@@ -19,68 +19,71 @@ import Moment = moment.Moment; // kann das über ein anderes Import Format gelö
 export default class DateUtil {
 
     /**
-     * @param {string} localDateTimeString string with format YYYY-MM-DDTHH:mm:ss.SSS
-     * @returns {?Moment}
+     * @param localDateTimeString string with format YYYY-MM-DDTHH:mm:ss.SSS
      */
-    public static localDateTimeToMoment(localDateTimeString: string): Moment {
-        if (localDateTimeString === null || localDateTimeString === undefined) { // cannot use EbeguUtil. cycle dependency
+    public static localDateTimeToMoment(localDateTimeString: string): Moment | undefined {
+        // cannot use EbeguUtil. cycle dependency
+        if (localDateTimeString === null || localDateTimeString === undefined) {
             return undefined;
         }
-        const theMoment: Moment = moment(localDateTimeString, ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTHH:mm:ss.SSSZ'], true);
+        const formats = ['YYYY-MM-DDTHH:mm:ss.SSS', 'YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTHH:mm:ss.SSSZ'];
+        const theMoment = moment(localDateTimeString, formats, true);
         if (!theMoment.isValid()) {
             console.warn('Trying to parse an invalid date to moment', theMoment);
+
             return undefined;
         }
+
         return theMoment;
     }
 
     /**
      * Calls momentToLocalDateFormat with the format by default 'YYYY-MM-DD'
-     * @param aMoment
-     * @returns {string}
      */
     public static momentToLocalDate(aMoment: Moment): string {
         return DateUtil.momentToLocalDateFormat(aMoment, 'YYYY-MM-DD');
     }
 
     /**
-     * @param {Moment} aMoment time instance
-     * @param {string} format the format
-     * @returns {?string} a Date (YYYY-MM-DD) representation of the given moment. NULL when aMoment is invalid
+     * @param aMoment time instance
+     * @param format the format
+     * @returns a Date (YYYY-MM-DD) representation of the given moment. NULL when aMoment is invalid
      */
-    public static momentToLocalDateFormat(aMoment: Moment, format: string): string {
+    public static momentToLocalDateFormat(aMoment: Moment, format?: string): string | undefined {
         if (!aMoment) {
             return undefined;
         }
+
         return moment(aMoment).startOf('day').format(format);
     }
 
     /**
-     * @param {Moment} aMoment time instance
+     * @param aMoment time instance
      * @param format format for the time
-     * @returns {?string} a Date (YYYY-MM-DD) representation of the given moment. undefined when aMoment is invalid
+     * @returns a Date (YYYY-MM-DD) representation of the given moment. undefined when aMoment is invalid
      */
-    public static momentToLocalDateTimeFormat(aMoment: Moment, format: string): string {
+    public static momentToLocalDateTimeFormat(aMoment: Moment, format: string): string | undefined {
         if (!aMoment) {
             return undefined;
         }
+
         return moment(aMoment).format(format);
     }
 
     /**
-     * @param {Moment} aMoment time instance
-     * @returns {?string} a Date (YYYY-MM-DD) representation of the given moment. NULL when aMoment is invalid
+     * @param aMoment time instance
+     * @returns a Date (YYYY-MM-DD) representation of the given moment. NULL when aMoment is invalid
      */
-    public static momentToLocalDateTime(aMoment: Moment): string {
+    public static momentToLocalDateTime(aMoment: Moment): string | undefined {
         return DateUtil.momentToLocalDateTimeFormat(aMoment, 'YYYY-MM-DDTHH:mm:ss.SSS');
     }
 
     /**
-     * @param {string} localDateString string with format YYYY-MM-DD
-     * @returns {?moment}
+     * @param localDateString string with format YYYY-MM-DD
      */
-    public static localDateToMoment(localDateString: string): Moment {
+    public static localDateToMoment(localDateString: string): Moment | undefined {
         const theMoment = moment(localDateString, 'YYYY-MM-DD', true);
+
         return theMoment.isValid() ? theMoment : undefined;
     }
 
@@ -102,10 +105,12 @@ export default class DateUtil {
     public static compareDateTime(a: Moment, b: Moment): number {
         if (a.isBefore(b)) {
             return -1;
-        } else if (a.isSame(b)) {
-            return 0;
-        } else {
-            return 1;
         }
+
+        if (a.isSame(b)) {
+            return 0;
+        }
+
+        return 1;
     }
 }

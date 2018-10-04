@@ -17,14 +17,14 @@
 
 import {HookResult, RejectType, Transition, TransitionService} from '@uirouter/core';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {onErrorPriorities} from './onErrorPriorities';
+import {OnErrorPriorities} from './onErrorPriorities';
 
 const LOG = LogFactory.createLog('errorLoggerHookRunBlock');
 
 errorLoggerHookRunBlock.$inject = ['$transitions'];
 
-export function errorLoggerHookRunBlock($transitions: TransitionService) {
-    $transitions.onError({}, onError, {priority: onErrorPriorities.ERROR_LOGGER});
+export function errorLoggerHookRunBlock($transitions: TransitionService): void {
+    $transitions.onError({}, onError, {priority: OnErrorPriorities.ERROR_LOGGER});
 }
 
 function onError(transition: Transition): HookResult {

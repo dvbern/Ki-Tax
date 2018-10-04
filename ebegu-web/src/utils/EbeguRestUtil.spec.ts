@@ -52,15 +52,21 @@ import DateUtil from './DateUtil';
 import EbeguRestUtil from './EbeguRestUtil';
 import EbeguUtil from './EbeguUtil';
 import TestDataUtil from './TestDataUtil.spec';
+import IProvideService = angular.auto.IProvideService;
 
+// tslint:disable:no-big-function
 describe('EbeguRestUtil', () => {
 
     let ebeguRestUtil: EbeguRestUtil;
     let today: moment.Moment;
 
+    const pensum25 = 25;
+    const pensum50 = 50;
+    const oeffnungsTage = 250;
+
     beforeEach(angular.mock.module('pascalprecht.translate'));
 
-    beforeEach(angular.mock.module(($provide: angular.auto.IProvideService) => {
+    beforeEach(angular.mock.module(($provide: IProvideService) => {
         $provide.value('CONSTANTS', CONSTANTS);
         $provide.service('EbeguUtil', EbeguUtil);
     }));
@@ -69,51 +75,6 @@ describe('EbeguRestUtil', () => {
         ebeguRestUtil = new EbeguRestUtil($injector.get('EbeguUtil'));
         today = DateUtil.today();
     }));
-
-    describe('publicAPI', () => {
-        it('should include a parseAdresse() function', () => {
-            expect(ebeguRestUtil.parseAdresse).toBeDefined();
-        });
-        it('should include a parseGesuchsteller() function', () => {
-            expect(ebeguRestUtil.parseGesuchsteller).toBeDefined();
-        });
-        it('should include a fachstelleToRestObject() function', () => {
-            expect(ebeguRestUtil.fachstelleToRestObject).toBeDefined();
-        });
-        it('should include a parseFachstelle() function', () => {
-            expect(ebeguRestUtil.parseFachstelle).toBeDefined();
-        });
-        it('should include a mandantToRestObject() function', () => {
-            expect(ebeguRestUtil.mandantToRestObject).toBeDefined();
-        });
-        it('should include a parseMandant() function', () => {
-            expect(ebeguRestUtil.parseMandant).toBeDefined();
-        });
-        it('should include a traegerschaftToRestObject() function', () => {
-            expect(ebeguRestUtil.traegerschaftToRestObject).toBeDefined();
-        });
-        it('should include a parseTraegerschaft() function', () => {
-            expect(ebeguRestUtil.parseTraegerschaft).toBeDefined();
-        });
-        it('should include a institutionToRestObject() function', () => {
-            expect(ebeguRestUtil.institutionToRestObject).toBeDefined();
-        });
-        it('should include a parseInstitution() function', () => {
-            expect(ebeguRestUtil.parseInstitution).toBeDefined();
-        });
-        it('should include a institutionStammdatenToRestObject() function', () => {
-            expect(ebeguRestUtil.institutionStammdatenToRestObject).toBeDefined();
-        });
-        it('should include a parseInstitutionStammdaten() function', () => {
-            expect(ebeguRestUtil.parseInstitutionStammdaten).toBeDefined();
-        });
-        it('should include a parseGesuch() function', () => {
-            expect(ebeguRestUtil.parseGesuch).toBeDefined();
-        });
-        it('should include a gesuchToRestObject() function', () => {
-            expect(ebeguRestUtil.gesuchToRestObject).toBeDefined();
-        });
-    });
 
     describe('API Usage', () => {
         describe('parseAdresse()', () => {
@@ -134,7 +95,7 @@ describe('EbeguRestUtil', () => {
 
                 const restAdresse: any = ebeguRestUtil.adresseToRestObject({}, adresse);
                 expect(restAdresse).toBeDefined();
-                const adr: TSAdresse = ebeguRestUtil.parseAdresse(new TSAdresse(), restAdresse);
+                const adr = ebeguRestUtil.parseAdresse(new TSAdresse(), restAdresse);
                 expect(adr).toBeDefined();
                 expect(adresse.gemeinde).toEqual(adr.gemeinde);
                 TestDataUtil.checkGueltigkeitAndSetIfSame(adr, adresse);
@@ -144,7 +105,7 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseGesuchsteller()', () => {
             it('should transfrom TSGesuchsteller to REST Obj and back', () => {
-                const myGesuchsteller: TSGesuchstellerContainer = createGesuchsteller();
+                const myGesuchsteller = createGesuchsteller();
                 TestDataUtil.setAbstractMutableFieldsUndefined(myGesuchsteller);
                 myGesuchsteller.gesuchstellerGS = undefined;
                 myGesuchsteller.gesuchstellerJA.telefon = ''; // Ein leerer String im Telefon muss auch behandelt werden
@@ -187,25 +148,25 @@ describe('EbeguRestUtil', () => {
                 const myGesuch = new TSGesuch();
                 TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch);
                 myGesuch.einkommensverschlechterungInfoContainer = undefined;
-                const fall: TSFall = new TSFall();
+                const fall = new TSFall();
                 TestDataUtil.setAbstractMutableFieldsUndefined(fall);
                 const dossier = new TSDossier();
                 TestDataUtil.setAbstractMutableFieldsUndefined(dossier);
                 myGesuch.dossier = dossier;
                 myGesuch.dossier.fall = fall;
                 myGesuch.dossier.fall.besitzer = undefined;
-                const gesuchsteller: TSGesuchstellerContainer = createGesuchsteller();
+                const gesuchsteller = createGesuchsteller();
                 gesuchsteller.gesuchstellerGS = undefined;
                 TestDataUtil.setAbstractMutableFieldsUndefined(gesuchsteller);
                 myGesuch.gesuchsteller1 = gesuchsteller;
                 myGesuch.gesuchsteller2 = gesuchsteller;
-                const gesuchsperiode: TSGesuchsperiode = new TSGesuchsperiode();
+                const gesuchsperiode = new TSGesuchsperiode();
                 TestDataUtil.setAbstractMutableFieldsUndefined(gesuchsperiode);
                 gesuchsperiode.gueltigkeit = new TSDateRange(undefined, undefined);
                 myGesuch.gesuchsperiode = gesuchsperiode;
-                const familiensituation: TSFamiliensituation = new TSFamiliensituation();
+                const familiensituation = new TSFamiliensituation();
                 TestDataUtil.setAbstractMutableFieldsUndefined(familiensituation);
-                myGesuch.familiensituationContainer = new TSFamiliensituationContainer;
+                myGesuch.familiensituationContainer = new TSFamiliensituationContainer();
                 myGesuch.familiensituationContainer.familiensituationJA = familiensituation;
                 TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch.familiensituationContainer);
                 myGesuch.kindContainers = [undefined];
@@ -219,14 +180,16 @@ describe('EbeguRestUtil', () => {
                 const transformedGesuch = ebeguRestUtil.parseGesuch(new TSGesuch(), restGesuch);
                 expect(transformedGesuch).toBeDefined();
 
-                expect(transformedGesuch.einkommensverschlechterungInfoContainer).toEqual(myGesuch.einkommensverschlechterungInfoContainer);
+                expect(transformedGesuch.einkommensverschlechterungInfoContainer)
+                    .toEqual(myGesuch.einkommensverschlechterungInfoContainer);
                 expect(transformedGesuch.dossier.fall).toEqual(myGesuch.dossier.fall);
                 expect(transformedGesuch.gesuchsteller1).toEqual(myGesuch.gesuchsteller1);
                 expect(transformedGesuch.gesuchsteller2).toEqual(myGesuch.gesuchsteller2);
                 expect(transformedGesuch.gesuchsperiode).toEqual(myGesuch.gesuchsperiode);
                 expect(transformedGesuch.familiensituationContainer).toEqual(myGesuch.familiensituationContainer);
                 expect(transformedGesuch.kindContainers).toEqual(myGesuch.kindContainers);
-                expect(transformedGesuch.einkommensverschlechterungInfoContainer).toEqual(myGesuch.einkommensverschlechterungInfoContainer);
+                expect(transformedGesuch.einkommensverschlechterungInfoContainer)
+                    .toEqual(myGesuch.einkommensverschlechterungInfoContainer);
                 expect(transformedGesuch.bemerkungen).toEqual(myGesuch.bemerkungen);
                 expect(transformedGesuch.laufnummer).toEqual(myGesuch.laufnummer);
                 expect(transformedGesuch.typ).toEqual(myGesuch.typ);
@@ -255,7 +218,8 @@ describe('EbeguRestUtil', () => {
                 expect(restTraegerschaft).toBeDefined();
                 expect(restTraegerschaft.name).toEqual(myTraegerschaft.name);
 
-                const transformedTraegerschaft = ebeguRestUtil.parseTraegerschaft(new TSTraegerschaft(), restTraegerschaft);
+                const traegerschaft = new TSTraegerschaft();
+                const transformedTraegerschaft = ebeguRestUtil.parseTraegerschaft(traegerschaft, restTraegerschaft);
                 expect(transformedTraegerschaft).toBeDefined();
                 expect(transformedTraegerschaft).toEqual(myTraegerschaft);
             });
@@ -277,25 +241,40 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseBetreuung()', () => {
             it('should transform TSBetreuung to REST object and back', () => {
-                const instStam: TSInstitutionStammdaten = new TSInstitutionStammdaten('iban', 250, 12, TSBetreuungsangebotTyp.KITA,
-                    createInstitution(), undefined, new TSDateRange(DateUtil.today(), DateUtil.today()));
+                const instStam = new TSInstitutionStammdaten('iban',
+                    oeffnungsTage,
+                    12,
+                    TSBetreuungsangebotTyp.KITA,
+                    createInstitution(),
+                    undefined,
+                    new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(instStam);
 
-                const tsBetreuungspensumGS: TSBetreuungspensum = new TSBetreuungspensum(false, 25, new TSDateRange(DateUtil.today(), DateUtil.today()));
+                const tsBetreuungspensumGS = new TSBetreuungspensum(false,
+                    pensum25,
+                    new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
-                const tsBetreuungspensumJA: TSBetreuungspensum = new TSBetreuungspensum(false, 50, new TSDateRange(DateUtil.today(), DateUtil.today()));
+                const tsBetreuungspensumJA = new TSBetreuungspensum(false,
+                    pensum50,
+                    new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumJA);
-                const tsBetreuungspensumContainer: TSBetreuungspensumContainer = new TSBetreuungspensumContainer(tsBetreuungspensumGS, tsBetreuungspensumJA);
+                const tsBetreuungspensumContainer = new TSBetreuungspensumContainer(
+                    tsBetreuungspensumGS,
+                    tsBetreuungspensumJA);
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumContainer);
-                const betContainers: Array<TSBetreuungspensumContainer> = [tsBetreuungspensumContainer];
+                const betContainers = [tsBetreuungspensumContainer];
 
-                const today: moment.Moment = DateUtil.today();
-                const tsAbwesenheitGS: TSAbwesenheit = new TSAbwesenheit(new TSDateRange(today, today));
-                const tsAbwesenheitJA: TSAbwesenheit = new TSAbwesenheit(new TSDateRange(today, today));
-                const tsAbwesenheitContainer: TSAbwesenheitContainer = new TSAbwesenheitContainer(tsAbwesenheitGS, tsAbwesenheitJA);
-                const abwesenheitContainers: Array<TSAbwesenheitContainer> = [tsAbwesenheitContainer];
+                const tsAbwesenheitGS = new TSAbwesenheit(new TSDateRange(today, today));
+                const tsAbwesenheitJA = new TSAbwesenheit(new TSDateRange(today, today));
+                const tsAbwesenheitContainer = new TSAbwesenheitContainer(tsAbwesenheitGS,
+                    tsAbwesenheitJA);
+                const abwesenheitContainers = [tsAbwesenheitContainer];
 
-                const betreuung: TSBetreuung = new TSBetreuung(instStam, TSBetreuungsstatus.AUSSTEHEND, betContainers, abwesenheitContainers, 2);
+                const betreuung = new TSBetreuung(instStam,
+                    TSBetreuungsstatus.AUSSTEHEND,
+                    betContainers,
+                    abwesenheitContainers,
+                    2);
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuung);
 
                 const restBetreuung = ebeguRestUtil.betreuungToRestObject({}, betreuung);
@@ -304,31 +283,41 @@ describe('EbeguRestUtil', () => {
                 expect(restBetreuung.betreuungsstatus).toEqual(TSBetreuungsstatus.AUSSTEHEND);
                 expect(restBetreuung.institutionStammdaten.iban).toEqual(betreuung.institutionStammdaten.iban);
                 expect(restBetreuung.betreuungspensumContainers).toBeDefined();
-                expect(restBetreuung.betreuungspensumContainers.length).toEqual(betreuung.betreuungspensumContainers.length);
-                expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumGS.pensum).toBe(betreuung.betreuungspensumContainers[0].betreuungspensumGS.pensum);
-                expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumJA.pensum).toBe(betreuung.betreuungspensumContainers[0].betreuungspensumJA.pensum);
+                expect(restBetreuung.betreuungspensumContainers.length)
+                    .toEqual(betreuung.betreuungspensumContainers.length);
+                expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumGS.pensum)
+                    .toBe(betreuung.betreuungspensumContainers[0].betreuungspensumGS.pensum);
+                expect(restBetreuung.betreuungspensumContainers[0].betreuungspensumJA.pensum)
+                    .toBe(betreuung.betreuungspensumContainers[0].betreuungspensumJA.pensum);
 
-                const transformedBetreuung: TSBetreuung = ebeguRestUtil.parseBetreuung(new TSBetreuung(), restBetreuung);
+                const transformedBetreuung = ebeguRestUtil.parseBetreuung(new TSBetreuung(),
+                    restBetreuung);
 
                 expect(transformedBetreuung).toBeDefined();
-                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedBetreuung.betreuungspensumContainers[0].betreuungspensumGS, betreuung.betreuungspensumContainers[0].betreuungspensumGS);
-                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedBetreuung.betreuungspensumContainers[0].betreuungspensumJA, betreuung.betreuungspensumContainers[0].betreuungspensumJA);
-                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedBetreuung.institutionStammdaten, betreuung.institutionStammdaten);
+                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedBetreuung.betreuungspensumContainers[0].betreuungspensumGS,
+                    betreuung.betreuungspensumContainers[0].betreuungspensumGS);
+                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedBetreuung.betreuungspensumContainers[0].betreuungspensumJA,
+                    betreuung.betreuungspensumContainers[0].betreuungspensumJA);
+                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedBetreuung.institutionStammdaten,
+                    betreuung.institutionStammdaten);
                 expect(transformedBetreuung.betreuungsstatus).toEqual(betreuung.betreuungsstatus);
                 expect(transformedBetreuung.betreuungNummer).toEqual(betreuung.betreuungNummer);
-                expect(transformedBetreuung.betreuungspensumContainers[0]).toEqual(betreuung.betreuungspensumContainers[0]);
+                expect(transformedBetreuung.betreuungspensumContainers[0])
+                    .toEqual(betreuung.betreuungspensumContainers[0]);
             });
         });
         describe('parseBetreuungspensum', () => {
             it('should transform TSBetreuungspensum to REST object and back', () => {
-                const betreuungspensum: TSBetreuungspensum = new TSBetreuungspensum(false, 25, new TSDateRange(DateUtil.today(), DateUtil.today()));
+                const betreuungspensum = new TSBetreuungspensum(false, pensum25,
+                    new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuungspensum);
 
-                const restBetreuungspensum: TSBetreuungspensum = ebeguRestUtil.betreuungspensumToRestObject({}, betreuungspensum);
+                const restBetreuungspensum = ebeguRestUtil.betreuungspensumToRestObject({}, betreuungspensum);
                 expect(restBetreuungspensum).toBeDefined();
                 expect(restBetreuungspensum.pensum).toEqual(betreuungspensum.pensum);
 
-                const transformedBetreuungspensum: TSBetreuungspensum = ebeguRestUtil.parseBetreuungspensum(new TSBetreuungspensum(), restBetreuungspensum);
+                const transformedBetreuungspensum = ebeguRestUtil.parseBetreuungspensum(new TSBetreuungspensum(),
+                    restBetreuungspensum);
 
                 expect(transformedBetreuungspensum).toBeDefined();
                 TestDataUtil.checkGueltigkeitAndSetIfSame(transformedBetreuungspensum, betreuungspensum);
@@ -343,25 +332,39 @@ describe('EbeguRestUtil', () => {
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
-                const myInstitutionStammdaten = new TSInstitutionStammdaten('iban', 250, 12, TSBetreuungsangebotTyp.KITA, myInstitution, undefined,
-                    new TSDateRange(DateUtil.today(), DateUtil.today()), '', undefined, tsInstStammdatenTagesschule);
+                const myInstitutionStammdaten = new TSInstitutionStammdaten('iban',
+                    oeffnungsTage,
+                    12,
+                    TSBetreuungsangebotTyp.KITA,
+                    myInstitution,
+                    undefined,
+                    new TSDateRange(DateUtil.today(), DateUtil.today()),
+                    '',
+                    undefined,
+                    tsInstStammdatenTagesschule);
                 TestDataUtil.setAbstractMutableFieldsUndefined(myInstitutionStammdaten);
 
-                const restInstitutionStammdaten = ebeguRestUtil.institutionStammdatenToRestObject({}, myInstitutionStammdaten);
+                const restInstitutionStammdaten = ebeguRestUtil.institutionStammdatenToRestObject({},
+                    myInstitutionStammdaten);
                 expect(restInstitutionStammdaten).toBeDefined();
                 expect(restInstitutionStammdaten.iban).toEqual(myInstitutionStammdaten.iban);
                 expect(restInstitutionStammdaten.oeffnungsstunden).toEqual(myInstitutionStammdaten.oeffnungsstunden);
                 expect(restInstitutionStammdaten.oeffnungstage).toEqual(myInstitutionStammdaten.oeffnungstage);
-                expect(restInstitutionStammdaten.gueltigAb).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
-                expect(restInstitutionStammdaten.gueltigBis).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
-                expect(restInstitutionStammdaten.betreuungsangebotTyp).toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
+                expect(restInstitutionStammdaten.gueltigAb)
+                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
+                expect(restInstitutionStammdaten.gueltigBis)
+                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
+                expect(restInstitutionStammdaten.betreuungsangebotTyp)
+                    .toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
                 expect(restInstitutionStammdaten.institution.name).toEqual(myInstitutionStammdaten.institution.name);
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule.length).toBe(1);
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag).toBeUndefined();
+                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag)
+                    .toBeUndefined();
 
-                const transformedInstitutionStammdaten = ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), restInstitutionStammdaten);
+                const transformedInstitutionStammdaten = ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
+                    restInstitutionStammdaten);
 
                 TestDataUtil.checkGueltigkeitAndSetIfSame(transformedInstitutionStammdaten, myInstitutionStammdaten);
                 expect(transformedInstitutionStammdaten).toEqual(myInstitutionStammdaten);
@@ -372,17 +375,21 @@ describe('EbeguRestUtil', () => {
                 const erwerbspensumContainer = TestDataUtil.createErwerbspensumContainer();
                 const erwerbspensumJA = erwerbspensumContainer.erwerbspensumJA;
 
-                const restErwerbspensum = ebeguRestUtil.erwerbspensumToRestObject({}, erwerbspensumContainer.erwerbspensumJA);
+                const restErwerbspensum = ebeguRestUtil.erwerbspensumToRestObject({},
+                    erwerbspensumContainer.erwerbspensumJA);
                 expect(restErwerbspensum).toBeDefined();
                 expect(restErwerbspensum.taetigkeit).toEqual(erwerbspensumJA.taetigkeit);
                 expect(restErwerbspensum.pensum).toEqual(erwerbspensumJA.pensum);
-                expect(restErwerbspensum.gueltigAb).toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigAb));
-                expect(restErwerbspensum.gueltigBis).toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigBis));
+                expect(restErwerbspensum.gueltigAb)
+                    .toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigAb));
+                expect(restErwerbspensum.gueltigBis)
+                    .toEqual(DateUtil.momentToLocalDate(erwerbspensumJA.gueltigkeit.gueltigBis));
                 expect(restErwerbspensum.zuschlagZuErwerbspensum).toEqual(erwerbspensumJA.zuschlagZuErwerbspensum);
                 expect(restErwerbspensum.zuschlagsprozent).toEqual(erwerbspensumJA.zuschlagsprozent);
                 expect(restErwerbspensum.zuschlagsgrund).toEqual(erwerbspensumJA.zuschlagsgrund);
 
-                const transformedErwerbspensum = ebeguRestUtil.parseErwerbspensum(new TSErwerbspensum(), restErwerbspensum);
+                const transformedErwerbspensum = ebeguRestUtil.parseErwerbspensum(new TSErwerbspensum(),
+                    restErwerbspensum);
 
                 TestDataUtil.checkGueltigkeitAndSetIfSame(transformedErwerbspensum, erwerbspensumJA);
                 expect(transformedErwerbspensum).toEqual(erwerbspensumJA);
@@ -390,13 +397,15 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseGesuchsperiode()', () => {
             it('should transfrom TSGesuchsperiode to REST Obj and back', () => {
-                const myGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(undefined, undefined));
+                const myGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV,
+                    new TSDateRange(undefined, undefined));
                 TestDataUtil.setAbstractMutableFieldsUndefined(myGesuchsperiode);
 
                 const restGesuchsperiode = ebeguRestUtil.gesuchsperiodeToRestObject({}, myGesuchsperiode);
                 expect(restGesuchsperiode).toBeDefined();
 
-                const transformedGesuchsperiode: TSGesuchsperiode = ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), restGesuchsperiode);
+                const transformedGesuchsperiode = ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(),
+                    restGesuchsperiode);
                 expect(transformedGesuchsperiode).toBeDefined();
                 expect(myGesuchsperiode.status).toBe(TSGesuchsperiodeStatus.AKTIV);
                 expect(myGesuchsperiode).toEqual(transformedGesuchsperiode);
@@ -405,9 +414,11 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseAntragDTO()', () => {
             it('should transform TSAntragDTO to REST Obj and back', () => {
-                const tsGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(undefined, undefined));
+                const tsGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV,
+                    new TSDateRange(undefined, undefined));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsGesuchsperiode);
-                const myPendenz = new TSAntragDTO('id1', 123, 'name', TSAntragTyp.ERSTGESUCH, DateUtil.today(),
+                const fallNummer = 123;
+                const myPendenz = new TSAntragDTO('id1', fallNummer, 'name', TSAntragTyp.ERSTGESUCH, DateUtil.today(),
                     undefined, DateUtil.now(), [TSBetreuungsangebotTyp.KITA], ['Inst1, Inst2'], 'Juan Arbolado');
 
                 const restPendenz = ebeguRestUtil.antragDTOToRestObject({}, myPendenz);
@@ -454,11 +465,13 @@ describe('EbeguRestUtil', () => {
                 restVerfuegungZeitabschnitt.bemerkungen = 'bemerkung1';
                 restVerfuegungZeitabschnitt.zahlungsstatus = TSVerfuegungZeitabschnittZahlungsstatus.NEU;
 
-                const verfuegungTS = ebeguRestUtil.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(), restVerfuegungZeitabschnitt);
+                const verfuegungTS = ebeguRestUtil.parseVerfuegungZeitabschnitt(new TSVerfuegungZeitabschnitt(),
+                    restVerfuegungZeitabschnitt);
 
                 expect(verfuegungTS).toBeDefined();
                 expect(verfuegungTS.abzugFamGroesse).toEqual(restVerfuegungZeitabschnitt.abzugFamGroesse);
-                expect(verfuegungTS.anspruchberechtigtesPensum).toEqual(restVerfuegungZeitabschnitt.anspruchberechtigtesPensum);
+                expect(verfuegungTS.anspruchberechtigtesPensum)
+                    .toEqual(restVerfuegungZeitabschnitt.anspruchberechtigtesPensum);
                 expect(verfuegungTS.anspruchspensumRest).toEqual(restVerfuegungZeitabschnitt.anspruchspensumRest);
                 expect(verfuegungTS.betreuungspensum).toEqual(restVerfuegungZeitabschnitt.betreuungspensum);
                 expect(verfuegungTS.betreuungsstunden).toEqual(restVerfuegungZeitabschnitt.betreuungsstunden);
@@ -466,7 +479,8 @@ describe('EbeguRestUtil', () => {
                 expect(verfuegungTS.erwerbspensumGS1).toEqual(restVerfuegungZeitabschnitt.erwerbspensumGS1);
                 expect(verfuegungTS.erwerbspensumGS2).toEqual(restVerfuegungZeitabschnitt.erwerbspensumGS2);
                 expect(verfuegungTS.fachstellenpensum).toEqual(restVerfuegungZeitabschnitt.fachstellenpensum);
-                expect(verfuegungTS.massgebendesEinkommenVorAbzugFamgr).toEqual(restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr);
+                expect(verfuegungTS.massgebendesEinkommenVorAbzugFamgr)
+                    .toEqual(restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr);
                 expect(verfuegungTS.vollkosten).toEqual(restVerfuegungZeitabschnitt.vollkosten);
                 expect(verfuegungTS.bemerkungen).toEqual(restVerfuegungZeitabschnitt.bemerkungen);
                 expect(verfuegungTS.zahlungsstatus).toEqual(restVerfuegungZeitabschnitt.zahlungsstatus);
@@ -485,7 +499,7 @@ describe('EbeguRestUtil', () => {
     }
 
     function createGesuchsteller(): TSGesuchstellerContainer {
-        const myGesuchstellerCont: TSGesuchstellerContainer = new TSGesuchstellerContainer();
+        const myGesuchstellerCont = new TSGesuchstellerContainer();
         TestDataUtil.setAbstractMutableFieldsUndefined(myGesuchstellerCont);
         myGesuchstellerCont.id = 'containerID';
         const myGesuchsteller = new TSGesuchsteller();

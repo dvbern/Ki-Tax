@@ -23,7 +23,7 @@ export default class TSSelectableSprache {
     private _sprache: TSSprache;
     private _selected: boolean;
 
-    constructor(sprache: TSSprache, selected: boolean) {
+    public constructor(sprache: TSSprache, selected: boolean) {
         this._sprache = sprache;
         this._selected = selected;
     }

@@ -14,26 +14,27 @@
  */
 
 import {async} from '@angular/core/testing';
+import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSFamiliensituationContainer from '../../../models/TSFamiliensituationContainer';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
 describe('einkommensverschlechterungSteuernView', () => {
 
     let gesuchModelManager: GesuchModelManager;
 
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    let scope: IScope;
+    let $componentController: IComponentControllerService;
 
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');

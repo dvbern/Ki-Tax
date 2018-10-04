@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSDokument from './TSDokument';
-import {TSDokumentGrundTyp} from './enums/TSDokumentGrundTyp';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSDokumentTyp} from './enums/TSDokumentTyp';
 import {TSDokumentGrundPersonType} from './enums/TSDokumentGrundPersonType';
+import {TSDokumentGrundTyp} from './enums/TSDokumentGrundTyp';
+import {TSDokumentTyp} from './enums/TSDokumentTyp';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSDokument from './TSDokument';
 
 export default class TSDokumentGrund extends TSAbstractMutableEntity {
 
@@ -37,74 +37,72 @@ export default class TSDokumentGrund extends TSAbstractMutableEntity {
 
     private _needed: boolean;
 
-    constructor(dokumentGrundTyp?: TSDokumentGrundTyp) {
+    public constructor(dokumentGrundTyp?: TSDokumentGrundTyp) {
         super();
         this._dokumentGrundTyp = dokumentGrundTyp;
     }
 
-    get dokumentGrundTyp(): TSDokumentGrundTyp {
+    public get dokumentGrundTyp(): TSDokumentGrundTyp {
         return this._dokumentGrundTyp;
     }
 
-    set dokumentGrundTyp(value: TSDokumentGrundTyp) {
+    public set dokumentGrundTyp(value: TSDokumentGrundTyp) {
         this._dokumentGrundTyp = value;
     }
 
-    get fullName(): string {
+    public get fullName(): string {
         return this._fullName;
     }
 
-    set fullName(value: string) {
+    public set fullName(value: string) {
         this._fullName = value;
     }
 
-    get tag(): string {
+    public get tag(): string {
         return this._tag;
     }
 
-    set tag(value: string) {
+    public set tag(value: string) {
         this._tag = value;
     }
 
-    get dokumente(): Array<TSDokument> {
+    public get dokumente(): Array<TSDokument> {
         return this._dokumente;
     }
 
-    set dokumente(value: Array<TSDokument>) {
+    public set dokumente(value: Array<TSDokument>) {
         this._dokumente = value;
     }
 
-    get dokumentTyp(): TSDokumentTyp {
+    public get dokumentTyp(): TSDokumentTyp {
         return this._dokumentTyp;
     }
 
-    set dokumentTyp(value: TSDokumentTyp) {
+    public set dokumentTyp(value: TSDokumentTyp) {
         this._dokumentTyp = value;
     }
 
-    get needed(): boolean {
+    public get needed(): boolean {
         return this._needed;
     }
 
-    set needed(value: boolean) {
+    public set needed(value: boolean) {
         this._needed = value;
     }
 
-    get personType(): TSDokumentGrundPersonType {
+    public get personType(): TSDokumentGrundPersonType {
         return this._personType;
     }
 
-    set personType(value: TSDokumentGrundPersonType) {
+    public set personType(value: TSDokumentGrundPersonType) {
         this._personType = value;
     }
 
-    get personNumber(): number {
+    public get personNumber(): number {
         return this._personNumber;
     }
 
-    set personNumber(value: number) {
+    public set personNumber(value: number) {
         this._personNumber = value;
     }
 }
-
-

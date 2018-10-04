@@ -13,83 +13,91 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
-import TSGesuch from '../../models/TSGesuch';
+import {IHttpResponse, IHttpService} from 'angular';
 import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSituationResultateDTO';
-import WizardStepManager from './wizardStepManager';
+import TSEinkommensverschlechterungContainer from '../../models/TSEinkommensverschlechterungContainer';
 import TSFinanzModel from '../../models/TSFinanzModel';
-import IPromise = angular.IPromise;
+import TSGesuch from '../../models/TSGesuch';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import WizardStepManager from './wizardStepManager';
 import ILogService = angular.ILogService;
+import IPromise = angular.IPromise;
 
 export default class EinkommensverschlechterungContainerRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public $log: ILogService,
-                private readonly wizardStepManager: WizardStepManager) {
-        this.serviceURL = REST_API + 'einkommensverschlechterung';
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public $log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
+        this.serviceURL = `${REST_API}einkommensverschlechterung`;
     }
 
-    public saveEinkommensverschlechterungContainer(einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer,
-                                                   gesuchstellerId: string, gesuchId: string): IPromise<TSEinkommensverschlechterungContainer> {
+    public saveEinkommensverschlechterungContainer(
+        einkommensverschlechterungContainer: TSEinkommensverschlechterungContainer,
+        gesuchstellerId: string,
+        gesuchId: string,
+    ): IPromise<TSEinkommensverschlechterungContainer> {
         let returnedEinkommensverschlechterungContainer = {};
         returnedEinkommensverschlechterungContainer =
-            this.ebeguRestUtil.einkommensverschlechterungContainerToRestObject(returnedEinkommensverschlechterungContainer, einkommensverschlechterungContainer);
-        return this.$http.put(this.serviceURL + '/' + gesuchstellerId  + '/' + encodeURIComponent(gesuchId), returnedEinkommensverschlechterungContainer, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((httpresponse: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.$log.debug('PARSING Einkommensverschlechterung Container REST object ', httpresponse.data);
-                return this.ebeguRestUtil.parseEinkommensverschlechterungContainer(new TSEinkommensverschlechterungContainer(), httpresponse.data);
-            });
+            this.ebeguRestUtil.einkommensverschlechterungContainerToRestObject(
+                returnedEinkommensverschlechterungContainer,
+                einkommensverschlechterungContainer);
+        const url = `${this.serviceURL}/${gesuchstellerId}/${encodeURIComponent(gesuchId)}`;
+
+        return this.$http.put(url, returnedEinkommensverschlechterungContainer).then(r => {
+            return this.wizardStepManager.findStepsFromGesuch(gesuchId)
+                .then(() => this.toEinkommensverschlechterung(r));
         });
     }
 
-    public calculateEinkommensverschlechterung(gesuch: TSGesuch, basisJahrPlus: number): IPromise<TSFinanzielleSituationResultateDTO> {
+    public calculateEinkommensverschlechterung(
+        gesuch: TSGesuch,
+        basisJahrPlus: number,
+    ): IPromise<TSFinanzielleSituationResultateDTO> {
         let gesuchToSend = {};
         gesuchToSend = this.ebeguRestUtil.gesuchToRestObject(gesuchToSend, gesuch);
-        return this.$http.post(this.serviceURL + '/calculate' + '/' + basisJahrPlus, gesuchToSend, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((httpresponse: any) => {
-            this.$log.debug('PARSING Einkommensverschlechterung Result  REST object ', httpresponse.data);
-            return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(), httpresponse.data);
-        });
+        return this.$http.post(`${this.serviceURL}/calculate/${basisJahrPlus}`, gesuchToSend)
+            .then(response => this.toFinanzielleSituationResult(response));
     }
 
-    public calculateEinkommensverschlechterungTemp(finanzModel: TSFinanzModel, basisJahrPlus: number): IPromise<TSFinanzielleSituationResultateDTO> {
+    public calculateEinkommensverschlechterungTemp(
+        finanzModel: TSFinanzModel,
+        basisJahrPlus: number,
+    ): IPromise<TSFinanzielleSituationResultateDTO> {
         let finanzenToSend = {};
         finanzenToSend = this.ebeguRestUtil.finanzModelToRestObject(finanzenToSend, finanzModel);
-        return this.$http.post(this.serviceURL + '/calculateTemp' + '/' + basisJahrPlus, finanzenToSend, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((httpresponse: any) => {
-            this.$log.debug('PARSING Einkommensverschlechterung Result  REST object ', httpresponse.data);
-            return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(), httpresponse.data);
-        });
+        return this.$http.post(`${this.serviceURL}/calculateTemp/${basisJahrPlus}`, finanzenToSend)
+            .then(response => this.toFinanzielleSituationResult(response));
     }
 
-    public findEinkommensverschlechterungContainer(einkommensverschlechterungID: string): IPromise<TSEinkommensverschlechterungContainer> {
-        return this.$http.get(this.serviceURL + '/' + encodeURIComponent(einkommensverschlechterungID)).then((httpresponse: any) => {
-            this.$log.debug('PARSING EinkommensverschlechterungContainer REST object ', httpresponse.data);
-            return this.ebeguRestUtil.parseEinkommensverschlechterungContainer(new TSEinkommensverschlechterungContainer(), httpresponse.data);
-        });
+    public findEinkommensverschlechterungContainer(einkommensverschlechterungID: string,
+    ): IPromise<TSEinkommensverschlechterungContainer> {
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(einkommensverschlechterungID)}`)
+            .then(r => this.toEinkommensverschlechterung(r));
     }
 
     public findEKVContainerForGesuchsteller(gesuchstellerID: string): IPromise<TSEinkommensverschlechterungContainer> {
-        return this.$http.get(this.serviceURL + '/forGesuchsteller/' + encodeURIComponent(gesuchstellerID)).then((httpresponse: any) => {
-            this.$log.debug('PARSING EinkommensverschlechterungContainer REST object ', httpresponse.data);
-            return this.ebeguRestUtil.parseEinkommensverschlechterungContainer(new TSEinkommensverschlechterungContainer(), httpresponse.data);
-        });
+        return this.$http.get(`${this.serviceURL}/forGesuchsteller/${encodeURIComponent(gesuchstellerID)}`)
+            .then(r => this.toEinkommensverschlechterung(r));
+    }
+
+    private toEinkommensverschlechterung(response: IHttpResponse<any>): TSEinkommensverschlechterungContainer {
+        this.$log.debug('PARSING EinkommensverschlechterungContainer REST object ', response.data);
+        const container = new TSEinkommensverschlechterungContainer();
+
+        return this.ebeguRestUtil.parseEinkommensverschlechterungContainer(container, response.data);
+    }
+
+    private toFinanzielleSituationResult(httpresponse: IHttpResponse<any>): TSFinanzielleSituationResultateDTO {
+        this.$log.debug('PARSING Einkommensverschlechterung Result  REST object ', httpresponse.data);
+        const result = new TSFinanzielleSituationResultateDTO();
+
+        return this.ebeguRestUtil.parseFinanzielleSituationResultate(result, httpresponse.data);
     }
 }

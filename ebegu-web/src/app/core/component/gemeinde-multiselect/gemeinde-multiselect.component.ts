@@ -20,7 +20,6 @@ import {ControlContainer, NgForm} from '@angular/forms';
 import {MatOptionSelectionChange} from '@angular/material';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../../models/TSGemeinde';
 
@@ -48,9 +47,9 @@ export class GemeindeMultiselectComponent implements OnInit {
     public allowedMap$: Observable<Map<TSGemeinde, boolean>>; // Die Gemeinden, die zur Auswahl stehen sollen
     public inputId = `gemeinde-select-${nextId++}`;
 
-    constructor(private readonly authServiceRS: AuthServiceRS,
-                private readonly gemeindeRS: GemeindeRS,
-                public readonly form: NgForm,
+    public constructor(
+        private readonly gemeindeRS: GemeindeRS,
+        public readonly form: NgForm,
     ) {
     }
 

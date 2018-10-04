@@ -36,7 +36,8 @@ describe('BenutzerEinladenComponent', () => {
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['isRole', 'getGemeindenForPrincipal$', 'getVisibleRolesForPrincipal']);
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getInstitutionenForCurrentBenutzer']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+        ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
     const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['einladen']);
@@ -52,7 +53,7 @@ describe('BenutzerEinladenComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                UIRouterModule.forRoot()
+                UIRouterModule.forRoot(),
             ],
             declarations: [BenutzerEinladenComponent, BerechtigungComponent, BenutzerRolleComponent],
             providers: [
@@ -62,7 +63,7 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: BenutzerRS, useValue: benutzerSpy},
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
-            ]
+            ],
         })
             .compileComponents();
     }));

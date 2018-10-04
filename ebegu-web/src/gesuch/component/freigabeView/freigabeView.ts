@@ -36,27 +36,43 @@ import ITimeoutService = angular.ITimeoutService;
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class FreigabeViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./freigabeView.html');
-    controller = FreigabeViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./freigabeView.html');
+    public controller = FreigabeViewController;
+    public controllerAs = 'vm';
 }
 
 export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager',
-        'DvDialog', 'DownloadRS', '$scope', 'ApplicationPropertyRS', 'AuthServiceRS', '$timeout'];
+    public static $inject = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'WizardStepManager',
+        'DvDialog',
+        'DownloadRS',
+        '$scope',
+        'ApplicationPropertyRS',
+        'AuthServiceRS',
+        '$timeout',
+    ];
 
-    bestaetigungFreigabequittung: boolean = false;
-    isFreigebenClicked: boolean = false;
-    private showGesuchFreigebenSimulationButton: boolean = false;
-    TSRoleUtil = TSRoleUtil;
+    public bestaetigungFreigabequittung: boolean = false;
+    public isFreigebenClicked: boolean = false;
+    public showGesuchFreigebenSimulationButton: boolean = false;
+    public readonly TSRoleUtil = TSRoleUtil;
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog,
-                private readonly downloadRS: DownloadRS, $scope: IScope, private readonly applicationPropertyRS: ApplicationPropertyRS,
-                private readonly authServiceRS: AuthServiceRS, $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        wizardStepManager: WizardStepManager,
+        private readonly dvDialog: DvDialog,
+        private readonly downloadRS: DownloadRS,
+        $scope: IScope,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly authServiceRS: AuthServiceRS,
+        $timeout: ITimeoutService,
+    ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.FREIGABE, $timeout);
         this.initViewModel();
@@ -69,10 +85,10 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public gesuchEinreichen(): IPromise<void> {
         this.isFreigebenClicked = true;
-        if (this.isGesuchValid() && this.bestaetigungFreigabequittung === true) {
+        if (this.isGesuchValid() && this.bestaetigungFreigabequittung) {
             this.form.$setPristine();
-            return this.DvDialog.showDialog(dialogTemplate, FreigabeDialogController, {
-                parentController: this
+            return this.dvDialog.showDialog(dialogTemplate, FreigabeDialogController, {
+                parentController: this,
             });
         }
         return undefined;
@@ -82,7 +98,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         if (this.gesuchModelManager.isGesuch()) {
             this.openFreigabequittungPDF(true);
         } else {
-            this.gesuchFreigeben(); //wenn keine freigabequittung noetig direkt freigeben
+            this.gesuchFreigeben(); // wenn keine freigabequittung noetig direkt freigeben
         }
     }
 
@@ -91,12 +107,13 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         this.gesuchModelManager.antragFreigeben(gesuchID, null, null);
     }
 
-    private initDevModeParameter() {
+    private initDevModeParameter(): void {
         this.applicationPropertyRS.isDevMode().then((response: boolean) => {
             // Simulation nur fuer SuperAdmin freischalten
-            const isSuperadmin: boolean = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles());
+            const isSuperadmin = this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles());
             // Die Simulation ist nur im Dev-Mode moeglich und nur, wenn das Gesuch im Status FREIGABEQUITTUNG ist
-            this.showGesuchFreigebenSimulationButton = (response && this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG) && isSuperadmin);
+            this.showGesuchFreigebenSimulationButton =
+                (response && this.isGesuchInStatus(TSAntragStatus.FREIGABEQUITTUNG) && isSuperadmin);
         });
     }
 
@@ -116,17 +133,16 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public openFreigabequittungPDF(forceCreation: boolean): IPromise<void> {
-        const win: Window = this.downloadRS.prepareDownloadWindow();
-        return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id, forceCreation)
+        const win = this.downloadRS.prepareDownloadWindow();
+        return this.downloadRS.getFreigabequittungAccessTokenGeneratedDokument(this.gesuchModelManager.getGesuch().id,
+            forceCreation)
             .then((downloadFile: TSDownloadFile) => {
                 // wir laden das Gesuch neu, da die Erstellung des Dokumentes auch Aenderungen im Gesuch verursacht
                 this.gesuchModelManager.openGesuch(this.gesuchModelManager.getGesuch().id)
                     .then(() => {
                         this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
                     })
-                    .catch((ex) => {
-                        win.close();
-                    });
+                    .catch(ex => EbeguUtil.handleDownloadError(win, ex));
             });
     }
 
@@ -144,11 +160,11 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     public getTextForFreigebenNotAllowed(): string {
         if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde) {
             return 'FREIGABEQUITTUNG_NOT_ALLOWED_BESCHWERDE_TEXT';
-        } else if (this.gesuchModelManager.isGesuchsperiodeReadonly()) {
-            return 'FREIGABEQUITTUNG_NOT_ALLOWED_GESUCHSPERIODE_TEXT';
-        } else {
-            return 'FREIGABEQUITTUNG_NOT_ALLOWED_TEXT';
         }
+        if (this.gesuchModelManager.isGesuchsperiodeReadonly()) {
+            return 'FREIGABEQUITTUNG_NOT_ALLOWED_GESUCHSPERIODE_TEXT';
+        }
+        return 'FREIGABEQUITTUNG_NOT_ALLOWED_TEXT';
     }
 
     /**
@@ -174,7 +190,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         return this.gesuchModelManager.isGesuch();
     }
 
-    $postLink() {
+    public $postLink(): void {
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, 100);

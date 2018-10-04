@@ -24,6 +24,6 @@ export function getTSMitteilungsStatusForFilter(): Array<TSMitteilungStatus> {
     return [
         TSMitteilungStatus.NEU,
         TSMitteilungStatus.GELESEN,
-        TSMitteilungStatus.ERLEDIGT
+        TSMitteilungStatus.ERLEDIGT,
     ];
 }

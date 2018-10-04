@@ -48,7 +48,8 @@ export const PERMISSIONS: { [k in Permission]: TSRole[] } = {
         TSRole.STEUERAMT,
     ],
     [Permission.ROLE_BG]: [
-        // todo This Permission should be removed in KIBON version 2. The permission Permission.ROLE_GEMEINDE should be used instead
+        // todo This Permission should be removed in KIBON version 2. The permission Permission.ROLE_GEMEINDE should be
+        // used instead
         TSRole.ADMIN_BG,
         TSRole.SACHBEARBEITER_BG,
         TSRole.JURIST,

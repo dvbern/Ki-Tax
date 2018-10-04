@@ -23,6 +23,6 @@ export function getTSBetroffeneValues(): Array<TSBetroffene> {
     return [
         TSBetroffene.GESUCHSTELLER_1,
         TSBetroffene.GESUCHSTELLER_2,
-        TSBetroffene.BEIDE_GESUCHSTELLER
+        TSBetroffene.BEIDE_GESUCHSTELLER,
     ];
 }

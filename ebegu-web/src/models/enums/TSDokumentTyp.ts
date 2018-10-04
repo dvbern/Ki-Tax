@@ -77,6 +77,6 @@ export function getTSTSDokumentTypValues(): Array<TSDokumentTyp> {
         TSDokumentTyp.NACHWEIS_EINKOMMENSSITUATION_MONAT,
         TSDokumentTyp.DIV,
         TSDokumentTyp.ORIGINAL_PAPIERGESUCH,
-        TSDokumentTyp.UNTERSTUETZUNGSBESTAETIGUNG
+        TSDokumentTyp.UNTERSTUETZUNGSBESTAETIGUNG,
     ];
 }

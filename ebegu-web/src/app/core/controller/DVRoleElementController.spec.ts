@@ -13,25 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguAuthentication} from '../../../authentication/authentication.module';
+import {AUTHENTICATION_JS_MODULE} from '../../../authentication/authentication.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../../models/enums/TSRole';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {DVRoleElementController} from './DVRoleElementController';
 
+// tslint:disable:no-identical-functions
 describe('DVElementController', () => {
 
     let authServiceRS: AuthServiceRS;
     let cvElementController: DVRoleElementController;
 
-    beforeEach(angular.mock.module(EbeguAuthentication.name));
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(AUTHENTICATION_JS_MODULE.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject($injector => {
-        authServiceRS = <AuthServiceRS>$injector.get('AuthServiceRS');
+        authServiceRS = $injector.get('AuthServiceRS');
         spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.GESUCHSTELLER);
         cvElementController = new DVRoleElementController(authServiceRS);
 

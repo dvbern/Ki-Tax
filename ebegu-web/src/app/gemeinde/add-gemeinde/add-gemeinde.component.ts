@@ -20,44 +20,42 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import ErrorService from '../../core/errors/service/ErrorService';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 
 @Component({
     selector: 'dv-add-gemeinde',
     templateUrl: './add-gemeinde.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddGemeindeComponent implements OnInit {
 
-    @ViewChild(NgForm) form: NgForm;
+    @ViewChild(NgForm) public form: NgForm;
 
-    gemeinde: TSGemeinde = undefined;
-    adminMail: string = undefined;
-    beguStartDatum: moment.Moment;
-    beguStartDatumMin: moment.Moment;
-    gesuchsperiodeList: Array<TSGesuchsperiode>;
+    public gemeinde: TSGemeinde = undefined;
+    public adminMail: string = undefined;
+    public beguStartDatum: moment.Moment;
+    public beguStartDatumMin: moment.Moment;
+    public gesuchsperiodeList: Array<TSGesuchsperiode>;
 
-    constructor(private readonly $transition$: Transition,
-                private readonly $state: StateService,
-                private readonly errorService: ErrorService,
-                private readonly gemeindeRS: GemeindeRS,
-                private readonly benutzerRS: BenutzerRS,
-                private readonly einstellungRS: EinstellungRS,
-                private readonly translate: TranslateService,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS) {
+    public constructor(
+        private readonly $transition$: Transition,
+        private readonly $state: StateService,
+        private readonly errorService: ErrorService,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly translate: TranslateService,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+    ) {
     }
 
     public ngOnInit(): void {
         const gemeindeId: string = this.$transition$.params().gemeindeId;
         if (gemeindeId) { // edit
-            this.gemeindeRS.findGemeinde(gemeindeId).then((result) => {
+            this.gemeindeRS.findGemeinde(gemeindeId).then(result => {
                 this.gemeinde = result;
             });
         } else { // add
@@ -79,11 +77,13 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     public gemeindeEinladen(): void {
-        if (this.form.valid) {
-            this.errorService.clearAll();
-            if (this.isStartDateValid()) {
-                this.persistGemeinde();
-            }
+        if (!this.form.valid) {
+            return;
+        }
+
+        this.errorService.clearAll();
+        if (this.isStartDateValid()) {
+            this.persistGemeinde();
         }
     }
 
@@ -101,7 +101,7 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum).then((neueGemeinde) => {
+        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum).then(neueGemeinde => {
             this.gemeinde = neueGemeinde;
             this.navigateBack();
         });
@@ -112,7 +112,7 @@ export class AddGemeindeComponent implements OnInit {
         this.gemeinde.status = TSGemeindeStatus.EINGELADEN;
     }
 
-    private navigateBack() {
+    private navigateBack(): void {
         this.$state.go('gemeinde.list');
     }
 }

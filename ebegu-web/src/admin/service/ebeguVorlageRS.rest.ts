@@ -13,35 +13,41 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {IHttpService, IPromise} from 'angular';
 import TSEbeguVorlage from '../../models/TSEbeguVorlage';
-import IQService = angular.IQService;
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import IHttpPromise = angular.IHttpPromise;
-
+import IQService = angular.IQService;
 
 export class EbeguVorlageRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                private readonly upload: any,
-                private readonly $q: IQService) {
-        this.serviceURL = REST_API + 'ebeguVorlage';
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        private readonly upload: any,
+        private readonly $q: IQService,
+    ) {
+        this.serviceURL = `${REST_API}ebeguVorlage`;
     }
 
     public getEbeguVorlagenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSEbeguVorlage[]> {
-        return this.http.get(this.serviceURL + '/gesuchsperiode/' + gesuchsperiodeId)
+        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEbeguVorlages(response.data);
             });
     }
 
-    public uploadVorlage(file: any, ebeguVorlage: TSEbeguVorlage, gesuchsperiodeID: string, proGesuchsperiode: boolean): IPromise<TSEbeguVorlage> {
+    public uploadVorlage(
+        file: any,
+        ebeguVorlage: TSEbeguVorlage,
+        gesuchsperiodeID: string,
+        proGesuchsperiode: boolean,
+    ): IPromise<TSEbeguVorlage> {
 
         let restEbeguVorlage = {};
         restEbeguVorlage = this.ebeguRestUtil.ebeguVorlageToRestObject(restEbeguVorlage, ebeguVorlage);
@@ -57,8 +63,8 @@ export class EbeguVorlageRS {
                 'x-progesuchsperiode': proGesuchsperiode,
             },
             data: {
-                file: file,
-            }
+                file,
+            },
         }).then((response: any) => {
             return this.ebeguRestUtil.parseEbeguVorlage(new TSEbeguVorlage(), response.data);
         }, (response: any) => {
@@ -67,18 +73,19 @@ export class EbeguVorlageRS {
         }, (evt: any) => {
             const loaded: number = evt.loaded;
             const total: number = evt.total;
-            const progressPercentage: number = 100.0 * loaded / total;
-            console.log('progress: ' + progressPercentage + '% ');
-            return this.$q.defer().notify();
+            const progressPercentage = 100 * loaded / total;
+            console.log(`progress: ${progressPercentage}% `);
+
+            this.$q.defer().notify();
         });
     }
 
     public deleteEbeguVorlage(ebeguVorlageID: string): IHttpPromise<any> {
-        return this.http.delete(this.serviceURL + '/' + encodeURIComponent(ebeguVorlageID));
+        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(ebeguVorlageID)}`);
     }
 
     public getEbeguVorlagenWithoutGesuchsperiode(): IPromise<TSEbeguVorlage[]> {
-        return this.http.get(this.serviceURL + '/nogesuchsperiode/')
+        return this.http.get(`${this.serviceURL}/nogesuchsperiode/`)
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEbeguVorlages(response.data);
             });

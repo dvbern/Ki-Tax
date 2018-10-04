@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSWizardStepName} from './enums/TSWizardStepName';
 import {TSWizardStepStatus} from './enums/TSWizardStepStatus';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSWizardStep extends TSAbstractMutableEntity {
 
@@ -25,8 +25,13 @@ export default class TSWizardStep extends TSAbstractMutableEntity {
     private _bemerkungen: string;
     private _verfuegbar: boolean;
 
-    constructor(gesuchId?: string, wizardStepName?: TSWizardStepName, wizardStepStatus?: TSWizardStepStatus, bemerkungen?: string,
-                verfuegbar?: boolean) {
+    public constructor(
+        gesuchId?: string,
+        wizardStepName?: TSWizardStepName,
+        wizardStepStatus?: TSWizardStepStatus,
+        bemerkungen?: string,
+        verfuegbar?: boolean,
+    ) {
         super();
         this._gesuchId = gesuchId;
         this._wizardStepName = wizardStepName;
@@ -35,43 +40,43 @@ export default class TSWizardStep extends TSAbstractMutableEntity {
         this._verfuegbar = verfuegbar;
     }
 
-    get gesuchId(): string {
+    public get gesuchId(): string {
         return this._gesuchId;
     }
 
-    set gesuchId(value: string) {
+    public set gesuchId(value: string) {
         this._gesuchId = value;
     }
 
-    get wizardStepName(): TSWizardStepName {
+    public get wizardStepName(): TSWizardStepName {
         return this._wizardStepName;
     }
 
-    set wizardStepName(value: TSWizardStepName) {
+    public set wizardStepName(value: TSWizardStepName) {
         this._wizardStepName = value;
     }
 
-    get wizardStepStatus(): TSWizardStepStatus {
+    public get wizardStepStatus(): TSWizardStepStatus {
         return this._wizardStepStatus;
     }
 
-    set wizardStepStatus(value: TSWizardStepStatus) {
+    public set wizardStepStatus(value: TSWizardStepStatus) {
         this._wizardStepStatus = value;
     }
 
-    get bemerkungen(): string {
+    public get bemerkungen(): string {
         return this._bemerkungen;
     }
 
-    set bemerkungen(value: string) {
+    public set bemerkungen(value: string) {
         this._bemerkungen = value;
     }
 
-    get verfuegbar(): boolean {
+    public get verfuegbar(): boolean {
         return this._verfuegbar;
     }
 
-    set verfuegbar(value: boolean) {
+    public set verfuegbar(value: boolean) {
         this._verfuegbar = value;
     }
 }

@@ -24,32 +24,32 @@ export default class TSUmzugAdresse {
     // nur zum speichern der anderen GS adresse
     private _adresseGS2: TSAdresseContainer;
 
-    constructor(betroffene?: TSBetroffene, adresse?: TSAdresseContainer) {
+    public constructor(betroffene?: TSBetroffene, adresse?: TSAdresseContainer) {
         this._betroffene = betroffene;
         this._adresse = adresse;
     }
 
-    get betroffene(): TSBetroffene {
+    public get betroffene(): TSBetroffene {
         return this._betroffene;
     }
 
-    set betroffene(value: TSBetroffene) {
+    public set betroffene(value: TSBetroffene) {
         this._betroffene = value;
     }
 
-    get adresse(): TSAdresseContainer {
+    public get adresse(): TSAdresseContainer {
         return this._adresse;
     }
 
-    set adresse(value: TSAdresseContainer) {
+    public set adresse(value: TSAdresseContainer) {
         this._adresse = value;
     }
 
-    get adresseGS2(): TSAdresseContainer {
+    public get adresseGS2(): TSAdresseContainer {
         return this._adresseGS2;
     }
 
-    set adresseGS2(value: TSAdresseContainer) {
+    public set adresseGS2(value: TSAdresseContainer) {
         this._adresseGS2 = value;
     }
 }

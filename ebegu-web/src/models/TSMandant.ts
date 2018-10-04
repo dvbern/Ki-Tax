@@ -19,7 +19,7 @@ export class TSMandant extends TSAbstractMutableEntity {
 
     private _name: string;
 
-    constructor(name?: string) {
+    public constructor(name?: string) {
         super();
         this._name = name;
     }
