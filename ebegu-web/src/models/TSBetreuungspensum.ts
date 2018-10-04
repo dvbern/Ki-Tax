@@ -35,11 +35,11 @@ export default class TSBetreuungspensum extends TSAbstractPensumEntity {
         this._nichtEingetreten = value;
     }
 
-    get doNotUsePercentage(): boolean {
+    public get doNotUsePercentage(): boolean {
         return this._doNotUsePercentage;
     }
 
-    set doNotUsePercentage(value: boolean) {
+    public set doNotUsePercentage(value: boolean) {
         this._doNotUsePercentage = value;
     }
 }

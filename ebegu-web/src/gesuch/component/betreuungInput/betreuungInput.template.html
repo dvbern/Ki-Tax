@@ -13,42 +13,25 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<!--<label class="md-no-float" data-translate="BETREUUNGSPENSUM"-->
-<!--data-translate-value-betreuungspensumnumber="{{$index + 1}}"-->
-<!--for="betreuungspensum-{{$index}}"></label>-->
-<!--<input aria-describedby="betreuungspensum-{{$index}}-error"-->
-<!--id="betreuungspensum-{{$index}}" type="number"-->
-<!--name="betreuungspensum-{{$index}}"-->
-<!--ng-model=".betreuungspensumJA.pensum"-->
-<!--dv-max-length class="form-control"-->
-<!--ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"-->
-<!--ng-required="true"-->
-<!--ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">-->
-<!--<dv-error-messages input-id="betreuungspensum-{{$index}}"-->
-<!--for="vm.form['betreuungspensum-' + $index].$error"></dv-error-messages>-->
-
-
-<!--<input aria-describedby="betreuungspensum-{{$index}}-error"-->
-<!--id="betreuungspensum-{{$index}}" type="number"-->
-<!--name="betreuungspensum-{{$index}}"-->
-<!--ng-model=".betreuungspensumJA.pensum"-->
-<!--dv-max-length class="form-control"-->
-<!--ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"-->
-<!--ng-required="true"-->
-<!--ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">-->
-
 <div class="betreuung-input-container">
     <input type="number"
+           step="0.25"
+           class="dv-betreuung-input"
            [id]="id"
            [name]="id"
-           [(ngModel)]="pensum.betreuungspensumJA.pensum"
            [required]="true"
            [attr.aria-describedby]="id + '-error'"
-           step="0.25" class="dv-betreuung-input"
            (input)="updateLabel()"
-    [disabled]="disabled">
-    <dv-switch (switchChange)="toggle($event)" [switchOptions]="switchOptions"
-               class="betreuung-input-switch" [switchValue]="doNotUsePercentage" [disabled]="disabled"></dv-switch>
+           [(ngModel)]="pensum.betreuungspensumJA.pensum"
+           [disabled]="disabled"
+    >
+    <dv-switch class="betreuung-input-switch"
+               (switchChange)="toggle($event)"
+               [switchOptions]="switchOptions"
+               [switchValue]="pensum.betreuungspensumJA.doNotUsePercentage"
+               [disabled]="disabled"
+    >
+    </dv-switch>
     <div class="dv-betreuung-input-info-label">
         <span *ngIf="!disabled">{{label}}</span>
     </div>

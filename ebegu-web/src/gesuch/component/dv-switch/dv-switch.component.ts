@@ -14,10 +14,7 @@
  */
 
 import {Component, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnInit, Output} from '@angular/core';
-import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {state, style, trigger} from '@angular/animations';
-
-const LOG = LogFactory.createLog('DvSwitchComponent');
 
 @Component({
     selector: 'dv-switch',
@@ -37,22 +34,18 @@ const LOG = LogFactory.createLog('DvSwitchComponent');
 })
 export class DvSwitchComponent implements OnInit, OnChanges {
 
-    private readonly LOG: Log = LogFactory.createLog(DvSwitchComponent.name);
-
-    // private listenToEvents: boolean = false;
-
-    @Input() switchValue: boolean = false;
-    @Input() switchOptions: Array<string> = [];
+    @Input() public switchValue: boolean = false;
+    @Input() public switchOptions: Array<string> = [];
     @HostBinding('class.disabled')
-    @Input() disabled: boolean = false;
+    @Input() public disabled: boolean = false;
 
     @Output()
-    switchChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public readonly switchChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     @HostBinding('attr.tabindex')
-    tabindex: number;
+    public tabindex: number;
 
-    constructor() {
+    public constructor() {
     }
 
     @HostListener('keydown.ArrowRight', ['$event'])
@@ -73,12 +66,12 @@ export class DvSwitchComponent implements OnInit, OnChanges {
         }
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.switchChange.emit(this.switchValue);
         this.tabindex = this.disabled ? -1 : 0;
     }
 
-    ngOnChanges(): void {
+    public ngOnChanges(): void {
         this.switchChange.emit(this.switchValue);
     }
 }

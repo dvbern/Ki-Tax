@@ -103,7 +103,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public moduleBackup: TSModulTagesschule[] = undefined;
     public aktuellGueltig: boolean = true;
     public isDuplicated: boolean = false;
-    angebot: TSBetreuungsangebotTyp;
 
     public constructor(
         private readonly $state: StateService,
@@ -175,7 +174,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
         this.findExistingBetreuungsmitteilung();
-        this.angebot = this.getBetreuungModel().getAngebotTyp();
         const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
         if (!anmeldungMutationZustand) {
             return;
@@ -253,7 +251,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
-        this.angebot = this.getBetreuungModel().getAngebotTyp();
         if (this.isSchulamt()) {
             if (this.isTagesschule()) {
                 // Nur fuer die neuen Gesuchsperiode kann die Belegung erfast werden
@@ -583,7 +580,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.getBetreuungModel().datumBestaetigung = DateUtil.today();
             this.getBetreuungModel().betreuungspensumContainers.forEach(val => {
                 if (val.betreuungspensumJA.doNotUsePercentage) {
-                    switch (this.angebot) {
+                    switch (this.getBetreuungModel().getAngebotTyp()) {
                         case TSBetreuungsangebotTyp.KITA:
                             val.betreuungspensumJA.pensum = Math.ceil((val.betreuungspensumJA.pensum * 5) * 100) / 100;
                             break;
@@ -655,6 +652,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return true;
+    }
+
+    public isPensumEditable(): boolean {
+        return (this.isBetreuungsstatusWarten() && !this.isSavingData) || this.isMutationsmeldungStatus;
     }
 
     /**

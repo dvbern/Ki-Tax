@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
-import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
 
 const LOG = LogFactory.createLog('BetreuungInputComponent');
 
@@ -25,99 +25,81 @@ const LOG = LogFactory.createLog('BetreuungInputComponent');
     templateUrl: './betreuungInput.template.html',
     styleUrls: ['./betreuungInput.less'],
 })
-export class BetreuungInputComponent implements OnInit, OnChanges {
+export class BetreuungInputComponent implements OnInit {
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
 
-    @Input()
-    pensum: TSBetreuungspensumContainer;
+    // 100% = 20 days => 1% = 0.2 days
+    private readonly MULTIPLIER_KITA = 0.2;
+    // 100% = 220 hours => 1% = 2.2 hours
+    private readonly MULTIPLIER_TAGESFAMILIEN = 2.2;
 
     @Input()
-    disabled: boolean = false;
+    public pensum: TSBetreuungspensumContainer;
 
     @Input()
-    id: string;
+    public disabled: boolean = false;
 
     @Input()
-    betreuungsangebottyp: TSBetreuungsangebotTyp;
+    public id: string;
 
+    @Input()
+    public betreuungsangebottyp: TSBetreuungsangebotTyp;
 
-    label: string = '';
-    switchOptions: Array<string> = [];
-    calcNumber: number = 1;
+    public label: string = '';
+    public switchOptions: Array<string> = [];
+    public multiplier: number = 1;
 
-    constructor() {
+    public constructor() {
     }
 
-    ngOnInit(): void {
-        console.log(this.betreuungsangebottyp);
+    public ngOnInit(): void {
+        this.LOG.debug(this.betreuungsangebottyp);
 
-        this.setVariables();
+        this.setAngebotDependingVariables();
         this.pensum.betreuungspensumJA.pensum = this.initialCalculation();
-
-        // this.loadObjects();  --> it is called in ngOnChanges anyway. otherwise it gets called twice
     }
 
-    ngOnChanges(): void {
-        this.setVariables();
-    }
-
-    public setVariables() {
-        this.switchOptions = [];
-        this.switchOptions.push('%');
-
+    public setAngebotDependingVariables(): void {
         switch (this.betreuungsangebottyp) {
             case TSBetreuungsangebotTyp.KITA:
-                this.switchOptions.push('Tage');
-                this.calcNumber = 5;
+                this.switchOptions = ['%', 'Tage'];
+                this.multiplier = this.MULTIPLIER_KITA;
                 break;
             case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                this.switchOptions.push('Stunden');
-                this.calcNumber = 2.2;
+                this.switchOptions = ['%', 'Stunden'];
+                this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
                 break;
             default:
                 LOG.error('could not set Switchoptions');
-
         }
     }
 
-    public toggle(event: any): void {
-        this.pensum.betreuungspensumJA.doNotUsePercentage = event;
+    public toggle(newValue: any): void {
+        this.pensum.betreuungspensumJA.doNotUsePercentage = newValue;
         this.updateLabel();
     }
 
     public updateLabel(): void {
-        if (this.calculate() !== 'NaN') {
+        if (this.calculate() === 'NaN') {
+            this.label = '';
+        } else {
             const lbl: string = this.pensum.betreuungspensumJA.doNotUsePercentage ? '%' : ` ${this.switchOptions[1]} pro Monat`;
             this.label = `oder ${this.calculate()}${lbl}`;
-        } else {
-            this.label = '';
         }
     }
 
     private calculate(): string {
         const pensum = this.pensum.betreuungspensumJA.pensum;
-        switch (this.betreuungsangebottyp) {
-            case TSBetreuungsangebotTyp.KITA:
-                return this.pensum.betreuungspensumJA.doNotUsePercentage ? (pensum * this.calcNumber).toFixed(2) : (pensum / this.calcNumber).toFixed(2);
-            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                return this.pensum.betreuungspensumJA.doNotUsePercentage ? (pensum / this.calcNumber).toFixed(2) : (pensum * this.calcNumber).toFixed(2);
-            default:
-                LOG.error('could not calc');
-                return 'NaN';
-        }
+        return this.pensum.betreuungspensumJA.doNotUsePercentage
+            ? (pensum / this.multiplier).toFixed(2)
+            : (pensum * this.multiplier).toFixed(2);
     }
 
     private initialCalculation(): number {
         const pensum = this.pensum.betreuungspensumJA.pensum;
-        switch (this.betreuungsangebottyp) {
-            case TSBetreuungsangebotTyp.KITA:
-                return this.pensum.betreuungspensumJA.doNotUsePercentage ? pensum / this.calcNumber : pensum;
-            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                return this.pensum.betreuungspensumJA.doNotUsePercentage ? pensum * this.calcNumber : pensum;
-            default:
-                LOG.error('could not calc');
-                return 0;
-        }
+        return this.pensum.betreuungspensumJA.doNotUsePercentage
+            ? pensum * this.multiplier
+            : pensum;
     }
 }
