@@ -61,9 +61,6 @@ public class GemeindeResource {
 	private GemeindeService gemeindeService;
 
 	@Inject
-	private EinstellungService einstellungService;
-
-	@Inject
 	private GemeindeJaxBConverter converter;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)

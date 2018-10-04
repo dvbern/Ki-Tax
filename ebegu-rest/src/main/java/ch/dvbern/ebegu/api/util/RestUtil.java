@@ -61,6 +61,10 @@ public final class RestUtil {
 	private static final Pattern MATCH_QUOTE = Pattern.compile("\"");
 	private static final String BLOB_DOWNLOAD_PATH = "/blobs/temp/blobdata/";
 
+	private RestUtil() {
+		//nop
+	}
+
 	/**
 	 * Parst den Content-Disposition Header
 	 *

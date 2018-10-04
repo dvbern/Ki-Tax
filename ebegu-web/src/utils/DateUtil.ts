@@ -117,7 +117,7 @@ export default class DateUtil {
     public static calculatePeriodenStartdatumString(startdatum: Moment): string {
         // wenn nach 1.8. -> periode = year / year + 1
         // wenn vor 1.8. -> periode = year -1 / year
-        const year = startdatum.month() > 6 ? startdatum.year() : startdatum.year() - 1;
+        const year: number = startdatum.month() > 6 ? startdatum.year() : startdatum.year() - 1;
 
         return `${year} / ${year + 1}`;
     }

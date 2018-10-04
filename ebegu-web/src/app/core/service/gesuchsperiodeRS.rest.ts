@@ -16,7 +16,6 @@
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {dossier} from '../../dossier/dossier.angularjs.module';
 
 export default class GesuchsperiodeRS {
 
@@ -26,11 +25,11 @@ export default class GesuchsperiodeRS {
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    publicconstructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public log: ILogService,
-                private readonly $q: IQService,
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public log: ILogService,
+                       private readonly $q: IQService,
     ) {
         this.serviceURL = `${REST_API}gesuchsperioden`;
     }

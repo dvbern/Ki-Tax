@@ -59,11 +59,11 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
         this._bfsNummer = value;
     }
 
-    get betreuungsgutscheineStartdatum(): moment.Moment {
+    public get betreuungsgutscheineStartdatum(): moment.Moment {
         return this._betreuungsgutscheineStartdatum;
     }
 
-    set betreuungsgutscheineStartdatum(value: moment.Moment) {
+    public set betreuungsgutscheineStartdatum(value: moment.Moment) {
         this._betreuungsgutscheineStartdatum = value;
     }
 }

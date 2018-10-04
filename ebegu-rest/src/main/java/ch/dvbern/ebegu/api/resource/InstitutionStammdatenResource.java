@@ -78,18 +78,21 @@ public class InstitutionStammdatenResource {
 		@Context HttpServletResponse response) {
 
 		InstitutionStammdaten instDaten;
+		JaxInstitutionStammdaten stammdaten = institutionStammdatenJAXP;
 		if (institutionStammdatenJAXP.getId() != null) {
-			Optional<InstitutionStammdaten> optional = institutionStammdatenService.findInstitutionStammdaten(institutionStammdatenJAXP.getId());
+			Optional<InstitutionStammdaten> optional =
+				institutionStammdatenService.findInstitutionStammdaten(institutionStammdatenJAXP.getId());
 			instDaten = optional.orElse(new InstitutionStammdaten());
 		} else {
 			instDaten = new InstitutionStammdaten();
 			instDaten.setAdresse(new Adresse());
 		}
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
-			institutionStammdatenJAXP = converter.updateJaxModuleTagesschule(institutionStammdatenJAXP);
+			stammdaten = converter.updateJaxModuleTagesschule(institutionStammdatenJAXP);
 		}
-		InstitutionStammdaten convertedInstData = converter.institutionStammdatenToEntity(institutionStammdatenJAXP, instDaten);
-		InstitutionStammdaten persistedInstData = institutionStammdatenService.saveInstitutionStammdaten(convertedInstData);
+		InstitutionStammdaten convertedInstData = converter.institutionStammdatenToEntity(stammdaten, instDaten);
+		InstitutionStammdaten persistedInstData =
+			institutionStammdatenService.saveInstitutionStammdaten(convertedInstData);
 
 		return converter.institutionStammdatenToJAX(persistedInstData);
 
@@ -107,7 +110,8 @@ public class InstitutionStammdatenResource {
 
 		Objects.requireNonNull(institutionStammdatenJAXPId.getId());
 		String institutionStammdatenID = converter.toEntityId(institutionStammdatenJAXPId);
-		Optional<InstitutionStammdaten> optional = institutionStammdatenService.findInstitutionStammdaten(institutionStammdatenID);
+		Optional<InstitutionStammdaten> optional =
+			institutionStammdatenService.findInstitutionStammdaten(institutionStammdatenID);
 
 		if (!optional.isPresent()) {
 			return null;
@@ -172,7 +176,8 @@ public class InstitutionStammdatenResource {
 	 * @param gesuchsperiodeId id der Gesuchsperiode fuer die Stammdaten gesucht werden sollen
 	 * @return Liste mit allen InstitutionStammdaten die den Bedingungen folgen
 	 */
-	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren und aktiv sind",
+	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren und aktiv "
+		+ "sind",
 		responseContainer = "List", response = JaxInstitutionStammdaten.class)
 	@Nonnull
 	@GET
@@ -226,7 +231,8 @@ public class InstitutionStammdatenResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<BetreuungsangebotTyp> getBetreuungsangeboteForInstitutionenOfCurrentBenutzer() {
-		List<BetreuungsangebotTyp> result = new ArrayList<>(institutionStammdatenService.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer());
+		List<BetreuungsangebotTyp> result =
+			new ArrayList<>(institutionStammdatenService.getBetreuungsangeboteForInstitutionenOfCurrentBenutzer());
 		return result;
 	}
 }

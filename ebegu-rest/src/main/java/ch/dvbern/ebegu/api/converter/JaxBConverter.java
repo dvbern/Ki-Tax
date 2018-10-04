@@ -219,7 +219,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused" })
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity"})
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
@@ -271,6 +271,14 @@ public class JaxBConverter extends AbstractConverter {
 	private Persistence persistence;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
+
+	public JaxBConverter() {
+		//nop
+	}
+
+	public JaxBConverter(@Nonnull GemeindeJaxBConverter gemeindeConverter) {
+		this.gemeindeConverter = gemeindeConverter;
+	}
 
 	@Nonnull
 	public JaxApplicationProperties applicationPropertyToJAX(@Nonnull final ApplicationProperty applicationProperty) {

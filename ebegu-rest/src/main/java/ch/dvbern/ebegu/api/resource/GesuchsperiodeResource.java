@@ -29,7 +29,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -47,12 +46,9 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
@@ -96,7 +92,8 @@ public class GesuchsperiodeResource {
 		GesuchsperiodeStatus gesuchsperiodeStatusBisher = gesuchsperiode.getStatus();
 
 		Gesuchsperiode convertedGesuchsperiode = converter.gesuchsperiodeToEntity(gesuchsperiodeJAXP, gesuchsperiode);
-		Gesuchsperiode persistedGesuchsperiode = this.gesuchsperiodeService.saveGesuchsperiode(convertedGesuchsperiode, gesuchsperiodeStatusBisher);
+		Gesuchsperiode persistedGesuchsperiode =
+			this.gesuchsperiodeService.saveGesuchsperiode(convertedGesuchsperiode, gesuchsperiodeStatusBisher);
 
 		return converter.gesuchsperiodeToJAX(persistedGesuchsperiode);
 	}
@@ -158,7 +155,8 @@ public class GesuchsperiodeResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Gibt alle in der Datenbank vorhandenen Gesuchsperioden zurueck, welche im Status AKTIV sind",
+	@ApiOperation(value = "Gibt alle in der Datenbank vorhandenen Gesuchsperioden zurueck, welche im Status AKTIV "
+		+ "sind",
 		responseContainer = "List", response = JaxGesuchsperiode.class)
 	@Nonnull
 	@GET
@@ -207,8 +205,8 @@ public class GesuchsperiodeResource {
 
 	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV oder INAKTIV sind und nach dem " +
 		"BetreuungsgutscheineStartdatum der Gemeinde liegen.",
-	responseContainer = "List",
-	response = JaxGesuchsperiode.class)
+		responseContainer = "List",
+		response = JaxGesuchsperiode.class)
 	@Nonnull
 	@GET
 	@Path("/gemeinde")

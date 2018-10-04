@@ -25,7 +25,7 @@ import {TSGesuchBetreuungenStatus} from '../../../../models/enums/TSGesuchBetreu
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSDossier from '../../../../models/TSDossier';
 import TSGesuchsperiode from '../../../../models/TSGesuchsperiode';
-import DateUtil from '../../../utils/DateUtil';
+import DateUtil from '../../../../utils/DateUtil';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import ErrorService from '../../../core/errors/service/ErrorService';
@@ -58,11 +58,11 @@ export class GesuchstellerDashboardViewController implements IController {
     ];
 
     private antragList: Array<TSAntragDTO> = [];
-    private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
+    public activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     public dossier: TSDossier;
     public totalResultCount: string = '-';
     public amountNewMitteilungen: number;
-    periodYear: string;
+    public periodYear: string;
     // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
     public mapOfNewestAntraege: { [key: string]: string } = {};
 
@@ -113,7 +113,7 @@ export class GesuchstellerDashboardViewController implements IController {
                 this.activeGesuchsperiodenList = response;
                 // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen.
                 // Wir merken uns das jeweils neueste Gesuch pro Periode
-                response.map(gp => {
+                response.forEach(gp => {
                     this.gesuchRS.getIdOfNewestGesuchForGesuchsperiode(gp.id, this.dossier.id)
                         .then(id => {
                             this.mapOfNewestAntraege[gp.id] = id;

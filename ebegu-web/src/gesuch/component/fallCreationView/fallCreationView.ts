@@ -166,16 +166,16 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         }
         if (this.gesuchModelManager.isGesuchSaved() && this.gesuchModelManager.getGesuchsperiode()) {
             const k = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?
-                    'KITAX_ERNEUERUNGSGESUCH_PERIODE' :
-                    'KITAX_ERSTGESUCH_PERIODE';
-                return this.$translate.instant(k, {
+                'KITAX_ERNEUERUNGSGESUCH_PERIODE' :
+                'KITAX_ERSTGESUCH_PERIODE';
+            return this.$translate.instant(k, {
                 periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString,
             });
         }
         const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?
-                    'KITAX_ERNEUERUNGSGESUCH' :
-                    'KITAX_ERSTGESUCH';
-                return this.$translate.instant(key);
+            'KITAX_ERNEUERUNGSGESUCH' :
+            'KITAX_ERSTGESUCH';
+        return this.$translate.instant(key);
 
     }
 
