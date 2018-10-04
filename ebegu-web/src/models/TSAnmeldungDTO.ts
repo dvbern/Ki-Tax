@@ -56,11 +56,11 @@ export default class TSAnmeldungDTO {
         this._mutterspracheDeutsch = value;
     }
 
-    get einschulungTyp(): TSEinschulungTyp {
+    public get einschulungTyp(): TSEinschulungTyp {
         return this._einschulungTyp;
     }
 
-    set einschulungTyp(value: TSEinschulungTyp) {
+    public set einschulungTyp(value: TSEinschulungTyp) {
         this._einschulungTyp = value;
     }
 }

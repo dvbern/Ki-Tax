@@ -13,25 +13,25 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import TSWizardStep from '../../models/TSWizardStep';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
 import WizardStepRS from './WizardStepRS.rest';
+import IHttpBackendService = angular.IHttpBackendService;
 
 describe('WizardStepRS', () => {
 
     let wizardStepRS: WizardStepRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
-    let REST_API: string;
     let mockWizardStep: TSWizardStep;
     let mockWizardStepRest: any;
     let mockWizardStepListRest: Array<any> = [];
-    const gesuchId: string = '123123123123';
+    const gesuchId = '123123123123';
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -39,7 +39,6 @@ describe('WizardStepRS', () => {
         wizardStepRS = $injector.get('WizardStepRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
-        REST_API = $injector.get('REST_API');
     }));
 
     beforeEach(() => {
@@ -53,24 +52,15 @@ describe('WizardStepRS', () => {
         it('check URI', () => {
             expect(wizardStepRS.serviceURL).toContain('wizard-steps');
         });
-        it('check Service name', () => {
-            expect(wizardStepRS.getServiceName()).toBe('WizardStepRS');
-        });
-        it('should include a updateWizardStep() function', () => {
-            expect(wizardStepRS.updateWizardStep).toBeDefined();
-        });
-        it('should include a findWizardStepsFromGesuch() function', () => {
-            expect(wizardStepRS.findWizardStepsFromGesuch).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
         describe('findWizardStepsFromGesuch', () => {
             it('should return the all wizardSteps of a Gesuch', () => {
-                $httpBackend.expectGET(wizardStepRS.serviceURL + '/' + gesuchId).respond(mockWizardStepListRest);
+                $httpBackend.expectGET(`${wizardStepRS.serviceURL}/${gesuchId}`).respond(mockWizardStepListRest);
 
                 let foundSteps: Array<TSWizardStep>;
-                wizardStepRS.findWizardStepsFromGesuch(gesuchId).then((result) => {
+                wizardStepRS.findWizardStepsFromGesuch(gesuchId).then(result => {
                     foundSteps = result;
                 });
                 $httpBackend.flush();

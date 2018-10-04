@@ -13,16 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
-import {EbeguWebAdmin} from '../admin.module';
+import {ADMIN_JS_MODULE} from '../admin.module';
 import {TestFaelleRS} from './testFaelleRS.rest';
 
 describe('TestFaelleRS', () => {
 
     let testFaelleRS: TestFaelleRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -35,18 +36,13 @@ describe('TestFaelleRS', () => {
         it('check URI', () => {
             expect(testFaelleRS.serviceURL).toContain('testfaelle');
         });
-        it('check Service name', () => {
-            expect(testFaelleRS.getServiceName()).toBe('TestFaelleRS');
-        });
-        it('should include a createTestFall() function', () => {
-            expect(testFaelleRS.createTestFall).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
         describe('createTestFall', () => {
             it('should call createTestFall', () => {
-                $httpBackend.expectGET(testFaelleRS.serviceURL + '/testfall/' + encodeURIComponent('1') + '/null/null/false/false').respond({});
+                const url = `${testFaelleRS.serviceURL}/testfall/${encodeURIComponent('1')}/null/null/false/false`;
+                $httpBackend.expectGET(url).respond({});
                 testFaelleRS.createTestFall('1', null, null, false, false);
                 $httpBackend.flush();
             });

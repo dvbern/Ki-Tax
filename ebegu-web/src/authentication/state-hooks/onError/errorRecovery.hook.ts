@@ -18,7 +18,7 @@
 import {HookResult, RejectType, Transition, TransitionService} from '@uirouter/core';
 import {TSRole} from '../../../models/enums/TSRole';
 import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
-import {onErrorPriorities} from './onErrorPriorities';
+import {OnErrorPriorities} from './onErrorPriorities';
 
 /**
  * This error recovery hook will ignore any errors with the following message.
@@ -27,8 +27,8 @@ export const DISABLE_RECOVERY_ERROR_MESSAGE = 'ignore me. Already handled';
 
 errorRecoveryHookRunBlock.$inject = ['$transitions'];
 
-export function errorRecoveryHookRunBlock($transitions: TransitionService) {
-    $transitions.onError({from: state => !state || !state.name}, onError, {priority: onErrorPriorities.ERROR_RECOVERY});
+export function errorRecoveryHookRunBlock($transitions: TransitionService): void {
+    $transitions.onError({from: state => !state || !state.name}, onError, {priority: OnErrorPriorities.ERROR_RECOVERY});
 }
 
 function onError(transition: Transition): HookResult {

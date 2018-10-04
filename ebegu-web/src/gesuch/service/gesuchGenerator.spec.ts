@@ -23,11 +23,11 @@ import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSCreationAction} from '../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../models/enums/TSEingangsart';
+import TSBenutzer from '../../models/TSBenutzer';
 import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
-import TSBenutzer from '../../models/TSBenutzer';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
 import DossierRS from './dossierRS.rest';
 import FallRS from './fallRS.rest';
@@ -38,9 +38,9 @@ import WizardStepManager from './wizardStepManager';
 
 describe('gesuchGenerator', () => {
 
-    const GP_ID = '2222-1111';
-    const GESUCH_ID = '33333-1111';
-    const DOSSIER_ID = '44444-1111';
+    const gpId = '2222-1111';
+    const gesuchId = '33333-1111';
+    const dossierId = '44444-1111';
     let dossier: TSDossier;
     let fall: TSFall;
     let gesuchGenerator: GesuchGenerator;
@@ -52,16 +52,16 @@ describe('gesuchGenerator', () => {
         initValues();
 
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
-            'getAllGemeinden': Promise.resolve(['findGemeinde']),
+            getAllGemeinden: Promise.resolve(['findGemeinde']),
         });
 
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
-            'isOneOfRoles': true,
+            isOneOfRoles: true,
         });
         authServiceSpy.principal$ = of(user) as any;
 
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
-            'findDossier': Promise.resolve(dossier)
+            findDossier: Promise.resolve(dossier),
         });
 
         const antragStatusHistoryServiceSpy = jasmine.createSpyObj<AntragStatusHistoryRS>(AntragStatusHistoryRS.name,
@@ -69,12 +69,12 @@ describe('gesuchGenerator', () => {
         antragStatusHistoryServiceSpy.loadLastStatusChange.and.callFake((gesuch: TSGesuch) => Promise.resolve(gesuch));
 
         const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name, {
-            'findGesuchsperiode': Promise.resolve(gesuchsperiode)
+            findGesuchsperiode: Promise.resolve(gesuchsperiode),
         });
 
         const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name, [
             'setHiddenSteps',
-            'initWizardSteps'
+            'initWizardSteps',
         ]);
 
         const fallServiceSpy = jasmine.createSpyObj<FallRS>(FallRS.name, ['createFall']);
@@ -101,7 +101,7 @@ describe('gesuchGenerator', () => {
 
     describe('initGesuch', () => {
         it('creates a new papier fall, dossier and gesuch. The given fall and dossier should be ignored', async(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, GP_ID, fall, dossier)
+            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -116,7 +116,7 @@ describe('gesuchGenerator', () => {
                 });
         }));
         it('creates a new online fall, dossier and gesuch. The given fall and dossier should be ignored', async(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.ONLINE, TSCreationAction.CREATE_NEW_FALL, GP_ID, fall, dossier)
+            gesuchGenerator.initGesuch(TSEingangsart.ONLINE, TSCreationAction.CREATE_NEW_FALL, gpId, fall, dossier)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -131,7 +131,7 @@ describe('gesuchGenerator', () => {
                 });
         }));
         it('creates a new Gesuch and Dossier linked to the existing fall', async(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_DOSSIER, GP_ID, fall, dossier)
+            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_DOSSIER, gpId, fall, dossier)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -143,7 +143,7 @@ describe('gesuchGenerator', () => {
                 });
         }));
         it('creates a new Gesuch linked to the existing fall and Dossier', async(() => {
-            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_GESUCH, GP_ID, fall, dossier)
+            gesuchGenerator.initGesuch(TSEingangsart.PAPIER, TSCreationAction.CREATE_NEW_GESUCH, gpId, fall, dossier)
                 .then(gesuch => {
                     expect(gesuch).toBeDefined();
                     expect(gesuch.gesuchsperiode).toBe(gesuchsperiode);
@@ -158,10 +158,10 @@ describe('gesuchGenerator', () => {
 
     describe('initMutation', () => {
         it('creates a new mutation', async(() => {
-            gesuchGenerator.initMutation(GESUCH_ID, TSEingangsart.PAPIER, GP_ID, DOSSIER_ID, fall, dossier)
+            gesuchGenerator.initMutation(gesuchId, TSEingangsart.PAPIER, gpId, dossierId, fall, dossier)
                 .then(mutation => {
                     expect(mutation).toBeDefined();
-                    expect(mutation.id).toBe(GESUCH_ID);
+                    expect(mutation.id).toBe(gesuchId);
                     expect(mutation.isMutation()).toBe(true);
                     expect(mutation.eingangsart).toBe(TSEingangsart.PAPIER);
                     expect(mutation.status).toBe(TSAntragStatus.IN_BEARBEITUNG_JA);
@@ -177,10 +177,10 @@ describe('gesuchGenerator', () => {
 
     describe('initErneuerungsgesuch', () => {
         it('creates a new Erneuerungsgesuch', async(() => {
-            gesuchGenerator.initErneuerungsgesuch(GESUCH_ID, TSEingangsart.PAPIER, GP_ID, DOSSIER_ID, fall, dossier)
+            gesuchGenerator.initErneuerungsgesuch(gesuchId, TSEingangsart.PAPIER, gpId, dossierId, fall, dossier)
                 .then(mutation => {
                     expect(mutation).toBeDefined();
-                    expect(mutation.id).toBe(GESUCH_ID);
+                    expect(mutation.id).toBe(gesuchId);
                     expect(mutation.isFolgegesuch()).toBe(true);
                     expect(mutation.eingangsart).toBe(TSEingangsart.PAPIER);
                     expect(mutation.status).toBe(TSAntragStatus.IN_BEARBEITUNG_JA);
@@ -196,11 +196,11 @@ describe('gesuchGenerator', () => {
 
     function initValues(): void {
         gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
-        gesuchsperiode.id = GP_ID;
+        gesuchsperiode.id = gpId;
         user = new TSBenutzer();
         fall = new TSFall();
         dossier = new TSDossier();
-        dossier.id = DOSSIER_ID;
+        dossier.id = dossierId;
         dossier.fall = fall;
     }
 });

@@ -13,26 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSRole} from '../models/enums/TSRole';
 import {StateService} from '@uirouter/core';
+import {TSRole} from '../models/enums/TSRole';
 import {TSRoleUtil} from './TSRoleUtil';
 
 export class NavigationUtil {
 
     public static navigateToStartsiteOfGesuchForRole(role: TSRole, state: StateService, gesuchID: string): void {
-        if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().includes(role) === true) {
+        if (TSRoleUtil.getTraegerschaftInstitutionOnlyRoles().includes(role)) {
             state.go('gesuch.betreuungen', {
-                gesuchId: gesuchID
+                gesuchId: gesuchID,
             });
 
         } else if (role === TSRole.STEUERAMT) {
             state.go('gesuch.familiensituation', {
-                gesuchId: gesuchID
+                gesuchId: gesuchID,
             });
 
         } else {
             state.go('gesuch.fallcreation', {
-                gesuchId: gesuchID
+                gesuchId: gesuchID,
             });
         }
     }

@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IDeferred} from 'angular';
 import TSExceptionReport from '../../../../models/TSExceptionReport';
 import TestDataUtil from '../../../../utils/TestDataUtil.spec';
 import HttpErrorInterceptor from './HttpErrorInterceptor';
@@ -36,7 +37,7 @@ describe('httpErrorInterceptor', () => {
     });
 
     describe('API usage', () => {
-        let deferred: angular.IDeferred<any>, successHandler: any, errorHandler: any;
+        let deferred: IDeferred<any>, successHandler: any, errorHandler: any;
         beforeEach(() => {
             deferred = $q.defer();
             successHandler = jasmine.createSpy('successHandler');
@@ -45,28 +46,30 @@ describe('httpErrorInterceptor', () => {
         });
 
         it('should reject the response with a validation report', () => {
-            const validationResponse: any = TestDataUtil.createValidationReport();
-            httpErrorInterceptor.responseError(validationResponse).then(() => {
-                deferred.resolve();
-            }, errors => {
-                deferred.reject(errors);
-            });
+            const validationResponse = TestDataUtil.createValidationReport();
+            httpErrorInterceptor.responseError(validationResponse)
+                .then(() => deferred.resolve())
+                .catch(err => deferred.reject(err));
 
-            const errors: Array<TSExceptionReport> = [(TSExceptionReport.createFromViolation('PARAMETER',
-                'Die Länge des Feldes muss zwischen 36 und 36 sein', 'markAsRead.arg1', '8a146418-ab12-456f-9b17-aad6990f51'))];
+            const errors = [
+                (TSExceptionReport.createFromViolation('PARAMETER',
+                    'Die Länge des Feldes muss zwischen 36 und 36 sein',
+                    'markAsRead.arg1',
+                    '8a146418-ab12-456f-9b17-aad6990f51')),
+            ];
             $rootScope.$digest();
             expect(errorHandler).toHaveBeenCalledWith(errors);
         });
 
         it('should reject the response containing an exceptionReport', () => {
-            const exceptionReportResponse: any = TestDataUtil.createExceptionReport();
+            const exceptionReportResponse = TestDataUtil.createExceptionReport();
             httpErrorInterceptor.responseError(exceptionReportResponse).then(() => {
                 deferred.resolve();
             }, error => {
                 deferred.reject(error);
             });
 
-            const errors: Array<TSExceptionReport> = [(TSExceptionReport.createFromExceptionReport(exceptionReportResponse.data))];
+            const errors = [(TSExceptionReport.createFromExceptionReport(exceptionReportResponse.data))];
             $rootScope.$digest();
             expect(errorHandler).toHaveBeenCalledWith(errors);
         });

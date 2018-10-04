@@ -31,36 +31,61 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class FallCreationViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./fallCreationView.html');
-    controller = FallCreationViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public template = require('./fallCreationView.html');
+    public controller = FallCreationViewController;
+    public controllerAs = 'vm';
 }
 
 export class FallCreationViewController extends AbstractGesuchViewController<any> {
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'ErrorService', '$stateParams',
-        'WizardStepManager', '$translate', '$q', '$scope', 'AuthServiceRS', 'GesuchsperiodeRS', '$timeout'];
+    public static $inject = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        '$stateParams',
+        'WizardStepManager',
+        '$translate',
+        '$q',
+        '$scope',
+        'AuthServiceRS',
+        'GesuchsperiodeRS',
+        '$timeout',
+    ];
     private gesuchsperiodeId: string;
 
-    // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt wird
-    // sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
-    showError: boolean = false;
+    // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
+    // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
+    public showError: boolean = false;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                private readonly errorService: ErrorService, private readonly $stateParams: INewFallStateParams, wizardStepManager: WizardStepManager,
-                private readonly $translate: ITranslateService, private readonly $q: IQService, $scope: IScope, private readonly authServiceRS: AuthServiceRS,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS, $timeout: ITimeoutService) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCH_ERSTELLEN, $timeout);
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        private readonly $stateParams: INewFallStateParams,
+        wizardStepManager: WizardStepManager,
+        private readonly $translate: ITranslateService,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        $timeout: ITimeoutService,
+    ) {
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.GESUCH_ERSTELLEN,
+            $timeout);
     }
 
-    $onInit() {
+    public $onInit(): void {
         this.readStateParams();
         this.initViewModel();
     }
 
-    private readStateParams() {
+    private readStateParams(): void {
         if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
             this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
         }
@@ -71,18 +96,18 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     private initViewModel(): void {
-        //gesuch should already have been initialized in resolve function
-        if (this.gesuchsperiodeId === null || this.gesuchsperiodeId === undefined || this.gesuchsperiodeId === '') {
-            if (this.gesuchModelManager.getGesuchsperiode()) {
-                this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
-            }
+        // gesuch should already have been initialized in resolve function
+        if ((this.gesuchsperiodeId === null || this.gesuchsperiodeId === undefined || this.gesuchsperiodeId === '')
+            && this.gesuchModelManager.getGesuchsperiode()) {
+            this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
-        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(this.$stateParams.dossierId).then((response: TSGesuchsperiode[]) => {
-            this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(response);
-        });
+        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(this.$stateParams.dossierId).then(
+            (response: TSGesuchsperiode[]) => {
+                this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(response);
+            });
     }
 
-    save(): IPromise<TSGesuch> {
+    public save(): IPromise<TSGesuch> {
         this.showError = true;
         if (this.isGesuchValid()) {
             if (!this.form.$dirty && !this.gesuchModelManager.getGesuch().isNew()) {
@@ -95,7 +120,8 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 if (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.MUTATION) {
                     this.berechnungsManager.clear();
                     return this.gesuchModelManager.saveMutation();
-                } else if (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) {
+                }
+                if (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) {
                     this.berechnungsManager.clear();
                     return this.gesuchModelManager.saveErneuerungsgesuch();
                 }
@@ -109,7 +135,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         return this.gesuchModelManager.getGesuch();
     }
 
-    public getAllActiveGesuchsperioden() {
+    public getAllActiveGesuchsperioden(): Array<TSGesuchsperiode> {
         return this.nichtAbgeschlosseneGesuchsperiodenList;
     }
 
@@ -125,25 +151,26 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         if (this.gesuchModelManager.getGesuchsperiode()) {
             return TSGesuchsperiodeStatus.AKTIV === this.gesuchModelManager.getGesuchsperiode().status
                 || TSGesuchsperiodeStatus.INAKTIV === this.gesuchModelManager.getGesuchsperiode().status;
-        } else {
-            return true;
         }
+        return true;
     }
 
     public getTitle(): string {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.isGesuch()) {
-            if (this.gesuchModelManager.isGesuchSaved() && this.gesuchModelManager.getGesuchsperiode()) {
-                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'KITAX_ERNEUERUNGSGESUCH_PERIODE' : 'KITAX_ERSTGESUCH_PERIODE';
-                return this.$translate.instant(key, {
-                    periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString
-                });
-            } else {
-                const key = (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) ? 'KITAX_ERNEUERUNGSGESUCH' : 'KITAX_ERSTGESUCH';
-                return this.$translate.instant(key);
-            }
-        } else {
+        if (!this.gesuchModelManager.getGesuch() || !this.gesuchModelManager.isGesuch()) {
             return this.$translate.instant('ART_DER_MUTATION');
         }
+        if (this.gesuchModelManager.isGesuchSaved() && this.gesuchModelManager.getGesuchsperiode()) {
+            const k = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?
+                'KITAX_ERNEUERUNGSGESUCH_PERIODE' :
+                'KITAX_ERSTGESUCH_PERIODE';
+            return this.$translate.instant(k, {
+                periode: this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString,
+            });
+        }
+        const key = this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH ?
+            'KITAX_ERNEUERUNGSGESUCH' :
+            'KITAX_ERSTGESUCH';
+        return this.$translate.instant(key);
     }
 
     public getNextButtonText(): string {
@@ -151,7 +178,8 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             if (this.gesuchModelManager.getGesuch().isNew()) {
                 return this.$translate.instant('ERSTELLEN');
             }
-            if (this.gesuchModelManager.isGesuchReadonly() || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
+            if (this.gesuchModelManager.isGesuchReadonly()
+                || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
                 return this.$translate.instant('WEITER_ONLY_UPPER');
             }
         }

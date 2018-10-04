@@ -23,29 +23,27 @@ export default class TSFile extends TSAbstractMutableEntity {
 
     private _filesize: string;
 
-    get filename(): string {
+    public get filename(): string {
         return this._filename;
     }
 
-    set filename(value: string) {
+    public set filename(value: string) {
         this._filename = value;
     }
 
-    get filepfad(): string {
+    public get filepfad(): string {
         return this._filepfad;
     }
 
-    set filepfad(value: string) {
+    public set filepfad(value: string) {
         this._filepfad = value;
     }
 
-    get filesize(): string {
+    public get filesize(): string {
         return this._filesize;
     }
 
-    set filesize(value: string) {
+    public set filesize(value: string) {
         this._filesize = value;
     }
 }
-
-

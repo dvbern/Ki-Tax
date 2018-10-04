@@ -46,4 +46,3 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
 })
 export class NgAdminModule {
 }
-

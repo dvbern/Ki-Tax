@@ -22,7 +22,7 @@ export default class TSBelegungTagesschule extends TSAbstractMutableEntity {
     private _moduleTagesschule: TSModulTagesschule[] = [];
     private _eintrittsdatum: moment.Moment;
 
-    constructor(moduleTagesschule?: TSModulTagesschule[], eintrittsdatum?: moment.Moment) {
+    public constructor(moduleTagesschule?: TSModulTagesschule[], eintrittsdatum?: moment.Moment) {
         super();
         this._moduleTagesschule = moduleTagesschule ? moduleTagesschule : [];
         this._eintrittsdatum = eintrittsdatum;

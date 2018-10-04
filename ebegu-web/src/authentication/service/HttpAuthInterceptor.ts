@@ -21,20 +21,27 @@ import HttpBuffer from './HttpBuffer';
 
 export default class HttpAuthInterceptor implements IHttpInterceptor {
 
-    static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
+    public static $inject = ['AuthLifeCycleService', '$q', 'CONSTANTS', 'httpBuffer'];
 
-    constructor(private readonly authLifeCycleService: AuthLifeCycleService, private readonly $q: IQService, private readonly CONSTANTS: any,
-                private readonly httpBuffer: HttpBuffer) {
+    public constructor(
+        private readonly authLifeCycleService: AuthLifeCycleService,
+        private readonly $q: IQService,
+        private readonly CONSTANTS: any,
+        private readonly httpBuffer: HttpBuffer,
+    ) {
     }
 
-    responseError = <T>(response: any): IPromise<IHttpResponse<T>> | IHttpResponse<T> => {
+    public responseError = <T>(response: any): IPromise<IHttpResponse<T>> | IHttpResponse<T> => {
+        const http401 = 401;
+        const http403 = 403;
+
         switch (response.status) {
-            case 401:
+            case http401:
                 // exclude requests from the login form
-                if (response.config && response.config.url === this.CONSTANTS.REST_API + 'auth/login') {
+                if (response.config && response.config.url === `${this.CONSTANTS.REST_API}auth/login`) {
                     return this.$q.reject(response);
                 }
-                //if this request was a background polling request we do not want to relogin or show errors
+                // if this request was a background polling request we do not want to relogin or show errors
                 if (isIgnorableHttpError(response)) {
                     console.debug('rejecting failed notokenrefresh response');
                     return this.$q.reject(response);
@@ -45,10 +52,11 @@ export default class HttpAuthInterceptor implements IHttpInterceptor {
                 this.httpBuffer.append(response.config, deferred);
                 this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHENTICATED, response);
                 return deferred.promise as IPromise<IHttpResponse<T>>;
-            case 403:
+            case http403:
                 this.authLifeCycleService.changeAuthStatus(TSAuthEvent.NOT_AUTHORISED, response);
                 return this.$q.reject(response);
+            default:
+                return this.$q.reject(response);
         }
-        return this.$q.reject(response);
     }
 }

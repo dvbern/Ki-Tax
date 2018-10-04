@@ -13,39 +13,40 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as angular from 'angular';
 import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig, MatSort, MatSortable, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatDialogConfig, MatSort, MatTableDataSource} from '@angular/material';
+import * as angular from 'angular';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../../app/core/service/traegerschaftRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 
 @Component({
     selector: 'dv-traegerschaft-view',
     templateUrl: './traegerschaftView.html',
-    styleUrls: ['./traegerschaftView.less']
+    styleUrls: ['./traegerschaftView.less'],
 })
 export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
-    @Input() traegerschaften: TSTraegerschaft[];
+    @Input() public traegerschaften: TSTraegerschaft[];
 
-    displayedColumns: string[] = ['name', 'remove'];
-    traegerschaft: TSTraegerschaft = undefined;
-    dataSource: MatTableDataSource<TSTraegerschaft>;
+    public displayedColumns: string[] = ['name', 'remove'];
+    public traegerschaft: TSTraegerschaft = undefined;
+    public dataSource: MatTableDataSource<TSTraegerschaft>;
 
-    @ViewChild(NgForm) form: NgForm;
-    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(NgForm) public form: NgForm;
+    @ViewChild(MatSort) public sort: MatSort;
 
-
-    constructor(private readonly traegerschaftRS: TraegerschaftRS,
-                private readonly errorService: ErrorService,
-                private readonly dialog: MatDialog,
-                authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly traegerschaftRS: TraegerschaftRS,
+        private readonly errorService: ErrorService,
+        private readonly dialog: MatDialog,
+        authServiceRS: AuthServiceRS,
+    ) {
 
         super(authServiceRS);
     }
@@ -58,11 +59,12 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
     /**
      * It sorts the table by default using the variable sort.
      */
-    private sortTable() {
-        this.sort.sort(<MatSortable>{
+    private sortTable(): void {
+        this.sort.sort({
                 id: 'name',
-                start: 'asc'
-            }
+                start: 'asc',
+                disableClear: false,
+            },
         );
     }
 
@@ -70,64 +72,69 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
         this.dataSource.sort = this.sort;
     }
 
-    removeTraegerschaft(traegerschaft: any): void {
+    public removeTraegerschaft(traegerschaft: any): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
             title: 'LOESCHEN_DIALOG_TITLE',
         };
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe((userAccepted) => {   //User confirmed removal
-                if (userAccepted) {
-                    this.traegerschaft = undefined;
-                    this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
-                        const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
-                        if (index > -1) {
-                            this.traegerschaften.splice(index, 1);
-                            this.refreshTraegerschaftenList();
-                        }
-                    });
+            .subscribe(userAccepted => {   // User confirmed removal
+                if (!userAccepted) {
+                    return;
                 }
+
+                this.traegerschaft = undefined;
+                this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
+                    const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                    if (index > -1) {
+                        this.traegerschaften.splice(index, 1);
+                        this.refreshTraegerschaftenList();
+                    }
+                });
             });
     }
 
-    createTraegerschaft(): void {
+    public createTraegerschaft(): void {
         this.traegerschaft = new TSTraegerschaft();
         this.traegerschaft.active = true;
     }
 
-    saveTraegerschaft(): void {
-        if (this.form.valid) {
-            this.errorService.clearAll();
-            const newTraegerschaft: boolean = this.traegerschaft.isNew();
-            this.traegerschaftRS.createTraegerschaft(this.traegerschaft).then((traegerschaft: TSTraegerschaft) => {
-                if (newTraegerschaft) {
-                    this.traegerschaften.push(traegerschaft);
-                } else {
-                    const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
-                    if (index > -1) {
-                        this.traegerschaften[index] = traegerschaft;
-                        EbeguUtil.handleSmarttablesUpdateBug(this.traegerschaften);
-                    }
-                }
-                this.refreshTraegerschaftenList();
-                this.traegerschaft = undefined;
-            });
+    public saveTraegerschaft(): void {
+        if (!this.form.valid) {
+            return;
         }
+
+        this.errorService.clearAll();
+        const newTraegerschaft = this.traegerschaft.isNew();
+        this.traegerschaftRS.createTraegerschaft(this.traegerschaft).then((traegerschaft: TSTraegerschaft) => {
+            if (newTraegerschaft) {
+                this.traegerschaften.push(traegerschaft);
+            } else {
+                const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                if (index > -1) {
+                    this.traegerschaften[index] = traegerschaft;
+                    EbeguUtil.handleSmarttablesUpdateBug(this.traegerschaften);
+                }
+            }
+            this.refreshTraegerschaftenList();
+            this.traegerschaft = undefined;
+        });
     }
 
     /**
-     * To refresh the traegerschaftenlist we need to refresh the MatTableDataSource with the new list of Traegerschaften.
+     * To refresh the traegerschaftenlist we need to refresh the MatTableDataSource with the new list of
+     * Traegerschaften.
      */
-    private refreshTraegerschaftenList() {
+    private refreshTraegerschaftenList(): void {
         this.dataSource.data = this.traegerschaften;
     }
 
-    cancelTraegerschaft(): void {
+    public cancelTraegerschaft(): void {
         this.traegerschaft = undefined;
     }
 
-    setSelectedTraegerschaft(selected: TSTraegerschaft): void {
+    public setSelectedTraegerschaft(selected: TSTraegerschaft): void {
         this.traegerschaft = angular.copy(selected);
     }
 

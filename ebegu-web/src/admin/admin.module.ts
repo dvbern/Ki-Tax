@@ -15,8 +15,8 @@
 
 import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
-import 'angular-smart-table';
-import {EbeguWebCore} from '../app/core/core.angularjs.module';
+
+import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
@@ -37,7 +37,7 @@ import {FerieninselStammdatenRS} from './service/ferieninselStammdatenRS.rest';
 import {ReindexRS} from './service/reindexRS.rest';
 import {TestFaelleRS} from './service/testFaelleRS.rest';
 
-export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name, 'smart-table'])
+export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.name, 'smart-table'])
     .service('InstitutionRS', InstitutionRS)
     .service('EinstellungRS', EinstellungRS)
     .service('EbeguVorlageRS', EbeguVorlageRS)
@@ -58,4 +58,4 @@ export const EbeguWebAdmin = angular.module('ebeguWeb.admin', [EbeguWebCore.name
     .directive('dvBatchjobTriggerView', downgradeComponent({component: BatchjobTriggerViewComponent}))
     .run(adminRun);
 
-export default EbeguWebAdmin;
+export default ADMIN_JS_MODULE;

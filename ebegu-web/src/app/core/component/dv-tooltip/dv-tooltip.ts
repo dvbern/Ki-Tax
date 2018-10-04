@@ -17,44 +17,41 @@ import {IComponentOptions} from 'angular';
 import {ShowTooltipController} from '../../../../gesuch/dialog/ShowTooltipController';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {IDVFocusableController} from '../IDVFocusableController';
-import ITranslateService = angular.translate.ITranslateService;
 
 const showTooltipTemplate = require('../../../../gesuch/dialog/showTooltipTemplate.html');
 
 export class DvTooltipComponentConfig implements IComponentOptions {
-    transclude = false;
-    template = require('./dv-tooltip.html');
-    controller = DvTooltipController;
-    controllerAs = 'vm';
-    bindings = {
+    public transclude = false;
+    public template = require('./dv-tooltip.html');
+    public controller = DvTooltipController;
+    public controllerAs = 'vm';
+    public bindings = {
         text: '<',
-        inputId: '@'
+        inputId: '@',
     };
 }
 
 export class DvTooltipController implements IDVFocusableController {
 
-    static $inject: ReadonlyArray<string> = ['$translate', 'DvDialog'];
+    public static $inject: ReadonlyArray<string> = ['DvDialog'];
 
     private readonly inputId: string;
 
-    constructor(private readonly $translate: ITranslateService,
-                private readonly DvDialog: DvDialog) {
+    public constructor(private readonly dvDialog: DvDialog) {
     }
 
-    showTooltip(info: any): void {
-        this.DvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
+    public showTooltip(info: any): void {
+        this.dvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
             title: '',
             text: info,
-            parentController: this
+            parentController: this,
         });
     }
 
     /**
      * Sets the focus back to the tooltip icon.
      */
-    public setFocusBack(elementID: string): void {
-        angular.element('#' + this.inputId + '.fa.fa-info-circle').first().focus();
+    public setFocusBack(_elementID: string): void {
+        angular.element(`#${this.inputId}.fa.fa-info-circle`).first().focus();
     }
 }
-

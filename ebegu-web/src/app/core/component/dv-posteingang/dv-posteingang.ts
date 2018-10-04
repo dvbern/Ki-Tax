@@ -16,11 +16,10 @@
 import {ChangeDetectionStrategy, Component, OnDestroy} from '@angular/core';
 import {from, merge, Observable, of, Subject, timer} from 'rxjs';
 import {switchMap, takeUntil} from 'rxjs/operators';
-import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSPostEingangEvent} from '../../../../models/enums/TSPostEingangEvent';
-import {PosteingangService} from '../../../../posteingang/service/posteingang.service';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {Log, LogFactory} from '../../logging/LogFactory';
 import MitteilungRS from '../../service/mitteilungRS.rest';
 
@@ -36,10 +35,11 @@ export class DvPosteingangComponent implements OnDestroy {
     private readonly unsubscribe$ = new Subject<void>();
     public mitteilungenCount$: Observable<number>;
 
-    constructor(private readonly mitteilungRS: MitteilungRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly authLifeCycleService: AuthLifeCycleService,
-                private readonly posteingangService: PosteingangService) {
+    public constructor(
+        private readonly mitteilungRS: MitteilungRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly posteingangService: PosteingangService,
+    ) {
 
         const posteingangeChanged$ = this.posteingangService.get$(TSPostEingangEvent.POSTEINGANG_MIGHT_HAVE_CHANGED)
             .pipe(switchMap(() => this.getMitteilungenCount$()));
@@ -58,7 +58,8 @@ export class DvPosteingangComponent implements OnDestroy {
 
                     // not for GS
                     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
-                        return timer(0, 300000)
+                        const fiveMin = 300000;
+                        return timer(0, fiveMin)
                             .pipe(takeUntil(this.unsubscribe$))
                             .pipe(switchMap(() => this.getMitteilungenCount$()));
                     }
@@ -68,7 +69,7 @@ export class DvPosteingangComponent implements OnDestroy {
                     }
 
                     return of(0);
-                })
+                }),
             );
     }
 
@@ -76,7 +77,7 @@ export class DvPosteingangComponent implements OnDestroy {
         return from(this.mitteilungRS.getAmountMitteilungenForCurrentBenutzer()
             .then(response => !response || isNaN(response) ? 0 : response)
             .catch(() => {
-                //Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
+                // Fehler bei deisem request (notokenrefresh )werden bis hier ohne Behandlung
                 // (unerwarteter Fehler anzeige, redirect etc.) weitergeschlauft
                 this.log.debug('received error message while reading posteingang. Ignoring ...');
                 return 0;

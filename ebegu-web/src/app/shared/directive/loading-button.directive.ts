@@ -2,7 +2,7 @@ import {Directive, ElementRef, EventEmitter, Injector, Input, Output} from '@ang
 import {UpgradeComponent} from '@angular/upgrade/static';
 
 @Directive({
-    selector: 'dv-loading-button'
+    selector: 'dv-loading-button',
 })
 export class LoadingButtonDirective extends UpgradeComponent {
 
@@ -14,9 +14,9 @@ export class LoadingButtonDirective extends UpgradeComponent {
     @Input() public ariaLabel: string;
     @Input() public inputId: string;
 
-    @Output() public buttonClick: EventEmitter<void>;
+    @Output() public readonly buttonClick: EventEmitter<void>;
 
-    constructor(elementRef: ElementRef, injector: Injector) {
+    public constructor(elementRef: ElementRef, injector: Injector) {
         super('dvLoadingButton', elementRef, injector);
     }
 

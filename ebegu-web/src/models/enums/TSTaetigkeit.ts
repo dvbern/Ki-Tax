@@ -27,6 +27,6 @@ export function getTSTaetigkeit(): Array<TSTaetigkeit> {
         TSTaetigkeit.SELBSTAENDIG,
         TSTaetigkeit.AUSBILDUNG,
         TSTaetigkeit.RAV,
-        TSTaetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN
+        TSTaetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN,
     ];
 }

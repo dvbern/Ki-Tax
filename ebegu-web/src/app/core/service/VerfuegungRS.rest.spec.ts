@@ -13,26 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSVerfuegung from '../../../models/TSVerfuegung';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import VerfuegungRS from './verfuegungRS.rest';
 
 describe('VerfuegungRS', () => {
 
     let verfuegungRS: VerfuegungRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockKindContainerListRest: Array<any> = [];
     let mockKind: TSKindContainer;
-    const gesuchId: string = '1234567789';
-    const betreuungId: string = '321123';
+    const gesuchId = '1234567789';
+    const betreuungId = '321123';
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -43,9 +44,9 @@ describe('VerfuegungRS', () => {
     }));
 
     beforeEach(() => {
-        const kindGS: TSKind = new TSKind('Pedro', 'Bern');
+        const kindGS = new TSKind('Pedro', 'Bern');
         TestDataUtil.setAbstractMutableFieldsUndefined(kindGS);
-        const kindJA: TSKind = new TSKind('Pedro', 'Bern');
+        const kindJA = new TSKind('Pedro', 'Bern');
         TestDataUtil.setAbstractMutableFieldsUndefined(kindJA);
         mockKind = new TSKindContainer(kindGS, kindJA, []);
         TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
@@ -57,21 +58,16 @@ describe('VerfuegungRS', () => {
         it('check URI', () => {
             expect(verfuegungRS.serviceURL).toContain('verfuegung');
         });
-        it('check Service name', () => {
-            expect(verfuegungRS.getServiceName()).toBe('VerfuegungRS');
-        });
-        it('should include a findKind() function', () => {
-            expect(verfuegungRS.calculateVerfuegung).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
         describe('calculate', () => {
             it('should return all KindContainer', () => {
-                $httpBackend.expectGET(verfuegungRS.serviceURL + '/calculate/' + gesuchId).respond(mockKindContainerListRest);
+                $httpBackend.expectGET(`${verfuegungRS.serviceURL}/calculate/${gesuchId}`).respond(
+                    mockKindContainerListRest);
 
                 let foundKind: Array<TSKindContainer>;
-                verfuegungRS.calculateVerfuegung(gesuchId).then((result) => {
+                verfuegungRS.calculateVerfuegung(gesuchId).then(result => {
                     foundKind = result;
                 });
                 $httpBackend.flush();
@@ -82,12 +78,13 @@ describe('VerfuegungRS', () => {
         });
         describe('saveVerfuegung', () => {
             it('should save the given Verfuegung', () => {
-                const verfuegung: TSVerfuegung = TestDataUtil.createVerfuegung();
-                $httpBackend.expectPUT(verfuegungRS.serviceURL + '/' + gesuchId + '/' + betreuungId + '/false').respond(ebeguRestUtil.verfuegungToRestObject({}, verfuegung));
-                $httpBackend.expectGET('/ebegu/api/v1/wizard-steps/' + gesuchId).respond({});
+                const verfuegung = TestDataUtil.createVerfuegung();
+                $httpBackend.expectPUT(`${verfuegungRS.serviceURL}/${gesuchId}/${betreuungId}/false`).respond(
+                    ebeguRestUtil.verfuegungToRestObject({}, verfuegung));
+                $httpBackend.expectGET(`/ebegu/api/v1/wizard-steps/${gesuchId}`).respond({});
 
                 let savedVerfuegung: TSVerfuegung;
-                verfuegungRS.saveVerfuegung(verfuegung, gesuchId, betreuungId, false).then((result) => {
+                verfuegungRS.saveVerfuegung(verfuegung, gesuchId, betreuungId, false).then(result => {
                     savedVerfuegung = result;
                 });
                 $httpBackend.flush();

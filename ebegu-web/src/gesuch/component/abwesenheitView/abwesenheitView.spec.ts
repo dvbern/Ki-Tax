@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -40,7 +40,7 @@ describe('abwesenheitView', () => {
     let $scope: angular.IScope;
     let $timeout: angular.ITimeoutService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -64,15 +64,15 @@ describe('abwesenheitView', () => {
 
     describe('getNameFromBetroffene', () => {
         it('should return empty string for undefined kindBetreuung', () => {
-            const kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
+            const kindBetreuung = new KindBetreuungUI();
             expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('');
         });
         it('should return empty string for empty data', () => {
-            const kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
+            const kindBetreuung = new KindBetreuungUI();
             expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('');
         });
         it('should return Name of KindBetreuung', () => {
-            const kindBetreuung: KindBetreuungUI = new KindBetreuungUI();
+            const kindBetreuung = new KindBetreuungUI();
             const betreuung = new TSBetreuung();
             const institutionStammdaten = new TSInstitutionStammdaten();
             const ins = new TSInstitution();
@@ -88,7 +88,8 @@ describe('abwesenheitView', () => {
             kind.kindJA = kindJA;
             kindBetreuung.kind = kind;
 
-            expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe('Pedrito Contreras - InstitutionTest');
+            expect(abwesenheitController.getTextForBetreuungDDL(kindBetreuung)).toBe(
+                'Pedrito Contreras - InstitutionTest');
         });
     });
 

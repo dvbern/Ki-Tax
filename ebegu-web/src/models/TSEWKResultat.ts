@@ -25,34 +25,34 @@ export default class TSEWKResultat extends TSAbstractMutableEntity {
     private _anzahlResultate: number;
     private _personen: Array<TSEWKPerson>;
 
-    constructor(maxResultate?: number, anzahlResultate?: number, personen?: Array<TSEWKPerson>) {
+    public constructor(maxResultate?: number, anzahlResultate?: number, personen?: Array<TSEWKPerson>) {
         super();
         this._maxResultate = maxResultate;
         this._anzahlResultate = anzahlResultate;
         this._personen = personen;
     }
 
-    get maxResultate(): number {
+    public get maxResultate(): number {
         return this._maxResultate;
     }
 
-    set maxResultate(value: number) {
+    public set maxResultate(value: number) {
         this._maxResultate = value;
     }
 
-    get anzahlResultate(): number {
+    public get anzahlResultate(): number {
         return this._anzahlResultate;
     }
 
-    set anzahlResultate(value: number) {
+    public set anzahlResultate(value: number) {
         this._anzahlResultate = value;
     }
 
-    get personen(): Array<TSEWKPerson> {
+    public get personen(): Array<TSEWKPerson> {
         return this._personen;
     }
 
-    set personen(value: Array<TSEWKPerson>) {
+    public set personen(value: Array<TSEWKPerson>) {
         this._personen = value;
     }
 

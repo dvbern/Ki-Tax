@@ -31,21 +31,22 @@ import TSGemeinde from '../../../../models/TSGemeinde';
 })
 export class DvNgGemeindeDialogComponent {
 
-    selectedGemeinde: TSGemeinde;
-    gemeindeList: TSGemeinde[];
+    public selectedGemeinde: TSGemeinde;
+    public gemeindeList: TSGemeinde[];
 
-    constructor(
+    public constructor(
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any) {
+        @Inject(MAT_DIALOG_DATA) data: any,
+    ) {
 
         this.gemeindeList = data.gemeindeList;
     }
 
-    save() {
+    public save(): void {
         this.dialogRef.close(this.selectedGemeinde ? this.selectedGemeinde.id : undefined);
     }
 
-    close() {
+    public close(): void {
         this.dialogRef.close();
     }
 }
