@@ -57,54 +57,54 @@
                 <form ng-submit="form.$valid && vm.submit()" name="form" role="form" class="" novalidate
                       ng-if="vm.applicationProperty"
                       unsaved-warning-form>
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <label class="md-no-float" data-translate="PROPERTY_NAME" for="propName">
-                                        </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input id="propName" type="text" name="propertyName"
-                                               ng-model="vm.applicationProperty.name"
-                                               dv-max-length class="input-element smallfont" required
-                                               ng-disabled="vm.applicationProperty.timestampErstellt">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="md-no-float" data-translate="PROPERTY_VALUE" for="propVal">
-                                        </label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input id="propVal" type="text" name="propertyValue"
-                                               ng-model="vm.applicationProperty.value"
-                                               ng-maxlength="4000" class="smallfont">
-                                    </div>
+                    <div class="row">
+                        <div class="col-md-12 form-group">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label class="md-no-float" data-translate="PROPERTY_NAME" for="propName">
+                                    </label>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col-md-3 col-md-offset-3">
-                                        <dv-error-messages for="form.propertyName.$error"></dv-error-messages>
-                                    </div>
-                                    <div class="col-md-3 col-md-offset-3">
-                                        <dv-error-messages for="form.propertyValue.$error"></dv-error-messages>
-                                    </div>
+                                <div class="col-md-4">
+                                    <input id="propName" type="text" name="propertyName"
+                                           ng-model="vm.applicationProperty.name"
+                                           dv-max-length class="input-element smallfont" required
+                                           ng-disabled="vm.applicationProperty.timestampErstellt">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="md-no-float" data-translate="PROPERTY_VALUE" for="propVal">
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input id="propVal" type="text" name="propertyValue"
+                                           ng-model="vm.applicationProperty.value"
+                                           ng-maxlength="4000" class="smallfont">
                                 </div>
                             </div>
+                            <div class="row form-group">
+                                <div class="col-md-3 col-md-offset-3">
+                                    <dv-error-messages for="form.propertyName.$error"></dv-error-messages>
+                                </div>
+                                <div class="col-md-3 col-md-offset-3">
+                                    <dv-error-messages for="form.propertyValue.$error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
 
-                        </div>
-                        <div class="row">
+                    </div>
+                    <div class="row">
                         <div class="col-md-2">
-                                <dv-loading-button button-class="" type="submit" >
-                                    <span data-translate="SAVE"></span>
-                                </dv-loading-button>
-                            </div>
-                            <div class="col-md-4 ">
-                                <dv-loading-button type="submit"
-                                                   button-click="vm.resetForm(); form.$setPristine();form.$setUntouched();"
-                                                   button-class="cancel-button">
-                                    <span data-translate="CANCEL"></span>
-                                </dv-loading-button>
-                            </div>
+                            <dv-loading-button button-class="" type="submit">
+                                <span data-translate="SAVE"></span>
+                            </dv-loading-button>
                         </div>
+                        <div class="col-md-4 ">
+                            <dv-loading-button type="submit"
+                                               button-click="vm.resetForm(); form.$setPristine();form.$setUntouched();"
+                                               button-class="cancel-button">
+                                <span data-translate="CANCEL"></span>
+                            </dv-loading-button>
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -115,7 +115,9 @@
                 </div>
                 <div class="row marginTop10">
                     <div class="col-md-12 form-group">
-                        <dv-loading-button force-wait-service="true" button-click="vm.startReindex()">Suchindex neu erstellen</dv-loading-button>
+                        <dv-loading-button force-wait-service="true" button-click="vm.startReindex()">Suchindex neu
+                            erstellen
+                        </dv-loading-button>
                     </div>
                 </div>
             </div>

@@ -13,8 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import * as moment from 'moment';
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSEWKAdresse from './TSEWKAdresse';
 
 /**
@@ -32,8 +32,17 @@ export default class TSEWKBeziehung extends TSAbstractMutableEntity {
     private _geburtsdatum: moment.Moment;
     private _adresse: TSEWKAdresse;
 
-    constructor(beziehungstyp?: string, beziehungstypTxt?: string, personID?: string, nachname?: string, ledigname?: string,
-                vorname?: string, rufname?: string, geburtsdatum?: moment.Moment, adresse?: TSEWKAdresse) {
+    public constructor(
+        beziehungstyp?: string,
+        beziehungstypTxt?: string,
+        personID?: string,
+        nachname?: string,
+        ledigname?: string,
+        vorname?: string,
+        rufname?: string,
+        geburtsdatum?: moment.Moment,
+        adresse?: TSEWKAdresse,
+    ) {
         super();
         this._beziehungstyp = beziehungstyp;
         this._beziehungstypTxt = beziehungstypTxt;
@@ -46,75 +55,75 @@ export default class TSEWKBeziehung extends TSAbstractMutableEntity {
         this._adresse = adresse;
     }
 
-    get beziehungstyp(): string {
+    public get beziehungstyp(): string {
         return this._beziehungstyp;
     }
 
-    set beziehungstyp(value: string) {
+    public set beziehungstyp(value: string) {
         this._beziehungstyp = value;
     }
 
-    get beziehungstypTxt(): string {
+    public get beziehungstypTxt(): string {
         return this._beziehungstypTxt;
     }
 
-    set beziehungstypTxt(value: string) {
+    public set beziehungstypTxt(value: string) {
         this._beziehungstypTxt = value;
     }
 
-    get personID(): string {
+    public get personID(): string {
         return this._personID;
     }
 
-    set personID(value: string) {
+    public set personID(value: string) {
         this._personID = value;
     }
 
-    get nachname(): string {
+    public get nachname(): string {
         return this._nachname;
     }
 
-    set nachname(value: string) {
+    public set nachname(value: string) {
         this._nachname = value;
     }
 
-    get ledigname(): string {
+    public get ledigname(): string {
         return this._ledigname;
     }
 
-    set ledigname(value: string) {
+    public set ledigname(value: string) {
         this._ledigname = value;
     }
 
-    get vorname(): string {
+    public get vorname(): string {
         return this._vorname;
     }
 
-    set vorname(value: string) {
+    public set vorname(value: string) {
         this._vorname = value;
     }
 
-    get rufname(): string {
+    public get rufname(): string {
         return this._rufname;
     }
 
-    set rufname(value: string) {
+    public set rufname(value: string) {
         this._rufname = value;
     }
 
-    get geburtsdatum(): moment.Moment {
+    public get geburtsdatum(): moment.Moment {
         return this._geburtsdatum;
     }
 
-    set geburtsdatum(value: moment.Moment) {
+    public set geburtsdatum(value: moment.Moment) {
         this._geburtsdatum = value;
     }
 
-    get adresse(): TSEWKAdresse {
+    public get adresse(): TSEWKAdresse {
         return this._adresse;
     }
 
-    set adresse(value: TSEWKAdresse) {
+    public set adresse(value: TSEWKAdresse) {
         this._adresse = value;
     }
 }

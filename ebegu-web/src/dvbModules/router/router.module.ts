@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as angular from 'angular';
 import {upgradeModule} from '@uirouter/angular-hybrid';
 import uiRouter from '@uirouter/angularjs';
+import * as angular from 'angular';
 import RouterHelperProvider from './route-helper-provider';
 
 export default angular.module('dvbAngular.router', [

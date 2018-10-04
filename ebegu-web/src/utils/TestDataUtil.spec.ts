@@ -42,29 +42,30 @@ import TSWizardStep from '../models/TSWizardStep';
 import {TSDateRange} from '../models/types/TSDateRange';
 import DateUtil from './DateUtil';
 
+// tslint:disable:no-magic-numbers no-identical-functions
 export default class TestDataUtil {
 
-    public static setAbstractFieldsUndefined(abstractEntity: TSAbstractEntity) {
+    public static setAbstractFieldsUndefined(abstractEntity: TSAbstractEntity): void {
         abstractEntity.id = undefined;
         abstractEntity.timestampErstellt = undefined;
         abstractEntity.timestampMutiert = undefined;
     }
 
-    public static setAbstractMutableFieldsUndefined(abstractEntity: TSAbstractMutableEntity) {
+    public static setAbstractMutableFieldsUndefined(abstractEntity: TSAbstractMutableEntity): void {
         this.setAbstractFieldsUndefined(abstractEntity);
         abstractEntity.vorgaengerId = undefined;
     }
 
     public static createErwerbspensumContainer(): TSErwerbspensumContainer {
 
-        const dummyErwerbspensumContainer: TSErwerbspensumContainer = new TSErwerbspensumContainer();
+        const dummyErwerbspensumContainer = new TSErwerbspensumContainer();
         dummyErwerbspensumContainer.erwerbspensumGS = this.createErwerbspensum();
         dummyErwerbspensumContainer.erwerbspensumJA = this.createErwerbspensum();
         this.setAbstractMutableFieldsUndefined(dummyErwerbspensumContainer);
         return dummyErwerbspensumContainer;
     }
 
-    static createErwerbspensum(): TSErwerbspensum {
+    public static createErwerbspensum(): TSErwerbspensum {
         const dummyErwerbspensum = new TSErwerbspensum();
         dummyErwerbspensum.taetigkeit = TSTaetigkeit.ANGESTELLT;
         dummyErwerbspensum.pensum = 80;
@@ -77,30 +78,37 @@ export default class TestDataUtil {
         return dummyErwerbspensum;
     }
 
-    static checkGueltigkeitAndSetIfSame(first: TSAbstractDateRangedEntity, second: TSAbstractDateRangedEntity) {
-        // Dieses hack wird gebraucht weil um 2 Moment zu vergleichen kann man nicht einfach equal() benutzen sondern isSame
+    public static checkGueltigkeitAndSetIfSame(
+        first: TSAbstractDateRangedEntity,
+        second: TSAbstractDateRangedEntity,
+    ): void {
+        // Dieses hack wird gebraucht weil um 2 Moment zu vergleichen kann man nicht einfach equal() benutzen sondern
+        // isSame
         expect(first.gueltigkeit.gueltigAb.isSame(second.gueltigkeit.gueltigAb)).toBe(true);
         expect(first.gueltigkeit.gueltigBis.isSame(second.gueltigkeit.gueltigBis)).toBe(true);
         first.gueltigkeit.gueltigAb = second.gueltigkeit.gueltigAb;
         first.gueltigkeit.gueltigBis = second.gueltigkeit.gueltigBis;
     }
 
-    static mockDefaultGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService) {
+    public static mockDefaultGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/0621fb5d-a187-5a91-abaf-8a813c4d263a').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/wizard-steps').respond({});
         $httpBackend.when('POST', '/ebegu/api/v1/wizard-steps').respond({});
     }
 
-    public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService) {
+    public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a').respond({});
+        $httpBackend.when('GET',
+            '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a')
+            .respond(
+                {});
     }
 
     public static createWizardStep(gesuchId: string): TSWizardStep {
-        const wizardStep: TSWizardStep = new TSWizardStep();
+        const wizardStep = new TSWizardStep();
         TestDataUtil.setAbstractMutableFieldsUndefined(wizardStep);
         wizardStep.gesuchId = gesuchId;
         wizardStep.bemerkungen = 'bemerkung';
@@ -110,7 +118,7 @@ export default class TestDataUtil {
     }
 
     public static createVerfuegung(): TSVerfuegung {
-        const verfuegung: TSVerfuegung = new TSVerfuegung();
+        const verfuegung = new TSVerfuegung();
         TestDataUtil.setAbstractMutableFieldsUndefined(verfuegung);
         verfuegung.id = '123321';
         verfuegung.zeitabschnitte = [];
@@ -118,13 +126,13 @@ export default class TestDataUtil {
     }
 
     public static createGesuchsperiode20162017(): TSGesuchsperiode {
-        const gueltigkeit: TSDateRange = new TSDateRange(moment('01.07.2016', 'DD.MM.YYYY'), moment('31.08.2017', 'DD.MM.YYYY'));
+        const gueltigkeit = new TSDateRange(moment('01.07.2016', 'DD.MM.YYYY'), moment('31.08.2017', 'DD.MM.YYYY'));
         return new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, gueltigkeit);
     }
 
     public static createGesuchsteller(vorname: string, nachname: string): TSGesuchstellerContainer {
-        const gesuchstellerCont: TSGesuchstellerContainer = new TSGesuchstellerContainer();
-        const gesuchsteller: TSGesuchsteller = new TSGesuchsteller();
+        const gesuchstellerCont = new TSGesuchstellerContainer();
+        const gesuchsteller = new TSGesuchsteller();
         gesuchsteller.vorname = vorname;
         gesuchsteller.nachname = nachname;
         gesuchstellerCont.gesuchstellerJA = gesuchsteller;
@@ -133,8 +141,8 @@ export default class TestDataUtil {
     }
 
     public static createAdresse(strasse: string, nummer: string): TSAdresseContainer {
-        const adresseCont: TSAdresseContainer = new TSAdresseContainer();
-        const adresse: TSAdresse = new TSAdresse();
+        const adresseCont = new TSAdresseContainer();
+        const adresse = new TSAdresse();
         adresse.strasse = strasse;
         adresse.hausnummer = nummer;
         adresse.gueltigkeit = TestDataUtil.createGesuchsperiode20162017().gueltigkeit;
@@ -160,14 +168,16 @@ export default class TestDataUtil {
                 parameterViolations: [],
                 classViolations: [],
                 fieldViolations: [],
-                propertyViolations: [{
-                    constraintType: 'PARAMETER',
-                    path: 'markAsRead.arg1',
-                    message: 'Die Länge des Feldes muss zwischen 36 und 36 sein',
-                    value: '8a146418-ab12-456f-9b17-aad6990f51'
-                }],
-                returnValueViolations: []
-            }
+                propertyViolations: [
+                    {
+                        constraintType: 'PARAMETER',
+                        path: 'markAsRead.arg1',
+                        message: 'Die Länge des Feldes muss zwischen 36 und 36 sein',
+                        value: '8a146418-ab12-456f-9b17-aad6990f51',
+                    },
+                ],
+                returnValueViolations: [],
+            },
         };
     }
 
@@ -183,12 +193,12 @@ export default class TestDataUtil {
                 customMessage: 'test',
                 objectId: '44-55-66-77',
                 argumentList: null,
-            }
+            },
         };
     }
 
     public static createGemeindeOstermundigen(): TSGemeinde {
-        const gemeinde: TSGemeinde = new TSGemeinde();
+        const gemeinde = new TSGemeinde();
         TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
         gemeinde.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
         gemeinde.name = 'Ostermundigen';
@@ -200,7 +210,7 @@ export default class TestDataUtil {
     }
 
     public static createGemeindeBern(): TSGemeinde {
-        const gemeinde: TSGemeinde = new TSGemeinde();
+        const gemeinde = new TSGemeinde();
         TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         gemeinde.name = 'Bern';
@@ -212,7 +222,7 @@ export default class TestDataUtil {
     }
 
     public static createGemeindeThun(): TSGemeinde {
-        const gemeinde: TSGemeinde = new TSGemeinde();
+        const gemeinde = new TSGemeinde();
         TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046ccc';
         gemeinde.name = 'Thun';
@@ -223,7 +233,7 @@ export default class TestDataUtil {
     }
 
     public static createBerechtigung(role: TSRole, createGemeinde: boolean): TSBerechtigung {
-        const berechtigung: TSBerechtigung = new TSBerechtigung();
+        const berechtigung = new TSBerechtigung();
         if (createGemeinde) {
             berechtigung.gemeindeList.push(TestDataUtil.createGemeindeOstermundigen());
         }
@@ -232,14 +242,14 @@ export default class TestDataUtil {
     }
 
     public static createFall(): TSFall {
-        const fall: TSFall = new TSFall();
+        const fall = new TSFall();
         TestDataUtil.setAbstractMutableFieldsUndefined(fall);
         fall.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046d61';
         return fall;
     }
 
     public static createDossier(id: string, fall: TSFall): TSDossier {
-        const dossier: TSDossier = new TSDossier();
+        const dossier = new TSDossier();
         dossier.id = id;
         dossier.fall = fall;
         return dossier;

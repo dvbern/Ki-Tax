@@ -69,6 +69,7 @@
     "bootstrap": "~3.3.7",
     "cache-loader": "^1.2.2",
     "check-engine": "~1.7.0",
+    "codelyzer": "^4.4.4",
     "concurrently": "^3.6.1",
     "css-loader": "^0.28.11",
     "file-loader": "~1.1.5",
@@ -110,7 +111,9 @@
     "ts-loader": "~3.0.5",
     "ts-node": "~3.3.0",
     "tslint": "~5.11.0",
+    "tslint-consistent-codestyle": "^1.13.3",
     "tslint-eslint-rules": "~5.3.1",
+    "tslint-sonarts": "^1.8.0",
     "typescript": "~2.8.3",
     "url-loader": "^1.0.1",
     "webpack": "^4.16.3",
@@ -120,7 +123,7 @@
   },
   "engines": {
     "node": ">=8.0.0 <=10.5.0",
-    "npm": "=6.2.0"
+    "npm": "=6.4.1"
   },
   "dependencies": {
     "@angular/animations": "~6.1.0",
@@ -138,7 +141,10 @@
     "@angular/upgrade": "~6.1.0",
     "@ngx-translate/core": "~9.1.1",
     "@ngx-translate/http-loader": "~2.0.1",
+    "@uirouter/angular": "^2.0.2",
     "@uirouter/angular-hybrid": "^6.0.1",
+    "@uirouter/angularjs": "^1.0.20",
+    "@uirouter/core": "^5.0.21",
     "@uirouter/visualizer": "^6.0.2",
     "core-js": "~2.5.5",
     "detect-browser": "~3.0.0",

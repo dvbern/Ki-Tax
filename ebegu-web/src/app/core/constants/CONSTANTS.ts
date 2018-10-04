@@ -29,3 +29,6 @@ export const CONSTANTS = {
 };
 
 export const DEFAULT_LOCALE = 'de-CH';
+
+// Maximale (upload) Filegrösse ist 10MB
+export const MAX_FILE_SIZE = 10000000;

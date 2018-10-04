@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSDateRange} from './types/TSDateRange';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSDateRange} from './types/TSDateRange';
 
 export default class TSAbwesenheit extends TSAbstractDateRangedEntity {
 
-    constructor(gueltigkeit?: TSDateRange) {
+    public constructor(gueltigkeit?: TSDateRange) {
         super(gueltigkeit);
     }
 }

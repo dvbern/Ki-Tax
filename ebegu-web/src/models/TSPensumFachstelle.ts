@@ -21,16 +21,16 @@ export class TSPensumFachstelle extends TSAbstractPensumEntity {
 
     private _fachstelle: TSFachstelle;
 
-    constructor(fachstelle?: TSFachstelle, pensum?: number, gueltigkeit?: TSDateRange) {
+    public constructor(fachstelle?: TSFachstelle, pensum?: number, gueltigkeit?: TSDateRange) {
         super(pensum, gueltigkeit);
         this._fachstelle = fachstelle;
     }
 
-    get fachstelle(): TSFachstelle {
+    public get fachstelle(): TSFachstelle {
         return this._fachstelle;
     }
 
-    set fachstelle(value: TSFachstelle) {
+    public set fachstelle(value: TSFachstelle) {
         this._fachstelle = value;
     }
 }

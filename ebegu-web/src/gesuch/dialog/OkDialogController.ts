@@ -14,23 +14,26 @@
  */
 
 import {IPromise} from 'angular';
+import EbeguUtil from '../../utils/EbeguUtil';
 import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class OkDialogController {
 
-    static $inject = ['$mdDialog', '$translate', 'title'];
+    public static $inject = ['$mdDialog', '$translate', 'title'];
 
-    title: string;
+    public title: string;
 
-    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, title: string, okText: string) {
+    public constructor(
+        private readonly $mdDialog: IDialogService,
+        $translate: ITranslateService,
+        title: string,
+        _okText: string,
+    ) {
 
-        if (title !== undefined && title !== null) {
-            this.title = $translate.instant(title);
-
-        } else {
-            this.title = $translate.instant('LOESCHEN_DIALOG_TITLE');
-        }
+        this.title = EbeguUtil.isNotNullOrUndefined(title) ?
+            $translate.instant(title) :
+            $translate.instant('LOESCHEN_DIALOG_TITLE');
     }
 
     public hide(): IPromise<any> {

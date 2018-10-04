@@ -21,29 +21,37 @@ import TSGesuch from '../../../../models/TSGesuch';
 import TSGesuchstellerContainer from '../../../../models/TSGesuchstellerContainer';
 import TSKind from '../../../../models/TSKind';
 import TSKindContainer from '../../../../models/TSKindContainer';
-import {EbeguWebCore} from '../../core.angularjs.module';
+import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {DVDokumenteListController} from './dv-dokumente-list';
 
+// tslint:disable:no-duplicate-string no-identical-functions
 describe('dvDokumenteList', () => {
 
     let controller: DVDokumenteListController;
     let gesuchModelManager: GesuchModelManager;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
 
-        controller = new DVDokumenteListController(undefined, gesuchModelManager, undefined, undefined,
-            undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+        controller = new DVDokumenteListController(undefined,
+            gesuchModelManager,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined);
 
     }));
 
     describe('extractFullName', () => {
         it('should return the fullName of GS1 for GESUCHSTELLER and personNumber=1', () => {
-            const dokumentGrund: TSDokumentGrund = new TSDokumentGrund();
+            const dokumentGrund = new TSDokumentGrund();
             dokumentGrund.personType = TSDokumentGrundPersonType.GESUCHSTELLER;
             dokumentGrund.personNumber = 1;
             dokumentGrund.fullName = 'Leonardo Dantes'; // even though this is set it shouldn't take it
@@ -51,7 +59,7 @@ describe('dvDokumenteList', () => {
             expect(controller.extractFullName(dokumentGrund)).toBe('Leonardo Primero');
         });
         it('should return empty string for GESUCHSTELLER and personNumber=null', () => {
-            const dokumentGrund: TSDokumentGrund = new TSDokumentGrund();
+            const dokumentGrund = new TSDokumentGrund();
             dokumentGrund.personType = TSDokumentGrundPersonType.GESUCHSTELLER;
             dokumentGrund.personNumber = undefined;
             dokumentGrund.fullName = 'Leonardo Dantes'; // even though this is set it shouldn't take it
@@ -59,7 +67,7 @@ describe('dvDokumenteList', () => {
             expect(controller.extractFullName(dokumentGrund)).toBe('');
         });
         it('should return the fullName of GS1 for GESUCHSTELLER and personNumber=2', () => {
-            const dokumentGrund: TSDokumentGrund = new TSDokumentGrund();
+            const dokumentGrund = new TSDokumentGrund();
             dokumentGrund.personType = TSDokumentGrundPersonType.GESUCHSTELLER;
             dokumentGrund.personNumber = 2;
             dokumentGrund.fullName = 'Leonardo Dantes'; // even though this is set it shouldn't take it
@@ -67,7 +75,7 @@ describe('dvDokumenteList', () => {
             expect(controller.extractFullName(dokumentGrund)).toBe('Leonardo Segundo');
         });
         it('should return the fullName of KIND3 for KIND and personNumber=3', () => {
-            const dokumentGrund: TSDokumentGrund = new TSDokumentGrund();
+            const dokumentGrund = new TSDokumentGrund();
             dokumentGrund.personType = TSDokumentGrundPersonType.KIND;
             dokumentGrund.personNumber = 3;
             dokumentGrund.fullName = 'Leonardo Dantes'; // even though this is set it shouldn't take it
@@ -75,7 +83,7 @@ describe('dvDokumenteList', () => {
             expect(controller.extractFullName(dokumentGrund)).toBe('Leonardo Hijo');
         });
         it('should return emptz string for a not existing KIND', () => {
-            const dokumentGrund: TSDokumentGrund = new TSDokumentGrund();
+            const dokumentGrund = new TSDokumentGrund();
             dokumentGrund.personType = TSDokumentGrundPersonType.KIND;
             dokumentGrund.personNumber = 6;
             dokumentGrund.fullName = 'Leonardo Dantes'; // even though this is set it shouldn't take it
@@ -84,14 +92,14 @@ describe('dvDokumenteList', () => {
         });
     });
 
-    function mockGesuch() {
-        const gesuch: TSGesuch = new TSGesuch();
+    function mockGesuch(): void {
+        const gesuch = new TSGesuch();
         gesuch.gesuchsteller1 = new TSGesuchstellerContainer();
         spyOn(gesuch.gesuchsteller1, 'extractFullName').and.returnValue('Leonardo Primero');
         gesuch.gesuchsteller2 = new TSGesuchstellerContainer();
         spyOn(gesuch.gesuchsteller2, 'extractFullName').and.returnValue('Leonardo Segundo');
 
-        const kind: TSKindContainer = new TSKindContainer();
+        const kind = new TSKindContainer();
         kind.kindJA = new TSKind();
         spyOn(kind.kindJA, 'getFullName').and.returnValue('Leonardo Hijo');
         kind.kindNummer = 3;

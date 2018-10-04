@@ -27,35 +27,40 @@ import {GesuchRouteController} from './gesuch';
 import BerechnungsManager from './service/berechnungsManager';
 import GesuchModelManager from './service/gesuchModelManager';
 import MahnungRS from './service/mahnungRS.rest';
-import WizardStepManager from './service/wizardStepManager';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
+
+// tslint:disable:no-duplicate-string
 
 const gesuchTpl = require('./gesuch.html');
 
 gesuchRun.$inject = ['RouterHelper'];
 
-export function gesuchRun(routerHelper: RouterHelper) {
+export function gesuchRun(routerHelper: RouterHelper): void {
     routerHelper.configureStates(ng1States, []);
 }
 
-//STATES
+// STATES
 
 export class EbeguGesuchState implements Ng1StateDeclaration {
-    parent = 'app';
-    abstract = true;
-    name = 'gesuch';
-    template = gesuchTpl;
-    url = '/gesuch';
-    controller = GesuchRouteController;
-    controllerAs = 'vm';
+    public parent = 'app';
+    public abstract = true;
+    public name = 'gesuch';
+    public template = gesuchTpl;
+    public url = '/gesuch';
+    public controller = GesuchRouteController;
+    public controllerAs = 'vm';
 }
 
+const fallCreationView = '<fall-creation-view>';
+
+const kommentarView = '<kommentar-view>';
+
 export class EbeguNewFallState implements Ng1StateDeclaration {
-    name = 'gesuch.fallcreation';
-    url = '/fall/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
-    params = {
+    public name = 'gesuch.fallcreation';
+    public url = '/fall/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId/:gemeindeId';
+    public params = {
         creationAction: '',
         eingangsart: '',
         gesuchsperiodeId: '',
@@ -64,580 +69,580 @@ export class EbeguNewFallState implements Ng1StateDeclaration {
         gemeindeId: '',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<fall-creation-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: fallCreationView,
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: reloadGesuchModelManager
+    public resolve = {
+        gesuch: reloadGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
 export class EbeguMutationState implements Ng1StateDeclaration {
-    name = 'gesuch.mutation';
-    url = '/mutation/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
+    public name = 'gesuch.mutation';
+    public url = '/mutation/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<fall-creation-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: fallCreationView,
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: reloadGesuchModelManager
+    public resolve = {
+        gesuch: reloadGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()
+    public data = {
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles(),
     };
 }
 
 export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
-    name = 'gesuch.erneuerung';
-    url = '/erneuerung/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
+    public name = 'gesuch.erneuerung';
+    public url = '/erneuerung/:creationAction/:eingangsart/:gesuchsperiodeId/:gesuchId/:dossierId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<fall-creation-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: fallCreationView,
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: reloadGesuchModelManager
+    public resolve = {
+        gesuch: reloadGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()
+    public data = {
+        roles: TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles(),
     };
 }
 
 export class EbeguFamiliensituationState implements Ng1StateDeclaration {
-    name = 'gesuch.familiensituation';
-    url = '/familiensituation/:gesuchId';
+    public name = 'gesuch.familiensituation';
+    public url = '/familiensituation/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<familiensituation-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<familiensituation-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
 export class EbeguStammdatenState implements Ng1StateDeclaration {
-    name = 'gesuch.stammdaten';
-    url = '/stammdaten/:gesuchId/:gesuchstellerNumber';
-    params = {
+    public name = 'gesuch.stammdaten';
+    public url = '/stammdaten/:gesuchId/:gesuchstellerNumber';
+    public params = {
         gesuchstellerNumber: '1',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<stammdaten-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<stammdaten-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
 export class EbeguUmzugState implements Ng1StateDeclaration {
-    name = 'gesuch.umzug';
-    url = '/umzug/:gesuchId';
+    public name = 'gesuch.umzug';
+    public url = '/umzug/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<umzug-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<umzug-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
 export class EbeguKinderListState implements Ng1StateDeclaration {
-    name = 'gesuch.kinder';
-    url = '/kinder/:gesuchId';
+    public name = 'gesuch.kinder';
+    public url = '/kinder/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<kinder-list-view kinder-dubletten="$resolve.kinderDubletten">'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<kinder-list-view kinder-dubletten="$resolve.kinderDubletten">',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
+    public resolve = {
         gesuch: getGesuchModelManager,
-        kinderDubletten: getKinderDubletten
+        kinderDubletten: getKinderDubletten,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguKindState implements Ng1StateDeclaration {
-    name = 'gesuch.kind';
-    url = '/kinder/kind/:gesuchId/:kindNumber';
-    params = {
+    public name = 'gesuch.kind';
+    public url = '/kinder/kind/:gesuchId/:kindNumber';
+    public params = {
         kindNumber: '',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<kind-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<kind-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguBetreuungListState implements Ng1StateDeclaration {
-    name = 'gesuch.betreuungen';
-    url = '/betreuungen/:gesuchId';
+    public name = 'gesuch.betreuungen';
+    public url = '/betreuungen/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<betreuung-list-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<betreuung-list-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
 export class EbeguBetreuungState implements Ng1StateDeclaration {
-    name = 'gesuch.betreuung';
-    url = '/betreuungen/betreuung/:gesuchId/:kindNumber/:betreuungNumber/:betreuungsangebotTyp';
-    params = {
+    public name = 'gesuch.betreuung';
+    public url = '/betreuungen/betreuung/:gesuchId/:kindNumber/:betreuungNumber/:betreuungsangebotTyp';
+    public params = {
         betreuungsangebotTyp: '',
         betreuungNumber: '',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<betreuung-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<betreuung-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
 export class EbeguAbwesenheitState implements Ng1StateDeclaration {
-    name = 'gesuch.abwesenheit';
-    url = '/abwesenheit/:gesuchId';
+    public name = 'gesuch.abwesenheit';
+    public url = '/abwesenheit/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<abwesenheit-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<abwesenheit-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButSteueramt()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt(),
     };
 }
 
 export class EbeguErwerbspensenListState implements Ng1StateDeclaration {
-    name = 'gesuch.erwerbsPensen';
-    url = '/erwerbspensen/:gesuchId';
+    public name = 'gesuch.erwerbsPensen';
+    public url = '/erwerbspensen/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<erwerbspensum-list-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<erwerbspensum-list-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
 export class EbeguErwerbspensumState implements Ng1StateDeclaration {
-    name = 'gesuch.erwerbsPensum';
-    url = '/erwerbspensen/erwerbspensum/:gesuchId/:gesuchstellerNumber/:erwerbspensumNum';
-    params = {
+    public name = 'gesuch.erwerbsPensum';
+    public url = '/erwerbspensen/erwerbspensum/:gesuchId/:gesuchstellerNumber/:erwerbspensumNum';
+    public params = {
         erwerbspensumNum: '',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<erwerbspensum-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<erwerbspensum-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
 export class EbeguFinanzielleSituationState implements Ng1StateDeclaration {
-    name = 'gesuch.finanzielleSituation';
-    url = '/finanzielleSituation/:gesuchId/:gesuchstellerNumber';
-    params = {
+    public name = 'gesuch.finanzielleSituation';
+    public url = '/finanzielleSituation/:gesuchId/:gesuchstellerNumber';
+    public params = {
         gesuchstellerNumber: '1',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<finanzielle-situation-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<finanzielle-situation-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguFinanzielleSituationStartState implements Ng1StateDeclaration {
-    name = 'gesuch.finanzielleSituationStart';
-    url = '/finanzielleSituationStart/:gesuchId';
+    public name = 'gesuch.finanzielleSituationStart';
+    public url = '/finanzielleSituationStart/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<finanzielle-situation-start-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<finanzielle-situation-start-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguFinanzielleSituationResultateState implements Ng1StateDeclaration {
-    name = 'gesuch.finanzielleSituationResultate';
-    url = '/finanzielleSituationResultate/:gesuchId';
+    public name = 'gesuch.finanzielleSituationResultate';
+    public url = '/finanzielleSituationResultate/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<finanzielle-situation-resultate-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<finanzielle-situation-resultate-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguVerfuegenListState implements Ng1StateDeclaration {
-    name = 'gesuch.verfuegen';
-    url = '/verfuegen/:gesuchId';
+    public name = 'gesuch.verfuegen';
+    public url = '/verfuegen/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<verfuegen-list-view mahnung-list="$resolve.mahnungList">'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<verfuegen-list-view mahnung-list="$resolve.mahnungList">',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
+    public resolve = {
         gesuch: getGesuchModelManager,
-        mahnungList: getMahnungen
+        mahnungList: getMahnungen,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButSteueramt()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt(),
     };
 }
 
 export class EbeguVerfuegenState implements Ng1StateDeclaration {
-    name = 'gesuch.verfuegenView';
-    url = '/verfuegenView/:gesuchId/:betreuungNumber/:kindNumber';
+    public name = 'gesuch.verfuegenView';
+    public url = '/verfuegenView/:gesuchId/:betreuungNumber/:kindNumber';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<verfuegen-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<verfuegen-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButSteueramt()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButSteueramt(),
     };
 }
 
 export class EbeguEinkommensverschlechterungInfoState implements Ng1StateDeclaration {
-    name = 'gesuch.einkommensverschlechterungInfo';
-    url = '/einkommensverschlechterungInfo/:gesuchId';
+    public name = 'gesuch.einkommensverschlechterungInfo';
+    public url = '/einkommensverschlechterungInfo/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<einkommensverschlechterung-info-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<einkommensverschlechterung-info-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDeclaration {
-    name = 'gesuch.einkommensverschlechterungSteuern';
-    url = '/einkommensverschlechterungSteuern/:gesuchId';
+    public name = 'gesuch.einkommensverschlechterungSteuern';
+    public url = '/einkommensverschlechterungSteuern/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<einkommensverschlechterung-steuern-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<einkommensverschlechterung-steuern-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration {
-    name = 'gesuch.einkommensverschlechterung';
-    url = '/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber/:basisjahrPlus';
-    params = {
+    public name = 'gesuch.einkommensverschlechterung';
+    public url = '/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber/:basisjahrPlus';
+    public params = {
         gesuchstellerNumber: '1',
         basisjahrPlus: '1',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<einkommensverschlechterung-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<einkommensverschlechterung-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguEinkommensverschlechterungResultateState implements Ng1StateDeclaration {
-    name = 'gesuch.einkommensverschlechterungResultate';
-    url = '/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
-    params = {
+    public name = 'gesuch.einkommensverschlechterungResultate';
+    public url = '/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
+    public params = {
         basisjahrPlus: '1',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<einkommensverschlechterung-resultate-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<einkommensverschlechterung-resultate-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
 export class EbeguDokumenteState implements Ng1StateDeclaration {
-    name = 'gesuch.dokumente';
-    url = '/dokumente/:gesuchId/:gesuchstellerNumber';
-    params = {
+    public name = 'gesuch.dokumente';
+    public url = '/dokumente/:gesuchId/:gesuchstellerNumber';
+    public params = {
         gesuchstellerNumber: '1',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<dokumente-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<dokumente-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
 export class EbeguFreigabeState implements Ng1StateDeclaration {
-    name = 'gesuch.freigabe';
-    url = '/freigabe/:gesuchId';
+    public name = 'gesuch.freigabe';
+    public url = '/freigabe/:gesuchId';
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<freigabe-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<freigabe-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
     };
 }
 
 export class EbeguBetreuungMitteilungState implements Ng1StateDeclaration {
-    name = 'gesuch.mitteilung';
-    url = '/mitteilung/:dossierId/:gesuchId/:betreuungId/:mitteilungId';
-    params = {
+    public name = 'gesuch.mitteilung';
+    public url = '/mitteilung/:dossierId/:gesuchId/:betreuungId/:mitteilungId';
+    public params = {
         mitteilungId: '',
     };
 
-    views: { [name: string]: Ng1StateDeclaration } = {
-        'gesuchViewPort': {
-            template: '<betreuung-mitteilung-view>'
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<betreuung-mitteilung-view>',
         },
-        'kommentarViewPort': {
-            template: '<kommentar-view>'
-        }
+        kommentarViewPort: {
+            template: kommentarView,
+        },
     };
 
-    resolve = {
-        gesuch: getGesuchModelManager
+    public resolve = {
+        gesuch: getGesuchModelManager,
     };
 
-    data = {
-        roles: TSRoleUtil.getAllRolesButAnonymous()
+    public data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
 }
 
@@ -671,100 +676,109 @@ const ng1States: Ng1StateDeclaration[] = [
     // new OnboardingTest()
 ];
 
-//PARAMS
+// PARAMS
 
 export class IGesuchStateParams {
-    gesuchId: string;
+    public gesuchId: string;
 }
 
 export class IStammdatenStateParams {
-    gesuchstellerNumber: string;
+    public gesuchstellerNumber: string;
 }
 
 export class IKindStateParams {
-    kindNumber: string;
+    public kindNumber: string;
 }
 
 export class IBetreuungStateParams {
-    betreuungNumber: string;
-    kindNumber: string;
-    betreuungsangebotTyp: string;
+    public betreuungNumber: string;
+    public kindNumber: string;
+    public betreuungsangebotTyp: string;
 }
 
 export class INewFallStateParams {
-    creationAction: TSCreationAction;
-    eingangsart: TSEingangsart;
-    gesuchsperiodeId: string;
-    gesuchId: string;
-    dossierId: string;
-    gemeindeId: string;
+    public creationAction: TSCreationAction;
+    public eingangsart: TSEingangsart;
+    public gesuchsperiodeId: string;
+    public gesuchId: string;
+    public dossierId: string;
+    public gemeindeId: string;
 }
 
 export class IErwerbspensumStateParams {
-    gesuchstellerNumber: string;
-    erwerbspensumNum: string;
+    public gesuchstellerNumber: string;
+    public erwerbspensumNum: string;
 }
 
 export class IEinkommensverschlechterungStateParams {
-    gesuchstellerNumber: string;
-    basisjahrPlus: string;
+    public gesuchstellerNumber: string;
+    public basisjahrPlus: string;
 }
 
 export class IEinkommensverschlechterungResultateStateParams {
-    basisjahrPlus: string;
+    public basisjahrPlus: string;
 }
 
-// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen (Grossbuchstaben am Anfang). Warum?
+// FIXME dieses $inject wird ignoriert, d.h, der Parameter der Funktion muss exact dem Namen des Services entsprechen
+// (Grossbuchstaben am Anfang). Warum?
 getMahnungen.$inject = ['MahnungRS', '$stateParams', '$q', '$log'];
 
-export function getMahnungen(MahnungRS: MahnungRS, $stateParams: IGesuchStateParams, $q: IQService, $log: ILogService) {
-    // return [];
+export function getMahnungen(
+    MahnungRS: MahnungRS, // tslint:disable-line:variable-name no-shadowed-variable
+    $stateParams: IGesuchStateParams,
+    $q: IQService,
+    $log: ILogService,
+): IPromise<TSMahnung[]> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
             return MahnungRS.findMahnungen(gesuchIdParam);
         }
     }
-    $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    const deferred = $q.defer<TSMahnung[]>();
-    deferred.resolve(undefined);
-    return deferred.promise;
+    $log.warn('keine stateParams oder keine gesuchId, gebe leeres Array zurueck');
+    return $q.resolve([]);
 }
 
-getGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', '$stateParams', '$q', '$log'];
+getGesuchModelManager.$inject =
+    ['GesuchModelManager', 'BerechnungsManager', '$stateParams', '$q', '$log'];
 
-export function getGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                                      wizardStepManager: WizardStepManager, $stateParams: IGesuchStateParams, $q: IQService,
-                                      $log: ILogService): IPromise<TSGesuch> {
+export function getGesuchModelManager(
+    gesuchModelManager: GesuchModelManager,
+    berechnungsManager: BerechnungsManager,
+    $stateParams: IGesuchStateParams,
+    $q: IQService,
+    $log: ILogService,
+): IPromise<TSGesuch> {
     if ($stateParams) {
         const gesuchIdParam = $stateParams.gesuchId;
         if (gesuchIdParam) {
-            if (!gesuchModelManager.getGesuch() || gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
+            if (!gesuchModelManager.getGesuch() ||
+                gesuchModelManager.getGesuch() && gesuchModelManager.getGesuch().id !== gesuchIdParam
                 || gesuchModelManager.getGesuch().emptyCopy) {
-                // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId ueberreinstimmt wird das gesuch neu geladen
-                // Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im Gesuchmodelmanager um eine leere Mutation handelt
-                // oder um ein leeres Erneuerungsgesuch
+                // Wenn die antrags id im GescuchModelManager nicht mit der GesuchId ueberreinstimmt wird das gesuch
+                // neu geladen Ebenfalls soll das Gesuch immer neu geladen werden, wenn es sich beim Gesuch im
+                // Gesuchmodelmanager um eine leere Mutation handelt oder um ein leeres Erneuerungsgesuch
                 berechnungsManager.clear();
                 return gesuchModelManager.openGesuch(gesuchIdParam);
-            } else {
-                const deferred = $q.defer<TSGesuch>();
-                deferred.resolve(gesuchModelManager.getGesuch());
-                return deferred.promise;
             }
 
+            return $q.resolve(gesuchModelManager.getGesuch());
         }
     }
     $log.warn('keine stateParams oder keine gesuchId, gebe undefined zurueck');
-    const deferred = $q.defer<TSGesuch>();
-    deferred.resolve(undefined);
-    return deferred.promise;
+    return $q.resolve(undefined);
 }
 
-reloadGesuchModelManager.$inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', '$stateParams', '$q', '$log'];
+reloadGesuchModelManager.$inject =
+    ['GesuchModelManager', 'BerechnungsManager', '$stateParams', '$q', '$log'];
 
-export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                                         wizardStepManager: WizardStepManager, $stateParams: INewFallStateParams, $q: any,
-                                         $log: ILogService): IPromise<TSGesuch> {
+export function reloadGesuchModelManager(
+    gesuchModelManager: GesuchModelManager,
+    berechnungsManager: BerechnungsManager,
+    $stateParams: INewFallStateParams,
+    $q: IQService,
+    $log: ILogService,
+): IPromise<TSGesuch> {
     if ($stateParams) {
 
         if ($stateParams.creationAction) {
@@ -787,19 +801,22 @@ export function reloadGesuchModelManager(gesuchModelManager: GesuchModelManager,
 
     }
     $log.warn('no state params available fo page fallCreation, this is probably a bug');
-    return $q.defer(gesuchModelManager.getGesuch());
+    return $q.resolve(gesuchModelManager.getGesuch());
 }
 
-getKinderDubletten.$inject = ['$stateParams', '$q', '$log', 'KindRS', 'AuthServiceRS'];
+getKinderDubletten.$inject = ['$stateParams', '$q', 'KindRS', 'AuthServiceRS'];
 
 // Die Kinderdubletten werden nur für SCH-Mitarbeiter oder JA-Mitarbeiter (inkl. Revisor und Jurist) angezeigt
-export function getKinderDubletten($stateParams: IGesuchStateParams, $q: IQService, $log: ILogService, KindRS: KindRS, authService: AuthServiceRS) {
-    const isUserAllowed: boolean = authService.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
+export function getKinderDubletten(
+    $stateParams: IGesuchStateParams,
+    $q: IQService,
+    kindRS: KindRS,
+    authService: AuthServiceRS,
+): IPromise<TSKindDublette[]> {
+    const isUserAllowed = authService.isOneOfRoles(TSRoleUtil.getJugendamtAndSchulamtRole());
     if (isUserAllowed && $stateParams && $stateParams.gesuchId) {
         const gesuchIdParam = $stateParams.gesuchId;
-        return KindRS.getKindDubletten(gesuchIdParam);
+        return kindRS.getKindDubletten(gesuchIdParam);
     }
-    const deferred = $q.defer<TSKindDublette[]>();
-    deferred.resolve(undefined);
-    return deferred.promise;
+    return $q.resolve([]);
 }

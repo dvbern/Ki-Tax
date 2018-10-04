@@ -26,6 +26,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSAdresse from '../../../models/TSAdresse';
 import TSAdresseContainer from '../../../models/TSAdresseContainer';
+import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
@@ -44,90 +45,115 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 export class StammdatenViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./stammdatenView.html');
-    controller = StammdatenViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./stammdatenView.html');
+    public controller = StammdatenViewController;
+    public controllerAs = 'vm';
 }
 
 export class StammdatenViewController extends AbstractGesuchViewController<TSGesuchstellerContainer> {
 
-    static $inject = ['$stateParams', 'EbeguRestUtil', 'GesuchModelManager', 'BerechnungsManager', 'ErrorService',
-        'WizardStepManager', 'CONSTANTS', '$q', '$scope', '$translate', 'AuthServiceRS', '$rootScope', 'EwkRS', '$timeout'];
+    public static $inject = [
+        '$stateParams',
+        'EbeguRestUtil',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'ErrorService',
+        'WizardStepManager',
+        '$q',
+        '$scope',
+        '$translate',
+        'AuthServiceRS',
+        '$rootScope',
+        'EwkRS',
+        '$timeout',
+    ];
 
-    geschlechter: Array<string>;
-    showKorrespondadr: boolean;
-    showKorrespondadrGS: boolean;
-    showRechnungsadr: boolean;
-    showRechnungsadrGS: boolean;
-    allowedRoles: Array<TSRole>;
-    gesuchstellerNumber: number;
-    private initialModel: TSGesuchstellerContainer;
+    public geschlechter: Array<string>;
+    public showKorrespondadr: boolean;
+    public showKorrespondadrGS: boolean;
+    public showRechnungsadr: boolean;
+    public showRechnungsadrGS: boolean;
+    public allowedRoles: Array<TSRole>;
+    public gesuchstellerNumber: number;
     private isLastVerfuegtesGesuch: boolean = false;
 
-    constructor($stateParams: IStammdatenStateParams,
-                public readonly ebeguRestUtil: EbeguRestUtil,
-                gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager,
-                private readonly errorService: ErrorService,
-                wizardStepManager: WizardStepManager,
-                private readonly CONSTANTS: any,
-                private readonly $q: IQService,
-                $scope: IScope,
-                private readonly $translate: ITranslateService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $rootScope: IRootScopeService,
-                private readonly ewkRS: EwkRS, $timeout: ITimeoutService) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.GESUCHSTELLER, $timeout);
+    public constructor(
+        $stateParams: IStammdatenStateParams,
+        public readonly ebeguRestUtil: EbeguRestUtil,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        private readonly errorService: ErrorService,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        $scope: IScope,
+        private readonly $translate: ITranslateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $rootScope: IRootScopeService,
+        private readonly ewkRS: EwkRS,
+        $timeout: ITimeoutService,
+    ) {
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.GESUCHSTELLER,
+            $timeout);
         this.gesuchstellerNumber = parseInt($stateParams.gesuchstellerNumber, 10);
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
     }
 
-    $onInit() {
+    public $onInit(): void {
         this.initViewmodel();
     }
 
-    private initViewmodel() {
+    private initViewmodel(): void {
         this.gesuchModelManager.initStammdaten();
         this.model = angular.copy(this.gesuchModelManager.getStammdatenToWorkWith());
-        this.initialModel = angular.copy(this.model);
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
-        this.showKorrespondadr = (this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseJA) ? true : false;
-        this.showKorrespondadrGS = (this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseGS) ? true : false;
-        this.showRechnungsadr = (this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseJA) ? true : false;
-        this.showRechnungsadrGS = (this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseGS) ? true : false;
+        this.showKorrespondadr = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseJA);
+        this.showKorrespondadrGS = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseGS);
+        this.showRechnungsadr = !!(this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseJA);
+        this.showRechnungsadrGS = !!(this.model.rechnungsAdresse && this.model.rechnungsAdresse.adresseGS);
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         this.getModel().showUmzug = this.getModel().showUmzug || this.getModel().isThereAnyUmzug();
         this.setLastVerfuegtesGesuch();
 
-        this.$rootScope.$on(TSGesuchEvent[TSGesuchEvent.EWK_PERSON_SELECTED], (event: any, gsNummer: number, ewkId: string) => {
-            if (gsNummer === this.gesuchModelManager.gesuchstellerNumber) {
+        this.$rootScope.$on(TSGesuchEvent[TSGesuchEvent.EWK_PERSON_SELECTED],
+            (_event: any, gsNummer: number, ewkId: string) => {
+                if (gsNummer !== this.gesuchModelManager.gesuchstellerNumber) {
+                    return;
+                }
+
                 this.model.gesuchstellerJA.ewkPersonId = ewkId;
                 this.model.gesuchstellerJA.ewkAbfrageDatum = DateUtil.today();
                 this.form.$dirty = true;
-            }
-        });
+            });
     }
 
-    korrespondenzAdrClicked() {
-        if (this.showKorrespondadr) {
-            if (!this.model.korrespondenzAdresse) {
-                this.model.korrespondenzAdresse = this.initAdresse(TSAdressetyp.KORRESPONDENZADRESSE);
-            } else if (!this.model.korrespondenzAdresse.adresseJA) {
-                this.initKorrespondenzAdresseJA();
-            }
+    public korrespondenzAdrClicked(): void {
+        if (!this.showKorrespondadr) {
+            return;
+        }
+
+        if (!this.model.korrespondenzAdresse) {
+            this.model.korrespondenzAdresse = this.initAdresse(TSAdressetyp.KORRESPONDENZADRESSE);
+        } else if (!this.model.korrespondenzAdresse.adresseJA) {
+            this.initKorrespondenzAdresseJA();
         }
     }
 
-    rechnungsAdrClicked() {
-        if (this.showRechnungsadr) {
-            if (!this.model.rechnungsAdresse) {
-                this.model.rechnungsAdresse = this.initAdresse(TSAdressetyp.RECHNUNGSADRESSE);
-            } else if (!this.model.rechnungsAdresse.adresseJA) {
-                this.initRechnungsAdresseJA();
-            }
+    public rechnungsAdrClicked(): void {
+        if (!this.showRechnungsadr) {
+            return;
+        }
+
+        if (!this.model.rechnungsAdresse) {
+            this.model.rechnungsAdresse = this.initAdresse(TSAdressetyp.RECHNUNGSADRESSE);
+        } else if (!this.model.rechnungsAdresse.adresseJA) {
+            this.initRechnungsAdresseJA();
         }
     }
 
@@ -135,47 +161,55 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.isLastVerfuegtesGesuch = this.gesuchModelManager.isNeuestesGesuch();
     }
 
-    private save(): IPromise<TSGesuchstellerContainer> {
-        if (this.isGesuchValid()) {
-            this.gesuchModelManager.setStammdatenToWorkWith(this.model);
-            if (!this.form.$dirty) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                if ((this.gesuchModelManager.getGesuchstellerNumber() === 1 && !this.gesuchModelManager.isGesuchsteller2Required())
-                    || this.gesuchModelManager.getGesuchstellerNumber() === 2) {
-                    this.updateGSDependentWizardSteps();
-                }
-
-                return this.$q.when(this.model);
-            }
-            // wenn keine Korrespondenzaddr oder Rechnungsadr da ist koennen wir sie wegmachen
-            this.maybeResetKorrespondadr();
-            this.maybeResetRechnungsadr();
-
-            if ((this.gesuchModelManager.getGesuch().gesuchsteller1 && this.gesuchModelManager.getGesuch().gesuchsteller1.showUmzug)
-                || (this.gesuchModelManager.getGesuch().gesuchsteller2 && this.gesuchModelManager.getGesuch().gesuchsteller2.showUmzug)
-                || this.isMutation()) {
-                this.wizardStepManager.unhideStep(TSWizardStepName.UMZUG);
-            } else {
-                this.wizardStepManager.hideStep(TSWizardStepName.UMZUG);
-            }
-            this.errorService.clearAll();
-            // todo bei Aenderungen von Kontaktdaten sollte man nicht den ganzen GS updaten sondern nur die Kontakdaten
-            return this.gesuchModelManager.updateGesuchsteller(false);
+    public save(): IPromise<TSGesuchstellerContainer> {
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        this.gesuchModelManager.setStammdatenToWorkWith(this.model);
+        if (!this.form.$dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            if ((this.gesuchModelManager.getGesuchstellerNumber() === 1
+                && !this.gesuchModelManager.isGesuchsteller2Required())
+                || this.gesuchModelManager.getGesuchstellerNumber() === 2) {
+                this.updateGSDependentWizardSteps();
+            }
+
+            return this.$q.when(this.model);
+        }
+        // wenn keine Korrespondenzaddr oder Rechnungsadr da ist koennen wir sie wegmachen
+        this.maybeResetKorrespondadr();
+        this.maybeResetRechnungsadr();
+
+        if ((this.gesuchModelManager.getGesuch().gesuchsteller1
+            && this.gesuchModelManager.getGesuch().gesuchsteller1.showUmzug)
+            || (
+                this.gesuchModelManager.getGesuch().gesuchsteller2
+                && this.gesuchModelManager.getGesuch().gesuchsteller2.showUmzug)
+            || this.isMutation()) {
+            this.wizardStepManager.unhideStep(TSWizardStepName.UMZUG);
+        } else {
+            this.wizardStepManager.hideStep(TSWizardStepName.UMZUG);
+        }
+        this.errorService.clearAll();
+        // todo bei Aenderungen von Kontaktdaten sollte man nicht den ganzen GS updaten sondern nur die Kontakdaten
+        return this.gesuchModelManager.updateGesuchsteller(false);
     }
 
     /**
      * Aktualisiert alle Steps die Abhaengigkeiten mit dem Status von GS haben.
      */
-    private updateGSDependentWizardSteps() {
+    private updateGSDependentWizardSteps(): void {
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK); // GESUCHSTELLER
         if (this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION, TSWizardStepStatus.NOK)) {
-            this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION, TSWizardStepStatus.OK);
+            this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
+                TSWizardStepStatus.OK);
         }
-        if (this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, TSWizardStepStatus.NOK)) {
-            this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, TSWizardStepStatus.OK);
+        if (this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+            TSWizardStepStatus.NOK)) {
+            this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+                TSWizardStepStatus.OK);
         }
     }
 
@@ -183,14 +217,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         return this.model;
     }
 
-    public getModelJA() {
+    public getModelJA(): TSGesuchsteller {
         return this.model.gesuchstellerJA;
     }
 
     /**
      * Die Wohnadresse des GS2 darf bei Mutationen in denen der GS2 bereits existiert, nicht geaendert werden.
      * Die Wohnadresse des GS1 darf bei Mutationen nie geaendert werden
-     * @returns {boolean}
      */
     public disableWohnadresseFor2GS(): boolean {
         return this.isMutation() && (this.gesuchstellerNumber === 1
@@ -204,22 +237,26 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     private maybeResetKorrespondadr(): void {
         if (!this.showKorrespondadr && !this.showKorrespondadrGS) {
-            this.getModel().korrespondenzAdresse = undefined; //keine korrAdr weder von GS noch von JA -> entfernen
+            // keine korrAdr weder von GS noch von JA -> entfernen
+            this.getModel().korrespondenzAdresse = undefined;
         } else if (!this.showKorrespondadr) {
-            this.getModel().korrespondenzAdresse.adresseJA = undefined; //nur adresse JA wird zurueckgesetzt die GS kann bleiben
+            // nur adresse JA wird zurueckgesetzt die GS kann bleiben
+            this.getModel().korrespondenzAdresse.adresseJA = undefined;
         }
     }
 
     private maybeResetRechnungsadr(): void {
         if (!this.showRechnungsadr && !this.showRechnungsadrGS) {
-            this.getModel().rechnungsAdresse = undefined; //keine rechnungsAdresse weder von GS noch von JA -> entfernen
+            // keine rechnungsAdresse weder von GS noch von JA -> entfernen
+            this.getModel().rechnungsAdresse = undefined;
         } else if (!this.showRechnungsadr) {
-            this.getModel().rechnungsAdresse.adresseJA = undefined; //nur adresse JA wird zurueckgesetzt die GS kann bleiben
+            // nur adresse JA wird zurueckgesetzt die GS kann bleiben
+            this.getModel().rechnungsAdresse.adresseJA = undefined;
         }
     }
 
-    private initAdresse(adresstyp: TSAdressetyp) {
-        const adresseContanier: TSAdresseContainer = new TSAdresseContainer();
+    private initAdresse(adresstyp: TSAdressetyp): TSAdresseContainer {
+        const adresseContanier = new TSAdresseContainer();
         const adresse = new TSAdresse();
         adresse.adresseTyp = adresstyp;
         adresseContanier.showDatumVon = false;
@@ -227,14 +264,14 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         return adresseContanier;
     }
 
-    private initKorrespondenzAdresseJA() {
+    private initKorrespondenzAdresseJA(): void {
         const addr = new TSAdresse();
         addr.adresseTyp = TSAdressetyp.KORRESPONDENZADRESSE;
         this.model.korrespondenzAdresse.adresseJA = addr;
         this.model.korrespondenzAdresse.showDatumVon = false;
     }
 
-    private initRechnungsAdresseJA() {
+    private initRechnungsAdresseJA(): void {
         const addr = new TSAdresse();
         addr.adresseTyp = TSAdressetyp.RECHNUNGSADRESSE;
         this.model.rechnungsAdresse.adresseJA = addr;
@@ -243,27 +280,26 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public getTextAddrKorrekturJA(adresseContainer: TSAdresseContainer): string {
         if (adresseContainer && adresseContainer.adresseGS) {
-            const adr: TSAdresse = adresseContainer.adresseGS;
-            const organisation: string = adr.organisation ? adr.organisation : '-';
-            const strasse: string = adr.strasse ? adr.strasse : '-';
-            const hausnummer: string = adr.hausnummer ? adr.hausnummer : '-';
-            const zusatzzeile: string = adr.zusatzzeile ? adr.zusatzzeile : '-';
-            const plz: string = adr.plz ? adr.plz : '-';
-            const ort: string = adr.ort ? adr.ort : '-';
-            const land: string = this.$translate.instant('Land_' + adr.land);
+            const adr = adresseContainer.adresseGS;
+            const organisation = adr.organisation ? adr.organisation : '-';
+            const strasse = adr.strasse ? adr.strasse : '-';
+            const hausnummer = adr.hausnummer ? adr.hausnummer : '-';
+            const zusatzzeile = adr.zusatzzeile ? adr.zusatzzeile : '-';
+            const plz = adr.plz ? adr.plz : '-';
+            const ort = adr.ort ? adr.ort : '-';
+            const land = this.$translate.instant('Land_' + adr.land);
             return this.$translate.instant('JA_KORREKTUR_ADDR', {
-                organisation: organisation,
-                strasse: strasse,
-                hausnummer: hausnummer,
-                zusatzzeile: zusatzzeile,
-                plz: plz,
-                ort: ort,
-                land: land,
+                organisation,
+                strasse,
+                hausnummer,
+                zusatzzeile,
+                plz,
+                ort,
+                land,
             });
-        } else {
-            return this.$translate.instant('LABEL_KEINE_ANGABE');
         }
 
+        return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 
     /**
@@ -272,22 +308,23 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
      * and the current gesuch is the newest one they may also edit those fields
      */
     public areEmailTelefonEditable(): boolean {
-        if (this.isLastVerfuegtesGesuch && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles())) {
-            return true;
-        } else {
-            return !this.isGesuchReadonly();
-        }
+        return this.isLastVerfuegtesGesuch
+        && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()) ?
+            true :
+            !this.isGesuchReadonly();
     }
 
     public checkAllEwkRelevantDataPresent(): void {
-        if (this.getModelJA()) {
-            if (this.gesuchModelManager.gesuchstellerNumber === 1) {
-                this.ewkRS.gesuchsteller1 = this.getModel();
-            } else if (this.gesuchModelManager.gesuchstellerNumber === 2) {
-                this.ewkRS.gesuchsteller2 = this.getModel();
-            } else {
-                console.log('Unbekannte Gesuchstellernummer', this.gesuchstellerNumber);
-            }
+        if (!this.getModelJA()) {
+            return;
+        }
+
+        if (this.gesuchModelManager.gesuchstellerNumber === 1) {
+            this.ewkRS.gesuchsteller1 = this.getModel();
+        } else if (this.gesuchModelManager.gesuchstellerNumber === 2) {
+            this.ewkRS.gesuchsteller2 = this.getModel();
+        } else {
+            console.log('Unbekannte Gesuchstellernummer', this.gesuchstellerNumber);
         }
     }
 

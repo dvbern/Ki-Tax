@@ -23,7 +23,7 @@ export enum TSEingangsart {
 export function getTSEingangsartValues(): Array<TSEingangsart> {
     return [
         TSEingangsart.ONLINE,
-        TSEingangsart.PAPIER
+        TSEingangsart.PAPIER,
     ];
 }
 

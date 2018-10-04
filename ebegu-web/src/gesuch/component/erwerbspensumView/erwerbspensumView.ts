@@ -15,13 +15,18 @@
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {getTSZuschlagsgruendeForGS, getTSZuschlagsgrunde, TSZuschlagsgrund} from '../../../models/enums/TSZuschlagsgrund';
+import {
+    getTSZuschlagsgruendeForGS,
+    getTSZuschlagsgrunde,
+    TSZuschlagsgrund,
+} from '../../../models/enums/TSZuschlagsgrund';
 import TSEinstellung from '../../../models/TSEinstellung';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
@@ -36,44 +41,70 @@ import AbstractGesuchViewController from '../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class ErwerbspensumViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./erwerbspensumView.html');
-    controller = ErwerbspensumViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./erwerbspensumView.html');
+    public controller = ErwerbspensumViewController;
+    public controllerAs = 'vm';
 }
 
 export class ErwerbspensumViewController extends AbstractGesuchViewController<TSErwerbspensumContainer> {
 
-    static $inject: string[] = ['$stateParams', 'GesuchModelManager', 'BerechnungsManager',
-        'CONSTANTS', '$scope', 'ErrorService', 'AuthServiceRS', 'WizardStepManager', '$q', '$translate', 'EinstellungRS', 'GlobalCacheService', '$timeout'];
+    public static $inject: string[] = [
+        '$stateParams',
+        'GesuchModelManager',
+        'BerechnungsManager',
+        '$scope',
+        'ErrorService',
+        'AuthServiceRS',
+        'WizardStepManager',
+        '$q',
+        '$translate',
+        'EinstellungRS',
+        'GlobalCacheService',
+        '$timeout',
+    ];
 
-    gesuchsteller: TSGesuchstellerContainer;
-    patternPercentage: string;
-    maxZuschlagsprozent: number = 100;
+    public gesuchsteller: TSGesuchstellerContainer;
+    public patternPercentage: string;
+    public maxZuschlagsprozent: number = 100;
 
-    constructor($stateParams: IErwerbspensumStateParams, gesuchModelManager: GesuchModelManager,
-                berechnungsManager: BerechnungsManager, private readonly CONSTANTS: any, $scope: IScope, private readonly errorService: ErrorService,
-                private readonly authServiceRS: AuthServiceRS, wizardStepManager: WizardStepManager, private readonly $q: IQService,
-                private readonly $translate: ITranslateService, private readonly einstellungRS: EinstellungRS, private readonly globalCacheService: GlobalCacheService,
-                $timeout: ITimeoutService) {
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.ERWERBSPENSUM, $timeout);
-        this.patternPercentage = this.CONSTANTS.PATTERN_PERCENTAGE;
-        this.gesuchModelManager.setGesuchstellerNumber(parseInt($stateParams.gesuchstellerNumber));
+    public constructor(
+        $stateParams: IErwerbspensumStateParams,
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        $scope: IScope,
+        private readonly errorService: ErrorService,
+        private readonly authServiceRS: AuthServiceRS,
+        wizardStepManager: WizardStepManager,
+        private readonly $q: IQService,
+        private readonly $translate: ITranslateService,
+        private readonly einstellungRS: EinstellungRS,
+        private readonly globalCacheService: GlobalCacheService,
+        $timeout: ITimeoutService,
+    ) {
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.ERWERBSPENSUM,
+            $timeout);
+        this.patternPercentage = CONSTANTS.PATTERN_PERCENTAGE;
+        this.gesuchModelManager.setGesuchstellerNumber(parseInt($stateParams.gesuchstellerNumber, 10));
         this.gesuchsteller = this.gesuchModelManager.getStammdatenToWorkWith();
         if (this.gesuchsteller) {
             if ($stateParams.erwerbspensumNum) {
-                const ewpNum = parseInt($stateParams.erwerbspensumNum) | 0;
+                const ewpNum = parseInt($stateParams.erwerbspensumNum, 10) || 0;
                 this.model = angular.copy(this.gesuchsteller.erwerbspensenContainer[ewpNum]);
             } else {
-                //wenn erwerbspensum nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
+                // wenn erwerbspensum nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
                 this.model = this.initEmptyEwpContainer();
             }
         } else {
             errorService.addMesageAsError('Unerwarteter Zustand: Gesuchsteller unbekannt');
             console.log('kein gesuchsteller gefunden');
         }
-        einstellungRS.getAllEinstellungenBySystemCached(
+        this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
             this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)).then((response: TSEinstellung[]) => {
             const found = response.find(r => r.key === TSEinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
@@ -84,30 +115,27 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         });
     }
 
-    getTaetigkeitenList(): Array<TSTaetigkeit> {
+    public getTaetigkeitenList(): Array<TSTaetigkeit> {
         return getTSTaetigkeit();
     }
 
-    getZuschlagsgrundList(): Array<TSZuschlagsgrund> {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
-            return getTSZuschlagsgruendeForGS();
-        } else {
-            return getTSZuschlagsgrunde();
-        }
+    public getZuschlagsgrundList(): Array<TSZuschlagsgrund> {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) ?
+            getTSZuschlagsgruendeForGS() :
+            getTSZuschlagsgrunde();
     }
 
     /**
      * Beim speichern wird geschaut ob Zuschlagsgrund noetig ist, wenn nicht zuruecksetzten
-     * @param erwerbspensum
      */
-    private maybeResetZuschlagsgrund(erwerbspensum: TSErwerbspensumContainer) {
+    private maybeResetZuschlagsgrund(erwerbspensum: TSErwerbspensumContainer): void {
         if (erwerbspensum && !erwerbspensum.erwerbspensumJA.zuschlagZuErwerbspensum) {
             erwerbspensum.erwerbspensumJA.zuschlagsprozent = undefined;
             erwerbspensum.erwerbspensumJA.zuschlagsgrund = undefined;
         }
     }
 
-    save(): IPromise<any> {
+    public save(): IPromise<any> {
         if (this.isGesuchValid()) {
 
             if (!this.form.$dirty) {
@@ -122,7 +150,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         return undefined;
     }
 
-    cancel() {
+    public cancel(): void {
         this.form.$setPristine();
     }
 
@@ -134,41 +162,44 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
 
     }
 
-    viewZuschlag(): boolean {
+    public viewZuschlag(): boolean {
         return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT ||
             this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.AUSBILDUNG ||
             this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG;
     }
 
-    taetigkeitChanged() {
-        if (!this.viewZuschlag()) {
-            this.model.erwerbspensumJA.zuschlagZuErwerbspensum = false;
-            this.model.erwerbspensumJA.zuschlagsprozent = undefined;
-            this.model.erwerbspensumJA.zuschlagsgrund = undefined;
+    public taetigkeitChanged(): void {
+        if (this.viewZuschlag()) {
+            return;
         }
+
+        this.model.erwerbspensumJA.zuschlagZuErwerbspensum = false;
+        this.model.erwerbspensumJA.zuschlagsprozent = undefined;
+        this.model.erwerbspensumJA.zuschlagsgrund = undefined;
     }
 
-    erwerbspensumDisabled(): boolean {
+    public erwerbspensumDisabled(): boolean {
         // Disabled wenn Mutation, ausser bei Bearbeiter Jugendamt oder Schulamt
-        return this.model.erwerbspensumJA.vorgaengerId && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+        return this.model.erwerbspensumJA.vorgaengerId
+            && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 
     public getTextZuschlagErwerbspensumKorrekturJA(): string {
-        if (this.model.erwerbspensumGS && this.model.erwerbspensumGS.zuschlagZuErwerbspensum === true) {
-            const ewp: TSErwerbspensum = this.model.erwerbspensumGS;
-            const grundText = this.$translate.instant(ewp.zuschlagsgrund.toString());
-            return this.$translate.instant('JA_KORREKTUR_ZUSCHLAG_ERWERBSPENSUM', {
-                zuschlagsgrund: grundText,
-                zuschlagsprozent: ewp.zuschlagsprozent
-            });
-        } else {
+        if (!this.model.erwerbspensumGS || !this.model.erwerbspensumGS.zuschlagZuErwerbspensum) {
             return this.$translate.instant('LABEL_KEINE_ANGABE');
         }
+
+        const ewp = this.model.erwerbspensumGS;
+        const grundText = this.$translate.instant(ewp.zuschlagsgrund.toString());
+        return this.$translate.instant('JA_KORREKTUR_ZUSCHLAG_ERWERBSPENSUM', {
+            zuschlagsgrund: grundText,
+            zuschlagsprozent: ewp.zuschlagsprozent,
+        });
     }
 
     public getZuschlagHelpText(): string {
         return this.$translate.instant('ZUSCHLAGSGRUND_HELP', {
-            maxzuschlag: this.maxZuschlagsprozent
+            maxzuschlag: this.maxZuschlagsprozent,
         });
     }
 

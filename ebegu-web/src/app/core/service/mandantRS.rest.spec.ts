@@ -13,21 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMandant} from '../../../models/TSMandant';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {MandantRS} from './mandantRS.rest';
 
 describe('mandantRS', () => {
 
     let mandantRS: MandantRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockMandant: TSMandant;
     let mockMandantRest: any;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -43,23 +44,14 @@ describe('mandantRS', () => {
         mockMandantRest = ebeguRestUtil.mandantToRestObject({}, mockMandant);
     });
 
-    describe('Public API', () => {
-        it('check Service name', () => {
-            expect(mandantRS.getServiceName()).toBe('MandantRS');
-
-        });
-        it('should include a findMandant() function', () => {
-            expect(mandantRS.findMandant).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
         describe('findMandant', () => {
             it('should return the mandant by id', () => {
-                $httpBackend.expectGET(mandantRS.serviceURL + '/id/' + encodeURIComponent(mockMandant.id)).respond(mockMandantRest);
+                const url = `${mandantRS.serviceURL}/id/${encodeURIComponent(mockMandant.id)}`;
+                $httpBackend.expectGET(url).respond(mockMandantRest);
 
                 let foundMandant: TSMandant;
-                mandantRS.findMandant(mockMandant.id).then((result) => {
+                mandantRS.findMandant(mockMandant.id).then(result => {
                     foundMandant = result;
                 });
                 $httpBackend.flush();

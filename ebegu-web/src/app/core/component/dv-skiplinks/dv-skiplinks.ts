@@ -24,35 +24,39 @@ import {IDVFocusableController} from '../IDVFocusableController';
 const showKontaktTemplate = require('../../../../gesuch/dialog/showKontaktTemplate.html');
 
 export class DvSkiplinksComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./dv-skiplinks.html');
-    controller = DvSkiplinksController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./dv-skiplinks.html');
+    public controller = DvSkiplinksController;
+    public controllerAs = 'vm';
 }
+
+const gesuchstellerDashboard = 'gesuchsteller.dashboard';
 
 export class DvSkiplinksController implements IDVFocusableController {
 
-    static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
+    public static $inject: ReadonlyArray<string> = ['$state', 'DvDialog', 'EbeguUtil'];
 
-    TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
-    constructor(private readonly $state: StateService,
-                private readonly DvDialog: DvDialog,
-                private readonly ebeguUtil: EbeguUtil) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly dvDialog: DvDialog,
+        private readonly ebeguUtil: EbeguUtil,
+    ) {
     }
 
     public goBackHome(): void {
-        this.$state.go('gesuchsteller.dashboard');
+        this.$state.go(gesuchstellerDashboard);
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.$state.current && this.$state.current.name === 'gesuchsteller.dashboard');
+        return (this.$state.current && this.$state.current.name === gesuchstellerDashboard);
     }
 
     public isCurrentPageGesuch(): boolean {
         return (this.$state.current &&
-            this.$state.current.name !== 'gesuchsteller.dashboard' &&
+            this.$state.current.name !== gesuchstellerDashboard &&
             this.$state.current.name !== 'alleVerfuegungen.view' &&
             this.$state.current.name !== 'mitteilungen.view');
     }
@@ -70,17 +74,17 @@ export class DvSkiplinksController implements IDVFocusableController {
     }
 
     public showKontakt(): void {
-        this.DvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
+        this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
             title: '',
             text: this.ebeguUtil.getKontaktJugendamt(),
-            parentController: this
+            parentController: this,
         });
     }
 
     /**
      * Sets the focus back to the Kontakt icon.
      */
-    public setFocusBack(elementID: string): void {
+    public setFocusBack(_elementID: string): void {
         angular.element('#SKIP_4').first().focus();
     }
 }

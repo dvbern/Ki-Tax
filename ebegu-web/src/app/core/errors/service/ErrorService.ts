@@ -15,37 +15,35 @@
 
 import IRootScopeService = angular.IRootScopeService;
 import {TSMessageEvent} from '../../../../models/enums/TSErrorEvent';
-import TSExceptionReport from '../../../../models/TSExceptionReport';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
+import TSExceptionReport from '../../../../models/TSExceptionReport';
 
 export default class ErrorService {
 
+    public static $inject = ['$rootScope'];
 
-    static $inject = ['$rootScope'];
+    public errors: Array<TSExceptionReport> = [];
 
-    errors: Array<TSExceptionReport> = [];
-
-    constructor(private readonly $rootScope: IRootScopeService) {
+    public constructor(private readonly $rootScope: IRootScopeService) {
     }
 
-
-    getErrors(): Array<TSExceptionReport> {
+    public getErrors(): Array<TSExceptionReport> {
         return angular.copy(this.errors);
     }
 
     /**
      * Clears all stored errors
      */
-    clearAll() {
+    public clearAll(): void {
         this.errors = [];
         this.$rootScope.$broadcast(TSMessageEvent[TSMessageEvent.CLEAR]);
     }
 
-    /** clear specific error
-     * @param {string} msgKey
+    /**
+     * clear specific error
      */
-    clearError(msgKey: string) {
+    public clearError(msgKey: string): void {
         // noinspection SuspiciousTypeOfGuard
         if (typeof msgKey !== 'string') {
             return;
@@ -61,48 +59,51 @@ export default class ErrorService {
 
     /**
      * This can be used to add a client-siede global error
-     * @param {string} msgKey translation key
-     * @param {Object} [args] message parameters
+     * @param msgKey translation key
+     * @param [args] message parameters
      */
-    addValidationError(msgKey: string, args?: any) {
-        const err: TSExceptionReport = TSExceptionReport.createClientSideError(TSErrorLevel.SEVERE, msgKey, args);
+    public addValidationError(msgKey: string, args?: any): void {
+        const err = TSExceptionReport.createClientSideError(TSErrorLevel.SEVERE, msgKey, args);
         this.addDvbError(err);
     }
 
-    containsError(dvbError: TSExceptionReport) {
+    public containsError(dvbError: TSExceptionReport): boolean {
         return this.errors.filter(e => e.msgKey === dvbError.msgKey).length > 0;
     }
 
-    addDvbError(dvbError: TSExceptionReport) {
-        if (dvbError && dvbError.isValid()) {
-            if (!this.containsError(dvbError)) {
-                this.errors.push(dvbError);
-                const udateEvent: TSMessageEvent = (dvbError.severity === TSErrorLevel.INFO ) ? TSMessageEvent.INFO_UPDATE : TSMessageEvent.ERROR_UPDATE;
-                this.$rootScope.$broadcast(TSMessageEvent[udateEvent], this.errors);
-            }
-        } else {
-            console.log('could not display received TSExceptionReport ' + dvbError);
+    public addDvbError(dvbError: TSExceptionReport): void {
+        if (!(dvbError && dvbError.isValid())) {
+            console.log('could not display received TSExceptionReport', dvbError);
+            return;
         }
+
+        if (this.containsError(dvbError)) {
+            return;
+        }
+
+        this.errors.push(dvbError);
+        const udateEvent = (dvbError.severity === TSErrorLevel.INFO) ?
+            TSMessageEvent.INFO_UPDATE :
+            TSMessageEvent.ERROR_UPDATE;
+        this.$rootScope.$broadcast(TSMessageEvent[udateEvent], this.errors);
     }
 
-    addMesageAsError(msg: string) {
-        const error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null);
+    public addMesageAsError(msg: string): void {
+        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null);
         this.addDvbError(error);
 
     }
 
-    addMesageAsInfo(msg: string) {
-        const error: TSExceptionReport = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null);
+    public addMesageAsInfo(msg: string): void {
+        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null);
         this.addDvbError(error);
     }
 
     /**
-     * @param {boolean} isValid when FALSE a new validationError is added. Otherwise the validationError is cleared
-     * @param {string} msgKey
-     * @param {Object} [args]
+     * when isValid FALSE a new validationError is added. Otherwise the validationError is cleared
      */
-    handleValidationError(isValid: boolean, msgKey: string, args?: any) {
-        // noinspection PointlessBooleanExpressionJS
+    public handleValidationError(isValid: boolean, msgKey: string, args?: any): void {
+        // noinspection NegatedIfStatementJS
         if (!!isValid) {
             this.clearError(msgKey);
         } else {
@@ -113,19 +114,20 @@ export default class ErrorService {
     /**
      * adds a DvbError to the errors
      */
-    handleError(dvbError: TSExceptionReport) {
+    public handleError(dvbError: TSExceptionReport): void {
         this.addDvbError(dvbError);
     }
 
     /**
      * adds all Errors to the errors service
      */
-    handleErrors(dvbErrors: Array<TSExceptionReport>) {
-        if (dvbErrors) {
-            for (const err of dvbErrors) {
-                this.addDvbError(err);
-            }
+    public handleErrors(dvbErrors: Array<TSExceptionReport>): void {
+        if (!dvbErrors) {
+            return;
         }
 
+        for (const err of dvbErrors) {
+            this.addDvbError(err);
+        }
     }
 }

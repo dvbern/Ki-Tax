@@ -38,7 +38,9 @@
 
             <!-- batchjobs -->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
-                <md-button ui-sref-active="active" ui-sref="admin.batchjobTrigger" aria-label="{{'BATCHJOBTRIGGER' | translate}}">
+                <md-button ui-sref-active="active"
+                           ui-sref="admin.batchjobTrigger"
+                           aria-label="{{'BATCHJOBTRIGGER' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="BATCHJOBTRIGGER"></a>
                 </md-button>
             </md-menu-item>
@@ -53,7 +55,7 @@
             <!-- Application Properties -->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
                 <md-button ui-sref-active="active" ui-sref="admin.view" aria-label="{{'ADMIN' | translate}}">
-                    <a href="#"ng-click="$event.preventDefault();" data-translate="ADMIN" aria-hidden></a>
+                    <a href="#" ng-click="$event.preventDefault();" data-translate="ADMIN" aria-hidden></a>
                 </md-button>
             </md-menu-item>
 
@@ -66,21 +68,27 @@
 
             <!-- Ferieninsel -->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSuperAdminRoles()">
-                <md-button ui-sref-active="active" ui-sref="admin.ferieninsel" aria-label="{{'FERIENINSEL' | translate}}">
+                <md-button ui-sref-active="active"
+                           ui-sref="admin.ferieninsel"
+                           aria-label="{{'FERIENINSEL' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="FERIENINSEL" aria-hidden></a>
                 </md-button>
             </md-menu-item>
 
             <!-- institutionen -->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getMandantRoles()">
-                <md-button ui-sref-active="active" ui-sref="admin.institutionen" aria-label="{{'INSTITUTION' | translate}}">
+                <md-button ui-sref-active="active"
+                           ui-sref="admin.institutionen"
+                           aria-label="{{'INSTITUTION' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="INSTITUTION" aria-hidden></a>
                 </md-button>
             </md-menu-item>
 
             <!--traegerschaften-->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getMandantRoles()">
-                <md-button ui-sref-active="active" ui-sref="admin.traegerschaft" aria-label="{{'TRAEGERSCHAFT' | translate}}">
+                <md-button ui-sref-active="active"
+                           ui-sref="admin.traegerschaft"
+                           aria-label="{{'TRAEGERSCHAFT' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="TRAEGERSCHAFT" aria-hidden></a>
                 </md-button>
             </md-menu-item>
@@ -100,7 +108,8 @@
                 </md-button>
             </md-menu-item>
             <md-menu-item class="versionInfo">
-                <a href="https://github.com/StadtBern/Ki-Tax" target="_blank">Vers: {{vm.VERSION}}: {{vm.BUILDTSTAMP}}</a>
+                <a href="https://github.com/StadtBern/Ki-Tax" target="_blank">Vers: {{vm.VERSION}}:
+                    {{vm.BUILDTSTAMP}}</a>
             </md-menu-item>
         </md-menu-content>
     </md-menu>

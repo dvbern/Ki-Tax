@@ -13,21 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {TraegerschaftRS} from './traegerschaftRS.rest';
 
 describe('institutionStammdatenRS', () => {
 
     let traegerschaftRS: TraegerschaftRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockTraegerschaft: TSTraegerschaft;
     let mockTraegerschaftRest: any;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -43,34 +44,14 @@ describe('institutionStammdatenRS', () => {
         mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
     });
 
-    describe('Public API', () => {
-        it('check Service name', () => {
-            expect(traegerschaftRS.getServiceName()).toBe('TraegerschaftRS');
-        });
-        it('should include a findTraegerschaft() function', () => {
-            expect(traegerschaftRS.findTraegerschaft).toBeDefined();
-        });
-        it('should include a createTraegerschaft() function', () => {
-            expect(traegerschaftRS.createTraegerschaft).toBeDefined();
-        });
-        it('should include a updateTraegerschaft() function', () => {
-            expect(traegerschaftRS.updateTraegerschaft).toBeDefined();
-        });
-        it('should include a removeTraegerschaft() function', () => {
-            expect(traegerschaftRS.removeTraegerschaft).toBeDefined();
-        });
-        it('should include a getAllTraegerschaften() function', () => {
-            expect(traegerschaftRS.getAllTraegerschaften).toBeDefined();
-        });
-    });
-
     describe('API Usage', () => {
         describe('findTraegerschaft', () => {
             it('should return the Traegerschaft by id', () => {
-                $httpBackend.expectGET(traegerschaftRS.serviceURL + '/id/' + encodeURIComponent(mockTraegerschaft.id)).respond(mockTraegerschaftRest);
+                const url = `${traegerschaftRS.serviceURL}/id/${encodeURIComponent(mockTraegerschaft.id)}`;
+                $httpBackend.expectGET(url).respond(mockTraegerschaftRest);
 
                 let foundTraegerschaft: TSTraegerschaft;
-                traegerschaftRS.findTraegerschaft(mockTraegerschaft.id).then((result) => {
+                traegerschaftRS.findTraegerschaft(mockTraegerschaft.id).then(result => {
                     foundTraegerschaft = result;
                 });
                 $httpBackend.flush();
@@ -82,10 +63,11 @@ describe('institutionStammdatenRS', () => {
         describe('createTraegerschaft', () => {
             it('should create a traegerschaft', () => {
                 let createdTraegerschaft: TSTraegerschaft;
-                $httpBackend.expectPUT(traegerschaftRS.serviceURL, mockTraegerschaftRest).respond(mockTraegerschaftRest);
+                const url = traegerschaftRS.serviceURL;
+                $httpBackend.expectPUT(url, mockTraegerschaftRest).respond(mockTraegerschaftRest);
 
                 traegerschaftRS.createTraegerschaft(mockTraegerschaft)
-                    .then((result) => {
+                    .then(result => {
                         createdTraegerschaft = result;
                     });
                 $httpBackend.flush();
@@ -98,10 +80,11 @@ describe('institutionStammdatenRS', () => {
                 mockTraegerschaft.name = 'changedname';
                 mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
                 let updatedTraegerschaft: TSTraegerschaft;
-                $httpBackend.expectPUT(traegerschaftRS.serviceURL, mockTraegerschaftRest).respond(mockTraegerschaftRest);
+                $httpBackend.expectPUT(traegerschaftRS.serviceURL,
+                    mockTraegerschaftRest).respond(mockTraegerschaftRest);
 
                 traegerschaftRS.updateTraegerschaft(mockTraegerschaft)
-                    .then((result) => {
+                    .then(result => {
                         updatedTraegerschaft = result;
                     });
                 $httpBackend.flush();
@@ -111,27 +94,28 @@ describe('institutionStammdatenRS', () => {
 
         describe('removeTraegerschaft', () => {
             it('should remove a traegerschaft', () => {
-                $httpBackend.expectDELETE(traegerschaftRS.serviceURL + '/' + mockTraegerschaft.id)
-                    .respond(200);
+                const url = `${traegerschaftRS.serviceURL}/${mockTraegerschaft.id}`;
+                const httpOk = 200;
+                $httpBackend.expectDELETE(url).respond(httpOk);
 
                 let deleteResult: any;
                 traegerschaftRS.removeTraegerschaft(mockTraegerschaft.id)
-                    .then((result) => {
+                    .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
                 expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(200);
+                expect(deleteResult.status).toEqual(httpOk);
             });
         });
 
         describe('getAllTraegerschaften', () => {
             it('should return all Traegerschaften', () => {
-                const traegerschaftenRestArray: Array<any> = [mockTraegerschaftRest, mockTraegerschaftRest];
+                const traegerschaftenRestArray = [mockTraegerschaftRest, mockTraegerschaftRest];
                 $httpBackend.expectGET(traegerschaftRS.serviceURL).respond(traegerschaftenRestArray);
 
                 let returnedTraegerschaften: Array<TSTraegerschaft>;
-                traegerschaftRS.getAllTraegerschaften().then((result) => {
+                traegerschaftRS.getAllTraegerschaften().then(result => {
                     returnedTraegerschaften = result;
                 });
                 $httpBackend.flush();
@@ -143,7 +127,7 @@ describe('institutionStammdatenRS', () => {
         });
     });
 
-    function checkFieldValues(traegerschaft1: TSTraegerschaft, traegerschaft2: TSTraegerschaft) {
+    function checkFieldValues(traegerschaft1: TSTraegerschaft, traegerschaft2: TSTraegerschaft): void {
         expect(traegerschaft1).toBeDefined();
         expect(traegerschaft1.name).toEqual(traegerschaft2.name);
         expect(traegerschaft1.id).toEqual(traegerschaft2.id);

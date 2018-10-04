@@ -14,22 +14,24 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import TSBetreuung from '../../../models/TSBetreuung';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import TSAnmeldungDTO from '../../../models/TSAnmeldungDTO';
+import TSBetreuung from '../../../models/TSBetreuung';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class BetreuungRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public log: ILogService,
-                private readonly wizardStepManager: WizardStepManager) {
-        this.serviceURL = REST_API + 'betreuungen';
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
+        this.serviceURL = `${REST_API}betreuungen`;
     }
 
     public getServiceName(): string {
@@ -37,7 +39,7 @@ export default class BetreuungRS {
     }
 
     public findBetreuung(betreuungID: string): IPromise<TSBetreuung> {
-        return this.http.get(this.serviceURL + '/' + encodeURIComponent(betreuungID))
+        return this.http.get(`${this.serviceURL}/${encodeURIComponent(betreuungID)}`)
             .then((response: any) => {
                 this.log.debug('PARSING betreuung REST object ', response.data);
                 return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
@@ -45,106 +47,78 @@ export default class BetreuungRS {
     }
 
     public findAllBetreuungenWithVerfuegungForDossier(dossierId: string): IPromise<TSBetreuung[]> {
-        return this.http.get(this.serviceURL + '/alleBetreuungen/' + encodeURIComponent(dossierId))
+        return this.http.get(`${this.serviceURL}/alleBetreuungen/${encodeURIComponent(dossierId)}`)
             .then((response: any) => {
-                this.log.debug('PARSING Betreuung REST object ', response.data);
                 return this.ebeguRestUtil.parseBetreuungList(response.data);
             });
     }
 
-    public saveBetreuung(betreuung: TSBetreuung, kindId: string, gesuchId: string, abwesenheit: boolean): IPromise<TSBetreuung> {
+    public saveBetreuung(
+        betreuung: TSBetreuung,
+        kindId: string,
+        gesuchId: string,
+        abwesenheit: boolean,
+    ): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
-        return this.http.put(this.serviceURL + '/betreuung/' + encodeURIComponent(kindId) + '/' + abwesenheit, restBetreuung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING Betreuung REST object ', response.data);
-                return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
-            });
-        });
+        const url = `${this.serviceURL}/betreuung/${encodeURIComponent(kindId)}/${abwesenheit}`;
+        return this.http.put(url, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
     }
 
     public betreuungsPlatzAbweisen(betreuung: TSBetreuung, kindId: string, gesuchId: string): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
-        return this.http.put(this.serviceURL + '/abweisen/' + encodeURIComponent(kindId) + '/', restBetreuung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING Betreuung REST object ', response.data);
-                return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
-            });
-        });
+        return this.http.put(`${this.serviceURL}/abweisen/${encodeURIComponent(kindId)}/`, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
     }
 
     public betreuungsPlatzBestaetigen(betreuung: TSBetreuung, kindId: string, gesuchId: string): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
-        return this.http.put(this.serviceURL + '/bestaetigen/' + encodeURIComponent(kindId) + '/', restBetreuung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING Betreuung REST object ', response.data);
-                return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
-            });
-        });
+        return this.http.put(`${this.serviceURL}/bestaetigen/${encodeURIComponent(kindId)}/`, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
     }
 
-    public anmeldungSchulamtUebernehmen(betreuung: TSBetreuung, kindId: string, gesuchId: string): IPromise<TSBetreuung> {
+    public anmeldungSchulamtUebernehmen(
+        betreuung: TSBetreuung,
+        kindId: string,
+        gesuchId: string,
+    ): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
-        return this.http.put(this.serviceURL + '/schulamt/uebernehmen/' + encodeURIComponent(kindId) + '/', restBetreuung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING Betreuung REST object ', response.data);
-                return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
-            });
-        });
+        return this.http.put(`${this.serviceURL}/schulamt/uebernehmen/${encodeURIComponent(kindId)}/`, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
     }
 
     public anmeldungSchulamtAblehnen(betreuung: TSBetreuung, kindId: string, gesuchId: string): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
-        return this.http.put(this.serviceURL + '/schulamt/ablehnen/' + encodeURIComponent(kindId) + '/', restBetreuung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING Betreuung REST object ', response.data);
-                return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
-            });
+        return this.http.put(`${this.serviceURL}/schulamt/ablehnen/${encodeURIComponent(kindId)}/`, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
+    }
+
+    private parseBetreuung(response: any, gesuchId: string): IPromise<TSBetreuung> {
+        return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+            return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
         });
     }
 
-    public anmeldungSchulamtFalscheInstitution(betreuung: TSBetreuung, kindId: string, gesuchId: string): IPromise<TSBetreuung> {
+    public anmeldungSchulamtFalscheInstitution(
+        betreuung: TSBetreuung,
+        kindId: string,
+        gesuchId: string,
+    ): IPromise<TSBetreuung> {
         let restBetreuung = {};
         restBetreuung = this.ebeguRestUtil.betreuungToRestObject(restBetreuung, betreuung);
-        return this.http.put(this.serviceURL + '/schulamt/falscheInstitution/' + encodeURIComponent(kindId) + '/', restBetreuung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING Betreuung REST object ', response.data);
-                return this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data);
-            });
-        });
+        const url = `${this.serviceURL}/schulamt/falscheInstitution/${encodeURIComponent(kindId)}/`;
+        return this.http.put(url, restBetreuung)
+            .then(response => this.parseBetreuung(response, gesuchId));
     }
 
     public removeBetreuung(betreuungId: string, gesuchId: string): IPromise<any> {
-        return this.http.delete(this.serviceURL + '/' + encodeURIComponent(betreuungId))
-            .then((responseDeletion) => {
+        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(betreuungId)}`)
+            .then(responseDeletion => {
                 return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                     return responseDeletion;
                 });
@@ -156,37 +130,33 @@ export default class BetreuungRS {
      * Dies wird empfohlen wenn mehrere Betreuungen gleichzeitig gespeichert werden muessen,
      * damit alles in einer Transaction passiert. Z.B. fuer Abwesenheiten
      */
-    public saveBetreuungen(betreuungenToUpdate: Array<TSBetreuung>, gesuchId: string, saveForAbwesenheit: boolean): IPromise<Array<TSBetreuung>> {
+    public saveBetreuungen(
+        betreuungenToUpdate: Array<TSBetreuung>,
+        gesuchId: string,
+        saveForAbwesenheit: boolean,
+    ): IPromise<Array<TSBetreuung>> {
         const restBetreuungen: Array<any> = [];
         betreuungenToUpdate.forEach((betreuungToUpdate: TSBetreuung) => {
             restBetreuungen.push(this.ebeguRestUtil.betreuungToRestObject({}, betreuungToUpdate));
         });
-        return this.http.put(this.serviceURL + '/all/' + saveForAbwesenheit, restBetreuungen, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.log.debug('PARSING Betreuung REST object ', response.data);
-                const convertedBetreuungen: Array<TSBetreuung> = [];
-                response.data.forEach((returnedBetreuung: any) => {
-                    convertedBetreuungen.push(this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), returnedBetreuung));
+        return this.http.put(`${this.serviceURL}/all/${saveForAbwesenheit}`, restBetreuungen)
+            .then((response: any) => {
+                return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+                    this.log.debug('PARSING Betreuung REST object ', response.data);
+                    const convertedBetreuungen: Array<TSBetreuung> = [];
+                    response.data.forEach((returnedBetreuung: any) => {
+                        convertedBetreuungen.push(this.ebeguRestUtil.parseBetreuung(new TSBetreuung(),
+                            returnedBetreuung));
+                    });
+                    return convertedBetreuungen;
                 });
-                return convertedBetreuungen;
             });
-        });
     }
 
     public createAngebot(anmeldungDTO: TSAnmeldungDTO): IPromise<any> {
         let restAnmeldung = {};
         restAnmeldung = this.ebeguRestUtil.anmeldungDTOToRestObject(restAnmeldung, anmeldungDTO);
-        return this.http.put(this.serviceURL + '/anmeldung/create/', restAnmeldung, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response: any) => {
-            return response;
-        });
 
+        return this.http.put(`${this.serviceURL}/anmeldung/create/`, restAnmeldung);
     }
 }

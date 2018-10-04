@@ -23,22 +23,24 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class AntragStatusHistoryRS {
 
-    get lastChange(): TSAntragStatusHistory {
+    public get lastChange(): TSAntragStatusHistory {
         return this._lastChange;
     }
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
     private _lastChange: TSAntragStatusHistory;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public log: ILogService,
-                private readonly authServiceRS: AuthServiceRS) {
-        this.serviceURL = REST_API + 'antragStatusHistory';
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
+        this.serviceURL = `${REST_API}antragStatusHistory`;
     }
 
     /**
@@ -46,7 +48,7 @@ export default class AntragStatusHistoryRS {
      */
     public loadLastStatusChange(gesuch: TSGesuch): IPromise<TSAntragStatusHistory> {
         if (gesuch && gesuch.id) {
-            return this.http.get(this.serviceURL + '/' + encodeURIComponent(gesuch.id))
+            return this.http.get(`${this.serviceURL}/${encodeURIComponent(gesuch.id)}`)
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
                     const history = new TSAntragStatusHistory();
@@ -59,14 +61,16 @@ export default class AntragStatusHistoryRS {
         return Promise.resolve(this._lastChange);
     }
 
-    public loadAllAntragStatusHistoryByGesuchsperiode(dossier: TSDossier,
-                                                      gesuchsperiode: TSGesuchsperiode)
+    public loadAllAntragStatusHistoryByGesuchsperiode(
+        dossier: TSDossier,
+        gesuchsperiode: TSGesuchsperiode,
+    )
         : IPromise<Array<TSAntragStatusHistory>> {
 
         if (gesuchsperiode && gesuchsperiode.id && dossier && dossier.id) {
-            const baseUrl = this.serviceURL + '/verlauf/';
+            const baseUrl = `${this.serviceURL}/verlauf/`;
 
-            return this.http.get(baseUrl + encodeURIComponent(gesuchsperiode.id) + '/' + encodeURIComponent(dossier.id))
+            return this.http.get(`${baseUrl + encodeURIComponent(gesuchsperiode.id)}/${encodeURIComponent(dossier.id)}`)
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
                     return this.ebeguRestUtil.parseAntragStatusHistoryCollection(response.data);

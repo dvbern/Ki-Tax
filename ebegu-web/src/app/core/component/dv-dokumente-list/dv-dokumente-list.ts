@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, ILogService, IWindowService} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
@@ -26,9 +26,8 @@ import TSApplicationProperty from '../../../../models/TSApplicationProperty';
 import TSDokument from '../../../../models/TSDokument';
 import TSDokumentGrund from '../../../../models/TSDokumentGrund';
 import TSDownloadFile from '../../../../models/TSDownloadFile';
-import TSKindContainer from '../../../../models/TSKindContainer';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {MAX_FILE_SIZE} from '../../constants/CONSTANTS';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../service/downloadRS.rest';
@@ -39,9 +38,9 @@ const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemp
 const okHtmlDialogTempl = require('../../../../gesuch/dialog/okHtmlDialogTemplate.html');
 
 export class DVDokumenteListConfig implements IComponentOptions {
-    transclude = false;
+    public transclude = false;
 
-    bindings = {
+    public bindings = {
         dokumente: '<',
         tableId: '@',
         tableTitle: '@',
@@ -49,44 +48,53 @@ export class DVDokumenteListConfig implements IComponentOptions {
         titleValue: '<',
         onUploadDone: '&',
         onRemove: '&',
-        sonstige: '<'
+        sonstige: '<',
 
     };
-    template = require('./dv-dokumente-list.html');
-    controller = DVDokumenteListController;
-    controllerAs = 'vm';
+    public template = require('./dv-dokumente-list.html');
+    public controller = DVDokumenteListController;
+    public controllerAs = 'vm';
 }
 
-export class DVDokumenteListController {
+export class DVDokumenteListController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['UploadRS', 'GesuchModelManager', 'EbeguUtil', 'DownloadRS', 'DvDialog', 'WizardStepManager',
-        '$log', 'AuthServiceRS', '$translate', '$window', 'ApplicationPropertyRS'];
+    public static $inject: ReadonlyArray<string> = [
+        'UploadRS',
+        'GesuchModelManager',
+        'DownloadRS',
+        'DvDialog',
+        'WizardStepManager',
+        '$log',
+        'AuthServiceRS',
+        '$translate',
+        'ApplicationPropertyRS',
+    ];
 
-    dokumente: TSDokumentGrund[];
-    tableId: string;
-    tableTitle: string;
-    tag: string;
-    titleValue: string;
-    onUploadDone: (dokumentGrund: any) => void;
-    onRemove: (attrs: any) => void;
-    sonstige: boolean;
-    allowedMimetypes: string = '';
+    public dokumente: TSDokumentGrund[];
+    public tableId: string;
+    public tableTitle: string;
+    public tag: string;
+    public titleValue: string;
+    public onUploadDone: (dokumentGrund: any) => void;
+    public onRemove: (attrs: any) => void;
+    public sonstige: boolean;
+    public allowedMimetypes: string = '';
 
-    constructor(private readonly uploadRS: UploadRS,
-                private readonly gesuchModelManager: GesuchModelManager,
-                private readonly ebeguUtil: EbeguUtil,
-                private readonly downloadRS: DownloadRS,
-                private readonly dvDialog: DvDialog,
-                private readonly wizardStepManager: WizardStepManager,
-                private readonly $log: ILogService,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly $translate: ITranslateService,
-                private readonly $window: IWindowService,
-                private readonly applicationPropertyRS: ApplicationPropertyRS) {
+    public constructor(
+        private readonly uploadRS: UploadRS,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly downloadRS: DownloadRS,
+        private readonly dvDialog: DvDialog,
+        private readonly wizardStepManager: WizardStepManager,
+        private readonly $log: angular.ILogService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly $translate: ITranslateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+    ) {
 
     }
 
-    $onInit() {
+    public $onInit(): void {
         this.applicationPropertyRS.getAllowedMimetypes().then((response: TSApplicationProperty) => {
             if (response !== undefined) {
                 this.allowedMimetypes = response.value;
@@ -95,51 +103,53 @@ export class DVDokumenteListController {
 
     }
 
-    uploadAnhaenge(files: any[], selectDokument: TSDokumentGrund) {
-        if (this.gesuchModelManager.getGesuch()) {
-            const gesuchID = this.gesuchModelManager.getGesuch().id;
-            const filesTooBig: any[] = [];
-            const filesOk: any[] = [];
-            this.$log.debug('Uploading files on gesuch ' + gesuchID);
-            for (const file of files) {
-                this.$log.debug('File: ' + file.name + ' size: ' + file.size);
-                if (file.size > 10000000) { // Maximale Filegrösse ist 10MB
-                    filesTooBig.push(file);
-                } else {
-                    filesOk.push(file);
-                }
-            }
-
-            if (filesTooBig.length > 0) {
-                // DialogBox anzeigen für Files, welche zu gross sind!
-                let returnString = this.$translate.instant('FILE_ZU_GROSS') + '<br/><br/>';
-                returnString += '<ul>';
-                for (const file of filesTooBig) {
-                    returnString += '<li>';
-                    returnString += file.name;
-                    returnString += '</li>';
-                }
-                returnString += '</ul>';
-
-                this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-                    title: returnString
-                });
-            }
-
-            if (filesOk.length > 0) {
-                this.uploadRS.uploadFile(filesOk, selectDokument, gesuchID).then((response) => {
-                    const returnedDG: TSDokumentGrund = angular.copy(response);
-                    this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id).then(() => {
-                        this.handleUpload(returnedDG);
-                    });
-                });
-            }
-        } else {
+    public uploadAnhaenge(files: any[], selectDokument: TSDokumentGrund): void {
+        if (!this.gesuchModelManager.getGesuch()) {
             this.$log.warn('No gesuch found to store file or gesuch is status verfuegt');
+            return;
         }
+
+        const gesuchID = this.gesuchModelManager.getGesuch().id;
+        const filesTooBig: any[] = [];
+        const filesOk: any[] = [];
+        this.$log.debug(`Uploading files on gesuch ${gesuchID}`);
+        for (const file of files) {
+            this.$log.debug(`File: ${file.name} size: ${file.size}`);
+            if (file.size > MAX_FILE_SIZE) {
+                filesTooBig.push(file);
+            } else {
+                filesOk.push(file);
+            }
+        }
+
+        if (filesTooBig.length > 0) {
+            // DialogBox anzeigen für Files, welche zu gross sind!
+            let returnString = `${this.$translate.instant('FILE_ZU_GROSS')}<br/><br/>`;
+            returnString += '<ul>';
+            for (const file of filesTooBig) {
+                returnString += '<li>';
+                returnString += file.name;
+                returnString += '</li>';
+            }
+            returnString += '</ul>';
+
+            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                title: returnString,
+            });
+        }
+
+        if (filesOk.length <= 0) {
+            return;
+        }
+
+        this.uploadRS.uploadFile(filesOk, selectDokument, gesuchID).then(response => {
+            const returnedDG = angular.copy(response);
+            this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id)
+                .then(() => this.handleUpload(returnedDG));
+        });
     }
 
-    hasDokuments(selectDokument: TSDokumentGrund): boolean {
+    public hasDokuments(selectDokument: TSDokumentGrund): boolean {
         if (selectDokument.dokumente) {
             for (const dokument of selectDokument.dokumente) {
                 if (dokument.filename) {
@@ -150,74 +160,85 @@ export class DVDokumenteListController {
         return false;
     }
 
-    handleUpload(returnedDG: TSDokumentGrund) {
+    public handleUpload(returnedDG: TSDokumentGrund): void {
         this.onUploadDone({dokument: returnedDG});
     }
 
-    isRemoveAllowed(dokumentGrund: TSDokumentGrund, dokument: TSDokument): boolean {
+    public isRemoveAllowed(_dokumentGrund: TSDokumentGrund, dokument: TSDokument): boolean {
         // Loeschen von Dokumenten ist nur in folgenden Faellen erlaubt:
         // - GS bis Freigabe (d.h nicht readonlyForRole). In diesem Status kann es nur "seine" Dokumente geben
-        // - JA bis Verfuegen, aber nur die von JA hinzugefuegten: d.h. wenn noch nicht verfuegt: die eigenen, wenn readonly: nichts
-        // - Admin: Auch nach verfuegen, aber nur die vom JA hinzugefuegten: wenn noch nicht verfuegt oder readonly: die eigenen
-        // - Alle anderen Rollen: nichts
-        const readonly: boolean = this.isGesuchReadonly();
-        const roleLoggedIn: TSRole = this.authServiceRS.getPrincipalRole();
-        let documentUploadedByAmt: boolean = true; // by default true in case there is no uploadUser
+        // - JA bis Verfuegen, aber nur die von JA hinzugefuegten: d.h. wenn noch nicht verfuegt: die eigenen, wenn
+        // readonly: nichts - Admin: Auch nach verfuegen, aber nur die vom JA hinzugefuegten: wenn noch nicht verfuegt
+        // oder readonly: die eigenen - Alle anderen Rollen: nichts
+        const readonly = this.isGesuchReadonly();
+        const roleLoggedIn = this.authServiceRS.getPrincipalRole();
+        let documentUploadedByAmt = true; // by default true in case there is no uploadUser
         if (dokument.userUploaded) {
-            const roleDocumentUpload: TSRole = dokument.userUploaded.getCurrentRole();
-            documentUploadedByAmt = (roleDocumentUpload === TSRole.SACHBEARBEITER_BG || roleDocumentUpload === TSRole.ADMIN_BG
-                || roleDocumentUpload === TSRole.SACHBEARBEITER_GEMEINDE || roleDocumentUpload === TSRole.ADMIN_GEMEINDE
-                || roleDocumentUpload === TSRole.SACHBEARBEITER_TS || roleDocumentUpload === TSRole.ADMIN_TS || roleDocumentUpload === TSRole.SUPER_ADMIN);
+            const roleDocumentUpload = dokument.userUploaded.getCurrentRole();
+            const amtroles = [
+                TSRole.SACHBEARBEITER_BG,
+                TSRole.ADMIN_BG,
+                TSRole.SACHBEARBEITER_GEMEINDE,
+                TSRole.ADMIN_GEMEINDE,
+                TSRole.SACHBEARBEITER_TS,
+                TSRole.ADMIN_TS,
+                TSRole.SUPER_ADMIN,
+            ];
+            documentUploadedByAmt = amtroles.includes(roleDocumentUpload);
         }
-        if (roleLoggedIn === TSRole.GESUCHSTELLER) {
-            return !readonly;
-        } else if (roleLoggedIn === TSRole.SACHBEARBEITER_BG || roleLoggedIn === TSRole.SACHBEARBEITER_GEMEINDE || roleLoggedIn === TSRole.SACHBEARBEITER_TS) {
-            return !readonly && documentUploadedByAmt;
-        } else if (roleLoggedIn === TSRole.ADMIN_BG || roleLoggedIn === TSRole.ADMIN_GEMEINDE || roleLoggedIn === TSRole.SUPER_ADMIN || roleLoggedIn === TSRole.ADMIN_TS) {
-            return documentUploadedByAmt;
+
+        switch (roleLoggedIn) {
+            case TSRole.GESUCHSTELLER:
+                return !readonly;
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+            case TSRole.SACHBEARBEITER_TS:
+                return !readonly && documentUploadedByAmt;
+            case TSRole.ADMIN_BG:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SUPER_ADMIN:
+            case TSRole.ADMIN_TS:
+                return documentUploadedByAmt;
+            default:
+                return false;
         }
-        return false;
     }
 
-    remove(dokumentGrund: TSDokumentGrund, dokument: TSDokument) {
-        this.$log.debug('component -> remove dokument ' + dokument.filename);
+    public remove(dokumentGrund: TSDokumentGrund, dokument: TSDokument): void {
+        this.$log.debug(`component -> remove dokument ${dokument.filename}`);
         this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
             deleteText: '',
             title: 'FILE_LOESCHEN',
             parentController: undefined,
-            elementID: undefined
+            elementID: undefined,
         })
-            .then(() => {   //User confirmed removal
-                this.onRemove({dokumentGrund: dokumentGrund, dokument: dokument});
+            .then(() => {   // User confirmed removal
+                this.onRemove({dokumentGrund, dokument});
 
             });
     }
 
-    download(dokument: TSDokument, attachment: boolean) {
-        this.$log.debug('download dokument ' + dokument.filename);
-        const win: Window = this.downloadRS.prepareDownloadWindow();
+    public download(dokument: TSDokument, attachment: boolean): void {
+        this.$log.debug(`download dokument ${dokument.filename}`);
+        const win = this.downloadRS.prepareDownloadWindow();
 
         this.downloadRS.getAccessTokenDokument(dokument.id)
             .then((downloadFile: TSDownloadFile) => {
-                this.$log.debug('accessToken: ' + downloadFile.accessToken);
+                this.$log.debug(`accessToken: ${downloadFile.accessToken}`);
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, attachment, win);
             })
-            .catch((ex) => {
+            .catch(() => {
                 win.close();
                 this.$log.error('An error occurred downloading the document, closing download window.');
             });
     }
 
-    getWidth(): string {
+    public getWidth(): string {
         if (this.sonstige) {
             return '95%';
-        } else {
-            if (this.tag) {
-                return '45%';
-            } else {
-                return '60%';
-            }
         }
+
+        return this.tag ? '45%' : '60%';
     }
 
     public isGesuchReadonly(): boolean {
@@ -228,35 +249,37 @@ export class DVDokumenteListController {
         // Dokument-Upload ist eigentlich in jedem Status möglich, aber nicht für alle Rollen. Also nicht
         // gleichbedeutend mit readonly auf dem Gesuch
         // Jedoch darf der Gesuchsteller nach der Verfuegung nichts mehr hochladen
-        const gsAndVerfuegt: boolean = isAnyStatusOfVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status) && this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
+        const gsAndVerfuegt = isAnyStatusOfVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status)
+            && this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
         return gsAndVerfuegt || this.authServiceRS.isOneOfRoles(TSRoleUtil.getReadOnlyRoles());
     }
 
     /**
      * According to the personType the right FullName will be calculated.
-     * - For GESUCHSTELLER the fullname will be taken out of the GESUCHSTELLER. The value of personNumber indicates from which Gesuchsteller.
-     * - For KIND the fullname will be taken out of the KIND. The value of personNumber indicates from which Kind using its field kindNumber.
+     * - For GESUCHSTELLER the fullname will be taken out of the GESUCHSTELLER. The value of personNumber indicates
+     * from which Gesuchsteller.
+     * - For KIND the fullname will be taken out of the KIND. The value of personNumber indicates from which Kind using
+     * its field kindNumber.
      */
     public extractFullName(dokumentGrund: TSDokumentGrund): string {
-        if (dokumentGrund.personType === TSDokumentGrundPersonType.GESUCHSTELLER) {
-            if (this.gesuchModelManager.getGesuch()) {
-                if (dokumentGrund.personNumber === 2 && this.gesuchModelManager.getGesuch().gesuchsteller2) {
-                    return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
+        const gesuch = this.gesuchModelManager.getGesuch();
+        if (!gesuch) {
+            return '';
+        }
 
-                } else if (dokumentGrund.personNumber === 1 && this.gesuchModelManager.getGesuch().gesuchsteller1) {
-                    return this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName();
-                }
+        if (dokumentGrund.personType === TSDokumentGrundPersonType.GESUCHSTELLER) {
+            if (dokumentGrund.personNumber === 2 && gesuch.gesuchsteller2) {
+                return gesuch.gesuchsteller2.extractFullName();
             }
-        } else if (dokumentGrund.personType === TSDokumentGrundPersonType.KIND) {
-            if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().kindContainers) {
-                const kindContainer: TSKindContainer = this.gesuchModelManager.getGesuch().extractKindFromKindNumber(dokumentGrund.personNumber);
-                if (kindContainer && kindContainer.kindJA) {
-                    return kindContainer.kindJA.getFullName();
-                }
+            if (dokumentGrund.personNumber === 1 && gesuch.gesuchsteller1) {
+                return gesuch.gesuchsteller1.extractFullName();
+            }
+        } else if (dokumentGrund.personType === TSDokumentGrundPersonType.KIND && gesuch.kindContainers) {
+            const kindContainer = gesuch.extractKindFromKindNumber(dokumentGrund.personNumber);
+            if (kindContainer && kindContainer.kindJA) {
+                return kindContainer.kindJA.getFullName();
             }
         }
         return '';
     }
 }
-
-

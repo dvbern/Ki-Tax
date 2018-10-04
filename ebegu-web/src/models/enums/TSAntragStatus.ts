@@ -60,7 +60,7 @@ export function getTSAntragStatusValues(): Array<TSAntragStatus> {
         TSAntragStatus.BESCHWERDE_HAENGIG,
         TSAntragStatus.PRUEFUNG_STV,
         TSAntragStatus.IN_BEARBEITUNG_STV,
-        TSAntragStatus.GEPRUEFT_STV
+        TSAntragStatus.GEPRUEFT_STV,
     ];
 }
 
@@ -72,7 +72,7 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
         case TSRole.STEUERAMT:
             return [
                 TSAntragStatus.PRUEFUNG_STV,
-                TSAntragStatus.IN_BEARBEITUNG_STV
+                TSAntragStatus.IN_BEARBEITUNG_STV,
             ];
         case TSRole.SACHBEARBEITER_TS:
         case TSRole.ADMIN_TS:
@@ -100,9 +100,8 @@ export function getTSAntragStatusValuesByRole(userrole: TSRole): Array<TSAntragS
 /**
  * Gibt alle Werte zurueck ausser VERFUEGT und KEIN_ANGEBOT.
  * Diese Werte sind die, die bei der Pendenzenliste notwendig sind
- * @returns {TSAntragStatus[]}
  */
-export function getTSAntragStatusPendenzValues(userrole: TSRole): Array<TSAntragStatus> {
+export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus[] {
     const allVisibleValuesByRole = getTSAntragStatusValuesByRole(userrole);
     switch (userrole) {
         case TSRole.SACHBEARBEITER_BG:
@@ -113,14 +112,20 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): Array<TSAntrag
         case TSRole.JURIST:
         case TSRole.ADMIN_MANDANT:
         case TSRole.SACHBEARBEITER_MANDANT:
-            return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT
-                && element !== TSAntragStatus.KEIN_ANGEBOT && element !== TSAntragStatus.NUR_SCHULAMT
-                && element !== TSAntragStatus.IN_BEARBEITUNG_STV && element !== TSAntragStatus.PRUEFUNG_STV));
+            return allVisibleValuesByRole.filter(element => (
+                element !== TSAntragStatus.VERFUEGT
+                && element !== TSAntragStatus.KEIN_ANGEBOT
+                && element !== TSAntragStatus.NUR_SCHULAMT
+                && element !== TSAntragStatus.IN_BEARBEITUNG_STV
+                && element !== TSAntragStatus.PRUEFUNG_STV));
         case TSRole.SACHBEARBEITER_TS:
         case TSRole.ADMIN_TS:
-            return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT
-                && element !== TSAntragStatus.KEIN_ANGEBOT && element !== TSAntragStatus.NUR_SCHULAMT
-                && element !== TSAntragStatus.VERFUEGEN && element !== TSAntragStatus.IN_BEARBEITUNG_STV
+            return allVisibleValuesByRole.filter(element => (
+                element !== TSAntragStatus.VERFUEGT
+                && element !== TSAntragStatus.KEIN_ANGEBOT
+                && element !== TSAntragStatus.NUR_SCHULAMT
+                && element !== TSAntragStatus.VERFUEGEN
+                && element !== TSAntragStatus.IN_BEARBEITUNG_STV
                 && element !== TSAntragStatus.PRUEFUNG_STV));
         default:
             return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT
@@ -146,7 +151,8 @@ export function isAtLeastFreigegeben(status: TSAntragStatus): boolean {
         TSAntragStatus.BESCHWERDE_HAENGIG,
         TSAntragStatus.PRUEFUNG_STV,
         TSAntragStatus.IN_BEARBEITUNG_STV,
-        TSAntragStatus.GEPRUEFT_STV];
+        TSAntragStatus.GEPRUEFT_STV,
+    ];
     return validStates.indexOf(status) !== -1;
 }
 
@@ -155,25 +161,34 @@ export function isAtLeastFreigegebenOrFreigabequittung(status: TSAntragStatus): 
 }
 
 export function isAnyStatusOfVerfuegt(status: TSAntragStatus): boolean {
-    return status === TSAntragStatus.NUR_SCHULAMT ||
-        status === TSAntragStatus.VERFUEGT || status === TSAntragStatus.BESCHWERDE_HAENGIG || status === TSAntragStatus.PRUEFUNG_STV
-        || status === TSAntragStatus.IN_BEARBEITUNG_STV || status === TSAntragStatus.GEPRUEFT_STV || status === TSAntragStatus.KEIN_ANGEBOT;
+    return status === TSAntragStatus.NUR_SCHULAMT
+        || status === TSAntragStatus.VERFUEGT
+        || status === TSAntragStatus.BESCHWERDE_HAENGIG
+        || status === TSAntragStatus.PRUEFUNG_STV
+        || status === TSAntragStatus.IN_BEARBEITUNG_STV
+        || status === TSAntragStatus.GEPRUEFT_STV
+        || status === TSAntragStatus.KEIN_ANGEBOT;
 }
 
 export function isAnyStatusOfVerfuegtButSchulamt(status: TSAntragStatus): boolean {
-    return status === TSAntragStatus.VERFUEGT || status === TSAntragStatus.BESCHWERDE_HAENGIG || status === TSAntragStatus.PRUEFUNG_STV
-        || status === TSAntragStatus.IN_BEARBEITUNG_STV || status === TSAntragStatus.GEPRUEFT_STV || status === TSAntragStatus.KEIN_ANGEBOT;
+    return status === TSAntragStatus.VERFUEGT
+        || status === TSAntragStatus.BESCHWERDE_HAENGIG
+        || status === TSAntragStatus.PRUEFUNG_STV
+        || status === TSAntragStatus.IN_BEARBEITUNG_STV
+        || status === TSAntragStatus.GEPRUEFT_STV
+        || status === TSAntragStatus.KEIN_ANGEBOT;
 }
 
 export function isVerfuegtOrSTV(status: TSAntragStatus): boolean {
-    return status === TSAntragStatus.VERFUEGT || status === TSAntragStatus.PRUEFUNG_STV
-        || status === TSAntragStatus.IN_BEARBEITUNG_STV || status === TSAntragStatus.GEPRUEFT_STV
+    return status === TSAntragStatus.VERFUEGT
+        || status === TSAntragStatus.PRUEFUNG_STV
+        || status === TSAntragStatus.IN_BEARBEITUNG_STV
+        || status === TSAntragStatus.GEPRUEFT_STV
         || status === TSAntragStatus.KEIN_ANGEBOT;
 }
 
 /**
  * Returns true when the status of the Gesuch is VERFUEGEN or VERFUEGT or NUR_SCHULAMT
- * @returns {boolean}
  */
 export function isStatusVerfuegenVerfuegt(status: TSAntragStatus): boolean {
     return isAnyStatusOfVerfuegt(status) || status === TSAntragStatus.VERFUEGEN;
@@ -184,10 +199,6 @@ export function isAnyStatusOfMahnung(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.ZWEITE_MAHNUNG || status === TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN;
 }
 
-export function  getStartAntragStatusFromEingangsart(eingangsart: TSEingangsart) {
-    if (TSEingangsart.ONLINE === eingangsart) {
-        return TSAntragStatus.IN_BEARBEITUNG_GS;
-    } else {
-        return TSAntragStatus.IN_BEARBEITUNG_JA;
-    }
+export function getStartAntragStatusFromEingangsart(eingangsart: TSEingangsart): TSAntragStatus {
+    return TSEingangsart.ONLINE === eingangsart ? TSAntragStatus.IN_BEARBEITUNG_GS : TSAntragStatus.IN_BEARBEITUNG_JA;
 }

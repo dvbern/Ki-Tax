@@ -14,9 +14,8 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration, Transition} from '@uirouter/angular';
+import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import DossierRS from '../../gesuch/service/dossierRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
 import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
@@ -29,22 +28,22 @@ const states: Ng2StateDeclaration[] = [
         parent: 'app',
         name: 'onboarding',
         abstract: true,
-        component: OnboardingMainComponent
+        component: OnboardingMainComponent,
     },
     {
         name: 'onboarding.start',
         url: '/',
         component: OnboardingComponent,
         data: {
-            roles: [TSRole.ANONYMOUS]
-        }
+            roles: [TSRole.ANONYMOUS],
+        },
     },
     {
         name: 'onboarding.be-login',
         url: '/{gemeindeId:[0-9a-fA-F\-]{36}}',
         component: OnboardingBeLoginComponent,
         data: {
-            roles: [TSRole.ANONYMOUS]
+            roles: [TSRole.ANONYMOUS],
         },
     },
     {
@@ -52,7 +51,7 @@ const states: Ng2StateDeclaration[] = [
         abstract: true,
         component: UiViewComponent,
         data: {
-            roles: [TSRole.GESUCHSTELLER]
+            roles: [TSRole.GESUCHSTELLER],
         },
         onEnter: disableWhenDossierExists,
     },
@@ -68,13 +67,13 @@ const states: Ng2StateDeclaration[] = [
         resolve: {
             nextState: () => 'onboarding.gesuchsteller.registration',
             showLogin: () => false,
-        }
+        },
     },
 ];
 
 disableWhenDossierExists.$inject = ['$transition$'];
 
-function disableWhenDossierExists(transition: Transition) {
+function disableWhenDossierExists(transition: Transition): HookResult {
     const dossierService = transition.injector().get('DossierRS');
 
     return dossierService.findNewestDossierByCurrentBenutzerAsBesitzer()
@@ -89,9 +88,9 @@ function disableWhenDossierExists(transition: Transition) {
         UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
-        UIRouterUpgradeModule
+        UIRouterUpgradeModule,
     ],
-    declarations: []
+    declarations: [],
 })
 export class OnboardingRoutingModule {
 }
