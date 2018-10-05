@@ -19,15 +19,11 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.math.BigDecimal;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
  * Created by imanol on 17.03.16.
@@ -44,7 +40,7 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	@Nullable
 	private String      sachbearbeiter;
 	@Nullable
-	private JaxBenutzer defaultBenutzerBG;
+	private JaxBenutzer defaultBenutzerBG; // Der Standardverantwortliche
 	@Nullable
 	private JaxBenutzer defaultBenutzerTS;
 	@NotNull
@@ -61,20 +57,13 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	@Nullable
 	private String      webseite;
 
-	private boolean     spracheDe;
-	private boolean     spracheFr;
+	private boolean 	korrespondenzspracheDe;
+	private boolean 	korrespondenzspracheFr;
 
-	private JaxBenutzer verantwortlicher;
-	@Nullable
-	private String      konfigurationAb;
-
+	// ---------- Konfiguration ----------
 	private boolean     kontingentierung;
 	@Nullable
-	private String      bgBisUndMitSchulstufe;
-
-	public static long getSerialVersionUID() {
-		return serialVersionUID;
-	}
+	private String      beguBisUndMitSchulstufe;
 
 	@Nullable
 	public String getAdministratoren() {
@@ -171,37 +160,20 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.webseite = webseite;
 	}
 
-	public boolean isSpracheDe() {
-		return spracheDe;
+	public boolean isKorrespondenzspracheDe() {
+		return korrespondenzspracheDe;
 	}
 
-	public void setSpracheDe(boolean spracheDe) {
-		this.spracheDe = spracheDe;
+	public void setKorrespondenzspracheDe(boolean korrespondenzspracheDe) {
+		this.korrespondenzspracheDe = korrespondenzspracheDe;
 	}
 
-	public boolean isSpracheFr() {
-		return spracheFr;
+	public boolean isKorrespondenzspracheFr() {
+		return korrespondenzspracheFr;
 	}
 
-	public void setSpracheFr(boolean spracheFr) {
-		this.spracheFr = spracheFr;
-	}
-
-	public JaxBenutzer getVerantwortlicher() {
-		return verantwortlicher;
-	}
-
-	public void setVerantwortlicher(JaxBenutzer verantwortlicher) {
-		this.verantwortlicher = verantwortlicher;
-	}
-
-	@Nullable
-	public String getKonfigurationAb() {
-		return konfigurationAb;
-	}
-
-	public void setKonfigurationAb(@Nullable String konfigurationAb) {
-		this.konfigurationAb = konfigurationAb;
+	public void setKorrespondenzspracheFr(boolean korrespondenzspracheFr) {
+		this.korrespondenzspracheFr = korrespondenzspracheFr;
 	}
 
 	public boolean isKontingentierung() {
@@ -213,11 +185,12 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public String getBgBisUndMitSchulstufe() {
-		return bgBisUndMitSchulstufe;
+	public String getBeguBisUndMitSchulstufe() {
+		return beguBisUndMitSchulstufe;
 	}
 
-	public void setBgBisUndMitSchulstufe(@Nullable String bgBisUndMitSchulstufe) {
-		this.bgBisUndMitSchulstufe = bgBisUndMitSchulstufe;
+	public void setBeguBisUndMitSchulstufe(@Nullable String beguBisUndMitSchulstufe) {
+		this.beguBisUndMitSchulstufe = beguBisUndMitSchulstufe;
 	}
+
 }

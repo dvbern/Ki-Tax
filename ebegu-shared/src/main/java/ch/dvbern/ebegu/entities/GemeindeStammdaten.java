@@ -23,14 +23,18 @@ import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -63,6 +67,14 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_adresse_id"), nullable = false)
 	private Adresse adresse;
 
+	@Nullable
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = false)
+	private Adresse beschwerdeAdresse;
+
+	@Column(nullable = false)
+	private boolean keineBeschwerdeAdresse = true;
+
 	@NotNull
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
@@ -79,21 +91,16 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
 	private String webseite;
 
-	@Override
-	public boolean isSame(AbstractEntity other) {
-		//noinspection ObjectEquality
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof GemeindeStammdaten)) {
-			return false;
-		}
-		if (!super.equals(other)) {
-			return false;
-		}
-		GemeindeStammdaten gemeindeStammdaten = (GemeindeStammdaten) other;
-		return Objects.equals(this.getGemeinde(), gemeindeStammdaten.getGemeinde());
-	}
+	@NotNull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
+
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_verantwortlicher_id"))
+	private Benutzer verantwortlicher;
+
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
@@ -129,6 +136,23 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.adresse = adresse;
 	}
 
+	@Nullable
+	public Adresse getBeschwerdeAdresse() {
+		return beschwerdeAdresse;
+	}
+
+	public void setBeschwerdeAdresse(@Nullable Adresse beschwerdeAdresse) {
+		this.beschwerdeAdresse = beschwerdeAdresse;
+	}
+
+	public boolean isKeineBeschwerdeAdresse() {
+		return keineBeschwerdeAdresse;
+	}
+
+	public void setKeineBeschwerdeAdresse(boolean keineBeschwerdeAdresse) {
+		this.keineBeschwerdeAdresse = keineBeschwerdeAdresse;
+	}
+
 	public String getMail() {
 		return mail;
 	}
@@ -153,6 +177,38 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setWebseite(@Nullable String webseite) {
 		this.webseite = webseite;
+	}
+
+	public KorrespondenzSpracheTyp getKorrespondenzsprache() {
+		return korrespondenzsprache;
+	}
+
+	public void setKorrespondenzsprache(KorrespondenzSpracheTyp korrespondenzsprache) {
+		this.korrespondenzsprache = korrespondenzsprache;
+	}
+
+	public Benutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(Benutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
+	}
+
+	@Override
+	public boolean isSame(AbstractEntity other) {
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof GemeindeStammdaten)) {
+			return false;
+		}
+		if (!super.equals(other)) {
+			return false;
+		}
+		GemeindeStammdaten gemeindeStammdaten = (GemeindeStammdaten) other;
+		return Objects.equals(this.getGemeinde(), gemeindeStammdaten.getGemeinde());
 	}
 
 }

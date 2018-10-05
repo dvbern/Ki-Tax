@@ -78,6 +78,6 @@ public interface GemeindeService {
 	/**
 	 * Gibt die GemeindeStammdaten der jeweiligen Gemeinde zurück
 	 */
-	@Nullable
-	GemeindeStammdaten getGemeindeStammdaten(@Nonnull String gemeindeId);
+	@Nonnull
+	Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String gemeindeId);
 }

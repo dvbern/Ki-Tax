@@ -43,6 +43,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -170,4 +171,19 @@ public class GemeindeResource {
 			.orElse(null);
 	}
 
+	@ApiOperation(value = "Returns the GemeindeStammdaten with the given GemeindeId.", response = JaxGemeindeStammdaten.class)
+	@Nullable
+	@GET
+	@Path("/stammdaten/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGemeindeStammdaten getGemeindeStammdaten(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+
+		return gemeindeService.getGemeindeStammdaten(gemeindeId)
+			.map(stammdaten -> converter.gemeindeStammdatenToJAX(stammdaten))
+			.orElse(null);
+	}
 }

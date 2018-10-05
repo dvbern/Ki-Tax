@@ -101,7 +101,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		final Long bfsNummer = gemeinde.getBfsNummer();
 		if (findGemeindeByBSF(bfsNummer).isPresent()) {
 			throw new EntityExistsException(Gemeinde.class, "bsf",
-				bfsNummer != null ? Long.toString(bfsNummer) : "",
+				Long.toString(bfsNummer),
 				ErrorCodeEnum.ERROR_DUPLICATE_GEMEINDE_BSF);
 		}
 		return saveGemeinde(gemeinde);
@@ -191,15 +191,16 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return persistence.getCriteriaResults(query);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public GemeindeStammdaten getGemeindeStammdaten(@Nonnull String gemeindeId) {
+	public Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String gemeindeId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdaten> query = cb.createQuery(GemeindeStammdaten.class);
 		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);
 		Predicate predicate = cb.equal(root.get(GemeindeStammdaten_.gemeinde).get(AbstractEntity_.id), gemeindeId);
 		query.where(predicate);
-		return persistence.getCriteriaSingleResult(query);
+		GemeindeStammdaten stammdaten = persistence.getCriteriaSingleResult(query);
+		return Optional.ofNullable(stammdaten);
 	}
 
 }

@@ -24,6 +24,7 @@ import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSGemeinde from '../../models/TSGemeinde';
+import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
 import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -120,4 +121,10 @@ export default class GemeindeRS implements IEntityRS {
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
         this.initGemeindenForPrincipal();
     }
+
+    public getGemeindeStammdaten(gemeindeId: string): IPromise<TSGemeindeStammdaten> {
+        return this.$http.get(`${this.serviceURL}/stammdaten/${encodeURIComponent(gemeindeId)}`)
+            .then(response => this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data));
+    }
+
 }

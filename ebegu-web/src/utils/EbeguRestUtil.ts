@@ -74,6 +74,7 @@ import TSFinanzielleSituation from '../models/TSFinanzielleSituation';
 import TSFinanzielleSituationContainer from '../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../models/TSFinanzModel';
 import TSGemeinde from '../models/TSGemeinde';
+import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
@@ -707,6 +708,37 @@ export default class EbeguRestUtil {
             gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
             gemeindeTS.bfsNummer = gemeindeFromServer.bfsNummer;
             return gemeindeTS;
+        }
+        return undefined;
+    }
+
+    public gemeindeStammdatenToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdaten): TSGemeindeStammdaten {
+        if (stammdaten) {
+            this.abstractMutableEntityToRestObject(restStammdaten, stammdaten);
+            restStammdaten.administratoren = stammdaten.administratoren;
+            restStammdaten.sachbearbeiter = stammdaten.sachbearbeiter;
+            restStammdaten.defaultBenutzerBG = this.userToRestObject({}, stammdaten.defaultBenutzerBG);
+            restStammdaten.defaultBenutzerTS = this.userToRestObject({}, stammdaten.defaultBenutzerTS);
+            restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
+            restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
+            restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
+            restStammdaten.keineBeschwerdeAdresse = stammdaten.keineBeschwerdeAdresse;
+            restStammdaten.mail = stammdaten.mail;
+            restStammdaten.telefon = stammdaten.telefon;
+            restStammdaten.webseite = stammdaten.webseite;
+            restStammdaten.korrespondenzspracheDe = stammdaten.korrespondenzspracheDe;
+            restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
+            restStammdaten.kontingentierung = stammdaten.kontingentierung;
+            restStammdaten.beguBisUndMitSchulstufe = stammdaten.beguBisUndMitSchulstufe;
+            return restStammdaten;
+        }
+        return undefined;
+    }
+
+    public parseGemeindeStammdaten(stammdatenTS: TSGemeindeStammdaten, stammdatenFromServer: any): TSGemeindeStammdaten {
+        if (stammdatenFromServer) {
+            this.parseAbstractMutableEntity(stammdatenTS, stammdatenFromServer);
+            return stammdatenTS;
         }
         return undefined;
     }

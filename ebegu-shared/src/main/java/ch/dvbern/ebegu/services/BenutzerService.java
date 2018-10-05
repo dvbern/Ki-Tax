@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -86,6 +87,22 @@ public interface BenutzerService {
 	 */
 	@Nonnull
 	Collection<Benutzer> getAllBenutzer();
+
+	/**
+	 * Gibt alle Administratoren einer Gemeinde zurueck.
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern aus der DB
+	 */
+	@Nonnull
+	Collection<Benutzer> getGemeindeAdministratoren(Gemeinde gemeinde);
+
+	/**
+	 * Gibt alle Sachbearbeiter einer Gemeinde zurueck.
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern aus der DB
+	 */
+	@Nonnull
+	Collection<Benutzer> getGemeindeSachbearbeiter(Gemeinde gemeinde);
 
 	/**
 	 * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_BG oder Admin zurueck.
