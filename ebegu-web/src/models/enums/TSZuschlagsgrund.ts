@@ -22,7 +22,7 @@ export enum TSZuschlagsgrund {
 
 }
 
-export function getTSZuschlagsgrunde(): Array<TSZuschlagsgrund> {
+export function getTSZuschlagsgrunde(): TSZuschlagsgrund[] {
     return [
         TSZuschlagsgrund.UNREGELMAESSIGE_ARBEITSZEITEN,
         TSZuschlagsgrund.UEBERLAPPENDE_ARBEITSZEITEN,
@@ -32,11 +32,11 @@ export function getTSZuschlagsgrunde(): Array<TSZuschlagsgrund> {
 
     ];
 }
+
 /**
  * Gesuchsteller duerfen nicht alle Gruende auswaehlen
- * @returns {TSZuschlagsgrund[]}
  */
-export function getTSZuschlagsgruendeForGS() {
+export function getTSZuschlagsgruendeForGS(): TSZuschlagsgrund[] {
     return [
         TSZuschlagsgrund.UNREGELMAESSIGE_ARBEITSZEITEN,
         TSZuschlagsgrund.UEBERLAPPENDE_ARBEITSZEITEN,

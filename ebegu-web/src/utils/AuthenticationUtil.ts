@@ -24,24 +24,28 @@ export function navigateToStartPageForRole(currentRole: TSRole, $state: StateSer
 }
 
 export function getRoleBasedTargetState(currentRole: TSRole, $state: StateService): TargetState {
+    const faelle = 'faelle.list';
+    const pendenzen = 'pendenzen.list-view';
+    const pendenzenBetreuung = 'pendenzenBetreuungen.list-view';
+
     const stateByRole: { [key in TSRole]: string } = {
-        [TSRole.SUPER_ADMIN]: 'faelle.list',
-        [TSRole.ADMIN_BG]: 'pendenzen.list-view',
-        [TSRole.SACHBEARBEITER_BG]: 'pendenzen.list-view',
-        [TSRole.ADMIN_GEMEINDE]: 'pendenzen.list-view',
-        [TSRole.SACHBEARBEITER_GEMEINDE]: 'pendenzen.list-view',
-        [TSRole.ADMIN_INSTITUTION]: 'pendenzenBetreuungen.list-view',
-        [TSRole.SACHBEARBEITER_INSTITUTION]: 'pendenzenBetreuungen.list-view',
-        [TSRole.ADMIN_TRAEGERSCHAFT]: 'pendenzenBetreuungen.list-view',
-        [TSRole.SACHBEARBEITER_TRAEGERSCHAFT]: 'pendenzenBetreuungen.list-view',
+        [TSRole.SUPER_ADMIN]: faelle,
+        [TSRole.ADMIN_BG]: pendenzen,
+        [TSRole.SACHBEARBEITER_BG]: pendenzen,
+        [TSRole.ADMIN_GEMEINDE]: pendenzen,
+        [TSRole.SACHBEARBEITER_GEMEINDE]: pendenzen,
+        [TSRole.ADMIN_INSTITUTION]: pendenzenBetreuung,
+        [TSRole.SACHBEARBEITER_INSTITUTION]: pendenzenBetreuung,
+        [TSRole.ADMIN_TRAEGERSCHAFT]: pendenzenBetreuung,
+        [TSRole.SACHBEARBEITER_TRAEGERSCHAFT]: pendenzenBetreuung,
         [TSRole.GESUCHSTELLER]: 'gesuchsteller.dashboard',
-        [TSRole.JURIST]: 'faelle.list',
-        [TSRole.REVISOR]: 'faelle.list',
+        [TSRole.JURIST]: faelle,
+        [TSRole.REVISOR]: faelle,
         [TSRole.STEUERAMT]: 'pendenzenSteueramt.list-view',
-        [TSRole.ADMIN_TS]: 'pendenzen.list-view',
-        [TSRole.SACHBEARBEITER_TS]: 'pendenzen.list-view',
-        [TSRole.ADMIN_MANDANT]: 'faelle.list',
-        [TSRole.SACHBEARBEITER_MANDANT]: 'faelle.list',
+        [TSRole.ADMIN_TS]: pendenzen,
+        [TSRole.SACHBEARBEITER_TS]: pendenzen,
+        [TSRole.ADMIN_MANDANT]: faelle,
+        [TSRole.SACHBEARBEITER_MANDANT]: faelle,
         [TSRole.ANONYMOUS]: 'onboarding.start',
     };
 

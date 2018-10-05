@@ -14,5 +14,5 @@
  */
 
 export enum TSSubmitEvent {
-    FORM_SUBMIT = <any> 'FORM_SUBMIT',
+    FORM_SUBMIT = 'FORM_SUBMIT' as any,
 }

@@ -17,7 +17,7 @@ export default class TSLand {
     private _name: string;
     private _code: string;
 
-    constructor(code: string, name: string) {
+    public constructor(code: string, name: string) {
         this._name = name;
         this._code = code;
     }

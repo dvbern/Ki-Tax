@@ -27,9 +27,17 @@ export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEnt
     private _geschaeftsgewinnBasisjahr: number;
     private _geleisteteAlimente: number;
 
-    constructor(steuerveranlagungErhalten?: boolean, steuererklaerungAusgefuellt?: boolean,
-                familienzulage?: number, ersatzeinkommen?: number, erhalteneAlimente?: number, bruttovermoegen?: number,
-                schulden?: number, geschaeftsgewinnBasisjahr?: number, geleisteteAlimente?: number) {
+    public constructor(
+        steuerveranlagungErhalten?: boolean,
+        steuererklaerungAusgefuellt?: boolean,
+        familienzulage?: number,
+        ersatzeinkommen?: number,
+        erhalteneAlimente?: number,
+        bruttovermoegen?: number,
+        schulden?: number,
+        geschaeftsgewinnBasisjahr?: number,
+        geleisteteAlimente?: number,
+    ) {
         super();
         this._steuerveranlagungErhalten = steuerveranlagungErhalten || false;
         this._steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
@@ -42,75 +50,75 @@ export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEnt
         this._geleisteteAlimente = geleisteteAlimente;
     }
 
-    get steuerveranlagungErhalten(): boolean {
+    public get steuerveranlagungErhalten(): boolean {
         return this._steuerveranlagungErhalten;
     }
 
-    set steuerveranlagungErhalten(value: boolean) {
+    public set steuerveranlagungErhalten(value: boolean) {
         this._steuerveranlagungErhalten = value;
     }
 
-    get steuererklaerungAusgefuellt(): boolean {
+    public get steuererklaerungAusgefuellt(): boolean {
         return this._steuererklaerungAusgefuellt;
     }
 
-    set steuererklaerungAusgefuellt(value: boolean) {
+    public set steuererklaerungAusgefuellt(value: boolean) {
         this._steuererklaerungAusgefuellt = value;
     }
 
-    get familienzulage(): number {
+    public get familienzulage(): number {
         return this._familienzulage;
     }
 
-    set familienzulage(value: number) {
+    public set familienzulage(value: number) {
         this._familienzulage = value;
     }
 
-    get ersatzeinkommen(): number {
+    public get ersatzeinkommen(): number {
         return this._ersatzeinkommen;
     }
 
-    set ersatzeinkommen(value: number) {
+    public set ersatzeinkommen(value: number) {
         this._ersatzeinkommen = value;
     }
 
-    get erhalteneAlimente(): number {
+    public get erhalteneAlimente(): number {
         return this._erhalteneAlimente;
     }
 
-    set erhalteneAlimente(value: number) {
+    public set erhalteneAlimente(value: number) {
         this._erhalteneAlimente = value;
     }
 
-    get bruttovermoegen(): number {
+    public get bruttovermoegen(): number {
         return this._bruttovermoegen;
     }
 
-    set bruttovermoegen(value: number) {
+    public set bruttovermoegen(value: number) {
         this._bruttovermoegen = value;
     }
 
-    get schulden(): number {
+    public get schulden(): number {
         return this._schulden;
     }
 
-    set schulden(value: number) {
+    public set schulden(value: number) {
         this._schulden = value;
     }
 
-    get geschaeftsgewinnBasisjahr(): number {
+    public get geschaeftsgewinnBasisjahr(): number {
         return this._geschaeftsgewinnBasisjahr;
     }
 
-    set geschaeftsgewinnBasisjahr(value: number) {
+    public set geschaeftsgewinnBasisjahr(value: number) {
         this._geschaeftsgewinnBasisjahr = value;
     }
 
-    get geleisteteAlimente(): number {
+    public get geleisteteAlimente(): number {
         return this._geleisteteAlimente;
     }
 
-    set geleisteteAlimente(value: number) {
+    public set geleisteteAlimente(value: number) {
         this._geleisteteAlimente = value;
     }
 

@@ -21,11 +21,11 @@ export default class TSBetreuungspensum extends TSAbstractPensumEntity {
     private _nichtEingetreten: boolean;
     private _monatlicheBetreuungskosten: number;
 
-    get nichtEingetreten(): boolean {
+    public get nichtEingetreten(): boolean {
         return this._nichtEingetreten;
     }
 
-    set nichtEingetreten(value: boolean) {
+    public set nichtEingetreten(value: boolean) {
         this._nichtEingetreten = value;
     }
 
@@ -36,7 +36,8 @@ export default class TSBetreuungspensum extends TSAbstractPensumEntity {
     set monatlicheBetreuungskosten(value: number) {
         this._monatlicheBetreuungskosten = value;
     }
-    constructor(nichtEingetreten?: boolean, monatlicheBetreuungskosten?: number, pensum?: number, gueltigkeit?: TSDateRange) {
+
+    public constructor(nichtEingetreten?: boolean, monatlicheBetreuungskosten?: number, pensum?: number, gueltigkeit?: TSDateRange) {
         super(pensum, gueltigkeit);
         this.nichtEingetreten = nichtEingetreten;
         this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;

@@ -22,13 +22,13 @@ import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
  */
 export default class GlobalCacheService {
 
-    static $inject = ['$cacheFactory'];
+    public static $inject = ['$cacheFactory'];
 
-    constructor(private readonly $cacheFactory: ICacheFactoryService) {
+    public constructor(private readonly $cacheFactory: ICacheFactoryService) {
         Object.values(TSCacheTyp).forEach(value => this.$cacheFactory(value));
     }
 
-    getCache(cacheType: TSCacheTyp): ICacheObject {
+    public getCache(cacheType: TSCacheTyp): ICacheObject {
         return this.$cacheFactory.get(cacheType);
     }
 

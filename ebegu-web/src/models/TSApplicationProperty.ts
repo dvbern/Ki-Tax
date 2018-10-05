@@ -19,7 +19,7 @@ export default class TSApplicationProperty extends TSAbstractMutableEntity {
     private _name: string;
     private _value: string;
 
-    constructor(name?: string, value?: string) {
+    public constructor(name?: string, value?: string) {
         super();
         this._name = name;
         this._value = value;

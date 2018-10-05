@@ -14,8 +14,8 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSTraegerschaft} from './TSTraegerschaft';
 import {TSMandant} from './TSMandant';
+import {TSTraegerschaft} from './TSTraegerschaft';
 
 export default class TSInstitution extends TSAbstractMutableEntity {
     private _name: string;
@@ -23,7 +23,7 @@ export default class TSInstitution extends TSAbstractMutableEntity {
     private _mandant: TSMandant;
     private _mail: string;
 
-    constructor(name?: string, tragerschaft?: TSTraegerschaft, mandant?: TSMandant, mail?: string) {
+    public constructor(name?: string, tragerschaft?: TSTraegerschaft, mandant?: TSMandant, mail?: string) {
         super();
         this._name = name;
         this._traegerschaft = tragerschaft;
@@ -55,11 +55,11 @@ export default class TSInstitution extends TSAbstractMutableEntity {
         this._mandant = value;
     }
 
-    get mail(): string {
+    public get mail(): string {
         return this._mail;
     }
 
-    set mail(value: string) {
+    public set mail(value: string) {
         this._mail = value;
     }
 }

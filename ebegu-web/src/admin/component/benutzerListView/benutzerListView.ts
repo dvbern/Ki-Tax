@@ -24,26 +24,28 @@ import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
 import AbstractAdminViewController from '../../abstractAdminView';
 
 export class BenutzerListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         benutzer: '<',
     };
-    template = require('./benutzerListView.html');
-    controller = BenutzerListViewController;
-    controllerAs = 'vm';
+    public template = require('./benutzerListView.html');
+    public controller = BenutzerListViewController;
+    public controllerAs = 'vm';
 }
 
 export class BenutzerListViewController extends AbstractAdminViewController {
 
-    static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'BenutzerRS'];
+    public static $inject: string[] = ['$state', '$log', 'AuthServiceRS', 'BenutzerRS'];
 
-    totalResultCount: string = '0';
+    public totalResultCount: string = '0';
     public readonly PERMISSION_BENUTZER_EINLADEN = PERMISSIONS[Permission.BENUTZER_EINLADEN];
 
-    constructor(private readonly $state: StateService,
-                private readonly $log: ILogService,
-                authServiceRS: AuthServiceRS,
-                private readonly benutzerRS: BenutzerRS) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly $log: ILogService,
+        authServiceRS: AuthServiceRS,
+        private readonly benutzerRS: BenutzerRS,
+    ) {
         super(authServiceRS);
     }
 
@@ -52,6 +54,7 @@ export class BenutzerListViewController extends AbstractAdminViewController {
 
         return this.benutzerRS.searchUsers(tableFilterState).then((response: TSUserSearchresultDTO) => {
             this.totalResultCount = response.totalResultSize ? response.totalResultSize.toString() : '0';
+
             return response;
         });
     }
@@ -59,10 +62,8 @@ export class BenutzerListViewController extends AbstractAdminViewController {
     /**
      * Fuer Benutzer mit der Rolle SACHBEARBEITER_INSTITUTION oder SACHBEARBEITER_TRAEGERSCHAFT oeffnet es das Gesuch
      * mit beschraenkten Daten Fuer anderen Benutzer wird das Gesuch mit allen Daten geoeffnet
-     * @param user
-     * @param event optinally this function can check if ctrl was clicked when opeing
      */
-    public editBenutzer(user: TSBenutzer, event: any): void {
+    public editBenutzer(user?: TSBenutzer): void {
         if (user) {
             this.$state.go('admin.benutzer', {benutzerId: user.username});
         }

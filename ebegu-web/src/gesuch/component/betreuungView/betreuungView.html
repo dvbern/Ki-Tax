@@ -397,7 +397,8 @@
                             <span data-translate="BETREUUNG_WARTEN_TEXT"></span>
                         </div>
 
-                        <div class="well well-status-abgewiesen" ng-if="vm.isBetreuungsstatusAbgewiesen() && !vm.isSavingData">
+                        <div class="well well-status-abgewiesen"
+                             ng-if="vm.isBetreuungsstatusAbgewiesen() && !vm.isSavingData">
                             <i class="fa fa-times" aria-hidden="true"></i>
                             <span data-translate="BETREUUNG_ABGEWIESEN_TEXT"
                                   data-translate-value-grund="{{vm.getBetreuungModel().grundAblehnung}}"
@@ -498,7 +499,7 @@
                     <div class="dv-navigation-item"
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                         dv-show-expression="vm.isMutationsmeldungAllowed()" >
+                         dv-show-expression="vm.isMutationsmeldungAllowed()">
 
                         <dv-loading-button button-click="vm.mutationsmeldungErstellen()"
                                            ng-if="!vm.isMutationsmeldungStatus"
@@ -518,7 +519,7 @@
                          dv-show-expression="vm.isBetreuungsstatusWarten()">
 
                         <div class="dv-navigation-item"
-                             ng-if="vm.isFromMutation()" >
+                             ng-if="vm.isFromMutation()">
                             <dv-loading-button button-click="vm.stornieren()"
                                                aria-label="{{'STORNIEREN_UPPER' | translate}}">
                                 <span data-translate="STORNIEREN_UPPER"></span>
@@ -533,7 +534,7 @@
                         </div>
 
                         <div class="dv-navigation-item"
-                             ng-if="!vm.isFromMutation()" >
+                             ng-if="!vm.isFromMutation()">
                             <dv-loading-button button-click="vm.platzAbweisen()"
                                                aria-label="{{'ABWEISEN_UPPER' | translate}}">
                                 <span data-translate="ABWEISEN_UPPER"></span>

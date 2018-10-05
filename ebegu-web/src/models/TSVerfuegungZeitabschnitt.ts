@@ -13,9 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
-import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 
 export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
 
@@ -42,13 +42,30 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     private _sameVerfuegungsdaten: boolean;
     private _sameVerguenstigung: boolean;
 
-    constructor(erwerbspensumGS1?: number, erwerbspensumGS2?: number, betreuungspensum?: number, fachstellenpensum?: number,
-                anspruchspensumRest?: number, anspruchberechtigtesPensum?: number, bgPensum?: number, betreuungsstunden?: number, vollkosten?: number,
-                elternbeitrag?: number, abzugFamGroesse?: number, massgebendesEinkommen?: number, bemerkungen?: string,
-                zahlungsstatus?: TSVerfuegungZeitabschnittZahlungsstatus, gueltigkeit?: TSDateRange, famGroesse?: number, einkommensjahr?: number,
-                kategorieMaxEinkommen?: boolean,
-                kategorieKeinPensum?: boolean, kategorieZuschlagZumErwerbspensum?: boolean, sameVerfuegungsdaten?: boolean,
-                sameVerguenstigung?: boolean) {
+    public constructor(
+        erwerbspensumGS1?: number,
+        erwerbspensumGS2?: number,
+        betreuungspensum?: number,
+        fachstellenpensum?: number,
+        anspruchspensumRest?: number,
+        anspruchberechtigtesPensum?: number,
+        bgPensum?: number,
+        betreuungsstunden?: number,
+        vollkosten?: number,
+        elternbeitrag?: number,
+        abzugFamGroesse?: number,
+        massgebendesEinkommen?: number,
+        bemerkungen?: string,
+        zahlungsstatus?: TSVerfuegungZeitabschnittZahlungsstatus,
+        gueltigkeit?: TSDateRange,
+        famGroesse?: number,
+        einkommensjahr?: number,
+        kategorieMaxEinkommen?: boolean,
+        kategorieKeinPensum?: boolean,
+        kategorieZuschlagZumErwerbspensum?: boolean,
+        sameVerfuegungsdaten?: boolean,
+        sameVerguenstigung?: boolean,
+    ) {
         super(gueltigkeit);
         this._erwerbspensumGS1 = erwerbspensumGS1;
         this._erwerbspensumGS2 = erwerbspensumGS2;
@@ -73,179 +90,179 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
         this._sameVerguenstigung = sameVerguenstigung;
     }
 
-    get erwerbspensumGS1(): number {
+    public get erwerbspensumGS1(): number {
         return this._erwerbspensumGS1;
     }
 
-    set erwerbspensumGS1(value: number) {
+    public set erwerbspensumGS1(value: number) {
         this._erwerbspensumGS1 = value;
     }
 
-    get erwerbspensumGS2(): number {
+    public get erwerbspensumGS2(): number {
         return this._erwerbspensumGS2;
     }
 
-    set erwerbspensumGS2(value: number) {
+    public set erwerbspensumGS2(value: number) {
         this._erwerbspensumGS2 = value;
     }
 
-    get betreuungspensum(): number {
+    public get betreuungspensum(): number {
         return this._betreuungspensum;
     }
 
-    set betreuungspensum(value: number) {
+    public set betreuungspensum(value: number) {
         this._betreuungspensum = value;
     }
 
-    get fachstellenpensum(): number {
+    public get fachstellenpensum(): number {
         return this._fachstellenpensum;
     }
 
-    set fachstellenpensum(value: number) {
+    public set fachstellenpensum(value: number) {
         this._fachstellenpensum = value;
     }
 
-    get anspruchspensumRest(): number {
+    public get anspruchspensumRest(): number {
         return this._anspruchspensumRest;
     }
 
-    set anspruchspensumRest(value: number) {
+    public set anspruchspensumRest(value: number) {
         this._anspruchspensumRest = value;
     }
 
-    get anspruchberechtigtesPensum(): number {
+    public get anspruchberechtigtesPensum(): number {
         return this._anspruchberechtigtesPensum;
     }
 
-    set anspruchberechtigtesPensum(value: number) {
+    public set anspruchberechtigtesPensum(value: number) {
         this._anspruchberechtigtesPensum = value;
     }
 
-    get bgPensum(): number {
+    public get bgPensum(): number {
         return this._bgPensum;
     }
 
-    set bgPensum(value: number) {
+    public set bgPensum(value: number) {
         this._bgPensum = value;
     }
 
-    get betreuungsstunden(): number {
+    public get betreuungsstunden(): number {
         return this._betreuungsstunden;
     }
 
-    set betreuungsstunden(value: number) {
+    public set betreuungsstunden(value: number) {
         this._betreuungsstunden = value;
     }
 
-    get vollkosten(): number {
+    public get vollkosten(): number {
         return this._vollkosten;
     }
 
-    set vollkosten(value: number) {
+    public set vollkosten(value: number) {
         this._vollkosten = value;
     }
 
-    get elternbeitrag(): number {
+    public get elternbeitrag(): number {
         return this._elternbeitrag;
     }
 
-    set elternbeitrag(value: number) {
+    public set elternbeitrag(value: number) {
         this._elternbeitrag = value;
     }
 
-    get abzugFamGroesse(): number {
+    public get abzugFamGroesse(): number {
         return this._abzugFamGroesse;
     }
 
-    set abzugFamGroesse(value: number) {
+    public set abzugFamGroesse(value: number) {
         this._abzugFamGroesse = value;
     }
 
-    get massgebendesEinkommenVorAbzugFamgr(): number {
+    public get massgebendesEinkommenVorAbzugFamgr(): number {
         return this._massgebendesEinkommenVorAbzugFamgr;
     }
 
-    set massgebendesEinkommenVorAbzugFamgr(value: number) {
+    public set massgebendesEinkommenVorAbzugFamgr(value: number) {
         this._massgebendesEinkommenVorAbzugFamgr = value;
     }
 
-    get bemerkungen(): string {
+    public get bemerkungen(): string {
         return this._bemerkungen;
     }
 
-    set bemerkungen(value: string) {
+    public set bemerkungen(value: string) {
         this._bemerkungen = value;
     }
 
-    get zahlungsstatus(): TSVerfuegungZeitabschnittZahlungsstatus {
+    public get zahlungsstatus(): TSVerfuegungZeitabschnittZahlungsstatus {
         return this._zahlungsstatus;
     }
 
-    set zahlungsstatus(value: TSVerfuegungZeitabschnittZahlungsstatus) {
+    public set zahlungsstatus(value: TSVerfuegungZeitabschnittZahlungsstatus) {
         this._zahlungsstatus = value;
     }
 
-    get famGroesse(): number {
+    public get famGroesse(): number {
         return this._famGroesse;
     }
 
-    set famGroesse(value: number) {
+    public set famGroesse(value: number) {
         this._famGroesse = value;
     }
 
-    get einkommensjahr(): number {
+    public get einkommensjahr(): number {
         return this._einkommensjahr;
     }
 
-    set einkommensjahr(value: number) {
+    public set einkommensjahr(value: number) {
         this._einkommensjahr = value;
     }
 
-    get kategorieMaxEinkommen(): boolean {
+    public get kategorieMaxEinkommen(): boolean {
         return this._kategorieMaxEinkommen;
     }
 
-    set kategorieMaxEinkommen(value: boolean) {
+    public set kategorieMaxEinkommen(value: boolean) {
         this._kategorieMaxEinkommen = value;
     }
 
-    get kategorieKeinPensum(): boolean {
+    public get kategorieKeinPensum(): boolean {
         return this._kategorieKeinPensum;
     }
 
-    set kategorieKeinPensum(value: boolean) {
+    public set kategorieKeinPensum(value: boolean) {
         this._kategorieKeinPensum = value;
     }
 
-    get kategorieZuschlagZumErwerbspensum(): boolean {
+    public get kategorieZuschlagZumErwerbspensum(): boolean {
         return this._kategorieZuschlagZumErwerbspensum;
     }
 
-    set kategorieZuschlagZumErwerbspensum(value: boolean) {
+    public set kategorieZuschlagZumErwerbspensum(value: boolean) {
         this._kategorieZuschlagZumErwerbspensum = value;
     }
 
-    get zuSpaetEingereicht(): boolean {
+    public get zuSpaetEingereicht(): boolean {
         return this._zuSpaetEingereicht;
     }
 
-    set zuSpaetEingereicht(value: boolean) {
+    public set zuSpaetEingereicht(value: boolean) {
         this._zuSpaetEingereicht = value;
     }
 
-    get sameVerfuegungsdaten(): boolean {
+    public get sameVerfuegungsdaten(): boolean {
         return this._sameVerfuegungsdaten;
     }
 
-    set sameVerfuegungsdaten(value: boolean) {
+    public set sameVerfuegungsdaten(value: boolean) {
         this._sameVerfuegungsdaten = value;
     }
 
-    get sameVerguenstigung(): boolean {
+    public get sameVerguenstigung(): boolean {
         return this._sameVerguenstigung;
     }
 
-    set sameVerguenstigung(value: boolean) {
+    public set sameVerguenstigung(value: boolean) {
         this._sameVerguenstigung = value;
     }
 }

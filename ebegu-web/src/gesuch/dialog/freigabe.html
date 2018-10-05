@@ -20,7 +20,8 @@
     <md-dialog-content class="md-dialog-content" role="document" tabindex="-1" id="dialogContent">
         <div class="row">
             <div class="col-xs-12">
-                <h2 ng-if="!vm.hasError() && vm.gesuch" class="md-title ng-binding" data-translate="FREIGEBEN_DIALOG_TITLE"></h2>
+                <h2 ng-if="!vm.hasError() && vm.gesuch" class="md-title ng-binding"
+                    data-translate="FREIGEBEN_DIALOG_TITLE"></h2>
 
                 <span ng-if="vm.hasError()" ng-bind="vm.errorMessage"></span>
             </div>
@@ -89,9 +90,12 @@
                 ng-if="vm.hasError() || vm.gesuch" ng-click="vm.cancel()" aria-label="{{'CANCEL' | translate}}">
             <span class="ng-binding ng-scope" data-translate="CANCEL"></span>
         </button>
-        <dv-loading-button button-class="" type="button" ng-if="!vm.hasError()"
-                button-click="vm.freigeben()" md-autofocus="dialog.$type==='alert'"
-                aria-label="{{'LABEL_FREIGEBEN' | translate}}">
+        <dv-loading-button button-class=""
+                           type="button"
+                           ng-if="!vm.hasError()"
+                           button-click="vm.freigeben()"
+                           md-autofocus="dialog.$type==='alert'"
+                           aria-label="{{'LABEL_FREIGEBEN' | translate}}">
             <span class="ng-binding ng-scope" data-translate="LABEL_FREIGEBEN"></span>
         </dv-loading-button>
     </md-dialog-actions>

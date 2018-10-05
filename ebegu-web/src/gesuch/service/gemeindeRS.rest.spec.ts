@@ -15,35 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as angular from 'angular';
-import {IRootScopeService} from 'angular';
-import {EbeguWebCore} from '../../app/core/core.angularjs.module';
+import {IHttpBackendService} from 'angular';
+import {CORE_JS_MODULE} from '../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
 import {TSRole} from '../../models/enums/TSRole';
-import TSGemeinde from '../../models/TSGemeinde';
 import TSBenutzer from '../../models/TSBenutzer';
+import TSGemeinde from '../../models/TSGemeinde';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
 import GemeindeRS from './gemeindeRS.rest';
 
 describe('dossier', () => {
 
     let gemeindeRS: GemeindeRS;
-    let $http: angular.IHttpService;
-    let $httpBackend: angular.IHttpBackendService;
-    let $q: angular.IQService;
+    let $httpBackend: IHttpBackendService;
     let allGemeinde: TSGemeinde[];
-    let $rootScope: IRootScopeService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject($injector => {
         gemeindeRS = $injector.get('GemeindeRS');
         $httpBackend = $injector.get('$httpBackend');
-        $http = $injector.get('$http');
-        $q = $injector.get('$q');
-        $rootScope = $injector.get('$rootScope');
 
         createAllGemeinden();
     }));
@@ -59,7 +52,7 @@ describe('dossier', () => {
                     expect(gemeinden[0]).toEqual(user.extractCurrentGemeinden()[0]);
                     done();
                 },
-                err => done.fail(err)
+                err => done.fail(err),
             );
         });
 
@@ -75,7 +68,7 @@ describe('dossier', () => {
                     expect(gemeinden[1]).toEqual(allGemeinde[1]);
                     done();
                 },
-                err => done.fail(err)
+                err => done.fail(err),
             );
 
             $httpBackend.flush();
@@ -87,18 +80,18 @@ describe('dossier', () => {
                     expect(gemeinden.length).toBe(0);
                     done();
                 },
-                err => done.fail(err)
+                err => done.fail(err),
             );
         });
     });
 
-    function createUser(role: TSRole, createGemeinde: boolean) {
-        const user: TSBenutzer = new TSBenutzer('Pedrito', 'Fuentes');
+    function createUser(role: TSRole, createGemeinde: boolean): TSBenutzer {
+        const user = new TSBenutzer('Pedrito', 'Fuentes');
         user.currentBerechtigung = TestDataUtil.createBerechtigung(role, createGemeinde);
         return user;
     }
 
-    function createAllGemeinden() {
+    function createAllGemeinden(): void {
         allGemeinde = [
             TestDataUtil.createGemeindeBern(),
             TestDataUtil.createGemeindeOstermundigen(),

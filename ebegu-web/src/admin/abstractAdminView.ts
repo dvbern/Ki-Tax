@@ -13,21 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSRole} from '../models/enums/TSRole';
-import {TSRoleUtil} from '../utils/TSRoleUtil';
+import {IController} from 'angular';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
-import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
+import {TSRole} from '../models/enums/TSRole';
+import TSGesuchsperiode from '../models/TSGesuchsperiode';
+import {TSRoleUtil} from '../utils/TSRoleUtil';
 
-export default class AbstractAdminViewController {
+export default class AbstractAdminViewController implements IController {
 
-    TSRole = TSRole;
-    TSRoleUtil = TSRoleUtil;
+    public readonly TSRole = TSRole;
+    public readonly TSRoleUtil = TSRoleUtil;
 
-    constructor(public authServiceRS: AuthServiceRS) {
+    public constructor(public authServiceRS: AuthServiceRS) {
     }
 
-    $onInit() {
+    public $onInit(): void {
     }
 
     public isReadonly(): boolean {
@@ -43,11 +44,11 @@ export default class AbstractAdminViewController {
             // Fuer SuperAdmin immer auch editierbar, wenn AKTIV oder INAKTIV, sonst nur ENTWURF
             if (TSGesuchsperiodeStatus.GESCHLOSSEN === gesuchsperiode.status) {
                 return false;
-            } else if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSuperAdminRoles())) {
-                return true;
-            } else {
-                return TSGesuchsperiodeStatus.ENTWURF === gesuchsperiode.status;
             }
+            if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSuperAdminRoles())) {
+                return true;
+            }
+            return TSGesuchsperiodeStatus.ENTWURF === gesuchsperiode.status;
         }
         return false;
     }

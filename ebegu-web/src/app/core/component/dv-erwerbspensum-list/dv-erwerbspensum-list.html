@@ -51,10 +51,13 @@
                         </dv-loading-button>
                     </td>
                     <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()" ng-if="vm.isRemoveAllowed(row)">
-                        <dv-loading-button type="button" button-click="vm.removeClicked(row,$index)"
-                                           button-class="dv-btn-operation" title="{{'ERWERBSPENSUM_DELETE' | translate}}"
+                        <dv-loading-button type="button"
+                                           button-click="vm.removeClicked(row,$index)"
+                                           button-class="dv-btn-operation"
+                                           title="{{'ERWERBSPENSUM_DELETE' | translate}}"
                                            input-id="{{vm.inputId + $index}}"
-                                           button-disabled="!vm.addButtonEnabled" delay="0"
+                                           button-disabled="!vm.addButtonEnabled"
+                                           delay="0"
                                            aria-label="{{'ERWERBSPENSUM_DELETE'|translate}}">
                             <i class="fa fa-lg fa-trash-o" aria-label="{{'ERWERBSPENSUM_DELETE' | translate}}">
                             </i>
@@ -76,7 +79,7 @@
             <dv-loading-button type="button" button-click="vm.addClicked()" button-class="dv-btn-operation"
                                button-disabled="!vm.addButtonEnabled">
                 <i class="fa fa-lg fa-plus-circle"></i>
-                 {{vm.addButtonText}}
+                {{vm.addButtonText}}
             </dv-loading-button>
         </div>
     </div>

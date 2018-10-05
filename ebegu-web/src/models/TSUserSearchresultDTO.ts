@@ -20,24 +20,24 @@ export default class TSUserSearchresultDTO {
     private _userDTOs: Array<TSBenutzer>;
     private _totalResultSize: number;
 
-    constructor(userDTOs?: Array<TSBenutzer>, totalResultSize?: number) {
+    public constructor(userDTOs?: Array<TSBenutzer>, totalResultSize?: number) {
         this._userDTOs = userDTOs;
         this._totalResultSize = totalResultSize;
     }
 
-    get userDTOs(): Array<TSBenutzer> {
+    public get userDTOs(): Array<TSBenutzer> {
         return this._userDTOs;
     }
 
-    set userDTOs(value: Array<TSBenutzer>) {
+    public set userDTOs(value: Array<TSBenutzer>) {
         this._userDTOs = value;
     }
 
-    get totalResultSize(): number {
+    public get totalResultSize(): number {
         return this._totalResultSize;
     }
 
-    set totalResultSize(value: number) {
+    public set totalResultSize(value: number) {
         this._totalResultSize = value;
     }
 }
