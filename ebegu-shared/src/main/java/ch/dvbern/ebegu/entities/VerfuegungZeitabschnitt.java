@@ -549,7 +549,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
-	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+	@SuppressWarnings({"AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount"})
 	public void add(VerfuegungZeitabschnitt other) {
 		this.setBetreuungspensum(this.getBetreuungspensum() + other.getBetreuungspensum());
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
