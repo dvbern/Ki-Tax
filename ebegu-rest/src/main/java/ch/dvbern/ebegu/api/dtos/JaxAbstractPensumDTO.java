@@ -39,9 +39,6 @@ public class JaxAbstractPensumDTO extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private Integer pensum;
 
-	@NotNull
-	private BigDecimal monatlicheBetreuungskosten;
-
 	@Nonnull
 	public Integer getPensum() {
 		return pensum;
@@ -49,15 +46,6 @@ public class JaxAbstractPensumDTO extends JaxAbstractDateRangedDTO {
 
 	public void setPensum(@Nonnull Integer pensum) {
 		this.pensum = pensum;
-	}
-
-	@Nonnull
-	public BigDecimal getMonatlicheBetreuungskosten() {
-		return monatlicheBetreuungskosten;
-	}
-
-	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
-		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
 }
