@@ -1356,6 +1356,7 @@
     "GEMEINDE_HINZUFUEGEN": "Gemeinde hinzufügen",
     "GEMEINDEN": "Gemeinde",
     "GEMEINDE": "Gemeinde",
+    "GEMEINDE_NAME": "Gemeinde {{name}}",
     "NEUE_GEMEINDE": "Neue Gemeinde",
     "GEMEINDENAME": "Gemeindename",
     "GEMEINDE_BFS_NR": "BFS-Nummer",

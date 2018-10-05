@@ -35,7 +35,7 @@
                         {{'GEMEINDE' | translate}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let gemeinde"
-                              (click)="setSelectedGemeinde(gemeinde)">
+                              (click)="editGemeinde(gemeinde)">
                         {{gemeinde.name}}
                     </mat-cell>
                 </ng-container>
@@ -46,7 +46,7 @@
                         {{'STATUS' | translate}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let gemeinde"
-                              (click)="setSelectedGemeinde(gemeinde)">
+                              (click)="editGemeinde(gemeinde)">
                         {{'GEMEINDE_STATUS_' + gemeinde.status | translate}}
                     </mat-cell>
                 </ng-container>

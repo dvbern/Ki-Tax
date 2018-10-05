@@ -1,0 +1,223 @@
+/*
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.dvbern.ebegu.api.dtos;
+
+import java.math.BigDecimal;
+
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+
+/**
+ * Created by imanol on 17.03.16.
+ * DTO fuer InstitutionStammdaten
+ */
+@XmlRootElement(name = "gemeindeStammdaten")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxGemeindeStammdaten extends JaxAbstractDTO {
+
+	private static final long serialVersionUID = -1893677808323618626L;
+	// TODO Gemeinde Logo
+	@Nullable
+	private String      administratoren;
+	@Nullable
+	private String      sachbearbeiter;
+	@Nullable
+	private JaxBenutzer defaultBenutzerBG;
+	@Nullable
+	private JaxBenutzer defaultBenutzerTS;
+	@NotNull
+	private JaxGemeinde gemeinde;
+	@NotNull
+	private JaxAdresse  adresse;
+	@Nullable
+	private JaxAdresse  beschwerdeAdresse;
+	private boolean     keineBeschwerdeAdresse;
+	@NotNull
+	private String      mail;
+	@Nullable
+	private String      telefon;
+	@Nullable
+	private String      webseite;
+
+	private boolean     spracheDe;
+	private boolean     spracheFr;
+
+	private JaxBenutzer verantwortlicher;
+	@Nullable
+	private String      konfigurationAb;
+
+	private boolean     kontingentierung;
+	@Nullable
+	private String      bgBisUndMitSchulstufe;
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	@Nullable
+	public String getAdministratoren() {
+		return administratoren;
+	}
+
+	public void setAdministratoren(@Nullable String administratoren) {
+		this.administratoren = administratoren;
+	}
+
+	@Nullable
+	public String getSachbearbeiter() {
+		return sachbearbeiter;
+	}
+
+	public void setSachbearbeiter(@Nullable String sachbearbeiter) {
+		this.sachbearbeiter = sachbearbeiter;
+	}
+
+	@Nullable
+	public JaxBenutzer getDefaultBenutzerBG() {
+		return defaultBenutzerBG;
+	}
+
+	public void setDefaultBenutzerBG(@Nullable JaxBenutzer defaultBenutzerBG) {
+		this.defaultBenutzerBG = defaultBenutzerBG;
+	}
+
+	@Nullable
+	public JaxBenutzer getDefaultBenutzerTS() {
+		return defaultBenutzerTS;
+	}
+
+	public void setDefaultBenutzerTS(@Nullable JaxBenutzer defaultBenutzerTS) {
+		this.defaultBenutzerTS = defaultBenutzerTS;
+	}
+
+	public JaxGemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(JaxGemeinde gemeinde) {
+		this.gemeinde = gemeinde;
+	}
+
+	public JaxAdresse getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(JaxAdresse adresse) {
+		this.adresse = adresse;
+	}
+
+	@Nullable
+	public JaxAdresse getBeschwerdeAdresse() {
+		return beschwerdeAdresse;
+	}
+
+	public void setBeschwerdeAdresse(@Nullable JaxAdresse beschwerdeAdresse) {
+		this.beschwerdeAdresse = beschwerdeAdresse;
+	}
+
+	public boolean isKeineBeschwerdeAdresse() {
+		return keineBeschwerdeAdresse;
+	}
+
+	public void setKeineBeschwerdeAdresse(boolean keineBeschwerdeAdresse) {
+		this.keineBeschwerdeAdresse = keineBeschwerdeAdresse;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	@Nullable
+	public String getTelefon() {
+		return telefon;
+	}
+
+	public void setTelefon(@Nullable String telefon) {
+		this.telefon = telefon;
+	}
+
+	@Nullable
+	public String getWebseite() {
+		return webseite;
+	}
+
+	public void setWebseite(@Nullable String webseite) {
+		this.webseite = webseite;
+	}
+
+	public boolean isSpracheDe() {
+		return spracheDe;
+	}
+
+	public void setSpracheDe(boolean spracheDe) {
+		this.spracheDe = spracheDe;
+	}
+
+	public boolean isSpracheFr() {
+		return spracheFr;
+	}
+
+	public void setSpracheFr(boolean spracheFr) {
+		this.spracheFr = spracheFr;
+	}
+
+	public JaxBenutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(JaxBenutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
+	}
+
+	@Nullable
+	public String getKonfigurationAb() {
+		return konfigurationAb;
+	}
+
+	public void setKonfigurationAb(@Nullable String konfigurationAb) {
+		this.konfigurationAb = konfigurationAb;
+	}
+
+	public boolean isKontingentierung() {
+		return kontingentierung;
+	}
+
+	public void setKontingentierung(boolean kontingentierung) {
+		this.kontingentierung = kontingentierung;
+	}
+
+	@Nullable
+	public String getBgBisUndMitSchulstufe() {
+		return bgBisUndMitSchulstufe;
+	}
+
+	public void setBgBisUndMitSchulstufe(@Nullable String bgBisUndMitSchulstufe) {
+		this.bgBisUndMitSchulstufe = bgBisUndMitSchulstufe;
+	}
+}

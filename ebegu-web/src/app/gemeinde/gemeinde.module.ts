@@ -20,6 +20,7 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
+import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
 
@@ -31,10 +32,12 @@ import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module'
     declarations: [
         GemeindeListComponent,
         AddGemeindeComponent,
+        EditGemeindeComponent,
     ],
     entryComponents: [
         GemeindeListComponent,
         AddGemeindeComponent,
+        EditGemeindeComponent,
     ],
     providers: [],
 })
