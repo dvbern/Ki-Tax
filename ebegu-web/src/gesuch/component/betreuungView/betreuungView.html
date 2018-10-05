@@ -260,16 +260,15 @@
 
                                 <!--Monatliche Betreuungskosten-->
                                 <div class="row">
-                                    <div class="col-sm-12 dv-input-container-small">
+                                    <div class="col-sm-12 dv-input-container-medium">
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float"
-                                                   data-translate-value-betreuungspensumnumber="{{$index + 1}}"
                                                    for="monatlicheBetreuungskosten-{{$index}}">
-                                                <span data-translate="MONATLICHE_BETREUUNGSKOSTEN" class="required"></span>
+                                                <span data-translate="MONATLICHE_BETREUUNGSKOSTEN"></span>
                                                 <dv-tooltip input-id="betreuungsangebot"
                                                             text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
                                             </label>
-                                            <div>
+                                            <div class="dv-input-container-medium-label">
                                                 <input aria-describedby="monatlicheBetreuungskosten-{{$index}}-error"
                                                        id="monatlicheBetreuungskosten-{{$index}}" type="number"
                                                        name="monatlicheBetreuungskosten-{{$index}}"

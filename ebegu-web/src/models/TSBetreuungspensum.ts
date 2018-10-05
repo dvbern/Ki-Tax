@@ -29,11 +29,11 @@ export default class TSBetreuungspensum extends TSAbstractPensumEntity {
         this._nichtEingetreten = value;
     }
 
-    get monatlicheBetreuungskosten(): number {
+    public get monatlicheBetreuungskosten(): number {
         return this._monatlicheBetreuungskosten;
     }
 
-    set monatlicheBetreuungskosten(value: number) {
+    public set monatlicheBetreuungskosten(value: number) {
         this._monatlicheBetreuungskosten = value;
     }
 

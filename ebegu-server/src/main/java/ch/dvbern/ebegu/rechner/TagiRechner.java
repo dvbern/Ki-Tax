@@ -50,8 +50,6 @@ public class TagiRechner extends AbstractBGRechner {
 		BigDecimal kostenProBetreuungsstunde = calculateKostenBetreuungsstunde(parameterDTO.getKostenProStundeMaximalKitaTagi(), massgebendesEinkommen, bgPensum, parameterDTO);
 
 		// Vollkosten und Elternbeitrag
-		//TODO can this be reoved?
-		//BigDecimal vollkosten = MathUtil.EXACT.multiply(parameterDTO.getKostenProStundeMaximalKitaTagi(), betreuungsstundenIntervall);
 		BigDecimal vollkosten = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
 		BigDecimal vollkostenIntervall = MathUtil.EXACT.multiply(vollkosten, anteilMonat);
 

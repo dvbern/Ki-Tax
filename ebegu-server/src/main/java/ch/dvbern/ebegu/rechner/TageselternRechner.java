@@ -47,11 +47,10 @@ public class TageselternRechner extends AbstractBGRechner {
 		BigDecimal betreuungsstundenIntervall = MathUtil.EXACT.multiply(betreuungsstundenProMonat, anteilMonat);
 
 		// Kosten Betreuungsstunde
-		BigDecimal kostenProBetreuungsstunde = calculateKostenBetreuungsstunde(parameterDTO.getKostenProStundeMaximalTageseltern(), massgebendesEinkommen, bgPensum, parameterDTO);
+		BigDecimal kostenProBetreuungsstunde = calculateKostenBetreuungsstunde(parameterDTO.getKostenProStundeMaximalTageseltern(),
+			massgebendesEinkommen, bgPensum, parameterDTO);
 
 		// Vollkosten und Elternbeitrag
-		//TODO can this be removed?
-		//BigDecimal vollkosten = MathUtil.EXACT.multiply(parameterDTO.getKostenProStundeMaximalTageseltern(), betreuungsstundenIntervall);
 		BigDecimal vollkosten =  verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
 		BigDecimal vollkostenIntervall = MathUtil.EXACT.multiply(vollkosten, anteilMonat);
 

@@ -63,11 +63,6 @@ public class KitaRechner extends AbstractBGRechner {
 		BigDecimal oeffnungsstundenBerechnet = oeffnungsstunden.min(parameterDTO.getAnzahlStundenProTagMaximal());
 
 		// Vollkosten
-		//TODO can this be removed?
-		/*BigDecimal vollkostenZaehler = MathUtil.EXACT.multiply(abgeltungProTag, oeffnungsstundenBerechnet, oeffnungstageBerechnet, bgPensum);
-		BigDecimal vollkostenNenner = MathUtil.EXACT.multiply(parameterDTO.getAnzahlStundenProTagMaximal(), ZWOELF);
-		BigDecimal vollkosten = MathUtil.EXACT.divide(vollkostenZaehler, vollkostenNenner);*/
-
 		BigDecimal vollkosten = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
 
 		// Elternbeitrag
