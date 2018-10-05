@@ -22,13 +22,14 @@
            [required]="true"
            [attr.aria-describedby]="id + '-error'"
            (input)="updateLabel()"
-           [(ngModel)]="pensum.betreuungspensumJA.pensum"
+           [(ngModel)]="value"
            [disabled]="disabled"
     >
     <dv-switch class="betreuung-input-switch"
-               (switchChange)="toggle($event)"
-               [switchOptions]="switchOptions"
-               [switchValue]="pensum.betreuungspensumJA.doNotUsePercentage"
+               (switchValueChange)="toggle($event)"
+               [switchOptionLeft]="switchOptions[0]"
+               [switchOptionRight]="switchOptions[1]"
+               [(switchValue)]="pensum.betreuungspensumJA.unitForDisplay"
                [disabled]="disabled"
     >
     </dv-switch>

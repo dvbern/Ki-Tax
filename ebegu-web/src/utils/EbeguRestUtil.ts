@@ -19,6 +19,7 @@ import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
+import {TSAbstractBetreuungspensumEntity} from '../models/TSAbstractBetreuungspensumEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import TSAbstractEntity from '../models/TSAbstractEntity';
 import TSAbstractFinanzielleSituation from '../models/TSAbstractFinanzielleSituation';
@@ -289,12 +290,25 @@ export default class EbeguRestUtil {
         restObj.pensum = pensumEntity.pensum;
     }
 
+    private abstractBetreuungspensumEntityToRestObject(restObj: any, betreuungspensumEntity: TSAbstractBetreuungspensumEntity): void {
+        this.abstractPensumEntityToRestObject(restObj, betreuungspensumEntity);
+        restObj.unitForDisplay = betreuungspensumEntity.unitForDisplay;
+    }
+
     private parseAbstractPensumEntity(
         betreuungspensumTS: TSAbstractPensumEntity,
         betreuungspensumFromServer: any,
     ): void {
         this.parseDateRangeEntity(betreuungspensumTS, betreuungspensumFromServer);
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
+    }
+
+    private parseAbstractBetreuungspensumEntity(
+        betreuungspensumTS: TSAbstractBetreuungspensumEntity,
+        betreuungspensumFromServer: any,
+    ): void {
+        this.parseAbstractPensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+        betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
     }
 
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity): void {
@@ -1469,11 +1483,12 @@ export default class EbeguRestUtil {
     }
 
     public betreuungspensumToRestObject(restBetreuungspensum: any, betreuungspensum: TSBetreuungspensum): any {
-        this.abstractPensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
+        this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
         if (betreuungspensum.nichtEingetreten !== null) {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
+            restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;
     }
@@ -1482,7 +1497,7 @@ export default class EbeguRestUtil {
         restBetreuungspensum: any,
         betreuungspensum: TSBetreuungsmitteilungPensum,
     ): any {
-        this.abstractPensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
+        this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
         return restBetreuungspensum;
     }
 
@@ -1589,8 +1604,9 @@ export default class EbeguRestUtil {
         betreuungspensumFromServer: any,
     ): TSBetreuungspensum {
         if (betreuungspensumFromServer) {
-            this.parseAbstractPensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+            this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
+            betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             return betreuungspensumTS;
         }
         return undefined;
@@ -1601,7 +1617,7 @@ export default class EbeguRestUtil {
         betreuungspensumFromServer: any,
     ): TSBetreuungsmitteilungPensum {
         if (betreuungspensumFromServer) {
-            this.parseAbstractPensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+            this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             return betreuungspensumTS;
         }
         return undefined;

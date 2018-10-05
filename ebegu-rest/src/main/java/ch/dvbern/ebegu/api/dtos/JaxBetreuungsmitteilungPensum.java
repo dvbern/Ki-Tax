@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "betreuungsmitteilungPensum")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxBetreuungsmitteilungPensum extends JaxAbstractPensumDTO {
+public class JaxBetreuungsmitteilungPensum extends JaxAbstractBetreuungspensumDTO {
 
 	private Boolean nichtEingetreten = false;
 

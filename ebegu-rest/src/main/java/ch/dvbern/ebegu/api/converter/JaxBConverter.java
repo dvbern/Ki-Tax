@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -38,6 +37,7 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.dtos.JaxAbstractBetreuungspensumDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
@@ -109,6 +109,7 @@ import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.entities.AbstractBetreuungspensumEntity;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
@@ -437,6 +438,22 @@ public class JaxBConverter {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setPensum(pensum.getPensum());
+	}
+
+	private void convertAbstractBetreuungspensumFieldsToEntity(
+		final JaxAbstractBetreuungspensumDTO jaxPensum,
+		final AbstractBetreuungspensumEntity pensumEntity) {
+
+		convertAbstractPensumFieldsToEntity(jaxPensum, pensumEntity);
+		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
+	}
+
+	private void convertAbstractBetreuungspensumFieldsToJAX(
+		final AbstractBetreuungspensumEntity pensum,
+		final JaxAbstractBetreuungspensumDTO jaxPensum) {
+
+		convertAbstractPensumFieldsToJAX(pensum, jaxPensum);
+		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 	}
 
 	@Nonnull
@@ -2482,7 +2499,7 @@ public class JaxBConverter {
 		final JaxBetreuungspensum jaxBetreuungspensum,
 		final Betreuungspensum betreuungspensum) {
 
-		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
+		convertAbstractBetreuungspensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
 
 		return betreuungspensum;
@@ -2503,7 +2520,7 @@ public class JaxBConverter {
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum,
 		final BetreuungsmitteilungPensum betreuungspensum) {
 
-		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
+		convertAbstractBetreuungspensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 
 		return betreuungspensum;
 	}
@@ -2513,7 +2530,7 @@ public class JaxBConverter {
 
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum = new JaxBetreuungsmitteilungPensum();
 
-		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
+		convertAbstractBetreuungspensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 
 		return jaxBetreuungspensum;
 	}
@@ -2842,7 +2859,7 @@ public class JaxBConverter {
 	private JaxBetreuungspensum betreuungspensumToJax(@Nonnull Betreuungspensum betreuungspensum) {
 
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
-		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
+		convertAbstractBetreuungspensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
 
 		return jaxBetreuungspensum;

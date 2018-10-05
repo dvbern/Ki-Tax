@@ -13,13 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnInit, Output} from '@angular/core';
 import {state, style, trigger} from '@angular/animations';
+import {ChangeDetectionStrategy, Component, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 
+/**
+ * This switch will display 2 boxes with the 2 given values.
+ */
 @Component({
     selector: 'dv-switch',
     templateUrl: './dv-switch.template.html',
     styleUrls: ['./dv-switch.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
         trigger('switchValue', [
             // ...
@@ -32,15 +36,18 @@ import {state, style, trigger} from '@angular/animations';
         ]),
     ]
 })
-export class DvSwitchComponent implements OnInit, OnChanges {
+export class DvSwitchComponent<T> implements OnInit, OnChanges {
 
-    @Input() public switchValue: boolean = false;
-    @Input() public switchOptions: Array<string> = [];
+    // It is allowed to set any values as switchOption. switchValue will then have the select (<any>) option
+    @Input() private switchValue: T;
+    @Input() public readonly switchOptionLeft: T;
+    @Input() public readonly switchOptionRight: T;
+
     @HostBinding('class.disabled')
     @Input() public disabled: boolean = false;
 
     @Output()
-    public readonly switchChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+    public readonly switchValueChange: EventEmitter<T> = new EventEmitter<T>();
 
     @HostBinding('attr.tabindex')
     public tabindex: number;
@@ -51,27 +58,43 @@ export class DvSwitchComponent implements OnInit, OnChanges {
     @HostListener('keydown.ArrowRight', ['$event'])
     @HostListener('keydown.ArrowLeft', ['$event'])
     public handleKeyboardEvent(event: KeyboardEvent): void {
-        if (this.switchValue !== (event.key === 'ArrowRight') && !this.disabled) {
-            this.switchValue = event.key === 'ArrowRight';
-            this.ngOnChanges();
+        if (this.disabled) {
+            return;
         }
+        if (event.key === 'ArrowRight' && this.switchValue !== this.switchOptionRight) {
+            this.switchValue = this.switchOptionRight;
+
+        } else if (event.key === 'ArrowLeft' && this.switchValue !== this.switchOptionLeft) {
+            this.switchValue = this.switchOptionLeft;
+        }
+
+        this.emitValue();
     }
 
     @HostListener('keydown.space', ['$event'])
     @HostListener('click', ['$event'])
     public toggle(): void {
-        if (!this.disabled) {
-            this.switchValue = !this.switchValue;
-            this.ngOnChanges();
+        if (this.disabled) {
+            return;
         }
+        this.switchValue = (this.switchValue === this.switchOptionLeft
+            ? this.switchOptionRight
+            : this.switchOptionLeft);
+
+        this.emitValue();
     }
 
     public ngOnInit(): void {
-        this.switchChange.emit(this.switchValue);
         this.tabindex = this.disabled ? -1 : 0;
     }
 
-    public ngOnChanges(): void {
-        this.switchChange.emit(this.switchValue);
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes && changes.switchValue) {
+            this.switchValueChange.emit(this.switchValue);
+        }
+    }
+
+    private emitValue(): void {
+        this.switchValueChange.emit(this.switchValue);
     }
 }

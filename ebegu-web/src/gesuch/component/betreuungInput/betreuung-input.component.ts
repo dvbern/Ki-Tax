@@ -13,9 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
 
 const LOG = LogFactory.createLog('BetreuungInputComponent');
@@ -24,6 +26,7 @@ const LOG = LogFactory.createLog('BetreuungInputComponent');
     selector: 'dv-betreuung-input',
     templateUrl: './betreuungInput.template.html',
     styleUrls: ['./betreuungInput.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BetreuungInputComponent implements OnInit {
 
@@ -46,28 +49,30 @@ export class BetreuungInputComponent implements OnInit {
     @Input()
     public betreuungsangebottyp: TSBetreuungsangebotTyp;
 
+    private value: number;
+
     public label: string = '';
-    public switchOptions: Array<string> = [];
+    public switchOptions: Array<TSPensumUnits> = [];
     public multiplier: number = 1;
 
-    public constructor() {
+    public constructor(private readonly translate: TranslateService) {
     }
 
     public ngOnInit(): void {
         this.LOG.debug(this.betreuungsangebottyp);
 
         this.setAngebotDependingVariables();
-        this.pensum.betreuungspensumJA.pensum = this.initialCalculation();
+        this.parseToPensumUnit();
     }
 
     public setAngebotDependingVariables(): void {
         switch (this.betreuungsangebottyp) {
             case TSBetreuungsangebotTyp.KITA:
-                this.switchOptions = ['%', 'Tage'];
+                this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
                 this.multiplier = this.MULTIPLIER_KITA;
                 break;
             case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                this.switchOptions = ['%', 'Stunden'];
+                this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
                 this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
                 break;
             default:
@@ -75,31 +80,39 @@ export class BetreuungInputComponent implements OnInit {
         }
     }
 
-    public toggle(newValue: any): void {
-        this.pensum.betreuungspensumJA.doNotUsePercentage = newValue;
+    public toggle(): void {
+        this.parseToPercentage();
         this.updateLabel();
     }
 
     public updateLabel(): void {
-        if (this.calculate() === 'NaN') {
+        const calculatedResult = this.calculateValueForAdditionalLabel();
+        if (calculatedResult === 'NaN') {
             this.label = '';
-        } else {
-            const lbl: string = this.pensum.betreuungspensumJA.doNotUsePercentage ? '%' : ` ${this.switchOptions[1]} pro Monat`;
-            this.label = `oder ${this.calculate()}${lbl}`;
+            return;
         }
+        const lbl: string = this.pensum.betreuungspensumJA.unitForDisplay === this.switchOptions[0]
+            ? ` ${this.translate.instant(this.switchOptions[1])} ${this.translate.instant('PER_MONTH')}`
+            : this.translate.instant(this.switchOptions[0]);
+
+        this.label = `${this.translate.instant('OR')} ${calculatedResult}${lbl}`;
     }
 
-    private calculate(): string {
-        const pensum = this.pensum.betreuungspensumJA.pensum;
-        return this.pensum.betreuungspensumJA.doNotUsePercentage
-            ? (pensum / this.multiplier).toFixed(2)
-            : (pensum * this.multiplier).toFixed(2);
+    private calculateValueForAdditionalLabel(): string {
+        return this.pensum.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
+            ? (this.value * this.multiplier).toFixed(2)
+            : (this.value / this.multiplier).toFixed(2);
     }
 
-    private initialCalculation(): number {
-        const pensum = this.pensum.betreuungspensumJA.pensum;
-        return this.pensum.betreuungspensumJA.doNotUsePercentage
-            ? pensum * this.multiplier
-            : pensum;
+    private parseToPensumUnit(): void {
+        this.value = this.pensum.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
+            ? this.pensum.betreuungspensumJA.pensum
+            : this.pensum.betreuungspensumJA.pensum * this.multiplier;
+    }
+
+    private parseToPercentage(): void {
+        this.pensum.betreuungspensumJA.pensum = this.pensum.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
+            ? this.value
+            : this.value / this.multiplier;
     }
 }

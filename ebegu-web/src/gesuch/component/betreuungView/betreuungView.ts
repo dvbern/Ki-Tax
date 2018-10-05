@@ -29,6 +29,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
 import TSBetreuung from '../../../models/TSBetreuung';
@@ -548,7 +549,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            new TSBetreuungspensum(false, undefined, new TSDateRange())));
+            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE, false, undefined, new TSDateRange())));
     }
 
     public removeBetreuungspensum(betreuungspensumToDelete: TSBetreuungspensumContainer): void {
@@ -578,22 +579,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public platzBestaetigen(): void {
         if (this.isGesuchValid()) {
             this.getBetreuungModel().datumBestaetigung = DateUtil.today();
-            this.getBetreuungModel().betreuungspensumContainers.forEach(val => {
-                if (val.betreuungspensumJA.doNotUsePercentage) {
-                    switch (this.getBetreuungModel().getAngebotTyp()) {
-                        case TSBetreuungsangebotTyp.KITA:
-                            val.betreuungspensumJA.pensum = Math.ceil((val.betreuungspensumJA.pensum * 5) * 100) / 100;
-                            break;
-                        case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                            val.betreuungspensumJA.pensum = Math.ceil((val.betreuungspensumJA.pensum / 2.2) * 100) / 100;
-                            break;
-                        default:
-                            console.log('whoops');
-                            break;
-                    }
-                }
-            });
-
             this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
         }
     }

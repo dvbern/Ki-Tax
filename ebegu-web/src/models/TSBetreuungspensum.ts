@@ -13,17 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractPensumEntity} from './TSAbstractPensumEntity';
+import {TSPensumUnits} from './enums/TSPensumUnits';
+import {TSAbstractBetreuungspensumEntity} from './TSAbstractBetreuungspensumEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSBetreuungspensum extends TSAbstractPensumEntity {
+export default class TSBetreuungspensum extends TSAbstractBetreuungspensumEntity {
 
     private _nichtEingetreten: boolean;
 
-    private _doNotUsePercentage: boolean;
-
-    public constructor(nichtEingetreten?: boolean, pensum?: number, gueltigkeit?: TSDateRange) {
-        super(pensum, gueltigkeit);
+    public constructor(unitForDisplay?: TSPensumUnits, nichtEingetreten?: boolean, pensum?: number, gueltigkeit?: TSDateRange) {
+        super(unitForDisplay, pensum, gueltigkeit);
         this.nichtEingetreten = nichtEingetreten;
     }
 
@@ -33,13 +32,5 @@ export default class TSBetreuungspensum extends TSAbstractPensumEntity {
 
     public set nichtEingetreten(value: boolean) {
         this._nichtEingetreten = value;
-    }
-
-    public get doNotUsePercentage(): boolean {
-        return this._doNotUsePercentage;
-    }
-
-    public set doNotUsePercentage(value: boolean) {
-        this._doNotUsePercentage = value;
     }
 }
