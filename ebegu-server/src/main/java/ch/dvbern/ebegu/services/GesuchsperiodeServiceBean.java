@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -162,9 +161,8 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			Optional<Gesuchsperiode> lastGesuchsperiode = getGesuchsperiodeAm(stichtagInVorperiode);
 			if (lastGesuchsperiode.isPresent()) {
 				// we only copy the einstellung when there is a lastGesuchsperiode. In some cases, among others in
-				// some tests we won't have
-				// a lastGesuchsperiode so we cannot copy the Einstellungen. In production if there is no
-				// lastGesuchsperiode there is also nothing to copy
+				// some tests we won't have a lastGesuchsperiode so we cannot copy the Einstellungen. In production
+				// if there is no lastGesuchsperiode there is also nothing to copy
 				einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode.get());
 			}
 			// Wenn die Gesuchsperiode neu ist, muss das Datum Freischaltung Tagesschule gesetzt werden: Defaultmässig
@@ -278,23 +276,6 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Override
 	@Nonnull
 	@PermitAll
-	public Collection<Gesuchsperiode> getGesuchsperiodenAfterDate(
-		@Nonnull LocalDate date,
-		@Nullable String dossierId) {
-
-		Collection<Gesuchsperiode> perioden;
-		perioden = dossierId != null
-			? getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId)
-			: getAllNichtAbgeschlosseneGesuchsperioden();
-
-		return perioden.stream()
-			.filter(periode -> periode.getGueltigkeit().startsSameDayOrAfter(date))
-			.collect(Collectors.toList());
-	}
-
-	@Override
-	@Nonnull
-	@PermitAll
 	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(
 		@Nullable String dossierId) {
 		Dossier dossier = persistence.find(Dossier.class, dossierId);
@@ -362,6 +343,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	public Collection<Gesuchsperiode> getGesuchsperiodenBetween(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis) {
+
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
 		Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);

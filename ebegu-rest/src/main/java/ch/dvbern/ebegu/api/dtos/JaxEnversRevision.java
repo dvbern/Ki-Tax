@@ -17,7 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDateTime;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -66,7 +66,7 @@ public class JaxEnversRevision extends JaxAbstractDTO {
 		return revTimeStamp;
 	}
 
-	public void setRevTimeStamp(@Nullable LocalDateTime revTimeStamp) {
+	public void setRevTimeStamp(@Nonnull LocalDateTime revTimeStamp) {
 		this.revTimeStamp = revTimeStamp;
 	}
 

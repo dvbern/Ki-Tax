@@ -169,7 +169,8 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 			.add(TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().getYear()));
 		betreuung.getBetreuungspensumContainers()
 			.add(TestJaxDataUtil.createBetreuungspensumContainer(LocalDate.now().plusYears(1).getYear()));
-		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()),
+		JaxBetreuung updatedBetr = betreuungResource.saveBetreuung(
+			converter.toJaxId(initialBetr.getKind()),
 			betreuung,
 			false,
 			DUMMY_URIINFO,
@@ -186,7 +187,8 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 				.plusYears(2)
 				.getYear())); //einen neuen einfuegen
 
-		updatedBetr = betreuungResource.saveBetreuung(converter.toJaxId(initialBetr.getKind()),
+		updatedBetr = betreuungResource.saveBetreuung(
+			converter.toJaxId(initialBetr.getKind()),
 			updatedBetr,
 			false,
 			DUMMY_URIINFO,
