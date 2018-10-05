@@ -638,6 +638,7 @@
     "DATE_PLACEHOLDER": "tt.mm.jjjj",
     "DATE_PLACEHOLDER_FIRSTOFMONTH": "01.mm.jjjj",
     "PERCENTAGE_PLACEHOLDER": "Angabe in %",
+    "BETRAG_PLACEHOLDER": "Angabe in CHF",
     "FAM_ERGAENZENDE_BETREUUNG_HELP": "Besucht Ihr Kind in der Stadt Bern eine Kita, ein Tagi, eine Ferieninsel, Tageseltern oder eine Tagesschule? Oder ist der Besuch geplant?",
     "FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE": "Um dieses Feld editieren zu können, löschen Sie zuerst alle Betreuungen des Kindes",
     "MUTTERSPRACHE_DEUTSCH_HELP": "Die Gesundheits- und Fürsorgedirektion des Kantons Bern benötigt diese Angabe für statistische Erhebungen.",
@@ -1366,5 +1367,7 @@
     "DEBUGGING_TRACE_TRANSITIONS": "Transition Tracing",
     "DEBUGGING_UI_ROUTER_VISUALIZER": "UI Router Visualizer aktivieren",
     "ERROR_STARTDATUM_FIRST_OF_MONTH": "Das Startdatum muss am 1. des jeweiligen Monats beginnen!",
-    "ERROR_STARTDATUM_FUTURE": "Das Startdatum muss in der Zukunft liegen!"
+    "ERROR_STARTDATUM_FUTURE": "Das Startdatum muss in der Zukunft liegen!",
+    "MONATLICHE_BETREUUNGSKOSTEN": "Monatliche Betreuungskosten",
+    "MONATLICHE_BETREUUNGSKOSTEN_HELP": "Erfassen Sie hier die monatlichen Betreuungskosten (ohne Verpflegungskosten).<br>Auch bei untermonatlichen Eintritten müssen die monatlichen Kosten erfasst werden. Falls sich der Tarif ändert, erstellen Sie ein neues Betreuungspensum."
 }

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -42,6 +43,10 @@ public class Betreuungspensum extends AbstractPensumEntity implements Comparable
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
 
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
+
 	public Betreuungspensum() {
 	}
 
@@ -62,6 +67,15 @@ public class Betreuungspensum extends AbstractPensumEntity implements Comparable
 
 	public void setNichtEingetreten(@Nonnull Boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
+	}
+
+	@Nonnull
+	public BigDecimal getMonatlicheBetreuungskosten() {
+		return monatlicheBetreuungskosten;
+	}
+
+	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
+		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
 	@Override

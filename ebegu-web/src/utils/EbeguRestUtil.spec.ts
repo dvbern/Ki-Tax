@@ -251,11 +251,11 @@ describe('EbeguRestUtil', () => {
                 TestDataUtil.setAbstractMutableFieldsUndefined(instStam);
 
                 const tsBetreuungspensumGS = new TSBetreuungspensum(false,
-                    pensum25,
+                    500.50, pensum25,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
                 const tsBetreuungspensumJA = new TSBetreuungspensum(false,
-                    pensum50,
+                    200.20, pensum50,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumJA);
                 const tsBetreuungspensumContainer = new TSBetreuungspensumContainer(
@@ -308,7 +308,7 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseBetreuungspensum', () => {
             it('should transform TSBetreuungspensum to REST object and back', () => {
-                const betreuungspensum = new TSBetreuungspensum(false, pensum25,
+                const betreuungspensum = new TSBetreuungspensum(false, 200.20, pensum25,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuungspensum);
 
