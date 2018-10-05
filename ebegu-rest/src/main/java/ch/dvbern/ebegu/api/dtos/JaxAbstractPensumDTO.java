@@ -45,4 +45,5 @@ public class JaxAbstractPensumDTO extends JaxAbstractDateRangedDTO {
 	public void setPensum(@Nonnull Integer pensum) {
 		this.pensum = pensum;
 	}
+
 }
