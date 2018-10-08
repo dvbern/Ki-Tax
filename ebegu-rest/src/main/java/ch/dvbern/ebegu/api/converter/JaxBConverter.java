@@ -291,6 +291,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractPensumFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
+		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
 	}
 
 	private void convertAbstractBetreuungspensumFieldsToJAX(
@@ -299,6 +300,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractPensumFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
+		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 	}
 
 	@Nonnull
@@ -547,13 +549,14 @@ public class JaxBConverter extends AbstractConverter {
 				{
 					if (o1.extractGueltigkeit() == null && o2.extractGueltigkeit() == null) {
 						return 0;
-					} else if (o1.extractGueltigkeit() == null) {
-						return 1;
-					} else if (o2.extractGueltigkeit() == null) {
-						return -1;
-					} else {
-						return o1.extractGueltigkeit().getGueltigAb().compareTo(o2.extractGueltigkeit().getGueltigAb());
 					}
+					if (o1.extractGueltigkeit() == null) {
+						return 1;
+					}
+					if (o2.extractGueltigkeit() == null) {
+						return -1;
+					}
+					return o1.extractGueltigkeit().getGueltigAb().compareTo(o2.extractGueltigkeit().getGueltigAb());
 				}).collect(Collectors.toList())
 			));
 		}
@@ -2302,7 +2305,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractBetreuungspensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
-		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
 
 		return betreuungspensum;
 	}
@@ -2663,7 +2665,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
 		convertAbstractBetreuungspensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
-		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 
 		return jaxBetreuungspensum;
 	}

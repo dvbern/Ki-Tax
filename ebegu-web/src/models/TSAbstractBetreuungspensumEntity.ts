@@ -22,10 +22,17 @@ import {TSDateRange} from './types/TSDateRange';
 export class TSAbstractBetreuungspensumEntity extends TSAbstractPensumEntity {
 
     private _unitForDisplay: TSPensumUnits;
+    private _monatlicheBetreuungskosten: number;
 
-    public constructor(unitForDisplay?: TSPensumUnits, pensum?: number, gueltigkeit?: TSDateRange) {
+    public constructor(
+        monatlicheBetreuungskosten: number,
+        unitForDisplay?: TSPensumUnits,
+        pensum?: number,
+        gueltigkeit?: TSDateRange
+    ) {
         super(pensum, gueltigkeit);
         this._unitForDisplay = unitForDisplay;
+        this._monatlicheBetreuungskosten = monatlicheBetreuungskosten;
     }
 
     public get unitForDisplay(): TSPensumUnits {
@@ -34,5 +41,13 @@ export class TSAbstractBetreuungspensumEntity extends TSAbstractPensumEntity {
 
     public set unitForDisplay(value: TSPensumUnits) {
         this._unitForDisplay = value;
+    }
+
+    public get monatlicheBetreuungskosten(): number {
+        return this._monatlicheBetreuungskosten;
+    }
+
+    public set monatlicheBetreuungskosten(value: number) {
+        this._monatlicheBetreuungskosten = value;
     }
 }

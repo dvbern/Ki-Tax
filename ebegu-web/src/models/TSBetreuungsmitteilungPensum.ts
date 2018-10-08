@@ -19,7 +19,12 @@ import {TSDateRange} from './types/TSDateRange';
 
 export default class TSBetreuungsmitteilungPensum extends TSAbstractBetreuungspensumEntity {
 
-    public constructor(unitForDisplay?: TSPensumUnits, pensum?: number, gueltigkeit?: TSDateRange) {
-        super(unitForDisplay, pensum, gueltigkeit);
+    public constructor(
+        monatlicheBetreuungskosten?: number,
+        unitForDisplay?: TSPensumUnits,
+        pensum?: number,
+        gueltigkeit?: TSDateRange
+    ) {
+        super(monatlicheBetreuungskosten, unitForDisplay, pensum, gueltigkeit);
     }
 }

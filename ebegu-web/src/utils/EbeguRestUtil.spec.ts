@@ -21,6 +21,7 @@ import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../models/enums/TSBetreuungsstatus';
 import {TSGeschlecht} from '../models/enums/TSGeschlecht';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
+import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from '../models/enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import TSAbwesenheit from '../models/TSAbwesenheit';
 import TSAbwesenheitContainer from '../models/TSAbwesenheitContainer';
@@ -252,12 +253,18 @@ describe('EbeguRestUtil', () => {
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(instStam);
 
-                const tsBetreuungspensumGS = new TSBetreuungspensum(false,
-                    monatlicheBetreuungskosten500, pensum25,
+                const tsBetreuungspensumGS = new TSBetreuungspensum(
+                    TSPensumUnits.PERCENTAGE,
+                    false,
+                    monatlicheBetreuungskosten500,
+                    pensum25,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
-                const tsBetreuungspensumJA = new TSBetreuungspensum(false,
-                    monatlicheBetreuungskosten200, pensum50,
+                const tsBetreuungspensumJA = new TSBetreuungspensum(
+                    TSPensumUnits.PERCENTAGE,
+                    false,
+                    monatlicheBetreuungskosten200,
+                    pensum50,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumJA);
                 const tsBetreuungspensumContainer = new TSBetreuungspensumContainer(
@@ -310,7 +317,11 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseBetreuungspensum', () => {
             it('should transform TSBetreuungspensum to REST object and back', () => {
-                const betreuungspensum = new TSBetreuungspensum(false, monatlicheBetreuungskosten200, pensum25,
+                const betreuungspensum = new TSBetreuungspensum(
+                    TSPensumUnits.PERCENTAGE,
+                    false,
+                    monatlicheBetreuungskosten200,
+                    pensum25,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuungspensum);
 

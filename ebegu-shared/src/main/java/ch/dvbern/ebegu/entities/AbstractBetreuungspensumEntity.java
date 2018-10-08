@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
@@ -47,8 +49,21 @@ public class AbstractBetreuungspensumEntity extends AbstractPensumEntity {
 	@NotNull
 	private PensumUnits unitForDisplay = PensumUnits.PERCENTAGE;
 
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
+
 	public PensumUnits getUnitForDisplay() {
 		return unitForDisplay;
+	}
+
+	@Nonnull
+	public BigDecimal getMonatlicheBetreuungskosten() {
+		return monatlicheBetreuungskosten;
+	}
+
+	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
+		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
 	public void setUnitForDisplay(PensumUnits unitForDisplay) {
@@ -73,8 +88,12 @@ public class AbstractBetreuungspensumEntity extends AbstractPensumEntity {
 	}
 
 	@Nonnull
-	public AbstractBetreuungspensumEntity copyAbstractBetreuungspensumEntity(@Nonnull AbstractBetreuungspensumEntity target, @Nonnull AntragCopyType copyType) {
+	public AbstractBetreuungspensumEntity copyAbstractBetreuungspensumEntity(
+		@Nonnull AbstractBetreuungspensumEntity target,
+		@Nonnull AntragCopyType copyType) {
+
 		super.copyAbstractPensumEntity(target, copyType);
+		target.setMonatlicheBetreuungskosten(this.monatlicheBetreuungskosten);
 		target.setUnitForDisplay(this.getUnitForDisplay());
 		return target;
 	}
