@@ -20,10 +20,12 @@ import {TSDateRange} from './types/TSDateRange';
 export default class TSBetreuungspensum extends TSAbstractBetreuungspensumEntity {
 
     private _nichtEingetreten: boolean;
+    private _monatlicheBetreuungskosten: number;
 
-    public constructor(unitForDisplay?: TSPensumUnits, nichtEingetreten?: boolean, pensum?: number, gueltigkeit?: TSDateRange) {
+    public constructor(unitForDisplay?: TSPensumUnits, nichtEingetreten?: boolean, monatlicheBetreuungskosten?: number, pensum?: number, gueltigkeit?: TSDateRange) {
         super(unitForDisplay, pensum, gueltigkeit);
         this.nichtEingetreten = nichtEingetreten;
+        this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
     }
 
     public get nichtEingetreten(): boolean {
@@ -32,5 +34,13 @@ export default class TSBetreuungspensum extends TSAbstractBetreuungspensumEntity
 
     public set nichtEingetreten(value: boolean) {
         this._nichtEingetreten = value;
+    }
+
+    public get monatlicheBetreuungskosten(): number {
+        return this._monatlicheBetreuungskosten;
+    }
+
+    public set monatlicheBetreuungskosten(value: number) {
+        this._monatlicheBetreuungskosten = value;
     }
 }

@@ -30,9 +30,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckEinstellungValidator.class)
+@Constraint(validatedBy = CheckGemeindeValidator.class)
 @Documented
-public @interface CheckEinstellung {
+public @interface CheckGemeinde {
 
 	String message() default "{invalid_einstellung}";
 

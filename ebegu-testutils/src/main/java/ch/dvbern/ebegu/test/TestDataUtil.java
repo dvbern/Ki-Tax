@@ -133,7 +133,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.BEGU_ANBIETEN_AB;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
@@ -343,6 +342,7 @@ public final class TestDataUtil {
 			gemeinde.setBfsNummer(SEQUENCE.incrementAndGet());
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
+			gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
 			return persistence.persist(gemeinde);
 		}
 		return gemeinde;
@@ -378,6 +378,7 @@ public final class TestDataUtil {
 		gemeinde.setGemeindeNummer(1);
 		gemeinde.setBfsNummer(351L);
 		gemeinde.setMandant(createDefaultMandant());
+		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
 		return gemeinde;
 	}
 
@@ -390,6 +391,7 @@ public final class TestDataUtil {
 		gemeinde.setGemeindeNummer(2);
 		gemeinde.setBfsNummer(363L);
 		gemeinde.setMandant(createDefaultMandant());
+		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
 		return gemeinde;
 	}
 
@@ -1107,7 +1109,6 @@ public final class TestDataUtil {
 	}
 
 	public static void prepareParameters(Gesuchsperiode gesuchsperiode, Persistence persistence) {
-		saveEinstellung(BEGU_ANBIETEN_AB, "1999-01-01", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_ABGELTUNG_PRO_TAG_KANTON, "107.19", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, "7", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, "7", gesuchsperiode, persistence);

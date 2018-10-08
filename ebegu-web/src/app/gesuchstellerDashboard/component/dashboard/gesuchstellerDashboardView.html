@@ -29,7 +29,8 @@
          layout-align-xs="space-between center">
 
         <div class="gdashboard-panel"
-             ng-repeat="periode in vm.getActiveGesuchsperiodenList() | orderBy: 'gueltigkeit.gueltigAb'">
+             ng-repeat="periode in vm.activeGesuchsperiodenList | orderBy: 'gueltigkeit.gueltigAb'"
+             ng-if="vm.activeGesuchsperiodenList.length > 0">
 
             <span class="gdashboard-panel__gesuchstring">
                 <span data-translate="GESUCH"></span>
@@ -70,18 +71,21 @@
                 {{'TAGESSCHULE_ANMELDEN' | translate}}
             </dv-loading-button>
 
-            <!--<div class="gdashboard-panel__text" ng-if="vm.gesperrtWegenMutation(periode)" >-->
-            <!--{{'GESPERRT_WEGEN_MUTATION' | translate}}-->
-            <!--</div>-->
+        </div>
+        <div class="dashboard-error"
+             ng-if="vm.activeGesuchsperiodenList.length == 0">
+            <span>
+                <b data-translate="GSDASHBOARD_KEINE_PERIODEN"
+                   data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"
+                   data-translate-value-periodenjahre="{{vm.periodYear}}">
+                </b>
+            </span>
 
-            <!--<div class="gdashboard-panel__text" ng-if="vm.showAnmeldungCreate(periode) && vm.hasOnlyFerieninsel(periode)" >-->
-            <!--{{'MUTATION_NOETIG_DB' | translate}}-->
-            <!--</div>-->
         </div>
 
     </div>
 
-    <div class="col-md-8 col-md-offset-2">
+    <div ng-if="vm.activeGesuchsperiodenList.length > 0" class="col-md-8 col-md-offset-2">
 
         <h2 data-translate="GSDASHBOARD_ANTRAEGE"></h2>
 
