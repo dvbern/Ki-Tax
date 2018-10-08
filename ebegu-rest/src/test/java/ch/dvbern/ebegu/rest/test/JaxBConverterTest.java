@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
@@ -104,7 +105,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private Persistence persistence;
 
-	private final JaxBConverter converter = new JaxBConverter();
+	private final JaxBConverter converter = new JaxBConverter(new GemeindeJaxBConverter());
 	private Gesuchsperiode gesuchsperiode;
 
 	@Before

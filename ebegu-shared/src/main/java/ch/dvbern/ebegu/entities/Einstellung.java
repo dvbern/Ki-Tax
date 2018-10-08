@@ -35,7 +35,6 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
-import ch.dvbern.ebegu.validators.CheckEinstellung;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
@@ -44,7 +43,6 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-@CheckEinstellung
 public class Einstellung extends AbstractEntity {
 
 	private static final long serialVersionUID = 8704632842261673111L;

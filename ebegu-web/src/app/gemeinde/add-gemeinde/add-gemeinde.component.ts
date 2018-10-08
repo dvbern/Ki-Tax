@@ -38,7 +38,6 @@ export class AddGemeindeComponent implements OnInit {
 
     public gemeinde: TSGemeinde = undefined;
     public adminMail: string = undefined;
-    public beguStartDatum: moment.Moment;
     public beguStartDatumMin: moment.Moment;
     public gesuchsperiodeList: Array<TSGesuchsperiode>;
 
@@ -65,7 +64,7 @@ export class AddGemeindeComponent implements OnInit {
         const currentDate = moment();
         const futureMonth = moment(currentDate).add(1, 'M');
         const futureMonthBegin = moment(futureMonth).startOf('month');
-        this.beguStartDatum = futureMonthBegin;
+        this.gemeinde.betreuungsgutscheineStartdatum = futureMonthBegin;
         this.beguStartDatumMin = futureMonthBegin;
         this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: TSGesuchsperiode[]) => {
             this.gesuchsperiodeList = response;
@@ -88,12 +87,12 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private isStartDateValid(): boolean {
-        const day = this.beguStartDatum.format('D');
+        const day = this.gemeinde.betreuungsgutscheineStartdatum.format('D');
         if ('1' !== day) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FIRST_OF_MONTH'));
             return false;
         }
-        if (moment() >= this.beguStartDatum) {
+        if (moment() >= this.gemeinde.betreuungsgutscheineStartdatum) {
             this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FUTURE'));
             return false;
         }
@@ -101,10 +100,11 @@ export class AddGemeindeComponent implements OnInit {
     }
 
     private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum).then(neueGemeinde => {
-            this.gemeinde = neueGemeinde;
-            this.navigateBack();
-        });
+        this.gemeindeRS.createGemeinde(this.gemeinde, this.gemeinde.betreuungsgutscheineStartdatum)
+            .then(neueGemeinde => {
+                this.gemeinde = neueGemeinde;
+                this.navigateBack();
+            });
     }
 
     private initGemeinde(): void {
