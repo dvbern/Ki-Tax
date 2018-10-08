@@ -38,7 +38,10 @@ public class GutscheineStartdatumCalcRule extends AbstractCalcRule {
 
 		if (!verfuegungZeitabschnitt.isAbschnittLiegtNachBEGUStartdatum()) {
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.BEGU_STARTDATUM, MsgKey.BETREUUNG_VOR_BEGU_START);
+			verfuegungZeitabschnitt.addBemerkung(
+				RuleKey.BEGU_STARTDATUM,
+				MsgKey.BETREUUNG_VOR_BEGU_START,
+				betreuung.extractGesuch().getDossier().getGemeinde().getName());
 		}
 	}
 }

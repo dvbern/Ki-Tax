@@ -38,10 +38,8 @@ public class GutscheineStartdatumAbschnittRuleTest {
 	@Nonnull
 	private Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 
-	private final GutscheineStartdatumAbschnittRule rule = new GutscheineStartdatumAbschnittRule(
-		RuleKey.NO_RULE,
-		RuleType.GRUNDREGEL_DATA,
-		Constants.DEFAULT_GUELTIGKEIT);
+	private final GutscheineStartdatumAbschnittRule rule =
+		new GutscheineStartdatumAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 
 	@Before
 	public void setUp() {
@@ -106,8 +104,8 @@ public class GutscheineStartdatumAbschnittRuleTest {
 		VerfuegungZeitabschnitt afterStartdatumResult = results.get(1);
 		Assert.assertTrue(afterStartdatumResult.isAbschnittLiegtNachBEGUStartdatum());
 		DateRange rangeAfterStartdatum = new DateRange(
-				Constants.GESUCHSPERIODE_17_18_BIS,
-				Constants.GESUCHSPERIODE_17_18_BIS);
+			Constants.GESUCHSPERIODE_17_18_BIS,
+			Constants.GESUCHSPERIODE_17_18_BIS);
 		Assert.assertEquals(rangeAfterStartdatum, afterStartdatumResult.getGueltigkeit());
 	}
 }
