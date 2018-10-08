@@ -61,8 +61,6 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     public showError: boolean = false;
     private gesuchsperiodenListe: Array<TSGesuchsperiode>;
 
-    public gemeindeId: string;
-
     public constructor(
         gesuchModelManager: GesuchModelManager,
         berechnungsManager: BerechnungsManager,
@@ -93,7 +91,6 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
             this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
         }
-        this.gemeindeId = this.$stateParams.gemeindeId;
     }
 
     public setShowError(showError: boolean): void {
@@ -106,7 +103,8 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             && this.gesuchModelManager.getGesuchsperiode()) {
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gemeindeId).then(
+
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gesuchModelManager.getDossier().gemeinde.id).then(
             (response: TSGesuchsperiode[]) => {
                 this.gesuchsperiodenListe = angular.copy(response);
             });
