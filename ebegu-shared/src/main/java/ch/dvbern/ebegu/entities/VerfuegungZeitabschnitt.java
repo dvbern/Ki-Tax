@@ -133,6 +133,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private boolean kategorieZuschlagZumErwerbspensum = false;
 
+	@Transient
+	private boolean abschnittLiegtNachBEGUStartdatum = false;
+
 	@Max(100)
 	@Min(0)
 	@NotNull
@@ -540,6 +543,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setSameVerguenstigung(boolean sameVerguenstigung) {
 		this.sameVerguenstigung = sameVerguenstigung;
+	}
+
+	public boolean isAbschnittLiegtNachBEGUStartdatum() {
+		return abschnittLiegtNachBEGUStartdatum;
+	}
+
+	public void setAbschnittLiegtNachBEGUStartdatum(boolean abschnittLiegtNachBEGUStartdatum) {
+		this.abschnittLiegtNachBEGUStartdatum = abschnittLiegtNachBEGUStartdatum;
 	}
 
 	/**

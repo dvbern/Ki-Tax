@@ -18,8 +18,8 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -41,23 +41,37 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(
 		@Nonnull Betreuung betreuung,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
+
 		LocalDate startdatum =
 			betreuung.extractGesuch().getDossier().getGemeinde().getBetreuungsgutscheineStartdatum();
 
-		return zeitabschnitte.stream()
-			.filter(abschnitt -> !abschnitt.getGueltigkeit().endsBefore(startdatum))
-			.map(abschnitt -> {
-				DateRange gueltigkeit = abschnitt.getGueltigkeit();
+		DateRange gueltigkeit = betreuung.extractGesuchsperiode().getGueltigkeit();
 
-				if (!gueltigkeit.contains(startdatum) || gueltigkeit.startsSameDay(startdatum)) {
-					return abschnitt;
-				}
+		if (gueltigkeit.endsBefore(startdatum)) {
+			betreuungspensumAbschnitte.add(createZeitabschnitt(gueltigkeit, false));
+		} else if (gueltigkeit.startsSameDayOrAfter(startdatum)) {
+			betreuungspensumAbschnitte.add(createZeitabschnitt(gueltigkeit, true));
+		} else if (startdatum.isAfter(gueltigkeit.getGueltigAb())
+			&& (startdatum.isBefore(gueltigkeit.getGueltigBis()) || startdatum.isEqual(gueltigkeit.getGueltigBis()))) {
 
-				// falls aus einem Grund das Startdatum nicht auf den ersten Tag des Monats fallen sollte
-				gueltigkeit.setGueltigAb(startdatum);
+			DateRange precreedingRange = new DateRange(gueltigkeit.getGueltigAb(), startdatum.minusDays(1));
+			betreuungspensumAbschnitte.add(createZeitabschnitt(precreedingRange, false));
 
-				return abschnitt;
-			})
-			.collect(Collectors.toList());
+			DateRange validRange = new DateRange(startdatum, gueltigkeit.getGueltigBis());
+			betreuungspensumAbschnitte.add(createZeitabschnitt(validRange, true));
+		}
+
+		return betreuungspensumAbschnitte;
+	}
+
+	private VerfuegungZeitabschnitt createZeitabschnitt(
+		@Nonnull DateRange dateRange,
+		boolean abschnittLiegtNachBEGUStartdatum) {
+
+		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt(dateRange);
+		abschnitt.setAbschnittLiegtNachBEGUStartdatum(abschnittLiegtNachBEGUStartdatum);
+
+		return abschnitt;
 	}
 }
