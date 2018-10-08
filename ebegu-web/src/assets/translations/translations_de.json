@@ -1372,7 +1372,6 @@
     "ERROR_STARTDATUM_FUTURE": "Das Startdatum muss in der Zukunft liegen!",
     "MONATLICHE_BETREUUNGSKOSTEN": "Monatliche Betreuungskosten",
     "MONATLICHE_BETREUUNGSKOSTEN_HELP": "Erfassen Sie hier die monatlichen Betreuungskosten (ohne Verpflegungskosten).<br>Auch bei untermonatlichen Eintritten müssen die monatlichen Kosten erfasst werden. Falls sich der Tarif ändert, erstellen Sie ein neues Betreuungspensum.",
-    "ERROR_STARTDATUM_FUTURE": "Das Startdatum muss in der Zukunft liegen!",
     "PERCENTAGE": "%",
     "DAYS": "Tage",
     "HOURS": "Stunden",
