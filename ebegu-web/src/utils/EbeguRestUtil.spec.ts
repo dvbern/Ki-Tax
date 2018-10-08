@@ -62,6 +62,8 @@ describe('EbeguRestUtil', () => {
 
     const pensum25 = 25;
     const pensum50 = 50;
+    const monatlicheBetreuungskosten200 = 200.2;
+    const monatlicheBetreuungskosten500 = 500.5;
     const oeffnungsTage = 250;
 
     beforeEach(angular.mock.module('pascalprecht.translate'));
@@ -251,11 +253,11 @@ describe('EbeguRestUtil', () => {
                 TestDataUtil.setAbstractMutableFieldsUndefined(instStam);
 
                 const tsBetreuungspensumGS = new TSBetreuungspensum(false,
-                    500.50, pensum25,
+                    monatlicheBetreuungskosten500, pensum25,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
                 const tsBetreuungspensumJA = new TSBetreuungspensum(false,
-                    200.20, pensum50,
+                    monatlicheBetreuungskosten200, pensum50,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumJA);
                 const tsBetreuungspensumContainer = new TSBetreuungspensumContainer(
@@ -308,7 +310,7 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseBetreuungspensum', () => {
             it('should transform TSBetreuungspensum to REST object and back', () => {
-                const betreuungspensum = new TSBetreuungspensum(false, 200.20, pensum25,
+                const betreuungspensum = new TSBetreuungspensum(false, monatlicheBetreuungskosten200, pensum25,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuungspensum);
 
