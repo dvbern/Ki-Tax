@@ -87,7 +87,8 @@ describe('BerechtigungComponent', () => {
     it('should load traegerschaften for role ADMIN_TRAEGERSCHAFT', () => {
         component.berechtigung.role = TSRole.ADMIN_TRAEGERSCHAFT;
         fixture.detectChanges();
-        // after detecting changes the element in the html should subscribe to the controller and thus get the list of traegerschaften
+        // after detecting changes the element in the html should subscribe to the
+        // controller and thus get the list of traegerschaften
         expect(traegerschaftSpy.getAllTraegerschaften).toHaveBeenCalled();
     });
 
