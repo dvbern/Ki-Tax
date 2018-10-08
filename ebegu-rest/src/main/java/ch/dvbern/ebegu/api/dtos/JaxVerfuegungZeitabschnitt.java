@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -48,10 +49,9 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private Integer erwerbspensumGS2;
 
-	@Max(100)
 	@Min(0)
 	@NotNull
-	private int betreuungspensum;
+	private BigDecimal betreuungspensum;
 
 	@Max(100)
 	@Min(0)
@@ -118,11 +118,11 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.erwerbspensumGS2 = erwerbspensumGS2;
 	}
 
-	public int getBetreuungspensum() {
+	public BigDecimal getBetreuungspensum() {
 		return betreuungspensum;
 	}
 
-	public void setBetreuungspensum(int betreuungspensum) {
+	public void setBetreuungspensum(BigDecimal betreuungspensum) {
 		this.betreuungspensum = betreuungspensum;
 	}
 

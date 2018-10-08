@@ -15,12 +15,11 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Objects;
+import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -36,21 +35,20 @@ public class AbstractPensumEntity extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -7576083148864149528L;
 
-	@Max(100)
 	@Min(0)
 	@NotNull
 	@Column(nullable = false)
-	private Integer pensum;
+	private BigDecimal pensum = null;
 
 	public AbstractPensumEntity() {
 	}
 
 	@Nonnull
-	public Integer getPensum() {
+	public BigDecimal getPensum() {
 		return pensum;
 	}
 
-	public void setPensum(@Nonnull Integer pensum) {
+	public void setPensum(@Nonnull BigDecimal pensum) {
 		this.pensum = pensum;
 	}
 
@@ -68,13 +66,11 @@ public class AbstractPensumEntity extends AbstractDateRangedEntity {
 		}
 		final AbstractPensumEntity otherAbstDateRangedEntity = (AbstractPensumEntity) other;
 		return super.isSame(otherAbstDateRangedEntity)
-			&& Objects.equals(this.getPensum(), otherAbstDateRangedEntity.getPensum());
+			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0;
 	}
 
-	@Nonnull
-	public AbstractPensumEntity copyAbstractPensumEntity(@Nonnull AbstractPensumEntity target, @Nonnull AntragCopyType copyType) {
+	public void copyAbstractPensumEntity(@Nonnull AbstractPensumEntity target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractDateRangedEntity(target, copyType);
 		target.setPensum(this.getPensum());
-		return target;
 	}
 }

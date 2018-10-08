@@ -136,11 +136,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
-	@Max(100)
 	@Min(0)
 	@NotNull
 	@Column(nullable = false)
-	private int betreuungspensum;
+	private BigDecimal betreuungspensum;
 
 	@Max(100)
 	@Min(0)
@@ -291,11 +290,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zuschlagErwerbspensumGS2 = zuschlagErwerbspensumGS2;
 	}
 
-	public int getBetreuungspensum() {
+	public BigDecimal getBetreuungspensum() {
 		return betreuungspensum;
 	}
 
-	public void setBetreuungspensum(int betreuungspensum) {
+	public void setBetreuungspensum(BigDecimal betreuungspensum) {
 		this.betreuungspensum = betreuungspensum;
 	}
 
