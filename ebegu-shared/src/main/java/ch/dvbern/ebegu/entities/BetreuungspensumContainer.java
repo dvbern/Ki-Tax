@@ -112,9 +112,9 @@ public class BetreuungspensumContainer extends AbstractMutableEntity implements 
 	 */
 	@Transient
 	public Gesuchsperiode extractGesuchsperiode() {
-		Objects.requireNonNull(this.getBetreuung(), "Can not extract Gesuchsperiode because Betreuung is null");
-		Objects.requireNonNull(this.getBetreuung().getKind(), "Can not extract Gesuchsperiode because Kind is null");
-		Objects.requireNonNull(this.getBetreuung().getKind().getGesuch(), "Can not extract Gesuchsperiode because Gesuch is null");
+		Objects.requireNonNull(this.getBetreuung(), "Cannot extract Gesuchsperiode because Betreuung is null");
+		Objects.requireNonNull(this.getBetreuung().getKind(), "Cannot extract Gesuchsperiode because Kind is null");
+		Objects.requireNonNull(this.getBetreuung().getKind().getGesuch(), "Cannot extract Gesuchsperiode because Gesuch is null");
 		return this.getBetreuung().getKind().getGesuch().getGesuchsperiode();
 	}
 

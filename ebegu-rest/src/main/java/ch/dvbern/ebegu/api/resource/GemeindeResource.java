@@ -35,15 +35,20 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -60,7 +65,13 @@ public class GemeindeResource {
 	private GemeindeService gemeindeService;
 
 	@Inject
-	private GemeindeJaxBConverter converter;
+	private BenutzerService benutzerService;
+
+	@Inject
+	private JaxBConverter converter;
+
+	@Inject
+	private GemeindeJaxBConverter gemeindeConverter;
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
@@ -69,17 +80,23 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGemeinde createGemeinde(
 		@Nonnull @NotNull @Valid JaxGemeinde gemeindeJAXP,
+		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
+		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguBietenAb,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, new Gemeinde());
+		Gemeinde convertedGemeinde = gemeindeConverter.gemeindeToEntity(gemeindeJAXP, new Gemeinde());
 
 		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
 
-		// todo KIBON-211 the given user must be informed
+		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde));
 
-		JaxGemeinde jaxGemeinde = converter.gemeindeToJAX(persistedGemeinde);
-		return jaxGemeinde;
+		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
+
+		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde));
+
+		return gemeindeConverter.gemeindeToJAX(persistedGemeinde);
 	}
 
 	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
@@ -96,9 +113,9 @@ public class GemeindeResource {
 			.flatMap(id -> gemeindeService.findGemeinde(id))
 			.orElseGet(Gemeinde::new);
 
-		Gemeinde convertedGemeinde = converter.gemeindeToEntity(gemeindeJAXP, gemeinde);
+		Gemeinde convertedGemeinde = gemeindeConverter.gemeindeToEntity(gemeindeJAXP, gemeinde);
 		Gemeinde persistedGemeinde = this.gemeindeService.saveGemeinde(convertedGemeinde);
-		JaxGemeinde jaxGemeinde = converter.gemeindeToJAX(persistedGemeinde);
+		JaxGemeinde jaxGemeinde = gemeindeConverter.gemeindeToJAX(persistedGemeinde);
 
 		return jaxGemeinde;
 	}
@@ -111,7 +128,7 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxGemeinde> getAllGemeinden() {
 		return gemeindeService.getAllGemeinden().stream()
-			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.map(gemeinde -> gemeindeConverter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
 
@@ -125,7 +142,7 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxGemeinde> getAktiveGemeinden() {
 		return gemeindeService.getAktiveGemeinden().stream()
-			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.map(gemeinde -> gemeindeConverter.gemeindeToJAX(gemeinde))
 			.collect(Collectors.toList());
 	}
 
@@ -141,7 +158,7 @@ public class GemeindeResource {
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
 		return gemeindeService.findGemeinde(gemeindeId)
-			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.map(gemeinde -> gemeindeConverter.gemeindeToJAX(gemeinde))
 			.orElse(null);
 	}
 
@@ -155,7 +172,7 @@ public class GemeindeResource {
 		@Nonnull @NotNull @PathParam("gemeindeName") String name) {
 
 		return gemeindeService.findGemeindeByName(name)
-			.map(gemeinde -> converter.gemeindeToJAX(gemeinde))
+			.map(gemeinde -> gemeindeConverter.gemeindeToJAX(gemeinde))
 			.orElse(null);
 	}
 

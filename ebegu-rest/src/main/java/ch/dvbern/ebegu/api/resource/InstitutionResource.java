@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -44,12 +43,18 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * REST Resource fuer Institution
@@ -63,8 +68,10 @@ public class InstitutionResource {
 	private InstitutionService institutionService;
 
 	@Inject
-	private JaxBConverter converter;
+	private BenutzerService benutzerService;
 
+	@Inject
+	private JaxBConverter converter;
 
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
 	@Nullable
@@ -76,8 +83,20 @@ public class InstitutionResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
+		String mail = institutionJAXP.getMail();
+		requireNonNull(mail);
 		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
+
+		if (benutzerService.findBenutzerByEmail(mail).isPresent()) {
+			// an existing user cannot be used to create a new Institution
+			throw new EbeguRuntimeException(
+				"createInstitution",
+				ErrorCodeEnum.EXISTING_USER_MAIL,
+				mail);
+		}
+		Benutzer benutzer = benutzerService.createAdminInstitutionByEmail(mail, persistedInstitution);
+		benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(InstitutionResource.class)
@@ -98,9 +117,13 @@ public class InstitutionResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(institutionJAXP.getId());
+		requireNonNull(institutionJAXP.getId());
 		Optional<Institution> optInstitution = institutionService.findInstitution(institutionJAXP.getId());
-		Institution institutionFromDB = optInstitution.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionJAXP.getId()));
+		Institution institutionFromDB = optInstitution
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"update",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				institutionJAXP.getId()));
 
 		Institution institutionToMerge = converter.institutionToEntity(institutionJAXP, institutionFromDB);
 		Institution modifiedInstitution = this.institutionService.updateInstitution(institutionToMerge);
@@ -117,7 +140,7 @@ public class InstitutionResource {
 	public JaxInstitution findInstitution(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
-		Objects.requireNonNull(institutionJAXPId.getId());
+		requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
 		Optional<Institution> optional = institutionService.findInstitution(institutionID);
 
@@ -134,7 +157,7 @@ public class InstitutionResource {
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(institutionJAXPId.getId());
+		requireNonNull(institutionJAXPId.getId());
 		institutionService.setInstitutionInactive(converter.toEntityId(institutionJAXPId));
 		return Response.ok().build();
 	}
@@ -149,7 +172,7 @@ public class InstitutionResource {
 	public List<JaxInstitution> getAllInstitutionenFromTraegerschaft(
 		@Nonnull @NotNull @PathParam("traegerschaftId") JaxId traegerschaftJAXPId) {
 
-		Objects.requireNonNull(traegerschaftJAXPId.getId());
+		requireNonNull(traegerschaftJAXPId.getId());
 		String traegerschaftId = converter.toEntityId(traegerschaftJAXPId);
 		return institutionService.getAllInstitutionenFromTraegerschaft(traegerschaftId).stream()
 			.map(institution -> converter.institutionToJAX(institution))
@@ -168,8 +191,11 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Find and return a list of all active Institutionen. An active Institution is a Institution " +
-		"where the active flag is true", responseContainer = "List", response = JaxInstitution.class)
+	@ApiOperation(
+		value = "Find and return a list of all active Institutionen. An active Institution is a Institution where the "
+			+ "active flag is true",
+		responseContainer = "List",
+		response = JaxInstitution.class)
 	@Nonnull
 	@GET
 	@Path("/active")
