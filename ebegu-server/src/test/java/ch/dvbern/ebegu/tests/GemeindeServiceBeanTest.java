@@ -15,28 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.tests;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.junit.Test;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+public class GemeindeServiceBeanTest {
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+	@Test
+	public void findGemeinde() {
+	}
 
-@Target({ TYPE, ANNOTATION_TYPE })
-@Retention(RUNTIME)
-@Constraint(validatedBy = CheckEinstellungValidator.class)
-@Documented
-public @interface CheckEinstellung {
+	@Test
+	public void getFirst() {
+	}
 
-	String message() default "{invalid_einstellung}";
+	@Test
+	public void getAllGemeinden() {
+	}
 
-	Class<?>[] groups() default {};
-
-	Class<? extends Payload>[] payload() default {};
+	@Test
+	public void getStammdatenByGemeinde() {
+	}
 }

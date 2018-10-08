@@ -50,7 +50,9 @@ public class TagiRechner extends AbstractBGRechner {
 		BigDecimal kostenProBetreuungsstunde = calculateKostenBetreuungsstunde(parameterDTO.getKostenProStundeMaximalKitaTagi(), massgebendesEinkommen, bgPensum, parameterDTO);
 
 		// Vollkosten und Elternbeitrag
-		BigDecimal vollkosten = MathUtil.EXACT.multiply(parameterDTO.getKostenProStundeMaximalKitaTagi(), betreuungsstundenIntervall);
+		BigDecimal vollkosten = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
+		BigDecimal vollkostenIntervall = MathUtil.EXACT.multiply(vollkosten, anteilMonat);
+
 		BigDecimal elternbeitrag;
 		if (verfuegungZeitabschnitt.isBezahltVollkosten()) {
 			elternbeitrag = vollkosten;
@@ -59,7 +61,7 @@ public class TagiRechner extends AbstractBGRechner {
 		}
 
 		// Runden und auf Zeitabschnitt zurückschreiben
-		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
+		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkostenIntervall));
 		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
 		return verfuegungZeitabschnitt;
 	}

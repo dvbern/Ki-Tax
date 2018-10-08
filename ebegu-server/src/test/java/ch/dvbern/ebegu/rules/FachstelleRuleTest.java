@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -34,7 +35,8 @@ public class FachstelleRuleTest {
 
 	@Test
 	public void testKitaMitFachstelleWenigerAlsPensum() {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 60);
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
+			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
@@ -58,7 +60,8 @@ public class FachstelleRuleTest {
 
 	@Test
 	public void testKitaMitFachstelleMehrAlsPensum() {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 60);
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
+			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
@@ -83,7 +86,8 @@ public class FachstelleRuleTest {
 
 	@Test
 	public void testKitaMitFachstelleUndRestPensum() {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 60);
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
+			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());

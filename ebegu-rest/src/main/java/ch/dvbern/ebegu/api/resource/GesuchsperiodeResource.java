@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +37,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -46,6 +49,8 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,6 +66,9 @@ public class GesuchsperiodeResource {
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -85,7 +93,8 @@ public class GesuchsperiodeResource {
 		GesuchsperiodeStatus gesuchsperiodeStatusBisher = gesuchsperiode.getStatus();
 
 		Gesuchsperiode convertedGesuchsperiode = converter.gesuchsperiodeToEntity(gesuchsperiodeJAXP, gesuchsperiode);
-		Gesuchsperiode persistedGesuchsperiode = this.gesuchsperiodeService.saveGesuchsperiode(convertedGesuchsperiode, gesuchsperiodeStatusBisher);
+		Gesuchsperiode persistedGesuchsperiode =
+			this.gesuchsperiodeService.saveGesuchsperiode(convertedGesuchsperiode, gesuchsperiodeStatusBisher);
 
 		return converter.gesuchsperiodeToJAX(persistedGesuchsperiode);
 	}
@@ -142,11 +151,13 @@ public class GesuchsperiodeResource {
 	public List<JaxGesuchsperiode> getAllGesuchsperioden() {
 		return gesuchsperiodeService.getAllGesuchsperioden().stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Gibt alle in der Datenbank vorhandenen Gesuchsperioden zurueck, welche im Status AKTIV sind",
+	@ApiOperation(value = "Gibt alle in der Datenbank vorhandenen Gesuchsperioden zurueck, welche im Status AKTIV "
+		+ "sind",
 		responseContainer = "List", response = JaxGesuchsperiode.class)
 	@Nonnull
 	@GET
@@ -169,6 +180,7 @@ public class GesuchsperiodeResource {
 	public List<JaxGesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden() {
 		return gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());
 	}
@@ -187,6 +199,38 @@ public class GesuchsperiodeResource {
 
 		return gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId).stream()
 			.map(gesuchsperiode -> converter.gesuchsperiodeToJAX(gesuchsperiode))
+			.filter(periode -> periode.getGueltigAb() != null)
+			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV oder INAKTIV sind und nach dem " +
+		"BetreuungsgutscheineStartdatum der Gemeinde liegen.",
+		responseContainer = "List",
+		response = JaxGesuchsperiode.class)
+	@Nonnull
+	@GET
+	@Path("/gemeinde/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(
+		@Nonnull @PathParam("gemeindeId") String gemeindeId,
+		@Nullable @QueryParam("dossierId") String dossierId) {
+
+		LocalDate startdatum = gemeindeService.findGemeinde(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getAllPeriodenForGemeinde",
+				String.format("Keine Gemeinde für ID %s", gemeindeId)))
+			.getBetreuungsgutscheineStartdatum();
+
+		Collection<Gesuchsperiode> perioden = dossierId == null
+			? gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden()
+			: gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId);
+
+		return perioden.stream()
+			.filter(periode -> periode.getGueltigkeit().endsAfterOrSame(startdatum))
+			.map(periode -> converter.gesuchsperiodeToJAX(periode))
+			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());
 	}

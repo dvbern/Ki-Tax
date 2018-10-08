@@ -205,6 +205,7 @@ export default class TestDataUtil {
         gemeinde.gemeindeNummer = 2;
         gemeinde.bfsNummer = 363;
         gemeinde.status = TSGemeindeStatus.AKTIV;
+        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
         return gemeinde;
     }
 
@@ -216,6 +217,7 @@ export default class TestDataUtil {
         gemeinde.gemeindeNummer = 1;
         gemeinde.bfsNummer = 351;
         gemeinde.status = TSGemeindeStatus.AKTIV;
+        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
         return gemeinde;
     }
 
@@ -226,6 +228,7 @@ export default class TestDataUtil {
         gemeinde.name = 'Thun';
         gemeinde.gemeindeNummer = 3;
         gemeinde.status = TSGemeindeStatus.AKTIV;
+        gemeinde.betreuungsgutscheineStartdatum = moment('20160801', 'YYYYMMDD');
         return gemeinde;
     }
 
