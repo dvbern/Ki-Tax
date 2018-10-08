@@ -181,7 +181,7 @@ export default class AuthServiceRS {
     public getVisibleRolesForPrincipal(): TSRole[] {
         switch (this.getPrincipalRole()) {
             case TSRole.SUPER_ADMIN:
-                return TSRoleUtil.getAllRoles();
+                return TSRoleUtil.getAllRolesButAnonymous();
 
             case TSRole.ADMIN_INSTITUTION:
                 return PERMISSIONS[Permission.ROLE_INSTITUTION];
