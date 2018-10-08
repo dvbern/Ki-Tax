@@ -266,7 +266,8 @@ public class MailTemplateConfiguration {
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
 		paramMap.put("acceptLink", createLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
-		paramMap.put("content",
+		paramMap.put(
+			"content",
 			ServerMessageUtil.getMessage(
 				"EinladungEmail_" + einladung.getEinladungTyp(),
 				einladender.getFullName(),
@@ -283,10 +284,10 @@ public class MailTemplateConfiguration {
 	private String getRollenZusatz(@Nonnull Einladung einladung, @Nullable Benutzer eingeladener) {
 		if (einladung.getEinladungTyp() == EinladungTyp.MITARBEITER) {
 			requireNonNull(eingeladener, "For an Einladung of the type Mitarbeiter a user must be set");
-			return eingeladener.extractRollenAbhaengigkeitAsString();
+			return '(' + eingeladener.extractRollenAbhaengigkeitAsString() + ')';
 		}
 		return einladung.getEinladungObjectName()
-			.map(name -> '(' + name + ')').orElse("");
+			.orElse("");
 	}
 
 	private String createLink(
