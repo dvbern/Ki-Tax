@@ -29,11 +29,8 @@ import ch.dvbern.ebegu.types.DateRange;
 
 public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 
-	public GutscheineStartdatumAbschnittRule(
-		@Nonnull RuleKey ruleKey,
-		@Nonnull RuleType ruleType,
-		@Nonnull DateRange validityPeriod) {
-		super(ruleKey, ruleType, validityPeriod);
+	public GutscheineStartdatumAbschnittRule(@Nonnull DateRange validityPeriod) {
+		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, validityPeriod);
 	}
 
 	@Nonnull

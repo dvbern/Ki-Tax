@@ -130,6 +130,10 @@ public class BetreuungsgutscheinConfigurator {
 		// Zivilstandsaenderung
 		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(defaultGueltigkeit);
 		rules.add(zivilstandsaenderungAbschnittRule);
+
+		// Betreuungsgutscheine Gueltigkeit
+		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule = new GutscheineStartdatumAbschnittRule(defaultGueltigkeit);
+		rules.add(gutscheineStartdatumAbschnittRule);
 	}
 
 	private void berechnenAnspruchRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
@@ -188,5 +192,10 @@ public class BetreuungsgutscheinConfigurator {
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit);
 		rules.add(restanspruchLimitCalcRule);
+
+		// BETREUUNGS GUTSCHEINE START DATUM - Anspruch verfällt, wenn Gutscheine vor dem BetreuungsgutscheineStartdatum
+		// der Gemeinde liegen
+		GutscheineStartdatumCalcRule gutscheineStartdatumCalcRule = new GutscheineStartdatumCalcRule(defaultGueltigkeit);
+		rules.add(gutscheineStartdatumCalcRule);
 	}
 }

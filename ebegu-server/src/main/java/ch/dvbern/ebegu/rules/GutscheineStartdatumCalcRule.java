@@ -28,7 +28,7 @@ public class GutscheineStartdatumCalcRule extends AbstractCalcRule {
 
 	public GutscheineStartdatumCalcRule(
 		@Nonnull DateRange validityPeriod) {
-		super(RuleKey.BEGU_STARTDATUM, RuleType.GRUNDREGEL_CALC, validityPeriod);
+		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, validityPeriod);
 	}
 
 	@Override
