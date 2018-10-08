@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeSet;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,6 +57,7 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
@@ -142,7 +143,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private Authorizer authorizer;
 
-
 	@Nonnull
 	@Override
 	@PermitAll
@@ -171,7 +171,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde) {
 		requireNonNull(gemeinde);
 
-		return createBenutzerFromEmail(adminMail, UserRole.ADMIN_GEMEINDE, gemeinde, null, null);
+		return createBenutzerFromEmail(
+			adminMail,
+			UserRole.ADMIN_GEMEINDE,
+			gemeinde,
+			b -> b.getGemeindeList().add(gemeinde));
 	}
 
 	@Nonnull
@@ -180,7 +184,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution) {
 		requireNonNull(institution);
 
-		return createBenutzerFromEmail(adminMail, UserRole.ADMIN_INSTITUTION, null, institution, null);
+		return createBenutzerFromEmail(
+			adminMail,
+			UserRole.ADMIN_INSTITUTION,
+			institution,
+			b -> b.setInstitution(institution));
 	}
 
 	@Nonnull
@@ -189,20 +197,27 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft) {
 		requireNonNull(traegerschaft);
 
-		return createBenutzerFromEmail(adminMail, UserRole.ADMIN_TRAEGERSCHAFT, null, null, traegerschaft);
+		return createBenutzerFromEmail(
+			adminMail,
+			UserRole.ADMIN_TRAEGERSCHAFT,
+			traegerschaft,
+			b -> b.setTraegerschaft(traegerschaft));
 	}
 
 	@Nonnull
-	private Benutzer createBenutzerFromEmail(
+	private <T extends AbstractEntity> Benutzer createBenutzerFromEmail(
 		@Nonnull String adminMail,
 		@Nonnull UserRole role,
-		@Nullable Gemeinde gemeinde,
-		@Nullable Institution institution,
-		@Nullable Traegerschaft traegerschaft
+		@Nullable T associatedEntity,
+		@Nonnull Consumer<Berechtigung> appender
 	) {
 		requireNonNull(adminMail);
 		requireNonNull(principalBean.getMandant());
-		checkRolabhaengigeParameters(role, gemeinde, institution, traegerschaft);
+
+		checkArgument(role.getRollenAbhaengigkeit().getAssociatedEntityClass()
+			.map(clazz -> clazz.isInstance(associatedEntity))
+			.orElseGet(() -> associatedEntity == null)
+		);
 
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setEmail(adminMail);
@@ -216,39 +231,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		berechtigung.setRole(role);
 		berechtigung.setBenutzer(benutzer);
 		berechtigung.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
-		benutzer.setBerechtigungen(
-			new TreeSet<>(Collections.singletonList(berechtigung))
-		);
+		benutzer.getBerechtigungen().add(berechtigung);
 
-		if (role == UserRole.ADMIN_GEMEINDE) {
-			benutzer.getCurrentBerechtigung().getGemeindeList().add(gemeinde);
-		}
-		if (role == UserRole.ADMIN_INSTITUTION) {
-			benutzer.getCurrentBerechtigung().setInstitution(institution);
-		}
-		if (role == UserRole.ADMIN_TRAEGERSCHAFT) {
-			benutzer.getCurrentBerechtigung().setTraegerschaft(traegerschaft);
-		}
-
+		appender.accept(berechtigung);
 
 		return saveBenutzer(benutzer);
-	}
-
-	private void checkRolabhaengigeParameters(
-		@Nonnull UserRole role,
-		@Nullable Gemeinde gemeinde,
-		@Nullable Institution institution,
-		@Nullable Traegerschaft traegerschaft
-	) {
-		if (role == UserRole.ADMIN_GEMEINDE) {
-			requireNonNull(gemeinde);
-		}
-		if (role == UserRole.ADMIN_INSTITUTION) {
-			requireNonNull(institution);
-		}
-		if (role == UserRole.ADMIN_TRAEGERSCHAFT) {
-			requireNonNull(traegerschaft);
-		}
 	}
 
 	@Nonnull
@@ -263,20 +250,19 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		ADMIN_TRAEGERSCHAFT,
 		SACHBEARBEITER_MANDANT,
 	})
-	public Benutzer einladen(@Nonnull Benutzer benutzer, @Nonnull Einladung einladung) {
-		requireNonNull(benutzer);
+	public Benutzer einladen(@Nonnull Einladung einladung) {
 		requireNonNull(einladung);
-		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
-		checkEinladung(benutzer, einladung.getEinladungTyp());
 
-		Benutzer persistedBenutzer = saveBenutzer(benutzer);
+		checkEinladung(einladung);
+
+		Benutzer persistedBenutzer = saveBenutzer(einladung.getEingeladener());
 
 		try {
-			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persistedBenutzer, einladung);
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
 
 		} catch (MailException e) {
 			String message =
-				String.format("Es konnte keine Email Einladung an %s geschickt werden", benutzer.getEmail());
+				String.format("Es konnte keine Email Einladung an %s geschickt werden", persistedBenutzer.getEmail());
 			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
 
@@ -286,16 +272,22 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	/**
 	 * According to the type of Einladung it checks that the given benutzer meets the conditions required.
 	 */
-	private void checkEinladung(@Nonnull Benutzer benutzer, @Nonnull EinladungTyp einladungTyp) {
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	private void checkEinladung(@Nonnull Einladung einladung) {
+		Benutzer benutzer = einladung.getEingeladener();
+		EinladungTyp einladungTyp = einladung.getEinladungTyp();
+		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
+
 		if (einladungTyp == EinladungTyp.MITARBEITER) {
-			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
 			checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
 			if (findBenutzer(benutzer.getUsername()).isPresent()) {
-				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist already
+				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist
+				// already
 				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
 			}
+		}
 
-		} else if (benutzer.isNew()) {
+		if (benutzer.isNew()) {
 			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
 		}
 	}
@@ -428,7 +420,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			username = principal.getName();
 		}
 		if (StringUtils.isNotEmpty(username)) {
-			if (Constants.ANONYMOUS_USER_USERNAME.equals(username) && principalBean.isCallerInRole(UserRole.SUPER_ADMIN.name())) {
+			if (Constants.ANONYMOUS_USER_USERNAME.equals(username)
+				&& principalBean.isCallerInRole(UserRole.SUPER_ADMIN.name())) {
 				return loadSuperAdmin();
 			}
 			return findBenutzer(username);
@@ -686,7 +679,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			}
 			// role
 			if (predicateObjectDto.getRole() != null) {
-				predicates.add(cb.equal(currentBerechtigungJoin.get(Berechtigung_.role), predicateObjectDto.getRole()));
+				predicates.add(cb.equal(
+					currentBerechtigungJoin.get(Berechtigung_.role),
+					predicateObjectDto.getRole()));
 			}
 			// roleGueltigBis
 			if (predicateObjectDto.getRoleGueltigBis() != null) {

@@ -368,11 +368,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	@Override
 	public void sendBenutzerEinladung(
 		@Nonnull Benutzer einladender,
-		@Nonnull Benutzer eingeladener,
 		@Nonnull Einladung einladung
 	) throws MailException {
-		String message = mailTemplateConfig.getBenutzerEinladung(einladender, eingeladener, einladung);
-		sendMessageWithTemplate(message, eingeladener.getEmail());
+		requireNonNull(einladender);
+		requireNonNull(einladung);
+
+		String message = mailTemplateConfig.getBenutzerEinladung(einladender, einladung);
+
+		sendMessageWithTemplate(message, einladung.getEingeladener().getEmail());
 	}
 
 	private void sendMail(

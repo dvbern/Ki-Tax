@@ -48,9 +48,6 @@ import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.enums.EinladungTyp;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
@@ -92,30 +89,14 @@ public class GemeindeResource {
 
 		Gemeinde persistedGemeinde = this.gemeindeService.createGemeinde(convertedGemeinde);
 
-		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail).orElseGet(() ->
-			benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde)
-		);
+		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+			.orElseGet(() -> benutzerService.createAdminGemeindeByEmail(adminMail, persistedGemeinde));
 
 		benutzer.getCurrentBerechtigung().getGemeindeList().add(persistedGemeinde);
 
-		assertUserHasRequiredRole(benutzer);
-
-		benutzerService.einladen(benutzer, new Einladung(EinladungTyp.GEMEINDE, persistedGemeinde, null, null));
+		benutzerService.einladen(Einladung.forGemeinde(benutzer, persistedGemeinde));
 
 		return gemeindeConverter.gemeindeToJAX(persistedGemeinde);
-	}
-
-	/**
-	 * Asserts that the given user has a gemeindeabhaengige role. Otherwise it will throw an Exception
-	 */
-	private void assertUserHasRequiredRole(@Nonnull Benutzer benutzer) {
-		if (!benutzer.getRole().isRoleAnyAdminGemeinde()) {
-			throw new EbeguRuntimeException(
-				"convertStatusToEntity",
-				ErrorCodeEnum.ERROR_WRONG_EXISTING_ROLE,
-				benutzer.getRole()
-			);
-		}
 	}
 
 	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxTraegerschaft.class)

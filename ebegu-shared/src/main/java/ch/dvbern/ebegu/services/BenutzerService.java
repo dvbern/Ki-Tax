@@ -79,7 +79,7 @@ public interface BenutzerService {
 	 * Saves the given Benutzer and sends him an Einladungsemail
 	 */
 	@Nonnull
-	Benutzer einladen(@Nonnull Benutzer benutzer, @Nonnull Einladung einladung);
+	Benutzer einladen(@Nonnull Einladung einladung);
 
 	/**
 	 * @param username PK (id) des Benutzers

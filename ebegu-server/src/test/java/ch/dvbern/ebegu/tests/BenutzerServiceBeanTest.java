@@ -202,14 +202,16 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void einladenGemeindeWrongStatus() {
-		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
-		Einladung einladung = new Einladung(EinladungTyp.GEMEINDE, gemeinde, null, null);
 		Benutzer benutzer = TestDataUtil.createBenutzerSCH();
 		benutzer.setMandant(getDummySuperadmin().getMandant());
 		benutzer.setStatus(BenutzerStatus.AKTIV);
 
+		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
+
+		Einladung einladung = Einladung.forGemeinde(benutzer, gemeinde);
+
 		try {
-			benutzerService.einladen(benutzer, einladung);
+			benutzerService.einladen(einladung);
 			fail("It should throw a ConstraintViolationException because AKTIV is not a valid status. It must be EINGELADEN");
 		} catch (EJBException e) {
 			// nop
@@ -219,14 +221,16 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void einladenGemeindeWrongUserWithoutGemeinde() {
-		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
-		Einladung einladung = new Einladung(EinladungTyp.GEMEINDE, gemeinde, null, null);
 		Benutzer benutzer = TestDataUtil.createBenutzerSCH();
 		benutzer.setStatus(BenutzerStatus.EINGELADEN);
 		benutzer.setMandant(getDummySuperadmin().getMandant());
 
+		Gemeinde gemeinde = TestDataUtil.getGemeindeBern(persistence);
+
+		Einladung einladung = Einladung.forGemeinde(benutzer, gemeinde);
+
 		try {
-			benutzerService.einladen(benutzer, einladung);
+			benutzerService.einladen(einladung);
 			fail("It should throw a ConstraintViolationException because the user must have a Gemeinde");
 		} catch (EJBTransactionRolledbackException e) {
 			// nop

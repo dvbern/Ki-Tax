@@ -129,9 +129,5 @@ public interface MailService {
 	/**
 	 * Sends an Einladungsemail to the given user according to the type of the Einladung
 	 */
-	void sendBenutzerEinladung(
-		@Nonnull Benutzer einladender,
-		@Nonnull Benutzer eingeladener,
-		@Nonnull Einladung einladung
-	) throws MailException;
+	void sendBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Einladung einladung) throws MailException;
 }

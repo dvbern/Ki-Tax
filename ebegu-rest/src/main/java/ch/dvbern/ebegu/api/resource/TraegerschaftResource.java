@@ -47,7 +47,6 @@ import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -76,7 +75,6 @@ public class TraegerschaftResource {
 	@Inject
 	private JaxBConverter converter;
 
-
 	@ApiOperation(value = "Speichert eine Traegerschaft in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
 	@PUT
@@ -87,22 +85,22 @@ public class TraegerschaftResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Traegerschaft traegerschaft = new Traegerschaft();
-		if (traegerschaftJAXP.getId() != null) {
-			Optional<Traegerschaft> optional = traegerschaftService.findTraegerschaft(traegerschaftJAXP.getId());
-			traegerschaft = optional.orElse(new Traegerschaft());
-		}
+		Traegerschaft traegerschaft = Optional.ofNullable(traegerschaftJAXP.getId())
+			.flatMap(id -> traegerschaftService.findTraegerschaft(id))
+			.orElseGet(Traegerschaft::new);
+
 		Traegerschaft convertedTraegerschaft = converter.traegerschaftToEntity(traegerschaftJAXP, traegerschaft);
 		Traegerschaft persistedTraegerschaft = this.traegerschaftService.saveTraegerschaft(convertedTraegerschaft);
 
 		if (convertedTraegerschaft.isNew()) {
-			if (benutzerService.findBenutzerByEmail(traegerschaftJAXP.getMail()).isPresent()) {
+			String mail = traegerschaftJAXP.getMail();
+			if (benutzerService.findBenutzerByEmail(mail).isPresent()) {
 				// an existing user cannot be used to create a new Traegerschaft
-				throw new EbeguRuntimeException("saveTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, traegerschaftJAXP.getMail());
+				throw new EbeguRuntimeException("saveTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, mail);
 			}
-			final Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(traegerschaftJAXP.getMail(), persistedTraegerschaft);
+			Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(mail, persistedTraegerschaft);
 
-			benutzerService.einladen(benutzer, new Einladung(EinladungTyp.TRAEGERSCHAFT, null, null, traegerschaft));
+			benutzerService.einladen(Einladung.forTraegerschaft(benutzer, traegerschaft));
 		}
 
 		JaxTraegerschaft jaxTraegerschaft = converter.traegerschaftToJAX(persistedTraegerschaft);
@@ -137,7 +135,8 @@ public class TraegerschaftResource {
 
 		Objects.requireNonNull(traegerschaftJAXPId.getId());
 		final String traegerschaftId = converter.toEntityId(traegerschaftJAXPId);
-		Collection<Institution> allInstitutionen = institutionService.getAllActiveInstitutionenFromTraegerschaft(traegerschaftId);
+		Collection<Institution> allInstitutionen = institutionService
+			.getAllActiveInstitutionenFromTraegerschaft(traegerschaftId);
 		for (Institution institution : allInstitutionen) {
 			institutionService.setInstitutionInactive(institution.getId());
 		}

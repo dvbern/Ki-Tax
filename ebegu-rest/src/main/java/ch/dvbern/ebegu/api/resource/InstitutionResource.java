@@ -46,7 +46,6 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -74,7 +73,6 @@ public class InstitutionResource {
 	@Inject
 	private JaxBConverter converter;
 
-
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
 	@Nullable
 	@POST
@@ -85,16 +83,20 @@ public class InstitutionResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		requireNonNull(institutionJAXP.getMail());
+		String mail = institutionJAXP.getMail();
+		requireNonNull(mail);
 		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
-		if (benutzerService.findBenutzerByEmail(institutionJAXP.getMail()).isPresent()) {
+		if (benutzerService.findBenutzerByEmail(mail).isPresent()) {
 			// an existing user cannot be used to create a new Institution
-			throw new EbeguRuntimeException("createInstitution", ErrorCodeEnum.EXISTING_USER_MAIL, institutionJAXP.getMail());
+			throw new EbeguRuntimeException(
+				"createInstitution",
+				ErrorCodeEnum.EXISTING_USER_MAIL,
+				mail);
 		}
-		final Benutzer benutzer = benutzerService.createAdminInstitutionByEmail(institutionJAXP.getMail(), persistedInstitution);
-		benutzerService.einladen(benutzer, new Einladung(EinladungTyp.INSTITUTION, null, persistedInstitution, null));
+		Benutzer benutzer = benutzerService.createAdminInstitutionByEmail(mail, persistedInstitution);
+		benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(InstitutionResource.class)
@@ -117,7 +119,11 @@ public class InstitutionResource {
 
 		requireNonNull(institutionJAXP.getId());
 		Optional<Institution> optInstitution = institutionService.findInstitution(institutionJAXP.getId());
-		Institution institutionFromDB = optInstitution.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionJAXP.getId()));
+		Institution institutionFromDB = optInstitution
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"update",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				institutionJAXP.getId()));
 
 		Institution institutionToMerge = converter.institutionToEntity(institutionJAXP, institutionFromDB);
 		Institution modifiedInstitution = this.institutionService.updateInstitution(institutionToMerge);
@@ -185,8 +191,11 @@ public class InstitutionResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Find and return a list of all active Institutionen. An active Institution is a Institution " +
-		"where the active flag is true", responseContainer = "List", response = JaxInstitution.class)
+	@ApiOperation(
+		value = "Find and return a list of all active Institutionen. An active Institution is a Institution where the "
+			+ "active flag is true",
+		responseContainer = "List",
+		response = JaxInstitution.class)
 	@Nonnull
 	@GET
 	@Path("/active")

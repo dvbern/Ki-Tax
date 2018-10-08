@@ -257,9 +257,10 @@ public class MailTemplateConfiguration {
 	@Nonnull
 	public String getBenutzerEinladung(
 		@Nonnull Benutzer einladender,
-		@Nonnull Benutzer eingeladener,
 		@Nonnull Einladung einladung
 	) {
+
+		Benutzer eingeladener = einladung.getEingeladener();
 
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));

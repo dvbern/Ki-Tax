@@ -21,126 +21,88 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Displayable;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 
-import static java.util.Objects.requireNonNull;
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * This class contains all required objects fro an Einladung.
  */
 public class Einladung {
 
-	@NotNull
-	private EinladungTyp einladungTyp;
+	@Nonnull
+	private final EinladungTyp einladungTyp;
+
+	@Nonnull
+	private final Benutzer eingeladener;
 
 	@Nullable
-	private Gemeinde gemeinde;
+	private final Displayable associatedEntity;
 
-	@Nullable
-	private Institution institution;
-
-	@Nullable
-	private Traegerschaft traegerschaft;
-
-	public Einladung(
-		@Nonnull EinladungTyp einladungTyp,
-		@Nullable Gemeinde gemeinde,
-		@Nullable Institution institution,
-		@Nullable Traegerschaft traegerschaft
-	) {
+	private Einladung(@Nonnull EinladungTyp einladungTyp, @Nonnull Benutzer eingeladener) {
 		this.einladungTyp = einladungTyp;
-		this.gemeinde = gemeinde;
-		this.institution = institution;
-		this.traegerschaft = traegerschaft;
-		checkValues();
+		this.eingeladener = eingeladener;
+		this.associatedEntity = null;
 	}
 
+	private Einladung(
+		@Nonnull EinladungTyp einladungTyp,
+		@Nonnull Benutzer eingeladener,
+		@Nullable Displayable associatedEntity) {
+		checkArgument(einladungTyp.getAssociatedEntityClass()
+			.map(clazz -> clazz.isInstance(associatedEntity))
+			.orElseGet(() -> associatedEntity == null)
+		);
+		this.einladungTyp = einladungTyp;
+		this.eingeladener = eingeladener;
+		this.associatedEntity = associatedEntity;
+	}
+
+	@Nonnull
+	public static Einladung forMitarbeiter(@Nonnull Benutzer eingeladener) {
+		return new Einladung(EinladungTyp.MITARBEITER, eingeladener);
+	}
+
+	@Nonnull
+	public static Einladung forGemeinde(@Nonnull Benutzer eingeladener, @Nonnull Gemeinde gemeinde) {
+		return new Einladung(EinladungTyp.GEMEINDE, eingeladener, gemeinde);
+	}
+
+	@Nonnull
+	public static Einladung forInstitution(@Nonnull Benutzer eingeladener, @Nonnull Institution institution) {
+		return new Einladung(EinladungTyp.INSTITUTION, eingeladener, institution);
+	}
+
+	@Nonnull
+	public static Einladung forTraegerschaft(@Nonnull Benutzer eingeladener, @Nonnull Traegerschaft traegerschaft) {
+		return new Einladung(EinladungTyp.TRAEGERSCHAFT, eingeladener, traegerschaft);
+	}
+
+	@Nonnull
 	public EinladungTyp getEinladungTyp() {
 		return einladungTyp;
 	}
 
-	public void setEinladungTyp(EinladungTyp einladungTyp) {
-		this.einladungTyp = einladungTyp;
+	@Nonnull
+	public Benutzer getEingeladener() {
+		return eingeladener;
 	}
 
-	@Nullable
-	public Gemeinde getGemeinde() {
-		return gemeinde;
-	}
-
-	public void setGemeinde(@Nullable Gemeinde gemeinde) {
-		this.gemeinde = gemeinde;
-	}
-
-	@Nullable
-	public Institution getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(@Nullable Institution institution) {
-		this.institution = institution;
-	}
-
-	@Nullable
-	public Traegerschaft getTraegerschaft() {
-		return traegerschaft;
-	}
-
-	public void setTraegerschaft(@Nullable Traegerschaft traegerschaft) {
-		this.traegerschaft = traegerschaft;
-	}
-
-
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	private void checkValues() {
-		switch (einladungTyp) {
-		case GEMEINDE:
-			requireNonNull(gemeinde, "For an Einladung of the type Gemeinde a Gemeinde must be set");
-			break;
-		case TRAEGERSCHAFT:
-			requireNonNull(traegerschaft, "For an Einladung of the type Traegerschaft a Traegerschaft must be set");
-			break;
-		case INSTITUTION:
-			requireNonNull(institution, "For an Einladung of the type Institution an Institution must be set");
-			break;
-		default:
-			break;
-		}
-	}
-
-	@SuppressWarnings("ConstantConditions")
 	@Nonnull
 	public Optional<String> getEinladungRelatedObjectId() {
-		checkValues();
-		switch (einladungTyp) {
-		case GEMEINDE:
-			return Optional.of(gemeinde.getId());
-		case TRAEGERSCHAFT:
-			return Optional.of(traegerschaft.getId());
-		case INSTITUTION:
-			return Optional.of(institution.getId());
-		default:
-			return Optional.empty();
-		}
+		return Optional.ofNullable(associatedEntity)
+			.map(Displayable::getId);
 	}
 
-	@SuppressWarnings("ConstantConditions")
 	@Nonnull
 	public Optional<String> getEinladungObjectName() {
-		switch (getEinladungTyp()) {
-		case GEMEINDE:
-			return Optional.of(gemeinde.getName());
-		case TRAEGERSCHAFT:
-			return Optional.of(traegerschaft.getName());
-		case INSTITUTION:
-			return Optional.of(institution.getName());
-		default:
-			return Optional.empty();
-		}
+		return Optional.ofNullable(associatedEntity)
+			.map(Displayable::getName);
 	}
 }

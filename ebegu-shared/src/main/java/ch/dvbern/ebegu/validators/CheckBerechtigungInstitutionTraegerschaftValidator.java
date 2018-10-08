@@ -50,6 +50,7 @@ public class CheckBerechtigungInstitutionTraegerschaftValidator implements Const
 		if (EnumUtil.isOneOf(berechtigung.getRole(), UserRole.ADMIN_TRAEGERSCHAFT, UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
 			return berechtigung.getTraegerschaft() != null;
 		}
-		return berechtigung.getTraegerschaft() == null && berechtigung.getInstitution() == null; // alle anderen Benutzer duerfen keine Inst/Traeg haben
+		// alle anderen Benutzer duerfen keine Inst/Traeg haben
+		return berechtigung.getTraegerschaft() == null && berechtigung.getInstitution() == null;
 	}
 }
