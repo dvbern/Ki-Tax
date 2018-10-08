@@ -242,7 +242,7 @@
                                             <label class="md-no-float" data-translate="BETREUUNGSPENSUM"
                                                    data-translate-value-betreuungspensumnumber="{{$index + 1}}"
                                                    for="betreuungspensum-{{$index}}"></label>
-                                            <dv-betreuung-input [pensum]="vm.getBetreuungspensum($index)"
+                                            <dv-betreuung-input [pensum-container]="vm.getBetreuungspensum($index)"
                                                                 [id]="betreuungspensum-{{$index}}"
                                                                 [betreuungsangebottyp]="vm.getBetreuungModel().getAngebotTyp()"
                                                                 [disabled]="!vm.isPensumEditable()">

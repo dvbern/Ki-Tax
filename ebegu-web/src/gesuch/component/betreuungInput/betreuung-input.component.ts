@@ -38,7 +38,7 @@ export class BetreuungInputComponent implements OnInit {
     private readonly MULTIPLIER_TAGESFAMILIEN = 2.2;
 
     @Input()
-    public pensum: TSBetreuungspensumContainer;
+    public pensumContainer: TSBetreuungspensumContainer;
 
     @Input()
     public disabled: boolean = false;
@@ -49,7 +49,7 @@ export class BetreuungInputComponent implements OnInit {
     @Input()
     public betreuungsangebottyp: TSBetreuungsangebotTyp;
 
-    private value: number;
+    private pensumValue: number;
 
     public label: string = '';
     public switchOptions: Array<TSPensumUnits> = [];
@@ -81,6 +81,10 @@ export class BetreuungInputComponent implements OnInit {
     }
 
     public toggle(): void {
+        this.refreshContent();
+    }
+
+    private refreshContent(): void {
         this.parseToPercentage();
         this.updateLabel();
     }
@@ -91,7 +95,7 @@ export class BetreuungInputComponent implements OnInit {
             this.label = '';
             return;
         }
-        const lbl: string = this.pensum.betreuungspensumJA.unitForDisplay === this.switchOptions[0]
+        const lbl: string = this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[0]
             ? ` ${this.translate.instant(this.switchOptions[1])} ${this.translate.instant('PER_MONTH')}`
             : this.translate.instant(this.switchOptions[0]);
 
@@ -99,20 +103,20 @@ export class BetreuungInputComponent implements OnInit {
     }
 
     private calculateValueForAdditionalLabel(): string {
-        return this.pensum.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
-            ? (this.value * this.multiplier).toFixed(2)
-            : (this.value / this.multiplier).toFixed(2);
+        return this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
+            ? (this.pensumValue * this.multiplier).toFixed(2)
+            : (this.pensumValue / this.multiplier).toFixed(2);
     }
 
     private parseToPensumUnit(): void {
-        this.value = this.pensum.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
-            ? this.pensum.betreuungspensumJA.pensum
-            : this.pensum.betreuungspensumJA.pensum * this.multiplier;
+        this.pensumValue = this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
+            ? this.pensumContainer.betreuungspensumJA.pensum
+            : this.pensumContainer.betreuungspensumJA.pensum * this.multiplier;
     }
 
     private parseToPercentage(): void {
-        this.pensum.betreuungspensumJA.pensum = this.pensum.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
-            ? this.value
-            : this.value / this.multiplier;
+        this.pensumContainer.betreuungspensumJA.pensum = this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
+            ? this.pensumValue
+            : this.pensumValue / this.multiplier;
     }
 }
