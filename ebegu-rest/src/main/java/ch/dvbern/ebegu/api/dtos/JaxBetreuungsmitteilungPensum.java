@@ -26,15 +26,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxBetreuungsmitteilungPensum extends JaxAbstractBetreuungspensumDTO {
 
-	private Boolean nichtEingetreten = false;
+	private boolean nichtEingetreten = false;
 
 	private static final long serialVersionUID = -8012538846244511785L;
 
-	public Boolean getNichtEingetreten() {
+	public boolean getNichtEingetreten() {
 		return nichtEingetreten;
 	}
 
-	public void setNichtEingetreten(Boolean nichtEingetreten) {
+	public void setNichtEingetreten(boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
 	}
 }
