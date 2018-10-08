@@ -33,6 +33,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
@@ -367,10 +368,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	@Override
 	public void sendBenutzerEinladung(
 		@Nonnull Benutzer einladender,
-		@Nonnull Benutzer eingeladener) throws MailException {
+		@Nonnull Einladung einladung
+	) throws MailException {
+		requireNonNull(einladender);
+		requireNonNull(einladung);
 
-		String message = mailTemplateConfig.getBenutzerEinladung(einladender, eingeladener);
-		sendMessageWithTemplate(message, eingeladener.getEmail());
+		String message = mailTemplateConfig.getBenutzerEinladung(einladender, einladung);
+
+		sendMessageWithTemplate(message, einladung.getEingeladener().getEmail());
 	}
 
 	private void sendMail(

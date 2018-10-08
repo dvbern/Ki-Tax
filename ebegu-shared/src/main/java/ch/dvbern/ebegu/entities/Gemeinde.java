@@ -54,7 +54,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 	}
 )
 @CheckGemeinde
-public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
+public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Displayable {
 
 	private static final long serialVersionUID = -6976259296646006855L;
 
@@ -104,6 +104,7 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
 		this.gemeindeNummer = gemeindeNummer;
 	}
 
+	@Override
 	@Nonnull
 	public String getName() {
 		return name;

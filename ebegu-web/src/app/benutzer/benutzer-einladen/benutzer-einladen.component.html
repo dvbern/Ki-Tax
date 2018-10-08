@@ -64,10 +64,11 @@
                     <div class="form-group">
                         <label translate for="email_ID">EMAIL</label>
                         <input id="email_ID"
-                               type="text"
+                               type="email"
                                name="email"
                                [(ngModel)]="benutzer.email"
                                required
+                               pattern="{{CONSTANTS.PATTERN_EMAIL}}"
                                class="form-control">
                         <dv-error-messages [errorObject]="form.controls['email']?.errors"
                                            inputId="email_ID">
