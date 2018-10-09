@@ -21,13 +21,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
@@ -37,13 +38,15 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
+import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Configuration For Freemarker Templates
@@ -252,24 +255,50 @@ public class MailTemplateConfiguration {
 	}
 
 	@Nonnull
-	public String getBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Benutzer eingeladener) {
+	public String getBenutzerEinladung(
+		@Nonnull Benutzer einladender,
+		@Nonnull Einladung einladung
+	) {
+
+		Benutzer eingeladener = einladung.getEingeladener();
 
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
-		paramMap.put("acceptLink", "https://www.dvbern.ch"); // TODO
-		paramMap.put("rolle", ServerMessageUtil.translateEnumValue(eingeladener.getRole()));
-
-		RollenAbhaengigkeit rollenAbhaengigkeit = eingeladener.getRole().getRollenAbhaengigkeit();
-		Optional<String> rollenZusatz = eingeladener.extractRollenAbhaengigkeitAsString();
-		paramMap.put("hasRollenZusatz", rollenZusatz.isPresent());
-		rollenZusatz.ifPresent(zusatz -> {
-			paramMap.put("rollenZusatzTitel", ServerMessageUtil.translateEnumValue(rollenAbhaengigkeit));
-			paramMap.put("rollenZusatz", zusatz);
-		});
-		paramMap.put("einladender", einladender);
+		paramMap.put("acceptLink", createLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
+		paramMap.put(
+			"content",
+			ServerMessageUtil.getMessage(
+				"EinladungEmail_" + einladung.getEinladungTyp(),
+				einladender.getFullName(),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole()),
+				getRollenZusatz(einladung, eingeladener)
+			)
+		);
+		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER"));
 
 		return doProcessTemplate("BenutzerEinladung.ftl", paramMap);
+	}
+
+	@Nonnull
+	private String getRollenZusatz(@Nonnull Einladung einladung, @Nullable Benutzer eingeladener) {
+		if (einladung.getEinladungTyp() == EinladungTyp.MITARBEITER) {
+			requireNonNull(eingeladener, "For an Einladung of the type Mitarbeiter a user must be set");
+			return '(' + eingeladener.extractRollenAbhaengigkeitAsString() + ')';
+		}
+		return einladung.getEinladungObjectName()
+			.orElse("");
+	}
+
+	private String createLink(
+		@Nonnull Benutzer eingeladener,
+		@Nonnull Einladung einladung
+	) {
+		return ebeguConfiguration.isClientUsingHTTPS() ? "https://" : "http://"
+			+ ebeguConfiguration.getHostname()
+			+ "/einladung?typ=" + einladung.getEinladungTyp()
+			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
+			+ "&userid=" + eingeladener.getId();
 	}
 
 	private String processTemplateGesuch(

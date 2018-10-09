@@ -20,8 +20,10 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import DateUtil from '../../../utils/DateUtil';
 import {INewFallStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -57,7 +59,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
     // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
     public showError: boolean = false;
-    private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
+    private gesuchsperiodenListe: Array<TSGesuchsperiode>;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -101,9 +103,10 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             && this.gesuchModelManager.getGesuchsperiode()) {
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
-        this.gesuchsperiodeRS.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(this.$stateParams.dossierId).then(
+
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gesuchModelManager.getDossier().gemeinde.id).then(
             (response: TSGesuchsperiode[]) => {
-                this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(response);
+                this.gesuchsperiodenListe = angular.copy(response);
             });
     }
 
@@ -136,7 +139,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getAllActiveGesuchsperioden(): Array<TSGesuchsperiode> {
-        return this.nichtAbgeschlosseneGesuchsperiodenList;
+        return this.gesuchsperiodenListe;
     }
 
     public setSelectedGesuchsperiode(): void {
@@ -171,6 +174,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             'KITAX_ERNEUERUNGSGESUCH' :
             'KITAX_ERSTGESUCH';
         return this.$translate.instant(key);
+
     }
 
     public getNextButtonText(): string {
@@ -196,5 +200,13 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         return this.gesuchModelManager.getGesuch()
             && this.gesuchModelManager.isGesuch()
             && this.isGesuchsperiodeActive() && this.gesuchModelManager.getGesuch().isNew();
+    }
+
+    public getGemeinde(): TSGemeinde {
+        return this.gesuchModelManager.getDossier().gemeinde;
+    }
+
+    public getPeriodString(): string {
+        return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
     }
 }

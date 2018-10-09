@@ -114,7 +114,7 @@ public class EbeguRuleTestsHelper {
 		return restanspruchInitializer.createVerfuegungsZeitabschnitte(currentBetreuung, zeitabschnitte);
 	}
 
-	public static Betreuung createBetreuungWithPensum(LocalDate von, LocalDate bis, BetreuungsangebotTyp angebot, int pensum) {
+	public static Betreuung createBetreuungWithPensum(LocalDate von, LocalDate bis, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheBetreuungskosten) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
@@ -125,6 +125,7 @@ public class EbeguRuleTestsHelper {
 		DateRange gueltigkeit = new DateRange(von, bis);
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
+		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 		return betreuung;
 	}

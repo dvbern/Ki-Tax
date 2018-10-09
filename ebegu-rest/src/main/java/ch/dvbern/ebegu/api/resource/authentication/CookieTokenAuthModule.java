@@ -105,6 +105,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	}
 
 	@Override
+	@SuppressWarnings({"checkstyle:CyclomaticComplexity", "checkstyle:BooleanExpressionComplexity"})
 	public AuthStatus validateHttpRequest(HttpServletRequest request, HttpServletResponse response, HttpMsgContext httpMsgContext) {
 		prepareLogvars(httpMsgContext);
 		//maybe we should do a logout first?

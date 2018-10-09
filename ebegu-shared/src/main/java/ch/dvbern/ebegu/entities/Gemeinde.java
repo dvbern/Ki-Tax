@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.CheckGemeinde;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -51,7 +53,8 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@UniqueConstraint(columnNames = {"gemeindeNummer", "mandant_id"}, name = "UK_gemeinde_gemeindeNummer_mandant")
 	}
 )
-public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
+@CheckGemeinde
+public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Displayable {
 
 	private static final long serialVersionUID = -6976259296646006855L;
 
@@ -80,6 +83,10 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
 	@Enumerated(EnumType.STRING)
 	private GemeindeStatus status = GemeindeStatus.EINGELADEN;
 
+	@NotNull
+	@Column(nullable = false)
+	@Nonnull
+	private LocalDate betreuungsgutscheineStartdatum;
 
 	public Mandant getMandant() {
 		return mandant;
@@ -97,6 +104,7 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
 		this.gemeindeNummer = gemeindeNummer;
 	}
 
+	@Override
 	@Nonnull
 	public String getName() {
 		return name;
@@ -121,6 +129,15 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde> {
 
 	public void setBfsNummer(@Nonnull Long bfsNummer) {
 		this.bfsNummer = bfsNummer;
+	}
+
+	@Nonnull
+	public LocalDate getBetreuungsgutscheineStartdatum() {
+		return betreuungsgutscheineStartdatum;
+	}
+
+	public void setBetreuungsgutscheineStartdatum(@Nonnull LocalDate betreuungsgutscheineStartdatum) {
+		this.betreuungsgutscheineStartdatum = betreuungsgutscheineStartdatum;
 	}
 
 	@Override

@@ -29,8 +29,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -54,7 +56,9 @@ import javax.persistence.criteria.SetJoin;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
@@ -69,6 +73,7 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
+import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -78,6 +83,7 @@ import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -99,6 +105,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setInstitutionFilterForCurrentUser;
@@ -138,7 +145,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Inject
 	private Authorizer authorizer;
 
-
 	@Nonnull
 	@Override
 	@PermitAll
@@ -163,6 +169,79 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde) {
+		requireNonNull(gemeinde);
+
+		return createBenutzerFromEmail(
+			adminMail,
+			UserRole.ADMIN_BG,
+			gemeinde,
+			b -> b.getGemeindeList().add(gemeinde));
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution) {
+		requireNonNull(institution);
+
+		return createBenutzerFromEmail(
+			adminMail,
+			UserRole.ADMIN_INSTITUTION,
+			institution,
+			b -> b.setInstitution(institution));
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft) {
+		requireNonNull(traegerschaft);
+
+		return createBenutzerFromEmail(
+			adminMail,
+			UserRole.ADMIN_TRAEGERSCHAFT,
+			traegerschaft,
+			b -> b.setTraegerschaft(traegerschaft));
+	}
+
+	@Nonnull
+	private <T extends AbstractEntity> Benutzer createBenutzerFromEmail(
+		@Nonnull String adminMail,
+		@Nonnull UserRole role,
+		@Nullable T associatedEntity,
+		@Nonnull Consumer<Berechtigung> appender
+	) {
+		requireNonNull(adminMail);
+		requireNonNull(principalBean.getMandant());
+
+		checkArgument(role.getRollenAbhaengigkeit().getAssociatedEntityClass()
+			.map(clazz -> clazz.isInstance(associatedEntity))
+			.orElseGet(() -> associatedEntity == null)
+		);
+
+		final Benutzer benutzer = new Benutzer();
+		benutzer.setEmail(adminMail);
+		benutzer.setNachname(Constants.UNKNOWN);
+		benutzer.setVorname(Constants.UNKNOWN);
+		benutzer.setUsername(adminMail);
+		benutzer.setStatus(BenutzerStatus.EINGELADEN);
+		benutzer.setMandant(principalBean.getMandant());
+
+		final Berechtigung berechtigung = new Berechtigung();
+		berechtigung.setRole(role);
+		berechtigung.setBenutzer(benutzer);
+		berechtigung.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
+		benutzer.getBerechtigungen().add(berechtigung);
+
+		appender.accept(berechtigung);
+
+		return saveBenutzer(benutzer);
+	}
+
+	@Nonnull
+	@Override
 	@RolesAllowed({
 		SUPER_ADMIN,
 		ADMIN_BG,
@@ -171,28 +250,48 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		ADMIN_MANDANT,
 		ADMIN_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_MANDANT,
 	})
-	public Benutzer einladen(@Nonnull Benutzer benutzer) {
-		requireNonNull(benutzer);
-		checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
-		checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
-		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
+	public Benutzer einladen(@Nonnull Einladung einladung) {
+		requireNonNull(einladung);
 
-		if (findBenutzer(benutzer.getUsername()).isPresent()) {
-			throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
-		}
+		checkEinladung(einladung);
 
-		Benutzer persisted = saveBenutzer(benutzer);
+		Benutzer persistedBenutzer = saveBenutzer(einladung.getEingeladener());
 
 		try {
-			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), persisted);
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
+
 		} catch (MailException e) {
 			String message =
-				String.format("Es konnte keine Email Einladung an %s geschickt werden", benutzer.getEmail());
+				String.format("Es konnte keine Email Einladung an %s geschickt werden", persistedBenutzer.getEmail());
 			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
 
-		return persisted;
+		return persistedBenutzer;
+	}
+
+	/**
+	 * According to the type of Einladung it checks that the given benutzer meets the conditions required.
+	 */
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	private void checkEinladung(@Nonnull Einladung einladung) {
+		Benutzer benutzer = einladung.getEingeladener();
+		EinladungTyp einladungTyp = einladung.getEinladungTyp();
+		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
+
+		if (einladungTyp == EinladungTyp.MITARBEITER) {
+			checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
+			if (findBenutzer(benutzer.getUsername()).isPresent()) {
+				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist
+				// already
+				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
+			}
+		}
+
+		if (benutzer.isNew()) {
+			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+		}
 	}
 
 	@Nonnull
@@ -347,7 +446,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			username = principal.getName();
 		}
 		if (StringUtils.isNotEmpty(username)) {
-			if (Constants.ANONYMOUS_USER_USERNAME.equals(username) && principalBean.isCallerInRole(UserRole.SUPER_ADMIN.name())) {
+			if (Constants.ANONYMOUS_USER_USERNAME.equals(username)
+				&& principalBean.isCallerInRole(UserRole.SUPER_ADMIN.name())) {
 				return loadSuperAdmin();
 			}
 			return findBenutzer(username);
@@ -605,7 +705,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			}
 			// role
 			if (predicateObjectDto.getRole() != null) {
-				predicates.add(cb.equal(currentBerechtigungJoin.get(Berechtigung_.role), predicateObjectDto.getRole()));
+				predicates.add(cb.equal(
+					currentBerechtigungJoin.get(Berechtigung_.role),
+					predicateObjectDto.getRole()));
 			}
 			// roleGueltigBis
 			if (predicateObjectDto.getRoleGueltigBis() != null) {

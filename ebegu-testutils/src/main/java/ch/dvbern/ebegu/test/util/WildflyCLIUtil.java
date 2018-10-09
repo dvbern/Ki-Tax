@@ -54,7 +54,7 @@ public class WildflyCLIUtil {
 			ModelNode result = client.getControllerClient().execute(operation);
 			return isOperationSuccess(result);
 		} catch (IOException e) {
-			LOG.error("Failed execution of operation " + operation.toJSONString(false), e);
+			LOG.error("Failed execution of operation {}", operation.toJSONString(false), e);
 			return false;
 		}
 	}

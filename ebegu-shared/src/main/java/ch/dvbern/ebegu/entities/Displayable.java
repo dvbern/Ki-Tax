@@ -15,28 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.entities;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import javax.annotation.Nonnull;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+public interface Displayable {
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+	@Nonnull
+	String getName();
 
-@Target({ TYPE, ANNOTATION_TYPE })
-@Retention(RUNTIME)
-@Constraint(validatedBy = CheckEinstellungValidator.class)
-@Documented
-public @interface CheckEinstellung {
-
-	String message() default "{invalid_einstellung}";
-
-	Class<?>[] groups() default {};
-
-	Class<? extends Payload>[] payload() default {};
+	@Nonnull
+	String getId();
 }

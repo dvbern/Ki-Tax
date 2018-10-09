@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class Institution extends AbstractMutableEntity implements HasMandant {
+public class Institution extends AbstractMutableEntity implements HasMandant, Displayable {
 
 	private static final long serialVersionUID = -8706487439884760618L;
 
@@ -69,6 +70,8 @@ public class Institution extends AbstractMutableEntity implements HasMandant {
 	public Institution() {
 	}
 
+	@Override
+	@Nonnull
 	public String getName() {
 		return name;
 	}

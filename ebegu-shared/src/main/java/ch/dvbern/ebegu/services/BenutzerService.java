@@ -23,10 +23,13 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -54,10 +57,29 @@ public interface BenutzerService {
 	Benutzer saveBenutzer(@Nonnull Benutzer benutzer);
 
 	/**
+	 * Creates a new user of Role ADMIN_GEMEINDE with the given adminMail as email and as username and the given Gemeinde as the only
+	 * Gemeinde in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 */
+	@Nonnull
+	Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde);
+
+	/**
+	 * Creates a new user of Role ADMIN_INSTITUTION with the given adminMail as email and as username and the given Institution as the only
+	 * Institution in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 */
+	Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution);
+
+	/**
+	 * Creates a new user of Role ADMIN_TRAEGERSCHAFT with the given adminMail as email and as username and the given Traegerschaft as the only
+	 * Traegerschaft in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 */
+	Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft);
+
+	/**
 	 * Saves the given Benutzer and sends him an Einladungsemail
 	 */
 	@Nonnull
-	Benutzer einladen(@Nonnull Benutzer benutzer);
+	Benutzer einladen(@Nonnull Einladung einladung);
 
 	/**
 	 * @param username PK (id) des Benutzers
