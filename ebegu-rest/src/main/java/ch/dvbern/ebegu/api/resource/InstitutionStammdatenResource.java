@@ -113,10 +113,8 @@ public class InstitutionStammdatenResource {
 		Optional<InstitutionStammdaten> optional =
 			institutionStammdatenService.findInstitutionStammdaten(institutionStammdatenID);
 
-		if (!optional.isPresent()) {
-			return null;
-		}
-		return converter.institutionStammdatenToJAX(optional.get());
+		return optional.map(institutionStammdaten -> converter.institutionStammdatenToJAX(institutionStammdaten))
+			.orElse(null);
 	}
 
 	@ApiOperation(value = "Gibt alle vorhandenen Institutionsstammdaten zurueck",

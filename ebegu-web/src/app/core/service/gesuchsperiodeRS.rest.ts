@@ -83,7 +83,11 @@ export default class GesuchsperiodeRS {
 
     public getAllPeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
         return this.http
-            .get(`${this.serviceURL}/gemeinde;gemeindeId=${gemeindeId}${dossierId ? ';dossierId=' + dossierId : ''}`)
+            .get(`${this.serviceURL}/gemeinde/${gemeindeId}`, {
+                params: {
+                    dossierId,
+                }
+            })
             .then(response => {
                 return this.ebeguRestUtil.parseGesuchsperioden(response.data);
             });

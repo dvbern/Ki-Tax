@@ -23,7 +23,6 @@ import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -38,14 +37,11 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GemeindeJaxBConverter.class);
 
-	@Inject
-	private JaxBConverter converter;
-
 	@Nonnull
 	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde jaxGemeinde, @Nonnull final Gemeinde gemeinde) {
 		Objects.requireNonNull(gemeinde);
 		Objects.requireNonNull(jaxGemeinde);
-		converter.convertAbstractVorgaengerFieldsToEntity(jaxGemeinde, gemeinde);
+		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
 		gemeinde.setName(jaxGemeinde.getName());
 		gemeinde.setStatus(jaxGemeinde.getStatus());
 		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
@@ -59,7 +55,7 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 
 	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
 		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
-		convertAbstractVorgaengerFieldsToJAX(persistedGemeinde, jaxGemeinde);
+		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
 		jaxGemeinde.setName(persistedGemeinde.getName());
 		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());

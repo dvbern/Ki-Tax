@@ -136,6 +136,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private boolean abschnittLiegtNachBEGUStartdatum = true;
 
+	@Transient
+	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
+
 	@Max(100)
 	@Min(0)
 	@NotNull
@@ -215,6 +218,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
 		this.betreuungspensum = toCopy.betreuungspensum;
+		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
 		this.anspruchberechtigtesPensum = toCopy.anspruchberechtigtesPensum;
 		this.betreuungsstunden = toCopy.betreuungsstunden;
 		this.vollkosten = toCopy.vollkosten;
@@ -556,12 +560,23 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
-	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+	@SuppressWarnings({"AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount"})
 	public void add(VerfuegungZeitabschnitt other) {
 		this.setBetreuungspensum(this.getBetreuungspensum() + other.getBetreuungspensum());
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAnspruchspensumRest(this.getAnspruchspensumRest() + other.getAnspruchspensumRest());
 		this.setAnspruchberechtigtesPensum(this.getAnspruchberechtigtesPensum() + other.getAnspruchberechtigtesPensum());
+
+		BigDecimal newMonatlicheBetreuungskosten = BigDecimal.ZERO;
+		if (this.getMonatlicheBetreuungskosten() != null) {
+			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(this.getMonatlicheBetreuungskosten());
+		}
+		if (other.getMonatlicheBetreuungskosten() != null) {
+			newMonatlicheBetreuungskosten = newMonatlicheBetreuungskosten.add(other.getMonatlicheBetreuungskosten());
+		}
+		this.setMonatlicheBetreuungskosten(newMonatlicheBetreuungskosten);
+
+
 		BigDecimal newBetreuungsstunden = ZERO;
 		if (this.getBetreuungsstunden() != null) {
 			newBetreuungsstunden = newBetreuungsstunden.add(this.getBetreuungsstunden());
@@ -839,5 +854,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		compareToBuilder.append(this.getGueltigkeit(), other.getGueltigkeit());
 		compareToBuilder.append(this.getId(), other.getId());  // wenn ids nicht gleich sind wollen wir auch compare to nicht gleich
 		return compareToBuilder.toComparison();
+	}
+
+	public BigDecimal getMonatlicheBetreuungskosten() {
+		return monatlicheBetreuungskosten;
+	}
+
+	public void setMonatlicheBetreuungskosten(BigDecimal monatlicheBetreuungskosten) {
+		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 }

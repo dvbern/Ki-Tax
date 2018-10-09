@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_05;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_06;
@@ -48,7 +49,6 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
-import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -58,6 +58,8 @@ import org.junit.Before;
  * Superklasse für BG-Rechner-Tests
  */
 public class AbstractBGRechnerTest {
+
+	public static final BigDecimal MONATLICHE_BETREUUNGSKOSTEN = new BigDecimal("2100.00");
 
 	protected BetreuungsgutscheinEvaluator evaluator;
 
@@ -152,16 +154,28 @@ public class AbstractBGRechnerTest {
 	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Tagi und Tageseltern notwendigen Parametern
 	 * zusammen
 	 */
-	protected Verfuegung prepareVerfuegungTagiUndTageseltern(LocalDate von, LocalDate bis, int anspruch, BigDecimal massgebendesEinkommen) {
+	protected Verfuegung prepareVerfuegungTagiUndTageseltern(
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis,
+		int anspruch,
+		@Nonnull BigDecimal massgebendesEinkommen,
+		@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
-		return createVerfuegung(von, bis, anspruch, massgebendesEinkommen);
+		return createVerfuegung(von, bis, anspruch, massgebendesEinkommen, monatlicheBetreuungskosten);
 	}
 
 	/**
 	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Kita notwendigen Parametern zusammen
 	 */
-	protected Verfuegung prepareVerfuegungKita(LocalDate geburtsdatumKind, BigDecimal anzahlTageKita, BigDecimal anzahlStundenProTagKita, LocalDate von, LocalDate bis,
-		int anspruch, BigDecimal massgebendesEinkommen) {
+	protected Verfuegung prepareVerfuegungKita(
+		@Nonnull LocalDate geburtsdatumKind,
+		@Nonnull BigDecimal anzahlTageKita,
+		@Nonnull BigDecimal anzahlStundenProTagKita,
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis,
+		int anspruch,
+		@Nonnull BigDecimal massgebendesEinkommen,
+		@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
 		Betreuung betreuung = new Betreuung();
 		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
@@ -183,7 +197,7 @@ public class AbstractBGRechnerTest {
 		kindContainer.setGesuch(gesuch);
 		betreuung.setKind(kindContainer);
 
-		Verfuegung verfuegung = createVerfuegung(von, bis, anspruch, massgebendesEinkommen);
+		Verfuegung verfuegung = createVerfuegung(von, bis, anspruch, massgebendesEinkommen, monatlicheBetreuungskosten);
 		verfuegung.setBetreuung(betreuung);
 		return verfuegung;
 	}
@@ -191,12 +205,18 @@ public class AbstractBGRechnerTest {
 	/**
 	 * Erstellt eine Verfügung mit den übergebenen Parametern
 	 */
-	private Verfuegung createVerfuegung(LocalDate von, LocalDate bis, int anspruch, BigDecimal massgebendesEinkommen) {
+	private Verfuegung createVerfuegung(
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis,
+		int anspruch,
+		@Nonnull BigDecimal massgebendesEinkommen,
+		@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(new DateRange(von, bis));
 		zeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
 		zeitabschnitt.setBetreuungspensum(anspruch);
 		zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
+		zeitabschnitt.setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();
 		zeitabschnittList.add(zeitabschnitt);
 		Verfuegung verfuegung = new Verfuegung();

@@ -78,9 +78,6 @@ public interface GesuchsperiodeService {
 	@Nonnull
 	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneGesuchsperioden();
 
-	@Nonnull
-	Collection<Gesuchsperiode> getGesuchsperiodenAfterDate(@Nonnull LocalDate date, @Nullable String dossierId);
-
 	/**
 	 * Gibt alle Gesuchsperioden zurueck, deren Ende-Datum noch nicht erreicht ist, und für die das angegebene
 	 * Dossier noch kein Gesuch freigegeben hat.

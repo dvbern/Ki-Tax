@@ -44,7 +44,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	@Nonnull
 	private long gemeindeNummer;
 
-	@Nullable
+	@Nonnull
 	private Long bfsNummer;
 
 	@Nonnull
@@ -81,12 +81,12 @@ public class JaxGemeinde extends JaxAbstractDTO {
 		this.status = status;
 	}
 
-	@Nullable
+	@Nonnull
 	public Long getBfsNummer() {
 		return bfsNummer;
 	}
 
-	public void setBfsNummer(@Nullable Long bfsNummer) {
+	public void setBfsNummer(@Nonnull Long bfsNummer) {
 		this.bfsNummer = bfsNummer;
 	}
 

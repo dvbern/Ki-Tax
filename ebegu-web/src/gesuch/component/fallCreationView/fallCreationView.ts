@@ -59,9 +59,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
     // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
     public showError: boolean = false;
-    private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
-
-    public gemeindeId: string;
+    private gesuchsperiodenListe: Array<TSGesuchsperiode>;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -93,7 +91,6 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
         if (this.$stateParams.gesuchsperiodeId && this.$stateParams.gesuchsperiodeId !== '') {
             this.gesuchsperiodeId = this.$stateParams.gesuchsperiodeId;
         }
-        this.gemeindeId = this.$stateParams.gemeindeId;
     }
 
     public setShowError(showError: boolean): void {
@@ -106,9 +103,10 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             && this.gesuchModelManager.getGesuchsperiode()) {
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gemeindeId).then(
+
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gesuchModelManager.getDossier().gemeinde.id).then(
             (response: TSGesuchsperiode[]) => {
-                this.nichtAbgeschlosseneGesuchsperiodenList = angular.copy(response);
+                this.gesuchsperiodenListe = angular.copy(response);
             });
     }
 
@@ -141,7 +139,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getAllActiveGesuchsperioden(): Array<TSGesuchsperiode> {
-        return this.nichtAbgeschlosseneGesuchsperiodenList;
+        return this.gesuchsperiodenListe;
     }
 
     public setSelectedGesuchsperiode(): void {

@@ -215,8 +215,7 @@ public class SchulamtBackendResource {
 
 	@ApiOperation(value =
 		"Gibt das massgebende Einkommen fuer die uebergebene BgNummer zurueck. Falls das massgebende Einkommen noch "
-			+ "nicht erfasst wurde, wird "
-			+ "400 zurueckgegeben.",
+			+ "nicht erfasst wurde, wird 400 zurueckgegeben.",
 		response = JaxExternalFinanzielleSituation.class)
 	@ApiResponses({
 		@ApiResponse(code = 400, message = "no data found"),
@@ -304,6 +303,7 @@ public class SchulamtBackendResource {
 		long fallNummer,
 		LocalDate stichtag,
 		Gesuch neustesGesuch) {
+
 		final Familiensituation familiensituation = neustesGesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation);
 
@@ -351,6 +351,7 @@ public class SchulamtBackendResource {
 	private JaxExternalFinanzielleSituation convertToJaxExternalFinanzielleSituation(
 		long fallNummer, LocalDate stichtag, Gesuch neustesGesuch,
 		VerfuegungZeitabschnitt zeitabschnitt) {
+
 		final GesuchstellerContainer gesuchsteller1 = neustesGesuch.getGesuchsteller1();
 		Objects.requireNonNull(gesuchsteller1);
 		final GesuchstellerAdresse rechnungsAdresse = gesuchsteller1.extractEffectiveRechnungsAdresse(stichtag);
@@ -376,6 +377,7 @@ public class SchulamtBackendResource {
 	private JaxExternalFinanzielleSituation convertToJaxExternalFinanzielleSituationWithoutFinDaten(
 		long fallNummer, LocalDate stichtag, Gesuch neustesGesuch,
 		JaxExternalTarifart tarifart) {
+
 		final GesuchstellerContainer gesuchsteller1 = neustesGesuch.getGesuchsteller1();
 		Objects.requireNonNull(gesuchsteller1);
 		final GesuchstellerAdresse rechnungsAdresse = gesuchsteller1.extractEffectiveRechnungsAdresse(stichtag);

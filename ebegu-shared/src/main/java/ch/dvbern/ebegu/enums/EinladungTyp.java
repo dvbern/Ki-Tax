@@ -27,16 +27,27 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 
-public enum RollenAbhaengigkeit {
+/**
+ * This Enum has values that indicate through which method the user is being invited to Kibon.
+ */
+public enum EinladungTyp {
+
+	// An invitation to a new user of a Gemeinde
+	MITARBEITER(null),
+
+	// When a new Gemeinde is created a user must be invited as the admin of this Gemeinde
 	GEMEINDE(Gemeinde.class),
+
+	// When a new Institution is created a user must be invited as the admin of this Institution
 	INSTITUTION(Institution.class),
-	TRAEGERSCHAFT(Traegerschaft.class),
-	NONE(null);
+
+	// When a new Traegerschaft is created a user must be invited as the admin of this Traegerschaft
+	TRAEGERSCHAFT(Traegerschaft.class);
 
 	@Nullable
 	private final Class<? extends Displayable> associatedEntityClass;
 
-	RollenAbhaengigkeit(@Nullable Class<? extends Displayable> associatedEntityClass) {
+	EinladungTyp(@Nullable Class<? extends Displayable> associatedEntityClass) {
 		this.associatedEntityClass = associatedEntityClass;
 	}
 

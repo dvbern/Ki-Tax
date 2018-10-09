@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -32,11 +33,11 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.MatrixParam;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -209,12 +210,12 @@ public class GesuchsperiodeResource {
 		response = JaxGesuchsperiode.class)
 	@Nonnull
 	@GET
-	@Path("/gemeinde")
+	@Path("/gemeinde/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxGesuchsperiode> getAllPeriodenForGemeinde(
-		@Nonnull @MatrixParam("gemeindeId") String gemeindeId,
-		@Nullable @MatrixParam("dossierId") String dossierId) {
+		@Nonnull @PathParam("gemeindeId") String gemeindeId,
+		@Nullable @QueryParam("dossierId") String dossierId) {
 
 		LocalDate startdatum = gemeindeService.findGemeinde(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -222,8 +223,12 @@ public class GesuchsperiodeResource {
 				String.format("Keine Gemeinde für ID %s", gemeindeId)))
 			.getBetreuungsgutscheineStartdatum();
 
-		return gesuchsperiodeService
-			.getGesuchsperiodenAfterDate(startdatum, dossierId).stream()
+		Collection<Gesuchsperiode> perioden = dossierId == null
+			? gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden()
+			: gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId);
+
+		return perioden.stream()
+			.filter(periode -> periode.getGueltigkeit().endsAfterOrSame(startdatum))
 			.map(periode -> converter.gesuchsperiodeToJAX(periode))
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())

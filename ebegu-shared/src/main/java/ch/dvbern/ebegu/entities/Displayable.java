@@ -15,28 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.enums.EinstellungKey;
+public interface Displayable {
 
-public class CheckEinstellungValidator implements ConstraintValidator<CheckEinstellung, Einstellung> {
+	@Nonnull
+	String getName();
 
-	@Override
-	public void initialize(CheckEinstellung constraintAnnotation) {
-		// nop
-	}
-
-	/**
-	 * For each EinstellungKey we can check in this method if the given value is right or not.
-	 */
-	@Override
-	public boolean isValid(@Nonnull Einstellung instance, @Nullable ConstraintValidatorContext context) {
-		return true;
-	}
+	@Nonnull
+	String getId();
 }
