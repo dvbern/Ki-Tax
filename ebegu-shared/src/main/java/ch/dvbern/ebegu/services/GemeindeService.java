@@ -33,8 +33,7 @@ public interface GemeindeService {
 
 	/**
 	 * Speichert die Gemeinde neu in der DB falls der Key noch nicht existiert.
-	 *
-	 * @param gemeinde Die Gemeinde als DTO
+	 * @param gemeinde Die Gemeinde
 	 */
 	@Nonnull
 	Gemeinde saveGemeinde(@Nonnull Gemeinde gemeinde);
@@ -80,4 +79,11 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String gemeindeId);
+
+	/**
+	 * Speichert die GemeindeStammdaten neu in der DB falls der Key noch nicht existiert.
+	 * @param stammdaten Die GemeindeStammdaten
+	 */
+	@Nonnull
+	GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten);
 }

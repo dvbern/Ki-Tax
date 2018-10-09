@@ -684,7 +684,7 @@ export default class EbeguRestUtil {
 
     public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
         if (gemeinde) {
-            this.abstractMutableEntityToRestObject(restGemeinde, gemeinde);
+            this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
             restGemeinde.status = gemeinde.status;
             restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
@@ -702,7 +702,7 @@ export default class EbeguRestUtil {
 
     public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
         if (gemeindeFromServer) {
-            this.parseAbstractMutableEntity(gemeindeTS, gemeindeFromServer);
+            this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
             gemeindeTS.name = gemeindeFromServer.name;
             gemeindeTS.status = gemeindeFromServer.status;
             gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
@@ -714,11 +714,13 @@ export default class EbeguRestUtil {
 
     public gemeindeStammdatenToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdaten): TSGemeindeStammdaten {
         if (stammdaten) {
-            this.abstractMutableEntityToRestObject(restStammdaten, stammdaten);
+            this.abstractEntityToRestObject(restStammdaten, stammdaten);
+
             restStammdaten.administratoren = stammdaten.administratoren;
             restStammdaten.sachbearbeiter = stammdaten.sachbearbeiter;
             restStammdaten.defaultBenutzerBG = this.userToRestObject({}, stammdaten.defaultBenutzerBG);
             restStammdaten.defaultBenutzerTS = this.userToRestObject({}, stammdaten.defaultBenutzerTS);
+            restStammdaten.verantwortlicher = this.userToRestObject({}, stammdaten.verantwortlicher);
             restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
             restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
@@ -730,6 +732,7 @@ export default class EbeguRestUtil {
             restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
             restStammdaten.kontingentierung = stammdaten.kontingentierung;
             restStammdaten.beguBisUndMitSchulstufe = stammdaten.beguBisUndMitSchulstufe;
+
             return restStammdaten;
         }
         return undefined;
@@ -737,7 +740,25 @@ export default class EbeguRestUtil {
 
     public parseGemeindeStammdaten(stammdatenTS: TSGemeindeStammdaten, stammdatenFromServer: any): TSGemeindeStammdaten {
         if (stammdatenFromServer) {
-            this.parseAbstractMutableEntity(stammdatenTS, stammdatenFromServer);
+            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+
+            stammdatenTS.administratoren = stammdatenFromServer.administratoren;
+            stammdatenTS.sachbearbeiter = stammdatenFromServer.sachbearbeiter;
+            stammdatenTS.defaultBenutzerBG = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerBG);
+            stammdatenTS.defaultBenutzerTS = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerTS);
+            stammdatenTS.verantwortlicher = this.parseUser(new TSBenutzer(), stammdatenFromServer.verantwortlicher);
+            stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
+            stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
+            stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
+            stammdatenTS.keineBeschwerdeAdresse = stammdatenFromServer.keineBeschwerdeAdresse;
+            stammdatenTS.mail = stammdatenFromServer.mail;
+            stammdatenTS.telefon = stammdatenFromServer.telefon;
+            stammdatenTS.webseite = stammdatenFromServer.webseite;
+            stammdatenTS.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
+            stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
+            stammdatenTS.kontingentierung = stammdatenFromServer.kontingentierung;
+            stammdatenTS.beguBisUndMitSchulstufe = stammdatenFromServer.beguBisUndMitSchulstufe;
+
             return stammdatenTS;
         }
         return undefined;

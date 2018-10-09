@@ -49,6 +49,7 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private JaxAdresse  adresse;
 	@Nullable
 	private JaxAdresse  beschwerdeAdresse;
+	@NotNull
 	private boolean     keineBeschwerdeAdresse;
 	@NotNull
 	private String      mail;
@@ -56,11 +57,15 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private String      telefon;
 	@Nullable
 	private String      webseite;
-
+	@NotNull
 	private boolean 	korrespondenzspracheDe;
+	@NotNull
 	private boolean 	korrespondenzspracheFr;
+	@Nullable
+	private JaxBenutzer verantwortlicher;
 
 	// ---------- Konfiguration ----------
+	@NotNull
 	private boolean     kontingentierung;
 	@Nullable
 	private String      beguBisUndMitSchulstufe;
@@ -174,6 +179,14 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setKorrespondenzspracheFr(boolean korrespondenzspracheFr) {
 		this.korrespondenzspracheFr = korrespondenzspracheFr;
+	}
+
+	public JaxBenutzer getVerantwortlicher() {
+		return verantwortlicher;
+	}
+
+	public void setVerantwortlicher(JaxBenutzer verantwortlicher) {
+		this.verantwortlicher = verantwortlicher;
 	}
 
 	public boolean isKontingentierung() {

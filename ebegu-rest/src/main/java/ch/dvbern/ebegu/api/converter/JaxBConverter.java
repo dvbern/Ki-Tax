@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -1015,8 +1016,14 @@ public class JaxBConverter {
 	@Nonnull
 	public GemeindeStammdaten gemeindeStammdatenToEntity(@Nonnull final JaxGemeindeStammdaten jaxStammdaten, @Nonnull final GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
+		requireNonNull(stammdaten.getAdresse());
 		requireNonNull(jaxStammdaten);
+		requireNonNull(jaxStammdaten.getGemeinde());
+
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
+
+		// Die Gemeinde selbst ändert nicht
+
 		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
 			Optional<Benutzer> benBG = benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername());
 			if (benBG.isPresent()) {
@@ -1029,22 +1036,19 @@ public class JaxBConverter {
 				stammdaten.setDefaultBenutzerTS(jaxBenutzerToBenutzer(jaxStammdaten.getDefaultBenutzerTS(), benTS.get()));
 			}
 		}
-		if (jaxStammdaten.getGemeinde().getId() != null) {
-			Optional<Gemeinde> gemeinde = gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId());
-			if (gemeinde.isPresent()) {
-				stammdaten.setGemeinde(gemeindeToEntity(jaxStammdaten.getGemeinde(), gemeinde.get()));
-			}
-		}
 		if (jaxStammdaten.getAdresse().getId() != null) {
-			Optional<Adresse> adresse = adresseService.findAdresse(jaxStammdaten.getAdresse().getId());
-			if (adresse.isPresent()) {
-				stammdaten.setAdresse(adresseToEntity(jaxStammdaten.getAdresse(), adresse.get()));
-			}
+			adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
 		}
 		if (jaxStammdaten.getBeschwerdeAdresse() != null && jaxStammdaten.getBeschwerdeAdresse().getId() != null) {
-			Optional<Adresse> adresse = adresseService.findAdresse(jaxStammdaten.getBeschwerdeAdresse().getId());
-			if (adresse.isPresent()) {
-				stammdaten.setBeschwerdeAdresse(adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), adresse.get()));
+			if (stammdaten.getBeschwerdeAdresse() == null) {
+				stammdaten.setBeschwerdeAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
+		}
+		if (jaxStammdaten.getVerantwortlicher() != null) {
+			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(jaxStammdaten.getVerantwortlicher().getUsername());
+			if (verantwortlicher.isPresent()) {
+				stammdaten.setVerantwortlicher(jaxBenutzerToBenutzer(jaxStammdaten.getVerantwortlicher(), verantwortlicher.get()));
 			}
 		}
 		stammdaten.setKeineBeschwerdeAdresse(jaxStammdaten.isKeineBeschwerdeAdresse());
@@ -1083,32 +1087,38 @@ public class JaxBConverter {
 	}
 
 	public JaxGemeindeStammdaten gemeindeStammdatenToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
+		requireNonNull(stammdaten);
+		requireNonNull(stammdaten.getGemeinde());
+		requireNonNull(stammdaten.getAdresse());
+
 		final JaxGemeindeStammdaten jaxStammdaten = new JaxGemeindeStammdaten();
 		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
 		Collection<Benutzer> administratoren = benutzerService.getGemeindeAdministratoren(stammdaten.getGemeinde());
 		Collection<Benutzer> sachbearbeiter = benutzerService.getGemeindeSachbearbeiter(stammdaten.getGemeinde());
 		jaxStammdaten.setAdministratoren(administratoren.stream().map(Benutzer::getFullName).collect(Collectors.joining(", ")));
 		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream().map(Benutzer::getFullName).collect(Collectors.joining(", ")));
-		jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
-		jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
 		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
-		if (stammdaten.getBeschwerdeAdresse() != null) jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
-		jaxStammdaten.setKeineBeschwerdeAdresse(stammdaten.isKeineBeschwerdeAdresse());
 		jaxStammdaten.setMail(stammdaten.getMail());
-		jaxStammdaten.setTelefon(stammdaten.getTelefon());
-		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-		if (KorrespondenzSpracheTyp.DE.equals(stammdaten.getKorrespondenzsprache())) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(false);
-		}
-		else if (KorrespondenzSpracheTyp.FR.equals(stammdaten.getKorrespondenzsprache())) {
-			jaxStammdaten.setKorrespondenzspracheDe(false);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
-		}
-		else if (KorrespondenzSpracheTyp.DE_FR.equals(stammdaten.getKorrespondenzsprache())) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
+		if (!stammdaten.isNew()) {
+			jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
+			jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
+			jaxStammdaten.setVerantwortlicher(benutzerToJaxBenutzer(stammdaten.getVerantwortlicher()));
+			if (stammdaten.getBeschwerdeAdresse() != null)
+				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+			jaxStammdaten.setKeineBeschwerdeAdresse(stammdaten.isKeineBeschwerdeAdresse());
+			jaxStammdaten.setTelefon(stammdaten.getTelefon());
+			jaxStammdaten.setWebseite(stammdaten.getWebseite());
+			if (KorrespondenzSpracheTyp.DE.equals(stammdaten.getKorrespondenzsprache())) {
+				jaxStammdaten.setKorrespondenzspracheDe(true);
+				jaxStammdaten.setKorrespondenzspracheFr(false);
+			} else if (KorrespondenzSpracheTyp.FR.equals(stammdaten.getKorrespondenzsprache())) {
+				jaxStammdaten.setKorrespondenzspracheDe(false);
+				jaxStammdaten.setKorrespondenzspracheFr(true);
+			} else if (KorrespondenzSpracheTyp.DE_FR.equals(stammdaten.getKorrespondenzsprache())) {
+				jaxStammdaten.setKorrespondenzspracheDe(true);
+				jaxStammdaten.setKorrespondenzspracheFr(true);
+			}
 		}
 		if (gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).isPresent()) {
 			Gesuchsperiode gsNow = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).get();

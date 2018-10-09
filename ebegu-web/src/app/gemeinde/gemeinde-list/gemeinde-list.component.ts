@@ -60,7 +60,6 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         private readonly changeDetectorRef: ChangeDetectorRef,
         authServiceRS: AuthServiceRS,
     ) {
-
         super(authServiceRS);
     }
 

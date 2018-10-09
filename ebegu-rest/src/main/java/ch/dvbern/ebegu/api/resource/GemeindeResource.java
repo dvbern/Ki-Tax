@@ -46,7 +46,9 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -182,8 +184,48 @@ public class GemeindeResource {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
-		return gemeindeService.getGemeindeStammdaten(gemeindeId)
+		Optional<GemeindeStammdaten> stammdatenFromDB = gemeindeService.getGemeindeStammdaten(gemeindeId);
+		if (!stammdatenFromDB.isPresent()) {
+			stammdatenFromDB = initGemeindeStammdaten(gemeindeId);
+		}
+		return stammdatenFromDB
 			.map(stammdaten -> converter.gemeindeStammdatenToJAX(stammdaten))
 			.orElse(null);
+	}
+
+	private Optional<GemeindeStammdaten> initGemeindeStammdaten(String gemeindeId) {
+		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
+		Optional<Gemeinde> gemeinde = gemeindeService.findGemeinde(gemeindeId);
+		stammdaten.setGemeinde(gemeinde.orElse(new Gemeinde()));
+		stammdaten.setAdresse(new Adresse());
+		stammdaten.getAdresse().setStrasse("");
+		stammdaten.getAdresse().setPlz("");
+		stammdaten.getAdresse().setOrt("");
+		stammdaten.setMail("");
+		return Optional.of(stammdaten);
+	}
+
+	@ApiOperation(value = "Speichert die GemeindeStammdaten", response = JaxGemeindeStammdaten.class)
+	@Nullable
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGemeindeStammdaten saveGemeindeStammdaten(
+		@Nonnull @NotNull @Valid JaxGemeindeStammdaten jaxStammdaten,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		GemeindeStammdaten stammdaten;
+		if (jaxStammdaten.getId() != null) {
+			Optional<GemeindeStammdaten> optional = gemeindeService.getGemeindeStammdaten(jaxStammdaten.getId());
+			stammdaten = optional.orElse(new GemeindeStammdaten());
+		} else {
+			stammdaten = new GemeindeStammdaten();
+		}
+		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
+		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
+
+		return converter.gemeindeStammdatenToJAX(persistedStammdaten);
+
 	}
 }

@@ -72,6 +72,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = false)
 	private Adresse beschwerdeAdresse;
 
+	@NotNull
 	@Column(nullable = false)
 	private boolean keineBeschwerdeAdresse = true;
 
@@ -96,7 +97,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Enumerated(EnumType.STRING)
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
 
-	@NotNull
+	@Nullable
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_verantwortlicher_id"))
 	private Benutzer verantwortlicher;

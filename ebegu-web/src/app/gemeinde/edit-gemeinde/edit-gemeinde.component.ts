@@ -17,15 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import * as moment from 'moment';
+import {Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import TSGemeinde from '../../../models/TSGemeinde';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 
@@ -38,39 +36,28 @@ export class EditGemeindeComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
-    public gemeinde: TSGemeinde = undefined;
-    public adminMail: string = undefined;
-    public beguStartDatum: moment.Moment;
-    public beguStartDatumMin: moment.Moment;
-    public gesuchsperiodeList: Array<TSGesuchsperiode>;
+    public stammdaten: TSGemeindeStammdaten;
+    public stammdaten$: Observable<TSGemeindeStammdaten>;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-    ) {
-    }
+    ) { }
 
     public ngOnInit(): void {
         const gemeindeId: string = this.$transition$.params().gemeindeId;
-        if (gemeindeId) { // edit
-            this.gemeindeRS.findGemeinde(gemeindeId).then(result => {
-                this.gemeinde = result;
-            });
-        } else { // add
-            this.initGemeinde();
+        if (!gemeindeId) {
+            return;
         }
-        this.adminMail = '';
-        const currentDate = moment();
-        const futureMonth = moment(currentDate).add(1, 'M');
-        const futureMonthBegin = moment(futureMonth).startOf('month');
-        this.beguStartDatum = futureMonthBegin;
-        this.beguStartDatumMin = futureMonthBegin;
-        this.gesuchsperiodeRS.getAllGesuchsperioden().then((response: TSGesuchsperiode[]) => {
-            this.gesuchsperiodeList = response;
+        this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(results => {
+            this.stammdaten = results;
+            // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe onboarding.component
+            this.changeDetectorRef.markForCheck();
         });
     }
 
@@ -78,40 +65,11 @@ export class EditGemeindeComponent implements OnInit {
         this.navigateBack();
     }
 
-    public gemeindeEinladen(): void {
-        if (!this.form.valid) {
-            return;
-        }
-
-        this.errorService.clearAll();
-        if (this.isStartDateValid()) {
-            this.persistGemeinde();
-        }
-    }
-
-    private isStartDateValid(): boolean {
-        const day = this.beguStartDatum.format('D');
-        if ('1' !== day) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FIRST_OF_MONTH'));
-            return false;
-        }
-        if (moment() >= this.beguStartDatum) {
-            this.errorService.addMesageAsError(this.translate.instant('ERROR_STARTDATUM_FUTURE'));
-            return false;
-        }
-        return true;
-    }
-
-    private persistGemeinde(): void {
-        this.gemeindeRS.createGemeinde(this.gemeinde, this.beguStartDatum).then(neueGemeinde => {
-            this.gemeinde = neueGemeinde;
+    public persistGemeindeStammdaten(): void {
+        this.gemeindeRS.saveGemeindeStammdaten(this.stammdaten).then(stammdaten => {
+            this.stammdaten = stammdaten;
             this.navigateBack();
         });
-    }
-
-    private initGemeinde(): void {
-        this.gemeinde = new TSGemeinde();
-        this.gemeinde.status = TSGemeindeStatus.EINGELADEN;
     }
 
     private navigateBack(): void {
