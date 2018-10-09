@@ -47,7 +47,7 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 
 		if (gueltigkeit.endsBefore(startdatum)) {
 			betreuungspensumAbschnitte.add(createZeitabschnitt(gueltigkeit, false));
-		} else if (gueltigkeit.startsSameDayOrAfter(startdatum)) {
+		} else if (gueltigkeit.startsSameDay(startdatum) || gueltigkeit.startsAfter(startdatum)) {
 			betreuungspensumAbschnitte.add(createZeitabschnitt(gueltigkeit, true));
 		} else if (startdatum.isAfter(gueltigkeit.getGueltigAb())
 			&& (startdatum.isBefore(gueltigkeit.getGueltigBis()) || startdatum.isEqual(gueltigkeit.getGueltigBis()))) {
