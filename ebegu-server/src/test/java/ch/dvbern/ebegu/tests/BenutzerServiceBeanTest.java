@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
-import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -192,7 +191,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 		assertCommonBenutzerFields(adminMail, adminGemeinde);
 
-		assertEquals(UserRole.ADMIN_GEMEINDE, adminGemeinde.getRole());
+		assertEquals(UserRole.ADMIN_BG, adminGemeinde.getRole());
 		assertNotNull(adminGemeinde.getCurrentBerechtigung());
 		assertEquals(1, adminGemeinde.getCurrentBerechtigung().getGemeindeList().size());
 		assertEquals(gemeinde, adminGemeinde.getCurrentBerechtigung().getGemeindeList().iterator().next());
