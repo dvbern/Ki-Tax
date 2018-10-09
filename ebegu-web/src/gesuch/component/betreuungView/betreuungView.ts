@@ -719,8 +719,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * als true gesetzt ist ACHTUNG: Hier benutzen wir die Direktive dv-show-element nicht, da es unterschiedliche
      * Bedingungen für jede Rolle gibt.
      */
+    //TODO kommentar der methode anpassen
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles())
             || this.getBetreuungModel().erweiterteBeduerfnisse;
     }
 
