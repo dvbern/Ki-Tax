@@ -42,6 +42,8 @@ p {
     line-height: 4.9rem;
     margin: 5vh 0;
     text-align: center;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 @media only screen
@@ -92,6 +94,27 @@ and (max-width: 480px) {
         width: 100%;
         justify-content: center;
     }
+
+    .be-login-actions {
+        .dv-btn {
+            width: 100%;
+            margin:1rem 0 !important;
+        }
+    }
+
+    .input-error {
+        padding: 0;
+        /deep/ .dv-error-messages {
+            text-align: center;
+        }
+    }
+
+
+
+    .onboarding-gs-container{
+        flex-direction: column-reverse;
+    }
+
 }
 
 @media @mq-sm {
