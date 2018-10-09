@@ -134,7 +134,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private boolean kategorieZuschlagZumErwerbspensum = false;
 
 	@Transient
-	private boolean abschnittLiegtNachBEGUStartdatum = false;
+	private boolean abschnittLiegtNachBEGUStartdatum = true;
 
 	@Max(100)
 	@Min(0)
