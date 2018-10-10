@@ -168,6 +168,13 @@ public class DateRange implements Serializable, Comparable<DateRange> {
 	}
 
 	/**
+	 * gueltigAb < date
+	 */
+	public boolean endsAfterOrSame(@Nonnull ChronoLocalDate date) {
+		return !getGueltigBis().isBefore(date);
+	}
+
+	/**
 	 * gueltigBis == date - 1 Day
 	 */
 	public boolean endsDayBefore(@Nonnull ChronoLocalDate date) {

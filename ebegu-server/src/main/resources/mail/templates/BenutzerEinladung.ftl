@@ -1,10 +1,7 @@
-<#-- @ftlvariable name="einladender" type="ch.dvbern.ebegu.entities.Benutzer" -->
 <#-- @ftlvariable name="eingeladener" type="ch.dvbern.ebegu.entities.Benutzer" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
-<#-- @ftlvariable name="rolle" type="java.lang.String" -->
-<#-- @ftlvariable name="hasRollenZusatz" type="java.lang.Boolean" -->
-<#-- @ftlvariable name="rollenZusatzTitel" type="java.lang.String" -->
-<#-- @ftlvariable name="rollenZusatz" type="java.lang.String" -->
+<#-- @ftlvariable name="content" type="java.lang.String" -->
+<#-- @ftlvariable name="footer" type="java.lang.String" -->
 <#-- @ftlvariable name="acceptLink" type="java.lang.String" -->
 <#-- @ftlvariable name="acceptExpire" type="java.lang.String" -->
 From: ${configuration.senderAddress}
@@ -395,53 +392,6 @@ Content-Type: text/html;charset=utf-8
 
 						<!--[if (mso)|(IE)]>
 						<td align="center" width="875"
-							style=" width:875px; padding-right: 60px; padding-left: 60px; padding-top:30px; padding-bottom:15px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;"
-							valign="top"><![endif]-->
-						<div class="col num12"
-							 style="min-width: 320px;max-width: 875px;display: table-cell;vertical-align: top;">
-							<div style="background-color: transparent; width: 100% !important;">
-								<!--[if (!mso)&(!IE)]><!-->
-								<div style="border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent; padding-top:30px; padding-bottom:15px; padding-right: 60px; padding-left: 60px;">
-									<!--<![endif]-->
-
-
-									<div>
-										<!--[if mso]>
-										<table width="100%" cellpadding="0" cellspacing="0" border="0">
-											<tr>
-												<td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">
-										<![endif]-->
-										<div style="color:#000000;line-height:120%;font-family:'Open Sans', Helvetica, Arial, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">
-											<div style="font-size:26px;line-height:31px;color:#000000;font-family:'Open Sans', Helvetica, Arial, sans-serif;text-align:left;">
-												<p style="margin: 0;font-size: 14px;line-height: 31px;text-align: center">
-													<span style="font-size: 26px; line-height: 31px; color: rgb(0, 0, 0);">Einladung von <strong>${einladender.getFullName()}</strong><#if hasRollenZusatz>
-														für die ${rollenZusatzTitel}
-														<strong>${rollenZusatz}</strong></#if></span>
-												</p></div>
-										</div>
-										<!--[if mso]></td></tr></table><![endif]-->
-									</div>
-
-									<!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
-							</div>
-						</div>
-						<!--[if (mso)|(IE)]></td></tr></table></td></tr></table><![endif]-->
-					</div>
-				</div>
-			</div>
-			<div style="background-color:transparent;">
-				<div style="Margin: 0 auto;min-width: 320px;max-width: 875px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #FFFFFF;"
-					 class="block-grid">
-					<div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
-						<!--[if (mso)|(IE)]>
-						<table width="100%" cellpadding="0" cellspacing="0" border="0">
-							<tr>
-								<td style="background-color:transparent;" align="center">
-									<table cellpadding="0" cellspacing="0" border="0" style="width: 875px;">
-										<tr class="layout-full-width" style="background-color:#FFFFFF;"><![endif]-->
-
-						<!--[if (mso)|(IE)]>
-						<td align="center" width="875"
 							style=" width:875px; padding-right: 30px; padding-left: 30px; padding-top:15px; padding-bottom:15px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;"
 							valign="top"><![endif]-->
 						<div class="col num12"
@@ -461,9 +411,12 @@ Content-Type: text/html;charset=utf-8
 										<div style="color:#000000;line-height:120%;font-family:'Open Sans', Helvetica, Arial, sans-serif; padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px;">
 											<div style="font-size:12px;line-height:14px;color:#000000;font-family:'Open Sans', Helvetica, Arial, sans-serif;text-align:left;">
 												<p style="margin: 0;font-size: 14px;line-height: 17px"><span
-														style="color: rgb(0, 0, 0); font-size: 16px; line-height: 19px;">Sie wurden von ${einladender.getFullName()} für die kiBon-Plattform eingeladen. Nach der Annahme der Einladung benötigen Sie ein <strong>BE-Login</strong>. Danach besitzen Sie folgende Berechtigung:<br>Rolle: <strong>${rolle}</strong></span><#if hasRollenZusatz>
-													<br><span
-															style="color: rgb(0, 0, 0); font-size: 16px; line-height: 19px;">${rollenZusatzTitel}: <strong>${rollenZusatz}</strong></span></#if>
+														style="color: rgb(0, 0, 0); font-size: 16px; line-height: 19px;">${content}</span>
+													<br>
+													<br>
+													<span style="color: rgb(0, 0, 0); font-size: 16px; line-height: 19px;">${footer}</span>
+													<br>
+													<span style="color: rgb(0, 0, 0); font-size: 16px; line-height: 19px;">kiBon - Team</span>
 												</p></div>
 										</div>
 										<!--[if mso]></td></tr></table><![endif]-->

@@ -20,6 +20,7 @@ export const CONSTANTS = {
     FALLNUMMER_LENGTH: 6,
     GEMEINDENUMMER_LENGTH: 3,
     PATTERN_BETRAG: '([0-9]{0,12})',
+    PATTERN_BETRAG_RAPPEN: '^[0-9]+(\\.[0-9]{1,2})?$',
     PATTERN_PERCENTAGE: '^[0-9][0-9]?$|^100$',
     PATTERN_PHONE: '(0|\\+41|0041)\\s?([\\d]{2})\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
     PATTERN_MOBILE: '(0|\\+41|0041)\\s?(74|75|76|77|78|79)\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',

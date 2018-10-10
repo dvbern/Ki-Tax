@@ -441,14 +441,17 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (principalBean.isCallerInRole(SUPER_ADMIN)) {
 			return true;
 		}
-		if (!principalBean.isCallerInAnyOfRole(getAllAdminRoles())) {
+		if (!principalBean.isCallerInAnyOfRole(getAllAdminRoles())
+			&& !principalBean.isCallerInRole(SACHBEARBEITER_MANDANT)) {
 			return false;
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE)) {
 			return userHasSameGemeindeAsPrincipal(benutzer);
 		}
-		if (principalBean.isCallerInRole(ADMIN_MANDANT)) {
-			return benutzer.getRole().isRoleMandant();
+		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
+			return benutzer.getRole().isRoleMandant()
+				|| benutzer.getRole().isRoleGemeinde()
+				|| benutzer.getRole().isRoleAdminTraegerschaftInstitution();
 		}
 		if (principalBean.isCallerInRole(ADMIN_TRAEGERSCHAFT)) {
 			return userBelongsToTraegerschaftOfPrincipal(benutzer);
