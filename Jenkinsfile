@@ -22,9 +22,8 @@ pipeline {
 			}
 
 			steps {
-				withMaven(jdk: 'JDK_1.8_162', maven: 'Maven_3.3.9', options: [junitPublisher(healthScaleFactor: 1.0),
-																			  findbugsPublisher()]) {
-					sh 'mvn -B -U clean -T 1C -P dvbern.oss -P test-wildfly-managed -P ci clean verify'
+				withMaven(options: [junitPublisher(healthScaleFactor: 1.0), findbugsPublisher()]) {
+					sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U clean -T 1C -P dvbern.oss -P test-wildfly-managed -P ci clean verify'
 				}
 			}
 		}
