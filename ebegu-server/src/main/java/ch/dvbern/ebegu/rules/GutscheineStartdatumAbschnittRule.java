@@ -38,6 +38,7 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(
 		@Nonnull Betreuung betreuung,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 
 		LocalDate startdatum =
@@ -47,8 +48,10 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 
 		if (gueltigkeit.endsBefore(startdatum)) {
 			betreuungspensumAbschnitte.add(createZeitabschnitt(gueltigkeit, false));
+
 		} else if (gueltigkeit.startsSameDay(startdatum) || gueltigkeit.startsAfter(startdatum)) {
 			betreuungspensumAbschnitte.add(createZeitabschnitt(gueltigkeit, true));
+
 		} else if (startdatum.isAfter(gueltigkeit.getGueltigAb())
 			&& (startdatum.isBefore(gueltigkeit.getGueltigBis()) || startdatum.isEqual(gueltigkeit.getGueltigBis()))) {
 

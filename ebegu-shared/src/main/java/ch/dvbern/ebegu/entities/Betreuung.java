@@ -382,6 +382,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return pensenSame && abwesenheitenSame && statusSame && stammdatenSame && erwBeduerfnisseSame;
 	}
 
+	@Nonnull
 	@Transient
 	public Gesuchsperiode extractGesuchsperiode() {
 		Objects.requireNonNull(this.getKind(), "Can not extract Gesuchsperiode because Kind is null");
@@ -389,6 +390,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return this.getKind().getGesuch().getGesuchsperiode();
 	}
 
+	@Nonnull
 	@Transient
 	public Gesuch extractGesuch() {
 		Objects.requireNonNull(this.getKind(), "Can not extract Gesuch because Kind is null");

@@ -344,6 +344,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return dossier.getFall();
 	}
 
+	@Nonnull
 	public Dossier getDossier() {
 		return dossier;
 	}
@@ -352,6 +353,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		this.dossier = dossier;
 	}
 
+	@Nonnull
 	public Gesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
 	}
