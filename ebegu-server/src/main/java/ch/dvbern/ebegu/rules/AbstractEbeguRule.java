@@ -148,7 +148,7 @@ public abstract class AbstractEbeguRule implements Rule {
 				if (startsBefore && zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb())) { // die Regel WOHNSITZ darf nicht normalisiert werden, da auch wohnsitze ausserhalb der Gesuchsperiode beruecksichtigt werden muessen
 					// Datum Von liegt vor der Periode
 					// Falls Datum Bis ebenfalls vor der Periode liegt, kann der Abschnitt gelöscht werden, ansonsten muss er verkürzt werden
-					if (!RuleKey.WOHNSITZ.equals(ruleKey)) {
+					if (RuleKey.WOHNSITZ != ruleKey) {
 						zeitabschnitt.getGueltigkeit().setGueltigAb(gesuchsperiode.getGueltigkeit().getGueltigAb());
 					}
 					zeitabschnittInPeriode = true;
