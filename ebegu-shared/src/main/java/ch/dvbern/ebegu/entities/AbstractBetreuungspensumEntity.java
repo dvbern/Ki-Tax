@@ -29,7 +29,8 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import org.hibernate.envers.Audited;
 
 /**
- * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent), ein DateRange und ein PensumUnits beeinhalten.
+ * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent), ein DateRange und ein
+ * PensumUnits beeinhalten.
  */
 @MappedSuperclass
 @Audited
@@ -45,15 +46,8 @@ public class AbstractBetreuungspensumEntity extends AbstractPensumEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	@NotNull
+	@Nonnull
 	private PensumUnits unitForDisplay = PensumUnits.PERCENTAGE;
-
-	public PensumUnits getUnitForDisplay() {
-		return unitForDisplay;
-	}
-
-	public void setUnitForDisplay(PensumUnits unitForDisplay) {
-		this.unitForDisplay = unitForDisplay;
-	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -72,10 +66,20 @@ public class AbstractBetreuungspensumEntity extends AbstractPensumEntity {
 			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay();
 	}
 
-	@Nonnull
-	public AbstractBetreuungspensumEntity copyAbstractBetreuungspensumEntity(@Nonnull AbstractBetreuungspensumEntity target, @Nonnull AntragCopyType copyType) {
+	public void copyAbstractBetreuungspensumEntity(
+		@Nonnull AbstractBetreuungspensumEntity target,
+		@Nonnull AntragCopyType copyType) {
+
 		super.copyAbstractPensumEntity(target, copyType);
 		target.setUnitForDisplay(this.getUnitForDisplay());
-		return target;
+	}
+
+	@Nonnull
+	public PensumUnits getUnitForDisplay() {
+		return unitForDisplay;
+	}
+
+	public void setUnitForDisplay(@Nonnull PensumUnits unitForDisplay) {
+		this.unitForDisplay = unitForDisplay;
 	}
 }

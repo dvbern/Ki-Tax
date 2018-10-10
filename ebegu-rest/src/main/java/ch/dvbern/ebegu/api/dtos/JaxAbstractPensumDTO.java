@@ -15,8 +15,9 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,16 +34,15 @@ public class JaxAbstractPensumDTO extends JaxAbstractDateRangedDTO {
 	private static final long serialVersionUID = -7598194821332548948L;
 
 	@Min(0)
-	@Max(100)
 	@NotNull
-	private Integer pensum;
+	private BigDecimal pensum = null;
 
 	@Nonnull
-	public Integer getPensum() {
+	public BigDecimal getPensum() {
 		return pensum;
 	}
 
-	public void setPensum(@Nonnull Integer pensum) {
+	public void setPensum(@Nonnull BigDecimal pensum) {
 		this.pensum = pensum;
 	}
 

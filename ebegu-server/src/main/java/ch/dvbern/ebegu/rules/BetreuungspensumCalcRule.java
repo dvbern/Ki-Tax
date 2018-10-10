@@ -15,11 +15,16 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static ch.dvbern.ebegu.util.MathUtil.HUNDRED;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Regel für die Betreuungspensen. Sie beachtet:
@@ -35,15 +40,16 @@ public class BetreuungspensumCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		// Betreuungspensum darf nie mehr als 100% sein
-		int betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensum();
-		if (betreuungspensum > 100) { // sollte nie passieren
-			betreuungspensum = 100;
+		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensum();
+		if (betreuungspensum.compareTo(HUNDRED) > 0) { // sollte nie passieren
+			betreuungspensum = HUNDRED;
 		}
 		// Fachstelle: Wird in einer separaten Rule behandelt
 		// Anspruch setzen fuer Schulkinder; bei Kleinkindern muss nichts gemacht werden
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtSchulkind()) {
+		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtSchulkind()) {
 			// Schulkind-Angebote: Sie erhalten IMMER soviel, wie sie wollen. Der Restanspruch wird nicht tangiert
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(betreuungspensum);
 		}

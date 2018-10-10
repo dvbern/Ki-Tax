@@ -17,23 +17,24 @@
     <input type="number"
            step="0.25"
            class="dv-betreuung-input"
-           [id]="id"
-           [name]="id"
-           [required]="true"
-           [attr.aria-describedby]="id + '-error'"
-           (input)="refreshContent()"
-           [(ngModel)]="pensumValue"
-           [disabled]="disabled"
+           id="{{vm.id}}"
+           name="{{vm.id}}"
+           required
+           min="0"
+           aria-describedby="{{vm.id + '-error'}}"
+           ng-change="vm.refreshContent()"
+           ng-model="vm.pensumValue"
+           ng-disabled="vm.isDisabled"
     >
     <dv-switch class="betreuung-input-switch"
-               (switchValueChange)="toggle($event)"
-               [switchOptionLeft]="switchOptions[0]"
-               [switchOptionRight]="switchOptions[1]"
-               [(switchValue)]="pensumContainer.betreuungspensumJA.unitForDisplay"
-               [disabled]="disabled"
+               (switch-value-change)="vm.toggle()"
+               [switch-option-left]="vm.switchOptions[0]"
+               [switch-option-right]="vm.switchOptions[1]"
+               [(switch-value)]="vm.pensumContainer.betreuungspensumJA.unitForDisplay"
+               [disabled]="vm.isDisabled"
     >
     </dv-switch>
     <div class="dv-betreuung-input-info-label">
-        <span *ngIf="!disabled">{{label}}</span>
+        <span ng-if="!vm.isDisabled" ng-bind="vm.label"></span>
     </div>
 </div>

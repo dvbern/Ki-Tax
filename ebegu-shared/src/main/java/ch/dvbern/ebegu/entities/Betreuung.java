@@ -374,7 +374,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		}
 		boolean statusSame = true;
 		if (inklStatus) {
-			statusSame = Objects.equals(this.getBetreuungsstatus(), otherBetreuung.getBetreuungsstatus());
+			statusSame = this.getBetreuungsstatus() == otherBetreuung.getBetreuungsstatus();
 		}
 		boolean stammdatenSame = this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
 		boolean erwBeduerfnisseSame = Objects.equals(getErweiterteBeduerfnisse(), otherBetreuung

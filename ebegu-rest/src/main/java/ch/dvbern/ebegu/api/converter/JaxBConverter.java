@@ -38,8 +38,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractBetreuungspensumDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
@@ -107,7 +105,6 @@ import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.AbstractBetreuungspensumEntity;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
@@ -224,7 +221,7 @@ import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity"})
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
@@ -286,16 +283,16 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	private void convertAbstractBetreuungspensumFieldsToEntity(
-		final JaxAbstractBetreuungspensumDTO jaxPensum,
-		final AbstractBetreuungspensumEntity pensumEntity) {
+		@Nonnull final JaxAbstractBetreuungspensumDTO jaxPensum,
+		@Nonnull final AbstractBetreuungspensumEntity pensumEntity) {
 
 		convertAbstractPensumFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 	}
 
 	private void convertAbstractBetreuungspensumFieldsToJAX(
-		final AbstractBetreuungspensumEntity pensum,
-		final JaxAbstractBetreuungspensumDTO jaxPensum) {
+		@Nonnull final AbstractBetreuungspensumEntity pensum,
+		@Nonnull final JaxAbstractBetreuungspensumDTO jaxPensum) {
 
 		convertAbstractPensumFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());

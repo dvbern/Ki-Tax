@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,13 +35,15 @@ public class JaxAbstractBetreuungspensumDTO extends JaxAbstractPensumDTO {
 	private static final long serialVersionUID = -7598774821364548948L;
 
 	@NotNull
+	@Nonnull
 	private PensumUnits unitForDisplay = PensumUnits.PERCENTAGE;
 
+	@Nonnull
 	public PensumUnits getUnitForDisplay() {
 		return unitForDisplay;
 	}
 
-	public void setUnitForDisplay(PensumUnits unitForDisplay) {
+	public void setUnitForDisplay(@Nonnull PensumUnits unitForDisplay) {
 		this.unitForDisplay = unitForDisplay;
 	}
 }

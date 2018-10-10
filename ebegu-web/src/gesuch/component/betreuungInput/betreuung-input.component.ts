@@ -13,22 +13,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
+import {IComponentOptions, IController} from 'angular';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
+import ITranslateService = angular.translate.ITranslateService;
 
-const LOG = LogFactory.createLog('BetreuungInputComponent');
+export class BetreuungInputComponentConfig implements IComponentOptions {
+    public template = require('./betreuung-input.component.html');
+    public bindings = {
+        pensumContainer: '<',
+        isDisabled: '<',
+        id: '@inputId',
+        betreuungsangebotTyp: '<',
+    };
+    public controller = BetreuungInputComponent;
+    public controllerAs = 'vm';
+}
 
-@Component({
-    selector: 'dv-betreuung-input',
-    templateUrl: './betreuungInput.template.html',
-    styleUrls: ['./betreuungInput.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class BetreuungInputComponent implements OnInit {
+export class BetreuungInputComponent implements IController {
+
+    public static $inject = ['$translate'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
 
@@ -37,46 +43,41 @@ export class BetreuungInputComponent implements OnInit {
     // 100% = 220 hours => 1% = 2.2 hours
     private readonly MULTIPLIER_TAGESFAMILIEN = 2.2;
 
-    @Input()
     public pensumContainer: TSBetreuungspensumContainer;
-
-    @Input()
-    public disabled: boolean = false;
-
-    @Input()
+    public isDisabled: boolean = false;
     public id: string;
+    public betreuungsangebotTyp: TSBetreuungsangebotTyp;
 
-    @Input()
-    public betreuungsangebottyp: TSBetreuungsangebotTyp;
+    public label: string = '';
+    public switchOptions: TSPensumUnits[] = [];
+    private multiplier: number = 1;
 
     private pensumValue: number;
 
-    public label: string = '';
-    public switchOptions: Array<TSPensumUnits> = [];
-    public multiplier: number = 1;
-
-    public constructor(private readonly translate: TranslateService) {
+    public constructor(private readonly translate: ITranslateService) {
     }
 
-    public ngOnInit(): void {
-        this.LOG.debug(this.betreuungsangebottyp);
+    public $onInit(): void {
+        this.LOG.debug(this.betreuungsangebotTyp);
 
         this.setAngebotDependingVariables();
         this.parseToPensumUnit();
+        this.toggle();
     }
 
     public setAngebotDependingVariables(): void {
-        switch (this.betreuungsangebottyp) {
+        switch (this.betreuungsangebotTyp) {
             case TSBetreuungsangebotTyp.KITA:
                 this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
                 this.multiplier = this.MULTIPLIER_KITA;
-                break;
+                return;
             case TSBetreuungsangebotTyp.TAGESFAMILIEN:
                 this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
                 this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
-                break;
+                return;
             default:
-                LOG.error('could not set Switchoptions');
+                // FIXME das wird aufgerufen mit Typ TAGI (Timon Becker)
+                throw new Error(`Not implemented for Angebot ${this.betreuungsangebotTyp}`);
         }
     }
 
@@ -115,8 +116,9 @@ export class BetreuungInputComponent implements OnInit {
     }
 
     private parseToPercentage(): void {
-        this.pensumContainer.betreuungspensumJA.pensum = this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
-            ? this.pensumValue
-            : this.pensumValue / this.multiplier;
+        this.pensumContainer.betreuungspensumJA.pensum =
+            this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
+                ? this.pensumValue
+                : this.pensumValue / this.multiplier;
     }
 }
