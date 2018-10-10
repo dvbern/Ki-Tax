@@ -134,6 +134,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private boolean kategorieZuschlagZumErwerbspensum = false;
 
 	@Transient
+	private boolean abschnittLiegtNachBEGUStartdatum = true;
+
+	@Transient
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
 	@Max(100)
@@ -236,6 +239,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
 		this.kategorieZuschlagZumErwerbspensum = toCopy.kategorieZuschlagZumErwerbspensum;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
+		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
 	}
 
 	/**
@@ -546,6 +550,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.sameVerguenstigung = sameVerguenstigung;
 	}
 
+	public boolean isAbschnittLiegtNachBEGUStartdatum() {
+		return abschnittLiegtNachBEGUStartdatum;
+	}
+
+	public void setAbschnittLiegtNachBEGUStartdatum(boolean abschnittLiegtNachBEGUStartdatum) {
+		this.abschnittLiegtNachBEGUStartdatum = abschnittLiegtNachBEGUStartdatum;
+	}
+
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
@@ -630,6 +642,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setKategorieKeinPensum(this.kategorieKeinPensum || other.kategorieKeinPensum);
 		this.setKategorieMaxEinkommen(this.kategorieMaxEinkommen || other.kategorieMaxEinkommen);
 		this.setKategorieZuschlagZumErwerbspensum(this.kategorieZuschlagZumErwerbspensum || other.kategorieZuschlagZumErwerbspensum);
+		this.setAbschnittLiegtNachBEGUStartdatum(this.abschnittLiegtNachBEGUStartdatum && other.abschnittLiegtNachBEGUStartdatum);
 	}
 
 	public void addBemerkung(VerfuegungsBemerkung bemerkungContainer) {
@@ -707,34 +720,34 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append('[').append(Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb())).append(" - ").append(Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis())).append("] ")
-			.append(" EP GS1: ").append(erwerbspensumGS1).append('\t')
-			.append(" EP GS2: ").append(erwerbspensumGS2).append('\t')
-			.append(" EP-Zuschlag GS1: ").append(zuschlagErwerbspensumGS1).append('\t')
-			.append(" EP-Zuschlag GS2: ").append(zuschlagErwerbspensumGS2).append('\t')
-			.append(" BetrPensum: ").append(betreuungspensum).append('\t')
-			.append(" Anspruch: ").append(anspruchberechtigtesPensum).append('\t')
-			.append(" Restanspruch: ").append(anspruchspensumRest).append('\t')
-			.append(" BG-Pensum: ").append(getBgPensum()).append('\t')
-			.append(" Vollkosten: ").append(vollkosten).append('\t')
-			.append(" Elternbeitrag: ").append(elternbeitrag).append('\t')
-			.append(" Bemerkungen: ").append(bemerkungen).append('\t')
-			.append(" Einkommen: ").append(massgebendesEinkommenVorAbzugFamgr).append('\t')
-			.append(" Abzug Fam: ").append(abzugFamGroesse);
-		return sb.toString();
+		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - " + Constants.DATE_FORMATTER.format(getGueltigkeit()
+			.getGueltigBis()) + "] "
+			+ " EP GS1: " + erwerbspensumGS1 + '\t'
+			+ " EP GS2: " + erwerbspensumGS2 + '\t'
+			+ " EP-Zuschlag GS1: " + zuschlagErwerbspensumGS1 + '\t'
+			+ " EP-Zuschlag GS2: " + zuschlagErwerbspensumGS2 + '\t'
+			+ " BetrPensum: " + betreuungspensum + '\t'
+			+ " Anspruch: " + anspruchberechtigtesPensum + '\t'
+			+ " Restanspruch: " + anspruchspensumRest + '\t'
+			+ " BG-Pensum: " + getBgPensum() + '\t'
+			+ " Vollkosten: " + vollkosten + '\t'
+			+ " Elternbeitrag: " + elternbeitrag + '\t'
+			+ " Bemerkungen: " + bemerkungen + '\t'
+			+ " Einkommen: " + massgebendesEinkommenVorAbzugFamgr + '\t'
+			+ " Abzug Fam: " + abzugFamGroesse;
+		return sb;
 	}
 
 	public String toStringFinanzielleSituation() {
-		StringBuilder sb = new StringBuilder();
-		sb.append('[').append(Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb())).append(" - ").append(Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigBis())).append("] ")
-			.append(" MassgebendesEinkommenVorAbzugFamiliengroesse: ").append(massgebendesEinkommenVorAbzugFamgr).append('\t')
-			.append(" AbzugFamiliengroesse: ").append(abzugFamGroesse).append('\t')
-			.append(" MassgebendesEinkommen: ").append(getMassgebendesEinkommen()).append('\t')
-			.append(" Einkommensjahr: ").append(einkommensjahr).append('\t')
-			.append(" Familiengroesse: ").append(famGroesse).append('\t')
-			.append(" Bemerkungen: ").append(bemerkungen);
-		return sb.toString();
+		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - " + Constants.DATE_FORMATTER.format(getGueltigkeit()
+			.getGueltigBis()) + "] "
+			+ " MassgebendesEinkommenVorAbzugFamiliengroesse: " + massgebendesEinkommenVorAbzugFamgr + '\t'
+			+ " AbzugFamiliengroesse: " + abzugFamGroesse + '\t'
+			+ " MassgebendesEinkommen: " + getMassgebendesEinkommen() + '\t'
+			+ " Einkommensjahr: " + einkommensjahr + '\t'
+			+ " Familiengroesse: " + famGroesse + '\t'
+			+ " Bemerkungen: " + bemerkungen;
+		return sb;
 	}
 
 	@SuppressWarnings({ "OverlyComplexBooleanExpression", "AccessingNonPublicFieldOfAnotherObject",
@@ -752,8 +765,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			return false;
 		}
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
-		return isSameErwerbspensum(this.erwerbspensumGS1, otherVerfuegungZeitabschnitt.erwerbspensumGS1) &&
-			isSameErwerbspensum(this.erwerbspensumGS2, otherVerfuegungZeitabschnitt.erwerbspensumGS2) &&
+		return isSameErwerbspensum(erwerbspensumGS1, otherVerfuegungZeitabschnitt.erwerbspensumGS1) &&
+			isSameErwerbspensum(erwerbspensumGS2, otherVerfuegungZeitabschnitt.erwerbspensumGS2) &&
 			Objects.equals(zuschlagErwerbspensumGS1, otherVerfuegungZeitabschnitt.zuschlagErwerbspensumGS1) &&
 			Objects.equals(zuschlagErwerbspensumGS2, otherVerfuegungZeitabschnitt.zuschlagErwerbspensumGS2) &&
 			betreuungspensum == otherVerfuegungZeitabschnitt.betreuungspensum &&
@@ -768,13 +781,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
 			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
 			longAbwesenheit == otherVerfuegungZeitabschnitt.longAbwesenheit &&
-			Objects.equals(this.einkommensjahr, otherVerfuegungZeitabschnitt.einkommensjahr) &&
-			this.ekv1Alleine == otherVerfuegungZeitabschnitt.ekv1Alleine &&
-			this.ekv1ZuZweit == otherVerfuegungZeitabschnitt.ekv1ZuZweit &&
-			this.ekv2Alleine == otherVerfuegungZeitabschnitt.ekv2Alleine &&
-			this.ekv2ZuZweit == otherVerfuegungZeitabschnitt.ekv2ZuZweit &&
-			this.ekv1NotExisting == otherVerfuegungZeitabschnitt.ekv1NotExisting &&
-			Objects.equals(this.zahlungsstatus, otherVerfuegungZeitabschnitt.zahlungsstatus);
+			Objects.equals(einkommensjahr, otherVerfuegungZeitabschnitt.einkommensjahr) &&
+			ekv1Alleine == otherVerfuegungZeitabschnitt.ekv1Alleine &&
+			ekv1ZuZweit == otherVerfuegungZeitabschnitt.ekv1ZuZweit &&
+			ekv2Alleine == otherVerfuegungZeitabschnitt.ekv2Alleine &&
+			ekv2ZuZweit == otherVerfuegungZeitabschnitt.ekv2ZuZweit &&
+			ekv1NotExisting == otherVerfuegungZeitabschnitt.ekv1NotExisting &&
+			abschnittLiegtNachBEGUStartdatum == otherVerfuegungZeitabschnitt.abschnittLiegtNachBEGUStartdatum &&
+			Objects.equals(zahlungsstatus, otherVerfuegungZeitabschnitt.zahlungsstatus);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {

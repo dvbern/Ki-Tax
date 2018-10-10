@@ -322,7 +322,7 @@ public final class TestDataUtil {
 		return mandant;
 	}
 
-	@Nonnull
+	@Nullable
 	public static Mandant getMandantKantonBern(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
 		if (mandant == null) {
@@ -348,7 +348,7 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
-	@Nonnull
+	@Nullable
 	public static Gemeinde getGemeindeBern(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
 		if (gemeinde == null) {
@@ -359,7 +359,7 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
-	@Nonnull
+	@Nullable
 	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_OSTERMUNDIGEN_ID);
 		if (gemeinde == null) {
