@@ -10,10 +10,10 @@ pipeline {
 		// Only keep the 10 most recent builds
 		buildDiscarder(logRotator(numToKeepStr: "10"))
 		// If the build (including waiting time for user input) takes longer, it will be aborted.
-		timeout(time: 1, unit: 'HOURS')
+		timeout(time: 2, unit: 'HOURS')
 	}
 	stages {
-		stage("Test") {
+		stage("running tests") {
 			agent {
 				docker {
 					image "docker.dvbern.ch:5000/dvbern/build-environment:latest"
@@ -24,6 +24,15 @@ pipeline {
 			steps {
 				withMaven(options: [junitPublisher(healthScaleFactor: 1.0), findbugsPublisher()]) {
 					sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci clean verify'
+				}
+			}
+
+			post {
+				always {
+					junit '**/target/surefire-reports/*.xml **/build/karma-results.xml'
+					checkstyle canComputeNew: false, canRunOnFailed: true, defaultEncoding: '', healthy: '', pattern: '**/checkstyle-result.xml', unHealthy: '
+					pmd canComputeNew: false, canRunOnFailed: true, defaultEncoding: '', healthy: '', pattern: '**/pmd.xml', unHealthy: ''
+					findbugs canComputeNew: false, canRunOnFailed: true, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', pattern: '**/findbugsXml.xml', unHealthy: ''
 				}
 			}
 		}
