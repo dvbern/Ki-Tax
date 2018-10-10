@@ -173,7 +173,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		return createBenutzerFromEmail(
 			adminMail,
-			UserRole.ADMIN_GEMEINDE,
+			UserRole.ADMIN_BG,
 			gemeinde,
 			b -> b.getGemeindeList().add(gemeinde));
 	}

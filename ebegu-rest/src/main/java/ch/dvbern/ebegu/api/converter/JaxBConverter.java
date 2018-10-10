@@ -547,13 +547,14 @@ public class JaxBConverter extends AbstractConverter {
 				{
 					if (o1.extractGueltigkeit() == null && o2.extractGueltigkeit() == null) {
 						return 0;
-					} else if (o1.extractGueltigkeit() == null) {
-						return 1;
-					} else if (o2.extractGueltigkeit() == null) {
-						return -1;
-					} else {
-						return o1.extractGueltigkeit().getGueltigAb().compareTo(o2.extractGueltigkeit().getGueltigAb());
 					}
+					if (o1.extractGueltigkeit() == null) {
+						return 1;
+					}
+					if (o2.extractGueltigkeit() == null) {
+						return -1;
+					}
+					return o1.extractGueltigkeit().getGueltigAb().compareTo(o2.extractGueltigkeit().getGueltigAb());
 				}).collect(Collectors.toList())
 			));
 		}

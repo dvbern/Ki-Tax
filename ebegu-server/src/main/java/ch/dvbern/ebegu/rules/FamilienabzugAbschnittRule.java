@@ -117,6 +117,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		//initial gilt die Familiengroesse die am letzten Tag vor dem Start der neuen Gesuchsperiode vorhanden war
 		Double famGrBeruecksichtigungAbzug = 0.0;
 		Integer famGrAnzahlPersonen = 0;
+
 		if (gesuch.getGesuchsperiode() != null) {
 			Map.Entry<Double, Integer> famGr = calculateFamiliengroesse(gesuch, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 			famGrBeruecksichtigungAbzug = famGr.getKey();
@@ -222,10 +223,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	BigDecimal calculateAbzugAufgrundFamiliengroesse(double famGrBeruecksichtigungAbzug, int famGrAnzahlPersonen) {
 
 		BigDecimal abzugFromServer = BigDecimal.ZERO;
-		if (famGrAnzahlPersonen < 3) {
-			// Unter 3 Personen gibt es keinen Abzug!
-			abzugFromServer = BigDecimal.ZERO;
-		} else if (famGrAnzahlPersonen == 3) {
+		// Unter 3 Personen gibt es keinen Abzug!
+		if (famGrAnzahlPersonen == 3) {
 			abzugFromServer = pauschalabzugProPersonFamiliengroesse3;
 		} else if (famGrAnzahlPersonen == 4) {
 			abzugFromServer = pauschalabzugProPersonFamiliengroesse4;

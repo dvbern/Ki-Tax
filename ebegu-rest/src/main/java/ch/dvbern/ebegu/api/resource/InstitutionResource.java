@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,6 +48,7 @@ import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -88,14 +90,21 @@ public class InstitutionResource {
 		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
-		if (benutzerService.findBenutzerByEmail(mail).isPresent()) {
-			// an existing user cannot be used to create a new Institution
-			throw new EbeguRuntimeException(
-				"createInstitution",
-				ErrorCodeEnum.EXISTING_USER_MAIL,
-				mail);
-		}
-		Benutzer benutzer = benutzerService.createAdminInstitutionByEmail(mail, persistedInstitution);
+		Benutzer benutzer = benutzerService.findBenutzerByEmail(mail)
+			.map(b -> {
+				if (b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT ||
+					!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
+					// an existing user cannot be used to create a new Institution
+					throw new EbeguRuntimeException(
+						"createInstitution",
+						ErrorCodeEnum.EXISTING_USER_MAIL,
+						mail);
+				}
+
+				return b;
+			})
+			.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(mail, persistedInstitution));
+
 		benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
 
 		URI uri = uriInfo.getBaseUriBuilder()
