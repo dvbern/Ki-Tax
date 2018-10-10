@@ -115,10 +115,14 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	public List<VerfuegungZeitabschnitt> createInitialenFamilienAbzug(Gesuch gesuch) {
 		VerfuegungZeitabschnitt initialFamAbzug = new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
 		//initial gilt die Familiengroesse die am letzten Tag vor dem Start der neuen Gesuchsperiode vorhanden war
+		Double famGrBeruecksichtigungAbzug = 0.0;
+		Integer famGrAnzahlPersonen = 0;
 
-		Map.Entry<Double, Integer> famGr = calculateFamiliengroesse(gesuch, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
-		Double famGrBeruecksichtigungAbzug = famGr.getKey();
-		Integer famGrAnzahlPersonen = famGr.getValue();
+		if (gesuch.getGesuchsperiode() != null) {
+			Map.Entry<Double, Integer> famGr = calculateFamiliengroesse(gesuch, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
+			famGrBeruecksichtigungAbzug = famGr.getKey();
+			famGrAnzahlPersonen = famGr.getValue();
+		}
 
 		BigDecimal abzugAufgrundFamiliengroesse = getAbzugFamGroesse(gesuch, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
 		initialFamAbzug.setAbzugFamGroesse(abzugAufgrundFamiliengroesse);
@@ -135,7 +139,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	private BigDecimal getAbzugFamGroesse(Gesuch gesuch, double famGrBeruecksichtigungAbzug, int famGrAnzahlPersonen) {
-		return calculateAbzugAufgrundFamiliengroesse(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+		return gesuch.getGesuchsperiode() == null ? BigDecimal.ZERO :
+			calculateAbzugAufgrundFamiliengroesse(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
 	}
 
 	/**

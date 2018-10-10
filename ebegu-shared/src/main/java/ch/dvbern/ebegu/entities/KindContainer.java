@@ -105,7 +105,6 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	public KindContainer() {
 	}
 
-	@Nonnull
 	public Gesuch getGesuch() {
 		return gesuch;
 	}

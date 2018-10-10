@@ -382,7 +382,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return pensenSame && abwesenheitenSame && statusSame && stammdatenSame && erwBeduerfnisseSame;
 	}
 
-	@Nonnull
 	@Transient
 	public Gesuchsperiode extractGesuchsperiode() {
 		Objects.requireNonNull(this.getKind(), "Can not extract Gesuchsperiode because Kind is null");
@@ -390,7 +389,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return this.getKind().getGesuch().getGesuchsperiode();
 	}
 
-	@Nonnull
 	@Transient
 	public Gesuch extractGesuch() {
 		Objects.requireNonNull(this.getKind(), "Can not extract Gesuch because Kind is null");
@@ -433,7 +431,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@SuppressFBWarnings("NM_CONFUSING")
 	public String getBGNummer() {
 		// some users like Institutionen don't have access to the Kind, so it must be proved that getKind() doesn't return null
-		if (getKind() != null) {
+		if (getKind() != null && getKind().getGesuch() != null) {
 			String kindNumberAsString = String.valueOf(getKind().getKindNummer());
 			String betreuung = String.valueOf(getBetreuungNummer());
 			return getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;

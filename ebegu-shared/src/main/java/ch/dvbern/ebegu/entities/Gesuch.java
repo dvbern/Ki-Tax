@@ -344,7 +344,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return dossier.getFall();
 	}
 
-	@Nonnull
 	public Dossier getDossier() {
 		return dossier;
 	}
@@ -353,7 +352,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		this.dossier = dossier;
 	}
 
-	@Nonnull
 	public Gesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
 	}
@@ -578,6 +576,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	 */
 	@Nonnull
 	public String getJahrFallAndGemeindenummer() {
+		if (getGesuchsperiode() == null) {
+			return "-";
+		}
 		return Integer.toString(getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear()).substring(2)
 			+ '.' + getFall().getPaddedFallnummer() + '.' + getDossier().getGemeinde().getPaddedGemeindeNummer();
 	}

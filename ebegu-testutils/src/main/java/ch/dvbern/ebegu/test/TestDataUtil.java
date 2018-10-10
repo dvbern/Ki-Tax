@@ -776,6 +776,9 @@ public final class TestDataUtil {
 	}
 
 	public static void calculateFinanzDaten(Gesuch gesuch) {
+		if (gesuch.getGesuchsperiode() == null) {
+			gesuch.setGesuchsperiode(createGesuchsperiode1718());
+		}
 		FinanzielleSituationRechner finanzielleSituationRechner = new FinanzielleSituationRechner();
 		finanzielleSituationRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(0.80));
 	}
