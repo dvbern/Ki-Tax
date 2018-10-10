@@ -433,7 +433,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@SuppressFBWarnings("NM_CONFUSING")
 	public String getBGNummer() {
 		// some users like Institutionen don't have access to the Kind, so it must be proved that getKind() doesn't return null
-		if (getKind() != null && getKind().getGesuch() != null) {
+		if (getKind() != null) {
 			String kindNumberAsString = String.valueOf(getKind().getKindNummer());
 			String betreuung = String.valueOf(getBetreuungNummer());
 			return getKind().getGesuch().getJahrFallAndGemeindenummer() + '.' + kindNumberAsString + '.' + betreuung;

@@ -578,9 +578,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	 */
 	@Nonnull
 	public String getJahrFallAndGemeindenummer() {
-		if (getGesuchsperiode() == null) {
-			return "-";
-		}
 		return Integer.toString(getGesuchsperiode().getGueltigkeit().getGueltigAb().getYear()).substring(2)
 			+ '.' + getFall().getPaddedFallnummer() + '.' + getDossier().getGemeinde().getPaddedGemeindeNummer();
 	}
