@@ -2235,6 +2235,7 @@ public class JaxBConverter {
 
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setVertrag(betreuungJAXP.getVertrag());
+		betreuung.setKeineKesbPlatzierung(betreuungJAXP.getKeineKesbPlatzierung());
 		betreuung.setErweiterteBeduerfnisse(betreuungJAXP.getErweiterteBeduerfnisse());
 
 		// InstitutionStammdaten muessen bereits existieren
@@ -2540,6 +2541,7 @@ public class JaxBConverter {
 		jaxBetreuung.setAbwesenheitContainers(abwesenheitContainersToJax(betreuungFromServer.getAbwesenheitContainers()));
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
+		jaxBetreuung.setKeineKesbPlatzierung(betreuungFromServer.getKeineKesbPlatzierung());
 		jaxBetreuung.setErweiterteBeduerfnisse(betreuungFromServer.getErweiterteBeduerfnisse());
 		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenToJAX(betreuungFromServer.getInstitutionStammdaten()));
 		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
