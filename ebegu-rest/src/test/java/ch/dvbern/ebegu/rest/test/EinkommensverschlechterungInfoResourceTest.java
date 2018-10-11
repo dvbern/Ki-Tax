@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rest.test;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
@@ -64,6 +65,9 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 	private JaxBConverter converter;
 
 	@Inject
+	private GemeindeJaxBConverter gemeindeConverter;
+
+	@Inject
 	private Persistence persistence;
 
 
@@ -93,7 +97,7 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 
 		JaxGesuch testJaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
 		testJaxGesuch.getDossier().setVerantwortlicherBG(converter.benutzerToJaxBenutzer(verantwortlicher));
-		testJaxGesuch.getDossier().setGemeinde(converter.gemeindeToJAX(persistedGemeinde));
+		testJaxGesuch.getDossier().setGemeinde(gemeindeConverter.gemeindeToJAX(persistedGemeinde));
 
 		JaxFall returnedFall = fallResource.saveFall(testJaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		testJaxGesuch.getDossier().setFall(returnedFall);

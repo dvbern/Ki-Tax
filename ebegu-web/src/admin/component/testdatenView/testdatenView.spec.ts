@@ -18,8 +18,8 @@ import {MAT_DATE_LOCALE} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
+import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import ZahlungRS from '../../../app/core/service/zahlungRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -34,8 +34,10 @@ describe('testdatenView', () => {
 
     beforeEach(async(() => {
         const testFaelleRSSpy = jasmine.createSpyObj<TestFaelleRS>(TestFaelleRS.name,
-            ['createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
-                'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten']);
+            [
+                'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
+                'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten',
+            ]);
         testFaelleRSSpy.createTestFall.and.returnValue('idOfCreatedGesuch');
         const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['getAllGesuchsteller']);
         benutzerRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
@@ -49,8 +51,8 @@ describe('testdatenView', () => {
             ['isDevMode']);
         applicationPropertyRSSpy.isDevMode.and.returnValue(Promise.resolve(true));
         const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['gesuchVerfuegen']);
-        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllGemeinden']);
-        gemeindeRSSpy.getAllGemeinden.and.returnValue(Promise.resolve(true));
+        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
+        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(Promise.resolve(true));
 
         TestBed.configureTestingModule({
             imports: [
@@ -68,7 +70,7 @@ describe('testdatenView', () => {
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
             ],
-            declarations: [TestdatenViewComponent]
+            declarations: [TestdatenViewComponent],
         })
             .compileComponents();
     }));

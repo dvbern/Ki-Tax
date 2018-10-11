@@ -18,12 +18,10 @@ package ch.dvbern.ebegu.services;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Sequence;
 import ch.dvbern.ebegu.enums.SequenceType;
 
 public interface SequenceService {
 
+	@Nonnull
 	Long createNumberTransactional(@Nonnull SequenceType seq, @Nonnull Mandant mandant);
-
-	Sequence initFallNrSeqMandant(@Nonnull Mandant mandant);
 }

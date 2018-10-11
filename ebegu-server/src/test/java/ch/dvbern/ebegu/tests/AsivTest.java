@@ -57,6 +57,7 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -115,6 +116,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		gemeinde = TestDataUtil.getGemeindeBern(persistence);
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_01() {
 		// Erstgesuch erstellen
@@ -134,6 +136,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_02() {
 		// Erstgesuch erstellen
@@ -153,6 +156,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_03() {
 		// Erstgesuch erstellen
@@ -172,6 +176,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_04() {
 		// Erstgesuch erstellen
@@ -191,6 +196,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_05() {
 		// Erstgesuch erstellen
@@ -210,6 +216,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_06() {
 		// Erstgesuch erstellen
@@ -229,6 +236,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_07() {
 		// Erstgesuch erstellen
@@ -248,6 +256,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_08() {
 		// Erstgesuch erstellen
@@ -267,6 +276,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_09() {
 		// Erstgesuch erstellen
@@ -286,6 +296,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void testfall_ASIV_10() {
 		// Erstgesuch erstellen
@@ -308,6 +319,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	/**
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
+	@Override
 	protected Gesuchsperiode createGesuchsperiode(boolean active) {
 		gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(2016, 2017);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
@@ -318,6 +330,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	/**
 	 * Helper für init. Speichert Traegerschaften, Mandant und Institution in DB
 	 */
+	@Override
 	protected Mandant insertInstitutionen() {
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();

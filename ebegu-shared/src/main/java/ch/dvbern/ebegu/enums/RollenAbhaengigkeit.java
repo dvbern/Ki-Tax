@@ -17,9 +17,32 @@
 
 package ch.dvbern.ebegu.enums;
 
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.Displayable;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Traegerschaft;
+
 public enum RollenAbhaengigkeit {
-	GEMEINDE,
-	INSTITUTION,
-	TRAEGERSCHAFT,
-	NONE
+	GEMEINDE(Gemeinde.class),
+	INSTITUTION(Institution.class),
+	TRAEGERSCHAFT(Traegerschaft.class),
+	NONE(null);
+
+	@Nullable
+	private final Class<? extends Displayable> associatedEntityClass;
+
+	RollenAbhaengigkeit(@Nullable Class<? extends Displayable> associatedEntityClass) {
+		this.associatedEntityClass = associatedEntityClass;
+	}
+
+	@Nonnull
+	public <T extends Displayable> Optional<Class<T>> getAssociatedEntityClass() {
+		//noinspection unchecked
+		return Optional.ofNullable((Class<T>) this.associatedEntityClass);
+	}
 }

@@ -31,7 +31,8 @@ export enum TSCreationAction {
 
 export function isNewDossierNeeded(creationAction: TSCreationAction): boolean {
     return EbeguUtil.isNotNullOrUndefined(creationAction)
-        && (creationAction === TSCreationAction.CREATE_NEW_DOSSIER || creationAction === TSCreationAction.CREATE_NEW_FALL);
+        && (creationAction === TSCreationAction.CREATE_NEW_DOSSIER
+            || creationAction === TSCreationAction.CREATE_NEW_FALL);
 }
 
 export function isNewFallNeeded(creationAction: TSCreationAction): boolean {

@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -105,7 +106,7 @@ public class BenutzerResource {
 	public JaxBenutzer einladen(@NotNull @Valid JaxBenutzer benutzerParam) {
 		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
 
-		return converter.benutzerToJaxBenutzer(benutzerService.einladen(benutzer));
+		return converter.benutzerToJaxBenutzer(benutzerService.einladen(Einladung.forMitarbeiter(benutzer)));
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, "
@@ -200,6 +201,26 @@ public class BenutzerResource {
 		return resultDTO;
 	}
 
+	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen  E-Mail in der Datenbank.",
+		response = JaxBenutzer.class)
+	@Nullable
+	@GET
+	@Path("/email/{email}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public JaxBenutzer findBenutzerByEmail(
+		@Nonnull @NotNull @PathParam("email") String email) {
+
+		requireNonNull(email);
+		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzerByEmail(email);
+		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
+
+		return benutzerOptional
+			.map(benutzer -> converter.benutzerToJaxBenutzer(benutzer))
+			.orElse(null);
+	}
+
 	@ApiOperation(value = "Sucht den Benutzer mit dem uebergebenen Username in der Datenbank.",
 		response = JaxBenutzer.class)
 	@Nullable
@@ -211,7 +232,6 @@ public class BenutzerResource {
 	public JaxBenutzer findBenutzer(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
-		requireNonNull(username);
 		Optional<Benutzer> benutzerOptional = benutzerService.findBenutzer(username);
 		benutzerOptional.ifPresent(benutzer -> authorizer.checkReadAuthorization(benutzer));
 
@@ -225,7 +245,7 @@ public class BenutzerResource {
 	@Path("/inactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public JaxBenutzer inactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
@@ -242,7 +262,7 @@ public class BenutzerResource {
 	@Path("/reactivate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public JaxBenutzer reactivateBenutzer(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,
@@ -259,7 +279,7 @@ public class BenutzerResource {
 	@Path("/saveBenutzerBerechtigungen")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
 		ADMIN_MANDANT })
 	public JaxBenutzer saveBenutzerBerechtigungen(
 		@Nonnull @NotNull @Valid JaxBenutzer benutzerJax,

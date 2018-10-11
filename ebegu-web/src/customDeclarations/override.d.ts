@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-//angular1.6 mit ts2 braucht ein bisschen ueberzeugungsarbeit fuer typings
+// angular1.6 mit ts2 braucht ein bisschen ueberzeugungsarbeit fuer typings
 declare global {
     const angular: ng.IAngularStatic;
 }

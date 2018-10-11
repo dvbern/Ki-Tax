@@ -29,45 +29,47 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
     private _role: TSRole;
     private _gemeindeList: Array<TSGemeinde> = [];
 
-    constructor(gueltigkeit?: TSDateRange,
-                role?: TSRole,
-                traegerschaft?: TSTraegerschaft,
-                institution?: TSInstitution) {
+    public constructor(
+        gueltigkeit?: TSDateRange,
+        role?: TSRole,
+        traegerschaft?: TSTraegerschaft,
+        institution?: TSInstitution,
+    ) {
         super(gueltigkeit);
         this._role = role;
         this._traegerschaft = traegerschaft;
         this._institution = institution;
     }
 
-    get role(): TSRole {
+    public get role(): TSRole {
         return this._role;
     }
 
-    set role(value: TSRole) {
+    public set role(value: TSRole) {
         this._role = value;
     }
 
-    get traegerschaft(): TSTraegerschaft {
+    public get traegerschaft(): TSTraegerschaft {
         return this._traegerschaft;
     }
 
-    set traegerschaft(value: TSTraegerschaft) {
+    public set traegerschaft(value: TSTraegerschaft) {
         this._traegerschaft = value;
     }
 
-    get institution(): TSInstitution {
+    public get institution(): TSInstitution {
         return this._institution;
     }
 
-    set institution(value: TSInstitution) {
+    public set institution(value: TSInstitution) {
         this._institution = value;
     }
 
-    get gemeindeList(): Array<TSGemeinde> {
+    public get gemeindeList(): Array<TSGemeinde> {
         return this._gemeindeList;
     }
 
-    set gemeindeList(value: Array<TSGemeinde>) {
+    public set gemeindeList(value: Array<TSGemeinde>) {
         this._gemeindeList = value;
     }
 
@@ -105,6 +107,10 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
 
     public hasTraegerschaftRole(): boolean {
         return TSRoleUtil.isTraegerschaftRole(this.role);
+    }
+
+    public isSuperadmin(): boolean {
+        return TSRoleUtil.getSuperAdminRoles().includes(this.role);
     }
 
     public prepareForSave(): void {

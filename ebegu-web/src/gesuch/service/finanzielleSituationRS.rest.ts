@@ -14,39 +14,45 @@
  */
 
 import {IHttpService} from 'angular';
-import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
-import TSGesuch from '../../models/TSGesuch';
 import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSituationResultateDTO';
-import WizardStepManager from './wizardStepManager';
+import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../../models/TSFinanzModel';
-import IPromise = angular.IPromise;
+import TSGesuch from '../../models/TSGesuch';
+import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import WizardStepManager from './wizardStepManager';
 import ILogService = angular.ILogService;
+import IPromise = angular.IPromise;
 
 export default class FinanzielleSituationRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'WizardStepManager'];
+    public serviceURL: string;
 
-    constructor(public $http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil,
-                public $log: ILogService,
-                private readonly wizardStepManager: WizardStepManager) {
-        this.serviceURL = REST_API + 'finanzielleSituation';
+    public constructor(
+        public $http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public $log: ILogService,
+        private readonly wizardStepManager: WizardStepManager,
+    ) {
+        this.serviceURL = `${REST_API}finanzielleSituation`;
     }
 
-    public saveFinanzielleSituation(finanzielleSituationContainer: TSFinanzielleSituationContainer, gesuchstellerId: string, gesuchId: string): IPromise<TSFinanzielleSituationContainer> {
+    public saveFinanzielleSituation(
+        finanzielleSituationContainer: TSFinanzielleSituationContainer,
+        gesuchstellerId: string,
+        gesuchId: string,
+    ): IPromise<TSFinanzielleSituationContainer> {
         let returnedFinanzielleSituation = {};
-        returnedFinanzielleSituation = this.ebeguRestUtil.finanzielleSituationContainerToRestObject(returnedFinanzielleSituation, finanzielleSituationContainer);
-        return this.$http.put(this.serviceURL + '/' + encodeURIComponent(gesuchstellerId) + '/' + encodeURIComponent(gesuchId), returnedFinanzielleSituation, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((httpresponse: any) => {
+        returnedFinanzielleSituation = this.ebeguRestUtil.finanzielleSituationContainerToRestObject(
+            returnedFinanzielleSituation,
+            finanzielleSituationContainer);
+
+        const url = `${this.serviceURL}/${encodeURIComponent(gesuchstellerId)}/${encodeURIComponent(gesuchId)}`;
+        return this.$http.put(url, returnedFinanzielleSituation).then((httpresponse: any) => {
             return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
-                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(), httpresponse.data);
+                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                    httpresponse.data);
             });
         });
     }
@@ -57,11 +63,7 @@ export default class FinanzielleSituationRS {
     public saveFinanzielleSituationStart(gesuch: TSGesuch): IPromise<TSGesuch> {
         let sentGesuch = {};
         sentGesuch = this.ebeguRestUtil.gesuchToRestObject(sentGesuch, gesuch);
-        return this.$http.put(this.serviceURL + '/finsitStart/', sentGesuch, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((response) => {
+        return this.$http.put(`${this.serviceURL}/finsitStart/`, sentGesuch).then(response => {
             return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
                 this.$log.debug('PARSING gesuch REST object ', response.data);
                 return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
@@ -72,33 +74,32 @@ export default class FinanzielleSituationRS {
     public calculateFinanzielleSituation(gesuch: TSGesuch): IPromise<TSFinanzielleSituationResultateDTO> {
         let gesuchToSend = {};
         gesuchToSend = this.ebeguRestUtil.gesuchToRestObject(gesuchToSend, gesuch);
-        return this.$http.post(this.serviceURL + '/calculate', gesuchToSend, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then((httpresponse: any) => {
-            this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
-            return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(), httpresponse.data);
+        return this.$http.post(`${this.serviceURL}/calculate`, gesuchToSend).then((httpresponse: any) => {
+            return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(),
+                httpresponse.data);
         });
     }
 
     public calculateFinanzielleSituationTemp(finSitModel: TSFinanzModel): IPromise<TSFinanzielleSituationResultateDTO> {
         let finSitModelToSend = {};
         finSitModelToSend = this.ebeguRestUtil.finanzModelToRestObject(finSitModelToSend, finSitModel);
-        return this.$http.post(this.serviceURL + '/calculateTemp', finSitModelToSend, {
+        return this.$http.post(`${this.serviceURL}/calculateTemp`, finSitModelToSend, {
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         }).then((httpresponse: any) => {
             this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
-            return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(), httpresponse.data);
+            return this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(),
+                httpresponse.data);
         });
     }
 
     public findFinanzielleSituation(finanzielleSituationID: string): IPromise<TSFinanzielleSituationContainer> {
-        return this.$http.get(this.serviceURL + '/' + encodeURIComponent(finanzielleSituationID)).then((httpresponse: any) => {
-            this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
-            return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(), httpresponse.data);
-        });
+        return this.$http.get(`${this.serviceURL}/${encodeURIComponent(finanzielleSituationID)}`)
+            .then((httpresponse: any) => {
+                this.$log.debug('PARSING finanzielle Situation  REST object ', httpresponse.data);
+                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
+                    httpresponse.data);
+            });
     }
 }

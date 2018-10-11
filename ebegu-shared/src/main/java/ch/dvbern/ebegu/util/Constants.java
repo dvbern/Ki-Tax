@@ -46,12 +46,14 @@ public final class Constants {
 	public static final String REGEX_EMAIL = "[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}";
 	public static final String REGEX_TELEFON = "(0|\\+41|0041)[ ]*[\\d]{2}[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
 	public static final String REGEX_TELEFON_MOBILE = "(0|\\+41|0041)[ ]*(74|75|76|77|78|79)[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
+	public static final String REGEX_URL = "[^\\s@]{2,}\\.[^\\s@]{2,}";
 	public static final String PATTERN_DATE = "dd.MM.yyyy";
 	public static final String PATTERN_FILENAME_DATE_TIME = "dd.MM.yyyy_HH.mm.ss";
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(Constants.PATTERN_DATE);
 	public static final DateTimeFormatter FILENAME_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(Constants.PATTERN_FILENAME_DATE_TIME);
 
-	public static final DateTimeFormatter SQL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	public static final String SQL_PATTERN_DATE = "yyyy-MM-dd";
+	public static final DateTimeFormatter SQL_DATE_FORMAT = DateTimeFormatter.ofPattern(SQL_PATTERN_DATE);
 
 	public static final String SERVER_MESSAGE_BUNDLE_NAME = "ch.dvbern.ebegu.i18n.server-messages";
 	public static final LocalDate END_OF_TIME = LocalDate.of(9999, 12, 31);
@@ -84,6 +86,9 @@ public final class Constants {
 	public static final String TEMP_REPORT_FOLDERNAME = "tempReports";
 
 	public static final String SYSTEM_USER_USERNAME = "System";
+	public static final String ANONYMOUS_USER_USERNAME = "anonymous";
+	public static final String LOGINCONNECTOR_USER_USERNAME = "LoginConnector";
+	public static final String UNKNOWN = "UNKNOWN";
 
 	private Constants() {
 		//this prevents even the native class from

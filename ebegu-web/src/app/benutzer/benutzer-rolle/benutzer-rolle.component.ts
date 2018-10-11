@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output}
 import {ControlContainer, NgForm} from '@angular/forms';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 @Component({
@@ -34,27 +33,27 @@ export class BenutzerRolleComponent implements OnInit {
     @Input() public readonly inputId: string;
     @Input() public readonly required: boolean = false;
     @Input() public readonly disabled: boolean = false;
-    @Input() public readonly exludedRoles: TSRole[] = [];
+    @Input() public readonly excludedRoles: TSRole[] = [];
 
-    @Output() public benutzerRolleChange = new EventEmitter<TSRole>();
+    @Output() public readonly benutzerRolleChange = new EventEmitter<TSRole>();
 
     public roles: Map<TSRole, string>;
 
     private _benutzerRolle: TSRole;
 
-    constructor(
+    public constructor(
         private readonly authServiceRS: AuthServiceRS,
         public readonly form: NgForm,
     ) {
     }
 
     public ngOnInit(): void {
-        this.roles = this.getRollenBasedOnPrincipal()
-            .filter(rolle => !this.exludedRoles.includes(rolle))
+        this.roles = this.authServiceRS.getVisibleRolesForPrincipal()
+            .filter(rolle => !this.excludedRoles.includes(rolle))
             .reduce((rollenMap, rolle) => {
                     return rollenMap.set(rolle, TSRoleUtil.translationKeyForRole(rolle, true));
                 },
-                new Map<TSRole, string>()
+                new Map<TSRole, string>(),
             );
     }
 
@@ -70,19 +69,7 @@ export class BenutzerRolleComponent implements OnInit {
     }
 
     // noinspection JSMethodCanBeStatic
-    public trackByRole(index: number, item: { key: TSRole, value: string }): string {
+    public trackByRole(_index: number, item: { key: TSRole, value: string }): string {
         return item.key;
-    }
-
-    private getRollenBasedOnPrincipal(): TSRole[] {
-        if (EbeguUtil.isTagesschulangebotEnabled()) {
-            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButAnonymous()
-                : TSRoleUtil.getAllRolesButSuperAdminAndAnonymous();
-        } else {
-            return this.authServiceRS.isRole(TSRole.SUPER_ADMIN)
-                ? TSRoleUtil.getAllRolesButSchulamtAndAnonymous()
-                : TSRoleUtil.getAllRolesButSchulamtAndSuperAdminAndAnonymous();
-        }
     }
 }

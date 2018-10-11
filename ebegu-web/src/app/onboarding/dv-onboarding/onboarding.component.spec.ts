@@ -18,11 +18,9 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
-import * as angular from 'angular';
 import {of} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {EbeguWebCore} from '../../core/core.angularjs.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
@@ -33,44 +31,26 @@ describe('OnboardingComponent', () => {
     let component: OnboardingComponent;
     let fixture: ComponentFixture<OnboardingComponent>;
 
-    const gemeindeRSSpy = createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAllGemeinden']);
+    const gemeindeRSSpy = createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
     const applicationPropertyRSSpy = createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDummyMode']);
 
-    let $injector: angular.auto.IInjectorService;
-
-    beforeEach(angular.mock.module(EbeguWebCore.name));
-    beforeEach(angular.mock.module(ngServicesMock));
-
-    beforeEach(angular.mock.inject((_$injector_: angular.auto.IInjectorService) => {
-        $injector = _$injector_;
-    }));
-
     beforeEach(async(() => {
-        gemeindeRSSpy.getAllGemeinden.and.returnValue(of([]).toPromise());
+        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(of([]).toPromise());
         applicationPropertyRSSpy.isDummyMode.and.returnValue(of(true).toPromise());
 
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                UIRouterModule.forRoot({useHash: true})
+                UIRouterModule.forRoot({useHash: true}),
             ],
             declarations: [OnboardingComponent],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy},
-                {
-                    provide: '$injector',
-                    useFactory: () => $injector,
-                    deps: []
-                },
-                {
-                    provide: '$scope',
-                    useFactory: () => $injector.get('$rootScope').$new(),
-                    deps: []
-                },
-            ]
+            ],
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
     }));
 
@@ -84,7 +64,7 @@ describe('OnboardingComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load all Gemeinden', () => {
-        expect(gemeindeRSSpy.getAllGemeinden).toHaveBeenCalled();
+    it('should load all active Gemeinden', () => {
+        expect(gemeindeRSSpy.getAktiveGemeinden).toHaveBeenCalled();
     });
 });

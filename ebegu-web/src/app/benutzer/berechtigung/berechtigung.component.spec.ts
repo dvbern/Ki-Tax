@@ -23,6 +23,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -30,17 +31,24 @@ import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component
 
 import {BerechtigungComponent} from './berechtigung.component';
 
-describe('EditBerechtigungComponent', () => {
+describe('BerechtigungComponent', () => {
     let component: BerechtigungComponent;
     let fixture: ComponentFixture<BerechtigungComponent>;
 
-    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name, ['getAllInstitutionen']);
+    const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+        ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+        ['isRole', 'getVisibleRolesForPrincipal', 'principal$']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
 
+    const inputSelector = '.dv-input-container-medium';
+
     beforeEach(async(() => {
-        insitutionSpy.getAllInstitutionen.and.returnValue([]);
+        const superadmin = TestDataUtil.createSuperadmin();
+        authServiceSpy.principal$ = of(superadmin) as any;
+        authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
+        insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue([]);
         traegerschaftSpy.getAllTraegerschaften.and.returnValue([]);
         gemeindeSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
 
@@ -71,9 +79,16 @@ describe('EditBerechtigungComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load institutionen and traegerschaften', () => {
+    it('should load institutionen', () => {
         fixture.detectChanges();
-        expect(insitutionSpy.getAllInstitutionen).toHaveBeenCalled();
+        expect(insitutionSpy.getInstitutionenForCurrentBenutzer).toHaveBeenCalled();
+    });
+
+    it('should load traegerschaften for role ADMIN_TRAEGERSCHAFT', () => {
+        component.berechtigung.role = TSRole.ADMIN_TRAEGERSCHAFT;
+        fixture.detectChanges();
+        // after detecting changes the element in the html should subscribe to the
+        // controller and thus get the list of traegerschaften
         expect(traegerschaftSpy.getAllTraegerschaften).toHaveBeenCalled();
     });
 
@@ -82,7 +97,7 @@ describe('EditBerechtigungComponent', () => {
         expect(component.berechtigung.hasGemeindeRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css('.dv-input-container-medium'));
+        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
         expect(debugElements.length).toBe(2);
 
         expect(fixture.debugElement.query(By.css('dv-gemeinde-multiselect'))).toBeTruthy();
@@ -93,7 +108,7 @@ describe('EditBerechtigungComponent', () => {
         expect(component.berechtigung.hasInstitutionRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css('.dv-input-container-medium'));
+        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
         expect(debugElements.length).toBe(2);
 
         expect(fixture.debugElement.query(By.css('[id^=institution-]'))).toBeTruthy();
@@ -104,7 +119,7 @@ describe('EditBerechtigungComponent', () => {
         expect(component.berechtigung.hasTraegerschaftRole()).toBe(true);
         fixture.detectChanges();
 
-        const debugElements = fixture.debugElement.queryAll(By.css('.dv-input-container-medium'));
+        const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
         expect(debugElements.length).toBe(2);
 
         expect(fixture.debugElement.query(By.css('[id^=treagerschaft-]'))).toBeTruthy();

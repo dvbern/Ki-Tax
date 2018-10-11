@@ -33,7 +33,6 @@ export enum TSWizardStepName {
  * It is crucial that this function returns all elements in the order they will have in the navigation menu.
  * the order of this function will be used to navigate through all steps, so if this order is not correct the
  * navigation won't work as expected.
- * @returns {TSWizardStepName[]}
  */
 export function getTSWizardStepNameValues(): Array<TSWizardStepName> {
     return [
@@ -49,6 +48,6 @@ export function getTSWizardStepNameValues(): Array<TSWizardStepName> {
         TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
         TSWizardStepName.DOKUMENTE,
         TSWizardStepName.FREIGABE,
-        TSWizardStepName.VERFUEGEN
+        TSWizardStepName.VERFUEGEN,
     ];
 }

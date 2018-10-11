@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import DateUtil from './DateUtil';
 
+// tslint:disable:no-identical-functions no-duplicate-string
 describe('dateUtil', () => {
 
     describe('localDateToMoment()', () => {

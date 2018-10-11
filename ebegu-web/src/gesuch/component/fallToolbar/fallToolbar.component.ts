@@ -13,17 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnChanges} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {from as fromPromise, from, Observable, of} from 'rxjs';
-import {filter, switchMap, map} from 'rxjs/operators';
+import {filter, map, switchMap} from 'rxjs/operators';
 import {DvNgGemeindeDialogComponent} from '../../../app/core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
-import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
-import {getTSEingangsartFromRole} from '../../../models/enums/TSEingangsart';
+import {getTSEingangsartFromRole, TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
@@ -42,39 +42,34 @@ const LOG = LogFactory.createLog('FallToolbarComponent');
     templateUrl: './fallToolbar.template.html',
     styleUrls: ['./fallToolbar.less'],
 })
-export class FallToolbarComponent implements OnInit, OnChanges {
+export class FallToolbarComponent implements OnChanges {
 
-    private readonly LOG: Log = LogFactory.createLog(FallToolbarComponent.name);
+    public readonly TSRoleUtil: any = TSRoleUtil;
 
-    TSRoleUtil: any = TSRoleUtil;
-
-    @Input() fallId: string;
-    @Input() dossierId: string;
-    @Input() currentDossier: TSDossier;
-    @Input() mobileMode?: boolean = false;
+    @Input() public fallId: string;
+    @Input() public dossierId: string;
+    @Input() public currentDossier: TSDossier;
+    @Input() public mobileMode?: boolean = false;
 
     public dossierList: TSDossier[] = [];
     public dossierListWithoutSelected: TSDossier[] = [];
-    selectedDossier?: TSDossier;
-    fallNummer: string;
+    public selectedDossier?: TSDossier;
+    public fallNummer: string;
     private availableGemeindeList: TSGemeinde[] = [];
-    gemeindeText: string;
-    showdropdown: boolean = false;
+    public gemeindeText: string;
+    public showdropdown: boolean = false;
 
-    constructor(private readonly dossierRS: DossierRS,
-                private readonly dialog: MatDialog,
-                private readonly gemeindeRS: GemeindeRS,
-                private readonly $state: StateService,
-                private readonly gesuchRS: GesuchRS,
-                private readonly authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly dossierRS: DossierRS,
+        private readonly dialog: MatDialog,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly $state: StateService,
+        private readonly gesuchRS: GesuchRS,
+        private readonly authServiceRS: AuthServiceRS,
+    ) {
     }
 
-    ngOnInit(): void {
-        this.loadObjects(); // todo fragen it gets called twice!! ngChanges. siehe Kommentar unten
-        // this.loadObjects();  --> it is called in ngOnChanges anyway. otherwise it gets called twice
-    }
-
-    private loadObjects() {
+    private loadObjects(): void {
         if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId) {
             this.dossierRS.findDossier(this.dossierId).then(dossier => {
                 this.fallId = dossier.fall.id ? dossier.fall.id : '';
@@ -91,21 +86,22 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     /**
      * In case a currentDossier exists and it is new and it is not already contained in the list then we add it
      */
-    private addNewDossierToCreateToDossiersList() {
-        if (this.currentDossier && this.currentDossier.isNew() && !this.dossierList.includes(this.currentDossier)) {
-            this.removeAllExistingNewDossierToCreate();
-            this.dossierList.push(this.currentDossier);
-            this.selectedDossier = this.dossierList[this.dossierList.length - 1];
+    private addNewDossierToCreateToDossiersList(): void {
+        if (!this.currentDossier || !this.currentDossier.isNew() || this.dossierList.includes(this.currentDossier)) {
+            return;
         }
+        this.removeAllExistingNewDossierToCreate();
+        this.dossierList.push(this.currentDossier);
+        this.selectedDossier = this.dossierList[this.dossierList.length - 1];
     }
 
-    ngOnChanges(changes: any) {
-        if (changes['fallId'] || changes['dossierId'] || changes['currentDossier']) {
+    public ngOnChanges(changes: any): void {
+        if (changes.fallId || changes.dossierId || changes.currentDossier) {
             this.loadObjects();
         }
     }
 
-    private setSelectedDossier() {
+    private setSelectedDossier(): void {
         this.selectedDossier = this.dossierList.find(dossier => dossier.id === this.dossierId);
         this.calculateFallNummer();
     }
@@ -148,7 +144,8 @@ export class FallToolbarComponent implements OnInit, OnChanges {
                     newestGesuchID,
                 );
             } else {
-                this.LOG.warn(`newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
+                LOG.warn(
+                    `newestGesuchID in method FallToolbarComponent#openDossier for dossier ${dossier.id} is undefined`);
             }
             return this.selectedDossier;
         }));
@@ -160,13 +157,14 @@ export class FallToolbarComponent implements OnInit, OnChanges {
             .subscribe(
                 chosenGemeindeId => {
                     if (this.isGesuchsteller()) {
-                        this.createDossier(chosenGemeindeId).then(() => {
-                            this.navigateToDashboard();
-                        });
-                    } else {
-                        this.navigateToFallCreation(chosenGemeindeId);
+                        this.createDossier(chosenGemeindeId).then(() => this.navigateToDashboard());
+
+                        return;
                     }
-                }
+
+                    this.navigateToFallCreation(chosenGemeindeId);
+                },
+                err => LOG.error(err),
             );
     }
 
@@ -186,7 +184,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
 
     private navigateToDashboard(): void {
         this.$state.go('gesuchsteller.dashboard', {
-            dossierId: this.selectedDossier.id
+            dossierId: this.selectedDossier.id,
         });
     }
 
@@ -202,7 +200,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
         this.$state.go('gesuch.fallcreation', params);
     }
 
-    private getEingangsArt() {
+    private getEingangsArt(): TSEingangsart {
         return getTSEingangsartFromRole(this.authServiceRS.getPrincipalRole());
     }
 
@@ -217,18 +215,18 @@ export class FallToolbarComponent implements OnInit, OnChanges {
             .pipe(
                 switchMap(principal => {
                     if (principal && TSRoleUtil.isGemeindeRole(principal.getCurrentRole())) {
-                        return of(principal.extractCurrentGemeinden());
+                        return of(principal.extractCurrentAktiveGemeinden());
                     }
 
-                    return from(this.gemeindeRS.getAllGemeinden());
+                    return from(this.gemeindeRS.getAktiveGemeinden());
                 }),
-                map(gemeinden => this.toGemeindenWithoutDossier(gemeinden))
+                map(gemeinden => this.toGemeindenWithoutDossier(gemeinden)),
             )
             .subscribe(
                 gemeinden => {
                     this.availableGemeindeList = gemeinden;
                 },
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -246,7 +244,7 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     private getGemeindeIDFromDialog$(): Observable<string> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            gemeindeList: this.availableGemeindeList
+            gemeindeList: this.availableGemeindeList,
         };
 
         return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
@@ -267,12 +265,12 @@ export class FallToolbarComponent implements OnInit, OnChanges {
      * It removes all existing NewDossierToCreate from the list. When a currentDossier comes we need to remove all
      * existing ones that haven't been saved yet because only one new dossier can be created at a time
      */
-    private removeAllExistingNewDossierToCreate() {
+    private removeAllExistingNewDossierToCreate(): void {
         this.dossierList = this.dossierList
             .filter(dossier => !dossier.isNew());
     }
 
-    private emptyDossierList() {
+    private emptyDossierList(): void {
         this.dossierList = [];
     }
 
@@ -310,14 +308,16 @@ export class FallToolbarComponent implements OnInit, OnChanges {
     }
 
     public doLoading(fallId: string): void {
-        if (fallId) {
-            this.dossierRS.findDossiersByFall(fallId).then(dossiers => {
-                this.dossierList = dossiers;
-                this.setSelectedDossier();
-                this.dossierListWithoutSelected = dossiers.filter(dossier => dossier.id !== this.selectedDossier.id);
-                this.addNewDossierToCreateToDossiersList();
-                this.retrieveListOfAvailableGemeinden();
-            });
+        if (!fallId) {
+            return;
         }
+
+        this.dossierRS.findDossiersByFall(fallId).then(dossiers => {
+            this.dossierList = dossiers;
+            this.setSelectedDossier();
+            this.dossierListWithoutSelected = dossiers.filter(dossier => dossier.id !== this.selectedDossier.id);
+            this.addNewDossierToCreateToDossiersList();
+            this.retrieveListOfAvailableGemeinden();
+        });
     }
 }

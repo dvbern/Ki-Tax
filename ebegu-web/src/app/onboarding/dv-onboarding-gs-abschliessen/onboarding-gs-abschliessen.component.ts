@@ -22,15 +22,19 @@ import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import DossierRS from '../../../gesuch/service/dossierRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSBenutzer from '../../../models/TSBenutzer';
+import {LogFactory} from '../../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('OnboardingGsAbschliessenComponent');
 
 @Component({
     selector: 'dv-onboarding-gs-abschliessen',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './onboarding-gs-abschliessen.component.html',
-    styleUrls: ['../onboarding.less', './onboarding-gs-abschliessen.component.less'],
+    styleUrls: ['./onboarding-gs-abschliessen.component.less', '../onboarding.less'],
 })
 export class OnboardingGsAbschliessenComponent implements OnInit {
 
@@ -39,17 +43,18 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
 
     private readonly gemeindeId: string; // Parameter aus URL
 
-    constructor(
+    public constructor(
         private readonly transition: Transition,
         public readonly authServiceRS: AuthServiceRS,
         public readonly gemeindeRS: GemeindeRS,
         private readonly stateService: StateService,
-        private readonly dossierRS: DossierRS) {
+        private readonly dossierRS: DossierRS,
+    ) {
 
         this.gemeindeId = this.transition.params().gemeindeId;
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.gemeinde$ = from(this.gemeindeRS.findGemeinde(this.gemeindeId));
         this.user$ = this.authServiceRS.principal$;
     }
@@ -60,8 +65,22 @@ export class OnboardingGsAbschliessenComponent implements OnInit {
         }
         this.dossierRS.getOrCreateDossierAndFallForCurrentUserAsBesitzer(this.gemeindeId).then((dossier: TSDossier) => {
             this.stateService.go('gesuchsteller.dashboard', {
-                dossierId: dossier.id
+                dossierId: dossier.id,
             });
         });
+    }
+
+    public changeGemeinde(): void {
+        switch (this.authServiceRS.getPrincipalRole()) {
+            case TSRole.GESUCHSTELLER:
+                this.stateService.go('onboarding.gesuchsteller.registration-incomplete');
+                break;
+            case TSRole.ANONYMOUS:
+                this.stateService.go('onboarding.start');
+                break;
+            default:
+                LOG.error('User has no possible onboarding page for role');
+                break;
+        }
     }
 }

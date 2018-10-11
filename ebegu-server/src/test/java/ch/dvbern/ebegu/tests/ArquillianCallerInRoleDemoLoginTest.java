@@ -26,6 +26,7 @@ import javax.security.auth.login.LoginException;
 
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Assert;
@@ -50,12 +51,12 @@ public class ArquillianCallerInRoleDemoLoginTest extends AbstractEbeguLoginTest 
 		loginContext.login();
 		Principal callerPrincipal = sessionContextService.getCallerPrincipal();
 		Assert.assertNotNull(callerPrincipal);
-		Assert.assertNotNull(callerPrincipal.getName(), "saja");
+		Assert.assertNotNull("saja", callerPrincipal.getName());
 		Assert.assertTrue(sessionContextService.isCallerInRole(UserRoleName.SACHBEARBEITER_BG));
 		loginContext.logout();
 		Principal anonPrincipal = sessionContextService.getCallerPrincipal();
 		Assert.assertNotNull(anonPrincipal);
-		Assert.assertNotNull(anonPrincipal.getName(), "anonymous");
+		Assert.assertNotNull(Constants.ANONYMOUS_USER_USERNAME, anonPrincipal.getName());
 	}
 
 	@Test
@@ -63,18 +64,13 @@ public class ArquillianCallerInRoleDemoLoginTest extends AbstractEbeguLoginTest 
 		LoginContext loginContext = JBossLoginContextFactory.createLoginContext("admin", "admin");
 		loginContext.login();
 		try {
-			Set<String> foundRoles = Subject.doAs(loginContext.getSubject(), new PrivilegedAction<Set<String>>() {
-
-				@Override
-				public Set<String> run() {
-					if (sessionContextService.isCallerInRole("ADMIN_BG")) {
-						Set<String> res = new HashSet<>();
-						res.add("ADMIN_BG");
-						return res;
-					}
-					return new HashSet<>();
+			Set<String> foundRoles = Subject.doAs(loginContext.getSubject(), (PrivilegedAction<Set<String>>) () -> {
+				if (sessionContextService.isCallerInRole("ADMIN_BG")) {
+					Set<String> res = new HashSet<>();
+					res.add("ADMIN_BG");
+					return res;
 				}
-
+				return new HashSet<>();
 			});
 			assertEquals(1, foundRoles.size());
 			assertTrue(foundRoles.contains("ADMIN_BG"));

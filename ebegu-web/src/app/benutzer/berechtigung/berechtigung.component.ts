@@ -17,8 +17,9 @@
 
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {from, Observable, of} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSInstitution from '../../../models/TSInstitution';
@@ -26,6 +27,7 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {Displayable} from '../../shared/interfaces/displayable';
 
 let nextId = 0;
 
@@ -39,7 +41,7 @@ export class BerechtigungComponent {
 
     @Input() public berechtigung: TSBerechtigung;
     @Input() public disabled: boolean = false;
-    @Input() public readonly exludedRoles: TSRole[] = [];
+    @Input() public readonly excludedRoles: TSRole[] = [];
 
     public readonly inputId = `berechtigung-${nextId++}`;
     public readonly rolleId: string;
@@ -51,19 +53,47 @@ export class BerechtigungComponent {
 
     public readonly compareById = EbeguUtil.compareById;
 
-    constructor(
+    public constructor(
         public readonly form: NgForm,
         private readonly institutionRS: InstitutionRS,
         private readonly traegerschaftenRS: TraegerschaftRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
         this.rolleId = 'rolle-' + this.inputId;
         this.institutionId = 'institution-' + this.inputId;
         this.traegerschaftId = 'treagerschaft-' + this.inputId;
 
-        this.institutionen$ = from(this.institutionRS.getAllInstitutionen())
-            .pipe(map(arr => arr.sort(EbeguUtil.compareByName)));
+        this.institutionen$ = from(this.institutionRS.getInstitutionenForCurrentBenutzer())
+            .pipe(map(BerechtigungComponent.sortByName));
 
-        this.traegerschaften$ = from(this.traegerschaftenRS.getAllTraegerschaften())
-            .pipe(map(arr => arr.sort(EbeguUtil.compareByName)));
+        this.traegerschaften$ = this.traegerschaftenForPrincipal$();
+    }
+
+    private static sortByName<T extends Displayable>(arr: T[]): T[] {
+        arr.sort(EbeguUtil.compareByName);
+
+        return arr;
+    }
+
+    private traegerschaftenForPrincipal$(): Observable<TSTraegerschaft[]> {
+        return this.authServiceRS.principal$
+            .pipe(
+                switchMap(principal => {
+                    if (!principal) {
+                        return of([]);
+                    }
+
+                    if (principal.currentBerechtigung.isSuperadmin()) {
+                        return from(this.traegerschaftenRS.getAllTraegerschaften());
+                    }
+
+                    if (principal.currentBerechtigung.traegerschaft) {
+                        return of([principal.currentBerechtigung.traegerschaft]);
+                    }
+
+                    return of([]);
+                }),
+                map(BerechtigungComponent.sortByName),
+            );
     }
 }

@@ -13,26 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService, IQService} from 'angular';
 import WizardStepManager from '../../../gesuch/service/wizardStepManager';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import GesuchstellerRS from './gesuchstellerRS.rest';
 
 describe('GesuchstellerRS', () => {
 
     let gesuchstellerRS: GesuchstellerRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockGesuchsteller: TSGesuchstellerContainer;
     let mockGesuchstellerRest: any;
-    const dummyGesuchID: string = '123';
-    let $q: angular.IQService;
+    const dummyGesuchID = '123';
+    let $q: IQService;
     let wizardStepManager: WizardStepManager;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -52,19 +53,8 @@ describe('GesuchstellerRS', () => {
         mockGesuchsteller.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         mockGesuchstellerRest = ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller);
 
-        $httpBackend.whenGET(gesuchstellerRS.serviceURL + '/' + encodeURIComponent(mockGesuchsteller.id)).respond(mockGesuchstellerRest);
-    });
-
-    describe('Public API', () => {
-        it('check Service name', () => {
-            expect(gesuchstellerRS.getServiceName()).toBe('GesuchstellerRS');
-        });
-        it('should include a findGesuchsteller() function', () => {
-            expect(gesuchstellerRS.findGesuchsteller).toBeDefined();
-        });
-        it('should include a updateGesuchsteller() function', () => {
-            expect(gesuchstellerRS.saveGesuchsteller).toBeDefined();
-        });
+        const url = `${gesuchstellerRS.serviceURL}/${encodeURIComponent(mockGesuchsteller.id)}`;
+        $httpBackend.whenGET(url).respond(mockGesuchstellerRest);
     });
 
     describe('API Usage', () => {
@@ -72,35 +62,39 @@ describe('GesuchstellerRS', () => {
             it('should updateGesuchsteller a gesuchsteller and her adresses', () => {
                     mockGesuchsteller.gesuchstellerJA.nachname = 'changedname';
                     let updatedGesuchsteller: TSGesuchstellerContainer;
-                    $httpBackend.expectPUT(gesuchstellerRS.serviceURL + '/' + dummyGesuchID + '/gsNumber/1/false',
+                    $httpBackend.expectPUT(`${gesuchstellerRS.serviceURL}/${dummyGesuchID}/gsNumber/1/false`,
                         ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller))
                         .respond(ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller));
 
-                    gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1, false).then((result) => {
+                    gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1, false).then(result => {
                         updatedGesuchsteller = result;
                     });
                     $httpBackend.flush();
+                    // tslint:disable-next-line:no-unbound-method
                     expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(dummyGesuchID);
                     expect(updatedGesuchsteller).toBeDefined();
                     expect(updatedGesuchsteller.gesuchstellerJA).toBeDefined();
-                    expect(updatedGesuchsteller.gesuchstellerJA.nachname).toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
+                    expect(updatedGesuchsteller.gesuchstellerJA.nachname)
+                        .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
                     expect(updatedGesuchsteller.id).toEqual(mockGesuchsteller.id);
-                }
+                },
             );
         });
 
         describe('findGesuchsteller', () => {
             it('should return the gesuchsteller by id', () => {
                     let foundGesuchsteller: TSGesuchstellerContainer;
-                    $httpBackend.expectGET(gesuchstellerRS.serviceURL + '/id/' + mockGesuchsteller.id).respond(mockGesuchsteller);
+                    const url = `${gesuchstellerRS.serviceURL}/id/${mockGesuchsteller.id}`;
+                    $httpBackend.expectGET(url).respond(mockGesuchsteller);
 
-                    gesuchstellerRS.findGesuchsteller(mockGesuchsteller.id).then((result) => {
+                    gesuchstellerRS.findGesuchsteller(mockGesuchsteller.id).then(result => {
                         foundGesuchsteller = result;
                     });
                     $httpBackend.flush();
                     expect(foundGesuchsteller).toBeDefined();
-                    expect(foundGesuchsteller.gesuchstellerJA.nachname).toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
-                }
+                    expect(foundGesuchsteller.gesuchstellerJA.nachname)
+                        .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
+                },
             );
         });
     });

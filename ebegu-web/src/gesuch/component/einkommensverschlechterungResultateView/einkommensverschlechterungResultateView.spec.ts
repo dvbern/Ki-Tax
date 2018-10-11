@@ -21,19 +21,20 @@ import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSFinanzModel from '../../../models/TSFinanzModel';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {EinkommensverschlechterungResultateViewController} from './einkommensverschlechterungResultateView';
 
+// tslint:disable:no-magic-numbers
 describe('einkommensverschlechterungResultateView', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
     let ekvrvc: EinkommensverschlechterungResultateViewController;
 
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -41,7 +42,6 @@ describe('einkommensverschlechterungResultateView', () => {
     let scope: angular.IScope;
     let $componentController: any;
     let stateParams: any;
-    let consta: any;
     let errorservice: any;
     let wizardStepManager: WizardStepManager;
     let $rootScope: angular.IScope;
@@ -55,7 +55,6 @@ describe('einkommensverschlechterungResultateView', () => {
         scope = $rootScope.$new();
         const $q = $injector.get('$q');
         stateParams = $injector.get('$stateParams');
-        consta = $injector.get('CONSTANTS');
         errorservice = $injector.get('ErrorService');
         wizardStepManager = $injector.get('WizardStepManager');
         $timeout = $injector.get('$timeout');
@@ -84,7 +83,11 @@ describe('einkommensverschlechterungResultateView', () => {
         beforeEach(() => {
             ekvrvc = new EinkommensverschlechterungResultateViewController(stateParams, gesuchModelManager,
                 berechnungsManager, errorservice, wizardStepManager, null, $rootScope, null, $timeout);
-            ekvrvc.model = new TSFinanzModel(gesuchModelManager.getBasisjahr(), gesuchModelManager.isGesuchsteller2Required(), null, null);
+            ekvrvc.model = new TSFinanzModel(
+                gesuchModelManager.getBasisjahr(),
+                gesuchModelManager.isGesuchsteller2Required(),
+                null,
+                null);
             ekvrvc.model.copyEkvDataFromGesuch(gesuchModelManager.getGesuch());
             ekvrvc.model.copyFinSitDataFromGesuch(gesuchModelManager.getGesuch());
 
@@ -143,18 +146,15 @@ describe('einkommensverschlechterungResultateView', () => {
             expect(ekvrvc.calculateVeraenderung()).toEqual('+ 100.00 %');
         });
 
-        function setValues(massgebendesEinkommen_vj: number, massgebendesEinkommen_bj: number) {
-            const finsint: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
-            finsint.massgebendesEinkVorAbzFamGr = massgebendesEinkommen_bj;
+        function setValues(massgebendesEinkommenVj: number, massgebendesEinkommenBj: number): void {
+            const finsint = new TSFinanzielleSituationResultateDTO();
+            finsint.massgebendesEinkVorAbzFamGr = massgebendesEinkommenBj;
 
-            const finsintvj: TSFinanzielleSituationResultateDTO = new TSFinanzielleSituationResultateDTO();
-            finsintvj.massgebendesEinkVorAbzFamGr = massgebendesEinkommen_vj;
+            const finsintvj = new TSFinanzielleSituationResultateDTO();
+            finsintvj.massgebendesEinkVorAbzFamGr = massgebendesEinkommenVj;
 
             spyOn(ekvrvc, 'getResultate').and.returnValue(finsint);
             ekvrvc.resultatBasisjahr = finsintvj;
         }
-
     });
 });
-
-

@@ -27,18 +27,20 @@ const LOG = LogFactory.createLog('debugHookRunBlock');
  */
 debugHookRunBlock.$inject = ['$transitions'];
 
-export function debugHookRunBlock($transitions: TransitionService) {
+export function debugHookRunBlock($transitions: TransitionService): void {
     $transitions.onBefore({
         // the hook is only active when the app loads initially, e.g. when we are not yet on any state
-        from: state => !state.name
+        from: state => !state.name,
     }, activateDebugMode, {priority: OnBeforePriorities.DEBUG});
 }
 
 function activateDebugMode(transition: Transition): HookResult {
     const debug = !!transition.params().debug;
-    if (debug) {
-        LOG.info('activating debug log level and transition tracing');
-        transition.router.trace.enable(Category.TRANSITION, Category.HOOK);
-        LogFactory.logLevel = LogLevel.DEBUG;
+    if (!debug) {
+        return;
     }
+
+    LOG.info('activating debug log level and transition tracing');
+    transition.router.trace.enable(Category.TRANSITION, Category.HOOK);
+    LogFactory.logLevel = LogLevel.DEBUG;
 }

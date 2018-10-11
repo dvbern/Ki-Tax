@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService} from 'angular';
+import {IHttpBackendService, IHttpService} from 'angular';
 import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -22,20 +22,20 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import GesuchsperiodeRS from './gesuchsperiodeRS.rest';
 
 describe('gesuchsperiodeRS', () => {
 
     let gesuchsperiodeRS: GesuchsperiodeRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockGesuchsperiode: TSGesuchsperiode;
     let mockGesuchsperiodeRest: any;
     let date: moment.Moment;
     let $http: IHttpService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -57,33 +57,16 @@ describe('gesuchsperiodeRS', () => {
         it('check URI', () => {
             expect(gesuchsperiodeRS.serviceURL).toContain('gesuchsperioden');
         });
-        it('check Service name', () => {
-            expect(gesuchsperiodeRS.getServiceName()).toBe('GesuchsperiodeRS');
-        });
-        it('should include a findGesuchsperiode() function', () => {
-            expect(gesuchsperiodeRS.findGesuchsperiode).toBeDefined();
-        });
-        it('should include a createGesuchsperiode() function', () => {
-            expect(gesuchsperiodeRS.createGesuchsperiode).toBeDefined();
-        });
-        it('should include a updateGesuchsperiode() function', () => {
-            expect(gesuchsperiodeRS.updateGesuchsperiode).toBeDefined();
-        });
-        it('should include a removeGesuchsperiode() function', () => {
-            expect(gesuchsperiodeRS.removeGesuchsperiode).toBeDefined();
-        });
-        it('should include a getAllActiveGesuchsperioden() function', () => {
-            expect(gesuchsperiodeRS.getAllActiveGesuchsperioden).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
         describe('findGesuchsperiode', () => {
             it('should return the Gesuchsperiode by id', () => {
-                $httpBackend.expectGET(gesuchsperiodeRS.serviceURL + '/gesuchsperiode/' + encodeURIComponent(mockGesuchsperiode.id)).respond(mockGesuchsperiodeRest);
+                $httpBackend.expectGET(`${gesuchsperiodeRS.serviceURL}/gesuchsperiode/${encodeURIComponent(
+                    mockGesuchsperiode.id)}`).respond(mockGesuchsperiodeRest);
 
                 let foundGesuchsperiode: TSGesuchsperiode;
-                gesuchsperiodeRS.findGesuchsperiode(mockGesuchsperiode.id).then((result) => {
+                gesuchsperiodeRS.findGesuchsperiode(mockGesuchsperiode.id).then(result => {
                     foundGesuchsperiode = result;
                 });
                 $httpBackend.flush();
@@ -92,22 +75,24 @@ describe('gesuchsperiodeRS', () => {
         });
         describe('getAllActiveGesuchsperioden', () => {
             it('should return all active Gesuchsperiode by id', () => {
-                const gesuchsperiodenList: Array<any> = [mockGesuchsperiodeRest];
-                $httpBackend.expectGET(gesuchsperiodeRS.serviceURL + '/active').respond(gesuchsperiodenList);
+                const gesuchsperiodenList = [mockGesuchsperiodeRest];
+                $httpBackend.expectGET(`${gesuchsperiodeRS.serviceURL}/active`).respond(gesuchsperiodenList);
                 spyOn($http, 'get').and.callThrough();
 
                 gesuchsperiodeRS.getAllActiveGesuchsperioden();
                 $httpBackend.flush();
-                expect($http.get).toHaveBeenCalledWith(gesuchsperiodeRS.serviceURL + '/active');
+                // tslint:disable-next-line:no-unbound-method
+                expect($http.get).toHaveBeenCalledWith(`${gesuchsperiodeRS.serviceURL}/active`);
             });
         });
         describe('createGesuchsperiode', () => {
             it('should create a gesuchsperiode', () => {
                 let createdGesuchsperiode: TSGesuchsperiode;
-                $httpBackend.expectPUT(gesuchsperiodeRS.serviceURL, mockGesuchsperiodeRest).respond(mockGesuchsperiodeRest);
+                $httpBackend.expectPUT(gesuchsperiodeRS.serviceURL, mockGesuchsperiodeRest).respond(
+                    mockGesuchsperiodeRest);
 
                 gesuchsperiodeRS.createGesuchsperiode(mockGesuchsperiode)
-                    .then((result) => {
+                    .then(result => {
                         createdGesuchsperiode = result;
                     });
                 $httpBackend.flush();
@@ -119,10 +104,11 @@ describe('gesuchsperiodeRS', () => {
                 mockGesuchsperiode.status = TSGesuchsperiodeStatus.AKTIV;
                 mockGesuchsperiodeRest = ebeguRestUtil.gesuchsperiodeToRestObject({}, mockGesuchsperiode);
                 let updatedGesuchsperiode: TSGesuchsperiode;
-                $httpBackend.expectPUT(gesuchsperiodeRS.serviceURL, mockGesuchsperiodeRest).respond(mockGesuchsperiodeRest);
+                $httpBackend.expectPUT(gesuchsperiodeRS.serviceURL, mockGesuchsperiodeRest).respond(
+                    mockGesuchsperiodeRest);
 
                 gesuchsperiodeRS.updateGesuchsperiode(mockGesuchsperiode)
-                    .then((result) => {
+                    .then(result => {
                         updatedGesuchsperiode = result;
                     });
                 $httpBackend.flush();
@@ -131,25 +117,29 @@ describe('gesuchsperiodeRS', () => {
         });
         describe('removeGesuchsperiode', () => {
             it('should remove a gesuchsperiode', () => {
-                $httpBackend.expectDELETE(gesuchsperiodeRS.serviceURL + '/' + mockGesuchsperiode.id)
-                    .respond(200);
+                const httpOk = 200;
+                $httpBackend.expectDELETE(`${gesuchsperiodeRS.serviceURL}/${mockGesuchsperiode.id}`)
+                    .respond(httpOk);
 
                 let deleteResult: any;
                 gesuchsperiodeRS.removeGesuchsperiode(mockGesuchsperiode.id)
-                    .then((result) => {
+                    .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
                 expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(200);
+                expect(deleteResult.status).toEqual(httpOk);
             });
         });
     });
 
-    function checkFieldValues(createdGesuchsperiode: TSGesuchsperiode, mockGesuchsperiode: TSGesuchsperiode,
-                              active: boolean) {
+    function checkFieldValues(
+        createdGesuchsperiode: TSGesuchsperiode,
+        mockPeriode: TSGesuchsperiode,
+        _active: boolean,
+    ): void {
         expect(createdGesuchsperiode).toBeDefined();
         expect(createdGesuchsperiode.status).toBe(TSGesuchsperiodeStatus.AKTIV);
-        TestDataUtil.checkGueltigkeitAndSetIfSame(createdGesuchsperiode, mockGesuchsperiode);
+        TestDataUtil.checkGueltigkeitAndSetIfSame(createdGesuchsperiode, mockPeriode);
     }
 });

@@ -39,22 +39,24 @@ const LOG = LogFactory.createLog('NavbarComponent');
 })
 export class NavbarComponent implements OnDestroy {
 
-    public TSRoleUtil = TSRoleUtil;
+    public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    constructor(private readonly authServiceRS: AuthServiceRS,
-                private readonly changeDetectorRef: ChangeDetectorRef,
-                private readonly dialog: MatDialog,
-                private readonly $state: StateService,
-                private readonly gemeindeRS: GemeindeRS) {
+    public constructor(
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly dialog: MatDialog,
+        private readonly $state: StateService,
+        private readonly gemeindeRS: GemeindeRS,
+    ) {
 
         // navbar depends on the principal. trigger change detection when the principal changes
-        authServiceRS.principal$
+        this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-                () => changeDetectorRef.markForCheck(),
-                err => LOG.error(err)
+                () => this.changeDetectorRef.markForCheck(),
+                err => LOG.error(err),
             );
     }
 
@@ -71,13 +73,13 @@ export class NavbarComponent implements OnDestroy {
                         creationAction: TSCreationAction.CREATE_NEW_FALL,
                         gesuchId: null,
                         dossierId: null,
-                        gemeindeId: gemeindeId,
+                        gemeindeId,
                         eingangsart: TSEingangsart.PAPIER,
                     };
                     this.$state.go('gesuch.fallcreation', params);
                 }
                 ,
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 
@@ -91,7 +93,7 @@ export class NavbarComponent implements OnDestroy {
             .pipe(
                 switchMap(principal => {
                     if (principal && principal.hasJustOneGemeinde()) {
-                        return of(principal.extractCurrentGemeinden());
+                        return of(principal.extractCurrentGemeindeId());
                     }
 
                     return this.getListOfGemeinden$()
@@ -101,9 +103,9 @@ export class NavbarComponent implements OnDestroy {
                                 dialogConfig.data = {gemeindeList};
 
                                 return this.dialog.open(DvNgGemeindeDialogComponent, dialogConfig).afterClosed();
-                            })
+                            }),
                         );
-                })
+                }),
             );
     }
 
@@ -113,10 +115,10 @@ export class NavbarComponent implements OnDestroy {
      */
     private getListOfGemeinden$(): Observable<TSGemeinde[]> {
         if (this.authServiceRS.isRole(TSRole.SUPER_ADMIN)) {
-            return fromPromise(this.gemeindeRS.getAllGemeinden());
-        } else {
-            return this.authServiceRS.principal$
-                .pipe(map(p => p.extractCurrentGemeinden()));
+            return fromPromise(this.gemeindeRS.getAktiveGemeinden());
         }
+
+        return this.authServiceRS.principal$
+            .pipe(map(p => p.extractCurrentAktiveGemeinden()));
     }
 }

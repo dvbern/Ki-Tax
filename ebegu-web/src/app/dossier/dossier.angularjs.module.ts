@@ -17,14 +17,14 @@
 
 import {StateProvider, Transition} from '@uirouter/angularjs';
 import * as angular from 'angular';
-import {IPromise} from 'angular';
 import DossierRS from '../../gesuch/service/dossierRS.rest';
 import TSDossier from '../../models/TSDossier';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
-import {EbeguWebCore} from '../core/core.angularjs.module';
+import {CORE_JS_MODULE} from '../core/core.angularjs.module';
+import IPromise = angular.IPromise;
 
-export const EbeguWebDossier = angular.module('ebeguWebDossier', [
-        EbeguWebCore.name,
+export const DOSSIER_JS_MODULE = angular.module('ebeguWebDossier', [
+        CORE_JS_MODULE.name,
     ])
         .config(conf)
 ;
@@ -39,10 +39,10 @@ function conf($stateProvider: StateProvider): void {
             abstract: true,
             url: '/dossier/:dossierId',
             resolve: {
-                dossier: dossier
+                dossier,
             },
             data: {
-                roles: TSRoleUtil.getAllRolesButAnonymous()
+                roles: TSRoleUtil.getAllRolesButAnonymous(),
             },
             params: {
                 dossierId: {
@@ -53,8 +53,8 @@ function conf($stateProvider: StateProvider): void {
                     // Mit etwas Zusatzaufwand könnte man die ID in die URL schreiben (dynamic parameter).
                     value: '',
                     squash: true,
-                }
-            }
+                },
+            },
         },
     );
 }

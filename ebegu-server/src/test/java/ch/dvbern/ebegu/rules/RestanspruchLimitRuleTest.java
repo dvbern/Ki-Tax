@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -107,7 +108,8 @@ public class RestanspruchLimitRuleTest {
 	}
 
 	private List<VerfuegungZeitabschnitt> initZeitabschnitteForSecondBetreuung(int arbeitspensum, int remainingRestanspruch, int betreuungspensum, BetreuungsangebotTyp type) {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, type, betreuungspensum);
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
+			type, betreuungspensum, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, arbeitspensum, 0));

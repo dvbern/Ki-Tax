@@ -16,26 +16,27 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {MatDialogModule} from '@angular/material';
 import {TranslateModule} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import TSGemeinde from '../../../models/TSGemeinde';
-import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import DossierRS from '../../service/dossierRS.rest';
-import {StateService} from '@uirouter/core';
 import GemeindeRS from '../../service/gemeindeRS.rest';
 import GesuchRS from '../../service/gesuchRS.rest';
 import {FallToolbarComponent} from './fallToolbar.component';
 
+// tslint:disable:no-big-function
 describe('fallToolbar', () => {
 
-    const DOSSIER_ID_1 = 'ea02b313-e7c3-4b26-1122-e413f4041111';
-    const DOSSIER_ID_2 = 'ea02b313-e7c3-4b26-1122-e413f4042222';
-    const MOCK_GESUCH_ID = 'ea02b313-e7c3-4b26-1122-e413f4043333';
+    const dossierId1 = 'ea02b313-e7c3-4b26-1122-e413f4041111';
+    const dossierId2 = 'ea02b313-e7c3-4b26-1122-e413f4042222';
+    const mockGesuchId = 'ea02b313-e7c3-4b26-1122-e413f4043333';
 
     let component: FallToolbarComponent;
     let fixture: ComponentFixture<FallToolbarComponent>;
@@ -45,36 +46,35 @@ describe('fallToolbar', () => {
     let gemeinde1: TSGemeinde;
     let gemeinde2: TSGemeinde;
     let gemeinde3: TSGemeinde;
-    const user: TSBenutzer = new TSBenutzer();
-
+    const user = new TSBenutzer();
 
     beforeEach(async(() => {
         // by default input values are empty/undefined
         initObjects();
 
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
-            'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2]),
+            getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2]),
         });
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
-            'getPrincipalRole': Promise.resolve(TSRole.SUPER_ADMIN),
-            'getPrincipal': Promise.resolve(user),
-            'isRole': false,
-            'isOneOfRoles': false,
+            getPrincipalRole: Promise.resolve(TSRole.SUPER_ADMIN),
+            getPrincipal: Promise.resolve(user),
+            isRole: false,
+            isOneOfRoles: false,
         });
         authServiceSpy.principal$ = of(user) as any;
 
         const dossierServiceSpy = jasmine.createSpyObj<DossierRS>(DossierRS.name, {
-            'findDossiersByFall': Promise.resolve([dossier1, dossier2])
+            findDossiersByFall: Promise.resolve([dossier1, dossier2]),
         });
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
         const gesuchServiceSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, {
-            'getIdOfNewestGesuchForDossier': Promise.resolve(MOCK_GESUCH_ID)
+            getIdOfNewestGesuchForDossier: Promise.resolve(mockGesuchId),
         });
 
         TestBed.configureTestingModule({
             imports: [
                 MatDialogModule,
-                TranslateModule
+                TranslateModule,
             ],
             providers: [
                 {provide: DossierRS, useValue: dossierServiceSpy},
@@ -86,7 +86,7 @@ describe('fallToolbar', () => {
             declarations: [
                 FallToolbarComponent,
                 DvNgShowElementDirective,
-            ]
+            ],
         });
     }));
 
@@ -112,7 +112,7 @@ describe('fallToolbar', () => {
                     expect(component.isDossierActive(dossier1)).toBe(true);
                     done();
                 },
-                done.fail
+                done.fail,
             );
         });
 
@@ -122,7 +122,7 @@ describe('fallToolbar', () => {
                     expect(component.isDossierActive(dossier2)).toBe(false);
                     done();
                 },
-                done.fail
+                done.fail,
             );
         });
         it('should return false for undefined', done => {
@@ -131,7 +131,7 @@ describe('fallToolbar', () => {
                     expect(component.isDossierActive(undefined)).toBe(false);
                     done();
                 },
-                done.fail
+                done.fail,
             );
         });
         it('should return false for the no selected dossier', done => {
@@ -140,7 +140,7 @@ describe('fallToolbar', () => {
                     expect(component.isDossierActive(dossier1)).toBe(false);
                     done();
                 },
-                done.fail
+                done.fail,
             );
         });
     });
@@ -150,12 +150,12 @@ describe('fallToolbar', () => {
             initTestBed();
         }));
 
-        it('should reload all data when changing input values', fakeAsync( () => {
+        it('should reload all data when changing input values', fakeAsync(() => {
             component.dossierId = dossier2.id;
             component.fallId = fall.id;
             component.ngOnChanges({
-                'fallId': fall.id,
-                'dossierId': dossier2.id,
+                fallId: fall.id,
+                dossierId: dossier2.id,
             });
 
             tick();
@@ -169,7 +169,7 @@ describe('fallToolbar', () => {
         beforeEach(async(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
-                'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
+                getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
             TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
             initTestBed();
@@ -190,11 +190,11 @@ describe('fallToolbar', () => {
         beforeEach(async(() => {
             // we need a different testbed because we need to provide a different object
             const threeGemeindeServiceSpy = jasmine.createSpyObj('GemeindeRS', {
-                'getAllGemeinden': Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
+                getAllGemeinden: Promise.resolve([gemeinde1, gemeinde2, gemeinde3]),
             });
             dossier1.fall.besitzer = new TSBenutzer(); // it  is now an onlineGesuch
             const dossierServiceSpy = jasmine.createSpyObj('DossierRS', {
-                'findDossiersByFall': Promise.resolve([dossier1, dossier2])
+                findDossiersByFall: Promise.resolve([dossier1, dossier2]),
             });
             TestBed.overrideProvider(GemeindeRS, {useValue: threeGemeindeServiceSpy});
             TestBed.overrideProvider(DossierRS, {useValue: dossierServiceSpy});
@@ -204,7 +204,6 @@ describe('fallToolbar', () => {
         it('should return false for non default values, available Gemeinden but onlineGesuch', fakeAsync(() => {
             component.dossierId = dossier1.id;
             component.fallId = fall.id;
-            component.ngOnInit(); // to update all depending objects in the component
 
             tick();
             expect(component.showCreateNewDossier()).toBe(false);
@@ -222,27 +221,25 @@ describe('fallToolbar', () => {
         it('should return false for non default values and no available Gemeinden', fakeAsync(() => {
             component.dossierId = dossier2.id;
             component.fallId = fall.id;
-            component.ngOnInit(); // to update all depending objects in the component
 
             tick();
             expect(component.showCreateNewDossier()).toBe(false);
         }));
     });
 
-
-    function initObjects() {
+    function initObjects(): void {
         gemeinde1 = TestDataUtil.createGemeindeOstermundigen();
         gemeinde2 = TestDataUtil.createGemeindeBern();
         gemeinde3 = TestDataUtil.createGemeindeThun();
 
         fall = TestDataUtil.createFall();
-        dossier1 = TestDataUtil.createDossier(DOSSIER_ID_1, fall);
+        dossier1 = TestDataUtil.createDossier(dossierId1, fall);
         dossier1.gemeinde = gemeinde1;
-        dossier2 = TestDataUtil.createDossier(DOSSIER_ID_2, fall);
+        dossier2 = TestDataUtil.createDossier(dossierId2, fall);
         dossier2.gemeinde = gemeinde2;
     }
 
-    function initTestBed() {
+    function initTestBed(): void {
         TestBed.compileComponents();
         fixture = TestBed.createComponent(FallToolbarComponent);
         component = fixture.componentInstance;

@@ -45,8 +45,8 @@
                          ng-if="vm.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1">
                         <div class="row marginTop20 marginBottom10">
                             <div class="col-md-12">
-                        <h3 data-translate="AUFGRUND_EINKOMMENSVERSCHLECHTERUNG"
-                              data-translate-value-jahr="{{vm.gesuchModelManager.getBasisjahrPlus(1)}}"></h3>
+                                <h3 data-translate="AUFGRUND_EINKOMMENSVERSCHLECHTERUNG"
+                                    data-translate-value-jahr="{{vm.gesuchModelManager.getBasisjahrPlus(1)}}"></h3>
                             </div>
                         </div>
                         <div class="row">
@@ -67,8 +67,8 @@
                         ng-if="vm.gesuchModelManager.getGesuch().einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus2">
                         <div class="row marginTop20 marginBottom10">
                             <div class="col-md-12">
-                        <h3 data-translate="AUFGRUND_EINKOMMENSVERSCHLECHTERUNG"
-                              data-translate-value-jahr="{{vm.gesuchModelManager.getBasisjahrPlus(2)}}"></h3>
+                                <h3 data-translate="AUFGRUND_EINKOMMENSVERSCHLECHTERUNG"
+                                    data-translate-value-jahr="{{vm.gesuchModelManager.getBasisjahrPlus(2)}}"></h3>
                             </div>
                         </div>
                         <div class="row">
@@ -94,7 +94,7 @@
                         </h3>
                     </div>
                     <div class="col-md-4 text-right">
-                        <h3 class="ebeguH2" aria-hidden  class="mainTitle">
+                        <h3 class="ebeguH2" aria-hidden class="mainTitle">
                             {{vm.getBetreuungNumber()}}
                         </h3>
                     </div>
@@ -253,7 +253,8 @@
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button type="submit"
-                                               button-click="vm.schliessenOhneVerfuegen()" ng-if="!vm.disableAblehnen()">
+                                               button-click="vm.schliessenOhneVerfuegen()"
+                                               ng-if="!vm.disableAblehnen()">
                                 <span data-translate="VERFUEGEN_ABLEHNEN_UPPER"></span>
                             </dv-loading-button>
                         </div>

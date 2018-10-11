@@ -1,5 +1,12 @@
 import {NgModule} from '@angular/core';
-import {MatDatepickerModule, MatDialogModule, MatRadioModule, MatSelectModule, MatSortModule, MatTableModule} from '@angular/material';
+import {
+    MatDatepickerModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatSortModule,
+    MatTableModule,
+} from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
 const MATERIAL_MODULES = [

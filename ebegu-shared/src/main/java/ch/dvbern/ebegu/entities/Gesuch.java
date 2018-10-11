@@ -574,6 +574,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	 * Gibt das Startjahr der Gesuchsperiode (zweistellig) gefolgt von Fall-Nummer als String zurück.
 	 * Achtung, entspricht NICHT der Antragsnummer! (siehe Antrag.laufnummer)
 	 */
+	@Nonnull
 	public String getJahrFallAndGemeindenummer() {
 		if (getGesuchsperiode() == null) {
 			return "-";
@@ -744,7 +745,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		target.setDatumGewarntNichtFreigegeben(null);
 		target.setDatumGewarntFehlendeQuittung(null);
 		target.setTimestampVerfuegt(null);
-		target.setGueltig(false);
+		// null instead of false because of UK_Constraint UK_gueltiges_gesuch
+		target.setGueltig(null);
 		target.setDokumenteHochgeladen(false);
 
 		copyFamiliensituation(target, copyType, this.isMutation());

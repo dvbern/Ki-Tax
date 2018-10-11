@@ -14,7 +14,6 @@
  */
 
 import {async, TestBed} from '@angular/core/testing';
-import {Observable} from 'rxjs';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {AuthLifeCycleService} from './authLifeCycle.service';
 
@@ -35,32 +34,32 @@ describe('authLifeCycleService', () => {
     describe('changeAuthStatus', () => {
         it('changes the status to undefined', () => {
             authLifeCycleService.changeAuthStatus(undefined, 'undefined values');
-            const all$: Observable<TSAuthEvent> = authLifeCycleService.getAll$();
+            const all$ = authLifeCycleService.get$(undefined);
             all$.subscribe(() => {
                 expect(true).toBe(false); // no value should come
-            });
+            }, fail);
         });
 
         it('changes the status to a given value', () => {
             authLifeCycleService.changeAuthStatus(TSAuthEvent.CHANGE_USER, 'user has changed');
 
-            const all$: Observable<TSAuthEvent> = authLifeCycleService.getAll$();
-            all$.subscribe(value => expect(value).toBe(TSAuthEvent.CHANGE_USER));
+            const all$ = authLifeCycleService.get$(TSAuthEvent.CHANGE_USER);
+            all$.subscribe(value => expect(value).toBe(TSAuthEvent.CHANGE_USER), fail);
         });
     });
     describe('get$', () => {
         it('get$ should just return a value for the thrown event', () => {
             authLifeCycleService.changeAuthStatus(TSAuthEvent.CHANGE_USER, 'user has changed');
 
-            const loginFailed$: Observable<TSAuthEvent> = authLifeCycleService.get$(TSAuthEvent.LOGIN_FAILED);
+            const loginFailed$ = authLifeCycleService.get$(TSAuthEvent.LOGIN_FAILED);
             loginFailed$.subscribe(() => {
                 expect(true).toBe(false); // no value should come
-            });
+            }, fail);
 
-            const changeUser$: Observable<TSAuthEvent> = authLifeCycleService.get$(TSAuthEvent.CHANGE_USER);
+            const changeUser$ = authLifeCycleService.get$(TSAuthEvent.CHANGE_USER);
             changeUser$.subscribe(value => {
                 expect(value).toBe((TSAuthEvent.CHANGE_USER));
-            });
+            }, fail);
         });
     });
 });

@@ -28,22 +28,22 @@ describe('OnboardingBeLoginComponent', () => {
     let fixture: ComponentFixture<OnboardingBeLoginComponent>;
 
     const transitionSpy = createSpyObj<Transition>(Transition.name, ['params']);
-    const GEMEINDE_ID = '1';
+    const gemeindeId = '1';
 
     beforeEach(async(() => {
-        transitionSpy.params.and.returnValue({gemeindeId: GEMEINDE_ID});
+        transitionSpy.params.and.returnValue({gemeindeId});
 
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                UIRouterModule.forRoot({ useHash: true }),
+                UIRouterModule.forRoot({useHash: true}),
             ],
             declarations: [OnboardingBeLoginComponent],
             providers: [
-                {provide: Transition, useValue: transitionSpy}
+                {provide: Transition, useValue: transitionSpy},
 
-            ]
+            ],
         })
             .compileComponents();
     }));

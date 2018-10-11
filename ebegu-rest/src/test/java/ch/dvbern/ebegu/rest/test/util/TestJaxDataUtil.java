@@ -279,6 +279,7 @@ public final class TestJaxDataUtil {
 		jaxBetreuungspensum.setGueltigBis(to);
 
 		jaxBetreuungspensum.setPensum(40);
+		jaxBetreuungspensum.setMonatlicheBetreuungskosten(new BigDecimal(2000));
 		return jaxBetreuungspensum;
 	}
 
@@ -380,6 +381,7 @@ public final class TestJaxDataUtil {
 		JaxGemeinde gemeinde = new JaxGemeinde();
 		gemeinde.setName("TestGemeinde");
 		gemeinde.setGemeindeNummer(1);
+		gemeinde.setBfsNummer(1L);
 		return gemeinde;
 	}
 

@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.SearchService;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jboss.arquillian.junit.Arquillian;
@@ -234,8 +235,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		//traegerschaftbenutzer setzten
 		Traegerschaft traegerschaft = institutionToSet.getTraegerschaft();
 		Assert.assertNotNull("Unser testaufbau sieht vor, dass die institution zu einer traegerschaft gehoert", traegerschaft);
-		Benutzer verantwortlicherUser = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "anonymous", traegerschaft,
-			null, TestDataUtil.createDefaultMandant(), persistence);
+		Benutzer verantwortlicherUser = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
+			Constants.ANONYMOUS_USER_USERNAME, traegerschaft, null, TestDataUtil.createDefaultMandant(), persistence);
 		gesDagmar.getDossier().setVerantwortlicherBG(verantwortlicherUser);
 		persistence.merge(gesDagmar);
 		//es muessen immer noch beide gefunden werden da die betreuungen immer noch zu inst des users gehoeren

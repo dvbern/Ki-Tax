@@ -13,25 +13,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
-import {EbeguWebCore} from '../core.angularjs.module';
+import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {InstitutionRS} from './institutionRS.rest';
 
 describe('institutionRS', () => {
 
     let institutionRS: InstitutionRS;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
     let mockInstitution: TSInstitution;
     let mockInstitutionRest: any;
     let mandant: TSMandant;
     let traegerschaft: TSTraegerschaft;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -53,33 +54,16 @@ describe('institutionRS', () => {
         it('check URI', () => {
             expect(institutionRS.serviceURL).toContain('institutionen');
         });
-        it('check Service name', () => {
-            expect(institutionRS.getServiceName()).toBe('InstitutionRS');
-        });
-        it('should include a findInstitution() function', () => {
-            expect(institutionRS.findInstitution).toBeDefined();
-        });
-        it('should include a createInstitution() function', () => {
-            expect(institutionRS.createInstitution).toBeDefined();
-        });
-        it('should include a updateInstitution() function', () => {
-            expect(institutionRS.updateInstitution).toBeDefined();
-        });
-        it('should include a removeInstitution() function', () => {
-            expect(institutionRS.removeInstitution).toBeDefined();
-        });
-        it('should include a getAllInstitutionen() function', () => {
-            expect(institutionRS.getAllInstitutionen).toBeDefined();
-        });
     });
 
     describe('API Usage', () => {
         describe('findInstitution', () => {
             it('should return the Institution by id', () => {
-                $httpBackend.expectGET(institutionRS.serviceURL + '/id/' + mockInstitution.id).respond(mockInstitutionRest);
+                const url = `${institutionRS.serviceURL}/id/${mockInstitution.id}`;
+                $httpBackend.expectGET(url).respond(mockInstitutionRest);
 
                 let foundInstitution: TSInstitution;
-                institutionRS.findInstitution(mockInstitution.id).then((result) => {
+                institutionRS.findInstitution(mockInstitution.id).then(result => {
                     foundInstitution = result;
                 });
                 $httpBackend.flush();
@@ -94,7 +78,7 @@ describe('institutionRS', () => {
                 $httpBackend.expectPOST(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
 
                 institutionRS.createInstitution(mockInstitution)
-                    .then((result) => {
+                    .then(result => {
                         createdInstitution = result;
                     });
                 $httpBackend.flush();
@@ -110,7 +94,7 @@ describe('institutionRS', () => {
                 $httpBackend.expectPUT(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
 
                 institutionRS.updateInstitution(mockInstitution)
-                    .then((result) => {
+                    .then(result => {
                         updatedInstitution = result;
                     });
                 $httpBackend.flush();
@@ -120,27 +104,28 @@ describe('institutionRS', () => {
 
         describe('removeInstitution', () => {
             it('should remove an institution', () => {
-                $httpBackend.expectDELETE(institutionRS.serviceURL + '/' + encodeURIComponent(mockInstitution.id))
-                    .respond(200);
+                const httpOk = 200;
+                $httpBackend.expectDELETE(`${institutionRS.serviceURL}/${encodeURIComponent(mockInstitution.id)}`)
+                    .respond(httpOk);
 
                 let deleteResult: any;
                 institutionRS.removeInstitution(mockInstitution.id)
-                    .then((result) => {
+                    .then(result => {
                         deleteResult = result;
                     });
                 $httpBackend.flush();
                 expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(200);
+                expect(deleteResult.status).toEqual(httpOk);
             });
         });
 
         describe('getAllInstitutionen', () => {
             it('should return all Institutionen', () => {
-                const institutionenRestArray: Array<any> = [mockInstitutionRest, mockInstitutionRest];
+                const institutionenRestArray = [mockInstitutionRest, mockInstitutionRest];
                 $httpBackend.expectGET(institutionRS.serviceURL).respond(institutionenRestArray);
 
                 let returnedInstitution: Array<TSInstitution>;
-                institutionRS.getAllInstitutionen().then((result) => {
+                institutionRS.getAllInstitutionen().then(result => {
                     returnedInstitution = result;
                 });
                 $httpBackend.flush();
@@ -153,7 +138,7 @@ describe('institutionRS', () => {
 
     });
 
-    function checkFieldValues(institution1: TSInstitution, institution2: TSInstitution) {
+    function checkFieldValues(institution1: TSInstitution, institution2: TSInstitution): void {
         expect(institution1).toBeDefined();
         expect(institution1.name).toEqual(institution2.name);
         expect(institution1.id).toEqual(institution2.id);

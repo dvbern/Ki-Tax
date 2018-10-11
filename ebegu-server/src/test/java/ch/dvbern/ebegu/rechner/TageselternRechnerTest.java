@@ -36,12 +36,12 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 	public void testEinTagMonatHohesEinkommenAnspruch15() {
 		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
 			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 21),
-			15, new BigDecimal("234567"));
+			15, new BigDecimal("234567"), MONATLICHE_BETREUUNGSKOSTEN);
 
 		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("15.30"), calculate.getVollkosten());
+		Assert.assertEquals(new BigDecimal("100.00"), calculate.getVollkosten());
 		Assert.assertEquals(new BigDecimal("15.30"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("0.00"), calculate.getVerguenstigung());
+		Assert.assertEquals(new BigDecimal("84.70"), calculate.getVerguenstigung());
 		Assert.assertEquals(new BigDecimal("1.7"), calculate.getBetreuungsstunden());
 	}
 
@@ -49,12 +49,12 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 	public void testTeilmonatMittleresEinkommen() {
 		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
 			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 31),
-			100, new BigDecimal("87654"));
+			100, new BigDecimal("87654"), MONATLICHE_BETREUUNGSKOSTEN);
 
 		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("713.95"), calculate.getVollkosten());
+		Assert.assertEquals(new BigDecimal("700.00"), calculate.getVollkosten());
 		Assert.assertEquals(new BigDecimal("313.05"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("400.90"), calculate.getVerguenstigung());
+		Assert.assertEquals(new BigDecimal("386.95"), calculate.getVerguenstigung());
 		Assert.assertEquals(new BigDecimal("77.9"), calculate.getBetreuungsstunden());
 	}
 
@@ -62,12 +62,12 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 	public void testTeilmonatMittleresEinkommen50() {
 		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
 			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 31),
-			50, new BigDecimal("87654"));
+			50, new BigDecimal("87654"), MONATLICHE_BETREUUNGSKOSTEN);
 
 		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("357.00"), calculate.getVollkosten());
+		Assert.assertEquals(new BigDecimal("700.00"), calculate.getVollkosten());
 		Assert.assertEquals(new BigDecimal("156.55"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("200.45"), calculate.getVerguenstigung());
+		Assert.assertEquals(new BigDecimal("543.45"), calculate.getVerguenstigung());
 		Assert.assertEquals(new BigDecimal("39.0"), calculate.getBetreuungsstunden());
 	}
 
@@ -75,12 +75,12 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 	public void testGanzerMonatZuWenigEinkommen() {
 		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
 			LocalDate.of(2016, Month.JANUARY, 1), LocalDate.of(2016, Month.JANUARY, 31),
-			100, new BigDecimal("27750"));
+			100, new BigDecimal("27750"), MONATLICHE_BETREUUNGSKOSTEN);
 
 		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("2141.90"), calculate.getVollkosten());
+		Assert.assertEquals(new BigDecimal("2100.00"), calculate.getVollkosten());
 		Assert.assertEquals(new BigDecimal("175.40"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("1966.50"), calculate.getVerguenstigung());
+		Assert.assertEquals(new BigDecimal("1924.60"), calculate.getVerguenstigung());
 		Assert.assertEquals(new BigDecimal("233.8"), calculate.getBetreuungsstunden());
 	}
 
@@ -88,7 +88,7 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 	public void testZeitraumUeberMonatsende() {
 		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
 			LocalDate.of(2016, Month.JANUARY, 10), LocalDate.of(2016, Month.FEBRUARY, 5),
-			100, new BigDecimal("27750"));
+			100, new BigDecimal("27750"), MONATLICHE_BETREUUNGSKOSTEN);
 
 		tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
 	}

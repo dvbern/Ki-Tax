@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges,
+} from '@angular/core';
 import {ControlContainer, NgForm, ValidationErrors} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -32,14 +40,14 @@ const LOG = LogFactory.createLog('ErrorMessagesComponent');
 })
 export class ErrorMessagesComponent implements OnChanges, OnDestroy {
 
-    @Input() errorObject: ValidationErrors | null;
-    @Input() inputId: string;
+    @Input() public errorObject: ValidationErrors | null;
+    @Input() public inputId: string;
 
     public error: string = '';
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    constructor(
+    public constructor(
         public readonly form: NgForm,
         public readonly changeDetectorRef: ChangeDetectorRef,
     ) {
@@ -47,7 +55,7 @@ export class ErrorMessagesComponent implements OnChanges, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => this.changeDetectorRef.markForCheck(),
-                err => LOG.error(err)
+                err => LOG.error(err),
             );
     }
 

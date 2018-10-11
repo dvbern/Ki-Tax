@@ -21,6 +21,8 @@ import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Implementiert den {@link EinkommensverschlechterungPrint}
  */
@@ -43,8 +45,13 @@ public class EinkommensverschlechterungPrintImpl extends FinanzDatenPrintImpl im
 	 * @param grund Grund
 	 * @param basisJahrPlus Anzahl Jahre nach dem Basisjahr
 	 */
-	public EinkommensverschlechterungPrintImpl(FinanzSituationPrintGesuchsteller fsGesuchsteller1, FinanzSituationPrintGesuchsteller fsGesuchsteller2,
-		String einkommensverschlechterungJahr, String ereigniseintritt, String grund, int basisJahrPlus) {
+	public EinkommensverschlechterungPrintImpl(
+		FinanzSituationPrintGesuchsteller fsGesuchsteller1,
+		FinanzSituationPrintGesuchsteller fsGesuchsteller2,
+		String einkommensverschlechterungJahr,
+		String ereigniseintritt,
+		String grund,
+		int basisJahrPlus) {
 
 		super(fsGesuchsteller1, fsGesuchsteller2);
 
@@ -96,8 +103,10 @@ public class EinkommensverschlechterungPrintImpl extends FinanzDatenPrintImpl im
 
 	@Override
 	public BigDecimal getGeschaeftsgewinnG1() {
-		final FinanzSituationPrintGesuchsteller fsGesuchsteller = fsGesuchsteller1;
-		return FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(fsGesuchsteller.getFinanzielleSituation(),
+		final FinanzSituationPrintGesuchsteller fsGesuchsteller = requireNonNull(getFsGesuchsteller1());
+
+		return FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(
+			fsGesuchsteller.getFinanzielleSituation(),
 			fsGesuchsteller.getEinkommensverschlechterung1(),
 			fsGesuchsteller.getEinkommensverschlechterung2(),
 			fsGesuchsteller.getEinkommensverschlechterungInfo(),
@@ -107,8 +116,8 @@ public class EinkommensverschlechterungPrintImpl extends FinanzDatenPrintImpl im
 	@Override
 	public BigDecimal getGeschaeftsgewinnG2() {
 		//hier muessen zum berechnen die Einkommensverschlechterung und die finanzielle Situation benutzt werden
-		if (fsGesuchsteller2 != null) {
-			final FinanzSituationPrintGesuchsteller fsGesuchsteller = fsGesuchsteller2;
+		if (getFsGesuchsteller2() != null) {
+			final FinanzSituationPrintGesuchsteller fsGesuchsteller = getFsGesuchsteller2();
 			return FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(fsGesuchsteller.getFinanzielleSituation(),
 				fsGesuchsteller.getEinkommensverschlechterung1(),
 				fsGesuchsteller.getEinkommensverschlechterung2(),

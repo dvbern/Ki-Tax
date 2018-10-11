@@ -29,21 +29,21 @@ const LOG = LogFactory.createLog('DebuggingComponent');
     selector: 'dv-debugging',
     templateUrl: './debugging.component.html',
     styleUrls: ['./debugging.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DebuggingComponent implements OnInit, OnDestroy {
 
     @ViewChild('traceForm') private readonly traceForm: NgForm;
 
-    public TRACE_CATEGORY = Category;
-    public TRACE_CATEGORY_KEYS = Object.keys(Category).filter(k => typeof Category[k as any] === 'number');
+    public readonly TRACE_CATEGORY = Category;
+    public readonly TRACE_CATEGORY_KEYS = Object.keys(Category).filter(k => typeof Category[k as any] === 'number');
 
     public routerTraceCategories: Category[];
     public hasVisualizer: boolean;
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    constructor(private readonly router: UIRouter) {
+    public constructor(private readonly router: UIRouter) {
         this.routerTraceCategories = this.TRACE_CATEGORY_KEYS
             .map(k => Category[k as any] as any)
             .filter(c => router.trace.enabled(c));
@@ -67,7 +67,7 @@ export class DebuggingComponent implements OnInit, OnDestroy {
         }
     }
 
-    private initTracer() {
+    private initTracer(): void {
         this.traceForm.valueChanges
             .pipe(
                 filter(values => !!values && values.hasOwnProperty('routerTraceCategories')),

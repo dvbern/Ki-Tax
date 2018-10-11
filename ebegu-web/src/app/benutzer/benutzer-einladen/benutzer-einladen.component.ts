@@ -22,19 +22,21 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBenutzerStatus} from '../../../models/enums/TSBenutzerStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBenutzer from '../../../models/TSBenutzer';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 
 @Component({
     selector: 'dv-benutzer-einladen',
     templateUrl: './benutzer-einladen.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BenutzerEinladenComponent {
 
     public readonly benutzer = new TSBenutzer();
     public readonly excludedRoles: ReadonlyArray<TSRole> = [TSRole.GESUCHSTELLER];
+    public readonly CONSTANTS = CONSTANTS;
 
-    constructor(
+    public constructor(
         private readonly benutzerRS: BenutzerRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly stateService: StateService,
