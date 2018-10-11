@@ -10,7 +10,7 @@ pipeline {
 		// Only keep the 10 most recent builds
 		buildDiscarder(logRotator(numToKeepStr: "10"))
 		// If the build (including waiting time for user input) takes longer, it will be aborted.
-		timeout(time: 1, unit: 'HOURS')
+		timeout(time: 2, unit: 'HOURS')
 	}
 	stages {
 		stage("Test") {
