@@ -15,12 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum Permission {
-    BENUTZER_EINLADEN = 'BENUTZER_EINLADEN',
-    ROLE_TRAEGERSCHAFT = 'ROLE_TRAEGERSCHAFT',
-    ROLE_INSTITUTION = 'ROLE_INSTITUTION',
-    ROLE_GEMEINDE = 'ROLE_GEMEINDE',
-    ROLE_MANDANT = 'ROLE_MANDANT',
-    ROLE_BG = 'ROLE_BG', // todo remove in KIBON version 2. use Permission.ROLE_GEMEINDE instead,
-    EINLADUNG_AKZEPTIEREN = 'EINLADUNG_AKZEPTIEREN'
-}
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+
+import {LoginInfoComponent} from './login-info.component';
+
+describe('LoginInfoComponent', () => {
+    let component: LoginInfoComponent;
+    let fixture: ComponentFixture<LoginInfoComponent>;
+
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [LoginInfoComponent],
+        })
+            .compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LoginInfoComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+});

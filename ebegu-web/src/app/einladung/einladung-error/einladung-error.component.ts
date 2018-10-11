@@ -15,12 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum Permission {
-    BENUTZER_EINLADEN = 'BENUTZER_EINLADEN',
-    ROLE_TRAEGERSCHAFT = 'ROLE_TRAEGERSCHAFT',
-    ROLE_INSTITUTION = 'ROLE_INSTITUTION',
-    ROLE_GEMEINDE = 'ROLE_GEMEINDE',
-    ROLE_MANDANT = 'ROLE_MANDANT',
-    ROLE_BG = 'ROLE_BG', // todo remove in KIBON version 2. use Permission.ROLE_GEMEINDE instead,
-    EINLADUNG_AKZEPTIEREN = 'EINLADUNG_AKZEPTIEREN'
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+
+@Component({
+    selector: 'dv-einladung-error',
+    templateUrl: './einladung-error.component.html',
+    styleUrls: ['./einladung-error.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class EinladungErrorComponent {
+
 }

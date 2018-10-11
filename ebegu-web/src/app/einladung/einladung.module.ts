@@ -15,12 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum Permission {
-    BENUTZER_EINLADEN = 'BENUTZER_EINLADEN',
-    ROLE_TRAEGERSCHAFT = 'ROLE_TRAEGERSCHAFT',
-    ROLE_INSTITUTION = 'ROLE_INSTITUTION',
-    ROLE_GEMEINDE = 'ROLE_GEMEINDE',
-    ROLE_MANDANT = 'ROLE_MANDANT',
-    ROLE_BG = 'ROLE_BG', // todo remove in KIBON version 2. use Permission.ROLE_GEMEINDE instead,
-    EINLADUNG_AKZEPTIEREN = 'EINLADUNG_AKZEPTIEREN'
+import {NgModule} from '@angular/core';
+import {SharedModule} from '../shared/shared.module';
+import {EinladungAbschliessenComponent} from './einladung-abschliessen/einladung-abschliessen.component';
+import {EinladungErrorComponent} from './einladung-error/einladung-error.component';
+import {EinladungRoutingModule} from './einladung-routing/einladung-routing.module';
+import {LoginInfoComponent} from './login-info/login-info.component';
+
+@NgModule({
+    imports: [
+        SharedModule,
+        EinladungRoutingModule,
+    ],
+    declarations: [LoginInfoComponent, EinladungAbschliessenComponent, EinladungErrorComponent],
+})
+export class EinladungModule {
 }

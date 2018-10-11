@@ -15,12 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum Permission {
-    BENUTZER_EINLADEN = 'BENUTZER_EINLADEN',
-    ROLE_TRAEGERSCHAFT = 'ROLE_TRAEGERSCHAFT',
-    ROLE_INSTITUTION = 'ROLE_INSTITUTION',
-    ROLE_GEMEINDE = 'ROLE_GEMEINDE',
-    ROLE_MANDANT = 'ROLE_MANDANT',
-    ROLE_BG = 'ROLE_BG', // todo remove in KIBON version 2. use Permission.ROLE_GEMEINDE instead,
-    EINLADUNG_AKZEPTIEREN = 'EINLADUNG_AKZEPTIEREN'
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+
+@Component({
+    selector: 'dv-login-info',
+    templateUrl: './login-info.component.html',
+    styleUrls: ['./login-info.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class LoginInfoComponent implements OnInit {
+
+    constructor() {
+    }
+
+    ngOnInit() {
+    }
+
 }
