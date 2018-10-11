@@ -1605,7 +1605,10 @@ export default class EbeguRestUtil {
     }
 
     private parseErwerbspensenContainers(data: Array<any>): TSErwerbspensumContainer[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseErwerbspensumContainer(new TSErwerbspensumContainer(), item))
             : [this.parseErwerbspensumContainer(new TSErwerbspensumContainer(), data)];
     }
@@ -2442,7 +2445,10 @@ export default class EbeguRestUtil {
     }
 
     public parseZahlungsauftragList(data: any): TSZahlungsauftrag[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseZahlungsauftrag(new TSZahlungsauftrag(), item))
             : [];
     }
@@ -2466,7 +2472,10 @@ export default class EbeguRestUtil {
     }
 
     public parseZahlungen(data: any): TSZahlung[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseZahlung(new TSZahlung(), item))
             : [];
     }
@@ -2495,7 +2504,10 @@ export default class EbeguRestUtil {
     }
 
     private parseEWKPersonList(data: any): TSEWKPerson[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseEWKPerson(new TSEWKPerson(), item))
             : [];
     }
@@ -2526,7 +2538,10 @@ export default class EbeguRestUtil {
     }
 
     private parseEWKEinwohnercodeList(data: any): TSEWKEinwohnercode[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseEWKEinwohnercode(new TSEWKEinwohnercode(), item))
             : [];
     }
@@ -2545,7 +2560,10 @@ export default class EbeguRestUtil {
     }
 
     private parseEWKAdresseList(data: any): TSEWKAdresse[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseEWKAdresse(new TSEWKAdresse(), item))
             : [];
     }
@@ -2571,7 +2589,10 @@ export default class EbeguRestUtil {
     }
 
     private parseEWKBeziehungList(data: any): TSEWKBeziehung[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseEWKBeziehung(new TSEWKBeziehung(), item))
             : [];
     }
@@ -2593,7 +2614,10 @@ export default class EbeguRestUtil {
     }
 
     public parseModuleTagesschuleArray(data: Array<any>): TSModulTagesschule[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseModulTagesschule(new TSModulTagesschule(), item))
             : [this.parseModulTagesschule(new TSModulTagesschule(), data)];
     }
@@ -2611,7 +2635,10 @@ export default class EbeguRestUtil {
     }
 
     private moduleTagesschuleArrayToRestObject(data: Array<TSModulTagesschule>): any[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.modulTagesschuleToRestObject({}, item))
             : [];
     }
@@ -2651,7 +2678,10 @@ export default class EbeguRestUtil {
     }
 
     public parseFerieninselStammdatenList(data: any): TSFerieninselStammdaten[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), item))
             : [this.parseFerieninselStammdaten(new TSFerieninselStammdaten(), data)];
     }
@@ -2728,7 +2758,10 @@ export default class EbeguRestUtil {
     }
 
     private parseBelegungFerieninselTagList(data: any): TSBelegungFerieninselTag[] {
-        return data && Array.isArray(data)
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
             ? data.map(item => this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), item))
             : [this.parseBelegungFerieninselTag(new TSBelegungFerieninselTag(), data)];
     }
