@@ -75,10 +75,16 @@ public interface GemeindeService {
 	Collection<Gemeinde> getAktiveGemeinden();
 
 	/**
+	 * Gibt die GemeindeStammdaten anhand ihrer Id zurück
+	 */
+	@Nonnull
+	public Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String id);
+
+	/**
 	 * Gibt die GemeindeStammdaten der jeweiligen Gemeinde zurück
 	 */
 	@Nonnull
-	Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String gemeindeId);
+	Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(@Nonnull String gemeindeId);
 
 	/**
 	 * Speichert die GemeindeStammdaten neu in der DB falls der Key noch nicht existiert.

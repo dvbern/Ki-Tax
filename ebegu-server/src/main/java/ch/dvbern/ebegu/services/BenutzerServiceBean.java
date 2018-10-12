@@ -96,6 +96,7 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getJugendamtRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getSchulamtRoles;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -342,6 +343,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@PermitAll
+	public Collection<Benutzer> getBenutzerBgOrGemeinde() {
+		return getBenutzersOfRoles(getBgAndGemeindeRoles());
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
 	public Collection<Benutzer> getBenutzerBGorAdmin() {
 		return getBenutzersOfRoles(getJugendamtRoles());
 	}
@@ -357,7 +365,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return getBenutzersOfRoles(roles, null);
 	}
 
-	private Collection<Benutzer> getBenutzersOfRoles(List<UserRole> roles, Gemeinde gemeinde) {
+	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Gemeinde gemeinde) {
 
 		Benutzer currentBenutzer = getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getBenutzersOfRole", "Non logged in user should never reach this"));
@@ -369,22 +377,19 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Root<Benutzer> root = query.from(Benutzer.class);
 
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
-		SetJoin<Berechtigung, Gemeinde> joinGemeinde = joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.INNER);
-
-		if (gemeinde != null) {
-			joinGemeinde.on(joinBerechtigungen.get(Gemeinde_.id).in(gemeinde.getId()));
-		}
+		Join<Berechtigung, Gemeinde> joinBerechtigungenGemeinde = joinBerechtigungen.join(Berechtigung_.gemeindeList);
 
 		query.select(root);
 
+		/*
 		predicates.add(cb.between(
 			cb.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
-
+		*/
 		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(roles));
 
-		setGemeindeFilterForCurrentUser(currentBenutzer, joinGemeinde, predicates);
+		//predicates.add(joinBerechtigungenGemeinde.get(Gemeinde_.id).in(gemeinde.getId()));
 
 		query.where(predicates.toArray(NEW));
 		query.distinct(true);

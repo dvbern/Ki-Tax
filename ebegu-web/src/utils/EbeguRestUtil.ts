@@ -718,8 +718,8 @@ export default class EbeguRestUtil {
             restStammdaten.sachbearbeiter = stammdaten.sachbearbeiter;
             restStammdaten.defaultBenutzerBG = this.userToRestObject({}, stammdaten.defaultBenutzerBG);
             restStammdaten.defaultBenutzerTS = this.userToRestObject({}, stammdaten.defaultBenutzerTS);
-            restStammdaten.verantwortlicher = this.userToRestObject({}, stammdaten.verantwortlicher);
             restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
+            restStammdaten.anschrift = stammdaten.anschrift;
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
             restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
             restStammdaten.keineBeschwerdeAdresse = stammdaten.keineBeschwerdeAdresse;
@@ -744,8 +744,8 @@ export default class EbeguRestUtil {
             stammdatenTS.sachbearbeiter = stammdatenFromServer.sachbearbeiter;
             stammdatenTS.defaultBenutzerBG = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerBG);
             stammdatenTS.defaultBenutzerTS = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerTS);
-            stammdatenTS.verantwortlicher = this.parseUser(new TSBenutzer(), stammdatenFromServer.verantwortlicher);
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
+            stammdatenTS.anschrift = stammdatenFromServer.anschrift;
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
             stammdatenTS.keineBeschwerdeAdresse = stammdatenFromServer.keineBeschwerdeAdresse;

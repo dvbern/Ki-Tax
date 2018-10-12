@@ -51,7 +51,6 @@ import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
@@ -103,7 +102,7 @@ public class GemeindeResource {
 		return gemeindeConverter.gemeindeToJAX(persistedGemeinde);
 	}
 
-	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
+	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxGemeinde.class)
 	@Nullable
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -191,7 +190,7 @@ public class GemeindeResource {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
-		Optional<GemeindeStammdaten> stammdatenFromDB = gemeindeService.getGemeindeStammdaten(gemeindeId);
+		Optional<GemeindeStammdaten> stammdatenFromDB = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 		if (!stammdatenFromDB.isPresent()) {
 			stammdatenFromDB = initGemeindeStammdaten(gemeindeId);
 		}
@@ -215,6 +214,7 @@ public class GemeindeResource {
 	@ApiOperation(value = "Speichert die GemeindeStammdaten", response = JaxGemeindeStammdaten.class)
 	@Nullable
 	@PUT
+	@Path("/stammdaten")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGemeindeStammdaten saveGemeindeStammdaten(
@@ -229,10 +229,15 @@ public class GemeindeResource {
 		} else {
 			stammdaten = new GemeindeStammdaten();
 		}
+		if (stammdaten.isNew()) {
+			stammdaten.setGemeinde(new Gemeinde());
+			stammdaten.setAdresse(new Adresse());
+		}
 		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
 		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
 
 		return converter.gemeindeStammdatenToJAX(persistedStammdaten);
 
 	}
+
 }

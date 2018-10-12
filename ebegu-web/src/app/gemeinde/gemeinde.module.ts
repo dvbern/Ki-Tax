@@ -18,6 +18,7 @@
  */
 
 import {NgModule} from '@angular/core';
+import {MatCheckboxModule} from '@angular/material';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
@@ -28,6 +29,7 @@ import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module'
     imports: [
         SharedModule,
         GemeindeRoutingModule,
+        MatCheckboxModule,
     ],
     declarations: [
         GemeindeListComponent,

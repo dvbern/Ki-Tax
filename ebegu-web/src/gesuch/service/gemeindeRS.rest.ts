@@ -23,9 +23,11 @@ import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSBenutzer from '../../models/TSBenutzer';
+import TSBetreuung from '../../models/TSBetreuung';
+import TSBetreuungsmitteilung from '../../models/TSBetreuungsmitteilung';
+import TSDossier from '../../models/TSDossier';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
-import {TSTraegerschaft} from '../../models/TSTraegerschaft';
 import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -131,12 +133,13 @@ export default class GemeindeRS implements IEntityRS {
             .then(response => this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data));
     }
 
-    public saveGemeindeStammdaten(gemeindeStammdaten: TSGemeindeStammdaten): IPromise<TSGemeindeStammdaten> {
-        let restGemeindeStammdaten = {};
-        restGemeindeStammdaten = this.ebeguRestUtil.gemeindeStammdatenToRestObject(restGemeindeStammdaten, gemeindeStammdaten);
-        return this.$http.put(this.serviceURL, restGemeindeStammdaten).then(response => {
+    public saveGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): IPromise<TSGemeindeStammdaten> {
+        let restStammdaten = {};
+        restStammdaten = this.ebeguRestUtil.gemeindeStammdatenToRestObject(restStammdaten, stammdaten);
+        return this.$http.put(`${this.serviceURL}/stammdaten`, restStammdaten).then((response: any) => {
             this.$log.debug('PARSING GemeindeStammdaten REST object ', response.data);
             return this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data);
         });
     }
+
 }

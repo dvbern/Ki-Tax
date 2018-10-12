@@ -836,11 +836,13 @@ public class JaxBConverter extends AbstractConverter {
 	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde gemeindeJax, @Nonnull final Gemeinde gemeinde) {
 		requireNonNull(gemeinde);
 		requireNonNull(gemeindeJax);
+		requireNonNull(gemeindeJax.getBetreuungsgutscheineStartdatum());
 		convertAbstractFieldsToEntity(gemeindeJax, gemeinde);
 		gemeinde.setName(gemeindeJax.getName());
 		gemeinde.setStatus(gemeindeJax.getStatus());
 		gemeinde.setGemeindeNummer(gemeindeJax.getGemeindeNummer());
 		gemeinde.setBfsNummer(gemeindeJax.getBfsNummer());
+		gemeinde.setBetreuungsgutscheineStartdatum(gemeindeJax.getBetreuungsgutscheineStartdatum());
 		return gemeinde;
 	}
 
@@ -851,15 +853,18 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
 		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
 		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
+		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
 		return jaxGemeinde;
 	}
 
 	@Nonnull
 	public GemeindeStammdaten gemeindeStammdatenToEntity(@Nonnull final JaxGemeindeStammdaten jaxStammdaten, @Nonnull final GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
+		requireNonNull(stammdaten.getGemeinde());
 		requireNonNull(stammdaten.getAdresse());
 		requireNonNull(jaxStammdaten);
 		requireNonNull(jaxStammdaten.getGemeinde());
+		requireNonNull(jaxStammdaten.getAdresse());
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
@@ -877,21 +882,18 @@ public class JaxBConverter extends AbstractConverter {
 				stammdaten.setDefaultBenutzerTS(jaxBenutzerToBenutzer(jaxStammdaten.getDefaultBenutzerTS(), benTS.get()));
 			}
 		}
-		if (jaxStammdaten.getAdresse().getId() != null) {
-			adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
-		}
+
+		gemeindeToEntity(jaxStammdaten.getGemeinde(), stammdaten.getGemeinde());
+
+		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
+
 		if (jaxStammdaten.getBeschwerdeAdresse() != null && jaxStammdaten.getBeschwerdeAdresse().getId() != null) {
 			if (stammdaten.getBeschwerdeAdresse() == null) {
 				stammdaten.setBeschwerdeAdresse(new Adresse());
 			}
 			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
 		}
-		if (jaxStammdaten.getVerantwortlicher() != null) {
-			Optional<Benutzer> verantwortlicher = benutzerService.findBenutzer(jaxStammdaten.getVerantwortlicher().getUsername());
-			if (verantwortlicher.isPresent()) {
-				stammdaten.setVerantwortlicher(jaxBenutzerToBenutzer(jaxStammdaten.getVerantwortlicher(), verantwortlicher.get()));
-			}
-		}
+		stammdaten.setAnschrift(jaxStammdaten.getAnschrift());
 		stammdaten.setKeineBeschwerdeAdresse(jaxStammdaten.isKeineBeschwerdeAdresse());
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
@@ -941,25 +943,30 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
 		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
 		jaxStammdaten.setMail(stammdaten.getMail());
+		jaxStammdaten.setAnschrift(stammdaten.getAnschrift());
+		if (KorrespondenzSpracheTyp.DE.equals(stammdaten.getKorrespondenzsprache())) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(false);
+		} else if (KorrespondenzSpracheTyp.FR.equals(stammdaten.getKorrespondenzsprache())) {
+			jaxStammdaten.setKorrespondenzspracheDe(false);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		} else if (KorrespondenzSpracheTyp.DE_FR.equals(stammdaten.getKorrespondenzsprache())) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		}
 		if (!stammdaten.isNew()) {
-			jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
-			jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
-			jaxStammdaten.setVerantwortlicher(benutzerToJaxBenutzer(stammdaten.getVerantwortlicher()));
-			if (stammdaten.getBeschwerdeAdresse() != null)
+			if (stammdaten.getDefaultBenutzerBG() != null) {
+				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
+			}
+			if (stammdaten.getDefaultBenutzerTS() != null) {
+				jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
+			}
+			if (stammdaten.getBeschwerdeAdresse() != null) {
 				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+			}
 			jaxStammdaten.setKeineBeschwerdeAdresse(stammdaten.isKeineBeschwerdeAdresse());
 			jaxStammdaten.setTelefon(stammdaten.getTelefon());
 			jaxStammdaten.setWebseite(stammdaten.getWebseite());
-			if (KorrespondenzSpracheTyp.DE.equals(stammdaten.getKorrespondenzsprache())) {
-				jaxStammdaten.setKorrespondenzspracheDe(true);
-				jaxStammdaten.setKorrespondenzspracheFr(false);
-			} else if (KorrespondenzSpracheTyp.FR.equals(stammdaten.getKorrespondenzsprache())) {
-				jaxStammdaten.setKorrespondenzspracheDe(false);
-				jaxStammdaten.setKorrespondenzspracheFr(true);
-			} else if (KorrespondenzSpracheTyp.DE_FR.equals(stammdaten.getKorrespondenzsprache())) {
-				jaxStammdaten.setKorrespondenzspracheDe(true);
-				jaxStammdaten.setKorrespondenzspracheFr(true);
-			}
 		}
 		if (gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).isPresent()) {
 			Gesuchsperiode gsNow = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).get();

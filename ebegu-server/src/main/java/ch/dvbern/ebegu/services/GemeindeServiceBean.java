@@ -205,7 +205,15 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	public Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String gemeindeId) {
+	public Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String id) {
+		requireNonNull(id, "id muss gesetzt sein");
+		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, id);
+		return Optional.ofNullable(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(@Nonnull String gemeindeId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdaten> query = cb.createQuery(GemeindeStammdaten.class);
 		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);
@@ -220,13 +228,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS, SACHBEARBEITER_GEMEINDE })
 	public GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten) {
 		Objects.requireNonNull(stammdaten);
-		/*
-		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
-		Set<ConstraintViolation<GemeindeStammdaten>> violations = validator.validate(stammdaten, InstitutionsStammdatenInsertValidationGroup.class);
-		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(violations);
+		if (stammdaten.isNew()) {
+			initGemeindeNummerAndMandant(stammdaten.getGemeinde());
 		}
-		*/
 		return persistence.merge(stammdaten);
 	}
 

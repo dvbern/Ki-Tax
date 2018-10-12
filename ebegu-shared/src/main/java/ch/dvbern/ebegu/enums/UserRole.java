@@ -100,6 +100,13 @@ public enum UserRole {
 		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG);
 	}
 
+	/**
+	 * Returns only the roles of BG and Gemeinde
+	 */
+	public static List<UserRole> getBgAndGemeindeRoles() {
+		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
+	}
+
 	public static List<UserRole> getMandantRoles() {
 		return Arrays.asList(ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
 	}

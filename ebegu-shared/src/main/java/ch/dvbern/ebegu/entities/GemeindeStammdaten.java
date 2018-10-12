@@ -47,6 +47,13 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
 
+	/*
+	 * TODO:
+	 * Gemeinde Logo rein,
+	 * Anschrift (String) rein,
+	 * verantwortlicher entfernen (==defaultBenutzerBG),
+	 */
+
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzerbg_id"), nullable = true)
@@ -61,6 +68,10 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_gemeinde_id"), nullable = false)
 	private Gemeinde gemeinde;
+
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	private String anschrift;
 
 	@NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -84,7 +95,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{error_invalid_mobilenummer}")
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
 	private String telefon;
 
 	@Nullable
@@ -96,11 +107,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
-
-	@Nullable
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_verantwortlicher_id"))
-	private Benutzer verantwortlicher;
 
 
 	@Nullable
@@ -127,6 +133,15 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setGemeinde(Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	@Nullable
+	public String getAnschrift() {
+		return anschrift;
+	}
+
+	public void setAnschrift(@Nullable String anschrift) {
+		this.anschrift = anschrift;
 	}
 
 	public Adresse getAdresse() {
@@ -186,14 +201,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setKorrespondenzsprache(KorrespondenzSpracheTyp korrespondenzsprache) {
 		this.korrespondenzsprache = korrespondenzsprache;
-	}
-
-	public Benutzer getVerantwortlicher() {
-		return verantwortlicher;
-	}
-
-	public void setVerantwortlicher(Benutzer verantwortlicher) {
-		this.verantwortlicher = verantwortlicher;
 	}
 
 	@Override

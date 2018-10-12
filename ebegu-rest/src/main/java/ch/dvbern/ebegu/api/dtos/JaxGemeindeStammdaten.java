@@ -34,7 +34,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1893677808323618626L;
-	// TODO Gemeinde Logo
+	/*
+	 * TODO:
+	 * Gemeinde Logo rein,
+	 * Anschrift (String) rein,
+	 * verantwortlicher entfernen (==defaultBenutzerBG),
+	 */
 	@Nullable
 	private String      administratoren;
 	@Nullable
@@ -45,6 +50,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private JaxBenutzer defaultBenutzerTS;
 	@NotNull
 	private JaxGemeinde gemeinde;
+	@Nullable
+	private String      anschrift;
 	@NotNull
 	private JaxAdresse  adresse;
 	@Nullable
@@ -61,8 +68,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private boolean 	korrespondenzspracheDe;
 	@NotNull
 	private boolean 	korrespondenzspracheFr;
-	@Nullable
-	private JaxBenutzer verantwortlicher;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -112,6 +117,15 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setGemeinde(JaxGemeinde gemeinde) {
 		this.gemeinde = gemeinde;
+	}
+
+	@Nullable
+	public String getAnschrift() {
+		return anschrift;
+	}
+
+	public void setAnschrift(@Nullable String anschrift) {
+		this.anschrift = anschrift;
 	}
 
 	public JaxAdresse getAdresse() {
@@ -179,14 +193,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setKorrespondenzspracheFr(boolean korrespondenzspracheFr) {
 		this.korrespondenzspracheFr = korrespondenzspracheFr;
-	}
-
-	public JaxBenutzer getVerantwortlicher() {
-		return verantwortlicher;
-	}
-
-	public void setVerantwortlicher(JaxBenutzer verantwortlicher) {
-		this.verantwortlicher = verantwortlicher;
 	}
 
 	public boolean isKontingentierung() {
