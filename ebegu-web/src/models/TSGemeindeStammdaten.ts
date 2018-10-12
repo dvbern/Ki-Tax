@@ -37,6 +37,9 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public webseite: string;
     public korrespondenzspracheDe: boolean;
     public korrespondenzspracheFr: boolean;
+    public logoUrl: string;
+    public benutzerListeBG: TSBenutzer[];
+    public benutzerListeTS: TSBenutzer[];
     // ---------- Konfiguration ----------
     public kontingentierung: boolean;
     public beguBisUndMitSchulstufe: string;

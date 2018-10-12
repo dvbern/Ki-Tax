@@ -27,6 +27,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -39,6 +40,7 @@ import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.TEN_MEG;
 
 @Audited
 @Entity
@@ -46,13 +48,6 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
-
-	/*
-	 * TODO:
-	 * Gemeinde Logo rein,
-	 * Anschrift (String) rein,
-	 * verantwortlicher entfernen (==defaultBenutzerBG),
-	 */
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -107,6 +102,11 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
+
+	@Nullable
+	@Column(nullable = false, length = TEN_MEG) //10 megabytes
+	@Lob
+	private byte[] logoContent;
 
 
 	@Nullable
@@ -201,6 +201,15 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setKorrespondenzsprache(KorrespondenzSpracheTyp korrespondenzsprache) {
 		this.korrespondenzsprache = korrespondenzsprache;
+	}
+
+	@Nullable
+	public byte[] getLogoContent() {
+		return logoContent;
+	}
+
+	public void setLogoContent(@Nullable byte[] logoContent) {
+		this.logoContent = logoContent;
 	}
 
 	@Override

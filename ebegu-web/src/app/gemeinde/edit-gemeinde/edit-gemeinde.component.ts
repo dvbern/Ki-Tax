@@ -39,7 +39,6 @@ export class EditGemeindeComponent implements OnInit {
 
     public stammdaten: TSGemeindeStammdaten;
     public stammdaten$: Observable<TSGemeindeStammdaten>;
-    public verantwortlicheBgList: Array<TSBenutzer>;
     public beguStart: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
 
@@ -65,11 +64,7 @@ export class EditGemeindeComponent implements OnInit {
             this.stammdaten = resStamm;
             this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
 
-            this.benutzerRS.getBenutzerBgOrGemeinde().then(resBen => {
-                this.verantwortlicheBgList = resBen;
-                this.changeDetectorRef.markForCheck();
-            });
-
+            this.changeDetectorRef.markForCheck();
         });
     }
 

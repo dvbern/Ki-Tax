@@ -35,17 +35,13 @@
 
             <fieldset>
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-8">
                         <div class="form-group">
                             <h3 translate>ADMINISTRATOREN</h3>
                             <p>{{stammdaten.administratoren}}</p>
                             <h3 translate>SACHBEARBEITER</h3>
                             <p>{{stammdaten.sachbearbeiter}}</p>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
                         <div class="form-group">
                             <button type="button" class="dv-btn mitarbeiter-bearbeiten-button" (click)="mitarbeiterBearbeiten()"
                                     [textContent]="'BENUTZER_EDIT' | translate">
@@ -178,7 +174,7 @@
                             <h3 translate for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
                             <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG" id="verantwortliche_bg_id" name="verantwortliche_bg_id"
                                         class="form-control" [compareWith]="compareBenutzer">
-                                <mat-option *ngFor="let vbg of verantwortlicheBgList" [value]="vbg">
+                                <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
                                     {{vbg.vorname}} {{vbg.nachname}}
                                 </mat-option>
                             </mat-select>

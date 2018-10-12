@@ -756,6 +756,9 @@ export default class EbeguRestUtil {
             stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
             stammdatenTS.kontingentierung = stammdatenFromServer.kontingentierung;
             stammdatenTS.beguBisUndMitSchulstufe = stammdatenFromServer.beguBisUndMitSchulstufe;
+            stammdatenTS.logoUrl = stammdatenFromServer.logoUrl;
+            stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
+            stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
 
             return stammdatenTS;
         }

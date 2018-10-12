@@ -19,6 +19,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,12 +36,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1893677808323618626L;
-	/*
-	 * TODO:
-	 * Gemeinde Logo rein,
-	 * Anschrift (String) rein,
-	 * verantwortlicher entfernen (==defaultBenutzerBG),
-	 */
 	@Nullable
 	private String      administratoren;
 	@Nullable
@@ -68,6 +64,14 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private boolean 	korrespondenzspracheDe;
 	@NotNull
 	private boolean 	korrespondenzspracheFr;
+	/*
+	@Nullable
+	private String      logoUrl;
+	*/
+	@Nullable
+	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
+	@Nullable
+	private List<JaxBenutzer> benutzerListeTS; // Für die ComboBox Standardverantwortliche TS
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -212,4 +216,32 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.beguBisUndMitSchulstufe = beguBisUndMitSchulstufe;
 	}
 
+	@Nullable
+	public List<JaxBenutzer> getBenutzerListeBG() {
+		return benutzerListeBG;
+	}
+
+	public void setBenutzerListeBG(@Nullable List<JaxBenutzer> benutzerListeBG) {
+		this.benutzerListeBG = benutzerListeBG;
+	}
+
+	@Nullable
+	public List<JaxBenutzer> getBenutzerListeTS() {
+		return benutzerListeTS;
+	}
+
+	public void setBenutzerListeTS(@Nullable List<JaxBenutzer> benutzerListeTS) {
+		this.benutzerListeTS = benutzerListeTS;
+	}
+
+	/*
+	@Nullable
+	public String getLogoUrl() {
+		return logoUrl;
+	}
+
+	public void setLogoUrl(@Nullable String logoUrl) {
+		this.logoUrl = logoUrl;
+	}
+	*/
 }

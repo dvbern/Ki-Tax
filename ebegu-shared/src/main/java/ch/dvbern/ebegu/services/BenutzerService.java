@@ -135,6 +135,14 @@ public interface BenutzerService {
 	public Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde);
 
 	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_TS oder Admin_TS oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	public Collection<Benutzer> getBenutzerTsOrGemeinde(Gemeinde gemeinde);
+
+	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
 	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
 	 *

@@ -99,6 +99,7 @@ import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getJugendamtRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getSchulamtRoles;
+import static ch.dvbern.ebegu.enums.UserRole.getTsAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
@@ -345,6 +346,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@PermitAll
 	public Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(getBgAndGemeindeRoles(), gemeinde);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
+	public Collection<Benutzer> getBenutzerTsOrGemeinde(Gemeinde gemeinde) {
+		return getBenutzersOfRoles(getTsAndGemeindeRoles(), gemeinde);
 	}
 
 	@Nonnull

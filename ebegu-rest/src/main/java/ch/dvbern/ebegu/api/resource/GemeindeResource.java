@@ -230,7 +230,6 @@ public class GemeindeResource {
 			stammdaten = new GemeindeStammdaten();
 		}
 		if (stammdaten.isNew()) {
-			stammdaten.setGemeinde(new Gemeinde());
 			stammdaten.setAdresse(new Adresse());
 		}
 		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
