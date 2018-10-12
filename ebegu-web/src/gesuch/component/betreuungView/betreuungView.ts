@@ -572,7 +572,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
             } else {
                 this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-                    deleteText: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                    title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                    deleteText: 'Möchten Sie die Betreuung trotzdem speichern?',
                     cancelText: 'LABEL_ABBRECHEN',
                     confirmText: 'LABEL_SPEICHERN',
                 })
