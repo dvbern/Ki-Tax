@@ -13,14 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
 
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {InstitutionRS} from '../app/core/service/institutionRS.rest';
 import {adminRun} from './admin.route';
 import {AdminViewComponentConfig} from './component/adminView/adminView';
-import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
 import {BenutzerListViewComponentConfig} from './component/benutzerListView/benutzerListView';
 import {FerieninselViewComponentConfig} from './component/ferieninselView/ferieninselView';
 import {GesuchsperiodeViewComponentConfig} from './component/gesuchsperiodeView/gesuchsperiodeView';
@@ -28,8 +26,6 @@ import {InstitutionenListViewComponentConfig} from './component/institutionenLis
 import {InstitutionStammdatenViewComponentConfig} from './component/institutionStammdatenView/institutionStammdatenView';
 import {InstitutionViewComponentConfig} from './component/institutionView/institutionView';
 import {ParameterViewComponentConfig} from './component/parameterView/parameterView';
-import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
-import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
 import {EinstellungRS} from './service/einstellungRS.rest';
@@ -53,9 +49,6 @@ export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.
     .component('dvGesuchsperiodeView', new GesuchsperiodeViewComponentConfig())
     .component('dvFerieninselView', new FerieninselViewComponentConfig())
     .component('benutzerListView', new BenutzerListViewComponentConfig())
-    .directive('dvTraegerschaftView', downgradeComponent({component: TraegerschaftViewComponent}))
-    .directive('dvTestdatenView', downgradeComponent({component: TestdatenViewComponent}))
-    .directive('dvBatchjobTriggerView', downgradeComponent({component: BatchjobTriggerViewComponent}))
     .run(adminRun);
 
 export default ADMIN_JS_MODULE;
