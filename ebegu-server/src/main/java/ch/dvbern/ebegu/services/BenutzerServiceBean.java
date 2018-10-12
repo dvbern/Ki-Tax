@@ -343,6 +343,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	@PermitAll
+	public Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde) {
+		return getBenutzersOfRoles(getBgAndGemeindeRoles(), gemeinde);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
 	public Collection<Benutzer> getBenutzerBgOrGemeinde() {
 		return getBenutzersOfRoles(getBgAndGemeindeRoles());
 	}
@@ -361,12 +368,46 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return getBenutzersOfRoles(getSchulamtRoles());
 	}
 
+	/**
+	 * Gibt alle existierenden Benutzer mit den geünschten Rollen zurueck.
+	 * ¡Diese Methode filtert die Gemeinde über den angemeldeten Benutzer!
+	 * @param roles Die besagten Rollen
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
 	private Collection<Benutzer> getBenutzersOfRoles(List<UserRole> roles) {
-		return getBenutzersOfRoles(roles, null);
-	}
+		Benutzer currentBenutzer = getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getBenutzersOfRole", "Non logged in user should never reach this"));
 
+		List<Predicate> predicates = new ArrayList<>();
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
+		SetJoin<Berechtigung, Gemeinde> joinGemeinde = joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.LEFT);
+		query.select(root);
+
+		predicates.add(cb.between(
+			cb.literal(LocalDate.now()),
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
+		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(roles));
+
+		setGemeindeFilterForCurrentUser(currentBenutzer, joinGemeinde, predicates);
+
+		query.where(predicates.toArray(NEW));
+		query.distinct(true);
+
+		return persistence.getCriteriaResults(query);	}
+
+	/**
+	 * Gibt alle existierenden Benutzer mit den geünschten Rollen zurueck.
+	 * ¡Diese Methode filtert die Gemeinde über den Gemeinde-Parameter!
+	 * @param roles Das Rollen Filter
+	 * @param gemeinde Das Gemeinde Filter
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Gemeinde gemeinde) {
-
 		Benutzer currentBenutzer = getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getBenutzersOfRole", "Non logged in user should never reach this"));
 
@@ -381,15 +422,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		query.select(root);
 
-		/*
 		predicates.add(cb.between(
 			cb.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
-		*/
 		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(roles));
-
-		//predicates.add(joinBerechtigungenGemeinde.get(Gemeinde_.id).in(gemeinde.getId()));
+		predicates.add(cb.equal(joinBerechtigungenGemeinde.get(Gemeinde_.id), gemeinde.getId()));
 
 		query.where(predicates.toArray(NEW));
 		query.distinct(true);
