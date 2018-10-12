@@ -16,7 +16,6 @@
  */
 
 import {TSRole} from '../../models/enums/TSRole';
-import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {Permission} from './Permission';
 
 export const PERMISSIONS: { [k in Permission]: TSRole[] } = {
@@ -61,6 +60,4 @@ export const PERMISSIONS: { [k in Permission]: TSRole[] } = {
         TSRole.ADMIN_MANDANT,
         TSRole.SACHBEARBEITER_MANDANT,
     ],
-    // Da ein Mitarbeiter mit irgend einer Rolle angelegt werden kann, müssen wir alle Rollen erlauben
-    [Permission.EINLADUNG_AKZEPTIEREN]: TSRoleUtil.getAllRolesButAnonymous(),
 };
