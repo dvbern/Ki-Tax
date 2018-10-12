@@ -15,20 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
     selector: 'dv-login-info',
     templateUrl: './login-info.component.html',
-    styleUrls: ['./login-info.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginInfoComponent implements OnInit {
-
-    constructor() {
-    }
-
-    ngOnInit() {
-    }
+export class LoginInfoComponent {
 
 }

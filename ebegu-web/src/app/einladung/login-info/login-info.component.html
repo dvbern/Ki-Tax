@@ -15,6 +15,35 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<p>
-    login-info works!
-</p>
+<dv-full-height-container>
+    <div class="dv-content">
+        <div class="row viewTitle">
+            <div class="col-md-12">
+                <h2 translate>ONBOARDING_BG_LOGIN_REQUIRED</h2>
+                <hr class="header">
+            </div>
+        </div>
+
+        <p class="marginBottom50" translate>ONBOARDING_BE_LOGIN_DESCRIPTION</p>
+
+        <div class="row">
+            <div class="col-md-5">
+                <!-- Note: we navigate to the desired target state. The authentication hooks will automatically redirect to the login page -->
+                <button class="dv-btn"
+                        uiSref="onboarding.gesuchsteller.registration"
+                        [uiParams]="{gemeindeId: gemeindeId}">
+                    {{'ONBOARDING_BE_LOGIN_ANMELDEN' | translate}}
+                    <i class="fa fa-external-link"></i>
+                </button>
+            </div>
+            <div class="col-md-5 col-md-offset-2">
+                <button class="dv-btn"
+                        uiSref="onboarding.gesuchsteller.registration"
+                        [uiParams]="{gemeindeId: gemeindeId}">
+                    {{'ONBOARDING_BE_LOGIN_REGISTRIEREN' | translate}}
+                    <i class="fa fa-external-link"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</dv-full-height-container>
