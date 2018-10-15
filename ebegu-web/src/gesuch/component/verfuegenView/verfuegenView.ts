@@ -137,10 +137,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.setBemerkungen();
             });
         }
-        if (!this.berechnungsManager.finanzielleSituationResultate
-            || angular.equals(this.berechnungsManager.finanzielleSituationResultate, {})) {
-            this.berechnungsManager.calculateFinanzielleSituation(gesuch);
-        }
         const info = gesuch.extractEinkommensverschlechterungInfo();
         if (info && info.ekvFuerBasisJahrPlus1
             && (
