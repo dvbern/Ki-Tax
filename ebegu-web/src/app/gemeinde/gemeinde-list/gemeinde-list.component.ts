@@ -33,6 +33,7 @@ import {map, takeUntil} from 'rxjs/operators';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import TSGemeinde from '../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -104,17 +105,29 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         );
     }
 
-    public editGemeinde(selected: TSGemeinde): void {
+    public openGemeinde(selected: TSGemeinde): void {
         this.gemeinde = angular.copy(selected);
-        this.$state.go('gemeinde.edit', {gemeindeId: this.gemeinde.id});
+        if (this.gemeinde.status === TSGemeindeStatus.EINGELADEN) {
+            this.$state.go('gemeinde.edit', {gemeindeId: this.gemeinde.id});
+        } else {
+            this.$state.go('gemeinde.view', {gemeindeId: this.gemeinde.id});
+        }
     }
 
     public addGemeinde(): void {
         this.$state.go('gemeinde.add');
     }
 
-    public isAccessible(): boolean {
+    public hatBerechtigungHinzufuegen(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    }
+
+    public hatBerechtigungBearbeiten(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
+    }
+
+    public hatBerechtigungAnsehen(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorMandantRevisorRole());
     }
 
     public showNoContentMessage(): boolean {

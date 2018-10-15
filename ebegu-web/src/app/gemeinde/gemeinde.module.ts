@@ -24,6 +24,7 @@ import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
+import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
 
 @NgModule({
     imports: [
@@ -35,11 +36,13 @@ import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module'
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
+        ViewGemeindeComponent,
     ],
     entryComponents: [
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
+        ViewGemeindeComponent,
     ],
     providers: [],
 })

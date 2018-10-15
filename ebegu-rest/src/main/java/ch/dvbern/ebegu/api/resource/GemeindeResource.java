@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
@@ -203,12 +204,18 @@ public class GemeindeResource {
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
 		Optional<Gemeinde> gemeinde = gemeindeService.findGemeinde(gemeindeId);
 		stammdaten.setGemeinde(gemeinde.orElse(new Gemeinde()));
-		stammdaten.setAdresse(new Adresse());
-		stammdaten.getAdresse().setStrasse("");
-		stammdaten.getAdresse().setPlz("");
-		stammdaten.getAdresse().setOrt("");
+		stammdaten.setAdresse(getInitAdresse());
+		stammdaten.setBeschwerdeAdresse(getInitAdresse());
 		stammdaten.setMail("");
 		return Optional.of(stammdaten);
+	}
+
+	private Adresse getInitAdresse() {
+		Adresse a = new Adresse();
+		a.setStrasse("");
+		a.setPlz("");
+		a.setOrt("");
+		return a;
 	}
 
 	@ApiOperation(value = "Speichert die GemeindeStammdaten", response = JaxGemeindeStammdaten.class)
@@ -233,6 +240,12 @@ public class GemeindeResource {
 			stammdaten.setAdresse(new Adresse());
 		}
 		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
+
+		// Statuswechsel
+		if (stammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
+			stammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
+		}
+
 		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
 
 		return converter.gemeindeStammdatenToJAX(persistedStammdaten);

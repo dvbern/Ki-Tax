@@ -35,7 +35,7 @@
                         {{'GEMEINDE' | translate}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let gemeinde"
-                              (click)="editGemeinde(gemeinde)">
+                              (click)="openGemeinde(gemeinde)">
                         {{gemeinde.name}}
                     </mat-cell>
                 </ng-container>
@@ -46,7 +46,7 @@
                         {{'STATUS' | translate}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let gemeinde"
-                              (click)="editGemeinde(gemeinde)">
+                              (click)="openGemeinde(gemeinde)">
                         {{'GEMEINDE_STATUS_' + gemeinde.status | translate}}
                     </mat-cell>
                 </ng-container>
@@ -60,7 +60,7 @@
             </div>
         </div>
 
-        <div *ngIf="isAccessible()"
+        <div *ngIf="hatBerechtigungHinzufuegen()"
              class="marginTop50 row">
             <div class="col-md-3">
                 <!--Knopf unterhalb der Tabelle zum hinzufügen einer neuen Gemeinde-->

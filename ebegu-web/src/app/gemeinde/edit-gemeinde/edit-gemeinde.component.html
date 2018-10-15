@@ -17,25 +17,26 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<dv-full-height-container>
-    <form role="form"
-          #form="ngForm"
-          [ngClass]="{'ng-submitted': form.submitted}"
-          *ngIf="stammdaten"
-          (ngSubmit)="persistGemeindeStammdaten()"
-          novalidate>
+<form role="form"
+      #form="ngForm"
+      [ngClass]="{'ng-submitted': form.submitted}"
+      *ngIf="stammdaten"
+      (ngSubmit)="persistGemeindeStammdaten()"
+      novalidate>
 
-        <div class="dv-content">
+    <div class="row marginTop20 marginBottom10">
+        <div class="col-md-8 col-md-offset-2 ">
 
             <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
             <div class="viewTitle">
                 <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer} }}</h2>
+                <pre>{{fromState.params | json}}</pre>
                 <hr class="header">
             </div>
 
             <fieldset>
                 <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>ADMINISTRATOREN</h3>
                             <p>{{stammdaten.administratoren}}</p>
@@ -48,9 +49,24 @@
                             </button>
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="marginBottom10">
+                                <img [src]="previewImageURL" [height]="180" class="klub-logo-dialog-image">
+                            </div>
+                            <div>
+                                <input #fileInput type="file" accept='image/*' (change)="handleInput(fileInput.files)"
+                                       class="klub-logo-dialog-fileinput">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </fieldset>
+        </div>
+    </div>
 
+    <dv-full-height-container>
+        <div class="dv-content">
             <fieldset>
                 <div class="viewTitle">
                     <h3 translate>GEMEINDE_STAMMDATEN</h3>
@@ -62,7 +78,7 @@
                         <div class="form-group">
                             <label translate for="anschrift_id">ADRESSE_ANSCHRIFT</label>
                             <input id="anschrift_id" type="text" name="anschrift_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.adresse.zusatzzeile"
+                                   [(ngModel)]="stammdaten.adresse.organisation"
                                    [maxlength]="255" class="form-control" required placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ..." >
                             <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors" inputId="anschrift_id"></dv-error-messages>
                         </div>
@@ -167,6 +183,62 @@
                         </div>
                     </div>
                 </div>
+                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                    <!-- Beschwerde-Adresse -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="anschrift_ba_id">ADRESSE_ANSCHRIFT</label>
+                            <input id="anschrift_ba_id" type="text" name="anschrift_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
+                                   [maxlength]="255" class="form-control" required placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ..." >
+                            <dv-error-messages [errorObject]="form.controls.anschrift_ba_id?.errors" inputId="anschrift_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                    <!-- Strasse -->
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label translate for="strasse_ba_id">ADRESSE_STRASSE</label>
+                            <input id="strasse_ba_id" type="text" name="strasse_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.strasse_ba_id?.errors" inputId="strasse_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Hausnummer -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label translate for="hausnummer_ba_id">ADRESSE_NUMMER</label>
+                            <input id="hausnummer_ba_id" type="text" name="hausnummer_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.hausnummer_ba_id?.errors" inputId="hausnummer_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                    <!-- PLZ -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label translate for="plz_ba_id">ADRESSE_PLZ</label>
+                            <input id="plz_ba_id" type="text" name="plz_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.plz"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.plz_ba_id?.errors" inputId="plz_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Ort -->
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label translate for="ort_ba_id">ADRESSE_ORT</label>
+                            <input id="ort_ba_id" type="text" name="ort_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.ort"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.ort_ba_id?.errors" inputId="ort_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <!-- Standardverantwortliche BG -->
                     <div class="col-sm-6">
@@ -197,7 +269,7 @@
                     <!-- Betreuungsgutscheine anbieten ab -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <h3 translate for="begu_start_id">BEGU_START</h3>
+                            <h3 translate>BEGU_START</h3>
                             <p>{{beguStart}}</p>
                         </div>
                     </div>
@@ -232,15 +304,18 @@
         </div>
 
         <!-- Buttons -->
-        <div class="dv-footer">
-            <dv-loading-button [type]="'submit'">
-                <span translate>GEMEINDE_SPEICHERN</span>
-            </dv-loading-button>
+        <div class="row">
+            <div class="dv-footer">
+                <dv-loading-button [type]="'submit'">
+                    <span translate>GEMEINDE_SPEICHERN</span>
+                </dv-loading-button>
 
-            <button type="button" class="dv-btn cancel-button"
-                    (click)="cancel()"
-                    [textContent]="'CANCEL' | translate">
-            </button>
+                <button type="button" class="dv-btn cancel-button"
+                        (click)="cancel()"
+                        [textContent]="'CANCEL' | translate">
+                </button>
+            </div>
         </div>
-    </form>
-</dv-full-height-container>
+    </dv-full-height-container>
+</form>
+

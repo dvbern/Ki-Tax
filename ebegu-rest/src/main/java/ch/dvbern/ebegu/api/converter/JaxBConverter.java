@@ -889,7 +889,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
 
-		if (jaxStammdaten.getBeschwerdeAdresse() != null && jaxStammdaten.getBeschwerdeAdresse().getId() != null) {
+		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
 			if (stammdaten.getBeschwerdeAdresse() == null) {
 				stammdaten.setBeschwerdeAdresse(new Adresse());
 			}

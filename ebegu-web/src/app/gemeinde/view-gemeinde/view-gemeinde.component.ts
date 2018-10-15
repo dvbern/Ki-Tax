@@ -19,43 +19,40 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
 
 @Component({
-    selector: 'dv-edit-gemeinde',
-    templateUrl: './edit-gemeinde.component.html',
+    selector: 'dv-view-gemeinde',
+    templateUrl: './view-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditGemeindeComponent implements OnInit {
-
+export class ViewGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
     public stammdaten: TSGemeindeStammdaten;
     public stammdaten$: Observable<TSGemeindeStammdaten>;
+    public korrespondenzsprache: string;
+    public kontinggentierung: string;
     public beguStart: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
-    public previewImageURL: string = '#';
     private fileToUpload!: File;
-    private fromState: StateDeclaration;
+    public previewImageURL: string = '#';
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
+        private readonly translate: TranslateService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly transition: Transition,
     ) {
-        this.fromState = this.transition.from();
     }
 
     public ngOnInit(): void {
@@ -63,19 +60,14 @@ export class EditGemeindeComponent implements OnInit {
         if (!gemeindeId) {
             return;
         }
-        this.einschulungTypValues = getTSEinschulungTypValues();
         this.previewImageURL = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
+        this.einschulungTypValues = getTSEinschulungTypValues();
 
         this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
             // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
             this.stammdaten = resStamm;
-            if (this.stammdaten.adresse === undefined) {
-                this.stammdaten.adresse = new TSAdresse();
-            }
-            if (this.stammdaten.beschwerdeAdresse === undefined) {
-                this.stammdaten.beschwerdeAdresse = new TSAdresse();
-            }
-            this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
+
+            this.initStrings();
 
             this.changeDetectorRef.markForCheck();
         });
@@ -100,11 +92,42 @@ export class EditGemeindeComponent implements OnInit {
         // TODO: Implement Mitarbeiter Bearbeiten Button Action
     }
 
+    public editGemeindeStammdaten(): void {
+        this.$state.go('gemeinde.edit', {gemeindeId: this.stammdaten.gemeinde.id});
+    }
+
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
+    public handleInput(files: FileList): void {
+        this.fileToUpload = files[0];
+        const tmpFileReader = new FileReader();
+        tmpFileReader.onload = (e: any): void => {
+            this.previewImageURL = e.target.result;
+        };
+        tmpFileReader.readAsDataURL(this.fileToUpload);
+    }
+
+    private initStrings(): void {
+        this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
+        this.kontinggentierung = 'Keine ' + this.translate.instant('KONTINGENTIERUNG');
+        if (this.stammdaten.kontingentierung) {
+            this.kontinggentierung = this.translate.instant('KONTINGENTIERUNG');
+        }
+        if (this.stammdaten.korrespondenzspracheDe) {
+            this.korrespondenzsprache = this.translate.instant('DEUTSCH');
+        }
+        if (!this.stammdaten.korrespondenzspracheFr) {
+            return;
+        }
+        if (this.korrespondenzsprache.length > 0) {
+            this.korrespondenzsprache += ', ';
+        }
+        this.korrespondenzsprache += this.translate.instant('FRANZOESISCH');
+    }
+
     private navigateBack(): void {
-        this.$state.go(this.fromState, {gemeindeId: this.stammdaten.gemeinde.id});
+        this.$state.go('gemeinde.list');
     }
 }

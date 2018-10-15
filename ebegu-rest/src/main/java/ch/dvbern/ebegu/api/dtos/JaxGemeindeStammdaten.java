@@ -64,10 +64,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private boolean 	korrespondenzspracheDe;
 	@NotNull
 	private boolean 	korrespondenzspracheFr;
-	/*
 	@Nullable
 	private String      logoUrl;
-	*/
 	@Nullable
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
@@ -234,7 +232,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.benutzerListeTS = benutzerListeTS;
 	}
 
-	/*
 	@Nullable
 	public String getLogoUrl() {
 		return logoUrl;
@@ -243,5 +240,4 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	public void setLogoUrl(@Nullable String logoUrl) {
 		this.logoUrl = logoUrl;
 	}
-	*/
 }
