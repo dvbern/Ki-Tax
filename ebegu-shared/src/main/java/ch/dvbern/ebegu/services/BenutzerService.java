@@ -88,6 +88,9 @@ public interface BenutzerService {
 	@Nonnull
 	Optional<Benutzer> findBenutzer(@Nonnull String username);
 
+	@Nonnull
+	Optional<Benutzer> findBenutzerById(@Nonnull String id);
+
 	/**
 	 * @param email E-Mail Adresse des Benutzers
 	 * @return Benutzer mit der gegebenen E-Mail Adresse oder null falls nicht vorhanden

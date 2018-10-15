@@ -16,6 +16,14 @@
  */
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {Transition} from '@uirouter/core';
+import {map, take} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {ignoreNullAndUndefined} from '../../../utils/rxjs-operators';
+import {LogFactory} from '../../core/logging/LogFactory';
+import {getEntityTargetState} from '../einladung-routing/einladung-helpers';
+
+const LOG = LogFactory.createLog('EinladungAbschliessenComponent');
 
 @Component({
     selector: 'dv-einladung-abschliessen',
@@ -25,4 +33,26 @@ import {ChangeDetectionStrategy, Component} from '@angular/core';
 })
 export class EinladungAbschliessenComponent {
 
+    public constructor(
+        private readonly transition: Transition,
+        private readonly authService: AuthServiceRS,
+    ) {
+    }
+
+    public next(): void {
+        this.authService.principal$
+            .pipe(
+                ignoreNullAndUndefined(),
+                take(1),
+                map(principal => {
+                        // we are logged: redirect to the new entity
+                        return getEntityTargetState(this.transition, principal);
+                    },
+                ),
+            )
+            .subscribe(
+                target => this.transition.router.stateService.go(target.state(), target.params(), target.options()),
+                err => LOG.error(err),
+            );
+    }
 }

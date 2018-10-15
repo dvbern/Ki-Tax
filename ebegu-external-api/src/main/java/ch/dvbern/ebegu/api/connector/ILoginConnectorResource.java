@@ -16,10 +16,14 @@
 package ch.dvbern.ebegu.api.connector;
 
 import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -54,6 +58,21 @@ public interface ILoginConnectorResource {
 	JaxExternalBenutzer updateOrStoreUserFromIAM(
 		@Nonnull JaxExternalBenutzer benutzer
 	);
+
+	/**
+	 * Service to update a Benutzer from an external login module
+	 *
+	 * @param benutzer User to update/store
+	 * @return stored object
+	 */
+	@PUT
+	@Path("/benutzer/{userId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Nonnull
+	JaxExternalBenutzer updateUserFromIAM(
+		@Nonnull @NotNull @PathParam("userId") String userId,
+		@Nonnull @NotNull @Valid JaxExternalBenutzer benutzer);
 
 	/**
 	 * @return the first and only Mandant that currently exists

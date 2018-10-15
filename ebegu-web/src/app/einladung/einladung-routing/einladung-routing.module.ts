@@ -16,60 +16,15 @@
  */
 
 import {NgModule} from '@angular/core';
-import {Ng2StateDeclaration, RedirectToResult, TargetState, Transition} from '@uirouter/angular';
+import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {map, take} from 'rxjs/operators';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSEinladungTyp} from '../../../models/enums/TSEinladungTyp';
 import {TSRole} from '../../../models/enums/TSRole';
-import TSBenutzer from '../../../models/TSBenutzer';
-import {getRoleBasedTargetState} from '../../../utils/AuthenticationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {EinladungAbschliessenComponent} from '../einladung-abschliessen/einladung-abschliessen.component';
 import {EinladungErrorComponent} from '../einladung-error/einladung-error.component';
 import {LoginInfoComponent} from '../login-info/login-info.component';
-
-function getEntityTargetState(transition: Transition, principal: TSBenutzer): TargetState {
-    const stateService = transition.router.stateService;
-
-    const params = transition.params();
-    const entityId: string = params.entityid;
-    const typ: TSEinladungTyp = params.typ;
-
-    switch (typ) {
-        case TSEinladungTyp.MITARBEITER:
-            return getRoleBasedTargetState(principal.getCurrentRole(), stateService);
-        case TSEinladungTyp.GEMEINDE:
-            return stateService.target('gemeinde.list');
-        case TSEinladungTyp.TRAEGERSCHAFT:
-            return stateService.target('admin.traegerschaft');
-        case TSEinladungTyp.INSTITUTION:
-            return stateService.target('admin.institution', {institutionId: entityId});
-        default:
-            throw new Error(`unrecognised EinladungTyp ${typ}`);
-    }
-}
-
-function handleLoggedInUser(transition: Transition): Promise<RedirectToResult> {
-    const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
-    const stateService = transition.router.stateService;
-
-    return authService.principal$
-        .pipe(
-            take(1),
-            map(principal => {
-                    if (!principal) {
-                        return stateService.target('einladung.logininfo', transition.params(), transition.options());
-                    }
-
-                    // we are logged: redirect to the new entity
-                    return getEntityTargetState(transition, principal);
-                },
-            ),
-        )
-        .toPromise();
-}
+import {handleLoggedInUser} from './einladung-helpers';
 
 const states: Ng2StateDeclaration[] = [
     {

@@ -15,23 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {Transition} from '@uirouter/core';
+package ch.dvbern.ebegu.errors;
 
-@Component({
-    selector: 'dv-login-info',
-    templateUrl: './login-info.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class LoginInfoComponent {
+import javax.annotation.Nonnull;
 
-    public constructor(public transition: Transition) {
-    }
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 
-    public goToLoginWithReturnToState(): void {
-        const params = this.transition.params();
-        const options = this.transition.options();
+public class LoginException extends EbeguRuntimeException {
 
-        this.transition.router.stateService.go('einladung.abschliessen', params, options);
-    }
+	private static final long serialVersionUID = 6434204197010381768L;
+
+	// TODO does not get mapped from FedletServlet (results in an "500 internal error")
+	public LoginException(
+		@Nonnull ErrorCodeEnum errorCodeEnum,
+		@Nonnull String persistedEmail,
+		@Nonnull String externalEmail) {
+		super(null, errorCodeEnum, persistedEmail, externalEmail);
+	}
 }

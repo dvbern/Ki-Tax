@@ -40,12 +40,15 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.LoginException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.MandantService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service provided by KI-TAX to allow an external login module to create users and logins
@@ -116,18 +119,16 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		checkLocalAccessOnly();
 
 		Benutzer user = new Benutzer();
-		user.setUsername(benutzer.getUsername());
-		user.setExternalUUID(benutzer.getExternalUUID());
-		user.setEmail(benutzer.getEmail());
-		user.setNachname(benutzer.getNachname());
-		user.setVorname(benutzer.getVorname());
+		toBenutzer(benutzer, user);
 
 		String unusedAttr = StringUtils.join(benutzer.getCommonName(), benutzer.getTelephoneNumber(),
 			benutzer.getMobile(), benutzer.getPreferredLang(), benutzer.getPostalCode(), benutzer.getState(),
 			benutzer.getStreet(), benutzer.getPostalCode(), benutzer.getCountryCode(), benutzer.getCountry(),
 			benutzer.getCountry(), ',');
 
-		LOG.info("The following attributes are received from the ExternalLoginModule but not yet stored {}", unusedAttr);
+		LOG.info(
+			"The following attributes are received from the ExternalLoginModule but not yet stored {}",
+			unusedAttr);
 
 		Mandant mandant = this.mandantService.findMandant(benutzer.getMandantId())
 			.orElseThrow(() -> {
@@ -137,10 +138,50 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		user.setMandant(mandant);
 
 		Benutzer storedUser = benutzerService.updateOrStoreUserFromIAM(user);
+
 		return convertBenutzerToJax(storedUser);
 	}
 
-	private JaxExternalBenutzer convertBenutzerToJax(Benutzer storedUser) {
+	private void toBenutzer(@Nonnull JaxExternalBenutzer jaxExternalBenutzer, @Nonnull Benutzer benutzer) {
+		benutzer.setUsername(jaxExternalBenutzer.getUsername());
+		benutzer.setExternalUUID(jaxExternalBenutzer.getExternalUUID());
+		benutzer.setEmail(jaxExternalBenutzer.getEmail());
+		benutzer.setNachname(jaxExternalBenutzer.getNachname());
+		benutzer.setVorname(jaxExternalBenutzer.getVorname());
+	}
+
+	@Nonnull
+	@Override
+	public JaxExternalBenutzer updateUserFromIAM(@Nonnull String userId, @Nonnull JaxExternalBenutzer benutzer) {
+		requireNonNull(userId);
+		requireNonNull(benutzer);
+		checkLocalAccessOnly();
+
+		Benutzer existingBenutzer = benutzerService.findBenutzerById(userId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"Benutzer not found",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+		String persistedEmail = existingBenutzer.getEmail();
+		String externalEmail = benutzer.getEmail();
+
+		if (!persistedEmail.equals(externalEmail)) {
+			throw new LoginException(ErrorCodeEnum.ERROR_EMAIL_MISMATCH, persistedEmail, externalEmail);
+		}
+
+		toBenutzer(benutzer, existingBenutzer);
+
+		if (existingBenutzer.getStatus() == BenutzerStatus.EINGELADEN) {
+			existingBenutzer.setStatus(BenutzerStatus.AKTIV);
+		}
+
+		Benutzer updatedBenutzer = benutzerService.updateOrStoreUserFromIAM(existingBenutzer);
+
+		return convertBenutzerToJax(updatedBenutzer);
+	}
+
+	@Nonnull
+	private JaxExternalBenutzer convertBenutzerToJax(@Nonnull Benutzer storedUser) {
 		JaxExternalBenutzer jaxExternalBenutzer = new JaxExternalBenutzer();
 		jaxExternalBenutzer.setUsername(storedUser.getUsername());
 		jaxExternalBenutzer.setExternalUUID(storedUser.getExternalUUID());
@@ -174,13 +215,12 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Override
 	public JaxExternalAuthAccessElement createLoginFromIAM(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser) {
-		Objects.requireNonNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
+		requireNonNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
 
 		LOG.debug("ExternalLogin System is creating Authorization for user {}", jaxExtAuthUser.getUsername());
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 
 		checkLocalAccessOnly();
-
 
 		AuthorisierterBenutzer authUser = convertExternalLogin(jaxExtAuthUser);
 		AuthAccessElement loginDataForCookie = this.authService.createLoginFromIAM(authUser);
@@ -188,8 +228,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Nonnull
-	private JaxExternalAuthAccessElement convertToJaxExternalAuthAccessElement(@Nonnull AuthAccessElement loginDataForCookie) {
-		Objects.requireNonNull(loginDataForCookie, "login data to convert may not be null");
+	private JaxExternalAuthAccessElement convertToJaxExternalAuthAccessElement(
+		@Nonnull AuthAccessElement loginDataForCookie) {
+		requireNonNull(loginDataForCookie, "login data to convert may not be null");
 		return new JaxExternalAuthAccessElement(
 			loginDataForCookie.getAuthId(),
 			loginDataForCookie.getAuthToken(),
@@ -209,7 +250,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (!this.configuration.isRemoteLoginConnectorAllowed()) {
 			boolean isLocallyAccessed = this.localhostChecker.isAddressLocalhost(request.getRemoteAddr());
 			if (!isLocallyAccessed) {
-				throw new EJBAccessException("This Service may only be called from localhost but was accessed from  " + request.getRemoteAddr());
+				throw new EJBAccessException("This Service may only be called from localhost but was accessed from  "
+					+ request.getRemoteAddr());
 			}
 		}
 	}
