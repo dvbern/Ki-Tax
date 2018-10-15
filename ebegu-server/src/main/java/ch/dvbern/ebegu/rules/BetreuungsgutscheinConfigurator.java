@@ -194,6 +194,10 @@ public class BetreuungsgutscheinConfigurator {
 		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe);
 		rules.add(schulstufeCalcRule);
 
+		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
+		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit);
+		rules.add(kesbPlatzierungCalcRule);
+
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit);
 		rules.add(restanspruchLimitCalcRule);
