@@ -438,8 +438,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'CONFIRM_UEBERNAHME_SCHULAMT',
             deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
-            parentController: undefined,
-            elementID: undefined,
         }).then(() => {
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
@@ -570,10 +568,26 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public platzAnfordern(): void {
         if (this.isGesuchValid() && this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = false;
-            this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            if (this.getBetreuungModel().keineKesbPlatzierung) {
+                this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            } else {
+                this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                    title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                    deleteText: 'Möchten Sie die Betreuung trotzdem speichern?',
+                    cancelText: 'LABEL_ABBRECHEN',
+                    confirmText: 'LABEL_SPEICHERN',
+                })
+                    .then(() => {   // User confirmed removal
+
+                        this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+
+                    });
+            }
+
         } else if (!this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = true;
         }
+
     }
 
     public platzBestaetigen(): void {
