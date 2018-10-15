@@ -228,7 +228,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					if (gesuchsteller.isPresent() && emailAddress.isPresent()) {
 						String adr = emailAddress.get();
 						String message = mailTemplateConfig
-							.getInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuchsteller.get(), adr);
+							.getInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuchsteller.get(), adr, gesuch);
 						sendMessageWithTemplate(message, adr);
 						LOG.debug("Email fuer InfoFreischaltungGesuchsperiode wurde versendet an {}", adr);
 					} else {

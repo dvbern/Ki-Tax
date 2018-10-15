@@ -1,4 +1,3 @@
-<#-- @ftlvariable name="gesuch" type="ch.dvbern.ebegu.entities.Gesuch" -->
 <#-- @ftlvariable name="betreuung" type="ch.dvbern.ebegu.entities.Betreuung" -->
 <#-- @ftlvariable name="kind" type="ch.dvbern.ebegu.entities.Kind" -->
 <#-- @ftlvariable name="fall" type="ch.dvbern.ebegu.entities.Fall" -->
@@ -66,7 +65,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
