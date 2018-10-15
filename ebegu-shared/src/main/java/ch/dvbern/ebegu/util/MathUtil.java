@@ -207,6 +207,11 @@ public enum MathUtil {
 		if (value == null || multiplicand == null) {
 			return null;
 		}
+		return multiplyNullSafe(value, multiplicand);
+	}
+
+	@Nonnull
+	public BigDecimal multiplyNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal multiplicand) {
 		BigDecimal result = value
 			.multiply(multiplicand)
 			.setScale(scale, roundingMode);
@@ -214,13 +219,18 @@ public enum MathUtil {
 	}
 
 	/**
-	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 * @throws PrecisionTooLargeException if the resulting values exceeds the defined precision
 	 */
 	@Nullable
-	public BigDecimal multiply(@Nullable BigDecimal... value) {
-		if (value == null) {
+	public BigDecimal multiply(@Nullable BigDecimal... values) {
+		if (values == null) {
 			return null;
 		}
+		return multiplyNullSafe(values);
+	}
+
+	@Nonnull
+	public BigDecimal multiplyNullSafe(@Nonnull BigDecimal... value) {
 		BigDecimal result = BigDecimal.ONE;
 		for (BigDecimal bigDecimal : value) {
 			result = multiply(result, bigDecimal);

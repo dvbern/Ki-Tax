@@ -73,8 +73,8 @@ public class AbstractBGRechnerTest {
 	public static BetreuungsgutscheinEvaluator createEvaluator(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde bern) {
 		Map<EinstellungKey, Einstellung> einstellungen = new HashMap<>();
 
-		Einstellung paramMaxEinkommen = new Einstellung(EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, "159000", gesuchsperiode);
-		einstellungen.put(EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, paramMaxEinkommen);
+		Einstellung paramMaxEinkommen = new Einstellung(EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN, "160000", gesuchsperiode);
+		einstellungen.put(EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN, paramMaxEinkommen);
 
 		Einstellung pmab3 = new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, "3760", gesuchsperiode);
 		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, pmab3);
@@ -132,21 +132,21 @@ public class AbstractBGRechnerTest {
 	 */
 	public static BGRechnerParameterDTO getParameter() {
 		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO();
-		parameterDTO.setBeitragKantonProTag(new BigDecimal("107.19"));
-		parameterDTO.setBeitragStadtProTagJahr1(new BigDecimal("7"));
-		parameterDTO.setBeitragStadtProTagJahr2(new BigDecimal("7"));
-		parameterDTO.setAnzahlTageMaximal(new BigDecimal("244"));
-		parameterDTO.setAnzahlStundenProTagMaximal(new BigDecimal("11.5"));
-		parameterDTO.setKostenProStundeMaximalKitaTagi(new BigDecimal("11.91"));
-		parameterDTO.setKostenProStundeMinimal(new BigDecimal("0.75"));
-		parameterDTO.setMassgebendesEinkommenMaximal(new BigDecimal("158690"));
-		parameterDTO.setMassgebendesEinkommenMinimal(new BigDecimal("42540"));
-		parameterDTO.setAnzahlTageTagi(new BigDecimal("240"));
-		parameterDTO.setAnzahlStundenProTagTagi(new BigDecimal("7"));
-		parameterDTO.setKostenProStundeMaximalTageseltern(new BigDecimal("9.16"));
-		parameterDTO.setBabyAlterInMonaten(12);
-		parameterDTO.setBabyFaktor(new BigDecimal("1.5"));
-		parameterDTO.setBgBisUndMitSchulstufe(EinschulungTyp.VORSCHULALTER);
+		parameterDTO.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(140));
+		parameterDTO.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
+		parameterDTO.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
+		parameterDTO.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(11.90));
+		parameterDTO.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		parameterDTO.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		parameterDTO.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
+		parameterDTO.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
+		parameterDTO.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
+		parameterDTO.setOeffnungstageTFO(MathUtil.GANZZAHL.from(240));
+		parameterDTO.setOeffnungsstundenTFO(MathUtil.GANZZAHL.from(11));
+		parameterDTO.setZuschlagBehinderungProTg(MathUtil.GANZZAHL.from(50));
+		parameterDTO.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
+		parameterDTO.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
+		parameterDTO.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
 		return parameterDTO;
 	}
 
@@ -184,6 +184,45 @@ public class AbstractBGRechnerTest {
 		betreuung.setInstitutionStammdaten(institutionStammdaten);
 		Kind kind = new Kind();
 		kind.setGeburtsdatum(geburtsdatumKind);
+		KindContainer kindContainer = new KindContainer();
+		kindContainer.setKindJA(kind);
+		Gesuch gesuch = new Gesuch();
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		boolean isSecondHalbjahr = LocalDate.now().isAfter(LocalDate.of(LocalDate.now().getYear(), Month.JULY, 31));
+		int startyear = isSecondHalbjahr ? LocalDate.now().getYear() : LocalDate.now().getYear() - 1;
+		LocalDate start = LocalDate.of(startyear, Month.AUGUST, 1);
+		LocalDate end = LocalDate.of(startyear + 1, Month.JULY, 31);
+		gesuchsperiode.setGueltigkeit(new DateRange(start, end));
+		gesuch.setGesuchsperiode(gesuchsperiode);
+		kindContainer.setGesuch(gesuch);
+		betreuung.setKind(kindContainer);
+
+		Verfuegung verfuegung = createVerfuegung(von, bis, anspruch, massgebendesEinkommen, monatlicheBetreuungskosten);
+		verfuegung.setBetreuung(betreuung);
+		return verfuegung;
+	}
+
+	/**
+	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Kita notwendigen Parametern zusammen
+	 */
+	protected Verfuegung prepareVerfuegungKita(
+		@Nonnull LocalDate geburtsdatumKind,
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis,
+		boolean eingeschult, boolean besondereBeduerfnisse,
+		int anspruch,
+		@Nonnull BigDecimal massgebendesEinkommen,
+		@Nonnull BigDecimal monatlicheBetreuungskosten) {
+
+		Betreuung betreuung = new Betreuung();
+		betreuung.setErweiterteBeduerfnisse(besondereBeduerfnisse);
+//		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
+//		institutionStammdaten.setOeffnungsstunden(anzahlStundenProTagKita);
+//		institutionStammdaten.setOeffnungstage(anzahlTageKita);
+//		betreuung.setInstitutionStammdaten(institutionStammdaten);
+		Kind kind = new Kind();
+		kind.setGeburtsdatum(geburtsdatumKind);
+		kind.setEinschulungTyp(eingeschult ? EinschulungTyp.KLASSE1 : EinschulungTyp.VORSCHULALTER);
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);
 		Gesuch gesuch = new Gesuch();

@@ -71,6 +71,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.KONTINGENTIERUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAHL_TAGE_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
@@ -82,8 +84,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_GRENZWERT_EINKOMMENSVER
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
@@ -387,8 +387,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(PARAM_STUNDEN_PRO_TAG_MAX_KITA, "11.5", gesuchsperiode);
 		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MAX, "11.91", gesuchsperiode);
 		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MIN, "0.75", gesuchsperiode);
-		saveEinstellung(PARAM_MASSGEBENDES_EINKOMMEN_MAX, "158690", gesuchsperiode);
-		saveEinstellung(PARAM_MASSGEBENDES_EINKOMMEN_MIN, "42540", gesuchsperiode);
+		saveEinstellung(MAX_MASSGEBENDES_EINKOMMEN, "158690", gesuchsperiode);
+		saveEinstellung(MIN_MASSGEBENDES_EINKOMMEN, "42540", gesuchsperiode);
 		saveEinstellung(PARAM_ANZAHL_TAGE_KANTON, "240", gesuchsperiode);
 		saveEinstellung(PARAM_STUNDEN_PRO_TAG_TAGI, "7", gesuchsperiode);
 		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, "9.16", gesuchsperiode);

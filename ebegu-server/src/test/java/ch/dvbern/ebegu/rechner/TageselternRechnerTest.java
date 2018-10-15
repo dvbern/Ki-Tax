@@ -15,12 +15,15 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,64 +35,51 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
 	private final TageselternRechner tageselternRechner = new TageselternRechner();
 
-	@Test
-	public void testEinTagMonatHohesEinkommenAnspruch15() {
-		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
-			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 21),
-			15, new BigDecimal("234567"), MONATLICHE_BETREUUNGSKOSTEN);
+	private LocalDate geburtstagBaby = LocalDate.of(2018, Month.OCTOBER, 15);
+	private LocalDate geburtstagKind = LocalDate.of(2016, Month.OCTOBER, 15);
 
-		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("100.00"), calculate.getVollkosten());
-		Assert.assertEquals(new BigDecimal("15.30"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("84.70"), calculate.getVerguenstigung());
-		Assert.assertEquals(new BigDecimal("1.7"), calculate.getBetreuungsstunden());
-	}
+	private DateRange intervall = new DateRange(
+		LocalDate.of(2019, Month.FEBRUARY, 10),
+		LocalDate.of(2019, Month.FEBRUARY, 20));
+
 
 	@Test
-	public void testTeilmonatMittleresEinkommen() {
-		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
-			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 31),
-			100, new BigDecimal("87654"), MONATLICHE_BETREUUNGSKOSTEN);
+	public void test() {
+		testWithParams(geburtstagBaby, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			20, 100000, 200, 66.45);
 
-		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("700.00"), calculate.getVollkosten());
-		Assert.assertEquals(new BigDecimal("313.05"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("386.95"), calculate.getVerguenstigung());
-		Assert.assertEquals(new BigDecimal("77.9"), calculate.getBetreuungsstunden());
+		testWithParams(geburtstagBaby, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			20, 100000, 200, 66.45);
+
+		testWithParams(geburtstagBaby, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			20, 100000, 200, 66.45);
+
+		testWithParams(geburtstagBaby, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			20, 100000, 200, 66.45);
+
+
+
+		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			20, 100000, 200, 66.45);
+
+		testWithParams(geburtstagKind, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			20, 100000, 200, 66.45);
+
+		testWithParams(geburtstagKind, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			20, 100000, 200, 66.45);
+
+		testWithParams(geburtstagKind, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			20, 100000, 200, 66.45);
+
 	}
 
-	@Test
-	public void testTeilmonatMittleresEinkommen50() {
-		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
-			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 31),
-			50, new BigDecimal("87654"), MONATLICHE_BETREUUNGSKOSTEN);
+	private void testWithParams(@Nonnull LocalDate geburtstag, boolean eingeschult, boolean besondereBeduerfnisse, @Nonnull LocalDate von, @Nonnull LocalDate bis,
+		int bgPensum, int einkommen, int vollkostenMonat, double expected) {
+		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, von, bis, eingeschult, besondereBeduerfnisse,
+			bgPensum, MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(vollkostenMonat));
 
-		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("700.00"), calculate.getVollkosten());
-		Assert.assertEquals(new BigDecimal("156.55"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("543.45"), calculate.getVerguenstigung());
-		Assert.assertEquals(new BigDecimal("39.0"), calculate.getBetreuungsstunden());
-	}
-
-	@Test
-	public void testGanzerMonatZuWenigEinkommen() {
-		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
-			LocalDate.of(2016, Month.JANUARY, 1), LocalDate.of(2016, Month.JANUARY, 31),
-			100, new BigDecimal("27750"), MONATLICHE_BETREUUNGSKOSTEN);
-
-		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("2100.00"), calculate.getVollkosten());
-		Assert.assertEquals(new BigDecimal("175.40"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("1924.60"), calculate.getVerguenstigung());
-		Assert.assertEquals(new BigDecimal("233.8"), calculate.getBetreuungsstunden());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testZeitraumUeberMonatsende() {
-		Verfuegung verfuegung = prepareVerfuegungTagiUndTageseltern(
-			LocalDate.of(2016, Month.JANUARY, 10), LocalDate.of(2016, Month.FEBRUARY, 5),
-			100, new BigDecimal("27750"), MONATLICHE_BETREUUNGSKOSTEN);
-
-		tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
+		VerfuegungZeitabschnitt
+			calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
+		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
 	}
 }

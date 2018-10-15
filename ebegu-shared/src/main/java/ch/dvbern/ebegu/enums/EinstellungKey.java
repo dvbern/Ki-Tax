@@ -28,6 +28,41 @@ public enum EinstellungKey {
 	// Bis zu welcher Schulstufe sollen Gutscheine ausgestellt werden?
 	BG_BIS_UND_MIT_SCHULSTUFE,
 
+
+	// *** Einstellungen fuer die Gutscheinberechnung
+
+	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
+	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG,
+	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
+	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG,
+	// Maximale Vergünstigung bei Eintritt des Kindergartens
+	MAX_VERGUENSTIGUNG_SCHULE_PRO_TG,
+
+	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
+	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD,
+	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
+	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD,
+	// Maximale Vergünstigung bei Eintritt des Kindergartens
+	MAX_VERGUENSTIGUNG_SCHULE_PRO_STD,
+
+	// Minimal Massgebendes Einkommen
+	MIN_MASSGEBENDES_EINKOMMEN,
+	// Maximal Massgebendes Einkommen
+	MAX_MASSGEBENDES_EINKOMMEN,
+
+	OEFFNUNGSTAGE_KITA,
+	OEFFNUNGSTAGE_TFO,
+	OEFFNUNGSSTUNDEN_TFO,
+
+	ZUSCHLAG_BEHINDERUNG_PRO_TG,
+	ZUSCHLAG_BEHINDERUNG_PRO_STD,
+
+	MIN_VERGUENSTIGUNG_PRO_TG,
+	MIN_VERGUENSTIGUNG_PRO_STD,
+
+	// *** Einstellungen fuer die Gutscheinberechnung
+
+
 	// Fixbetrag der Stadt Bern. Eigentlich Jahesabhängig und vermutlich nicht mehr gebraucht. Vorerst mal Param pro Halbjahr
 	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1,
 	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2,

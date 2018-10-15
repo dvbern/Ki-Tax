@@ -32,7 +32,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
@@ -61,7 +61,7 @@ public class BetreuungsgutscheinConfigurator {
 
 	public Set<EinstellungKey> requiredBernerParameters() {
 		return EnumSet.of(
-			PARAM_MASSGEBENDES_EINKOMMEN_MAX,
+			MAX_MASSGEBENDES_EINKOMMEN,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
@@ -167,8 +167,8 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(gutscheineStartdatumCalcRule);
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
-		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(PARAM_MASSGEBENDES_EINKOMMEN_MAX);
-		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter PARAM_MASSGEBENDES_EINKOMMEN_MAX muss gesetzt sein");
+		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(MAX_MASSGEBENDES_EINKOMMEN);
+		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter MAX_MASSGEBENDES_EINKOMMEN muss gesetzt sein");
 		EinkommenCalcRule maxEinkommenCalcRule = new EinkommenCalcRule(defaultGueltigkeit, paramMassgebendesEinkommenMax.getValueAsBigDecimal());
 		rules.add(maxEinkommenCalcRule);
 
