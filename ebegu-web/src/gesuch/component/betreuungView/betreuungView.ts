@@ -578,16 +578,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     confirmText: 'LABEL_SPEICHERN',
                 })
                     .then(() => {   // User confirmed removal
-
                         this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-
                     });
             }
-
         } else if (!this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = true;
         }
-
     }
 
     public platzBestaetigen(): void {

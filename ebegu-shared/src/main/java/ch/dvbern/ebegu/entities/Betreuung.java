@@ -524,6 +524,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			target.setAbwesenheitMutiert(null);
 			target.setGueltig(false);
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
+			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
 
 			// EBEGU-1559
 			// Beim Mutieren werden alle Betreuungen kopiert.

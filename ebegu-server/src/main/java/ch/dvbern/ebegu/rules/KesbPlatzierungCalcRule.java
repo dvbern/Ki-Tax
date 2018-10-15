@@ -25,7 +25,7 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
-	 * Bemerkung: Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB übernommen.
+ * Bemerkung: Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB übernommen.
  */
 public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 
@@ -36,12 +36,10 @@ public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(
 		@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (!betreuung.isAngebotSchulamt()) {
-			if (!betreuung.getKeineKesbPlatzierung()){
-				// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
-				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG);
-			}
+		if (!betreuung.isAngebotSchulamt() && !betreuung.getKeineKesbPlatzierung()) {
+			// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
+			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG);
 		}
 	}
 }

@@ -18,8 +18,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +26,6 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,16 +36,10 @@ import org.junit.Test;
  */
 public class KesbPlatzierungCalcRuleTest {
 
-//	private final LocalDate START_PERIODE = LocalDate.of(2016, Month.AUGUST, 1);
-//	private final LocalDate ENDE_PERIODE = LocalDate.of(2017, Month.JULY, 31);
-//	private final DateRange PERIODE = new DateRange(START_PERIODE, ENDE_PERIODE);
-	private final VerfuegungZeitabschnitt ZEIT_ABSCHNITT = new VerfuegungZeitabschnitt();
-	private final BetreuungspensumCalcRule betreuungspensumCalcRule = new BetreuungspensumCalcRule(Constants.DEFAULT_GUELTIGKEIT);
-
 	private Betreuung betreuung;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(Constants.DEFAULT_GUELTIGKEIT.getGueltigAb(), Constants.DEFAULT_GUELTIGKEIT.getGueltigBis(),
 			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		ErwerbspensumContainer erwerbspensumContainer = TestDataUtil.createErwerbspensumContainer();
