@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="gesuch" type="ch.dvbern.ebegu.entities.Gesuch" -->
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
@@ -39,7 +40,7 @@ ${templateConfiguration.mailCss}
 		Falls Sie für die Periode ${gesuchsperiode.gesuchsperiodeString} kein Gesuch stellen möchten, sind für Sie keine weiteren Schritte notwendig.
 	<p>
 		Freundliche Grüsse <br/>
-		Stadt Bern
+		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.

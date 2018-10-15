@@ -1,4 +1,5 @@
 <#-- @ftlvariable name="gesuch" type="ch.dvbern.ebegu.entities.Gesuch" -->
+<#-- @ftlvariable name="gesuch" type="ch.dvbern.ebegu.entities.Gesuch" -->
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
@@ -30,7 +31,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Jugendamt der Stadt Bern
+		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
