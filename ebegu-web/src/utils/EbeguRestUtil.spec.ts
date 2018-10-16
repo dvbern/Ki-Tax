@@ -171,7 +171,7 @@ describe('EbeguRestUtil', () => {
                 myGesuch.familiensituationContainer = new TSFamiliensituationContainer();
                 myGesuch.familiensituationContainer.familiensituationJA = familiensituation;
                 TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch.familiensituationContainer);
-                myGesuch.kindContainers = [undefined];
+                myGesuch.kindContainers = [];
                 myGesuch.einkommensverschlechterungInfoContainer = undefined;
                 myGesuch.bemerkungen = undefined;
                 myGesuch.typ = undefined;
