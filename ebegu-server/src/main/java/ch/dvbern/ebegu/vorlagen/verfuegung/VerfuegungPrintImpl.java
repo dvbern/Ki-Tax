@@ -136,35 +136,40 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	@Override
 	public List<VerfuegungZeitabschnittPrint> getVerfuegungZeitabschnitt() {
 
-		List<VerfuegungZeitabschnittPrint> result = new ArrayList<>();
 		Optional<Verfuegung> verfuegung = extractVerfuegung();
-		if (verfuegung.isPresent()) {
+		if (!verfuegung.isPresent()) {
+			return new ArrayList<>();
+		}
 
-			result.addAll(verfuegung.get().getZeitabschnitte().stream()
+		// first of all we get all Zeitabschnitte and create a List of VerfuegungZeitabschnittPrintImpl, then we remove
+		// all Zeitabschnitte with Pensum == 0 that we find at the beginning and at the end of the list. All Zeitabschnitte
+		// between two valid values will remain: 0, 0, 30, 40, 0, 30, 0, 0 ==> 30, 40, 0, 30
+		List<VerfuegungZeitabschnittPrint> result = verfuegung.get().getZeitabschnitte().stream()
 				.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR.reversed())
 				.map(VerfuegungZeitabschnittPrintImpl::new)
-				.collect(Collectors.toList()));
-			ListIterator<VerfuegungZeitabschnittPrint> listIterator = result.listIterator();
-			while (listIterator.hasNext()) {
-				VerfuegungZeitabschnittPrint zeitabschnitt = listIterator.next();
-				if (!MathUtil.isPositive(zeitabschnitt.getBetreuung())) {
-					listIterator.remove();
-				} else {
-					break;
-				}
-			}
-			// todo fragen, warum wird es hier 2x gemacht????
-			Collections.reverse(result);
-			listIterator = result.listIterator();
-			while (listIterator.hasNext()) {
-				VerfuegungZeitabschnittPrint zeitabschnitt = listIterator.next();
-				if (!MathUtil.isPositive(zeitabschnitt.getBetreuung())) {
-					listIterator.remove();
-				} else {
-					break;
-				}
+				.collect(Collectors.toList());
+
+		ListIterator<VerfuegungZeitabschnittPrint> listIteratorBeginning = result.listIterator();
+		while (listIteratorBeginning.hasNext()) {
+			VerfuegungZeitabschnittPrint zeitabschnitt = listIteratorBeginning.next();
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuung())) {
+				listIteratorBeginning.remove();
+			} else {
+				break;
 			}
 		}
+
+		Collections.reverse(result);
+		ListIterator<VerfuegungZeitabschnittPrint> listIteratorEnd = result.listIterator();
+		while (listIteratorEnd.hasNext()) {
+			VerfuegungZeitabschnittPrint zeitabschnitt = listIteratorEnd.next();
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuung())) {
+				listIteratorEnd.remove();
+			} else {
+				break;
+			}
+		}
+
 		return result;
 	}
 
@@ -200,7 +205,7 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	 * @return true falls Pensum groesser 0 ist
 	 */
 	@Override
-	public boolean isPensumGreaterThanZero() {
+	public boolean isPensumGrosser0() {
 		List<VerfuegungZeitabschnittPrint> vzList = getVerfuegungZeitabschnitt();
 		BigDecimal value = vzList.stream()
 			.map(VerfuegungZeitabschnittPrint::getBGPensum)
@@ -209,8 +214,8 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	}
 
 	@Override
-	public boolean isPensumZero() {
-		return !isPensumGreaterThanZero();
+	public boolean isPensumIst0() {
+		return !isPensumGrosser0();
 	}
 
 	@Override

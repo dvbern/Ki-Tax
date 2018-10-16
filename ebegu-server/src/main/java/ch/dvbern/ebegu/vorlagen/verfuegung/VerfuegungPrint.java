@@ -54,12 +54,12 @@ public interface VerfuegungPrint {
 	/**
 	 * @return true falls Pensum groesser 0 ist
 	 */
-	boolean isPensumGreaterThanZero();
+	boolean isPensumGrosser0();
 
 	/**
 	 * @return true wenn Pensum gleich 0 ist
 	 */
-	boolean isPensumZero();
+	boolean isPensumIst0();
 
 	/**
 	 * @return true falls eine Vorgänger-Verfügung besteht

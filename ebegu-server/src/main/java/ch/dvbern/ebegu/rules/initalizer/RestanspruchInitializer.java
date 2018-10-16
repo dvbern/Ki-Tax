@@ -71,7 +71,6 @@ public class RestanspruchInitializer {
 				// Der Restanspruch war schon initialisiert und bleibt gleich wie auf der vorherigen Betreuung
 				targetZeitabschnitt.setAnspruchspensumRest(anspruchspensumRest);
 			} else if (betreuungspensum.compareTo(BigDecimal.valueOf(anspruchberechtigtesPensum)) < 0) {
-				// todo round to %5 int
 				targetZeitabschnitt.setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum.intValue());
 			} else {
 				targetZeitabschnitt.setAnspruchspensumRest(0);

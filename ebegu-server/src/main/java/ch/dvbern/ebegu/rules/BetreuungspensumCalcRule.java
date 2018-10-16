@@ -51,7 +51,6 @@ public class BetreuungspensumCalcRule extends AbstractCalcRule {
 		// Anspruch setzen fuer Schulkinder; bei Kleinkindern muss nichts gemacht werden
 		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtSchulkind()) {
 			// Schulkind-Angebote: Sie erhalten IMMER soviel, wie sie wollen. Der Restanspruch wird nicht tangiert
-			// todo round it to integer %5
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(betreuungspensum.intValue());
 		}
 	}

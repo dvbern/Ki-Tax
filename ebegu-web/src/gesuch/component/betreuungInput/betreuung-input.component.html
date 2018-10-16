@@ -14,18 +14,19 @@
   -->
 
 <div class="betreuung-input-container">
-    <input type="number"
-           step="0.25"
-           class="dv-betreuung-input"
-           id="{{vm.id}}"
-           name="{{vm.id}}"
-           required
-           min="0"
-           aria-describedby="{{vm.id + '-error'}}"
-           ng-change="vm.refreshContent()"
-           ng-model="vm.pensumValue"
-           ng-disabled="vm.isDisabled"
-    >
+    <div class="dv-betreuung-input">
+        <input type="number"
+               step="0.25"
+               id="{{vm.id}}"
+               name="{{vm.id}}"
+               required
+               min="0"
+               aria-describedby="{{vm.id + '-error'}}"
+               ng-change="vm.refreshContent()"
+               ng-model="vm.pensumValue"
+               ng-disabled="vm.isDisabled"
+        >
+    </div>
     <dv-switch class="betreuung-input-switch"
                (switch-value-change)="vm.toggle()"
                [switch-option-left]="vm.switchOptions[0]"
