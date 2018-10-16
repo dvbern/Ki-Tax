@@ -10,7 +10,7 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-public class ErweiterteBetreuung extends AbstractMutableEntity implements Comparable<ErweiterteBetreuung> {
+public class ErweiterteBetreuung extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -2859349895821767525L;
 
@@ -27,7 +27,6 @@ public class ErweiterteBetreuung extends AbstractMutableEntity implements Compar
 		this.erweiterteBeduerfnisse = erweiterteBeduerfnisse;
 	}
 
-	//TODO
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -37,20 +36,12 @@ public class ErweiterteBetreuung extends AbstractMutableEntity implements Compar
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!super.isSame(other)) {
-			return false;
-		}
 		if (!(other instanceof ErweiterteBetreuung)) {
 			return false;
 		}
-		boolean erwBeduerfnisseSame = Objects.equals(getErweiterteBeduerfnisse(), other
-			.getErweiterteBeduerfnisse());
-		return false;
-	}
+		boolean erwBeduerfnisseSame = Objects.equals(getErweiterteBeduerfnisse(),
+			((ErweiterteBetreuung) other).erweiterteBeduerfnisse);
 
-	//TODO
-	@Override
-	public int compareTo(ErweiterteBetreuung o) {
-		return 0;
+		return erwBeduerfnisseSame;
 	}
 }
