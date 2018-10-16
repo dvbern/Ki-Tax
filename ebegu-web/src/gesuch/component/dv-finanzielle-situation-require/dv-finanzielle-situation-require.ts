@@ -51,7 +51,7 @@ export class DVFinanzielleSituationRequireController implements IController {
     public $onInit(): void {
         this.setFinanziellesituationRequired();
         // Den Parameter fuer das Maximale Einkommen lesen
-        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX,
+        this.einstellungRS.findEinstellung(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN,
             this.gesuchModelManager.getDossier().gemeinde,
             this.gesuchModelManager.getGesuchsperiode())
             .then(response => {
