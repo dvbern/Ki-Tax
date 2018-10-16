@@ -17,10 +17,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import TSAdresse from '../../../models/TSAdresse';
@@ -37,17 +38,17 @@ export class EditGemeindeComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
-    public stammdaten: TSGemeindeStammdaten;
+    public stammdaten$: Observable<TSGemeindeStammdaten>;
     public beguStart: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
-    public previewImageURL: string = '#';
+    public logoImageUrl: string = '#';
     private fileToUpload!: File;
     private navigationSource: StateDeclaration;
+    private gemeindeId: string;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
     ) {
@@ -55,79 +56,67 @@ export class EditGemeindeComponent implements OnInit {
 
     public ngOnInit(): void {
         this.navigationSource = this.$transition$.from();
-        const gemeindeId: string = this.$transition$.params().gemeindeId;
-        if (!gemeindeId) {
+        this.gemeindeId = this.$transition$.params().gemeindeId;
+        if (!this.gemeindeId) {
             return;
         }
         // TODO: Task KIBON-217: Load from DB
-        this.previewImageURL = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
+        this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
         this.einschulungTypValues = getTSEinschulungTypValues();
 
-        this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
+        this.stammdaten$ = from(
+        this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(resStamm => {
             // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
-            this.stammdaten = resStamm;
-            if (this.stammdaten.adresse === undefined) {
-                this.stammdaten.adresse = new TSAdresse();
+            if (resStamm.adresse === undefined) {
+                resStamm.adresse = new TSAdresse();
             }
-            if (this.stammdaten.beschwerdeAdresse === undefined) {
-                this.stammdaten.beschwerdeAdresse = new TSAdresse();
+            if (resStamm.beschwerdeAdresse === undefined) {
+                resStamm.beschwerdeAdresse = new TSAdresse();
             }
-            this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
-
-            this.changeDetectorRef.markForCheck();
-        });
+            this.beguStart = resStamm.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
+            return resStamm;
+        }));
     }
 
     public cancel(): void {
         this.navigateBack();
     }
 
-    public persistGemeindeStammdaten(): void {
+    public persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): void {
         if (!this.form.valid) {
             return;
         }
         this.errorService.clearAll();
-        if (this.stammdaten.keineBeschwerdeAdresse) {
+        if (stammdaten.keineBeschwerdeAdresse) {
             // Reset Beschwerdeadresse if not used
-            this.stammdaten.beschwerdeAdresse = undefined;
+            stammdaten.beschwerdeAdresse = undefined;
         }
-        this.gemeindeRS.saveGemeindeStammdaten(this.stammdaten).then(response => {
-            this.stammdaten = response;
-            this.navigateBack();
-        });
+        if (this.fileToUpload && this.fileToUpload.type.includes('image/')) {
+            this.gemeindeRS.postLogoImage(stammdaten.gemeinde.id, this.fileToUpload);
+        }
+        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => this.navigateBack());
     }
 
     public mitarbeiterBearbeiten(): void {
         // TODO: Implement Mitarbeiter Bearbeiten Button Action
     }
 
-    public hatBeschwerdeAdresse(): boolean {
-        this.stammdaten.beschwerdeAdresse = undefined;
-        if (this.stammdaten.keineBeschwerdeAdresse) {
-            this.stammdaten.beschwerdeAdresse = undefined;
-            return false;
-        }
-        this.stammdaten.beschwerdeAdresse = new TSAdresse();
-        return true;
-    }
-
-
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
-    public handleInput(files: FileList): void {
+    public handleLogoUpload(files: FileList): void {
         this.fileToUpload = files[0];
         const tmpFileReader = new FileReader();
         tmpFileReader.onload = (e: any): void => {
-            this.previewImageURL = e.target.result;
+            this.logoImageUrl = e.target.result;
         };
         tmpFileReader.readAsDataURL(this.fileToUpload);
     }
 
     private navigateBack(): void {
         if (this.navigationSource.name) {
-            this.$state.go(this.navigationSource, {gemeindeId: this.stammdaten.gemeinde.id});
+            this.$state.go(this.navigationSource, {gemeindeId: this.gemeindeId});
             return;
         }
         this.$state.go('gemeinde.list');

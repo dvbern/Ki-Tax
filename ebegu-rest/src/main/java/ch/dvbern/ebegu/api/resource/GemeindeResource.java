@@ -38,6 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
@@ -46,16 +47,22 @@ import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
+import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.Validate;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * Resource fuer Gemeinde
@@ -251,4 +258,24 @@ public class GemeindeResource {
 
 	}
 
+	@POST
+	@Path("/logo/{gemeindeId}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadLogo(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull MultipartFormDataInput input) {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+
+		Validate.notEmpty(fileList, "Need to upload something");
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(
+			() -> new EbeguEntityNotFoundException("uploadLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId)
+		);
+		stammdaten.setLogoContent(fileList.get(0).getContent());
+		gemeindeService.saveGemeindeStammdaten(stammdaten);
+		return Response.ok().build();
+	}
 }

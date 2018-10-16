@@ -41,7 +41,7 @@ export class ViewGemeindeComponent implements OnInit {
     public beguStart: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
     private fileToUpload!: File;
-    public previewImageURL: string = '#';
+    public logoImageUrl: string = '#';
 
     public constructor(
         private readonly $transition$: Transition,
@@ -59,7 +59,7 @@ export class ViewGemeindeComponent implements OnInit {
             return;
         }
         // TODO: Task KIBON-217: Load from DB
-        this.previewImageURL = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
+        this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
         this.einschulungTypValues = getTSEinschulungTypValues();
 
         this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
@@ -99,11 +99,11 @@ export class ViewGemeindeComponent implements OnInit {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
-    public handleInput(files: FileList): void {
+    public handleLogoUpload(files: FileList): void {
         this.fileToUpload = files[0];
         const tmpFileReader = new FileReader();
         tmpFileReader.onload = (e: any): void => {
-            this.previewImageURL = e.target.result;
+            this.logoImageUrl = e.target.result;
         };
         tmpFileReader.readAsDataURL(this.fileToUpload);
     }

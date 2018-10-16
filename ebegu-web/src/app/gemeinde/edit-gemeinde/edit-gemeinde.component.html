@@ -20,8 +20,8 @@
 <form role="form"
       #form="ngForm"
       [ngClass]="{'ng-submitted': form.submitted}"
-      *ngIf="stammdaten"
-      (ngSubmit)="persistGemeindeStammdaten()"
+      *ngIf="stammdaten$ | async as stammdaten"
+      (ngSubmit)="persistGemeindeStammdaten(stammdaten)"
       novalidate>
 
     <div class="row marginTop20 marginBottom10">
@@ -51,10 +51,10 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <div class="marginBottom10">
-                                <img [src]="previewImageURL" [height]="180" class="klub-logo-dialog-image">
+                                <img [src]="logoImageUrl" [height]="180" class="klub-logo-dialog-image">
                             </div>
                             <div>
-                                <input #fileInput type="file" accept='image/*' (change)="handleInput(fileInput.files)"
+                                <input #fileInput type="file" accept='image/*' (change)="handleLogoUpload(fileInput.files)"
                                        class="klub-logo-dialog-fileinput">
                             </div>
                         </div>

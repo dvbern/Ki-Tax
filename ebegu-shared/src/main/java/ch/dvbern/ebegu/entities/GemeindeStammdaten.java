@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -192,11 +193,19 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	public byte[] getLogoContent() {
-		return logoContent;
+		if (this.logoContent == null) {
+			return new byte[0];
+		} else {
+			return this.logoContent;
+		}
 	}
 
 	public void setLogoContent(@Nullable byte[] logoContent) {
-		this.logoContent = logoContent;
+		if (logoContent == null) {
+			this.logoContent = new byte[0];
+		} else {
+			this.logoContent = Arrays.copyOf(logoContent, logoContent.length);
+		}
 	}
 
 	@Override

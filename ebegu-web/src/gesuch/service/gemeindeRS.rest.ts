@@ -18,7 +18,7 @@
 import {IHttpService, ILogService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {catchError, switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
@@ -139,6 +139,20 @@ export default class GemeindeRS implements IEntityRS {
         return this.$http.put(`${this.serviceURL}/stammdaten`, restStammdaten).then((response: any) => {
             this.$log.debug('PARSING GemeindeStammdaten REST object ', response.data);
             return this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data);
+        });
+    }
+
+    public postLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+        const formData = new FormData();
+        formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
+        return this.uploadLogo(gemeindeId, formData);
+    }
+
+    private uploadLogo(gemeindeId: string, formData: FormData): IPromise<any> {
+        return this.$http.post(`${this.serviceURL}/stammdaten/${encodeURIComponent(gemeindeId)}`, formData)
+            .then((response: any) => {
+                this.$log.debug('Upload Gemeinde Logo ', response.data);
+                return response.data;
         });
     }
 
