@@ -55,6 +55,8 @@ import TSEinkommensverschlechterungContainer from '../models/TSEinkommensverschl
 import TSEinkommensverschlechterungInfo from '../models/TSEinkommensverschlechterungInfo';
 import TSEinkommensverschlechterungInfoContainer from '../models/TSEinkommensverschlechterungInfoContainer';
 import TSEinstellung from '../models/TSEinstellung';
+import TSErweiterteBetreuung from '../models/TSErweiterteBetreuung';
+import TSErweiterteBetreuungContainer from '../models/TSErweiterteBetreuungContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSEWKAdresse from '../models/TSEWKAdresse';
@@ -1395,7 +1397,6 @@ export default class EbeguRestUtil {
         restBetreuung.datumAblehnung = DateUtil.momentToLocalDate(betreuung.datumAblehnung);
         restBetreuung.datumBestaetigung = DateUtil.momentToLocalDate(betreuung.datumBestaetigung);
         restBetreuung.vertrag = betreuung.vertrag;
-        restBetreuung.erweiterteBeduerfnisse = betreuung.erweiterteBeduerfnisse;
         if (betreuung.institutionStammdaten) {
             restBetreuung.institutionStammdaten =
                 this.institutionStammdatenToRestObject({}, betreuung.institutionStammdaten);
@@ -1412,6 +1413,10 @@ export default class EbeguRestUtil {
             betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
                 restBetreuung.abwesenheitContainers.push(this.abwesenheitContainerToRestObject({}, abwesenheitCont));
             });
+        }
+        if (betreuung.erweiterteBetreuungContainer) {
+            restBetreuung.erweiterteBetreuungContainer =
+                this.erweiterteBetreuungContainerToRestObject({}, betreuung.erweiterteBetreuungContainer);
         }
         restBetreuung.kindFullname = betreuung.kindFullname;
         restBetreuung.kindNummer = betreuung.kindNummer;
@@ -1496,7 +1501,6 @@ export default class EbeguRestUtil {
             betreuungTS.datumAblehnung = DateUtil.localDateToMoment(betreuungFromServer.datumAblehnung);
             betreuungTS.datumBestaetigung = DateUtil.localDateToMoment(betreuungFromServer.datumBestaetigung);
             betreuungTS.vertrag = betreuungFromServer.vertrag;
-            betreuungTS.erweiterteBeduerfnisse = betreuungFromServer.erweiterteBeduerfnisse;
             betreuungTS.betreuungsstatus = betreuungFromServer.betreuungsstatus;
             betreuungTS.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                 betreuungFromServer.institutionStammdaten);
@@ -1504,6 +1508,11 @@ export default class EbeguRestUtil {
                 this.parseBetreuungspensumContainers(betreuungFromServer.betreuungspensumContainers);
             betreuungTS.abwesenheitContainers =
                 this.parseAbwesenheitContainers(betreuungFromServer.abwesenheitContainers);
+            betreuungTS.erweiterteBetreuungContainer =
+                this.parseErweiterteBetreuungContainer(
+                    betreuungTS.erweiterteBetreuungContainer,
+                    betreuungFromServer.erweiterteBetreuungContainer
+                );
             betreuungTS.betreuungNummer = betreuungFromServer.betreuungNummer;
             betreuungTS.verfuegung = this.parseVerfuegung(new TSVerfuegung(), betreuungFromServer.verfuegung);
             betreuungTS.kindFullname = betreuungFromServer.kindFullname;
@@ -1600,6 +1609,62 @@ export default class EbeguRestUtil {
         if (abwesenheitFromServer) {
             this.parseDateRangeEntity(abwesenheitTS, abwesenheitFromServer);
             return abwesenheitTS;
+        }
+        return undefined;
+    }
+
+    public erweiterteBetreuungContainerToRestObject(
+        restErweiterteBetreuungContainer: any,
+        erweiterteBetreuungContainer: TSErweiterteBetreuungContainer,
+    ): TSErweiterteBetreuungContainer {
+        this.abstractMutableEntityToRestObject(restErweiterteBetreuungContainer, erweiterteBetreuungContainer);
+
+        if (erweiterteBetreuungContainer.erweiterteBetreuungGS) {
+            restErweiterteBetreuungContainer.erweiterteBetreuungGS =
+                this.erweiterteBetreuungToRestObject({}, erweiterteBetreuungContainer.erweiterteBetreuungGS);
+        }
+        if (erweiterteBetreuungContainer.erweiterteBetreuungJA) {
+            restErweiterteBetreuungContainer.erweiterteBetreuungJA =
+                this.erweiterteBetreuungToRestObject({}, erweiterteBetreuungContainer.erweiterteBetreuungJA);
+        }
+        return restErweiterteBetreuungContainer;
+    }
+
+    public parseErweiterteBetreuungContainer(
+        containerTS: TSErweiterteBetreuungContainer,
+        containerFromServer: any,
+    ): TSErweiterteBetreuungContainer {
+        if (containerFromServer) {
+            this.parseAbstractMutableEntity(containerTS, containerFromServer);
+
+            containerTS.erweiterteBetreuungGS =
+                this.parseErweiterteBetreuung(containerTS.erweiterteBetreuungGS || new TSErweiterteBetreuung(),
+                    containerFromServer.erweiterteBetreuungGS);
+            containerTS.erweiterteBetreuungJA =
+                this.parseErweiterteBetreuung(containerTS.erweiterteBetreuungJA || new TSErweiterteBetreuung(),
+                    containerFromServer.erweiterteBetreuungJA);
+            return containerTS;
+        }
+        return undefined;
+    }
+
+    public erweiterteBetreuungToRestObject(
+        restErweiterteBetreuung: any,
+        erweiterteBetreuung: TSErweiterteBetreuung,
+    ): TSErweiterteBetreuung {
+        this.abstractMutableEntityToRestObject(restErweiterteBetreuung, erweiterteBetreuung);
+        restErweiterteBetreuung.erweiterteBeduerfnisse = erweiterteBetreuung.erweiterteBeduerfnisse;
+        return restErweiterteBetreuung;
+    }
+
+    public parseErweiterteBetreuung(
+        erweiterteBetreuungTS: TSErweiterteBetreuung,
+        erweiterteBetreuungFromServer: any,
+    ): TSErweiterteBetreuung {
+        if (erweiterteBetreuungFromServer) {
+            this.parseAbstractMutableEntity(erweiterteBetreuungFromServer, erweiterteBetreuungTS);
+            erweiterteBetreuungTS.erweiterteBeduerfnisse = erweiterteBetreuungFromServer.erweiterteBeduerfnisse;
+            return erweiterteBetreuungTS;
         }
         return undefined;
     }
