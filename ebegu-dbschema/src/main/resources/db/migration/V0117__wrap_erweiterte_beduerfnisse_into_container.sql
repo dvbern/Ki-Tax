@@ -72,6 +72,9 @@ FOREIGN KEY (rev)
 REFERENCES revinfo (rev);
 
 ALTER TABLE erweiterte_betreuung_container
+  ADD CONSTRAINT UK_erweiterte_betreuung_betreuung UNIQUE (betreuung_id);
+
+ALTER TABLE erweiterte_betreuung_container
   ADD CONSTRAINT FK_erweiterte_betreuung_container_betreuung_id
 FOREIGN KEY (betreuung_id)
 REFERENCES betreuung (id);
