@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.validators;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
@@ -82,7 +83,7 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 		for (BetreuungspensumContainer betPenContainer : betreuung.getBetreuungspensumContainers()) {
 			Gesuchsperiode gesuchsperiode = betPenContainer.extractGesuchsperiode();
 			Gemeinde gemeinde = betreuung.extractGesuch().getDossier().getGemeinde();
-			int betreuungsangebotTypMinValue = BetreuungUtil.getMinValueFromBetreuungsangebotTyp(
+			BigDecimal betreuungsangebotTypMinValue = BetreuungUtil.getMinValueFromBetreuungsangebotTyp(
 				gesuchsperiode, gemeinde, betreuung.getBetreuungsangebotTyp(), einstellungService, em);
 
 			if (validateBetreuungspensum(
@@ -139,7 +140,7 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 	 */
 	private boolean validateBetreuungspensum(
 		@Nullable Betreuungspensum betreuungspensum,
-		int pensumMin,
+		BigDecimal pensumMin,
 		int index,
 		String containerPostfix,
 		ConstraintValidatorContext context) {
@@ -150,7 +151,7 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 
 		// Es waere moeglich, die Messages mit der Klasse HibernateConstraintValidatorContext zu erzeugen. Das waere
 		// aber Hibernate-abhaengig. wuerde es Sinn machen??
-		if (!betreuungspensum.getNichtEingetreten() && betreuungspensum.getPensum() < pensumMin) {
+		if (!betreuungspensum.getNichtEingetreten() && betreuungspensum.getPensum().compareTo(pensumMin) < 0) {
 			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
 			String message = rb.getString("invalid_betreuungspensum");
 			message = MessageFormat.format(message, betreuungspensum.getPensum(), pensumMin);

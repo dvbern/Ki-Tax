@@ -115,9 +115,9 @@ public class ExportConverter {
 	private ZeitabschnittExportDTO createZeitabschnittExportDTOFromZeitabschnitt(VerfuegungZeitabschnitt zeitabschnitt) {
 		LocalDate von = zeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = zeitabschnitt.getGueltigkeit().getGueltigBis();
-		int effektiveBetr = zeitabschnitt.getBetreuungspensum();
+		BigDecimal effektiveBetr = zeitabschnitt.getBetreuungspensum();
 		int anspruchPct = zeitabschnitt.getAnspruchberechtigtesPensum();
-		int vergPct = zeitabschnitt.getBgPensum();
+		BigDecimal vergPct = zeitabschnitt.getBgPensum();
 		BigDecimal vollkosten = zeitabschnitt.getVollkosten();
 		BigDecimal verguenstigung = zeitabschnitt.getVerguenstigung();
 		return new ZeitabschnittExportDTO(von, bis, effektiveBetr, anspruchPct, vergPct, vollkosten, verguenstigung);

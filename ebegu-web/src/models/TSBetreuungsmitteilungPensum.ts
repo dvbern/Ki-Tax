@@ -14,10 +14,10 @@
  */
 
 import {TSPensumUnits} from './enums/TSPensumUnits';
-import {TSAbstractBetreuungspensumEntity} from './TSAbstractBetreuungspensumEntity';
+import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSBetreuungsmitteilungPensum extends TSAbstractBetreuungspensumEntity {
+export default class TSBetreuungsmitteilungPensum extends TSAbstractDecimalPensumEntity {
 
     public constructor(unitForDisplay?: TSPensumUnits, pensum?: number, gueltigkeit?: TSDateRange) {
         super(unitForDisplay, pensum, gueltigkeit);

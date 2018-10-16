@@ -96,7 +96,7 @@ export class BetreuungInputComponent implements IController {
             this.label = '';
             return;
         }
-        const lbl: string = this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[0]
+        const lbl = this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[0]
             ? ` ${this.translate.instant(this.switchOptions[1])} ${this.translate.instant('PER_MONTH')}`
             : this.translate.instant(this.switchOptions[0]);
 

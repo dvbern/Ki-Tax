@@ -43,7 +43,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @CheckZuschlagErwerbspensumZuschlagUndGrund
-public class Erwerbspensum extends AbstractPensumEntity {
+public class Erwerbspensum extends AbstractIntegerPensum {
 
 	private static final long serialVersionUID = 4649639217797690323L;
 

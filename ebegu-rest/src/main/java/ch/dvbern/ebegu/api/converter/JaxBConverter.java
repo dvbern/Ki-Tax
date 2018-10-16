@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.api.dtos.JaxAbstractBetreuungspensumDTO;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDecimalPensumDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
@@ -104,7 +104,7 @@ import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
-import ch.dvbern.ebegu.entities.AbstractBetreuungspensumEntity;
+import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
@@ -283,19 +283,21 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	private void convertAbstractBetreuungspensumFieldsToEntity(
-		@Nonnull final JaxAbstractBetreuungspensumDTO jaxPensum,
-		@Nonnull final AbstractBetreuungspensumEntity pensumEntity) {
+		@Nonnull final JaxAbstractDecimalPensumDTO jaxPensum,
+		@Nonnull final AbstractDecimalPensum pensumEntity) {
 
-		convertAbstractPensumFieldsToEntity(jaxPensum, pensumEntity);
+		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
+		pensumEntity.setPensum(jaxPensum.getPensum());
 	}
 
 	private void convertAbstractBetreuungspensumFieldsToJAX(
-		@Nonnull final AbstractBetreuungspensumEntity pensum,
-		@Nonnull final JaxAbstractBetreuungspensumDTO jaxPensum) {
+		@Nonnull final AbstractDecimalPensum pensum,
+		@Nonnull final JaxAbstractDecimalPensumDTO jaxPensum) {
 
-		convertAbstractPensumFieldsToJAX(pensum, jaxPensum);
+		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
+		jaxPensum.setPensum(pensum.getPensum());
 	}
 
 	@Nonnull

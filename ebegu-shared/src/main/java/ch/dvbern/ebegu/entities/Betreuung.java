@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.ebegu.validators.CheckAbwesenheitDatesOverlapping;
@@ -541,7 +542,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	private boolean hasAnyNonZeroPensum() {
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
-			if (betreuungspensumContainer.getBetreuungspensumJA().getPensum() > 0) {
+			if (MathUtil.isPositive(betreuungspensumContainer.getBetreuungspensumJA().getPensum())) {
 				return true;
 			}
 		}

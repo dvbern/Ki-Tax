@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.vorlagen.verfuegung;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.vorlagen.AufzaehlungPrint;
 import ch.dvbern.ebegu.vorlagen.AufzaehlungPrintImpl;
@@ -145,18 +147,18 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 			ListIterator<VerfuegungZeitabschnittPrint> listIterator = result.listIterator();
 			while (listIterator.hasNext()) {
 				VerfuegungZeitabschnittPrint zeitabschnitt = listIterator.next();
-				if (zeitabschnitt.getBetreuung() <= 0) {
+				if (!MathUtil.isPositive(zeitabschnitt.getBetreuung())) {
 					listIterator.remove();
 				} else {
 					break;
 				}
 			}
-
+			// todo fragen, warum wird es hier 2x gemacht????
 			Collections.reverse(result);
 			listIterator = result.listIterator();
 			while (listIterator.hasNext()) {
 				VerfuegungZeitabschnittPrint zeitabschnitt = listIterator.next();
-				if (zeitabschnitt.getBetreuung() <= 0) {
+				if (!MathUtil.isPositive(zeitabschnitt.getBetreuung())) {
 					listIterator.remove();
 				} else {
 					break;
@@ -185,7 +187,6 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	 */
 	@Nonnull
 	private List<AufzaehlungPrint> splitBemerkungen(@Nonnull String bemerkungen) {
-
 		List<AufzaehlungPrint> list = new ArrayList<>();
 		// Leere Zeile werden mit diese Annotation [\\r\\n]+ entfernt
 		String[] splitBemerkungenNewLine = bemerkungen.split('[' + System.getProperty("line.separator") + "]+");
@@ -199,21 +200,17 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	 * @return true falls Pensum groesser 0 ist
 	 */
 	@Override
-	public boolean isPensumGrosser0() {
-
+	public boolean isPensumGreaterThanZero() {
 		List<VerfuegungZeitabschnittPrint> vzList = getVerfuegungZeitabschnitt();
-		int value = 0;
-		for (VerfuegungZeitabschnittPrint verfuegungZeitabschnitt : vzList) {
-			value = value + verfuegungZeitabschnitt.getBGPensum();
-			// BG-Pensum
-		}
-		return value > 0;
+		BigDecimal value = vzList.stream()
+			.map(VerfuegungZeitabschnittPrint::getBGPensum)
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		return MathUtil.isPositive(value);
 	}
 
 	@Override
-	public boolean isPensumIst0() {
-
-		return !isPensumGrosser0();
+	public boolean isPensumZero() {
+		return !isPensumGreaterThanZero();
 	}
 
 	@Override
@@ -223,19 +220,16 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 
 	@Override
 	public boolean isPrintManuellebemerkung() {
-
 		return !getManuelleBemerkungen().isEmpty();
 	}
 
 	@Nonnull
 	private Kind extractKind() {
-
 		return betreuung.getKind().getKindJA();
 	}
 
 	@Nonnull
 	private Optional<Verfuegung> extractVerfuegung() {
-
 		Verfuegung verfuegung = betreuung.getVerfuegung();
 		if (verfuegung != null) {
 			return Optional.of(verfuegung);

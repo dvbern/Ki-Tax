@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
 import ch.dvbern.ebegu.util.EnumUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -75,7 +76,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 			.sorted()
 			.forEach(zahlung -> {
 				zahlung.getZahlungspositionen().stream()
-					.filter(zahlungsposition -> zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum() > 0)
+					.filter(zahlungsposition -> MathUtil.isPositive(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum()))
 					.sorted()
 					.forEach(zahlungsposition -> {
 						ExcelMergerDTO excelRowGroup = sheet.createGroup(MergeFieldZahlungAuftrag.repeatZahlungAuftragRow);
@@ -86,7 +87,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.verfuegung, zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.vonDatum, zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.bisDatum, zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis());
-						excelRowGroup.addValue(MergeFieldZahlungAuftrag.bgPensum, BigDecimal.valueOf(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum())
+						excelRowGroup.addValue(MergeFieldZahlungAuftrag.bgPensum, zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum()
 							.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.betragCHF, zahlungsposition.getBetrag());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.isKorrektur, ZahlungspositionStatus.NORMAL != zahlungsposition.getStatus());

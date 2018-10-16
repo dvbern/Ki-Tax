@@ -15,11 +15,12 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -27,28 +28,30 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 /**
- * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent) und ein DateRange beeinhalten.
+ * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent) in Ganzzahl
+ * und ein DateRange beeinhalten.
  */
 @MappedSuperclass
 @Audited
-public class AbstractPensumEntity extends AbstractDateRangedEntity {
+public class AbstractIntegerPensum extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -7576083148864149528L;
 
+	@Max(100)
 	@Min(0)
 	@NotNull
 	@Column(nullable = false)
-	private BigDecimal pensum = null;
+	private Integer pensum = 0;
 
-	public AbstractPensumEntity() {
+	public AbstractIntegerPensum() {
 	}
 
 	@Nonnull
-	public BigDecimal getPensum() {
+	public Integer getPensum() {
 		return pensum;
 	}
 
-	public void setPensum(@Nonnull BigDecimal pensum) {
+	public void setPensum(@Nonnull Integer pensum) {
 		this.pensum = pensum;
 	}
 
@@ -61,15 +64,15 @@ public class AbstractPensumEntity extends AbstractDateRangedEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!(other instanceof AbstractPensumEntity)) {
+		if (!(other instanceof AbstractIntegerPensum)) {
 			return false;
 		}
-		final AbstractPensumEntity otherAbstDateRangedEntity = (AbstractPensumEntity) other;
+		final AbstractIntegerPensum otherAbstDateRangedEntity = (AbstractIntegerPensum) other;
 		return super.isSame(otherAbstDateRangedEntity)
-			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0;
+			&& Objects.equals(this.getPensum(), otherAbstDateRangedEntity.getPensum());
 	}
 
-	public void copyAbstractPensumEntity(@Nonnull AbstractPensumEntity target, @Nonnull AntragCopyType copyType) {
+	public void copyAbstractPensumEntity(@Nonnull AbstractIntegerPensum target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractDateRangedEntity(target, copyType);
 		target.setPensum(this.getPensum());
 	}

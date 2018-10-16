@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * DTO fuer Daten des Betreuungspensum
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxBetreuungspensum extends JaxAbstractBetreuungspensumDTO {
+public class JaxBetreuungspensum extends JaxAbstractDecimalPensumDTO {
 
 	private Boolean nichtEingetreten = false;
 

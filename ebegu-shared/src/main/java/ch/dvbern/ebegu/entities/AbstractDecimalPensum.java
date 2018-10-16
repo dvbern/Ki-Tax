@@ -17,11 +17,14 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -29,14 +32,19 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import org.hibernate.envers.Audited;
 
 /**
- * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent), ein DateRange und ein
- * PensumUnits beeinhalten.
+ * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent) als BigDecimal,
+ * ein DateRange und ein PensumUnits beeinhalten.
  */
 @MappedSuperclass
 @Audited
-public class AbstractBetreuungspensumEntity extends AbstractPensumEntity {
+public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -7136083144964149528L;
+
+	@Min(0)
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal pensum = BigDecimal.ZERO;
 
 	/**
 	 * This parameter is used in the client to know in which units the amount must be displayed.
@@ -58,19 +66,21 @@ public class AbstractBetreuungspensumEntity extends AbstractPensumEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!(other instanceof AbstractBetreuungspensumEntity)) {
+		if (!(other instanceof AbstractDecimalPensum)) {
 			return false;
 		}
-		final AbstractBetreuungspensumEntity otherAbstDateRangedEntity = (AbstractBetreuungspensumEntity) other;
+		final AbstractDecimalPensum otherAbstDateRangedEntity = (AbstractDecimalPensum) other;
 		return super.isSame(otherAbstDateRangedEntity)
+			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0
 			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay();
 	}
 
 	public void copyAbstractBetreuungspensumEntity(
-		@Nonnull AbstractBetreuungspensumEntity target,
+		@Nonnull AbstractDecimalPensum target,
 		@Nonnull AntragCopyType copyType) {
 
-		super.copyAbstractPensumEntity(target, copyType);
+		super.copyAbstractDateRangedEntity(target, copyType);
+		target.setPensum(this.getPensum());
 		target.setUnitForDisplay(this.getUnitForDisplay());
 	}
 
@@ -81,5 +91,18 @@ public class AbstractBetreuungspensumEntity extends AbstractPensumEntity {
 
 	public void setUnitForDisplay(@Nonnull PensumUnits unitForDisplay) {
 		this.unitForDisplay = unitForDisplay;
+	}
+
+	@Nonnull
+	public BigDecimal getPensum() {
+		return pensum;
+	}
+
+	public void setPensum(@Nonnull BigDecimal pensum) {
+		this.pensum = pensum;
+	}
+
+	public void setPensum(@Nonnull Integer pensum) {
+		this.pensum = BigDecimal.valueOf(pensum);
 	}
 }
