@@ -28,7 +28,6 @@ import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
 
 @Component({
     selector: 'dv-edit-gemeinde',
@@ -45,7 +44,7 @@ export class EditGemeindeComponent implements OnInit {
     public einschulungTypValues: Array<TSEinschulungTyp>;
     public previewImageURL: string = '#';
     private fileToUpload!: File;
-    private fromState: StateDeclaration;
+    private navigationSource: StateDeclaration;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -55,7 +54,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly transition: Transition,
     ) {
-        this.fromState = this.transition.from();
+        this.navigationSource = this.transition.from();
     }
 
     public ngOnInit(): void {
@@ -90,6 +89,10 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
+        if (this.stammdaten.keineBeschwerdeAdresse) {
+            // Reset Beschwerdeadresse if not used
+            this.stammdaten.beschwerdeAdresse = undefined;
+        }
         this.gemeindeRS.saveGemeindeStammdaten(this.stammdaten).then(response => {
             this.stammdaten = response;
             this.navigateBack();
@@ -100,11 +103,22 @@ export class EditGemeindeComponent implements OnInit {
         // TODO: Implement Mitarbeiter Bearbeiten Button Action
     }
 
+    public hatBeschwerdeAdresse(): boolean {
+        this.stammdaten.beschwerdeAdresse = undefined;
+        if (this.stammdaten.keineBeschwerdeAdresse) {
+            this.stammdaten.beschwerdeAdresse = undefined;
+            return false;
+        }
+        this.stammdaten.beschwerdeAdresse = new TSAdresse();
+        return true;
+    }
+
+
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
     private navigateBack(): void {
-        this.$state.go(this.fromState, {gemeindeId: this.stammdaten.gemeinde.id});
+        this.$state.go(this.navigationSource, {gemeindeId: this.stammdaten.gemeinde.id});
     }
 }

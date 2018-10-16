@@ -90,7 +90,13 @@
                         </div>
                     </div>
                     <!-- Beschwerdeadresse -->
-                    <div class="col-sm-6">
+                    <div *ngIf="stammdaten.keineBeschwerdeAdresse" class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>BESCHWERDE_ADRESSE</h3>
+                            <p translate>BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT</p>
+                        </div>
+                    </div>
+                    <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>BESCHWERDE_ADRESSE</h3>
                             <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
@@ -100,15 +106,15 @@
                     </div>
                 </div>
                 <div class="row">
-                    <!-- Kontaktadresse -->
+                    <!-- Korrespondenzsprache -->
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>KORRESPONDENZSPRACHE</h3>
                             <p>{{korrespondenzsprache}}</p>
                         </div>
                     </div>
-                    <!-- E-Mail, Telefon -->
-                    <div class="col-sm-6">
+                    <!-- Standardverantwortliche -->
+                    <div *ngIf="stammdaten.defaultBenutzerBG" class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>STANDARD_VERANTWORTLICHE</h3>
                             <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>

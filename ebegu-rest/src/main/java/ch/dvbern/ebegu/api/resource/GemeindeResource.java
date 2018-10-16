@@ -205,7 +205,6 @@ public class GemeindeResource {
 		Optional<Gemeinde> gemeinde = gemeindeService.findGemeinde(gemeindeId);
 		stammdaten.setGemeinde(gemeinde.orElse(new Gemeinde()));
 		stammdaten.setAdresse(getInitAdresse());
-		stammdaten.setBeschwerdeAdresse(getInitAdresse());
 		stammdaten.setMail("");
 		return Optional.of(stammdaten);
 	}

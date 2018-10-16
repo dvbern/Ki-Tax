@@ -46,8 +46,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private JaxBenutzer defaultBenutzerTS;
 	@NotNull
 	private JaxGemeinde gemeinde;
-	@Nullable
-	private String      anschrift;
 	@NotNull
 	private JaxAdresse  adresse;
 	@Nullable
@@ -119,15 +117,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setGemeinde(JaxGemeinde gemeinde) {
 		this.gemeinde = gemeinde;
-	}
-
-	@Nullable
-	public String getAnschrift() {
-		return anschrift;
-	}
-
-	public void setAnschrift(@Nullable String anschrift) {
-		this.anschrift = anschrift;
 	}
 
 	public JaxAdresse getAdresse() {

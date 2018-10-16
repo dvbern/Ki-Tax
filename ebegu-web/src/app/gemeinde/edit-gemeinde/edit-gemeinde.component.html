@@ -30,7 +30,6 @@
             <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
             <div class="viewTitle">
                 <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer} }}</h2>
-                <pre>{{fromState.params | json}}</pre>
                 <hr class="header">
             </div>
 
@@ -183,7 +182,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!this.stammdaten.keineBeschwerdeAdresse" class="row">
                     <!-- Beschwerde-Adresse -->
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -195,7 +194,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!this.stammdaten.keineBeschwerdeAdresse" class="row">
                     <!-- Strasse -->
                     <div class="col-sm-5">
                         <div class="form-group">
@@ -217,7 +216,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!this.stammdaten.keineBeschwerdeAdresse" class="row">
                     <!-- PLZ -->
                     <div class="col-sm-1">
                         <div class="form-group">
@@ -245,11 +244,12 @@
                         <div class="form-group">
                             <h3 translate for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
                             <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG" id="verantwortliche_bg_id" name="verantwortliche_bg_id"
-                                        class="form-control" [compareWith]="compareBenutzer">
+                                        class="form-control" [compareWith]="compareBenutzer" required>
                                 <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
                                     {{vbg.vorname}} {{vbg.nachname}}
                                 </mat-option>
                             </mat-select>
+                            <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors" inputId="verantwortliche_bg_id"></dv-error-messages>
                         </div>
                     </div>
                     <div class="col-sm-6">

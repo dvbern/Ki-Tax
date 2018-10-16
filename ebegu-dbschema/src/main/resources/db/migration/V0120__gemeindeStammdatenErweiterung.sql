@@ -1,8 +1,5 @@
 # Tabellen GemeindeStammdaten erweitern
 
-ALTER TABLE gemeinde_stammdaten	ADD COLUMN anschrift VARCHAR(255) NULL;
-ALTER TABLE gemeinde_stammdaten_aud	ADD COLUMN anschrift VARCHAR(36) NULL;
-
 ALTER TABLE gemeinde_stammdaten	ADD COLUMN beschwerde_adresse_id VARCHAR(36) NULL;
 ALTER TABLE gemeinde_stammdaten_aud	ADD COLUMN beschwerde_adresse_id VARCHAR(36) NULL;
 

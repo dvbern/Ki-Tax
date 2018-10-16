@@ -28,7 +28,6 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public defaultBenutzerBG: TSBenutzer;
     public defaultBenutzerTS: TSBenutzer;
     public gemeinde: TSGemeinde;
-    public anschrift: string;
     public adresse: TSAdresse;
     public beschwerdeAdresse: TSAdresse;
     public keineBeschwerdeAdresse: boolean;

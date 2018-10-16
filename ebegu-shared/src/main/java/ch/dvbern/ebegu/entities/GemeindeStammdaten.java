@@ -64,10 +64,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_gemeinde_id"), nullable = false)
 	private Gemeinde gemeinde;
 
-	@Nullable
-	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String anschrift;
-
 	@NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_adresse_id"), nullable = false)
@@ -133,15 +129,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setGemeinde(Gemeinde gemeinde) {
 		this.gemeinde = gemeinde;
-	}
-
-	@Nullable
-	public String getAnschrift() {
-		return anschrift;
-	}
-
-	public void setAnschrift(@Nullable String anschrift) {
-		this.anschrift = anschrift;
 	}
 
 	public Adresse getAdresse() {

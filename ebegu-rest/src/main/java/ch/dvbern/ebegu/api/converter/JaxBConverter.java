@@ -895,7 +895,6 @@ public class JaxBConverter extends AbstractConverter {
 			}
 			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
 		}
-		stammdaten.setAnschrift(jaxStammdaten.getAnschrift());
 		stammdaten.setKeineBeschwerdeAdresse(jaxStammdaten.isKeineBeschwerdeAdresse());
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
@@ -945,7 +944,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
 		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
 		jaxStammdaten.setMail(stammdaten.getMail());
-		jaxStammdaten.setAnschrift(stammdaten.getAnschrift());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
 		jaxStammdaten.setKeineBeschwerdeAdresse(stammdaten.isKeineBeschwerdeAdresse());
