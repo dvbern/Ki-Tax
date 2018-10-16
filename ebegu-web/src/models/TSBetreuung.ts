@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {val} from '@uirouter/core';
 import * as moment from 'moment';
 import {TSAnmeldungMutationZustand} from './enums/TSAnmeldungMutationZustand';
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
