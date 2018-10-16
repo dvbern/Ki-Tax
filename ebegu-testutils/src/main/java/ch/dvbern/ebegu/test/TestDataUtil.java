@@ -322,7 +322,7 @@ public final class TestDataUtil {
 		return mandant;
 	}
 
-	@Nonnull
+	@Nullable
 	public static Mandant getMandantKantonBern(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
 		if (mandant == null) {
@@ -348,7 +348,7 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
-	@Nonnull
+	@Nullable
 	public static Gemeinde getGemeindeBern(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_BERN_ID);
 		if (gemeinde == null) {
@@ -359,7 +359,7 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
-	@Nonnull
+	@Nullable
 	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_OSTERMUNDIGEN_ID);
 		if (gemeinde == null) {
@@ -632,6 +632,7 @@ public final class TestDataUtil {
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
+		betreuung.setKeineKesbPlatzierung(true);
 		return betreuung;
 	}
 
@@ -641,6 +642,7 @@ public final class TestDataUtil {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		betreuung.setBetreuungspensumContainers(new TreeSet<>());
 		betreuung.setAbwesenheitContainers(new HashSet<>());
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setKind(createDefaultKindContainer());
 		return betreuung;
 	}
@@ -771,6 +773,7 @@ public final class TestDataUtil {
 		betreuung.setKind(new KindContainer());
 		betreuung.getKind().setKindJA(new Kind());
 		betreuung.getKind().setGesuch(gesuch);
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		return betreuung;
 	}

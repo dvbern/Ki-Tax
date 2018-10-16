@@ -151,6 +151,10 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	@NotNull
 	@Column(nullable = false)
+	private Boolean keineKesbPlatzierung = false;
+
+	@NotNull
+	@Column(nullable = false)
 	private Boolean erweiterteBeduerfnisse = false;
 
 	@Nullable
@@ -274,6 +278,14 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	public void setVertrag(Boolean vertrag) {
 		this.vertrag = vertrag;
+	}
+
+	public Boolean getKeineKesbPlatzierung() {
+		return keineKesbPlatzierung;
+	}
+
+	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
+		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
 	public Boolean getErweiterteBeduerfnisse() {
@@ -512,6 +524,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			target.setAbwesenheitMutiert(null);
 			target.setGueltig(false);
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
+			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
 
 			// EBEGU-1559
 			// Beim Mutieren werden alle Betreuungen kopiert.

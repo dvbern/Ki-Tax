@@ -73,6 +73,7 @@ describe('betreuungView', () => {
         betreuung = new TSBetreuung();
         betreuung.timestampErstellt = DateUtil.today();
         betreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
+        betreuung.keineKesbPlatzierung = true;
         kind = new TSKindContainer();
         $stateParams = $injector.get('$stateParams');
         spyOn(gesuchModelManager, 'getKindToWorkWith').and.returnValue(kind);

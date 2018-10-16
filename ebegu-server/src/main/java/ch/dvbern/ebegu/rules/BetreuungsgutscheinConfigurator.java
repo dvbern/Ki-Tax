@@ -103,6 +103,10 @@ public class BetreuungsgutscheinConfigurator {
 			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal());
 		rules.add(familienabzugAbschnittRule);
 
+		// Betreuungsgutscheine Gueltigkeit
+		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule = new GutscheineStartdatumAbschnittRule(defaultGueltigkeit);
+		rules.add(gutscheineStartdatumAbschnittRule);
+
 		// - Betreuungspensum
 		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit);
 		rules.add(betreuungspensumAbschnittRule);
@@ -157,6 +161,11 @@ public class BetreuungsgutscheinConfigurator {
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// REDUKTIONSREGELN: Setzen Anpsruch auf 0
 
+		// BETREUUNGS GUTSCHEINE START DATUM - Anspruch verfällt, wenn Gutscheine vor dem BetreuungsgutscheineStartdatum
+		// der Gemeinde liegen
+		GutscheineStartdatumCalcRule gutscheineStartdatumCalcRule = new GutscheineStartdatumCalcRule(defaultGueltigkeit);
+		rules.add(gutscheineStartdatumCalcRule);
+
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
 		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(PARAM_MASSGEBENDES_EINKOMMEN_MAX);
 		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter PARAM_MASSGEBENDES_EINKOMMEN_MAX muss gesetzt sein");
@@ -184,6 +193,10 @@ public class BetreuungsgutscheinConfigurator {
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
 		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe);
 		rules.add(schulstufeCalcRule);
+
+		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
+		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit);
+		rules.add(kesbPlatzierungCalcRule);
 
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit);
