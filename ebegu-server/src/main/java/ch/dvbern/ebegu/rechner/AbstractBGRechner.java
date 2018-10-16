@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
@@ -47,10 +46,9 @@ public abstract class AbstractBGRechner {
 	protected void checkArguments(@Nullable LocalDate von, @Nullable LocalDate bis,
 			@Nullable BigDecimal anspruch, @Nullable BigDecimal massgebendesEinkommen) {
 		// Inputdaten validieren
-		Objects.requireNonNull(von, "von darf nicht null sein");
-		Objects.requireNonNull(bis, "bis darf nicht null sein");
-		Objects.requireNonNull(anspruch, "anspruch darf nicht null sein");
-		Objects.requireNonNull(massgebendesEinkommen, "massgebendesEinkommen darf nicht null sein");
+		if (von == null || bis == null || anspruch == null || massgebendesEinkommen == null) {
+			throw new IllegalArgumentException("BG Rechner kann nicht verwendet werden, da Inputdaten fehlen: von/bis, Anpsruch, massgebendes Einkommen");
+		}
 		// Max. 1 Monat
 		if (von.getMonth() != bis.getMonth()) {
 			throw new IllegalArgumentException("BG Rechner duerfen nicht für monatsuebergreifende Zeitabschnitte verwendet werden!");

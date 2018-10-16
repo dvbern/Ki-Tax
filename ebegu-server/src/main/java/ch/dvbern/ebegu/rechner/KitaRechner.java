@@ -78,6 +78,8 @@ public class KitaRechner extends AbstractBGRechner {
 
 		// Resultat
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
+		verguenstigung = verguenstigung.min(vollkosten); 		// Verguenstigung nicht höher als Vollkosten
+		verguenstigung = verguenstigung.max(BigDecimal.ZERO); 	// Vergünstigung nicht negativ
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
 		// Runden und auf Zeitabschnitt zurückschreiben
 		if (verfuegungZeitabschnitt.isBezahltVollkosten()) {

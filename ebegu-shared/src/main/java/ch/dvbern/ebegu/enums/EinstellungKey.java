@@ -82,12 +82,6 @@ public enum EinstellungKey {
 	// Kosten pro Stunde Min
 	PARAM_KOSTEN_PRO_STUNDE_MIN,
 
-	// Minimal Massgebendes Einkommen
-	PARAM_MASSGEBENDES_EINKOMMEN_MIN,
-
-	// Maximal Massgebendes Einkommen
-	PARAM_MASSGEBENDES_EINKOMMEN_MAX,
-
 	// Anzahl Tage Kanton
 	PARAM_ANZAHL_TAGE_KANTON,
 

@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
@@ -158,6 +159,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungKind1.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setGueltigkeit(fachstelleGueltigkeit);
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setPensum(80);
+		betreuungKind1.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		return gesuch;
 	}
