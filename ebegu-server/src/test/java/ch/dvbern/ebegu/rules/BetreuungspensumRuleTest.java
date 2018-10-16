@@ -206,14 +206,14 @@ public class BetreuungspensumRuleTest {
 	@Test
 	public void testTagesfamilienOhneErwerbspensum() {
 		// Tageseltern Kleinkind haben die gleichen Regeln wie Kita
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp
-			.TAGESFAMILIEN, 80, BigDecimal.valueOf(800));
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
+			BetreuungsangebotTyp.TAGESFAMILIEN, 80, BigDecimal.valueOf(800));
 		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(0), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(BigDecimal.valueOf(0), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(BigDecimal.valueOf(80), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(BigDecimal.ZERO, result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());

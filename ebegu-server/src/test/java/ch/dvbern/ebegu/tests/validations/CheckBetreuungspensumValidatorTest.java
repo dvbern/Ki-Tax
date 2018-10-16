@@ -87,7 +87,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testTageselternJAWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, BigDecimal.valueOf(20), BigDecimal.valueOf(20));
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, BigDecimal.valueOf(20), BigDecimal.valueOf(19));
 		// Jetzt ist betreuungspensumGS richtig und wir finden den Fehler in betreuungspensumJA
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
