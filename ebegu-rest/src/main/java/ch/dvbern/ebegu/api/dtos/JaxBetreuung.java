@@ -76,6 +76,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	private Boolean vertrag;
 
 	@NotNull
+	private Boolean keineKesbPlatzierung;
+
+	@NotNull
 	private Boolean erweiterteBeduerfnisse;
 
 	@Nullable
@@ -179,6 +182,14 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setVertrag(Boolean vertrag) {
 		this.vertrag = vertrag;
+	}
+
+	public Boolean getKeineKesbPlatzierung() {
+		return keineKesbPlatzierung;
+	}
+
+	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
+		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
 	public Boolean getErweiterteBeduerfnisse() {

@@ -61,6 +61,8 @@ public class MailTemplateConfiguration {
 	public static final String GESUCHSTELLER = "gesuchsteller";
 	public static final String GESUCHSPERIODE = "gesuchsperiode";
 	public static final String START_DATUM = "startDatum";
+	public static final String GESUCH = "gesuch";
+	public static final String MITTEILUNG = "mitteilung";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -243,13 +245,15 @@ public class MailTemplateConfiguration {
 	public String getInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Gesuch gesuch) {
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
 		paramMap.put(START_DATUM, Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()));
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
+		paramMap.put(GESUCH, gesuch);
 
 		return doProcessTemplate("InfoFreischaltungGesuchsperiode.ftl", paramMap);
 	}
@@ -307,7 +311,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull Map<Object, Object> paramMap) {
 
-		paramMap.put("gesuch", gesuch);
+		paramMap.put(GESUCH, gesuch);
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 
 		return doProcessTemplate(nameOfTemplate, paramMap);
@@ -383,7 +387,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Mitteilung mitteilung,
 		@Nonnull Map<Object, Object> paramMap) {
 
-		paramMap.put("mitteilung", mitteilung);
+		paramMap.put(MITTEILUNG, mitteilung);
 
 		return doProcessTemplate("InfoMitteilungErhalten.ftl", paramMap);
 	}

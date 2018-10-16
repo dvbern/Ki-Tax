@@ -31,7 +31,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Schulamt der Stadt Bern
+		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.

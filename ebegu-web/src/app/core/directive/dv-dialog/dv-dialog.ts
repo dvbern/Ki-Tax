@@ -13,7 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ILogService, IPromise} from 'angular';
+import {IFormController, ILogService, IPromise} from 'angular';
+import {RemoveDialogParams} from '../../../../gesuch/dialog/RemoveDialogController';
 import IDialogOptions = angular.material.IDialogOptions;
 import IDialogService = angular.material.IDialogService;
 
@@ -60,13 +61,17 @@ export class DvDialog {
      * @param params Ein JS-Objekt {key-value}. Alle definierte Keys werden dann mit dem gegebenen Wert in Controller
      *         injected
      */
-    public showRemoveDialog(template: string, form: any, controller?: any, params?: any): IPromise<any> {
-        params.form = form;
+    public showRemoveDialog(
+        template: string,
+        form: IFormController,
+        controller?: any,
+        params?: { [k in RemoveDialogParams]?: any },
+    ): IPromise<any> {
         const confirm: IDialogOptions = {
             template,
             controller,
             controllerAs: 'vm',
-            locals: params,
+            locals: {params, form},
         };
         return this.$mdDialog.show(confirm);
     }

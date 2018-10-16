@@ -157,6 +157,7 @@ public abstract class AbstractTestfall {
 		Gemeinde testGemeinde = new Gemeinde();
 		testGemeinde.setStatus(GemeindeStatus.AKTIV);
 		testGemeinde.setName("Testgemeinde");
+		testGemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		return testGemeinde;
 	}
 
@@ -310,6 +311,7 @@ public abstract class AbstractTestfall {
 			betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 			betreuung.setDatumBestaetigung(LocalDate.now());
 		}
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setVertrag(Boolean.TRUE);
 		return betreuung;
 	}

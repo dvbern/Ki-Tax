@@ -25,7 +25,6 @@ import TSBetreuung from '../../../models/TSBetreuung';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSVerfuegung from '../../../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../../../models/TSVerfuegungZeitabschnitt';
-import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {ThreeButtonsDialogController} from '../../dialog/ThreeButtonsDialogController';
@@ -137,27 +136,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.setBemerkungen();
             });
         }
-        if (!this.berechnungsManager.finanzielleSituationResultate
-            || angular.equals(this.berechnungsManager.finanzielleSituationResultate, {})) {
-            this.berechnungsManager.calculateFinanzielleSituation(gesuch);
-        }
-        const info = gesuch.extractEinkommensverschlechterungInfo();
-        if (info && info.ekvFuerBasisJahrPlus1
-            && (
-                !this.berechnungsManager.einkommensverschlechterungResultateBjP1
-                || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP1, {})
-            )) {
-
-            this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 1);
-        }
-        if (info && info.ekvFuerBasisJahrPlus2
-            && (
-                !this.berechnungsManager.einkommensverschlechterungResultateBjP2
-                || angular.equals(this.berechnungsManager.einkommensverschlechterungResultateBjP2, {})
-            )) {
-
-            this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, 2);
-        }
         this.initDevModeParameter();
         this.setSameVerfuegungsdaten();
         this.setSameVerrechneteVerfuegungdaten();
@@ -220,6 +198,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         });
     }
 
+    // noinspection JSUnusedGlobalSymbols
     public schliessenOhneVerfuegen(): void {
         if (!this.isGesuchValid()) {
             return;
@@ -228,6 +207,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.verfuegungSchliessenOhenVerfuegen().then(() => this.goToVerfuegen());
     }
 
+    // noinspection JSUnusedGlobalSymbols
     public nichtEintreten(): void {
         if (!this.isGesuchValid()) {
             return;
@@ -303,39 +283,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return undefined;
         }
         return this.getBetreuung().betreuungsstatus;
-    }
-
-    public getAnfangsPeriode(): string {
-        if (this.ebeguUtil && this.gesuchModelManager.getGesuchsperiode()) {
-            return this.ebeguUtil.getFirstDayGesuchsperiodeAsString(this.gesuchModelManager.getGesuchsperiode());
-        }
-        return undefined;
-    }
-
-    public getAnfangsVerschlechterung1(): string {
-        if (this.hasEinkommensVerschlechterungInfo()) {
-            const gesuch = this.gesuchModelManager.getGesuch();
-            const stichtag = gesuch.extractEinkommensverschlechterungInfo().stichtagFuerBasisJahrPlus1;
-
-            return DateUtil.momentToLocalDateFormat(stichtag, 'DD.MM.YYYY');
-        }
-        return undefined;
-    }
-
-    public getAnfangsVerschlechterung2(): string {
-        if (this.hasEinkommensVerschlechterungInfo()) {
-            const gesuch = this.gesuchModelManager.getGesuch();
-            const stichtag = gesuch.extractEinkommensverschlechterungInfo().stichtagFuerBasisJahrPlus2;
-
-            return DateUtil.momentToLocalDateFormat(stichtag, 'DD.MM.YYYY');
-        }
-        return undefined;
-    }
-
-    private hasEinkommensVerschlechterungInfo(): boolean {
-        return this.gesuchModelManager
-            && this.gesuchModelManager.getGesuch()
-            && !!this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
     }
 
     /**
@@ -465,6 +412,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return !this.isBetreuungInStatus(TSBetreuungsstatus.NICHT_EINGETRETEN);
     }
 
+    // noinspection JSUnusedGlobalSymbols
     public showExportLink(): boolean {
         return this.isBetreuungInStatus(TSBetreuungsstatus.VERFUEGT);
     }

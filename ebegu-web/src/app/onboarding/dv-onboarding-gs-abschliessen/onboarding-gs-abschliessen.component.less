@@ -26,39 +26,59 @@
 .onboarding-gs-angaben, .onboarding-gs-gemeinde {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: stretch;
-    width: 52.6rem;
+    width: 100%;
+    max-width: 52.6rem;
     padding: 2rem;
     &-title {
         padding: 20px;
-        background-color: @dgrey;
+        background-color: @contrast-darker;
         color: @white;
+        display: flex;
+        justify-content: space-between;
+
         .onboarding-gs-gemeinde-aendern {
-            background-color: @white;
-            color: @black;
+            background: @contrast-lightest;
+            color: @contrast-darker;
+            height: auto;
+            padding: 0 2.5rem 0;
+            text-transform: uppercase;
         }
     }
     &-content {
-        padding: 20px;
         background-color: @white;
         color: @black;
     }
+}
+
+.onboarding-gs-gemeinde {
+    justify-content: space-between;
+    &-content {
+        padding: 20px;
+    }
+}
+
+.onboarding-gs-angaben {
+    justify-content: start;
     &-table {
-        border: 1px @black;
+        border: none;
         width: 100%;
         &-label, &-value {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             max-width: 0;
+            padding: 14px;
+            border-bottom: 1px solid @black;
         }
         &-label {
             font-weight: bold;
             width: 30%;
+            border-right: 1px solid @black;
         }
         &-value {
             width: 70%;
+            border-left: 1px solid @black;
 
         }
 
@@ -68,20 +88,19 @@
 .onboarding-gs-abschliessen {
     height: 4rem;
     width: 26.3rem;
-    margin: 1.7rem auto;
+    margin: 4rem auto 0 0;
     .onboarding-text();
     background-color: @primary;
     text-align: center;
-    flex: 1;
     border: none;
     text-transform: uppercase;
 }
 
 .onboarding-gs-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
 }
 
 .onboarding {
