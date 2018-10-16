@@ -67,6 +67,8 @@ import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxEnversRevision;
+import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensum;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
@@ -131,6 +133,8 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fachstelle;
@@ -2025,6 +2029,11 @@ public class JaxBConverter extends AbstractConverter {
 			betreuungJAXP.getBetreuungspensumContainers(),
 			betreuung.getBetreuungspensumContainers()
 		);
+
+		erweiterteBetreuungContainerToEntity(
+			betreuungJAXP.getErweiterteBetreuungContainer(),
+			betreuung.getErweiterteBetreuungContainer()
+		);
 		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
 
 		abwesenheitContainersToEntity(betreuungJAXP.getAbwesenheitContainers(), betreuung.getAbwesenheitContainers());
@@ -2032,7 +2041,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setVertrag(betreuungJAXP.getVertrag());
-		betreuung.setErweiterteBeduerfnisse(betreuungJAXP.getErweiterteBeduerfnisse());
 
 		// InstitutionStammdaten muessen bereits existieren
 		if (betreuungJAXP.getInstitutionStammdaten() != null) {
@@ -2086,6 +2094,20 @@ public class JaxBConverter extends AbstractConverter {
 
 		//ACHTUNG: Verfuegung wird hier nicht synchronisiert aus sicherheitsgruenden
 		return betreuung;
+	}
+
+	private ErweiterteBetreuung erweiterteBetreuungToEntity(
+		@Nonnull final JaxErweiterteBetreuung erweiterteBetreuungJAXP,
+		@Nonnull final ErweiterteBetreuung erweiterteBetreuung) {
+
+		requireNonNull(erweiterteBetreuung);
+		requireNonNull(erweiterteBetreuungJAXP);
+
+		convertAbstractVorgaengerFieldsToEntity(erweiterteBetreuungJAXP, erweiterteBetreuung);
+
+		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
+
+		return erweiterteBetreuung;
 	}
 
 	@Nullable
@@ -2337,7 +2359,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setAbwesenheitContainers(abwesenheitContainersToJax(betreuungFromServer.getAbwesenheitContainers()));
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
-		jaxBetreuung.setErweiterteBeduerfnisse(betreuungFromServer.getErweiterteBeduerfnisse());
 		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenToJAX(betreuungFromServer.getInstitutionStammdaten()));
 		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
 		if (betreuungFromServer.getKind() != null) {
@@ -2645,6 +2666,67 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 
 		return jaxBetreuungspensum;
+	}
+
+	@Nonnull
+	public ErweiterteBetreuungContainer erweiterteBetreuungContainerToEntity(
+		@Nonnull final JaxErweiterteBetreuungContainer containerJAX,
+		@Nonnull final ErweiterteBetreuungContainer container) {
+		requireNonNull(container);
+		requireNonNull(containerJAX);
+		convertAbstractVorgaengerFieldsToEntity(containerJAX, container);
+
+		ErweiterteBetreuung erwBetToMergeWith;
+
+		if (containerJAX.getErweiterteBetreuungGS() != null) {
+			erwBetToMergeWith =
+				Optional.ofNullable(container.getErweiterteBetreuungGS()).orElse(new ErweiterteBetreuung());
+			container.setErweiterteBetreuungGS(erweiterteBetreuungToEntity(
+				containerJAX.getErweiterteBetreuungGS(),
+				erwBetToMergeWith));
+		}
+		if (containerJAX.getErweiterteBetreuungJA() != null) {
+			erwBetToMergeWith =
+				Optional.ofNullable(container.getErweiterteBetreuungJA()).orElse(new ErweiterteBetreuung());
+			container.setErweiterteBetreuungJA(erweiterteBetreuungToEntity(
+				containerJAX.getErweiterteBetreuungJA(),
+				erwBetToMergeWith));
+		}
+		return container;
+	}
+
+	@Nullable
+	private JaxErweiterteBetreuungContainer erweiterteBetreuungContainerToJax(
+		@Nullable ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
+
+		if (erweiterteBetreuungContainer == null) {
+			return null;
+		}
+
+		JaxErweiterteBetreuungContainer jaxErweiterteBetreuungContainer = new JaxErweiterteBetreuungContainer();
+		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuungContainer, jaxErweiterteBetreuungContainer);
+
+		if (erweiterteBetreuungContainer.getErweiterteBetreuungGS() != null) {
+			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungGS());
+			jaxErweiterteBetreuungContainer.setErweiterteBetreuungGS(jaxErweiterteBetreuung);
+		}
+
+		if (erweiterteBetreuungContainer.getErweiterteBetreuungJA() != null) {
+			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungJA());
+			jaxErweiterteBetreuungContainer.setErweiterteBetreuungJA(jaxErweiterteBetreuung);
+		}
+
+		return jaxErweiterteBetreuungContainer;
+	}
+
+	@Nonnull
+	private JaxErweiterteBetreuung erweiterteBetreuungToJax(@Nonnull ErweiterteBetreuung erweiterteBetreuung) {
+
+		JaxErweiterteBetreuung jaxErweiterteBetreuung = new JaxErweiterteBetreuung();
+		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
+		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
+
+		return jaxErweiterteBetreuung;
 	}
 
 	@Nonnull
