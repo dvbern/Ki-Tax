@@ -26,20 +26,18 @@ import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
-import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../shared/shared.module';
-import {EditGemeindeComponent} from './edit-gemeinde.component';
+import {ViewGemeindeComponent} from './view-gemeinde.component';
 
-describe('EditGemeindeComponent', () => {
+describe('ViewGemeindeComponent', () => {
 
-    let component: EditGemeindeComponent;
-    let fixture: ComponentFixture<EditGemeindeComponent>;
+    let component: ViewGemeindeComponent;
+    let fixture: ComponentFixture<ViewGemeindeComponent>;
 
     const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
         ['getGemeindenForPrincipal$', 'findGemeinde']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['findBenutzerByEmail']);
     const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
     const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
         ['getAllGesuchsperioden']);
@@ -55,15 +53,13 @@ describe('EditGemeindeComponent', () => {
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
-                {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BenutzerRS, useValue: benutzerServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
-                {provide: GesuchsperiodeRS, useValue: gesuchsperiodeServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
             ],
             declarations: [
-                EditGemeindeComponent,
+                ViewGemeindeComponent,
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();
@@ -75,7 +71,7 @@ describe('EditGemeindeComponent', () => {
     }));
 
     beforeEach(async(() => {
-        fixture = TestBed.createComponent(EditGemeindeComponent);
+        fixture = TestBed.createComponent(ViewGemeindeComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));

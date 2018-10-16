@@ -21,7 +21,6 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
-import {Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import TSAdresse from '../../../models/TSAdresse';
@@ -39,7 +38,6 @@ export class EditGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
     public stammdaten: TSGemeindeStammdaten;
-    public stammdaten$: Observable<TSGemeindeStammdaten>;
     public beguStart: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
     public previewImageURL: string = '#';
@@ -52,18 +50,18 @@ export class EditGemeindeComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly transition: Transition,
     ) {
-        this.navigationSource = this.transition.from();
     }
 
     public ngOnInit(): void {
+        this.navigationSource = this.$transition$.from();
         const gemeindeId: string = this.$transition$.params().gemeindeId;
         if (!gemeindeId) {
             return;
         }
-        this.einschulungTypValues = getTSEinschulungTypValues();
+        // TODO: Task KIBON-217: Load from DB
         this.previewImageURL = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
+        this.einschulungTypValues = getTSEinschulungTypValues();
 
         this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
             // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
@@ -118,7 +116,20 @@ export class EditGemeindeComponent implements OnInit {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
+    public handleInput(files: FileList): void {
+        this.fileToUpload = files[0];
+        const tmpFileReader = new FileReader();
+        tmpFileReader.onload = (e: any): void => {
+            this.previewImageURL = e.target.result;
+        };
+        tmpFileReader.readAsDataURL(this.fileToUpload);
+    }
+
     private navigateBack(): void {
-        this.$state.go(this.navigationSource, {gemeindeId: this.stammdaten.gemeinde.id});
+        if (this.navigationSource.name) {
+            this.$state.go(this.navigationSource, {gemeindeId: this.stammdaten.gemeinde.id});
+            return;
+        }
+        this.$state.go('gemeinde.list');
     }
 }

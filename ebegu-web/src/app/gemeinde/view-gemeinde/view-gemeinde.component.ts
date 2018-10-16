@@ -21,7 +21,6 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import TSBenutzer from '../../../models/TSBenutzer';
@@ -37,7 +36,6 @@ export class ViewGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
     public stammdaten: TSGemeindeStammdaten;
-    public stammdaten$: Observable<TSGemeindeStammdaten>;
     public korrespondenzsprache: string;
     public kontinggentierung: string;
     public beguStart: string;
@@ -60,6 +58,7 @@ export class ViewGemeindeComponent implements OnInit {
         if (!gemeindeId) {
             return;
         }
+        // TODO: Task KIBON-217: Load from DB
         this.previewImageURL = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
         this.einschulungTypValues = getTSEinschulungTypValues();
 
