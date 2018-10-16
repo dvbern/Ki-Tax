@@ -50,26 +50,26 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
  */
 public final class BGRechnerParameterDTO {
 
-	private BigDecimal maxVerguenstigungVorschuleBabyProTg = MathUtil.GANZZAHL.from(140);
-	private BigDecimal maxVerguenstigungVorschuleKindProTg = MathUtil.GANZZAHL.from(100);
-	private BigDecimal maxVerguenstigungSchuleKindProTg = MathUtil.GANZZAHL.from(75);
+	private BigDecimal maxVerguenstigungVorschuleBabyProTg;
+	private BigDecimal maxVerguenstigungVorschuleKindProTg;
+	private BigDecimal maxVerguenstigungSchuleKindProTg;
 
-	private BigDecimal maxVerguenstigungVorschuleBabyProStd = MathUtil.DEFAULT.from(11.90);
-	private BigDecimal maxVerguenstigungVorschuleKindProStd = MathUtil.DEFAULT.from(8.50);
-	private BigDecimal maxVerguenstigungSchuleKindProStd = MathUtil.DEFAULT.from(8.50);
+	private BigDecimal maxVerguenstigungVorschuleBabyProStd;
+	private BigDecimal maxVerguenstigungVorschuleKindProStd;
+	private BigDecimal maxVerguenstigungSchuleKindProStd;
 
-	private BigDecimal maxMassgebendesEinkommen = MathUtil.GANZZAHL.from(160000);
-	private BigDecimal minMassgebendesEinkommen = MathUtil.GANZZAHL.from(43000);
+	private BigDecimal maxMassgebendesEinkommen;
+	private BigDecimal minMassgebendesEinkommen;
 
-	private BigDecimal oeffnungstageKita = MathUtil.GANZZAHL.from(240);
-	private BigDecimal oeffnungstageTFO = MathUtil.GANZZAHL.from(240);
-	private BigDecimal oeffnungsstundenTFO = MathUtil.GANZZAHL.from(11);
+	private BigDecimal oeffnungstageKita;
+	private BigDecimal oeffnungstageTFO;
+	private BigDecimal oeffnungsstundenTFO;
 
-	private BigDecimal zuschlagBehinderungProTg = MathUtil.GANZZAHL.from(50);
-	private BigDecimal zuschlagBehinderungProStd = MathUtil.DEFAULT.from(4.25);
+	private BigDecimal zuschlagBehinderungProTg;
+	private BigDecimal zuschlagBehinderungProStd;
 
-	private BigDecimal minVerguenstigungProTg = MathUtil.GANZZAHL.from(7);
-	private BigDecimal minVerguenstigungProStd = MathUtil.DEFAULT.from(0.70);
+	private BigDecimal minVerguenstigungProTg;
+	private BigDecimal minVerguenstigungProStd;
 
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
