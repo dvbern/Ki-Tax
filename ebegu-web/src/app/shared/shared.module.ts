@@ -34,6 +34,8 @@ import {GemeindeMultiselectComponent} from '../core/component/gemeinde-multisele
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {AccordionTabDirective} from './directive/accordion-tab.directive';
+import {AccordionDirective} from './directive/accordion.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {MaterialModule} from './material.module';
@@ -74,6 +76,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         UiViewComponent,
         FullHeightContainerComponent,
         LoadingButtonDirective,
+        AccordionDirective,
+        AccordionTabDirective,
         GemeindeMultiselectComponent,
     ],
     entryComponents: [
@@ -107,6 +111,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         UiViewComponent,
         FullHeightContainerComponent,
         LoadingButtonDirective,
+        AccordionDirective,
+        AccordionTabDirective,
         GemeindeMultiselectComponent,
     ],
     providers: [
