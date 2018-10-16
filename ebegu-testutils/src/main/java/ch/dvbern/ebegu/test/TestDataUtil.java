@@ -632,6 +632,7 @@ public final class TestDataUtil {
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
+		betreuung.setKeineKesbPlatzierung(true);
 		return betreuung;
 	}
 
@@ -641,6 +642,7 @@ public final class TestDataUtil {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		betreuung.setBetreuungspensumContainers(new TreeSet<>());
 		betreuung.setAbwesenheitContainers(new HashSet<>());
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setKind(createDefaultKindContainer());
 		return betreuung;
 	}
@@ -771,6 +773,7 @@ public final class TestDataUtil {
 		betreuung.setKind(new KindContainer());
 		betreuung.getKind().setKindJA(new Kind());
 		betreuung.getKind().setGesuch(gesuch);
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		return betreuung;
 	}
