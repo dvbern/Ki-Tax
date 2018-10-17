@@ -18,7 +18,10 @@
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {take} from 'rxjs/operators';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import {ignoreNullAndUndefined} from '../../../utils/rxjs-operators';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {EinladungAbschliessenComponent} from '../einladung-abschliessen/einladung-abschliessen.component';
@@ -63,6 +66,17 @@ const states: Ng2StateDeclaration[] = [
             // Da ein Mitarbeiter mit irgend einer Rolle angelegt werden kann, müssen wir alle Rollen erlauben
             roles: TSRoleUtil.getAllRolesButAnonymous(),
         },
+        resolve: [
+            {
+                token: 'principal',
+                deps: [AuthServiceRS],
+                resolveFn: (authService: AuthServiceRS) => authService.principal$
+                    .pipe(
+                        ignoreNullAndUndefined(),
+                        take(1))
+                    .toPromise(),
+            },
+        ],
     },
     {
         name: 'einladung.error',

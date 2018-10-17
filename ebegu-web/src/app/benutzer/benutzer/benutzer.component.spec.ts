@@ -24,8 +24,8 @@ import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
-import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component';
-import {BerechtigungComponent} from '../berechtigung/berechtigung.component';
+import {BenutzerRolleComponent} from '../../shared/component/benutzer-rolle/benutzer-rolle.component';
+import {BerechtigungComponent} from '../../shared/component/berechtigung/berechtigung.component';
 
 import {BenutzerComponent} from './benutzer.component';
 

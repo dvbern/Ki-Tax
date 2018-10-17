@@ -16,18 +16,46 @@
   -->
 
 <dv-full-height-container>
-    <div class="dv-content">
-        <div class="row viewTitle">
-            <div class="col-md-12">
-                <h2 translate>EINLADUNG_ABSCHLIESSEN</h2>
-                <hr class="header">
+    <form #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+        <div class="dv-content">
+            <div class="row viewTitle">
+                <div class="col-md-12">
+                    <h2 translate>EINLADUNG_ABSCHLIESSEN</h2>
+                    <hr class="header">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 translate>KIBON_DATEN</h3>
+
+                    <dv-berechtigung [disabled]="true" [berechtigung]="principal.currentBerechtigung"></dv-berechtigung>
+                </div>
+                <div class="col-md-6">
+                    <h3 translate>BE_LOGIN_DATEN</h3>
+
+                    <table class="table">
+                        <tr>
+                            <td translate>VORNAME</td>
+                            <td>{{principal.vorname}}</td>
+                        </tr>
+                        <tr>
+                            <td translate>NAME</td>
+                            <td>{{principal.nachname}}</td>
+                        </tr>
+                        <tr>
+                            <td translate>EMAIL</td>
+                            <td>{{principal.email}}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="dv-footer">
-        <dv-loading-button (buttonClick)="next()">
-            <span translate>EINLADUNG_ABSCHLIESSEN</span>
-        </dv-loading-button>
-    </div>
+        <div class="dv-footer">
+            <dv-loading-button (buttonClick)="next()">
+                <span translate>EINLADUNG_ABSCHLIESSEN</span>
+            </dv-loading-button>
+        </div>
+    </form>
 </dv-full-height-container>
