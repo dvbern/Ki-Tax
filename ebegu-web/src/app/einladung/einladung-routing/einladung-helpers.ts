@@ -26,8 +26,10 @@ export function getEntityTargetState(transition: Transition, principal: TSBenutz
         case TSEinladungTyp.MITARBEITER:
             return getRoleBasedTargetState(principal.getCurrentRole(), stateService);
         case TSEinladungTyp.GEMEINDE:
+            // TODO auf Gemeinde Profil navigieren (KIBON-212)
             return stateService.target('gemeinde.list');
         case TSEinladungTyp.TRAEGERSCHAFT:
+            // TODO auf Trägerschaft Profil navigieren (KIBON-XXX?)
             return stateService.target('admin.traegerschaft');
         case TSEinladungTyp.INSTITUTION:
             return stateService.target('admin.institution', {institutionId: entityId});
