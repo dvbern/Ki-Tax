@@ -16,5 +16,5 @@ export function isNotNullOrUndefined<T>(input: null | undefined | T): input is T
 }
 
 export function ignoreNullAndUndefined<T>(): (source$: Observable<T | null | undefined>) => Observable<T> {
-    return (source$: Observable<null | undefined | T>) => source$.pipe(filter(isNotNullOrUndefined));
+    return source$ => source$.pipe(filter(isNotNullOrUndefined));
 }
