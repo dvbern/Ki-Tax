@@ -63,9 +63,6 @@ export class DVNavigation implements IDirective {
     }
 }
 
-/**
- * Direktive  der initial die smart table nach dem aktuell eingeloggtem user filtert
- */
 export class NavigatorController implements IController {
 
     public static $inject: string[] = [
