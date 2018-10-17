@@ -181,6 +181,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(gueltigkeit);
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
+		betreuung.setKeineKesbPlatzierung(true);
 		return betreuung;
 	}
 }

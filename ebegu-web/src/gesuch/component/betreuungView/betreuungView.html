@@ -188,9 +188,8 @@
                         </div>
                     </div>
 
-
                     <!--vertrag-->
-                    <div class="row marginBottom50 marginTop20" dv-show-element
+                    <div class="row marginTop20" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="!vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
@@ -204,6 +203,21 @@
                                 <div class="dv-error-messages" ng-if="vm.flagErrorVertrag === true">
                                     <span data-translate="ERROR_VERTRAG_REQUIRED"></span>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Kesb Platzierung-->
+                    <div class="row marginBottom50 marginTop20" dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                         dv-show-expression="!vm.isSchulamt()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.getBetreuungModel().keineKesbPlatzierung" name="keineKesbPlatzierung"
+                                             aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}" ng-disabled="!vm.isEnabled()"
+                                             ng-class="{true:'checkbox-error', false:''}[vm.flagErrorVertrag]">
+                                    <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
+                                </md-checkbox>
                             </div>
                         </div>
                     </div>

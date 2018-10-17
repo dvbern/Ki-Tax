@@ -311,6 +311,7 @@ public abstract class AbstractTestfall {
 			betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 			betreuung.setDatumBestaetigung(LocalDate.now());
 		}
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setVertrag(Boolean.TRUE);
 		return betreuung;
 	}
