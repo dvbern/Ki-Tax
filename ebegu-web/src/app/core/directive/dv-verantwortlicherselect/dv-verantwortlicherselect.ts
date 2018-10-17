@@ -24,7 +24,6 @@ import ITranslateService = angular.translate.ITranslateService;
 
 export class DvVerantwortlicherselect implements IDirective {
     public restrict = 'E';
-    public require = {};
     public scope = {};
     public controller = VerantwortlicherselectController;
     public controllerAs = 'vm';
