@@ -15,8 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource.auth;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
 import javax.ejb.EJBAccessException;
 import javax.ejb.Stateless;
@@ -39,15 +37,17 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.ConnectorException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.LoginException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_EMAIL_MISMATCH;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -113,31 +113,40 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Override
-	public JaxExternalBenutzer updateOrStoreUserFromIAM(@Nonnull JaxExternalBenutzer benutzer) {
+	public JaxExternalBenutzer updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer) {
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 		LOG.debug("Requested forwared for {} ", this.request.getHeader("X-Forwarded-For"));
 		checkLocalAccessOnly();
 
-		Benutzer user = new Benutzer();
-		toBenutzer(benutzer, user);
+		Benutzer benutzer = new Benutzer();
+		toBenutzer(externalBenutzer, benutzer);
 
-		String unusedAttr = StringUtils.join(benutzer.getCommonName(), benutzer.getTelephoneNumber(),
-			benutzer.getMobile(), benutzer.getPreferredLang(), benutzer.getPostalCode(), benutzer.getState(),
-			benutzer.getStreet(), benutzer.getPostalCode(), benutzer.getCountryCode(), benutzer.getCountry(),
-			benutzer.getCountry(), ',');
+		String unusedAttr = StringUtils.join(
+			externalBenutzer.getCommonName(),
+			externalBenutzer.getTelephoneNumber(),
+			externalBenutzer.getMobile(),
+			externalBenutzer.getPreferredLang(),
+			externalBenutzer.getPostalCode(),
+			externalBenutzer.getState(),
+			externalBenutzer.getStreet(),
+			externalBenutzer.getPostalCode(),
+			externalBenutzer.getCountryCode(),
+			externalBenutzer.getCountry(),
+			externalBenutzer.getCountry(),
+			',');
 
 		LOG.info(
 			"The following attributes are received from the ExternalLoginModule but not yet stored {}",
 			unusedAttr);
 
-		Mandant mandant = this.mandantService.findMandant(benutzer.getMandantId())
+		Mandant mandant = this.mandantService.findMandant(externalBenutzer.getMandantId())
 			.orElseThrow(() -> {
-				LOG.error("Mandant not found for passed id: {}", benutzer.getMandantId());
+				LOG.error("Mandant not found for passed id: {}", externalBenutzer.getMandantId());
 				return new EbeguEntityNotFoundException("updateOrStoreMandant", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 			});
-		user.setMandant(mandant);
+		benutzer.setMandant(mandant);
 
-		Benutzer storedUser = benutzerService.updateOrStoreUserFromIAM(user);
+		Benutzer storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
 
 		return convertBenutzerToJax(storedUser);
 	}
@@ -152,24 +161,30 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	@Override
-	public JaxExternalBenutzer updateUserFromIAM(@Nonnull String userId, @Nonnull JaxExternalBenutzer benutzer) {
-		requireNonNull(userId);
-		requireNonNull(benutzer);
+	public JaxExternalBenutzer updateBenutzer(
+		@Nonnull String benutzerId,
+		@Nonnull JaxExternalBenutzer externalBenutzer)
+		throws ConnectorException {
+
+		requireNonNull(benutzerId);
+		requireNonNull(externalBenutzer);
 		checkLocalAccessOnly();
 
-		Benutzer existingBenutzer = benutzerService.findBenutzerById(userId)
+		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"Benutzer not found",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		String persistedEmail = existingBenutzer.getEmail();
-		String externalEmail = benutzer.getEmail();
+		String externalEmail = externalBenutzer.getEmail();
 
 		if (!persistedEmail.equals(externalEmail)) {
-			throw new LoginException(ErrorCodeEnum.ERROR_EMAIL_MISMATCH, persistedEmail, externalEmail);
+			String msg = ServerMessageUtil.translateEnumValue(ERROR_EMAIL_MISMATCH, persistedEmail, externalEmail);
+
+			throw new ConnectorException(msg);
 		}
 
-		toBenutzer(benutzer, existingBenutzer);
+		toBenutzer(externalBenutzer, existingBenutzer);
 
 		if (existingBenutzer.getStatus() == BenutzerStatus.EINGELADEN) {
 			existingBenutzer.setStatus(BenutzerStatus.AKTIV);
@@ -181,21 +196,21 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Nonnull
-	private JaxExternalBenutzer convertBenutzerToJax(@Nonnull Benutzer storedUser) {
+	private JaxExternalBenutzer convertBenutzerToJax(@Nonnull Benutzer benutzer) {
 		JaxExternalBenutzer jaxExternalBenutzer = new JaxExternalBenutzer();
-		jaxExternalBenutzer.setUsername(storedUser.getUsername());
-		jaxExternalBenutzer.setExternalUUID(storedUser.getExternalUUID());
-		jaxExternalBenutzer.setEmail(storedUser.getEmail());
-		jaxExternalBenutzer.setNachname(storedUser.getNachname());
-		jaxExternalBenutzer.setVorname(storedUser.getVorname());
-		jaxExternalBenutzer.setRole(storedUser.getRole().name());
-		jaxExternalBenutzer.setMandantId(storedUser.getMandant().getId());
-		jaxExternalBenutzer.setGesperrt(storedUser.getStatus() != BenutzerStatus.AKTIV);
-		if (storedUser.getInstitution() != null) {
-			jaxExternalBenutzer.setInstitutionId(storedUser.getInstitution().getId());
+		jaxExternalBenutzer.setUsername(benutzer.getUsername());
+		jaxExternalBenutzer.setExternalUUID(benutzer.getExternalUUID());
+		jaxExternalBenutzer.setEmail(benutzer.getEmail());
+		jaxExternalBenutzer.setNachname(benutzer.getNachname());
+		jaxExternalBenutzer.setVorname(benutzer.getVorname());
+		jaxExternalBenutzer.setRole(benutzer.getRole().name());
+		jaxExternalBenutzer.setMandantId(benutzer.getMandant().getId());
+		jaxExternalBenutzer.setGesperrt(benutzer.getStatus() != BenutzerStatus.AKTIV);
+		if (benutzer.getInstitution() != null) {
+			jaxExternalBenutzer.setInstitutionId(benutzer.getInstitution().getId());
 		}
-		if (storedUser.getTraegerschaft() != null) {
-			jaxExternalBenutzer.setTraegerschaftId(storedUser.getTraegerschaft().getId());
+		if (benutzer.getTraegerschaft() != null) {
+			jaxExternalBenutzer.setTraegerschaftId(benutzer.getTraegerschaft().getId());
 		}
 		return jaxExternalBenutzer;
 	}
@@ -214,7 +229,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Override
-	public JaxExternalAuthAccessElement createLoginFromIAM(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser) {
+	public JaxExternalAuthAccessElement createLogin(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser) {
 		requireNonNull(jaxExtAuthUser, "Passed JaxExternalAuthorisierterBenutzer may not be null");
 
 		LOG.debug("ExternalLogin System is creating Authorization for user {}", jaxExtAuthUser.getUsername());
