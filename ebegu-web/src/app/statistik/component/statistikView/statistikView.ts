@@ -125,10 +125,9 @@ export class StatistikViewController implements IController {
         if (!form.$valid) {
             return;
         }
-
         this.$log.debug('Validated Form: ' + form.$name);
-        const stichtag = this._statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT);
-
+        const stichtag = this._statistikParameter.stichtag ?
+            this._statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT) : undefined;
         switch (type) {
             case TSStatistikParameterType.GESUCH_STICHTAG:
                 this.reportAsyncRS.getGesuchStichtagReportExcel(stichtag,
