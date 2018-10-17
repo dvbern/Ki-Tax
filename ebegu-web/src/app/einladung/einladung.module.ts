@@ -18,7 +18,6 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {EinladungAbschliessenComponent} from './einladung-abschliessen/einladung-abschliessen.component';
-import {EinladungErrorComponent} from './einladung-error/einladung-error.component';
 import {EinladungRoutingModule} from './einladung-routing/einladung-routing.module';
 import {LoginInfoComponent} from './login-info/login-info.component';
 
@@ -27,7 +26,7 @@ import {LoginInfoComponent} from './login-info/login-info.component';
         SharedModule,
         EinladungRoutingModule,
     ],
-    declarations: [LoginInfoComponent, EinladungAbschliessenComponent, EinladungErrorComponent],
+    declarations: [LoginInfoComponent, EinladungAbschliessenComponent],
 })
 export class EinladungModule {
 }

@@ -25,7 +25,6 @@ import {ignoreNullAndUndefined} from '../../../utils/rxjs-operators';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {EinladungAbschliessenComponent} from '../einladung-abschliessen/einladung-abschliessen.component';
-import {EinladungErrorComponent} from '../einladung-error/einladung-error.component';
 import {LoginInfoComponent} from '../login-info/login-info.component';
 import {handleLoggedInUser} from './einladung-helpers';
 
@@ -77,11 +76,6 @@ const states: Ng2StateDeclaration[] = [
                     .toPromise(),
             },
         ],
-    },
-    {
-        name: 'einladung.error',
-        component: EinladungErrorComponent,
-        // TODO Berechtigung überlegen
     },
 ];
 
