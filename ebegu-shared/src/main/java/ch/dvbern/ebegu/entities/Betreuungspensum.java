@@ -92,6 +92,7 @@ public class Betreuungspensum extends AbstractPensumEntity implements Comparable
 		switch (copyType) {
 		case MUTATION:
 			target.setNichtEingetreten(this.getNichtEingetreten());
+			target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
