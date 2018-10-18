@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,13 +33,20 @@ import ch.dvbern.ebegu.enums.PensumUnits;
  */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxAbstractBetreuungspensumDTO extends JaxAbstractPensumDTO {
+public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 
 	private static final long serialVersionUID = -7598774821364548948L;
 
 	@NotNull
+	@Nonnull
 	private PensumUnits unitForDisplay = PensumUnits.PERCENTAGE;
 
+	@NotNull
+	@Nonnull
+	@Min(0)
+	private BigDecimal pensum = BigDecimal.ZERO;
+
+	@Nonnull
 	@NotNull
 	private BigDecimal monatlicheBetreuungskosten;
 
@@ -46,8 +54,17 @@ public class JaxAbstractBetreuungspensumDTO extends JaxAbstractPensumDTO {
 		return unitForDisplay;
 	}
 
-	public void setUnitForDisplay(PensumUnits unitForDisplay) {
+	public void setUnitForDisplay(@Nonnull PensumUnits unitForDisplay) {
 		this.unitForDisplay = unitForDisplay;
+	}
+
+	@Nonnull
+	public BigDecimal getPensum() {
+		return pensum;
+	}
+
+	public void setPensum(@Nonnull BigDecimal pensum) {
+		this.pensum = pensum;
 	}
 
 	@Nonnull

@@ -61,6 +61,7 @@ public class EbeguRuleTestsHelper {
 	private static final AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(Constants.DEFAULT_GUELTIGKEIT, EinschulungTyp.KINDERGARTEN2);
+	private static final KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
 
 	protected static List<VerfuegungZeitabschnitt> calculate(Betreuung betreuung) {
@@ -106,6 +107,7 @@ public class EbeguRuleTestsHelper {
 		result = wohnsitzCalcRule.calculate(betreuung, result);
 		result = abwesenheitCalcRule.calculate(betreuung, result);
 		result = schulstufeCalcRule.calculate(betreuung, result);
+		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 		return result;
 	}
@@ -114,7 +116,12 @@ public class EbeguRuleTestsHelper {
 		return restanspruchInitializer.createVerfuegungsZeitabschnitte(currentBetreuung, zeitabschnitte);
 	}
 
-	public static Betreuung createBetreuungWithPensum(LocalDate von, LocalDate bis, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheBetreuungskosten) {
+	public static Betreuung createBetreuungWithPensum(
+		LocalDate von, LocalDate bis,
+		BetreuungsangebotTyp angebot,
+		int pensum,
+		BigDecimal monatlicheBetreuungskosten
+	) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);

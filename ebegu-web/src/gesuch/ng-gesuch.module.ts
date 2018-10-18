@@ -15,9 +15,8 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
-import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
-import {BetreuungInputComponent} from './component/betreuungInput/betreuung-input.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
+import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 
 @NgModule({
     imports: [
@@ -25,12 +24,10 @@ import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
     ],
     declarations: [
         FallToolbarComponent,
-        BetreuungInputComponent,
         DvSwitchComponent,
     ],
     entryComponents: [
         FallToolbarComponent,
-        BetreuungInputComponent,
         DvSwitchComponent,
     ],
 })

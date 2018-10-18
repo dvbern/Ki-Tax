@@ -36,6 +36,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _betreuungNummer: number;
     private _verfuegung: TSVerfuegung;
     private _vertrag: boolean;
+    private _keineKesbPlatzierung: boolean;
     private _erweiterteBeduerfnisse: boolean;
     private _datumAblehnung: moment.Moment;
     private _datumBestaetigung: moment.Moment;
@@ -60,6 +61,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         betreuungNummer?: number,
         verfuegung?: TSVerfuegung,
         vertrag?: boolean,
+        keineKesbPlatzierung?: boolean,
         erweiterteBeduerfnisse?: boolean,
         grundAblehnung?: string,
         datumAblehnung?: moment.Moment,
@@ -86,6 +88,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         this._betreuungNummer = betreuungNummer;
         this._verfuegung = verfuegung;
         this._vertrag = !!vertrag;
+        this._keineKesbPlatzierung = !!keineKesbPlatzierung;
         this._erweiterteBeduerfnisse = !!erweiterteBeduerfnisse;
         this._datumAblehnung = datumAblehnung;
         this._datumBestaetigung = datumBestaetigung;
@@ -165,6 +168,14 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public set vertrag(value: boolean) {
         this._vertrag = value;
+    }
+
+    public get keineKesbPlatzierung(): boolean {
+        return this._keineKesbPlatzierung;
+    }
+
+    public set keineKesbPlatzierung(value: boolean) {
+        this._keineKesbPlatzierung = value;
     }
 
     public get erweiterteBeduerfnisse(): boolean {
@@ -291,7 +302,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
             return this.institutionStammdaten.betreuungsangebotTyp;
         }
-        return TSBetreuungsangebotTyp.KITA;
+        return null;
     }
 
     private isAngebot(typ: TSBetreuungsangebotTyp): boolean {

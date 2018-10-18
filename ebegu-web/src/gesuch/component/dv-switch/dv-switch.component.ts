@@ -1,42 +1,54 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {state, style, trigger} from '@angular/animations';
-import {ChangeDetectionStrategy, Component, EventEmitter, HostBinding, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    HostBinding,
+    HostListener,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges,
+} from '@angular/core';
 
 /**
  * This switch will display 2 boxes with the 2 given values.
  */
 @Component({
     selector: 'dv-switch',
-    templateUrl: './dv-switch.template.html',
-    styleUrls: ['./dv-switch.less'],
+    templateUrl: './dv-switch.component.html',
+    styleUrls: ['./dv-switch.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
         trigger('switchValue', [
             // ...
             state('0', style({
-                'margin-left': '0'
+                'margin-left': '0',
             })),
             state('1', style({
-                'margin-left': '50%'
-            }))
+                'margin-left': '50%',
+            })),
         ]),
-    ]
+    ],
 })
-export class DvSwitchComponent<T> implements OnInit, OnChanges {
+export class DvSwitchComponent<T> implements OnChanges {
 
     // It is allowed to set any values as switchOption. switchValue will then have the select (<any>) option
     @Input() private switchValue: T;
@@ -52,23 +64,22 @@ export class DvSwitchComponent<T> implements OnInit, OnChanges {
     @HostBinding('attr.tabindex')
     public tabindex: number;
 
-    public constructor() {
-    }
-
     @HostListener('keydown.ArrowRight', ['$event'])
     @HostListener('keydown.ArrowLeft', ['$event'])
     public handleKeyboardEvent(event: KeyboardEvent): void {
         if (this.disabled) {
             return;
         }
-        if (event.key === 'ArrowRight' && this.switchValue !== this.switchOptionRight) {
-            this.switchValue = this.switchOptionRight;
 
-        } else if (event.key === 'ArrowLeft' && this.switchValue !== this.switchOptionLeft) {
-            this.switchValue = this.switchOptionLeft;
+        if (event.key === 'ArrowRight' && this.switchValue !== this.switchOptionRight) {
+            this.emitAndSetValue(this.switchOptionRight);
+
+            return;
         }
 
-        this.emitValue();
+        if (event.key === 'ArrowLeft' && this.switchValue !== this.switchOptionLeft) {
+            this.emitAndSetValue(this.switchOptionLeft);
+        }
     }
 
     @HostListener('keydown.space', ['$event'])
@@ -77,24 +88,19 @@ export class DvSwitchComponent<T> implements OnInit, OnChanges {
         if (this.disabled) {
             return;
         }
-        this.switchValue = (this.switchValue === this.switchOptionLeft
-            ? this.switchOptionRight
-            : this.switchOptionLeft);
 
-        this.emitValue();
-    }
+        const value = this.switchValue === this.switchOptionLeft ? this.switchOptionRight : this.switchOptionLeft;
 
-    public ngOnInit(): void {
-        this.tabindex = this.disabled ? -1 : 0;
+        this.emitAndSetValue(value);
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if (changes && changes.switchValue) {
-            this.switchValueChange.emit(this.switchValue);
+        if (changes.disabled) {
+            this.tabindex = changes.disabled.currentValue ? -1 : 0;
         }
     }
-
-    private emitValue(): void {
-        this.switchValueChange.emit(this.switchValue);
+    private emitAndSetValue(value: T): void {
+        this.switchValue = value;
+        this.switchValueChange.emit(value);
     }
 }

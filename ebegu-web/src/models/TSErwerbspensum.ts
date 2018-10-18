@@ -15,13 +15,13 @@
 
 import {TSTaetigkeit} from './enums/TSTaetigkeit';
 import {TSZuschlagsgrund} from './enums/TSZuschlagsgrund';
-import {TSAbstractPensumEntity} from './TSAbstractPensumEntity';
+import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import {TSDateRange} from './types/TSDateRange';
 
 /**
  * Definiert ein Erwerbspensum
  */
-export default class TSErwerbspensum extends TSAbstractPensumEntity {
+export default class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _taetigkeit: TSTaetigkeit;
 

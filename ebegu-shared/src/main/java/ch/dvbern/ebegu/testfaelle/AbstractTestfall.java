@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -157,6 +158,7 @@ public abstract class AbstractTestfall {
 		Gemeinde testGemeinde = new Gemeinde();
 		testGemeinde.setStatus(GemeindeStatus.AKTIV);
 		testGemeinde.setName("Testgemeinde");
+		testGemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		return testGemeinde;
 	}
 
@@ -310,6 +312,7 @@ public abstract class AbstractTestfall {
 			betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 			betreuung.setDatumBestaetigung(LocalDate.now());
 		}
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setVertrag(Boolean.TRUE);
 		return betreuung;
 	}
@@ -324,7 +327,12 @@ public abstract class AbstractTestfall {
 		throw new IllegalStateException("Institutionsstammdaten sind nicht vorhanden: " + institutionsId);
 	}
 
-	protected BetreuungspensumContainer createBetreuungspensum(int pensum) {
+	@Deprecated
+	protected BetreuungspensumContainer createBetreuungspensum(Integer pensum) {
+		return createBetreuungspensum(BigDecimal.valueOf(pensum));
+	}
+
+	protected BetreuungspensumContainer createBetreuungspensum(BigDecimal pensum) {
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
@@ -333,7 +341,12 @@ public abstract class AbstractTestfall {
 		return betreuungspensumContainer;
 	}
 
-	protected BetreuungspensumContainer createBetreuungspensum(int pensum, LocalDate datumVon, LocalDate datumBis) {
+	@Deprecated
+	protected BetreuungspensumContainer createBetreuungspensum(Integer pensum, LocalDate datumVon, LocalDate datumBis) {
+		return createBetreuungspensum(BigDecimal.valueOf(pensum), datumVon, datumBis);
+	}
+
+	protected BetreuungspensumContainer createBetreuungspensum(BigDecimal pensum, LocalDate datumVon, LocalDate datumBis) {
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);

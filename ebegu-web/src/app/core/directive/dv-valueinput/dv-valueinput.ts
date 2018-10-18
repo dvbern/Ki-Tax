@@ -13,14 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-    IAugmentedJQuery,
-    IController,
-    IDirective,
-    IDirectiveFactory,
-    IDirectiveLinkFn,
-    INgModelController,
-} from 'angular';
+import {IAugmentedJQuery, IController, IDirective, IDirectiveFactory, INgModelController} from 'angular';
 import ITimeoutService = angular.ITimeoutService;
 
 declare let require: any;
@@ -44,7 +37,6 @@ export class DVValueinput implements IDirective {
         inputName: '@?',
     };
     public template = require('./dv-valueinput.html');
-    public link: IDirectiveLinkFn;
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVValueinput();

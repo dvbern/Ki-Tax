@@ -18,13 +18,16 @@ import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
-import {BetreuungInputComponent} from './component/betreuungInput/betreuung-input.component';
+import {BetreuungInputComponentConfig} from './component/betreuungInput/betreuung-input.component';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
 import {BetreuungMitteilungViewComponentConfig} from './component/betreuungMitteilungView/betreuungMitteilungView';
 import {BetreuungTagesschuleViewComponentConfig} from './component/betreuungTagesschuleView/betreuungTagesschuleView';
 import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungView';
 import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
-import {DossierToolbarComponentConfig, DossierToolbarGesuchstellerComponentConfig,} from './component/dossierToolbar/dossierToolbar';
+import {
+    DossierToolbarComponentConfig,
+    DossierToolbarGesuchstellerComponentConfig,
+} from './component/dossierToolbar/dossierToolbar';
 import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
@@ -83,6 +86,6 @@ export const GESUCH_JS_MODULE =
         .component('betreuungMitteilungView', new BetreuungMitteilungViewComponentConfig())
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
-        .directive('dvBetreuungInput', downgradeComponent({component: BetreuungInputComponent}))
-        .directive('dvSwitchComponent', downgradeComponent({component: DvSwitchComponent}))
+        .component('dvBetreuungInput', new BetreuungInputComponentConfig())
+        .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
 ;

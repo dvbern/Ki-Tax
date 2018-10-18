@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules.initalizer;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,14 +64,14 @@ public class RestanspruchInitializer {
 		Objects.requireNonNull(betreuung.getBetreuungsangebotTyp());
 		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int anspruchberechtigtesPensum = sourceZeitabschnitt.getAnspruchberechtigtesPensum();
-			int betreuungspensum = sourceZeitabschnitt.getBetreuungspensum();
+			BigDecimal betreuungspensum = sourceZeitabschnitt.getBetreuungspensum();
 			int anspruchspensumRest = sourceZeitabschnitt.getAnspruchspensumRest();
 			//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
 			if (anspruchberechtigtesPensum == 0 && anspruchspensumRest != -1) {
 				// Der Restanspruch war schon initialisiert und bleibt gleich wie auf der vorherigen Betreuung
 				targetZeitabschnitt.setAnspruchspensumRest(anspruchspensumRest);
-			} else if (betreuungspensum < anspruchberechtigtesPensum) {
-				targetZeitabschnitt.setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum);
+			} else if (betreuungspensum.compareTo(BigDecimal.valueOf(anspruchberechtigtesPensum)) < 0) {
+				targetZeitabschnitt.setAnspruchspensumRest(anspruchberechtigtesPensum - betreuungspensum.intValue());
 			} else {
 				targetZeitabschnitt.setAnspruchspensumRest(0);
 			}

@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {
+    MatCheckboxModule,
     MatDatepickerModule,
     MatDialogModule,
     MatRadioModule,
@@ -14,7 +15,7 @@ const MATERIAL_MODULES = [
     // MatButtonModule,
     // MatButtonToggleModule,
     // MatCardModule,
-    // MatCheckboxModule,
+    MatCheckboxModule,
     // MatChipsModule,
     MatDatepickerModule,
     MatDialogModule,

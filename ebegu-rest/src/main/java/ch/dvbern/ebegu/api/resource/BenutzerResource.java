@@ -109,8 +109,24 @@ public class BenutzerResource {
 		return converter.benutzerToJaxBenutzer(benutzerService.einladen(Einladung.forMitarbeiter(benutzer)));
 	}
 
-	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, "
-		+ "SACHBEARBEITER_GEMEINDE zurueck",
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "
+		+ "ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE zurueck",
+		responseContainer = "List",
+		response = JaxBenutzer.class)
+	@Nonnull
+	@GET
+	@Path("/BgOrGemeinde")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, STEUERAMT, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public List<JaxBenutzer> getBenutzerBgOrGemeinde() {
+		return benutzerService.getBenutzerBgOrGemeinde().stream()
+			.map(converter::benutzerToJaxBenutzer)
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG zurueck",
 		responseContainer = "List",
 		response = JaxBenutzer.class)
 	@Nonnull

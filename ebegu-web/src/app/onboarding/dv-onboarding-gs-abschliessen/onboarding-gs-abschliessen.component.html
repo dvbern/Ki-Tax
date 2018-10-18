@@ -22,39 +22,45 @@
     <div class="onboarding-gs-container">
 
         <div class="onboarding-gs-gemeinde">
-            <div class="onboarding-gs-gemeinde-title">
-                <span>{{'ONBOARDING_GS_GEMEINDE_TITLE' | translate}}</span>
-            </div>
-            <div class="onboarding-gs-gemeinde-content">
-                <span>{{(gemeinde$ | async)?.name}}</span>
+            <div>
+                <div class="onboarding-gs-gemeinde-title">
+                    <span>{{'ONBOARDING_GS_GEMEINDE_TITLE' | translate}}</span>
+                    <button type="button" (click)="changeGemeinde()"
+                            class="dv-btn onboarding-gs-gemeinde-aendern">{{'ONBOARDING_GS_GEMEINDE_AENDERN' | translate}}
+                    </button>
+                </div>
+                <div class="onboarding-gs-gemeinde-content">
+                    <span>{{(gemeinde$ | async)?.name}}</span>
+                </div>
             </div>
             <button type="submit" (debounceClick)="createDossier()"
-                    class="onboarding-gs-abschliessen">{{'ONBOARDING_GS_ABSCHLIESSEN' | translate}}
+                    class="dv-btn onboarding-gs-abschliessen">{{'ONBOARDING_GS_ABSCHLIESSEN' | translate}}
             </button>
         </div>
 
         <div class="onboarding-gs-angaben">
-            <div class="onboarding-gs-angaben-title">
-                <span>{{'ONBOARDING_GS_ANGABEN_TITLE' | translate}}</span>
-            </div>
-            <div class="onboarding-gs-angaben-content">
-                <table class="onboarding-gs-angaben-table">
-                    <tr>
-                        <td class="onboarding-gs-angaben-table-label">Vorname</td>
-                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).vorname}}</td>
-                    </tr>
-                    <tr>
-                        <td class="onboarding-gs-angaben-table-label">Name</td>
-                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).nachname}}</td>
-                    </tr>
-                    <tr>
-                        <td class="onboarding-gs-angaben-table-label">E-Mail</td>
-                        <td class="onboarding-gs-angaben-table-value">{{(user$ | async).email}}</td>
-                    </tr>
-                </table>
+            <div>
+                <div class="onboarding-gs-angaben-title">
+                    <span>{{'ONBOARDING_GS_ANGABEN_TITLE' | translate}}</span>
+                </div>
+                <div class="onboarding-gs-angaben-content">
+                    <table class="onboarding-gs-angaben-table">
+                        <tr>
+                            <td class="onboarding-gs-angaben-table-label">Vorname</td>
+                            <td class="onboarding-gs-angaben-table-value">{{(user$ | async).vorname}}</td>
+                        </tr>
+                        <tr>
+                            <td class="onboarding-gs-angaben-table-label">Name</td>
+                            <td class="onboarding-gs-angaben-table-value">{{(user$ | async).nachname}}</td>
+                        </tr>
+                        <tr>
+                            <td class="onboarding-gs-angaben-table-label">E-Mail</td>
+                            <td class="onboarding-gs-angaben-table-value">{{(user$ | async).email}}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
-
     </div>
 
 </form>

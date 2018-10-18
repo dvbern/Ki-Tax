@@ -32,12 +32,14 @@ import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel2;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel3;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * Test der die vom JA gemeldeten Testfaelle für Doppelkitas ueberprueft.
  * Siehe https://support.dvbern.ch/browse/EBEGU-561
  */
+@Ignore
 public class DoppelkitaTest extends AbstractBGRechnerTest {
 
 	/**

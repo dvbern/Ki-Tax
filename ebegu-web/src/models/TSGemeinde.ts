@@ -17,15 +17,28 @@
 
 import * as moment from 'moment';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSAbstractEntity from './TSAbstractEntity';
 
-export default class TSGemeinde extends TSAbstractMutableEntity {
+export default class TSGemeinde extends TSAbstractEntity {
 
     private _name: string;
     private _gemeindeNummer: number;
     private _bfsNummer: number;
     private _status: TSGemeindeStatus;
     private _betreuungsgutscheineStartdatum: moment.Moment;
+
+    public constructor(
+        name?: string,
+        gemeindeNummer?: number,
+        bfsNummer?: number,
+        status?: TSGemeindeStatus
+    ) {
+        super();
+        this._name = name;
+        this._gemeindeNummer = gemeindeNummer;
+        this._bfsNummer = bfsNummer;
+        this._status = status;
+    }
 
     public get name(): string {
         return this._name;

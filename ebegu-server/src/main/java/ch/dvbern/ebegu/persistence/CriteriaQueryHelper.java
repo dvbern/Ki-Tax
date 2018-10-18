@@ -43,6 +43,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -171,7 +172,7 @@ public class CriteriaQueryHelper {
 		Root<T> root = delete.from(entityClazz);
 
 		ParameterExpression<LocalDateTime> beforeParam = cb.parameter(LocalDateTime.class, "before");
-		delete.where(cb.lessThan(root.get(AbstractDateRangedEntity_.timestampMutiert), beforeParam));
+		delete.where(cb.lessThan(root.get(AbstractEntity_.timestampMutiert), beforeParam));
 
 		Query query = persistence.getEntityManager().createQuery(delete);
 		query.setParameter(beforeParam, before);

@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "pensumFachstelle")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxPensumFachstelle extends JaxAbstractPensumDTO {
+public class JaxPensumFachstelle extends JaxAbstractIntegerPensumDTO {
 
 	private static final long serialVersionUID = -7997026881634137397L;
 

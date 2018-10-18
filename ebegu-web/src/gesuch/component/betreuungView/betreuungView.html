@@ -188,9 +188,8 @@
                         </div>
                     </div>
 
-
                     <!--vertrag-->
-                    <div class="row marginBottom50 marginTop20" dv-show-element
+                    <div class="row marginTop20" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="!vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
@@ -204,6 +203,21 @@
                                 <div class="dv-error-messages" ng-if="vm.flagErrorVertrag === true">
                                     <span data-translate="ERROR_VERTRAG_REQUIRED"></span>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Kesb Platzierung-->
+                    <div class="row marginBottom50 marginTop20" dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                         dv-show-expression="!vm.isSchulamt()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.getBetreuungModel().keineKesbPlatzierung" name="keineKesbPlatzierung"
+                                             aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}" ng-disabled="!vm.isEnabled()"
+                                             ng-class="{true:'checkbox-error', false:''}[vm.flagErrorVertrag]">
+                                    <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
+                                </md-checkbox>
                             </div>
                         </div>
                     </div>
@@ -242,10 +256,10 @@
                                             <label class="md-no-float" data-translate="BETREUUNGSPENSUM"
                                                    data-translate-value-betreuungspensumnumber="{{$index + 1}}"
                                                    for="betreuungspensum-{{$index}}"></label>
-                                            <dv-betreuung-input [pensum-container]="vm.getBetreuungspensum($index)"
-                                                                [id]="betreuungspensum-{{$index}}"
-                                                                [betreuungsangebottyp]="vm.getBetreuungModel().getAngebotTyp()"
-                                                                [disabled]="!vm.isPensumEditable()">
+                                            <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
+                                                                input-id="betreuungspensum-{{$index}}"
+                                                                betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
+                                                                is-disabled="!vm.isPensumEditable()">
                                             </dv-betreuung-input>
                                             <dv-error-messages input-id="betreuungspensum-{{$index}}"
                                                                for="vm.form['betreuungspensum-' + $index].$error"></dv-error-messages>

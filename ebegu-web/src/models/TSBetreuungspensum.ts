@@ -14,10 +14,10 @@
  */
 
 import {TSPensumUnits} from './enums/TSPensumUnits';
-import {TSAbstractBetreuungspensumEntity} from './TSAbstractBetreuungspensumEntity';
+import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSBetreuungspensum extends TSAbstractBetreuungspensumEntity {
+export default class TSBetreuungspensum extends TSAbstractDecimalPensumEntity {
 
     private _nichtEingetreten: boolean;
 

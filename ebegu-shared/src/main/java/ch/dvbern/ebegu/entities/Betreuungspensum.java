@@ -34,7 +34,7 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
-public class Betreuungspensum extends AbstractBetreuungspensumEntity implements Comparable<Betreuungspensum> {
+public class Betreuungspensum extends AbstractDecimalPensum implements Comparable<Betreuungspensum> {
 
 	private static final long serialVersionUID = -9032857320571372370L;
 

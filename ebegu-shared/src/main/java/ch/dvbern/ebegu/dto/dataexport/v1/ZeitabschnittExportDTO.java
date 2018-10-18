@@ -40,20 +40,28 @@ public class ZeitabschnittExportDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate bis;
 
-	//betreuungspensum
-	private int effektiveBetreuungPct;
+	//betreuungspensum.
+	private BigDecimal effektiveBetreuungPct;
 
 	//Anspruch
 	private int anspruchPct;
 
 	//BG Pensum
-	private int verguenstigtPct;
+	private BigDecimal verguenstigtPct;
 
 	private BigDecimal vollkosten;
 
 	private BigDecimal verguenstigung;
 
-	public ZeitabschnittExportDTO(LocalDate von, LocalDate bis, int effektiveBetr, int anspruchPct, int vergPct, BigDecimal vollkosten, BigDecimal verguenstigung) {
+	public ZeitabschnittExportDTO(
+		LocalDate von,
+		LocalDate bis,
+		BigDecimal effektiveBetr,
+		int anspruchPct,
+		BigDecimal vergPct,
+		BigDecimal vollkosten,
+		BigDecimal verguenstigung
+	) {
 		this.von = von;
 		this.bis = bis;
 		this.effektiveBetreuungPct = effektiveBetr;
@@ -83,11 +91,11 @@ public class ZeitabschnittExportDTO {
 		this.bis = bis;
 	}
 
-	public int getEffektiveBetreuungPct() {
+	public BigDecimal getEffektiveBetreuungPct() {
 		return effektiveBetreuungPct;
 	}
 
-	public void setEffektiveBetreuungPct(int effektiveBetreuungPct) {
+	public void setEffektiveBetreuungPct(BigDecimal effektiveBetreuungPct) {
 		this.effektiveBetreuungPct = effektiveBetreuungPct;
 	}
 
@@ -99,11 +107,11 @@ public class ZeitabschnittExportDTO {
 		this.anspruchPct = anspruchPct;
 	}
 
-	public int getVerguenstigtPct() {
+	public BigDecimal getVerguenstigtPct() {
 		return verguenstigtPct;
 	}
 
-	public void setVerguenstigtPct(int verguenstigtPct) {
+	public void setVerguenstigtPct(BigDecimal verguenstigtPct) {
 		this.verguenstigtPct = verguenstigtPct;
 	}
 
@@ -132,9 +140,9 @@ public class ZeitabschnittExportDTO {
 			return false;
 		}
 		ZeitabschnittExportDTO that = (ZeitabschnittExportDTO) o;
-		return getEffektiveBetreuungPct() == that.getEffektiveBetreuungPct() &&
+		return Objects.equals(getEffektiveBetreuungPct(), that.getEffektiveBetreuungPct()) &&
 			getAnspruchPct() == that.getAnspruchPct() &&
-			getVerguenstigtPct() == that.getVerguenstigtPct() &&
+			Objects.equals(getVerguenstigtPct(), that.getVerguenstigtPct()) &&
 			Objects.equals(getVon(), that.getVon()) &&
 			Objects.equals(getBis(), that.getBis()) &&
 			Objects.equals(getVollkosten(), that.getVollkosten()) &&

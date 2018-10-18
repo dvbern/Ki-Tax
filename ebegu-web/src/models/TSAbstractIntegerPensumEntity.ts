@@ -13,10 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-.ellipsis {
-    width: 5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
+import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSDateRange} from './types/TSDateRange';
+
+export class TSAbstractIntegerPensumEntity extends TSAbstractDateRangedEntity {
+
+    private _pensum: number;
+
+    public constructor(pensum?: number, gueltigkeit?: TSDateRange) {
+        super(gueltigkeit);
+        this._pensum = pensum;
+    }
+
+    public get pensum(): number {
+        return this._pensum;
+    }
+
+    public set pensum(value: number) {
+        this._pensum = value;
+    }
 }
