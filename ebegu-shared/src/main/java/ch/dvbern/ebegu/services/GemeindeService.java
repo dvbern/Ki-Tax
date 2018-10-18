@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -78,7 +77,7 @@ public interface GemeindeService {
 	 * Gibt die GemeindeStammdaten anhand ihrer Id zurück
 	 */
 	@Nonnull
-	public Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String id);
+	Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String id);
 
 	/**
 	 * Gibt die GemeindeStammdaten der jeweiligen Gemeinde zurück

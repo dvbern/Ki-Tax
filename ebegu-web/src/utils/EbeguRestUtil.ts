@@ -726,8 +726,6 @@ export default class EbeguRestUtil {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
 
-            restStammdaten.administratoren = stammdaten.administratoren;
-            restStammdaten.sachbearbeiter = stammdaten.sachbearbeiter;
             restStammdaten.defaultBenutzerBG = this.userToRestObject({}, stammdaten.defaultBenutzerBG);
             restStammdaten.defaultBenutzerTS = this.userToRestObject({}, stammdaten.defaultBenutzerTS);
             restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);

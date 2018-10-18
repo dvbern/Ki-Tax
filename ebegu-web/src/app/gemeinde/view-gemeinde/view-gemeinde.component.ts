@@ -99,6 +99,7 @@ export class ViewGemeindeComponent implements OnInit {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
+    // todo KIBON-217 auslagern??? es ist in edit-gemeinde dupliziert
     public handleInput(files: FileList): void {
         this.fileToUpload = files[0];
         const tmpFileReader = new FileReader();

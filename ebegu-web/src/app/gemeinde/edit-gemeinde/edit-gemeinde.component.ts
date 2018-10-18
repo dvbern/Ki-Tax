@@ -66,10 +66,10 @@ export class EditGemeindeComponent implements OnInit {
         this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
             // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
             this.stammdaten = resStamm;
-            if (this.stammdaten.adresse === undefined) {
+            if (!this.stammdaten.adresse) {
                 this.stammdaten.adresse = new TSAdresse();
             }
-            if (this.stammdaten.beschwerdeAdresse === undefined) {
+            if (!this.stammdaten.beschwerdeAdresse) {
                 this.stammdaten.beschwerdeAdresse = new TSAdresse();
             }
             this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
@@ -110,7 +110,6 @@ export class EditGemeindeComponent implements OnInit {
         this.stammdaten.beschwerdeAdresse = new TSAdresse();
         return true;
     }
-
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;

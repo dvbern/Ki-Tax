@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,7 +29,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -74,6 +74,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = false)
 	private Adresse beschwerdeAdresse;
 
+	// todo KIBON-245 braucht man das? koennte man es nicht direkt setzen wenn die adresse existiert?
 	@NotNull
 	@Column(nullable = false)
 	private boolean keineBeschwerdeAdresse = true;
@@ -100,7 +101,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
 
 	@Nullable
-	@Column(nullable = false, length = TEN_MEG) //10 megabytes
+	@Column(nullable = false, length = TEN_MEG) //10 megabytes // todo KIBON-245 ist es nicht viel?
 	@Lob
 	private byte[] logoContent;
 
@@ -131,11 +132,12 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.gemeinde = gemeinde;
 	}
 
+	@Nonnull
 	public Adresse getAdresse() {
 		return adresse;
 	}
 
-	public void setAdresse(Adresse adresse) {
+	public void setAdresse(@Nonnull Adresse adresse) {
 		this.adresse = adresse;
 	}
 
@@ -182,11 +184,12 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.webseite = webseite;
 	}
 
+	@Nonnull
 	public KorrespondenzSpracheTyp getKorrespondenzsprache() {
 		return korrespondenzsprache;
 	}
 
-	public void setKorrespondenzsprache(KorrespondenzSpracheTyp korrespondenzsprache) {
+	public void setKorrespondenzsprache(@Nonnull KorrespondenzSpracheTyp korrespondenzsprache) {
 		this.korrespondenzsprache = korrespondenzsprache;
 	}
 
