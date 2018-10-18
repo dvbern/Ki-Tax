@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -33,8 +32,7 @@ public interface GemeindeService {
 
 	/**
 	 * Speichert die Gemeinde neu in der DB falls der Key noch nicht existiert.
-	 *
-	 * @param gemeinde Die Gemeinde als DTO
+	 * @param gemeinde Die Gemeinde
 	 */
 	@Nonnull
 	Gemeinde saveGemeinde(@Nonnull Gemeinde gemeinde);
@@ -76,8 +74,21 @@ public interface GemeindeService {
 	Collection<Gemeinde> getAktiveGemeinden();
 
 	/**
+	 * Gibt die GemeindeStammdaten anhand ihrer Id zurück
+	 */
+	@Nonnull
+	Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String id);
+
+	/**
 	 * Gibt die GemeindeStammdaten der jeweiligen Gemeinde zurück
 	 */
-	@Nullable
-	GemeindeStammdaten getGemeindeStammdaten(@Nonnull String gemeindeId);
+	@Nonnull
+	Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(@Nonnull String gemeindeId);
+
+	/**
+	 * Speichert die GemeindeStammdaten neu in der DB falls der Key noch nicht existiert.
+	 * @param stammdaten Die GemeindeStammdaten
+	 */
+	@Nonnull
+	GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten);
 }

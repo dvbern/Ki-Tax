@@ -75,6 +75,7 @@ import TSFinanzielleSituation from '../models/TSFinanzielleSituation';
 import TSFinanzielleSituationContainer from '../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../models/TSFinanzModel';
 import TSGemeinde from '../models/TSGemeinde';
+import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
@@ -702,7 +703,7 @@ export default class EbeguRestUtil {
 
     public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
         if (gemeinde) {
-            this.abstractMutableEntityToRestObject(restGemeinde, gemeinde);
+            this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
             restGemeinde.status = gemeinde.status;
             restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
@@ -725,7 +726,7 @@ export default class EbeguRestUtil {
 
     public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
         if (gemeindeFromServer) {
-            this.parseAbstractMutableEntity(gemeindeTS, gemeindeFromServer);
+            this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
             gemeindeTS.name = gemeindeFromServer.name;
             gemeindeTS.status = gemeindeFromServer.status;
             gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
@@ -733,6 +734,61 @@ export default class EbeguRestUtil {
             gemeindeTS.betreuungsgutscheineStartdatum = DateUtil
                 .localDateToMoment(gemeindeFromServer.betreuungsgutscheineStartdatum);
             return gemeindeTS;
+        }
+        return undefined;
+    }
+
+    public gemeindeStammdatenToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdaten): TSGemeindeStammdaten {
+        if (stammdaten) {
+            this.abstractEntityToRestObject(restStammdaten, stammdaten);
+
+            restStammdaten.defaultBenutzerBG = this.userToRestObject({}, stammdaten.defaultBenutzerBG);
+            restStammdaten.defaultBenutzerTS = this.userToRestObject({}, stammdaten.defaultBenutzerTS);
+            restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
+            restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
+            restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
+            restStammdaten.keineBeschwerdeAdresse = stammdaten.keineBeschwerdeAdresse;
+            restStammdaten.mail = stammdaten.mail;
+            restStammdaten.telefon = stammdaten.telefon;
+            restStammdaten.webseite = stammdaten.webseite;
+            restStammdaten.korrespondenzspracheDe = stammdaten.korrespondenzspracheDe;
+            restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
+            restStammdaten.kontingentierung = stammdaten.kontingentierung;
+            restStammdaten.beguBisUndMitSchulstufe = stammdaten.beguBisUndMitSchulstufe;
+
+            return restStammdaten;
+        }
+        return undefined;
+    }
+
+    public parseGemeindeStammdaten(
+        stammdatenTS: TSGemeindeStammdaten,
+        stammdatenFromServer: any
+    ): TSGemeindeStammdaten {
+
+        if (stammdatenFromServer) {
+            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+
+            stammdatenTS.administratoren = stammdatenFromServer.administratoren;
+            stammdatenTS.sachbearbeiter = stammdatenFromServer.sachbearbeiter;
+            stammdatenTS.defaultBenutzerBG = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerBG);
+            stammdatenTS.defaultBenutzerTS = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerTS);
+            stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
+            stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
+            stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
+            stammdatenTS.keineBeschwerdeAdresse = stammdatenFromServer.keineBeschwerdeAdresse;
+            stammdatenTS.mail = stammdatenFromServer.mail;
+            stammdatenTS.telefon = stammdatenFromServer.telefon;
+            stammdatenTS.webseite = stammdatenFromServer.webseite;
+            stammdatenTS.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
+            stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
+            stammdatenTS.kontingentierung = stammdatenFromServer.kontingentierung;
+            stammdatenTS.beguBisUndMitSchulstufe = stammdatenFromServer.beguBisUndMitSchulstufe;
+            stammdatenTS.logoUrl = stammdatenFromServer.logoUrl;
+            stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
+            stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
+
+            return stammdatenTS;
         }
         return undefined;
     }

@@ -199,7 +199,7 @@ export default class TestDataUtil {
 
     public static createGemeindeOstermundigen(): TSGemeinde {
         const gemeinde = new TSGemeinde();
-        TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
+        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
         gemeinde.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
         gemeinde.name = 'Ostermundigen';
         gemeinde.gemeindeNummer = 2;
@@ -211,7 +211,7 @@ export default class TestDataUtil {
 
     public static createGemeindeBern(): TSGemeinde {
         const gemeinde = new TSGemeinde();
-        TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
+        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
         gemeinde.name = 'Bern';
         gemeinde.gemeindeNummer = 1;
@@ -223,7 +223,7 @@ export default class TestDataUtil {
 
     public static createGemeindeThun(): TSGemeinde {
         const gemeinde = new TSGemeinde();
-        TestDataUtil.setAbstractMutableFieldsUndefined(gemeinde);
+        TestDataUtil.setAbstractFieldsUndefined(gemeinde);
         gemeinde.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046ccc';
         gemeinde.name = 'Thun';
         gemeinde.gemeindeNummer = 3;
