@@ -111,9 +111,10 @@ export class ViewGemeindeComponent implements OnInit {
 
     private initStrings(): void {
         this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
-        this.kontinggentierung = 'Keine ' + this.translate.instant('KONTINGENTIERUNG');
+        const kontingentierung: string = this.translate.instant('KONTINGENTIERUNG');
+        this.kontinggentierung = 'Keine ' + kontingentierung;
         if (this.stammdaten.kontingentierung) {
-            this.kontinggentierung = this.translate.instant('KONTINGENTIERUNG');
+            this.kontinggentierung = kontingentierung;
         }
         if (this.stammdaten.korrespondenzspracheDe) {
             this.korrespondenzsprache = this.translate.instant('DEUTSCH');

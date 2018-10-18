@@ -745,7 +745,11 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseGemeindeStammdaten(stammdatenTS: TSGemeindeStammdaten, stammdatenFromServer: any): TSGemeindeStammdaten {
+    public parseGemeindeStammdaten(
+        stammdatenTS: TSGemeindeStammdaten,
+        stammdatenFromServer: any
+    ): TSGemeindeStammdaten {
+
         if (stammdatenFromServer) {
             this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
 
