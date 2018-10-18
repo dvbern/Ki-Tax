@@ -135,17 +135,40 @@
 
             </fieldset>
 
-            <dv-accordion>
-                <dv-accordion-tab>
-                    <tab-title>Hallo Velo</tab-title>
-                    <tab-body>Body</tab-body>
-                </dv-accordion-tab>
-
-                <dv-accordion-tab>
-                    <tab-title>Hallo Velo 2</tab-title>
-                    <tab-body>Body 2</tab-body>
-                </dv-accordion-tab>
-            </dv-accordion>
+            <div class="row">
+                <div class="col-sm-12">
+                    <dv-accordion class="mitteilungenList" allow-multiple-sections="true">
+                        <dv-accordion-tab
+                            *ngFor="let konf of konfigurationList; let i = index"
+                            [tabid]="i">
+                            <tab-title>
+                                <div class="message-header">
+                                    <i class="fa fa-angle-right"></i>{{konf.gesuchsperiode}} {{i}}
+                                </div>
+                            </tab-title>
+                            <tab-body>
+                                <div class="row">
+                                    <!-- Betreuungsgutscheine anbieten ab -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <h3 translate>BEGU_START</h3>
+                                            <p>{{beguStart}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <h3 translate>GEMEINDE_REGELN</h3>
+                                            <label translate>BEGU_KITAS_BIS_UND_MIT</label>
+                                            <p>{{konf.beguBisUndMitSchulstufe | translate}}</p>
+                                            <p>{{konf.kontingentierung}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tab-body>
+                        </dv-accordion-tab>
+                    </dv-accordion>
+                </div>
+            </div>
 
             <fieldset>
                 <div class="viewTitle">

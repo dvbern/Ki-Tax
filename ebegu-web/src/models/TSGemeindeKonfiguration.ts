@@ -17,18 +17,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Directive, ElementRef, Injector, Input} from '@angular/core';
-import {UpgradeComponent} from '@angular/upgrade/static';
+import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
+import TSAbstractEntity from './TSAbstractEntity';
+import TSFerieninselStammdaten from './TSFerieninselStammdaten';
 
-@Directive({
-  selector: 'dv-accordion-tab'
-})
-export class AccordionTabDirective extends UpgradeComponent {
-
-    @Input() public tabid: string;
-
-    public constructor(elementRef: ElementRef, injector: Injector) {
-        super('dvAccordionTab', elementRef, injector);
-    }
-
+export default class TSGemeindeKonfiguration {
+    public id: number;
+    public gesuchsperiodeName: string;
+    public gesuchsperiodeStatus: TSGesuchsperiodeStatus;
+    public kontingentierung: string;
+    public beguBisUndMitSchulstufe: string;
+    public ferieninselStammdatenMap: { [key: string]: string; } = {};
 }

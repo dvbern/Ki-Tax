@@ -21,21 +21,26 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import TSBenutzer from '../../../models/TSBenutzer';
+import TSEinstellung from '../../../models/TSEinstellung';
+import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
     selector: 'dv-view-gemeinde',
     templateUrl: './view-gemeinde.component.html',
+    styleUrls: ['../gemeinde-module.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
     public stammdaten: TSGemeindeStammdaten;
+    public konfigurationList: Array<TSGemeindeKonfiguration>;
     public korrespondenzsprache: string;
     public kontinggentierung: string;
     public beguStart: string;
@@ -50,6 +55,7 @@ export class ViewGemeindeComponent implements OnInit {
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -61,6 +67,8 @@ export class ViewGemeindeComponent implements OnInit {
         // TODO: Task KIBON-217: Load from DB
         this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
         this.einschulungTypValues = getTSEinschulungTypValues();
+
+        this.initTestKonfigurationen();
 
         this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
             // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
@@ -124,6 +132,31 @@ export class ViewGemeindeComponent implements OnInit {
             this.korrespondenzsprache += ', ';
         }
         this.korrespondenzsprache += this.translate.instant('FRANZOESISCH');
+    }
+
+    private initTestKonfigurationen(): void {
+        this.konfigurationList = new Array<TSGemeindeKonfiguration>();
+
+        let gk = new TSGemeindeKonfiguration();
+        gk.id = 1;
+        gk.gesuchsperiode = '01.08.2017 - 31.07.2018';
+        gk.kontingentierung = 'Keine Kontingentierung';
+        gk.beguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN1;
+        this.konfigurationList.push(gk);
+
+        gk.id = 2;
+        gk = new TSGemeindeKonfiguration();
+        gk.gesuchsperiode = '01.08.2018 - 31.07.2019';
+        gk.kontingentierung = 'Kontingentierung';
+        gk.beguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
+        this.konfigurationList.push(gk);
+
+        gk.id = 3;
+        gk = new TSGemeindeKonfiguration();
+        gk.gesuchsperiode = '01.08.2019 - 31.07.2020';
+        gk.kontingentierung = 'Keine Kontingentierung';
+        gk.beguBisUndMitSchulstufe = TSEinschulungTyp.KLASSE1;
+        this.konfigurationList.push(gk);
     }
 
     private navigateBack(): void {
