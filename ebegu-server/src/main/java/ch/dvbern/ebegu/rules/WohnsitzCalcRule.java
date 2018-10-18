@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -40,7 +42,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(@Nonnull Betreuung betreuung,
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (betreuung.getBetreuungsangebotTyp().isJugendamt()) {
+		if (Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt()) {
 			if (areNotInBern(betreuung, verfuegungZeitabschnitt)) {
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 				verfuegungZeitabschnitt.addBemerkung(
@@ -75,7 +77,6 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 			&& verfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS2())
 			|| (!hasSecondGesuchsteller
 			&& verfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1());
-
 	}
 
 }
