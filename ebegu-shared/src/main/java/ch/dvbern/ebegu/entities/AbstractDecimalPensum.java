@@ -21,11 +21,14 @@ import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.PensumUnits;
 import org.hibernate.envers.Audited;
 
 /**
@@ -43,6 +46,21 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	@Column(nullable = false)
 	private BigDecimal pensum = BigDecimal.ZERO;
 
+	/**
+	 * This parameter is used in the client to know in which units the amount must be displayed.
+	 * In the database the amount will always be % so it must be task of the client to translate the value
+	 * in the DB into the value needed by the user.
+	 */
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	@NotNull
+	@Nonnull
+	private PensumUnits unitForDisplay = PensumUnits.PERCENTAGE;
+
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -57,7 +75,8 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		}
 		final AbstractDecimalPensum otherAbstDateRangedEntity = (AbstractDecimalPensum) other;
 		return super.isSame(otherAbstDateRangedEntity)
-			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0;
+			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0
+			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay();
 	}
 
 	public void copyAbstractBetreuungspensumEntity(
@@ -66,6 +85,17 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 		super.copyAbstractDateRangedEntity(target, copyType);
 		target.setPensum(this.getPensum());
+		target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
+		target.setUnitForDisplay(this.getUnitForDisplay());
+	}
+
+	@Nonnull
+	public PensumUnits getUnitForDisplay() {
+		return unitForDisplay;
+	}
+
+	public void setUnitForDisplay(@Nonnull PensumUnits unitForDisplay) {
+		this.unitForDisplay = unitForDisplay;
 	}
 
 	@Nonnull
@@ -79,5 +109,14 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	public void setPensum(@Nonnull Integer pensum) {
 		this.pensum = BigDecimal.valueOf(pensum);
+	}
+
+	@Nonnull
+	public BigDecimal getMonatlicheBetreuungskosten() {
+		return monatlicheBetreuungskosten;
+	}
+
+	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
+		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 }
