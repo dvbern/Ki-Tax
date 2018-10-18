@@ -20,6 +20,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -44,7 +45,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+		if (Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
 			Objects.requireNonNull(betreuung.extractGesuch(), "Gesuch muss gesetzt sein");
 			Objects.requireNonNull(betreuung.extractGesuch().extractFamiliensituation(), "Familiensituation muss gesetzt sein");
 			boolean hasSecondGesuchsteller = hasSecondGSForZeit(betreuung, verfuegungZeitabschnitt.getGueltigkeit());
@@ -138,9 +139,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	@Nonnull
 	private Integer calculateErwerbspensum(VerfuegungZeitabschnitt verfuegungZeitabschnitt, Integer erwerbspensum, MsgKey bemerkung) {
 		if (erwerbspensum > 100) {
-			if (erwerbspensum > 100) {
-				erwerbspensum = 100;
-			}
+			erwerbspensum = 100;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, bemerkung);
 		}
 		return erwerbspensum;
@@ -148,11 +147,15 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	private boolean hasSecondGSForZeit(@Nonnull Betreuung betreuung, @Nonnull DateRange gueltigkeit) {
 		final Gesuch gesuch = betreuung.extractGesuch();
-		if (gesuch.extractFamiliensituation().getAenderungPer() != null && gesuch.extractFamiliensituationErstgesuch() != null
-			&& gueltigkeit.getGueltigBis().isBefore(gesuch.extractFamiliensituation().getAenderungPer())) {
-			return gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller();
-		} else {
-			return gesuch.extractFamiliensituation().hasSecondGesuchsteller();
+		final Familiensituation familiensituation = Objects.requireNonNull(gesuch.extractFamiliensituation());
+		final Familiensituation familiensituationErstGesuch = gesuch.extractFamiliensituationErstgesuch();
+
+		if (familiensituation.getAenderungPer() != null
+			&& familiensituationErstGesuch != null
+			&& gueltigkeit.getGueltigBis().isBefore(familiensituation.getAenderungPer())) {
+
+			return familiensituationErstGesuch.hasSecondGesuchsteller();
 		}
+		return familiensituation.hasSecondGesuchsteller();
 	}
 }

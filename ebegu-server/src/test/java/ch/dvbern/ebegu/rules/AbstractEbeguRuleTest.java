@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -37,17 +38,17 @@ public class AbstractEbeguRuleTest {
 	private final DateRange defaultGueltigkeit = new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME);
 	private final ErwerbspensumAbschnittRule erwerbspensumRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit);
 
-	private final LocalDate DATUM_1 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.APRIL, 1);
-	private final LocalDate DATUM_2 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.SEPTEMBER, 1);
-	private final LocalDate DATUM_3 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.OCTOBER, 1);
-	private final LocalDate DATUM_4 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 1);
+	private static final LocalDate DATUM_1 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.APRIL, 1);
+	private static final LocalDate DATUM_2 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.SEPTEMBER, 1);
+	private static final LocalDate DATUM_3 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.OCTOBER, 1);
+	private static final LocalDate DATUM_4 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 1);
 
 	@Test
-	public void testErwerbspensenUndBetreuungspensen() throws Exception {
+	public void testErwerbspensenUndBetreuungspensen() {
 
 		List<VerfuegungZeitabschnitt> betreuungspensen = new ArrayList<>();
-		betreuungspensen.add(createBetreuungspensum(Constants.START_OF_TIME, Constants.END_OF_TIME, 50));
-		betreuungspensen.add(createBetreuungspensum(DATUM_2, DATUM_4, 20));
+		betreuungspensen.add(createBetreuungspensum(Constants.START_OF_TIME, Constants.END_OF_TIME, BigDecimal.valueOf(50)));
+		betreuungspensen.add(createBetreuungspensum(DATUM_2, DATUM_4, BigDecimal.valueOf(20)));
 		betreuungspensen = erwerbspensumRule.mergeZeitabschnitte(betreuungspensen);
 		// 01.01.1900 - DATUM2-1: 50, DATUM2 - DATUM4: 70, DATUM4+1 - 31.12.9999: 50
 
@@ -92,11 +93,11 @@ public class AbstractEbeguRuleTest {
 		Assert.assertEquals(Integer.valueOf(60), fourth.getErwerbspensumGS1());
 		Assert.assertNull(fifth.getErwerbspensumGS1());
 
-		Assert.assertEquals(50, first.getBetreuungspensum());
-		Assert.assertEquals(50, second.getBetreuungspensum());
-		Assert.assertEquals(70, third.getBetreuungspensum());
-		Assert.assertEquals(70, fourth.getBetreuungspensum());
-		Assert.assertEquals(50, fifth.getBetreuungspensum());
+		Assert.assertEquals(50, first.getBetreuungspensum().intValue());
+		Assert.assertEquals(50, second.getBetreuungspensum().intValue());
+		Assert.assertEquals(70, third.getBetreuungspensum().intValue());
+		Assert.assertEquals(70, fourth.getBetreuungspensum().intValue());
+		Assert.assertEquals(50, fifth.getBetreuungspensum().intValue());
 	}
 
 	@Test
@@ -139,8 +140,8 @@ public class AbstractEbeguRuleTest {
 	@Test
 	public void testSchnittmenge() {
 		List<VerfuegungZeitabschnitt> zeitabschnitte = new ArrayList<>();
-		zeitabschnitte.add(createBetreuungspensum(Constants.START_OF_TIME, Constants.END_OF_TIME, 50));
-		zeitabschnitte.add(createBetreuungspensum(DATUM_2, DATUM_4, 20));
+		zeitabschnitte.add(createBetreuungspensum(Constants.START_OF_TIME, Constants.END_OF_TIME, BigDecimal.valueOf(50)));
+		zeitabschnitte.add(createBetreuungspensum(DATUM_2, DATUM_4, BigDecimal.valueOf(20)));
 		List<VerfuegungZeitabschnitt> result = erwerbspensumRule.mergeZeitabschnitte(zeitabschnitte);
 
 		Assert.assertNotNull(result);
@@ -154,9 +155,9 @@ public class AbstractEbeguRuleTest {
 		Assert.assertEquals(DATUM_4, second.getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(DATUM_4.plusDays(1), third.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(Constants.END_OF_TIME, third.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(50, first.getBetreuungspensum());
-		Assert.assertEquals(70, second.getBetreuungspensum());
-		Assert.assertEquals(50, third.getBetreuungspensum());
+		Assert.assertEquals(50, first.getBetreuungspensum().intValue());
+		Assert.assertEquals(70, second.getBetreuungspensum().intValue());
+		Assert.assertEquals(50, third.getBetreuungspensum().intValue());
 	}
 
 	@Test
@@ -229,8 +230,12 @@ public class AbstractEbeguRuleTest {
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), result.get(0).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), result.get(0).getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(
+			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+			result.get(0).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(
+			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(),
+			result.get(0).getGueltigkeit().getGueltigBis());
 	}
 
 	@Test
@@ -248,7 +253,9 @@ public class AbstractEbeguRuleTest {
 		// Erwerbspensen eingegeben wurden.
 		Assert.assertEquals(3, result.size());
 
-		Assert.assertEquals(betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigAb(), result.get(0).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(
+			betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+			result.get(0).getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(DATUM_2.minusDays(1), result.get(0).getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(Integer.valueOf(0), result.get(0).getErwerbspensumGS1());
 		Assert.assertEquals(Integer.valueOf(0), result.get(0).getErwerbspensumGS2());
@@ -259,7 +266,9 @@ public class AbstractEbeguRuleTest {
 		Assert.assertEquals(Integer.valueOf(0), result.get(1).getErwerbspensumGS2());
 
 		Assert.assertEquals(DATUM_4.plusDays(1), result.get(2).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis(), result.get(2).getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(
+			betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis(),
+			result.get(2).getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(Integer.valueOf(0), result.get(2).getErwerbspensumGS1());
 		Assert.assertEquals(Integer.valueOf(0), result.get(2).getErwerbspensumGS2());
 	}
@@ -279,7 +288,9 @@ public class AbstractEbeguRuleTest {
 		// Fuer Zeitabschnitte in denen es kein EP eingegeben wurde, wird auch ein Zeitabschnitte berechnet
 		Assert.assertEquals(5, result.size());
 
-		Assert.assertEquals(betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigAb(), result.get(0).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(
+			betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+			result.get(0).getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(DATUM_2.minusDays(1), result.get(0).getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(Integer.valueOf(0), result.get(0).getErwerbspensumGS1());
 		Assert.assertEquals(Integer.valueOf(0), result.get(0).getErwerbspensumGS2());
@@ -300,7 +311,9 @@ public class AbstractEbeguRuleTest {
 		Assert.assertEquals(Integer.valueOf(0), result.get(3).getErwerbspensumGS2());
 
 		Assert.assertEquals(DATUM_4.plusDays(1), result.get(4).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis(), result.get(4).getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(
+			betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis(),
+			result.get(4).getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(Integer.valueOf(0), result.get(4).getErwerbspensumGS1());
 		Assert.assertEquals(Integer.valueOf(0), result.get(4).getErwerbspensumGS2());
 	}
@@ -312,7 +325,7 @@ public class AbstractEbeguRuleTest {
 		return zeitabschnitt1;
 	}
 
-	private VerfuegungZeitabschnitt createBetreuungspensum(LocalDate von, LocalDate bis, int pensum) {
+	private VerfuegungZeitabschnitt createBetreuungspensum(LocalDate von, LocalDate bis, BigDecimal pensum) {
 		VerfuegungZeitabschnitt zeitabschnitt1 = new VerfuegungZeitabschnitt(new DateRange(von, bis));
 		zeitabschnitt1.setBetreuungspensum(pensum);
 		return zeitabschnitt1;

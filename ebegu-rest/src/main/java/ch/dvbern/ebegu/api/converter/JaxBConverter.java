@@ -37,6 +37,7 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDecimalPensumDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
@@ -103,6 +104,7 @@ import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
+import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
@@ -219,7 +221,7 @@ import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity"})
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
@@ -278,6 +280,24 @@ public class JaxBConverter extends AbstractConverter {
 
 	public JaxBConverter(@Nonnull GemeindeJaxBConverter gemeindeConverter) {
 		this.gemeindeConverter = gemeindeConverter;
+	}
+
+	private void convertAbstractBetreuungspensumFieldsToEntity(
+		@Nonnull final JaxAbstractDecimalPensumDTO jaxPensum,
+		@Nonnull final AbstractDecimalPensum pensumEntity) {
+
+		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
+		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
+		pensumEntity.setPensum(jaxPensum.getPensum());
+	}
+
+	private void convertAbstractBetreuungspensumFieldsToJAX(
+		@Nonnull final AbstractDecimalPensum pensum,
+		@Nonnull final JaxAbstractDecimalPensumDTO jaxPensum) {
+
+		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
+		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
+		jaxPensum.setPensum(pensum.getPensum());
 	}
 
 	@Nonnull
@@ -2281,7 +2301,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxBetreuungspensum jaxBetreuungspensum,
 		final Betreuungspensum betreuungspensum) {
 
-		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
+		convertAbstractBetreuungspensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
 		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
 
@@ -2303,7 +2323,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum,
 		final BetreuungsmitteilungPensum betreuungspensum) {
 
-		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
+		convertAbstractBetreuungspensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 
 		return betreuungspensum;
 	}
@@ -2313,7 +2333,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum = new JaxBetreuungsmitteilungPensum();
 
-		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
+		convertAbstractBetreuungspensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 
 		return jaxBetreuungspensum;
 	}
@@ -2643,7 +2663,7 @@ public class JaxBConverter extends AbstractConverter {
 	private JaxBetreuungspensum betreuungspensumToJax(@Nonnull Betreuungspensum betreuungspensum) {
 
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
-		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
+		convertAbstractBetreuungspensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
 		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 

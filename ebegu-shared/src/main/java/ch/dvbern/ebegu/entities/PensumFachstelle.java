@@ -31,7 +31,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class PensumFachstelle extends AbstractPensumEntity {
+public class PensumFachstelle extends AbstractIntegerPensum {
 
 	private static final long serialVersionUID = -9132257320978374570L;
 

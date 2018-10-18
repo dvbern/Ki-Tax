@@ -19,11 +19,12 @@ import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
+import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import TSAbstractEntity from '../models/TSAbstractEntity';
 import TSAbstractFinanzielleSituation from '../models/TSAbstractFinanzielleSituation';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
-import {TSAbstractPensumEntity} from '../models/TSAbstractPensumEntity';
+import {TSAbstractIntegerPensumEntity} from '../models/TSAbstractIntegerPensumEntity';
 import TSAbstractPersonEntity from '../models/TSAbstractPersonEntity';
 import TSAbwesenheit from '../models/TSAbwesenheit';
 import TSAbwesenheitContainer from '../models/TSAbwesenheitContainer';
@@ -292,16 +293,31 @@ export default class EbeguRestUtil {
         parsedObject.gueltigkeit = new TSDateRange(ab, bis);
     }
 
-    private abstractPensumEntityToRestObject(restObj: any, pensumEntity: TSAbstractPensumEntity): void {
+    private abstractPensumEntityToRestObject(restObj: any, pensumEntity: TSAbstractIntegerPensumEntity): void {
         this.abstractDateRangeEntityToRestObject(restObj, pensumEntity);
         restObj.pensum = pensumEntity.pensum;
     }
 
+    private abstractBetreuungspensumEntityToRestObject(restObj: any, betreuungspensumEntity: TSAbstractDecimalPensumEntity): void {
+        this.abstractDateRangeEntityToRestObject(restObj, betreuungspensumEntity);
+        restObj.unitForDisplay = betreuungspensumEntity.unitForDisplay;
+        restObj.pensum = betreuungspensumEntity.pensum;
+    }
+
     private parseAbstractPensumEntity(
-        betreuungspensumTS: TSAbstractPensumEntity,
+        betreuungspensumTS: TSAbstractIntegerPensumEntity,
         betreuungspensumFromServer: any,
     ): void {
         this.parseDateRangeEntity(betreuungspensumTS, betreuungspensumFromServer);
+        betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
+    }
+
+    private parseAbstractBetreuungspensumEntity(
+        betreuungspensumTS: TSAbstractDecimalPensumEntity,
+        betreuungspensumFromServer: any,
+    ): void {
+        this.parseDateRangeEntity(betreuungspensumTS, betreuungspensumFromServer);
+        betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
     }
 
@@ -1495,11 +1511,12 @@ export default class EbeguRestUtil {
     }
 
     public betreuungspensumToRestObject(restBetreuungspensum: any, betreuungspensum: TSBetreuungspensum): any {
-        this.abstractPensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
+        this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
         if (betreuungspensum.nichtEingetreten !== null) {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
+            restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         restBetreuungspensum.monatlicheBetreuungskosten = betreuungspensum.monatlicheBetreuungskosten;
         return restBetreuungspensum;
@@ -1508,7 +1525,7 @@ export default class EbeguRestUtil {
     public betreuungsmitteilungPensumToRestObject(restBetreuungspensum: any,
                                                   betreuungspensum: TSBetreuungsmitteilungPensum,
     ): any {
-        this.abstractPensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
+        this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
         return restBetreuungspensum;
     }
 
@@ -1622,9 +1639,10 @@ export default class EbeguRestUtil {
                                  betreuungspensumFromServer: any,
     ): TSBetreuungspensum {
         if (betreuungspensumFromServer) {
-            this.parseAbstractPensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+            this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
             betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
+            betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             return betreuungspensumTS;
         }
         return undefined;
@@ -1634,7 +1652,7 @@ export default class EbeguRestUtil {
                                            betreuungspensumFromServer: any,
     ): TSBetreuungsmitteilungPensum {
         if (betreuungspensumFromServer) {
-            this.parseAbstractPensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+            this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             return betreuungspensumTS;
         }
         return undefined;

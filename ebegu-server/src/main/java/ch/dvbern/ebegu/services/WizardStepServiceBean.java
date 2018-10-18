@@ -718,7 +718,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 			final List<Betreuung> betreuungenFromGesuch = betreuungService.findAllBetreuungenFromGesuch(wizardStep.getGesuch().getId());
 
-			BetreuungsangebotTyp dominantType = getDominantBetruungsangebotTyp(betreuungenFromGesuch);
+			BetreuungsangebotTyp dominantType = getDominantBetreuungsangebotTyp(betreuungenFromGesuch);
 
 			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				setWizardStepOkOrMutiert(wizardStep);
@@ -742,7 +742,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * KITA > TAGESSCHULE > FERINEINSEL
 	 */
 	@Nonnull
-	private BetreuungsangebotTyp getDominantBetruungsangebotTyp(List<Betreuung> betreuungenFromGesuch) {
+	private BetreuungsangebotTyp getDominantBetreuungsangebotTyp(List<Betreuung> betreuungenFromGesuch) {
 		BetreuungsangebotTyp dominantType = BetreuungsangebotTyp.FERIENINSEL; // less dominant type
 		for (Betreuung betreuung : betreuungenFromGesuch) {
 			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {

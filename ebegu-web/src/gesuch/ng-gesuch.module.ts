@@ -15,6 +15,7 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
+import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 
 @NgModule({
@@ -23,9 +24,11 @@ import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.componen
     ],
     declarations: [
         FallToolbarComponent,
+        DvSwitchComponent,
     ],
     entryComponents: [
         FallToolbarComponent,
+        DvSwitchComponent,
     ],
 })
 

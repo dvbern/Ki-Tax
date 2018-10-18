@@ -28,11 +28,11 @@ public interface VerfuegungZeitabschnittPrint {
 
 	String getBis();
 
-	int getBetreuung();
+	BigDecimal getBetreuung();
 
 	int getAnspruch();
 
-	int getBGPensum();
+	BigDecimal getBGPensum();
 
 	BigDecimal getVollkosten();
 

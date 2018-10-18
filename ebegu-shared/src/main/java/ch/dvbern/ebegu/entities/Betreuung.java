@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.ebegu.validators.CheckAbwesenheitDatesOverlapping;
@@ -386,7 +387,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		}
 		boolean statusSame = true;
 		if (inklStatus) {
-			statusSame = Objects.equals(this.getBetreuungsstatus(), otherBetreuung.getBetreuungsstatus());
+			statusSame = this.getBetreuungsstatus() == otherBetreuung.getBetreuungsstatus();
 		}
 		boolean stammdatenSame = this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
 		boolean erwBeduerfnisseSame = Objects.equals(getErweiterteBeduerfnisse(), otherBetreuung
@@ -554,7 +555,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	private boolean hasAnyNonZeroPensum() {
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
-			if (betreuungspensumContainer.getBetreuungspensumJA().getPensum() > 0) {
+			if (MathUtil.isPositive(betreuungspensumContainer.getBetreuungspensumJA().getPensum())) {
 				return true;
 			}
 		}

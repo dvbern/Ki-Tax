@@ -13,37 +13,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.api.dtos;
+import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSDateRange} from './types/TSDateRange';
 
-import javax.annotation.Nonnull;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
+export class TSAbstractIntegerPensumEntity extends TSAbstractDateRangedEntity {
 
-/**
- * Superklasse fuer ein Pensum
- */
-@XmlTransient
-@XmlAccessorType(XmlAccessType.FIELD)
-public class JaxAbstractPensumDTO extends JaxAbstractDateRangedDTO {
+    private _pensum: number;
 
-	private static final long serialVersionUID = -7598194821332548948L;
+    public constructor(pensum?: number, gueltigkeit?: TSDateRange) {
+        super(gueltigkeit);
+        this._pensum = pensum;
+    }
 
-	@Min(0)
-	@Max(100)
-	@NotNull
-	private Integer pensum;
+    public get pensum(): number {
+        return this._pensum;
+    }
 
-	@Nonnull
-	public Integer getPensum() {
-		return pensum;
-	}
-
-	public void setPensum(@Nonnull Integer pensum) {
-		this.pensum = pensum;
-	}
-
+    public set pensum(value: number) {
+        this._pensum = value;
+    }
 }
