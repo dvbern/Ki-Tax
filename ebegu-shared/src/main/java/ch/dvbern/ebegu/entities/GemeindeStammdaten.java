@@ -196,7 +196,10 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	public byte[] getLogoContent() {
-		return logoContent;
+		if (logoContent == null) {
+			return null;
+		}
+		return Arrays.copyOf(logoContent, logoContent.length);
 	}
 
 	public void setLogoContent(@Nullable byte[] logoContent) {
