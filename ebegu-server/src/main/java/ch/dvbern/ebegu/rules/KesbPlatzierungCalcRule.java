@@ -25,7 +25,8 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
- * Bemerkung: Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB übernommen.
+ * Bemerkung: Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB
+ * übernommen.
  */
 public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 

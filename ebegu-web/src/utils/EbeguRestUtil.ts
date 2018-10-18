@@ -303,6 +303,7 @@ export default class EbeguRestUtil {
         this.abstractDateRangeEntityToRestObject(restObj, betreuungspensumEntity);
         restObj.unitForDisplay = betreuungspensumEntity.unitForDisplay;
         restObj.pensum = betreuungspensumEntity.pensum;
+        restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten;
     }
 
     private parseAbstractPensumEntity(
@@ -320,6 +321,7 @@ export default class EbeguRestUtil {
         this.parseDateRangeEntity(betreuungspensumTS, betreuungspensumFromServer);
         betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
+        betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
     }
 
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity): void {
@@ -1574,7 +1576,6 @@ export default class EbeguRestUtil {
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
-        restBetreuungspensum.monatlicheBetreuungskosten = betreuungspensum.monatlicheBetreuungskosten;
         return restBetreuungspensum;
     }
 
@@ -1697,7 +1698,6 @@ export default class EbeguRestUtil {
         if (betreuungspensumFromServer) {
             this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
-            betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             return betreuungspensumTS;
         }

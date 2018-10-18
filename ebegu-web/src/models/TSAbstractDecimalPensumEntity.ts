@@ -23,11 +23,18 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
     private _unitForDisplay: TSPensumUnits;
     private _pensum: number;
+    private _monatlicheBetreuungskosten: number;
 
-    public constructor(unitForDisplay?: TSPensumUnits, pensum?: number, gueltigkeit?: TSDateRange) {
+    public constructor(
+        monatlicheBetreuungskosten: number,
+        unitForDisplay?: TSPensumUnits,
+        pensum?: number,
+        gueltigkeit?: TSDateRange
+    ) {
         super(gueltigkeit);
         this._unitForDisplay = unitForDisplay;
         this._pensum = pensum;
+        this._monatlicheBetreuungskosten = monatlicheBetreuungskosten;
     }
 
     public get unitForDisplay(): TSPensumUnits {
@@ -44,5 +51,13 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
     public set pensum(value: number) {
         this._pensum = value;
+    }
+
+    public get monatlicheBetreuungskosten(): number {
+        return this._monatlicheBetreuungskosten;
+    }
+
+    public set monatlicheBetreuungskosten(value: number) {
+        this._monatlicheBetreuungskosten = value;
     }
 }

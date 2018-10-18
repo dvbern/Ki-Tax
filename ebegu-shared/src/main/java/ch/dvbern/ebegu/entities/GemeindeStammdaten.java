@@ -72,8 +72,8 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private Adresse adresse;
 
 	@Nullable
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = false)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = true)
 	private Adresse beschwerdeAdresse;
 
 	// todo KIBON-245 braucht man das? koennte man es nicht direkt setzen wenn die adresse existiert?
@@ -103,7 +103,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
 
 	@Nullable
-	@Column(nullable = false, length = TEN_MEG) //10 megabytes // todo KIBON-245 ist es nicht viel?
+	@Column(nullable = true, length = TEN_MEG) //10 megabytes // todo KIBON-245 ist es nicht viel?
 	@Lob
 	private byte[] logoContent;
 
