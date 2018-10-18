@@ -151,58 +151,6 @@ public class AbstractBGRechnerTest {
 	}
 
 	/**
-	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Tagi und Tageseltern notwendigen Parametern
-	 * zusammen
-	 */
-	protected Verfuegung prepareVerfuegungTagiUndTageseltern(
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis,
-		int anspruch,
-		@Nonnull BigDecimal massgebendesEinkommen,
-		@Nonnull BigDecimal monatlicheBetreuungskosten) {
-
-		return createVerfuegung(von, bis, anspruch, massgebendesEinkommen, monatlicheBetreuungskosten);
-	}
-
-	/**
-	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Kita notwendigen Parametern zusammen
-	 */
-	protected Verfuegung prepareVerfuegungKita(
-		@Nonnull LocalDate geburtsdatumKind,
-		@Nonnull BigDecimal anzahlTageKita,
-		@Nonnull BigDecimal anzahlStundenProTagKita,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis,
-		int anspruch,
-		@Nonnull BigDecimal massgebendesEinkommen,
-		@Nonnull BigDecimal monatlicheBetreuungskosten) {
-
-		Betreuung betreuung = new Betreuung();
-		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
-		institutionStammdaten.setOeffnungsstunden(anzahlStundenProTagKita);
-		institutionStammdaten.setOeffnungstage(anzahlTageKita);
-		betreuung.setInstitutionStammdaten(institutionStammdaten);
-		Kind kind = new Kind();
-		kind.setGeburtsdatum(geburtsdatumKind);
-		KindContainer kindContainer = new KindContainer();
-		kindContainer.setKindJA(kind);
-		Gesuch gesuch = new Gesuch();
-		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
-		boolean isSecondHalbjahr = LocalDate.now().isAfter(LocalDate.of(LocalDate.now().getYear(), Month.JULY, 31));
-		int startyear = isSecondHalbjahr ? LocalDate.now().getYear() : LocalDate.now().getYear() - 1;
-		LocalDate start = LocalDate.of(startyear, Month.AUGUST, 1);
-		LocalDate end = LocalDate.of(startyear + 1, Month.JULY, 31);
-		gesuchsperiode.setGueltigkeit(new DateRange(start, end));
-		gesuch.setGesuchsperiode(gesuchsperiode);
-		kindContainer.setGesuch(gesuch);
-		betreuung.setKind(kindContainer);
-
-		Verfuegung verfuegung = createVerfuegung(von, bis, anspruch, massgebendesEinkommen, monatlicheBetreuungskosten);
-		verfuegung.setBetreuung(betreuung);
-		return verfuegung;
-	}
-
-	/**
 	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Kita notwendigen Parametern zusammen
 	 */
 	protected Verfuegung prepareVerfuegungKita(
@@ -216,10 +164,6 @@ public class AbstractBGRechnerTest {
 
 		Betreuung betreuung = new Betreuung();
 		betreuung.setErweiterteBeduerfnisse(besondereBeduerfnisse);
-//		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
-//		institutionStammdaten.setOeffnungsstunden(anzahlStundenProTagKita);
-//		institutionStammdaten.setOeffnungstage(anzahlTageKita);
-//		betreuung.setInstitutionStammdaten(institutionStammdaten);
 		Kind kind = new Kind();
 		kind.setGeburtsdatum(geburtsdatumKind);
 		kind.setEinschulungTyp(eingeschult ? EinschulungTyp.KLASSE1 : EinschulungTyp.VORSCHULALTER);

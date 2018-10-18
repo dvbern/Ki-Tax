@@ -35,16 +35,17 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
 	private final TageselternRechner tageselternRechner = new TageselternRechner();
 
-	private LocalDate geburtstagBaby = LocalDate.of(2018, Month.OCTOBER, 15);
-	private LocalDate geburtstagKind = LocalDate.of(2016, Month.OCTOBER, 15);
+	private final LocalDate geburtstagBaby = LocalDate.of(2018, Month.OCTOBER, 15);
+	private final LocalDate geburtstagKind = LocalDate.of(2016, Month.OCTOBER, 15);
 
-	private DateRange intervall = new DateRange(
+	private final DateRange intervall = new DateRange(
 		LocalDate.of(2019, Month.FEBRUARY, 10),
 		LocalDate.of(2019, Month.FEBRUARY, 20));
 
 
 	@Test
 	public void test() {
+		// todo fragen sind nicht alle tests gleich??
 		testWithParams(geburtstagBaby, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
 			20, 100000, 200, 66.45);
 

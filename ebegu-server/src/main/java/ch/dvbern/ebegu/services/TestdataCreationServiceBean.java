@@ -418,7 +418,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode);
 		saveEinstellung(BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode);
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode);
-
+		// todo fragen müssen alle anderen nicht weg?
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG,"140", gesuchsperiode);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG, "100", gesuchsperiode);
 		saveEinstellung(MAX_VERGUENSTIGUNG_SCHULE_PRO_TG, "75", gesuchsperiode);

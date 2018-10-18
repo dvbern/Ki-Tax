@@ -34,7 +34,7 @@ export enum TSEinstellungKey {
     ZUSCHLAG_BEHINDERUNG_PRO_STD = 'ZUSCHLAG_BEHINDERUNG_PRO_STD' as any,
     MIN_VERGUENSTIGUNG_PRO_TG = 'MIN_VERGUENSTIGUNG_PRO_TG' as any,
     MIN_VERGUENSTIGUNG_PRO_STD = 'MIN_VERGUENSTIGUNG_PRO_STD' as any,
-
+    // todo fragen alle anderen alten params löschen?
     PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1 = 'PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1' as any,
     PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2 = 'PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2' as any,
     PARAM_ANZAL_TAGE_MAX_KITA = 'PARAM_ANZAL_TAGE_MAX_KITA' as any,
@@ -76,7 +76,7 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
         TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG,
         TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD,
-
+// todo fragen alle anderen alten params löschen?
         TSEinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1,
         TSEinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2,
         TSEinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA,

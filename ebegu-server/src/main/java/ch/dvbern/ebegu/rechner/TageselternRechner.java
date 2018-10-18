@@ -35,7 +35,11 @@ public class TageselternRechner extends AbstractBGRechner {
 	private static final MathUtil MATH = MathUtil.EXACT;
 
 	@Override
-	public VerfuegungZeitabschnitt calculate(VerfuegungZeitabschnitt verfuegungZeitabschnitt, Verfuegung verfuegung, BGRechnerParameterDTO parameterDTO) {
+	public VerfuegungZeitabschnitt calculate(
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		Verfuegung verfuegung,
+		BGRechnerParameterDTO parameterDTO
+	) {
 		Objects.requireNonNull(verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp());
 
 		// Benoetigte Daten
@@ -47,13 +51,12 @@ public class TageselternRechner extends AbstractBGRechner {
 		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(verfuegungZeitabschnitt.getBgPensum());
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
 		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
+		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageTFO();
+		BigDecimal oeffnungsstunden = parameterDTO.getOeffnungsstundenTFO();
 
 		// Inputdaten validieren
 		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
 		Objects.requireNonNull(geburtsdatum, "geburtsdatum darf nicht null sein");
-
-		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageTFO();
-		BigDecimal oeffnungsstunden = parameterDTO.getOeffnungsstundenTFO();
 
 		// Zwischenresultate
 		boolean unter12Monate = !von.isAfter(geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth()));
@@ -63,13 +66,10 @@ public class TageselternRechner extends AbstractBGRechner {
 			besonderebeduerfnisse,
 			massgebendesEinkommen);
 
-
 		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
 		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
 		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
 		long nettoTageIntervall = daysBetween(von, bis);
-
-
 
 		long stundenMonat =  nettoTageMonat * oeffnungsstunden.longValue();
 		long stundenIntervall = nettoTageIntervall * oeffnungsstunden.longValue();

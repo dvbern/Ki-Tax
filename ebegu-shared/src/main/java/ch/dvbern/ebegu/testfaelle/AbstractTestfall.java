@@ -339,7 +339,7 @@ public abstract class AbstractTestfall {
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
 		betreuungspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
 		betreuungspensum.setPensum(pensum);
-		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(5000));
+		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
 		return betreuungspensumContainer;
 	}
 
@@ -354,7 +354,7 @@ public abstract class AbstractTestfall {
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
 		betreuungspensum.setGueltigkeit(new DateRange(datumVon, datumBis));
 		betreuungspensum.setPensum(pensum);
-		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(5000));
+		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
 		return betreuungspensumContainer;
 	}
 

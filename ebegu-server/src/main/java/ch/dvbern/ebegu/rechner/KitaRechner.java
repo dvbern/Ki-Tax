@@ -38,7 +38,9 @@ public class KitaRechner extends AbstractBGRechner {
 	public VerfuegungZeitabschnitt calculate(
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
 		Verfuegung verfuegung,
-		BGRechnerParameterDTO parameterDTO) {
+		BGRechnerParameterDTO parameterDTO
+	) {
+		// todo fragen zusammen anschauen und evtl. gemeinsamen Code in Abstract
 		Objects.requireNonNull(verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp());
 
 		// Benoetigte Daten
@@ -50,12 +52,11 @@ public class KitaRechner extends AbstractBGRechner {
 		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(verfuegungZeitabschnitt.getBgPensum());
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
 		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
+		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageKita();
 
 		// Inputdaten validieren
 		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
 		Objects.requireNonNull(geburtsdatum, "geburtsdatum darf nicht null sein");
-
-		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageKita();
 
 		// Zwischenresultate
 		boolean unter12Monate = !von.isAfter(geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth()));
