@@ -44,7 +44,7 @@ public class TageselternRechner extends AbstractBGRechner {
 		boolean besonderebeduerfnisse = verfuegung.getBetreuung().getErweiterteBeduerfnisse();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
-		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(new BigDecimal(verfuegungZeitabschnitt.getBgPensum()));
+		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(verfuegungZeitabschnitt.getBgPensum());
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
 		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
 

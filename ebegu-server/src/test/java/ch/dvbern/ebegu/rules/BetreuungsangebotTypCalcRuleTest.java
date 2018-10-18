@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -82,7 +83,7 @@ public class BetreuungsangebotTypCalcRuleTest {
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(80);
+		betreuungspensumContainer.getBetreuungspensumJA().setPensum(BigDecimal.valueOf(80));
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 		return betreuung;
 	}

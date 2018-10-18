@@ -13,12 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractPensumEntity} from './TSAbstractPensumEntity';
+import {TSPensumUnits} from './enums/TSPensumUnits';
+import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSBetreuungsmitteilungPensum extends TSAbstractPensumEntity {
+export default class TSBetreuungsmitteilungPensum extends TSAbstractDecimalPensumEntity {
 
-    public constructor(pensum?: number, gueltigkeit?: TSDateRange) {
-        super(pensum, gueltigkeit);
+    public constructor(unitForDisplay?: TSPensumUnits, pensum?: number, gueltigkeit?: TSDateRange) {
+        super(unitForDisplay, pensum, gueltigkeit);
     }
 }

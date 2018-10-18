@@ -155,7 +155,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		// Adressen
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		// Kind 1
-		Betreuung betreuungKind1 = createBetreuungWithPensum(gesuch, BetreuungsangebotTyp.KITA, gesuchsperiode, 60);
+		Betreuung betreuungKind1 = createBetreuungWithPensum(gesuch, gesuchsperiode);
 		betreuungKind1.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setGueltigkeit(fachstelleGueltigkeit);
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setPensum(80);
@@ -164,7 +164,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		return gesuch;
 	}
 
-	private Betreuung createBetreuungWithPensum(Gesuch gesuch, BetreuungsangebotTyp angebot, DateRange gueltigkeit, int pensum) {
+	private Betreuung createBetreuungWithPensum(Gesuch gesuch, DateRange gueltigkeit) {
 		Betreuung betreuung = new Betreuung();
 		KindContainer kindContainer = new KindContainer();
 		betreuung.setKind(kindContainer);
@@ -175,13 +175,13 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuung.getKind().getKindJA().setKinderabzug(Kinderabzug.GANZER_ABZUG);
 		gesuch.getKindContainers().add(betreuung.getKind());
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
-		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(angebot);
+		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		betreuung.setBetreuungspensumContainers(new HashSet<>());
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		betreuungspensumContainer.setBetreuung(betreuung);
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(gueltigkeit);
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
+		betreuungspensumContainer.getBetreuungspensumJA().setPensum(60);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 		betreuung.setKeineKesbPlatzierung(true);
 		return betreuung;

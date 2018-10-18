@@ -353,4 +353,8 @@ public enum MathUtil {
 		}
 		return value.max(BigDecimal.ZERO);
 	}
+
+	public static boolean isPositive(@Nonnull BigDecimal value) {
+		return value.compareTo(BigDecimal.ZERO) > 0;
+	}
 }

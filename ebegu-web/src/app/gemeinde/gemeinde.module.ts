@@ -18,23 +18,31 @@
  */
 
 import {NgModule} from '@angular/core';
+import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
+import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
+import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
 
 @NgModule({
     imports: [
         SharedModule,
         GemeindeRoutingModule,
+        MaterialModule,
     ],
     declarations: [
         GemeindeListComponent,
         AddGemeindeComponent,
+        EditGemeindeComponent,
+        ViewGemeindeComponent,
     ],
     entryComponents: [
         GemeindeListComponent,
         AddGemeindeComponent,
+        EditGemeindeComponent,
+        ViewGemeindeComponent,
     ],
     providers: [],
 })

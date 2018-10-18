@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
@@ -42,7 +44,7 @@ public final class BetreuungUtil {
 	 * @return The minimum value for the betreuungsangebotTyp. Default value is -1: This means if the given betreuungsangebotTyp doesn't match any
 	 * recorded type, the min value will be 0 and any positive value will be then accepted
 	 */
-	public static int getMinValueFromBetreuungsangebotTyp(
+	public static BigDecimal getMinValueFromBetreuungsangebotTyp(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gemeinde gemeinde,
 		@Nullable BetreuungsangebotTyp betreuungsangebotTyp,
@@ -61,8 +63,8 @@ public final class BetreuungUtil {
 		}
 		if (key != null) {
 			Einstellung parameter = einstellungService.findEinstellung(key, gemeinde, gesuchsperiode, em);
-			return parameter.getValueAsInteger();
+			return parameter.getValueAsBigDecimal();
 		}
-		return 0;
+		return BigDecimal.ZERO;
 	}
 }

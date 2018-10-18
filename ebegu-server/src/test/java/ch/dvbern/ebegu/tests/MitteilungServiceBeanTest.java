@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.tests;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -350,7 +351,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		final Set<BetreuungsmitteilungPensum> betPensen = new HashSet<>();
 		BetreuungsmitteilungPensum betPens = new BetreuungsmitteilungPensum();
 		betPens.setBetreuungsmitteilung(mitteilung);
-		betPens.setPensum(33);
+		betPens.setPensum(BigDecimal.valueOf(33));
 		final DateRange gueltigkeit = new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME);
 		betPens.setGueltigkeit(gueltigkeit);
 		betPensen.add(betPens);
@@ -367,7 +368,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(persistedBetreuung.isPresent());
 		Assert.assertEquals(1, persistedBetreuung.get().getBetreuungspensumContainers().size());
 		final BetreuungspensumContainer nextBetPensum = persistedBetreuung.get().getBetreuungspensumContainers().iterator().next();
-		Assert.assertEquals(new Integer(33), nextBetPensum.getBetreuungspensumJA().getPensum());
+		Assert.assertEquals(BigDecimal.valueOf(33).setScale(2), nextBetPensum.getBetreuungspensumJA().getPensum());
 		Assert.assertEquals(gueltigkeit, nextBetPensum.getBetreuungspensumJA().getGueltigkeit());
 	}
 

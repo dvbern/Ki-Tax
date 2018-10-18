@@ -13,13 +13,20 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractPensumEntity} from './TSAbstractPensumEntity';
+import {TSPensumUnits} from './enums/TSPensumUnits';
+import {TSAbstractDecimalPensumEntity} from './TSAbstractDecimalPensumEntity';
 import {TSDateRange} from './types/TSDateRange';
 
-export default class TSBetreuungspensum extends TSAbstractPensumEntity {
+export default class TSBetreuungspensum extends TSAbstractDecimalPensumEntity {
 
     private _nichtEingetreten: boolean;
     private _monatlicheBetreuungskosten: number;
+
+    public constructor(unitForDisplay?: TSPensumUnits, nichtEingetreten?: boolean, monatlicheBetreuungskosten?: number, pensum?: number, gueltigkeit?: TSDateRange) {
+        super(unitForDisplay, pensum, gueltigkeit);
+        this.nichtEingetreten = nichtEingetreten;
+        this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
+    }
 
     public get nichtEingetreten(): boolean {
         return this._nichtEingetreten;
@@ -35,11 +42,5 @@ export default class TSBetreuungspensum extends TSAbstractPensumEntity {
 
     public set monatlicheBetreuungskosten(value: number) {
         this._monatlicheBetreuungskosten = value;
-    }
-
-    public constructor(nichtEingetreten?: boolean, monatlicheBetreuungskosten?: number, pensum?: number, gueltigkeit?: TSDateRange) {
-        super(pensum, gueltigkeit);
-        this.nichtEingetreten = nichtEingetreten;
-        this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
     }
 }

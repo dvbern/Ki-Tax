@@ -21,7 +21,9 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddGemeindeComponent} from '../add-gemeinde/add-gemeinde.component';
+import {EditGemeindeComponent} from '../edit-gemeinde/edit-gemeinde.component';
 import {GemeindeListComponent} from '../gemeinde-list/gemeinde-list.component';
+import {ViewGemeindeComponent} from '../view-gemeinde/view-gemeinde.component';
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -41,10 +43,26 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'gemeinde.add',
-        url: '/add/:gemeindeId',
+        url: '/add',
         component: AddGemeindeComponent,
         data: {
             roles: TSRoleUtil.getMandantRoles(),
+        },
+    },
+    {
+        name: 'gemeinde.edit',
+        url: '/edit/:gemeindeId',
+        component: EditGemeindeComponent,
+        data: {
+            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole(),
+        },
+    },
+    {
+        name: 'gemeinde.view',
+        url: '/view/:gemeindeId',
+        component: ViewGemeindeComponent,
+        data: {
+            roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
         },
     },
 ];

@@ -253,7 +253,7 @@ public class AbstractBGRechnerTest {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(new DateRange(von, bis));
 		zeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
-		zeitabschnitt.setBetreuungspensum(anspruch);
+		zeitabschnitt.setBetreuungspensum(BigDecimal.valueOf(anspruch));
 		zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
 		zeitabschnitt.setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();

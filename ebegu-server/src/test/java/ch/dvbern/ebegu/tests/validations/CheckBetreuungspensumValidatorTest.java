@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,7 +54,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testKitaGSWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, 9, 9);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, BigDecimal.valueOf(9), BigDecimal.valueOf(9));
 		// Das passiert weil wir nur den ersten falschen Werten checken. Deswegen als wir den Fehler in betreuungspensumGS finden, checken
 		// wir nicht weiter und betreuungspensumJA wirft keine Violation
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
@@ -61,7 +63,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testKitaJAWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, 10, 9);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, BigDecimal.TEN, BigDecimal.valueOf(9));
 		// Jetzt ist betreuungspensumGS richtig und wir finden den Fehler in betreuungspensumJA
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
@@ -69,14 +71,14 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testKitaRightValues() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, 10, 10);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, BigDecimal.TEN, BigDecimal.TEN);
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
 	}
 
 	@Test
 	public void testTageselternGSWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, 19, 19);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, BigDecimal.valueOf(19), BigDecimal.valueOf(19));
 		// Das passiert weil wir nur den ersten falschen Werten checken. Deswegen als wir den Fehler in betreuungspensumGS finden, checken
 		// wir nicht weiter und betreuungspensumJA wirft keine Violation
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
@@ -85,7 +87,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testTageselternJAWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, 20, 19);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, BigDecimal.valueOf(20), BigDecimal.valueOf(19));
 		// Jetzt ist betreuungspensumGS richtig und wir finden den Fehler in betreuungspensumJA
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
@@ -93,14 +95,14 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testTageselternRightValues() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, 20, 20);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, BigDecimal.valueOf(20), BigDecimal.valueOf(20));
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
 	}
 
 	@Test
 	public void testTagiGSWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, 59, 59);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, BigDecimal.valueOf(59), BigDecimal.valueOf(59));
 		// Das passiert weil wir nur den ersten falschen Werten checken. Deswegen als wir den Fehler in betreuungspensumGS finden, checken
 		// wir nicht weiter und betreuungspensumJA wirft keine Violation
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
@@ -109,7 +111,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testTagiJAWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, 60, 59);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, BigDecimal.valueOf(60), BigDecimal.valueOf(59));
 		// Jetzt ist betreuungspensumGS richtig und wir finden den Fehler in betreuungspensumJA
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
@@ -117,7 +119,7 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testTagiRightValues() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, 60, 60);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, BigDecimal.valueOf(60), BigDecimal.valueOf(60));
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
 	}
@@ -127,18 +129,19 @@ public class CheckBetreuungspensumValidatorTest {
 	 */
 	@Test
 	public void testTagesschule() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESSCHULE, 1, 1);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESSCHULE, BigDecimal.ONE, BigDecimal.ONE);
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
 	}
 
 	@Test
 	public void testSeveralBetreuungspensumContainers() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, 60, 60);
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, BigDecimal.valueOf(60), BigDecimal.valueOf(60));
 
 		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);
-		betPensContainer.getBetreuungspensumGS().setPensum(59);
-		betPensContainer.getBetreuungspensumJA().setPensum(60);
+		Assert.assertNotNull(betPensContainer.getBetreuungspensumGS());
+		betPensContainer.getBetreuungspensumGS().setPensum(BigDecimal.valueOf(59));
+		betPensContainer.getBetreuungspensumJA().setPensum(BigDecimal.valueOf(60));
 		betreuung.getBetreuungspensumContainers().add(betPensContainer);
 
 		//es ist ein Set. Daher muessen wir den Index finden
@@ -161,7 +164,7 @@ public class CheckBetreuungspensumValidatorTest {
 	 * creates a Betreeung with {@link BetreuungspensumContainer} gs and ja with the specified Pensum
 	 */
 	@Nonnull
-	private Betreuung createBetreuung(BetreuungsangebotTyp betreuungsangebotTyp, int pensumGS, int pensumJA) {
+	private Betreuung createBetreuung(BetreuungsangebotTyp betreuungsangebotTyp, BigDecimal pensumGS, BigDecimal pensumJA) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
@@ -170,6 +173,7 @@ public class CheckBetreuungspensumValidatorTest {
 		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);
 		Set<BetreuungspensumContainer> containerSet = new HashSet<>();
 		containerSet.add(betPensContainer);
+		Assert.assertNotNull(betPensContainer.getBetreuungspensumGS());
 		betPensContainer.getBetreuungspensumGS().setPensum(pensumGS);
 		betPensContainer.getBetreuungspensumJA().setPensum(pensumJA);
 		betreuung.setBetreuungspensumContainers(containerSet);
