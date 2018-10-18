@@ -35,7 +35,7 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
-public class Betreuungspensum extends AbstractPensumEntity implements Comparable<Betreuungspensum> {
+public class Betreuungspensum extends AbstractDecimalPensum implements Comparable<Betreuungspensum> {
 
 	private static final long serialVersionUID = -9032857320571372370L;
 
@@ -53,6 +53,7 @@ public class Betreuungspensum extends AbstractPensumEntity implements Comparable
 	public Betreuungspensum(BetreuungsmitteilungPensum betPensumMitteilung) {
 		this.setGueltigkeit(new DateRange(betPensumMitteilung.getGueltigkeit()));
 		this.setPensum(betPensumMitteilung.getPensum());
+		this.setUnitForDisplay(betPensumMitteilung.getUnitForDisplay());
 		this.setNichtEingetreten(false); //can not be set through BetreuungsmitteilungPensum
 	}
 
@@ -88,10 +89,11 @@ public class Betreuungspensum extends AbstractPensumEntity implements Comparable
 
 	@Nonnull
 	public Betreuungspensum copyBetreuungspensum(@Nonnull Betreuungspensum target, @Nonnull AntragCopyType copyType) {
-		super.copyAbstractPensumEntity(target, copyType);
+		super.copyAbstractBetreuungspensumEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setNichtEingetreten(this.getNichtEingetreten());
+			target.setMonatlicheBetreuungskosten(this.monatlicheBetreuungskosten);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:
@@ -117,6 +119,7 @@ public class Betreuungspensum extends AbstractPensumEntity implements Comparable
 			return false;
 		}
 		final Betreuungspensum otherBetreuungspensum = (Betreuungspensum) other;
-		return Objects.equals(getNichtEingetreten(), otherBetreuungspensum.getNichtEingetreten());
+		return Objects.equals(getNichtEingetreten(), otherBetreuungspensum.getNichtEingetreten())
+			&& this.getUnitForDisplay() == otherBetreuungspensum.getUnitForDisplay();
 	}
 }

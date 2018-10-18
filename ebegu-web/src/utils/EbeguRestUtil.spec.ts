@@ -21,6 +21,7 @@ import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../models/enums/TSBetreuungsstatus';
 import {TSGeschlecht} from '../models/enums/TSGeschlecht';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
+import {TSPensumUnits} from '../models/enums/TSPensumUnits';
 import {TSVerfuegungZeitabschnittZahlungsstatus} from '../models/enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import TSAbwesenheit from '../models/TSAbwesenheit';
 import TSAbwesenheitContainer from '../models/TSAbwesenheitContainer';
@@ -62,6 +63,8 @@ describe('EbeguRestUtil', () => {
 
     const pensum25 = 25;
     const pensum50 = 50;
+    const monatlicheBetreuungskosten200 = 200.2;
+    const monatlicheBetreuungskosten500 = 500.5;
     const oeffnungsTage = 250;
 
     beforeEach(angular.mock.module('pascalprecht.translate'));
@@ -169,7 +172,7 @@ describe('EbeguRestUtil', () => {
                 myGesuch.familiensituationContainer = new TSFamiliensituationContainer();
                 myGesuch.familiensituationContainer.familiensituationJA = familiensituation;
                 TestDataUtil.setAbstractMutableFieldsUndefined(myGesuch.familiensituationContainer);
-                myGesuch.kindContainers = [undefined];
+                myGesuch.kindContainers = [];
                 myGesuch.einkommensverschlechterungInfoContainer = undefined;
                 myGesuch.bemerkungen = undefined;
                 myGesuch.typ = undefined;
@@ -250,12 +253,18 @@ describe('EbeguRestUtil', () => {
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(instStam);
 
-                const tsBetreuungspensumGS = new TSBetreuungspensum(false,
-                    500.50, pensum25,
+                const tsBetreuungspensumGS = new TSBetreuungspensum(
+                    TSPensumUnits.PERCENTAGE,
+                    false,
+                    monatlicheBetreuungskosten500,
+                    pensum25,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumGS);
-                const tsBetreuungspensumJA = new TSBetreuungspensum(false,
-                    200.20, pensum50,
+                const tsBetreuungspensumJA = new TSBetreuungspensum(
+                    TSPensumUnits.PERCENTAGE,
+                    false,
+                    monatlicheBetreuungskosten200,
+                    pensum50,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsBetreuungspensumJA);
                 const tsBetreuungspensumContainer = new TSBetreuungspensumContainer(
@@ -308,7 +317,11 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseBetreuungspensum', () => {
             it('should transform TSBetreuungspensum to REST object and back', () => {
-                const betreuungspensum = new TSBetreuungspensum(false, 200.20, pensum25,
+                const betreuungspensum = new TSBetreuungspensum(
+                    TSPensumUnits.PERCENTAGE,
+                    false,
+                    monatlicheBetreuungskosten200,
+                    pensum25,
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuungspensum);
 

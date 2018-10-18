@@ -1,0 +1,43 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="betreuung-input-container">
+    <div class="dv-betreuung-input">
+        <input type="number"
+               step="0.25"
+               id="{{vm.id}}"
+               name="{{vm.id}}"
+               required
+               min="0"
+               aria-describedby="{{vm.id + '-error'}}"
+               ng-change="vm.refreshContent()"
+               ng-model="vm.pensumValue"
+               ng-disabled="vm.isDisabled"
+        >
+    </div>
+    <dv-switch class="betreuung-input-switch"
+               (switch-value-change)="vm.toggle()"
+               [switch-option-left]="vm.switchOptions[0]"
+               [switch-option-right]="vm.switchOptions[1]"
+               [(switch-value)]="vm.pensumContainer.betreuungspensumJA.unitForDisplay"
+               [disabled]="vm.isDisabled"
+    >
+    </dv-switch>
+    <div class="dv-betreuung-input-info-label">
+        <span ng-if="!vm.isDisabled" ng-bind="vm.label"></span>
+    </div>
+</div>

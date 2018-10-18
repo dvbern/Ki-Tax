@@ -29,6 +29,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
 import TSBetreuung from '../../../models/TSBetreuung';
@@ -174,7 +175,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
         this.findExistingBetreuungsmitteilung();
-
         const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
         if (!anmeldungMutationZustand) {
             return;
@@ -547,7 +547,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            new TSBetreuungspensum(false, undefined, undefined, new TSDateRange())));
+            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE, false, undefined, undefined, new TSDateRange())));
     }
 
     public removeBetreuungspensum(betreuungspensumToDelete: TSBetreuungspensumContainer): void {
@@ -578,16 +578,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     confirmText: 'LABEL_SPEICHERN',
                 })
                     .then(() => {   // User confirmed removal
-
                         this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-
                     });
             }
-
         } else if (!this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = true;
         }
-
     }
 
     public platzBestaetigen(): void {
@@ -651,6 +647,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return true;
+    }
+
+    public isPensumEditable(): boolean {
+        return (this.isBetreuungsstatusWarten() && !this.isSavingData) || this.isMutationsmeldungStatus;
     }
 
     /**

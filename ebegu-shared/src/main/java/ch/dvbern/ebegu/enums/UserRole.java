@@ -56,6 +56,10 @@ public enum UserRole {
 		return ADMIN_BG == this || SACHBEARBEITER_BG == this || isRoleGemeinde();
 	}
 
+	public boolean isRoleAnyAdminGemeinde() {
+		return ADMIN_GEMEINDE == this || ADMIN_BG == this || ADMIN_TS == this;
+	}
+
 	public boolean isRoleGemeinde() {
 		return  ADMIN_GEMEINDE == this || SACHBEARBEITER_GEMEINDE == this;
 	}
@@ -66,6 +70,10 @@ public enum UserRole {
 
 	public boolean isSuperadmin() {
 		return SUPER_ADMIN == this;
+	}
+
+	public boolean isRoleAdminTraegerschaftInstitution() {
+		return  getInstitutionTraegerschaftAdminRoles().contains(this);
 	}
 
 	public static List<UserRole> getAllAdminSuperAdminRevisorRoles() {
@@ -90,6 +98,20 @@ public enum UserRole {
 	 */
 	public static List<UserRole> getJugendamtRoles() {
 		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG);
+	}
+
+	/**
+	 * Returns the roles of BG and Gemeinde
+	 */
+	public static List<UserRole> getBgAndGemeindeRoles() {
+		return Arrays.asList(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
+	}
+
+	/**
+	 * Returns the roles of TS and Gemeinde
+	 */
+	public static List<UserRole> getTsAndGemeindeRoles() {
+		return Arrays.asList(ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
 	}
 
 	public static List<UserRole> getMandantRoles() {

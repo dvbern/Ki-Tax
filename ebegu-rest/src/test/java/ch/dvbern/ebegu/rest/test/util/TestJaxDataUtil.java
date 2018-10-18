@@ -278,7 +278,8 @@ public final class TestJaxDataUtil {
 		jaxBetreuungspensum.setGueltigAb(from);
 		jaxBetreuungspensum.setGueltigBis(to);
 
-		jaxBetreuungspensum.setPensum(40);
+		jaxBetreuungspensum.setPensum(BigDecimal.valueOf(40));
+		jaxBetreuungspensum.setMonatlicheBetreuungskosten(new BigDecimal(2000));
 		return jaxBetreuungspensum;
 	}
 

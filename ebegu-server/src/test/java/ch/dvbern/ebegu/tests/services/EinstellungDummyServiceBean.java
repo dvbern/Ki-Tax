@@ -125,11 +125,4 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 	public void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
 		// nop
 	}
-
-	@Nullable
-	@Override
-	public Einstellung createBeguBietenAbEinstellung(@Nonnull LocalDate eingangsdatum, @Nullable Gemeinde gemeinde) {
-		// nop
-		return null;
-	}
 }

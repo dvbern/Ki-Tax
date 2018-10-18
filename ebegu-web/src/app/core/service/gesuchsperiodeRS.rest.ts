@@ -25,12 +25,11 @@ export default class GesuchsperiodeRS {
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    public constructor(
-        public http: IHttpService,
-        REST_API: string,
-        public ebeguRestUtil: EbeguRestUtil,
-        public log: ILogService,
-        private readonly $q: IQService,
+    public constructor(public http: IHttpService,
+                       REST_API: string,
+                       public ebeguRestUtil: EbeguRestUtil,
+                       public log: ILogService,
+                       private readonly $q: IQService,
     ) {
         this.serviceURL = `${REST_API}gesuchsperioden`;
     }
@@ -66,7 +65,7 @@ export default class GesuchsperiodeRS {
     }
 
     public updateActiveGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/active`).then((response: any) => {
+        return this.http.get(`${this.serviceURL}/active`).then(response => {
             const gesuchsperioden = this.ebeguRestUtil.parseGesuchsperioden(response.data);
             this.activeGesuchsperiodenList = angular.copy(gesuchsperioden);
             return this.activeGesuchsperiodenList;
@@ -80,6 +79,18 @@ export default class GesuchsperiodeRS {
             });
         }
         return this.$q.when(this.activeGesuchsperiodenList); // we need to return a promise
+    }
+
+    public getAllPeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
+        return this.http
+            .get(`${this.serviceURL}/gemeinde/${gemeindeId}`, {
+                params: {
+                    dossierId,
+                }
+            })
+            .then(response => {
+                return this.ebeguRestUtil.parseGesuchsperioden(response.data);
+            });
     }
 
     public getAllGesuchsperioden(): IPromise<TSGesuchsperiode[]> {

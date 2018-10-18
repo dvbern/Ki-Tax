@@ -13,23 +13,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IAugmentedJQuery, IDirective, IDirectiveLinkFn, IScope} from 'angular';
-import {TSSubmitEvent} from '../../events/TSSubmitEvent';
+package ch.dvbern.ebegu.api.dtos;
+
+import javax.annotation.Nonnull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * this directive can be added to a form to boradcast a form submit event
+ * Superklasse fuer ein Pensum
  */
-export default class DVSubmitevent implements IDirective {
+@XmlTransient
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxAbstractIntegerPensumDTO extends JaxAbstractDateRangedDTO {
 
-    public restrict = 'A';
-    public require = 'form';
-    public link: IDirectiveLinkFn;
+	private static final long serialVersionUID = -7598194821332548948L;
 
-    public constructor() {
-        this.link = (scope: IScope, element: IAugmentedJQuery, _attrs, _ctrl: any) => {
-            element.on('submit', () => {
-                scope.$broadcast(TSSubmitEvent[TSSubmitEvent.FORM_SUBMIT]);
-            });
-        };
-    }
+	@Min(0)
+	@Max(100)
+	@NotNull
+	private Integer pensum;
+
+	@Nonnull
+	public Integer getPensum() {
+		return pensum;
+	}
+
+	public void setPensum(@Nonnull Integer pensum) {
+		this.pensum = pensum;
+	}
+
 }

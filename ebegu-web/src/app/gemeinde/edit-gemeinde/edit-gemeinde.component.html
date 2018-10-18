@@ -1,0 +1,328 @@
+<!--
+  ~ AGPL File-Header
+  ~
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<form role="form"
+      #form="ngForm"
+      [ngClass]="{'ng-submitted': form.submitted}"
+      *ngIf="stammdaten"
+      (ngSubmit)="persistGemeindeStammdaten()"
+      novalidate>
+
+    <div class="row marginTop20 marginBottom10">
+        <div class="col-md-8 col-md-offset-2 ">
+
+            <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
+            <div class="viewTitle">
+                <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer} }}</h2>
+                <hr class="header">
+            </div>
+
+            <fieldset>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>ADMINISTRATOREN</h3>
+                            <p>{{stammdaten.administratoren}}</p>
+                            <h3 translate>SACHBEARBEITER</h3>
+                            <p>{{stammdaten.sachbearbeiter}}</p>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="dv-btn mitarbeiter-bearbeiten-button" (click)="mitarbeiterBearbeiten()"
+                                    [textContent]="'BENUTZER_EDIT' | translate">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="marginBottom10">
+                                <img [src]="previewImageURL" [height]="180" class="klub-logo-dialog-image">
+                            </div>
+                            <div>
+                                <input #fileInput type="file" accept='image/*' (change)="handleInput(fileInput.files)"
+                                       class="klub-logo-dialog-fileinput">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <dv-full-height-container>
+        <div class="dv-content">
+            <fieldset>
+                <div class="viewTitle">
+                    <h3 translate>GEMEINDE_STAMMDATEN</h3>
+                    <hr class="header">
+                </div>
+                <div class="row">
+                    <!-- Anschrift -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="anschrift_id">ADRESSE_ANSCHRIFT</label>
+                            <input id="anschrift_id" type="text" name="anschrift_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.organisation"
+                                   [maxlength]="255" class="form-control" required
+                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                            <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors" inputId="anschrift_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- E-Mail -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="e_mail_id">EMAIL</label>
+                            <input id="e_mail_id" type="email" name="e_mail_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.mail"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.e_mail_id?.errors" inputId="e_mail_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Strasse -->
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label translate for="strasse_id">ADRESSE_STRASSE</label>
+                            <input id="strasse_id" type="text" name="strasse_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.strasse"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.strasse_id?.errors" inputId="strasse_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Hausnummer -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label translate for="hausnummer_id">ADRESSE_NUMMER</label>
+                            <input id="hausnummer_id" type="text" name="hausnummer_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.hausnummer"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.hausnummer_id?.errors" inputId="hausnummer_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Telefon -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="telefon_id">TELEFON</label>
+                            <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.telefon"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.telefon_id?.errors" inputId="telefon_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- PLZ -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label translate for="plz_id">ADRESSE_PLZ</label>
+                            <input id="plz_id" type="text" name="plz_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.plz"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.plz_id?.errors" inputId="plz_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Ort -->
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label translate for="ort_id">ADRESSE_ORT</label>
+                            <input id="ort_id" type="text" name="ort_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresse.ort"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.ort_id?.errors" inputId="ort_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Webseite -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="webseite_id">WEBSEITE</label>
+                            <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.webseite"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.webseite_id?.errors" inputId="webseite_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Beschwerde-Adresse Checkbox -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
+                            <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
+                                          [(ngModel)]="stammdaten.keineBeschwerdeAdresse">
+                                {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                    <!-- Korrespondenzsprache -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate for="korrespondenzsprache_id">KORRESPONDENZSPRACHE</h3>
+                            <div class="form-group" id="korrespondenzsprache_id">
+                                <mat-checkbox id="korrespondenzspracheDe_id" name="korrespondenzspracheDe_id"
+                                              [(ngModel)]="stammdaten.korrespondenzspracheDe">
+                                    {{'DEUTSCH'|translate}}
+                                </mat-checkbox>
+                                <mat-checkbox id="korrespondenzspracheFr_id" name="korrespondenzspracheFr_id"
+                                              [(ngModel)]="stammdaten.korrespondenzspracheFr">
+                                    {{'FRANZOESISCH'|translate}}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                    <!-- Beschwerde-Adresse -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="anschrift_ba_id">ADRESSE_ANSCHRIFT</label>
+                            <input id="anschrift_ba_id" type="text" name="anschrift_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
+                                   [maxlength]="255" class="form-control" required
+                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                            <dv-error-messages [errorObject]="form.controls.anschrift_ba_id?.errors" inputId="anschrift_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                    <!-- Strasse -->
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label translate for="strasse_ba_id">ADRESSE_STRASSE</label>
+                            <input id="strasse_ba_id" type="text" name="strasse_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.strasse_ba_id?.errors" inputId="strasse_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Hausnummer -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label translate for="hausnummer_ba_id">ADRESSE_NUMMER</label>
+                            <input id="hausnummer_ba_id" type="text" name="hausnummer_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.hausnummer_ba_id?.errors" inputId="hausnummer_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                    <!-- PLZ -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <label translate for="plz_ba_id">ADRESSE_PLZ</label>
+                            <input id="plz_ba_id" type="text" name="plz_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.plz"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.plz_ba_id?.errors" inputId="plz_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Ort -->
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label translate for="ort_ba_id">ADRESSE_ORT</label>
+                            <input id="ort_ba_id" type="text" name="ort_ba_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.beschwerdeAdresse.ort"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.ort_ba_id?.errors" inputId="ort_ba_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Standardverantwortliche BG -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
+                            <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG" id="verantwortliche_bg_id" name="verantwortliche_bg_id"
+                                        class="form-control" [compareWith]="compareBenutzer" required>
+                                <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
+                                    {{vbg.vorname}} {{vbg.nachname}}
+                                </mat-option>
+                            </mat-select>
+                            <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors" inputId="verantwortliche_bg_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+
+            <fieldset>
+                <div class="viewTitle">
+                    <h3 translate>BEGU_KONFIGURATION</h3>
+                    <hr class="header">
+                </div>
+                <div class="row">
+                    <!-- Betreuungsgutscheine anbieten ab -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>BEGU_START</h3>
+                            <p>{{beguStart}}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Kontingentierung -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate for="kontingentierung_id">EIGENSCHAFTEN</h3>
+                            <mat-checkbox id="kontingentierung_id" name="kontingentierung_id"
+                                          [(ngModel)]="stammdaten.kontingentierung">
+                                {{'KONTINGENTIERUNG'|translate}}
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                    <!-- Betreuungsgutscheine für Kitas anbieten bis und mit -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>GEMEINDE_REGELN</h3>
+                            <label translate for="begu_kitas_bis_und_mit_id">BEGU_KITAS_BIS_UND_MIT</label>
+                            <mat-select [(ngModel)]="stammdaten.beguBisUndMitSchulstufe" id="begu_kitas_bis_und_mit_id" name="begu_kitas_bis_und_mit_id"
+                                        class="form-control">
+                                <mat-option *ngFor="let etv of einschulungTypValues" [value]="etv">{{etv | translate}}
+                                </mat-option>
+                            </mat-select>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <!-- Buttons -->
+        <div class="row">
+            <div class="dv-footer">
+                <dv-loading-button [type]="'submit'">
+                    <span translate>GEMEINDE_SPEICHERN</span>
+                </dv-loading-button>
+
+                <button type="button" class="dv-btn cancel-button"
+                        (click)="cancel()"
+                        [textContent]="'CANCEL' | translate">
+                </button>
+            </div>
+        </div>
+    </dv-full-height-container>
+</form>
+

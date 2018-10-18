@@ -442,7 +442,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 			row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-			row.setBgPensum(MathUtil.DEFAULT.fromNullSafe(zeitabschnitt.getBgPensum()));
+			row.setBgPensum(zeitabschnitt.getBgPensum());
 			row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 			row.setVerguenstigung(zeitabschnitt.getVerguenstigung());
 			row.setInstitution(betreuung.getInstitutionStammdaten().getInstitution().getName());
@@ -1150,7 +1150,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBetreuungsStatus(ServerMessageUtil.getMessage(Betreuungsstatus.class.getSimpleName()
 			+ '_'
 			+ betreuung.getBetreuungsstatus().name()));
-		row.setBetreuungsPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensum()));
+		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensum()));
 		row.setAnspruchsPensum(MathUtil.DEFAULT.from(zeitabschnitt.getAnspruchberechtigtesPensum()));
 		row.setBgPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBgPensum()));
 		row.setBgStunden(zeitabschnitt.getBetreuungsstunden());

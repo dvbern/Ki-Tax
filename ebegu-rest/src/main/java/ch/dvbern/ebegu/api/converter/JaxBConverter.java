@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -38,11 +37,8 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDecimalPensumDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractPensumDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractPersonDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
@@ -84,11 +80,11 @@ import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
-import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
@@ -109,12 +105,9 @@ import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
+import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.AbstractMutableEntity;
-import ch.dvbern.ebegu.entities.AbstractPensumEntity;
-import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
@@ -153,6 +146,7 @@ import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -181,14 +175,18 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.AdresseService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungInfoService;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.ErwerbspensumService;
 import ch.dvbern.ebegu.services.FachstelleService;
 import ch.dvbern.ebegu.services.FallService;
@@ -204,7 +202,6 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
@@ -227,12 +224,11 @@ import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused" })
-public class JaxBConverter {
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
+public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
 	public static final String DOSSIER_TO_ENTITY = "dossierToEntity";
@@ -278,164 +274,39 @@ public class JaxBConverter {
 	@Inject
 	private GemeindeService gemeindeService;
 	@Inject
+	private AdresseService adresseService;
+	@Inject
+	private EinstellungService einstellungService;
+	@Inject
+	private GemeindeJaxBConverter gemeindeConverter;
+	@Inject
 	private Persistence persistence;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
 
-	@Nonnull
-	public String toResourceId(@Nonnull final AbstractEntity entity) {
-		return requireNonNull(entity.getId());
+	public JaxBConverter() {
+		//nop
 	}
 
-	@Nonnull
-	public String toEntityId(@Nonnull final JaxId resourceId) {
-		return requireNonNull(resourceId.getId());
+	public JaxBConverter(@Nonnull GemeindeJaxBConverter gemeindeConverter) {
+		this.gemeindeConverter = gemeindeConverter;
 	}
 
-	@Nonnull
-	public JaxId toJaxId(@Nonnull final AbstractEntity entity) {
-		return new JaxId(entity.getId());
-	}
-
-	@Nonnull
-	public JaxId toJaxId(@Nonnull final JaxAbstractDTO entity) {
-		return new JaxId(entity.getId());
-	}
-
-	@Nonnull
-	private <T extends JaxAbstractDTO> T convertAbstractFieldsToJAX(
-		@Nonnull final AbstractEntity abstEntity,
-		final T jaxDTOToConvertTo) {
-
-		jaxDTOToConvertTo.setTimestampErstellt(abstEntity.getTimestampErstellt());
-		jaxDTOToConvertTo.setTimestampMutiert(abstEntity.getTimestampMutiert());
-		jaxDTOToConvertTo.setId(checkNotNull(abstEntity.getId()));
-
-		return jaxDTOToConvertTo;
-	}
-
-	@Nonnull
-	private <T extends AbstractEntity> T convertAbstractFieldsToEntity(
-		final JaxAbstractDTO jaxToConvert,
-		@Nonnull final T abstEntityToConvertTo) {
-
-		if (jaxToConvert.getId() != null) {
-			abstEntityToConvertTo.setId(jaxToConvert.getId());
-			//ACHTUNG hier timestamp erstellt und mutiert NICHT konvertieren da diese immer auf dem server gesetzt
-			// werden muessen
-		}
-
-		return abstEntityToConvertTo;
-	}
-
-	@Nonnull
-	private <T extends JaxAbstractDTO> T convertAbstractVorgaengerFieldsToJAX(
-		@Nonnull final AbstractMutableEntity abstEntity,
-		final T jaxDTOToConvertTo) {
-
-		convertAbstractFieldsToJAX(abstEntity, jaxDTOToConvertTo);
-		jaxDTOToConvertTo.setVorgaengerId(abstEntity.getVorgaengerId());
-
-		return jaxDTOToConvertTo;
-	}
-
-	@Nonnull
-	private <T extends AbstractMutableEntity> T convertAbstractVorgaengerFieldsToEntity(
-		final JaxAbstractDTO jaxToConvert,
-		@Nonnull final T abstEntityToConvertTo) {
-
-		convertAbstractFieldsToEntity(jaxToConvert, abstEntityToConvertTo);
-		abstEntityToConvertTo.setVorgaengerId(jaxToConvert.getVorgaengerId());
-
-		return abstEntityToConvertTo;
-	}
-
-	/**
-	 * Converts all person related fields from Jax to Entity
-	 *
-	 * @param personEntityJAXP das objekt als Jax
-	 * @param personEntity das object als Entity
-	 */
-	private void convertAbstractPersonFieldsToEntity(
-		final JaxAbstractPersonDTO personEntityJAXP,
-		final AbstractPersonEntity personEntity) {
-
-		convertAbstractVorgaengerFieldsToEntity(personEntityJAXP, personEntity);
-		personEntity.setNachname(personEntityJAXP.getNachname());
-		personEntity.setVorname(personEntityJAXP.getVorname());
-		personEntity.setGeburtsdatum(personEntityJAXP.getGeburtsdatum());
-		personEntity.setGeschlecht(personEntityJAXP.getGeschlecht());
-	}
-
-	/**
-	 * Converts all person related fields from Entity to Jax
-	 *
-	 * @param personEntity das object als Entity
-	 * @param personEntityJAXP das objekt als Jax
-	 */
-	private void convertAbstractPersonFieldsToJAX(
-		final AbstractPersonEntity personEntity,
-		final JaxAbstractPersonDTO personEntityJAXP) {
-
-		convertAbstractVorgaengerFieldsToJAX(personEntity, personEntityJAXP);
-		personEntityJAXP.setNachname(personEntity.getNachname());
-		personEntityJAXP.setVorname(personEntity.getVorname());
-		personEntityJAXP.setGeburtsdatum(personEntity.getGeburtsdatum());
-		personEntityJAXP.setGeschlecht(personEntity.getGeschlecht());
-	}
-
-	/**
-	 * Checks fields gueltigAb and gueltigBis from given object and stores the corresponding DateRange object in the
-	 * given Jax Object
-	 * If gueltigAb is null then current date is set instead
-	 * If gueltigBis is null then end_of_time is set instead
-	 *
-	 * @param dateRangedJAXP AbstractDateRanged jax where to take the date from
-	 * @param dateRangedEntity AbstractDateRanged entity where to store the date into
-	 */
-	private AbstractDateRangedEntity convertAbstractDateRangedFieldsToEntity(
-		final JaxAbstractDateRangedDTO dateRangedJAXP, final AbstractDateRangedEntity
-		dateRangedEntity) {
-		convertAbstractVorgaengerFieldsToEntity(dateRangedJAXP, dateRangedEntity);
-		final LocalDate dateAb =
-			dateRangedJAXP.getGueltigAb() == null ? LocalDate.now() : dateRangedJAXP.getGueltigAb();
-		final LocalDate dateBis =
-			dateRangedJAXP.getGueltigBis() == null ? Constants.END_OF_TIME : dateRangedJAXP.getGueltigBis();
-		dateRangedEntity.setGueltigkeit(new DateRange(dateAb, dateBis));
-		return dateRangedEntity;
-	}
-
-	/***
-	 * Konvertiert eine DateRange fuer den Client. Wenn das DatumBis {@link Constants#END_OF_TIME} entspricht wird es
-	 * NICHT konvertiert
-	 */
-	private void convertAbstractDateRangedFieldsToJAX(
-		@Nonnull final AbstractDateRangedEntity dateRangedEntity,
-		@Nonnull final JaxAbstractDateRangedDTO jaxDateRanged) {
-
-		requireNonNull(dateRangedEntity.getGueltigkeit());
-		convertAbstractVorgaengerFieldsToJAX(dateRangedEntity, jaxDateRanged);
-		jaxDateRanged.setGueltigAb(dateRangedEntity.getGueltigkeit().getGueltigAb());
-		if (Constants.END_OF_TIME.equals(dateRangedEntity.getGueltigkeit().getGueltigBis())) {
-			jaxDateRanged.setGueltigBis(null); // end of time gueltigkeit wird nicht an client geschickt
-		} else {
-			jaxDateRanged.setGueltigBis(dateRangedEntity.getGueltigkeit().getGueltigBis());
-		}
-	}
-
-	private void convertAbstractPensumFieldsToEntity(
-		final JaxAbstractPensumDTO jaxPensum,
-		final AbstractPensumEntity pensumEntity) {
+	private void convertAbstractBetreuungspensumFieldsToEntity(
+		@Nonnull final JaxAbstractDecimalPensumDTO jaxPensum,
+		@Nonnull final AbstractDecimalPensum pensumEntity) {
 
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
+		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 		pensumEntity.setPensum(jaxPensum.getPensum());
 	}
 
-	private void convertAbstractPensumFieldsToJAX(
-		final AbstractPensumEntity pensum,
-		final JaxAbstractPensumDTO jaxPensum) {
+	private void convertAbstractBetreuungspensumFieldsToJAX(
+		@Nonnull final AbstractDecimalPensum pensum,
+		@Nonnull final JaxAbstractDecimalPensumDTO jaxPensum) {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
+		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setPensum(pensum.getPensum());
 	}
 
@@ -685,13 +556,14 @@ public class JaxBConverter {
 				{
 					if (o1.extractGueltigkeit() == null && o2.extractGueltigkeit() == null) {
 						return 0;
-					} else if (o1.extractGueltigkeit() == null) {
-						return 1;
-					} else if (o2.extractGueltigkeit() == null) {
-						return -1;
-					} else {
-						return o1.extractGueltigkeit().getGueltigAb().compareTo(o2.extractGueltigkeit().getGueltigAb());
 					}
+					if (o1.extractGueltigkeit() == null) {
+						return 1;
+					}
+					if (o2.extractGueltigkeit() == null) {
+						return -1;
+					}
+					return o1.extractGueltigkeit().getGueltigAb().compareTo(o2.extractGueltigkeit().getGueltigAb());
 				}).collect(Collectors.toList())
 			));
 		}
@@ -959,50 +831,6 @@ public class JaxBConverter {
 		return jaxFall;
 	}
 
-	@Nonnull
-	private Set<Gemeinde> gemeindeListToEntity(
-		@Nonnull Set<JaxGemeinde> jaxGemeindeList,
-		@Nonnull Set<Gemeinde> gemeindeList) {
-
-		final Set<Gemeinde> transformedGemeindeList = new TreeSet<>();
-		for (final JaxGemeinde jaxGemeinde : jaxGemeindeList) {
-			final Gemeinde gemeindeToMergeWith = gemeindeList
-				.stream()
-				.filter(existingGemeinde -> existingGemeinde.getId().equalsIgnoreCase(jaxGemeinde.getId()))
-				.reduce(StreamsUtil.toOnlyElement())
-				.orElse(new Gemeinde());
-			final Gemeinde gemeindeToAdd = gemeindeToEntity(jaxGemeinde, gemeindeToMergeWith);
-			final boolean added = transformedGemeindeList.add(gemeindeToAdd);
-			if (!added) {
-				LOGGER.warn(DROPPED_DUPLICATE_CONTAINER + "{}", gemeindeToAdd);
-			}
-		}
-
-		return transformedGemeindeList;
-	}
-
-	@Nonnull
-	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde gemeindeJax, @Nonnull final Gemeinde gemeinde) {
-		requireNonNull(gemeinde);
-		requireNonNull(gemeindeJax);
-		convertAbstractFieldsToEntity(gemeindeJax, gemeinde);
-		gemeinde.setName(gemeindeJax.getName());
-		gemeinde.setStatus(gemeindeJax.getStatus());
-		gemeinde.setGemeindeNummer(gemeindeJax.getGemeindeNummer());
-		gemeinde.setBfsNummer(gemeindeJax.getBfsNummer());
-		return gemeinde;
-	}
-
-	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
-		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
-		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
-		jaxGemeinde.setName(persistedGemeinde.getName());
-		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
-		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
-		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
-		return jaxGemeinde;
-	}
-
 	public Dossier dossierToEntity(@Nonnull final JaxDossier dossierJAX, @Nonnull final Dossier dossier) {
 		requireNonNull(dossier);
 		requireNonNull(dossierJAX);
@@ -1068,7 +896,7 @@ public class JaxBConverter {
 		final JaxDossier jaxDossier = new JaxDossier();
 		convertAbstractVorgaengerFieldsToJAX(persistedDossier, jaxDossier);
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
-		jaxDossier.setGemeinde(this.gemeindeToJAX(persistedDossier.getGemeinde()));
+		jaxDossier.setGemeinde(gemeindeConverter.gemeindeToJAX(persistedDossier.getGemeinde()));
 		if (persistedDossier.getVerantwortlicherBG() != null) {
 			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherBG()));
 		}
@@ -2483,7 +2311,7 @@ public class JaxBConverter {
 		final JaxBetreuungspensum jaxBetreuungspensum,
 		final Betreuungspensum betreuungspensum) {
 
-		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
+		convertAbstractBetreuungspensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
 		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
 
@@ -2505,7 +2333,7 @@ public class JaxBConverter {
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum,
 		final BetreuungsmitteilungPensum betreuungspensum) {
 
-		convertAbstractPensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
+		convertAbstractBetreuungspensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 
 		return betreuungspensum;
 	}
@@ -2515,7 +2343,7 @@ public class JaxBConverter {
 
 		final JaxBetreuungsmitteilungPensum jaxBetreuungspensum = new JaxBetreuungsmitteilungPensum();
 
-		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
+		convertAbstractBetreuungspensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 
 		return jaxBetreuungspensum;
 	}
@@ -2845,7 +2673,7 @@ public class JaxBConverter {
 	private JaxBetreuungspensum betreuungspensumToJax(@Nonnull Betreuungspensum betreuungspensum) {
 
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
-		convertAbstractPensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
+		convertAbstractBetreuungspensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
 		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 
@@ -3005,7 +2833,7 @@ public class JaxBConverter {
 
 		// Gemeinden
 		final Set<Gemeinde> gemeindeListe =
-			gemeindeListToEntity(jaxBerechtigung.getGemeindeList(), berechtigung.getGemeindeList());
+			gemeindeConverter.gemeindeListToEntity(jaxBerechtigung.getGemeindeList(), berechtigung.getGemeindeList());
 		berechtigung.setGemeindeList(gemeindeListe);
 
 		return berechtigung;
@@ -3023,7 +2851,7 @@ public class JaxBConverter {
 		}
 		// Gemeinden
 		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
-			.map(this::gemeindeToJAX)
+			.map(gemeindeConverter::gemeindeToJAX)
 			.collect(Collectors.toCollection(TreeSet::new));
 		jaxBerechtigung.setGemeindeList(jaxGemeinden);
 
@@ -3878,5 +3706,132 @@ public class JaxBConverter {
 			stammdatenTagesschule.setModuleTagesschule(moduleTagesschuleComplete);
 		}
 		return jaxInstDaten;
+	}
+
+	@Nonnull
+	public GemeindeStammdaten gemeindeStammdatenToEntity(
+		@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull final GemeindeStammdaten stammdaten
+	) {
+		requireNonNull(stammdaten);
+		requireNonNull(jaxStammdaten);
+		requireNonNull(jaxStammdaten.getGemeinde());
+		requireNonNull(jaxStammdaten.getGemeinde().getId());
+		requireNonNull(jaxStammdaten.getAdresse());
+
+		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
+
+		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername())
+				.ifPresent(stammdaten::setDefaultBenutzerBG);
+		}
+		if (jaxStammdaten.getDefaultBenutzerTS() != null) {
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername())
+				.ifPresent(stammdaten::setDefaultBenutzerTS);
+		}
+
+		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
+		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
+			.ifPresent(stammdaten::setGemeinde);
+
+		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
+
+		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
+			if (stammdaten.getBeschwerdeAdresse() == null) {
+				stammdaten.setBeschwerdeAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
+		}
+		stammdaten.setKeineBeschwerdeAdresse(jaxStammdaten.isKeineBeschwerdeAdresse());
+		stammdaten.setMail(jaxStammdaten.getMail());
+		stammdaten.setTelefon(jaxStammdaten.getTelefon());
+		stammdaten.setWebseite(jaxStammdaten.getWebseite());
+
+		if (jaxStammdaten.isKorrespondenzspracheDe() && jaxStammdaten.isKorrespondenzspracheFr()) {
+			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
+		} else if (jaxStammdaten.isKorrespondenzspracheDe()) {
+			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
+		} else if (jaxStammdaten.isKorrespondenzspracheFr()) {
+			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.FR);
+		} else {
+			throw new IllegalArgumentException("Die Korrespondenzsprache muss gesetzt sein");
+		}
+
+		// todo KIBON-245 now or newest one??
+		if (gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).isPresent()) {
+			Gesuchsperiode gsNow = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).get();
+
+			Einstellung kontingentierung = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, stammdaten.getGemeinde(), gsNow);
+			kontingentierung.setKey(EinstellungKey.KONTINGENTIERUNG_ENABLED);
+			kontingentierung.setValue(jaxStammdaten.isKontingentierung() ? "true" : "false");
+			kontingentierung.setGemeinde(stammdaten.getGemeinde());
+			kontingentierung.setGesuchsperiode(gsNow);
+			einstellungService.saveEinstellung(kontingentierung);
+
+			Einstellung beguBis = einstellungService.findEinstellung(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE, stammdaten.getGemeinde(), gsNow);
+			beguBis.setKey(EinstellungKey.KONTINGENTIERUNG_ENABLED);
+
+			beguBis.setValue(jaxStammdaten.getBeguBisUndMitSchulstufe());
+			beguBis.setGemeinde(stammdaten.getGemeinde());
+			beguBis.setGesuchsperiode(gsNow);
+			einstellungService.saveEinstellung(beguBis);
+		}
+		return stammdaten;
+	}
+
+	public JaxGemeindeStammdaten gemeindeStammdatenToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
+		requireNonNull(stammdaten);
+		requireNonNull(stammdaten.getGemeinde());
+		requireNonNull(stammdaten.getAdresse());
+
+		final JaxGemeindeStammdaten jaxStammdaten = new JaxGemeindeStammdaten();
+		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
+
+		Collection<Benutzer> administratoren = benutzerService.getGemeindeAdministratoren(stammdaten.getGemeinde());
+		Collection<Benutzer> sachbearbeiter = benutzerService.getGemeindeSachbearbeiter(stammdaten.getGemeinde());
+		jaxStammdaten.setAdministratoren(administratoren.stream().map(Benutzer::getFullName).collect(Collectors.joining(", ")));
+		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream().map(Benutzer::getFullName).collect(Collectors.joining(", ")));
+
+		jaxStammdaten.setGemeinde(gemeindeConverter.gemeindeToJAX(stammdaten.getGemeinde()));
+		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
+		jaxStammdaten.setMail(stammdaten.getMail());
+		jaxStammdaten.setTelefon(stammdaten.getTelefon());
+		jaxStammdaten.setWebseite(stammdaten.getWebseite());
+		jaxStammdaten.setKeineBeschwerdeAdresse(stammdaten.isKeineBeschwerdeAdresse());
+
+		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(false);
+		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(false);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		}
+		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
+			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
+		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
+			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
+
+		if (!stammdaten.isNew()) {
+			if (stammdaten.getDefaultBenutzerBG() != null) {
+				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
+			}
+			if (stammdaten.getDefaultBenutzerTS() != null) {
+				jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
+			}
+			if (stammdaten.getBeschwerdeAdresse() != null) {
+				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+			}
+		}
+		if (gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).isPresent()) {
+			Gesuchsperiode gsNow = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).get();
+			Einstellung kontingentierung = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, stammdaten.getGemeinde(), gsNow);
+			jaxStammdaten.setKontingentierung("true".equalsIgnoreCase(kontingentierung.getValue()));
+			Einstellung beguBis = einstellungService.findEinstellung(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE, stammdaten.getGemeinde(), gsNow);
+			jaxStammdaten.setBeguBisUndMitSchulstufe(beguBis.getValue());
+		}
+		return jaxStammdaten;
 	}
 }

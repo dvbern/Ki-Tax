@@ -18,29 +18,23 @@
 package ch.dvbern.ebegu.validators;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.entities.Gemeinde;
 
-public class CheckEinstellungValidator implements ConstraintValidator<CheckEinstellung, Einstellung> {
+public class CheckGemeindeValidator implements ConstraintValidator<CheckGemeinde, Gemeinde> {
 
 	@Override
-	public void initialize(CheckEinstellung constraintAnnotation) {
+	public void initialize(@Nonnull CheckGemeinde gemeinde) {
 		// nop
 	}
 
-	/**
-	 * For each EinstellungKey we can check in this method if the given value is right or not.
-	 */
 	@Override
-	public boolean isValid(@Nonnull Einstellung instance, @Nullable ConstraintValidatorContext context) {
-		if (instance.getKey() == EinstellungKey.BEGU_ANBIETEN_AB) {
-			// date must be at the first day of any month
-			return instance.getValueAsDate().getDayOfMonth() == 1;
-		}
-		return true;
+	public boolean isValid(
+		@Nonnull Gemeinde instance,
+		@Nonnull ConstraintValidatorContext context) {
+
+		return instance.getBetreuungsgutscheineStartdatum().getDayOfMonth() == 1;
 	}
 }

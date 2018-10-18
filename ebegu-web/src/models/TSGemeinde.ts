@@ -15,15 +15,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSAbstractEntity from './TSAbstractEntity';
 
-export default class TSGemeinde extends TSAbstractMutableEntity {
+export default class TSGemeinde extends TSAbstractEntity {
 
     private _name: string;
     private _gemeindeNummer: number;
     private _bfsNummer: number;
     private _status: TSGemeindeStatus;
+    private _betreuungsgutscheineStartdatum: moment.Moment;
+
+    public constructor(
+        name?: string,
+        gemeindeNummer?: number,
+        bfsNummer?: number,
+        status?: TSGemeindeStatus
+    ) {
+        super();
+        this._name = name;
+        this._gemeindeNummer = gemeindeNummer;
+        this._bfsNummer = bfsNummer;
+        this._status = status;
+    }
 
     public get name(): string {
         return this._name;
@@ -55,5 +70,13 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
 
     public set bfsNummer(value: number) {
         this._bfsNummer = value;
+    }
+
+    public get betreuungsgutscheineStartdatum(): moment.Moment {
+        return this._betreuungsgutscheineStartdatum;
+    }
+
+    public set betreuungsgutscheineStartdatum(value: moment.Moment) {
+        this._betreuungsgutscheineStartdatum = value;
     }
 }

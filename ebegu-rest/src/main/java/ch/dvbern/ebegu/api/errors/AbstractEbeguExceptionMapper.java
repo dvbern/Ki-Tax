@@ -46,6 +46,7 @@ public abstract class AbstractEbeguExceptionMapper<E extends Throwable> implemen
 	private HttpHeaders headers;
 
 	@Inject
+	@SuppressWarnings("checkstyle:VisibilityModifier")
 	protected EbeguConfiguration configuration;
 
 	protected Response buildResponse(Object entity, String mediaType, Response.Status status) {
