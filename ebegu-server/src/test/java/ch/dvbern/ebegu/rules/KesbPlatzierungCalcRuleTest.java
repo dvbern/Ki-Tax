@@ -18,17 +18,16 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,37 +38,42 @@ import org.junit.Test;
  */
 public class KesbPlatzierungCalcRuleTest {
 
-//	private final LocalDate START_PERIODE = LocalDate.of(2016, Month.AUGUST, 1);
-//	private final LocalDate ENDE_PERIODE = LocalDate.of(2017, Month.JULY, 31);
-//	private final DateRange PERIODE = new DateRange(START_PERIODE, ENDE_PERIODE);
-	private final VerfuegungZeitabschnitt ZEIT_ABSCHNITT = new VerfuegungZeitabschnitt();
-	private final BetreuungspensumCalcRule betreuungspensumCalcRule = new BetreuungspensumCalcRule(Constants.DEFAULT_GUELTIGKEIT);
-
+	@SuppressWarnings({ "InstanceVariableMayNotBeInitialized", "NullableProblems" })
+	@Nonnull
 	private Betreuung betreuung;
 
 	@Before
-	public void setUp() throws Exception {
-		betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(Constants.DEFAULT_GUELTIGKEIT.getGueltigAb(), Constants.DEFAULT_GUELTIGKEIT.getGueltigBis(),
-			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
+	public void setUp() {
+		betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(
+			Constants.DEFAULT_GUELTIGKEIT.getGueltigAb(),
+			Constants.DEFAULT_GUELTIGKEIT.getGueltigBis(),
+			BetreuungsangebotTyp.KITA,
+			60,
+			new BigDecimal(2000));
 		ErwerbspensumContainer erwerbspensumContainer = TestDataUtil.createErwerbspensumContainer();
 		Assert.assertNotNull(erwerbspensumContainer.getErwerbspensumJA());
 		erwerbspensumContainer.getErwerbspensumJA().setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		Assert.assertNotNull(betreuung.extractGesuch().getGesuchsteller1());
-		Assert.assertNotNull(Objects.requireNonNull(betreuung.extractGesuch().getGesuchsteller1()).getErwerbspensenContainers());
-		Objects.requireNonNull(betreuung.extractGesuch().getGesuchsteller1()).addErwerbspensumContainer(erwerbspensumContainer);
+		Assert.assertNotNull(Objects.requireNonNull(betreuung.extractGesuch().getGesuchsteller1())
+			.getErwerbspensenContainers());
+		Objects.requireNonNull(betreuung.extractGesuch().getGesuchsteller1())
+			.addErwerbspensumContainer(erwerbspensumContainer);
 	}
 
 	@Test
-	public void testPensumWithKesbPlatzierung () {
+	public void testPensumWithKesbPlatzierung() {
 		betreuung.setKeineKesbPlatzierung(false);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertEquals("KESB_PLATZIERUNG: Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB übernommen.", result.get(0).getBemerkungen());
+		Assert.assertEquals(
+			"KESB_PLATZIERUNG: Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden"
+				+ " von der KESB übernommen.",
+			result.get(0).getBemerkungen());
 	}
 
 	@Test
-	public void testPensumWithoutKesbPlatzierung () {
+	public void testPensumWithoutKesbPlatzierung() {
 		betreuung.setKeineKesbPlatzierung(true);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertEquals(1, result.size());
