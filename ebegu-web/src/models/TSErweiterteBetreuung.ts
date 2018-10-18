@@ -21,7 +21,7 @@ export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     public constructor(erweiterteBeduerfnisse?: boolean) {
         super();
-        this._erweiterteBeduerfnisse = erweiterteBeduerfnisse;
+        this._erweiterteBeduerfnisse = !!erweiterteBeduerfnisse;
     }
 
     public get erweiterteBeduerfnisse(): boolean {

@@ -7,6 +7,8 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +16,10 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-public class ErweiterteBetreuungContainer  extends AbstractMutableEntity implements Comparable<ErweiterteBetreuungContainer> {
+@Table(
+	uniqueConstraints = @UniqueConstraint(columnNames = "betreuung_id", name = "UK_erweiterte_betreuung_betreuung")
+)
+public class ErweiterteBetreuungContainer extends AbstractMutableEntity implements Comparable<ErweiterteBetreuungContainer> {
 
 	private static final long serialVersionUID = 4847428166714262413L;
 
@@ -33,6 +38,14 @@ public class ErweiterteBetreuungContainer  extends AbstractMutableEntity impleme
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_erweiterte_betreuung_ja"))
 	private ErweiterteBetreuung erweiterteBetreuungJA;
+
+	public Betreuung getBetreuung() {
+		return betreuung;
+	}
+
+	public void setBetreuung(@NotNull Betreuung betreuung) {
+		this.betreuung = betreuung;
+	}
 
 	@Nullable
 	public ErweiterteBetreuung getErweiterteBetreuungGS() {

@@ -1510,7 +1510,7 @@ export default class EbeguRestUtil {
                 this.parseAbwesenheitContainers(betreuungFromServer.abwesenheitContainers);
             betreuungTS.erweiterteBetreuungContainer =
                 this.parseErweiterteBetreuungContainer(
-                    betreuungTS.erweiterteBetreuungContainer,
+                    new TSErweiterteBetreuungContainer(),
                     betreuungFromServer.erweiterteBetreuungContainer
                 );
             betreuungTS.betreuungNummer = betreuungFromServer.betreuungNummer;

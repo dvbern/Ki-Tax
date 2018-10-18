@@ -2029,12 +2029,13 @@ public class JaxBConverter extends AbstractConverter {
 			betreuungJAXP.getBetreuungspensumContainers(),
 			betreuung.getBetreuungspensumContainers()
 		);
+		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
 
-		erweiterteBetreuungContainerToEntity(
+		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
 			betreuungJAXP.getErweiterteBetreuungContainer(),
 			betreuung.getErweiterteBetreuungContainer()
-		);
-		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
+		));
+		betreuung.getErweiterteBetreuungContainer().setBetreuung(betreuung);
 
 		abwesenheitContainersToEntity(betreuungJAXP.getAbwesenheitContainers(), betreuung.getAbwesenheitContainers());
 		setBetreuungInAbwesenheiten(betreuung.getAbwesenheitContainers(), betreuung);
@@ -2672,9 +2673,11 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	public ErweiterteBetreuungContainer erweiterteBetreuungContainerToEntity(
 		@Nonnull final JaxErweiterteBetreuungContainer containerJAX,
-		@Nonnull final ErweiterteBetreuungContainer container) {
-		requireNonNull(container);
+		@Nullable ErweiterteBetreuungContainer container) {
 		requireNonNull(containerJAX);
+
+		container = container == null ? new ErweiterteBetreuungContainer() : container;
+
 		convertAbstractVorgaengerFieldsToEntity(containerJAX, container);
 
 		ErweiterteBetreuung erwBetToMergeWith;

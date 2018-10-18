@@ -209,10 +209,10 @@
                     </div>
 
                     <!--erweiterte Beduerfnisse-->
-                    <div class="row marginTop20 marginBottom40" ng-if="vm.showErweiterteBeduerfnisse()">
+                    <div class="row marginTop20 marginBottom50" ng-if="vm.showErweiterteBeduerfnisse()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.getBetreuungModel().erweiterteBeduerfnisse"
+                                <md-checkbox ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
                                              name="erweiterteBeduerfnisse"
                                              aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
                                              dv-enable-element
@@ -220,12 +220,7 @@
                                              dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
                                     <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
                                 </md-checkbox>
-                                <dv-bisher gs="vm.getModel().adresseGS.plz"
-                                           ja="vm.getModel().adresseJA.plz"
-                                           show-if-bisher-none="vm.showIfBisherNone === true"
-                                           block-existed="!!vm.getModel().adresseGS"></dv-bisher>
-                                <dv-error-messages
-                                    for="vm.form.erweiterteBeduerfnisse.$error"></dv-error-messages>
+
                             </div>
                         </div>
                     </div>

@@ -35,6 +35,8 @@ import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
+import TSErweiterteBetreuung from '../../../models/TSErweiterteBetreuung';
+import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuungContainer';
 import TSExceptionReport from '../../../models/TSExceptionReport';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../../models/TSKindContainer';
@@ -132,7 +134,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
-
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -193,6 +194,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public initEmptyBetreuung(): TSBetreuung {
         const tsBetreuung = new TSBetreuung();
+        tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
+        tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
         return tsBetreuung;
@@ -524,6 +527,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return undefined;
     }
 
+    public getErweiterteBetreuungJA(): TSErweiterteBetreuung {
+        if (this.getBetreuungModel()) {
+            return this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA;
+        }
+
+        return undefined;
+    }
+
     public getBetreuungspensen(): Array<TSBetreuungspensumContainer> {
         if (this.getBetreuungModel()) {
             return this.getBetreuungModel().betreuungspensumContainers;
@@ -591,7 +602,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public platzAbweisen(): void {
         // copy values modified by the Institution in initialBetreuung
-        this.initialBetreuung.erweiterteBeduerfnisse = this.getBetreuungModel().erweiterteBeduerfnisse;
+
         this.initialBetreuung.grundAblehnung = this.getBetreuungModel().grundAblehnung;
         // restore initialBetreuung
         this.model = angular.copy(this.initialBetreuung);
@@ -609,7 +620,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.getBetreuungspensum(i).betreuungspensumJA.pensum = 0;
             this.getBetreuungspensum(i).betreuungspensumJA.nichtEingetreten = true;
         }
-        this.getBetreuungModel().erweiterteBeduerfnisse = false;
+
         this.save(TSBetreuungsstatus.STORNIERT, PENDENZEN_BETREUUNG, undefined);
     }
 
@@ -719,11 +730,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * als true gesetzt ist ACHTUNG: Hier benutzen wir die Direktive dv-show-element nicht, da es unterschiedliche
      * Bedingungen für jede Rolle gibt.
      */
-    //TODO kommentar der methode anpassen
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
             || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles())
-            || this.getBetreuungModel().erweiterteBeduerfnisse;
+            || this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse;
     }
 
     public showFalscheAngaben(): boolean {
@@ -903,7 +913,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableErweiterteBeduerfnisse(): boolean {
-        return (this.isBetreuungsstatusWarten() && !this.isSavingData) || this.isMutationsmeldungStatus;
+        return ((this.isBetreuungsstatusWarten() || this.isBetreuungsstatusAusstehend()) && !this.isSavingData)
+            || this.isMutationsmeldungStatus;
     }
 
     /**
