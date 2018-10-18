@@ -38,25 +38,33 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		if (betreuung.getBetreuungsangebotTyp().isJugendamt()) {
 			if (areNotInBern(betreuung, verfuegungZeitabschnitt)) {
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.WOHNSITZ, MsgKey.WOHNSITZ_MSG);
+				verfuegungZeitabschnitt.addBemerkung(
+					RuleKey.WOHNSITZ,
+					MsgKey.WOHNSITZ_MSG,
+					betreuung.extractGesuch().getDossier().getGemeinde().getName());
 			}
 
 		}
 	}
 
 	/**
-	 * Zuerst schaut ob es eine Aenderung in der Familiensituation gab. Dementsprechend nimmt es die richtige Familiensituation
+	 * Zuerst schaut ob es eine Aenderung in der Familiensituation gab. Dementsprechend nimmt es die richtige
+	 * Familiensituation
 	 * um zu wissen ob es ein GS2 gibt, erst dann wird es geprueft ob die Adressen von GS1 oder GS2 in Bern sind
 	 */
 	private boolean areNotInBern(Betreuung betreuung, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		boolean hasSecondGesuchsteller = false;
 		final Gesuch gesuch = betreuung.extractGesuch();
-		if (!gesuch.isMutation() || (gesuch.extractFamiliensituation() != null && gesuch.extractFamiliensituation().getAenderungPer() != null
-			&& !gesuch.extractFamiliensituation().getAenderungPer().isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb()))) {
+		if (!gesuch.isMutation() || (gesuch.extractFamiliensituation() != null
+			&& gesuch.extractFamiliensituation().getAenderungPer() != null
+			&& !gesuch.extractFamiliensituation()
+			.getAenderungPer()
+			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb()))) {
 
 			hasSecondGesuchsteller = gesuch.extractFamiliensituation().hasSecondGesuchsteller();
 		} else if (gesuch.extractFamiliensituationErstgesuch() != null) {
