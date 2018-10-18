@@ -49,6 +49,7 @@ import static ch.dvbern.ebegu.util.Constants.TEN_MEG;
 public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
+	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -197,7 +198,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Nullable
 	public byte[] getLogoContent() {
 		if (logoContent == null) {
-			return null;
+			return EMPTY_BYTE_ARRAY;
 		}
 		return Arrays.copyOf(logoContent, logoContent.length);
 	}
