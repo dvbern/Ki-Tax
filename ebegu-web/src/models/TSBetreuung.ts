@@ -302,7 +302,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
             return this.institutionStammdaten.betreuungsangebotTyp;
         }
-        return TSBetreuungsangebotTyp.KITA;
+        return null;
     }
 
     private isAngebot(typ: TSBetreuungsangebotTyp): boolean {
