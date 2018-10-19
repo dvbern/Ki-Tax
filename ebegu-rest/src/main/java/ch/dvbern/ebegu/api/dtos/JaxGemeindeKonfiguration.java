@@ -19,41 +19,40 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 
 public class JaxGemeindeKonfiguration {
-	@Nullable
+	@NotNull
 	private String gesuchsperiodeName;
-	@Nullable
-	private GesuchsperiodeStatus gesuchsperiodeStatus;
+	@NotNull
+	private JaxGesuchsperiode gesuchsperiode;
 	@Nullable
 	private boolean konfigKontingentierung;
 	@Nullable
 	private EinschulungTyp konfigBeguBisUndMitSchulstufe;
-	@Nullable
-	private Map<String, String> konfigiration;
+	@NotNull
+	private Map<String, String> konfigiration = new HashMap<>();
 
-	@Nullable
 	public String getGesuchsperiodeName() {
 		return gesuchsperiodeName;
 	}
 
-	public void setGesuchsperiodeName(@Nullable String gesuchsperiodeName) {
+	public void setGesuchsperiodeName(String gesuchsperiodeName) {
 		this.gesuchsperiodeName = gesuchsperiodeName;
 	}
 
-	@Nullable
-	public GesuchsperiodeStatus getGesuchsperiodeStatus() {
-		return gesuchsperiodeStatus;
+	public JaxGesuchsperiode getGesuchsperiode() {
+		return gesuchsperiode;
 	}
 
-	public void setGesuchsperiodeStatus(@Nullable GesuchsperiodeStatus gesuchsperiodeStatus) {
-		this.gesuchsperiodeStatus = gesuchsperiodeStatus;
+	public void setGesuchsperiode(JaxGesuchsperiode gesuchsperiode) {
+		this.gesuchsperiode = gesuchsperiode;
 	}
 
 	@Nullable
@@ -74,12 +73,11 @@ public class JaxGemeindeKonfiguration {
 		this.konfigBeguBisUndMitSchulstufe = konfigBeguBisUndMitSchulstufe;
 	}
 
-	@Nullable
 	public Map<String, String> getKonfigiration() {
 		return konfigiration;
 	}
 
-	public void setKonfigiration(@Nullable Map<String, String> konfigiration) {
+	public void setKonfigiration(Map<String, String> konfigiration) {
 		this.konfigiration = konfigiration;
 	}
 }

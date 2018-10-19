@@ -19,6 +19,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -37,9 +38,9 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1893677808323618626L;
 	@Nullable
-	private String      administratoren;
+	private String administratoren;
 	@Nullable
-	private String      sachbearbeiter;
+	private String sachbearbeiter;
 	@Nullable
 	private JaxBenutzer defaultBenutzerBG; // Der Standardverantwortliche
 	@Nullable
@@ -47,33 +48,31 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	@NotNull
 	private JaxGemeinde gemeinde;
 	@NotNull
-	private JaxAdresse  adresse;
+	private JaxAdresse adresse;
 	@Nullable
-	private JaxAdresse  beschwerdeAdresse;
+	private JaxAdresse beschwerdeAdresse;
 	@NotNull
-	private boolean     keineBeschwerdeAdresse;
+	private boolean keineBeschwerdeAdresse;
 	@NotNull
-	private String      mail;
+	private String mail;
 	@Nullable
-	private String      telefon;
+	private String telefon;
 	@Nullable
-	private String      webseite;
+	private String webseite;
 	@NotNull
-	private boolean 	korrespondenzspracheDe;
+	private boolean korrespondenzspracheDe;
 	@NotNull
-	private boolean 	korrespondenzspracheFr;
+	private boolean korrespondenzspracheFr;
 	@Nullable
-	private String      logoUrl;
+	private String logoUrl;
 	@Nullable
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
 	private List<JaxBenutzer> benutzerListeTS; // Für die ComboBox Standardverantwortliche TS
-
 	// ---------- Konfiguration ----------
 	@NotNull
-	private boolean     kontingentierung;
-	@Nullable
-	private String      beguBisUndMitSchulstufe;
+	private List<JaxGemeindeKonfiguration> konfigurationsListe = new ArrayList<>();
+
 
 	@Nullable
 	public String getAdministratoren() {
@@ -186,23 +185,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.korrespondenzspracheFr = korrespondenzspracheFr;
 	}
 
-	public boolean isKontingentierung() {
-		return kontingentierung;
-	}
-
-	public void setKontingentierung(boolean kontingentierung) {
-		this.kontingentierung = kontingentierung;
-	}
-
-	@Nullable
-	public String getBeguBisUndMitSchulstufe() {
-		return beguBisUndMitSchulstufe;
-	}
-
-	public void setBeguBisUndMitSchulstufe(@Nullable String beguBisUndMitSchulstufe) {
-		this.beguBisUndMitSchulstufe = beguBisUndMitSchulstufe;
-	}
-
 	@Nullable
 	public List<JaxBenutzer> getBenutzerListeBG() {
 		return benutzerListeBG;
@@ -229,4 +211,14 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	public void setLogoUrl(@Nullable String logoUrl) {
 		this.logoUrl = logoUrl;
 	}
+
+	@NotNull
+	public List<JaxGemeindeKonfiguration> getKonfigurationsListe() {
+		return konfigurationsListe;
+	}
+
+	public void setKonfigurationsListe(@Nullable List<JaxGemeindeKonfiguration> konfigurationsListe) {
+		this.konfigurationsListe = konfigurationsListe;
+	}
+
 }

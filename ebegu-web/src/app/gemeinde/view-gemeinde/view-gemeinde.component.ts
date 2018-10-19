@@ -24,9 +24,9 @@ import {StateService, Transition} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
+import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSBenutzer from '../../../models/TSBenutzer';
-import TSEinstellung from '../../../models/TSEinstellung';
-import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 
@@ -40,9 +40,7 @@ export class ViewGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
     public stammdaten: TSGemeindeStammdaten;
-    public konfigurationList: Array<TSGemeindeKonfiguration>;
     public korrespondenzsprache: string;
-    public kontinggentierung: string;
     public beguStart: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
     private fileToUpload!: File;
@@ -67,8 +65,6 @@ export class ViewGemeindeComponent implements OnInit {
         // TODO: Task KIBON-217: Load from DB
         this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
         this.einschulungTypValues = getTSEinschulungTypValues();
-
-        this.initTestKonfigurationen();
 
         this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
             // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
@@ -118,10 +114,7 @@ export class ViewGemeindeComponent implements OnInit {
 
     private initStrings(): void {
         this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
-        this.kontinggentierung = 'Keine ' + this.translate.instant('KONTINGENTIERUNG');
-        if (this.stammdaten.kontingentierung) {
-            this.kontinggentierung = this.translate.instant('KONTINGENTIERUNG');
-        }
+
         if (this.stammdaten.korrespondenzspracheDe) {
             this.korrespondenzsprache = this.translate.instant('DEUTSCH');
         }
@@ -134,29 +127,23 @@ export class ViewGemeindeComponent implements OnInit {
         this.korrespondenzsprache += this.translate.instant('FRANZOESISCH');
     }
 
-    private initTestKonfigurationen(): void {
-        this.konfigurationList = new Array<TSGemeindeKonfiguration>();
+    public getKonfigKontingentierungString(index: number): string {
+        const gk = this.stammdaten.konfigurationsListe[index];
+        const kontStr = gk.konfigKontingentierung ? this.translate.instant('KONTINGENTIERUNG') :
+            'Keine ' + this.translate.instant('KONTINGENTIERUNG');
+        return kontStr;
+    }
 
-        let gk = new TSGemeindeKonfiguration();
-        gk.id = 1;
-        gk.gesuchsperiode = '01.08.2017 - 31.07.2018';
-        gk.kontingentierung = 'Keine Kontingentierung';
-        gk.beguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN1;
-        this.konfigurationList.push(gk);
+    public getKonfigBeguBisUndMitSchulstufeString(index: number): string {
+        const gk = this.stammdaten.konfigurationsListe[index];
+        const bgBisStr = this.translate.instant(gk.konfigBeguBisUndMitSchulstufe.toString());
+        return bgBisStr;
+    }
 
-        gk.id = 2;
-        gk = new TSGemeindeKonfiguration();
-        gk.gesuchsperiode = '01.08.2018 - 31.07.2019';
-        gk.kontingentierung = 'Kontingentierung';
-        gk.beguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
-        this.konfigurationList.push(gk);
-
-        gk.id = 3;
-        gk = new TSGemeindeKonfiguration();
-        gk.gesuchsperiode = '01.08.2019 - 31.07.2020';
-        gk.kontingentierung = 'Keine Kontingentierung';
-        gk.beguBisUndMitSchulstufe = TSEinschulungTyp.KLASSE1;
-        this.konfigurationList.push(gk);
+    public isEditable(index: number): boolean {
+        const gk = this.stammdaten.konfigurationsListe[index];
+        return TSGemeindeStatus.EINGELADEN === this.stammdaten.gemeinde.status
+            || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiode.status;
     }
 
     private navigateBack(): void {

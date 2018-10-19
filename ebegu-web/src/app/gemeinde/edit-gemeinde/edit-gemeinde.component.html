@@ -284,7 +284,7 @@
                         <div class="form-group">
                             <h3 translate for="kontingentierung_id">EIGENSCHAFTEN</h3>
                             <mat-checkbox id="kontingentierung_id" name="kontingentierung_id"
-                                          [(ngModel)]="stammdaten.kontingentierung">
+                                          [(ngModel)]="stammdaten.konfigKontingentierung">
                                 {{'KONTINGENTIERUNG'|translate}}</mat-checkbox>
                         </div>
                     </div>
@@ -293,7 +293,7 @@
                         <div class="form-group">
                             <h3 translate>GEMEINDE_REGELN</h3>
                             <label translate for="begu_kitas_bis_und_mit_id">BEGU_KITAS_BIS_UND_MIT</label>
-                            <mat-select [(ngModel)]="stammdaten.beguBisUndMitSchulstufe" id="begu_kitas_bis_und_mit_id" name="begu_kitas_bis_und_mit_id" class="form-control">
+                            <mat-select [(ngModel)]="stammdaten.konfigBeguBisUndMitSchulstufe" id="begu_kitas_bis_und_mit_id" name="begu_kitas_bis_und_mit_id" class="form-control">
                                 <mat-option *ngFor="let etv of einschulungTypValues" [value]="etv">{{etv | translate}}
                                 </mat-option>
                             </mat-select>

@@ -137,9 +137,9 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    <dv-accordion class="mitteilungenList" allow-multiple-sections="true">
+                    <dv-accordion class="konfigurationList" allow-multiple-sections="true">
                         <dv-accordion-tab
-                            *ngFor="let konf of konfigurationList; let i = index"
+                            *ngFor="let konf of stammdaten.konfigurationsListe; let i = index"
                             [tabid]="i">
                             <tab-title>
                                 <div class="message-header">
@@ -147,20 +147,29 @@
                                 </div>
                             </tab-title>
                             <tab-body>
-                                <div class="row">
+                                <div class="row marginBottom20">
                                     <!-- Betreuungsgutscheine anbieten ab -->
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <h3 translate>BEGU_START</h3>
                                             <p>{{beguStart}}</p>
                                         </div>
+
+                                        <!-- Beschwerde-Adresse Checkbox -->
+                                        <div *ngIf="isEditable(i)" class="form-group">
+                                            <mat-checkbox id="edit_cb_id" name="edit_cb_id"
+                                                          [(ngModel)]="konf.editMode">
+                                                {{'KONFIGURATION_EDIT'|translate}}</mat-checkbox>
+                                        </div>
+
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
+                                            <!-- Gemeinde-Konfiguraiton -->
                                             <h3 translate>GEMEINDE_REGELN</h3>
                                             <label translate>BEGU_KITAS_BIS_UND_MIT</label>
-                                            <p>{{konf.beguBisUndMitSchulstufe | translate}}</p>
-                                            <p>{{konf.kontingentierung}}</p>
+                                            <p>{{getKonfigBeguBisUndMitSchulstufeString(i)}}</p>
+                                            <p>{{getKonfigKontingentierungString(i)}}</p>
                                         </div>
                                     </div>
                                 </div>

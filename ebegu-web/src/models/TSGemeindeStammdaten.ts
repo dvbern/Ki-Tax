@@ -21,6 +21,7 @@ import TSAbstractEntity from './TSAbstractEntity';
 import TSAdresse from './TSAdresse';
 import TSBenutzer from './TSBenutzer';
 import TSGemeinde from './TSGemeinde';
+import TSGemeindeKonfiguration from './TSGemeindeKonfiguration';
 
 export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public administratoren: string;
@@ -40,6 +41,5 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public benutzerListeBG: TSBenutzer[];
     public benutzerListeTS: TSBenutzer[];
     // ---------- Konfiguration ----------
-    public kontingentierung: boolean;
-    public beguBisUndMitSchulstufe: string;
+    public konfigurationsListe: TSGemeindeKonfiguration[];
 }

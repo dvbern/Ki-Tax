@@ -74,6 +74,7 @@ import TSFinanzielleSituation from '../models/TSFinanzielleSituation';
 import TSFinanzielleSituationContainer from '../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../models/TSFinanzModel';
 import TSGemeinde from '../models/TSGemeinde';
+import TSGemeindeKonfiguration from '../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
@@ -727,15 +728,15 @@ export default class EbeguRestUtil {
             restStammdaten.webseite = stammdaten.webseite;
             restStammdaten.korrespondenzspracheDe = stammdaten.korrespondenzspracheDe;
             restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
-            restStammdaten.kontingentierung = stammdaten.kontingentierung;
-            restStammdaten.beguBisUndMitSchulstufe = stammdaten.beguBisUndMitSchulstufe;
+            restStammdaten.konfigurationsListe = stammdaten.konfigurationsListe;
 
             return restStammdaten;
         }
         return undefined;
     }
 
-    public parseGemeindeStammdaten(stammdatenTS: TSGemeindeStammdaten, stammdatenFromServer: any): TSGemeindeStammdaten {
+    public parseGemeindeStammdaten(stammdatenTS: TSGemeindeStammdaten,
+                                   stammdatenFromServer: any): TSGemeindeStammdaten {
         if (stammdatenFromServer) {
             this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
 
@@ -752,11 +753,10 @@ export default class EbeguRestUtil {
             stammdatenTS.webseite = stammdatenFromServer.webseite;
             stammdatenTS.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
             stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
-            stammdatenTS.kontingentierung = stammdatenFromServer.kontingentierung;
-            stammdatenTS.beguBisUndMitSchulstufe = stammdatenFromServer.beguBisUndMitSchulstufe;
             stammdatenTS.logoUrl = stammdatenFromServer.logoUrl;
             stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
             stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
+            stammdatenTS.konfigurationsListe = stammdatenFromServer.konfigurationsListe;
 
             return stammdatenTS;
         }

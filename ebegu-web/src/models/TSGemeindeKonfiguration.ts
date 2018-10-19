@@ -17,15 +17,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
-import TSAbstractEntity from './TSAbstractEntity';
-import TSFerieninselStammdaten from './TSFerieninselStammdaten';
+import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
+import TSGesuchsperiode from './TSGesuchsperiode';
 
 export default class TSGemeindeKonfiguration {
     public id: number;
     public gesuchsperiodeName: string;
-    public gesuchsperiodeStatus: TSGesuchsperiodeStatus;
-    public kontingentierung: string;
-    public beguBisUndMitSchulstufe: string;
-    public ferieninselStammdatenMap: { [key: string]: string; } = {};
+    public gesuchsperiode: TSGesuchsperiode;
+    public konfigKontingentierung: boolean;
+    public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp;
+    public editMode: boolean; // only on client
+    public konfigiration: Map<string, string>;
 }
