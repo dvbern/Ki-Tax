@@ -807,6 +807,8 @@ export default class EbeguRestUtil {
         restFachstelle.name = fachstelle.name;
         restFachstelle.beschreibung = fachstelle.beschreibung;
         restFachstelle.behinderungsbestaetigung = fachstelle.behinderungsbestaetigung;
+        restFachstelle.fachstelleAnspruch = fachstelle.fachstelleAnspruch;
+        restFachstelle.fachstelleErweiterteBetreuung = fachstelle.fachstelleErweiterteBetreuung;
         return restFachstelle;
     }
 
@@ -821,6 +823,8 @@ export default class EbeguRestUtil {
         parsedFachstelle.name = receivedFachstelle.name;
         parsedFachstelle.beschreibung = receivedFachstelle.beschreibung;
         parsedFachstelle.behinderungsbestaetigung = receivedFachstelle.behinderungsbestaetigung;
+        parsedFachstelle.fachstelleAnspruch = receivedFachstelle.fachstelleAnspruch;
+        parsedFachstelle.fachstelleErweiterteBetreuung = receivedFachstelle.fachstelleErweiterteBetreuung;
         return parsedFachstelle;
     }
 
@@ -1654,6 +1658,9 @@ export default class EbeguRestUtil {
     ): TSErweiterteBetreuung {
         this.abstractMutableEntityToRestObject(restErweiterteBetreuung, erweiterteBetreuung);
         restErweiterteBetreuung.erweiterteBeduerfnisse = erweiterteBetreuung.erweiterteBeduerfnisse;
+        if (erweiterteBetreuung.fachstelle) {
+            restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
+        }
         return restErweiterteBetreuung;
     }
 
@@ -1664,6 +1671,10 @@ export default class EbeguRestUtil {
         if (erweiterteBetreuungFromServer) {
             this.parseAbstractMutableEntity(erweiterteBetreuungFromServer, erweiterteBetreuungTS);
             erweiterteBetreuungTS.erweiterteBeduerfnisse = erweiterteBetreuungFromServer.erweiterteBeduerfnisse;
+            if (erweiterteBetreuungFromServer.fachstelle) {
+                erweiterteBetreuungTS.fachstelle =
+                    this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);
+            }
             return erweiterteBetreuungTS;
         }
         return undefined;

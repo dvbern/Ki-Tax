@@ -94,6 +94,30 @@ public class FachstelleResource {
 			.collect(Collectors.toList());
 	}
 
+	@ApiOperation(value = "Returns Anspruch Fachstellen", responseContainer = "List", response = JaxFachstelle.class)
+	@Nonnull
+	@GET
+	@Path("/anspruch")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxFachstelle> getAnspruchFachstellen(){
+		return fachstelleService.getAllFachstellen().stream().filter(Fachstelle::isFachstelleAnspruch)
+			.map(ap -> converter.fachstelleToJAX(ap))
+			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Returns erweiterte Betreuung Fachstellen", responseContainer = "List", response = JaxFachstelle.class)
+	@Nonnull
+	@GET
+	@Path("/erweiterteBetreuung")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxFachstelle> getErweiterteBetreuungFachstellen(){
+		return fachstelleService.getAllFachstellen().stream().filter(Fachstelle::isFachstelleErweiterteBetreuung)
+			.map(ap -> converter.fachstelleToJAX(ap))
+			.collect(Collectors.toList());
+	}
+
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@ApiOperation("Removes a Fachstelle from the database")
 	@Nullable

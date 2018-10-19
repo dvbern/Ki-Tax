@@ -38,6 +38,7 @@ import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumConta
 import TSErweiterteBetreuung from '../../../models/TSErweiterteBetreuung';
 import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuungContainer';
 import TSExceptionReport from '../../../models/TSExceptionReport';
+import {TSFachstelle} from '../../../models/TSFachstelle';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
@@ -105,6 +106,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public moduleBackup: TSModulTagesschule[] = undefined;
     public aktuellGueltig: boolean = true;
     public isDuplicated: boolean = false;
+    // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
+    public fachstelleId: string;
 
     public constructor(
         private readonly $state: StateService,
@@ -167,6 +170,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
             this.initViewModel();
 
+            if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
+                this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
+            }
+
             // just to read!
             this.kindModel = this.gesuchModelManager.getKindToWorkWith();
         } else {
@@ -213,6 +220,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.gesuchModelManager.getActiveInstitutionenList()
             || this.gesuchModelManager.getActiveInstitutionenList().length <= 0) {
             this.gesuchModelManager.updateActiveInstitutionenList();
+        }
+        if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
+            this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
+        }
+        if (!this.gesuchModelManager.getFachstellenErweiterteBetreuungList()
+            || this.gesuchModelManager.getFachstellenErweiterteBetreuungList().length <= 0) {
+            this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
         }
     }
 
@@ -528,7 +542,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public getErweiterteBetreuungJA(): TSErweiterteBetreuung {
-        if (this.getBetreuungModel()) {
+        if (this.getBetreuungModel() && this.getBetreuungModel().erweiterteBetreuungContainer) {
             return this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA;
         }
 
@@ -939,5 +953,26 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.getBetreuungModel().institutionStammdaten = undefined;
         }
         this.setSelectedInstitutionStammdaten();
+    }
+
+    public isFachstelleRequired(): boolean {
+        return this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse;
+    }
+
+    public setSelectedFachsstelle(): void {
+        const fachstellenList = this.getFachstellenList();
+        const found = fachstellenList.find(f => f.id === this.fachstelleId);
+        if (found) {
+            this.getErweiterteBetreuungJA().fachstelle = found;
+        }
+    }
+
+    private resetFachstelleFields(): void {
+        this.fachstelleId = undefined;
+        this.getErweiterteBetreuungJA().fachstelle = undefined;
+    }
+
+    public getFachstellenList(): Array<TSFachstelle> {
+        return this.gesuchModelManager.getFachstellenErweiterteBetreuungList();
     }
 }

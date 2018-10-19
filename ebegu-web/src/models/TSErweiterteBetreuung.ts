@@ -14,14 +14,17 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import {TSFachstelle} from './TSFachstelle';
 
 export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     private _erweiterteBeduerfnisse: boolean;
+    private _fachstelle: TSFachstelle;
 
-    public constructor(erweiterteBeduerfnisse?: boolean) {
+    public constructor(erweiterteBeduerfnisse?: boolean, fachstelle?: TSFachstelle) {
         super();
         this._erweiterteBeduerfnisse = !!erweiterteBeduerfnisse;
+        this._fachstelle = fachstelle;
     }
 
     public get erweiterteBeduerfnisse(): boolean {
@@ -30,5 +33,13 @@ export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     public set erweiterteBeduerfnisse(value: boolean) {
         this._erweiterteBeduerfnisse = value;
+    }
+
+    public get fachstelle(): TSFachstelle {
+        return this._fachstelle;
+    }
+
+    public set fachstelle(value: TSFachstelle) {
+        this._fachstelle = value;
     }
 }

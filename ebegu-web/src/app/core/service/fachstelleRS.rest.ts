@@ -67,6 +67,12 @@ export class FachstelleRS {
         );
     }
 
+    public getFachstellen(urlFragment: string): IPromise<TSFachstelle[]> {
+        return this.http.get(`${this.serviceURL}/${urlFragment}`).then(
+            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
+        );
+    }
+
     public getServiceName(): string {
         return 'FachstelleRS';
     }

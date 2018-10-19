@@ -108,8 +108,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (this.getPensumFachstelle() && this.getPensumFachstelle().fachstelle) {
             this.fachstelleId = this.getPensumFachstelle().fachstelle.id;
         }
-        if (!this.gesuchModelManager.getFachstellenList() || this.gesuchModelManager.getFachstellenList().length <= 0) {
-            this.gesuchModelManager.updateFachstellenList();
+        if (!this.gesuchModelManager.getFachstellenAnspruchList()
+            || this.gesuchModelManager.getFachstellenAnspruchList().length <= 0
+        ) {
+            this.gesuchModelManager.updateFachstellenAnspruchList();
         }
     }
 
@@ -172,7 +174,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public getFachstellenList(): Array<TSFachstelle> {
-        return this.gesuchModelManager.getFachstellenList();
+        return this.gesuchModelManager.getFachstellenAnspruchList();
     }
 
     public getModel(): TSKind {

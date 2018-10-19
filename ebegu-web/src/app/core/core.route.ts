@@ -107,7 +107,8 @@ export function appRun(
         });
         gemeindeRS.getAllGemeinden();
         gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
-        gesuchModelManager.updateFachstellenList();
+        gesuchModelManager.updateFachstellenAnspruchList();
+        gesuchModelManager.updateFachstellenErweiterteBetreuungList();
     }
 
     moment.locale(LOCALE_ID);

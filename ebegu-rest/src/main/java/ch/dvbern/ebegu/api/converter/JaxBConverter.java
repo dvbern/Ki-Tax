@@ -1226,6 +1226,8 @@ public class JaxBConverter extends AbstractConverter {
 		fachstelle.setName(fachstelleJAXP.getName());
 		fachstelle.setBeschreibung(fachstelleJAXP.getBeschreibung());
 		fachstelle.setBehinderungsbestaetigung(fachstelleJAXP.isBehinderungsbestaetigung());
+		fachstelle.setFachstelleAnspruch(fachstelleJAXP.isFachstelleAnspruch());
+		fachstelle.setFachstelleErweiterteBetreuung(fachstelleJAXP.isFachstelleErweiterteBetreuung());
 		return fachstelle;
 	}
 
@@ -1235,6 +1237,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFachstelle.setName(persistedFachstelle.getName());
 		jaxFachstelle.setBeschreibung(persistedFachstelle.getBeschreibung());
 		jaxFachstelle.setBehinderungsbestaetigung(persistedFachstelle.isBehinderungsbestaetigung());
+		jaxFachstelle.setFachstelleAnspruch(persistedFachstelle.isFachstelleAnspruch());
+		jaxFachstelle.setFachstelleErweiterteBetreuung(persistedFachstelle.isFachstelleErweiterteBetreuung());
 		return jaxFachstelle;
 	}
 
@@ -2108,6 +2112,19 @@ public class JaxBConverter extends AbstractConverter {
 
 		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
 
+			final Optional<Fachstelle> fachstelleFromDB =
+				fachstelleService.findFachstelle(erweiterteBetreuungJAXP.getFachstelle().getId());
+			if (fachstelleFromDB.isPresent()) {
+				// Fachstelle darf nicht vom Client ueberschrieben werden
+				erweiterteBetreuung.setFachstelle(fachstelleFromDB.get());
+			} else {
+				throw new EbeguEntityNotFoundException(
+					"pensumFachstelleToEntity",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					erweiterteBetreuungJAXP.getFachstelle()
+						.getId());
+			}
+
 		return erweiterteBetreuung;
 	}
 
@@ -2726,9 +2743,12 @@ public class JaxBConverter extends AbstractConverter {
 	@Nonnull
 	private JaxErweiterteBetreuung erweiterteBetreuungToJax(@Nonnull ErweiterteBetreuung erweiterteBetreuung) {
 
+		requireNonNull(erweiterteBetreuung, "Erweiterte Betreuung muss gesetzt sein");
+
 		JaxErweiterteBetreuung jaxErweiterteBetreuung = new JaxErweiterteBetreuung();
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
+		jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
 
 		return jaxErweiterteBetreuung;
 	}

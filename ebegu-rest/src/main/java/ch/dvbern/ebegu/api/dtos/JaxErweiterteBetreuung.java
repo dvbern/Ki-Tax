@@ -15,12 +15,10 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
 
 /**
  * DTO fuer Daten der erweiterten Betreeung
@@ -33,11 +31,21 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 	@NotNull
 	private Boolean erweiterteBeduerfnisse;
 
+	private JaxFachstelle fachstelle;
+
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
 	}
 
 	public void setErweiterteBeduerfnisse(Boolean erweiterteBeduerfnisse) {
 		this.erweiterteBeduerfnisse = erweiterteBeduerfnisse;
+	}
+
+	public JaxFachstelle getFachstelle() {
+		return fachstelle;
+	}
+
+	public void setFachstelle(JaxFachstelle fachstelle) {
+		this.fachstelle = fachstelle;
 	}
 }

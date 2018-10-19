@@ -98,7 +98,8 @@ export default class GesuchModelManager {
     public basisJahrPlusNumber: number = 1;
     private kindIndex: number;
     private betreuungIndex: number;
-    private fachstellenList: Array<TSFachstelle>;
+    private fachstellenAnspruchList: Array<TSFachstelle>;
+    private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
     private activInstitutionenList: Array<TSInstitutionStammdaten>;
 
     public ewkResultatGS1: TSEWKResultat;
@@ -239,9 +240,15 @@ export default class GesuchModelManager {
         return this.gesuch ? this.gesuch.extractFamiliensituationErstgesuch() : undefined;
     }
 
-    public updateFachstellenList(): void {
-        this.fachstelleRS.getAllFachstellen().then((response: TSFachstelle[]) => {
-            this.fachstellenList = response;
+    public updateFachstellenAnspruchList(): void {
+        this.fachstelleRS.getFachstellen('anspruch').then((response: TSFachstelle[]) => {
+            this.fachstellenAnspruchList = response;
+        });
+    }
+
+    public updateFachstellenErweiterteBetreuungList(): void {
+        this.fachstelleRS.getFachstellen('erweiterteBetreuung').then((response: TSFachstelle[]) => {
+            this.fachstellenErweiterteBetreuungList = response;
         });
     }
 
@@ -486,13 +493,22 @@ export default class GesuchModelManager {
         return -1;
     }
 
-    public getFachstellenList(): Array<TSFachstelle> {
-        if (this.fachstellenList === undefined) {
-            this.fachstellenList = []; // init empty while we wait for promise
-            this.updateFachstellenList();
+    public getFachstellenAnspruchList(): Array<TSFachstelle> {
+        if (this.fachstellenAnspruchList === undefined) {
+            this.fachstellenAnspruchList = []; // init empty while we wait for promise
+            this.updateFachstellenAnspruchList();
         }
 
-        return this.fachstellenList;
+        return this.fachstellenAnspruchList;
+    }
+
+    public getFachstellenErweiterteBetreuungList(): Array<TSFachstelle> {
+        if (this.fachstellenErweiterteBetreuungList === undefined) {
+            this.fachstellenErweiterteBetreuungList = []; // init empty while we wait for promise
+            this.updateFachstellenErweiterteBetreuungList();
+        }
+
+        return this.fachstellenErweiterteBetreuungList;
     }
 
     public getActiveInstitutionenList(): Array<TSInstitutionStammdaten> {
