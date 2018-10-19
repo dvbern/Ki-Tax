@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -43,9 +42,6 @@ public class Betreuungspensum extends AbstractDecimalPensum implements Comparabl
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
 
-	@NotNull
-	@Column(nullable = false)
-	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
 	public Betreuungspensum() {
 	}
@@ -54,6 +50,7 @@ public class Betreuungspensum extends AbstractDecimalPensum implements Comparabl
 		this.setGueltigkeit(new DateRange(betPensumMitteilung.getGueltigkeit()));
 		this.setPensum(betPensumMitteilung.getPensum());
 		this.setUnitForDisplay(betPensumMitteilung.getUnitForDisplay());
+		this.setMonatlicheBetreuungskosten(betPensumMitteilung.getMonatlicheBetreuungskosten());
 		this.setNichtEingetreten(false); //can not be set through BetreuungsmitteilungPensum
 	}
 
@@ -68,15 +65,6 @@ public class Betreuungspensum extends AbstractDecimalPensum implements Comparabl
 
 	public void setNichtEingetreten(@Nonnull Boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
-	}
-
-	@Nonnull
-	public BigDecimal getMonatlicheBetreuungskosten() {
-		return monatlicheBetreuungskosten;
-	}
-
-	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
-		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
 	@Override

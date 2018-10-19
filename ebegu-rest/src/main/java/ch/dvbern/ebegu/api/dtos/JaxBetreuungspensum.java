@@ -15,10 +15,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -30,9 +26,6 @@ public class JaxBetreuungspensum extends JaxAbstractDecimalPensumDTO {
 
 	private Boolean nichtEingetreten = false;
 
-	@NotNull
-	private BigDecimal monatlicheBetreuungskosten;
-
 	private static final long serialVersionUID = -8012537546244511785L;
 
 	public Boolean getNichtEingetreten() {
@@ -43,12 +36,4 @@ public class JaxBetreuungspensum extends JaxAbstractDecimalPensumDTO {
 		this.nichtEingetreten = nichtEingetreten;
 	}
 
-	@Nonnull
-	public BigDecimal getMonatlicheBetreuungskosten() {
-		return monatlicheBetreuungskosten;
-	}
-
-	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
-		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
-	}
 }

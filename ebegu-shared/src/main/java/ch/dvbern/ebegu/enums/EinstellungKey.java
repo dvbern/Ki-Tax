@@ -71,10 +71,6 @@ public enum EinstellungKey {
 	// Min Pensum Tagesschule
 	PARAM_PENSUM_TAGESSCHULE_MIN,
 
-	//TDO (hier durchgehen!!!!
-
-
-
 	// Pauschalabzug bei einer Familiengrösse von drei Personen pauschal pro Person
 	PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
 

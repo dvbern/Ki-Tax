@@ -299,6 +299,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 		pensumEntity.setPensum(jaxPensum.getPensum());
+		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
 	}
 
 	private void convertAbstractBetreuungspensumFieldsToJAX(
@@ -308,6 +309,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 		jaxPensum.setPensum(pensum.getPensum());
+		jaxPensum.setMonatlicheBetreuungskosten(pensum.getMonatlicheBetreuungskosten());
 	}
 
 	@Nonnull
@@ -2313,7 +2315,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractBetreuungspensumFieldsToEntity(jaxBetreuungspensum, betreuungspensum);
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
-		betreuungspensum.setMonatlicheBetreuungskosten(jaxBetreuungspensum.getMonatlicheBetreuungskosten());
 
 		return betreuungspensum;
 	}
@@ -2675,7 +2676,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxBetreuungspensum jaxBetreuungspensum = new JaxBetreuungspensum();
 		convertAbstractBetreuungspensumFieldsToJAX(betreuungspensum, jaxBetreuungspensum);
 		jaxBetreuungspensum.setNichtEingetreten(betreuungspensum.getNichtEingetreten());
-		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 
 		return jaxBetreuungspensum;
 	}

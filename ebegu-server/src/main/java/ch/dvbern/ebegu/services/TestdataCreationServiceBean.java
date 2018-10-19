@@ -96,6 +96,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -340,7 +341,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	private void insertInstitutionsstammdatenForTestfaelle(@Nonnull TestdataSetupConfig config, @Nonnull Mandant mandant, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final InstitutionStammdaten institutionStammdatenKitaAaregg = config.getKitaWeissenstein();
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = config.getKitaBruennen();
-		final InstitutionStammdaten institutionStammdatenTagiAaregg = config.getTagiWeissenstein();
+		final InstitutionStammdaten institutionStammdatenKita2Aaregg = config.getKita2Weissenstein();
 		final InstitutionStammdaten institutionStammdatenTagesschuleBruennen = config.getTagesschuleBruennen();
 		final InstitutionStammdaten institutionStammdatenFerieninselBruennen = config.getFerieninselBruennen();
 
@@ -354,12 +355,12 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		institutionStammdatenKitaAaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
 		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
 		institutionStammdatenKitaBruennen.getInstitution().setTraegerschaft(traegerschaftBruennen);
-		institutionStammdatenTagiAaregg.getInstitution().setMandant(mandant);
-		institutionStammdatenTagiAaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
+		institutionStammdatenKita2Aaregg.getInstitution().setMandant(mandant);
+		institutionStammdatenKita2Aaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
 
 		institutionService.createInstitution(institutionStammdatenKitaAaregg.getInstitution());
 		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaAaregg, gesuchsperiode);
-		saveInstitutionStammdatenIfNecessary(institutionStammdatenTagiAaregg, gesuchsperiode);
+		saveInstitutionStammdatenIfNecessary(institutionStammdatenKita2Aaregg, gesuchsperiode);
 
 		institutionService.createInstitution(institutionStammdatenKitaBruennen.getInstitution());
 		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaBruennen, gesuchsperiode);
