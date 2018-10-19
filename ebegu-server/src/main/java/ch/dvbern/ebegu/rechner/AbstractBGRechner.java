@@ -110,17 +110,30 @@ public abstract class AbstractBGRechner {
 		}
 	}
 
-	/**
-	 * Berechnet den Anteil des Zeitabschnittes am gesamten Monat als dezimalzahl von 0 bis 1
-	 * Dabei werden nur Werktage (d.h. sa do werden ignoriert) beruecksichtigt
-	 */
 	@Nonnull
-	protected BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
-		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
-		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
-		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
-		long nettoTageIntervall = daysBetween(von, bis);
-		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoTageIntervall), MathUtil.EXACT.from(nettoTageMonat));
+	protected BigDecimal getVerguenstigungProZeiteinheit(
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull Boolean unter12Monate,
+		@Nonnull Boolean eingeschult,
+		@Nonnull Boolean besonderebeduerfnisse,
+		@Nonnull BigDecimal massgebendesEinkommen) {
+
+		BigDecimal maximaleVerguenstigungProTag =
+			getMaximaleVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, eingeschult);
+		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
+		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
+
+		BigDecimal op1 = MATH.divide(maximaleVerguenstigungProTag, MATH.subtract(minEinkommen, maxEinkommen));
+		BigDecimal op2 = MATH.subtract(massgebendesEinkommen, minEinkommen);
+		BigDecimal augment = MATH.multiplyNullSafe(op1, op2);
+		BigDecimal verguenstigungProTag = MATH.add(augment, maximaleVerguenstigungProTag);
+		// Max und Min beachten
+		verguenstigungProTag = verguenstigungProTag.min(maximaleVerguenstigungProTag);
+		verguenstigungProTag = verguenstigungProTag.max(BigDecimal.ZERO);
+		// (Fixen) Zuschlag fuer Besondere Beduerfnisse
+		BigDecimal zuschlagFuerBesondereBeduerfnisse =
+			getZuschlagFuerBesondereBeduerfnisse(parameterDTO, besonderebeduerfnisse);
+		return MATH.add(verguenstigungProTag, zuschlagFuerBesondereBeduerfnisse);
 	}
 
 	/**
@@ -131,14 +144,6 @@ public abstract class AbstractBGRechner {
 			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
 			.count();
 	}
-
-	@Nonnull
-	protected abstract BigDecimal getVerguenstigungProZeiteinheit(
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean eingeschult,
-		@Nonnull Boolean besonderebeduerfnisse,
-		@Nonnull BigDecimal massgebendesEinkommen);
 
 	@Nonnull
 	protected abstract BigDecimal getAnteilMonat(
@@ -156,5 +161,16 @@ public abstract class AbstractBGRechner {
 	@Nonnull
 	protected abstract BigDecimal getMinimalBeitragProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO);
+
+	@Nonnull
+	protected abstract BigDecimal getMaximaleVerguenstigungProZeiteinheit(
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull Boolean unter12Monate,
+		@Nonnull Boolean eingeschult);
+
+	@Nonnull
+	protected abstract BigDecimal getZuschlagFuerBesondereBeduerfnisse(
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull Boolean besonderebeduerfnisse);
 
 }

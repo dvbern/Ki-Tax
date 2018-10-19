@@ -3758,6 +3758,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		// todo KIBON-245 now or newest one??
+		// todo KIBON-245 dies sollte im Service und nicht in Convertert gemacht werden
 		if (gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).isPresent()) {
 			Gesuchsperiode gsNow = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now()).get();
 

@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -54,12 +53,12 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Superklasse für BG-Rechner-Tests
  */
 public class AbstractBGRechnerTest {
-
-	public static final BigDecimal MONATLICHE_BETREUUNGSKOSTEN = new BigDecimal("2100.00");
 
 	protected BetreuungsgutscheinEvaluator evaluator;
 
@@ -100,20 +99,22 @@ public class AbstractBGRechnerTest {
 	}
 
 	public static void assertZeitabschnitt(VerfuegungZeitabschnitt abschnitt, int betreuungspensum, int anspruchsberechtigtesPensum, int bgPensum) {
-		Assert.assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt, betreuungspensum, abschnitt.getBetreuungspensum());
-		Assert.assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(bgPensum, abschnitt.getBgPensum());
+		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+			BigDecimal.valueOf(betreuungspensum), abschnitt.getBetreuungspensum());
+		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(BigDecimal.valueOf(bgPensum), abschnitt.getBgPensum());
 	}
 
 	public static void assertZeitabschnitt(VerfuegungZeitabschnitt abschnitt, int betreuungspensum, int anspruchsberechtigtesPensum, int bgPensum, double vollkosten,
 		double verguenstigung, double elternbeitrag) {
 
-		Assert.assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt, betreuungspensum, abschnitt.getBetreuungspensum());
-		Assert.assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(bgPensum, abschnitt.getBgPensum());
-		Assert.assertEquals(MATH.from(vollkosten), abschnitt.getVollkosten());
-		Assert.assertEquals(MATH.from(verguenstigung), abschnitt.getVerguenstigung());
-		Assert.assertEquals(MATH.from(elternbeitrag), abschnitt.getElternbeitrag());
+		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+			BigDecimal.valueOf(betreuungspensum), abschnitt.getBetreuungspensum());
+		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(BigDecimal.valueOf(bgPensum), abschnitt.getBgPensum());
+		assertEquals(MATH.from(vollkosten), abschnitt.getVollkosten());
+		assertEquals(MATH.from(verguenstigung), abschnitt.getVerguenstigung());
+		assertEquals(MATH.from(elternbeitrag), abschnitt.getElternbeitrag());
 	}
 
 	public static void assertZeitabschnittFinanzdaten(VerfuegungZeitabschnitt abschnitt, double massgebendesEinkVorFamAbz,
@@ -121,10 +122,10 @@ public class AbstractBGRechnerTest {
 		double famGroesse) {
 
 		Assert.assertTrue(Objects.equals(einkommensjahr, abschnitt.getEinkommensjahr()));
-		Assert.assertEquals(MATH.from(famGroesse), MATH.from(abschnitt.getFamGroesse()));
-		Assert.assertEquals(MATH.from(massgebendesEinkVorFamAbz), MATH.from(abschnitt.getMassgebendesEinkommenVorAbzFamgr()));
-		Assert.assertEquals(MATH.from(abzugFam), MATH.from(abschnitt.getAbzugFamGroesse()));
-		Assert.assertEquals(MATH.from(massgebendesEinkommen), MATH.from(abschnitt.getMassgebendesEinkommen()));
+		assertEquals(MATH.from(famGroesse), MATH.from(abschnitt.getFamGroesse()));
+		assertEquals(MATH.from(massgebendesEinkVorFamAbz), MATH.from(abschnitt.getMassgebendesEinkommenVorAbzFamgr()));
+		assertEquals(MATH.from(abzugFam), MATH.from(abschnitt.getAbzugFamGroesse()));
+		assertEquals(MATH.from(massgebendesEinkommen), MATH.from(abschnitt.getMassgebendesEinkommen()));
 	}
 
 	/**
@@ -157,8 +158,8 @@ public class AbstractBGRechnerTest {
 		@Nonnull LocalDate geburtsdatumKind,
 		@Nonnull LocalDate von,
 		@Nonnull LocalDate bis,
-		boolean eingeschult, boolean besondereBeduerfnisse,
-		int anspruch,
+		boolean eingeschult,
+		boolean besondereBeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
 		@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
@@ -180,7 +181,7 @@ public class AbstractBGRechnerTest {
 		kindContainer.setGesuch(gesuch);
 		betreuung.setKind(kindContainer);
 
-		Verfuegung verfuegung = createVerfuegung(von, bis, anspruch, massgebendesEinkommen, monatlicheBetreuungskosten);
+		Verfuegung verfuegung = createVerfuegung(von, bis, massgebendesEinkommen, monatlicheBetreuungskosten);
 		verfuegung.setBetreuung(betreuung);
 		return verfuegung;
 	}
@@ -191,13 +192,12 @@ public class AbstractBGRechnerTest {
 	private Verfuegung createVerfuegung(
 		@Nonnull LocalDate von,
 		@Nonnull LocalDate bis,
-		int anspruch,
 		@Nonnull BigDecimal massgebendesEinkommen,
 		@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(new DateRange(von, bis));
-		zeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
-		zeitabschnitt.setBetreuungspensum(BigDecimal.valueOf(anspruch));
+		zeitabschnitt.setAnspruchberechtigtesPensum(20);
+		zeitabschnitt.setBetreuungspensum(BigDecimal.valueOf(20));
 		zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
 		zeitabschnitt.setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();
@@ -217,8 +217,8 @@ public class AbstractBGRechnerTest {
 				if (betreuung.getInstitutionStammdaten().getInstitution().getId().equals(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN)) {
 					Verfuegung verfuegung = betreuung.getVerfuegung();
 					Assert.assertNotNull(verfuegung);
-					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-					Assert.assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(53872.35)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					assertEquals(12, verfuegung.getZeitabschnitte().size());
+					assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(53872.35)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 					assertZeitabschnitt(august, 80, 80, 80, 1827.05, 1562.25, 264.80);
@@ -231,8 +231,8 @@ public class AbstractBGRechnerTest {
 				} else {     //KITA Bruennen
 					Verfuegung verfuegung = betreuung.getVerfuegung();
 					Assert.assertNotNull(verfuegung);
-					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-					Assert.assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(53872.35)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					assertEquals(12, verfuegung.getZeitabschnitte().size());
+					assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(53872.35)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 					// Noch kein Anspruch im Januar 2017, Kind geht erst ab Feb 2017 in Kita, Anspruch muss ausserdem 0 sein im Januar weil das Kind in die andere Kita geht
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
 					assertZeitabschnitt(januar, 0, 0, 0, 0, 0, 0);
@@ -254,13 +254,13 @@ public class AbstractBGRechnerTest {
 	public static void checkTestfall02FeutzYvonne(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			if ("Leonard".equals(kindContainer.getKindJA().getVorname())) {
-				Assert.assertEquals(1, kindContainer.getBetreuungen().size());
+				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
 
-				Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-				Assert.assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(113745.70)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				assertEquals(12, verfuegung.getZeitabschnitte().size());
+				assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(113745.70)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, 40, 40, 40, 913.50, 366.90, 546.60);
@@ -270,13 +270,13 @@ public class AbstractBGRechnerTest {
 				assertZeitabschnitt(juli, 40, 40, 40, 913.50, 366.90, 546.60);
 			}
 			if ("Tamara".equals(kindContainer.getKindJA().getVorname())) {
-				Assert.assertEquals(1, kindContainer.getBetreuungen().size());
+				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
 
-				Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-				Assert.assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(113745.70)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				assertEquals(12, verfuegung.getZeitabschnitte().size());
+				assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(113745.70)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, 60, 60, 60, 1000.45, 362.75, 637.70);
@@ -294,13 +294,13 @@ public class AbstractBGRechnerTest {
 	public static void checkTestfall03PerreiraMarcia(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			if ("Jose".equals(kindContainer.getKindJA().getVorname())) {
-				Assert.assertEquals(1, kindContainer.getBetreuungen().size());
+				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
-				Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-				Assert.assertEquals(MathUtil.GANZZAHL.from(69078.00), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				assertEquals(12, verfuegung.getZeitabschnitte().size());
+				assertEquals(MathUtil.GANZZAHL.from(69078.00), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, 50, 50, 50, 1141.90, 844.90, 297.00);
@@ -318,13 +318,13 @@ public class AbstractBGRechnerTest {
 	public static void checkTestfall04WaltherLaura(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			if ("Jose".equals(kindContainer.getKindJA().getVorname())) {
-				Assert.assertEquals(1, kindContainer.getBetreuungen().size());
+				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
-				Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-				Assert.assertEquals(MathUtil.DEFAULT.from(162245.90), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				assertEquals(12, verfuegung.getZeitabschnitte().size());
+				assertEquals(MathUtil.DEFAULT.from(162245.90), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, 50, 0, 0, 1141.90, 0, 1141.90);
@@ -341,13 +341,13 @@ public class AbstractBGRechnerTest {
 	public static void checkTestfall05LuethiMeret(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			if ("Tanja".equals(kindContainer.getKindJA().getVorname())) {
-				Assert.assertEquals(1, kindContainer.getBetreuungen().size());
+				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
-				Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-				Assert.assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(98949.85)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				assertEquals(12, verfuegung.getZeitabschnitte().size());
+				assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(98949.85)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat 50%
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, 50, 70, 50, 1141.90, 586.60, 555.30);
@@ -371,25 +371,25 @@ public class AbstractBGRechnerTest {
 	public static void checkTestfall06BeckerNora(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			if ("Timon".equals(kindContainer.getKindJA().getVorname())) {
-				Assert.assertEquals(1, kindContainer.getBetreuungen().size());
+				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
-				Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-				Assert.assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7520)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				assertEquals(12, verfuegung.getZeitabschnitte().size());
+				assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7520)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, 100, 100, 100, 1667.40, 1562.40, 105.00);
 			}
 			if ("Yasmin".equals(kindContainer.getKindJA().getVorname())) {
-				Assert.assertEquals(1, kindContainer.getBetreuungen().size());
+				assertEquals(1, kindContainer.getBetreuungen().size());
 				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
-				Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
-				Assert.assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7520)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				assertEquals(12, verfuegung.getZeitabschnitte().size());
+				assertEquals(MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7520)), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, 100, 60, 60, 1370.30, 1289.30, 81.00);

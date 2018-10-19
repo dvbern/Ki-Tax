@@ -113,16 +113,6 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 
 	}
 
-	private void testWithParams(@Nonnull LocalDate geburtstag, boolean eingeschult, boolean besondereBeduerfnisse, @Nonnull LocalDate von, @Nonnull LocalDate bis,
-		int bgPensum, int einkommen, int vollkostenMonat, double expected) {
-		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, von, bis, eingeschult, besondereBeduerfnisse,
-			bgPensum, MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(vollkostenMonat));
-
-		VerfuegungZeitabschnitt
-			calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
-	}
-
 	private void testWithParams(
 		@Nonnull LocalDate geburtstag,
 		boolean eingeschult,
@@ -133,7 +123,7 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		double expected
 	) {
 		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, von, bis, eingeschult, besondereBeduerfnisse,
-			20, MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
+			MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
 
 		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
 		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());

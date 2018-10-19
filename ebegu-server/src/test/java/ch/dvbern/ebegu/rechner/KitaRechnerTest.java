@@ -96,7 +96,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		double expected
 	) {
 		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, von, bis, eingeschult, besondereBeduerfnisse,
-			20, MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
+			MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
 
 		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
 		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());

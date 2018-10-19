@@ -231,13 +231,13 @@ public enum MathUtil {
 		if (values == null || values.length == 0) {
 			return null;
 		}
-return multiplyNullSafe(values);
+		return multiplyNullSafe(values);
 	}
 
 	@Nonnull
 	public BigDecimal multiplyNullSafe(@Nonnull BigDecimal... values) {
 		BigDecimal result = Arrays.stream(values)
-		.filter(Objects::nonNull)
+			.filter(Objects::nonNull)
 			.reduce(BigDecimal.ONE, this::multiplyNullSafe);
 
 		return validatePrecision(result);

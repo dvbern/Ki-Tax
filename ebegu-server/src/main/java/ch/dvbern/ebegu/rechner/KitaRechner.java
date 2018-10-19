@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 
 import javax.annotation.Nonnull;
 
@@ -51,13 +52,16 @@ public class KitaRechner extends AbstractBGRechner {
 	@Nonnull
 	@Override
 	protected BigDecimal getAnteilMonat(
-		@Nonnull BGRechnerParameterDTO parameterDTO, @Nonnull LocalDate von, @Nonnull
-		LocalDate bis) {
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis) {
+
 		return calculateAnteilMonatInklWeekend(von, bis);
 	}
 
 	@Nonnull
-	private BigDecimal getMaximaleVerguenstigungProTag(
+	@Override
+	protected BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
 		@Nonnull Boolean eingeschult) {
@@ -70,38 +74,25 @@ public class KitaRechner extends AbstractBGRechner {
 		return parameterDTO.getMaxVerguenstigungVorschuleKindProTg();
 	}
 
+	@Nonnull
 	@Override
-	@Nonnull
-	protected BigDecimal getVerguenstigungProZeiteinheit(
-		@Nonnull BGRechnerParameterDTO parameterDTO,
-		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean eingeschult,
-		@Nonnull Boolean besonderebeduerfnisse,
-		@Nonnull BigDecimal massgebendesEinkommen) {
-
-		BigDecimal maximaleVerguenstigungProTag =
-			getMaximaleVerguenstigungProTag(parameterDTO, unter12Monate, eingeschult);
-		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
-		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
-
-		BigDecimal op1 = MATH.divide(maximaleVerguenstigungProTag, MATH.subtract(minEinkommen, maxEinkommen));
-		BigDecimal op2 = MATH.subtract(massgebendesEinkommen, minEinkommen);
-		BigDecimal augment = MATH.multiplyNullSafe(op1, op2);
-		BigDecimal verguenstigungProTag = MATH.add(augment, maximaleVerguenstigungProTag);
-		// Max und Min beachten
-		verguenstigungProTag = verguenstigungProTag.min(maximaleVerguenstigungProTag);
-		verguenstigungProTag = verguenstigungProTag.max(BigDecimal.ZERO);
-		// (Fixen) Zuschlag fuer Besondere Beduerfnisse
-		BigDecimal zuschlagFuerBesondereBeduerfnisse =
-			getZuschlagFuerBesondereBeduerfnisse(parameterDTO, besonderebeduerfnisse);
-		return MATH.add(verguenstigungProTag, zuschlagFuerBesondereBeduerfnisse);
-	}
-
-	@Nonnull
-	private BigDecimal getZuschlagFuerBesondereBeduerfnisse(
+	protected BigDecimal getZuschlagFuerBesondereBeduerfnisse(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean besonderebeduerfnisse) {
 
 		return besonderebeduerfnisse ? parameterDTO.getZuschlagBehinderungProTg() : BigDecimal.ZERO;
+	}
+
+	/**
+	 * Berechnet den Anteil des Zeitabschnittes am gesamten Monat als dezimalzahl von 0 bis 1
+	 * Dabei werden nur Werktage (d.h. sa do werden ignoriert) beruecksichtigt
+	 */
+	@Nonnull
+	private BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
+		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
+		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
+		long nettoTageIntervall = daysBetween(von, bis);
+		return MathUtil.EXACT.divide(MathUtil.EXACT.from(nettoTageIntervall), MathUtil.EXACT.from(nettoTageMonat));
 	}
 }
