@@ -66,7 +66,7 @@ public class KitaRechner extends AbstractBGRechner {
 			besonderebeduerfnisse,
 			massgebendesEinkommen);
 
-		BigDecimal anteilMonat = calculateAnteilMonatInklWeekend(von, bis);
+		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis); //calculateAnteilMonatInklWeekend(von, bis);
 		BigDecimal tageGemaessPensumUndAnteilMonat =
 			MATH.multiplyNullSafe(MATH.divide(oeffnungstage, MATH.from(12)), anteilMonat, bgPensum);
 
@@ -87,6 +87,15 @@ public class KitaRechner extends AbstractBGRechner {
 		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
 		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
 		return verfuegungZeitabschnitt;
+	}
+
+//	@Override
+//	protected BigDecimal getMinimalBetrag(BGRechnerParameterDTO parameterDTO) {
+//		return null;
+//	}
+
+	private BigDecimal getAnteilMonat(BGRechnerParameterDTO parameterDTO, LocalDate von, LocalDate bis) {
+		return calculateAnteilMonatInklWeekend(von, bis);
 	}
 
 	private BigDecimal getMaximaleVerguenstigungProTag(

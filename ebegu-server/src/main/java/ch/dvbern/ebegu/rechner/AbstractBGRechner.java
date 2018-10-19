@@ -75,4 +75,8 @@ public abstract class AbstractBGRechner {
 			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
 			.count();
 	}
+
+	protected abstract BigDecimal getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(BGRechnerParameterDTO parameterDTO);
+
+	protected abstract BigDecimal getMinimalBetrag(BGRechnerParameterDTO parameterDTO);
 }
