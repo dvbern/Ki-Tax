@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.util.Constants;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
@@ -67,6 +68,7 @@ public class BetreuungsgutscheinConfigurator {
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
 			PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
+			PARAM_MAX_TAGE_ABWESENHEIT,
 			BG_BIS_UND_MIT_SCHULSTUFE);
 	}
 
@@ -128,7 +130,9 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(einreichungsfristAbschnittRule);
 
 		// Abwesenheit
-		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit);
+		Einstellung abwesenheitMaxDaysParam = einstellungMap.get(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT);
+		Integer abwesenheitMaxDaysValue = abwesenheitMaxDaysParam.getValueAsInteger();
+		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit, abwesenheitMaxDaysValue);
 		rules.add(abwesenheitAbschnittRule);
 
 		// Zivilstandsaenderung

@@ -169,6 +169,7 @@ public final class TestDataUtil {
 
 	private static final String iban = "CH39 0900 0000 3066 3817 2";
 
+	public static final int ABWESENHEIT_DAYS_LIMIT = 30;
 	public static final int PERIODE_JAHR_0 = 2016;
 	public static final int PERIODE_JAHR_1 = 2017;
 	public static final int PERIODE_JAHR_2 = 2018;
@@ -1289,7 +1290,7 @@ public final class TestDataUtil {
 	private static Abwesenheit createShortAbwesenheit(final Gesuchsperiode gesuchsperiode) {
 		final Abwesenheit abwesenheit = new Abwesenheit();
 		abwesenheit.setGueltigkeit(new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1),
-			gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1).plusDays(Constants.ABWESENHEIT_DAYS_LIMIT - 1)));
+			gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1).plusDays(ABWESENHEIT_DAYS_LIMIT - 1)));
 		return abwesenheit;
 	}
 
@@ -1302,7 +1303,7 @@ public final class TestDataUtil {
 	private static Abwesenheit createLongAbwesenheit(final Gesuchsperiode gesuchsperiode) {
 		final Abwesenheit abwesenheit = new Abwesenheit();
 		abwesenheit.setGueltigkeit(new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1),
-			gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1).plusDays(Constants.ABWESENHEIT_DAYS_LIMIT)));
+			gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1).plusDays(ABWESENHEIT_DAYS_LIMIT)));
 		return abwesenheit;
 	}
 

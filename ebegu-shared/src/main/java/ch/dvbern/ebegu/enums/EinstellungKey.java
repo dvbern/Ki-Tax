@@ -84,7 +84,7 @@ public enum EinstellungKey {
 	PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
 
 	// Max Abwesenheit
-	PARAM_MAX_TAGE_ABWESENHEIT, //TODO es wird Constants.ABWESENHEIT_DAYS_LIMIT verwendet
+	PARAM_MAX_TAGE_ABWESENHEIT,
 
 	// Eine Einkommensverschlechterung wird nur berücksichtigt, wenn diese höher als 20% des Ausgangswertes ist.
 	PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
