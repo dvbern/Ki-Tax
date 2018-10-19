@@ -133,23 +133,17 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
 		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
-			Optional<Benutzer> benBG = benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername());
-			if (benBG.isPresent()) {
-				stammdaten.setDefaultBenutzerBG(converter.jaxBenutzerToBenutzer(jaxStammdaten.getDefaultBenutzerBG(), benBG.get()));
-			}
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername())
+				.ifPresent(stammdaten::setDefaultBenutzerBG);
 		}
 		if (jaxStammdaten.getDefaultBenutzerTS() != null) {
-			Optional<Benutzer> benTS = benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername());
-			if (benTS.isPresent()) {
-				stammdaten.setDefaultBenutzerTS(converter.jaxBenutzerToBenutzer(jaxStammdaten.getDefaultBenutzerTS(), benTS.get()));
-			}
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername())
+				.ifPresent(stammdaten::setDefaultBenutzerTS);
 		}
 
 		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
-		Optional<Gemeinde> gemeinde = gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId());
-		if (gemeinde.isPresent()) {
-			stammdaten.setGemeinde(gemeinde.get());
-		}
+		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
+			.ifPresent(stammdaten::setGemeinde);
 
 		converter.adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
 
@@ -163,16 +157,15 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
 		stammdaten.setWebseite(jaxStammdaten.getWebseite());
-		if (jaxStammdaten.isKorrespondenzspracheDe() && !jaxStammdaten.isKorrespondenzspracheFr()){
-			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
-		}
-		else if (!jaxStammdaten.isKorrespondenzspracheDe() && jaxStammdaten.isKorrespondenzspracheFr()){
-			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
-		}
-		else if (jaxStammdaten.isKorrespondenzspracheDe() && jaxStammdaten.isKorrespondenzspracheFr()){
+
+		if (jaxStammdaten.isKorrespondenzspracheDe() && jaxStammdaten.isKorrespondenzspracheFr()) {
 			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
+		} else if (jaxStammdaten.isKorrespondenzspracheDe()) {
+			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
+		} else if (jaxStammdaten.isKorrespondenzspracheFr()) {
+			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.FR);
 		} else {
-			stammdaten.setKorrespondenzsprache(null);
+			throw new IllegalArgumentException("Die Korrespondenzsprache muss gesetzt sein");
 		}
 
 		// Konfiguration
@@ -205,13 +198,14 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
 		jaxStammdaten.setKeineBeschwerdeAdresse(stammdaten.isKeineBeschwerdeAdresse());
-		if (KorrespondenzSpracheTyp.DE.equals(stammdaten.getKorrespondenzsprache())) {
+
+		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(true);
 			jaxStammdaten.setKorrespondenzspracheFr(false);
-		} else if (KorrespondenzSpracheTyp.FR.equals(stammdaten.getKorrespondenzsprache())) {
+		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(false);
 			jaxStammdaten.setKorrespondenzspracheFr(true);
-		} else if (KorrespondenzSpracheTyp.DE_FR.equals(stammdaten.getKorrespondenzsprache())) {
+		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(true);
 			jaxStammdaten.setKorrespondenzspracheFr(true);
 		}
