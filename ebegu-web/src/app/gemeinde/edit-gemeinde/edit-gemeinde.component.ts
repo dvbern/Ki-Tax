@@ -19,19 +19,24 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
+import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
+import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
     selector: 'dv-edit-gemeinde',
     templateUrl: './edit-gemeinde.component.html',
+    styleUrls: ['../gemeinde-module.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditGemeindeComponent implements OnInit {
@@ -49,6 +54,7 @@ export class EditGemeindeComponent implements OnInit {
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
+        private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
     ) {
@@ -111,6 +117,22 @@ export class EditGemeindeComponent implements OnInit {
             this.logoImageUrl = e.target.result;
         };
         tmpFileReader.readAsDataURL(this.fileToUpload);
+    }
+
+    public getKonfigKontingentierungString(gk: TSGemeindeKonfiguration): string {
+        const kontStr = gk.konfigKontingentierung ? this.translate.instant('KONTINGENTIERUNG') :
+            'Keine ' + this.translate.instant('KONTINGENTIERUNG');
+        return kontStr;
+    }
+
+    public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
+        const bgBisStr = this.translate.instant(gk.konfigBeguBisUndMitSchulstufe.toString());
+        return bgBisStr;
+    }
+
+    public isEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
+        return TSGemeindeStatus.EINGELADEN === stammdaten.gemeinde.status
+            || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiode.status;
     }
 
     private navigateBack(): void {
