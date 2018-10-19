@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -95,7 +94,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getJugendamtRoles;
 import static ch.dvbern.ebegu.enums.UserRole.getSchulamtRoles;
@@ -331,14 +329,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@PermitAll
 	public Collection<Benutzer> getGemeindeAdministratoren(Gemeinde gemeinde) {
-		return getBenutzersOfRoles(Arrays.asList(UserRole.ADMIN_GEMEINDE), gemeinde);
+		return getBenutzersOfRoles(Collections.singletonList(UserRole.ADMIN_GEMEINDE), gemeinde);
 	}
 
 	@Nonnull
 	@Override
 	@PermitAll
 	public Collection<Benutzer> getGemeindeSachbearbeiter(Gemeinde gemeinde) {
-		return getBenutzersOfRoles(Arrays.asList(UserRole.SACHBEARBEITER_GEMEINDE), gemeinde);
+		return getBenutzersOfRoles(Collections.singletonList(UserRole.SACHBEARBEITER_GEMEINDE), gemeinde);
 	}
 
 	@Nonnull
@@ -377,7 +375,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	/**
-	 * Gibt alle existierenden Benutzer mit den geünschten Rollen zurueck.
+	 * Gibt alle existierenden Benutzer mit den gewünschten Rollen zurueck.
 	 * ¡Diese Methode filtert die Gemeinde über den angemeldeten Benutzer!
 	 * @param roles Die besagten Rollen
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
@@ -409,14 +407,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return persistence.getCriteriaResults(query);	}
 
 	/**
-	 * Gibt alle existierenden Benutzer mit den geünschten Rollen zurueck.
+	 * Gibt alle existierenden Benutzer mit den gewünschten Rollen zurueck.
 	 * ¡Diese Methode filtert die Gemeinde über den Gemeinde-Parameter!
 	 * @param roles Das Rollen Filter
 	 * @param gemeinde Das Gemeinde Filter
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Gemeinde gemeinde) {
-		Benutzer currentBenutzer = getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getBenutzersOfRole", "Non logged in user should never reach this"));
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -435,7 +433,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
 		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(roles));
-		predicates.add(cb.equal(joinBerechtigungenGemeinde.get(Gemeinde_.id), gemeinde.getId()));
+		predicates.add(cb.equal(joinBerechtigungenGemeinde.get(AbstractEntity_.id), gemeinde.getId()));
 
 		query.where(predicates.toArray(NEW));
 		query.distinct(true);

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
@@ -34,7 +33,6 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -59,7 +57,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(ErwerbspensumService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+	SACHBEARBEITER_TS, ADMIN_TS })
 public class ErwerbspensumServiceBean extends AbstractBaseService implements ErwerbspensumService {
 
 	@Inject
@@ -75,18 +74,24 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 
 	@Nonnull
 	@Override
-	public ErwerbspensumContainer saveErwerbspensum(@Valid @Nonnull ErwerbspensumContainer erwerbspensumContainer, Gesuch gesuch) {
+	public ErwerbspensumContainer saveErwerbspensum(
+		@Valid @Nonnull ErwerbspensumContainer erwerbspensumContainer,
+		Gesuch gesuch) {
 		Objects.requireNonNull(erwerbspensumContainer);
 		final ErwerbspensumContainer mergedErwerbspensum = persistence.merge(erwerbspensumContainer);
 		mergedErwerbspensum.getGesuchsteller().addErwerbspensumContainer(mergedErwerbspensum);
-		wizardStepService.updateSteps(gesuch.getId(), null, mergedErwerbspensum.getErwerbspensumJA(), WizardStepName.ERWERBSPENSUM);
+		wizardStepService.updateSteps(
+			gesuch.getId(),
+			null,
+			mergedErwerbspensum.getErwerbspensumJA(),
+			WizardStepName.ERWERBSPENSUM);
 		return mergedErwerbspensum;
 	}
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST, GESUCHSTELLER,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<ErwerbspensumContainer> findErwerbspensum(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		ErwerbspensumContainer ewpCnt = persistence.find(ErwerbspensumContainer.class, key);
@@ -95,16 +100,20 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST, GESUCHSTELLER,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Collection<ErwerbspensumContainer> findErwerbspensenForGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller) {
-		return criteriaQueryHelper.getEntitiesByAttribute(ErwerbspensumContainer.class, gesuchsteller, ErwerbspensumContainer_.gesuchstellerContainer);
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Collection<ErwerbspensumContainer> findErwerbspensenForGesuchsteller(
+		@Nonnull GesuchstellerContainer gesuchsteller) {
+		return criteriaQueryHelper.getEntitiesByAttribute(
+			ErwerbspensumContainer.class,
+			gesuchsteller,
+			ErwerbspensumContainer_.gesuchstellerContainer);
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST, GESUCHSTELLER,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Collection<ErwerbspensumContainer> findErwerbspensenFromGesuch(@Nonnull String gesuchId) {
 		Collection<ErwerbspensumContainer> result = new ArrayList<>();
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(gesuchId);
@@ -133,37 +142,37 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST, GESUCHSTELLER,
-		ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, JURIST,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void removeErwerbspensum(@Nonnull String erwerbspensumContainerID, Gesuch gesuch) {
 		Objects.requireNonNull(erwerbspensumContainerID);
 		ErwerbspensumContainer ewpCont = this.findErwerbspensum(erwerbspensumContainerID).orElseThrow(
-			() -> new EbeguEntityNotFoundException("removeErwerbspensum", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, erwerbspensumContainerID)
+			() -> new EbeguEntityNotFoundException(
+				"removeErwerbspensum",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				erwerbspensumContainerID)
 		);
 		GesuchstellerContainer gesuchsteller = ewpCont.getGesuchsteller();
 		persistence.remove(ewpCont);
 
 		// the kind needs to be removed from the object as well
-		gesuchsteller.getErwerbspensenContainersNotEmpty().removeIf(k -> k.getId().equalsIgnoreCase(erwerbspensumContainerID));
+		gesuchsteller.getErwerbspensenContainersNotEmpty()
+			.removeIf(k -> k.getId().equalsIgnoreCase(erwerbspensumContainerID));
 		wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.ERWERBSPENSUM);
 	}
 
 	@Override
 	@PermitAll
 	public boolean isErwerbspensumRequired(@Nonnull Gesuch gesuch) {
-		// Erwerbspensum ist zwingend, wenn mindestens 1 Kind eine Kleinkind-Betreuung ohne Fachstelle hat
-		Set<KindContainer> kindContainers = gesuch.getKindContainers();
-		for (KindContainer kindContainer : kindContainers) {
-			if (kindContainer.getKindJA().getPensumFachstelle() != null) {
-				return false;
-			}
-			Set<Betreuung> betreuungen = kindContainer.getBetreuungen();
-			for (Betreuung betreuung : betreuungen) {
-				if (!betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-					return false;
-				}
-			}
-		}
-		return true;
+		return gesuch.extractAllBetreuungen().stream()
+			.anyMatch(this::isErwerbspensumRequired);
+	}
+
+	private boolean isErwerbspensumRequired(@Nonnull Betreuung betreuung) {
+		// Erwerbspensum ist zwingend, wenn:
+		// 1. das Kind keine Fachstelle zugewiesen hat UND das Angebot ein JugendamtKleinkind ist
+		return (betreuung.getKind().getKindJA().getPensumFachstelle() == null &&
+			betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isAngebotJugendamtKleinkind())
+			&& !betreuung.getErweiterteBeduerfnisse();
 	}
 }

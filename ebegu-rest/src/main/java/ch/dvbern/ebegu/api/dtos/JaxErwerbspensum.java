@@ -30,7 +30,7 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
  * DTO fuer Erwerbspensum
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxErwerbspensum extends JaxAbstractPensumDTO {
+public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 
 	private static final long serialVersionUID = -2495737706808699744L;
 

@@ -96,7 +96,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	private AntragStatusHistoryService antragStatusHistoryService;
 
 	private Gesuchsperiode gesuchsperiode;
-	private String gemeinde;
+	private String gemeindeId;
 
 	private static final LocalDateTime DATUM_GENERIERT = LocalDateTime.of(2017, Month.JUNE, 20, 0, 0);
 	private static final LocalDate DATUM_FAELLIG = DATUM_GENERIERT.plusDays(3).toLocalDate();
@@ -110,7 +110,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuchsperiode = createGesuchsperiode(true);
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-		gemeinde = TestDataUtil.getGemeindeBern(persistence).getId();
+		gemeindeId = Objects.requireNonNull(TestDataUtil.getGemeindeBern(persistence)).getId();
 	}
 
 	@Test
@@ -469,7 +469,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createGesuch(boolean verfuegen) {
-		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeinde, gesuchsperiode);
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeindeId, gesuchsperiode);
 	}
 
 	@Nullable
@@ -490,7 +490,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Nullable
-	private Gesuch createMutationBetreuungspensum(Gesuch erstgesuch, LocalDate eingangsdatum, int pensum) {
+	private Gesuch createMutationBetreuungspensum(Gesuch erstgesuch, LocalDate eingangsdatum, BigDecimal pensum) {
 		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), eingangsdatum);
 		if (gesuchOptional.isPresent()) {
 			final Gesuch mutation = gesuchOptional.get();
@@ -516,7 +516,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	private Gesuch createMutationBetreuungspensum(Gesuch erstgesuch, LocalDate eingangsdatum, int pensum, LocalDate verfuegungsdatum) {
-		Gesuch gesuch = createMutationBetreuungspensum(erstgesuch, eingangsdatum, pensum);
+		Gesuch gesuch = createMutationBetreuungspensum(erstgesuch, eingangsdatum, BigDecimal.valueOf(pensum));
 		Assert.assertNotNull(gesuch);
 		gesuchService.postGesuchVerfuegen(gesuch);
 

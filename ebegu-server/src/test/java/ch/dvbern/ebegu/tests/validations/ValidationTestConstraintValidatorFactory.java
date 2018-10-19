@@ -25,13 +25,13 @@ import ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumValidator;
 
 /**
- * This class helps us thest our ConstraintValidators without actually starting a CDI container.
+ * This class helps us test our ConstraintValidators without actually starting a CDI container.
  * Since we are using services inside the validators we need a way to initialize the Validator with a dummy.
  * This Factory allows us to initialize the Validator ourself, giving us the oppurtunity to use a DummyService for the validotr
  */
 public class ValidationTestConstraintValidatorFactory implements ConstraintValidatorFactory {
 
-	final EntityManagerFactory entityManagerFactory;
+	private final EntityManagerFactory entityManagerFactory;
 
 	public ValidationTestConstraintValidatorFactory(EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
@@ -39,9 +39,10 @@ public class ValidationTestConstraintValidatorFactory implements ConstraintValid
 
 	@Override
 	public <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> key) {
-		if (key == CheckBetreuungspensumValidator.class) {
+		if (key.equals(CheckBetreuungspensumValidator.class)) {
 			//Mock Service for Parameters
 			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
+			//noinspection unchecked
 			return (T) new CheckBetreuungspensumValidator(dummyEinstellungenService, entityManagerFactory);
 		}
 		ConstraintValidatorFactory delegate = Validation.byDefaultProvider().configure().getDefaultConstraintValidatorFactory();

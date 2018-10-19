@@ -104,6 +104,7 @@ export class ViewGemeindeComponent implements OnInit {
     }
 
     public handleLogoUpload(files: FileList): void {
+    // todo KIBON-217 auslagern??? es ist in edit-gemeinde dupliziert
         this.fileToUpload = files[0];
         const tmpFileReader = new FileReader();
         tmpFileReader.onload = (e: any): void => {

@@ -298,6 +298,13 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         return this.isAngebotFerieninsel() || this.isAngebotTagesschule();
     }
 
+    public getAngebotTyp(): TSBetreuungsangebotTyp {
+        if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
+            return this.institutionStammdaten.betreuungsangebotTyp;
+        }
+        return null;
+    }
+
     private isAngebot(typ: TSBetreuungsangebotTyp): boolean {
         if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
             return this.institutionStammdaten.betreuungsangebotTyp === typ;

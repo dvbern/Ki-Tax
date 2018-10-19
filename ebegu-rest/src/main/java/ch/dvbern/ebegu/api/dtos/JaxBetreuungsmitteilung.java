@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,6 +34,7 @@ public class JaxBetreuungsmitteilung extends JaxMitteilung {
 	private static final long serialVersionUID = -1297781341675137397L;
 
 	@NotNull
+	@Valid
 	private List<JaxBetreuungsmitteilungPensum> betreuungspensen = new ArrayList<>();
 
 	@NotNull

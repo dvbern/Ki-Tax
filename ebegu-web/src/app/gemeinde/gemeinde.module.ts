@@ -30,7 +30,7 @@ import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
     imports: [
         SharedModule,
         GemeindeRoutingModule,
-        MatCheckboxModule,
+        MaterialModule,
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).

@@ -72,8 +72,9 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde jaxGemeinde, @Nonnull final Gemeinde gemeinde) {
-		Objects.requireNonNull(gemeinde);
-		Objects.requireNonNull(jaxGemeinde);
+		requireNonNull(gemeinde);
+		requireNonNull(jaxGemeinde);
+		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
 		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
 		gemeinde.setName(jaxGemeinde.getName());
 		gemeinde.setStatus(jaxGemeinde.getStatus());

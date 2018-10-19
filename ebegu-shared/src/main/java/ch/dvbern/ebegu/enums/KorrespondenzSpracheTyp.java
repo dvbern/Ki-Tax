@@ -22,5 +22,5 @@ package ch.dvbern.ebegu.enums;
 public enum KorrespondenzSpracheTyp {
 	DE,
 	FR,
-	DE_FR;
+	DE_FR,
 }

@@ -144,9 +144,9 @@ public class ExportDTOMarshallingTest {
 		LocalDate von = LocalDate.of(2017, 1, 1);
 		LocalDate bis = LocalDate.of(2017, 1, 31);
 
-		int effBet = 80;
+		BigDecimal effBet = BigDecimal.valueOf(80);
 		int anspPct = 60;
-		int vergPct = 60;
+		BigDecimal vergPct = BigDecimal.valueOf(60);
 		BigDecimal vollkosten = new BigDecimal("1370.05");
 		BigDecimal verg = new BigDecimal("690.45");
 		return new ZeitabschnittExportDTO(von, bis, effBet, anspPct, vergPct, vollkosten, verg);
