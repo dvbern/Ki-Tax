@@ -42,35 +42,74 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		LocalDate.of(2019, Month.FEBRUARY, 10),
 		LocalDate.of(2019, Month.FEBRUARY, 20));
 
+	private final DateRange intervallTag = new DateRange(
+		LocalDate.of(2019, Month.FEBRUARY, 10),
+		LocalDate.of(2019, Month.FEBRUARY, 10));
+
 
 	@Test
 	public void test() {
-		// todo fragen sind nicht alle tests gleich??
+
 		testWithParams(geburtstagBaby, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			20, 100000, 200, 66.45);
+			100000, 105.50);
 
-		testWithParams(geburtstagBaby, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			20, 100000, 200, 66.45);
+		testWithParams(geburtstagKind, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 75.35);
 
-		testWithParams(geburtstagBaby, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			20, 100000, 200, 66.45);
+		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			50000, 138.15);
 
-		testWithParams(geburtstagBaby, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			20, 100000, 200, 66.45);
 
+		testWithParams(geburtstagKind, false, false, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 6.85);
+
+		testWithParams(geburtstagKind, true, false, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 6.85);
+
+		testWithParams(geburtstagKind, false, true, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 13.55);
+
+		testWithParams(geburtstagKind, true, true, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 13.55);
 
 
 		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			20, 100000, 200, 66.45);
+			150000, 12.55);
 
 		testWithParams(geburtstagKind, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			20, 100000, 200, 66.45);
+			150000, 12.55);
 
 		testWithParams(geburtstagKind, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			20, 100000, 200, 66.45);
+			150000, 86.00);
 
 		testWithParams(geburtstagKind, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			20, 100000, 200, 66.45);
+			150000, 86.00);
+
+
+		testWithParams(geburtstagBaby, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 105.50);
+
+		testWithParams(geburtstagBaby, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 105.50);
+
+		testWithParams(geburtstagBaby, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 178.95);
+
+		testWithParams(geburtstagBaby, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 178.95);
+
+
+		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 75.35);
+
+		testWithParams(geburtstagKind, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 75.35);
+
+		testWithParams(geburtstagKind, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 148.80);
+
+		testWithParams(geburtstagKind, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 148.80);
 
 	}
 
@@ -81,6 +120,22 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 
 		VerfuegungZeitabschnitt
 			calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
+		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
+	}
+
+	private void testWithParams(
+		@Nonnull LocalDate geburtstag,
+		boolean eingeschult,
+		boolean besondereBeduerfnisse,
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis,
+		int einkommen,
+		double expected
+	) {
+		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, von, bis, eingeschult, besondereBeduerfnisse,
+			20, MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
+
+		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
 		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
 	}
 }

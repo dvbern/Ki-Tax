@@ -42,47 +42,47 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		LocalDate.of(2019, Month.FEBRUARY, 10),
 		LocalDate.of(2019, Month.FEBRUARY, 20));
 
+	private final DateRange intervallTag = new DateRange(
+		LocalDate.of(2019, Month.FEBRUARY, 10),
+		LocalDate.of(2019, Month.FEBRUARY, 10));
+
 
 	@Test
 	public void test() {
 		testWithParams(geburtstagBaby, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			100000, 67.55);
-
-		testWithParams(geburtstagBaby, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			100000, 67.55);
-
-		testWithParams(geburtstagBaby, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			100000, 67.55);
-
-		testWithParams(geburtstagBaby, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			100000, 67.55);
-
-
-
-		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			100000, 67.55);
+			100000, 112.80);
 
 		testWithParams(geburtstagKind, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			100000, 60.40);
+			100000, 60.45);
 
-		testWithParams(geburtstagKind, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			100000, 67.55);
+		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			50000, 147.75);
 
-		testWithParams(geburtstagKind, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			100000, 67.55);
+
+		testWithParams(geburtstagKind, false, false, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 7.35);
+
+		testWithParams(geburtstagKind, true, false, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 5.50);
+
+		testWithParams(geburtstagKind, false, true, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 14.45);
+
+		testWithParams(geburtstagKind, true, true, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 12.65);
 
 
 		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			150000, 13.40);
+			150000, 13.45);
 
 		testWithParams(geburtstagKind, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
 			150000, 10.05);
 
 		testWithParams(geburtstagKind, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			150000, 67.55);
+			150000, 92.00);
 
 		testWithParams(geburtstagKind, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
-			150000, 67.55);
+			150000, 88.65);
 
 	}
 
@@ -96,7 +96,7 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 		double expected
 	) {
 		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, von, bis, eingeschult, besondereBeduerfnisse,
-			20, MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(200));
+			20, MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
 
 		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
 		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
