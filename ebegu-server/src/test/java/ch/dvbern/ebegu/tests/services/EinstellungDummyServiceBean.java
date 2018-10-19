@@ -45,7 +45,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWE
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGI_MIN;
 
 /**
  * Dummyservice fuer Einstellungen
@@ -61,7 +60,6 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 		this.dummyObjects = new EnumMap<>(EinstellungKey.class);
 		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
 
-		dummyObjects.put(PARAM_PENSUM_TAGI_MIN, new Einstellung(PARAM_PENSUM_TAGI_MIN, "60", gesuchsperiode1718));
 		dummyObjects.put(PARAM_PENSUM_KITA_MIN, new Einstellung(PARAM_PENSUM_KITA_MIN, "10", gesuchsperiode1718));
 		dummyObjects.put(PARAM_PENSUM_TAGESELTERN_MIN, new Einstellung(PARAM_PENSUM_TAGESELTERN_MIN, "20", gesuchsperiode1718));
 		dummyObjects.put(PARAM_PENSUM_TAGESSCHULE_MIN, new Einstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode1718));

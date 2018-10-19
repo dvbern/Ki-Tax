@@ -31,9 +31,6 @@ public final class BGRechnerFactory {
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
 			return new KitaRechner();
 		}
-		if (BetreuungsangebotTyp.TAGI == betreuungsangebotTyp) {
-			return new TagiRechner();
-		}
 		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
 			return new TageselternRechner();
 		}

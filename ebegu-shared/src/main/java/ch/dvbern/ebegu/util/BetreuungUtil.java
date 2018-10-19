@@ -54,8 +54,6 @@ public final class BetreuungUtil {
 		EinstellungKey key = null;
 		if (betreuungsangebotTyp == BetreuungsangebotTyp.KITA) {
 			key = EinstellungKey.PARAM_PENSUM_KITA_MIN;
-		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGI) {
-			key = EinstellungKey.PARAM_PENSUM_TAGI_MIN;
 		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
 			key = EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {

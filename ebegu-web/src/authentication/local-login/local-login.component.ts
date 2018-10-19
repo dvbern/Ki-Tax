@@ -164,8 +164,8 @@ export class LocalLoginComponent {
      */
     private static getTraegerschaftStadtBern(): TSTraegerschaft {
         const traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'Kitas & Tagis Stadt Bern';
-        traegerschaft.mail = 'kitasundtagis@example.com';
+        traegerschaft.name = 'Kitas Stadt Bern';
+        traegerschaft.mail = 'kitasbaern@example.com';
         traegerschaft.id = 'f9ddee82-81a1-4cda-b273-fb24e9299308';
         return traegerschaft;
     }

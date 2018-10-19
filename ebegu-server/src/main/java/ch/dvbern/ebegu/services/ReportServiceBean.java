@@ -1734,7 +1734,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		row.setKita(angebote.stream().anyMatch(BetreuungsangebotTyp::isKita));
 		row.setTagesfamilien(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesfamilien));
-		row.setTagi(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagi));
 		row.setTagesschule(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesschule));
 		row.setFerieninsel(angebote.stream().anyMatch(BetreuungsangebotTyp::isFerieninsel));
 	}

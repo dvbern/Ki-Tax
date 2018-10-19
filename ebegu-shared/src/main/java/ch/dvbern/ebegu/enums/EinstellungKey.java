@@ -56,12 +56,6 @@ public enum EinstellungKey {
 	// Anzahl Tage Kanton
 	PARAM_ANZAHL_TAGE_KANTON,
 
-	// Stunden / Tag Tagi
-	PARAM_STUNDEN_PRO_TAG_TAGI,
-
-	// Min Pensum Tagesstätten
-	PARAM_PENSUM_TAGI_MIN,
-
 	// Min Pensum Kitas
 	PARAM_PENSUM_KITA_MIN,
 

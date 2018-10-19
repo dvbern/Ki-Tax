@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.util;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -207,6 +209,14 @@ public enum MathUtil {
 		if (value == null || multiplicand == null) {
 			return null;
 		}
+		return multiplyNullSafe(value, multiplicand);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
+	@Nonnull
+	public BigDecimal multiplyNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal multiplicand) {
 		BigDecimal result = value
 			.multiply(multiplicand)
 			.setScale(scale, roundingMode);
@@ -217,14 +227,15 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nullable
-	public BigDecimal multiply(@Nullable BigDecimal... value) {
-		if (value == null) {
+	public BigDecimal multiply(@Nullable BigDecimal... values) {
+		if (values == null || values.length == 0) {
 			return null;
 		}
-		BigDecimal result = BigDecimal.ONE;
-		for (BigDecimal bigDecimal : value) {
-			result = multiply(result, bigDecimal);
-		}
+
+		BigDecimal result = Arrays.stream(values)
+			.filter(Objects::nonNull)
+			.reduce(BigDecimal.ONE, this::multiplyNullSafe);
+
 		return validatePrecision(result);
 	}
 
@@ -274,7 +285,11 @@ public enum MathUtil {
 	/**
 	 * Rundet einen BigDecimal auf 2 Nachkommastellen und auf 5 Rappen.
 	 */
-	public static BigDecimal roundToFrankenRappen(BigDecimal amount) {
+	@Nonnull
+	public static BigDecimal roundToFrankenRappen(@Nullable BigDecimal amount) {
+		if (amount == null) {
+			return BigDecimal.ZERO;
+		}
 		// Ab welcher Nachkommastelle soll gerundet werden???
 		// Wir runden zuerst die vierte auf die dritte...
 		BigDecimal roundedUp = amount.multiply(MathUtil.HUNDRED).divide(MathUtil.HUNDRED, 3, BigDecimal.ROUND_HALF_UP);

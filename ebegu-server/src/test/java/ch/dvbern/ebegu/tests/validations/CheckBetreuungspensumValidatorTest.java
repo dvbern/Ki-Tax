@@ -100,30 +100,6 @@ public class CheckBetreuungspensumValidatorTest {
 		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
 	}
 
-	@Test
-	public void testTagiGSWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, BigDecimal.valueOf(59), BigDecimal.valueOf(59));
-		// Das passiert weil wir nur den ersten falschen Werten checken. Deswegen als wir den Fehler in betreuungspensumGS finden, checken
-		// wir nicht weiter und betreuungspensumJA wirft keine Violation
-		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
-		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
-	}
-
-	@Test
-	public void testTagiJAWrongValue() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, BigDecimal.valueOf(60), BigDecimal.valueOf(59));
-		// Jetzt ist betreuungspensumGS richtig und wir finden den Fehler in betreuungspensumJA
-		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
-		assertViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
-	}
-
-	@Test
-	public void testTagiRightValues() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, BigDecimal.valueOf(60), BigDecimal.valueOf(60));
-		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumGS.pensum");
-		assertNotViolated(CheckBetreuungspensum.class, betreuung, customFactory, "betreuungspensumContainers[0].betreuungspensumJA.pensum");
-	}
-
 	/**
 	 * Fuer Tagesschule gibt es keinen Minimalwert
 	 */
@@ -136,12 +112,12 @@ public class CheckBetreuungspensumValidatorTest {
 
 	@Test
 	public void testSeveralBetreuungspensumContainers() {
-		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGI, BigDecimal.valueOf(60), BigDecimal.valueOf(60));
+		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, BigDecimal.valueOf(10), BigDecimal.valueOf(10));
 
 		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);
 		Assert.assertNotNull(betPensContainer.getBetreuungspensumGS());
-		betPensContainer.getBetreuungspensumGS().setPensum(BigDecimal.valueOf(59));
-		betPensContainer.getBetreuungspensumJA().setPensum(BigDecimal.valueOf(60));
+		betPensContainer.getBetreuungspensumGS().setPensum(BigDecimal.valueOf(9));
+		betPensContainer.getBetreuungspensumJA().setPensum(BigDecimal.valueOf(10));
 		betreuung.getBetreuungspensumContainers().add(betPensContainer);
 
 		//es ist ein Set. Daher muessen wir den Index finden

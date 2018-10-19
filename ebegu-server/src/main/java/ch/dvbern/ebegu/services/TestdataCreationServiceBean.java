@@ -93,9 +93,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGI_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -340,7 +338,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	private void insertInstitutionsstammdatenForTestfaelle(@Nonnull TestdataSetupConfig config, @Nonnull Mandant mandant, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final InstitutionStammdaten institutionStammdatenKitaAaregg = config.getKitaWeissenstein();
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = config.getKitaBruennen();
-		final InstitutionStammdaten institutionStammdatenTagiAaregg = config.getTagiWeissenstein();
+		final InstitutionStammdaten institutionStammdatenKita2Aaregg = config.getKita2Weissenstein();
 		final InstitutionStammdaten institutionStammdatenTagesschuleBruennen = config.getTagesschuleBruennen();
 		final InstitutionStammdaten institutionStammdatenFerieninselBruennen = config.getFerieninselBruennen();
 
@@ -354,12 +352,12 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		institutionStammdatenKitaAaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
 		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
 		institutionStammdatenKitaBruennen.getInstitution().setTraegerschaft(traegerschaftBruennen);
-		institutionStammdatenTagiAaregg.getInstitution().setMandant(mandant);
-		institutionStammdatenTagiAaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
+		institutionStammdatenKita2Aaregg.getInstitution().setMandant(mandant);
+		institutionStammdatenKita2Aaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
 
 		institutionService.createInstitution(institutionStammdatenKitaAaregg.getInstitution());
 		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaAaregg, gesuchsperiode);
-		saveInstitutionStammdatenIfNecessary(institutionStammdatenTagiAaregg, gesuchsperiode);
+		saveInstitutionStammdatenIfNecessary(institutionStammdatenKita2Aaregg, gesuchsperiode);
 
 		institutionService.createInstitution(institutionStammdatenKitaBruennen.getInstitution());
 		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaBruennen, gesuchsperiode);
@@ -390,7 +388,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(PARAM_MASSGEBENDES_EINKOMMEN_MAX, "158690", gesuchsperiode);
 		saveEinstellung(PARAM_MASSGEBENDES_EINKOMMEN_MIN, "42540", gesuchsperiode);
 		saveEinstellung(PARAM_ANZAHL_TAGE_KANTON, "240", gesuchsperiode);
-		saveEinstellung(PARAM_STUNDEN_PRO_TAG_TAGI, "7", gesuchsperiode);
 		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, "9.16", gesuchsperiode);
 		saveEinstellung(PARAM_BABY_ALTER_IN_MONATEN, "12", gesuchsperiode);  //waere eigentlich int
 		saveEinstellung(PARAM_BABY_FAKTOR, "1.5", gesuchsperiode);
@@ -401,7 +398,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode);
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode);
 		saveEinstellung(PARAM_PENSUM_KITA_MIN, "0", gesuchsperiode);
-		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "0", gesuchsperiode);
 		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "0", gesuchsperiode);
 		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode);
 		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode);

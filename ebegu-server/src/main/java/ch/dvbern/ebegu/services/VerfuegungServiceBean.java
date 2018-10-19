@@ -325,6 +325,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		return gesuch;
 	}
 
+	@Override
 	public Verfuegung getEvaluateFamiliensituationVerfuegung(@Nonnull Gesuch gesuch) {
 		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
 		final List<Rule> rules = rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
