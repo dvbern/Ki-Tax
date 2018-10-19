@@ -235,7 +235,8 @@ return multiplyNullSafe(values);
 	}
 
 	@Nonnull
-	public BigDecimal multiplyNullSafe(@Nonnull BigDecimal... value) {		BigDecimal result = Arrays.stream(values)
+	public BigDecimal multiplyNullSafe(@Nonnull BigDecimal... values) {
+		BigDecimal result = Arrays.stream(values)
 		.filter(Objects::nonNull)
 			.reduce(BigDecimal.ONE, this::multiplyNullSafe);
 
