@@ -21,12 +21,15 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
+import {from, Observable} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
+import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 
@@ -39,18 +42,18 @@ import ErrorService from '../../core/errors/service/ErrorService';
 export class ViewGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
-    public stammdaten: TSGemeindeStammdaten;
+    public stammdaten$: Observable<TSGemeindeStammdaten>;
     public korrespondenzsprache: string;
     public beguStart: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
     private fileToUpload!: File;
     public logoImageUrl: string = '#';
+    private gemeindeId: string;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly translate: TranslateService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
@@ -58,37 +61,23 @@ export class ViewGemeindeComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        const gemeindeId: string = this.$transition$.params().gemeindeId;
-        if (!gemeindeId) {
+        this.gemeindeId = this.$transition$.params().gemeindeId;
+        if (!this.gemeindeId) {
             return;
         }
         // TODO: Task KIBON-217: Load from DB
         this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
         this.einschulungTypValues = getTSEinschulungTypValues();
 
-        this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
-            // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
-            this.stammdaten = resStamm;
-
-            this.initStrings();
-
-            this.changeDetectorRef.markForCheck();
-        });
+        this.stammdaten$ = from(
+            this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
+                this.initStrings(stammdaten);
+                return stammdaten;
+            }));
     }
 
     public cancel(): void {
         this.navigateBack();
-    }
-
-    public persistGemeindeStammdaten(): void {
-        if (!this.form.valid) {
-            return;
-        }
-        this.errorService.clearAll();
-        this.gemeindeRS.saveGemeindeStammdaten(this.stammdaten).then(response => {
-            this.stammdaten = response;
-            this.navigateBack();
-        });
     }
 
     public mitarbeiterBearbeiten(): void {
@@ -96,7 +85,7 @@ export class ViewGemeindeComponent implements OnInit {
     }
 
     public editGemeindeStammdaten(): void {
-        this.$state.go('gemeinde.edit', {gemeindeId: this.stammdaten.gemeinde.id});
+        this.$state.go('gemeinde.edit', {gemeindeId: this.gemeindeId});
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
@@ -113,13 +102,13 @@ export class ViewGemeindeComponent implements OnInit {
         tmpFileReader.readAsDataURL(this.fileToUpload);
     }
 
-    private initStrings(): void {
-        this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
+    private initStrings(stammdaten: TSGemeindeStammdaten): void {
+        this.beguStart = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
 
-        if (this.stammdaten.korrespondenzspracheDe) {
+        if (stammdaten.korrespondenzspracheDe) {
             this.korrespondenzsprache = this.translate.instant('DEUTSCH');
         }
-        if (!this.stammdaten.korrespondenzspracheFr) {
+        if (!stammdaten.korrespondenzspracheFr) {
             return;
         }
         if (this.korrespondenzsprache.length > 0) {
@@ -128,22 +117,19 @@ export class ViewGemeindeComponent implements OnInit {
         this.korrespondenzsprache += this.translate.instant('FRANZOESISCH');
     }
 
-    public getKonfigKontingentierungString(index: number): string {
-        const gk = this.stammdaten.konfigurationsListe[index];
+    public getKonfigKontingentierungString(gk: TSGemeindeKonfiguration): string {
         const kontStr = gk.konfigKontingentierung ? this.translate.instant('KONTINGENTIERUNG') :
             'Keine ' + this.translate.instant('KONTINGENTIERUNG');
         return kontStr;
     }
 
-    public getKonfigBeguBisUndMitSchulstufeString(index: number): string {
-        const gk = this.stammdaten.konfigurationsListe[index];
+    public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
         const bgBisStr = this.translate.instant(gk.konfigBeguBisUndMitSchulstufe.toString());
         return bgBisStr;
     }
 
-    public isEditable(index: number): boolean {
-        const gk = this.stammdaten.konfigurationsListe[index];
-        return TSGemeindeStatus.EINGELADEN === this.stammdaten.gemeinde.status
+    public isEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
+        return TSGemeindeStatus.EINGELADEN === stammdaten.gemeinde.status
             || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiode.status;
     }
 

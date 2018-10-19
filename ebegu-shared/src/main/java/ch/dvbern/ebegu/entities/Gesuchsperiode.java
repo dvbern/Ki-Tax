@@ -143,7 +143,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 		DateRange gueltigkeit = this.getGueltigkeit();
 		return Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigAb()) + " - "
 			+ Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigBis())
-			+ "(" + ServerMessageUtil.translateEnumValue(status) + ")";
+			+ "  (" + ServerMessageUtil.translateEnumValue(status) + ")";
 	}
 
 	public boolean hasTagesschulenAnmeldung() {
