@@ -148,17 +148,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAHL_TAGE_KANTON;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_BABY_ALTER_IN_MONATEN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_BABY_FAKTOR;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
@@ -168,9 +158,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGI_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
 
@@ -1125,18 +1112,6 @@ public final class TestDataUtil {
 	}
 
 	public static void prepareParameters(Gesuchsperiode gesuchsperiode, Persistence persistence) {
-		saveEinstellung(PARAM_ABGELTUNG_PRO_TAG_KANTON, "107.19", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, "7", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, "7", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_ANZAL_TAGE_MAX_KITA, "244", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_STUNDEN_PRO_TAG_MAX_KITA, "11.5", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MAX, "11.91", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MIN, "0.75", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_ANZAHL_TAGE_KANTON, "240", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_STUNDEN_PRO_TAG_TAGI, "7", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, "9.16", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_BABY_ALTER_IN_MONATEN, "12", gesuchsperiode, persistence);  //waere eigentlich int
-		saveEinstellung(PARAM_BABY_FAKTOR, "1.5", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, "3760", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, "5900", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, "6970", gesuchsperiode, persistence);
@@ -1144,13 +1119,11 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_KITA_MIN, "0", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode, persistence);
-		/// todo fragen alle anderen Params löschen???
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG,"140", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG, "100", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_SCHULE_PRO_TG, "75", gesuchsperiode, persistence);

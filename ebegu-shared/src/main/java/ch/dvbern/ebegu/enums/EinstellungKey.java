@@ -62,35 +62,6 @@ public enum EinstellungKey {
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 
-
-	// Fixbetrag der Stadt Bern. Eigentlich Jahesabhängig und vermutlich nicht mehr gebraucht. Vorerst mal Param pro Halbjahr
-	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1,
-	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2,
-
-	// Anzahl Tage Kita Max
-	PARAM_ANZAL_TAGE_MAX_KITA,
-
-	// Stunden / Tag Max
-	PARAM_STUNDEN_PRO_TAG_MAX_KITA,
-
-	// Kosten pro Stunde Max
-	PARAM_KOSTEN_PRO_STUNDE_MAX,
-
-	// Kosten pro Stunde Max Tageseltern
-	PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN,
-
-	// Kosten pro Stunde Min
-	PARAM_KOSTEN_PRO_STUNDE_MIN,
-
-	// Anzahl Tage Kanton
-	PARAM_ANZAHL_TAGE_KANTON,
-
-	// Stunden / Tag Tagi
-	PARAM_STUNDEN_PRO_TAG_TAGI,
-
-	// Min Pensum Tagesstätten
-	PARAM_PENSUM_TAGI_MIN,
-
 	// Min Pensum Kitas
 	PARAM_PENSUM_KITA_MIN,
 
@@ -99,6 +70,10 @@ public enum EinstellungKey {
 
 	// Min Pensum Tagesschule
 	PARAM_PENSUM_TAGESSCHULE_MIN,
+
+	//TDO (hier durchgehen!!!!
+
+
 
 	// Pauschalabzug bei einer Familiengrösse von drei Personen pauschal pro Person
 	PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
@@ -113,19 +88,10 @@ public enum EinstellungKey {
 	PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
 
 	// Max Abwesenheit
-	PARAM_MAX_TAGE_ABWESENHEIT,
+	PARAM_MAX_TAGE_ABWESENHEIT, //TODO es wird Constants.ABWESENHEIT_DAYS_LIMIT verwendet
 
 	// Eine Einkommensverschlechterung wird nur berücksichtigt, wenn diese höher als 20% des Ausgangswertes ist.
 	PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
-
-	// Baby-Faktor
-	PARAM_BABY_FAKTOR,
-
-	// Baby-Faktor bis N – Monate
-	PARAM_BABY_ALTER_IN_MONATEN,
-
-	// Abgeltung des Kantons pro Tag
-	PARAM_ABGELTUNG_PRO_TAG_KANTON,
 
 	// Maximaler Zuschlag zum Erwerbspensum
 	PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;

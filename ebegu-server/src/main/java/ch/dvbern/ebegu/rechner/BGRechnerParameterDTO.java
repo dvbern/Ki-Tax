@@ -89,26 +89,6 @@ public final class BGRechnerParameterDTO {
 		this.setMinVerguenstigungProStd(asBigDecimal(paramMap, MIN_VERGUENSTIGUNG_PRO_STD, gesuchsperiode, gemeinde));
 	}
 
-	/* todo fragen diese ganze Einstellungen werden nun nur in tests benutzt. braucht man sie überhaupt?
-	// todo fragen, ausserdem werden manche (PARAM_MASSGEBENDES_EINKOMMEN_MAX) auch in reporttest.xml benutzt
-	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
-		this.setBgBisUndMitSchulstufe(asEinschulungstyp(paramMap, BG_BIS_UND_MIT_SCHULSTUFE, gesuchsperiode, gemeinde));
-		this.setBeitragKantonProTag(asBigDecimal(paramMap, PARAM_ABGELTUNG_PRO_TAG_KANTON, gesuchsperiode, gemeinde));
-		this.setAnzahlTageMaximal(asBigDecimal(paramMap, PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode, gemeinde));
-		this.setAnzahlStundenProTagMaximal(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_MAX_KITA, gesuchsperiode, gemeinde));
-		this.setKostenProStundeMaximalKitaTagi(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX, gesuchsperiode, gemeinde));
-		this.setKostenProStundeMinimal(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MIN, gesuchsperiode, gemeinde));
-		this.setMassgebendesEinkommenMaximal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MAX, gesuchsperiode, gemeinde));
-		this.setMassgebendesEinkommenMinimal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MIN, gesuchsperiode, gemeinde));
-		this.setAnzahlTageTagi(asBigDecimal(paramMap, PARAM_ANZAHL_TAGE_KANTON, gesuchsperiode, gemeinde));
-		this.setAnzahlStundenProTagTagi(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_TAGI, gesuchsperiode, gemeinde));
-		this.setKostenProStundeMaximalTageseltern(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, gesuchsperiode, gemeinde));
-		this.setBabyAlterInMonaten(asInteger(paramMap, PARAM_BABY_ALTER_IN_MONATEN, gesuchsperiode, gemeinde));
-		this.setBabyFaktor(asBigDecimal(paramMap, PARAM_BABY_FAKTOR, gesuchsperiode, gemeinde));
-		this.setBeitragStadtProTagJahr1(asBigDecimal(paramMap, PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, gesuchsperiode, gemeinde));
-		this.setBeitragStadtProTagJahr2(asBigDecimal(paramMap, PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, gesuchsperiode, gemeinde));
-	}*/
-
 	public BGRechnerParameterDTO() {
 
 	}
