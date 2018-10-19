@@ -105,7 +105,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     }
 
     /**
-     * Aus der Liste mit den gesamten Kindern wird rausgefunden, welche Betreuungen TAGI oder KITA sind. Mit diesen
+     * Aus der Liste mit den gesamten Kindern wird rausgefunden, welche Betreuungen KITA sind. Mit diesen
      * wird eine neue Liste gemacht, die ein Object fuer jedes Kind und Betreuung hat
      */
     private setBetreuungList(): void {

@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.converter;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -31,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.api.converter.JaxBConverter.DROPPED_DUPLICATE_CONTAINER;
+import static java.util.Objects.requireNonNull;
 
 @RequestScoped
 public class GemeindeJaxBConverter extends AbstractConverter {
@@ -39,8 +39,9 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 
 	@Nonnull
 	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde jaxGemeinde, @Nonnull final Gemeinde gemeinde) {
-		Objects.requireNonNull(gemeinde);
-		Objects.requireNonNull(jaxGemeinde);
+		requireNonNull(gemeinde);
+		requireNonNull(jaxGemeinde);
+		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
 		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
 		gemeinde.setName(jaxGemeinde.getName());
 		gemeinde.setStatus(jaxGemeinde.getStatus());

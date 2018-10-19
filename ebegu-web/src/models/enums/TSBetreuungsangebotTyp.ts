@@ -18,7 +18,6 @@ import EbeguUtil from '../../utils/EbeguUtil';
 export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',
     TAGESFAMILIEN = 'TAGESFAMILIEN',
-    TAGI = 'TAGI',
     TAGESSCHULE = 'TAGESSCHULE',
     FERIENINSEL = 'FERIENINSEL'
 }

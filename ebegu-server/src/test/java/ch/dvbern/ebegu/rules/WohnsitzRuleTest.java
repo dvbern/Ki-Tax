@@ -25,6 +25,7 @@ import java.util.List;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
@@ -47,9 +48,17 @@ public class WohnsitzRuleTest {
 	@Test
 	public void testNormalfallBeideAdresseInBern() {
 		Betreuung betreuung = createTestdata(true);
+
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, false, gesuch.getGesuchsteller1()));
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			false,
+			gesuch.getGesuchsteller1()));
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
+
 		Assert.assertNotNull(zeitabschnittList);
 		Assert.assertEquals(1, zeitabschnittList.size());
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
@@ -61,9 +70,19 @@ public class WohnsitzRuleTest {
 	@Test
 	public void testEinGesuchstellerAdresseNichtBern() {
 		Betreuung betreuung = createTestdata(false);
+
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, true, gesuch.getGesuchsteller1()));
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller1()));
+
+		createDossier(gesuch);
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
+
 		Assert.assertNotNull(zeitabschnittList);
 		Assert.assertEquals(1, zeitabschnittList.size());
 		VerfuegungZeitabschnitt abschnitt = zeitabschnittList.get(0);
@@ -75,9 +94,17 @@ public class WohnsitzRuleTest {
 	@Test
 	public void testEinGesuchstellerAdresseInBern() {
 		Betreuung betreuung = createTestdata(false);
+
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, false, gesuch.getGesuchsteller1()));
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			false,
+			gesuch.getGesuchsteller1()));
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
+
 		Assert.assertNotNull(zeitabschnittList);
 		Assert.assertEquals(1, zeitabschnittList.size());
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
@@ -89,10 +116,22 @@ public class WohnsitzRuleTest {
 	@Test
 	public void testZweiGesuchstellerEinerDavonInBern() {
 		Betreuung betreuung = createTestdata(true);
+
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, false, gesuch.getGesuchsteller1()));
-		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, true, gesuch.getGesuchsteller2()));
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			false,
+			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller2()));
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
+
 		Assert.assertNotNull(zeitabschnittList);
 		Assert.assertEquals(1, zeitabschnittList.size());
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
@@ -104,13 +143,27 @@ public class WohnsitzRuleTest {
 	@Test
 	public void testZweiGesuchstellerNichtInBernWithUmzugGS2InBern() {
 		Betreuung betreuung = createTestdata(true);
-		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, true, gesuch.getGesuchsteller1()));
 
-		gesuch.getGesuchsteller2()
-			.addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 15), true, gesuch.getGesuchsteller2())); // nur wenn Gesuchsperiode TestDataUtil.PERIODE_JAHR_1/TestDataUtil.PERIODE_JAHR_2
-		gesuch.getGesuchsteller2()
-			.addAdresse(createGesuchstellerAdresse(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 16), TestDataUtil.ENDE_PERIODE, false, gesuch.getGesuchsteller2())); // nur wenn Gesuchsperiode TestDataUtil.PERIODE_JAHR_1/TestDataUtil.PERIODE_JAHR_2
+		final Gesuch gesuch = betreuung.extractGesuch();
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller1()));
+
+		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 15),
+			true,
+			gesuch.getGesuchsteller2())); // nur wenn Gesuchsperiode TestDataUtil.PERIODE_JAHR_1/TestDataUtil.PERIODE_JAHR_2
+		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
+			LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 16),
+			TestDataUtil.ENDE_PERIODE,
+			false,
+			gesuch.getGesuchsteller2())); // nur wenn Gesuchsperiode TestDataUtil.PERIODE_JAHR_1/TestDataUtil.PERIODE_JAHR_2
+
+		createDossier(gesuch);
 
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnittList);
@@ -122,14 +175,16 @@ public class WohnsitzRuleTest {
 		Assert.assertEquals(0, abschnittNichtInBern.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(BigDecimal.ZERO, abschnittNichtInBern.getBgPensum());
 		Assert.assertEquals(TestDataUtil.START_PERIODE, abschnittNichtInBern.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 15), abschnittNichtInBern.getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 15),
+			abschnittNichtInBern.getGueltigkeit().getGueltigBis());
 
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(1);
 		Assert.assertTrue(abschnittInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertFalse(abschnittInBern.isWohnsitzNichtInGemeindeGS2());
 		Assert.assertEquals(100, abschnittInBern.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern.getBgPensum());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 16), abschnittInBern.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 16),
+			abschnittInBern.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, abschnittInBern.getGueltigkeit().getGueltigBis());
 	}
 
@@ -137,11 +192,29 @@ public class WohnsitzRuleTest {
 	public void testZuzug() {
 		LocalDate zuzugsDatum = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.OCTOBER, 16);
 		Betreuung betreuung = createTestdata(true);
+
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, zuzugsDatum.minusDays(1), true, gesuch.getGesuchsteller1()));
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(zuzugsDatum, TestDataUtil.ENDE_PERIODE, false, gesuch.getGesuchsteller1()));
-		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, true, gesuch.getGesuchsteller2()));
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			zuzugsDatum.minusDays(1),
+			true,
+			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			zuzugsDatum,
+			TestDataUtil.ENDE_PERIODE,
+			false,
+			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller2()));
+
+		createDossier(gesuch);
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
+
 		Assert.assertNotNull(zeitabschnittList);
 		Assert.assertEquals(2, zeitabschnittList.size());
 		VerfuegungZeitabschnitt abschnittNichtInBern = zeitabschnittList.get(0);
@@ -159,11 +232,30 @@ public class WohnsitzRuleTest {
 	public void testWegzug() {
 		LocalDate wegzugsDatum = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.OCTOBER, 16);
 		Betreuung betreuung = createTestdata(true);
+
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, wegzugsDatum.minusDays(1), false, gesuch.getGesuchsteller1()));
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(wegzugsDatum, TestDataUtil.ENDE_PERIODE, true, gesuch.getGesuchsteller1()));
-		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, true, gesuch.getGesuchsteller2()));
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			wegzugsDatum.minusDays(1),
+			false,
+			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			wegzugsDatum,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller1()));
+
+		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller2()));
+
+		createDossier(gesuch);
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
+
 		Assert.assertNotNull(zeitabschnittList);
 		Assert.assertEquals(2, zeitabschnittList.size());
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
@@ -189,8 +281,19 @@ public class WohnsitzRuleTest {
 		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		gesuch.extractFamiliensituation().setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, true, gesuch.getGesuchsteller1()));
-		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, false, gesuch.getGesuchsteller2()));
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			false,
+			gesuch.getGesuchsteller2()));
+
+		createDossier(gesuch);
+
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnittList);
 		Assert.assertEquals(3, zeitabschnittList.size());
@@ -235,5 +338,10 @@ public class WohnsitzRuleTest {
 		adresse.extractGueltigkeit().setGueltigAb(von);
 		adresse.extractGueltigkeit().setGueltigBis(bis);
 		return adresse;
+	}
+
+	private void createDossier(Gesuch gesuch) {
+		Dossier dossier = TestDataUtil.createDefaultDossier();
+		gesuch.setDossier(dossier);
 	}
 }

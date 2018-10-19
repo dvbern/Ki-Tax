@@ -137,12 +137,11 @@ public class AbstractBGRechnerTest {
 		parameterDTO.setBeitragStadtProTagJahr2(new BigDecimal("7"));
 		parameterDTO.setAnzahlTageMaximal(new BigDecimal("244"));
 		parameterDTO.setAnzahlStundenProTagMaximal(new BigDecimal("11.5"));
-		parameterDTO.setKostenProStundeMaximalKitaTagi(new BigDecimal("11.91"));
+		parameterDTO.setKostenProStundeMaximalKita(new BigDecimal("11.91"));
 		parameterDTO.setKostenProStundeMinimal(new BigDecimal("0.75"));
 		parameterDTO.setMassgebendesEinkommenMaximal(new BigDecimal("158690"));
 		parameterDTO.setMassgebendesEinkommenMinimal(new BigDecimal("42540"));
 		parameterDTO.setAnzahlTageTagi(new BigDecimal("240"));
-		parameterDTO.setAnzahlStundenProTagTagi(new BigDecimal("7"));
 		parameterDTO.setKostenProStundeMaximalTageseltern(new BigDecimal("9.16"));
 		parameterDTO.setBabyAlterInMonaten(12);
 		parameterDTO.setBabyFaktor(new BigDecimal("1.5"));

@@ -57,6 +57,10 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	@Nonnull
 	private PensumUnits unitForDisplay = PensumUnits.PERCENTAGE;
 
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -81,6 +85,7 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 		super.copyAbstractDateRangedEntity(target, copyType);
 		target.setPensum(this.getPensum());
+		target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
 		target.setUnitForDisplay(this.getUnitForDisplay());
 	}
 
@@ -104,5 +109,14 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	public void setPensum(@Nonnull Integer pensum) {
 		this.pensum = BigDecimal.valueOf(pensum);
+	}
+
+	@Nonnull
+	public BigDecimal getMonatlicheBetreuungskosten() {
+		return monatlicheBetreuungskosten;
+	}
+
+	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
+		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 }
