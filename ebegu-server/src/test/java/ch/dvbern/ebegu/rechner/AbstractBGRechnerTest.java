@@ -90,6 +90,9 @@ public class AbstractBGRechnerTest {
 		Einstellung paramZuschlag = new Einstellung(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode);
 		einstellungen.put(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, paramZuschlag);
 
+		Einstellung paramAbwesenheit = new Einstellung(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode);
+		einstellungen.put(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT, paramAbwesenheit);
+
 		Einstellung bgBisUndMitSchulstufe = new Einstellung(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode);
 		einstellungen.put(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE, bgBisUndMitSchulstufe);
 
