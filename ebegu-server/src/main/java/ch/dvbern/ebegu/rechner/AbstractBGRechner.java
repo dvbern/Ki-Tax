@@ -19,8 +19,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Objects;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -32,10 +34,63 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public abstract class AbstractBGRechner {
 
+	protected static final MathUtil MATH = MathUtil.EXACT;
+
 	/**
-	 * Diese Methode muss von den Subklassen ueberschrieben werden und fuehrt die Berechnung fuer  die uebergebenen Verfuegungsabschnitte durch.
+	 * Diese Methode fuehrt die Berechnung fuer  die uebergebenen Verfuegungsabschnitte durch.
 	 */
-	public abstract VerfuegungZeitabschnitt calculate(VerfuegungZeitabschnitt verfuegungZeitabschnitt, Verfuegung verfuegung, BGRechnerParameterDTO parameterDTO);
+	@Nonnull
+	public VerfuegungZeitabschnitt calculate(
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		@Nonnull Verfuegung verfuegung,
+		@Nonnull BGRechnerParameterDTO parameterDTO) {
+
+		Objects.requireNonNull(verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp());
+
+		// Benoetigte Daten
+		LocalDate geburtsdatum = verfuegung.getBetreuung().getKind().getKindJA().getGeburtsdatum();
+		boolean eingeschult = verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp().isEingeschult();
+		boolean besonderebeduerfnisse = verfuegung.getBetreuung().getErweiterteBeduerfnisse();
+		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
+		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
+		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
+		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
+
+		// Inputdaten validieren
+		checkArguments(von, bis, verfuegungZeitabschnitt.getBgPensum(), massgebendesEinkommen);
+		Objects.requireNonNull(geburtsdatum, "geburtsdatum darf nicht null sein");
+
+		// Zwischenresultate
+		boolean unter12Monate = !von.isAfter(geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth()));
+		BigDecimal verguenstigungProTag = getVerguenstigungProZeiteinheit(parameterDTO,
+			unter12Monate,
+			eingeschult,
+			besonderebeduerfnisse,
+			massgebendesEinkommen);
+
+		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis);
+
+		BigDecimal stundenGemaessPensumUndAnteilMonat =
+			getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(parameterDTO, von, bis, verfuegungZeitabschnitt.getBgPensum());
+
+		BigDecimal minBetrag = MATH.multiply(stundenGemaessPensumUndAnteilMonat, getMinimalBeitragProZeiteinheit(parameterDTO));
+		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
+			MATH.multiplyNullSafe(stundenGemaessPensumUndAnteilMonat, verguenstigungProTag);
+		BigDecimal vollkosten = MATH.multiply(anteilMonat, vollkostenProMonat);
+		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
+
+		// Resultat
+		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
+		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
+		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
+		// Runden und auf Zeitabschnitt zurückschreiben
+		if (verfuegungZeitabschnitt.isBezahltVollkosten()) {
+			elternbeitrag = vollkosten;
+		}
+		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
+		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
+		return verfuegungZeitabschnitt;
+	}
 
 	/**
 	 * Checkt die für alle Angebote benoetigten Argumente auf Null.
@@ -59,7 +114,8 @@ public abstract class AbstractBGRechner {
 	 * Berechnet den Anteil des Zeitabschnittes am gesamten Monat als dezimalzahl von 0 bis 1
 	 * Dabei werden nur Werktage (d.h. sa do werden ignoriert) beruecksichtigt
 	 */
-	protected BigDecimal calculateAnteilMonatInklWeekend(LocalDate von, LocalDate bis) {
+	@Nonnull
+	protected BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
 		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
 		LocalDate monatsende = bis.with(TemporalAdjusters.lastDayOfMonth());
 		long nettoTageMonat = daysBetween(monatsanfang, monatsende);
@@ -70,13 +126,35 @@ public abstract class AbstractBGRechner {
 	/**
 	 * Berechnet die Anzahl Tage zwischen zwei Daten
 	 */
-	protected long daysBetween(LocalDate start, LocalDate end) {
+	protected long daysBetween(@Nonnull LocalDate start, @Nonnull LocalDate end) {
 		return Stream.iterate(start, d -> d.plusDays(1))
 			.limit(start.until(end.plusDays(1), ChronoUnit.DAYS))
 			.count();
 	}
 
-	protected abstract BigDecimal getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(BGRechnerParameterDTO parameterDTO);
+	@Nonnull
+	protected abstract BigDecimal getVerguenstigungProZeiteinheit(
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull Boolean unter12Monate,
+		@Nonnull Boolean eingeschult,
+		@Nonnull Boolean besonderebeduerfnisse,
+		@Nonnull BigDecimal massgebendesEinkommen);
 
-	protected abstract BigDecimal getMinimalBetrag(BGRechnerParameterDTO parameterDTO);
+	@Nonnull
+	protected abstract BigDecimal getAnteilMonat(
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis);
+
+	@Nonnull
+	protected abstract BigDecimal getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis,
+		@Nonnull BigDecimal bgPensum);
+
+	@Nonnull
+	protected abstract BigDecimal getMinimalBeitragProZeiteinheit(
+		@Nonnull BGRechnerParameterDTO parameterDTO);
+
 }

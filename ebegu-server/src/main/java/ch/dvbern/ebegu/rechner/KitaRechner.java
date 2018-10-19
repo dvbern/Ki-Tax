@@ -17,13 +17,9 @@ package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -32,72 +28,35 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class KitaRechner extends AbstractBGRechner {
 
-	private static final MathUtil MATH = MathUtil.EXACT;
-
+	@Nonnull
 	@Override
-	public VerfuegungZeitabschnitt calculate(
-		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		Verfuegung verfuegung,
-		BGRechnerParameterDTO parameterDTO
-	) {
-		// todo fragen zusammen anschauen und evtl. gemeinsamen Code in Abstract
-		Objects.requireNonNull(verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp());
-
-		// Benoetigte Daten
-		LocalDate geburtsdatum = verfuegung.getBetreuung().getKind().getKindJA().getGeburtsdatum();
-		boolean eingeschult = verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp().isEingeschult();
-		boolean besonderebeduerfnisse = verfuegung.getBetreuung().getErweiterteBeduerfnisse();
-		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
-		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
-		BigDecimal bgPensum = MathUtil.EXACT.pctToFraction(verfuegungZeitabschnitt.getBgPensum());
-		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
-		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
-		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageKita();
-
-		// Inputdaten validieren
-		checkArguments(von, bis, bgPensum, massgebendesEinkommen);
-		Objects.requireNonNull(geburtsdatum, "geburtsdatum darf nicht null sein");
-
-		// Zwischenresultate
-		boolean unter12Monate = !von.isAfter(geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth()));
-		BigDecimal verguenstigungProTag = getVerguenstigungProTag(parameterDTO,
-			unter12Monate,
-			eingeschult,
-			besonderebeduerfnisse,
-			massgebendesEinkommen);
-
-		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis); //calculateAnteilMonatInklWeekend(von, bis);
-		BigDecimal tageGemaessPensumUndAnteilMonat =
-			MATH.multiplyNullSafe(MATH.divide(oeffnungstage, MATH.from(12)), anteilMonat, bgPensum);
-
-		BigDecimal minBetrag = MATH.multiply(tageGemaessPensumUndAnteilMonat, parameterDTO.getMinVerguenstigungProTg
-			());
-		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
-			MATH.multiplyNullSafe(tageGemaessPensumUndAnteilMonat, verguenstigungProTag);
-		BigDecimal vollkosten = MATH.multiply(anteilMonat, vollkostenProMonat);
-		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
-
-		// Resultat
-		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
-		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
-		// Runden und auf Zeitabschnitt zurückschreiben
-		if (verfuegungZeitabschnitt.isBezahltVollkosten()) {
-			elternbeitrag = vollkosten;
-		}
-		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
-		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
-		return verfuegungZeitabschnitt;
+	protected BigDecimal getMinimalBeitragProZeiteinheit(@Nonnull BGRechnerParameterDTO parameterDTO) {
+		return parameterDTO.getMinVerguenstigungProTg();
 	}
 
-//	@Override
-//	protected BigDecimal getMinimalBetrag(BGRechnerParameterDTO parameterDTO) {
-//		return null;
-//	}
+	@Nonnull
+	@Override
+	protected BigDecimal getAnzahlZeiteinheitenGemaessPensumUndAnteilMonat(
+		@Nonnull BGRechnerParameterDTO parameterDTO,
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis,
+		@Nonnull BigDecimal bgPensum) {
 
-	private BigDecimal getAnteilMonat(BGRechnerParameterDTO parameterDTO, LocalDate von, LocalDate bis) {
+		BigDecimal oeffnungstage = parameterDTO.getOeffnungstageKita();
+		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis);
+		BigDecimal pensum = MathUtil.EXACT.pctToFraction(bgPensum);
+		return MATH.multiplyNullSafe(MATH.divide(oeffnungstage, MATH.from(12)), anteilMonat, pensum);
+	}
+
+	@Nonnull
+	@Override
+	protected BigDecimal getAnteilMonat(
+		@Nonnull BGRechnerParameterDTO parameterDTO, @Nonnull LocalDate von, @Nonnull
+		LocalDate bis) {
 		return calculateAnteilMonatInklWeekend(von, bis);
 	}
 
+	@Nonnull
 	private BigDecimal getMaximaleVerguenstigungProTag(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
@@ -111,8 +70,9 @@ public class KitaRechner extends AbstractBGRechner {
 		return parameterDTO.getMaxVerguenstigungVorschuleKindProTg();
 	}
 
+	@Override
 	@Nonnull
-	private BigDecimal getVerguenstigungProTag(
+	protected BigDecimal getVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
 		@Nonnull Boolean eingeschult,
@@ -124,9 +84,7 @@ public class KitaRechner extends AbstractBGRechner {
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
 		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommen();
 
-		BigDecimal op1 = MATH.divide(
-			maximaleVerguenstigungProTag,
-			MATH.subtract(minEinkommen, maxEinkommen));
+		BigDecimal op1 = MATH.divide(maximaleVerguenstigungProTag, MATH.subtract(minEinkommen, maxEinkommen));
 		BigDecimal op2 = MATH.subtract(massgebendesEinkommen, minEinkommen);
 		BigDecimal augment = MATH.multiplyNullSafe(op1, op2);
 		BigDecimal verguenstigungProTag = MATH.add(augment, maximaleVerguenstigungProTag);
