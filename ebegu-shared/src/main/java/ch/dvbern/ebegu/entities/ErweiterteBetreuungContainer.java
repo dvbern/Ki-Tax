@@ -1,7 +1,5 @@
 package ch.dvbern.ebegu.entities;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
