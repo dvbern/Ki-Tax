@@ -1,5 +1,7 @@
 package ch.dvbern.ebegu.entities;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
@@ -13,6 +15,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -20,7 +23,7 @@ import org.hibernate.envers.Audited;
 @Table(
 	uniqueConstraints = @UniqueConstraint(columnNames = "betreuung_id", name = "UK_erweiterte_betreuung_betreuung")
 )
-public class ErweiterteBetreuungContainer extends AbstractMutableEntity implements Comparable<ErweiterteBetreuungContainer> {
+public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 4847428166714262413L;
 
@@ -65,16 +68,20 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity implemen
 		this.erweiterteBetreuungJA = erweiterteBetreuungJA;
 	}
 
-	//TODO
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		return false;
-	}
-
-	//TODO
-	@Override
-	public int compareTo(ErweiterteBetreuungContainer o) {
-		return 0;
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (other == null || !getClass().equals(other.getClass())) {
+			return false;
+		}
+		if (!(other instanceof ErweiterteBetreuungContainer)) {
+			return false;
+		}
+		final ErweiterteBetreuungContainer otherErwBetrContainer = (ErweiterteBetreuungContainer) other;
+		return EbeguUtil.isSameObject(getErweiterteBetreuungJA(), otherErwBetrContainer.getErweiterteBetreuungJA());
 	}
 
 	@Nonnull

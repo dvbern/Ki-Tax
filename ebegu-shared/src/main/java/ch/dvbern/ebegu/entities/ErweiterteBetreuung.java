@@ -58,10 +58,14 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		if (!(other instanceof ErweiterteBetreuung)) {
 			return false;
 		}
+		final ErweiterteBetreuung otherErwBetr = (ErweiterteBetreuung) other;
 		boolean erwBeduerfnisseSame = Objects.equals(getErweiterteBeduerfnisse(),
-			((ErweiterteBetreuung) other).erweiterteBeduerfnisse);
+			otherErwBetr.getErweiterteBeduerfnisse());
 
-		return erwBeduerfnisseSame;
+		boolean fachstelleSame = Objects.equals(getFachstelle(),
+			otherErwBetr.getFachstelle());
+
+		return erwBeduerfnisseSame && fachstelleSame;
 	}
 
 	@Nonnull
