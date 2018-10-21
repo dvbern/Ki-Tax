@@ -38,6 +38,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _betreuungNummer: number;
     private _verfuegung: TSVerfuegung;
     private _vertrag: boolean;
+    private _keineKesbPlatzierung: boolean;
     private _datumAblehnung: moment.Moment;
     private _datumBestaetigung: moment.Moment;
     private _kindFullname: string;
@@ -62,6 +63,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         betreuungNummer?: number,
         verfuegung?: TSVerfuegung,
         vertrag?: boolean,
+        keineKesbPlatzierung?: boolean,
         grundAblehnung?: string,
         datumAblehnung?: moment.Moment,
         datumBestaetigung?: moment.Moment,
@@ -88,6 +90,7 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         this._betreuungNummer = betreuungNummer;
         this._verfuegung = verfuegung;
         this._vertrag = !!vertrag;
+        this._keineKesbPlatzierung = !!keineKesbPlatzierung;
         this._datumAblehnung = datumAblehnung;
         this._datumBestaetigung = datumBestaetigung;
         this._kindFullname = kindFullname;
@@ -174,6 +177,14 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public set vertrag(value: boolean) {
         this._vertrag = value;
+    }
+
+    public get keineKesbPlatzierung(): boolean {
+        return this._keineKesbPlatzierung;
+    }
+
+    public set keineKesbPlatzierung(value: boolean) {
+        this._keineKesbPlatzierung = value;
     }
 
     public get datumAblehnung(): moment.Moment {
@@ -286,6 +297,13 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public isAngebotSchulamt(): boolean {
         return this.isAngebotFerieninsel() || this.isAngebotTagesschule();
+    }
+
+    public getAngebotTyp(): TSBetreuungsangebotTyp {
+        if (this.institutionStammdaten && this.institutionStammdaten.betreuungsangebotTyp) {
+            return this.institutionStammdaten.betreuungsangebotTyp;
+        }
+        return null;
     }
 
     private isAngebot(typ: TSBetreuungsangebotTyp): boolean {

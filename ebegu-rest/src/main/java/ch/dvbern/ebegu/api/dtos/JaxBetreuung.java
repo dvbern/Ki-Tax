@@ -78,6 +78,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	@NotNull
 	private Boolean vertrag;
 
+	@NotNull
+	private Boolean keineKesbPlatzierung;
+
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate datumAblehnung = null;
@@ -189,6 +192,14 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setVertrag(Boolean vertrag) {
 		this.vertrag = vertrag;
+	}
+
+	public Boolean getKeineKesbPlatzierung() {
+		return keineKesbPlatzierung;
+	}
+
+	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
+		this.keineKesbPlatzierung = keineKesbPlatzierung;
 	}
 
 	@Nullable

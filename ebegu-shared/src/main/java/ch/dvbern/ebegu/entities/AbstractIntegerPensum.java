@@ -28,11 +28,12 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 /**
- * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent) und ein DateRange beeinhalten.
+ * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent) in Ganzzahl
+ * und ein DateRange beeinhalten.
  */
 @MappedSuperclass
 @Audited
-public class AbstractPensumEntity extends AbstractDateRangedEntity {
+public class AbstractIntegerPensum extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -7576083148864149528L;
 
@@ -40,9 +41,9 @@ public class AbstractPensumEntity extends AbstractDateRangedEntity {
 	@Min(0)
 	@NotNull
 	@Column(nullable = false)
-	private Integer pensum;
+	private Integer pensum = 0;
 
-	public AbstractPensumEntity() {
+	public AbstractIntegerPensum() {
 	}
 
 	@Nonnull
@@ -63,18 +64,16 @@ public class AbstractPensumEntity extends AbstractDateRangedEntity {
 		if (other == null || !getClass().equals(other.getClass())) {
 			return false;
 		}
-		if (!(other instanceof AbstractPensumEntity)) {
+		if (!(other instanceof AbstractIntegerPensum)) {
 			return false;
 		}
-		final AbstractPensumEntity otherAbstDateRangedEntity = (AbstractPensumEntity) other;
+		final AbstractIntegerPensum otherAbstDateRangedEntity = (AbstractIntegerPensum) other;
 		return super.isSame(otherAbstDateRangedEntity)
 			&& Objects.equals(this.getPensum(), otherAbstDateRangedEntity.getPensum());
 	}
 
-	@Nonnull
-	public AbstractPensumEntity copyAbstractPensumEntity(@Nonnull AbstractPensumEntity target, @Nonnull AntragCopyType copyType) {
+	public void copyAbstractPensumEntity(@Nonnull AbstractIntegerPensum target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractDateRangedEntity(target, copyType);
 		target.setPensum(this.getPensum());
-		return target;
 	}
 }

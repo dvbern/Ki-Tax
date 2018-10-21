@@ -21,13 +21,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
@@ -37,13 +38,15 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
+import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Configuration For Freemarker Templates
@@ -58,6 +61,8 @@ public class MailTemplateConfiguration {
 	public static final String GESUCHSTELLER = "gesuchsteller";
 	public static final String GESUCHSPERIODE = "gesuchsperiode";
 	public static final String START_DATUM = "startDatum";
+	public static final String GESUCH = "gesuch";
+	public static final String MITTEILUNG = "mitteilung";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -240,36 +245,64 @@ public class MailTemplateConfiguration {
 	public String getInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Gesuch gesuch) {
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
 		paramMap.put(START_DATUM, Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()));
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
+		paramMap.put(GESUCH, gesuch);
 
 		return doProcessTemplate("InfoFreischaltungGesuchsperiode.ftl", paramMap);
 	}
 
 	@Nonnull
-	public String getBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Benutzer eingeladener) {
+	public String getBenutzerEinladung(
+		@Nonnull Benutzer einladender,
+		@Nonnull Einladung einladung
+	) {
+
+		Benutzer eingeladener = einladung.getEingeladener();
 
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
-		paramMap.put("acceptLink", "https://www.dvbern.ch"); // TODO
-		paramMap.put("rolle", ServerMessageUtil.translateEnumValue(eingeladener.getRole()));
-
-		RollenAbhaengigkeit rollenAbhaengigkeit = eingeladener.getRole().getRollenAbhaengigkeit();
-		Optional<String> rollenZusatz = eingeladener.extractRollenAbhaengigkeitAsString();
-		paramMap.put("hasRollenZusatz", rollenZusatz.isPresent());
-		rollenZusatz.ifPresent(zusatz -> {
-			paramMap.put("rollenZusatzTitel", ServerMessageUtil.translateEnumValue(rollenAbhaengigkeit));
-			paramMap.put("rollenZusatz", zusatz);
-		});
-		paramMap.put("einladender", einladender);
+		paramMap.put("acceptLink", createLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
+		paramMap.put(
+			"content",
+			ServerMessageUtil.getMessage(
+				"EinladungEmail_" + einladung.getEinladungTyp(),
+				einladender.getFullName(),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole()),
+				getRollenZusatz(einladung, eingeladener)
+			)
+		);
+		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER"));
 
 		return doProcessTemplate("BenutzerEinladung.ftl", paramMap);
+	}
+
+	@Nonnull
+	private String getRollenZusatz(@Nonnull Einladung einladung, @Nullable Benutzer eingeladener) {
+		if (einladung.getEinladungTyp() == EinladungTyp.MITARBEITER) {
+			requireNonNull(eingeladener, "For an Einladung of the type Mitarbeiter a user must be set");
+			return '(' + eingeladener.extractRollenAbhaengigkeitAsString() + ')';
+		}
+		return einladung.getEinladungObjectName()
+			.orElse("");
+	}
+
+	private String createLink(
+		@Nonnull Benutzer eingeladener,
+		@Nonnull Einladung einladung
+	) {
+		return ebeguConfiguration.isClientUsingHTTPS() ? "https://" : "http://"
+			+ ebeguConfiguration.getHostname()
+			+ "/einladung?typ=" + einladung.getEinladungTyp()
+			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
+			+ "&userid=" + eingeladener.getId();
 	}
 
 	private String processTemplateGesuch(
@@ -278,7 +311,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull Map<Object, Object> paramMap) {
 
-		paramMap.put("gesuch", gesuch);
+		paramMap.put(GESUCH, gesuch);
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 
 		return doProcessTemplate(nameOfTemplate, paramMap);
@@ -354,7 +387,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Mitteilung mitteilung,
 		@Nonnull Map<Object, Object> paramMap) {
 
-		paramMap.put("mitteilung", mitteilung);
+		paramMap.put(MITTEILUNG, mitteilung);
 
 		return doProcessTemplate("InfoMitteilungErhalten.ftl", paramMap);
 	}

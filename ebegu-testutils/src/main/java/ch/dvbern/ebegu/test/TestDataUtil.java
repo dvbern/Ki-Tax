@@ -157,9 +157,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGI_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
 
 /**
  * comments homa
@@ -322,7 +320,7 @@ public final class TestDataUtil {
 		return mandant;
 	}
 
-	@Nonnull
+	@Nullable
 	public static Mandant getMandantKantonBern(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
 		if (mandant == null) {
@@ -359,7 +357,7 @@ public final class TestDataUtil {
 		return gemeinde;
 	}
 
-	@Nonnull
+	@Nullable
 	public static Gemeinde getGemeindeOstermundigen(@Nonnull Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_OSTERMUNDIGEN_ID);
 		if (gemeinde == null) {
@@ -491,17 +489,17 @@ public final class TestDataUtil {
 		return instStammdaten;
 	}
 
-	public static InstitutionStammdaten createInstitutionStammdatenTagiWeissenstein() {
+	public static InstitutionStammdaten createInstitutionStammdatenTagesfamilien() {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_TAGI);
+		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(9));
 		instStammdaten.setOeffnungstage(BigDecimal.valueOf(244));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGI);
+		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 		instStammdaten.setInstitution(createDefaultInstitution());
 		instStammdaten.getInstitution().setId(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN);
-		instStammdaten.getInstitution().setName("Tagi & Kita Aaregg");
+		instStammdaten.getInstitution().setName("Kita 2 Aaregg");
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
 	}
@@ -634,6 +632,7 @@ public final class TestDataUtil {
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
+		betreuung.setKeineKesbPlatzierung(true);
 		return betreuung;
 	}
 
@@ -643,6 +642,7 @@ public final class TestDataUtil {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		betreuung.setBetreuungspensumContainers(new TreeSet<>());
 		betreuung.setAbwesenheitContainers(new HashSet<>());
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setKind(createDefaultKindContainer());
 		return betreuung;
 	}
@@ -663,7 +663,7 @@ public final class TestDataUtil {
 
 	private static Betreuungspensum createBetreuungspensum() {
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
-		betreuungspensum.setPensum(80);
+		betreuungspensum.setPensum(BigDecimal.valueOf(80));
 		return betreuungspensum;
 	}
 
@@ -773,6 +773,7 @@ public final class TestDataUtil {
 		betreuung.setKind(new KindContainer());
 		betreuung.getKind().setKindJA(new Kind());
 		betreuung.getKind().setGesuch(gesuch);
+		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		return betreuung;
 	}
@@ -883,13 +884,20 @@ public final class TestDataUtil {
 	private static void ensureFachstelleAndInstitutionsExist(Persistence persistence, Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				persistence.merge(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-				persistence.merge(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
-				if (persistence.find(Institution.class, betreuung.getInstitutionStammdaten().getInstitution().getId()) == null) {
-					persistence.merge(betreuung.getInstitutionStammdaten().getInstitution());
+				InstitutionStammdaten institutionStammdaten = betreuung.getInstitutionStammdaten();
+				Traegerschaft traegerschaft = institutionStammdaten.getInstitution().getTraegerschaft();
+				if (traegerschaft != null && persistence.find(Traegerschaft.class, traegerschaft.getId()) == null) {
+					persistence.merge(traegerschaft);
 				}
-				if (persistence.find(InstitutionStammdaten.class, betreuung.getInstitutionStammdaten().getId()) == null) {
-					persistence.merge(betreuung.getInstitutionStammdaten());
+				Mandant mandant = institutionStammdaten.getInstitution().getMandant();
+				if (mandant != null && persistence.find(Mandant.class, mandant.getId()) == null) {
+					persistence.merge(mandant);
+				}
+				if (persistence.find(Institution.class, institutionStammdaten.getInstitution().getId()) == null) {
+					persistence.merge(institutionStammdaten.getInstitution());
+				}
+				if (persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId()) == null) {
+					persistence.merge(institutionStammdaten);
 				}
 				if (betreuung.getKind().getKindJA().getPensumFachstelle() != null) {
 					persistence.merge(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
@@ -901,7 +909,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistFeutzYvonneGesuch(InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, AntragStatus status) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
@@ -912,7 +920,7 @@ public final class TestDataUtil {
 		gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
 
@@ -923,7 +931,7 @@ public final class TestDataUtil {
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
 		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
@@ -1121,7 +1129,6 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_MASSGEBENDES_EINKOMMEN_MAX, "158690", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MASSGEBENDES_EINKOMMEN_MIN, "42540", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_ANZAHL_TAGE_KANTON, "240", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_STUNDEN_PRO_TAG_TAGI, "7", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, "9.16", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_BABY_ALTER_IN_MONATEN, "12", gesuchsperiode, persistence);  //waere eigentlich int
 		saveEinstellung(PARAM_BABY_FAKTOR, "1.5", gesuchsperiode, persistence);
@@ -1132,7 +1139,6 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_KITA_MIN, "0", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode, persistence);
@@ -1231,7 +1237,8 @@ public final class TestDataUtil {
 
 	public static void createDefaultAdressenForGS(final Gesuch gesuch, final boolean gs2) {
 		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
-		final GesuchstellerAdresseContainer adresseGS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		final GesuchstellerAdresseContainer adresseGS1 = TestDataUtil.
+			createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(adresseGS1.getGesuchstellerAdresseJA());
 		adresseGS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		adresseGS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
@@ -1241,7 +1248,8 @@ public final class TestDataUtil {
 
 		if (gs2) {
 			List<GesuchstellerAdresseContainer> adressen2 = new ArrayList<>();
-			final GesuchstellerAdresseContainer adresseGS2 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
+			final GesuchstellerAdresseContainer adresseGS2 = TestDataUtil
+				.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
 			Objects.requireNonNull(adresseGS2.getGesuchstellerAdresseJA());
 			adresseGS2.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 			adresseGS2.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
@@ -1488,7 +1496,7 @@ public final class TestDataUtil {
 	public static VerfuegungZeitabschnitt createDefaultZeitabschnitt(Verfuegung verfuegung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
 		zeitabschnitt.setVerfuegung(verfuegung);
-		zeitabschnitt.setBetreuungspensum(10);
+		zeitabschnitt.setBetreuungspensum(BigDecimal.valueOf(10));
 		zeitabschnitt.setAnspruchberechtigtesPensum(50);
 		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
 		zeitabschnitt.setZuSpaetEingereicht(false);

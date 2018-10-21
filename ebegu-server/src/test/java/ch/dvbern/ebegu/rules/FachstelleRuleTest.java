@@ -50,9 +50,9 @@ public class FachstelleRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(60, result.get(0).getBetreuungspensum());
+		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(80, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertEquals(60, result.get(0).getBgPensum());
+		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		List<VerfuegungZeitabschnitt> nextZeitabschn = EbeguRuleTestsHelper.initializeRestanspruchForNextBetreuung(betreuung, result);
 		Assert.assertEquals(20, nextZeitabschn.get(0).getAnspruchspensumRest());
@@ -75,9 +75,9 @@ public class FachstelleRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(60, result.get(0).getBetreuungspensum());
+		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertEquals(60, result.get(0).getBgPensum());
+		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		List<VerfuegungZeitabschnitt> nextZeitabschn = EbeguRuleTestsHelper.initializeRestanspruchForNextBetreuung(betreuung, result);
 		Assert.assertEquals(40, nextZeitabschn.get(0).getAnspruchspensumRest());
@@ -101,7 +101,7 @@ public class FachstelleRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(40), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(60, result.get(0).getBetreuungspensum());
+		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(80, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		List<VerfuegungZeitabschnitt> nextZeitabschn = EbeguRuleTestsHelper.initializeRestanspruchForNextBetreuung(betreuung, result);

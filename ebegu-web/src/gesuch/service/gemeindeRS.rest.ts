@@ -24,6 +24,7 @@ import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSGemeinde from '../../models/TSGemeinde';
+import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
 import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
@@ -102,12 +103,15 @@ export default class GemeindeRS implements IEntityRS {
      * It sends all required parameters (new Gemeinde, beguStartDatum and User) to the server so the server can create
      * all required objects within a single transaction.
      */
-    public createGemeinde(gemeinde: TSGemeinde, beguStartDatum: moment.Moment): IPromise<TSGemeinde> {
+    public createGemeinde(gemeinde: TSGemeinde, beguStartDatum: moment.Moment, email: string): IPromise<TSGemeinde> {
         const restGemeinde = this.ebeguRestUtil.gemeindeToRestObject({}, gemeinde);
 
         return this.$http.post(this.serviceURL, restGemeinde,
             {
-                params: {date: DateUtil.momentToLocalDate(beguStartDatum)},
+                params: {
+                    date: DateUtil.momentToLocalDate(beguStartDatum),
+                    adminMail: email,
+                },
             })
             .then(response => {
                 this.resetGemeindeCache();
@@ -120,4 +124,19 @@ export default class GemeindeRS implements IEntityRS {
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
         this.initGemeindenForPrincipal();
     }
+
+    public getGemeindeStammdaten(gemeindeId: string): IPromise<TSGemeindeStammdaten> {
+        return this.$http.get(`${this.serviceURL}/stammdaten/${encodeURIComponent(gemeindeId)}`)
+            .then(response => this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data));
+    }
+
+    public saveGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): IPromise<TSGemeindeStammdaten> {
+        let restStammdaten = {};
+        restStammdaten = this.ebeguRestUtil.gemeindeStammdatenToRestObject(restStammdaten, stammdaten);
+        return this.$http.put(`${this.serviceURL}/stammdaten`, restStammdaten).then((response: any) => {
+            this.$log.debug('PARSING GemeindeStammdaten REST object ', response.data);
+            return this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data);
+        });
+    }
+
 }

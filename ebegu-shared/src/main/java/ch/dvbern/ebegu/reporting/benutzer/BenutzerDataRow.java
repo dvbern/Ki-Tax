@@ -42,7 +42,6 @@ public class BenutzerDataRow {
 	private BenutzerStatus status = null;
 	private Boolean isKita = null;
 	private Boolean isTagesfamilien = null;
-	private Boolean isTagi = null;
 	private Boolean isTagesschule = null;
 	private Boolean isFerieninsel = null;
 
@@ -151,14 +150,6 @@ public class BenutzerDataRow {
 		this.isKita = isKita;
 	}
 
-	public Boolean isTagi() {
-		return isTagi;
-	}
-
-	public void setTagi(Boolean tagi) {
-		isTagi = tagi;
-	}
-
 	public Boolean isTagesschule() {
 		return isTagesschule;
 	}
@@ -185,8 +176,7 @@ public class BenutzerDataRow {
 
 	public Boolean isJugendamt() {
 		return (this.isKita != null && this.isKita)
-			|| (this.isTagesfamilien != null && this.isTagesfamilien)
-			|| (this.isTagi != null && this.isTagi);
+			|| (this.isTagesfamilien != null && this.isTagesfamilien);
 	}
 
 	public Boolean isSchulamt() {

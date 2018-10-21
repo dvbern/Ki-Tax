@@ -42,7 +42,6 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -60,10 +59,9 @@ public final class BGRechnerParameterDTO {
 	private BigDecimal anzahlTageTagi;                // PARAM_ANZAHL_TAGE_KANTON
 	private BigDecimal anzahlTageMaximal;            // PARAM_ANZAL_TAGE_MAX_KITA
 
-	private BigDecimal anzahlStundenProTagTagi;    // PARAM_STUNDEN_PRO_TAG_TAGI
 	private BigDecimal anzahlStundenProTagMaximal;    // PARAM_STUNDEN_PRO_TAG_MAX_KITA
 
-	private BigDecimal kostenProStundeMaximalKitaTagi; // PARAM_KOSTEN_PRO_STUNDE_MAX
+	private BigDecimal kostenProStundeMaximalKita; // PARAM_KOSTEN_PRO_STUNDE_MAX
 	private BigDecimal kostenProStundeMaximalTageseltern; // PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN
 	private BigDecimal kostenProStundeMinimal;        // PARAM_KOSTEN_PRO_STUNDE_MIN
 
@@ -78,12 +76,11 @@ public final class BGRechnerParameterDTO {
 		this.setBeitragKantonProTag(asBigDecimal(paramMap, PARAM_ABGELTUNG_PRO_TAG_KANTON, gesuchsperiode, gemeinde));
 		this.setAnzahlTageMaximal(asBigDecimal(paramMap, PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode, gemeinde));
 		this.setAnzahlStundenProTagMaximal(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_MAX_KITA, gesuchsperiode, gemeinde));
-		this.setKostenProStundeMaximalKitaTagi(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX, gesuchsperiode, gemeinde));
+		this.setKostenProStundeMaximalKita(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX, gesuchsperiode, gemeinde));
 		this.setKostenProStundeMinimal(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MIN, gesuchsperiode, gemeinde));
 		this.setMassgebendesEinkommenMaximal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MAX, gesuchsperiode, gemeinde));
 		this.setMassgebendesEinkommenMinimal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MIN, gesuchsperiode, gemeinde));
 		this.setAnzahlTageTagi(asBigDecimal(paramMap, PARAM_ANZAHL_TAGE_KANTON, gesuchsperiode, gemeinde));
-		this.setAnzahlStundenProTagTagi(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_TAGI, gesuchsperiode, gemeinde));
 		this.setKostenProStundeMaximalTageseltern(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, gesuchsperiode, gemeinde));
 		this.setBabyAlterInMonaten(asInteger(paramMap, PARAM_BABY_ALTER_IN_MONATEN, gesuchsperiode, gemeinde));
 		this.setBabyFaktor(asBigDecimal(paramMap, PARAM_BABY_FAKTOR, gesuchsperiode, gemeinde));
@@ -175,12 +172,12 @@ public final class BGRechnerParameterDTO {
 		this.anzahlStundenProTagMaximal = anzahlStundenProTagMaximal;
 	}
 
-	public BigDecimal getKostenProStundeMaximalKitaTagi() {
-		return kostenProStundeMaximalKitaTagi;
+	public BigDecimal getKostenProStundeMaximalKita() {
+		return kostenProStundeMaximalKita;
 	}
 
-	public void setKostenProStundeMaximalKitaTagi(BigDecimal kostenProStundeMaximalKitaTagi) {
-		this.kostenProStundeMaximalKitaTagi = kostenProStundeMaximalKitaTagi;
+	public void setKostenProStundeMaximalKita(BigDecimal kostenProStundeMaximalKita) {
+		this.kostenProStundeMaximalKita = kostenProStundeMaximalKita;
 	}
 
 	public BigDecimal getKostenProStundeMinimal() {
@@ -213,14 +210,6 @@ public final class BGRechnerParameterDTO {
 
 	public void setAnzahlTageTagi(BigDecimal anzahlTageTagi) {
 		this.anzahlTageTagi = anzahlTageTagi;
-	}
-
-	public BigDecimal getAnzahlStundenProTagTagi() {
-		return anzahlStundenProTagTagi;
-	}
-
-	public void setAnzahlStundenProTagTagi(BigDecimal anzahlStundenProTagTagi) {
-		this.anzahlStundenProTagTagi = anzahlStundenProTagTagi;
 	}
 
 	public BigDecimal getKostenProStundeMaximalTageseltern() {

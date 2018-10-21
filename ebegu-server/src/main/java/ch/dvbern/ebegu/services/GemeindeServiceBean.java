@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -51,8 +52,14 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
@@ -101,7 +108,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		final Long bfsNummer = gemeinde.getBfsNummer();
 		if (findGemeindeByBSF(bfsNummer).isPresent()) {
 			throw new EntityExistsException(Gemeinde.class, "bsf",
-				bfsNummer != null ? Long.toString(bfsNummer) : "",
+				Long.toString(bfsNummer),
 				ErrorCodeEnum.ERROR_DUPLICATE_GEMEINDE_BSF);
 		}
 		return saveGemeinde(gemeinde);
@@ -111,6 +118,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	public Optional<Gemeinde> findGemeinde(@Nonnull String id) {
 		requireNonNull(id, "id muss gesetzt sein");
+		// todo KIBON-245 authorizer.checkReadAuthorizationGemeinde(id) hinzufügen
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, id);
 		return Optional.ofNullable(gemeinde);
 	}
@@ -159,7 +167,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		}
 	}
 
-
 	@Nonnull
 	@Override
 	public Collection<Gemeinde> getAktiveGemeinden() {
@@ -191,15 +198,35 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return persistence.getCriteriaResults(query);
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
-	public GemeindeStammdaten getGemeindeStammdaten(@Nonnull String gemeindeId) {
+	public Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String id) {
+		requireNonNull(id, "id muss gesetzt sein");
+		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, id);
+		return Optional.ofNullable(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(@Nonnull String gemeindeId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<GemeindeStammdaten> query = cb.createQuery(GemeindeStammdaten.class);
 		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);
 		Predicate predicate = cb.equal(root.get(GemeindeStammdaten_.gemeinde).get(AbstractEntity_.id), gemeindeId);
 		query.where(predicate);
-		return persistence.getCriteriaSingleResult(query);
+		GemeindeStammdaten stammdaten = persistence.getCriteriaSingleResult(query);
+		return Optional.ofNullable(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS, SACHBEARBEITER_GEMEINDE })
+	public GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten) {
+		Objects.requireNonNull(stammdaten);
+		if (stammdaten.isNew()) {
+			initGemeindeNummerAndMandant(stammdaten.getGemeinde());
+		}
+		return persistence.merge(stammdaten);
 	}
 
 }

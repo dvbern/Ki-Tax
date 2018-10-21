@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.ebegu.validators.CheckAbwesenheitDatesOverlapping;
@@ -153,6 +154,10 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@NotNull
 	@Column(nullable = false)
 	private Boolean vertrag = false;
+
+	@NotNull
+	@Column(nullable = false)
+	private Boolean keineKesbPlatzierung = false;
 
 	@Nullable
 	@Column(nullable = true)
@@ -286,6 +291,14 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		this.vertrag = vertrag;
 	}
 
+	public Boolean getKeineKesbPlatzierung() {
+		return keineKesbPlatzierung;
+	}
+
+	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
+		this.keineKesbPlatzierung = keineKesbPlatzierung;
+	}
+
 	@Nullable
 	public LocalDate getDatumAblehnung() {
 		return datumAblehnung;
@@ -376,7 +389,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		}
 		boolean statusSame = true;
 		if (inklStatus) {
-			statusSame = Objects.equals(this.getBetreuungsstatus(), otherBetreuung.getBetreuungsstatus());
+			statusSame = this.getBetreuungsstatus() == otherBetreuung.getBetreuungsstatus();
 		}
 		boolean stammdatenSame = this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
 
@@ -518,6 +531,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			target.setAbwesenheitMutiert(null);
 			target.setGueltig(false);
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
+			target.setKeineKesbPlatzierung(this.getKeineKesbPlatzierung());
 
 			// EBEGU-1559
 			// Beim Mutieren werden alle Betreuungen kopiert.
@@ -547,7 +561,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	private boolean hasAnyNonZeroPensum() {
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
-			if (betreuungspensumContainer.getBetreuungspensumJA().getPensum() > 0) {
+			if (MathUtil.isPositive(betreuungspensumContainer.getBetreuungspensumJA().getPensum())) {
 				return true;
 			}
 		}

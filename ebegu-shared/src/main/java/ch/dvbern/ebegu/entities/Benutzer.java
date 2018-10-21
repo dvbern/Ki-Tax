@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Collections;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -267,18 +266,18 @@ public class Benutzer extends AbstractMutableEntity {
 	}
 
 	@Nonnull
-	public Optional<String> extractRollenAbhaengigkeitAsString() {
+	public String extractRollenAbhaengigkeitAsString() {
 		RollenAbhaengigkeit rollenAbhaengigkeit = getRole().getRollenAbhaengigkeit();
 
 		switch (rollenAbhaengigkeit) {
 		case NONE:
-			return Optional.empty();
+			return "";
 		case GEMEINDE:
-			return Optional.of(getCurrentBerechtigung().extractGemeindenForBerechtigungAsString());
+			return getCurrentBerechtigung().extractGemeindenForBerechtigungAsString();
 		case INSTITUTION:
-			return Optional.of(requireNonNull(getInstitution()).getName());
+			return requireNonNull(getInstitution()).getName();
 		case TRAEGERSCHAFT:
-			return Optional.of(requireNonNull(getTraegerschaft()).getName());
+			return requireNonNull(getTraegerschaft()).getName();
 		}
 
 		throw new IllegalStateException("No mapping defined for " + rollenAbhaengigkeit);

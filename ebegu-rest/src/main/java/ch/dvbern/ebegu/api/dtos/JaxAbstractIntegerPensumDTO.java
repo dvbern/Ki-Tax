@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxAbstractPensumDTO extends JaxAbstractDateRangedDTO {
+public class JaxAbstractIntegerPensumDTO extends JaxAbstractDateRangedDTO {
 
 	private static final long serialVersionUID = -7598194821332548948L;
 

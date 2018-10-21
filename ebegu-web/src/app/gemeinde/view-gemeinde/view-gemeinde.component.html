@@ -1,0 +1,160 @@
+<!--
+  ~ AGPL File-Header
+  ~
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<form role="form"
+      #form="ngForm"
+      [ngClass]="{'ng-submitted': form.submitted}"
+      *ngIf="stammdaten"
+      (ngSubmit)="editGemeindeStammdaten()"
+      novalidate>
+
+    <div class="row marginTop20 marginBottom10">
+        <div class="col-md-8 col-md-offset-2 ">
+
+            <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
+            <div class="viewTitle">
+                <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer} }}</h2>
+                <hr class="header">
+            </div>
+
+            <fieldset>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>ADMINISTRATOREN</h3>
+                            <p>{{stammdaten.administratoren}}</p>
+                            <h3 translate>SACHBEARBEITER</h3>
+                            <p>{{stammdaten.sachbearbeiter}}</p>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="dv-btn mitarbeiter-bearbeiten-button" (click)="mitarbeiterBearbeiten()"
+                                    [textContent]="'BENUTZER_EDIT' | translate">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <div class="marginBottom10">
+                                <img [src]="previewImageURL" [height]="180" class="klub-logo-dialog-image">
+                            </div>
+                            <div>
+                                <input #fileInput type="file" accept='image/*' (change)="handleInput(fileInput.files)"
+                                       class="klub-logo-dialog-fileinput">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <dv-full-height-container>
+        <div class="dv-content">
+            <fieldset>
+                <div class="viewTitle">
+                    <h3 translate>GEMEINDE_STAMMDATEN</h3>
+                    <hr class="header">
+                </div>
+                <div class="row">
+                    <!-- Kontaktadresse -->
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <h3 translate>KONTAKTADRESSE</h3>
+                            <p>{{stammdaten.adresse.organisation}}</p>
+                            <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
+                            <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
+                        </div>
+                    </div>
+                    <!-- E-Mail, Telefon -->
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <h3>&nbsp;</h3>
+                            <p><a href="mailto:{{stammdaten.mail}}">{{stammdaten.mail}}</a></p>
+                            <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
+                            <p><a href="{{stammdaten.webseite}}" target="tah">{{stammdaten.webseite}}</a></p>
+                        </div>
+                    </div>
+                    <!-- Beschwerdeadresse -->
+                    <div *ngIf="stammdaten.keineBeschwerdeAdresse" class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>BESCHWERDE_ADRESSE</h3>
+                            <p translate>BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT</p>
+                        </div>
+                    </div>
+                    <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>BESCHWERDE_ADRESSE</h3>
+                            <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
+                            <p>{{stammdaten.beschwerdeAdresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
+                            <p>{{stammdaten.beschwerdeAdresse.plz}} {{stammdaten.adresse.ort}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Korrespondenzsprache -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>KORRESPONDENZSPRACHE</h3>
+                            <p>{{korrespondenzsprache}}</p>
+                        </div>
+                    </div>
+                    <!-- Standardverantwortliche -->
+                    <div *ngIf="stammdaten.defaultBenutzerBG" class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>STANDARD_VERANTWORTLICHE</h3>
+                            <p>{{stammdaten.defaultBenutzerBG.vorname}} {{stammdaten.defaultBenutzerBG.nachname}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="dv-footer">
+                        <dv-loading-button [type]="'submit'">
+                            <span translate>STAMMDATEN_EDIT</span>
+                        </dv-loading-button>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <fieldset>
+                <div class="viewTitle">
+                    <h3 translate>BEGU_KONFIGURATION</h3>
+                    <hr class="header">
+                </div>
+                <div class="row">
+                    <!-- Betreuungsgutscheine anbieten ab -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>BEGU_START</h3>
+                            <p>{{beguStart}}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>GEMEINDE_REGELN</h3>
+                            <label translate>BEGU_KITAS_BIS_UND_MIT</label>
+                            <p>{{stammdaten.beguBisUndMitSchulstufe}}</p>
+                            <p>{{kontinggentierung}}</p>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </dv-full-height-container>
+</form>

@@ -103,6 +103,10 @@ public class BetreuungsgutscheinConfigurator {
 			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal());
 		rules.add(familienabzugAbschnittRule);
 
+		// Betreuungsgutscheine Gueltigkeit
+		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule = new GutscheineStartdatumAbschnittRule(defaultGueltigkeit);
+		rules.add(gutscheineStartdatumAbschnittRule);
+
 		// - Betreuungspensum
 		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit);
 		rules.add(betreuungspensumAbschnittRule);
@@ -145,10 +149,6 @@ public class BetreuungsgutscheinConfigurator {
 		ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(defaultGueltigkeit, maxZuschlagValue.getValueAsInteger());
 		rules.add(erwerbspensumCalcRule);
 
-		// - Betreuungspensum
-		BetreuungspensumCalcRule betreuungspensumCalcRule = new BetreuungspensumCalcRule(defaultGueltigkeit);
-		rules.add(betreuungspensumCalcRule);
-
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit);
 		rules.add(fachstelleCalcRule);
@@ -156,6 +156,11 @@ public class BetreuungsgutscheinConfigurator {
 
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// REDUKTIONSREGELN: Setzen Anpsruch auf 0
+
+		// BETREUUNGS GUTSCHEINE START DATUM - Anspruch verfällt, wenn Gutscheine vor dem BetreuungsgutscheineStartdatum
+		// der Gemeinde liegen
+		GutscheineStartdatumCalcRule gutscheineStartdatumCalcRule = new GutscheineStartdatumCalcRule(defaultGueltigkeit);
+		rules.add(gutscheineStartdatumCalcRule);
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
 		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(PARAM_MASSGEBENDES_EINKOMMEN_MAX);
@@ -184,6 +189,10 @@ public class BetreuungsgutscheinConfigurator {
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
 		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe);
 		rules.add(schulstufeCalcRule);
+
+		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
+		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit);
+		rules.add(kesbPlatzierungCalcRule);
 
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit);

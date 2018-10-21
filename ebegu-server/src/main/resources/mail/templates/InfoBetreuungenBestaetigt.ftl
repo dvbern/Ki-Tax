@@ -29,7 +29,7 @@ ${templateConfiguration.mailCss}
 		freigegeben werden.
 	<p>
 		Freundliche Grüsse <br/>
-		Jugendamt der Stadt Bern
+		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
 	</p>
 
 	<p>

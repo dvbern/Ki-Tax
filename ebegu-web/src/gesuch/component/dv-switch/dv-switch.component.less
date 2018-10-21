@@ -1,0 +1,109 @@
+/*
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+
+@import (reference) '../../../style/variables.less';
+
+md-input-container:not(.md-input-has-value) input:not(:focus),
+.dv-betreuung-input {
+    color: @contrast-darkest !important;
+}
+
+:host {
+    display: flex;
+    margin-left: 2px;
+    height: 4rem;
+    outline: 1px solid @contrast-darkest !important;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &:focus {
+        outline: 2px solid @contrast-darkest !important;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    &.disabled {
+        .dv-switch-background {
+            background: @contrast;
+        }
+
+        .dv-switch-animation-label {
+            color: @contrast;
+        }
+
+        &:hover {
+            cursor: not-allowed;
+        }
+        &:focus {
+            outline: 1px solid @contrast-darkest !important;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+    }
+
+
+}
+
+.dv-switch-container, .dv-switch-background-container {
+    display: flex;
+    position: relative !important;
+    height: 100%;
+    width: 100%;
+    align-items: flex-start;
+    justify-content: center;
+    background: @contrast-lightest;
+
+}
+
+.dv-switch-animation-container {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+
+}
+
+.dv-switch-animation {
+    background: #4a4a4a;
+}
+
+.dv-switch-animation, .dv-switch-background {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dv-switch-animation-label {
+    color: @contrast-lightest;
+    font-weight: bold;
+}
+
+.dv-switch-background-label {
+    color: @contrast-darkest;
+}
+
+.dv-switch-background-label,
+.dv-switch-animation-label {
+    user-select: none;
+}

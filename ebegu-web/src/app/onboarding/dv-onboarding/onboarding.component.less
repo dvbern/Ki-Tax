@@ -32,6 +32,7 @@
         flex-flow: row wrap;
         align-items: flex-end;
         justify-content: space-between;
+        padding: 0 1.6rem;
     }
 
     &-search {
@@ -46,7 +47,7 @@
             align-items: center;
         }
 
-        .dv-select-style {
+        .dv-select-style-onboarding {
             border: 1px solid @anthracite;
             background: @contrast-lightest;
 
@@ -57,7 +58,8 @@
                 font-weight: normal;
             }
 
-            &:after {
+            &::after {
+                content: " \f002";
                 top: 0.5rem;
                 color: @black;
             }
@@ -68,13 +70,19 @@
     /deep/ &-auswaehlen {
         width: 26.3rem;
         text-transform: uppercase;
+        margin-bottom: 4rem;
         // wenn der button fokusiert ist braucht er 2px für den Outline
     }
 }
 
+
 .input-error {
     height: 4rem;
     width: 26.3rem;
+}
+
+.onboarding-gemeinde-auswaehlen {
+    margin-bottom: 4rem;
 }
 
 form:not(.ng-submitted) .input-error /deep/ .error {
@@ -89,4 +97,10 @@ form:not(.ng-submitted) .input-error /deep/ .error {
     a {
         color: @red
     }
+}
+
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -29,6 +29,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBelegungTagesschule from '../../../models/TSBelegungTagesschule';
 import TSBetreuung from '../../../models/TSBetreuung';
@@ -182,7 +183,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
 
         this.findExistingBetreuungsmitteilung();
-
         const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
         if (!anmeldungMutationZustand) {
             return;
@@ -455,8 +455,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'CONFIRM_UEBERNAHME_SCHULAMT',
             deleteText: 'BESCHREIBUNG_UEBERNAHME_SCHULAMT',
-            parentController: undefined,
-            elementID: undefined,
         }).then(() => {
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
@@ -582,7 +580,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            new TSBetreuungspensum(false, undefined, undefined, new TSDateRange())));
+            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE, false, undefined, undefined, new TSDateRange())));
     }
 
     public removeBetreuungspensum(betreuungspensumToDelete: TSBetreuungspensumContainer): void {
@@ -603,7 +601,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public platzAnfordern(): void {
         if (this.isGesuchValid() && this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = false;
-            this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            if (this.getBetreuungModel().keineKesbPlatzierung) {
+                this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            } else {
+                this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                    title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                    deleteText: 'Möchten Sie die Betreuung trotzdem speichern?',
+                    cancelText: 'LABEL_ABBRECHEN',
+                    confirmText: 'LABEL_SPEICHERN',
+                })
+                    .then(() => {   // User confirmed removal
+                        this.save(TSBetreuungsstatus.WARTEN, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+                    });
+            }
         } else if (!this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = true;
         }
@@ -670,6 +680,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return true;
+    }
+
+    public isPensumEditable(): boolean {
+        return (this.isBetreuungsstatusWarten() && !this.isSavingData) || this.isMutationsmeldungStatus;
     }
 
     /**

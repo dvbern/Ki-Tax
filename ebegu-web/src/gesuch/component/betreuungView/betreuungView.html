@@ -188,22 +188,41 @@
                         </div>
                     </div>
 
-
                     <!--vertrag-->
-                    <div class="row marginBottom50 marginTop20" dv-show-element
+                    <div class="row marginTop20"
+                         dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="!vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.getBetreuungModel().vertrag" name="vertrag"
+                                <md-checkbox ng-model="vm.getBetreuungModel().vertrag"
+                                             name="vertrag"
                                              required
-                                             aria-label="{{'VERTRAG'|translate}}" ng-disabled="!vm.isEnabled()"
+                                             aria-label="{{'VERTRAG'|translate}}"
+                                             ng-disabled="!vm.isEnabled()"
                                              ng-class="{true:'checkbox-error', false:''}[vm.flagErrorVertrag]">
                                     <span data-translate="VERTRAG"></span>
                                 </md-checkbox>
                                 <div class="dv-error-messages" ng-if="vm.flagErrorVertrag === true">
                                     <span data-translate="ERROR_VERTRAG_REQUIRED"></span>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Kesb Platzierung-->
+                    <div class="row marginBottom50 marginTop20"
+                         dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                         dv-show-expression="!vm.isSchulamt()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.getBetreuungModel().keineKesbPlatzierung"
+                                             name="keineKesbPlatzierung"
+                                             aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
+                                             ng-disabled="!vm.isEnabled()">
+                                    <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
+                                </md-checkbox>
                             </div>
                         </div>
                     </div>
@@ -273,30 +292,25 @@
                         </div>
 
                         <fieldset dv-enable-element
-                                  dv-enable-expression="(vm.isBetreuungsstatusWarten() && !vm.isSavingData) || vm.isMutationsmeldungStatus"
-                                  dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()">
+                                  dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+                                  dv-enable-expression="vm.isPensumEditable()">
 
                             <!--Betreuungspensen-->
                             <div ng-repeat="betpen in vm.getBetreuungspensen()">
                                 <!--Betreuungspensum-->
                                 <div class="row">
-                                    <div class="col-sm-12 dv-input-container-small">
+                                    <div class="col-sm-12 dv-input-betreuung-container">
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float" data-translate="BETREUUNGSPENSUM"
                                                    data-translate-value-betreuungspensumnumber="{{$index + 1}}"
                                                    for="betreuungspensum-{{$index}}"></label>
-                                            <input aria-describedby="betreuungspensum-{{$index}}-error"
-                                                   id="betreuungspensum-{{$index}}" type="number"
-                                                   name="betreuungspensum-{{$index}}"
-                                                   ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.pensum"
-                                                   dv-max-length class="form-control"
-                                                   ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
-                                                   ng-required="true"
-                                                   ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
+                                            <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
+                                                                input-id="betreuungspensum-{{$index}}"
+                                                                betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
+                                                                is-disabled="!vm.isPensumEditable()">
+                                            </dv-betreuung-input>
                                             <dv-error-messages input-id="betreuungspensum-{{$index}}"
                                                                for="vm.form['betreuungspensum-' + $index].$error"></dv-error-messages>
-
-
                                         </dv-input-container>
                                     </div>
                                 </div>
@@ -369,7 +383,7 @@
                                         <dv-loading-button type="button"
                                                            button-click="vm.removeBetreuungspensum(betpen)"
                                                            button-class="dv-btn-operation"
-                                                           button-disabled="!((vm.isBetreuungsstatusWarten() && !vm.isSavingData) || vm.isMutationsmeldungStatus)">
+                                                           button-disabled="!vm.isPensumEditable()">
                                             <i class="fa fa-lg fa-trash-o"
                                                title="{{'BETREUUNGSPENSUM_DELETE' | translate}}"
                                                aria-label="{{'BETREUUNGSPENSUM_DELETE' | translate}}"></i>
@@ -384,7 +398,7 @@
                             <!--Neues Betreuungspensum hinzufuegen-->
                             <div class="row" dv-show-element
                                  dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                                 dv-show-expression="(vm.isBetreuungsstatusWarten() && !vm.isSavingData) || vm.isMutationsmeldungStatus">
+                                 dv-show-expression="vm.isPensumEditable()">
                                 <div class="col-md-12">
                                     <dv-loading-button type="button" button-click="vm.createBetreuungspensum()"
                                                        dv-enable-element
@@ -410,6 +424,24 @@
                                                   maxlength="4000">
                                         </textarea>
                                     </dv-input-container>
+                                </div>
+                            </div>
+
+                            <!--erweiterte Beduerfnisse-->
+                            <div class="row marginTop40 marginBottom40" ng-if="vm.showErweiterteBeduerfnisse()">
+                                <div class="col-xs-12 dv-input-container-question">
+                                    <div class="checkbox">
+                                        <md-checkbox ng-model="vm.getBetreuungModel().erweiterteBeduerfnisse"
+                                                     name="erweiterteBeduerfnisse"
+                                                     aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
+                                                     dv-enable-element
+                                                     dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+                                                     dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
+                                            <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
+                                        </md-checkbox>
+                                        <dv-error-messages
+                                            for="vm.form.erweiterteBeduerfnisse.$error"></dv-error-messages>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>

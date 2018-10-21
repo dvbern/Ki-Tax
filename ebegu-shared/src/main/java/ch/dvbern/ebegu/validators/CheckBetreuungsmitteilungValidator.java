@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.validators;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
@@ -87,7 +88,7 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 		Gemeinde gemeinde = mitteilung.getDossier().getGemeinde();
 		int index = 0;
 		for (BetreuungsmitteilungPensum betPen : mitteilung.getBetreuungspensen()) {
-			int betreuungsangebotTypMinValue = BetreuungUtil.getMinValueFromBetreuungsangebotTyp(
+			BigDecimal betreuungsangebotTypMinValue = BetreuungUtil.getMinValueFromBetreuungsangebotTyp(
 				gesuchsperiode, gemeinde, mitteilung.getBetreuung().getBetreuungsangebotTyp(), einstellungService, em);
 
 			if (!validateBetreuungspensum(betPen, betreuungsangebotTypMinValue, index, context)) {
@@ -111,8 +112,13 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 	 * @param context the context
 	 * @return true if the value resides inside the permitted range. False otherwise
 	 */
-	private boolean validateBetreuungspensum(BetreuungsmitteilungPensum betreuungspensum, int pensumMin, int index, ConstraintValidatorContext context) {
-		if (betreuungspensum != null && betreuungspensum.getPensum() < pensumMin) {
+	private boolean validateBetreuungspensum(
+		BetreuungsmitteilungPensum betreuungspensum,
+		BigDecimal pensumMin,
+		int index,
+		ConstraintValidatorContext context
+	) {
+		if (betreuungspensum != null && betreuungspensum.getPensum().compareTo(pensumMin) < 0) {
 			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
 			String message = rb.getString("invalid_betreuungspensum");
 			message = MessageFormat.format(message, betreuungspensum.getPensum(), pensumMin);

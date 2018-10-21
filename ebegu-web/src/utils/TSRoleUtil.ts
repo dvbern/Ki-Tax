@@ -180,6 +180,15 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getAdministratorBgTsGemeindeRole(): Array<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_TS,
+            TSRole.ADMIN_GEMEINDE,
+        ];
+    }
+
     public static getAdministratorOrAmtRole(): Array<TSRole> {
         return [
             TSRole.SUPER_ADMIN,

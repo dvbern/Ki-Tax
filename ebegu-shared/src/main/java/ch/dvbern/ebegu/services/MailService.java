@@ -21,6 +21,7 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
@@ -125,8 +126,8 @@ public interface MailService {
 		@Nullable DownloadFile attachement,
 		@Nonnull String downloadurl) throws MailException;
 
-	void sendBenutzerEinladung(
-		@Nonnull Benutzer einladender,
-		@Nonnull Benutzer eingeladener)
-		throws MailException;
+	/**
+	 * Sends an Einladungsemail to the given user according to the type of the Einladung
+	 */
+	void sendBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Einladung einladung) throws MailException;
 }
