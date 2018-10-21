@@ -549,6 +549,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return undefined;
     }
 
+    public getErweiterteBetreuungGS(): TSErweiterteBetreuung {
+        if (this.getBetreuungModel() && this.getBetreuungModel().erweiterteBetreuungContainer) {
+            return this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungGS;
+        }
+
+        return undefined;
+    }
+
     public getBetreuungspensen(): Array<TSBetreuungspensumContainer> {
         if (this.getBetreuungModel()) {
             return this.getBetreuungModel().betreuungspensumContainers;

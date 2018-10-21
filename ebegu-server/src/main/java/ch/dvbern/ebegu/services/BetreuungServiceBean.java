@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -84,6 +85,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -151,6 +153,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit) {
 		Objects.requireNonNull(betreuung);
 		boolean isNew = betreuung.isNew(); // needed hier before it gets saved
+
+		//copy Erweiterte Betreuung
+		if(isNew){
+			BetreuungUtil.copyErweiterteBetreuungContainer(betreuung.getErweiterteBetreuungContainer());
+		}
+
 		if (betreuung.getBetreuungsstatus().isSchulamt()) {
 			// Wir setzen auch Schulamt-Betreuungen auf gueltig, for future use
 			betreuung.setGueltig(true);

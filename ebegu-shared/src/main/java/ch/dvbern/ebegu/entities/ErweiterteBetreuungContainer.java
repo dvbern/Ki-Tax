@@ -1,17 +1,18 @@
 package ch.dvbern.ebegu.entities;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -74,5 +75,23 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity implemen
 	@Override
 	public int compareTo(ErweiterteBetreuungContainer o) {
 		return 0;
+	}
+
+	@Nonnull
+	public ErweiterteBetreuungContainer copyErweiterteBetreuungContainer(
+		@Nonnull ErweiterteBetreuungContainer target, @Nonnull AntragCopyType copyType, @Nonnull Betreuung targetErweiterteBetreuung) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setBetreuung(targetErweiterteBetreuung);
+			target.setErweiterteBetreuungGS(null);
+			target.setErweiterteBetreuungJA(this.getErweiterteBetreuungJA().copyErweiterteBetreuung(new ErweiterteBetreuung(), copyType));
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 }

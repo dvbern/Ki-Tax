@@ -2,6 +2,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -60,5 +62,21 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			((ErweiterteBetreuung) other).erweiterteBeduerfnisse);
 
 		return erwBeduerfnisseSame;
+	}
+
+	@Nonnull
+	public ErweiterteBetreuung copyErweiterteBetreuung(@Nonnull ErweiterteBetreuung target, @Nonnull AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+		switch (copyType) {
+		case MUTATION:
+			target.setErweiterteBeduerfnisse(this.getErweiterteBeduerfnisse());
+			target.setFachstelle(this.getFachstelle());
+			break;
+		case ERNEUERUNG:
+		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_NEUES_DOSSIER:
+			break;
+		}
+		return target;
 	}
 }
