@@ -749,8 +749,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     /**
      * Erweiterte Beduerfnisse wird nur beim Institutionen oder Traegerschaften eingeblendet oder wenn das Feld schon
-     * als true gesetzt ist ACHTUNG: Hier benutzen wir die Direktive dv-show-element nicht, da es unterschiedliche
-     * Bedingungen für jede Rolle gibt.
+     * als true gesetzt ist.
      */
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
@@ -935,7 +934,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableErweiterteBeduerfnisse(): boolean {
-        return ((this.isBetreuungsstatusWarten() || this.isBetreuungsstatusAusstehend()) && !this.isSavingData)
+        const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+        return ((gesuchsteller && this.isBetreuungsstatusAusstehend() && !this.isSavingData)
+            || this.isBetreuungsstatusWarten() && !gesuchsteller && !this.isSavingData)
             || this.isMutationsmeldungStatus;
     }
 

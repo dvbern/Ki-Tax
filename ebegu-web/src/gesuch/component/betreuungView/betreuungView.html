@@ -228,7 +228,7 @@
                     </div>
 
                     <!--Fachstelle erweiterte Beduerfnisse-->
-                    <div ng-if="vm.isFachstelleRequired()">
+                    <div ng-if="(vm.isFachstelleRequired())">
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-medium form-group">
                                 <label class="md-no-float required" data-translate="FACHSTELLE" for="fachstelle">
@@ -241,6 +241,7 @@
                                             class="form-control"
                                             ng-options="fachstelle.id as fachstelle.name for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
                                             ng-required="vm.isFachstelleRequired()"
+                                            ng-disabled="!vm.enableErweiterteBeduerfnisse()"
                                             ng-change="vm.setSelectedFachsstelle()">
                                     </select>
 
