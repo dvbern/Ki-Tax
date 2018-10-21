@@ -496,6 +496,12 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			for (AbwesenheitContainer abwesenheitContainer : this.getAbwesenheitContainers()) {
 				target.getAbwesenheitContainers().add(abwesenheitContainer.copyAbwesenheitContainer(new AbwesenheitContainer(), copyType, target));
 			}
+
+			if(erweiterteBetreuungContainer != null){
+				target.setErweiterteBetreuungContainer(erweiterteBetreuungContainer
+					.copyErweiterteBetreuungContainer(new ErweiterteBetreuungContainer(), copyType, target));
+			}
+
 			if (belegungFerieninsel != null) {
 				target.setBelegungFerieninsel(belegungFerieninsel.copyBelegungFerieninsel(new BelegungFerieninsel(), copyType));
 			}
@@ -506,8 +512,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			target.setBetreuungNummer(this.getBetreuungNummer());
 			target.setVerfuegung(null);
 			target.setVertrag(this.getVertrag());
-			//TODO copy container (?)
-			//target.setErweiterteBeduerfnisse(this.getErweiterteBeduerfnisse());
 			target.setDatumAblehnung(this.getDatumAblehnung());
 			target.setDatumBestaetigung(this.getDatumBestaetigung());
 			target.setBetreuungMutiert(null);
