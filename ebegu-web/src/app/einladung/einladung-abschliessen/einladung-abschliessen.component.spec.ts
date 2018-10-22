@@ -20,7 +20,6 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {EinladungAbschliessenComponent} from './einladung-abschliessen.component';
 
 describe('EinladungAbschliessenComponent', () => {
-    let component: EinladungAbschliessenComponent;
     let fixture: ComponentFixture<EinladungAbschliessenComponent>;
 
     beforeEach(async(() => {
@@ -32,11 +31,6 @@ describe('EinladungAbschliessenComponent', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(EinladungAbschliessenComponent);
-        component = fixture.componentInstance;
         fixture.detectChanges();
-    });
-
-    it('should create', () => {
-        expect(component).toBeTruthy();
     });
 });
