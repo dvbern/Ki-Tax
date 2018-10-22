@@ -27,7 +27,6 @@ import TestDataUtil from '../../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared.module';
-import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component';
 
 import {BerechtigungComponent} from './berechtigung.component';
 
@@ -56,7 +55,6 @@ describe('BerechtigungComponent', () => {
             imports: [
                 SharedModule,
             ],
-            declarations: [BerechtigungComponent, BenutzerRolleComponent],
             providers: [
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},

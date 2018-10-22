@@ -26,8 +26,6 @@ import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
-import {BenutzerRolleComponent} from '../../shared/component/benutzer-rolle/benutzer-rolle.component';
-import {BerechtigungComponent} from '../../shared/component/berechtigung/berechtigung.component';
 import {BenutzerEinladenComponent} from './benutzer-einladen.component';
 
 describe('BenutzerEinladenComponent', () => {
@@ -55,7 +53,7 @@ describe('BenutzerEinladenComponent', () => {
                 SharedModule,
                 UIRouterModule.forRoot(),
             ],
-            declarations: [BenutzerEinladenComponent, BerechtigungComponent, BenutzerRolleComponent],
+            declarations: [BenutzerEinladenComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: AuthServiceRS, useValue: authServiceSpy},

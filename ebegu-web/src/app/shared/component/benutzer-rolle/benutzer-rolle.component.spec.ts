@@ -37,7 +37,6 @@ describe('BenutzerRolleComponent', () => {
             imports: [
                 SharedModule,
             ],
-            declarations: [BenutzerRolleComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
