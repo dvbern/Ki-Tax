@@ -345,5 +345,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.Gemeinde"/>
 	<entity class="ch.dvbern.ebegu.entities.Einstellung"/>
 	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdaten"/>
+	<entity class="ch.dvbern.ebegu.entities.ErweiterteBetreuung"/>
+	<entity class="ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer"/>
 
 </entity-mappings>
