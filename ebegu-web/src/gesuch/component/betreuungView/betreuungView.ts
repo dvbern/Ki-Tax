@@ -950,8 +950,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
         const gemeindeUser = this.authServiceRS
             .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles());
-        return (gesuchsteller && this.isBetreuungsstatusAusstehend() && !this.isSavingData)
-            || gemeindeUser && !this.isSavingData;
+
+        return !this.isSavingData
+            && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
+            && (gesuchsteller && this.isBetreuungsstatusAusstehend())
+            || gemeindeUser;
     }
 
     /**
