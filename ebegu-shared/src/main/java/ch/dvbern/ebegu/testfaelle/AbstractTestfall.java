@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -338,6 +339,7 @@ public abstract class AbstractTestfall {
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
 		betreuungspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
 		betreuungspensum.setPensum(pensum);
+		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
 		return betreuungspensumContainer;
 	}
 
@@ -352,6 +354,7 @@ public abstract class AbstractTestfall {
 		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
 		betreuungspensum.setGueltigkeit(new DateRange(datumVon, datumBis));
 		betreuungspensum.setPensum(pensum);
+		betreuungspensum.setMonatlicheBetreuungskosten(MathUtil.DEFAULT.from(2000));
 		return betreuungspensumContainer;
 	}
 
