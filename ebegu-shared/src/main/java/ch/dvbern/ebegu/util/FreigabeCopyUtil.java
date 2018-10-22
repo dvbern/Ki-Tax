@@ -30,6 +30,8 @@ import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -99,31 +101,53 @@ public final class FreigabeCopyUtil {
 	}
 
 	private static void copyKindContainer(@Nullable KindContainer container) {
-		if (container != null) {
-			if (container.getKindJA() != null) {
-				if (container.getKindGS() == null) {
-					container.setKindGS(new Kind());
-				}
-				copyKind(container.getKindGS(), container.getKindJA());
-			} else {
-				container.setKindGS(null);
+		if (container == null) {
+			return;
+		}
+
+		if (container.getKindJA() != null) {
+			if (container.getKindGS() == null) {
+				container.setKindGS(new Kind());
 			}
-			// Betreuungen pro Kind
-			for (Betreuung betreuung : container.getBetreuungen()) {
-				// Betreuung
-				if (betreuung.getBetreuungspensumContainers() != null) {
-					for (BetreuungspensumContainer betreuungspensumContainer : betreuung.getBetreuungspensumContainers()) {
-						copyBetreuungspensumContainer(betreuungspensumContainer);
-					}
-				}
-				// Abwesenheiten pro Betreuung
-				if (betreuung.getAbwesenheitContainers() != null) {
-					for (AbwesenheitContainer abwesenheitContainer : betreuung.getAbwesenheitContainers()) {
-						copyAbwesenheitContainer(abwesenheitContainer);
-					}
-				}
+			copyKind(container.getKindGS(), container.getKindJA());
+		} else {
+			container.setKindGS(null);
+		}
+
+		// Betreuungen pro Kind
+		for (Betreuung betreuung : container.getBetreuungen()) {
+			// Betreuung
+			if (betreuung.getBetreuungspensumContainers() != null) {
+				betreuung.getBetreuungspensumContainers().forEach(FreigabeCopyUtil::copyBetreuungspensumContainer);
+			}
+			// Abwesenheiten pro Betreuung
+			if (betreuung.getAbwesenheitContainers() != null) {
+				betreuung.getAbwesenheitContainers().forEach(FreigabeCopyUtil::copyAbwesenheitContainer);
+			}
+			// ErweiterteBetreuung
+			if (betreuung.getErweiterteBetreuungContainer() != null) {
+				copyErweiterteBetreuungContainer(betreuung.getErweiterteBetreuungContainer());
 			}
 		}
+	}
+
+	private static void copyErweiterteBetreuungContainer(@Nonnull ErweiterteBetreuungContainer container) {
+		if (container.getErweiterteBetreuungJA() != null) {
+			if (container.getErweiterteBetreuungGS() == null) {
+				container.setErweiterteBetreuungGS(new ErweiterteBetreuung());
+			}
+			copyErweiterteBetreuung(container.getErweiterteBetreuungGS(), container.getErweiterteBetreuungJA());
+		} else {
+			container.setErweiterteBetreuungGS(null);
+		}
+	}
+
+	private static void copyErweiterteBetreuung(
+		@Nonnull ErweiterteBetreuung erweiterteBetreuungGS,
+		@Nonnull ErweiterteBetreuung erweiterteBetreuungJA
+	) {
+		erweiterteBetreuungGS.setErweiterteBeduerfnisse(erweiterteBetreuungJA.getErweiterteBeduerfnisse());
+		erweiterteBetreuungGS.setFachstelle(erweiterteBetreuungJA.getFachstelle());
 	}
 
 	private static void copyKind(@Nonnull Kind kindGS, @Nonnull Kind kindJA) {

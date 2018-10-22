@@ -241,13 +241,13 @@ export default class GesuchModelManager {
     }
 
     public updateFachstellenAnspruchList(): void {
-        this.fachstelleRS.getFachstellen('anspruch').then((response: TSFachstelle[]) => {
+        this.fachstelleRS.getAnspruchFachstellen().then((response: TSFachstelle[]) => {
             this.fachstellenAnspruchList = response;
         });
     }
 
     public updateFachstellenErweiterteBetreuungList(): void {
-        this.fachstelleRS.getFachstellen('erweiterteBetreuung').then((response: TSFachstelle[]) => {
+        this.fachstelleRS.getErweiterteBetreuungFachstellen().then((response: TSFachstelle[]) => {
             this.fachstellenErweiterteBetreuungList = response;
         });
     }

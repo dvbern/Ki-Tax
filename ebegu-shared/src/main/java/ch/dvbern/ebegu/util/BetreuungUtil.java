@@ -22,8 +22,6 @@ import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -66,26 +64,5 @@ public final class BetreuungUtil {
 			return parameter.getValueAsBigDecimal();
 		}
 		return BigDecimal.ZERO;
-	}
-
-	public static void copyErweiterteBetreuungContainer(@Nullable ErweiterteBetreuungContainer container) {
-		if (container != null) {
-			if (container.getErweiterteBetreuungJA() != null) {
-				if (container.getErweiterteBetreuungGS() == null) {
-					container.setErweiterteBetreuungGS(new ErweiterteBetreuung());
-				}
-				copyErweiterteBetreuung(container.getErweiterteBetreuungGS(), container.getErweiterteBetreuungJA());
-			} else {
-				container.setErweiterteBetreuungGS(null);
-			}
-		}
-	}
-
-	private static void copyErweiterteBetreuung(
-		@Nonnull ErweiterteBetreuung erweiterteBetreuungGS,
-		@Nonnull ErweiterteBetreuung erweiterteBetreuungJA
-	) {
-		erweiterteBetreuungGS.setErweiterteBeduerfnisse(erweiterteBetreuungJA.getErweiterteBeduerfnisse());
-		erweiterteBetreuungGS.setFachstelle(erweiterteBetreuungJA.getFachstelle());
 	}
 }

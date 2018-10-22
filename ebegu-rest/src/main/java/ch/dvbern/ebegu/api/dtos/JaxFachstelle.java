@@ -38,6 +38,7 @@ public class JaxFachstelle extends JaxAbstractDTO {
 	@NotNull
 	private String name;
 
+	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String beschreibung;
 

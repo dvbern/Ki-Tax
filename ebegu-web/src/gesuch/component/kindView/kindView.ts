@@ -154,10 +154,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showFachstelleClicked(): void {
-        if (!this.showFachstelle) {
-            this.resetFachstelleFields();
-        } else {
+        if (this.showFachstelle) {
             this.getModel().pensumFachstelle = new TSPensumFachstelle();
+        } else {
+            this.resetFachstelleFields();
         }
     }
 

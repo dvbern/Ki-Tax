@@ -101,7 +101,8 @@ public class FachstelleResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxFachstelle> getAnspruchFachstellen(){
-		return fachstelleService.getAllFachstellen().stream().filter(Fachstelle::isFachstelleAnspruch)
+		return fachstelleService.getAllFachstellen().stream()
+			.filter(Fachstelle::isFachstelleAnspruch)
 			.map(ap -> converter.fachstelleToJAX(ap))
 			.collect(Collectors.toList());
 	}
@@ -113,7 +114,8 @@ public class FachstelleResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxFachstelle> getErweiterteBetreuungFachstellen(){
-		return fachstelleService.getAllFachstellen().stream().filter(Fachstelle::isFachstelleErweiterteBetreuung)
+		return fachstelleService.getAllFachstellen().stream()
+			.filter(Fachstelle::isFachstelleErweiterteBetreuung)
 			.map(ap -> converter.fachstelleToJAX(ap))
 			.collect(Collectors.toList());
 	}

@@ -393,7 +393,12 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		}
 		boolean stammdatenSame = this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
 
-		return pensenSame && abwesenheitenSame && statusSame && stammdatenSame;
+		boolean sameErweiterteBeduerfnisse = true;
+		if (getErweiterteBetreuungContainer() != null && otherBetreuung.getErweiterteBetreuungContainer() != null) {
+			sameErweiterteBeduerfnisse = getErweiterteBetreuungContainer().isSame(otherBetreuung.getErweiterteBetreuungContainer());
+		}
+
+		return pensenSame && abwesenheitenSame && statusSame && stammdatenSame && sameErweiterteBeduerfnisse;
 	}
 
 	@Transient
@@ -468,9 +473,8 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	public Verfuegung getVerfuegungOrVorgaengerVerfuegung() {
 		if (getVerfuegung() != null) {
 			return getVerfuegung();
-		} else {
-			return getVorgaengerVerfuegung();
 		}
+		return getVorgaengerVerfuegung();
 	}
 
 	@Nullable

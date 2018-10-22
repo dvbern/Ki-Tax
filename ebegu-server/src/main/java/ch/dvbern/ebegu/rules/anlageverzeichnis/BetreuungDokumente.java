@@ -15,7 +15,7 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -25,8 +25,6 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -43,23 +41,21 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 	@Override
 	public void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
 
-		final Set<KindContainer> kindContainers = gesuch.getKindContainers();
+		final List<Betreuung> allBetreuungen = gesuch.extractAllBetreuungen();
 
-		if (kindContainers == null || kindContainers.isEmpty()) {
+		if (allBetreuungen.isEmpty()) {
 			return;
 		}
 
-		for (KindContainer kindContainer : kindContainers) {
-			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				add(getDokument(betreuung, DokumentTyp.BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND), anlageVerzeichnis);
-			}
-		}
+		allBetreuungen.forEach(betreuung ->
+			add(getDokumentBetreuungsaufwand(betreuung), anlageVerzeichnis)
+		);
 	}
 
 	@Nullable
-	private DokumentGrund getDokument(@Nonnull Betreuung betreuung, DokumentTyp dokumentTyp) {
+	private DokumentGrund getDokumentBetreuungsaufwand(@Nonnull Betreuung betreuung) {
 		return getDokument(
-			dokumentTyp,
+			DokumentTyp.BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND,
 			betreuung,
 			null,
 			DokumentGrundPersonType.KIND,
@@ -70,17 +66,18 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Betreuung betreuung) {
-		if (betreuung != null) {
-			switch (dokumentTyp) {
-			case BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND:
-				ErweiterteBetreuungContainer erwBetContainer = betreuung.getErweiterteBetreuungContainer();
-				return erwBetContainer != null && erwBetContainer.getErweiterteBetreuungJA() != null
-					&& erwBetContainer.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
-			default:
-				return false;
-			}
+		if (betreuung == null) {
+			return false;
 		}
-		return false;
+
+		switch (dokumentTyp) {
+		case BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND:
+			ErweiterteBetreuungContainer erwBetContainer = betreuung.getErweiterteBetreuungContainer();
+			return erwBetContainer != null && erwBetContainer.getErweiterteBetreuungJA() != null
+				&& erwBetContainer.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
+		default:
+			return false;
+		}
 	}
 
 }

@@ -171,8 +171,10 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	private boolean isErwerbspensumRequired(@Nonnull Betreuung betreuung) {
 		// Erwerbspensum ist zwingend, wenn:
 		// 1. das Kind keine Fachstelle zugewiesen hat UND das Angebot ein JugendamtKleinkind ist
-		return (betreuung.getKind().getKindJA().getPensumFachstelle() == null &&
-			betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isAngebotJugendamtKleinkind())
-			&& !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
+		// 2. das Kind kein erweiterteBeduerfniss hat
+		return (betreuung.getKind().getKindJA().getPensumFachstelle() == null
+			&& betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isAngebotJugendamtKleinkind())
+			&& ((betreuung.getErweiterteBetreuungContainer() == null || betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null)
+			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse());
 	}
 }

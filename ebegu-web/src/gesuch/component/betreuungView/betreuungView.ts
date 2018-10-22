@@ -151,9 +151,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 // wenn betreuung-nummer nicht definiert ist heisst das, dass wir ein neues erstellen sollten
                 this.model = this.initEmptyBetreuung();
                 this.initialBetreuung = angular.copy(this.model);
-                this.betreuungIndex = this.gesuchModelManager.getKindToWorkWith().betreuungen ?
-                    this.gesuchModelManager.getKindToWorkWith().betreuungen.length :
-                    0;
+                this.betreuungIndex = this.gesuchModelManager.getKindToWorkWith().betreuungen
+                    ? this.gesuchModelManager.getKindToWorkWith().betreuungen.length
+                    : 0;
                 this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
             }
 
@@ -543,7 +543,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel() && this.getBetreuungModel().erweiterteBetreuungContainer) {
             return this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA;
         }
-
         return undefined;
     }
 
@@ -949,9 +948,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public enableErweiterteBeduerfnisse(): boolean {
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
-        return ((gesuchsteller && this.isBetreuungsstatusAusstehend() && !this.isSavingData)
-            || this.isBetreuungsstatusWarten() && !gesuchsteller && !this.isSavingData)
-            || this.isMutationsmeldungStatus;
+        const gemeindeUser = this.authServiceRS
+            .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles());
+        return (gesuchsteller && this.isBetreuungsstatusAusstehend() && !this.isSavingData)
+            || gemeindeUser && !this.isSavingData;
     }
 
     /**
@@ -992,5 +992,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public getFachstellenList(): Array<TSFachstelle> {
         return this.gesuchModelManager.getFachstellenErweiterteBetreuungList();
+    }
+
+    public getTextFachstelleKorrekturJA(): string {
+        if ((this.getErweiterteBetreuungGS() && this.getErweiterteBetreuungGS().erweiterteBeduerfnisse)
+            && (this.getErweiterteBetreuungJA() &&!this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)) {
+            return this.getErweiterteBetreuungGS().fachstelle.name;
+        }
+        return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 }

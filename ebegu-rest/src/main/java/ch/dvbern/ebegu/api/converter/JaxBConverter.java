@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -2068,11 +2069,15 @@ public class JaxBConverter extends AbstractConverter {
 		);
 		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
 
-		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
-			betreuungJAXP.getErweiterteBetreuungContainer(),
-			betreuung.getErweiterteBetreuungContainer()
-		));
-		betreuung.getErweiterteBetreuungContainer().setBetreuung(betreuung);
+		if (betreuungJAXP.getErweiterteBetreuungContainer() != null) {
+			betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
+				betreuungJAXP.getErweiterteBetreuungContainer(),
+				betreuung.getErweiterteBetreuungContainer()
+			));
+			requireNonNull(betreuung.getErweiterteBetreuungContainer()).setBetreuung(betreuung);
+		} else {
+			betreuung.setErweiterteBetreuungContainer(null);
+		}
 
 		abwesenheitContainersToEntity(betreuungJAXP.getAbwesenheitContainers(), betreuung.getAbwesenheitContainers());
 		setBetreuungInAbwesenheiten(betreuung.getAbwesenheitContainers(), betreuung);
@@ -2155,16 +2160,15 @@ public class JaxBConverter extends AbstractConverter {
 
 			final Optional<Fachstelle> fachstelleFromDB =
 				fachstelleService.findFachstelle(erweiterteBetreuungJAXP.getFachstelle().getId());
-			if (fachstelleFromDB.isPresent()) {
-				// Fachstelle darf nicht vom Client ueberschrieben werden
-				erweiterteBetreuung.setFachstelle(fachstelleFromDB.get());
-			} else {
+
+			if (!fachstelleFromDB.isPresent()) {
 				throw new EbeguEntityNotFoundException(
 					"erweiterteBetreuungToEntity",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					erweiterteBetreuungJAXP.getFachstelle()
-						.getId());
+					erweiterteBetreuungJAXP.getFachstelle().getId());
 			}
+			// Fachstelle darf nicht vom Client ueberschrieben werden
+			erweiterteBetreuung.setFachstelle(fachstelleFromDB.get());
 		}
 
 		return erweiterteBetreuung;
@@ -2738,17 +2742,15 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractVorgaengerFieldsToEntity(containerJAX, container);
 
-		ErweiterteBetreuung erwBetToMergeWith;
-
 		if (containerJAX.getErweiterteBetreuungGS() != null) {
-			erwBetToMergeWith =
+			ErweiterteBetreuung erwBetToMergeWith =
 				Optional.ofNullable(container.getErweiterteBetreuungGS()).orElse(new ErweiterteBetreuung());
 			container.setErweiterteBetreuungGS(erweiterteBetreuungToEntity(
 				containerJAX.getErweiterteBetreuungGS(),
 				erwBetToMergeWith));
 		}
 		if (containerJAX.getErweiterteBetreuungJA() != null) {
-			erwBetToMergeWith =
+			ErweiterteBetreuung erwBetToMergeWith =
 				Optional.ofNullable(container.getErweiterteBetreuungJA()).orElse(new ErweiterteBetreuung());
 			container.setErweiterteBetreuungJA(erweiterteBetreuungToEntity(
 				containerJAX.getErweiterteBetreuungJA(),

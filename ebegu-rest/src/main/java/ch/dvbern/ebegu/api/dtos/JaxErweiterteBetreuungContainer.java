@@ -29,10 +29,10 @@ public class JaxErweiterteBetreuungContainer extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 1196725684018427343L;
 
-	//TODO annotations
+	@Valid
 	private JaxErweiterteBetreuung erweiterteBetreuungGS;
 
-	//TODO annotations
+	@Valid
 	private JaxErweiterteBetreuung erweiterteBetreuungJA;
 
 	public JaxErweiterteBetreuung getErweiterteBetreuungGS() {

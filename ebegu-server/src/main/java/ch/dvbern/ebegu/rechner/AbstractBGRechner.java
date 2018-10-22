@@ -50,7 +50,11 @@ public abstract class AbstractBGRechner {
 		// Benoetigte Daten
 		LocalDate geburtsdatum = verfuegung.getBetreuung().getKind().getKindJA().getGeburtsdatum();
 		boolean eingeschult = verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp().isEingeschult();
-		boolean besonderebeduerfnisse = verfuegung.getBetreuung().getErweiterteBeduerfnisse();
+		boolean besonderebeduerfnisse = false;
+		if (verfuegung.getBetreuung().getErweiterteBetreuungContainer() != null) {
+			besonderebeduerfnisse = verfuegung.getBetreuung().getErweiterteBetreuungContainer()
+				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
+		}
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
