@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
