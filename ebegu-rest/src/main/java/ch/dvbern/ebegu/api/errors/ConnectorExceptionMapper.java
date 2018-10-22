@@ -24,7 +24,7 @@ import ch.dvbern.ebegu.errors.ConnectorException;
 @Provider
 public class ConnectorExceptionMapper extends AbstractEbeguExceptionMapper<ConnectorException> {
 
-	private class ConnectorStatusType implements StatusType {
+	private static class ConnectorStatusType implements StatusType {
 
 		private final Family family = Status.CONFLICT.getFamily();
 		private final int statusCode = Status.CONFLICT.getStatusCode();
