@@ -426,24 +426,6 @@
                                     </dv-input-container>
                                 </div>
                             </div>
-
-                            <!--erweiterte Beduerfnisse-->
-                            <div class="row marginTop40 marginBottom40" ng-if="vm.showErweiterteBeduerfnisse()">
-                                <div class="col-xs-12 dv-input-container-question">
-                                    <div class="checkbox">
-                                        <md-checkbox ng-model="vm.getBetreuungModel().erweiterteBeduerfnisse"
-                                                     name="erweiterteBeduerfnisse"
-                                                     aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
-                                                     dv-enable-element
-                                                     dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                                                     dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
-                                            <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
-                                        </md-checkbox>
-                                        <dv-error-messages
-                                            for="vm.form.erweiterteBeduerfnisse.$error"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
                         </fieldset>
 
 

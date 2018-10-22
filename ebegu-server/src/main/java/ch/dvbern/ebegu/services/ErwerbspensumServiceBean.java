@@ -173,6 +173,6 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 		// 1. das Kind keine Fachstelle zugewiesen hat UND das Angebot ein JugendamtKleinkind ist
 		return (betreuung.getKind().getKindJA().getPensumFachstelle() == null &&
 			betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isAngebotJugendamtKleinkind())
-			&& !betreuung.getErweiterteBeduerfnisse();
+			&& !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
 	}
 }

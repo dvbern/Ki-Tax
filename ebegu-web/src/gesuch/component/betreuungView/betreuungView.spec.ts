@@ -219,7 +219,7 @@ describe('betreuungView', () => {
             it('must change the status of the Betreuung to ABGEWIESEN and restore initial values of Betreuung', () => {
                 spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue($q.when({}));
                 spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.stub();
-                betreuungView.model.erweiterteBeduerfnisse = true;
+                betreuungView.model.erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse = true;
                 betreuungView.model.grundAblehnung = 'mein Grund';
                 expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
                     .toEqual(TSBetreuungsstatus.AUSSTEHEND);
@@ -232,7 +232,8 @@ describe('betreuungView', () => {
                     .toEqual(TSBetreuungsstatus.AUSSTEHEND);
                 expect(gesuchModelManager.getBetreuungToWorkWith().grundAblehnung).toEqual('mein Grund');
                 expect(gesuchModelManager.getBetreuungToWorkWith().datumAblehnung).toEqual(DateUtil.today());
-                expect(gesuchModelManager.getBetreuungToWorkWith().erweiterteBeduerfnisse).toBe(true);
+                expect(gesuchModelManager.getBetreuungToWorkWith().erweiterteBetreuungContainer
+                    .erweiterteBetreuungJA.erweiterteBeduerfnisse).toBe(true);
                 // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });

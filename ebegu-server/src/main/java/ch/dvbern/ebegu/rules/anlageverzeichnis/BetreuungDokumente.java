@@ -44,14 +44,12 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 	public void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
 
 		final Set<KindContainer> kindContainers = gesuch.getKindContainers();
-		Set<Betreuung> betreuungen = new HashSet<>();
 
 		if (kindContainers == null || kindContainers.isEmpty()) {
 			return;
 		}
 
 		for (KindContainer kindContainer : kindContainers) {
-			final Kind kindJA = kindContainer.getKindJA();
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				add(getDokument(betreuung, DokumentTyp.BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND), anlageVerzeichnis);
 			}
