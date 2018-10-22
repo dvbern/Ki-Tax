@@ -36,7 +36,6 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.ApplicationProperty_;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -73,7 +72,9 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Nonnull
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public ApplicationProperty saveOrUpdateApplicationProperty(@Nonnull final ApplicationPropertyKey key, @Nonnull final String value) {
+	public ApplicationProperty saveOrUpdateApplicationProperty(
+		@Nonnull final ApplicationPropertyKey key,
+		@Nonnull final String value) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(value);
 		Optional<ApplicationProperty> property = readApplicationProperty(key);
@@ -89,7 +90,10 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Override
 	@PermitAll
 	public Optional<ApplicationProperty> readApplicationProperty(@Nonnull final ApplicationPropertyKey key) {
-		return criteriaQueryHelper.getEntityByUniqueAttribute(ApplicationProperty.class, key, ApplicationProperty_.name);
+		return criteriaQueryHelper.getEntityByUniqueAttribute(
+			ApplicationProperty.class,
+			key,
+			ApplicationProperty_.name);
 	}
 
 	@Nonnull
@@ -97,7 +101,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	public Collection<String> readMimeTypeWhitelist() {
 		//note this is a candidate for caching
 		Set<String> allowedTypes = Collections.emptySet();
-		final Optional<ApplicationProperty> whitelistVal = this.readApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST);
+		final Optional<ApplicationProperty> whitelistVal =
+			this.readApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST);
 		if (whitelistVal.isPresent() && StringUtils.isNotEmpty(whitelistVal.get().getValue())) {
 			final String[] values = whitelistVal.get().getValue().split(",");
 			allowedTypes = Arrays.stream(values)
@@ -132,8 +137,10 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 	public void removeApplicationProperty(@Nonnull ApplicationPropertyKey key) {
 		Objects.requireNonNull(key);
-		ApplicationProperty toRemove = readApplicationProperty(key).orElseThrow(() -> new EbeguEntityNotFoundException("removeApplicationProperty",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key));
+		ApplicationProperty toRemove =
+			readApplicationProperty(key).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"removeApplicationProperty",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key));
 		persistence.remove(toRemove);
 	}
 
@@ -142,7 +149,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@PermitAll
 	public String findApplicationPropertyAsString(@Nonnull ApplicationPropertyKey name) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
-		Optional<ApplicationProperty> property = criteriaQueryHelper.getEntityByUniqueAttribute(ApplicationProperty.class, name, ApplicationProperty_.name);
+		Optional<ApplicationProperty> property =
+			criteriaQueryHelper.getEntityByUniqueAttribute(ApplicationProperty.class, name, ApplicationProperty_.name);
 		return property.map(ApplicationProperty::getValue).orElse(null);
 	}
 
@@ -191,32 +199,5 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 			return defaultValue;
 		}
 		return property;
-	}
-
-	@Nonnull
-	@Override
-	@PermitAll
-	public Optional<Benutzer> readDefaultVerantwortlicherBGFromProperties() {
-		return readDefaultVerantwortlicherAmtFromProperties(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
-	}
-
-	@Nonnull
-	@Override
-	@PermitAll
-	public Optional<Benutzer> readDefaultVerantwortlicherTSFromProperties() {
-		return readDefaultVerantwortlicherAmtFromProperties(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS);
-	}
-
-	private Optional<Benutzer> readDefaultVerantwortlicherAmtFromProperties(ApplicationPropertyKey key) {
-		String propertyDefaultVerantwortlicher = findApplicationPropertyAsString(key);
-		if (org.apache.commons.lang.StringUtils.isNotEmpty(propertyDefaultVerantwortlicher)) {
-			Optional<Benutzer> defaultVerantwortlicherOptional = benutzerService.findBenutzer(propertyDefaultVerantwortlicher);
-			if (defaultVerantwortlicherOptional.isPresent()) {
-				return defaultVerantwortlicherOptional;
-			}
-			LOG.warn("Es ist kein gueltiger DEFAULT Verantwortlicher fuer Mitteilungen gesetzt. Bitte Propertys pruefen: {}",
-				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
-		}
-		return Optional.empty();
 	}
 }
