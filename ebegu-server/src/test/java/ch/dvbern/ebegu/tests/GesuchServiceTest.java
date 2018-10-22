@@ -230,7 +230,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final Collection<GeneratedDokument> allGenDok = generatedDokumentService.findGeneratedDokumentsFromGesuch(gesuch);
 		Assert.assertEquals(1, allGenDok.size());
 		Collection<Zahlungsposition> zahlungspositionen = criteriaQueryHelper.getAll(Zahlungsposition.class);
-		Assert.assertEquals(2, zahlungspositionen.size());
+		Assert.assertEquals(4, zahlungspositionen.size());
 
 		gesuchService.removeGesuch(gesuch.getId(), GesuchDeletionCause.UNBEKANNT);
 		gesuchService.removeGesuch(gesuch2.getId(), GesuchDeletionCause.UNBEKANNT);

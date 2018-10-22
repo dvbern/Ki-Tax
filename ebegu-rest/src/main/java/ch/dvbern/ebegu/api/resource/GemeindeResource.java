@@ -43,11 +43,15 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
@@ -99,7 +103,7 @@ public class GemeindeResource {
 		return gemeindeConverter.gemeindeToJAX(persistedGemeinde);
 	}
 
-	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
+	@ApiOperation(value = "Speichert eine Gemeinde in der Datenbank", response = JaxGemeinde.class)
 	@Nullable
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -174,6 +178,77 @@ public class GemeindeResource {
 		return gemeindeService.findGemeindeByName(name)
 			.map(gemeinde -> gemeindeConverter.gemeindeToJAX(gemeinde))
 			.orElse(null);
+	}
+
+	@ApiOperation(value = "Returns the GemeindeStammdaten with the given GemeindeId.", response = JaxGemeindeStammdaten.class)
+	@Nullable
+	@GET
+	@Path("/stammdaten/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGemeindeStammdaten getGemeindeStammdaten(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+
+		Optional<GemeindeStammdaten> stammdatenFromDB = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+		if (!stammdatenFromDB.isPresent()) {
+			stammdatenFromDB = initGemeindeStammdaten(gemeindeId);
+		}
+		return stammdatenFromDB
+			.map(stammdaten -> converter.gemeindeStammdatenToJAX(stammdaten))
+			.orElse(null);
+	}
+
+	private Optional<GemeindeStammdaten> initGemeindeStammdaten(String gemeindeId) {
+		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
+		Optional<Gemeinde> gemeinde = gemeindeService.findGemeinde(gemeindeId);
+		stammdaten.setGemeinde(gemeinde.orElse(new Gemeinde()));
+		stammdaten.setAdresse(getInitAdresse());
+		stammdaten.setMail("");
+		return Optional.of(stammdaten);
+	}
+
+	private Adresse getInitAdresse() {
+		Adresse a = new Adresse();
+		a.setStrasse("");
+		a.setPlz("");
+		a.setOrt("");
+		return a;
+	}
+
+	@ApiOperation(value = "Speichert die GemeindeStammdaten", response = JaxGemeindeStammdaten.class)
+	@Nullable
+	@PUT
+	@Path("/stammdaten")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxGemeindeStammdaten saveGemeindeStammdaten(
+		@Nonnull @NotNull @Valid JaxGemeindeStammdaten jaxStammdaten,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		GemeindeStammdaten stammdaten;
+		if (jaxStammdaten.getId() != null) {
+			Optional<GemeindeStammdaten> optional = gemeindeService.getGemeindeStammdaten(jaxStammdaten.getId());
+			stammdaten = optional.orElse(new GemeindeStammdaten());
+		} else {
+			stammdaten = new GemeindeStammdaten();
+		}
+		if (stammdaten.isNew()) {
+			stammdaten.setAdresse(new Adresse());
+		}
+		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
+
+		// Statuswechsel
+		if (stammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
+			stammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
+		}
+
+		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
+
+		return converter.gemeindeStammdatenToJAX(persistedStammdaten);
+
 	}
 
 }

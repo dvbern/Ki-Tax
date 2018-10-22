@@ -43,6 +43,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests fuer den Zahlungsservice
@@ -50,6 +52,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ZahlungsauftragSonderfaelleTest.class);
 
 	@Inject
 	private ZahlungService zahlungService;
@@ -198,6 +202,9 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 
 	private void assertZahlungsstatus(List<VerfuegungZeitabschnitt> alleZeitabschnitte, int startIndex,
 		VerfuegungsZeitabschnittZahlungsstatus statusFirstMonth, VerfuegungsZeitabschnittZahlungsstatus statusRestOfMonths) {
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : alleZeitabschnitte) {
+			LOG.warn(verfuegungZeitabschnitt.toString());
+		}
 		Assert.assertSame(statusFirstMonth, alleZeitabschnitte.get(startIndex).getZahlungsstatus());
 		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+1).getZahlungsstatus());
 		Assert.assertSame(statusRestOfMonths, alleZeitabschnitte.get(startIndex+2).getZahlungsstatus());

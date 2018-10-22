@@ -19,11 +19,12 @@ import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
+import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import TSAbstractEntity from '../models/TSAbstractEntity';
 import TSAbstractFinanzielleSituation from '../models/TSAbstractFinanzielleSituation';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
-import {TSAbstractPensumEntity} from '../models/TSAbstractPensumEntity';
+import {TSAbstractIntegerPensumEntity} from '../models/TSAbstractIntegerPensumEntity';
 import TSAbstractPersonEntity from '../models/TSAbstractPersonEntity';
 import TSAbwesenheit from '../models/TSAbwesenheit';
 import TSAbwesenheitContainer from '../models/TSAbwesenheitContainer';
@@ -74,6 +75,7 @@ import TSFinanzielleSituation from '../models/TSFinanzielleSituation';
 import TSFinanzielleSituationContainer from '../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../models/TSFinanzModel';
 import TSGemeinde from '../models/TSGemeinde';
+import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
@@ -292,17 +294,34 @@ export default class EbeguRestUtil {
         parsedObject.gueltigkeit = new TSDateRange(ab, bis);
     }
 
-    private abstractPensumEntityToRestObject(restObj: any, pensumEntity: TSAbstractPensumEntity): void {
+    private abstractPensumEntityToRestObject(restObj: any, pensumEntity: TSAbstractIntegerPensumEntity): void {
         this.abstractDateRangeEntityToRestObject(restObj, pensumEntity);
         restObj.pensum = pensumEntity.pensum;
     }
 
+    private abstractBetreuungspensumEntityToRestObject(restObj: any, betreuungspensumEntity: TSAbstractDecimalPensumEntity): void {
+        this.abstractDateRangeEntityToRestObject(restObj, betreuungspensumEntity);
+        restObj.unitForDisplay = betreuungspensumEntity.unitForDisplay;
+        restObj.pensum = betreuungspensumEntity.pensum;
+        restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten;
+    }
+
     private parseAbstractPensumEntity(
-        betreuungspensumTS: TSAbstractPensumEntity,
+        betreuungspensumTS: TSAbstractIntegerPensumEntity,
         betreuungspensumFromServer: any,
     ): void {
         this.parseDateRangeEntity(betreuungspensumTS, betreuungspensumFromServer);
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
+    }
+
+    private parseAbstractBetreuungspensumEntity(
+        betreuungspensumTS: TSAbstractDecimalPensumEntity,
+        betreuungspensumFromServer: any,
+    ): void {
+        this.parseDateRangeEntity(betreuungspensumTS, betreuungspensumFromServer);
+        betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
+        betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
+        betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
     }
 
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity): void {
@@ -686,7 +705,7 @@ export default class EbeguRestUtil {
 
     public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
         if (gemeinde) {
-            this.abstractMutableEntityToRestObject(restGemeinde, gemeinde);
+            this.abstractEntityToRestObject(restGemeinde, gemeinde);
             restGemeinde.name = gemeinde.name;
             restGemeinde.status = gemeinde.status;
             restGemeinde.gemeindeNummer = gemeinde.gemeindeNummer;
@@ -709,7 +728,7 @@ export default class EbeguRestUtil {
 
     public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
         if (gemeindeFromServer) {
-            this.parseAbstractMutableEntity(gemeindeTS, gemeindeFromServer);
+            this.parseAbstractEntity(gemeindeTS, gemeindeFromServer);
             gemeindeTS.name = gemeindeFromServer.name;
             gemeindeTS.status = gemeindeFromServer.status;
             gemeindeTS.gemeindeNummer = gemeindeFromServer.gemeindeNummer;
@@ -717,6 +736,61 @@ export default class EbeguRestUtil {
             gemeindeTS.betreuungsgutscheineStartdatum = DateUtil
                 .localDateToMoment(gemeindeFromServer.betreuungsgutscheineStartdatum);
             return gemeindeTS;
+        }
+        return undefined;
+    }
+
+    public gemeindeStammdatenToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdaten): TSGemeindeStammdaten {
+        if (stammdaten) {
+            this.abstractEntityToRestObject(restStammdaten, stammdaten);
+
+            restStammdaten.defaultBenutzerBG = this.userToRestObject({}, stammdaten.defaultBenutzerBG);
+            restStammdaten.defaultBenutzerTS = this.userToRestObject({}, stammdaten.defaultBenutzerTS);
+            restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
+            restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
+            restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
+            restStammdaten.keineBeschwerdeAdresse = stammdaten.keineBeschwerdeAdresse;
+            restStammdaten.mail = stammdaten.mail;
+            restStammdaten.telefon = stammdaten.telefon;
+            restStammdaten.webseite = stammdaten.webseite;
+            restStammdaten.korrespondenzspracheDe = stammdaten.korrespondenzspracheDe;
+            restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
+            restStammdaten.kontingentierung = stammdaten.kontingentierung;
+            restStammdaten.beguBisUndMitSchulstufe = stammdaten.beguBisUndMitSchulstufe;
+
+            return restStammdaten;
+        }
+        return undefined;
+    }
+
+    public parseGemeindeStammdaten(
+        stammdatenTS: TSGemeindeStammdaten,
+        stammdatenFromServer: any
+    ): TSGemeindeStammdaten {
+
+        if (stammdatenFromServer) {
+            this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
+
+            stammdatenTS.administratoren = stammdatenFromServer.administratoren;
+            stammdatenTS.sachbearbeiter = stammdatenFromServer.sachbearbeiter;
+            stammdatenTS.defaultBenutzerBG = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerBG);
+            stammdatenTS.defaultBenutzerTS = this.parseUser(new TSBenutzer(), stammdatenFromServer.defaultBenutzerTS);
+            stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
+            stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
+            stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
+            stammdatenTS.keineBeschwerdeAdresse = stammdatenFromServer.keineBeschwerdeAdresse;
+            stammdatenTS.mail = stammdatenFromServer.mail;
+            stammdatenTS.telefon = stammdatenFromServer.telefon;
+            stammdatenTS.webseite = stammdatenFromServer.webseite;
+            stammdatenTS.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
+            stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
+            stammdatenTS.kontingentierung = stammdatenFromServer.kontingentierung;
+            stammdatenTS.beguBisUndMitSchulstufe = stammdatenFromServer.beguBisUndMitSchulstufe;
+            stammdatenTS.logoUrl = stammdatenFromServer.logoUrl;
+            stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
+            stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
+
+            return stammdatenTS;
         }
         return undefined;
     }
@@ -1495,20 +1569,20 @@ export default class EbeguRestUtil {
     }
 
     public betreuungspensumToRestObject(restBetreuungspensum: any, betreuungspensum: TSBetreuungspensum): any {
-        this.abstractPensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
+        this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
         if (betreuungspensum.nichtEingetreten !== null) {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
+            restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
-        restBetreuungspensum.monatlicheBetreuungskosten = betreuungspensum.monatlicheBetreuungskosten;
         return restBetreuungspensum;
     }
 
     public betreuungsmitteilungPensumToRestObject(restBetreuungspensum: any,
                                                   betreuungspensum: TSBetreuungsmitteilungPensum,
     ): any {
-        this.abstractPensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
+        this.abstractBetreuungspensumEntityToRestObject(restBetreuungspensum, betreuungspensum);
         return restBetreuungspensum;
     }
 
@@ -1622,9 +1696,9 @@ export default class EbeguRestUtil {
                                  betreuungspensumFromServer: any,
     ): TSBetreuungspensum {
         if (betreuungspensumFromServer) {
-            this.parseAbstractPensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+            this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             betreuungspensumTS.nichtEingetreten = betreuungspensumFromServer.nichtEingetreten;
-            betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
+            betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             return betreuungspensumTS;
         }
         return undefined;
@@ -1634,7 +1708,7 @@ export default class EbeguRestUtil {
                                            betreuungspensumFromServer: any,
     ): TSBetreuungsmitteilungPensum {
         if (betreuungspensumFromServer) {
-            this.parseAbstractPensumEntity(betreuungspensumTS, betreuungspensumFromServer);
+            this.parseAbstractBetreuungspensumEntity(betreuungspensumTS, betreuungspensumFromServer);
             return betreuungspensumTS;
         }
         return undefined;

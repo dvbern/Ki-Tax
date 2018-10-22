@@ -75,13 +75,13 @@ public class Testfall02_FeutzYvonne extends AbstractTestfall {
 		gesuch.getKindContainers().add(kind2);
 
 		// Betreuungen
-		// Kind 1: Tagi Weissenstein
-		Betreuung betreuungTagiAaregg = createBetreuung(BetreuungsangebotTyp.TAGI, ID_INSTITUTION_WEISSENSTEIN, betreuungenBestaetigt);
-		betreuungTagiAaregg.setKind(kind1);
-		kind1.getBetreuungen().add(betreuungTagiAaregg);
+		// Kind 1: Kita Weissenstein
+		Betreuung betreuungKitaWeissenstein = createBetreuung(BetreuungsangebotTyp.KITA, ID_INSTITUTION_WEISSENSTEIN, betreuungenBestaetigt);
+		betreuungKitaWeissenstein.setKind(kind1);
+		kind1.getBetreuungen().add(betreuungKitaWeissenstein);
 		BetreuungspensumContainer betreuungspensumTagiAaregg = createBetreuungspensum(60, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
-		betreuungspensumTagiAaregg.setBetreuung(betreuungTagiAaregg);
-		betreuungTagiAaregg.getBetreuungspensumContainers().add(betreuungspensumTagiAaregg);
+		betreuungspensumTagiAaregg.setBetreuung(betreuungKitaWeissenstein);
+		betreuungKitaWeissenstein.getBetreuungspensumContainers().add(betreuungspensumTagiAaregg);
 		// Kind 2: Kita Weissenstein
 		Betreuung betreuungKitaAaregg = createBetreuung(BetreuungsangebotTyp.KITA, ID_INSTITUTION_WEISSENSTEIN, betreuungenBestaetigt);
 		betreuungKitaAaregg.setKind(kind2);

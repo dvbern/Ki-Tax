@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.validators;
 
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
@@ -45,9 +46,9 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 	@Inject
 	private EinstellungService einstellungService;
 
-	// We need to pass to EinstellungService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
-	// and pass it to the methods of EinstellungService we need to call.
-	//http://stackoverflow.com/questions/18267269/correct-way-to-do-an-entitymanager-query-during-hibernate-validation
+	// We need to pass to EinstellungService a new EntityManager to avoid errors like ConcurrentModificatinoException.
+	// So we create it here and pass it to the methods of EinstellungService we need to call.
+	// http://stackoverflow.com/questions/18267269/correct-way-to-do-an-entitymanager-query-during-hibernate-validation
 	@PersistenceUnit(unitName = "ebeguPersistenceUnit")
 	private EntityManagerFactory entityManagerFactory;
 
@@ -82,16 +83,29 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 		for (BetreuungspensumContainer betPenContainer : betreuung.getBetreuungspensumContainers()) {
 			Gesuchsperiode gesuchsperiode = betPenContainer.extractGesuchsperiode();
 			Gemeinde gemeinde = betreuung.extractGesuch().getDossier().getGemeinde();
-			int betreuungsangebotTypMinValue = BetreuungUtil.getMinValueFromBetreuungsangebotTyp(
+			BigDecimal betreuungsangebotTypMinValue = BetreuungUtil.getMinValueFromBetreuungsangebotTyp(
 				gesuchsperiode, gemeinde, betreuung.getBetreuungsangebotTyp(), einstellungService, em);
 
-			if (!validateBetreuungspensum(betPenContainer.getBetreuungspensumGS(), betreuungsangebotTypMinValue, index, "GS", context)
-				|| !validateBetreuungspensum(betPenContainer.getBetreuungspensumJA(), betreuungsangebotTypMinValue, index, "JA", context)) {
+			if (validateBetreuungspensum(
+				betPenContainer.getBetreuungspensumGS(),
+				betreuungsangebotTypMinValue,
+				index,
+				"GS",
+				context)
+				&&
+				validateBetreuungspensum(
+					betPenContainer.getBetreuungspensumJA(),
+					betreuungsangebotTypMinValue,
+					index,
+					"JA",
+					context)
+			) {
+				index++;
+			} else {
 
 				closeEntityManager(em);
 				return false;
 			}
-			index++;
 		}
 		closeEntityManager(em);
 		return true;
@@ -112,9 +126,10 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 	}
 
 	/**
-	 * With the given the pensumMin it checks if the introduced pensum is in the permitted range. Case not a ConstraintValidator will be created
-	 * with a message and a path indicating which object threw the error. False will be returned in the explained case. In case the value for pensum
-	 * is right, nothing will be done and true will be returned.
+	 * With the given the pensumMin it checks if the introduced pensum is in the permitted range. Case not a
+	 * ConstraintValidator will be created with a message and a path indicating which object threw the error.
+	 * False will be returned in the explained case.
+	 * In case the value for pensum is right, nothing will be done and true will be returned.
 	 *
 	 * @param betreuungspensum the betreuungspensum to check
 	 * @param pensumMin the minimum permitted value for pensum
@@ -123,16 +138,31 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 	 * @param context the context
 	 * @return true if the value resides inside the permitted range. False otherwise
 	 */
-	private boolean validateBetreuungspensum(Betreuungspensum betreuungspensum, int pensumMin, int index, String containerPostfix, ConstraintValidatorContext context) {
-		// Es waere moeglich, die Messages mit der Klasse HibernateConstraintValidatorContext zu erzeugen. Das waere aber Hibernate-abhaengig. wuerde es Sinn machen??
-		if (betreuungspensum != null && !betreuungspensum.getNichtEingetreten() && betreuungspensum.getPensum() < pensumMin) {
+	private boolean validateBetreuungspensum(
+		@Nullable Betreuungspensum betreuungspensum,
+		BigDecimal pensumMin,
+		int index,
+		String containerPostfix,
+		ConstraintValidatorContext context) {
+
+		if (betreuungspensum == null) {
+			return true;
+		}
+
+		// Es waere moeglich, die Messages mit der Klasse HibernateConstraintValidatorContext zu erzeugen. Das waere
+		// aber Hibernate-abhaengig. wuerde es Sinn machen??
+		if (!betreuungspensum.getNichtEingetreten() && betreuungspensum.getPensum().compareTo(pensumMin) < 0) {
 			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
 			String message = rb.getString("invalid_betreuungspensum");
 			message = MessageFormat.format(message, betreuungspensum.getPensum(), pensumMin);
 
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate(message)
-				.addPropertyNode("betreuungspensumContainers[" + Integer.toString(index) + "].betreuungspensum" + containerPostfix + ".pensum")
+				.addPropertyNode("betreuungspensumContainers["
+					+ index
+					+ "].betreuungspensum"
+					+ containerPostfix
+					+ ".pensum")
 				.addConstraintViolation();
 
 			return false;

@@ -67,6 +67,7 @@ public class MutationsMerger {
 		final Verfuegung verfuegungOnGesuchForMutation = betreuung.getVorgaengerVerfuegung();
 
 		final LocalDate mutationsEingansdatum = betreuung.extractGesuch().getEingangsdatum();
+		Objects.requireNonNull(mutationsEingansdatum);
 
 		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();
 
@@ -96,8 +97,7 @@ public class MutationsMerger {
 
 			//SCHULKINDER: Sonderregel bei zu Mutation von zu spaet eingereichten Schulkindangeboten
 			//fuer Abschnitte ab dem Folgemonat des Mutationseingangs rechnen wir bisher, fuer alle vorherigen folgende Sonderregel
-			if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtSchulkind()
-				&& !isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)
+			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)
 				&& verfuegungOnGesuchForMutation != null) {
 
 				VerfuegungZeitabschnitt zeitabschnittInVorgaenger = findZeitabschnittInVorgaenger(zeitabschnittStart, verfuegungOnGesuchForMutation);
@@ -117,7 +117,7 @@ public class MutationsMerger {
 		return monatsSchritte;
 	}
 
-	private boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, LocalDate mutationsEingansdatum) {
+	private boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {
 		return verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
 	}
 
@@ -134,14 +134,14 @@ public class MutationsMerger {
 			}
 		}
 
-		LOG.error("Vorgaengerzeitabschnitt fuer Mutation konnte nicht gefunden werden " + stichtag);
+		LOG.error("Vorgaengerzeitabschnitt fuer Mutation konnte nicht gefunden werden {}", stichtag);
 		return null;
 	}
 
 	/**
 	 * Findet das anspruchberechtigtes Pensum zum Zeitpunkt des neuen Zeitabschnitt-Start
 	 */
-	private int findAnspruchberechtigtesPensumAt(LocalDate zeitabschnittStart, Verfuegung verfuegungGSM) {
+	private int findAnspruchberechtigtesPensumAt(LocalDate zeitabschnittStart, @Nullable Verfuegung verfuegungGSM) {
 
 		if (verfuegungGSM != null) {
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : verfuegungGSM.getZeitabschnitte()) {

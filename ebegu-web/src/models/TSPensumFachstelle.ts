@@ -13,11 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractPensumEntity} from './TSAbstractPensumEntity';
+import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import {TSFachstelle} from './TSFachstelle';
 import {TSDateRange} from './types/TSDateRange';
 
-export class TSPensumFachstelle extends TSAbstractPensumEntity {
+export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     private _fachstelle: TSFachstelle;
 

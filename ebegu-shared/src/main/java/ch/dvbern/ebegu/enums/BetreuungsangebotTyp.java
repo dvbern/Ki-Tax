@@ -25,7 +25,6 @@ public enum BetreuungsangebotTyp {
 	KITA,
 	TAGESSCHULE,
 	TAGESFAMILIEN,
-	TAGI,
 	FERIENINSEL;
 
 	public boolean isKita() {
@@ -38,10 +37,6 @@ public enum BetreuungsangebotTyp {
 
 	public boolean isTagesfamilien() { return TAGESFAMILIEN == this; }
 
-	public boolean isTagi() {
-		return TAGI == this;
-	}
-
 	public boolean isFerieninsel() {
 		return FERIENINSEL == this;
 	}
@@ -51,8 +46,6 @@ public enum BetreuungsangebotTyp {
 	}
 
 	public boolean isAngebotJugendamtKleinkind() { return KITA == this || TAGESFAMILIEN == this; }
-
-	public boolean isAngebotJugendamtSchulkind() { return TAGI == this; }
 
 	public boolean isJugendamt() {
 		return !isSchulamt();
