@@ -96,7 +96,7 @@ describe('BerechtigungComponent', () => {
         fixture.detectChanges();
 
         const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
-        expect(debugElements.length).toBe(2);
+        expect(debugElements.length).toBe(0);
 
         expect(fixture.debugElement.query(By.css('dv-gemeinde-multiselect'))).toBeTruthy();
     });
@@ -107,7 +107,7 @@ describe('BerechtigungComponent', () => {
         fixture.detectChanges();
 
         const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
-        expect(debugElements.length).toBe(2);
+        expect(debugElements.length).toBe(0);
 
         expect(fixture.debugElement.query(By.css('[id^=institution-]'))).toBeTruthy();
     });
@@ -118,7 +118,7 @@ describe('BerechtigungComponent', () => {
         fixture.detectChanges();
 
         const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
-        expect(debugElements.length).toBe(2);
+        expect(debugElements.length).toBe(0);
 
         expect(fixture.debugElement.query(By.css('[id^=treagerschaft-]'))).toBeTruthy();
     });
