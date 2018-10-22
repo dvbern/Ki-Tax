@@ -237,9 +237,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		appender.accept(berechtigung);
 
-		// Wir speichern direkt anstatt über Service, da in diesem speziellen Fall ein Kantonsbenutzer auch
-		// Gemeinderollen vergeben können muss und wir daher den Authorizer umgehen wollen
-		return persistence.persist(benutzer);
+		return saveBenutzer(benutzer);
 	}
 
 	@Nonnull
@@ -258,18 +256,19 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		requireNonNull(einladung);
 
 		checkEinladung(einladung);
-		Benutzer eingeladener = einladung.getEingeladener();
+
+		Benutzer persistedBenutzer = saveBenutzer(einladung.getEingeladener());
 
 		try {
 			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
 
 		} catch (MailException e) {
 			String message =
-				String.format("Es konnte keine Email Einladung an %s geschickt werden", eingeladener.getEmail());
+				String.format("Es konnte keine Email Einladung an %s geschickt werden", persistedBenutzer.getEmail());
 			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
 
-		return eingeladener;
+		return persistedBenutzer;
 	}
 
 	/**
