@@ -237,7 +237,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		appender.accept(berechtigung);
 
-		return saveBenutzer(benutzer);
+		// Wir speichern direkt anstatt über Service, da in diesem speziellen Fall ein Kantonsbenutzer auch
+		// Gemeinderollen vergeben können muss und wir daher den Authorizer umgehen wollen
+		return persistence.persist(benutzer);
 	}
 
 	@Nonnull
