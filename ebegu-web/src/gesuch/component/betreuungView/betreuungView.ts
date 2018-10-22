@@ -990,11 +990,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    private resetFachstelleFields(): void {
-        this.fachstelleId = undefined;
-        this.getErweiterteBetreuungJA().fachstelle = undefined;
-    }
-
     public getFachstellenList(): Array<TSFachstelle> {
         return this.gesuchModelManager.getFachstellenErweiterteBetreuungList();
     }
