@@ -15,11 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum Permission {
-    BENUTZER_EINLADEN = 'BENUTZER_EINLADEN',
-    ROLE_TRAEGERSCHAFT = 'ROLE_TRAEGERSCHAFT',
-    ROLE_INSTITUTION = 'ROLE_INSTITUTION',
-    ROLE_GEMEINDE = 'ROLE_GEMEINDE',
-    ROLE_MANDANT = 'ROLE_MANDANT',
-    ROLE_BG = 'ROLE_BG', // todo remove in KIBON version 2. use Permission.ROLE_GEMEINDE instead,
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {Transition} from '@uirouter/core';
+
+@Component({
+    selector: 'dv-login-info',
+    templateUrl: './login-info.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class LoginInfoComponent {
+
+    public constructor(public transition: Transition) {
+    }
+
+    public goToLoginWithReturnToState(): void {
+        const params = this.transition.params();
+        const options = this.transition.options();
+
+        this.transition.router.stateService.go('einladung.abschliessen', params, options);
+    }
 }

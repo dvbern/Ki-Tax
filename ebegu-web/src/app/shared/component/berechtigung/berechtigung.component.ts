@@ -19,15 +19,15 @@ import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {from, Observable, of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
-import TSBerechtigung from '../../../models/TSBerechtigung';
-import TSInstitution from '../../../models/TSInstitution';
-import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import EbeguUtil from '../../../utils/EbeguUtil';
-import {InstitutionRS} from '../../core/service/institutionRS.rest';
-import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-import {Displayable} from '../../shared/interfaces/displayable';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../../models/enums/TSRole';
+import TSBerechtigung from '../../../../models/TSBerechtigung';
+import TSInstitution from '../../../../models/TSInstitution';
+import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
+import EbeguUtil from '../../../../utils/EbeguUtil';
+import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
+import {Displayable} from '../../interfaces/displayable';
 
 let nextId = 0;
 

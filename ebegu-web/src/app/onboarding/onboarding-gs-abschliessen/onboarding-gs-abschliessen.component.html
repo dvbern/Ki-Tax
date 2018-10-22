@@ -1,0 +1,72 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+
+    <div class="onboarding-subtitle" translate>EINLADUNG_ABSCHLIESSEN</div>
+
+    <div class="onboarding-gs-container">
+
+        <div class="onboarding-gs-gemeinde">
+            <div>
+                <div class="onboarding-gs-gemeinde-title">
+                    <span translate>ONBOARDING_GS_GEMEINDE_TITLE</span>
+                    <button type="button"
+                            (click)="changeGemeinde()"
+                            class="dv-btn onboarding-gs-gemeinde-aendern"
+                            translate>ONBOARDING_GS_GEMEINDE_AENDERN
+                    </button>
+                </div>
+                <div class="onboarding-gs-gemeinde-content">
+                    <span>{{(gemeinde$ | async)?.name}}</span>
+                </div>
+            </div>
+            <button type="submit"
+                    (debounceClick)="createDossier()"
+                    class="dv-btn onboarding-gs-abschliessen"
+                    translate>
+            </button>
+        </div>
+
+        <div class="onboarding-gs-angaben">
+            <div>
+                <div class="onboarding-gs-angaben-title">
+                    <span translate>BE_LOGIN_DATEN</span>
+                </div>
+                <div class="onboarding-gs-angaben-content">
+                    <ng-container *ngIf="user$ | async as user">
+                        <table class="onboarding-gs-angaben-table">
+                            <tr>
+                                <td class="onboarding-gs-angaben-table-label" translate>VORNAME</td>
+                                <td class="onboarding-gs-angaben-table-value">{{user.vorname}}</td>
+                            </tr>
+                            <tr>
+                                <td class="onboarding-gs-angaben-table-label" translate>NAME</td>
+                                <td class="onboarding-gs-angaben-table-value">{{user.nachname}}</td>
+                            </tr>
+                            <tr>
+                                <td class="onboarding-gs-angaben-table-label" translate>EMAIL</td>
+                                <td class="onboarding-gs-angaben-table-value">{{user.email}}</td>
+                            </tr>
+                        </table>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
