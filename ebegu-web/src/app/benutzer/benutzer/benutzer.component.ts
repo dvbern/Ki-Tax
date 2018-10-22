@@ -105,20 +105,12 @@ export class BenutzerComponent implements OnInit {
             // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
             // "Default-Verantwortlichen" des entsprechenden Amtes handelt
             if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
-                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(defaultBenutzerJA => {
-                    if (result.username.toLowerCase() === defaultBenutzerJA.value.toLowerCase()) {
-                        this.isDefaultVerantwortlicher = true;
-                    }
-                    this.changeDetectorRef.markForCheck();
-                });
+                // KIBON-256
+                this.isDefaultVerantwortlicher = false;
             }
             if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
-                this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(defaultBenutzerSCH => {
-                    if (result.username.toLowerCase() === defaultBenutzerSCH.value.toLowerCase()) {
-                        this.isDefaultVerantwortlicher = true;
-                    }
-                    this.changeDetectorRef.markForCheck();
-                });
+                // KIBON-256
+                this.isDefaultVerantwortlicher = false;
             }
             this.changeDetectorRef.markForCheck();
         });
