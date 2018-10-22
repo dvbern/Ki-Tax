@@ -168,6 +168,7 @@
             </fieldset>
 
             <!-- Add Zukünftige Berechtigung -->
+            <!-- KIBON-256 -->
             <div class="row" *ngIf="!isDisabled && !isDefaultVerantwortlicher && canAddBerechtigung();">
                 <div class="col-sm-12">
                     <button type="button" class="dv-btn dv-btn-operation" (click)="addBerechtigung()">
@@ -178,6 +179,7 @@
             </div>
 
             <!-- Remove Zukünftige Berechtigung -->
+            <!-- KIBON-256 -->
             <div class="row" *ngIf="!isDisabled && !isDefaultVerantwortlicher && !canAddBerechtigung();">
                 <div class="col-sm-12">
                     <button type="button" class="dv-btn dv-btn-operation" (click)="removeBerechtigung()">
@@ -188,6 +190,7 @@
             </div>
 
             <!-- Info, wenn Defaultbenutzer -->
+            <!-- KIBON-256 -->
             <div class="row" *ngIf="isDefaultVerantwortlicher">
                 <div class="col-md-12">
                     <div class="well well-status-bestaetigt">
