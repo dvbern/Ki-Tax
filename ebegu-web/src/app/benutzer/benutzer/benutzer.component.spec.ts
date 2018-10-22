@@ -48,7 +48,7 @@ describe('BenutzerComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [SharedModule, UIRouterModule.forRoot()],
-            declarations: [BenutzerComponent, BenutzerRolleComponent, BerechtigungComponent],
+            declarations: [BenutzerComponent],
             providers: [
                 {
                     provide: InstitutionRS,
