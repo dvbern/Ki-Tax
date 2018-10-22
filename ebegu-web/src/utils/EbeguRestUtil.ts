@@ -159,6 +159,12 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    private einstellungListToRestObject(einstellungListTS: Array<TSEinstellung>): Array<any> {
+        return einstellungListTS
+            ? einstellungListTS.map(item => this.einstellungToRestObject({}, item))
+            : [];
+    }
+
     public einstellungToRestObject(restEinstellung: any, tsEinstellung: TSEinstellung): TSEinstellung {
         if (tsEinstellung) {
             this.abstractDateRangeEntityToRestObject(restEinstellung, tsEinstellung);
@@ -704,6 +710,15 @@ export default class EbeguRestUtil {
             : [];
     }
 
+    public parseGemeindeList(data: any): TSGemeinde[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseGemeinde(new TSGemeinde(), item))
+            : [this.parseGemeinde(new TSGemeinde(), data)];
+    }
+
     public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
         if (gemeinde) {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
@@ -716,15 +731,6 @@ export default class EbeguRestUtil {
             return restGemeinde;
         }
         return undefined;
-    }
-
-    public parseGemeindeList(data: any): TSGemeinde[] {
-        if (!data) {
-            return [];
-        }
-        return Array.isArray(data)
-            ? data.map(item => this.parseGemeinde(new TSGemeinde(), item))
-            : [this.parseGemeinde(new TSGemeinde(), data)];
     }
 
     public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
@@ -756,7 +762,8 @@ export default class EbeguRestUtil {
             restStammdaten.webseite = stammdaten.webseite;
             restStammdaten.korrespondenzspracheDe = stammdaten.korrespondenzspracheDe;
             restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
-            restStammdaten.konfigurationsListe = stammdaten.konfigurationsListe;
+            restStammdaten.konfigurationsListe =
+                this.gemeindeKonfigurationListToRestObject(stammdaten.konfigurationsListe);
 
             return restStammdaten;
         }
@@ -784,9 +791,48 @@ export default class EbeguRestUtil {
             stammdatenTS.logoUrl = stammdatenFromServer.logoUrl;
             stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
             stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
-            stammdatenTS.konfigurationsListe = stammdatenFromServer.konfigurationsListe;
+            stammdatenTS.konfigurationsListe =
+                this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
 
             return stammdatenTS;
+        }
+        return undefined;
+    }
+
+    private gemeindeKonfigurationListToRestObject(konfigurationListTS: Array<TSGemeindeKonfiguration>): Array<any> {
+        return konfigurationListTS
+            ? konfigurationListTS.map(item => this.gemeindeKonfigurationToRestObject({}, item))
+            : [];
+    }
+
+    public gemeindeKonfigurationToRestObject(restKonfiguration: any,
+                                             konfiguration: TSGemeindeKonfiguration): TSGemeindeKonfiguration {
+        if (konfiguration) {
+            restKonfiguration.gesuchsperiodeId = konfiguration.gesuchsperiodeId;
+            restKonfiguration.gesuchsperiodeStatus = konfiguration.gesuchsperiodeStatus;
+            restKonfiguration.konfigurationen = this.einstellungListToRestObject(konfiguration.konfigurationen);
+            return restKonfiguration;
+        }
+        return undefined;
+    }
+
+    public parseGemeindeKonfigurationList(data: any): TSGemeindeKonfiguration[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseGemeindeKonfiguration(new TSGemeindeKonfiguration(), item))
+            : [this.parseGemeindeKonfiguration(new TSGemeindeKonfiguration(), data)];
+    }
+
+    public parseGemeindeKonfiguration(konfigurationTS: TSGemeindeKonfiguration,
+                                      konfigurationFromServer: any): TSGemeindeKonfiguration {
+        if (konfigurationFromServer) {
+            konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
+            konfigurationTS.gesuchsperiodeId = konfigurationFromServer.gesuchsperiodeId;
+            konfigurationTS.gesuchsperiodeStatus = konfigurationFromServer.gesuchsperiodeStatus;
+            konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
+            return konfigurationTS;
         }
         return undefined;
     }

@@ -17,20 +17,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
-import TSAdresse from '../../../models/TSAdresse';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
@@ -56,7 +55,7 @@ export class ViewGemeindeComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -71,13 +70,10 @@ export class ViewGemeindeComponent implements OnInit {
 
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
+                this.initProperties(stammdaten);
                 this.initStrings(stammdaten);
                 return stammdaten;
             }));
-    }
-
-    public cancel(): void {
-        this.navigateBack();
     }
 
     public mitarbeiterBearbeiten(): void {
@@ -86,6 +82,10 @@ export class ViewGemeindeComponent implements OnInit {
 
     public editGemeindeStammdaten(): void {
         this.$state.go('gemeinde.edit', {gemeindeId: this.gemeindeId});
+    }
+
+    public isStammdatenEditable(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
@@ -100,6 +100,21 @@ export class ViewGemeindeComponent implements OnInit {
             this.logoImageUrl = e.target.result;
         };
         tmpFileReader.readAsDataURL(this.fileToUpload);
+    }
+
+    private initProperties(stammdaten: TSGemeindeStammdaten): void {
+        stammdaten.konfigurationsListe.forEach(config => {
+            config.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
+            config.konfigKontingentierung = false;
+            config.konfigurationen.forEach(property => {
+                if (TSEinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
+                    config.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
+                }
+                if (TSEinstellungKey.KONTINGENTIERUNG_ENABLED === property.key) {
+                    config.konfigKontingentierung = (property.value === 'true');
+                }
+            });
+        });
     }
 
     private initStrings(stammdaten: TSGemeindeStammdaten): void {
@@ -128,9 +143,12 @@ export class ViewGemeindeComponent implements OnInit {
         return bgBisStr;
     }
 
-    public isEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
-        return TSGemeindeStatus.EINGELADEN === stammdaten.gemeinde.status
-            || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiode.status;
+    public isKonfigurationEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
+        return false;
+    }
+
+    public cancel(): void {
+        this.navigateBack();
     }
 
     private navigateBack(): void {

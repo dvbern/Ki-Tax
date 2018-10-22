@@ -52,12 +52,12 @@ public class GemeindeStammdaten extends AbstractEntity {
 	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzerbg_id"), nullable = true)
 	private Benutzer defaultBenutzerBG;
 
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzerts_id"), nullable = true)
 	private Benutzer defaultBenutzerTS;
 

@@ -128,9 +128,14 @@
 
                 <div class="row">
                     <div class="dv-footer">
-                        <dv-loading-button [type]="'submit'">
+                        <dv-loading-button *ngIf="isStammdatenEditable()"
+                                           [type]="'submit'">
                             <span translate>STAMMDATEN_EDIT</span>
                         </dv-loading-button>
+                        <button type="button" class="dv-btn cancel-button"
+                                (click)="cancel()"
+                                [textContent]="'CANCEL' | translate">
+                        </button>
                     </div>
                 </div>
 
@@ -158,7 +163,7 @@
                                             </div>
 
                                             <!-- Beschwerde-Adresse Checkbox -->
-                                            <div *ngIf="isEditable(stammdaten, stammdaten.konfigurationsListe[i])" class="form-group">
+                                            <div *ngIf="isKonfigurationEditable(stammdaten, stammdaten.konfigurationsListe[i])" class="form-group">
                                                 <mat-checkbox id="edit_cb_id" name="edit_cb_id"
                                                               [(ngModel)]="konf.editMode">
                                                     {{'KONFIGURATION_EDIT'|translate}}</mat-checkbox>
@@ -195,30 +200,6 @@
                                 </tab-body>
                             </dv-accordion-tab>
                         </dv-accordion>
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <div class="viewTitle">
-                    <h3 translate>BEGU_KONFIGURATION</h3>
-                    <hr class="header">
-                </div>
-                <div class="row">
-                    <!-- Betreuungsgutscheine anbieten ab -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>BEGU_START</h3>
-                            <p>{{beguStart}}</p>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>GEMEINDE_REGELN</h3>
-                            <label translate>BEGU_KITAS_BIS_UND_MIT</label>
-                            <p>{{stammdaten.beguBisUndMitSchulstufe}}</p>
-                            <p>{{kontinggentierung}}</p>
-                        </div>
                     </div>
                 </div>
             </fieldset>

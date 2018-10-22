@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.api.converter;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -30,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
@@ -174,7 +174,7 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		// - wenn die Gemeinde im Status "Eingeladen" ist
 		boolean eingeladen = GemeindeStatus.EINGELADEN.equals(jaxStammdaten.getGemeinde().getStatus());
 		for (JaxGemeindeKonfiguration konfiguraion : jaxStammdaten.getKonfigurationsListe()) {
-			if (eingeladen || GesuchsperiodeStatus.ENTWURF.equals(konfiguraion.getGesuchsperiode().getStatus())) {
+			if (eingeladen || GesuchsperiodeStatus.ENTWURF.equals(konfiguraion.getGesuchsperiodeStatus())) {
 				saveGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguraion);
 			}
 		}
@@ -254,63 +254,34 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName());
-		konfiguration.setGesuchsperiode(converter.gesuchsperiodeToJAX(gesuchsperiode));
+		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());
+		konfiguration.setGesuchsperiodeStatus(gesuchsperiode.getStatus());
 
 		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		for (Map.Entry<EinstellungKey, Einstellung> entry : konfigurationMap.entrySet()) {
 			if (EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE.equals(entry.getKey())
 				|| EinstellungKey.KONTINGENTIERUNG_ENABLED.equals(entry.getKey())) { // nur gemeindespezifische Einstellungen
-				konfiguration.getKonfigiration().put(entry.getKey().name(), entry.getValue().getValue());
-				// TODO do in client
-				konfiguration.setKonfigKontingentierung("true".equalsIgnoreCase(konfiguration.getKonfigiration().get(EinstellungKey.KONTINGENTIERUNG_ENABLED.toString())));
-				String est = konfiguration.getKonfigiration().get(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE.toString());
-				konfiguration.setKonfigBeguBisUndMitSchulstufe(est == null ? null : EinschulungTyp.valueOf(est));
+				konfiguration.getKonfigurationen().add(converter.einstellungToJAX(entry.getValue()));
 			}
 		}
 		return konfiguration;
 	}
 
 	private void saveGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull JaxGemeindeKonfiguration konfiguration) {
-		if (konfiguration.getGesuchsperiode().getId() != null) {
-			Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiode().getId());
+		if (konfiguration.getGesuchsperiodeId() != null) {
+			Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiodeId());
 			if (gesuchsperiode.isPresent()) {
-				Einstellung kont = einstellungService.findEinstellung(EinstellungKey.KONTINGENTIERUNG_ENABLED, gemeinde, gesuchsperiode.get());
-				if (!gemeinde.equals(kont.getGemeinde()) || !gesuchsperiode.get().equals(kont.getGesuchsperiode())) {
-					kont = new Einstellung();
-					kont.setKey(EinstellungKey.KONTINGENTIERUNG_ENABLED);
-					kont.setGemeinde(gemeinde);
-					kont.setGesuchsperiode(gesuchsperiode.get());
-				}
-				kont.setValue(konfiguration.isKonfigKontingentierung() ? "true" : "false");
-				einstellungService.saveEinstellung(kont);
-
-				Einstellung bgBis = einstellungService.findEinstellung(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE, gemeinde, gesuchsperiode.get());
-				if (!gemeinde.equals(bgBis.getGemeinde()) || !gesuchsperiode.get().equals(bgBis.getGesuchsperiode())) {
-					bgBis = new Einstellung();
-					bgBis.setKey(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE);
-					bgBis.setGemeinde(gemeinde);
-					bgBis.setGesuchsperiode(gesuchsperiode.get());
-				}
-				if (konfiguration.getKonfigBeguBisUndMitSchulstufe() != null) {
-					bgBis.setValue(konfiguration.getKonfigBeguBisUndMitSchulstufe().name());
-					einstellungService.saveEinstellung(bgBis);
-				}
-
-				/* TODO try to use map instead of the two properties
-				for (Map.Entry<String, String> entry : konfiguration.getKonfigiration().entrySet()) {
-					EinstellungKey key = EinstellungKey.valueOf(entry.getKey());
-					String value = entry.getValue();
-					Einstellung einstellung = einstellungService.findEinstellung(key, gemeinde, gesuchsperiode.get());
+				for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
+					Einstellung einstellung = einstellungService.findEinstellung(jaxKonfig.getKey(), gemeinde, gesuchsperiode.get());
 					if (!gemeinde.equals(einstellung.getGemeinde()) || !gesuchsperiode.get().equals(einstellung.getGesuchsperiode())) {
 						einstellung = new Einstellung();
-						einstellung.setKey(key);
+						einstellung.setKey(jaxKonfig.getKey());
 						einstellung.setGemeinde(gemeinde);
 						einstellung.setGesuchsperiode(gesuchsperiode.get());
 					}
-					einstellung.setValue(value);
+					einstellung.setValue(jaxKonfig.getValue());
 					einstellungService.saveEinstellung(einstellung);
 				}
-				*/
 			}
 		}
 	}

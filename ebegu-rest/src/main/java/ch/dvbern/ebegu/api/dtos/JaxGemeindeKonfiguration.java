@@ -19,25 +19,27 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 
 public class JaxGemeindeKonfiguration {
 	@NotNull
 	private String gesuchsperiodeName;
 	@NotNull
-	private JaxGesuchsperiode gesuchsperiode;
-	@Nullable
-	private boolean konfigKontingentierung;
-	@Nullable
-	private EinschulungTyp konfigBeguBisUndMitSchulstufe;
+	private String gesuchsperiodeId;
 	@NotNull
-	private Map<String, String> konfigiration = new HashMap<>();
+	private GesuchsperiodeStatus gesuchsperiodeStatus;
+	@NotNull
+	private List<JaxEinstellung> konfigurationen = new ArrayList<>();
+
 
 	public String getGesuchsperiodeName() {
 		return gesuchsperiodeName;
@@ -47,37 +49,28 @@ public class JaxGemeindeKonfiguration {
 		this.gesuchsperiodeName = gesuchsperiodeName;
 	}
 
-	public JaxGesuchsperiode getGesuchsperiode() {
-		return gesuchsperiode;
+	public String getGesuchsperiodeId() {
+		return gesuchsperiodeId;
 	}
 
-	public void setGesuchsperiode(JaxGesuchsperiode gesuchsperiode) {
-		this.gesuchsperiode = gesuchsperiode;
+	public void setGesuchsperiodeId(String gesuchsperiodeId) {
+		this.gesuchsperiodeId = gesuchsperiodeId;
 	}
 
-	@Nullable
-	public boolean isKonfigKontingentierung() {
-		return konfigKontingentierung;
+	public GesuchsperiodeStatus getGesuchsperiodeStatus() {
+		return gesuchsperiodeStatus;
 	}
 
-	public void setKonfigKontingentierung(@Nullable boolean konfigKontingentierung) {
-		this.konfigKontingentierung = konfigKontingentierung;
+	public void setGesuchsperiodeStatus(GesuchsperiodeStatus gesuchsperiodeStatus) {
+		this.gesuchsperiodeStatus = gesuchsperiodeStatus;
 	}
 
-	@Nullable
-	public EinschulungTyp getKonfigBeguBisUndMitSchulstufe() {
-		return konfigBeguBisUndMitSchulstufe;
+	public List<JaxEinstellung> getKonfigurationen() {
+		return konfigurationen;
 	}
 
-	public void setKonfigBeguBisUndMitSchulstufe(@Nullable EinschulungTyp konfigBeguBisUndMitSchulstufe) {
-		this.konfigBeguBisUndMitSchulstufe = konfigBeguBisUndMitSchulstufe;
+	public void setKonfigurationen(List<JaxEinstellung> konfigurationen) {
+		this.konfigurationen = konfigurationen;
 	}
 
-	public Map<String, String> getKonfigiration() {
-		return konfigiration;
-	}
-
-	public void setKonfigiration(Map<String, String> konfigiration) {
-		this.konfigiration = konfigiration;
-	}
 }

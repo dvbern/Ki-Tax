@@ -25,6 +25,7 @@ import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSAdresse from '../../../models/TSAdresse';
@@ -79,6 +80,7 @@ export class EditGemeindeComponent implements OnInit {
                     stammdaten.beschwerdeAdresse = new TSAdresse();
                 }
                 this.beguStart = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
+                this.initProperties(stammdaten);
                 return stammdaten;
             }));
     }
@@ -92,6 +94,7 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
+        this.saveProperties(stammdaten);
         if (stammdaten.keineBeschwerdeAdresse) {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
@@ -130,9 +133,37 @@ export class EditGemeindeComponent implements OnInit {
         return bgBisStr;
     }
 
-    public isEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
+    public isKonfigurationEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
         return TSGemeindeStatus.EINGELADEN === stammdaten.gemeinde.status
-            || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiode.status;
+            || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiodeStatus;
+    }
+
+    private initProperties(stammdaten: TSGemeindeStammdaten): void {
+        stammdaten.konfigurationsListe.forEach(config => {
+            config.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
+            config.konfigKontingentierung = false;
+            config.konfigurationen.forEach(property => {
+                if (TSEinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
+                    config.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
+                }
+                if (TSEinstellungKey.KONTINGENTIERUNG_ENABLED === property.key) {
+                    config.konfigKontingentierung = (property.value === 'true');
+                }
+            });
+        });
+    }
+
+    private saveProperties(stammdaten: TSGemeindeStammdaten): void {
+        stammdaten.konfigurationsListe.forEach(config => {
+            config.konfigurationen.forEach(property => {
+                if (TSEinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
+                    property.value = config.konfigBeguBisUndMitSchulstufe;
+                }
+                if (TSEinstellungKey.KONTINGENTIERUNG_ENABLED === property.key) {
+                    property.value = config.konfigKontingentierung ? 'true' : 'false';
+                }
+            });
+        });
     }
 
     private navigateBack(): void {

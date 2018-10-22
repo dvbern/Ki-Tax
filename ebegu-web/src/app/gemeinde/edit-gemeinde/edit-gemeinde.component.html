@@ -287,7 +287,7 @@
                                             </div>
 
                                             <!-- Beschwerde-Adresse Checkbox -->
-                                            <div *ngIf="isEditable(stammdaten, stammdaten.konfigurationsListe[i])" class="form-group">
+                                            <div *ngIf="isKonfigurationEditable(stammdaten, stammdaten.konfigurationsListe[i])" class="form-group">
                                                 <mat-checkbox id="edit_cb_id" name="edit_cb_id"
                                                               [(ngModel)]="konf.editMode">
                                                     {{'KONFIGURATION_EDIT'|translate}}</mat-checkbox>

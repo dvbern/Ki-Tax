@@ -18,14 +18,17 @@
  */
 
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
+import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
+import TSEinstellung from './TSEinstellung';
 import TSGesuchsperiode from './TSGesuchsperiode';
 
 export default class TSGemeindeKonfiguration {
-    public id: number;
     public gesuchsperiodeName: string;
-    public gesuchsperiode: TSGesuchsperiode;
-    public konfigKontingentierung: boolean;
-    public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp;
+    public gesuchsperiodeId: string;
+    public gesuchsperiodeStatus: TSGesuchsperiodeStatus;
+    public konfigKontingentierung: boolean; // only on client
+    public konfigBeguBisUndMitSchulstufe: TSEinschulungTyp; // only on client
     public editMode: boolean; // only on client
-    public konfigiration: Map<string, string>;
+    public konfigurationen: TSEinstellung[];
+
 }
