@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
@@ -26,6 +28,7 @@ public final class BGRechnerFactory {
 	private BGRechnerFactory() {
 	}
 
+	@Nullable
 	public static AbstractBGRechner getRechner(Betreuung betreuung) {
 		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
 		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {

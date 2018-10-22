@@ -224,14 +224,18 @@ public enum MathUtil {
 	}
 
 	/**
-	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 * @throws PrecisionTooLargeException if the resulting values exceeds the defined precision
 	 */
 	@Nullable
 	public BigDecimal multiply(@Nullable BigDecimal... values) {
 		if (values == null || values.length == 0) {
 			return null;
 		}
+		return multiplyNullSafe(values);
+	}
 
+	@Nonnull
+	public BigDecimal multiplyNullSafe(@Nonnull BigDecimal... values) {
 		BigDecimal result = Arrays.stream(values)
 			.filter(Objects::nonNull)
 			.reduce(BigDecimal.ONE, this::multiplyNullSafe);
