@@ -258,19 +258,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		requireNonNull(einladung);
 
 		checkEinladung(einladung);
-
-		Benutzer persistedBenutzer = saveBenutzer(einladung.getEingeladener());
+		Benutzer eingeladener = einladung.getEingeladener();
 
 		try {
 			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
 
 		} catch (MailException e) {
 			String message =
-				String.format("Es konnte keine Email Einladung an %s geschickt werden", persistedBenutzer.getEmail());
+				String.format("Es konnte keine Email Einladung an %s geschickt werden", eingeladener.getEmail());
 			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
 
-		return persistedBenutzer;
+		return eingeladener;
 	}
 
 	/**
