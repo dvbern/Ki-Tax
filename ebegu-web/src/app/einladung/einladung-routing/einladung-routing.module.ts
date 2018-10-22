@@ -32,7 +32,7 @@ const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
         name: 'einladung',
-        url: '/einladung?typ&userid',
+        url: '/einladung?typ&userid&entityid',
         redirectTo: handleLoggedInUser,
         component: UiViewComponent,
         params: {
