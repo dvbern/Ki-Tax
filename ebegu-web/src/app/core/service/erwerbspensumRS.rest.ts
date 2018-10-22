@@ -74,7 +74,7 @@ export default class ErwerbspensumRS {
     public isErwerbspensumRequired(gesuchId: string): IPromise<boolean> {
         return this.http.get(`${this.serviceURL}/required/${encodeURIComponent(gesuchId)}`)
             .then((response: any) => {
-                return response.data;
+                return JSON.parse(response.data);
             });
     }
 }
