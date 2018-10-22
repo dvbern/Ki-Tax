@@ -483,10 +483,28 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Optional<Betreuung> betrToRemoveOpt = findBetreuung(betreuungId);
 		Betreuung betreuungToRemove = betrToRemoveOpt.orElseThrow(() -> new EbeguEntityNotFoundException("removeBetreuung", ErrorCodeEnum
 			.ERROR_ENTITY_NOT_FOUND, betreuungId));
+
+		handleDependingMitteilungenWhenDeletingBetreuung(betreuungId, betreuungToRemove);
+
+		persistence.remove(betreuungToRemove.getErweiterteBetreuungContainer());
+
+		final String gesuchId = betreuungToRemove.extractGesuch().getId();
+		removeBetreuung(betreuungToRemove);
+		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.BETREUUNG); //auch bei entfernen wizard updaten
+
+		List<Betreuung> betreuungen = new ArrayList<>();
+		betreuungen.add(betreuungToRemove);
+		mailService.sendInfoBetreuungGeloescht(betreuungen);
+	}
+
+	/**
+	 * removes Betreuungsmitteilungen of this Betreuung and removes the relation of all depending Mitteilunges
+	 */
+	private void handleDependingMitteilungenWhenDeletingBetreuung(@Nonnull String betreuungId, @Nonnull Betreuung betreuungToRemove) {
 		Collection<Mitteilung> mitteilungenForBetreuung = this.mitteilungService.findAllMitteilungenForBetreuung(betreuungToRemove);
 		mitteilungenForBetreuung.stream()
 			.filter(mitteilung -> mitteilung.getClass().equals(Mitteilung.class))
-			.forEach((mitteilung) ->
+			.forEach(mitteilung ->
 			{
 				mitteilung.setBetreuung(null);
 				LOG.debug("Betreuung '{}' will be removed. Removing Relation in Mitteilung: '{}'", betreuungId, mitteilung.getId());
@@ -495,18 +513,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		mitteilungenForBetreuung.stream()
 			.filter(mitteilung -> mitteilung.getClass().equals(Betreuungsmitteilung.class))
-			.forEach((betMitteilung) -> {
+			.forEach(betMitteilung -> {
 				LOG.debug("Betreuung '{}' will be removed. Removing dependent Betreuungsmitteilung: '{}'", betreuungId, betMitteilung.getId());
 				persistence.remove(Betreuungsmitteilung.class, betMitteilung.getId());
 			});
-
-		final String gesuchId = betreuungToRemove.getKind().getGesuch().getId();
-		removeBetreuung(betreuungToRemove);
-		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.BETREUUNG); //auch bei entfernen wizard updaten
-
-		List<Betreuung> betreuungen = new ArrayList<>();
-		betreuungen.add(betreuungToRemove);
-		mailService.sendInfoBetreuungGeloescht(betreuungen);
 	}
 
 	@Override

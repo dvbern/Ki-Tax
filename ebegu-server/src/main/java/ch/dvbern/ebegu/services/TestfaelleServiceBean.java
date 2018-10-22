@@ -147,7 +147,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Nonnull
 	public StringBuilder createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen,
 			@Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId) {
-		return this.createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, null, gesuchsPeriodeId, gemeindeId);
+		return createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, null, gesuchsPeriodeId, gemeindeId);
 	}
 
 	@Nonnull

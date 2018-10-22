@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -2069,15 +2068,11 @@ public class JaxBConverter extends AbstractConverter {
 		);
 		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
 
-		if (betreuungJAXP.getErweiterteBetreuungContainer() != null) {
-			betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
-				betreuungJAXP.getErweiterteBetreuungContainer(),
-				betreuung.getErweiterteBetreuungContainer()
-			));
-			requireNonNull(betreuung.getErweiterteBetreuungContainer()).setBetreuung(betreuung);
-		} else {
-			betreuung.setErweiterteBetreuungContainer(null);
-		}
+		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
+			betreuungJAXP.getErweiterteBetreuungContainer(),
+			betreuung.getErweiterteBetreuungContainer()
+		));
+		betreuung.getErweiterteBetreuungContainer().setBetreuung(betreuung);
 
 		abwesenheitContainersToEntity(betreuungJAXP.getAbwesenheitContainers(), betreuung.getAbwesenheitContainers());
 		setBetreuungInAbwesenheiten(betreuung.getAbwesenheitContainers(), betreuung);
@@ -2187,10 +2182,9 @@ public class JaxBConverter extends AbstractConverter {
 				moduleTagesschuleListToEntity(belegungTagesschuleJAXP.getModuleTagesschule(),
 					instStammdatenTagesschule.getModuleTagesschule(), instStammdatenTagesschule);
 			if (convertedModule != null) {
-				//change the existing collection to reflect changes
+				// change the existing collection to reflect changes
 				// Already tested: All existing module of the list remain as they were, that means their data are
-				// updated
-				// and the objects are not created again. ID and InsertTimeStamp are the same as before
+				// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
 				belegungTagesschule.getModuleTagesschule().clear();
 				belegungTagesschule.getModuleTagesschule().addAll(convertedModule);
 			}
@@ -2759,13 +2753,9 @@ public class JaxBConverter extends AbstractConverter {
 		return container;
 	}
 
-	@Nullable
+	@Nonnull
 	private JaxErweiterteBetreuungContainer erweiterteBetreuungContainerToJax(
-		@Nullable ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
-
-		if (erweiterteBetreuungContainer == null) {
-			return null;
-		}
+		@Nonnull ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
 
 		JaxErweiterteBetreuungContainer jaxErweiterteBetreuungContainer = new JaxErweiterteBetreuungContainer();
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuungContainer, jaxErweiterteBetreuungContainer);

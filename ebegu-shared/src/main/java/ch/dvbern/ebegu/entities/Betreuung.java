@@ -116,9 +116,9 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@SortNatural
 	private Set<BetreuungspensumContainer> betreuungspensumContainers = new TreeSet<>();
 
-	@Nullable
+	@NotNull
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	private ErweiterteBetreuungContainer erweiterteBetreuungContainer;
 
 	@Valid
@@ -230,12 +230,12 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		this.abwesenheitContainers = abwesenheiten;
 	}
 
-	@Nullable
+	@Nonnull
 	public ErweiterteBetreuungContainer getErweiterteBetreuungContainer() {
 		return erweiterteBetreuungContainer;
 	}
 
-	public void setErweiterteBetreuungContainer(@Nullable ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
+	public void setErweiterteBetreuungContainer(@Nonnull ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
 		this.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
 	}
 

@@ -35,6 +35,8 @@ import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
@@ -181,6 +183,7 @@ public abstract class AbstractTestfall {
 		gesuch.setGesuchsperiode(gesuchsperiode);
 		gesuch.setDossier(dossier);
 		gesuch.setEingangsdatum(eingangsdatum);
+		//noinspection VariableNotUsedInsideIf
 		if (eingangsdatum != null) {
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		} else {
@@ -315,6 +318,15 @@ public abstract class AbstractTestfall {
 		}
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setVertrag(Boolean.TRUE);
+
+		// default ErweiterteBetreuung
+		ErweiterteBetreuungContainer erwBedContainer = new ErweiterteBetreuungContainer();
+		erwBedContainer.setBetreuung(betreuung);
+		ErweiterteBetreuung erwBed = new ErweiterteBetreuung();
+		erwBed.setErweiterteBeduerfnisse(false);
+		erwBedContainer.setErweiterteBetreuungJA(erwBed);
+		betreuung.setErweiterteBetreuungContainer(erwBedContainer);
+
 		return betreuung;
 	}
 
