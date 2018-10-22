@@ -56,9 +56,11 @@ public class EbeguRuleTestsHelper {
 	private static final EinreichungsfristCalcRule einreichungsfristCalcRule = new EinreichungsfristCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(Constants.DEFAULT_GUELTIGKEIT);
-	private static final AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
+	private static final AbwesenheitAbschnittRule abwesenheitAbschnittRule =
+		new AbwesenheitAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, TestDataUtil.ABWESENHEIT_DAYS_LIMIT);
 	private static final AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(Constants.DEFAULT_GUELTIGKEIT);
-	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
+	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule =
+		new ZivilstandsaenderungAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(Constants.DEFAULT_GUELTIGKEIT, EinschulungTyp.KINDERGARTEN2);
 	private static final KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();

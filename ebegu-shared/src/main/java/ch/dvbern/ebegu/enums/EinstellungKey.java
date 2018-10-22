@@ -28,33 +28,39 @@ public enum EinstellungKey {
 	// Bis zu welcher Schulstufe sollen Gutscheine ausgestellt werden?
 	BG_BIS_UND_MIT_SCHULSTUFE,
 
-	// Fixbetrag der Stadt Bern. Eigentlich Jahesabhängig und vermutlich nicht mehr gebraucht. Vorerst mal Param pro Halbjahr
-	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1,
-	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2,
 
-	// Anzahl Tage Kita Max
-	PARAM_ANZAL_TAGE_MAX_KITA,
+	// *** Einstellungen fuer die Gutscheinberechnung
 
-	// Stunden / Tag Max
-	PARAM_STUNDEN_PRO_TAG_MAX_KITA,
+	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
+	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG,
+	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
+	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG,
+	// Maximale Vergünstigung bei Eintritt des Kindergartens
+	MAX_VERGUENSTIGUNG_SCHULE_PRO_TG,
 
-	// Kosten pro Stunde Max
-	PARAM_KOSTEN_PRO_STUNDE_MAX,
-
-	// Kosten pro Stunde Max Tageseltern
-	PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN,
-
-	// Kosten pro Stunde Min
-	PARAM_KOSTEN_PRO_STUNDE_MIN,
+	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
+	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD,
+	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
+	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD,
+	// Maximale Vergünstigung bei Eintritt des Kindergartens
+	MAX_VERGUENSTIGUNG_SCHULE_PRO_STD,
 
 	// Minimal Massgebendes Einkommen
-	PARAM_MASSGEBENDES_EINKOMMEN_MIN,
-
+	MIN_MASSGEBENDES_EINKOMMEN,
 	// Maximal Massgebendes Einkommen
-	PARAM_MASSGEBENDES_EINKOMMEN_MAX,
+	MAX_MASSGEBENDES_EINKOMMEN,
 
-	// Anzahl Tage Kanton
-	PARAM_ANZAHL_TAGE_KANTON,
+	OEFFNUNGSTAGE_KITA,
+	OEFFNUNGSTAGE_TFO,
+	OEFFNUNGSSTUNDEN_TFO,
+
+	ZUSCHLAG_BEHINDERUNG_PRO_TG,
+	ZUSCHLAG_BEHINDERUNG_PRO_STD,
+
+	MIN_VERGUENSTIGUNG_PRO_TG,
+	MIN_VERGUENSTIGUNG_PRO_STD,
+
+	// *** Einstellungen fuer die Gutscheinberechnung
 
 	// Min Pensum Kitas
 	PARAM_PENSUM_KITA_MIN,
@@ -83,15 +89,6 @@ public enum EinstellungKey {
 	// Eine Einkommensverschlechterung wird nur berücksichtigt, wenn diese höher als 20% des Ausgangswertes ist.
 	PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
 
-	// Baby-Faktor
-	PARAM_BABY_FAKTOR,
-
-	// Baby-Faktor bis N – Monate
-	PARAM_BABY_ALTER_IN_MONATEN,
-
-	// Abgeltung des Kantons pro Tag
-	PARAM_ABGELTUNG_PRO_TAG_KANTON,
-
 	// Maximaler Zuschlag zum Erwerbspensum
-	PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
+	PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
 }
