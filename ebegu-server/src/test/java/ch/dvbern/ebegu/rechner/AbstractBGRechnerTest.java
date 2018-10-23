@@ -91,8 +91,8 @@ public class AbstractBGRechnerTest {
 		Einstellung paramZuschlag = new Einstellung(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode);
 		einstellungen.put(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, paramZuschlag);
 
-		Einstellung bgBisUndMitSchulstufe = new Einstellung(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode);
-		einstellungen.put(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE, bgBisUndMitSchulstufe);
+		Einstellung bgBisUndMitSchulstufe = new Einstellung(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode);
+		einstellungen.put(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, bgBisUndMitSchulstufe);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen);

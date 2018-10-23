@@ -209,8 +209,10 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	public Optional<GemeindeStammdaten> getGemeindeStammdaten(@Nonnull String id) {
 		requireNonNull(id, "id muss gesetzt sein");
 		GemeindeStammdaten stammdaten = persistence.find(GemeindeStammdaten.class, id);
-		authorizer.checkReadAuthorization(stammdaten.getGemeinde());
-		return Optional.of(stammdaten);
+		if (stammdaten != null) {
+			authorizer.checkReadAuthorization(stammdaten.getGemeinde());
+		}
+		return Optional.ofNullable(stammdaten);
 	}
 
 	@Nonnull

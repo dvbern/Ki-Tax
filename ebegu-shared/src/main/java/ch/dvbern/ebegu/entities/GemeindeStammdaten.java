@@ -41,7 +41,7 @@ import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static ch.dvbern.ebegu.util.Constants.TEN_MEG;
+import static ch.dvbern.ebegu.util.Constants.ONE_MEG;
 
 @Audited
 @Entity
@@ -76,11 +76,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = true)
 	private Adresse beschwerdeAdresse;
 
-	// todo KIBON-245 braucht man das? koennte man es nicht direkt setzen wenn die adresse existiert?
-	@NotNull
-	@Column(nullable = false)
-	private boolean keineBeschwerdeAdresse = true;
-
 	@NotNull
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
@@ -103,7 +98,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
 
 	@Nullable
-	@Column(nullable = true, length = TEN_MEG) //10 megabytes // todo KIBON-245 ist es nicht viel?
+	@Column(nullable = true, length = ONE_MEG) // 1 megabytes
 	@Lob
 	private byte[] logoContent;
 
@@ -150,14 +145,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setBeschwerdeAdresse(@Nullable Adresse beschwerdeAdresse) {
 		this.beschwerdeAdresse = beschwerdeAdresse;
-	}
-
-	public boolean isKeineBeschwerdeAdresse() {
-		return keineBeschwerdeAdresse;
-	}
-
-	public void setKeineBeschwerdeAdresse(boolean keineBeschwerdeAdresse) {
-		this.keineBeschwerdeAdresse = keineBeschwerdeAdresse;
 	}
 
 	public String getMail() {

@@ -20,14 +20,10 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 
 public class JaxGemeindeKonfiguration {

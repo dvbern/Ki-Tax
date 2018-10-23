@@ -23,10 +23,10 @@ package ch.dvbern.ebegu.enums;
 public enum EinstellungKey {
 
 	// Die Gemeinde kennt eine Kontingentierung der Gutscheine
-	KONTINGENTIERUNG_ENABLED,
+	GEMEINDE_KONTINGENTIERUNG_ENABLED,
 
 	// Bis zu welcher Schulstufe sollen Gutscheine ausgestellt werden?
-	BG_BIS_UND_MIT_SCHULSTUFE,
+	GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
 
 	// Fixbetrag der Stadt Bern. Eigentlich Jahesabhängig und vermutlich nicht mehr gebraucht. Vorerst mal Param pro Halbjahr
 	PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1,

@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
@@ -67,7 +67,7 @@ public class BetreuungsgutscheinConfigurator {
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
 			PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
-			BG_BIS_UND_MIT_SCHULSTUFE);
+			GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 	}
 
 	private void useBernerRules(Map<EinstellungKey, Einstellung> einstellungen) {
@@ -189,7 +189,7 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(abwesenheitCalcRule);
 
 		// - Schulstufe des Kindes: Je nach Gemeindeeinstellung wird bis zu einer gewissen STufe ein Gutschein ausgestellt
-		Einstellung einstellungBgAusstellenBisStufe = einstellungMap.get(EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE);
+		Einstellung einstellungBgAusstellenBisStufe = einstellungMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
 		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe);
 		rules.add(schulstufeCalcRule);

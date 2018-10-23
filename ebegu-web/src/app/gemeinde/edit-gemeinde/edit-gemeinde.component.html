@@ -164,7 +164,7 @@
                         <div class="form-group">
                             <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
                             <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
-                                          [(ngModel)]="stammdaten.keineBeschwerdeAdresse">
+                                          [(ngModel)]="keineBeschwerdeAdresse">
                                 {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                             </mat-checkbox>
                         </div>
@@ -186,7 +186,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!keineBeschwerdeAdresse" class="row">
                     <!-- Beschwerde-Adresse -->
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -199,7 +199,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!keineBeschwerdeAdresse" class="row">
                     <!-- Strasse -->
                     <div class="col-sm-5">
                         <div class="form-group">
@@ -221,7 +221,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!keineBeschwerdeAdresse" class="row">
                     <!-- PLZ -->
                     <div class="col-sm-1">
                         <div class="form-group">

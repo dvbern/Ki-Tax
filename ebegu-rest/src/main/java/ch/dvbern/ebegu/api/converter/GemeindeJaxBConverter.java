@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -153,7 +152,6 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 			}
 			converter.adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
 		}
-		stammdaten.setKeineBeschwerdeAdresse(jaxStammdaten.isKeineBeschwerdeAdresse());
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
 		stammdaten.setWebseite(jaxStammdaten.getWebseite());
@@ -197,7 +195,6 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-		jaxStammdaten.setKeineBeschwerdeAdresse(stammdaten.isKeineBeschwerdeAdresse());
 
 		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(true);
@@ -256,14 +253,11 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName());
 		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());
 		konfiguration.setGesuchsperiodeStatus(gesuchsperiode.getStatus());
-
 		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
-		for (Map.Entry<EinstellungKey, Einstellung> entry : konfigurationMap.entrySet()) {
-			if (EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE.equals(entry.getKey())
-				|| EinstellungKey.KONTINGENTIERUNG_ENABLED.equals(entry.getKey())) { // nur gemeindespezifische Einstellungen
-				konfiguration.getKonfigurationen().add(converter.einstellungToJAX(entry.getValue()));
-			}
-		}
+		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
+			.filter(map -> map.getKey().name().startsWith("GEMEINDE_"))
+			.map(x -> converter.einstellungToJAX(x.getValue()))
+			.collect(Collectors.toList()));
 		return konfiguration;
 	}
 

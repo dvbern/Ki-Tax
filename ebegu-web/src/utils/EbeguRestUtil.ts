@@ -756,7 +756,6 @@ export default class EbeguRestUtil {
             restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
             restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
-            restStammdaten.keineBeschwerdeAdresse = stammdaten.keineBeschwerdeAdresse;
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
             restStammdaten.webseite = stammdaten.webseite;
@@ -782,7 +781,6 @@ export default class EbeguRestUtil {
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
-            stammdatenTS.keineBeschwerdeAdresse = stammdatenFromServer.keineBeschwerdeAdresse;
             stammdatenTS.mail = stammdatenFromServer.mail;
             stammdatenTS.telefon = stammdatenFromServer.telefon;
             stammdatenTS.webseite = stammdatenFromServer.webseite;

@@ -133,8 +133,8 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
-import static ch.dvbern.ebegu.enums.EinstellungKey.KONTINGENTIERUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAHL_TAGE_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
@@ -1136,8 +1136,8 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_PENSUM_TAGI_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGESELTERN_MIN, "0", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode, persistence);
-		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode, persistence);
-		saveEinstellung(BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode, persistence);
+		saveEinstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode, persistence);
 
 	}

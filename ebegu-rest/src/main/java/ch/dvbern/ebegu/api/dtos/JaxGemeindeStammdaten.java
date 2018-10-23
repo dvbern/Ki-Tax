@@ -52,8 +52,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	@Nullable
 	private JaxAdresse beschwerdeAdresse;
 	@NotNull
-	private boolean keineBeschwerdeAdresse;
-	@NotNull
 	private String mail;
 	@Nullable
 	private String telefon;
@@ -135,14 +133,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.beschwerdeAdresse = beschwerdeAdresse;
 	}
 
-	public boolean isKeineBeschwerdeAdresse() {
-		return keineBeschwerdeAdresse;
-	}
-
-	public void setKeineBeschwerdeAdresse(boolean keineBeschwerdeAdresse) {
-		this.keineBeschwerdeAdresse = keineBeschwerdeAdresse;
-	}
-
 	public String getMail() {
 		return mail;
 	}
@@ -212,12 +202,11 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.logoUrl = logoUrl;
 	}
 
-	@NotNull
 	public List<JaxGemeindeKonfiguration> getKonfigurationsListe() {
 		return konfigurationsListe;
 	}
 
-	public void setKonfigurationsListe(@Nullable List<JaxGemeindeKonfiguration> konfigurationsListe) {
+	public void setKonfigurationsListe(List<JaxGemeindeKonfiguration> konfigurationsListe) {
 		this.konfigurationsListe = konfigurationsListe;
 	}
 

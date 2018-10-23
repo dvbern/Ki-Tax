@@ -114,7 +114,7 @@ export default class GemeindeRS implements IEntityRS {
                 },
             })
             .then(response => {
-                this.resetGemeindeCache();
+                this.resetGemeindeCache(); // damit die neue Gemeinde in der Liste erscheint
                 this.$log.debug('PARSING gemeinde REST object ', response.data);
                 return this.ebeguRestUtil.parseGemeinde(new TSGemeinde(), response.data);
             });
@@ -134,6 +134,7 @@ export default class GemeindeRS implements IEntityRS {
         let restStammdaten = {};
         restStammdaten = this.ebeguRestUtil.gemeindeStammdatenToRestObject(restStammdaten, stammdaten);
         return this.$http.put(`${this.serviceURL}/stammdaten`, restStammdaten).then((response: any) => {
+            this.resetGemeindeCache(); // damit die Statusänderung (eingeladen->aktiv) geladen werden kann
             this.$log.debug('PARSING GemeindeStammdaten REST object ', response.data);
             return this.ebeguRestUtil.parseGemeindeStammdaten(new TSGemeindeStammdaten(), response.data);
         });

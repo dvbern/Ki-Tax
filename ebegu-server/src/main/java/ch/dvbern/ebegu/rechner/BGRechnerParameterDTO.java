@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAHL_TAGE_KANTON;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
@@ -74,7 +74,7 @@ public final class BGRechnerParameterDTO {
 	private int babyAlterInMonaten;                    // PARAM_BABY_ALTER_IN_MONATEN
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
-		this.setBgBisUndMitSchulstufe(asEinschulungstyp(paramMap, BG_BIS_UND_MIT_SCHULSTUFE, gesuchsperiode, gemeinde));
+		this.setBgBisUndMitSchulstufe(asEinschulungstyp(paramMap, GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, gesuchsperiode, gemeinde));
 		this.setBeitragKantonProTag(asBigDecimal(paramMap, PARAM_ABGELTUNG_PRO_TAG_KANTON, gesuchsperiode, gemeinde));
 		this.setAnzahlTageMaximal(asBigDecimal(paramMap, PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode, gemeinde));
 		this.setAnzahlStundenProTagMaximal(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_MAX_KITA, gesuchsperiode, gemeinde));

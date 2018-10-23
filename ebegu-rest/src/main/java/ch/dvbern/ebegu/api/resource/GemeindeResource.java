@@ -248,8 +248,8 @@ public class GemeindeResource {
 		GemeindeStammdaten convertedStammdaten = gemeindeConverter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
 
 		// Statuswechsel
-		if (stammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
-			stammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
+		if (convertedStammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
+			convertedStammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
 		}
 
 		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);

@@ -42,6 +42,7 @@ export class ViewGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
+    public keineBeschwerdeAdresse: boolean;
     public korrespondenzsprache: string;
     public beguStart: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
@@ -103,14 +104,15 @@ export class ViewGemeindeComponent implements OnInit {
     }
 
     private initProperties(stammdaten: TSGemeindeStammdaten): void {
+        this.keineBeschwerdeAdresse = stammdaten.beschwerdeAdresse ? false : true;
         stammdaten.konfigurationsListe.forEach(config => {
             config.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
             config.konfigKontingentierung = false;
             config.konfigurationen.forEach(property => {
-                if (TSEinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
+                if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
                     config.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
                 }
-                if (TSEinstellungKey.KONTINGENTIERUNG_ENABLED === property.key) {
+                if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
                     config.konfigKontingentierung = (property.value === 'true');
                 }
             });
