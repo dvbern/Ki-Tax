@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -72,6 +73,7 @@ import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -776,71 +778,74 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Mitteilung mitteilungUebergebenAnJugendamt(@Nonnull String mitteilungId) {
-		Mitteilung mitteilung = findMitteilung(mitteilungId).orElseThrow(() -> new EbeguRuntimeException(
-			"mitteilungUebergebenAnJugendamt",
-			"Mitteilung not found"));
+		Mitteilung mitteilung = findMitteilung(mitteilungId)
+			.orElseThrow(() -> new EbeguRuntimeException("mitteilungUebergebenAnJugendamt", "Mitteilung not found"));
+
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+
 		// Dass der eingeloggte Benutzer Schulamt ist, ist schon durch die Berechtigungen geprueft. Es muss noch
-		// sichergestellt werden, dass die Meldung
-		// auch tatsaechlich dem Schulamt "gehoert"
-		if (mitteilung.getEmpfaengerAmt() == Amt.SCHULAMT) {
-			// An wen soll die Meldung delegiert werden?
-			Benutzer verantwortlicherBG = mitteilung.getDossier().getVerantwortlicherBG();
-			if (verantwortlicherBG == null) {
-				// Kein TS-Verantwortlicher definiert. Wir nehmen den Default-Verantwortlichen
-				verantwortlicherBG = gemeindeService.getGemeindeStammdatenByGemeindeId(mitteilung
-					.getDossier()
-					.getGemeinde()
-					.getId())
-					.orElseThrow(() -> new EbeguRuntimeException(
-						"mitteilungUebergebenAnJugendamt",
-						ErrorCodeEnum.ERROR_EMPFAENGER_JA_NOT_FOUND,
-						mitteilung.getId()))
-					.getDefaultBenutzerBG();
-			}
-			//TODO und wenn der verantwortlichen null ist? dasselbe für SCH/TS
-			// Den VerantwortlichenJA als Empfänger setzen
-			mitteilung.setEmpfaenger(verantwortlicherBG);
-			mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-			return persistence.merge(mitteilung);
+		// sichergestellt werden, dass die Meldung auch tatsaechlich dem Schulamt "gehoert"
+		if (mitteilung.getEmpfaengerAmt() != Amt.SCHULAMT) {
+			throw new IllegalArgumentException(
+				"Der Empfänger der Mitteilung hat nicht die Rolle Schulamt");
 		}
-		throw new IllegalArgumentException(
-			"Die Mitteilung hat entweder keinen Empfänger oder dieser ist nicht in Rolle Schulamt");
+
+		// An wen soll die Meldung delegiert werden?
+		Benutzer verantwortlicherBG = Stream.of(
+			mitteilung.getDossier().getVerantwortlicherBG(),
+			gemeindeService.getGemeindeStammdatenByGemeindeId(mitteilung
+				.getDossier()
+				.getGemeinde()
+				.getId()).map(GemeindeStammdaten::getDefaultBenutzerBG).orElse(null))
+			.filter(Objects::nonNull)
+			.findFirst()
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"mitteilungUebergebenAnJugendamt",
+				ErrorCodeEnum.ERROR_EMPFAENGER_JA_NOT_FOUND,
+				mitteilung.getId()));
+
+		// Den VerantwortlichenJA als Empfänger setzen
+		mitteilung.setEmpfaenger(verantwortlicherBG);
+		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
+
+		return persistence.merge(mitteilung);
 	}
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Mitteilung mitteilungUebergebenAnSchulamt(@Nonnull String mitteilungId) {
-		Mitteilung mitteilung = findMitteilung(mitteilungId).orElseThrow(() -> new EbeguRuntimeException(
-			"mitteilungUebergebenAnSchulamt",
-			"Mitteilung not found"));
+		Mitteilung mitteilung = findMitteilung(mitteilungId)
+			.orElseThrow(() -> new EbeguRuntimeException("mitteilungUebergebenAnSchulamt", "Mitteilung not found"));
+
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
+
 		// Dass der eingeloggte Benutzer Jugendamt ist, ist schon durch die Berechtigungen geprueft. Es muss noch
 		// sichergestellt werden, dass die Meldung auch tatsaechlich dem Jugendamt "gehoert"
-		if (mitteilung.getEmpfaengerAmt() == Amt.JUGENDAMT) {
-			// An wen soll die Meldung delegiert werden?
-			Benutzer verantwortlicherTS = mitteilung.getDossier().getVerantwortlicherTS();
-			if (verantwortlicherTS == null) {
-				// Kein TS-Verantwortlicher definiert. Wir nehmen den Default-Verantwortlichen
-				verantwortlicherTS = gemeindeService.getGemeindeStammdatenByGemeindeId(mitteilung
-					.getDossier()
-					.getGemeinde()
-					.getId())
-					.orElseThrow(() -> new EbeguRuntimeException(
-						"mitteilungUebergebenAnSchulamt",
-						ErrorCodeEnum.ERROR_EMPFAENGER_SCH_NOT_FOUND,
-						mitteilung.getId()))
-					.getDefaultBenutzerTS();
-			}
-			//TODO und wenn der verantwortlichen null ist? dasselbe für SCH/TS
-			// Den VerantwortlichenJA als Empfänger setzen
-			mitteilung.setEmpfaenger(verantwortlicherTS);
-			mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-			return persistence.merge(mitteilung);
+		if (mitteilung.getEmpfaengerAmt() != Amt.JUGENDAMT) {
+			throw new IllegalArgumentException(
+				"Der Empfänger der Mitteilung hat nicht die Rolle Jugendamt");
 		}
-		throw new IllegalArgumentException(
-			"Die Mitteilung hat entweder keinen Empfänger oder dieser ist nicht in Rolle Jugendamt");
+
+		// An wen soll die Meldung delegiert werden?
+		Benutzer verantwortlicherTS = Stream.of(
+			mitteilung.getDossier().getVerantwortlicherTS(),
+			gemeindeService.getGemeindeStammdatenByGemeindeId(mitteilung
+				.getDossier()
+				.getGemeinde()
+				.getId()).map(GemeindeStammdaten::getDefaultBenutzerTS).orElse(null))
+			.filter(Objects::nonNull)
+			.findFirst()
+			.orElseThrow(() -> new EbeguRuntimeException(
+				"mitteilungUebergebenAnSchulamt",
+				ErrorCodeEnum.ERROR_EMPFAENGER_SCH_NOT_FOUND,
+				mitteilung.getId()));
+
+		// Den VerantwortlichenJA als Empfänger setzen
+		mitteilung.setEmpfaenger(verantwortlicherTS);
+		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
+
+		return persistence.merge(mitteilung);
 	}
 
 	@Nonnull
