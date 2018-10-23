@@ -486,7 +486,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		handleDependingMitteilungenWhenDeletingBetreuung(betreuungId, betreuungToRemove);
 
-		persistence.remove(betreuungToRemove.getErweiterteBetreuungContainer());
+		// must be set to null so that hibernate understands it must remove it
+		//noinspection ConstantConditions
+		betreuungToRemove.setErweiterteBetreuungContainer(null);
 
 		final String gesuchId = betreuungToRemove.extractGesuch().getId();
 		removeBetreuung(betreuungToRemove);
