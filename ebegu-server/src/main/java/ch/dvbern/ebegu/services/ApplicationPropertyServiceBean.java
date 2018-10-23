@@ -63,9 +63,6 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	private Persistence persistence;
 
 	@Inject
-	private BenutzerService benutzerService;
-
-	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 	private static final String NAME_MISSING_MSG = "name muss gesetzt sein";
 

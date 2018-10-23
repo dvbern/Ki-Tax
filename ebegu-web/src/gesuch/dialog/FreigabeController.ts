@@ -38,6 +38,8 @@ export class FreigabeController {
         'BenutzerRS',
         'AuthServiceRS',
         '$translate',
+        'GemeindeRS',
+        'DossierRS'
     ];
 
     public gesuch: TSAntragDTO;
@@ -98,7 +100,7 @@ export class FreigabeController {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
             this.dossierRS.findDossier(this.gesuch.dossierId).then(dossier => {
                 this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
-                    this.selectedUserBG = stammdaten.defaultBenutzerBG.getFullName();
+                    this.selectedUserBG = stammdaten.defaultBenutzerBG.username;
                 });
             });
         } else {
@@ -114,7 +116,7 @@ export class FreigabeController {
         } else {
             this.dossierRS.findDossier(this.gesuch.dossierId).then(dossier => {
                 this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
-                    this.selectedUserTS = stammdaten.defaultBenutzerTS.getFullName();
+                    this.selectedUserTS = stammdaten.defaultBenutzerTS.username;
                 });
             });
         }

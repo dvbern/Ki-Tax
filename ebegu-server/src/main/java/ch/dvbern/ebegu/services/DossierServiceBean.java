@@ -91,9 +91,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	private MitteilungService mitteilungService;
 
 	@Inject
-	private EinstellungService einstellungService;
-
-	@Inject
 	private GemeindeService gemeindeService;
 
 	@Nonnull

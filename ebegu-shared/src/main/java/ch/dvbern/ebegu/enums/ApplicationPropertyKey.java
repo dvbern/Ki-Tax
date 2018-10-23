@@ -34,13 +34,13 @@ public enum ApplicationPropertyKey {
 	 * Wenn eine Nachricht zu einem Fall eintrifft, welcher noch keinen Verantwortlichen BG hat, so soll diese an den
 	 * Default-Verantwortlichen BG geschickt werden.
 	 */
-	DEFAULT_VERANTWORTLICHER_BG,
+	DEFAULT_VERANTWORTLICHER_BG, //TODO muss weg
 
 	/**
 	 * Wenn eine Nachricht zu einem Fall eintrifft, welcher noch keinen Verantwortlichen TS hat, so soll diese an den
 	 * Default-Verantwortlichen TS geschickt werden.
 	 */
-	DEFAULT_VERANTWORTLICHER_TS,
+	DEFAULT_VERANTWORTLICHER_TS, //TODO muss weg
 
 	/**
 	 * {Dbtr}{Nm} Name des Zahlungspflichtigen
