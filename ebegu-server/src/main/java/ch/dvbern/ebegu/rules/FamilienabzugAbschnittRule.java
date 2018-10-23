@@ -72,8 +72,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	@Override
 	@Nonnull
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(
-		@Nonnull Betreuung betreuung,
-		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		@Nonnull Betreuung betreuung) {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		final List<VerfuegungZeitabschnitt> familienAbzugZeitabschnitt = createInitialenFamilienAbzug(gesuch);

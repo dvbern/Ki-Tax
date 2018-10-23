@@ -22,22 +22,16 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Sonderregel die nach der eigentlich Berechnung angewendet wird und welche die Zeitabschnitte auf Monate begrenzt
  */
-public class MonatsRule extends AbstractEbeguRule {
-
-	public MonatsRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.NO_RULE, RuleType.NO_RULE, validityPeriod);
-	}
+public class MonatsRule {
 
 	@Nonnull
-	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> createMonate(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			LocalDate gueltigAb = zeitabschnitt.getGueltigkeit().getGueltigAb();
@@ -52,10 +46,5 @@ public class MonatsRule extends AbstractEbeguRule {
 			}
 		}
 		return monatsSchritte;
-	}
-
-	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		// Keine Regel
 	}
 }
