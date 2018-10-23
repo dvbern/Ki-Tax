@@ -361,9 +361,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// Diese Methode wird nur beim Loeschen einer Online-Mutation durch den Admin beim Erstellen einer
 		// Papier-Mutation verwendet.
 		// Wir koennen in diesem Fall die normale AuthCheck verwenden, da niemand vom JA fuer die vorhandene
-		// Online-Mutation des GS nach
-		// herkoemmlichem Schema berechtigt ist. Wir duerfen hier aber trotzdem loeschen. Methode ist aber nur fuer
-		// ADMIN_BG und SUPER_ADMIN verfuegbar.
+		// Online-Mutation des GS nach herkoemmlichem Schema berechtigt ist. Wir duerfen hier aber trotzdem
+		// loeschen. Methode ist aber nur fuer ADMIN_BG und SUPER_ADMIN verfuegbar.
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuungsmitteilung> query = cb.createQuery(Betreuungsmitteilung.class);
@@ -675,8 +674,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		authorizer.checkWriteAuthorizationMitteilung(betreuungsmitteilung);
 		setSenderAndEmpfaenger(betreuungsmitteilung);
 
-		return persistence.persist(betreuungsmitteilung); // A Betreuungsmitteilung is created and sent, therefore
-		// persist and not merge
+		// A Betreuungsmitteilung is created and sent, therefore persist and not merge
+		return persistence.persist(betreuungsmitteilung);
 	}
 
 	@Nonnull
@@ -794,11 +793,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					.getGemeinde()
 					.getId())
 					.orElseThrow(() -> new EbeguRuntimeException(
-						"mitteilungUebergebenAnSchulamt",
-						ErrorCodeEnum.ERROR_EMPFAENGER_SCH_NOT_FOUND,
+						"mitteilungUebergebenAnJugendamt",
+						ErrorCodeEnum.ERROR_EMPFAENGER_JA_NOT_FOUND,
 						mitteilung.getId()))
 					.getDefaultBenutzerBG();
 			}
+			//TODO und wenn der verantwortlichen null ist? dasselbe für SCH/TS
 			// Den VerantwortlichenJA als Empfänger setzen
 			mitteilung.setEmpfaenger(verantwortlicherBG);
 			mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
@@ -833,6 +833,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						mitteilung.getId()))
 					.getDefaultBenutzerTS();
 			}
+			//TODO und wenn der verantwortlichen null ist? dasselbe für SCH/TS
 			// Den VerantwortlichenJA als Empfänger setzen
 			mitteilung.setEmpfaenger(verantwortlicherTS);
 			mitteilung.setMitteilungStatus(MitteilungStatus.NEU);

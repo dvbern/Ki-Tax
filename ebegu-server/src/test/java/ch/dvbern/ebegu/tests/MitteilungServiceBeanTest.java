@@ -125,8 +125,8 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.persist(empfaengerINST);
 
 		// Default-Verantwortliche setzen, damit beim Senden der Message automatisch der Empfaenger ermittelt werden kann
-		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG, "saja", persistence);
-		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS, "scju", persistence);
+		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG, "saja", persistence); //TODO GemeindeStammdaten!
+		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS, "scju", persistence); //TODO GemeindeStammdaten!
 	}
 
 	@Test

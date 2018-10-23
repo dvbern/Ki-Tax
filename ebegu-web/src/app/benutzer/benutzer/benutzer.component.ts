@@ -35,7 +35,6 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {LogFactory} from '../../core/logging/LogFactory';
-import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 
 const LOG = LogFactory.createLog('BenutzerComponent');
@@ -71,7 +70,6 @@ export class BenutzerComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly benutzerRS: BenutzerRS,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly dialog: MatDialog,
     ) {
     }
@@ -105,11 +103,11 @@ export class BenutzerComponent implements OnInit {
             // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
             // "Default-Verantwortlichen" des entsprechenden Amtes handelt
             if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
-                // KIBON-256
+                // TODO KIBON-256
                 this.isDefaultVerantwortlicher = false;
             }
             if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
-                // KIBON-256
+                // TODO KIBON-256
                 this.isDefaultVerantwortlicher = false;
             }
             this.changeDetectorRef.markForCheck();
