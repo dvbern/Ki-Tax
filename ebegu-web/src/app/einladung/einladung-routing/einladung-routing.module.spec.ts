@@ -15,11 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum Permission {
-    BENUTZER_EINLADEN = 'BENUTZER_EINLADEN',
-    ROLE_TRAEGERSCHAFT = 'ROLE_TRAEGERSCHAFT',
-    ROLE_INSTITUTION = 'ROLE_INSTITUTION',
-    ROLE_GEMEINDE = 'ROLE_GEMEINDE',
-    ROLE_MANDANT = 'ROLE_MANDANT',
-    ROLE_BG = 'ROLE_BG', // todo remove in KIBON version 2. use Permission.ROLE_GEMEINDE instead,
-}
+import {EinladungRoutingModule} from './einladung-routing.module';
+
+describe('EinladungRoutingModule', () => {
+    let einladungRoutingModule: EinladungRoutingModule;
+
+    beforeEach(() => {
+        einladungRoutingModule = new EinladungRoutingModule();
+    });
+
+    it('should create an instance', () => {
+        expect(einladungRoutingModule).toBeTruthy();
+    });
+});

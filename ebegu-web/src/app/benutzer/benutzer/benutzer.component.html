@@ -78,7 +78,7 @@
                 <div class="row">
                     <div class="col-sm-12 dv-input-container-medium">
                         <div class="form-group">
-                            <label translate for="nachname_ID">NACHNAME</label>
+                            <label translate for="nachname_ID">NAME</label>
                             <input id="nachname_ID"
                                    type="text"
                                    name="nachname"
@@ -114,9 +114,13 @@
             </div>
 
             <!-- Aktive Rolle -->
-            <dv-berechtigung [berechtigung]="currentBerechtigung"
-                             [disabled]="isDisabled">
-            </dv-berechtigung>
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-medium">
+                    <dv-berechtigung [berechtigung]="currentBerechtigung"
+                                     [disabled]="isDisabled">
+                    </dv-berechtigung>
+                </div>
+            </div>
 
             <div class="marginTop50" *ngIf="futureBerechtigung || !isDisabled">
                 <h1 [textContent]="'ROLLE_KUENFTIG' | translate"></h1>
@@ -125,9 +129,13 @@
 
             <!-- Zukünftige Berechtigung -->
             <fieldset *ngIf="futureBerechtigung">
-                <dv-berechtigung [berechtigung]="futureBerechtigung"
-                                 [disabled]="isDisabled">
-                </dv-berechtigung>
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <dv-berechtigung [berechtigung]="futureBerechtigung"
+                                         [disabled]="isDisabled">
+                        </dv-berechtigung>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-sm-12 dv-input-container-small">
                         <div class="form-group">

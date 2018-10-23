@@ -90,6 +90,7 @@ public class PersistenceService implements Persistence {
 	}
 
 	@Override
+	@Nullable
 	public <T> T getCriteriaSingleResult(CriteriaQuery<T> query) {
 		try {
 			return em.createQuery(query).getSingleResult();

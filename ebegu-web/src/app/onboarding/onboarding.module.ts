@@ -15,8 +15,8 @@
 
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
-import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
-import {OnboardingComponent} from './dv-onboarding/onboarding.component';
+import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
+import {OnboardingComponent} from './onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 import {OnboardingRoutingModule} from './onboarding-routing.module';

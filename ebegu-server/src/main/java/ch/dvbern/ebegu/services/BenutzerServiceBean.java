@@ -304,6 +304,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
+	public Optional<Benutzer> findBenutzerById(@Nonnull String id) {
+		requireNonNull(id, "id muss gesetzt sein");
+
+		return Optional.ofNullable(persistence.find(Benutzer.class, id));
+	}
+
+	@Nonnull
+	@Override
 	@PermitAll
 	public Optional<Benutzer> findBenutzerByEmail(@Nonnull String email) {
 		Objects.requireNonNull(email, "email muss gesetzt sein");
