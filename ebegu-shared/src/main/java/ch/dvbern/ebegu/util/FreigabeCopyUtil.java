@@ -46,7 +46,6 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -125,9 +124,7 @@ public final class FreigabeCopyUtil {
 				betreuung.getAbwesenheitContainers().forEach(FreigabeCopyUtil::copyAbwesenheitContainer);
 			}
 			// ErweiterteBetreuung
-			if (betreuung.getErweiterteBetreuungContainer() != null) {
-				copyErweiterteBetreuungContainer(betreuung.getErweiterteBetreuungContainer());
-			}
+			copyErweiterteBetreuungContainer(betreuung.getErweiterteBetreuungContainer());
 		}
 	}
 
@@ -344,15 +341,17 @@ public final class FreigabeCopyUtil {
 	}
 
 	private static void copyFinanzielleSituationContainer(@Nullable FinanzielleSituationContainer container) {
-		if (container != null) {
-			if (container.getFinanzielleSituationJA() != null) {
-				if (container.getFinanzielleSituationGS() == null) {
-					container.setFinanzielleSituationGS(new FinanzielleSituation());
-				}
-				copyFinanzielleSituation(container.getFinanzielleSituationGS(), container.getFinanzielleSituationJA());
-			} else {
-				container.setFinanzielleSituationGS(null);
+		if (container == null) {
+			return;
+		}
+		if (container.getFinanzielleSituationJA() == null) {
+			//noinspection ConstantConditions
+			container.setFinanzielleSituationGS(null);
+		} else {
+			if (container.getFinanzielleSituationGS() == null) {
+				container.setFinanzielleSituationGS(new FinanzielleSituation());
 			}
+			copyFinanzielleSituation(container.getFinanzielleSituationGS(), container.getFinanzielleSituationJA());
 		}
 	}
 
@@ -364,15 +363,16 @@ public final class FreigabeCopyUtil {
 	}
 
 	private static void copyErwerbspensumContainer(@Nullable ErwerbspensumContainer container) {
-		if (container != null) {
-			if (container.getErwerbspensumJA() != null) {
-				if (container.getErwerbspensumGS() == null) {
-					container.setErwerbspensumGS(new Erwerbspensum());
-				}
-				copyErwerbspensum(container.getErwerbspensumGS(), container.getErwerbspensumJA());
-			} else {
-				container.setErwerbspensumGS(null);
+		if (container == null) {
+			return;
+		}
+		if (container.getErwerbspensumJA() == null) {
+			container.setErwerbspensumGS(null);
+		} else {
+			if (container.getErwerbspensumGS() == null) {
+				container.setErwerbspensumGS(new Erwerbspensum());
 			}
+			copyErwerbspensum(container.getErwerbspensumGS(), container.getErwerbspensumJA());
 		}
 	}
 

@@ -380,12 +380,14 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		final Betreuung otherBetreuung = (Betreuung) other;
 
 		boolean pensenSame = this.getBetreuungspensumContainers().stream().allMatch(
-			(pensCont) -> otherBetreuung.getBetreuungspensumContainers().stream().anyMatch(otherPensenCont -> otherPensenCont.isSame(pensCont)));
+			pensCont -> otherBetreuung.getBetreuungspensumContainers().stream()
+				.anyMatch(otherPensenCont -> otherPensenCont.isSame(pensCont)));
 
 		boolean abwesenheitenSame = true;
 		if (inklAbwesenheiten) {
 			abwesenheitenSame = this.getAbwesenheitContainers().stream().allMatch(
-				(abwesenheitCont) -> otherBetreuung.getAbwesenheitContainers().stream().anyMatch(otherAbwesenheitCont -> otherAbwesenheitCont.isSame(abwesenheitCont)));
+				abwesenheitCont -> otherBetreuung.getAbwesenheitContainers().stream()
+					.anyMatch(otherAbwesenheitCont -> otherAbwesenheitCont.isSame(abwesenheitCont)));
 		}
 		boolean statusSame = true;
 		if (inklStatus) {
@@ -393,10 +395,8 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		}
 		boolean stammdatenSame = this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
 
-		boolean sameErweiterteBeduerfnisse = true;
-		if (getErweiterteBetreuungContainer() != null && otherBetreuung.getErweiterteBetreuungContainer() != null) {
-			sameErweiterteBeduerfnisse = getErweiterteBetreuungContainer().isSame(otherBetreuung.getErweiterteBetreuungContainer());
-		}
+		boolean sameErweiterteBeduerfnisse =
+			getErweiterteBetreuungContainer().isSame(otherBetreuung.getErweiterteBetreuungContainer());
 
 		return pensenSame && abwesenheitenSame && statusSame && stammdatenSame && sameErweiterteBeduerfnisse;
 	}

@@ -73,7 +73,7 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 		switch (dokumentTyp) {
 		case BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND:
 			ErweiterteBetreuungContainer erwBetContainer = betreuung.getErweiterteBetreuungContainer();
-			return erwBetContainer != null && erwBetContainer.getErweiterteBetreuungJA() != null
+			return erwBetContainer.getErweiterteBetreuungJA() != null
 				&& erwBetContainer.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
 		default:
 			return false;
