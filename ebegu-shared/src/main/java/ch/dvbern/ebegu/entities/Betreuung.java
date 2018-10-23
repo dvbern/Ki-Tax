@@ -235,6 +235,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return erweiterteBetreuungContainer;
 	}
 
+	@SuppressWarnings("NullableProblems")
 	public void setErweiterteBetreuungContainer(@Nonnull ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
 		this.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
 	}

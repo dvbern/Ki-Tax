@@ -241,6 +241,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		EntityManager em = persistence.getEntityManager();
 
+		//noinspection JpaQueryApiInspection
 		TypedQuery<GesuchStichtagDataRow> query =
 			em.createNamedQuery("GesuchStichtagNativeSQLQuery", GesuchStichtagDataRow.class);
 
@@ -308,6 +309,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		EntityManager em = persistence.getEntityManager();
 
+		//noinspection JpaQueryApiInspection
 		TypedQuery<GesuchZeitraumDataRow> query =
 			em.createNamedQuery("GesuchZeitraumNativeSQLQuery", GesuchZeitraumDataRow.class);
 
@@ -1136,9 +1138,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			kind.getPensumFachstelle().getFachstelle().getName() :
 			StringUtils.EMPTY);
 
-		if (betreuung.getErweiterteBetreuungContainer() != null
-			&& betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
-
+		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
 			row.setKindErwBeduerfnisse(betreuung.getErweiterteBetreuungContainer()
 				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse());
 		}

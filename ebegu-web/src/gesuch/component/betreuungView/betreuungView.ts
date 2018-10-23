@@ -999,7 +999,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public getTextFachstelleKorrekturJA(): string {
         if ((this.getErweiterteBetreuungGS() && this.getErweiterteBetreuungGS().erweiterteBeduerfnisse)
-            && (this.getErweiterteBetreuungJA() &&!this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)) {
+            && (this.getErweiterteBetreuungJA() && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)) {
             return this.getErweiterteBetreuungGS().fachstelle.name;
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');

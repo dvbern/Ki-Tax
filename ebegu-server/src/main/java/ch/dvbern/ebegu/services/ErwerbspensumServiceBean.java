@@ -174,7 +174,7 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 		// 2. das Kind kein erweiterteBeduerfniss hat
 		return (betreuung.getKind().getKindJA().getPensumFachstelle() == null
 			&& betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isAngebotJugendamtKleinkind())
-			&& ((betreuung.getErweiterteBetreuungContainer() == null || betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null)
+			&& (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null
 			|| !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse());
 	}
 }
