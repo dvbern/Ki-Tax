@@ -19,15 +19,14 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {of} from 'rxjs';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
-import TSBerechtigung from '../../../models/TSBerechtigung';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {InstitutionRS} from '../../core/service/institutionRS.rest';
-import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-import {SharedModule} from '../../shared/shared.module';
-import {BenutzerRolleComponent} from '../benutzer-rolle/benutzer-rolle.component';
+import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
+import {TSRole} from '../../../../models/enums/TSRole';
+import TSBerechtigung from '../../../../models/TSBerechtigung';
+import TestDataUtil from '../../../../utils/TestDataUtil.spec';
+import {InstitutionRS} from '../../../core/service/institutionRS.rest';
+import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
+import {SharedModule} from '../../shared.module';
 
 import {BerechtigungComponent} from './berechtigung.component';
 
@@ -56,7 +55,6 @@ describe('BerechtigungComponent', () => {
             imports: [
                 SharedModule,
             ],
-            declarations: [BerechtigungComponent, BenutzerRolleComponent],
             providers: [
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
@@ -98,7 +96,7 @@ describe('BerechtigungComponent', () => {
         fixture.detectChanges();
 
         const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
-        expect(debugElements.length).toBe(2);
+        expect(debugElements.length).toBe(0);
 
         expect(fixture.debugElement.query(By.css('dv-gemeinde-multiselect'))).toBeTruthy();
     });
@@ -109,7 +107,7 @@ describe('BerechtigungComponent', () => {
         fixture.detectChanges();
 
         const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
-        expect(debugElements.length).toBe(2);
+        expect(debugElements.length).toBe(0);
 
         expect(fixture.debugElement.query(By.css('[id^=institution-]'))).toBeTruthy();
     });
@@ -120,7 +118,7 @@ describe('BerechtigungComponent', () => {
         fixture.detectChanges();
 
         const debugElements = fixture.debugElement.queryAll(By.css(inputSelector));
-        expect(debugElements.length).toBe(2);
+        expect(debugElements.length).toBe(0);
 
         expect(fixture.debugElement.query(By.css('[id^=treagerschaft-]'))).toBeTruthy();
     });

@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -73,7 +72,7 @@ public class FamilienabzugAbschnittRuleTest {
 		final KindContainer defaultKindContainer = TestDataUtil.createDefaultKindContainer();
 		gesuch.getKindContainers().add(defaultKindContainer);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung, new ArrayList<>());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
@@ -91,7 +90,7 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer1);
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung, new ArrayList<>());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
@@ -109,7 +108,7 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer1);
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung, new ArrayList<>());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
@@ -129,7 +128,7 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer1);
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung, new ArrayList<>());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(2, zeitabschnitte.size());
 
@@ -162,7 +161,7 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer2);
 		gesuch.getKindContainers().add(defaultKindContainer3);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung, new ArrayList<>());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(2, zeitabschnitte.size());
 
@@ -432,7 +431,7 @@ public class FamilienabzugAbschnittRuleTest {
 		final KindContainer defaultKindContainer = TestDataUtil.createDefaultKindContainer();
 		gesuch.getKindContainers().add(defaultKindContainer);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung, new ArrayList<>());
+		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(2, zeitabschnitte.size());
 

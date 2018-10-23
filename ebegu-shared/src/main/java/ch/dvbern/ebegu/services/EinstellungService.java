@@ -17,13 +17,11 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -50,20 +48,31 @@ public interface EinstellungService {
 
 	/**
 	 * Sucht eine Einstellung nach folgendem Schema:
-	 * (1) Wenn Einstellung dem gewünschten Key spezifisch für die gewünschte Gemeinde vorhanden ist, wird diese zurueckgegeben
-	 * (2) Wenn nicht, wird geschaut, ob es eine spezifische Einstellung für den Mandanten der gewünschten Gemeinde gibt
+	 * (1) Wenn Einstellung dem gewünschten Key spezifisch für die gewünschte Gemeinde vorhanden ist, wird diese
+	 * zurueckgegeben
+	 * (2) Wenn nicht, wird geschaut, ob es eine spezifische Einstellung für den Mandanten der gewünschten Gemeinde
+	 * gibt
 	 * (3) Wenn nicht, wird die allgemeine, systemweite Einstellung zurückgegeben
+	 *
 	 * @throws NoEinstellungFoundException, wenn auf *keiner* Stufe ein Resultat gefunden wird
 	 */
 	@Nonnull
-	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+	Einstellung findEinstellung(
+		@Nonnull EinstellungKey key,
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Suche analog {@link #findEinstellung(EinstellungKey, Gemeinde, Gesuchsperiode)}
-	 * Ein externes EntityManager wird uebergeben. Damit vermeiden wir Fehler  ConcurrentModificationException in hibernate
+	 * Ein externes EntityManager wird uebergeben. Damit vermeiden wir Fehler  ConcurrentModificationException in
+	 * hibernate
 	 */
 	@Nonnull
-	Einstellung findEinstellung(@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull EntityManager em);
+	Einstellung findEinstellung(
+		@Nonnull EinstellungKey key,
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull EntityManager em);
 
 	/**
 	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode zurueck. Es werden die System Defaults zurueckgegeben
@@ -72,18 +81,22 @@ public interface EinstellungService {
 	Collection<Einstellung> getAllEinstellungenBySystem(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
-	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode *fuer eine bestimmte Gemeinde* zurueck. D.h. in der zurueckgegebenen Map ist jeder
-	 * EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten Wert fuer die Gemeinde. z.B. Key A als Gemeindeeinstellung, Key B als
-	 * System Default, Key C als Mandanteinstellung
+	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode *fuer eine bestimmte Gemeinde* zurueck. D.h. in der
+	 * zurueckgegebenen Map ist jeder EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten Wert fuer
+	 * die Gemeinde. z.B. Key A als Gemeindeeinstellung, Key B als System Default, Key C als Mandanteinstellung
 	 */
 	@Nonnull
-	Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+	Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
-	 * Kopiert alle Einstellungen der alten in die neue Gesuchsperiode. Es werden sowohl Gemeinde-, Mandant-, wie auch System-Einstellungen
-	 * kopiert.
+	 * Kopiert alle Einstellungen der alten in die neue Gesuchsperiode. Es werden sowohl Gemeinde-, Mandant-, wie auch
+	 * System-Einstellungen kopiert.
 	 */
-	void copyEinstellungenToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCreate, @Nonnull Gesuchsperiode lastGesuchsperiode);
+	void copyEinstellungenToNewGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiodeToCreate,
+		@Nonnull Gesuchsperiode lastGesuchsperiode);
 
 	/**
 	 * Löscht alle Einstellungen der uebergebenen Gesuchsperiode
