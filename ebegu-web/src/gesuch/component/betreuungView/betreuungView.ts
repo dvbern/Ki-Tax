@@ -339,6 +339,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     /**
+     * This method saves the Betreuung as it is and it doesn't trigger any other action.
+     */
+    public saveBetreuung(): void {
+        if (this.isGesuchValid()) {
+            this.save(null, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        }
+    }
+
+    /**
      * Entfernt alle Module die nicht als angemeldet markiert sind. Nur fuer Gesuchsperiode in denen die
      * Tagesschuleanmeldung aktiv ist.
      */
@@ -949,12 +958,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public enableErweiterteBeduerfnisse(): boolean {
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
         const gemeindeUser = this.authServiceRS
-            .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles());
+            .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
 
         return !this.isSavingData
             && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
-            && (gesuchsteller && this.isBetreuungsstatusAusstehend())
-            || gemeindeUser;
+            && ((gesuchsteller && this.isBetreuungsstatusAusstehend())
+                || gemeindeUser);
     }
 
     /**

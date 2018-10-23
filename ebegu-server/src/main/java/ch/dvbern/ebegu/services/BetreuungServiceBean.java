@@ -45,6 +45,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer_;
@@ -67,7 +68,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
@@ -86,6 +86,7 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -466,7 +467,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		root.fetch(Betreuung_.betreuungspensumContainers, JoinType.LEFT);
 		root.fetch(Betreuung_.abwesenheitContainers, JoinType.LEFT);
 		query.select(root);
-		Predicate idPred = cb.equal(root.get(Betreuung_.id), key);
+		Predicate idPred = cb.equal(root.get(AbstractEntity_.id), key);
 		query.where(idPred);
 		Betreuung result = persistence.getCriteriaSingleResult(query);
 		if (result != null) {
@@ -476,8 +477,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer must be set to null")
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
 	public void removeBetreuung(@Nonnull String betreuungId) {
 		Objects.requireNonNull(betreuungId);
 		Optional<Betreuung> betrToRemoveOpt = findBetreuung(betreuungId);
@@ -558,7 +560,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 		Root<Betreuung> root = query.from(Betreuung.class);
 		// Betreuung from Gesuch
-		Predicate predicateInstitution = root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.id).in(gesuchId);
+		Predicate predicateInstitution = root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(AbstractEntity_.id).in(gesuchId);
 
 		query.where(predicateInstitution);
 		authorizer.checkReadAuthorizationGesuchId(gesuchId);
@@ -589,11 +591,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		predicatesToUse.add(verfuegungPredicate);
 
 		Collection<Institution> institutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
-		Predicate predicateInstitution = root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.institution).in(Arrays.asList(institutionen));
+		Predicate predicateInstitution = root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.institution)
+			.in(Collections.singletonList(institutionen));
 		predicatesToUse.add(predicateInstitution);
 
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse)).orderBy(cb.desc(root.get(Betreuung_.verfuegung).get(Verfuegung_
-			.timestampErstellt)));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse)).orderBy(cb.desc(root.get(Betreuung_.verfuegung)
+			.get(AbstractEntity_.timestampErstellt)));
 
 		List<Betreuung> criteriaResults = persistence.getCriteriaResults(query);
 
@@ -623,9 +626,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		List<Predicate> predicates = new ArrayList<>();
 
 		if (role.isRoleSchulamt()) {
-			predicates.add(root.get(Betreuung_.betreuungsstatus).in(Arrays.asList(Betreuungsstatus.forPendenzSchulamt)));
+			predicates.add(root.get(Betreuung_.betreuungsstatus).in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
 		} else { // for Institution or Traegerschaft. by default
-			predicates.add(root.get(Betreuung_.betreuungsstatus).in(Arrays.asList(Betreuungsstatus.forPendenzInstitution)));
+			predicates.add(root.get(Betreuung_.betreuungsstatus).in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
 		}
 
 		// nur Aktuelle Anmeldungen
@@ -731,7 +734,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Root<Betreuung> root = update.from(Betreuung.class);
 		update.set(Betreuung_.anmeldungMutationZustand, anmeldungMutationZustand);
 
-		Predicate predBetreuung = cb.equal(root.get(Betreuung_.id), betreuungsId);
+		Predicate predBetreuung = cb.equal(root.get(AbstractEntity_.id), betreuungsId);
 		update.where(predBetreuung);
 
 		return persistence.getEntityManager().createQuery(update).executeUpdate();
