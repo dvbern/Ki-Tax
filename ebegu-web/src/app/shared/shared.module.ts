@@ -30,10 +30,12 @@ import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
-import {GemeindeMultiselectComponent} from '../core/component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
+import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
+import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {MaterialModule} from './material.module';
@@ -75,6 +77,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         FullHeightContainerComponent,
         LoadingButtonDirective,
         GemeindeMultiselectComponent,
+        BerechtigungComponent,
+        BenutzerRolleComponent,
     ],
     entryComponents: [
         DvNgGemeindeDialogComponent,
@@ -108,6 +112,8 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         FullHeightContainerComponent,
         LoadingButtonDirective,
         GemeindeMultiselectComponent,
+        BerechtigungComponent,
+        BenutzerRolleComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

@@ -72,6 +72,8 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	// ---------- Konfiguration ----------
 	@NotNull
 	private boolean kontingentierung;
+
+	// todo KIBON-245 dies MUSS ein Enum sein, da es dann validiert ist, dass der Wert richtig ist, sonst koennte man irgendeinen Wert speichern
 	@Nullable
 	private String beguBisUndMitSchulstufe;
 
