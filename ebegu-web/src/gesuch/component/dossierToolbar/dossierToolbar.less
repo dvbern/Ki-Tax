@@ -60,7 +60,6 @@
         &:hover, &.md-default-theme:not([disabled]).md-focused, &:not([disabled]).md-focused, &:focus {
             background: none;
             outline: 0;
-            -webkit-box-shadow: none;
             box-shadow: none;
         }
     }
@@ -103,7 +102,6 @@
         &:hover, &.md-default-theme:not([disabled]).md-focused, &:not([disabled]).md-focused, &:focus {
             background: @primary-dark;
             outline: 0;
-            -webkit-box-shadow: none;
             box-shadow: none;
         }
     }
@@ -329,9 +327,9 @@
     overflow-y: auto;
     overflow-x: hidden;
     z-index: @z-index-mobile-toolbar;
-    width: 90%;
-    min-width: 90%;
-    max-width: 90%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
     background: @primary;
     .gesuchsperioden-container {
         width: 100%;
@@ -433,14 +431,21 @@
         }
     }
 
-    .dossier-toolbar-mobile-close, .mobile-logout {
-        background-color: transparent;
+    .dossier-toolbar-mobile-close, .mobile-logout, .dossier-toolbar-top-operations-container {
         color: @contrast-lightest;
         text-align: right;
         width: 100%;
         height: @navbar-height;
-        padding: 0 1.5rem 0 3rem;
         line-height: @navbar-height;
+    }
+
+    .dossier-toolbar-mobile-close, .mobile-logout {
+        background-color: transparent;
+        padding: 0 1.5rem 0 3rem;
+        span {
+            text-transform: uppercase;
+            font-size: 1.6rem;
+        }
         &.active, &:active, &:hover, &:focus {
             background-color: transparent;
             color: @contrast-lightest;
@@ -453,8 +458,33 @@
         }
 
     }
-    .mobile-logout {
-        text-align: left;
+    .dossier-toolbar-top-operations-container {
+        background-color: @contrast-darkest;
+        padding: 0 0 0 1rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        z-index: 108;
+        .dossier-toolbar-mobile-close {
+            background-color: transparent;
+            color: @contrast-lightest;
+            text-align: center;
+            width: 5rem;
+            height: @navbar-height;
+            padding: 1rem;
+            line-height: 3rem;
+
+            &.active, &:active, &:hover, &:focus {
+                background-color: transparent;
+                color: @contrast-lightest;
+                outline: none;
+                text-decoration: none !important;
+                outline: 0;
+                -webkit-box-shadow: none;
+                box-shadow: none;
+
+            }
+        }
         span {
             text-transform: uppercase;
             font-size: 1.6rem;
@@ -498,9 +528,6 @@ i.ellipsis-icon {
     margin-left: 1rem;
 }
 
-.toolbar-gesuchname {
-    font-size: 1.4rem;
-}
 
 .toolbar-gesuchname {
     font-size: 1.6rem;
@@ -516,7 +543,7 @@ i.ellipsis-icon {
     text-transform: none;
 }
 
-md-menu-bar md-menu>button {
+md-menu-bar md-menu > button {
     color: @contrast-lightest;
 
 }

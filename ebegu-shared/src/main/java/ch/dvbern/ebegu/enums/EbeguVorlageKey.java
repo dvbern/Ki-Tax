@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.enums;
 
+import javax.annotation.Nullable;
+
 /**
  * Keys für die zeitabhängigen E-BEGU-Vorlagen
  */
@@ -37,9 +39,6 @@ public enum EbeguVorlageKey {
 
 	// Verfügung des Angebots Tagesfamilien
 	VORLAGE_VERFUEGUNG_TAGESFAMILIEN("/vorlagen/Verfuegungsmuster_tagesfamilien.docx"),
-
-	// Verfügung (Brief) des Angebots Tagesstaette Schulkinder
-	VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER("/vorlagen/Verfuegungsmuster_tagesstaette_schulkinder.docx"),
 
 	// Die Freigabequittung die der Gesuchsteller ausdruckt
 	VORLAGE_FREIGABEQUITTUNG("/vorlagen/Freigabequittung.docx"),
@@ -100,8 +99,9 @@ public enum EbeguVorlageKey {
 		this.defaultVorlagePath = defaultVorlagePath;
 	}
 
-	@SuppressWarnings("OverlyComplexMethod")
-	public static EbeguVorlageKey getBenutzerHandbuchKeyForRole(UserRole userRole) {
+	@SuppressWarnings("checkstyle:CyclomaticComplexity")
+	@Nullable
+	public static EbeguVorlageKey getBenutzerHandbuchKeyForRole(@Nullable UserRole userRole) {
 		if (userRole != null) {
 			switch (userRole) {
 				case ADMIN_BG:
@@ -144,7 +144,6 @@ public enum EbeguVorlageKey {
 			VORLAGE_NICHT_EINTRETENSVERFUEGUNG,
 			VORLAGE_INFOSCHREIBEN_MAXIMALTARIF,
 			VORLAGE_VERFUEGUNG_TAGESFAMILIEN,
-			VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER,
 			VORLAGE_FREIGABEQUITTUNG,
 			VORLAGE_FINANZIELLE_SITUATION,
 			VORLAGE_BEGLEITSCHREIBEN };

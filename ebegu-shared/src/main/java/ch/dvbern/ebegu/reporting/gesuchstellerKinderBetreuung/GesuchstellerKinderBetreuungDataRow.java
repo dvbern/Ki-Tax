@@ -608,11 +608,11 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public BigDecimal getBetreuungsPensum() {
+	public BigDecimal getBetreuungspensum() {
 		return betreuungsPensum;
 	}
 
-	public void setBetreuungsPensum(@Nullable BigDecimal betreuungsPensum) {
+	public void setBetreuungspensum(@Nullable BigDecimal betreuungsPensum) {
 		this.betreuungsPensum = betreuungsPensum;
 	}
 

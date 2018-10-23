@@ -21,13 +21,13 @@ import {Transition} from '@uirouter/core';
 @Component({
     selector: 'dv-onboarding-be-login',
     templateUrl: './onboarding-be-login.component.html',
-    styleUrls: ['../onboarding.less', './onboarding-be-login.component.less']
+    styleUrls: [ './onboarding-be-login.component.less', '../onboarding.less'],
 })
 export class OnboardingBeLoginComponent {
 
-    private readonly gemeindeId: string;
+    public readonly gemeindeId: string;
 
-    constructor(private readonly transition: Transition,
+    public constructor(private readonly transition: Transition,
     ) {
         this.gemeindeId = this.transition.params().gemeindeId;
     }

@@ -39,7 +39,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 		Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
@@ -57,6 +57,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Betreuungspensum betreuungspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensum());
+		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		return zeitabschnitt;
 	}
 }

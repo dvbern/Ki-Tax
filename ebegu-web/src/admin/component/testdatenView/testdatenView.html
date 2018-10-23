@@ -68,32 +68,32 @@
                 <ul>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('1')">
-                            <span [textContent]="'Testfall Dagmar Wälti'"></span>
+                            <span [textContent]="'Testfall Dagmar Wälti: Ledig, 1 Kind, 2 Kitas'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('2')">
-                            <span [textContent]="'Testfall Yvonne Feutz'"></span>
+                            <span [textContent]="'Testfall Yvonne Feutz: Verheiratet, 2 Kinder, Kita'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('3')">
-                            <span [textContent]="'Testfall Marcia Perreira'"></span>
+                            <span [textContent]="'Testfall Marcia Perreira: Verheiratet, 2 Kinder, Kind 1 Kita, Kind 2 keine Betreuung'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('4')">
-                            <span [textContent]="'Testfall Laura Walther'"></span>
+                            <span [textContent]="'Testfall Laura Walther: Verheiratet, 1 Kind, Kita'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('5')">
-                            <span [textContent]="'Testfall Mereth Lueti'"></span>
+                            <span [textContent]="'Testfall Mereth Lueti: Verheiratet, 1 Kind, Kita, 2 Pensen'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('6')">
-                            <span [textContent]="'Testfall Nora Becker'"></span>
+                            <span [textContent]="'Testfall Nora Becker: Verheiratet, 1 Kind, Kita'"></span>
                         </button>
                     </li>
                     <li>
@@ -244,8 +244,7 @@
                            placeholder="Eingangsdatum"
                            id="eingangsdatum"
                            [value]="eingangsdatum">
-                    <mat-datepicker-toggle class="testfall-datepicker" matSuffix
-                                           [for]="dpEingangsdatum"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix [for]="dpEingangsdatum"></mat-datepicker-toggle>
                     <mat-datepicker #dpEingangsdatum></mat-datepicker>
                 </div>
                 <div class="col-sm-2 dv-input-container-small">
@@ -254,15 +253,16 @@
                            placeholder="Ereignisdatum"
                            id="ereignisdatum"
                            [value]="ereignisdatum">
-                    <mat-datepicker-toggle class="testfall-datepicker" matSuffix
-                                           [for]="dpDatumHeirat"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix [for]="dpDatumHeirat"></mat-datepicker-toggle>
                     <mat-datepicker #dpDatumHeirat></mat-datepicker>
                 </div>
                 <div class="col-sm-2 dv-input-container-small">
-                    <button dvNgDebounceClick (debounceClick)="mutiereFallHeirat()" class="dv-btn testfall-button testfall-button-duo">
+                    <button dvNgDebounceClick (debounceClick)="mutiereFallHeirat()"
+                            class="dv-btn testfall-button testfall-button-duo">
                         Heirat
                     </button>
-                    <button dvNgDebounceClick (debounceClick)="mutiereFallScheidung()" class="dv-btn testfall-button testfall-button-duo">
+                    <button dvNgDebounceClick (debounceClick)="mutiereFallScheidung()"
+                            class="dv-btn testfall-button testfall-button-duo">
                         Scheidung
                     </button>
                 </div>
@@ -292,7 +292,8 @@
                             class="dv-btn testfall-button-duo">
                         Schulungsdaten erstellen
                     </button>
-                    <button dvNgDebounceClick (debounceClick)="deleteSchulungsdaten()" class="dv-btn testfall-button-duo">
+                    <button dvNgDebounceClick (debounceClick)="deleteSchulungsdaten()"
+                            class="dv-btn testfall-button-duo">
                         Schulungsdaten löschen
                     </button>
                 </div>
@@ -303,7 +304,8 @@
             <div class="row">
 
                 <div class="col-md-12">
-                    <button dvNgDebounceClick (debounceClick)="zahlungenKontrollieren()" class="dv-btn testfall-button-duo">
+                    <button dvNgDebounceClick (debounceClick)="zahlungenKontrollieren()"
+                            class="dv-btn testfall-button-duo">
                         Zahlungen kontrollieren
                     </button>
                     <button dvNgDebounceClick (debounceClick)="deleteAllZahlungsauftraege()"

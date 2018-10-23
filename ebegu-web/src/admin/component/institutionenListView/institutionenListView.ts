@@ -19,49 +19,52 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class InstitutionenListViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         institutionen: '<',
     };
-    template = require('./institutionenListView.html');
-    controller = InstitutionenListViewController;
-    controllerAs = 'vm';
+    public template = require('./institutionenListView.html');
+    public controller = InstitutionenListViewController;
+    public controllerAs = 'vm';
 }
 
 export class InstitutionenListViewController extends AbstractAdminViewController {
 
-    static $inject: ReadonlyArray<string> = ['InstitutionRS', 'DvDialog', 'AuthServiceRS', '$state'];
+    public static $inject: ReadonlyArray<string> = ['InstitutionRS', 'DvDialog', 'AuthServiceRS', '$state'];
 
-    form: IFormController;
-    institutionen: TSInstitution[];
-    selectedInstitution: TSInstitution = undefined;
+    public form: IFormController;
+    public institutionen: TSInstitution[];
+    public selectedInstitution: TSInstitution = undefined;
 
-    constructor(private readonly institutionRS: InstitutionRS,
-                private readonly dvDialog: DvDialog, authServiceRS: AuthServiceRS,
-                private readonly $state: StateService) {
+    public constructor(private readonly institutionRS: InstitutionRS,
+                       private readonly dvDialog: DvDialog, authServiceRS: AuthServiceRS,
+                       private readonly $state: StateService,
+    ) {
         super(authServiceRS);
     }
 
-    getInstitutionenList(): TSInstitution[] {
+    public getInstitutionenList(): TSInstitution[] {
         return this.institutionen;
     }
 
-    removeInstitution(institution: any): void {
+    public removeInstitution(institution: any): void {
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             deleteText: '',
             title: 'LOESCHEN_DIALOG_TITLE',
             parentController: undefined,
-            elementID: undefined
-        }).then(() => {   //User confirmed removal
+            elementID: undefined,
+        }).then(() => {   // User confirmed removal
             this.selectedInstitution = undefined;
-            this.institutionRS.removeInstitution(institution.id).then((response) => {
+            this.institutionRS.removeInstitution(institution.id).then(() => {
                 const index = EbeguUtil.getIndexOfElementwithID(institution, this.institutionen);
                 if (index > -1) {
                     this.institutionen.splice(index, 1);
@@ -70,15 +73,20 @@ export class InstitutionenListViewController extends AbstractAdminViewController
         });
     }
 
-    createInstitution(): void {
+    public createInstitution(): void {
         this.$state.go('admin.institution', {
-            institutionId: undefined
+            institutionId: undefined,
         });
     }
 
-    editInstitution(institution: TSInstitution) {
+    public editInstitution(institution: TSInstitution): void {
         this.$state.go('admin.institution', {
-            institutionId: institution.id
+            institutionId: institution.id,
         });
+    }
+
+    public isCreateInstitutionAllowed(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles())
+            || this.authServiceRS.isRole(TSRole.SACHBEARBEITER_MANDANT);
     }
 }

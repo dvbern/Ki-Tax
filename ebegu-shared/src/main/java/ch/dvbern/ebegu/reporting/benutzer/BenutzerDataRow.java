@@ -19,30 +19,31 @@ import java.time.LocalDate;
 
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.enums.BenutzerStatus;
+
 public class BenutzerDataRow {
 
-	private String username;
-	private String vorname;
-	private String nachname;
-	private String email;
-	private String role;
+	private String username = null;
+	private String vorname = null;
+	private String nachname = null;
+	private String email = null;
+	private String role = null;
 	@Nullable
-	private LocalDate roleGueltigAb;
+	private LocalDate roleGueltigAb = null;
 	@Nullable
-	private LocalDate roleGueltigBis;
+	private LocalDate roleGueltigBis = null;
 	@Nullable
-	private String gemeinden;
+	private String gemeinden = null;
 	@Nullable
-	private String institution;
+	private String institution = null;
 	@Nullable
-	private String traegerschaft;
-	private Boolean gesperrt;
-	private Boolean isKita;
-	private Boolean isTagesfamilien;
-	private Boolean isTagi;
-	private Boolean isTagesschule;
-	private Boolean isFerieninsel;
-
+	private String traegerschaft = null;
+	@Nullable
+	private BenutzerStatus status = null;
+	private Boolean isKita = null;
+	private Boolean isTagesfamilien = null;
+	private Boolean isTagesschule = null;
+	private Boolean isFerieninsel = null;
 
 	public BenutzerDataRow() {
 	}
@@ -132,12 +133,13 @@ public class BenutzerDataRow {
 		this.traegerschaft = traegerschaft;
 	}
 
-	public Boolean isGesperrt() {
-		return gesperrt;
+	@Nullable
+	public BenutzerStatus getStatus() {
+		return status;
 	}
 
-	public void setGesperrt(Boolean gesperrt) {
-		this.gesperrt = gesperrt;
+	public void setStatus(@Nullable BenutzerStatus status) {
+		this.status = status;
 	}
 
 	public Boolean isKita() {
@@ -146,14 +148,6 @@ public class BenutzerDataRow {
 
 	public void setKita(Boolean isKita) {
 		this.isKita = isKita;
-	}
-
-	public Boolean isTagi() {
-		return isTagi;
-	}
-
-	public void setTagi(Boolean tagi) {
-		isTagi = tagi;
 	}
 
 	public Boolean isTagesschule() {
@@ -172,14 +166,17 @@ public class BenutzerDataRow {
 		isFerieninsel = ferieninsel;
 	}
 
-	public Boolean isTagesfamilien() { return isTagesfamilien; }
+	public Boolean isTagesfamilien() {
+		return isTagesfamilien;
+	}
 
-	public void setTagesfamilien(Boolean tagesfamilien) { isTagesfamilien = tagesfamilien; }
+	public void setTagesfamilien(Boolean tagesfamilien) {
+		isTagesfamilien = tagesfamilien;
+	}
 
 	public Boolean isJugendamt() {
 		return (this.isKita != null && this.isKita)
-			|| (this.isTagesfamilien != null && this.isTagesfamilien)
-			|| (this.isTagi != null && this.isTagi);
+			|| (this.isTagesfamilien != null && this.isTagesfamilien);
 	}
 
 	public Boolean isSchulamt() {

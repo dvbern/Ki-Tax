@@ -14,26 +14,25 @@
  */
 
 export enum TSWizardStepName {
-    GESUCH_ERSTELLEN = <any> 'GESUCH_ERSTELLEN',
-    FAMILIENSITUATION = <any> 'FAMILIENSITUATION',
-    GESUCHSTELLER = <any> 'GESUCHSTELLER',
-    UMZUG = <any> 'UMZUG',
-    KINDER = <any> 'KINDER',
-    BETREUUNG = <any> 'BETREUUNG',
-    ABWESENHEIT = <any> 'ABWESENHEIT',
-    ERWERBSPENSUM = <any> 'ERWERBSPENSUM',
-    FINANZIELLE_SITUATION = <any> 'FINANZIELLE_SITUATION',
-    EINKOMMENSVERSCHLECHTERUNG = <any> 'EINKOMMENSVERSCHLECHTERUNG',
-    DOKUMENTE = <any> 'DOKUMENTE',
-    FREIGABE = <any> 'FREIGABE',
-    VERFUEGEN = <any> 'VERFUEGEN'
+    GESUCH_ERSTELLEN = 'GESUCH_ERSTELLEN',
+    FAMILIENSITUATION = 'FAMILIENSITUATION',
+    GESUCHSTELLER = 'GESUCHSTELLER',
+    UMZUG = 'UMZUG',
+    KINDER = 'KINDER',
+    BETREUUNG = 'BETREUUNG',
+    ABWESENHEIT = 'ABWESENHEIT',
+    ERWERBSPENSUM = 'ERWERBSPENSUM',
+    FINANZIELLE_SITUATION = 'FINANZIELLE_SITUATION',
+    EINKOMMENSVERSCHLECHTERUNG = 'EINKOMMENSVERSCHLECHTERUNG',
+    DOKUMENTE = 'DOKUMENTE',
+    FREIGABE = 'FREIGABE',
+    VERFUEGEN = 'VERFUEGEN'
 }
 
 /**
  * It is crucial that this function returns all elements in the order they will have in the navigation menu.
  * the order of this function will be used to navigate through all steps, so if this order is not correct the
  * navigation won't work as expected.
- * @returns {TSWizardStepName[]}
  */
 export function getTSWizardStepNameValues(): Array<TSWizardStepName> {
     return [
@@ -49,6 +48,6 @@ export function getTSWizardStepNameValues(): Array<TSWizardStepName> {
         TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
         TSWizardStepName.DOKUMENTE,
         TSWizardStepName.FREIGABE,
-        TSWizardStepName.VERFUEGEN
+        TSWizardStepName.VERFUEGEN,
     ];
 }

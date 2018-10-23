@@ -21,9 +21,9 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {UIRouterModule} from '@uirouter/angular';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
-import {DvNgErrorMessages} from '../core/component/dv-error-messages/dv-ng-error-messages';
-import {GemeindeMultiselectComponent} from '../core/component/gemeinde-multiselect/gemeinde-multiselect.component';
+import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
@@ -33,12 +33,15 @@ import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-postei
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
+import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
+import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
+import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {MaterialModule} from './material.module';
-import {UIRouterModule} from '@uirouter/angular';
 import {UiViewComponent} from './ui-view/ui-view.component';
 
-export function createTranslateLoader(http: HttpClient) {
+export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
     return new TranslateHttpLoader(http, './assets/translations/translations_', '.json');
 }
 
@@ -54,14 +57,14 @@ export function createTranslateLoader(http: HttpClient) {
             loader: {
                 provide: TranslateLoader,
                 useFactory: (createTranslateLoader),
-                deps: [HttpClient]
-            }
+                deps: [HttpClient],
+            },
         }),
     ],
     declarations: [
         DvHelpmenuComponent,
         DvNgDebounceClickDirective,
-        DvNgErrorMessages,
+        ErrorMessagesComponent,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgLinkDialogComponent,
@@ -71,8 +74,11 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgShowElementDirective,
         DvPosteingangComponent,
         UiViewComponent,
+        FullHeightContainerComponent,
         LoadingButtonDirective,
         GemeindeMultiselectComponent,
+        BerechtigungComponent,
+        BenutzerRolleComponent,
     ],
     entryComponents: [
         DvNgGemeindeDialogComponent,
@@ -83,7 +89,7 @@ export function createTranslateLoader(http: HttpClient) {
         DvHelpmenuComponent,
         NavbarComponent,
         DvPosteingangComponent,
-        GemeindeMultiselectComponent
+        GemeindeMultiselectComponent,
     ],
     exports: [
         CommonModule,
@@ -95,7 +101,7 @@ export function createTranslateLoader(http: HttpClient) {
 
         DvHelpmenuComponent,
         DvNgDebounceClickDirective,
-        DvNgErrorMessages,
+        ErrorMessagesComponent,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgLinkDialogComponent,
@@ -103,20 +109,23 @@ export function createTranslateLoader(http: HttpClient) {
         DvNgRemoveDialogComponent,
         DvNgShowElementDirective,
         UiViewComponent,
+        FullHeightContainerComponent,
         LoadingButtonDirective,
         GemeindeMultiselectComponent,
+        BerechtigungComponent,
+        BenutzerRolleComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
-    ]
+    ],
 })
 export class SharedModule {
 
-    constructor(translate: TranslateService) {
+    public constructor(translate: TranslateService) {
         SharedModule.initTranslateService(translate);
     }
 
-    private static initTranslateService(translate: TranslateService) {
+    private static initTranslateService(translate: TranslateService): void {
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang('de');
         // the lang to use, if the lang isn't available, it will use the current loader to get them

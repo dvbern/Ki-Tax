@@ -1,89 +1,90 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {IPromise} from 'angular';
 import {BenutzerComponent} from '../app/benutzer/benutzer/benutzer.component';
 import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
-import {GemeindeListComponent} from '../app/gemeindeList/gemeinde-list.component';
+import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 import {BatchjobTriggerViewComponent} from './component/batchjobTriggerView/batchjobTriggerView';
+import {DebuggingComponent} from './component/debugging/debugging.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView';
 import {TraegerschaftViewComponent} from './component/traegerschaftView/traegerschaftView';
 
-export const traegerschaftState: Ng2StateDeclaration = {
-    name: 'admin.traegerschaft',
-    url: '/traegerschaft',
-    component: TraegerschaftViewComponent,
-    resolve: [
-        {
-            token: 'traegerschaften',
-            deps: [TraegerschaftRS],
-            resolveFn: getTraegerschaften,
-        }
-    ],
-    data: {
-        roles: TSRoleUtil.getMandantRoles(),
-    }
-};
-
-export const gemeindenState: Ng2StateDeclaration = {
-    name: 'admin.gemeinden',
-    url: '/gemeinden',
-    component: GemeindeListComponent,
-    data: {
-        roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
-    }
-};
-
-export const testdatenState: Ng2StateDeclaration = {
-    name: 'admin.testdaten',
-    url: '/testdaten',
-    component: TestdatenViewComponent,
-    data: {
-        roles: TSRoleUtil.getSuperAdminRoles(),
-    }
-};
-
-export const batchjobTriggerState: Ng2StateDeclaration = {
-    name: 'admin.batchjobTrigger',
-    url: '/batchjobTrigger',
-    component: BatchjobTriggerViewComponent,
-};
-
-export const benutzerState: Ng2StateDeclaration = {
-    name: 'admin.benutzer',
-    component: BenutzerComponent,
-    url: '/benutzerlist/benutzer/:benutzerId',
-    data: {
-        roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+const states: Ng2StateDeclaration[] = [
+    {
+        name: 'admin.traegerschaft',
+        url: '/traegerschaft',
+        component: TraegerschaftViewComponent,
+        resolve: [
+            {
+                token: 'traegerschaften',
+                deps: [TraegerschaftRS],
+                resolveFn: getTraegerschaften,
+            },
+        ],
+        data: {
+            roles: TSRoleUtil.getMandantRoles(),
+        },
     },
-};
+    {
+        name: 'admin.testdaten',
+        url: '/testdaten',
+        component: TestdatenViewComponent,
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles(),
+        },
+    },
+    {
+        name: 'admin.batchjobTrigger',
+        url: '/batchjobTrigger',
+        component: BatchjobTriggerViewComponent,
+    },
+    {
+        name: 'admin.debugging',
+        url: '/debug',
+        component: DebuggingComponent,
+    },
+    {
+        name: 'admin.benutzer',
+        component: BenutzerComponent,
+        url: '/benutzerlist/benutzer/:benutzerId',
+        data: {
+            roles: TSRoleUtil.getAllAdministratorRevisorRole(),
+        },
+    },
+];
 
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [traegerschaftState, gemeindenState, testdatenState, batchjobTriggerState, benutzerState]}),
+        UIRouterUpgradeModule.forChild({states}),
     ],
     exports: [
-        UIRouterUpgradeModule
+        UIRouterUpgradeModule,
     ],
 })
 export class NgAdminRoutingModule {
 }
 
-function getTraegerschaften(traegerschaftRS: TraegerschaftRS) {
+function getTraegerschaften(traegerschaftRS: TraegerschaftRS): IPromise<TSTraegerschaft[]> {
     return traegerschaftRS.getAllActiveTraegerschaften();
 }

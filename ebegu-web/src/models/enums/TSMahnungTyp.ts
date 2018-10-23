@@ -14,8 +14,8 @@
  */
 
 export enum TSMahnungTyp {
-    ERSTE_MAHNUNG = <any>'ERSTE_MAHNUNG',
-    ZWEITE_MAHNUNG = <any>'ZWEITE_MAHNUNG',
+    ERSTE_MAHNUNG = 'ERSTE_MAHNUNG',
+    ZWEITE_MAHNUNG = 'ZWEITE_MAHNUNG',
 }
 
 export function getTSMahnungTypValues(): Array<TSMahnungTyp> {

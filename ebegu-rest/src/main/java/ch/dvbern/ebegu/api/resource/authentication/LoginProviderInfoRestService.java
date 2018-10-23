@@ -41,7 +41,8 @@ import static ch.dvbern.ebegu.config.EbeguConfigurationImpl.EBEGU_LOGIN_PROVIDER
 @Stateless
 public class LoginProviderInfoRestService {
 
-	private final Logger LOG = LoggerFactory.getLogger(LoginProviderInfoRestService.class.getSimpleName());
+	@SuppressWarnings("checkstyle:MemberName")
+	private final Logger LOG = LoggerFactory.getLogger(LoginProviderInfoRestService.class);
 	public static final int CONNECTION_TIMEOUT = 10;
 
 	@Inject
@@ -96,9 +97,11 @@ public class LoginProviderInfoRestService {
 	 * erstellt einen neuen ResteasyClient
 	 */
 	private ResteasyClient buildClient() {
-		ResteasyClientBuilder builder = new ResteasyClientBuilder().establishConnectionTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS);
+		ResteasyClientBuilder builder = new ResteasyClientBuilder()
+			.connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS);
 
-		if (configuration.getIsDevmode() || LOG.isDebugEnabled()) { //wenn debug oder dev mode dann loggen wir den request
+		if (configuration.getIsDevmode() || LOG.isDebugEnabled()) {
+			// wenn debug oder dev mode dann loggen wir den request
 			builder.register(new ClientRequestLogger());
 			builder.register(new ClientResponseLogger());
 		}

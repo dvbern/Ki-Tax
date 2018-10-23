@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rest.test;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
@@ -36,7 +37,7 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -72,16 +73,18 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private JaxBConverter converter;
 	@Inject
+	private GemeindeJaxBConverter gemeindeConverter;
+	@Inject
 	private Persistence persistence;
 
 	@Test
 	public void createKindTest() {
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
-		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
+		JaxGemeinde persistedGemeinde = gemeindeConverter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
 		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
 		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
 		jaxGesuch.getDossier().getVerantwortlicherBG().getBerechtigungen().iterator().next().getGemeindeList().add(persistedGemeinde);
-		benutzerService.saveBenutzer(converter.authLoginElementToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
+		benutzerService.saveBenutzer(converter.jaxBenutzerToBenutzer(jaxGesuch.getDossier().getVerantwortlicherBG(), new Benutzer()));
 		JaxFall returnedFall = fallResource.saveFall(jaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		jaxGesuch.getDossier().setFall(returnedFall);
 		jaxGesuch.getDossier().setGemeinde(persistedGemeinde);

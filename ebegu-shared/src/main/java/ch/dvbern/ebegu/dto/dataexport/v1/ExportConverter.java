@@ -67,13 +67,13 @@ public class ExportConverter {
 		verfuegungDTO.setBetreuung(createBetreuungExportDTOFromBetreuung(verfuegung.getBetreuung()));
 		// Verrechnete Zeitabschnitte
 		List<ZeitabschnittExportDTO> zeitabschnitte = verfuegung.getZeitabschnitte().stream()
-			.filter(abschnitt -> !abschnitt.getZahlungsstatus().isIgnoriert())
+			.filter(abschnitt -> !abschnitt.getZahlungsstatus().isIgnoriertIgnorierend())
 			.map(this::createZeitabschnittExportDTOFromZeitabschnitt)
 			.collect(Collectors.toList());
 		verfuegungDTO.setZeitabschnitte(zeitabschnitte);
 		// Ignorierte Zeitabschnitte
 		List<ZeitabschnittExportDTO> zeitabschnitteIgnoriert = verfuegung.getZeitabschnitte().stream()
-			.filter(abschnitt -> abschnitt.getZahlungsstatus().isIgnoriert())
+			.filter(abschnitt -> abschnitt.getZahlungsstatus().isIgnoriertIgnorierend())
 			.map(this::createZeitabschnittExportDTOFromZeitabschnitt)
 			.collect(Collectors.toList());
 		verfuegungDTO.setIgnorierteZeitabschnitte(zeitabschnitteIgnoriert);
@@ -115,9 +115,9 @@ public class ExportConverter {
 	private ZeitabschnittExportDTO createZeitabschnittExportDTOFromZeitabschnitt(VerfuegungZeitabschnitt zeitabschnitt) {
 		LocalDate von = zeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = zeitabschnitt.getGueltigkeit().getGueltigBis();
-		int effektiveBetr = zeitabschnitt.getBetreuungspensum();
+		BigDecimal effektiveBetr = zeitabschnitt.getBetreuungspensum();
 		int anspruchPct = zeitabschnitt.getAnspruchberechtigtesPensum();
-		int vergPct = zeitabschnitt.getBgPensum();
+		BigDecimal vergPct = zeitabschnitt.getBgPensum();
 		BigDecimal vollkosten = zeitabschnitt.getVollkosten();
 		BigDecimal verguenstigung = zeitabschnitt.getVerguenstigung();
 		return new ZeitabschnittExportDTO(von, bis, effektiveBetr, anspruchPct, vergPct, vollkosten, verguenstigung);

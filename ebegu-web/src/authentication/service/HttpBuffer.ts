@@ -22,22 +22,23 @@ import {IDeferred, IHttpService, IRequestConfig} from 'angular';
  */
 export default class HttpBuffer {
 
-    static $inject = ['$injector'];
+    public static $inject = ['$injector'];
 
     /** Holds all the requests, so they can be re-requested in future. */
-    buffer: Array<any> = [];
+    public buffer: Array<any> = [];
 
     /** Service initialized later because of circular dependency problem. */
-    $http: IHttpService;
-    constructor(private readonly $injector: IInjectorService) {
+    public $http: IHttpService;
+
+    public constructor(private readonly $injector: IInjectorService) {
     }
 
-    private retryHttpRequest(config: IRequestConfig, deferred: IDeferred<any>) {
-        function successCallback(response: any) {
+    private retryHttpRequest(config: IRequestConfig, deferred: IDeferred<any>): void {
+        function successCallback(response: any): void {
             deferred.resolve(response);
         }
 
-        function errorCallback(response: any) {
+        function errorCallback(response: any): void {
             deferred.reject(response);
         }
 
@@ -45,21 +46,20 @@ export default class HttpBuffer {
         this.$http(config).then(successCallback, errorCallback);
     }
 
-
     /**
      * Appends HTTP request configuration object with deferred response attached to buffer.
      */
-    public append(config: IRequestConfig, deferred: IDeferred<any>) {
+    public append(config: IRequestConfig, deferred: IDeferred<any>): void {
         this.buffer.push({
-            config: config,
-            deferred: deferred
+            config,
+            deferred,
         });
     }
 
     /**
      * Abandon or reject (if reason provided) all the buffered requests.
      */
-    public rejectAll(reason: any) {
+    public rejectAll(reason: any): void {
         if (reason) {
             this.buffer.forEach(b => b.deferred.reject(reason));
         }
@@ -69,7 +69,7 @@ export default class HttpBuffer {
     /**
      * Retries all the buffered requests clears the buffer.
      */
-    public retryAll(updater: any) {
+    public retryAll(updater: any): void {
         this.buffer.forEach(b => this.retryHttpRequest(updater(b.config), b.deferred));
         this.buffer = [];
     }

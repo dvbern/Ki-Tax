@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
@@ -45,7 +46,7 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.TestdataCreationService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
@@ -104,7 +105,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private Persistence persistence;
 
-	private final JaxBConverter converter = new JaxBConverter();
+	private final JaxBConverter converter = new JaxBConverter(new GemeindeJaxBConverter());
 	private Gesuchsperiode gesuchsperiode;
 
 	@Before
@@ -113,9 +114,9 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		final InstitutionStammdaten kitaAaregg = TestDataUtil.createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten kitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
-		final InstitutionStammdaten tagiAaregg = TestDataUtil.createInstitutionStammdatenTagiWeissenstein();
+		final InstitutionStammdaten kita2Aaregg = TestDataUtil.createInstitutionStammdatenTagesfamilien();
 		Mandant mandant = TestDataUtil.createDefaultMandant();
-		TestdataSetupConfig setupConfig = new TestdataSetupConfig(mandant, kitaBruennen, kitaAaregg, tagiAaregg, gesuchsperiode);
+		TestdataSetupConfig setupConfig = new TestdataSetupConfig(mandant, kitaBruennen, kitaAaregg, kita2Aaregg, gesuchsperiode);
 		testdataCreationService.setupTestdata(setupConfig);
 	}
 

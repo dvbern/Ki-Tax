@@ -13,18 +13,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebAdmin} from '../../../admin/admin.module';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {IHttpBackendService, IQService, IScope, ITimeoutService} from 'angular';
+import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSDossier from '../../../models/TSDossier';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSGesuch from '../../../models/TSGesuch';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
-import {EbeguWebGesuch} from '../../gesuch.module';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import {FreigabeViewController} from './freigabeView';
@@ -32,22 +33,21 @@ import {FreigabeViewController} from './freigabeView';
 describe('freigabeView', () => {
 
     let controller: FreigabeViewController;
-    let $scope: angular.IScope;
+    let $scope: IScope;
     let wizardStepManager: WizardStepManager;
     let dialog: DvDialog;
     let downloadRS: DownloadRS;
-    let $q: angular.IQService;
+    let $q: IQService;
     let gesuchModelManager: GesuchModelManager;
-    let $httpBackend: angular.IHttpBackendService;
+    let $httpBackend: IHttpBackendService;
     let applicationPropertyRS: any;
     let authServiceRS: AuthServiceRS;
-    let $timeout: angular.ITimeoutService;
+    let $timeout: ITimeoutService;
+    let dossier: TSDossier;
 
-    let gesuch: TSGesuch;
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
-    beforeEach(angular.mock.module(EbeguWebGesuch.name));
-
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));  //to inject applicationPropertyRS
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));  // to inject applicationPropertyRS
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -67,15 +67,18 @@ describe('freigabeView', () => {
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue({});
 
+        dossier = TestDataUtil.createDossier('', undefined);
+        dossier.gemeinde = TestDataUtil.createGemeindeBern();
+        spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
+
         controller = new FreigabeViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
             wizardStepManager, dialog, downloadRS, $scope, applicationPropertyRS, authServiceRS, $timeout);
-        controller.form = <angular.IFormController>{};
 
+        expect(controller.gemeindeName).toBe(dossier.extractGemeindeName());
+
+        controller.form = {} as any;
         spyOn(controller, 'isGesuchValid').and.callFake(() => controller.form.$valid);
-
-        const form = TestDataUtil.createDummyForm();
-        // $rootScope.form = form;
-        controller.form = form;
+        controller.form = TestDataUtil.createDummyForm();
     }));
     describe('canBeFreigegeben', () => {
         it('should return false when not all steps are true', () => {
@@ -88,28 +91,31 @@ describe('freigabeView', () => {
             spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(false);
 
             expect(controller.canBeFreigegeben()).toBe(false);
-
-            expect(wizardStepManager.hasStepGivenStatus).toHaveBeenCalledWith(TSWizardStepName.BETREUUNG, TSWizardStepStatus.OK);
+            // tslint:disable-next-line:no-unbound-method
+            expect(wizardStepManager.hasStepGivenStatus)
+                .toHaveBeenCalledWith(TSWizardStepName.BETREUUNG, TSWizardStepStatus.OK);
         });
-        it('should return false when all steps are true and all Betreuungen are accepted and the Gesuch is ReadOnly', () => {
-            spyOn(wizardStepManager, 'areAllStepsOK').and.returnValue(true);
-            spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(true);
-            spyOn(gesuchModelManager, 'isGesuchReadonly').and.returnValue(true);
-            expect(controller.canBeFreigegeben()).toBe(false);
-        });
-        it('should return true when all steps are true and all Betreuungen are accepted and the Gesuch is not ReadOnly', () => {
-            spyOn(wizardStepManager, 'areAllStepsOK').and.returnValue(true);
-            spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(true);
-            spyOn(gesuchModelManager, 'isGesuchReadonly').and.returnValue(false);
-            spyOn(controller, 'isGesuchInStatus').and.returnValue(true);
-            expect(controller.canBeFreigegeben()).toBe(true);
-        });
+        it('should return false when all steps are true and all Betreuungen are accepted and the Gesuch is ReadOnly',
+            () => {
+                spyOn(wizardStepManager, 'areAllStepsOK').and.returnValue(true);
+                spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(true);
+                spyOn(gesuchModelManager, 'isGesuchReadonly').and.returnValue(true);
+                expect(controller.canBeFreigegeben()).toBe(false);
+            });
+        it('should return true when all steps are true and all Betreuungen are accepted and the Gesuch is not ReadOnly',
+            () => {
+                spyOn(wizardStepManager, 'areAllStepsOK').and.returnValue(true);
+                spyOn(wizardStepManager, 'hasStepGivenStatus').and.returnValue(true);
+                spyOn(gesuchModelManager, 'isGesuchReadonly').and.returnValue(false);
+                spyOn(controller, 'isGesuchInStatus').and.returnValue(true);
+                expect(controller.canBeFreigegeben()).toBe(true);
+            });
     });
     describe('gesuchFreigeben', () => {
         it('should return undefined when the form is not valid', () => {
             controller.form.$valid = false;
 
-            const returned: angular.IPromise<void> = controller.gesuchEinreichen();
+            const returned = controller.gesuchEinreichen();
 
             expect(returned).toBeUndefined();
         });
@@ -117,7 +123,7 @@ describe('freigabeView', () => {
             controller.form.$valid = true;
             controller.bestaetigungFreigabequittung = false;
 
-            const returned: angular.IPromise<void> = controller.gesuchEinreichen();
+            const returned = controller.gesuchEinreichen();
 
             expect(returned).toBeUndefined();
         });
@@ -128,9 +134,9 @@ describe('freigabeView', () => {
             controller.form.$valid = true;
             spyOn(dialog, 'showDialog').and.returnValue($q.when({}));
 
-            const returned: angular.IPromise<void> = controller.gesuchEinreichen();
+            const returned = controller.gesuchEinreichen();
             $scope.$apply();
-
+            // tslint:disable-next-line:no-unbound-method
             expect(dialog.showDialog).toHaveBeenCalled();
             expect(returned).toBeDefined();
         });
@@ -143,24 +149,31 @@ describe('freigabeView', () => {
             controller.form.$valid = true;
 
             spyOn(dialog, 'showDialog').and.returnValue($q.when({}));
-            const downloadFile: TSDownloadFile = new TSDownloadFile();
+            const downloadFile = new TSDownloadFile();
             downloadFile.accessToken = 'token';
             downloadFile.filename = 'name';
             spyOn(downloadRS, 'getFreigabequittungAccessTokenGeneratedDokument').and.returnValue($q.when(downloadFile));
             spyOn(downloadRS, 'startDownload').and.returnValue($q.when({}));
             spyOn(gesuchModelManager, 'openGesuch').and.returnValue($q.when({}));
-            const gesuch: TSGesuch = new TSGesuch();
+            const gesuch = new TSGesuch();
             gesuch.id = '123';
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
 
             controller.confirmationCallback();
             $scope.$apply();
 
+            // tslint:disable-next-line:no-unbound-method
             expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, true);
-            expect(downloadRS.startDownload).toHaveBeenCalledWith(downloadFile.accessToken, downloadFile.filename, false, jasmine.any(Object));
+            // tslint:disable-next-line:no-unbound-method
+            expect(downloadRS.startDownload).toHaveBeenCalledWith(downloadFile.accessToken,
+                downloadFile.filename,
+                false,
+                jasmine.any(Object));
         });
     });
     describe('openFreigabequittungPDF', () => {
+        let gesuch: TSGesuch;
+
         beforeEach(() => {
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
             spyOn(gesuchModelManager, 'openGesuch').and.returnValue($q.when({}));
@@ -176,6 +189,7 @@ describe('freigabeView', () => {
             controller.openFreigabequittungPDF(false);
             $scope.$apply();
 
+            // tslint:disable-next-line:no-unbound-method
             expect(downloadRS.getFreigabequittungAccessTokenGeneratedDokument).toHaveBeenCalledWith(gesuch.id, false);
         });
     });

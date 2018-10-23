@@ -29,7 +29,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class EinkommenCalcRuleTest {
 
 	@Test
 	public void testKitaNormalfall() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(50000), BetreuungsangebotTyp.KITA, 100));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(50000), BetreuungsangebotTyp.KITA, 100, new BigDecimal(1000)));
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
@@ -53,7 +53,7 @@ public class EinkommenCalcRuleTest {
 
 	@Test
 	public void testKitaEinkommenZuHoch() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(180000), BetreuungsangebotTyp.KITA, 100));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(180000), BetreuungsangebotTyp.KITA, 100, new BigDecimal(1000)));
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
@@ -63,37 +63,13 @@ public class EinkommenCalcRuleTest {
 		Assert.assertFalse(result.get(0).getBemerkungen().isEmpty());
 	}
 
-	@Test
-	public void testTagiNormalfall() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(50000), BetreuungsangebotTyp.TAGI, 100));
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(0, (new BigDecimal("50000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
-		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).isBezahltVollkosten());
-		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
-	}
-
-	@Test
-	public void testTagiEinkommenZuHoch() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(180000), BetreuungsangebotTyp.TAGI, 100));
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(0, (new BigDecimal("180000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
-		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(result.get(0).isBezahltVollkosten());
-		Assert.assertFalse(result.get(0).getBemerkungen().isEmpty());
-	}
-
 	/**
 	 * Erstellt einen Testfall mit 2 EKV.
 	 * Am Ende schaut es dass die Bemerkungen richtig geschrieben wurden
 	 */
 	@Test
 	public void testAcceptedEKV() {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.TAGI, 100);
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.TAGESSCHULE, 100, new BigDecimal(1000));
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
@@ -123,16 +99,16 @@ public class EinkommenCalcRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 
 		Assert.assertEquals(3, result.size());
-		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
+		Assert.assertEquals("BETREUUNGSANGEBOT_TYP: Betreuungsangebot Schulamt", result.get(0).getBemerkungen());
 		Assert.assertEquals(new BigDecimal(50000), result.get(0).getMassgebendesEinkommen());
-		Assert.assertEquals("EINKOMMEN: Ihr massgebendes Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1 + " ist gegenüber der Vergleichsperiode um mehr als 20% gesunken. Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1 + ".", result.get(1).getBemerkungen());
+		Assert.assertEquals("EINKOMMEN: Ihr massgebendes Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1 + " ist gegenüber der Vergleichsperiode um mehr als 20% gesunken. Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1 + ".\nBETREUUNGSANGEBOT_TYP: Betreuungsangebot Schulamt", result.get(1).getBemerkungen());
 		Assert.assertEquals(new BigDecimal(25000), result.get(1).getMassgebendesEinkommen());
-		Assert.assertEquals("EINKOMMEN: Ihr massgebendes Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_2 + " ist gegenüber der Vergleichsperiode um mehr als 20% gesunken. Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_2 + ".", result.get(2).getBemerkungen());
+		Assert.assertEquals("EINKOMMEN: Ihr massgebendes Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_2 + " ist gegenüber der Vergleichsperiode um mehr als 20% gesunken. Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_2 + ".\nBETREUUNGSANGEBOT_TYP: Betreuungsangebot Schulamt", result.get(2).getBemerkungen());
 		Assert.assertEquals(new BigDecimal(20000), result.get(2).getMassgebendesEinkommen());
 	}
 
-	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum) {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, angebot, pensum);
+	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheVollkosten) {
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, angebot, pensum, monatlicheVollkosten);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		TestDataUtil.calculateFinanzDaten(gesuch);

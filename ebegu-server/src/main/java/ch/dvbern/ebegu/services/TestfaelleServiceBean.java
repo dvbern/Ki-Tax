@@ -59,7 +59,6 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.enums.Zuschlagsgrund;
@@ -462,7 +461,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		Optional<InstitutionStammdaten> optionalAaregg = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
 		Optional<InstitutionStammdaten> optionalBruennen = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA);
-		Optional<InstitutionStammdaten> optionalTagiAaregg = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_TAGI);
+		Optional<InstitutionStammdaten> optionalTagiAaregg = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
 		Optional<InstitutionStammdaten> optionalTagesschule = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
 		Optional<InstitutionStammdaten> optionalFerieninsel = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL);
 
@@ -531,7 +530,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		fromTestfall.setFall(persistedFall); // dies wird gebraucht, weil fallService.saveFall ein merge macht.
 
 		final Dossier persistedDossier = dossierService.saveDossier(dossier);
-		fromTestfall.setDossier(persistedDossier);;
+		fromTestfall.setDossier(persistedDossier);
 
 		fromTestfall.createGesuch(LocalDate.of(2016, Month.FEBRUARY, 15));
 		gesuchService.createGesuch(fromTestfall.getGesuch());

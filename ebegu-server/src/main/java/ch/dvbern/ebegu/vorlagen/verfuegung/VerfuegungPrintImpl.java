@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.vorlagen.verfuegung;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,11 +32,11 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.vorlagen.AufzaehlungPrint;
 import ch.dvbern.ebegu.vorlagen.AufzaehlungPrintImpl;
 import ch.dvbern.ebegu.vorlagen.BriefPrintImpl;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Transferobjekt
@@ -47,12 +48,11 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	//formatiert
 	private final String letzteVerfuegungDatum;
 
-	/**
-	 * @param betreuung
-	 */
 	public VerfuegungPrintImpl(Betreuung betreuung, @Nullable LocalDate letzteVerfuegungDatum) {
 		super(betreuung.extractGesuch());
-		this.letzteVerfuegungDatum = letzteVerfuegungDatum != null ? Constants.DATE_FORMATTER.format(letzteVerfuegungDatum) : null;
+		this.letzteVerfuegungDatum = letzteVerfuegungDatum != null ?
+			Constants.DATE_FORMATTER.format(letzteVerfuegungDatum) :
+			null;
 		this.betreuung = betreuung;
 	}
 
@@ -136,35 +136,40 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	@Override
 	public List<VerfuegungZeitabschnittPrint> getVerfuegungZeitabschnitt() {
 
-		List<VerfuegungZeitabschnittPrint> result = new ArrayList<>();
 		Optional<Verfuegung> verfuegung = extractVerfuegung();
-		if (verfuegung.isPresent()) {
+		if (!verfuegung.isPresent()) {
+			return new ArrayList<>();
+		}
 
-			result.addAll(verfuegung.get().getZeitabschnitte().stream()
+		// first of all we get all Zeitabschnitte and create a List of VerfuegungZeitabschnittPrintImpl, then we remove
+		// all Zeitabschnitte with Pensum == 0 that we find at the beginning and at the end of the list. All Zeitabschnitte
+		// between two valid values will remain: 0, 0, 30, 40, 0, 30, 0, 0 ==> 30, 40, 0, 30
+		List<VerfuegungZeitabschnittPrint> result = verfuegung.get().getZeitabschnitte().stream()
 				.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR.reversed())
 				.map(VerfuegungZeitabschnittPrintImpl::new)
-				.collect(Collectors.toList()));
-			ListIterator<VerfuegungZeitabschnittPrint> listIterator = result.listIterator();
-			while (listIterator.hasNext()) {
-				VerfuegungZeitabschnittPrint zeitabschnitt = listIterator.next();
-				if (zeitabschnitt.getBetreuung() <= 0) {
-					listIterator.remove();
-				} else {
-					break;
-				}
-			}
+				.collect(Collectors.toList());
 
-			Collections.reverse(result);
-			listIterator = result.listIterator();
-			while (listIterator.hasNext()) {
-				VerfuegungZeitabschnittPrint zeitabschnitt = listIterator.next();
-				if (zeitabschnitt.getBetreuung() <= 0) {
-					listIterator.remove();
-				} else {
-					break;
-				}
+		ListIterator<VerfuegungZeitabschnittPrint> listIteratorBeginning = result.listIterator();
+		while (listIteratorBeginning.hasNext()) {
+			VerfuegungZeitabschnittPrint zeitabschnitt = listIteratorBeginning.next();
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuung())) {
+				listIteratorBeginning.remove();
+			} else {
+				break;
 			}
 		}
+
+		Collections.reverse(result);
+		ListIterator<VerfuegungZeitabschnittPrint> listIteratorEnd = result.listIterator();
+		while (listIteratorEnd.hasNext()) {
+			VerfuegungZeitabschnittPrint zeitabschnitt = listIteratorEnd.next();
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuung())) {
+				listIteratorEnd.remove();
+			} else {
+				break;
+			}
+		}
+
 		return result;
 	}
 
@@ -174,13 +179,10 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	 */
 	@Override
 	public List<AufzaehlungPrint> getManuelleBemerkungen() {
-
-		List<AufzaehlungPrint> bemerkungen = new ArrayList<>();
-		Optional<Verfuegung> verfuegung = extractVerfuegung();
-		if (verfuegung.isPresent() && StringUtils.isNotEmpty(verfuegung.get().getManuelleBemerkungen())) {
-			bemerkungen.addAll(splitBemerkungen(verfuegung.get().getManuelleBemerkungen()));
-		}
-		return bemerkungen;
+		return extractVerfuegung()
+			.map(Verfuegung::getManuelleBemerkungen)
+			.map(this::splitBemerkungen)
+			.orElseGet(Collections::emptyList);
 	}
 
 	/**
@@ -188,11 +190,11 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	 *
 	 * @return List mit Bemerkungen
 	 */
-	private List<AufzaehlungPrint> splitBemerkungen(String bemerkungen) {
-
+	@Nonnull
+	private List<AufzaehlungPrint> splitBemerkungen(@Nonnull String bemerkungen) {
 		List<AufzaehlungPrint> list = new ArrayList<>();
 		// Leere Zeile werden mit diese Annotation [\\r\\n]+ entfernt
-		String[] splitBemerkungenNewLine = bemerkungen.split("[" + System.getProperty("line.separator") + "]+");
+		String[] splitBemerkungenNewLine = bemerkungen.split('[' + System.getProperty("line.separator") + "]+");
 		for (String bemerkung : splitBemerkungenNewLine) {
 			list.add(new AufzaehlungPrintImpl(bemerkung));
 		}
@@ -204,19 +206,15 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 	 */
 	@Override
 	public boolean isPensumGrosser0() {
-
 		List<VerfuegungZeitabschnittPrint> vzList = getVerfuegungZeitabschnitt();
-		int value = 0;
-		for (VerfuegungZeitabschnittPrint verfuegungZeitabschnitt : vzList) {
-			value = value + verfuegungZeitabschnitt.getBGPensum();
-			// BG-Pensum
-		}
-		return value > 0;
+		BigDecimal value = vzList.stream()
+			.map(VerfuegungZeitabschnittPrint::getBGPensum)
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
+		return MathUtil.isPositive(value);
 	}
 
 	@Override
 	public boolean isPensumIst0() {
-
 		return !isPensumGrosser0();
 	}
 
@@ -227,19 +225,16 @@ public class VerfuegungPrintImpl extends BriefPrintImpl implements VerfuegungPri
 
 	@Override
 	public boolean isPrintManuellebemerkung() {
-
 		return !getManuelleBemerkungen().isEmpty();
 	}
 
 	@Nonnull
 	private Kind extractKind() {
-
 		return betreuung.getKind().getKindJA();
 	}
 
 	@Nonnull
 	private Optional<Verfuegung> extractVerfuegung() {
-
 		Verfuegung verfuegung = betreuung.getVerfuegung();
 		if (verfuegung != null) {
 			return Optional.of(verfuegung);

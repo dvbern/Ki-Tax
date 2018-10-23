@@ -32,7 +32,7 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.services.ErwerbspensumService;
 import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -82,7 +82,8 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		ewpCont.setGesuchsteller(gesuchsteller);
 
 		erwerbspensumService.saveErwerbspensum(ewpCont, TestDataUtil.createDefaultGesuch());
-		Collection<ErwerbspensumContainer> allErwerbspensenenContainer = erwerbspensumService.getAllErwerbspensenenContainer();
+		Collection<ErwerbspensumContainer> allErwerbspensenenContainer =
+			erwerbspensumService.getAllErwerbspensenenContainer();
 		Assert.assertEquals(1, allErwerbspensenenContainer.size());
 		Optional<ErwerbspensumContainer> storedContainer = erwerbspensumService.findErwerbspensum(ewpCont.getId());
 		Assert.assertTrue(storedContainer.isPresent());
@@ -91,7 +92,9 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(erwerbspensumContainer, allErwerbspensenenContainer.iterator().next());
 		Assert.assertNotNull(erwerbspensumContainer.getErwerbspensumGS());
 		Assert.assertNotNull(erwerbspensumContainer.getErwerbspensumGS().getTaetigkeit());
-		Assert.assertEquals(erwerbspensumData.getTaetigkeit(), erwerbspensumContainer.getErwerbspensumGS().getTaetigkeit());
+		Assert.assertEquals(
+			erwerbspensumData.getTaetigkeit(),
+			erwerbspensumContainer.getErwerbspensumGS().getTaetigkeit());
 	}
 
 	@Test
@@ -104,7 +107,8 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		changedData.setGueltigkeit(new DateRange(LocalDate.now(), LocalDate.now().plusDays(80)));
 		erwPenCont.setErwerbspensumGS(changedData);
 
-		ErwerbspensumContainer updatedCont = erwerbspensumService.saveErwerbspensum(erwPenCont, TestDataUtil.createDefaultGesuch());
+		ErwerbspensumContainer updatedCont =
+			erwerbspensumService.saveErwerbspensum(erwPenCont, TestDataUtil.createDefaultGesuch());
 		Assert.assertNotNull(updatedCont.getErwerbspensumGS());
 		Assert.assertEquals(LocalDate.now(), updatedCont.getErwerbspensumGS().getGueltigkeit().getGueltigAb());
 	}
@@ -126,11 +130,13 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuchsteller1.addErwerbspensumContainer(ewpCont);
 		erwerbspensumService.saveErwerbspensum(ewpCont, gesuch);
 
-		Collection<ErwerbspensumContainer> erwerbspensenFromGesuch = erwerbspensumService.findErwerbspensenFromGesuch(gesuch.getId());
+		Collection<ErwerbspensumContainer> erwerbspensenFromGesuch =
+			erwerbspensumService.findErwerbspensenFromGesuch(gesuch.getId());
 
 		Assert.assertEquals(1, erwerbspensenFromGesuch.size());
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		Assert.assertEquals(gesuch.getGesuchsteller1().getErwerbspensenContainers().iterator().next(),
+		Assert.assertEquals(
+			gesuch.getGesuchsteller1().getErwerbspensenContainers().iterator().next(),
 			erwerbspensenFromGesuch.iterator().next());
 	}
 
@@ -148,14 +154,24 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void isErwerbspensumRequired_KITA_Required() {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.now(),
+			null,
+			gesuchsperiode);
 
 		Assert.assertTrue(erwerbspensumService.isErwerbspensumRequired(gesuch));
 	}
 
 	@Test
 	public void isErwerbspensumRequired_KITA_TAGESELTERNKLEINKIND_Required() {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.now(),
+			null,
+			gesuchsperiode);
 		final KindContainer kind = gesuch.getKindContainers().iterator().next();
 		final Betreuung betreuung = kind.getBetreuungen().iterator().next();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
@@ -165,24 +181,90 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void isErwerbspensumRequired_TAGI_NotRequired() {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
+	public void isErwerbspensumRequired_TAGESSCHULE_NotRequired() {
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.now(),
+			null,
+			gesuchsperiode);
 		final KindContainer kind = gesuch.getKindContainers().iterator().next();
-		final Betreuung betreuung = kind.getBetreuungen().iterator().next();
-		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGI);
-		persistence.merge(betreuung.getInstitutionStammdaten());
+		kind.getBetreuungen().forEach(betreuung -> {
+			betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
+			persistence.merge(betreuung.getInstitutionStammdaten());
+		});
 
 		Assert.assertFalse(erwerbspensumService.isErwerbspensumRequired(gesuch));
 	}
 
 	@Test
 	public void isErwerbspensumRequired_Fachstelle_NotRequired() {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.now(), null, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.now(),
+			null,
+			gesuchsperiode);
 		final KindContainer kind = gesuch.getKindContainers().iterator().next();
 		final PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
 		kind.getKindJA().setPensumFachstelle(pensumFachstelle);
 		persistence.persist(pensumFachstelle.getFachstelle());
 		persistence.persist(pensumFachstelle);
+
+		Assert.assertFalse(erwerbspensumService.isErwerbspensumRequired(gesuch));
+	}
+
+	@Test
+	public void isErwerbspensumRequired_KitaUndSchulamtAngebot_Required() {
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.now(),
+			null,
+			gesuchsperiode);
+		final KindContainer kind = gesuch.getKindContainers().iterator().next();
+		Assert.assertEquals(2, kind.getBetreuungen().size());
+
+		Betreuung betreuungTagesschule = kind.getBetreuungen().iterator().next();
+		betreuungTagesschule.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
+
+		Betreuung betreuungKita = kind.getBetreuungen().iterator().next();
+		betreuungKita.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
+
+		Assert.assertTrue(erwerbspensumService.isErwerbspensumRequired(gesuch));
+	}
+
+	@Test
+	public void isErwerbspensumRequired_KitaOhneFachstelle_Required() {
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.now(),
+			null,
+			gesuchsperiode);
+		final KindContainer kind = gesuch.getKindContainers().iterator().next();
+		kind.getBetreuungen().forEach(betreuung -> {
+			betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
+			persistence.merge(betreuung.getInstitutionStammdaten());
+		});
+
+		Assert.assertTrue(erwerbspensumService.isErwerbspensumRequired(gesuch));
+	}
+
+	@Test
+	public void isErwerbspensumRequired_ErweiterteBeduerfnisse_NotRequired() {
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.now(),
+			null,
+			gesuchsperiode);
+		final KindContainer kind = gesuch.getKindContainers().iterator().next();
+
+		kind.getBetreuungen().forEach(betreuung -> {
+			betreuung.setErweiterteBeduerfnisse(true);
+			persistence.merge(betreuung);
+		});
 
 		Assert.assertFalse(erwerbspensumService.isErwerbspensumRequired(gesuch));
 	}

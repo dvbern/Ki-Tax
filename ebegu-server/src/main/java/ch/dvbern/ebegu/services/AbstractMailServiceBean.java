@@ -44,7 +44,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Allgemeine Mailing-Funktionalität
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @PermitAll
 public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
@@ -61,10 +60,16 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	private TransactionSynchronizationRegistry txReg;
 
 	@PermitAll
-	public void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress) throws MailException {
+	public void sendMessage(
+		@Nonnull String subject,
+		@Nonnull String messageBody,
+		@Nonnull String mailadress)
+		throws MailException {
+
 		Objects.requireNonNull(subject);
 		Objects.requireNonNull(messageBody);
 		Objects.requireNonNull(mailadress);
+
 		if (configuration.isSendingOfMailsDisabled()) {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
@@ -72,11 +77,17 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		}
 	}
 
-	public void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress, @Nonnull DownloadFile attachement) throws
-		MailException {
+	public void sendMessage(
+		@Nonnull String subject,
+		@Nonnull String messageBody,
+		@Nonnull String mailadress,
+		@Nonnull DownloadFile attachement)
+		throws MailException {
+
 		Objects.requireNonNull(subject);
 		Objects.requireNonNull(messageBody);
 		Objects.requireNonNull(mailadress);
+
 		if (configuration.isSendingOfMailsDisabled()) {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
@@ -84,7 +95,11 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		}
 	}
 
-	private void doSendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress) throws MailException {
+	private void doSendMessage(
+		@Nonnull String subject,
+		@Nonnull String messageBody,
+		@Nonnull String mailadress)
+		throws MailException {
 		try {
 			Email email = new SimpleEmail();
 			email.setHostName(configuration.getSMTPHost());
@@ -100,7 +115,11 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		}
 	}
 
-	private void doSendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress, @Nonnull DownloadFile file) throws MailException {
+	private void doSendMessage(
+		@Nonnull String subject,
+		@Nonnull String messageBody,
+		@Nonnull String mailadress,
+		@Nonnull DownloadFile file) throws MailException {
 
 		try {
 			// Create the attachment
@@ -130,7 +149,6 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			throw new MailException("Error while sending Mail to: '" + mailadress + '\'', e);
 		}
 	}
-
 
 	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
 	private void doSendMessage(@Nonnull String messageBody, @Nonnull String mailadress) throws MailException {
@@ -168,7 +186,8 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	 * Emails should only be sent when all actions were performed withou any error.
 	 * For this reason this method flushes the EntityManager before sending emails.
 	 */
-	protected void sendMessageWithTemplate(@Nonnull final String messageBody, @Nonnull final String mailadress) throws MailException {
+	protected void sendMessageWithTemplate(@Nonnull final String messageBody, @Nonnull final String mailadress)
+		throws MailException {
 		Objects.requireNonNull(mailadress);
 		Objects.requireNonNull(messageBody);
 		// wir haben hier nicht zwingend immer eine transaktion
@@ -185,7 +204,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	}
 
 	private void pretendToSendMessage(final String messageBody, final String mailadress) {
-		LOG.info("Sending of Emails disabled. Mail would be sent to " + mailadress + " : {}", messageBody);
+		LOG.info("Sending of Emails disabled. Mail would be sent to {} : {}", mailadress, messageBody);
 	}
 
 	private void assertPositiveIntermediate(final SMTPClient client) {

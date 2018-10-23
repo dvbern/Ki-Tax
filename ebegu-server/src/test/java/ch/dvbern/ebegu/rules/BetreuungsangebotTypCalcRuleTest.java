@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -23,7 +24,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,16 +41,6 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
-	}
-
-	@Test
-	public void testAngebotTagi() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(BetreuungsangebotTyp.TAGI));
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(80, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
 	}
 
@@ -82,7 +73,7 @@ public class BetreuungsangebotTypCalcRuleTest {
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(80);
+		betreuungspensumContainer.getBetreuungspensumJA().setPensum(BigDecimal.valueOf(80));
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 		return betreuung;
 	}

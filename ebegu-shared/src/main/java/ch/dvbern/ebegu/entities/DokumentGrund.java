@@ -57,27 +57,27 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dokumentGrund_gesuch_id"), nullable = false)
-	private Gesuch gesuch;
+	private Gesuch gesuch = null;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
-	private DokumentGrundTyp dokumentGrundTyp;
+	private DokumentGrundTyp dokumentGrundTyp = null;
 
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
 	@Nullable
-	private String tag;
+	private String tag = null;
 
 	@Enumerated(EnumType.STRING)
 	@Nullable
-	private DokumentGrundPersonType personType;
+	private DokumentGrundPersonType personType = null;
 
 	@Nullable
-	private Integer personNumber;
+	private Integer personNumber = null;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
-	private DokumentTyp dokumentTyp;
+	private DokumentTyp dokumentTyp = null;
 
 	@Nonnull
 	@Valid
@@ -96,8 +96,12 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 		this.needed = !DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrundTyp);
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, @Nullable String tag,
-		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber) {
+	public DokumentGrund(
+		@Nonnull DokumentGrundTyp dokumentGrundTyp,
+		@Nullable String tag,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber) {
+
 		this.dokumentGrundTyp = dokumentGrundTyp;
 		this.needed = !DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrundTyp);
 		this.tag = tag;
@@ -105,14 +109,19 @@ public class DokumentGrund extends AbstractMutableEntity implements Comparable<D
 		this.personNumber = personNumber;
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, DokumentTyp dokumentTyp) {
+	public DokumentGrund(@Nonnull DokumentGrundTyp dokumentGrundTyp, @Nonnull DokumentTyp dokumentTyp) {
 		this(dokumentGrundTyp);
 		this.dokumente = new HashSet<>();
 		this.dokumentTyp = dokumentTyp;
 	}
 
-	public DokumentGrund(DokumentGrundTyp dokumentGrundTyp, String tag,
-		DokumentGrundPersonType personType, Integer personNumber, DokumentTyp dokumentTyp) {
+	public DokumentGrund(
+		@Nonnull DokumentGrundTyp dokumentGrundTyp,
+		@Nullable String tag,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber,
+		@Nonnull DokumentTyp dokumentTyp) {
+
 		this(dokumentGrundTyp, tag, personType, personNumber);
 		this.dokumente = new HashSet<>();
 		this.dokumentTyp = dokumentTyp;

@@ -33,7 +33,6 @@ public class VerfuegungZeitabschnittPrintImpl implements VerfuegungZeitabschnitt
 	 */
 	@Override
 	public String getVon() {
-
 		return Constants.DATE_FORMATTER.format(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb());
 	}
 
@@ -42,7 +41,6 @@ public class VerfuegungZeitabschnittPrintImpl implements VerfuegungZeitabschnitt
 	 */
 	@Override
 	public String getBis() {
-
 		return Constants.DATE_FORMATTER.format(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis());
 	}
 
@@ -50,8 +48,7 @@ public class VerfuegungZeitabschnittPrintImpl implements VerfuegungZeitabschnitt
 	 * @return Betreuung
 	 */
 	@Override
-	public int getBetreuung() {
-
+	public BigDecimal getBetreuung() {
 		return verfuegungZeitabschnitt.getBetreuungspensum();
 	}
 
@@ -60,7 +57,6 @@ public class VerfuegungZeitabschnittPrintImpl implements VerfuegungZeitabschnitt
 	 */
 	@Override
 	public int getAnspruch() {
-
 		return verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 	}
 
@@ -68,9 +64,9 @@ public class VerfuegungZeitabschnittPrintImpl implements VerfuegungZeitabschnitt
 	 * @return BGPensum
 	 */
 	@Override
-	public int getBGPensum() {
+	public BigDecimal getBGPensum() {
 		//hier wird das Minimum von (Rest)anspruch und von Betreuung zurueckgegeben. Dies enspricht der Definition des BG-Pensum
-		return Math.min(getBetreuung(), getAnspruch());
+		return getBetreuung().min(BigDecimal.valueOf(getAnspruch()));
 	}
 
 	/**

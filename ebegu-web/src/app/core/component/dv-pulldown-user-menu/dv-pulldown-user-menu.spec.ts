@@ -14,12 +14,12 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentControllerService, IQService, IScope} from 'angular';
+import {IComponentControllerService, IScope} from 'angular';
 import {of} from 'rxjs';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
-import TSUser from '../../../../models/TSUser';
-import {EbeguWebCore} from '../../core.angularjs.module';
+import TSBenutzer from '../../../../models/TSBenutzer';
+import {CORE_JS_MODULE} from '../../core.angularjs.module';
 import {DvPulldownUserMenuController} from './dv-pulldown-user-menu';
 import IInjectorService = angular.auto.IInjectorService;
 
@@ -27,21 +27,20 @@ describe('DvPulldownUserMenuController', () => {
 
     let authServiceRS: AuthServiceRS;
     let $state: StateService;
-    let $q: IQService;
     let scope: IScope;
     let component: DvPulldownUserMenuController;
     let $componentController: IComponentControllerService;
 
-    const user: TSUser = new TSUser('pedro');
+    const user = new TSBenutzer('pedro');
+    const principalProperty = 'principal$';
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         authServiceRS = $injector.get('AuthServiceRS');
         scope = $injector.get('$rootScope').$new();
-        $q = $injector.get('$q');
         $state = $injector.get('$state');
         $componentController = $injector.get('$componentController');
     }));
@@ -55,7 +54,7 @@ describe('DvPulldownUserMenuController', () => {
 
         describe('logout()', () => {
             it('must call the logout function and redirect to the login page', () => {
-                spyOnProperty(authServiceRS, 'principal$', 'get').and.returnValue(of(user));
+                spyOnProperty(authServiceRS, principalProperty, 'get').and.returnValue(of(user));
                 spyOn($state, 'go');
 
                 component = $componentController('dvPulldownUserMenu', {$scope: scope}, {});
@@ -63,14 +62,14 @@ describe('DvPulldownUserMenuController', () => {
 
                 component.logout();
 
-                //actual logout happens on login page
+                // actual logout happens on login page
                 expect($state.go).toHaveBeenCalledWith('authentication.login', {type: 'logout'});
             });
         });
         describe('change Principal', () => {
 
             it('just after the controller is created Principal is undefined', () => {
-                spyOnProperty(authServiceRS, 'principal$', 'get').and.returnValue(of(undefined));
+                spyOnProperty(authServiceRS, principalProperty, 'get').and.returnValue(of(undefined));
 
                 component = $componentController('dvPulldownUserMenu', {$scope: scope});
                 component.$onInit();
@@ -78,7 +77,7 @@ describe('DvPulldownUserMenuController', () => {
                 expect(component.principal).toBeUndefined();
             });
             it('When the user logs in the principal must be updated', () => {
-                spyOnProperty(authServiceRS, 'principal$', 'get').and.returnValue(of(user));
+                spyOnProperty(authServiceRS, principalProperty, 'get').and.returnValue(of(user));
 
                 component = $componentController('dvPulldownUserMenu', {$scope: scope});
                 component.$onInit();

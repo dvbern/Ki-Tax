@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.SchulungService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -120,7 +120,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		for (InstitutionStammdaten institutionStammdaten : institutionStammdatenList) {
 			institutionStammdaten.getInstitution().setTraegerschaft(null);
 			institutionStammdaten.getInstitution().setMandant(mandant);

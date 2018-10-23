@@ -35,9 +35,9 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
-import ch.dvbern.ebegu.tets.TestDataUtil;
-import ch.dvbern.ebegu.tets.util.JBossLoginContextFactory;
-import ch.dvbern.ebegu.tets.util.LoginmoduleAndCacheSetupTask;
+import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.test.util.LoginmoduleAndCacheSetupTask;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
@@ -147,6 +147,7 @@ public abstract class AbstractEbeguTest {
 			.addAsResource("mail/templates/WarnungGesuchNichtFreigegeben.ftl", "mail/templates/WarnungGesuchNichtFreigegeben.ftl")
 			.addAsResource("mail/templates/WarnungFreigabequittungFehlt.ftl", "mail/templates/WarnungFreigabequittungFehlt.ftl")
 			.addAsResource("mail/templates/InfoGesuchGeloescht.ftl", "mail/templates/InfoGesuchGeloescht.ftl")
+			.addAsResource("mail/templates/BenutzerEinladung.ftl", "mail/templates/BenutzerEinladung.ftl")
 			.addAsResource("font/sRGB.profile", "font/sRGB.profile")
 			.addAsWebInfResource("META-INF/test-beans.xml", "beans.xml")
 			.addAsResource("META-INF/test-orm.xml", "META-INF/orm.xml")
@@ -181,7 +182,7 @@ public abstract class AbstractEbeguTest {
 
 		final InstitutionStammdaten institutionStammdatenKitaAaregg = TestDataUtil.createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
-		final InstitutionStammdaten institutionStammdatenTagiAaregg = TestDataUtil.createInstitutionStammdatenTagiWeissenstein();
+		final InstitutionStammdaten institutionStammdatenTagesfamilien = TestDataUtil.createInstitutionStammdatenTagesfamilien();
 		final InstitutionStammdaten institutionStammdatenTagesschuleBern = TestDataUtil.createInstitutionStammdatenTagesschuleBern();
 		final InstitutionStammdaten institutionStammdatenFerieninselGuarda = TestDataUtil.createInstitutionStammdatenFerieninselGuarda();
 
@@ -189,7 +190,7 @@ public abstract class AbstractEbeguTest {
 		traegerschaftService.saveTraegerschaft(traegerschaft);
 		institutionStammdatenKitaAaregg.getInstitution().setTraegerschaft(traegerschaft);
 		institutionStammdatenKitaBruennen.getInstitution().setTraegerschaft(traegerschaft);
-		institutionStammdatenTagiAaregg.getInstitution().setTraegerschaft(traegerschaft);
+		institutionStammdatenTagesfamilien.getInstitution().setTraegerschaft(traegerschaft);
 		institutionStammdatenTagesschuleBern.getInstitution().setTraegerschaft(traegerschaft);
 		institutionStammdatenFerieninselGuarda.getInstitution().setTraegerschaft(traegerschaft);
 
@@ -197,13 +198,13 @@ public abstract class AbstractEbeguTest {
 		persistence.persist(mandant);
 		institutionStammdatenKitaAaregg.getInstitution().setMandant(mandant);
 		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
-		institutionStammdatenTagiAaregg.getInstitution().setMandant(mandant);
+		institutionStammdatenTagesfamilien.getInstitution().setMandant(mandant);
 		institutionStammdatenTagesschuleBern.getInstitution().setMandant(mandant);
 		institutionStammdatenFerieninselGuarda.getInstitution().setMandant(mandant);
 
 		institutionService.createInstitution(institutionStammdatenKitaAaregg.getInstitution());
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenKitaAaregg);
-		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenTagiAaregg);
+		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenTagesfamilien);
 
 		institutionService.createInstitution(institutionStammdatenKitaBruennen.getInstitution());
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenKitaBruennen);
@@ -216,7 +217,7 @@ public abstract class AbstractEbeguTest {
 
 		Assert.assertNotNull(institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA));
 		Assert.assertNotNull(institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA));
-		Assert.assertNotNull(institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_TAGI));
+		Assert.assertNotNull(institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN));
 		Assert.assertNotNull(institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE));
 		Assert.assertNotNull(institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL));
 		return mandant;

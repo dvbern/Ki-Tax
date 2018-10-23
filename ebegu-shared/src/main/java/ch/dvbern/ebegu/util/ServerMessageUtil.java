@@ -45,7 +45,7 @@ public final class ServerMessageUtil {
 	}
 
 	/**
-	 * Da wir aller wahrscheinlichkeit eine Exceptionmessage uebersetzten wollen macht es nicht gross Sinn heir falls ein
+	 * Da wir aller wahrscheinlichkeit eine Exceptionmessage uebersetzten wollen macht es nicht gross Sinn hier falls ein
 	 * Key fehlt MissingResourceException werfen zu lassen.
 	 */
 	private static String readStringFromBundleOrReturnKey(ResourceBundle bundle, String key) {

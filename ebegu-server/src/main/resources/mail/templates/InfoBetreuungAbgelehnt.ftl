@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>Ki-Tax – Betreuungsplatz abgelehnt</@base64Header>
+Subject: <@base64Header>kiBon – Betreuungsplatz abgelehnt</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -31,7 +31,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Jugendamt der Stadt Bern
+		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.

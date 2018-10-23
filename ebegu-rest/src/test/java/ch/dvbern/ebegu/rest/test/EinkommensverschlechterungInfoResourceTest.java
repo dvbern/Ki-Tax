@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rest.test;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
@@ -30,7 +31,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -64,6 +65,9 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 	private JaxBConverter converter;
 
 	@Inject
+	private GemeindeJaxBConverter gemeindeConverter;
+
+	@Inject
 	private Persistence persistence;
 
 
@@ -92,8 +96,8 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 		verantwortlicher = persistence.persist(verantwortlicher);
 
 		JaxGesuch testJaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
-		testJaxGesuch.getDossier().setVerantwortlicherBG(converter.benutzerToAuthLoginElement(verantwortlicher));
-		testJaxGesuch.getDossier().setGemeinde(converter.gemeindeToJAX(persistedGemeinde));
+		testJaxGesuch.getDossier().setVerantwortlicherBG(converter.benutzerToJaxBenutzer(verantwortlicher));
+		testJaxGesuch.getDossier().setGemeinde(gemeindeConverter.gemeindeToJAX(persistedGemeinde));
 
 		JaxFall returnedFall = fallResource.saveFall(testJaxGesuch.getDossier().getFall(), DUMMY_URIINFO, DUMMY_RESPONSE);
 		testJaxGesuch.getDossier().setFall(returnedFall);

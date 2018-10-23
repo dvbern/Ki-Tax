@@ -20,6 +20,6 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 
 clearErrorsHookRunBlock.$inject = ['$transitions', 'ErrorService'];
 
-export function clearErrorsHookRunBlock($transitions: TransitionService, errorService: ErrorService) {
+export function clearErrorsHookRunBlock($transitions: TransitionService, errorService: ErrorService): void {
     $transitions.onSuccess({}, () => errorService.clearAll());
 }

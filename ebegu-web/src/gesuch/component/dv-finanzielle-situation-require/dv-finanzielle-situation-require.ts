@@ -13,45 +13,47 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
-
 export class DvFinanzielleSituationRequire implements IComponentOptions {
-    transclude = false;
-    bindings = {
+    public transclude = false;
+    public bindings = {
         areThereOnlySchulamtangebote: '=',
         sozialhilfeBezueger: '=',
         verguenstigungGewuenscht: '=',
-        finanzielleSituationRequired: '='
+        finanzielleSituationRequired: '=',
     };
-    template = require('./dv-finanzielle-situation-require.html');
-    controller = DVFinanzielleSituationRequireController;
-    controllerAs = 'vm';
+    public template = require('./dv-finanzielle-situation-require.html');
+    public controller = DVFinanzielleSituationRequireController;
+    public controllerAs = 'vm';
 }
 
-export class DVFinanzielleSituationRequireController {
+export class DVFinanzielleSituationRequireController implements IController {
 
-    static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
+    public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
 
-    finanzielleSituationRequired: boolean;
-    areThereOnlySchulamtangebote: boolean;
-    sozialhilfeBezueger: boolean;
-    verguenstigungGewuenscht: boolean;
+    public finanzielleSituationRequired: boolean;
+    public areThereOnlySchulamtangebote: boolean;
+    public sozialhilfeBezueger: boolean;
+    public verguenstigungGewuenscht: boolean;
 
-    maxMassgebendesEinkommen: string;
+    public maxMassgebendesEinkommen: string;
 
-    constructor(
+    public constructor(
         private readonly einstellungRS: EinstellungRS,
-        private readonly gesuchModelManager: GesuchModelManager) {
+        private readonly gesuchModelManager: GesuchModelManager,
+    ) {
     }
 
-    $onInit() {
+    public $onInit(): void {
         this.setFinanziellesituationRequired();
         // Den Parameter fuer das Maximale Einkommen lesen
-        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX, this.gesuchModelManager.getDossier().gemeinde, this.gesuchModelManager.getGesuchsperiode())
+        this.einstellungRS.findEinstellung(TSEinstellungKey.MAX_MASSGEBENDES_EINKOMMEN,
+            this.gesuchModelManager.getDossier().gemeinde,
+            this.gesuchModelManager.getGesuchsperiode())
             .then(response => {
                 this.maxMassgebendesEinkommen = response.value;
             });
@@ -65,15 +67,16 @@ export class DVFinanzielleSituationRequireController {
     }
 
     /**
-     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit nein beantwortet wurde.
+     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
+     * nein beantwortet wurde.
      */
     public showVerguenstigungGewuenscht(): boolean {
-        return this.showSozialhilfeBezueger() && this.sozialhilfeBezueger === false;
+        return this.showSozialhilfeBezueger() && !this.sozialhilfeBezueger;
     }
 
     public setFinanziellesituationRequired(): void {
         this.finanzielleSituationRequired = !this.showSozialhilfeBezueger()
-            || (this.showVerguenstigungGewuenscht() && this.verguenstigungGewuenscht === true);
+            || (this.showVerguenstigungGewuenscht() && this.verguenstigungGewuenscht);
     }
 
     public getMaxMassgebendesEinkommen(): string {

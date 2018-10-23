@@ -89,7 +89,7 @@ public abstract class AbstractEbeguRule implements Rule {
 	 * Zuerst muessen die neuen Zeitabschnitte aus den Daten der aktuellen Rule zusammengestellt werden:
 	 */
 	@Nonnull
-	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte);
+	protected abstract List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung);
 
 	/**
 	 * Fuehrt die eigentliche Rule auf einem einzelnen Zeitabschnitt aus.
@@ -108,7 +108,7 @@ public abstract class AbstractEbeguRule implements Rule {
 
 		// Zuerst muessen die neuen Zeitabschnitte aus den Daten meiner Rule zusammengestellt werden:
 
-		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitte(betreuung, zeitabschnitte);
+		List<VerfuegungZeitabschnitt> abschnitteCreatedInRule = createVerfuegungsZeitabschnitte(betreuung);
 		Collections.sort(abschnitteCreatedInRule);
 
 		// In dieser Funktion muss sichergestellt werden, dass in der neuen Liste keine Ueberschneidungen mehr bestehen
@@ -148,7 +148,7 @@ public abstract class AbstractEbeguRule implements Rule {
 				if (startsBefore && zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb())) { // die Regel WOHNSITZ darf nicht normalisiert werden, da auch wohnsitze ausserhalb der Gesuchsperiode beruecksichtigt werden muessen
 					// Datum Von liegt vor der Periode
 					// Falls Datum Bis ebenfalls vor der Periode liegt, kann der Abschnitt gelöscht werden, ansonsten muss er verkürzt werden
-					if (!RuleKey.WOHNSITZ.equals(ruleKey)) {
+					if (RuleKey.WOHNSITZ != ruleKey) {
 						zeitabschnitt.getGueltigkeit().setGueltigAb(gesuchsperiode.getGueltigkeit().getGueltigAb());
 					}
 					zeitabschnittInPeriode = true;

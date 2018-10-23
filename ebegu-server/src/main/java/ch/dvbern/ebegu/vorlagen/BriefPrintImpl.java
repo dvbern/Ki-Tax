@@ -24,14 +24,10 @@ import org.apache.commons.lang.StringUtils;
 
 public class BriefPrintImpl implements BriefPrint {
 
-	protected final Gesuch gesuch;
+	private final Gesuch gesuch;
 
 	public BriefPrintImpl(Gesuch gesuch) {
 		this.gesuch = gesuch;
-	}
-
-	public Gesuch getGesuch() {
-		return gesuch;
 	}
 
 	@Override
@@ -113,5 +109,9 @@ public class BriefPrintImpl implements BriefPrint {
 	@Override
 	public boolean isAdresseSchulamt() {
 		return gesuch.hasOnlyBetreuungenOfSchulamt();
+	}
+
+	public Gesuch getGesuch() {
+		return gesuch;
 	}
 }

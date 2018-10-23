@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validators.CheckGemeinde;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -47,10 +49,12 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "name", name = "UK_gemeinde_name"),
+		@UniqueConstraint(columnNames = "bfsNummer", name = "UK_gemeinde_bfsnummer"),
 		@UniqueConstraint(columnNames = {"gemeindeNummer", "mandant_id"}, name = "UK_gemeinde_gemeindeNummer_mandant")
 	}
 )
-public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemeinde> {
+@CheckGemeinde
+public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Displayable {
 
 	private static final long serialVersionUID = -6976259296646006855L;
 
@@ -64,6 +68,11 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 	@Field(bridge = @FieldBridge(impl = LongBridge.class))
 	private long gemeindeNummer = 0;
 
+	@NotNull
+	@Column(nullable = false)
+	@Field(bridge = @FieldBridge(impl = LongBridge.class))
+	private Long bfsNummer;
+
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
 	@NotNull
@@ -72,8 +81,12 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 	@NotNull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private GemeindeStatus status = GemeindeStatus.REGISTRIERT;
+	private GemeindeStatus status = GemeindeStatus.EINGELADEN;
 
+	@NotNull
+	@Column(nullable = false)
+	@Nonnull
+	private LocalDate betreuungsgutscheineStartdatum;
 
 	public Mandant getMandant() {
 		return mandant;
@@ -91,6 +104,7 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 		this.gemeindeNummer = gemeindeNummer;
 	}
 
+	@Override
 	@Nonnull
 	public String getName() {
 		return name;
@@ -106,6 +120,24 @@ public class Gemeinde extends AbstractMutableEntity implements Comparable<Gemein
 
 	public void setStatus(GemeindeStatus status) {
 		this.status = status;
+	}
+
+	@Nonnull
+	public Long getBfsNummer() {
+		return bfsNummer;
+	}
+
+	public void setBfsNummer(@Nonnull Long bfsNummer) {
+		this.bfsNummer = bfsNummer;
+	}
+
+	@Nonnull
+	public LocalDate getBetreuungsgutscheineStartdatum() {
+		return betreuungsgutscheineStartdatum;
+	}
+
+	public void setBetreuungsgutscheineStartdatum(@Nonnull LocalDate betreuungsgutscheineStartdatum) {
+		this.betreuungsgutscheineStartdatum = betreuungsgutscheineStartdatum;
 	}
 
 	@Override

@@ -24,9 +24,9 @@ import {DvNgHelpDialogComponent} from '../../../../gesuch/dialog/dv-ng-help-dial
 })
 export class DvHelpmenuComponent {
 
-    display: boolean = false;
+    public display: boolean = false;
 
-    constructor(private readonly dialog: MatDialog) {
+    public constructor(private readonly dialog: MatDialog) {
     }
 
     public showDialog(): void {

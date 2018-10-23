@@ -1,26 +1,44 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
 import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSAbstractEntity from './TSAbstractEntity';
 
-export default class TSGemeinde extends TSAbstractMutableEntity {
+export default class TSGemeinde extends TSAbstractEntity {
 
     private _name: string;
     private _gemeindeNummer: number;
+    private _bfsNummer: number;
     private _status: TSGemeindeStatus;
+    private _betreuungsgutscheineStartdatum: moment.Moment;
+
+    public constructor(
+        name?: string,
+        gemeindeNummer?: number,
+        bfsNummer?: number,
+        status?: TSGemeindeStatus
+    ) {
+        super();
+        this._name = name;
+        this._gemeindeNummer = gemeindeNummer;
+        this._bfsNummer = bfsNummer;
+        this._status = status;
+    }
 
     public get name(): string {
         return this._name;
@@ -38,11 +56,27 @@ export default class TSGemeinde extends TSAbstractMutableEntity {
         this._gemeindeNummer = value;
     }
 
-    get status(): TSGemeindeStatus {
+    public get status(): TSGemeindeStatus {
         return this._status;
     }
 
-    set status(value: TSGemeindeStatus) {
+    public set status(value: TSGemeindeStatus) {
         this._status = value;
+    }
+
+    public get bfsNummer(): number {
+        return this._bfsNummer;
+    }
+
+    public set bfsNummer(value: number) {
+        this._bfsNummer = value;
+    }
+
+    public get betreuungsgutscheineStartdatum(): moment.Moment {
+        return this._betreuungsgutscheineStartdatum;
+    }
+
+    public set betreuungsgutscheineStartdatum(value: moment.Moment) {
+        this._betreuungsgutscheineStartdatum = value;
     }
 }

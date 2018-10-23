@@ -42,4 +42,102 @@ p {
     line-height: 4.9rem;
     margin: 5vh 0;
     text-align: center;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 568px)
+and (-webkit-min-device-pixel-ratio: 2), only screen
+and (min-device-width: 375px)
+and (max-device-width: 667px)
+and (-webkit-min-device-pixel-ratio: 2), only screen
+and (min-device-width: 414px)
+and (max-device-width: 736px)
+and (-webkit-min-device-pixel-ratio: 3), only screen
+and (max-device-width: 640px), only screen
+and (max-device-width: 667px), only screen
+and (max-width: 480px) {
+
+    .onboarding-gemeinde-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+    }
+
+    .onboarding-gemeinde-input-container,
+    .be-login-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .onboarding-gs-abschliessen {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+    }
+
+    .onboarding-gs-angaben, .onboarding-gs-gemeinde {
+        width: 100%;
+    }
+    .onboarding-gemeinde-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+    }
+
+    .onboarding-gemeinde-input-container,
+    .be-login-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .be-login-actions {
+        .dv-btn {
+            width: 100%;
+            margin:1rem 0 !important;
+        }
+    }
+
+    .input-error {
+        padding: 0;
+        /deep/ .dv-error-messages {
+            text-align: center;
+        }
+    }
+
+
+
+    .onboarding-gs-container{
+        flex-direction: column-reverse;
+    }
+
+}
+
+@media @mq-sm {
+
+    .onboarding-gemeinde-container {
+        justify-content: space-between;
+    }
+
+    .onboarding-gemeinde-input-container,
+    .be-login-actions {
+        width: 100%;
+    }
+}
+
+@media @mq-sm {
+
+    .onboarding-gemeinde-container {
+        justify-content: space-between;
+    }
+
+    .onboarding-gemeinde-input-container,
+    .be-login-actions {
+        width: 100%;
+    }
+
 }

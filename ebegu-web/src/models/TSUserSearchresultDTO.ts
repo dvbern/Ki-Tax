@@ -13,31 +13,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSUser from './TSUser';
+import TSBenutzer from './TSBenutzer';
 
 export default class TSUserSearchresultDTO {
 
-    private _userDTOs: Array<TSUser>;
+    private _userDTOs: Array<TSBenutzer>;
     private _totalResultSize: number;
 
-    constructor(userDTOs?: Array<TSUser>, totalResultSize?: number) {
+    public constructor(userDTOs?: Array<TSBenutzer>, totalResultSize?: number) {
         this._userDTOs = userDTOs;
         this._totalResultSize = totalResultSize;
     }
 
-    get userDTOs(): Array<TSUser> {
+    public get userDTOs(): Array<TSBenutzer> {
         return this._userDTOs;
     }
 
-    set userDTOs(value: Array<TSUser>) {
+    public set userDTOs(value: Array<TSBenutzer>) {
         this._userDTOs = value;
     }
 
-    get totalResultSize(): number {
+    public get totalResultSize(): number {
         return this._totalResultSize;
     }
 
-    set totalResultSize(value: number) {
+    public set totalResultSize(value: number) {
         this._totalResultSize = value;
     }
 }

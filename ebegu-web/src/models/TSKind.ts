@@ -13,12 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
-import TSAbstractPersonEntity from './TSAbstractPersonEntity';
-import {TSGeschlecht} from './enums/TSGeschlecht';
-import {TSPensumFachstelle} from './TSPensumFachstelle';
-import {TSKinderabzug} from './enums/TSKinderabzug';
 import * as moment from 'moment';
+import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
+import {TSGeschlecht} from './enums/TSGeschlecht';
+import {TSKinderabzug} from './enums/TSKinderabzug';
+import TSAbstractPersonEntity from './TSAbstractPersonEntity';
+import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export default class TSKind extends TSAbstractPersonEntity {
 
@@ -28,15 +28,17 @@ export default class TSKind extends TSAbstractPersonEntity {
     private _einschulungTyp: TSEinschulungTyp;
     private _pensumFachstelle: TSPensumFachstelle;
 
-    constructor(vorname?: string,
-                nachname?: string,
-                geburtsdatum?: moment.Moment,
-                geschlecht?: TSGeschlecht,
-                kinderabzug?: TSKinderabzug,
-                familienErgaenzendeBetreuung?: boolean,
-                mutterspracheDeutsch?: boolean,
-                pensumFachstelle?: TSPensumFachstelle,
-                einschulungTyp?: TSEinschulungTyp) {
+    public constructor(
+        vorname?: string,
+        nachname?: string,
+        geburtsdatum?: moment.Moment,
+        geschlecht?: TSGeschlecht,
+        kinderabzug?: TSKinderabzug,
+        familienErgaenzendeBetreuung?: boolean,
+        mutterspracheDeutsch?: boolean,
+        pensumFachstelle?: TSPensumFachstelle,
+        einschulungTyp?: TSEinschulungTyp,
+    ) {
 
         super(vorname, nachname, geburtsdatum, geschlecht);
         this._kinderabzug = kinderabzug;
@@ -46,43 +48,43 @@ export default class TSKind extends TSAbstractPersonEntity {
         this._pensumFachstelle = pensumFachstelle;
     }
 
-    get kinderabzug(): TSKinderabzug {
+    public get kinderabzug(): TSKinderabzug {
         return this._kinderabzug;
     }
 
-    set kinderabzug(value: TSKinderabzug) {
+    public set kinderabzug(value: TSKinderabzug) {
         this._kinderabzug = value;
     }
 
-    get familienErgaenzendeBetreuung(): boolean {
+    public get familienErgaenzendeBetreuung(): boolean {
         return this._familienErgaenzendeBetreuung;
     }
 
-    set familienErgaenzendeBetreuung(value: boolean) {
+    public set familienErgaenzendeBetreuung(value: boolean) {
         this._familienErgaenzendeBetreuung = value;
     }
 
-    get mutterspracheDeutsch(): boolean {
+    public get mutterspracheDeutsch(): boolean {
         return this._mutterspracheDeutsch;
     }
 
-    set mutterspracheDeutsch(value: boolean) {
+    public set mutterspracheDeutsch(value: boolean) {
         this._mutterspracheDeutsch = value;
     }
 
-    get pensumFachstelle(): TSPensumFachstelle {
+    public get pensumFachstelle(): TSPensumFachstelle {
         return this._pensumFachstelle;
     }
 
-    set pensumFachstelle(value: TSPensumFachstelle) {
+    public set pensumFachstelle(value: TSPensumFachstelle) {
         this._pensumFachstelle = value;
     }
 
-    get einschulungTyp(): TSEinschulungTyp {
+    public get einschulungTyp(): TSEinschulungTyp {
         return this._einschulungTyp;
     }
 
-    set einschulungTyp(value: TSEinschulungTyp) {
+    public set einschulungTyp(value: TSEinschulungTyp) {
         this._einschulungTyp = value;
     }
 }

@@ -21,11 +21,10 @@ import java.util.List;
 public enum GemeindeStatus {
 
 	AKTIV,
-	GESPERRT,
-	REGISTRIERT;
+	EINGELADEN;
 
 	public boolean isEnabled() {
-		return AKTIV.equals(this);
+		return AKTIV == this;
 	}
 
 	public static List<GemeindeStatus> getValuesForFilter(String name) {

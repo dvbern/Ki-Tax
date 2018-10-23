@@ -32,7 +32,7 @@ import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -70,20 +70,17 @@ public class FallServiceTest extends AbstractEbeguLoginTest {
 
 		Collection<Fall> allFalle = fallService.getAllFalle(false);
 		Assert.assertEquals(1, allFalle.size());
-		Assert.assertEquals(1, allFalle.iterator().next().getFallNummer());
 
 		Assert.assertNotNull(fallService);
 		Fall secondFall = TestDataUtil.createDefaultFall();
 		fallService.saveFall(secondFall);
 
-		//Wir erwarten das die Fallnummern 1 und 2 (bzw in PSQL 0 und 1 ) vergeben wurden
+		//Wir erwarten dass unterschiedliche Fallnummern vergeben wurden
 		List<Fall> moreFaelle = fallService.getAllFalle(false).stream()
-			.sorted(Comparator.comparingLong(Fall::getFallNummer)).collect(Collectors.toList());
+			.sorted(Comparator.comparingLong(Fall::getFallNummer))
+			.collect(Collectors.toList());
 		Assert.assertEquals(2, moreFaelle.size());
-		for (int i = 0; i < moreFaelle.size(); i++) {
-			int expectedFallNr = (i + 1); //H2 DB faengt anscheinend im Gegensatz zu PSQL bei 1 an wenn auto increment
-			Assert.assertEquals(expectedFallNr, moreFaelle.get(i).getFallNummer());
-		}
+		Assert.assertNotEquals(moreFaelle.get(0).getFallNummer(), moreFaelle.get(1).getFallNummer());
 	}
 
 	@Test

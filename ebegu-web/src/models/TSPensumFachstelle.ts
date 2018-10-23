@@ -13,24 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractPensumEntity} from './TSAbstractPensumEntity';
+import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import {TSFachstelle} from './TSFachstelle';
 import {TSDateRange} from './types/TSDateRange';
 
-export class TSPensumFachstelle extends TSAbstractPensumEntity {
+export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     private _fachstelle: TSFachstelle;
 
-    constructor(fachstelle?: TSFachstelle, pensum?: number, gueltigkeit?: TSDateRange) {
+    public constructor(fachstelle?: TSFachstelle, pensum?: number, gueltigkeit?: TSDateRange) {
         super(pensum, gueltigkeit);
         this._fachstelle = fachstelle;
     }
 
-    get fachstelle(): TSFachstelle {
+    public get fachstelle(): TSFachstelle {
         return this._fachstelle;
     }
 
-    set fachstelle(value: TSFachstelle) {
+    public set fachstelle(value: TSFachstelle) {
         this._fachstelle = value;
     }
 }

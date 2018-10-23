@@ -14,28 +14,26 @@
  */
 
 import {IController, IDirective, IDirectiveFactory} from 'angular';
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import TSGesuch from '../../../../models/TSGesuch';
-import TSUser from '../../../../models/TSUser';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import UserRS from '../../service/userRS.rest';
+import BenutzerRS from '../../service/benutzerRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class DvVerantwortlicherselect implements IDirective {
-    restrict = 'E';
-    require = {};
-    scope = {};
-    controller = VerantwortlicherselectController;
-    controllerAs = 'vm';
-    bindToController = {
+    public restrict = 'E';
+    public scope = {};
+    public controller = VerantwortlicherselectController;
+    public controllerAs = 'vm';
+    public bindToController = {
         isSchulamt: '<',
         gemeindeId: '<',
     };
-    template = require('./dv-verantwortlicherselect.html');
+    public template = require('./dv-verantwortlicherselect.html');
 
-    static factory(): IDirectiveFactory {
+    public static factory(): IDirectiveFactory {
         const directive = () => new DvVerantwortlicherselect();
         directive.$inject = [];
         return directive;
@@ -44,21 +42,22 @@ export class DvVerantwortlicherselect implements IDirective {
 
 export class VerantwortlicherselectController implements IController {
 
-    static $inject: string[] = ['UserRS', 'AuthServiceRS', 'GesuchModelManager', '$translate'];
+    public static $inject: string[] = ['BenutzerRS', 'GesuchModelManager', '$translate'];
 
-    TSRoleUtil = TSRoleUtil;
-    isSchulamt: boolean;
-    gemeindeId: string;
+    public readonly TSRoleUtil = TSRoleUtil;
+    public isSchulamt: boolean;
+    public gemeindeId: string;
 
-    userList: Array<TSUser>;
+    public userList: Array<TSBenutzer>;
 
-    constructor(private readonly userRS: UserRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly gesuchModelManager: GesuchModelManager,
-                private readonly $translate: ITranslateService) {
+    public constructor(
+        private readonly benutzerRS: BenutzerRS,
+        private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $translate: ITranslateService,
+    ) {
     }
 
-    public $onChanges(changes: any) {
+    public $onChanges(changes: any): void {
         if (changes.gemeindeId) {
             this.updateUserList();
         }
@@ -86,14 +85,13 @@ export class VerantwortlicherselectController implements IController {
 
     /**
      * Sets the given user as the verantworlicher fuer den aktuellen Fall
-     * @param verantwortlicher
      */
-    public setVerantwortlicher(verantwortlicher: TSUser): void {
+    public setVerantwortlicher(verantwortlicher: TSBenutzer): void {
         this.setVerantwortlicherGesuchModelManager(verantwortlicher);
         this.setUserAsFallVerantwortlicherLocal(verantwortlicher);
     }
 
-    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSUser) {
+    private setVerantwortlicherGesuchModelManager(verantwortlicher: TSBenutzer): void {
         if (this.isSchulamt) {
             this.gesuchModelManager.setUserAsFallVerantwortlicherTS(verantwortlicher);
         } else {
@@ -101,31 +99,29 @@ export class VerantwortlicherselectController implements IController {
         }
     }
 
-    public setUserAsFallVerantwortlicherLocal(user: TSUser) {
-        if (user && this.getGesuch() && this.getGesuch().dossier) {
-            if (this.isSchulamt) {
-                this.getGesuch().dossier.verantwortlicherTS = user;
-            } else {
-                this.getGesuch().dossier.verantwortlicherBG = user;
-            }
+    public setUserAsFallVerantwortlicherLocal(user: TSBenutzer): void {
+        if (!(user && this.getGesuch() && this.getGesuch().dossier)) {
+            return;
+        }
+
+        if (this.isSchulamt) {
+            this.getGesuch().dossier.verantwortlicherTS = user;
+        } else {
+            this.getGesuch().dossier.verantwortlicherBG = user;
         }
     }
 
     /**
-     *
-     * @param user
-     * @returns {boolean} true if the given user is already the verantwortlicherBG of the current fall
+     * @returns true if the given user is already the verantwortlicherBG of the current fall
      */
-    public isCurrentVerantwortlicher(user: TSUser): boolean {
+    public isCurrentVerantwortlicher(user: TSBenutzer): boolean {
         return (user && this.getFallVerantwortlicher() && this.getFallVerantwortlicher().username === user.username);
     }
 
-    public getFallVerantwortlicher(): TSUser {
-        if (this.isSchulamt) {
-            return this.gesuchModelManager.getFallVerantwortlicherTS();
-        } else {
-            return this.gesuchModelManager.getFallVerantwortlicherBG();
-        }
+    public getFallVerantwortlicher(): TSBenutzer {
+        return this.isSchulamt ?
+            this.gesuchModelManager.getFallVerantwortlicherTS() :
+            this.gesuchModelManager.getFallVerantwortlicherBG();
     }
 
     private updateUserList(): void {
@@ -135,31 +131,33 @@ export class VerantwortlicherselectController implements IController {
             return;
         }
 
-        this.isSchulamt === true
-            ? this.updateSchulamtUserList()
-            : this.updateJugendAmtUserList();
+        if (this.isSchulamt) {
+            this.updateSchulamtUserList();
+        } else {
+            this.updateJugendAmtUserList();
+        }
     }
 
     private updateSchulamtUserList(): void {
-        this.userRS.getBenutzerSCHorAdminSCH().then(response => {
+        this.benutzerRS.getBenutzerSCHorAdminSCH().then(response => {
             this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
         });
     }
 
     private updateJugendAmtUserList(): void {
-        this.userRS.getBenutzerJAorAdmin().then(response => {
+        this.benutzerRS.getBenutzerJAorAdmin().then(response => {
             this.userList = this.sortUsers(this.filterUsers(response, this.gemeindeId));
         });
     }
 
-    private sortUsers(userList: Array<TSUser>) {
+    private sortUsers(userList: Array<TSBenutzer>): Array<TSBenutzer> {
         return userList.sort((a, b) => a.getFullName().localeCompare(b.getFullName()));
     }
 
     /**
      *  Filters out users that have no berechtigung on the current gemeinde
      */
-    private filterUsers(userList: Array<TSUser>, gemeindeId: string): Array<TSUser> {
+    private filterUsers(userList: Array<TSBenutzer>, gemeindeId: string): Array<TSBenutzer> {
         return userList.filter(user => user.berechtigungen
             .some(berechtigung => berechtigung.gemeindeList
                 .some(gemeinde => gemeindeId === gemeinde.id)));

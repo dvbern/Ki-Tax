@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
-import ch.dvbern.ebegu.api.dtos.JaxAuthLoginElement;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
@@ -200,8 +200,8 @@ public final class TestJaxDataUtil {
 		return jaxDossier;
 	}
 
-	public static JaxAuthLoginElement createTestJaxBenutzer() {
-		JaxAuthLoginElement jaxBenutzer = new JaxAuthLoginElement();
+	public static JaxBenutzer createTestJaxBenutzer() {
+		JaxBenutzer jaxBenutzer = new JaxBenutzer();
 		JaxBerechtigung jaxBerechtigung = createTestJaxBerechtigung();
 		jaxBenutzer.getBerechtigungen().add(jaxBerechtigung);
 		jaxBenutzer.setCurrentBerechtigung(jaxBerechtigung);
@@ -278,7 +278,8 @@ public final class TestJaxDataUtil {
 		jaxBetreuungspensum.setGueltigAb(from);
 		jaxBetreuungspensum.setGueltigBis(to);
 
-		jaxBetreuungspensum.setPensum(40);
+		jaxBetreuungspensum.setPensum(BigDecimal.valueOf(40));
+		jaxBetreuungspensum.setMonatlicheBetreuungskosten(new BigDecimal(2000));
 		return jaxBetreuungspensum;
 	}
 
@@ -380,6 +381,7 @@ public final class TestJaxDataUtil {
 		JaxGemeinde gemeinde = new JaxGemeinde();
 		gemeinde.setName("TestGemeinde");
 		gemeinde.setGemeindeNummer(1);
+		gemeinde.setBfsNummer(1L);
 		return gemeinde;
 	}
 

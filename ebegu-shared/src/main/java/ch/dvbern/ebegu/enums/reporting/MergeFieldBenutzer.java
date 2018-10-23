@@ -45,7 +45,7 @@ public enum MergeFieldBenutzer implements MergeFieldProvider {
 	gemeinden(new SimpleMergeField<>("gemeinden", STRING_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
 	traegerschaft(new SimpleMergeField<>("traegerschaft", STRING_CONVERTER)),
-	gesperrt(new SimpleMergeField<>("gesperrt", BOOLEAN_X_CONVERTER)),
+	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
 	isKita(new SimpleMergeField<>("isKita", BOOLEAN_X_CONVERTER)),
 	isTagesfamilien(new SimpleMergeField<>("isTagesfamilien", BOOLEAN_X_CONVERTER)),
 	isTagi(new SimpleMergeField<>("isTagi", BOOLEAN_X_CONVERTER)),

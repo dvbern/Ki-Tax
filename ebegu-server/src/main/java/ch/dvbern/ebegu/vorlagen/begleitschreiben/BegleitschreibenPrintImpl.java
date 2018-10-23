@@ -37,9 +37,6 @@ public class BegleitschreibenPrintImpl extends BriefPrintImpl implements Begleit
 
 	private final List<AufzaehlungPrint> beilagen = new ArrayList<>();
 
-	/**
-	 * @param gesuch
-	 */
 	public BegleitschreibenPrintImpl(Gesuch gesuch) {
 
 		super(gesuch);
@@ -55,13 +52,6 @@ public class BegleitschreibenPrintImpl extends BriefPrintImpl implements Begleit
 				&& betreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG)
 			.map(betreuung -> new AufzaehlungPrintImpl(ServerMessageUtil.getMessage("BegleitschreibenPrintImpl_VERFUEGUNG") + ' ' + betreuung.getBGNummer()))
 			.collect(Collectors.toList()));
-
-		beilagen.addAll(betreuungen.stream()
-			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isAngebotJugendamtSchulkind()
-				&& betreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG)
-			.map(betreuung -> new AufzaehlungPrintImpl(ServerMessageUtil.getMessage("BegleitschreibenPrintImpl_MITTEILUNG") + ' ' + betreuung.getBGNummer()))
-			.collect(Collectors.toList()));
-
 	}
 
 	@Override
@@ -71,7 +61,7 @@ public class BegleitschreibenPrintImpl extends BriefPrintImpl implements Begleit
 
 	@Override
 	public boolean isHasFSDokument() {
-		return gesuch.isHasFSDokument();
+		return getGesuch().isHasFSDokument();
 	}
 
 	@Override

@@ -37,7 +37,7 @@ import ch.dvbern.ebegu.api.resource.GesuchsperiodeResource;
 import ch.dvbern.ebegu.api.resource.authentication.AuthResource;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.tets.util.LoginmoduleAndCacheSetupTask;
+import ch.dvbern.ebegu.test.util.LoginmoduleAndCacheSetupTask;
 import ch.dvbern.lib.cdipersistence.ISessionContextService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.ArrayUtils;

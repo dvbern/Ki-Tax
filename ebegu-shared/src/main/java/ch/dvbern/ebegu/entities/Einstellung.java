@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
@@ -160,6 +162,10 @@ public class Einstellung extends AbstractEntity {
 
 	public Integer getValueAsInteger() {
 		return Integer.valueOf(value);
+	}
+
+	public LocalDate getValueAsDate() {
+		return DateUtil.parseStringToDate(value);
 	}
 
 	@Override

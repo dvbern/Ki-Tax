@@ -16,14 +16,14 @@
 import {TSRole} from './TSRole';
 
 export enum TSEingangsart {
-    ONLINE = <any> 'ONLINE',
-    PAPIER = <any> 'PAPIER'
+    ONLINE = 'ONLINE',
+    PAPIER = 'PAPIER'
 }
 
 export function getTSEingangsartValues(): Array<TSEingangsart> {
     return [
         TSEingangsart.ONLINE,
-        TSEingangsart.PAPIER
+        TSEingangsart.PAPIER,
     ];
 }
 

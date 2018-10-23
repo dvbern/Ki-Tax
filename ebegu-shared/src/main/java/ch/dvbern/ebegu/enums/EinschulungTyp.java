@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.enums;
 
+import ch.dvbern.ebegu.util.EnumUtil;
+
 /**
  * Enum fuer Feld EinschulungTyp
  */
@@ -31,5 +33,11 @@ public enum EinschulungTyp {
 	KLASSE6,
 	KLASSE7,
 	KLASSE8,
-	KLASSE9,
+	KLASSE9;
+
+
+	public boolean isEingeschult() {
+		boolean vorschulalter = EnumUtil.isOneOf(this, VORSCHULALTER, KINDERGARTEN1, KINDERGARTEN2);
+		return !vorschulalter;
+	}
 }

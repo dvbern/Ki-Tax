@@ -32,8 +32,9 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
@@ -61,12 +62,13 @@ public class BetreuungsgutscheinConfigurator {
 
 	public Set<EinstellungKey> requiredBernerParameters() {
 		return EnumSet.of(
-			PARAM_MASSGEBENDES_EINKOMMEN_MAX,
+			MAX_MASSGEBENDES_EINKOMMEN,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
 			PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
+			PARAM_MAX_TAGE_ABWESENHEIT,
 			BG_BIS_UND_MIT_SCHULSTUFE);
 	}
 
@@ -78,6 +80,7 @@ public class BetreuungsgutscheinConfigurator {
 
 	}
 
+	@SuppressWarnings("checkstyle:LocalVariableName")
 	private void abschnitteErstellenRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// GRUNDREGELN_DATA: Abschnitte erstellen
 
@@ -102,6 +105,10 @@ public class BetreuungsgutscheinConfigurator {
 			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal());
 		rules.add(familienabzugAbschnittRule);
 
+		// Betreuungsgutscheine Gueltigkeit
+		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule = new GutscheineStartdatumAbschnittRule(defaultGueltigkeit);
+		rules.add(gutscheineStartdatumAbschnittRule);
+
 		// - Betreuungspensum
 		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit);
 		rules.add(betreuungspensumAbschnittRule);
@@ -123,7 +130,9 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(einreichungsfristAbschnittRule);
 
 		// Abwesenheit
-		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit);
+		Einstellung abwesenheitMaxDaysParam = einstellungMap.get(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT);
+		Integer abwesenheitMaxDaysValue = abwesenheitMaxDaysParam.getValueAsInteger();
+		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit, abwesenheitMaxDaysValue);
 		rules.add(abwesenheitAbschnittRule);
 
 		// Zivilstandsaenderung
@@ -144,10 +153,6 @@ public class BetreuungsgutscheinConfigurator {
 		ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(defaultGueltigkeit, maxZuschlagValue.getValueAsInteger());
 		rules.add(erwerbspensumCalcRule);
 
-		// - Betreuungspensum
-		BetreuungspensumCalcRule betreuungspensumCalcRule = new BetreuungspensumCalcRule(defaultGueltigkeit);
-		rules.add(betreuungspensumCalcRule);
-
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit);
 		rules.add(fachstelleCalcRule);
@@ -156,9 +161,14 @@ public class BetreuungsgutscheinConfigurator {
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {
 		// REDUKTIONSREGELN: Setzen Anpsruch auf 0
 
+		// BETREUUNGS GUTSCHEINE START DATUM - Anspruch verfällt, wenn Gutscheine vor dem BetreuungsgutscheineStartdatum
+		// der Gemeinde liegen
+		GutscheineStartdatumCalcRule gutscheineStartdatumCalcRule = new GutscheineStartdatumCalcRule(defaultGueltigkeit);
+		rules.add(gutscheineStartdatumCalcRule);
+
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
-		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(PARAM_MASSGEBENDES_EINKOMMEN_MAX);
-		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter PARAM_MASSGEBENDES_EINKOMMEN_MAX muss gesetzt sein");
+		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(MAX_MASSGEBENDES_EINKOMMEN);
+		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter MAX_MASSGEBENDES_EINKOMMEN muss gesetzt sein");
 		EinkommenCalcRule maxEinkommenCalcRule = new EinkommenCalcRule(defaultGueltigkeit, paramMassgebendesEinkommenMax.getValueAsBigDecimal());
 		rules.add(maxEinkommenCalcRule);
 
@@ -183,6 +193,10 @@ public class BetreuungsgutscheinConfigurator {
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
 		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe);
 		rules.add(schulstufeCalcRule);
+
+		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
+		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit);
+		rules.add(kesbPlatzierungCalcRule);
 
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit);

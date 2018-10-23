@@ -45,7 +45,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
@@ -97,7 +97,7 @@ public class PDFServiceBeanTest {
 
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenFerieninselGuarda());
@@ -183,23 +183,6 @@ public class PDFServiceBeanTest {
 			unitTestTempfolder.writeToTempDir(bytes, "Nichteintreten(" + betreuung.get().getBGNummer() + ").pdf");
 		} else {
 			throw new Exception(String.format("%s", "testPrintNichteintreten()"));
-		}
-
-	}
-
-	@Test
-	public void testPrintInfoschreiben() throws Exception {
-
-		Optional<Betreuung> betreuung = gesuch_2GS.extractAllBetreuungen().stream()
-			.filter(b -> b.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGI)
-			.findFirst();
-
-		if (betreuung.isPresent()) {
-			byte[] bytes = pdfService.generateNichteintreten(betreuung.get(), writeProtectPDF);
-			Assert.assertNotNull(bytes);
-			unitTestTempfolder.writeToTempDir(bytes, "Infoschreiben(" + betreuung.get().getBGNummer() + ").pdf");
-		} else {
-			throw new Exception(String.format("%s", "testPrintInfoschreiben()"));
 		}
 
 	}
@@ -422,7 +405,7 @@ public class PDFServiceBeanTest {
 
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
@@ -513,23 +496,4 @@ public class PDFServiceBeanTest {
 		Assert.assertNotNull(verfuegungsPDF);
 		unitTestTempfolder.writeToTempDir(verfuegungsPDF, "Verfuegung_TageselternKleinkinder.pdf");
 	}
-
-	/**
-	 * @throws Exception
-	 */
-	@Test
-	public void testGeneriereVerfuegung_TagesstatetteSchulkinder() throws Exception {
-
-		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGI);
-
-		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
-
-		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
-
-		byte[] verfuegungsPDF = pdfService.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF);
-		Assert.assertNotNull(verfuegungsPDF);
-		unitTestTempfolder.writeToTempDir(verfuegungsPDF, "Verfuegung_TagesstatetteSchulkinder.pdf");
-	}
-
 }

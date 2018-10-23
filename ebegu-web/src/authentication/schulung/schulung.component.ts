@@ -17,15 +17,14 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {TestFaelleRS} from '../../admin/service/testFaelleRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
+import TSBenutzer from '../../models/TSBenutzer';
 import TSInstitution from '../../models/TSInstitution';
 import {TSMandant} from '../../models/TSMandant';
 import {TSTraegerschaft} from '../../models/TSTraegerschaft';
-import TSUser from '../../models/TSUser';
 import {navigateToStartPageForRole} from '../../utils/AuthenticationUtil';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
-import ITimeoutService = angular.ITimeoutService;
 
-export const SchulungComponentConfig: IComponentOptions = {
+export const SCHULUNG_COMPONENT_CONFIG: IComponentOptions = {
     transclude: false,
     template: require('./schulung.component.html'),
     controllerAs: 'vm',
@@ -33,19 +32,21 @@ export const SchulungComponentConfig: IComponentOptions = {
 
 export class SchulungViewController implements IController {
 
-    static $inject: string[] = ['$state', 'AuthServiceRS', '$timeout', 'TestFaelleRS'];
+    public static $inject: string[] = ['$state', 'AuthServiceRS', 'TestFaelleRS'];
 
-    public usersList: Array<TSUser> = Array<TSUser>();
+    public usersList: Array<TSBenutzer> = Array<TSBenutzer>();
     private gesuchstellerList: string[];
-    private readonly institutionsuserList: Array<TSUser> = Array<TSUser>();
-    private readonly amtUserList: Array<TSUser> = Array<TSUser>();
+    private readonly institutionsuserList: Array<TSBenutzer> = Array<TSBenutzer>();
+    private readonly amtUserList: Array<TSBenutzer> = Array<TSBenutzer>();
     private readonly mandant: TSMandant;
     private readonly institutionForelle: TSInstitution;
     private readonly traegerschaftFisch: TSTraegerschaft;
 
-    constructor(private readonly $state: StateService, private readonly authServiceRS: AuthServiceRS,
-                private readonly $timeout: ITimeoutService,
-                private readonly testFaelleRS: TestFaelleRS) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly testFaelleRS: TestFaelleRS,
+    ) {
 
         this.mandant = this.getMandant();
         this.traegerschaftFisch = this.getTraegerschaftFisch();
@@ -55,7 +56,14 @@ export class SchulungViewController implements IController {
             for (let i = 0; i < this.gesuchstellerList.length; i++) {
                 const name = this.gesuchstellerList[i];
                 const username = 'sch' + (((i + 1) < 10) ? '0' + (i + 1).toString() : (i + 1).toString());
-                this.usersList.push(new TSUser('Sandra', name, username, 'password1', 'sandra.' + name.toLocaleLowerCase() + '@example.com', this.mandant, TSRole.GESUCHSTELLER));
+                const benutzer = new TSBenutzer('Sandra',
+                    name,
+                    username,
+                    'password1',
+                    `sandra.${name.toLocaleLowerCase()}@example.com`,
+                    this.mandant,
+                    TSRole.GESUCHSTELLER);
+                this.usersList.push(benutzer);
             }
 
             this.setInstitutionUsers();
@@ -63,23 +71,29 @@ export class SchulungViewController implements IController {
         });
     }
 
-    private setInstitutionUsers() {
-        this.institutionsuserList.push(new TSUser('Fritz', 'Fisch', 'sch20', 'password1', 'fritz.fisch@example.com',
+    private setInstitutionUsers(): void {
+        this.institutionsuserList.push(new TSBenutzer('Fritz', 'Fisch', 'sch20', 'password1', 'fritz.fisch@example.com',
             this.mandant, TSRole.SACHBEARBEITER_TRAEGERSCHAFT, this.traegerschaftFisch, undefined));
-        this.institutionsuserList.push(new TSUser('Franz', 'Forelle', 'sch21', 'password1', 'franz.forelle@example.com',
-            this.mandant, TSRole.SACHBEARBEITER_INSTITUTION, undefined, this.institutionForelle));
+        this.institutionsuserList.push(new TSBenutzer('Franz',
+            'Forelle',
+            'sch21',
+            'password1',
+            'franz.forelle@example.com',
+            this.mandant,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            undefined,
+            this.institutionForelle));
     }
 
-    private setAmtUsers() {
-        this.amtUserList.push(new TSUser('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
+    private setAmtUsers(): void {
+        this.amtUserList.push(new TSBenutzer('Julien', 'Schuler', 'scju', 'password9', 'julien.schuler@example.com',
             this.mandant, TSRole.SACHBEARBEITER_TS));
-        this.amtUserList.push(new TSUser('Jennifer', 'Müller', 'jemu', 'password2', 'jennifer.mueller@example.com',
+        this.amtUserList.push(new TSBenutzer('Jennifer', 'Müller', 'jemu', 'password2', 'jennifer.mueller@example.com',
             this.mandant, TSRole.SACHBEARBEITER_BG));
     }
 
     /**
      * Der Mandant wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     * @returns {TSMandant}
      */
     private getMandant(): TSMandant {
         const mandant = new TSMandant();
@@ -112,10 +126,10 @@ export class SchulungViewController implements IController {
         return institution;
     }
 
-    public logIn(credentials: TSUser): void {
+    public logIn(credentials: TSBenutzer): void {
         this.authServiceRS.loginRequest(credentials)
             .then(user => navigateToStartPageForRole(user.getCurrentRole(), this.$state));
     }
 }
 
-SchulungComponentConfig.controller = SchulungViewController;
+SCHULUNG_COMPONENT_CONFIG.controller = SchulungViewController;

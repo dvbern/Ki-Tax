@@ -15,19 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
+import {BenutzerEinladenComponent} from './benutzer-einladen/benutzer-einladen.component';
+import {BenutzerRoutingModule} from './benutzer-routing/benutzer-routing.module';
 import {BenutzerComponent} from './benutzer/benutzer.component';
 
 @NgModule({
     imports: [
-        CommonModule,
         SharedModule,
+        BenutzerRoutingModule,
     ],
-    declarations: [BenutzerComponent],
-    entryComponents: [BenutzerComponent],
-    exports: [BenutzerComponent],
+    declarations: [
+        BenutzerComponent,
+        BenutzerEinladenComponent,
+    ],
+    entryComponents: [
+        BenutzerComponent,
+        BenutzerEinladenComponent,
+    ],
+    exports: [
+        BenutzerComponent,
+    ],
 })
 export class BenutzerModule {
 }

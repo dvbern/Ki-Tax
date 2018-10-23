@@ -115,11 +115,19 @@
 <!--Definition der Toolbar fuer kleine Screens als Sidebar-->
 <md-sidenav md-component-id="dossier-toolbar-mobile" class="md-sidenav-right dossier-toolbar-mobile" flex="100"
             layout="column" layout-align="start center" hide-gt-sm>
-    <button class="dossier-toolbar-mobile-close" ng-click="vmgs.toggleSidenav('dossier-toolbar-mobile')"
-            aria-label="Schliessen">
-        <!--close knopf-->
-        <i class="fa fa-times" aria-hidden="true"></i>
-    </button>
+
+    <div class="dossier-toolbar-top-operations-container">
+        <dv-fall-toolbar [fall-id]="vmgs.fallId"
+                         [dossier-id]="vmgs.dossierId"
+                         [current-dossier]="vmgs.dossier"
+                         [mobile-mode]="true">
+        </dv-fall-toolbar>
+        <button class="dv-btn dossier-toolbar-mobile-close" ng-click="vmgs.toggleSidenav('dossier-toolbar-mobile')"
+                aria-label="Schliessen">
+            <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+    </div>
+
     <div class="gesuchsperiode-gesuchname">
 			<span ng-bind="vmgs.getGesuchName()">
 			</span>
@@ -129,7 +137,7 @@
          layout-align="start center">
 
         <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.setGesuchsperiode(gesuchsperiodeString)"
-                aria-label="{{gesuchsperiodeString}}" class="gesuchsperiode-button">
+                aria-label="{{gesuchsperiodeString}}" class="dv-btn gesuchsperiode-button">
 			<span>
 				{{gesuchsperiodeString}}
 			</span>
@@ -139,7 +147,7 @@
             ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.setAntragTypDatumMobile(gesuchsperiodeString, antragTypDatum)"
             aria-label="{{antragTypDatum}}" ng-if="vmgs.showAntragTypListNavigationMenu()"
             ng-repeat="antragTypDatum in vmgs.gesuchNavigationList[gesuchsperiodeString]"
-            ng-value="antragTypDatum" class="antrag-typ-datum-button">
+            ng-value="antragTypDatum" class="dv-btn  antrag-typ-datum-button">
 			<span>
 				{{antragTypDatum}}
 			</span>
@@ -151,7 +159,7 @@
     <div dv-show-element
          dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtRoles()" class="gesuchsperioden-container">
         <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.openMitteilungen()"
-                aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" class="gesuchsperiode-button">
+                aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" class="dv-btn gesuchsperiode-button">
             <span data-translate="TOOLBAR_MITTEILUNGEN"></span>
         </button>
     </div>
@@ -163,7 +171,7 @@
         <a href="tel:0313215115"><span>031 321 51 15</span></a>
         <a href="mailto:kinderbetreuung@bern.ch"><span>kinderbetreuung@bern.ch</span></a>
     </div>
-    <button class="mobile-logout" ng-click="vmgs.toggleSidenav('dossier-toolbar-mobile');vmgs.logout()"
+    <button class="dv-btn mobile-logout" ng-click="vmgs.toggleSidenav('dossier-toolbar-mobile');vmgs.logout()"
             aria-label="{{'AUSLOGGEN' | translate}}">
         <span data-translate="AUSLOGGEN"></span>
     </button>

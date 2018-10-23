@@ -10,7 +10,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 From: ${configuration.senderAddress}
 To: ${institution.name} <${empfaengerMail}>
-Subject: <@base64Header>${institution.name}: Ki-Tax – Betreuung gelöscht</@base64Header>
+Subject: <@base64Header>${institution.name}: kiBon – Betreuung gelöscht</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -65,7 +65,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Jugendamt der Stadt Bern
+		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.

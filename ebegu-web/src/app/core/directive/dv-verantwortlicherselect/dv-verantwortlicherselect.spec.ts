@@ -13,14 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
+import TSBenutzer from '../../../../models/TSBenutzer';
 import TSDossier from '../../../../models/TSDossier';
 import TSGesuch from '../../../../models/TSGesuch';
-import TSUser from '../../../../models/TSUser';
-import {EbeguWebCore} from '../../core.angularjs.module';
-import UserRS from '../../service/userRS.rest';
+import {CORE_JS_MODULE} from '../../core.angularjs.module';
+import BenutzerRS from '../../service/benutzerRS.rest';
 import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -28,26 +27,23 @@ describe('dvVerantwortlicherSelect', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let verantwortlicherselectController: VerantwortlicherselectController;
-    let authServiceRS: AuthServiceRS;
-    let userRS: UserRS;
-    let user: TSUser;
-    let $mdSidenav: angular.material.ISidenavService;
+    let benutzerRS: BenutzerRS;
+    let benutzer: TSBenutzer;
     let $translate: ITranslateService;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject($injector => {
         gesuchModelManager = $injector.get('GesuchModelManager');
-        authServiceRS = $injector.get('AuthServiceRS');
-        userRS = $injector.get('UserRS');
-        $mdSidenav = $injector.get('$mdSidenav');
-        user = new TSUser('Emiliano', 'Camacho');
+        benutzerRS = $injector.get('BenutzerRS');
+        benutzer = new TSBenutzer('Emiliano', 'Camacho');
         $translate = $injector.get('$translate');
 
-        verantwortlicherselectController = new VerantwortlicherselectController(userRS,
-            authServiceRS, gesuchModelManager, $translate);
+        verantwortlicherselectController = new VerantwortlicherselectController(benutzerRS,
+            gesuchModelManager,
+            $translate);
     }));
 
     describe('getVerantwortlicherFullName', () => {
@@ -56,8 +52,8 @@ describe('dvVerantwortlicherSelect', () => {
         });
 
         it('returns the fullname of the verantwortlicherBG', () => {
-            const verantwortlicher: TSUser = new TSUser('Emiliano', 'Camacho');
-            const gesuch: TSGesuch = new TSGesuch();
+            const verantwortlicher = new TSBenutzer('Emiliano', 'Camacho');
+            const gesuch = new TSGesuch();
             gesuch.dossier = new TSDossier();
             gesuch.dossier.verantwortlicherBG = verantwortlicher;
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
@@ -70,22 +66,22 @@ describe('dvVerantwortlicherSelect', () => {
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
 
             verantwortlicherselectController.setVerantwortlicher(undefined);
-            expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(user);
+            expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(benutzer);
         });
         it('sets the user as the verantwortlicherBG of the current fall', () => {
             createGesuch();
             spyOn(gesuchModelManager, 'setUserAsFallVerantwortlicherBG');
 
-            const newUser: TSUser = new TSUser('Adolfo', 'Contreras');
+            const newUser = new TSBenutzer('Adolfo', 'Contreras');
             verantwortlicherselectController.setVerantwortlicher(newUser);
             expect(gesuchModelManager.getGesuch().dossier.verantwortlicherBG).toBe(newUser);
         });
     });
 
-    function createGesuch() {
-        const gesuch: TSGesuch = new TSGesuch();
-        const dossier: TSDossier = new TSDossier();
-        dossier.verantwortlicherBG = user;
+    function createGesuch(): void {
+        const gesuch = new TSGesuch();
+        const dossier = new TSDossier();
+        dossier.verantwortlicherBG = benutzer;
         gesuch.dossier = dossier;
         gesuchModelManager.setGesuch(gesuch);
     }

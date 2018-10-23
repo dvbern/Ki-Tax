@@ -47,9 +47,11 @@ public class JaxEinkommensverschlechterungInfo extends JaxAbstractDTO {
 	private Boolean ekvFuerBasisJahrPlus2;
 
 	@Nullable
+	@SuppressWarnings("checkstyle:MemberName")
 	private Boolean gemeinsameSteuererklaerung_BjP1;
 
 	@Nullable
+	@SuppressWarnings("checkstyle:MemberName")
 	private Boolean gemeinsameSteuererklaerung_BjP2;
 
 	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
@@ -135,19 +137,23 @@ public class JaxEinkommensverschlechterungInfo extends JaxAbstractDTO {
 	}
 
 	@Nullable
+	@SuppressWarnings("checkstyle:MethodName")
 	public Boolean getGemeinsameSteuererklaerung_BjP1() {
 		return gemeinsameSteuererklaerung_BjP1;
 	}
 
+	@SuppressWarnings({"checkstyle:MethodName", "checkstyle:ParameterName"})
 	public void setGemeinsameSteuererklaerung_BjP1(@Nullable Boolean gemeinsameSteuererklaerung_BjP1) {
 		this.gemeinsameSteuererklaerung_BjP1 = gemeinsameSteuererklaerung_BjP1;
 	}
 
 	@Nullable
+	@SuppressWarnings({"checkstyle:MethodName", "checkstyle:ParameterName"})
 	public Boolean getGemeinsameSteuererklaerung_BjP2() {
 		return gemeinsameSteuererklaerung_BjP2;
 	}
 
+	@SuppressWarnings({"checkstyle:MethodName", "checkstyle:ParameterName"})
 	public void setGemeinsameSteuererklaerung_BjP2(@Nullable Boolean gemeinsameSteuererklaerung_BjP2) {
 		this.gemeinsameSteuererklaerung_BjP2 = gemeinsameSteuererklaerung_BjP2;
 	}

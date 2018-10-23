@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>Ki-Tax – Ihr Gesuch wurde bearbeitet</@base64Header>
+Subject: <@base64Header>kiBon – Ihr Gesuch wurde bearbeitet</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -24,13 +24,13 @@ ${templateConfiguration.mailCss}
 		Sehr geehrte Familie
 	</p>
 	<p>
-		Die Prüfung und Berechnung Ihres Ki-Tax-Gesuchs wurde bearbeitet. Sie können die Ergebnisse
+		Die Prüfung und Berechnung Ihres kiBon-Gesuchs wurde bearbeitet. Sie können die Ergebnisse
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
 		einsehen.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Jugendamt der Stadt Bern
+		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.

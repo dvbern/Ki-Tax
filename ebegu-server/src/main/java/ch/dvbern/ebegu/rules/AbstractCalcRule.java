@@ -38,7 +38,7 @@ public abstract class AbstractCalcRule extends AbstractEbeguRule {
 
 	@Nonnull
 	@Override
-	protected final List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected final List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
 		return new ArrayList<>();
 	}
 }

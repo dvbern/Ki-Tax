@@ -14,33 +14,59 @@
  */
 
 import {IPromise} from 'angular';
-import {IDVFocusableController} from '../../app/core/component/IDVFocusableController';
+import EbeguUtil from '../../utils/EbeguUtil';
+import ILogService = angular.ILogService;
+import IQService = angular.IQService;
 import IDialogService = angular.material.IDialogService;
 import ITranslateService = angular.translate.ITranslateService;
-import IQService = angular.IQService;
-import ILogService = angular.ILogService;
+
+export type RemoveDialogParams =
+    'title'
+    | 'deleteText'
+    | 'cancelText'
+    | 'confirmText'
+    | 'parentController'
+    | 'form'
+    | 'elementID';
 
 export class RemoveDialogController {
 
-    static $inject = ['$mdDialog', '$translate', '$q', '$log', 'title', 'deleteText', 'parentController', 'elementID', 'form'];
+    public static $inject = [
+        '$mdDialog',
+        '$translate',
+        '$q',
+        '$log',
+        'params',
+    ];
 
-    deleteText: string;
-    title: string;
+    public deleteText: string;
+    public title: string;
+    public cancelText: string;
+    public confirmText: string;
 
-    constructor(private readonly $mdDialog: IDialogService, $translate: ITranslateService, private readonly $q: IQService, private readonly $log: ILogService, title: string,
-                deleteText: string,
-                private readonly parentController: IDVFocusableController, private readonly elementID: string, private readonly form: any) {
-        if (deleteText !== undefined && deleteText !== null) {
-            this.deleteText = $translate.instant(deleteText);
-        } else {
-            this.deleteText = $translate.instant('LOESCHEN_DIALOG_TEXT');
-        }
+    public constructor(
+        private readonly $mdDialog: IDialogService,
+        $translate: ITranslateService,
+        private readonly $q: IQService,
+        private readonly $log: ILogService,
+        private readonly params: { [key in RemoveDialogParams]?: any },
+    ) {
 
-        if (title !== undefined && title !== null) {
-            this.title = $translate.instant(title);
-        } else {
-            this.title = $translate.instant('LOESCHEN_DIALOG_TITLE');
-        }
+        this.deleteText = EbeguUtil.isNotNullOrUndefined(params.deleteText) ?
+            $translate.instant(params.deleteText) :
+            $translate.instant('LOESCHEN_DIALOG_TEXT');
+
+        this.title = EbeguUtil.isNotNullOrUndefined(params.title) ?
+            $translate.instant(params.title) :
+            $translate.instant('LOESCHEN_DIALOG_TITLE');
+
+        this.cancelText = EbeguUtil.isNotNullOrUndefined(params.cancelText) ?
+            $translate.instant(params.cancelText) :
+            $translate.instant('LABEL_NEIN');
+
+        this.confirmText = EbeguUtil.isNotNullOrUndefined(params.confirmText) ?
+            $translate.instant(params.confirmText) :
+            $translate.instant('LABEL_JA');
     }
 
     public hide(): IPromise<any> {
@@ -48,14 +74,14 @@ export class RemoveDialogController {
     }
 
     public cancel(): void {
-        if (this.parentController) {
-            this.parentController.setFocusBack(this.elementID);
+        if (this.params.parentController) {
+            this.params.parentController.setFocusBack(this.params.elementID);
         }
 
         /*Es kann sein, dass die DialogBox durch einen Button mit Type submit ausgelösst wird. Wenn wir in der DialogBox jedoch auf
          * cancel drücken, müssen wir die form wieder auf dirty setzen, um Randeffekte zu umgehen. See EBEGU-1557*/
-        if (this.form) {
-            this.form.$setDirty();
+        if (this.params.form) {
+            this.params.form.$setDirty();
         } else {
             this.$log.info('Cancel DialogController without setting form back to dirty may produce errors');
         }

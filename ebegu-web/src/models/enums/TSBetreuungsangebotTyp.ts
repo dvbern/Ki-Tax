@@ -16,11 +16,10 @@
 import EbeguUtil from '../../utils/EbeguUtil';
 
 export enum TSBetreuungsangebotTyp {
-    KITA = <any> 'KITA',
-    TAGESFAMILIEN = <any> 'TAGESFAMILIEN',
-    TAGI = <any> 'TAGI',
-    TAGESSCHULE = <any> 'TAGESSCHULE',
-    FERIENINSEL = <any> 'FERIENINSEL'
+    KITA = 'KITA',
+    TAGESFAMILIEN = 'TAGESFAMILIEN',
+    TAGESSCHULE = 'TAGESSCHULE',
+    FERIENINSEL = 'FERIENINSEL'
 }
 
 export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {
@@ -29,14 +28,14 @@ export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp>
             TSBetreuungsangebotTyp.KITA,
             TSBetreuungsangebotTyp.TAGESFAMILIEN,
             TSBetreuungsangebotTyp.TAGESSCHULE,
-            TSBetreuungsangebotTyp.FERIENINSEL
-        ];
-    } else {
-        return [
-            TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN,
+            TSBetreuungsangebotTyp.FERIENINSEL,
         ];
     }
+
+    return [
+        TSBetreuungsangebotTyp.KITA,
+        TSBetreuungsangebotTyp.TAGESFAMILIEN,
+    ];
 }
 
 /**
@@ -47,20 +46,20 @@ export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array
         return [
             TSBetreuungsangebotTyp.KITA,
             TSBetreuungsangebotTyp.TAGESFAMILIEN,
-            TSBetreuungsangebotTyp.TAGESSCHULE
-        ];
-    } else {
-        return [
-            TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN
+            TSBetreuungsangebotTyp.TAGESSCHULE,
         ];
     }
+
+    return [
+        TSBetreuungsangebotTyp.KITA,
+        TSBetreuungsangebotTyp.TAGESFAMILIEN,
+    ];
 }
 
 export function getSchulamtBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {
     return [
         TSBetreuungsangebotTyp.TAGESSCHULE,
-        TSBetreuungsangebotTyp.FERIENINSEL
+        TSBetreuungsangebotTyp.FERIENINSEL,
     ];
 }
 
@@ -75,6 +74,9 @@ export function isJugendamt(status: TSBetreuungsangebotTyp): boolean {
 /**
  * Gibt true zurueck wenn der gegebene betreuungsangebotTyp in der Liste types gefunden wird
  */
-export function isOfAnyBetreuungsangebotTyp(betreuungsangebotTyp: TSBetreuungsangebotTyp, types: TSBetreuungsangebotTyp[]): boolean {
+export function isOfAnyBetreuungsangebotTyp(
+    betreuungsangebotTyp: TSBetreuungsangebotTyp,
+    types: TSBetreuungsangebotTyp[],
+): boolean {
     return types.filter(type => betreuungsangebotTyp === type).length > 0;
 }

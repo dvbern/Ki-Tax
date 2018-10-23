@@ -50,7 +50,8 @@
                                                     dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
                                                     aria-described-by="gemeinsameSteuererklaerung_BjP1-error">
                                 </dv-radio-container>
-                                <dv-error-messages input-id="gemeinsameSteuererklaerung_BjP1" for="vm.form.gemeinsameSteuererklaerung_BjP1.$error"
+                                <dv-error-messages input-id="gemeinsameSteuererklaerung_BjP1"
+                                                   for="vm.form.gemeinsameSteuererklaerung_BjP1.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
@@ -62,7 +63,8 @@
                             <div class="form-group">
                                 <span class="ebeguH1 required">
                                     <span data-translate="FINANZIELLE_SITUATION_STEUERVERANLAGUNG"
-                                          translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahrPlus(1)}" id="steuerveranlagung_BjP1"></span>
+                                          translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahrPlus(1)}"
+                                          id="steuerveranlagung_BjP1"></span>
                                 </span>
                                 <dv-radio-container name="steuerveranlagung_BjP1"
                                                     ng-model="vm.getEkv_GS1_Bjp1().steuerveranlagungErhalten"
@@ -73,7 +75,8 @@
                                                     dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
                                                     aria-described-by="steuerveranlagung_BjP1-error">
                                 </dv-radio-container>
-                                <dv-error-messages input-id="steuerveranlagung_BjP1" for="vm.form.steuerveranlagung_BjP1.$error"
+                                <dv-error-messages input-id="steuerveranlagung_BjP1"
+                                                   for="vm.form.steuerveranlagung_BjP1.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
@@ -85,7 +88,8 @@
                              ng-if="vm.showSteuerveranlagung_BjP1() && vm.showSteuererklaerung_BjP1()">
                             <div class="form-group">
                                 <span class="ebeguH1 required">
-                                    <span id="steuererklaerung_BjP1" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG"
+                                    <span id="steuererklaerung_BjP1"
+                                          data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG"
                                           translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrPlus(1)}}}"></span>
                                 </span>
                                 <dv-radio-container name="steuererklaerung_BjP1"
@@ -98,7 +102,8 @@
                                                     aria-described-by="steuererklaerung_BjP1-error"
                                                     aria-label="{{ 'FINANZIELLE_SITUATION_STEUERERKLAERUNG' |translate}}">
                                 </dv-radio-container>
-                                <dv-error-messages input-id="steuererklaerung_BjP1" for="vm.form.steuererklaerung_BjP1.$error"
+                                <dv-error-messages input-id="steuererklaerung_BjP1"
+                                                   for="vm.form.steuererklaerung_BjP1.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>

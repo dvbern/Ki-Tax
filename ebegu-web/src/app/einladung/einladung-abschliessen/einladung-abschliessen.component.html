@@ -1,0 +1,61 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<dv-full-height-container>
+    <form #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
+        <div class="dv-content">
+            <div class="row viewTitle">
+                <div class="col-md-12">
+                    <h2 translate>EINLADUNG_ABSCHLIESSEN</h2>
+                    <hr class="header">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 translate>KIBON_DATEN</h3>
+
+                    <dv-berechtigung [disabled]="true" [berechtigung]="principal.currentBerechtigung"></dv-berechtigung>
+                </div>
+                <div class="col-md-6">
+                    <h3 translate>BE_LOGIN_DATEN</h3>
+
+                    <table class="table">
+                        <tr>
+                            <td translate>VORNAME</td>
+                            <td>{{principal.vorname}}</td>
+                        </tr>
+                        <tr>
+                            <td translate>NAME</td>
+                            <td>{{principal.nachname}}</td>
+                        </tr>
+                        <tr>
+                            <td translate>EMAIL</td>
+                            <td>{{principal.email}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="dv-footer">
+            <dv-loading-button (buttonClick)="next()">
+                <span translate>EINLADUNG_ABSCHLIESSEN</span>
+            </dv-loading-button>
+        </div>
+    </form>
+</dv-full-height-container>

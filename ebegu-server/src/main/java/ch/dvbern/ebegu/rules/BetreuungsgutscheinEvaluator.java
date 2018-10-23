@@ -15,7 +15,20 @@
 
 package ch.dvbern.ebegu.rules;
 
-import ch.dvbern.ebegu.entities.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.AbstractBGRechner;
@@ -24,28 +37,25 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.util.BetreuungComparator;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import static java.util.Objects.requireNonNull;
 
 /**
  * This is the Evaluator that runs all the rules and calculations for a given Antrag to determine the Betreuungsgutschein
  */
 public class BetreuungsgutscheinEvaluator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(BetreuungsgutscheinEvaluator.class);
+
 	private boolean isDebug = true;
 
 	private List<Rule> rules = new LinkedList<>();
 
 	private final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
-	private final MonatsRule monatsRule = new MonatsRule(Constants.DEFAULT_GUELTIGKEIT);
+	private final MonatsRule monatsRule = new MonatsRule();
 	private final MutationsMerger mutationsMerger = new MutationsMerger();
 	private final AbschlussNormalizer abschlussNormalizer = new AbschlussNormalizer();
 
@@ -58,7 +68,6 @@ public class BetreuungsgutscheinEvaluator {
 		this.isDebug = enableDebugOutput;
 	}
 
-	private final Logger LOG = LoggerFactory.getLogger(BetreuungsgutscheinEvaluator.class.getSimpleName());
 
 	/**
 	 * Berechnet nur die Familiengroesse und Abzuege fuer den Print der Familiensituation, es muss min eine Betreuung existieren
@@ -86,7 +95,7 @@ public class BetreuungsgutscheinEvaluator {
 				}
 			}
 			// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-			zeitabschnitte = monatsRule.createVerfuegungsZeitabschnitte(firstBetreuungOfGesuch, zeitabschnitte);
+			zeitabschnitte = monatsRule.createMonate(zeitabschnitte);
 		} else {
 			LOG.warn("Keine Betreuung vorhanden kann Familiengroesse und Abzuege nicht berechnen");
 		}
@@ -119,7 +128,7 @@ public class BetreuungsgutscheinEvaluator {
 
 			for (Betreuung betreuung : betreuungen) {
 
-				if (!betreuung.getBetreuungsangebotTyp().isSchulamt()) {
+				if (!requireNonNull(betreuung.getBetreuungsangebotTyp()).isSchulamt()) {
 					//initiale Restansprueche vorberechnen
 					if (betreuung.getBetreuungsstatus() != null) {
 						if ((betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
@@ -128,7 +137,8 @@ public class BetreuungsgutscheinEvaluator {
 							// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen Vorgaenger und keine aktuelle
 							//verfuegung und wir muessen keinenr restanspruch berechnen (vergl EBEGU-890)
 							continue;
-						} else if (betreuung.getBetreuungsstatus().isGeschlossenJA()) {
+						}
+						if (betreuung.getBetreuungsstatus().isGeschlossenJA()) {
 							// Verfuegte Betreuungen duerfen nicht neu berechnet werden
 							LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
 							// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
@@ -163,7 +173,7 @@ public class BetreuungsgutscheinEvaluator {
 					zeitabschnitte = abschlussNormalizer.mergeGleicheSichtbareDaten(zeitabschnitte);
 
 					// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-					zeitabschnitte = monatsRule.createVerfuegungsZeitabschnitte(betreuung, zeitabschnitte);
+					zeitabschnitte = monatsRule.createMonate(zeitabschnitte);
 
 					// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 					zeitabschnitte = mutationsMerger.createVerfuegungsZeitabschnitte(betreuung, zeitabschnitte);
@@ -236,13 +246,11 @@ public class BetreuungsgutscheinEvaluator {
 		return restanspruchZeitabschnitte;
 	}
 
-	@SuppressWarnings("LoopStatementThatDoesntLoop")
+	@Nullable
 	private Betreuung getFirstBetreuungOfGesuch(Gesuch gesuch) {
-		for (KindContainer kindContainer : gesuch.getKindContainers()) {
-			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				return betreuung;
-			}
-		}
-		return null;
+		return gesuch.getKindContainers().stream()
+			.findFirst()
+			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream().findFirst())
+			.orElse(null);
 	}
 }

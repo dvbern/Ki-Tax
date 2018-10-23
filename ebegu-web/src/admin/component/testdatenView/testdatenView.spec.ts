@@ -16,14 +16,14 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DATE_LOCALE} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {SharedModule} from '../../../app/shared/shared.module';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import UserRS from '../../../app/core/service/userRS.rest';
 import ZahlungRS from '../../../app/core/service/zahlungRS.rest';
+import {SharedModule} from '../../../app/shared/shared.module';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView';
 
@@ -33,20 +33,26 @@ describe('testdatenView', () => {
     let fixture: ComponentFixture<TestdatenViewComponent>;
 
     beforeEach(async(() => {
-        const testFaelleRSSpy = jasmine.createSpyObj('TestFaelleRS', ['createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
-            'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten']);
+        const testFaelleRSSpy = jasmine.createSpyObj<TestFaelleRS>(TestFaelleRS.name,
+            [
+                'createTestFall', 'createTestFallGS', 'removeFaelleOfGS', 'mutiereFallHeirat',
+                'mutiereFallScheidung', 'resetSchulungsdaten', 'deleteSchulungsdaten',
+            ]);
         testFaelleRSSpy.createTestFall.and.returnValue('idOfCreatedGesuch');
-        const userRSSpy = jasmine.createSpyObj('UserRS', ['getAllGesuchsteller']);
-        userRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
-        const errorServiceSpy = jasmine.createSpyObj('ErrorService', ['addMesageAsInfo']);
-        const gesuchsperiodeRSSpy = jasmine.createSpyObj('GesuchsperiodeRS', ['getAllGesuchsperioden', 'removeGesuchsperiode']);
+        const benutzerRSSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['getAllGesuchsteller']);
+        benutzerRSSpy.getAllGesuchsteller.and.returnValue(Promise.resolve(true));
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
+        const gesuchsperiodeRSSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
+            ['getAllGesuchsperioden', 'removeGesuchsperiode']);
         gesuchsperiodeRSSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve(true));
-        const zahlungRSSpy = jasmine.createSpyObj('ZahlungRS', ['zahlungenKontrollieren', 'deleteAllZahlungsauftraege']);
-        const applicationPropertyRSSpy = jasmine.createSpyObj('ApplicationPropertyRS', ['isDevMode']);
+        const zahlungRSSpy = jasmine.createSpyObj<ZahlungRS>(ZahlungRS.name,
+            ['zahlungenKontrollieren', 'deleteAllZahlungsauftraege']);
+        const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+            ['isDevMode']);
         applicationPropertyRSSpy.isDevMode.and.returnValue(Promise.resolve(true));
-        const gesuchRSSpy = jasmine.createSpyObj('GesuchRS', ['gesuchVerfuegen']);
-        const gemeindeRSSpy = jasmine.createSpyObj('GemeindeRS', ['getAllGemeinden']);
-        gemeindeRSSpy.getAllGemeinden.and.returnValue(Promise.resolve(true));
+        const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['gesuchVerfuegen']);
+        const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
+        gemeindeRSSpy.getAktiveGemeinden.and.returnValue(Promise.resolve(true));
 
         TestBed.configureTestingModule({
             imports: [
@@ -55,7 +61,7 @@ describe('testdatenView', () => {
             ],
             providers: [
                 {provide: TestFaelleRS, useValue: testFaelleRSSpy},
-                {provide: UserRS, useValue: userRSSpy},
+                {provide: BenutzerRS, useValue: benutzerRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeRSSpy},
                 {provide: ZahlungRS, useValue: zahlungRSSpy},
@@ -64,7 +70,7 @@ describe('testdatenView', () => {
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
             ],
-            declarations: [TestdatenViewComponent]
+            declarations: [TestdatenViewComponent],
         })
             .compileComponents();
     }));

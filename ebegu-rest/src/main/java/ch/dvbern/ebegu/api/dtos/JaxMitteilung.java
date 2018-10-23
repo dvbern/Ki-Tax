@@ -52,10 +52,10 @@ public class JaxMitteilung extends JaxAbstractDTO {
 	private MitteilungTeilnehmerTyp empfaengerTyp;
 
 	@Nullable
-	private JaxAuthLoginElement sender;
+	private JaxBenutzer sender;
 
 	@Nullable
-	private JaxAuthLoginElement empfaenger;
+	private JaxBenutzer empfaenger;
 
 	@Size(min = 0, max = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Nullable
@@ -109,20 +109,20 @@ public class JaxMitteilung extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public JaxAuthLoginElement getSender() {
+	public JaxBenutzer getSender() {
 		return sender;
 	}
 
-	public void setSender(@Nullable JaxAuthLoginElement sender) {
+	public void setSender(@Nullable JaxBenutzer sender) {
 		this.sender = sender;
 	}
 
 	@Nullable
-	public JaxAuthLoginElement getEmpfaenger() {
+	public JaxBenutzer getEmpfaenger() {
 		return empfaenger;
 	}
 
-	public void setEmpfaenger(@Nullable JaxAuthLoginElement empfaenger) {
+	public void setEmpfaenger(@Nullable JaxBenutzer empfaenger) {
 		this.empfaenger = empfaenger;
 	}
 

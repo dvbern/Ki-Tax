@@ -1,0 +1,106 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<dv-full-height-container>
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          (ngSubmit)="gemeindeEinladen()"
+          novalidate>
+
+        <div class="dv-content">
+
+            <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
+            <div class="viewTitle">
+                <h2 translate>NEUE_GEMEINDE</h2>
+                <hr class="header">
+            </div>
+
+            <fieldset>
+                <!-- Gemeindename | BFS-Nummer der Gemeinde -->
+                <div class="row">
+                    <div class="col-sm-6 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="gemeinde_ID">GEMEINDENAME</label>
+                            <input id="gemeinde_ID" type="text" name="gemeinde_name" #name="ngModel"
+                                   [(ngModel)]="gemeinde.name"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.gemeinde_name?.errors"
+                                               inputId="gemeinde_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="gemeinde_ID">GEMEINDE_BFS_NR</label>
+                            <input id="bfs_nummer_ID" type="number" name="bfs_nummer" #name="ngModel"
+                                   [(ngModel)]="gemeinde.bfsNummer"
+                                   [min]="1" [max]="6806" [maxlength]="4" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.bfs_nummer?.errors"
+                                               inputId="bfs_nummer_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Betreuungsgutscheine anbieten ab | Administrator - E-Mail Adresse -->
+                <div class="row">
+                    <div class="col-sm-6 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
+                            <input class="dv-mat-datepicker" type="text"
+                                   name="begu_start" id="begu_start_ID"
+                                   [(ngModel)]="gemeinde.betreuungsgutscheineStartdatum"
+                                   [min]="beguStartDatumMin"
+                                   [matDatepicker]="begu_start"
+                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                   required>
+                            <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
+                            <mat-datepicker #begu_start></mat-datepicker>
+                            <dv-error-messages inputid="begu_start_ID"
+                                               [errorObject]="form.controls.begu_start?.errors">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 dv-input-container-medium">
+                        <div class="form-group">
+                            <label translate for="admin_mail_ID">ADMIN_MAIL</label>
+                            <input id="admin_mail_ID" type="email" name="admin_mail"
+                                   [(ngModel)]="adminMail"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
+                                               inputid="admin_mail_ID">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+        <!-- Buttons -->
+        <div class="dv-footer">
+            <dv-loading-button [type]="'submit'">
+                <span translate>EINLADUNG_SENDEN</span>
+            </dv-loading-button>
+
+            <button type="button" class="dv-btn cancel-button"
+                    (click)="cancel()"
+                    [textContent]="'CANCEL' | translate">
+            </button>
+        </div>
+    </form>
+</dv-full-height-container>

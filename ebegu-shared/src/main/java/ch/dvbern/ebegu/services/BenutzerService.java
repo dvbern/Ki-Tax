@@ -23,9 +23,13 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -53,11 +57,46 @@ public interface BenutzerService {
 	Benutzer saveBenutzer(@Nonnull Benutzer benutzer);
 
 	/**
+	 * Creates a new user of Role ADMIN_GEMEINDE with the given adminMail as email and as username and the given Gemeinde as the only
+	 * Gemeinde in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 */
+	@Nonnull
+	Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde);
+
+	/**
+	 * Creates a new user of Role ADMIN_INSTITUTION with the given adminMail as email and as username and the given Institution as the only
+	 * Institution in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 */
+	Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution);
+
+	/**
+	 * Creates a new user of Role ADMIN_TRAEGERSCHAFT with the given adminMail as email and as username and the given Traegerschaft as the only
+	 * Traegerschaft in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 */
+	Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft);
+
+	/**
+	 * Saves the given Benutzer and sends him an Einladungsemail
+	 */
+	@Nonnull
+	Benutzer einladen(@Nonnull Einladung einladung);
+
+	/**
 	 * @param username PK (id) des Benutzers
 	 * @return Benutzer mit dem gegebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull
 	Optional<Benutzer> findBenutzer(@Nonnull String username);
+
+	@Nonnull
+	Optional<Benutzer> findBenutzerById(@Nonnull String id);
+
+	/**
+	 * @param email E-Mail Adresse des Benutzers
+	 * @return Benutzer mit der gegebenen E-Mail Adresse oder null falls nicht vorhanden
+	 */
+	@Nonnull
+	Optional<Benutzer> findBenutzerByEmail(@Nonnull String email);
 
 	/**
 	 * Sucht einen Benutzer nach externalUUID: Diese Methode wird nur von den Connectoren gebraucht.
@@ -75,7 +114,47 @@ public interface BenutzerService {
 	Collection<Benutzer> getAllBenutzer();
 
 	/**
-	 * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_BG oder Admin zurueck.
+	 * Gibt alle Administratoren einer Gemeinde zurueck.
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern aus der DB
+	 */
+	@Nonnull
+	Collection<Benutzer> getGemeindeAdministratoren(Gemeinde gemeinde);
+
+	/**
+	 * Gibt alle Sachbearbeiter einer Gemeinde zurueck.
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern aus der DB
+	 */
+	@Nonnull
+	Collection<Benutzer> getGemeindeSachbearbeiter(Gemeinde gemeinde);
+
+	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde);
+
+	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_TS oder Admin_TS oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
+	 * @param gemeinde Die Gemeinde
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	Collection<Benutzer> getBenutzerTsOrGemeinde(Gemeinde gemeinde);
+
+	/**
+	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
+	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde zurueck.
+	 *
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	Collection<Benutzer> getBenutzerBgOrGemeinde();
+
+	/**
+	 * Gibt alle existierenden Benutzer mit Rolle Sachbearbeiter_BG oder Admin_BG zurueck.
 	 *
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
@@ -115,7 +194,8 @@ public interface BenutzerService {
 	Benutzer updateOrStoreUserFromIAM(@Nonnull Benutzer benutzer);
 
 	/**
-	 * Setzt den uebergebenen Benutzer auf gesperrt. Es werden auch alle möglicherweise noch vorhandenen AuthentifizierteBenutzer gelöscht.
+	 * Setzt den uebergebenen Benutzer auf gesperrt. Es werden auch alle möglicherweise noch vorhandenen
+	 * AuthentifizierteBenutzer gelöscht.
 	 */
 	@Nonnull
 	Benutzer sperren(@Nonnull String username);
@@ -134,6 +214,7 @@ public interface BenutzerService {
 
 	/**
 	 * Setzt alle Benutzer mit abgelaufenen Rollen auf die Rolle GESUCHSTELLER zurück.
+	 *
 	 * @return Die Anzahl zurückgesetzter Benutzer
 	 */
 	int handleAbgelaufeneRollen(@Nonnull LocalDate stichtag);

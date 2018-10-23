@@ -34,16 +34,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract Service class, die von allen PrintServices erweitert werden muss. Sie enthaelt Methoden, um die Vorlagen zu laden
+ * Abstract Service class, die von allen PrintServices erweitert werden muss. Sie enthaelt Methoden, um die Vorlagen
+ * zu laden
  */
 public abstract class AbstractPrintService extends AbstractBaseService {
 
-	private final Logger LOG = LoggerFactory.getLogger(AbstractPrintService.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractPrintService.class);
 
 	@Inject
 	private EbeguVorlageService ebeguVorlageService;
 
-	// We need to pass to EbeguVorlageService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
+	// We need to pass to EbeguVorlageService a new EntityManager to avoid errors like ConcurrentModificatinoException
+	// . So we create it here
 	// and pass it to the methods of EbeguVorlageService we need to call.
 	//http://stackoverflow.com/questions/18267269/correct-way-to-do-an-entitymanager-query-during-hibernate-validation
 	@PersistenceUnit(unitName = "ebeguPersistenceUnit")
@@ -54,16 +56,20 @@ public abstract class AbstractPrintService extends AbstractBaseService {
 	 * Sollte der Parameter nicht existieren, wird das drfault-template geladen
 	 */
 	@Nonnull
-	protected InputStream getVorlageStream(@Nonnull LocalDate dateAb, @Nonnull LocalDate dateBis, @Nonnull EbeguVorlageKey vorlageKey) {
+	protected InputStream getVorlageStream(@Nonnull LocalDate dateAb,
+		@Nonnull LocalDate dateBis,
+		@Nonnull EbeguVorlageKey vorlageKey) {
 		final Optional<EbeguVorlage> vorlage = ebeguVorlageService.getEbeguVorlageByDatesAndKey(dateAb, dateBis,
 			vorlageKey, createEntityManager());
 		if (vorlage.isPresent() && vorlage.get().getVorlage() != null) {
 			try {
 				return new FileInputStream(vorlage.get().getVorlage().getFilepfad());
 			} catch (final FileNotFoundException e) {
-				// Wenn die Datei nicht gefunden wird, die Exception Message wird gelogt und das default-template geladen
-				LOG.error("Die Datei mit der Vorlage fuer " + vorlageKey + " wurde nicht gefunden. Die default Vorlage ("
-					+ vorlageKey.getDefaultVorlagePath() + ") wird stattdessen benutzt");
+				LOG.error(
+					"Die Datei mit der Vorlage fuer {} wurde nicht gefunden. Die default Vorlage ({}) wird stattdessen"
+						+ " benutzt",
+					vorlageKey,
+					vorlageKey.getDefaultVorlagePath());
 			}
 		}
 		return AbstractPrintService.class.getResourceAsStream(vorlageKey.getDefaultVorlagePath());

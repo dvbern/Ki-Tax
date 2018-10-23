@@ -1,5 +1,13 @@
 import {NgModule} from '@angular/core';
-import {MatDatepickerModule, MatDialogModule, MatRadioModule, MatSelectModule, MatSortModule, MatTableModule} from '@angular/material';
+import {
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatSortModule,
+    MatTableModule,
+} from '@angular/material';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 
 const MATERIAL_MODULES = [
@@ -7,7 +15,7 @@ const MATERIAL_MODULES = [
     // MatButtonModule,
     // MatButtonToggleModule,
     // MatCardModule,
-    // MatCheckboxModule,
+    MatCheckboxModule,
     // MatChipsModule,
     MatDatepickerModule,
     MatDialogModule,

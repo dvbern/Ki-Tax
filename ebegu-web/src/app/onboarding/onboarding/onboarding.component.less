@@ -1,0 +1,106 @@
+/*
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+@import (reference) '../../../style/variables.less';
+
+.onboarding-gemeinde {
+    &-container {
+        display: flex;
+        flex-flow: column;
+    }
+
+    &-label {
+        width: 26.3rem;
+        margin-bottom: 1.7rem;
+    }
+
+    &-input-container {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 0 1.6rem;
+    }
+
+    &-search {
+        margin-bottom: 0;
+
+        &-input {
+            height: 4rem;
+            background: @primary;
+            width: 26.3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dv-select-style-onboarding {
+            border: 1px solid @anthracite;
+            background: @contrast-lightest;
+
+            select {
+                width: calc(25.2rem - 1px);
+                height: calc(3rem - 1px);
+                font-size: 1.4rem;
+                font-weight: normal;
+            }
+
+            &::after {
+                content: " \f002";
+                top: 0.5rem;
+                color: @black;
+            }
+        }
+
+    }
+
+    /deep/ &-auswaehlen {
+        width: 26.3rem;
+        text-transform: uppercase;
+        margin-bottom: 4rem;
+        // wenn der button fokusiert ist braucht er 2px für den Outline
+    }
+}
+
+
+.input-error {
+    height: 4rem;
+    width: 26.3rem;
+}
+
+.onboarding-gemeinde-auswaehlen {
+    margin-bottom: 4rem;
+}
+
+form:not(.ng-submitted) .input-error /deep/ .error {
+    display: none
+}
+
+.onboarding-login {
+    margin-top: 10vh;
+    text-align: center;
+    line-height: 2.8rem;
+
+    a {
+        color: @red
+    }
+}
+
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

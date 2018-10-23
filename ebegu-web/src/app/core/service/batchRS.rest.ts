@@ -14,38 +14,39 @@
  */
 
 import {IHttpService, IPromise} from 'angular';
-import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import TSWorkJob from '../../../models/TSWorkJob';
+import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 /**
  * liest information ueber batch jobs aus
  */
 export default class BatchJobRS {
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                private readonly ebeguRestUtil: EbeguRestUtil) {
-        this.serviceURL = REST_API + 'admin/batch';
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        private readonly ebeguRestUtil: EbeguRestUtil,
+    ) {
+        this.serviceURL = `${REST_API}admin/batch`;
     }
 
     public getAllJobs(): IPromise<TSWorkJob[]> {
-        return this.http.get(this.serviceURL + '/jobs').then((response: any) => {
-            return this.ebeguRestUtil.parseWorkJobList(response.data);
-        });
+        return this.getInfo(`${this.serviceURL}/jobs`);
     }
 
     public getBatchJobsOfUser(): IPromise<TSWorkJob[]> {
-
-        return this.http.get(this.serviceURL + '/userjobs/notokenrefresh').then((response: any) => {
-            return this.ebeguRestUtil.parseWorkJobList(response.data);
-        });
+        return this.getInfo(`${this.serviceURL}/userjobs/notokenrefresh`);
     }
 
     public getBatchJobInformation(executionId: string): IPromise<TSWorkJob[]> {
-        return this.http.get(this.serviceURL + '/jobs/' + encodeURI(executionId)).then((response: any) => {
+        return this.getInfo(`${this.serviceURL}/jobs/${encodeURI(executionId)}`);
+    }
+
+    private getInfo(url: string): IPromise<Array<TSWorkJob> | never> {
+        return this.http.get(url).then((response: any) => {
             return this.ebeguRestUtil.parseWorkJobList(response.data);
         });
     }

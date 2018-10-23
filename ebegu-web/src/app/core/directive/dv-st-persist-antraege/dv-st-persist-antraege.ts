@@ -20,12 +20,14 @@ import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {TSAuthEvent} from '../../../../models/enums/TSAuthEvent';
 import {TSRole} from '../../../../models/enums/TSRole';
-import TSBerechtigung from '../../../../models/TSBerechtigung';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DVAntragListController} from '../../component/dv-antrag-list/dv-antrag-list';
+import {LogFactory} from '../../logging/LogFactory';
+import BenutzerRS from '../../service/benutzerRS.rest';
 import {DVsTPersistService} from '../../service/dVsTPersistService';
 import {InstitutionRS} from '../../service/institutionRS.rest';
-import UserRS from '../../service/userRS.rest';
+
+const LOG = LogFactory.createLog('DVSTPersistAntraege');
 
 /**
  * This directive allows a filter and sorting configuration to be saved after leaving the table.
@@ -33,24 +35,30 @@ import UserRS from '../../service/userRS.rest';
  */
 export default class DVSTPersistAntraege implements IDirective {
 
-    static $inject: string[] = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
-        'AuthLifeCycleService'];
+    public static $inject: string[] = [
+        'BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService',
+        'GemeindeRS',
+        'AuthLifeCycleService',
+    ];
 
-    restrict = 'A';
-    require = ['^stTable', '^dvAntragList'];
-    link: IDirectiveLinkFn;
-    obss: Subscription;
+    public restrict = 'A';
+    public require = ['^stTable', '^dvAntragList'];
+    public link: IDirectiveLinkFn;
+    public obss: Subscription;
 
-    constructor(private readonly userRS: UserRS,
-                private readonly institutionRS: InstitutionRS,
-                private readonly authServiceRS: AuthServiceRS,
-                private readonly dVsTPersistService: DVsTPersistService,
-                private readonly gemeindeRS: GemeindeRS,
-                private readonly authLifeCycleService: AuthLifeCycleService) {
+    public constructor(
+        private readonly benutzerRS: BenutzerRS,
+        private readonly institutionRS: InstitutionRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly dVsTPersistService: DVsTPersistService,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly authLifeCycleService: AuthLifeCycleService,
+    ) {
 
-        this.link = (scope: IScope, element: IAugmentedJQuery, attrs: IAttributes, ctrlArray: any) => {
+        this.link = (scope: IScope, _element: IAugmentedJQuery, attrs, ctrlArray: any) => {
             this.obss = this.authLifeCycleService.get$(TSAuthEvent.LOGIN_SUCCESS)
-                .subscribe(() => this.loadData(attrs, ctrlArray, scope, dVsTPersistService));
+                .subscribe(() => this.loadData(attrs, ctrlArray, scope, this.dVsTPersistService),
+                    err => LOG.error(err));
 
             scope.$on('$destroy', () => {
                 this.destroy();
@@ -58,80 +66,91 @@ export default class DVSTPersistAntraege implements IDirective {
         };
     }
 
-    static factory(): IDirectiveFactory {
-        const directive = (userRS: any,
-                           institutionRS: any,
-                           authServiceRS: any,
-                           dVsTPersistService: any,
-                           gemeindeRS: any,
-                           authLifeCycleService: any) =>
-            new DVSTPersistAntraege(userRS, institutionRS, authServiceRS, dVsTPersistService, gemeindeRS, authLifeCycleService);
+    public static factory(): IDirectiveFactory {
+        const directive = (
+            benutzerRS: any,
+            institutionRS: any,
+            authServiceRS: any,
+            dVsTPersistService: any,
+            gemeindeRS: any,
+            authLifeCycleService: any,
+        ) =>
+            new DVSTPersistAntraege(benutzerRS,
+                institutionRS,
+                authServiceRS,
+                dVsTPersistService,
+                gemeindeRS,
+                authLifeCycleService);
 
-        directive.$inject = ['UserRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS', 'AuthLifeCycleService'];
+        directive.$inject = [
+            'BenutzerRS', 'InstitutionRS', 'AuthServiceRS', 'DVsTPersistService', 'GemeindeRS',
+            'AuthLifeCycleService',
+        ];
         return directive;
     }
 
     /**
-     * Die Directive wird nicht destroyed, daher muss man beim destroyen vom Scope die observables unsubscriben. Sollte dies nicht
-     * gemacht werden, bleibt die Directive aktiv und der Code wird immer wieder ausfgefuehrt
+     * Die Directive wird nicht destroyed, daher muss man beim destroyen vom Scope die observables unsubscriben. Sollte
+     * dies nicht gemacht werden, bleibt die Directive aktiv und der Code wird immer wieder ausfgefuehrt
      *
-     * INFO: wir speichern die Observables in eine ISubscription die beim destroyen von scope unsubscribed werden muss. Die Alternative
-     * mit takeUntil ist in diesem Fall (fuer eine Directive) nicht so gut weil es nicht completen kann. Da die Directive nur einmal erstellt
-     * wird, wird der Constructor nur einmal ausgefuehrt und die unsubscription$ object deshalb nur einmal erstellt.
+     * INFO: wir speichern die Observables in eine ISubscription die beim destroyen von scope unsubscribed werden muss.
+     * Die Alternative mit takeUntil ist in diesem Fall (fuer eine Directive) nicht so gut weil es nicht completen
+     * kann. Da die Directive nur einmal erstellt wird, wird der Constructor nur einmal ausgefuehrt und die
+     * unsubscription$ object deshalb nur einmal erstellt.
      */
-    private destroy() {
+    private destroy(): void {
         this.obss.unsubscribe();
     }
 
-    private loadData(attrs: angular.IAttributes, ctrlArray: any, scope: angular.IScope, dVsTPersistService: DVsTPersistService) {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller())) { // just to be sure that the user has the required role
-            const nameSpace: string = attrs.dvStPersistAntraege;
-            const stTableCtrl: any = ctrlArray[0];
-            const antragListController: DVAntragListController = ctrlArray[1];
+    private loadData(
+        attrs: IAttributes,
+        ctrlArray: any,
+        scope: IScope,
+        dVsTPersistService: DVsTPersistService,
+    ): void {
+        // just to be sure that the user has the required role
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAllRolesButGesuchsteller())) {
+            return;
+        }
 
-            //save the table state every time it changes
-            scope.$watch(() => stTableCtrl.tableState(), (newValue, oldValue) => {
-                if (newValue !== oldValue) {
-                    // sessionStorage.setItem(nameSpace, JSON.stringify(newValue));
-                    dVsTPersistService.saveData(nameSpace, newValue);
-                }
-            }, true);
-
-            // if (sessionStorage.getItem(nameSpace)) {
-            // let savedState = JSON.parse(sessionStorage.getItem(nameSpace));
-
-            //fetch the table state when the directive is loaded
-            let savedState = dVsTPersistService.loadData(nameSpace);
-            savedState = this.setCurrentUserAsVerantwortlicher(antragListController, savedState);
-            if (savedState) {
-                if (savedState.search && savedState.search.predicateObject) { //update all objects of the model for the filters
-                    antragListController.selectedAntragTyp = savedState.search.predicateObject.antragTyp;
-                    antragListController.selectedGesuchsperiode =
-                        savedState.search.predicateObject.gesuchsperiodeString;
-                    antragListController.selectedAntragStatus = savedState.search.predicateObject.status;
-                    antragListController.selectedBetreuungsangebotTyp = savedState.search.predicateObject.angebote;
-                    this.setInstitutionFromName(antragListController, savedState.search.predicateObject.institutionen);
-                    antragListController.selectedFallNummer = savedState.search.predicateObject.fallNummer;
-                    antragListController.selectedFamilienName = savedState.search.predicateObject.familienName;
-                    antragListController.selectedKinder = savedState.search.predicateObject.kinder;
-                    antragListController.selectedAenderungsdatum = savedState.search.predicateObject.aenderungsdatum;
-                    antragListController.selectedEingangsdatum = savedState.search.predicateObject.eingangsdatum;
-                    antragListController.selectedDokumenteHochgeladen =
-                        savedState.search.predicateObject.dokumenteHochgeladen;
-                    antragListController.selectedEingangsdatumSTV = savedState.search.predicateObject.eingangsdatumSTV;
-                    this.setGemeindeFromName(antragListController, savedState.search.predicateObject.gemeinde);
-                    this.setVerantwortlicherBGFromName(antragListController,
-                        savedState.search.predicateObject.verantwortlicherBG);
-                    this.setVerantwortlicherTSFromName(antragListController,
-                        savedState.search.predicateObject.verantwortlicherTS);
-                }
-                const tableState = stTableCtrl.tableState();
-
-                angular.extend(tableState, savedState);
-                stTableCtrl.pipe();
-
+        const nameSpace: string = attrs.dvStPersistAntraege;
+        const stTableCtrl = ctrlArray[0];
+        const antragListController: DVAntragListController = ctrlArray[1];
+        scope.$watch(() => stTableCtrl.tableState(), (newValue, oldValue) => {
+            if (newValue !== oldValue) {
+                dVsTPersistService.saveData(nameSpace, newValue);
             }
+        }, true);
+        let savedState = dVsTPersistService.loadData(nameSpace);
+        savedState = this.setCurrentUserAsVerantwortlicher(antragListController, savedState);
+        if (!savedState) {
+            return;
         }
+        if (savedState.search && savedState.search.predicateObject) {
+            // update all objects of the model for the filters
+            antragListController.selectedAntragTyp = savedState.search.predicateObject.antragTyp;
+            antragListController.selectedGesuchsperiode =
+                savedState.search.predicateObject.gesuchsperiodeString;
+            antragListController.selectedAntragStatus = savedState.search.predicateObject.status;
+            antragListController.selectedBetreuungsangebotTyp = savedState.search.predicateObject.angebote;
+            this.setInstitutionFromName(antragListController, savedState.search.predicateObject.institutionen);
+            antragListController.selectedFallNummer = savedState.search.predicateObject.fallNummer;
+            antragListController.selectedFamilienName = savedState.search.predicateObject.familienName;
+            antragListController.selectedKinder = savedState.search.predicateObject.kinder;
+            antragListController.selectedAenderungsdatum = savedState.search.predicateObject.aenderungsdatum;
+            antragListController.selectedEingangsdatum = savedState.search.predicateObject.eingangsdatum;
+            antragListController.selectedDokumenteHochgeladen =
+                savedState.search.predicateObject.dokumenteHochgeladen;
+            antragListController.selectedEingangsdatumSTV = savedState.search.predicateObject.eingangsdatumSTV;
+            this.setGemeindeFromName(antragListController, savedState.search.predicateObject.gemeinde);
+            this.setVerantwortlicherBGFromName(antragListController,
+                savedState.search.predicateObject.verantwortlicherBG);
+            this.setVerantwortlicherTSFromName(antragListController,
+                savedState.search.predicateObject.verantwortlicherTS);
+        }
+        const tableState = stTableCtrl.tableState();
+        angular.extend(tableState, savedState);
+        stTableCtrl.pipe();
     }
 
     /**
@@ -139,14 +158,18 @@ export default class DVSTPersistAntraege implements IDirective {
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
      */
-    private setVerantwortlicherBGFromName(antragListController: DVAntragListController,
-                                          verantwortlicherBGFullname: string): void {
-        if (verantwortlicherBGFullname && antragListController) {
-            this.userRS.getBenutzerJAorAdmin().then(userList => {
-                antragListController.selectedVerantwortlicherBG = userList.find(
-                    user => user.getFullName() === verantwortlicherBGFullname);
-            });
+    private setVerantwortlicherBGFromName(
+        antragListController: DVAntragListController,
+        verantwortlicherBGFullname: string,
+    ): void {
+        if (!(verantwortlicherBGFullname && antragListController)) {
+            return;
         }
+
+        this.benutzerRS.getBenutzerJAorAdmin().then(userList => {
+            antragListController.selectedVerantwortlicherBG = userList.find(
+                user => user.getFullName() === verantwortlicherBGFullname);
+        });
     }
 
     /**
@@ -154,14 +177,18 @@ export default class DVSTPersistAntraege implements IDirective {
      * while the dropdownlist is constructed using the object TSUser. So in order to be able to select the right user
      * with need the complete object and not only its Fullname.
      */
-    private setVerantwortlicherTSFromName(antragListController: DVAntragListController,
-                                          verantwortlicherTSFullname: string): void {
-        if (verantwortlicherTSFullname && antragListController) {
-            this.userRS.getBenutzerSCHorAdminSCH().then(userList => {
-                antragListController.selectedVerantwortlicherTS = userList.find(
-                    user => user.getFullName() === verantwortlicherTSFullname);
-            });
+    private setVerantwortlicherTSFromName(
+        antragListController: DVAntragListController,
+        verantwortlicherTSFullname: string,
+    ): void {
+        if (!(verantwortlicherTSFullname && antragListController)) {
+            return;
         }
+
+        this.benutzerRS.getBenutzerSCHorAdminSCH().then(userList => {
+            antragListController.selectedVerantwortlicherTS = userList.find(
+                user => user.getFullName() === verantwortlicherTSFullname);
+        });
     }
 
     /**
@@ -169,24 +196,30 @@ export default class DVSTPersistAntraege implements IDirective {
      * filter. This is needed because the filter saves the name and not the object.
      */
     private setInstitutionFromName(antragListController: DVAntragListController, institution: string): void {
-        if (institution && antragListController) {
-            this.institutionRS.getInstitutionenForCurrentBenutzer().then(institutionList => {
-                if (Array.isArray(institutionList)) {
-                    const found = institutionList.find(i => i.name === institution);
-                    if (found) {
-                        antragListController.selectedInstitution = found;
-                    }
-                }
-            });
+        if (!(institution && antragListController)) {
+            return;
         }
+
+        this.institutionRS.getInstitutionenForCurrentBenutzer().then(institutionList => {
+            if (!Array.isArray(institutionList)) {
+                return;
+            }
+
+            const found = institutionList.find(i => i.name === institution);
+            if (found) {
+                antragListController.selectedInstitution = found;
+            }
+        });
     }
 
     private setGemeindeFromName(antragListController: DVAntragListController, gemeinde: string): void {
-        if (gemeinde && antragListController) {
-            this.gemeindeRS.getAllGemeinden().then(gemeindeList => {
-                antragListController.selectedGemeinde = gemeindeList.find(g => g.name === gemeinde);
-            });
+        if (!(gemeinde && antragListController)) {
+            return;
         }
+
+        this.gemeindeRS.getAllGemeinden().then(gemeindeList => {
+            antragListController.selectedGemeinde = gemeindeList.find(g => g.name === gemeinde);
+        });
     }
 
     /**
@@ -195,7 +228,7 @@ export default class DVSTPersistAntraege implements IDirective {
      * - es noch nicht gesetzt wurde, d.h. nichts war ausgewaehlt
      */
     private setCurrentUserAsVerantwortlicher(antragListController: DVAntragListController, savedState: any): any {
-        let savedStateToReturn: any = angular.copy(savedState);
+        let savedStateToReturn = angular.copy(savedState);
         if (antragListController.pendenz) {
             if (!savedStateToReturn) {
                 savedStateToReturn = {search: {predicateObject: this.extractVerantwortlicherFullName()}};
@@ -206,11 +239,11 @@ export default class DVSTPersistAntraege implements IDirective {
             if (!savedStateToReturn.search.predicateObject.verantwortlicher) {
                 const principal = this.authServiceRS.getPrincipal();
 
-                const berechtigung: TSBerechtigung = principal.currentBerechtigung;
+                const berechtigung = principal.currentBerechtigung;
                 if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS) {
                     savedStateToReturn.search.predicateObject.verantwortlicherTS =
                         principal.getFullName();
-                } else { //JA
+                } else { // JA
                     savedStateToReturn.search.predicateObject.verantwortlicherBG =
                         principal.getFullName();
                 }
@@ -219,16 +252,16 @@ export default class DVSTPersistAntraege implements IDirective {
         return savedStateToReturn;
     }
 
-    private extractVerantwortlicherFullName() {
+    private extractVerantwortlicherFullName(): any {
         const principal = this.authServiceRS.getPrincipal();
 
         if (principal) {
-            const berechtigung: TSBerechtigung = principal.currentBerechtigung;
-            if (berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS) {
-                return {verantwortlicherTS: principal.getFullName()};
-            } else { //JA
-                return {verantwortlicherBG: principal.getFullName()};
-            }
+            const berechtigung = principal.currentBerechtigung;
+            const fullName = principal.getFullName();
+
+            return berechtigung.role === TSRole.ADMIN_TS || berechtigung.role === TSRole.SACHBEARBEITER_TS ?
+                {verantwortlicherTS: fullName} :
+                {verantwortlicherBG: fullName};
         }
 
         return '';

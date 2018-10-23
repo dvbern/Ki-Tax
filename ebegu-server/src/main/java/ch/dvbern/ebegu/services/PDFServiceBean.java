@@ -71,6 +71,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
+@SuppressWarnings("UnstableApiUsage")
 @Stateless
 @Local(PDFService.class)
 public class PDFServiceBean extends AbstractPrintService implements PDFService {
@@ -100,7 +101,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 		if (angebotTyp == BetreuungsangebotTyp.KITA || angebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
 			vorlageKey = EbeguVorlageKey.VORLAGE_NICHT_EINTRETENSVERFUEGUNG;
-		} else if (angebotTyp == BetreuungsangebotTyp.TAGI || angebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
+		} else if (angebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
 			vorlageKey = EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
 		} else {
 			throw new MergeDocException("generateNichteintreten()",
@@ -210,7 +211,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 		}
 	}
 
-	@Nullable
+	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, GESUCHSTELLER,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
@@ -276,15 +277,12 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 		if (Betreuungsstatus.NICHT_EINGETRETEN == betreuung.getBetreuungsstatus()) {
 			if (betreuungsangebotTyp.isAngebotJugendamtKleinkind()) {
 				return EbeguVorlageKey.VORLAGE_NICHT_EINTRETENSVERFUEGUNG;
-			} else {
-				return EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
 			}
+			return EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
 		}
 		switch (betreuungsangebotTyp) {
 		case TAGESFAMILIEN:
 			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_TAGESFAMILIEN;
-		case TAGI:
-			return EbeguVorlageKey.VORLAGE_BRIEF_TAGESSTAETTE_SCHULKINDER;
 		case KITA:
 		default:
 			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_KITA;

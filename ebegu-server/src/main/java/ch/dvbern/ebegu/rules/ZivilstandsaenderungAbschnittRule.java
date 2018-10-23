@@ -43,7 +43,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	@Nonnull
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		final List<VerfuegungZeitabschnitt> zivilstandsaenderungAbschnitte = new ArrayList<>();

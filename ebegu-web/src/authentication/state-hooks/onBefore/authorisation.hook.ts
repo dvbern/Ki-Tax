@@ -17,6 +17,7 @@
 
 import {HookMatchCriteria, HookResult, Transition, TransitionService} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {hasFromState} from '../../../dvbModules/router/route-helper-provider';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getRoleBasedTargetState} from '../../../utils/AuthenticationUtil';
@@ -31,7 +32,9 @@ import {OnBeforePriorities} from './onBeforePriorities';
  */
 authorisationHookRunBlock.$inject = ['$transitions'];
 
-export function authorisationHookRunBlock($transitions: TransitionService) {
+const LOG = LogFactory.createLog('authorisationHookRunBlock');
+
+export function authorisationHookRunBlock($transitions: TransitionService): void {
     // Matches if the destination state has a data.roles array
     const requiresAuthCriteria: HookMatchCriteria = {
         to: state => state.data && Array.isArray(state.data.roles),
@@ -49,6 +52,7 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
         .pipe(
             take(1),
             map(principal => {
+                LOG.debug('check authorisation of principal', principal);
                 const allowedRoles: TSRole[] = transition.to().data.roles;
 
                 if (!principal) {
@@ -69,21 +73,26 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
                 }
 
                 if (!hasFromState(transition)) {
-                    // the principal is not allowed to access the state. Since it is not yet on any state, navigate to a role-based landing state
+                    // the principal is not allowed to access the state. Since it is not yet on any state, navigate to
+                    // a role-based landing state
                     return getRoleBasedTargetState(currentRole, transition.router.stateService);
                 }
 
                 if (transition.from().name === 'authentication.locallogin') {
-                    // when changing the user via locallogin and the selected user is not allowed to return to the previous state, navigate to the role-based landing state
+                    // when changing the user via locallogin and the selected user is not allowed to return to the
+                    // previous state, navigate to the role-based landing state
                     return getRoleBasedTargetState(currentRole, transition.router.stateService);
                 }
 
-                // the principal is not allowed to access the state. Show an error and abort the transition (and stay on the current state)
+                // the principal is not allowed to access the state. Show an error and abort the transition (and stay
+                // on the current state)
                 const errorService = transition.injector().get('ErrorService');
                 errorService.addMesageAsError('ERROR_UNAUTHORIZED');
 
+                LOG.debug('unauthorised');
+
                 return false;
-            })
+            }),
         )
         .toPromise();
 }

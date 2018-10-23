@@ -14,13 +14,13 @@
  */
 
 export enum TSDayOfWeek {
-    MONDAY = <any> 'MONDAY',
-    TUESDAY = <any> 'TUESDAY',
-    WEDNESDAY = <any> 'WEDNESDAY',
-    THURSDAY = <any> 'THURSDAY',
-    FRIDAY = <any> 'FRIDAY',
-    SATURDAY = <any> 'SATURDAY',
-    SUNDAY = <any> 'SUNDAY'
+    MONDAY = 'MONDAY',
+    TUESDAY = 'TUESDAY',
+    WEDNESDAY = 'WEDNESDAY',
+    THURSDAY = 'THURSDAY',
+    FRIDAY = 'FRIDAY',
+    SATURDAY = 'SATURDAY',
+    SUNDAY = 'SUNDAY'
 }
 
 export function getWeekdaysValues(): Array<TSDayOfWeek> {
@@ -29,6 +29,6 @@ export function getWeekdaysValues(): Array<TSDayOfWeek> {
         TSDayOfWeek.TUESDAY,
         TSDayOfWeek.WEDNESDAY,
         TSDayOfWeek.THURSDAY,
-        TSDayOfWeek.FRIDAY
+        TSDayOfWeek.FRIDAY,
     ];
 }

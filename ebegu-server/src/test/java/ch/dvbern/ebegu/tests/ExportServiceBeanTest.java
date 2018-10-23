@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.tests;
 
 import java.time.LocalDate;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.dataexport.v1.VerfuegungExportDTO;
@@ -35,7 +36,7 @@ import ch.dvbern.ebegu.services.ExportService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.TestfaelleService;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -71,6 +72,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Inject
 	private TestfaelleService testfaelleService;
 
+	@Nullable
 	private Gemeinde gemeinde;
 	private Gesuchsperiode gesuchsperiode;
 
@@ -109,7 +111,9 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void exportTestVorVerfuegt() {
 
-		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde.getId(), gesuchsperiode);
+		Assert.assertNotNull(gemeinde);
+		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR,
+			true, true, gemeinde.getId(), gesuchsperiode);
 		Assert.assertNotNull(gesuch.getKindContainers().stream().findFirst());
 		Assert.assertTrue(gesuch.getKindContainers().stream().findFirst().isPresent());
 		KindContainer container = gesuch.getKindContainers().stream().findFirst().get();

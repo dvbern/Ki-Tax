@@ -36,11 +36,11 @@ import ITranslateService = angular.translate.ITranslateService;
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
 export class AbwesenheitViewComponentConfig implements IComponentOptions {
-    transclude = false;
-    bindings = {};
-    template = require('./abwesenheitView.html');
-    controller = AbwesenheitViewController;
-    controllerAs = 'vm';
+    public transclude = false;
+    public bindings = {};
+    public template = require('./abwesenheitView.html');
+    public controller = AbwesenheitViewController;
+    public controllerAs = 'vm';
 }
 
 export class KindBetreuungUI {
@@ -52,7 +52,7 @@ export class AbwesenheitUI {
     public kindBetreuung: KindBetreuungUI;
     public abwesenheit: TSAbwesenheitContainer;
 
-    constructor(kindBetreuung: KindBetreuungUI, abwesenheit: TSAbwesenheitContainer) {
+    public constructor(kindBetreuung: KindBetreuungUI, abwesenheit: TSAbwesenheitContainer) {
         this.kindBetreuung = kindBetreuung;
         this.abwesenheit = abwesenheit;
     }
@@ -60,18 +60,40 @@ export class AbwesenheitUI {
 
 export class AbwesenheitViewController extends AbstractGesuchViewController<Array<AbwesenheitUI>> {
 
-    static $inject = ['GesuchModelManager', 'BerechnungsManager', 'WizardStepManager', 'DvDialog',
-        '$translate', '$q', 'ErrorService', '$scope', '$timeout'];
+    public static $inject = [
+        'GesuchModelManager',
+        'BerechnungsManager',
+        'WizardStepManager',
+        'DvDialog',
+        '$translate',
+        '$q',
+        'ErrorService',
+        '$scope',
+        '$timeout',
+    ];
 
-    betreuungList: Array<KindBetreuungUI>;
+    public betreuungList: Array<KindBetreuungUI>;
     private removed: boolean;
     private readonly changedBetreuungen: Array<TSBetreuung> = [];
 
-    constructor(gesuchModelManager: GesuchModelManager, berechnungsManager: BerechnungsManager,
-                wizardStepManager: WizardStepManager, private readonly DvDialog: DvDialog, private readonly $translate: ITranslateService,
-                private readonly $q: IQService, private readonly errorService: ErrorService, $scope: IScope, $timeout: ITimeoutService) {
+    public constructor(
+        gesuchModelManager: GesuchModelManager,
+        berechnungsManager: BerechnungsManager,
+        wizardStepManager: WizardStepManager,
+        private readonly dvDialog: DvDialog,
+        private readonly $translate: ITranslateService,
+        private readonly $q: IQService,
+        private readonly errorService: ErrorService,
+        $scope: IScope,
+        $timeout: ITimeoutService,
+    ) {
 
-        super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.ABWESENHEIT, $timeout);
+        super(gesuchModelManager,
+            berechnungsManager,
+            wizardStepManager,
+            $scope,
+            TSWizardStepName.ABWESENHEIT,
+            $timeout);
         this.initViewModel();
     }
 
@@ -83,18 +105,21 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     }
 
     /**
-     * Aus der Liste mit den gesamten Kindern wird rausgefunden, welche Betreuungen TAGI oder KITA sind. Mit diesen
+     * Aus der Liste mit den gesamten Kindern wird rausgefunden, welche Betreuungen KITA sind. Mit diesen
      * wird eine neue Liste gemacht, die ein Object fuer jedes Kind und Betreuung hat
      */
     private setBetreuungList(): void {
-        const kinderList: Array<TSKindContainer> = this.gesuchModelManager.getKinderWithBetreuungList();
+        const kinderList = this.gesuchModelManager.getKinderWithBetreuungList();
         this.betreuungList = [];
-        kinderList.forEach((kind) => {
-            const betreuungenFromKind: Array<TSBetreuung> = kind.betreuungen;
-            betreuungenFromKind.forEach((betreuung) => {
-                if (betreuung.institutionStammdaten && betreuung.institutionStammdaten.betreuungsangebotTyp &&
-                    (betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
-                        || betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN)) {
+        kinderList.forEach(kind => {
+            const betreuungenFromKind = kind.betreuungen;
+            betreuungenFromKind.forEach(betreuung => {
+                if (betreuung.institutionStammdaten
+                    && betreuung.institutionStammdaten.betreuungsangebotTyp
+                    && (
+                        betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
+                        || betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN
+                    )) {
                     this.betreuungList.push({betreuung, kind});
                 }
             });
@@ -103,12 +128,14 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
 
     private initAbwesenheitList(): void {
         this.model = [];
-        this.betreuungList.forEach((kindBetreuung) => {
-            if (kindBetreuung.betreuung.abwesenheitContainers) {
-                kindBetreuung.betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
-                    this.model.push(new AbwesenheitUI(kindBetreuung, abwesenheitCont));
-                });
+        this.betreuungList.forEach(kindBetreuung => {
+            if (!kindBetreuung.betreuung.abwesenheitContainers) {
+                return;
             }
+
+            kindBetreuung.betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
+                this.model.push(new AbwesenheitUI(kindBetreuung, abwesenheitCont));
+            });
         });
     }
 
@@ -125,14 +152,14 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
                 return this.$q.when([]);
             }
 
-            //Zuerst loeschen wir alle Abwesenheiten jeder Betreuung
-            const kinderList: Array<TSKindContainer> = this.gesuchModelManager.getKinderWithBetreuungList();
+            // Zuerst loeschen wir alle Abwesenheiten jeder Betreuung
+            const kinderList = this.gesuchModelManager.getKinderWithBetreuungList();
             kinderList.forEach((kindContainer: TSKindContainer) => {
                 kindContainer.betreuungen.forEach((betreuung: TSBetreuung) => {
                     betreuung.abwesenheitContainers.length = 0;
                 });
             });
-            //Jetzt koennen wir alle geaenderten Abwesenheiten nochmal hinzufuegen
+            // Jetzt koennen wir alle geaenderten Abwesenheiten nochmal hinzufuegen
             this.model.forEach((abwesenheit: AbwesenheitUI) => {
                 if (!abwesenheit.kindBetreuung.betreuung.abwesenheitContainers) {
                     abwesenheit.kindBetreuung.betreuung.abwesenheitContainers = [];
@@ -150,9 +177,9 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
      * Anhand des IDs schaut es ob die gegebene Betreuung bereits in der Liste changedBetreuungen ist.
      * Nur wenn sie noch nicht da ist, wird sie hinzugefuegt
      */
-    private addChangedBetreuungToList(betreuung: TSBetreuung) {
-        let betreuungAlreadyChanged: boolean = false;
-        this.changedBetreuungen.forEach((changedBetreuung) => {
+    private addChangedBetreuungToList(betreuung: TSBetreuung): void {
+        let betreuungAlreadyChanged = false;
+        this.changedBetreuungen.forEach(changedBetreuung => {
             if (changedBetreuung.id === betreuung.id) {
                 betreuungAlreadyChanged = true;
             }
@@ -167,31 +194,35 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
      * Sonst wird sie einfach geloescht
      */
     public removeAbwesenheitConfirm(abwesenheit: AbwesenheitUI): void {
-        if (abwesenheit.abwesenheit.id) {
-            const remTitleText = this.$translate.instant('ABWESENHEIT_LOESCHEN');
-            this.DvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: remTitleText,
-                deleteText: '',
-                parentController: undefined,
-                elementID: undefined
-            }).then(() => {   //User confirmed removal
-                this.removeAbwesenheit(abwesenheit);
-            });
-        } else {
+        if (!abwesenheit.abwesenheit.id) {
             this.removeAbwesenheit(abwesenheit);
+
+            return;
         }
+
+        const remTitleText = this.$translate.instant('ABWESENHEIT_LOESCHEN');
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+            title: remTitleText,
+            deleteText: '',
+            parentController: undefined,
+            elementID: undefined,
+        }).then(() => {   // User confirmed removal
+            this.removeAbwesenheit(abwesenheit);
+        });
     }
 
-    private removeAbwesenheit(abwesenheit: AbwesenheitUI) {
+    private removeAbwesenheit(abwesenheit: AbwesenheitUI): void {
         const indexOf = this.model.lastIndexOf(abwesenheit);
-        if (indexOf >= 0) {
-            if (abwesenheit.kindBetreuung) {
-                this.removed = true;
-                this.addChangedBetreuungToList(abwesenheit.kindBetreuung.betreuung);
-            }
-            this.model.splice(indexOf, 1);
-            this.$timeout(() => EbeguUtil.selectFirst(), 100);
+        if (indexOf < 0) {
+            return;
         }
+
+        if (abwesenheit.kindBetreuung) {
+            this.removed = true;
+            this.addChangedBetreuungToList(abwesenheit.kindBetreuung.betreuung);
+        }
+        this.model.splice(indexOf, 1);
+        this.$timeout(() => EbeguUtil.selectFirst(), 100);
     }
 
     public createAbwesenheit(): void {
@@ -200,7 +231,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
         }
         this.model.push(new AbwesenheitUI(undefined, new TSAbwesenheitContainer()));
         this.$postLink();
-        //todo focus on specific id, so the newly added abwesenheit will be selected not the first in the DOM
+        // todo focus on specific id, so the newly added abwesenheit will be selected not the first in the DOM
     }
 
     public getAbwesenheiten(): Array<AbwesenheitUI> {
@@ -213,11 +244,18 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
      * Leerer String wieder zurueckgeliefert wenn die Daten nicht richtig sind
      */
     public getTextForBetreuungDDL(kindBetreuung: KindBetreuungUI): string {
-        if (kindBetreuung && kindBetreuung.kind && kindBetreuung.kind.kindJA
-            && kindBetreuung.betreuung && kindBetreuung.betreuung.institutionStammdaten && kindBetreuung.betreuung.institutionStammdaten.institution) {
+        if (kindBetreuung
+            && kindBetreuung.kind
+            && kindBetreuung.kind.kindJA
+            && kindBetreuung.betreuung
+            && kindBetreuung.betreuung.institutionStammdaten
+            && kindBetreuung.betreuung.institutionStammdaten.institution) {
 
-            return kindBetreuung.kind.kindJA.getFullName() + ' - ' + kindBetreuung.betreuung.institutionStammdaten.institution.name;
+            const institution = kindBetreuung.betreuung.institutionStammdaten.institution;
+
+            return `${kindBetreuung.kind.kindJA.getFullName()} - ${institution.name}`;
         }
+
         return '';
     }
 
@@ -228,27 +266,23 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     public changedAngebot(oldKindID: string, oldBetreuungID: string): void {
         // In case the Abwesenheit didn't exist before, the old IDs will be empty and there is no need to change
         // anything
-        if (oldKindID && oldKindID !== '' && oldBetreuungID && oldBetreuungID !== '') {
-            this.gesuchModelManager.findKindById(oldKindID);
-            this.gesuchModelManager.findBetreuungById(oldBetreuungID);
-            const betreuungToWorkWith: TSBetreuung = this.gesuchModelManager.getBetreuungToWorkWith();
-            if (betreuungToWorkWith && betreuungToWorkWith.id) {
-                this.addChangedBetreuungToList(betreuungToWorkWith);
-            }
+        if (!oldKindID || oldKindID === '' || !oldBetreuungID || oldBetreuungID === '') {
+            return;
+        }
+
+        this.gesuchModelManager.findKindById(oldKindID);
+        this.gesuchModelManager.findBetreuungById(oldBetreuungID);
+        const betreuungToWorkWith = this.gesuchModelManager.getBetreuungToWorkWith();
+        if (betreuungToWorkWith && betreuungToWorkWith.id) {
+            this.addChangedBetreuungToList(betreuungToWorkWith);
         }
     }
 
     public getPreviousButtonText(): string {
-        if (this.getAbwesenheiten().length === 0) {
-            return 'ZURUECK_ONLY_UPPER';
-        }
-        return 'ZURUECK_UPPER';
+        return this.getAbwesenheiten().length === 0 ? 'ZURUECK_ONLY_UPPER' : 'ZURUECK_UPPER';
     }
 
     public getNextButtonText(): string {
-        if (this.getAbwesenheiten().length === 0) {
-            return 'WEITER_ONLY_UPPER';
-        }
-        return 'WEITER_UPPER';
+        return this.getAbwesenheiten().length === 0 ? 'WEITER_ONLY_UPPER' : 'WEITER_UPPER';
     }
 }

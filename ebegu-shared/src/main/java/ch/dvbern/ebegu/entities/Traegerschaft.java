@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -33,7 +34,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class Traegerschaft extends AbstractMutableEntity {
+public class Traegerschaft extends AbstractMutableEntity implements Displayable {
 
 	private static final long serialVersionUID = -8403454439884704618L;
 
@@ -55,6 +56,8 @@ public class Traegerschaft extends AbstractMutableEntity {
 	public Traegerschaft() {
 	}
 
+	@Override
+	@Nonnull
 	public String getName() {
 		return name;
 	}

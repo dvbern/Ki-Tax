@@ -34,45 +34,57 @@ import {EinstellungRS} from '../../service/einstellungRS.rest';
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
-    transclude: boolean = false;
-    template: string = require('./gesuchsperiodeView.html');
-    controller: any = GesuchsperiodeViewController;
-    controllerAs: string = 'vm';
+    public transclude: boolean = false;
+    public template: string = require('./gesuchsperiodeView.html');
+    public controller: any = GesuchsperiodeViewController;
+    public controllerAs: string = 'vm';
 }
 
 export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
-    static $inject = ['EinstellungRS', 'DvDialog', 'GlobalCacheService', 'GesuchsperiodeRS', '$log', '$stateParams',
-        '$state', 'AuthServiceRS'];
+    public static $inject = [
+        'EinstellungRS',
+        'DvDialog',
+        'GlobalCacheService',
+        'GesuchsperiodeRS',
+        '$log',
+        '$stateParams',
+        '$state',
+        'AuthServiceRS',
+    ];
 
-    form: IFormController;
-    gesuchsperiode: TSGesuchsperiode;
-    einstellungenGesuchsperiode: TSEinstellung[];
+    public form: IFormController;
+    public gesuchsperiode: TSGesuchsperiode;
+    public einstellungenGesuchsperiode: TSEinstellung[];
 
-    initialStatus: TSGesuchsperiodeStatus;
-    datumFreischaltungTagesschule: moment.Moment;
-    datumFreischaltungMax: moment.Moment;
+    public initialStatus: TSGesuchsperiodeStatus;
+    public datumFreischaltungTagesschule: moment.Moment;
+    public datumFreischaltungMax: moment.Moment;
 
-    constructor(private readonly einstellungenRS: EinstellungRS,
-                private readonly dvDialog: DvDialog,
-                private readonly globalCacheService: GlobalCacheService,
-                private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-                private readonly $log: ILogService,
-                private readonly $stateParams: IGesuchsperiodeStateParams,
-                private readonly $state: StateService,
-                authServiceRS: AuthServiceRS) {
+    public constructor(
+        private readonly einstellungenRS: EinstellungRS,
+        private readonly dvDialog: DvDialog,
+        private readonly globalCacheService: GlobalCacheService,
+        private readonly gesuchsperiodeRS: GesuchsperiodeRS,
+        private readonly $log: ILogService,
+        private readonly $stateParams: IGesuchsperiodeStateParams,
+        private readonly $state: StateService,
+        authServiceRS: AuthServiceRS,
+    ) {
         super(authServiceRS);
     }
 
-    $onInit() {
-        if (this.$stateParams.gesuchsperiodeId) {
-            this.gesuchsperiodeRS.findGesuchsperiode(this.$stateParams.gesuchsperiodeId).then((found: TSGesuchsperiode) => {
-                this.setSelectedGesuchsperiode(found);
-                this.initialStatus = this.gesuchsperiode.status;
-            });
-        } else {
+    public $onInit(): void {
+        if (!this.$stateParams.gesuchsperiodeId) {
             this.createGesuchsperiode();
+
+            return;
         }
+
+        this.gesuchsperiodeRS.findGesuchsperiode(this.$stateParams.gesuchsperiodeId).then((found: TSGesuchsperiode) => {
+            this.setSelectedGesuchsperiode(found);
+            this.initialStatus = this.gesuchsperiode.status;
+        });
     }
 
     public getTSGesuchsperiodeStatusValues(): Array<TSGesuchsperiodeStatus> {
@@ -97,43 +109,50 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public saveGesuchsperiode(): void {
-        if (this.form.$valid && this.statusHaveChanged()) {
-            // Den Dialog nur aufrufen, wenn der Status geändert wurde (oder die GP neu ist) oder wenn es AKTIV ist
-            if (this.gesuchsperiode.isNew() || this.initialStatus !== this.gesuchsperiode.status || this.gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV) {
-                const dialogText = this.getGesuchsperiodeSaveDialogText(this.initialStatus !== this.gesuchsperiode.status);
-                this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                    title: 'GESUCHSPERIODE_DIALOG_TITLE',
-                    deleteText: dialogText,
-                    parentController: undefined,
-                    elementID: undefined
-                }).then(() => {
-                    this.saveGesuchsperiodeFreischaltungTagesschule();
-                });
-            } else {
-                this.saveGesuchsperiodeFreischaltungTagesschule();
-            }
+        if (!this.form.$valid || !this.statusHaveChanged()) {
+            return;
         }
+
+        if (this.gesuchsperiode.isNew()
+            || this.initialStatus !== this.gesuchsperiode.status
+            || this.gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV) {
+            const dialogText = this.getGesuchsperiodeSaveDialogText(this.initialStatus !== this.gesuchsperiode.status);
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'GESUCHSPERIODE_DIALOG_TITLE',
+                deleteText: dialogText,
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {
+                this.saveGesuchsperiodeFreischaltungTagesschule();
+            });
+            return;
+        }
+
+        this.saveGesuchsperiodeFreischaltungTagesschule();
     }
 
     public saveGesuchsperiodeFreischaltungTagesschule(): void {
         // Zweite Rückfrage falls neu ein Datum für die Freischaltung der Tagesschulen gesetzt wurde
-        if (!this.gesuchsperiode.isTagesschulenAnmeldungKonfiguriert() && this.isDatumFreischaltungTagesschuleValid()) {
-            this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                title: 'FREISCHALTUNG_TAGESSCHULE_DIALOG_TITLE',
-                deleteText: 'FREISCHALTUNG_TAGESSCHULE_DIALOG_TEXT',
-                parentController: undefined,
-                elementID: undefined
-            }).then(() => {
-                this.gesuchsperiode.datumFreischaltungTagesschule = this.datumFreischaltungTagesschule;
-                this.doSave();
-            });
-        } else {
+        if (this.gesuchsperiode.isTagesschulenAnmeldungKonfiguriert() || !this.isDatumFreischaltungTagesschuleValid()) {
             this.doSave();
+
+            return;
         }
+
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+            title: 'FREISCHALTUNG_TAGESSCHULE_DIALOG_TITLE',
+            deleteText: 'FREISCHALTUNG_TAGESSCHULE_DIALOG_TEXT',
+            parentController: undefined,
+            elementID: undefined,
+        }).then(() => {
+            this.gesuchsperiode.datumFreischaltungTagesschule = this.datumFreischaltungTagesschule;
+            this.doSave();
+        });
     }
 
-    private isDatumFreischaltungTagesschuleValid() {
-        return this.datumFreischaltungTagesschule && this.datumFreischaltungTagesschule.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb);
+    private isDatumFreischaltungTagesschuleValid(): boolean {
+        return this.datumFreischaltungTagesschule
+            && this.datumFreischaltungTagesschule.isBefore(this.gesuchsperiode.gueltigkeit.gueltigAb);
     }
 
     private doSave(): void {
@@ -143,7 +162,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
             // Die E-BEGU-Parameter für die neue Periode lesen bzw. erstellen, wenn noch nicht vorhanden
             this.readEinstellungenByGesuchsperiode();
-            this.gesuchsperiodeRS.updateActiveGesuchsperiodenList(); //reset gesuchperioden in manager
+            this.gesuchsperiodeRS.updateActiveGesuchsperiodenList(); // reset gesuchperioden in manager
             this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
             this.initialStatus = this.gesuchsperiode.status;
         });
@@ -152,10 +171,12 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public createGesuchsperiode(): void {
         this.gesuchsperiodeRS.getNewestGesuchsperiode().then(newestGeuschsperiode => {
             this.gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.ENTWURF, new TSDateRange());
-            this.initialStatus = undefined; //initialStatus ist undefined for new created Gesuchsperioden
+            this.initialStatus = undefined; // initialStatus ist undefined for new created Gesuchsperioden
             this.datumFreischaltungTagesschule = undefined;
-            this.gesuchsperiode.gueltigkeit.gueltigAb = newestGeuschsperiode.gueltigkeit.gueltigAb.clone().add(1, 'years');
-            this.gesuchsperiode.gueltigkeit.gueltigBis = newestGeuschsperiode.gueltigkeit.gueltigBis.clone().add(1, 'years');
+            this.gesuchsperiode.gueltigkeit.gueltigAb =
+                newestGeuschsperiode.gueltigkeit.gueltigAb.clone().add(1, 'years');
+            this.gesuchsperiode.gueltigkeit.gueltigBis =
+                newestGeuschsperiode.gueltigkeit.gueltigBis.clone().add(1, 'years');
             this.gesuchsperiode.datumFreischaltungTagesschule = this.gesuchsperiode.gueltigkeit.gueltigAb;
             this.datumFreischaltungMax = this.getDatumFreischaltungMax();
         });
@@ -186,6 +207,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             return 'GESUCHSPERIODE_DIALOG_TEXT_GESCHLOSSEN';
         }
         this.$log.warn('Achtung, Status unbekannt: ', this.gesuchsperiode.status);
+
         return null;
     }
 
@@ -201,15 +223,16 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     /**
-     * Gibt true zurueck wenn der Status sich geaendert hat oder wenn der Status AKTIV ist, da in Status AKTIV, die Parameter (Tagesschule)
-     * noch geaendert werden koennen.
+     * Gibt true zurueck wenn der Status sich geaendert hat oder wenn der Status AKTIV ist, da in Status AKTIV, die
+     * Parameter (Tagesschule) noch geaendert werden koennen.
      */
-    private statusHaveChanged() {
+    private statusHaveChanged(): boolean {
         return this.initialStatus !== this.gesuchsperiode.status || this.gesuchsperiode.status === TSGesuchsperiodeStatus.AKTIV;
     }
 
-    public getDatumFreischaltungMax() {
-        const gueltigAb: moment.Moment = angular.copy(this.gesuchsperiode.gueltigkeit.gueltigAb);
+    public getDatumFreischaltungMax(): moment.Moment {
+        const gueltigAb = angular.copy(this.gesuchsperiode.gueltigkeit.gueltigAb);
+
         return gueltigAb.subtract(1, 'days');
     }
 }

@@ -14,6 +14,7 @@
  */
 
 import {async} from '@angular/core/testing';
+import {IQService, IScope, ITimeoutService} from 'angular';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -21,6 +22,7 @@ import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
@@ -31,13 +33,13 @@ describe('stammdatenView', () => {
     let gesuchModelManager: GesuchModelManager;
     let stammdatenViewController: StammdatenViewController;
     let $stateParams: IStammdatenStateParams;
-    let $q: angular.IQService;
+    let $q: IQService;
     let $rootScope: any;
-    let $scope: angular.IScope;
+    let $scope: IScope;
     let ewkRS: EwkRS;
-    let $timeout: angular.ITimeoutService;
+    let $timeout: ITimeoutService;
 
-    beforeEach(angular.mock.module('ebeguWeb.gesuch'));
+    beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -53,9 +55,20 @@ describe('stammdatenView', () => {
         ewkRS = $injector.get('EwkRS');
         $scope = $rootScope.$new();
         $timeout = $injector.get('$timeout');
-        stammdatenViewController = new StammdatenViewController($stateParams, undefined, gesuchModelManager,
-            undefined, undefined, wizardStepManager, $injector.get('CONSTANTS'), $q, $scope, $injector.get('$translate'),
-            undefined, $rootScope, ewkRS, $timeout);
+        stammdatenViewController = new StammdatenViewController($stateParams,
+            undefined,
+            gesuchModelManager,
+            undefined,
+            undefined,
+            wizardStepManager,
+            $q,
+            $scope,
+            $injector.get(
+                '$translate'),
+            undefined,
+            $rootScope,
+            ewkRS,
+            $timeout);
     })));
 
     describe('disableWohnadresseFor2GS', () => {

@@ -188,22 +188,41 @@
                         </div>
                     </div>
 
-
                     <!--vertrag-->
-                    <div class="row marginBottom50 marginTop20" dv-show-element
+                    <div class="row marginTop20"
+                         dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="!vm.isSchulamt()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.getBetreuungModel().vertrag" name="vertrag"
+                                <md-checkbox ng-model="vm.getBetreuungModel().vertrag"
+                                             name="vertrag"
                                              required
-                                             aria-label="{{'VERTRAG'|translate}}" ng-disabled="!vm.isEnabled()"
+                                             aria-label="{{'VERTRAG'|translate}}"
+                                             ng-disabled="!vm.isEnabled()"
                                              ng-class="{true:'checkbox-error', false:''}[vm.flagErrorVertrag]">
                                     <span data-translate="VERTRAG"></span>
                                 </md-checkbox>
                                 <div class="dv-error-messages" ng-if="vm.flagErrorVertrag === true">
                                     <span data-translate="ERROR_VERTRAG_REQUIRED"></span>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Kesb Platzierung-->
+                    <div class="row marginBottom50 marginTop20"
+                         dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
+                         dv-show-expression="!vm.isSchulamt()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.getBetreuungModel().keineKesbPlatzierung"
+                                             name="keineKesbPlatzierung"
+                                             aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
+                                             ng-disabled="!vm.isEnabled()">
+                                    <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
+                                </md-checkbox>
                             </div>
                         </div>
                     </div>
@@ -230,29 +249,51 @@
                         </div>
 
                         <fieldset dv-enable-element
-                                  dv-enable-expression="(vm.isBetreuungsstatusWarten() && !vm.isSavingData) || vm.isMutationsmeldungStatus"
-                                  dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()">
+                                  dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+                                  dv-enable-expression="vm.isPensumEditable()">
 
                             <!--Betreuungspensen-->
                             <div ng-repeat="betpen in vm.getBetreuungspensen()">
                                 <!--Betreuungspensum-->
                                 <div class="row">
-                                    <div class="col-sm-12 dv-input-container-small">
+                                    <div class="col-sm-12 dv-input-betreuung-container">
                                         <dv-input-container class="form-group">
                                             <label class="md-no-float" data-translate="BETREUUNGSPENSUM"
                                                    data-translate-value-betreuungspensumnumber="{{$index + 1}}"
                                                    for="betreuungspensum-{{$index}}"></label>
-                                            <input aria-describedby="betreuungspensum-{{$index}}-error"
-                                                   id="betreuungspensum-{{$index}}" type="number"
-                                                   name="betreuungspensum-{{$index}}"
-                                                   ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.pensum"
-                                                   dv-max-length class="form-control"
-                                                   ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
-                                                   ng-required="true"
-                                                   ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
+                                            <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
+                                                                input-id="betreuungspensum-{{$index}}"
+                                                                betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
+                                                                is-disabled="!vm.isPensumEditable()">
+                                            </dv-betreuung-input>
                                             <dv-error-messages input-id="betreuungspensum-{{$index}}"
                                                                for="vm.form['betreuungspensum-' + $index].$error"></dv-error-messages>
+                                        </dv-input-container>
+                                    </div>
+                                </div>
 
+                                <!--Monatliche Betreuungskosten-->
+                                <div class="row">
+                                    <div class="col-sm-12 dv-input-container-medium">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float"
+                                                   for="monatlicheBetreuungskosten-{{$index}}">
+                                                <span data-translate="MONATLICHE_BETREUUNGSKOSTEN"></span>
+                                                <dv-tooltip input-id="betreuungsangebot"
+                                                            text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
+                                            </label>
+                                            <div class="dv-input-container-medium-label">
+                                                <input aria-describedby="monatlicheBetreuungskosten-{{$index}}-error"
+                                                       id="monatlicheBetreuungskosten-{{$index}}" type="number"
+                                                       name="monatlicheBetreuungskosten-{{$index}}"
+                                                       ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
+                                                       dv-max-length class="form-control"
+                                                       ng-pattern="vm.CONSTANTS.PATTERN_BETRAG_RAPPEN"
+                                                       ng-required="true"
+                                                       ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                                                <dv-error-messages input-id="monatlicheBetreuungskosten-{{$index}}"
+                                                                   for="vm.form['monatlicheBetreuungskosten-' + $index].$error"></dv-error-messages>
+                                            </div>
 
                                         </dv-input-container>
                                     </div>
@@ -299,7 +340,7 @@
                                         <dv-loading-button type="button"
                                                            button-click="vm.removeBetreuungspensum(betpen)"
                                                            button-class="dv-btn-operation"
-                                                           button-disabled="!((vm.isBetreuungsstatusWarten() && !vm.isSavingData) || vm.isMutationsmeldungStatus)">
+                                                           button-disabled="!vm.isPensumEditable()">
                                             <i class="fa fa-lg fa-trash-o"
                                                title="{{'BETREUUNGSPENSUM_DELETE' | translate}}"
                                                aria-label="{{'BETREUUNGSPENSUM_DELETE' | translate}}"></i>
@@ -314,7 +355,7 @@
                             <!--Neues Betreuungspensum hinzufuegen-->
                             <div class="row" dv-show-element
                                  dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                                 dv-show-expression="(vm.isBetreuungsstatusWarten() && !vm.isSavingData) || vm.isMutationsmeldungStatus">
+                                 dv-show-expression="vm.isPensumEditable()">
                                 <div class="col-md-12">
                                     <dv-loading-button type="button" button-click="vm.createBetreuungspensum()"
                                                        dv-enable-element
@@ -364,27 +405,18 @@
 
 
                         <!-- Status texts -->
-                        <div class="row">
-                            <div class="col-md-12"
-                                 ng-if="vm.isBetreuungsstatusWarten() && !vm.isSavingData">
-                                <div class="well well-status-warten">
-                                    <i class="fa fa-hourglass" aria-hidden="true"></i>
-                                    <span data-translate="BETREUUNG_WARTEN_TEXT"></span>
-                                </div>
-                            </div>
+                        <div class="well well-status-warten" ng-if="vm.isBetreuungsstatusWarten() && !vm.isSavingData">
+                            <i class="fa fa-hourglass" aria-hidden="true"></i>
+                            <span data-translate="BETREUUNG_WARTEN_TEXT"></span>
                         </div>
-                        <div class="row">
 
-                            <div class="col-md-12"
-                                 ng-if="vm.isBetreuungsstatusAbgewiesen() && !vm.isSavingData">
-                                <div class="well well-status-abgewiesen">
-                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                    <span data-translate="BETREUUNG_ABGEWIESEN_TEXT"
-                                          data-translate-value-grund="{{vm.getBetreuungModel().grundAblehnung}}"
-                                          data-translate-value-date="{{vm.getBetreuungModel().datumAblehnung  | amDateFormat : 'DD.MM.YYYY'}}">
-                        </span>
-                                </div>
-                            </div>
+                        <div class="well well-status-abgewiesen"
+                             ng-if="vm.isBetreuungsstatusAbgewiesen() && !vm.isSavingData">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                            <span data-translate="BETREUUNG_ABGEWIESEN_TEXT"
+                                  data-translate-value-grund="{{vm.getBetreuungModel().grundAblehnung}}"
+                                  data-translate-value-date="{{vm.getBetreuungModel().datumAblehnung  | amDateFormat : 'DD.MM.YYYY'}}">
+                            </span>
                         </div>
                         <div class="row">
                             <div class="col-md-12"
@@ -396,24 +428,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12"
-                                 ng-if="vm.isBetreuungsstatusNichtEingetreten() && !vm.isSavingData">
-                                <div class="well well-status-bestaetigt">
-                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                    <span data-translate="BETREUUNG_NICHT_EINGETRETEN_TEXT"
-                                          data-translate-value-date="{{vm.getBetreuungModel().datumBestaetigung  | amDateFormat : 'DD.MM.YYYY'}}"></span>
-                                </div>
-                            </div>
+                        <div class="well well-status-bestaetigt"
+                             ng-if="vm.isBetreuungsstatusNichtEingetreten() && !vm.isSavingData">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                            <span data-translate="BETREUUNG_NICHT_EINGETRETEN_TEXT"
+                                  data-translate-value-date="{{vm.getBetreuungModel().datumBestaetigung  | amDateFormat : 'DD.MM.YYYY'}}"></span>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12"
-                                 ng-if="vm.isStorniert() && !vm.isSavingData">
-                                <div class="well well-status-bestaetigt">
-                                    <i class="fa fa-exclamation " aria-hidden="true"></i>
-                                    <span data-translate="BETREUUNG_STORNIERT_TEXT"></span>
-                                </div>
-                            </div>
+                        <div class="well well-status-bestaetigt" ng-if="vm.isStorniert() && !vm.isSavingData">
+                            <i class="fa fa-exclamation" aria-hidden="true"></i>
+                            <span data-translate="BETREUUNG_STORNIERT_TEXT"></span>
                         </div>
 
                         <!--falsche Angaben-->
@@ -489,7 +512,7 @@
                     <div class="dv-navigation-item"
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                         dv-show-expression="vm.isMutationsmeldungAllowed()" >
+                         dv-show-expression="vm.isMutationsmeldungAllowed()">
 
                         <dv-loading-button button-click="vm.mutationsmeldungErstellen()"
                                            ng-if="!vm.isMutationsmeldungStatus"
@@ -509,7 +532,7 @@
                          dv-show-expression="vm.isBetreuungsstatusWarten()">
 
                         <div class="dv-navigation-item"
-                             ng-if="vm.isFromMutation()" >
+                             ng-if="vm.isFromMutation()">
                             <dv-loading-button button-click="vm.stornieren()"
                                                aria-label="{{'STORNIEREN_UPPER' | translate}}">
                                 <span data-translate="STORNIEREN_UPPER"></span>
@@ -524,7 +547,7 @@
                         </div>
 
                         <div class="dv-navigation-item"
-                             ng-if="!vm.isFromMutation()" >
+                             ng-if="!vm.isFromMutation()">
                             <dv-loading-button button-click="vm.platzAbweisen()"
                                                aria-label="{{'ABWEISEN_UPPER' | translate}}">
                                 <span data-translate="ABWEISEN_UPPER"></span>

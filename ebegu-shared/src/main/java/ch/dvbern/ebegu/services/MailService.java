@@ -21,6 +21,8 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -34,12 +36,15 @@ import ch.dvbern.ebegu.errors.MailException;
 public interface MailService {
 
 	/**
-	 * Sendet die Email mit gegebenem MessageBody an die gegebene Adresse. Dadurch kann eine beliebige Message gemailt werden
+	 * Sendet die Email mit gegebenem MessageBody an die gegebene Adresse. Dadurch kann eine beliebige Message gemailt
+	 * werden
 	 */
-	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress) throws MailException;
+	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress)
+		throws MailException;
 
 	/**
-	 * Sendet eine Email mit der Information, dass alle Betreuungsplaetze bestaetigt wurden und das Gesuch freigegeben werden kann.
+	 * Sendet eine Email mit der Information, dass alle Betreuungsplaetze bestaetigt wurden und das Gesuch freigegeben
+	 * werden kann.
 	 */
 	void sendInfoBetreuungenBestaetigt(@Nonnull Gesuch gesuch) throws MailException;
 
@@ -49,7 +54,8 @@ public interface MailService {
 	void sendInfoBetreuungAbgelehnt(@Nonnull Betreuung betreuung) throws MailException;
 
 	/**
-	 * Sendet eine Email mit der Information, dass eine Anmeldung fuer ein Schulamt-Angebot ins Backend uebernommen wurde
+	 * Sendet eine Email mit der Information, dass eine Anmeldung fuer ein Schulamt-Angebot ins Backend uebernommen
+	 * wurde
 	 */
 	void sendInfoSchulamtAnmeldungUebernommen(@Nonnull Betreuung betreuung) throws MailException;
 
@@ -96,10 +102,13 @@ public interface MailService {
 	/**
 	 * Sendet eine Mail an den GS1 des übergebenen Gesuchs, dass die übergebene Gesuchsperiode eröffnet wurde.
 	 */
-	Future<Integer> sendInfoFreischaltungGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull List<Gesuch> gesucheToSendMail);
+	Future<Integer> sendInfoFreischaltungGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull List<Gesuch> gesucheToSendMail);
 
 	/**
-	 * Sendet unter gewissen Bedingungen pro Betreuung eine Email mit der Information, dass ein Betreuungsplatz geloescht wurde.
+	 * Sendet unter gewissen Bedingungen pro Betreuung eine Email mit der Information, dass ein Betreuungsplatz
+	 * geloescht wurde.
 	 */
 	void sendInfoBetreuungGeloescht(@Nonnull List<Betreuung> betreuungen);
 
@@ -109,7 +118,16 @@ public interface MailService {
 	void sendInfoBetreuungVerfuegt(@Nonnull Betreuung betreuung);
 
 	/**
-	 * schickt eine email an den uebergebenen Empfaenger die angibt wie das angehaengte File heruntergeladen werden kann
+	 * schickt eine email an den uebergebenen Empfaenger die angibt wie das angehaengte File heruntergeladen werden
+	 * kann
 	 */
-	void sendDocumentCreatedEmail(@Nonnull String receiverEmail, @Nullable DownloadFile attachement, @Nonnull String downloadurl) throws MailException;
+	void sendDocumentCreatedEmail(
+		@Nonnull String receiverEmail,
+		@Nullable DownloadFile attachement,
+		@Nonnull String downloadurl) throws MailException;
+
+	/**
+	 * Sends an Einladungsemail to the given user according to the type of the Einladung
+	 */
+	void sendBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Einladung einladung) throws MailException;
 }

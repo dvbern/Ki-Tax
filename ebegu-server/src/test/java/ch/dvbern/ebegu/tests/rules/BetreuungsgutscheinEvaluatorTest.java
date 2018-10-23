@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -34,17 +35,23 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.RuleKey;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.tets.TestDataUtil.createDefaultInstitutionStammdaten;
+import static ch.dvbern.ebegu.test.TestDataUtil.createDefaultInstitutionStammdaten;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test der als Proof of Concept dienen soll fuer das Regelsystem
@@ -71,6 +78,8 @@ import static ch.dvbern.ebegu.tets.TestDataUtil.createDefaultInstitutionStammdat
  */
 public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
+	private static final Logger LOG = LoggerFactory.getLogger(BetreuungsgutscheinEvaluatorTest.class);
+
 	private final DateRange erwerbspensumGS1_1 = new DateRange(LocalDate.of(2010, Month.FEBRUARY, 2), LocalDate.of(2017, Month.MARCH, 20));
 	private final DateRange erwerbspensumGS1_2 = new DateRange(LocalDate.of(2017, Month.JANUARY, 1), LocalDate.of(2017, Month.JULY, 31));
 
@@ -86,7 +95,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		evaluator.evaluate(testgesuch, getParameter());
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				System.out.println(betreuung.getVerfuegung());
+				LOG.info("{}", betreuung.getVerfuegung());
 			}
 		}
 	}
@@ -101,8 +110,10 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				Assert.assertFalse(betreuung.getVerfuegung().getGeneratedBemerkungen().isEmpty());
-				Assert.assertTrue(betreuung.getVerfuegung().getGeneratedBemerkungen().contains(RuleKey.EINKOMMEN.name()));
+				assertNotNull(betreuung.getVerfuegung());
+				assertNotNull(betreuung.getVerfuegung().getGeneratedBemerkungen());
+				assertFalse(betreuung.getVerfuegung().getGeneratedBemerkungen().isEmpty());
+				assertTrue(betreuung.getVerfuegung().getGeneratedBemerkungen().contains(RuleKey.EINKOMMEN.name()));
 			}
 		}
 	}
@@ -113,10 +124,10 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		Verfuegung verfuegung = evaluator.evaluateFamiliensituation(testgesuch);
 
-		Assert.assertNotNull(verfuegung);
+		assertNotNull(verfuegung);
 		Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 
-		Assert.assertEquals(MathUtil.EINE_NACHKOMMASTELLE.from(3d), verfuegung.getZeitabschnitte().get(0).getFamGroesse());
+		Assert.assertEquals(MathUtil.EINE_NACHKOMMASTELLE.from(3.0d), verfuegung.getZeitabschnitte().get(0).getFamGroesse());
 		Assert.assertEquals(0, new BigDecimal("20000").compareTo(verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommenVorAbzFamgr()));
 		Assert.assertEquals(0, new BigDecimal("11280").compareTo(verfuegung.getZeitabschnitte().get(0).getAbzugFamGroesse()));
 		Assert.assertEquals(0, new BigDecimal("8720").compareTo(verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen()));
@@ -130,12 +141,16 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.initFamiliensituationContainer();
-		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		assertNotNull(familiensituation);
+		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		// GS 1
 		GesuchstellerContainer gsContainer1 = new GesuchstellerContainer();
 		gsContainer1.setGesuchstellerJA(new Gesuchsteller());
 		gesuch.setGesuchsteller1(gsContainer1);
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+		assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(20000));
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(erwerbspensumGS1_1.getGueltigAb(), erwerbspensumGS1_1.getGueltigBis(), 50, 0));
@@ -144,21 +159,25 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		GesuchstellerContainer gsContainer2 = new GesuchstellerContainer();
 		gsContainer2.setGesuchstellerJA(new Gesuchsteller());
 		gesuch.setGesuchsteller2(gsContainer2);
+		assertNotNull(gesuch.getGesuchsteller2());
 		gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+		assertNotNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(gesuchsperiode.getGueltigAb(), gesuchsperiode.getGueltigBis(), 90, 10));
 		// Adressen
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		// Kind 1
-		Betreuung betreuungKind1 = createBetreuungWithPensum(gesuch, BetreuungsangebotTyp.KITA, gesuchsperiode, 60);
+		Betreuung betreuungKind1 = createBetreuungWithPensum(gesuch, gesuchsperiode);
 		betreuungKind1.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
+		assertNotNull(betreuungKind1.getKind().getKindJA().getPensumFachstelle());
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setGueltigkeit(fachstelleGueltigkeit);
 		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setPensum(80);
+		betreuungKind1.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		return gesuch;
 	}
 
-	private Betreuung createBetreuungWithPensum(Gesuch gesuch, BetreuungsangebotTyp angebot, DateRange gueltigkeit, int pensum) {
+	private Betreuung createBetreuungWithPensum(Gesuch gesuch, DateRange gueltigkeit) {
 		Betreuung betreuung = new Betreuung();
 		KindContainer kindContainer = new KindContainer();
 		betreuung.setKind(kindContainer);
@@ -169,14 +188,15 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuung.getKind().getKindJA().setKinderabzug(Kinderabzug.GANZER_ABZUG);
 		gesuch.getKindContainers().add(betreuung.getKind());
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
-		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(angebot);
+		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		betreuung.setBetreuungspensumContainers(new HashSet<>());
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		betreuungspensumContainer.setBetreuung(betreuung);
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(gueltigkeit);
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
+		betreuungspensumContainer.getBetreuungspensumJA().setPensum(60);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
+		betreuung.setKeineKesbPlatzierung(true);
 		return betreuung;
 	}
 }

@@ -15,13 +15,14 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import org.apache.commons.lang3.Validate;
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +38,8 @@ public class RestanspruchLimitRuleTest {
 	@Test
 	public void testRestanspruchInitForKita() {
 
-		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList = initZeitabschnitteForSecondBetreuung(100, -1, 30, BetreuungsangebotTyp.KITA);
+		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList =
+			initZeitabschnitteForSecondBetreuung(100, -1, 30, BetreuungsangebotTyp.KITA);
 
 		Assert.assertNotNull(restansprchZeitabschnittList);
 		Assert.assertEquals(1, restansprchZeitabschnittList.size());
@@ -49,7 +51,8 @@ public class RestanspruchLimitRuleTest {
 
 	@Test
 	public void testRestanspruchZeroForKita() {
-		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList = initZeitabschnitteForSecondBetreuung(50, -1, 80, BetreuungsangebotTyp.KITA);
+		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList =
+			initZeitabschnitteForSecondBetreuung(50, -1, 80, BetreuungsangebotTyp.KITA);
 		Assert.assertNotNull(restansprchZeitabschnittList);
 		Assert.assertEquals(1, restansprchZeitabschnittList.size());
 		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
@@ -59,7 +62,8 @@ public class RestanspruchLimitRuleTest {
 
 	@Test
 	public void testExistingRestanspruchConsideredForKita() {
-		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList = initZeitabschnitteForSecondBetreuung(100, 50, 30, BetreuungsangebotTyp.KITA);
+		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList =
+			initZeitabschnitteForSecondBetreuung(100, 50, 30, BetreuungsangebotTyp.KITA);
 		Assert.assertNotNull(restansprchZeitabschnittList);
 		Assert.assertEquals(1, restansprchZeitabschnittList.size());
 		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
@@ -69,34 +73,10 @@ public class RestanspruchLimitRuleTest {
 	}
 
 	@Test
-	public void testRestanspruchNoChangeForTagi() {
-
-		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList = initZeitabschnitteForSecondBetreuung(100, -1, 30, BetreuungsangebotTyp.TAGI);
-
-		Assert.assertNotNull(restansprchZeitabschnittList);
-		Assert.assertEquals(1, restansprchZeitabschnittList.size());
-		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
-		Assert.assertEquals(-1, nextInitialabschnitt.getAnspruchspensumRest());
-
-	}
-
-	@Test
-	public void testRestanspruchNoChangeForTagiIfAlreadyPresent() {
-
-		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList = initZeitabschnitteForSecondBetreuung(100, 50, 30, BetreuungsangebotTyp.TAGI);
-
-		Assert.assertNotNull(restansprchZeitabschnittList);
-		Assert.assertEquals(1, restansprchZeitabschnittList.size());
-		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
-		//hat in der "1." betreuung von seinen 100 prozent anspruch 50 verbraucht, die 30% tagibetrauung aendern den restanspruch aber nicht
-		Assert.assertEquals(50, nextInitialabschnitt.getAnspruchspensumRest());
-
-	}
-
-	@Test
 	public void testRestansprucAlreadyZero() {
 
-		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList = initZeitabschnitteForSecondBetreuung(70, 0, 30, BetreuungsangebotTyp.KITA);
+		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList =
+			initZeitabschnitteForSecondBetreuung(70, 0, 30, BetreuungsangebotTyp.KITA);
 
 		Assert.assertNotNull(restansprchZeitabschnittList);
 		Assert.assertEquals(1, restansprchZeitabschnittList.size());
@@ -106,11 +86,18 @@ public class RestanspruchLimitRuleTest {
 
 	}
 
-	private List<VerfuegungZeitabschnitt> initZeitabschnitteForSecondBetreuung(int arbeitspensum, int remainingRestanspruch, int betreuungspensum, BetreuungsangebotTyp type) {
-		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, type, betreuungspensum);
+	private List<VerfuegungZeitabschnitt> initZeitabschnitteForSecondBetreuung(
+		int arbeitspensum,
+		int remainingRestanspruch,
+		int betreuungspensum,
+		BetreuungsangebotTyp type
+	) {
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
+			type, betreuungspensum, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, arbeitspensum, 0));
+		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.
+			createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, arbeitspensum, 0));
 		List<VerfuegungZeitabschnitt> calculatedAbschnitte;
 		if (remainingRestanspruch != -1) {
 			//simulates the already existing another betreuung and we have just remainingRestanspruch left for this calculation,

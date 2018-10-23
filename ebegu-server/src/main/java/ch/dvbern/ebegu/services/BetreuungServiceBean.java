@@ -641,7 +641,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		if (role.isRoleGemeindeabhaengig()) {
 			final Join<Dossier, Gemeinde> gemeindeJoin = root.join(Betreuung_.kind, JoinType.LEFT).join(KindContainer_.gesuch, JoinType.LEFT)
 				.join(Gesuch_.dossier, JoinType.LEFT).join(Dossier_.gemeinde, JoinType.LEFT);
-			FilterFunctions.getGemeindeFilterForCurrentUser(benutzerOptional.get(),
+			FilterFunctions.setGemeindeFilterForCurrentUser(benutzerOptional.get(),
 				gemeindeJoin, predicates);
 		}
 

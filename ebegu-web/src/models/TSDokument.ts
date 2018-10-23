@@ -13,36 +13,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import TSFile from './TSFile';
 import * as moment from 'moment';
-import TSUser from './TSUser';
+import TSBenutzer from './TSBenutzer';
+import TSFile from './TSFile';
 
 export default class TSDokument extends TSFile {
 
     private _timestampUpload: moment.Moment;
-    private _userUploaded: TSUser;
+    private _userUploaded: TSBenutzer;
 
-    constructor(timestampUpload?: moment.Moment, userUploaded?: TSUser) {
+    public constructor(timestampUpload?: moment.Moment, userUploaded?: TSBenutzer) {
         super();
         this._timestampUpload = timestampUpload;
         this._userUploaded = userUploaded;
     }
 
-    get timestampUpload(): moment.Moment {
+    public get timestampUpload(): moment.Moment {
         return this._timestampUpload;
     }
 
-    set timestampUpload(value: moment.Moment) {
+    public set timestampUpload(value: moment.Moment) {
         this._timestampUpload = value;
     }
 
-    get userUploaded(): TSUser {
+    public get userUploaded(): TSBenutzer {
         return this._userUploaded;
     }
 
-    set userUploaded(value: TSUser) {
+    public set userUploaded(value: TSBenutzer) {
         this._userUploaded = value;
     }
 }
-
-

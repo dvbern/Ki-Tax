@@ -13,20 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import EbeguWebAdmin from '../../admin.module';
+import ADMIN_JS_MODULE from '../../admin.module';
+import IInjectorService = angular.auto.IInjectorService;
 
 describe('adminView', () => {
 
-    beforeEach(angular.mock.module(EbeguWebAdmin.name));
+    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     let component: any;
-    let scope: angular.IScope;
-    let $componentController: angular.IComponentControllerService;
+    let scope: IScope;
+    let $componentController: IComponentControllerService;
 
-    beforeEach(angular.mock.inject(($injector: angular.auto.IInjectorService) => {
+    beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         $componentController = $injector.get('$componentController');
         const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();

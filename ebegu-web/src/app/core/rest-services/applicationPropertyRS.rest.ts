@@ -19,80 +19,77 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class ApplicationPropertyRS {
 
-    static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
 
-    serviceURL: string;
+    public serviceURL: string;
 
-    constructor(public http: IHttpService,
-                REST_API: string,
-                public ebeguRestUtil: EbeguRestUtil) {
-        this.serviceURL = REST_API + 'application-properties';
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+    ) {
+        this.serviceURL = `${REST_API}application-properties`;
     }
 
-    getAllowedMimetypes(): IPromise<TSApplicationProperty> {
-        return this.http.get(this.serviceURL + '/public/' + encodeURIComponent('UPLOAD_FILETYPES_WHITELIST'),
+    public getAllowedMimetypes(): IPromise<TSApplicationProperty> {
+        return this.http.get(`${this.serviceURL}/public/${encodeURIComponent('UPLOAD_FILETYPES_WHITELIST')}`,
             {cache: true})
             .then((response: IHttpResponse<TSApplicationProperty>) => {
                 return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
             });
     }
 
-    getByName(name: string): IPromise<TSApplicationProperty> {
-        return this.http.get(this.serviceURL + '/key/' + encodeURIComponent(name)).then(
+    public getByName(name: string): IPromise<TSApplicationProperty> {
+        return this.http.get(`${this.serviceURL}/key/${encodeURIComponent(name)}`).then(
             (response: any) => {
                 return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
-            }
+            },
         );
     }
 
-    isDevMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/devmode', {cache: true}).then((response) => {
+    public isDevMode(): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/public/devmode`, {cache: true}).then(response => {
             return response.data as boolean;
         });
     }
 
-    isDummyMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/dummy').then((response) => {
+    public isDummyMode(): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/public/dummy`).then(response => {
             return response.data as boolean;
         });
     }
 
-    getBackgroundColor(): IPromise<TSApplicationProperty> {
-        return this.http.get(this.serviceURL + '/public/background').then((response) => {
-            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty, response.data);
+    public getBackgroundColor(): IPromise<TSApplicationProperty> {
+        return this.http.get(`${this.serviceURL}/public/background`).then(response => {
+            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
         });
     }
 
-    create(name: string, value: string): IHttpPromise<any> {
-        return this.http.post(this.serviceURL + '/' + encodeURIComponent(name), value, {
+    public create(name: string, value: string): IHttpPromise<any> {
+        return this.http.post(`${this.serviceURL}/${encodeURIComponent(name)}`, value, {
             headers: {
-                'Content-Type': 'text/plain'
-            }
+                'Content-Type': 'text/plain',
+            },
         });
     }
 
-    update(name: string, value: string): IHttpPromise<any> {
-        return this.http.post(this.serviceURL + '/' + encodeURIComponent(name), value, {
-            headers: {
-                'Content-Type': 'text/plain'
-            }
-        });
+    public update(name: string, value: string): IHttpPromise<any> {
+        return this.create(name, value);
     }
 
-    remove(name: string): IHttpPromise<any> {
-        return this.http.delete(this.serviceURL + '/' + encodeURIComponent(name));
+    public remove(name: string): IHttpPromise<any> {
+        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(name)}`);
     }
 
-    getAllApplicationProperties(): IPromise<TSApplicationProperty[]> {
-        return this.http.get(this.serviceURL + '/').then(
-            (response: any) => this.ebeguRestUtil.parseApplicationProperties(response.data)
+    public getAllApplicationProperties(): IPromise<TSApplicationProperty[]> {
+        return this.http.get(`${this.serviceURL}/`).then(
+            (response: any) => this.ebeguRestUtil.parseApplicationProperties(response.data),
         );
     }
 
-    isZahlungenTestMode(): IPromise<boolean> {
-        return this.http.get(this.serviceURL + '/public/zahlungentestmode', {cache: true}).then((response) => {
+    public isZahlungenTestMode(): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/public/zahlungentestmode`, {cache: true}).then(response => {
             return response.data as boolean;
         });
     }
 }
-

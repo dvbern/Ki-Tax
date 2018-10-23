@@ -13,27 +13,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {EbeguWebCore} from '../../../app/core/core.angularjs.module';
+import {StateService} from '@uirouter/core';
+import {IQService, IScope} from 'angular';
+import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import TSGesuch from '../../../models/TSGesuch';
-import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import {FallCreationViewController} from './fallCreationView';
-import {StateService} from '@uirouter/core';
 
 describe('fallCreationView', () => {
 
     let fallCreationview: FallCreationViewController;
     let gesuchModelManager: GesuchModelManager;
     let $state: StateService;
-    let $q: angular.IQService;
-    let $rootScope: angular.IScope;
+    let $q: IQService;
+    let $rootScope: IScope;
     let form: any;
     let gesuch: TSGesuch;
 
-    beforeEach(angular.mock.module(EbeguWebCore.name));
+    beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
@@ -46,9 +46,16 @@ describe('fallCreationView', () => {
         form = {};
         form.$valid = true;
         form.$dirty = true;
-        fallCreationview = new FallCreationViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
-            $injector.get('ErrorService'), $injector.get('$stateParams'), $injector.get('WizardStepManager'),
-            $injector.get('$translate'), $q, $rootScope, $injector.get('AuthServiceRS'), $injector.get('GesuchsperiodeRS'),
+        fallCreationview = new FallCreationViewController(gesuchModelManager,
+            $injector.get('BerechnungsManager'),
+            $injector.get('ErrorService'),
+            $injector.get('$stateParams'),
+            $injector.get('WizardStepManager'),
+            $injector.get('$translate'),
+            $q,
+            $rootScope,
+            $injector.get('AuthServiceRS'),
+            $injector.get('GesuchsperiodeRS'),
             $injector.get('$timeout'));
         fallCreationview.form = form;
         spyOn(fallCreationview, 'isGesuchValid').and.callFake(() => form.$valid);
@@ -60,12 +67,13 @@ describe('fallCreationView', () => {
         it('submitted but rejected -> it does not go to the next step', () => {
             spyOn($state, 'go');
             const reject = $q.reject({}).catch(() => {
-                //need to catch rejected promise
+                // need to catch rejected promise
             });
             spyOn(gesuchModelManager, 'saveGesuchAndFall').and.returnValue(reject);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(new TSGesuch());
             fallCreationview.save();
             $rootScope.$apply();
+            // tslint:disable-next-line:no-unbound-method
             expect(gesuchModelManager.saveGesuchAndFall).toHaveBeenCalled();
             expect($state.go).not.toHaveBeenCalled();
         });
@@ -75,6 +83,7 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(new TSGesuch());
             fallCreationview.save();
             $rootScope.$apply();
+            // tslint:disable-next-line:no-unbound-method
             expect(gesuchModelManager.saveGesuchAndFall).toHaveBeenCalled();
         });
         it('should not submit the form and not go to the next page because form is invalid', () => {
@@ -82,6 +91,7 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'saveGesuchAndFall');
             form.$valid = false;
             fallCreationview.save();
+            // tslint:disable-next-line:no-unbound-method
             expect(gesuchModelManager.saveGesuchAndFall).not.toHaveBeenCalled();
         });
     });
@@ -90,19 +100,19 @@ describe('fallCreationView', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(false);
             expect(fallCreationview.getTitle()).toBe('Änderung Ihrer Daten');
         });
-        it('should return Ki-Tax – Erstgesuch der Periode', () => {
-            const gesuchsperiode: TSGesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
+        it('should return kiBon – Erstgesuch der Periode', () => {
+            const gesuchsperiode = TestDataUtil.createGesuchsperiode20162017();
             spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(true);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(fallCreationview.getTitle()).toBe('Ki-Tax – Erstgesuch der Periode 2016/17');
+            expect(fallCreationview.getTitle()).toBe('kiBon – Erstgesuch der Periode 2016/17');
         });
-        it('should return Ki-Tax – Erstgesuch', () => {
+        it('should return kiBon – Erstgesuch', () => {
             spyOn(gesuchModelManager, 'isGesuch').and.returnValue(true);
             spyOn(gesuchModelManager, 'isGesuchSaved').and.returnValue(false);
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-            expect(fallCreationview.getTitle()).toBe('Ki-Tax – Erstgesuch');
+            expect(fallCreationview.getTitle()).toBe('kiBon – Erstgesuch');
         });
     });
 });

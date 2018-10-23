@@ -19,11 +19,17 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class UploadRS {
 
-    static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q'];
-    serviceURL: string;
+    public static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q'];
+    public serviceURL: string;
 
-    constructor(public http: IHttpService, REST_API: string, public log: ILogService, private readonly upload: any, public ebeguRestUtil: EbeguRestUtil,
-                public q: IQService) {
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public log: ILogService,
+        private readonly upload: any,
+        public ebeguRestUtil: EbeguRestUtil,
+        public q: IQService,
+    ) {
         this.serviceURL = REST_API + 'upload';
     }
 
@@ -46,12 +52,12 @@ export class UploadRS {
             method: 'POST',
             headers: {
                 'x-filename': names.join(';'),
-                'x-gesuchID': gesuchID
+                'x-gesuchID': gesuchID,
             },
             data: {
                 file: files,
-                dokumentGrund: restDokumentString
-            }
+                dokumentGrund: restDokumentString,
+            },
         }).then((response: any) => {
             return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
         }, (response: any) => {
@@ -60,9 +66,9 @@ export class UploadRS {
         }, (evt: any) => {
             const loaded: number = evt.loaded;
             const total: number = evt.total;
-            const progressPercentage: number = 100.0 * loaded / total;
-            console.log('progress: ' + progressPercentage + '% ');
-            return this.q.defer().notify();
+            const progressPercentage = 100 * loaded / total;
+            console.log(`progress: ${progressPercentage}% `);
+            this.q.defer().notify();
         });
     }
 

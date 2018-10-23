@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 
-	private final Logger LOG = LoggerFactory.getLogger(WohnsitzAbschnittRule.class.getSimpleName());
+	private static final Logger LOG = LoggerFactory.getLogger(WohnsitzAbschnittRule.class);
 
 	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod) {
 		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, validityPeriod);
@@ -48,7 +48,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> analysedAbschnitte = new ArrayList<>();
 		Gesuch gesuch = betreuung.extractGesuch();
 		if (gesuch.getGesuchsteller1() != null) {

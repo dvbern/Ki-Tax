@@ -28,7 +28,7 @@ export default class TSWorkJob extends TSAbstractMutableEntity {
     private _requestURI: string;
     private _resultData: string;
     private _executionId: string;
-    private _execution:  TSBatchJobInformation;
+    private _execution: TSBatchJobInformation;
 
     public get workJobType(): string {
         return this._workJobType;
