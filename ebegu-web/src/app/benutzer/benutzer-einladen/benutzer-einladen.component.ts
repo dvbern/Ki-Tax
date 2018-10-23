@@ -52,6 +52,8 @@ export class BenutzerEinladenComponent {
         this.benutzer.username = this.benutzer.email;
         this.benutzer.mandant = this.authServiceRS.getPrincipal().mandant;
 
+        this.benutzer.berechtigungen.forEach(berechtigung => berechtigung.prepareForSave());
+
         this.benutzerRS.einladen(this.benutzer)
             .then(() => this.stateService.go('admin.benutzerlist'));
     }
