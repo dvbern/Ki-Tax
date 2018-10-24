@@ -1427,7 +1427,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		final JaxInstitutionStammdatenFerieninsel jaxInstStammdatenFerieninsel =
 			new JaxInstitutionStammdatenFerieninsel();
-		convertAbstractVorgaengerFieldsToJAX(persistedInstStammdatenFerieninsel, jaxInstStammdatenFerieninsel);
+		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenFerieninsel, jaxInstStammdatenFerieninsel);
 		jaxInstStammdatenFerieninsel.setAusweichstandortFruehlingsferien(persistedInstStammdatenFerieninsel.getAusweichstandortFruehlingsferien());
 		jaxInstStammdatenFerieninsel.setAusweichstandortHerbstferien(persistedInstStammdatenFerieninsel.getAusweichstandortHerbstferien());
 		jaxInstStammdatenFerieninsel.setAusweichstandortSommerferien(persistedInstStammdatenFerieninsel.getAusweichstandortSommerferien());
@@ -1444,7 +1444,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionStammdatenFerieninselJAXP);
 		requireNonNull(institutionStammdatenFerieninsel);
 
-		convertAbstractVorgaengerFieldsToEntity(
+		convertAbstractDateRangedFieldsToEntity(
 			institutionStammdatenFerieninselJAXP,
 			institutionStammdatenFerieninsel
 		);
@@ -1462,7 +1462,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		final JaxInstitutionStammdatenTagesschule jaxInstStammdatenTagesschule =
 			new JaxInstitutionStammdatenTagesschule();
-		convertAbstractVorgaengerFieldsToJAX(persistedInstStammdatenTagesschule, jaxInstStammdatenTagesschule);
+		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenTagesschule, jaxInstStammdatenTagesschule);
 		jaxInstStammdatenTagesschule.setModuleTagesschule(moduleTagesschuleListToJax(persistedInstStammdatenTagesschule.getModuleTagesschule()));
 
 		return jaxInstStammdatenTagesschule;
@@ -1476,7 +1476,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionStammdatenTagesschuleJAXP);
 		requireNonNull(institutionStammdatenTagesschule);
 
-		convertAbstractVorgaengerFieldsToEntity(
+		convertAbstractDateRangedFieldsToEntity(
 			institutionStammdatenTagesschuleJAXP,
 			institutionStammdatenTagesschule);
 

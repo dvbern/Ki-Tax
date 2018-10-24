@@ -1063,7 +1063,7 @@ export default class EbeguRestUtil {
         institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel,
     ): any {
         if (institutionStammdatenFerieninsel) {
-            this.abstractMutableEntityToRestObject(restInstitutionStammdatenFerieninsel,
+            this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenFerieninsel,
                 institutionStammdatenFerieninsel);
             restInstitutionStammdatenFerieninsel.ausweichstandortFruehlingsferien =
                 institutionStammdatenFerieninsel.ausweichstandortFruehlingsferien;
@@ -1083,7 +1083,7 @@ export default class EbeguRestUtil {
         institutionStammdatenFerieninselFromServer: any,
     ): TSInstitutionStammdatenFerieninsel {
         if (institutionStammdatenFerieninselFromServer) {
-            this.parseAbstractMutableEntity(institutionStammdatenFerieninselTS,
+            this.parseDateRangeEntity(institutionStammdatenFerieninselTS,
                 institutionStammdatenFerieninselFromServer);
             institutionStammdatenFerieninselTS.ausweichstandortFruehlingsferien =
                 institutionStammdatenFerieninselFromServer.ausweichstandortFruehlingsferien;
@@ -1103,7 +1103,7 @@ export default class EbeguRestUtil {
         institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule,
     ): any {
         if (institutionStammdatenTagesschule) {
-            this.abstractMutableEntityToRestObject(restInstitutionStammdatenTagesschule,
+            this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenTagesschule,
                 institutionStammdatenTagesschule);
             restInstitutionStammdatenTagesschule.moduleTagesschule =
                 this.moduleTagesschuleArrayToRestObject(institutionStammdatenTagesschule.moduleTagesschule);
@@ -1117,7 +1117,7 @@ export default class EbeguRestUtil {
         institutionStammdatenTagesschuleFromServer: any,
     ): TSInstitutionStammdatenTagesschule {
         if (institutionStammdatenTagesschuleFromServer) {
-            this.parseAbstractMutableEntity(institutionStammdatenTagesschuleTS,
+            this.parseDateRangeEntity(institutionStammdatenTagesschuleTS,
                 institutionStammdatenTagesschuleFromServer);
             institutionStammdatenTagesschuleTS.moduleTagesschule =
                 this.parseModuleTagesschuleArray(institutionStammdatenTagesschuleFromServer.moduleTagesschule);
