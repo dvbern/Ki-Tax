@@ -16,9 +16,10 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
+import {HttpClient} from '@angular/common/http';
 import * as moment from 'moment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
-import {catchError, switchMap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
@@ -32,13 +33,14 @@ import GlobalCacheService from './globalCacheService';
 
 export default class GemeindeRS implements IEntityRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', 'AuthServiceRS'];
+    public static $inject = ['$http', 'httpClient', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', 'AuthServiceRS'];
     public serviceURL: string;
 
     private readonly principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
 
     public constructor(
         public $http: IHttpService,
+        private httpClient: HttpClient,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
         private readonly $log: ILogService,
@@ -140,19 +142,27 @@ export default class GemeindeRS implements IEntityRS {
         });
     }
 
-    public postLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+    public postLogoImage(gemeindeId: string, fileToUpload: File): void {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
         formData.append('kat', fileToUpload, encodeURIComponent('logo'));
         return this.uploadLogo(gemeindeId, formData);
     }
 
-    private uploadLogo(gemeindeId: string, formData: FormData): IPromise<any> {
-        return this.$http.post(`${this.serviceURL}/logo/${encodeURIComponent(gemeindeId)}`, formData)
-            .then((response: any) => {
-                this.$log.debug('Upload Gemeinde Logo ', response.data);
-                return response.data;
-        });
+    private uploadLogo(gemeindeId: string, formData: FormData): void {
+        this.httpClient.post<any>(`${this.serviceURL}/logo/${encodeURIComponent(gemeindeId)}`, formData)
+            .subscribe(() => {});
+        // return this.httpClient.post<any>(`${this.serviceURL}/logo/${encodeURIComponent(gemeindeId)}`, formData).
+        // map((value: any) => {
+        //         return this.deserializeOrCreate(value, new TSDokumentKategorie());
+		//
+        //     }),
+        //     catchError(err => this.catchThrow('could not load files', err)),
+        // );
+        //     .then((response: any) => {
+        //         this.$log.debug('Upload Gemeinde Logo ', response.data);
+        //         return response.data;
+        // });
     }
 
 }
