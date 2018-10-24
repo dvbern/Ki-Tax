@@ -1,0 +1,149 @@
+/*
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+@import (reference) '../../../style/variables.less';
+@import (reference) '../../../style/mixins.less';
+
+/deep/ dv-accordion {
+    overflow: hidden;
+    dv-accordion-tab {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 2rem;
+        &.isSender {
+            margin-left: auto;
+        }
+        &.institution {
+            & > * {
+                color: @institution-color;
+            }
+        }
+
+        &.gesuchsteller {
+            & > * {
+                color: @contrast-darkest;
+            }
+        }
+
+        &.jugendamt {
+            & > * {
+                color: @primary;
+            }
+        }
+
+        &.schulamt {
+            & > * {
+                color: #4879b5;
+            }
+        }
+        .erledigt {
+            color: black;
+        }
+        .dv-accordion-tab-title {
+            &:focus {
+                outline: 2px solid @contrast-darkest;
+            }
+            opacity: 1;
+            padding: 0 2rem 0;
+            width: 100%;
+            min-height: 4rem;
+            height: auto;
+            background: @contrast-lightest;
+            letter-spacing: 0.15rem;
+            margin: 0;
+            transition: all 0.5s ease;
+            & > * {
+                display: flex;
+                flex-direction: row;
+            }
+            &.message-header {
+                flex: 1;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .fa.fa-angle-right {
+                margin-right: 1rem;
+                margin-top: 1rem;
+                font-size: 2rem;
+                font-weight: bold;
+                transition: all 0.5s ease;
+            }
+            &:after {
+                content: "";
+                display: block;
+                width: 0;
+                height: 0;
+                background: 0;
+                margin: 0 auto 0;
+                border-bottom: 1px solid @contrast;
+                transition: all 0.5s ease;
+            }
+            &.tab-open {
+                .fa.fa-angle-right {
+                    transform: rotate(90deg);
+                }
+            }
+        }
+        .dv-accordion-tab-content {
+            .ebeguP();
+            color: @contrast-darkest;
+            overflow: hidden;
+            overflow-y: auto;
+            opacity: 1;
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 60rem;
+            background: @contrast-lightest;
+            padding: 0 2rem 0;
+            & > tab-body > * {
+                margin: 2rem 0 3rem;
+            }
+            .message {
+                display: flex;
+                flex-direction: column;
+                .betreuung {
+                    color: @institution-color;
+                    margin-bottom: 2rem;
+                    text-decoration: underline;
+                }
+            }
+            &.ng-hide-add {
+                overflow: hidden;
+                max-height: 60rem;
+                transition: all 0.5s ease;
+            }
+            &.ng-hide-add.ng-hide-add-active {
+                overflow: hidden;
+                max-height: 0;
+            }
+            &.ng-hide-remove {
+                overflow: hidden;
+                transition: all 1s ease;
+                max-height: 0;
+            }
+            &.ng-hide-remove.ng-hide-remove-active {
+                overflow: hidden;
+                max-height: 60rem;
+            }
+        }
+    }
+}

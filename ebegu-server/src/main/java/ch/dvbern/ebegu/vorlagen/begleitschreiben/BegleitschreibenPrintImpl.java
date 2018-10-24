@@ -52,13 +52,6 @@ public class BegleitschreibenPrintImpl extends BriefPrintImpl implements Begleit
 				&& betreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG)
 			.map(betreuung -> new AufzaehlungPrintImpl(ServerMessageUtil.getMessage("BegleitschreibenPrintImpl_VERFUEGUNG") + ' ' + betreuung.getBGNummer()))
 			.collect(Collectors.toList()));
-
-		beilagen.addAll(betreuungen.stream()
-			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isAngebotJugendamtSchulkind()
-				&& betreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG)
-			.map(betreuung -> new AufzaehlungPrintImpl(ServerMessageUtil.getMessage("BegleitschreibenPrintImpl_MITTEILUNG") + ' ' + betreuung.getBGNummer()))
-			.collect(Collectors.toList()));
-
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class TestdataSetupConfig {
 	private Gemeinde gemeinde;
 	private InstitutionStammdaten kitaBruennen;
 	private InstitutionStammdaten kitaWeissenstein;
-	private InstitutionStammdaten tagiWeissenstein;
+	private InstitutionStammdaten kita2Weissenstein;
 	private InstitutionStammdaten tagesschuleBruennen;
 	private InstitutionStammdaten ferieninselBruennen;
 
@@ -38,30 +38,40 @@ public class TestdataSetupConfig {
 	private TestdataSetupConfig() {
 	}
 
-	public TestdataSetupConfig(Mandant mandant, InstitutionStammdaten kitaBruennen, InstitutionStammdaten kitaWeissenstein,
-			InstitutionStammdaten tagiWeissenstein) {
+	public TestdataSetupConfig(
+		Mandant mandant, InstitutionStammdaten kitaBruennen, InstitutionStammdaten kitaWeissenstein,
+		InstitutionStammdaten kita2Weissenstein) {
 		this.mandant = mandant;
 		this.kitaBruennen = kitaBruennen;
 		this.kitaWeissenstein = kitaWeissenstein;
-		this.tagiWeissenstein = tagiWeissenstein;
+		this.kita2Weissenstein = kita2Weissenstein;
 	}
 
-	public TestdataSetupConfig(Mandant mandant, InstitutionStammdaten kitaBruennen, InstitutionStammdaten kitaWeissenstein,
-			InstitutionStammdaten tagiWeissenstein, Gesuchsperiode gesuchsperiode) {
+	public TestdataSetupConfig(
+		Mandant mandant,
+		InstitutionStammdaten kitaBruennen,
+		InstitutionStammdaten kitaWeissenstein,
+		InstitutionStammdaten kita2Weissenstein, Gesuchsperiode gesuchsperiode) {
 		this.mandant = mandant;
 		this.kitaBruennen = kitaBruennen;
 		this.kitaWeissenstein = kitaWeissenstein;
-		this.tagiWeissenstein = tagiWeissenstein;
+		this.kita2Weissenstein = kita2Weissenstein;
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
-	public TestdataSetupConfig(Mandant mandant, InstitutionStammdaten kitaBruennen, InstitutionStammdaten kitaWeissenstein,
-		InstitutionStammdaten tagiWeissenstein, InstitutionStammdaten tagesschuleBruennen, InstitutionStammdaten ferieninselBruennen,
+	public TestdataSetupConfig(
+		Mandant mandant,
+		InstitutionStammdaten kitaBruennen,
+		InstitutionStammdaten kitaWeissenstein,
+		InstitutionStammdaten kita2Weissenstein,
+		InstitutionStammdaten tagesschuleBruennen,
+		InstitutionStammdaten ferieninselBruennen,
 		Gesuchsperiode gesuchsperiode) {
+
 		this.mandant = mandant;
 		this.kitaBruennen = kitaBruennen;
 		this.kitaWeissenstein = kitaWeissenstein;
-		this.tagiWeissenstein = tagiWeissenstein;
+		this.kita2Weissenstein = kita2Weissenstein;
 		this.tagesschuleBruennen = tagesschuleBruennen;
 		this.ferieninselBruennen = ferieninselBruennen;
 		this.gesuchsperiode = gesuchsperiode;
@@ -91,12 +101,12 @@ public class TestdataSetupConfig {
 		this.kitaWeissenstein = kitaWeissenstein;
 	}
 
-	public InstitutionStammdaten getTagiWeissenstein() {
-		return tagiWeissenstein;
+	public InstitutionStammdaten getKita2Weissenstein() {
+		return kita2Weissenstein;
 	}
 
-	public void setTagiWeissenstein(InstitutionStammdaten tagiWeissenstein) {
-		this.tagiWeissenstein = tagiWeissenstein;
+	public void setKita2Weissenstein(InstitutionStammdaten kita2Weissenstein) {
+		this.kita2Weissenstein = kita2Weissenstein;
 	}
 
 	public Gesuchsperiode getGesuchsperiode() {

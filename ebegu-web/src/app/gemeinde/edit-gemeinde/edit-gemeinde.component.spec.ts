@@ -28,6 +28,7 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 import {EditGemeindeComponent} from './edit-gemeinde.component';
 
@@ -43,7 +44,7 @@ describe('EditGemeindeComponent', () => {
     const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
     const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
         ['getAllGesuchsperioden']);
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
 
     beforeEach(async(() => {
@@ -52,6 +53,7 @@ describe('EditGemeindeComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
+                MaterialModule,
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
@@ -71,6 +73,7 @@ describe('EditGemeindeComponent', () => {
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
             [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
         transitionSpy.params.and.returnValue({});
+        transitionSpy.from.and.returnValue({});
         gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
     }));
 

@@ -19,6 +19,7 @@ import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddGemeindeComponent} from '../add-gemeinde/add-gemeinde.component';
 import {EditGemeindeComponent} from '../edit-gemeinde/edit-gemeinde.component';

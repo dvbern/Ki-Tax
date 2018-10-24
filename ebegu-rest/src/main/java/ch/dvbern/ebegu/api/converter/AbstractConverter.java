@@ -25,14 +25,18 @@ import javax.enterprise.context.RequestScoped;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractPensumDTO;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractIntegerPensumDTO;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractPersonDTO;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractIntegerPensum;
 import ch.dvbern.ebegu.entities.AbstractMutableEntity;
-import ch.dvbern.ebegu.entities.AbstractPensumEntity;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
@@ -183,16 +187,56 @@ public class AbstractConverter {
 	}
 
 	protected void convertAbstractPensumFieldsToEntity(
-		final JaxAbstractPensumDTO jaxPensum,
-		final AbstractPensumEntity pensumEntity) {
+		final JaxAbstractIntegerPensumDTO jaxPensum,
+		final AbstractIntegerPensum pensumEntity) {
+
+		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
+		pensumEntity.setPensum(jaxPensum.getPensum());
+	}
+
+	protected void convertAbstractPensumFieldsToEntity(
+		JaxBetreuungspensum jaxPensum,
+		Betreuungspensum pensumEntity) {
+
+		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
+		pensumEntity.setPensum(jaxPensum.getPensum());
+	}
+
+	protected void convertAbstractPensumFieldsToEntity(
+		JaxBetreuungsmitteilungPensum jaxPensum,
+		BetreuungsmitteilungPensum pensumEntity) {
 
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setPensum(jaxPensum.getPensum());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
-		final AbstractPensumEntity pensum,
-		final JaxAbstractPensumDTO jaxPensum) {
+		final AbstractIntegerPensum pensum,
+		final JaxAbstractIntegerPensumDTO jaxPensum) {
+
+		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
+		jaxPensum.setPensum(pensum.getPensum());
+	}
+
+	protected void convertAbstractPensumFieldsToJAX(
+		final BetreuungsmitteilungPensum pensum,
+		final JaxBetreuungspensum jaxPensum) {
+
+		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
+		jaxPensum.setPensum(pensum.getPensum());
+	}
+
+	protected void convertAbstractPensumFieldsToJAX(
+		BetreuungsmitteilungPensum pensum,
+		JaxBetreuungsmitteilungPensum jaxPensum) {
+
+		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
+		jaxPensum.setPensum(pensum.getPensum());
+	}
+
+	protected void convertAbstractPensumFieldsToJAX(
+		Betreuungspensum pensum,
+		JaxBetreuungspensum jaxPensum) {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setPensum(pensum.getPensum());

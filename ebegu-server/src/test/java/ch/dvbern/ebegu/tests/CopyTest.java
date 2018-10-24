@@ -59,7 +59,7 @@ public class CopyTest {
 		Collection<InstitutionStammdaten> instStammdaten = new ArrayList<>();
 		instStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		instStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		instStammdaten.add(TestDataUtil.createInstitutionStammdatenTagiWeissenstein());
+		instStammdaten.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
 		Testfall01_WaeltiDagmar testfall01_waeltiDagmar = new Testfall01_WaeltiDagmar(gesuchsperiode, instStammdaten);
 		testfall01_waeltiDagmar.createGesuch(LocalDate.now());

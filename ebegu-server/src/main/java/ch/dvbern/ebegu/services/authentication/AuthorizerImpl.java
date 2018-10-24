@@ -122,6 +122,31 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
+
+	@Override
+	public void checkReadAuthorization(@Nullable Gemeinde gemeinde) {
+		if (gemeinde != null) {
+			boolean allGemeindenAllowed = principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
+				principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR);
+			if (!allGemeindenAllowed && !allowedForGemeinde) {
+				throwViolation(gemeinde);
+			}
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorization(@Nullable Gemeinde gemeinde) {
+		if (gemeinde != null) {
+			boolean allGemeindenAllowed = principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
+				principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE);
+			if (!allGemeindenAllowed && !allowedForGemeinde) {
+				throwViolation(gemeinde);
+			}
+		}
+	}
+
 	@Override
 	public void checkReadAuthorizationGesuchId(@Nullable String gesuchId) {
 		if (gesuchId != null) {
@@ -450,6 +475,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		if (principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)) {
 			return benutzer.getRole().isRoleMandant()
+				|| benutzer.getRole().isRoleAnyAdminGemeinde()
 				|| benutzer.getRole().isRoleGemeinde()
 				|| benutzer.getRole().isRoleAdminTraegerschaftInstitution();
 		}

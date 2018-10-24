@@ -18,8 +18,8 @@ import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRole} from '../../models/enums/TSRole';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
-import {OnboardingGsAbschliessenComponent} from './dv-onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
-import {OnboardingComponent} from './dv-onboarding/onboarding.component';
+import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
+import {OnboardingComponent} from './onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
 

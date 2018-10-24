@@ -139,11 +139,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private BigDecimal monatlicheBetreuungskosten = BigDecimal.ZERO;
 
-	@Max(100)
 	@Min(0)
 	@NotNull
 	@Column(nullable = false)
-	private int betreuungspensum;
+	private BigDecimal betreuungspensum = BigDecimal.ZERO;
 
 	@Max(100)
 	@Min(0)
@@ -295,11 +294,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zuschlagErwerbspensumGS2 = zuschlagErwerbspensumGS2;
 	}
 
-	public int getBetreuungspensum() {
+	public BigDecimal getBetreuungspensum() {
 		return betreuungspensum;
 	}
 
-	public void setBetreuungspensum(int betreuungspensum) {
+	public void setBetreuungspensum(BigDecimal betreuungspensum) {
 		this.betreuungspensum = betreuungspensum;
 	}
 
@@ -563,7 +562,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@SuppressWarnings({"AccessingNonPublicFieldOfAnotherObject", "PMD.NcssMethodCount"})
 	public void add(VerfuegungZeitabschnitt other) {
-		this.setBetreuungspensum(this.getBetreuungspensum() + other.getBetreuungspensum());
+		this.setBetreuungspensum(this.getBetreuungspensum().add(other.getBetreuungspensum()));
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
 		this.setAnspruchspensumRest(this.getAnspruchspensumRest() + other.getAnspruchspensumRest());
 		this.setAnspruchberechtigtesPensum(this.getAnspruchberechtigtesPensum() + other.getAnspruchberechtigtesPensum());
@@ -714,14 +713,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 * Ein Kind mit einem Betreuungspensum von 40% und einem anspruchsberechtigten Pensum von 60% hat ein BG-Pensum von 40%.
 	 */
 	@Transient
-	public int getBgPensum() {
-		return Math.min(getBetreuungspensum(), getAnspruchberechtigtesPensum());
+	public BigDecimal getBgPensum() {
+		return getBetreuungspensum().min(BigDecimal.valueOf(getAnspruchberechtigtesPensum()));
 	}
 
 	@Override
 	public String toString() {
 		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - " + Constants.DATE_FORMATTER.format(getGueltigkeit()
 			.getGueltigBis()) + "] "
+			+ " Status: " + zahlungsstatus + '\t'
 			+ " EP GS1: " + erwerbspensumGS1 + '\t'
 			+ " EP GS2: " + erwerbspensumGS2 + '\t'
 			+ " EP-Zuschlag GS1: " + zuschlagErwerbspensumGS1 + '\t'

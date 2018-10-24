@@ -203,7 +203,7 @@ public class GemeindeResource {
 			stammdatenFromDB = initGemeindeStammdaten(gemeindeId);
 		}
 		return stammdatenFromDB
-			.map(stammdaten -> converter.gemeindeStammdatenToJAX(stammdaten))
+			.map(stammdaten -> gemeindeConverter.gemeindeStammdatenToJAX(stammdaten))
 			.orElse(null);
 	}
 
@@ -245,16 +245,16 @@ public class GemeindeResource {
 		if (stammdaten.isNew()) {
 			stammdaten.setAdresse(new Adresse());
 		}
-		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
+		GemeindeStammdaten convertedStammdaten = gemeindeConverter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
 
 		// Statuswechsel
-		if (stammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
-			stammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
+		if (convertedStammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
+			convertedStammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
 		}
 
 		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
 
-		return converter.gemeindeStammdatenToJAX(persistedStammdaten);
+		return gemeindeConverter.gemeindeStammdatenToJAX(persistedStammdaten);
 
 	}
 

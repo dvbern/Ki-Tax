@@ -15,6 +15,7 @@
 
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
+import * as moment from 'moment';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {TSGemeindeStatus} from '../../models/enums/TSGemeindeStatus';
 import {TSRole} from '../../models/enums/TSRole';
@@ -140,6 +141,7 @@ export class LocalLoginComponent {
         bern.gemeindeNummer = 1;
         bern.bfsNummer = LocalLoginComponent.BFS_BERN;
         bern.status = TSGemeindeStatus.AKTIV;
+        bern.betreuungsgutscheineStartdatum = moment('01.01.2016', 'DD.MM.YYYY');
         return bern;
     }
 
@@ -153,6 +155,7 @@ export class LocalLoginComponent {
         ostermundigen.gemeindeNummer = 2;
         ostermundigen.bfsNummer = LocalLoginComponent.BFS_OSTERMUNDIGEN;
         ostermundigen.status = TSGemeindeStatus.AKTIV;
+        ostermundigen.betreuungsgutscheineStartdatum = moment('01.01.2016', 'DD.MM.YYYY');
         return ostermundigen;
     }
 
@@ -161,8 +164,8 @@ export class LocalLoginComponent {
      */
     private static getTraegerschaftStadtBern(): TSTraegerschaft {
         const traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'Kitas & Tagis Stadt Bern';
-        traegerschaft.mail = 'kitasundtagis@example.com';
+        traegerschaft.name = 'Kitas Stadt Bern';
+        traegerschaft.mail = 'kitasbaern@example.com';
         traegerschaft.id = 'f9ddee82-81a1-4cda-b273-fb24e9299308';
         return traegerschaft;
     }

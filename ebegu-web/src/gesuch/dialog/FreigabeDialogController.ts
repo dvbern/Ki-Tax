@@ -24,6 +24,8 @@ export class FreigabeDialogController {
 
     public deleteText: string;
     public title: string;
+    public cancelText: string;
+    public confirmText: string;
 
     public constructor(
         private readonly $mdDialog: IDialogService,
@@ -32,6 +34,8 @@ export class FreigabeDialogController {
     ) {
         this.title = $translate.instant('CONFIRM_GESUCH_FREIGEBEN');
         this.deleteText = $translate.instant('CONFIRM_GESUCH_FREIGEBEN_DESCRIPTION');
+        this.cancelText = $translate.instant('LABEL_NEIN');
+        this.confirmText = $translate.instant('LABEL_JA');
     }
 
     public hide(): IPromise<any> {

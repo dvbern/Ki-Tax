@@ -325,7 +325,6 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 				assertNotNull(row.getTraegerschaft());
 				assertNotNull(row.getInstitution());
 				assertTrue(row.isKita());
-				assertTrue(row.isTagi());
 				assertFalse(row.isTagesfamilien());
 				assertFalse(row.isTagesschule());
 				assertFalse(row.isFerieninsel());

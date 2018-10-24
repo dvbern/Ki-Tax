@@ -36,8 +36,7 @@ public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(
-		@Nonnull Betreuung betreuung,
-		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		@Nonnull Betreuung betreuung) {
 
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 

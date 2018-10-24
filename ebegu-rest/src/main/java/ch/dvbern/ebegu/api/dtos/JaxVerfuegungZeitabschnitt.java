@@ -48,10 +48,9 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private Integer erwerbspensumGS2;
 
-	@Max(100)
 	@Min(0)
 	@NotNull
-	private int betreuungspensum;
+	private BigDecimal betreuungspensum;
 
 	@Max(100)
 	@Min(0)
@@ -70,7 +69,7 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private boolean zuSpaetEingereicht;
 
-	private int bgPensum; //min von anspruchberechtigtesPensum und betreuungspensum
+	private BigDecimal bgPensum; //min von anspruchberechtigtesPensum und betreuungspensum
 
 	private Integer einkommensjahr;
 
@@ -118,11 +117,11 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.erwerbspensumGS2 = erwerbspensumGS2;
 	}
 
-	public int getBetreuungspensum() {
+	public BigDecimal getBetreuungspensum() {
 		return betreuungspensum;
 	}
 
-	public void setBetreuungspensum(int betreuungspensum) {
+	public void setBetreuungspensum(BigDecimal betreuungspensum) {
 		this.betreuungspensum = betreuungspensum;
 	}
 
@@ -255,11 +254,11 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 		this.zuSpaetEingereicht = zuSpaetEingereicht;
 	}
 
-	public int getBgPensum() {
+	public BigDecimal getBgPensum() {
 		return bgPensum;
 	}
 
-	public void setBgPensum(int bgPensum) {
+	public void setBgPensum(BigDecimal bgPensum) {
 		this.bgPensum = bgPensum;
 	}
 

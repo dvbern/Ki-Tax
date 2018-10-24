@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Arrays;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,7 +30,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -41,7 +41,7 @@ import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static ch.dvbern.ebegu.util.Constants.TEN_MEG;
+import static ch.dvbern.ebegu.util.Constants.ONE_MEG;
 
 @Audited
 @Entity
@@ -49,14 +49,15 @@ import static ch.dvbern.ebegu.util.Constants.TEN_MEG;
 public class GemeindeStammdaten extends AbstractEntity {
 
 	private static final long serialVersionUID = -6627279554105679587L;
+	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzerbg_id"), nullable = true)
 	private Benutzer defaultBenutzerBG;
 
 	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_defaultbenutzerts_id"), nullable = true)
 	private Benutzer defaultBenutzerTS;
 
@@ -71,13 +72,9 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private Adresse adresse;
 
 	@Nullable
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = false)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeindestammdaten_beschwerdeadresse_id"), nullable = true)
 	private Adresse beschwerdeAdresse;
-
-	@NotNull
-	@Column(nullable = false)
-	private boolean keineBeschwerdeAdresse = true;
 
 	@NotNull
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
@@ -101,7 +98,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
 
 	@Nullable
-	@Column(nullable = false, length = TEN_MEG) //10 megabytes
+	@Column(nullable = true, length = ONE_MEG) // 1 megabytes
 	@Lob
 	private byte[] logoContent;
 
@@ -132,11 +129,12 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.gemeinde = gemeinde;
 	}
 
+	@Nonnull
 	public Adresse getAdresse() {
 		return adresse;
 	}
 
-	public void setAdresse(Adresse adresse) {
+	public void setAdresse(@Nonnull Adresse adresse) {
 		this.adresse = adresse;
 	}
 
@@ -147,14 +145,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setBeschwerdeAdresse(@Nullable Adresse beschwerdeAdresse) {
 		this.beschwerdeAdresse = beschwerdeAdresse;
-	}
-
-	public boolean isKeineBeschwerdeAdresse() {
-		return keineBeschwerdeAdresse;
-	}
-
-	public void setKeineBeschwerdeAdresse(boolean keineBeschwerdeAdresse) {
-		this.keineBeschwerdeAdresse = keineBeschwerdeAdresse;
 	}
 
 	public String getMail() {
@@ -183,26 +173,26 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.webseite = webseite;
 	}
 
+	@Nonnull
 	public KorrespondenzSpracheTyp getKorrespondenzsprache() {
 		return korrespondenzsprache;
 	}
 
-	public void setKorrespondenzsprache(KorrespondenzSpracheTyp korrespondenzsprache) {
+	public void setKorrespondenzsprache(@Nonnull KorrespondenzSpracheTyp korrespondenzsprache) {
 		this.korrespondenzsprache = korrespondenzsprache;
 	}
 
 	@Nullable
 	public byte[] getLogoContent() {
-		if (this.logoContent == null) {
-			return new byte[0];
-		} else {
-			return this.logoContent;
+		if (logoContent == null) {
+			return EMPTY_BYTE_ARRAY;
 		}
+		return Arrays.copyOf(logoContent, logoContent.length);
 	}
 
 	public void setLogoContent(@Nullable byte[] logoContent) {
 		if (logoContent == null) {
-			this.logoContent = new byte[0];
+			this.logoContent = null;
 		} else {
 			this.logoContent = Arrays.copyOf(logoContent, logoContent.length);
 		}

@@ -16,10 +16,11 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
+
 <form role="form"
       #form="ngForm"
       [ngClass]="{'ng-submitted': form.submitted}"
-      *ngIf="stammdaten"
+      *ngIf="stammdaten$ | async as stammdaten"
       (ngSubmit)="editGemeindeStammdaten()"
       novalidate>
 
@@ -93,13 +94,13 @@
                         </div>
                     </div>
                     <!-- Beschwerdeadresse -->
-                    <div *ngIf="stammdaten.keineBeschwerdeAdresse" class="col-sm-6">
+                    <div *ngIf="keineBeschwerdeAdresse" class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>BESCHWERDE_ADRESSE</h3>
                             <p translate>BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT</p>
                         </div>
                     </div>
-                    <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="col-sm-6">
+                    <div *ngIf="!keineBeschwerdeAdresse" class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>BESCHWERDE_ADRESSE</h3>
                             <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
@@ -127,49 +128,27 @@
 
                 <div class="row">
                     <div class="dv-footer">
-                        <dv-loading-button [type]="'submit'">
+                        <dv-loading-button *ngIf="isStammdatenEditable()"
+                                           [type]="'submit'">
                             <span translate>STAMMDATEN_EDIT</span>
                         </dv-loading-button>
+                        <button type="button" class="dv-btn cancel-button"
+                                (click)="cancel()"
+                                [textContent]="'CANCEL' | translate">
+                        </button>
                     </div>
                 </div>
 
             </fieldset>
-
-            <dv-accordion>
-                <dv-accordion-tab>
-                    <tab-title>Hallo Velo</tab-title>
-                    <tab-body>Body</tab-body>
-                </dv-accordion-tab>
-
-                <dv-accordion-tab>
-                    <tab-title>Hallo Velo 2</tab-title>
-                    <tab-body>Body 2</tab-body>
-                </dv-accordion-tab>
-            </dv-accordion>
 
             <fieldset>
-                <div class="viewTitle">
-                    <h3 translate>BEGU_KONFIGURATION</h3>
-                    <hr class="header">
-                </div>
-                <div class="row">
-                    <!-- Betreuungsgutscheine anbieten ab -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>BEGU_START</h3>
-                            <p>{{beguStart}}</p>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>GEMEINDE_REGELN</h3>
-                            <label translate>BEGU_KITAS_BIS_UND_MIT</label>
-                            <p>{{stammdaten.beguBisUndMitSchulstufe}}</p>
-                            <p>{{kontinggentierung}}</p>
-                        </div>
-                    </div>
-                </div>
+                <dv-gemeinde-konfiguration
+                    [konfigurationsListe]="stammdaten.konfigurationsListe"
+                    [gemeindeStatus]="stammdaten.gemeinde.status"
+                    [beguStartDate]="stammdaten.gemeinde.betreuungsgutscheineStartdatum">
+                </dv-gemeinde-konfiguration>
             </fieldset>
+
         </div>
     </dv-full-height-container>
 </form>

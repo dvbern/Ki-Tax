@@ -19,11 +19,11 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
@@ -35,12 +35,10 @@ import ErrorService from '../../core/errors/service/ErrorService';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditGemeindeComponent implements OnInit {
-
     @ViewChild(NgForm) public form: NgForm;
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
-    public beguStart: string;
-    public einschulungTypValues: Array<TSEinschulungTyp>;
+    public keineBeschwerdeAdresse: boolean;
     public logoImageUrl: string = '#';
     private fileToUpload!: File;
     private navigationSource: StateDeclaration;
@@ -49,6 +47,7 @@ export class EditGemeindeComponent implements OnInit {
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
+        private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
     ) {
@@ -62,20 +61,18 @@ export class EditGemeindeComponent implements OnInit {
         }
         // TODO: Task KIBON-217: Load from DB
         this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
-        this.einschulungTypValues = getTSEinschulungTypValues();
 
         this.stammdaten$ = from(
-        this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(resStamm => {
-            // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
-            if (resStamm.adresse === undefined) {
-                resStamm.adresse = new TSAdresse();
-            }
-            if (resStamm.beschwerdeAdresse === undefined) {
-                resStamm.beschwerdeAdresse = new TSAdresse();
-            }
-            this.beguStart = resStamm.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
-            return resStamm;
-        }));
+            this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
+                this.keineBeschwerdeAdresse = stammdaten.beschwerdeAdresse ? false : true;
+                if (stammdaten.adresse === undefined) {
+                    stammdaten.adresse = new TSAdresse();
+                }
+                if (stammdaten.beschwerdeAdresse === undefined) {
+                    stammdaten.beschwerdeAdresse = new TSAdresse();
+                }
+                return stammdaten;
+            }));
     }
 
     public cancel(): void {
@@ -87,7 +84,7 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        if (stammdaten.keineBeschwerdeAdresse) {
+        if (this.keineBeschwerdeAdresse) {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
         }
