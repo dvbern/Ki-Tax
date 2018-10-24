@@ -97,9 +97,11 @@ public class LoginProviderInfoRestService {
 	 * erstellt einen neuen ResteasyClient
 	 */
 	private ResteasyClient buildClient() {
-		ResteasyClientBuilder builder = new ResteasyClientBuilder().establishConnectionTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS);
+		ResteasyClientBuilder builder = new ResteasyClientBuilder()
+			.connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS);
 
-		if (configuration.getIsDevmode() || LOG.isDebugEnabled()) { //wenn debug oder dev mode dann loggen wir den request
+		if (configuration.getIsDevmode() || LOG.isDebugEnabled()) {
+			// wenn debug oder dev mode dann loggen wir den request
 			builder.register(new ClientRequestLogger());
 			builder.register(new ClientResponseLogger());
 		}

@@ -73,33 +73,6 @@ public class RestanspruchLimitRuleTest {
 	}
 
 	@Test
-	public void testRestanspruchNoChangeForTagi() {
-
-		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList =
-			initZeitabschnitteForSecondBetreuung(100, -1, 30, BetreuungsangebotTyp.TAGI);
-
-		Assert.assertNotNull(restansprchZeitabschnittList);
-		Assert.assertEquals(1, restansprchZeitabschnittList.size());
-		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
-		Assert.assertEquals(-1, nextInitialabschnitt.getAnspruchspensumRest());
-
-	}
-
-	@Test
-	public void testRestanspruchNoChangeForTagiIfAlreadyPresent() {
-
-		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList =
-			initZeitabschnitteForSecondBetreuung(100, 50, 30, BetreuungsangebotTyp.TAGI);
-
-		Assert.assertNotNull(restansprchZeitabschnittList);
-		Assert.assertEquals(1, restansprchZeitabschnittList.size());
-		VerfuegungZeitabschnitt nextInitialabschnitt = restansprchZeitabschnittList.get(0);
-		//hat in der "1." betreuung von seinen 100 prozent anspruch 50 verbraucht, die 30% tagibetrauung aendern den restanspruch aber nicht
-		Assert.assertEquals(50, nextInitialabschnitt.getAnspruchspensumRest());
-
-	}
-
-	@Test
 	public void testRestansprucAlreadyZero() {
 
 		List<VerfuegungZeitabschnitt> restansprchZeitabschnittList =

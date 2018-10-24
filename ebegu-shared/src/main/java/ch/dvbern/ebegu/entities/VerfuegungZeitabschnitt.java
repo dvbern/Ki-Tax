@@ -721,6 +721,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public String toString() {
 		String sb = '[' + Constants.DATE_FORMATTER.format(getGueltigkeit().getGueltigAb()) + " - " + Constants.DATE_FORMATTER.format(getGueltigkeit()
 			.getGueltigBis()) + "] "
+			+ " Status: " + zahlungsstatus + '\t'
 			+ " EP GS1: " + erwerbspensumGS1 + '\t'
 			+ " EP GS2: " + erwerbspensumGS2 + '\t'
 			+ " EP-Zuschlag GS1: " + zuschlagErwerbspensumGS1 + '\t'

@@ -21,6 +21,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import TSDossier from '../../../models/TSDossier';
 import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSGesuch from '../../../models/TSGesuch';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
@@ -42,6 +43,7 @@ describe('freigabeView', () => {
     let applicationPropertyRS: any;
     let authServiceRS: AuthServiceRS;
     let $timeout: ITimeoutService;
+    let dossier: TSDossier;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -65,12 +67,17 @@ describe('freigabeView', () => {
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
         spyOn(wizardStepManager, 'updateCurrentWizardStepStatus').and.returnValue({});
 
+        dossier = TestDataUtil.createDossier('', undefined);
+        dossier.gemeinde = TestDataUtil.createGemeindeBern();
+        spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
+
         controller = new FreigabeViewController(gesuchModelManager, $injector.get('BerechnungsManager'),
             wizardStepManager, dialog, downloadRS, $scope, applicationPropertyRS, authServiceRS, $timeout);
+
+        expect(controller.gemeindeName).toBe(dossier.extractGemeindeName());
+
         controller.form = {} as any;
-
         spyOn(controller, 'isGesuchValid').and.callFake(() => controller.form.$valid);
-
         controller.form = TestDataUtil.createDummyForm();
     }));
     describe('canBeFreigegeben', () => {

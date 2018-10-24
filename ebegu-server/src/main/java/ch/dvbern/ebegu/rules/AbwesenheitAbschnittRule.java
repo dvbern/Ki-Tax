@@ -28,7 +28,8 @@ import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.Constants;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Regel für Abwesenheiten. Sie beachtet:
@@ -40,8 +41,11 @@ import ch.dvbern.ebegu.util.Constants;
  */
 public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 
-	public AbwesenheitAbschnittRule(@Nonnull DateRange validityPeriod) {
+	private final Integer abwesenheitDaysLimit;
+
+	public AbwesenheitAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Integer abwesenheitDaysLimit) {
 		super(RuleKey.ABWESENHEIT, RuleType.GRUNDREGEL_DATA, validityPeriod);
+		this.abwesenheitDaysLimit = abwesenheitDaysLimit;
 	}
 
 	/**
@@ -52,9 +56,9 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 	 */
 	@Nonnull
 	@Override
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> resultlist = new ArrayList<>();
-		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
+		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
 
 			final List<AbwesenheitContainer> sortedAbwesenheiten = betreuung.getAbwesenheitContainers().stream().sorted().collect(Collectors.toList());
 			for (final AbwesenheitContainer abwesenheit : sortedAbwesenheiten) {
@@ -83,7 +87,7 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 
 	@NotNull
 	private LocalDate calculateStartVolltarif(@Nonnull Abwesenheit abwesenheit) {
-		return abwesenheit.getGueltigkeit().getGueltigAb().plusDays(Constants.ABWESENHEIT_DAYS_LIMIT);
+		return abwesenheit.getGueltigkeit().getGueltigAb().plusDays(abwesenheitDaysLimit);
 	}
 
 	/**
@@ -92,6 +96,6 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 	@SuppressWarnings("BooleanMethodNameMustStartWithQuestion")
 	@NotNull
 	private boolean exceedsAbwesenheitTimeLimit(@Nonnull Abwesenheit abwesenheit) {
-		return (abwesenheit.getGueltigkeit().getDays()) > Constants.ABWESENHEIT_DAYS_LIMIT;
+		return (abwesenheit.getGueltigkeit().getDays()) > abwesenheitDaysLimit;
 	}
 }

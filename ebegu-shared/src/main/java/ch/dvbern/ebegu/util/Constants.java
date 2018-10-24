@@ -37,8 +37,6 @@ public final class Constants {
 
 	public static final int LOGIN_TIMEOUT_SECONDS = 60 * 60; //aktuell 1h
 
-	public static final int ABWESENHEIT_DAYS_LIMIT = 30;
-
 	public static final int MAX_TIMEOUT_MINUTES = 360; // minutes
 	public static final int STATISTIK_TIMEOUT_MINUTES = 180; // minutes
 

@@ -82,7 +82,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
         this.initDevModeParameter();
-        this.gemeindeName = this.gesuchModelManager.getDossier().gemeinde.name;
+        this.gemeindeName = this.gesuchModelManager.getDossier().extractGemeindeName();
     }
 
     public gesuchEinreichen(): IPromise<void> {

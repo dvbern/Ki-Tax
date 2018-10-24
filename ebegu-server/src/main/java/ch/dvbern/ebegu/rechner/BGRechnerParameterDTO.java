@@ -23,26 +23,25 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ABGELTUNG_PRO_TAG_KANTON;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAHL_TAGE_KANTON;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_BABY_ALTER_IN_MONATEN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_BABY_FAKTOR;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_KOSTEN_PRO_STUNDE_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MAX;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MASSGEBENDES_EINKOMMEN_MIN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_MAX_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
 
 /**
  * Kapselung aller Parameter, welche für die BG-Berechnung aller Angebote benötigt werden.
@@ -50,62 +49,56 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_STUNDEN_PRO_TAG_TAGI;
  */
 public final class BGRechnerParameterDTO {
 
-	private EinschulungTyp bgBisUndMitSchulstufe;
+	private BigDecimal maxVerguenstigungVorschuleBabyProTg;
+	private BigDecimal maxVerguenstigungVorschuleKindProTg;
+	private BigDecimal maxVerguenstigungSchuleKindProTg;
 
-	private BigDecimal beitragKantonProTag;        // PARAM_ABGELTUNG_PRO_TAG_KANTON
+	private BigDecimal maxVerguenstigungVorschuleBabyProStd;
+	private BigDecimal maxVerguenstigungVorschuleKindProStd;
+	private BigDecimal maxVerguenstigungSchuleKindProStd;
 
-	private BigDecimal beitragStadtProTagJahr1;            // PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1
-	private BigDecimal beitragStadtProTagJahr2;            // PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2
+	private BigDecimal maxMassgebendesEinkommen;
+	private BigDecimal minMassgebendesEinkommen;
 
-	private BigDecimal anzahlTageTagi;                // PARAM_ANZAHL_TAGE_KANTON
-	private BigDecimal anzahlTageMaximal;            // PARAM_ANZAL_TAGE_MAX_KITA
+	private BigDecimal oeffnungstageKita;
+	private BigDecimal oeffnungstageTFO;
+	private BigDecimal oeffnungsstundenTFO;
 
-	private BigDecimal anzahlStundenProTagTagi;    // PARAM_STUNDEN_PRO_TAG_TAGI
-	private BigDecimal anzahlStundenProTagMaximal;    // PARAM_STUNDEN_PRO_TAG_MAX_KITA
+	private BigDecimal zuschlagBehinderungProTg;
+	private BigDecimal zuschlagBehinderungProStd;
 
-	private BigDecimal kostenProStundeMaximalKitaTagi; // PARAM_KOSTEN_PRO_STUNDE_MAX
-	private BigDecimal kostenProStundeMaximalTageseltern; // PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN
-	private BigDecimal kostenProStundeMinimal;        // PARAM_KOSTEN_PRO_STUNDE_MIN
+	private BigDecimal minVerguenstigungProTg;
+	private BigDecimal minVerguenstigungProStd;
 
-	private BigDecimal massgebendesEinkommenMaximal; // PARAM_MASSGEBENDES_EINKOMMEN_MIN
-	private BigDecimal massgebendesEinkommenMinimal; // PARAM_MASSGEBENDES_EINKOMMEN_MAX
-
-	private BigDecimal babyFaktor;                    // PARAM_BABY_FAKTOR
-	private int babyAlterInMonaten;                    // PARAM_BABY_ALTER_IN_MONATEN
 
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
-		this.setBgBisUndMitSchulstufe(asEinschulungstyp(paramMap, GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, gesuchsperiode, gemeinde));
-		this.setBeitragKantonProTag(asBigDecimal(paramMap, PARAM_ABGELTUNG_PRO_TAG_KANTON, gesuchsperiode, gemeinde));
-		this.setAnzahlTageMaximal(asBigDecimal(paramMap, PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode, gemeinde));
-		this.setAnzahlStundenProTagMaximal(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_MAX_KITA, gesuchsperiode, gemeinde));
-		this.setKostenProStundeMaximalKitaTagi(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX, gesuchsperiode, gemeinde));
-		this.setKostenProStundeMinimal(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MIN, gesuchsperiode, gemeinde));
-		this.setMassgebendesEinkommenMaximal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MAX, gesuchsperiode, gemeinde));
-		this.setMassgebendesEinkommenMinimal(asBigDecimal(paramMap, PARAM_MASSGEBENDES_EINKOMMEN_MIN, gesuchsperiode, gemeinde));
-		this.setAnzahlTageTagi(asBigDecimal(paramMap, PARAM_ANZAHL_TAGE_KANTON, gesuchsperiode, gemeinde));
-		this.setAnzahlStundenProTagTagi(asBigDecimal(paramMap, PARAM_STUNDEN_PRO_TAG_TAGI, gesuchsperiode, gemeinde));
-		this.setKostenProStundeMaximalTageseltern(asBigDecimal(paramMap, PARAM_KOSTEN_PRO_STUNDE_MAX_TAGESELTERN, gesuchsperiode, gemeinde));
-		this.setBabyAlterInMonaten(asInteger(paramMap, PARAM_BABY_ALTER_IN_MONATEN, gesuchsperiode, gemeinde));
-		this.setBabyFaktor(asBigDecimal(paramMap, PARAM_BABY_FAKTOR, gesuchsperiode, gemeinde));
-		this.setBeitragStadtProTagJahr1(asBigDecimal(paramMap, PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_1, gesuchsperiode, gemeinde));
-		this.setBeitragStadtProTagJahr2(asBigDecimal(paramMap, PARAM_FIXBETRAG_STADT_PRO_TAG_KITA_HALBJAHR_2, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungVorschuleBabyProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungVorschuleKindProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungSchuleKindProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_SCHULE_PRO_TG, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungVorschuleBabyProStd(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungVorschuleKindProStd(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungSchuleKindProStd(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_SCHULE_PRO_STD, gesuchsperiode, gemeinde));
+		this.setMaxMassgebendesEinkommen(asBigDecimal(paramMap, MAX_MASSGEBENDES_EINKOMMEN, gesuchsperiode, gemeinde));
+		this.setMinMassgebendesEinkommen(asBigDecimal(paramMap, MIN_MASSGEBENDES_EINKOMMEN, gesuchsperiode, gemeinde));
+		this.setOeffnungstageKita(asBigDecimal(paramMap, OEFFNUNGSTAGE_KITA, gesuchsperiode, gemeinde));
+		this.setOeffnungstageTFO(asBigDecimal(paramMap, OEFFNUNGSTAGE_TFO, gesuchsperiode, gemeinde));
+		this.setOeffnungsstundenTFO(asBigDecimal(paramMap, OEFFNUNGSSTUNDEN_TFO, gesuchsperiode, gemeinde));
+		this.setZuschlagBehinderungProTg(asBigDecimal(paramMap, ZUSCHLAG_BEHINDERUNG_PRO_TG, gesuchsperiode, gemeinde));
+		this.setZuschlagBehinderungProStd(asBigDecimal(paramMap, ZUSCHLAG_BEHINDERUNG_PRO_STD, gesuchsperiode, gemeinde));
+		this.setMinVerguenstigungProTg(asBigDecimal(paramMap, MIN_VERGUENSTIGUNG_PRO_TG, gesuchsperiode, gemeinde));
+		this.setMinVerguenstigungProStd(asBigDecimal(paramMap, MIN_VERGUENSTIGUNG_PRO_STD, gesuchsperiode, gemeinde));
 	}
 
 	public BGRechnerParameterDTO() {
 
 	}
 
-	private int asInteger(@Nonnull Map<EinstellungKey, Einstellung> paramMap, @Nonnull EinstellungKey paramKey, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
-		Einstellung param = paramMap.get(paramKey);
-		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', "
-				+ "Gesuchsperiode '" + gesuchsperiode + "'";
-			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
-		}
-		return param.getValueAsInteger();
-	}
+	private BigDecimal asBigDecimal(
+		@Nonnull Map<EinstellungKey, Einstellung> paramMap,
+		@Nonnull EinstellungKey paramKey,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde) {
 
-	private BigDecimal asBigDecimal(@Nonnull Map<EinstellungKey, Einstellung> paramMap, @Nonnull EinstellungKey paramKey, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Gemeinde gemeinde) {
 		Einstellung param = paramMap.get(paramKey);
 		if (param == null) {
 			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
@@ -115,135 +108,123 @@ public final class BGRechnerParameterDTO {
 		return param.getValueAsBigDecimal();
 	}
 
-	private EinschulungTyp asEinschulungstyp(@Nonnull Map<EinstellungKey, Einstellung> paramMap, @Nonnull EinstellungKey paramKey, @Nonnull Gesuchsperiode
-		gesuchsperiode,
-		@Nonnull Gemeinde gemeinde) {
-		Einstellung param = paramMap.get(paramKey);
-		if (param == null) {
-			String message = "Required calculator parameter '" + paramKey + "' could not be loaded for the given Gemeinde '" + gemeinde.getName() + "', Gesuchsperiode "
-				+ '\'' + gesuchsperiode + '\'';
-			throw new EbeguEntityNotFoundException("loadCalculatorParameters", message, ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, paramKey);
-		}
-		return EinschulungTyp.valueOf(param.getValue());
+	public BigDecimal getMaxVerguenstigungVorschuleBabyProTg() {
+		return maxVerguenstigungVorschuleBabyProTg;
 	}
 
-	public EinschulungTyp getBgBisUndMitSchulstufe() {
-		return bgBisUndMitSchulstufe;
+	public void setMaxVerguenstigungVorschuleBabyProTg(BigDecimal maxVerguenstigungVorschuleBabyProTg) {
+		this.maxVerguenstigungVorschuleBabyProTg = maxVerguenstigungVorschuleBabyProTg;
 	}
 
-	public void setBgBisUndMitSchulstufe(EinschulungTyp bgBisUndMitSchulstufe) {
-		this.bgBisUndMitSchulstufe = bgBisUndMitSchulstufe;
+	public BigDecimal getMaxVerguenstigungVorschuleKindProTg() {
+		return maxVerguenstigungVorschuleKindProTg;
 	}
 
-	public BigDecimal getBeitragKantonProTag() {
-		return beitragKantonProTag;
+	public void setMaxVerguenstigungVorschuleKindProTg(BigDecimal maxVerguenstigungVorschuleKindProTg) {
+		this.maxVerguenstigungVorschuleKindProTg = maxVerguenstigungVorschuleKindProTg;
 	}
 
-	public void setBeitragKantonProTag(BigDecimal beitragKantonProTag) {
-		this.beitragKantonProTag = beitragKantonProTag;
+	public BigDecimal getMaxVerguenstigungSchuleKindProTg() {
+		return maxVerguenstigungSchuleKindProTg;
 	}
 
-	public BigDecimal getBeitragStadtProTagJahr1() {
-		return beitragStadtProTagJahr1;
+	public void setMaxVerguenstigungSchuleKindProTg(BigDecimal maxVerguenstigungSchuleKindProTg) {
+		this.maxVerguenstigungSchuleKindProTg = maxVerguenstigungSchuleKindProTg;
 	}
 
-	public void setBeitragStadtProTagJahr1(BigDecimal beitragStadtProTagJahr1) {
-		this.beitragStadtProTagJahr1 = beitragStadtProTagJahr1;
+	public BigDecimal getMaxVerguenstigungVorschuleBabyProStd() {
+		return maxVerguenstigungVorschuleBabyProStd;
 	}
 
-	public BigDecimal getBeitragStadtProTagJahr2() {
-		return beitragStadtProTagJahr2;
+	public void setMaxVerguenstigungVorschuleBabyProStd(BigDecimal maxVerguenstigungVorschuleBabyProStd) {
+		this.maxVerguenstigungVorschuleBabyProStd = maxVerguenstigungVorschuleBabyProStd;
 	}
 
-	public void setBeitragStadtProTagJahr2(BigDecimal beitragStadtProTagJahr2) {
-		this.beitragStadtProTagJahr2 = beitragStadtProTagJahr2;
+	public BigDecimal getMaxVerguenstigungVorschuleKindProStd() {
+		return maxVerguenstigungVorschuleKindProStd;
 	}
 
-	public BigDecimal getAnzahlTageMaximal() {
-		return anzahlTageMaximal;
+	public void setMaxVerguenstigungVorschuleKindProStd(BigDecimal maxVerguenstigungVorschuleKindProStd) {
+		this.maxVerguenstigungVorschuleKindProStd = maxVerguenstigungVorschuleKindProStd;
 	}
 
-	public void setAnzahlTageMaximal(BigDecimal anzahlTageMaximal) {
-		this.anzahlTageMaximal = anzahlTageMaximal;
+	public BigDecimal getMaxVerguenstigungSchuleKindProStd() {
+		return maxVerguenstigungSchuleKindProStd;
 	}
 
-	public BigDecimal getAnzahlStundenProTagMaximal() {
-		return anzahlStundenProTagMaximal;
+	public void setMaxVerguenstigungSchuleKindProStd(BigDecimal maxVerguenstigungSchuleKindProStd) {
+		this.maxVerguenstigungSchuleKindProStd = maxVerguenstigungSchuleKindProStd;
 	}
 
-	public void setAnzahlStundenProTagMaximal(BigDecimal anzahlStundenProTagMaximal) {
-		this.anzahlStundenProTagMaximal = anzahlStundenProTagMaximal;
+	public BigDecimal getMaxMassgebendesEinkommen() {
+		return maxMassgebendesEinkommen;
 	}
 
-	public BigDecimal getKostenProStundeMaximalKitaTagi() {
-		return kostenProStundeMaximalKitaTagi;
+	public void setMaxMassgebendesEinkommen(BigDecimal maxMassgebendesEinkommen) {
+		this.maxMassgebendesEinkommen = maxMassgebendesEinkommen;
 	}
 
-	public void setKostenProStundeMaximalKitaTagi(BigDecimal kostenProStundeMaximalKitaTagi) {
-		this.kostenProStundeMaximalKitaTagi = kostenProStundeMaximalKitaTagi;
+	public BigDecimal getMinMassgebendesEinkommen() {
+		return minMassgebendesEinkommen;
 	}
 
-	public BigDecimal getKostenProStundeMinimal() {
-		return kostenProStundeMinimal;
+	public void setMinMassgebendesEinkommen(BigDecimal minMassgebendesEinkommen) {
+		this.minMassgebendesEinkommen = minMassgebendesEinkommen;
 	}
 
-	public void setKostenProStundeMinimal(BigDecimal kostenProStundeMinimal) {
-		this.kostenProStundeMinimal = kostenProStundeMinimal;
+	public BigDecimal getOeffnungstageKita() {
+		return oeffnungstageKita;
 	}
 
-	public BigDecimal getMassgebendesEinkommenMaximal() {
-		return massgebendesEinkommenMaximal;
+	public void setOeffnungstageKita(BigDecimal oeffnungstageKita) {
+		this.oeffnungstageKita = oeffnungstageKita;
 	}
 
-	public void setMassgebendesEinkommenMaximal(BigDecimal massgebendesEinkommenMaximal) {
-		this.massgebendesEinkommenMaximal = massgebendesEinkommenMaximal;
+	public BigDecimal getOeffnungstageTFO() {
+		return oeffnungstageTFO;
 	}
 
-	public BigDecimal getMassgebendesEinkommenMinimal() {
-		return massgebendesEinkommenMinimal;
+	public void setOeffnungstageTFO(BigDecimal oeffnungstageTFO) {
+		this.oeffnungstageTFO = oeffnungstageTFO;
 	}
 
-	public void setMassgebendesEinkommenMinimal(BigDecimal massgebendesEinkommenMinimal) {
-		this.massgebendesEinkommenMinimal = massgebendesEinkommenMinimal;
+	public BigDecimal getOeffnungsstundenTFO() {
+		return oeffnungsstundenTFO;
 	}
 
-	public BigDecimal getAnzahlTageTagi() {
-		return anzahlTageTagi;
+	public void setOeffnungsstundenTFO(BigDecimal oeffnungsstundenTFO) {
+		this.oeffnungsstundenTFO = oeffnungsstundenTFO;
 	}
 
-	public void setAnzahlTageTagi(BigDecimal anzahlTageTagi) {
-		this.anzahlTageTagi = anzahlTageTagi;
+	public BigDecimal getZuschlagBehinderungProTg() {
+		return zuschlagBehinderungProTg;
 	}
 
-	public BigDecimal getAnzahlStundenProTagTagi() {
-		return anzahlStundenProTagTagi;
+	public void setZuschlagBehinderungProTg(BigDecimal zuschlagBehinderungProTg) {
+		this.zuschlagBehinderungProTg = zuschlagBehinderungProTg;
 	}
 
-	public void setAnzahlStundenProTagTagi(BigDecimal anzahlStundenProTagTagi) {
-		this.anzahlStundenProTagTagi = anzahlStundenProTagTagi;
+	public BigDecimal getZuschlagBehinderungProStd() {
+		return zuschlagBehinderungProStd;
 	}
 
-	public BigDecimal getKostenProStundeMaximalTageseltern() {
-		return kostenProStundeMaximalTageseltern;
+	public void setZuschlagBehinderungProStd(BigDecimal zuschlagBehinderungProStd) {
+		this.zuschlagBehinderungProStd = zuschlagBehinderungProStd;
 	}
 
-	public void setKostenProStundeMaximalTageseltern(BigDecimal kostenProStundeMaximalTageseltern) {
-		this.kostenProStundeMaximalTageseltern = kostenProStundeMaximalTageseltern;
+	public BigDecimal getMinVerguenstigungProTg() {
+		return minVerguenstigungProTg;
 	}
 
-	public BigDecimal getBabyFaktor() {
-		return babyFaktor;
+	public void setMinVerguenstigungProTg(BigDecimal minVerguenstigungProTg) {
+		this.minVerguenstigungProTg = minVerguenstigungProTg;
 	}
 
-	public void setBabyFaktor(BigDecimal babyFaktor) {
-		this.babyFaktor = babyFaktor;
+	public BigDecimal getMinVerguenstigungProStd() {
+		return minVerguenstigungProStd;
 	}
 
-	public int getBabyAlterInMonaten() {
-		return babyAlterInMonaten;
-	}
-
-	public void setBabyAlterInMonaten(int babyAlterInMonaten) {
-		this.babyAlterInMonaten = babyAlterInMonaten;
+	public void setMinVerguenstigungProStd(BigDecimal minVerguenstigungProStd) {
+		this.minVerguenstigungProStd = minVerguenstigungProStd;
 	}
 }

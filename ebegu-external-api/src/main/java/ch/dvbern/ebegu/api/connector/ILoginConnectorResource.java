@@ -16,16 +16,21 @@
 package ch.dvbern.ebegu.api.connector;
 
 import javax.annotation.Nonnull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
+import ch.dvbern.ebegu.errors.ConnectorException;
 
 @Path("/connector")
 public interface ILoginConnectorResource {
@@ -44,16 +49,29 @@ public interface ILoginConnectorResource {
 	 * Service to create or Update a Benutzer in Ki-TAX from an external login module. If the user is
 	 * already found by its unique username we update the existing entry, otherwise we create a new one
 	 *
-	 * @param benutzer User to update/store
+	 * @param externalBenutzer User to update/store
 	 * @return stored object
 	 */
 	@POST
 	@Path("/benutzer")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	JaxExternalBenutzer updateOrStoreUserFromIAM(
-		@Nonnull JaxExternalBenutzer benutzer
-	);
+	JaxExternalBenutzer updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer);
+
+	/**
+	 * Service to update a Benutzer from an external login module
+	 *
+	 * @param externalBenutzer User to update/store
+	 * @return stored object
+	 */
+	@PUT
+	@Path("/benutzer/{benutzerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Nonnull
+	JaxExternalBenutzer updateBenutzer(
+		@Nonnull @NotNull @PathParam("benutzerId") String benutzerId,
+		@Nonnull @NotNull @Valid JaxExternalBenutzer externalBenutzer) throws ConnectorException;
 
 	/**
 	 * @return the first and only Mandant that currently exists
@@ -75,7 +93,5 @@ public interface ILoginConnectorResource {
 	@Path("/extauth")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	JaxExternalAuthAccessElement createLoginFromIAM(
-		@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser);
-
+	JaxExternalAuthAccessElement createLogin(@Nonnull JaxExternalAuthorisierterBenutzer jaxExtAuthUser);
 }

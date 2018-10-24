@@ -9,7 +9,6 @@ kiBon is an online portal through which parents can apply for financial support 
 The following childcare services are available:
  
 * Kitas, for children not yet at school (Youth Office)
-* Tagis, for school-age children (Youth Office)
 * All-day schools (Education Office)
 * Childminders (Youth Office)
 

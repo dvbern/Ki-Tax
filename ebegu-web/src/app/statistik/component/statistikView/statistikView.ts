@@ -80,7 +80,7 @@ export class StatistikViewController implements IController {
         private readonly $log: ILogService,
         private readonly reportAsyncRS: ReportAsyncRS,
         private readonly downloadRS: DownloadRS,
-        private readonly bachJobRS: BatchJobRS,
+        private readonly batchJobRS: BatchJobRS,
         private readonly errorService: ErrorService,
         private readonly $translate: ITranslateService,
         private readonly $interval: angular.IIntervalService,
@@ -116,7 +116,7 @@ export class StatistikViewController implements IController {
     }
 
     private refreshUserJobs(): void {
-        this.bachJobRS.getBatchJobsOfUser().then((response: TSWorkJob[]) => {
+        this.batchJobRS.getBatchJobsOfUser().then((response: TSWorkJob[]) => {
             this.userjobs = response;
         });
     }
@@ -127,7 +127,8 @@ export class StatistikViewController implements IController {
         }
         this.$log.debug('Validated Form: ' + form.$name);
         const stichtag = this._statistikParameter.stichtag ?
-            this._statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT) : undefined;
+            this._statistikParameter.stichtag.format(this.DATE_PARAM_FORMAT) :
+            undefined;
         switch (type) {
             case TSStatistikParameterType.GESUCH_STICHTAG:
                 this.reportAsyncRS.getGesuchStichtagReportExcel(stichtag,
@@ -243,7 +244,7 @@ export class StatistikViewController implements IController {
      * helper methode die es dem Admin erlaubt alle jobs zu sehen
      */
     public showAllJobs(): void {
-        this.bachJobRS.getAllJobs().then((result: TSWorkJob[]) => {
+        this.batchJobRS.getAllJobs().then((result: TSWorkJob[]) => {
             let res: TSBatchJobInformation[] = [];
             res = res.concat(result.map(value => {
                 return value.execution || undefined;

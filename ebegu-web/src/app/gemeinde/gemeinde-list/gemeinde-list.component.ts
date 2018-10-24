@@ -107,10 +107,12 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
 
     public openGemeinde(selected: TSGemeinde): void {
         this.gemeinde = angular.copy(selected);
-        if (this.gemeinde.status === TSGemeindeStatus.EINGELADEN) {
-            this.$state.go('gemeinde.edit', {gemeindeId: this.gemeinde.id});
-        } else {
+        if (this.gemeinde.status !== TSGemeindeStatus.EINGELADEN) {
             this.$state.go('gemeinde.view', {gemeindeId: this.gemeinde.id});
+            return;
+        }
+        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAdministratorBgTsGemeindeRole())) {
+            this.$state.go('gemeinde.edit', {gemeindeId: this.gemeinde.id});
         }
     }
 

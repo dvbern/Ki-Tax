@@ -53,7 +53,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 
-	private static final EinstellungKey PARAM_KEY = EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA;
+	private static final EinstellungKey PARAM_KEY = EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
 	private Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
 	private Gemeinde gemeinde = null;
 
@@ -77,9 +77,9 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void createEinstellungDuplicateTest() {
-		createAndPersistParameter(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
+		createAndPersistParameter(PARAM_KEY, gesuchsperiode);
 		try {
-			createAndPersistParameter(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
+			createAndPersistParameter(PARAM_KEY, gesuchsperiode);
 			Assert.fail("It cannot create the same Einstellung twice. An Exception should've been thrown");
 		} catch(Exception e) {
 			//nop
@@ -89,7 +89,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void updateEinstellungTest() {
 		Assert.assertNotNull(einstellungService);
-		Einstellung insertedEinstellung = createAndPersistParameter(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
+		Einstellung insertedEinstellung = createAndPersistParameter(PARAM_KEY, gesuchsperiode);
 
 		Optional<Einstellung> EinstellungOptional = einstellungService.findEinstellung(insertedEinstellung.getId());
 		Assert.assertTrue(EinstellungOptional.isPresent());
@@ -115,7 +115,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 			// nop, expected
 		}
 
-		Einstellung param1 = TestDataUtil.createDefaultEinstellung(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
+		Einstellung param1 = TestDataUtil.createDefaultEinstellung(PARAM_KEY, gesuchsperiode);
 		einstellungService.saveEinstellung(param1);
 
 		allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
@@ -132,7 +132,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 		Collection<Einstellung> allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Assert.assertTrue(allParameter.isEmpty());
 
-		createAndPersistParameter(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
+		createAndPersistParameter(PARAM_KEY, gesuchsperiode);
 
 		allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Assert.assertFalse(allParameter.isEmpty());
@@ -142,7 +142,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void copyEinstellungListToNewGesuchsperiode() {
 
-		createAndPersistParameter(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
+		createAndPersistParameter(PARAM_KEY, gesuchsperiode);
 		Collection<Einstellung> allParameter = einstellungService.getAllEinstellungenBySystem(gesuchsperiode);
 		Assert.assertFalse(allParameter.isEmpty());
 		Assert.assertEquals(1, allParameter.size());
@@ -163,7 +163,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void getEinstellungByKeyGemeindeAndGesuchsperiode() {
-		Einstellung param1 = TestDataUtil.createDefaultEinstellung(EinstellungKey.PARAM_ANZAL_TAGE_MAX_KITA, gesuchsperiode);
+		Einstellung param1 = TestDataUtil.createDefaultEinstellung(PARAM_KEY, gesuchsperiode);
 		einstellungService.saveEinstellung(param1);
 
 		Einstellung einstellungFound = einstellungService.findEinstellung(EinstellungServiceTest.PARAM_KEY, gemeinde, gesuchsperiode);

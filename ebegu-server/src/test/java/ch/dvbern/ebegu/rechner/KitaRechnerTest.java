@@ -15,12 +15,15 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,70 +35,70 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 	private final BGRechnerParameterDTO parameterDTO = getParameter();
 	private final KitaRechner kitaRechner = new KitaRechner();
 
-	@Test
-	public void testEinTagHohesEinkommenKitaLangeOffenAnspruch15() {
-		Verfuegung verfuegung = prepareVerfuegungKita(LocalDate.of(2014, Month.AUGUST, 1),
-			new BigDecimal("260"), new BigDecimal("13"),
-			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 21),
-			15, new BigDecimal("234567"), MONATLICHE_BETREUUNGSKOSTEN);
+	private final LocalDate geburtstagBaby = LocalDate.of(2018, Month.OCTOBER, 15);
+	private final LocalDate geburtstagKind = LocalDate.of(2016, Month.OCTOBER, 15);
 
-		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("100.00"), calculate.getVollkosten());
-		Assert.assertEquals(new BigDecimal("15.55"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("84.45"), calculate.getVerguenstigung());
-	}
+	private final DateRange intervall = new DateRange(
+		LocalDate.of(2019, Month.FEBRUARY, 10),
+		LocalDate.of(2019, Month.FEBRUARY, 20));
 
-	@Test
-	public void testTeilmonatHohesEinkommenKitaLangeOffenBabyAnspruch80() {
-		Verfuegung verfuegung = prepareVerfuegungKita(LocalDate.of(2015, Month.AUGUST, 1),
-			new BigDecimal("260"), new BigDecimal("13"),
-			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 27),
-			80, new BigDecimal("234567"), MONATLICHE_BETREUUNGSKOSTEN);
+	private final DateRange intervallTag = new DateRange(
+		LocalDate.of(2019, Month.FEBRUARY, 10),
+		LocalDate.of(2019, Month.FEBRUARY, 10));
 
-		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("750.00"), calculate.getVollkosten());
-		Assert.assertEquals(new BigDecimal("415.15"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("334.85"), calculate.getVerguenstigung());
-	}
 
 	@Test
-	public void testTeilmonatMittleresEinkommenBaby() {
-		Verfuegung verfuegung = prepareVerfuegungKita(LocalDate.of(2015, Month.AUGUST, 1),
-			new BigDecimal("200"), new BigDecimal("9"),
-			LocalDate.of(2016, Month.JANUARY, 21), LocalDate.of(2016, Month.JANUARY, 31),
-			100, new BigDecimal("87654"), MONATLICHE_BETREUUNGSKOSTEN);
+	public void test() {
+		testWithParams(geburtstagBaby, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 112.80);
 
-		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(new BigDecimal("1050.00"), calculate.getVollkosten());
-		Assert.assertEquals(new BigDecimal("198.95"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("851.05"), calculate.getVerguenstigung());
+		testWithParams(geburtstagKind, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			100000, 60.45);
+
+		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			50000, 147.75);
+
+
+		testWithParams(geburtstagKind, false, false, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 7.35);
+
+		testWithParams(geburtstagKind, true, false, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 5.50);
+
+		testWithParams(geburtstagKind, false, true, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 14.45);
+
+		testWithParams(geburtstagKind, true, true, intervallTag.getGueltigAb(), intervallTag.getGueltigBis(),
+			100000, 12.65);
+
+
+		testWithParams(geburtstagKind, false, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			150000, 13.45);
+
+		testWithParams(geburtstagKind, true, false, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			150000, 10.05);
+
+		testWithParams(geburtstagKind, false, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			150000, 92.00);
+
+		testWithParams(geburtstagKind, true, true, intervall.getGueltigAb(), intervall.getGueltigBis(),
+			150000, 88.65);
+
 	}
 
-	@Test
-	public void testGanzerMonatZuWenigEinkommen() {
-		Verfuegung verfuegung = prepareVerfuegungKita(
-			LocalDate.of(2014, Month.AUGUST, 1),
-			new BigDecimal("244"),
-			new BigDecimal("11.5"),
-			LocalDate.of(2016, Month.JANUARY, 1),
-			LocalDate.of(2016, Month.JANUARY, 31),
-			100,
-			new BigDecimal("27750"),
-			MONATLICHE_BETREUUNGSKOSTEN);
+	private void testWithParams(
+		@Nonnull LocalDate geburtstag,
+		boolean eingeschult,
+		boolean besondereBeduerfnisse,
+		@Nonnull LocalDate von,
+		@Nonnull LocalDate bis,
+		int einkommen,
+		double expected
+	) {
+		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, von, bis, eingeschult, besondereBeduerfnisse,
+			MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
 
 		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
-		Assert.assertEquals(MONATLICHE_BETREUUNGSKOSTEN, calculate.getVollkosten());
-		Assert.assertEquals(new BigDecimal("137.25"), calculate.getElternbeitrag());
-		Assert.assertEquals(new BigDecimal("1962.75"), calculate.getVerguenstigung());
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testZeitraumUeberMonatsende() {
-		Verfuegung verfuegung = prepareVerfuegungKita(LocalDate.of(2014, Month.AUGUST, 1),
-			new BigDecimal("244"), new BigDecimal("11.5"),
-			LocalDate.of(2016, Month.JANUARY, 10), LocalDate.of(2016, Month.FEBRUARY, 5),
-			100, new BigDecimal("27750"), MONATLICHE_BETREUUNGSKOSTEN);
-
-		kitaRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
+		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
 	}
 }
