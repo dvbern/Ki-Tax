@@ -54,7 +54,8 @@ public interface GesuchService {
 	 *
 	 * @param gesuch das Gesuch als DTO
 	 * @param saveInStatusHistory true wenn gewollt, dass die Aenderung in der Status gespeichert wird
-	 * @param saveAsUser wenn gesetzt, die Statusaenderung des Gesuchs wird mit diesem User gespeichert, sonst mit currentUser
+	 * @param saveAsUser wenn gesetzt, die Statusaenderung des Gesuchs wird mit diesem User gespeichert, sonst mit
+	 * currentUser
 	 * @return Das aktualisierte Gesuch
 	 */
 	@Nonnull
@@ -67,13 +68,18 @@ public interface GesuchService {
 	 *
 	 * @param gesuch das Gesuch als DTO
 	 * @param saveInStatusHistory true wenn gewollt, dass die Aenderung in der Status gespeichert wird
-	 * @param saveAsUser wenn gesetzt, die Statusaenderung des Gesuchs wird mit diesem User gespeichert, sonst mit currentUser
+	 * @param saveAsUser wenn gesetzt, die Statusaenderung des Gesuchs wird mit diesem User gespeichert, sonst mit
+	 * currentUser
 	 * @param doAuthCheck: Definiert, ob die Berechtigungen (Lesen/Schreiben) geprüft werden muessen.
 	 * @return Das aktualisierte Gesuch
 	 */
 	@Nonnull
 	@PermitAll
-	Gesuch updateGesuch(@Nonnull Gesuch gesuch, boolean saveInStatusHistory, @Nullable Benutzer saveAsUser, boolean doAuthCheck);
+	Gesuch updateGesuch(
+		@Nonnull Gesuch gesuch,
+		boolean saveInStatusHistory,
+		@Nullable Benutzer saveAsUser,
+		boolean doAuthCheck);
 
 	/**
 	 * Laedt das Gesuch mit der id aus der DB. ACHTUNG zudem wird hier der Status auf IN_BEARBEITUNG_JA gesetzt
@@ -162,7 +168,9 @@ public interface GesuchService {
 	 * hilfsmethode zur mutation von faellen ueber das gui. Wird fuer testzwecke benoetigt
 	 */
 	@Nonnull
-	Optional<Gesuch> testfallMutieren(@Nonnull String dossierID, @Nonnull String gesuchsperiodeId,
+	Optional<Gesuch> testfallMutieren(
+		@Nonnull String dossierID,
+		@Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum);
 
 	/**
@@ -170,13 +178,19 @@ public interface GesuchService {
 	 * letzte verfügte Antrag kopiert für das Erneuerungsgesuch
 	 */
 	@Nonnull
-	Optional<Gesuch> antragErneuern(@Nonnull String antragId, @Nonnull String gesuchsperiodeId, @Nullable LocalDate eingangsdatum);
+	Optional<Gesuch> antragErneuern(
+		@Nonnull String antragId,
+		@Nonnull String gesuchsperiodeId,
+		@Nullable LocalDate eingangsdatum);
 
 	/**
 	 * Gibt das letzte verfuegte Gesuch fuer die uebergebene Gesuchsoperde und den uebergebenen Fall zurueck.
 	 */
 	@Nonnull
-	Optional<Gesuch> getNeustesVerfuegtesGesuchFuerGesuch(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier, boolean doAuthCheck);
+	Optional<Gesuch> getNeustesVerfuegtesGesuchFuerGesuch(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Dossier dossier,
+		boolean doAuthCheck);
 
 	/**
 	 * Gibt das neueste Gesuch der im selben Fall und Periode wie das gegebene Gesuch ist.
@@ -222,13 +236,34 @@ public interface GesuchService {
 	Gesuch antragFreigeben(@Nonnull String gesuchId, @Nullable String usernameJA, @Nullable String usernameSCH);
 
 	/**
-	 * Verantwortliche müssen gesetzt werden wenn in einem Papiergesuch oder Papiermutation eine Betreuung hinzugefügt wird
-	 * oder eine Online-Mutation freigegeben wird (direkte Freigabe). Beim Einlesen eines Papiergesuchs werden die Veratnwortliche mittels Dialogfenster
-	 * durch den Benutzer gesetzt
+	 * Verantwortliche müssen gesetzt werden wenn in einem Papiergesuch oder Papiermutation eine Betreuung hinzugefügt
+	 * wird oder eine Online-Mutation freigegeben wird (direkte Freigabe). Beim Einlesen eines Papiergesuchs werden
+	 * die Veratnwortliche mittels Dialogfenster durch den Benutzer gesetzt
+	 *
 	 * @param persist speichert die Verantwortliche direkt auf der DB in Update-Query
 	 * @return true if Verantwortliche changed
 	 */
-	boolean setVerantwortliche(@Nullable String usernameBG, @Nullable String usernameTS, Gesuch gesuch, boolean onlyIfNotSet, boolean persist);
+	boolean setVerantwortliche(
+		@Nullable String usernameBG,
+		@Nullable String usernameTS,
+		Gesuch gesuch,
+		boolean onlyIfNotSet,
+		boolean persist);
+
+	/**
+	 * Verantwortliche müssen gesetzt werden wenn in einem Papiergesuch oder Papiermutation eine Betreuung hinzugefügt
+	 * wird oder eine Online-Mutation freigegeben wird (direkte Freigabe). Beim Einlesen eines Papiergesuchs werden
+	 * die Veratnwortliche mittels Dialogfenster durch den Benutzer gesetzt
+	 *
+	 * @param persist speichert die Verantwortliche direkt auf der DB in Update-Query
+	 * @return true if Verantwortliche changed
+	 */
+	boolean setVerantwortliche(
+		@Nullable Benutzer verantwortlicherBG,
+		@Nullable Benutzer verantwortlicherTS,
+		@Nonnull Gesuch gesuch,
+		boolean onlyIfNotSet,
+		boolean persist);
 
 	/**
 	 * Setzt das gegebene Gesuch als Beschwerde hängig und bei allen Gescuhen der Periode den Flag
@@ -266,20 +301,25 @@ public interface GesuchService {
 	 * Gesuch sein, fuer welches ich nicht berechtigt bin!
 	 */
 	@Nonnull
-	Optional<String> getIdOfNeuestesGesuchForDossierAndGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Dossier dossier);
-
+	Optional<String> getIdOfNeuestesGesuchForDossierAndGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Dossier dossier);
 
 	/**
-	 * Returns the newest Gesuch for the given Fall. It will return the newest Gesuch for which the user has read-rights
+	 * Returns the newest Gesuch for the given Fall. It will return the newest Gesuch for which the user has
+	 * read-rights
 	 */
 	@Nonnull
 	Optional<String> getIdOfNeuestesGesuchForDossier(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt das Geusch zurueck, das mit dem Fall verknuepft ist und das neueste fuer das SchulamtInterface ist. Das Flag FinSitStatus
+	 * Gibt das Geusch zurueck, das mit dem Fall verknuepft ist und das neueste fuer das SchulamtInterface ist. Das
+	 * Flag FinSitStatus
 	 * muss nicht NULL sein, sonst gilt es als nicht geprueft.
 	 */
-	Optional<Gesuch> getNeustesGesuchFuerFallnumerForSchulamtInterface(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Long fallnummer);
+	Optional<Gesuch> getNeustesGesuchFuerFallnumerForSchulamtInterface(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Long fallnummer);
 
 	/**
 	 * Schickt eine E-Mail an alle Gesuchsteller, die ihr Gesuch innerhalb einer konfigurierbaren Frist nach
@@ -303,7 +343,8 @@ public interface GesuchService {
 	int deleteGesucheOhneFreigabeOderQuittung();
 
 	/**
-	 * gibt alle Gesuche zurueck die nach einer konfigurierten Frist nach Erstellung nicht freigegeben bzw. nach Freigabe
+	 * gibt alle Gesuche zurueck die nach einer konfigurierten Frist nach Erstellung nicht freigegeben bzw. nach
+	 * Freigabe
 	 * die Quittung nicht geschickt haben.
 	 */
 	List<Gesuch> getGesuchesOhneFreigabeOderQuittung();
@@ -317,7 +358,8 @@ public interface GesuchService {
 	 * Sucht die neueste Online Mutation, die zu dem gegebenen Antrag gehoert und loescht sie.
 	 * Diese Mutation muss Online und noch nicht freigegeben sein. Diese Methode darf nur bei ADMIN_BG oder SUPER_ADMIN
 	 * aufgerufen werden, wegen loescherechten wird es dann immer mir RunAs/SUPER_ADMIN) ausgefuehrt.
-	 *  @param dossier Der Antraege, zu denen die Mutation gehoert, die geloescht werden muss
+	 *
+	 * @param dossier Der Antraege, zu denen die Mutation gehoert, die geloescht werden muss
 	 * @param gesuchsperiode Gesuchsperiode, in der die Gesuche geloescht werden sollen
 	 */
 	void removeOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
@@ -326,32 +368,37 @@ public interface GesuchService {
 	 * Sucht die neueste Online Mutation, die zu dem gegebenen Antrag gehoert
 	 * Diese Mutation muss Online und noch nicht freigegeben sein. Diese Methode darf nur bei ADMIN_BG oder SUPER_ADMIN
 	 * aufgerufen werden, wegen loescherechten wird es dann immer mir RunAs/SUPER_ADMIN) ausgefuehrt.
-	 *  @param dossier Der Antraege, zu denen die Mutation gehoert
+	 *
+	 * @param dossier Der Antraege, zu denen die Mutation gehoert
 	 * @param gesuchsperiode Gesuchsperiode
 	 */
 	Gesuch findOnlineMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Sucht und entfernt ein Folgegesuch fuer den gegebenen Antrag in der gegebenen Gesuchsperiode
-	 *  @param dossier Der Antraeg des Falles
+	 *
+	 * @param dossier Der Antraeg des Falles
 	 * @param gesuchsperiode Gesuchsperiode in der das Folgegesuch gesucht werden muss
 	 */
 	void removeOnlineFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
-	 * Loescht das angegebene Gesuch falls es sich um ein Papiergesuch handelt, das noch nicht im Status "verfuegen" oder verfuegt ist.
+	 * Loescht das angegebene Gesuch falls es sich um ein Papiergesuch handelt, das noch nicht im Status "verfuegen"
+	 * oder verfuegt ist.
 	 * Wenn es sich um ein Papier-Erstgesuch handelt, wird auch der Fall gelöscht.
 	 */
 	void removePapiergesuch(@Nonnull Gesuch gesuch);
 
 	/**
-	 * Loescht das angegebene Gesuch, falls es sich um ein Onlinegesuch handelt, das noch nicht freigegeben wurde. Der Fall wird dabei nie geloescht.
+	 * Loescht das angegebene Gesuch, falls es sich um ein Onlinegesuch handelt, das noch nicht freigegeben wurde. Der
+	 * Fall wird dabei nie geloescht.
 	 */
 	void removeGesuchstellerAntrag(@Nonnull Gesuch gesuch);
 
 	/**
 	 * Sucht ein Folgegesuch fuer den gegebenen Antrag in der gegebenen Gesuchsperiode
-	 *  @param dossier Der Antraeg des Falles
+	 *
+	 * @param dossier Der Antraeg des Falles
 	 * @param gesuchsperiode Gesuchsperiode in der das Folgegesuch gesucht werden muss
 	 */
 	Gesuch findOnlineFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
@@ -380,7 +427,9 @@ public interface GesuchService {
 	 * Diese Methode wird asynchron ausgefuehrt, da das ermitteln des jeweils letzten Gesuchs pro
 	 * Fall sehr lange geht.
 	 */
-	void sendMailsToAllGesuchstellerOfLastGesuchsperiode(@Nonnull Gesuchsperiode lastGesuchsperiode, @Nonnull Gesuchsperiode nextGesuchsperiode);
+	void sendMailsToAllGesuchstellerOfLastGesuchsperiode(
+		@Nonnull Gesuchsperiode lastGesuchsperiode,
+		@Nonnull Gesuchsperiode nextGesuchsperiode);
 
 	/**
 	 * Checks all Betreuungen of the given Gesuch and updates the flag gesuchBetreuungenStatus with the corresponding
@@ -389,13 +438,15 @@ public interface GesuchService {
 	Gesuch updateBetreuungenStatus(@NotNull Gesuch gesuch);
 
 	/**
-	 * In dieser Methode wird das Gesuch verfuegt. Nur Gesuche bei denen alle Betreuungen bereits verfuegt sind und der WizardStep Verfuegen
+	 * In dieser Methode wird das Gesuch verfuegt. Nur Gesuche bei denen alle Betreuungen bereits verfuegt sind und
+	 * der WizardStep Verfuegen
 	 * (faelslicherweise) auf OK gesetzt wurde, werden durch diese Methode wieder verfuegt.
 	 */
 	void gesuchVerfuegen(@NotNull Gesuch gesuch);
 
 	/**
 	 * Setzt den uebergebene FinSitStatus im gegebenen Gesuch
+	 *
 	 * @return 1 wenn alles ok
 	 */
 	int changeFinSitStatus(@Nonnull String antragId, @Nonnull FinSitStatus finSitStatus);

@@ -73,6 +73,7 @@ import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -185,6 +186,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private GesuchDeletionLogService gesuchDeletionLogService;
 	@Inject
 	private DossierService dossierService;
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Nonnull
 	@Override
@@ -748,13 +751,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				setVerantwortliche(usernameJA, usernameSCH, gesuch, false, false);
 			} else {
 				// in case of mutation, we take default Verantwortliche and set them only if not set...
-				String propertyDefaultVerantwortlicherBG = applicationPropertyService.findApplicationPropertyAsString(
-					ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
-				String propertyDefaultVerantwortlicherTS = applicationPropertyService.findApplicationPropertyAsString(
-					ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS);
+				Optional<GemeindeStammdaten> gemeindeStammdaten =
+					gemeindeService.getGemeindeStammdatenByGemeindeId(gesuchId);
+
 				setVerantwortliche(
-					propertyDefaultVerantwortlicherBG,
-					propertyDefaultVerantwortlicherTS,
+					gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerBG).orElse(null),
+					gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerTS).orElse(null),
 					gesuch,
 					true,
 					false);
@@ -783,26 +785,38 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		boolean onlyIfNotSet,
 		boolean persist) {
 
-		boolean hasVerantwortlicheChanged = false;
+		Benutzer verantwortlicherBG = null;
+		Benutzer verantwortlicherTS = null;
+
 		if (usernameBG != null) {
-			Optional<Benutzer> optionalUserBG = benutzerService.findBenutzer(usernameBG);
-			if (optionalUserBG.isPresent() && gesuch.hasBetreuungOfJugendamt()) {
-				Benutzer userBG = optionalUserBG.get();
-				boolean hasUserChangedBG = setVerantwortlicherIfNecessaryBG(userBG, gesuch, onlyIfNotSet, persist);
-				if (hasUserChangedBG) {
-					hasVerantwortlicheChanged = true;
-				}
-			}
+			verantwortlicherBG = benutzerService.findBenutzer(usernameBG).orElse(null);
 		}
 		if (usernameTS != null) {
-			Optional<Benutzer> optionalUserTS = benutzerService.findBenutzer(usernameTS);
-			if (optionalUserTS.isPresent() && gesuch.hasBetreuungOfSchulamt()) {
-				Benutzer userTS = optionalUserTS.get();
-				boolean hasUserChangedTS = setVerantwortlicherIfNecessaryTS(userTS, gesuch, onlyIfNotSet, persist);
-				if (hasUserChangedTS) {
-					hasVerantwortlicheChanged = true;
-				}
-			}
+			verantwortlicherTS = benutzerService.findBenutzer(usernameTS).orElse(null);
+		}
+
+		return setVerantwortliche(verantwortlicherBG, verantwortlicherTS, gesuch, onlyIfNotSet, persist);
+	}
+
+	@Override
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS, GESUCHSTELLER })
+	public boolean setVerantwortliche(
+		@Nullable Benutzer verantwortlicherBG,
+		@Nullable Benutzer verantwortlicherTS,
+		Gesuch gesuch,
+		boolean onlyIfNotSet,
+		boolean persist) {
+
+		boolean hasVerantwortlicheChanged = false;
+
+		if (verantwortlicherBG != null && gesuch.hasBetreuungOfJugendamt()) {
+			hasVerantwortlicheChanged =
+				setVerantwortlicherIfNecessaryBG(verantwortlicherBG, gesuch, onlyIfNotSet, persist);
+		}
+		if (verantwortlicherTS != null && gesuch.hasBetreuungOfSchulamt()) {
+			hasVerantwortlicheChanged =
+				setVerantwortlicherIfNecessaryTS(verantwortlicherTS, gesuch, onlyIfNotSet, persist);
 		}
 		return hasVerantwortlicheChanged;
 	}

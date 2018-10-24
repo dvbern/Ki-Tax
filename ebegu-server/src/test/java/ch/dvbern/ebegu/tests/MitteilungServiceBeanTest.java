@@ -42,7 +42,6 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -125,8 +124,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.persist(empfaengerINST);
 
 		// Default-Verantwortliche setzen, damit beim Senden der Message automatisch der Empfaenger ermittelt werden kann
-		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG, "saja", persistence); //TODO GemeindeStammdaten!
-		TestDataUtil.saveParameter(ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS, "scju", persistence); //TODO GemeindeStammdaten!
+		TestDataUtil.createStammdatenDefaultVerantwortliche(persistence, empfaengerSCH, empfaengerJA);
 	}
 
 	@Test
