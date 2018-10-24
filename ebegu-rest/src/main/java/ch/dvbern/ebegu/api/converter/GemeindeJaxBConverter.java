@@ -151,6 +151,8 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 				stammdaten.setBeschwerdeAdresse(new Adresse());
 			}
 			converter.adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
+		} else {
+			stammdaten.setBeschwerdeAdresse(null);
 		}
 		stammdaten.setMail(jaxStammdaten.getMail());
 		stammdaten.setTelefon(jaxStammdaten.getTelefon());
