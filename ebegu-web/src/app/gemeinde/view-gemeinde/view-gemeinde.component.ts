@@ -94,6 +94,10 @@ export class ViewGemeindeComponent implements OnInit {
             this.logoImageUrl = e.target.result;
         };
         tmpFileReader.readAsDataURL(this.fileToUpload);
+
+        if (this.fileToUpload && this.fileToUpload.type.includes('image/')) {
+            this.gemeindeRS.postLogoImage(this.gemeindeId, this.fileToUpload);
+        }
     }
 
     private initStrings(stammdaten: TSGemeindeStammdaten): void {

@@ -143,11 +143,12 @@ export default class GemeindeRS implements IEntityRS {
     public postLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
+        formData.append('kat', fileToUpload, encodeURIComponent('logo'));
         return this.uploadLogo(gemeindeId, formData);
     }
 
     private uploadLogo(gemeindeId: string, formData: FormData): IPromise<any> {
-        return this.$http.post(`${this.serviceURL}/stammdaten/${encodeURIComponent(gemeindeId)}`, formData)
+        return this.$http.post(`${this.serviceURL}/logo/${encodeURIComponent(gemeindeId)}`, formData)
             .then((response: any) => {
                 this.$log.debug('Upload Gemeinde Logo ', response.data);
                 return response.data;
