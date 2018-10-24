@@ -22,12 +22,12 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import * as moment from 'moment';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
-import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 
 @Component({
     selector: 'dv-gemeinde-konfiguration',
@@ -37,9 +37,11 @@ import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 })
 export class GemeindeKonfigComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
-    @Input() public stammdaten: TSGemeindeStammdaten;
+    @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
+    @Input() public gemeindeStatus: TSGemeindeStatus;
+    @Input() public beguStartDate: moment.Moment;
 
-    public beguStart: string;
+    public beguStartStr: string;
     public einschulungTypValues: Array<TSEinschulungTyp>;
     private navigationDest: StateDeclaration;
 
@@ -53,6 +55,7 @@ export class GemeindeKonfigComponent implements OnInit {
     public ngOnInit(): void {
         this.navigationDest = this.$transition$.to();
         this.einschulungTypValues = getTSEinschulungTypValues();
+        this.beguStartStr = this.beguStartDate.format('DD.MM.YYYY');
         this.initProperties();
     }
 
@@ -83,15 +86,14 @@ export class GemeindeKonfigComponent implements OnInit {
         });
     }
 
-    public isKonfigurationEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
-
-        return 'gemeinde.edit' === this.navigationDest.name &&
-            (TSGemeindeStatus.EINGELADEN === stammdaten.gemeinde.status
-            || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiodeStatus);
+    public isKonfigurationEditable(gk: TSGemeindeKonfiguration): boolean {
+        return 'gemeinde.edit' === this.navigationDest.name
+            && (TSGemeindeStatus.EINGELADEN === this.gemeindeStatus
+                || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiodeStatus);
     }
 
     private initProperties(): void {
-        this.stammdaten.konfigurationsListe.forEach(config => {
+        this.konfigurationsListe.forEach(config => {
             config.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
             config.konfigKontingentierung = false;
             config.konfigurationen.forEach(property => {

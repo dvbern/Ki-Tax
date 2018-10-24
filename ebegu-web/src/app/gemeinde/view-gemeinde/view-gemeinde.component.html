@@ -142,7 +142,10 @@
             </fieldset>
 
             <fieldset>
-                <dv-gemeinde-konfiguration [stammdaten]="stammdaten">
+                <dv-gemeinde-konfiguration
+                    [konfigurationsListe]="stammdaten.konfigurationsListe"
+                    [gemeindeStatus]="stammdaten.gemeinde.status"
+                    [beguStartDate]="stammdaten.gemeinde.betreuungsgutscheineStartdatum">
                 </dv-gemeinde-konfiguration>
             </fieldset>
 
