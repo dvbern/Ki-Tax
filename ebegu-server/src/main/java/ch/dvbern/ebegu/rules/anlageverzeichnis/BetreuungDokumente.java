@@ -59,7 +59,7 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 			betreuung,
 			null,
 			DokumentGrundPersonType.KIND,
-			betreuung.getBetreuungNummer(),
+			betreuung.getKind().getKindNummer(),
 			DokumentGrundTyp.ERWEITERTE_BETREUUNG);
 	}
 
