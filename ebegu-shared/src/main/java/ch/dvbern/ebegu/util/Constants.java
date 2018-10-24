@@ -89,6 +89,11 @@ public final class Constants {
 	public static final String LOGINCONNECTOR_USER_USERNAME = "LoginConnector";
 	public static final String UNKNOWN = "UNKNOWN";
 
+	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 = "3800";
+	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4 = "6000";
+	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5 = "7000";
+	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 = "7700";
+
 	private Constants() {
 		//this prevents even the native class from
 		//calling this ctor as well :
