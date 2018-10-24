@@ -60,15 +60,23 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				//maximales einkommen wurde ueberschritten
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-					if (!betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse()) {
-						verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-					}
+					reduceAnspruchInNormalCase(betreuung, verfuegungZeitabschnitt);
 					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG);
 				} else {
 					verfuegungZeitabschnitt.setBezahltVollkosten(true);
 					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_VOLLKOSTEN_MSG);
 				}
 			}
+		}
+	}
+
+	/**
+	 * If the Betreuung is set as "erweiterteBeduerfniss" there is no need to reduce the Anspruch tu zero when the incomes are too high.
+	 * This is because the child still has Anspruch, though it will only get a redutcion of the costs due to this erweiterteBeduerfniss
+	 */
+	private void reduceAnspruchInNormalCase(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		if (!betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse()) {
+			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 		}
 	}
 
