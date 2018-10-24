@@ -26,48 +26,18 @@
         width: 100%;
         height: auto;
         display: block;
-        margin-bottom: 2rem;
-        &.isSender {
-            margin-left: auto;
-        }
-        &.institution {
-            & > * {
-                color: @institution-color;
-            }
-        }
-
-        &.gesuchsteller {
-            & > * {
-                color: @contrast-darkest;
-            }
-        }
-
-        &.jugendamt {
-            & > * {
-                color: @primary;
-            }
-        }
-
-        &.schulamt {
-            & > * {
-                color: #4879b5;
-            }
-        }
-        .erledigt {
-            color: black;
-        }
         .dv-accordion-tab-title {
             &:focus {
-                outline: 2px solid @contrast-darkest;
+                outline: none;
             }
             opacity: 1;
-            padding: 0 2rem 0;
             width: 100%;
-            min-height: 4rem;
             height: auto;
-            background: @contrast-lightest;
+            min-height: 4rem;
+            background: transparent;
             letter-spacing: 0.15rem;
             margin: 0;
+            border-bottom: 1px solid @contrast-darkest;
             transition: all 0.5s ease;
             & > * {
                 display: flex;
@@ -83,7 +53,8 @@
                 margin-right: 1rem;
                 margin-top: 1rem;
                 font-size: 2rem;
-                font-weight: bold;
+                font-weight: 800;
+                color: @red;
                 transition: all 0.5s ease;
             }
             &:after {
@@ -91,12 +62,14 @@
                 display: block;
                 width: 0;
                 height: 0;
-                background: 0;
-                margin: 0 auto 0;
-                border-bottom: 1px solid @contrast;
+                margin: 0 auto;
                 transition: all 0.5s ease;
             }
             &.tab-open {
+                background: transparent;
+                .message-header {
+                    font-weight: bold;
+                }
                 .fa.fa-angle-right {
                     transform: rotate(90deg);
                 }
@@ -112,19 +85,15 @@
             width: 100%;
             height: auto;
             max-height: 60rem;
-            background: @contrast-lightest;
-            padding: 0 2rem 0;
+            background: transparent;
             & > tab-body > * {
                 margin: 2rem 0 3rem;
             }
-            .message {
-                display: flex;
-                flex-direction: column;
-                .betreuung {
-                    color: @institution-color;
-                    margin-bottom: 2rem;
-                    text-decoration: underline;
-                }
+            .row {
+                margin: 0;
+            }
+            .line-through {
+                text-decoration: line-through;
             }
             &.ng-hide-add {
                 overflow: hidden;

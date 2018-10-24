@@ -61,7 +61,7 @@ export class GemeindeKonfigComponent implements OnInit {
 
     public getKonfigKontingentierungString(gk: TSGemeindeKonfiguration): string {
         const kontStr = gk.konfigKontingentierung ? this.translate.instant('KONTINGENTIERUNG') :
-            'Keine ' + this.translate.instant('KONTINGENTIERUNG');
+            ` ${this.translate.instant('KONTINGENTIERUNG')} `;
         return kontStr;
     }
 
