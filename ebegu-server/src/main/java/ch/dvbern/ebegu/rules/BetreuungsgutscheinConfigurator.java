@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
@@ -69,7 +69,7 @@ public class BetreuungsgutscheinConfigurator {
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
 			PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
 			PARAM_MAX_TAGE_ABWESENHEIT,
-			BG_BIS_UND_MIT_SCHULSTUFE);
+			GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 	}
 
 	private void useBernerRules(Map<EinstellungKey, Einstellung> einstellungen) {

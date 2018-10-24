@@ -36,6 +36,8 @@ import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
+import {AccordionTabDirective} from './directive/accordion-tab.directive';
+import {AccordionDirective} from './directive/accordion.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
 import {MaterialModule} from './material.module';
