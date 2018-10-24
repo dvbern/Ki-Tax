@@ -1,0 +1,83 @@
+
+
+            <!--
+  ~ AGPL File-Header
+  ~
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="row">
+    <div class="col-sm-12">
+        <dv-accordion class="konfigurationList" allow-multiple-sections="true">
+            <dv-accordion-tab
+                *ngFor="let konf of stammdaten.konfigurationsListe; let i = index"
+                [tabid]="i">
+                <tab-title>
+                    <div class="message-header">
+                        <i class="fa fa-angle-right"></i>{{konf.gesuchsperiodeName}}
+                    </div>
+                </tab-title>
+                <tab-body>
+                    <div class="row marginBottom20">
+                        <!-- Betreuungsgutscheine anbieten ab -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>BEGU_START</h3>
+                                <p>{{beguStart}}</p>
+                            </div>
+
+                            <!-- Konfiguration Bearbeiten Checkbox -->
+                            <div *ngIf="isKonfigurationEditable(stammdaten, stammdaten.konfigurationsListe[i])" class="form-group">
+                                <mat-checkbox id="edit_cb_id" name="edit_cb_id"
+                                              [(ngModel)]="konf.editMode">
+                                    {{'KONFIGURATION_EDIT'|translate}}</mat-checkbox>
+                            </div>
+
+                        </div>
+                        <div *ngIf="!konf.editMode" class="col-sm-6">
+                            <div class="form-group">
+                                <!-- Gemeinde-Konfiguraiton read only -->
+                                <h3 translate>GEMEINDE_REGELN</h3>
+                                <label translate>BEGU_KITAS_BIS_UND_MIT</label>
+                                <p><strong>{{getKonfigBeguBisUndMitSchulstufeString(stammdaten.konfigurationsListe[i])}}</strong></p>
+                                <p><b>{{getKonfigKontingentierungString(stammdaten.konfigurationsListe[i])}}</b></p>
+                            </div>
+                        </div>
+                        <div *ngIf="konf.editMode" class="col-sm-6">
+                            <div class="form-group">
+                                <!-- Gemeinde-Konfiguraiton editierbar -->
+                                <h3 translate>GEMEINDE_REGELN</h3>
+                                <label translate>BEGU_KITAS_BIS_UND_MIT</label>
+                                <mat-select [(ngModel)]="stammdaten.konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
+                                            (selectionChange)="changeKonfigBeguBisUndMitSchulstufe(stammdaten.konfigurationsListe[i])"
+                                            id="begu_kitas_bis_und_mit_id" name="begu_kitas_bis_und_mit_id" class="form-control">
+                                    <mat-option *ngFor="let etv of einschulungTypValues" [value]="etv">{{etv | translate}}
+                                    </mat-option>
+                                </mat-select>
+                            </div>
+                            <div class="form-group">
+                                <mat-checkbox id="kontingentierung_id" name="kontingentierung_id"
+                                              [(ngModel)]="stammdaten.konfigurationsListe[i].konfigKontingentierung"
+                                              (change)="changeKonfigKontingentierung(stammdaten.konfigurationsListe[i])">
+                                    {{'KONTINGENTIERUNG'|translate}}</mat-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </tab-body>
+            </dv-accordion-tab>
+        </dv-accordion>
+    </div>
+</div>

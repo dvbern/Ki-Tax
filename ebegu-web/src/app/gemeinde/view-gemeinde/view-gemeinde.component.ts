@@ -24,10 +24,7 @@ import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import TSBenutzer from '../../../models/TSBenutzer';
-import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
@@ -35,7 +32,6 @@ import ErrorService from '../../core/errors/service/ErrorService';
 @Component({
     selector: 'dv-view-gemeinde',
     templateUrl: './view-gemeinde.component.html',
-    styleUrls: ['../gemeinde-module.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewGemeindeComponent implements OnInit {
@@ -44,8 +40,6 @@ export class ViewGemeindeComponent implements OnInit {
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
     public korrespondenzsprache: string;
-    public beguStart: string;
-    public einschulungTypValues: Array<TSEinschulungTyp>;
     private fileToUpload!: File;
     public logoImageUrl: string = '#';
     private gemeindeId: string;
@@ -67,12 +61,11 @@ export class ViewGemeindeComponent implements OnInit {
         }
         // TODO: Task KIBON-217: Load from DB
         this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
-        this.einschulungTypValues = getTSEinschulungTypValues();
 
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
-                this.initProperties(stammdaten);
                 this.initStrings(stammdaten);
+                this.keineBeschwerdeAdresse = stammdaten.beschwerdeAdresse ? false : true;
                 return stammdaten;
             }));
     }
@@ -103,25 +96,7 @@ export class ViewGemeindeComponent implements OnInit {
         tmpFileReader.readAsDataURL(this.fileToUpload);
     }
 
-    private initProperties(stammdaten: TSGemeindeStammdaten): void {
-        this.keineBeschwerdeAdresse = stammdaten.beschwerdeAdresse ? false : true;
-        stammdaten.konfigurationsListe.forEach(config => {
-            config.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
-            config.konfigKontingentierung = false;
-            config.konfigurationen.forEach(property => {
-                if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
-                    config.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
-                }
-                if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
-                    config.konfigKontingentierung = (property.value === 'true');
-                }
-            });
-        });
-    }
-
     private initStrings(stammdaten: TSGemeindeStammdaten): void {
-        this.beguStart = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
-
         if (stammdaten.korrespondenzspracheDe) {
             this.korrespondenzsprache = this.translate.instant('DEUTSCH');
         }
@@ -132,21 +107,6 @@ export class ViewGemeindeComponent implements OnInit {
             this.korrespondenzsprache += ', ';
         }
         this.korrespondenzsprache += this.translate.instant('FRANZOESISCH');
-    }
-
-    public getKonfigKontingentierungString(gk: TSGemeindeKonfiguration): string {
-        const kontStr = gk.konfigKontingentierung ? this.translate.instant('KONTINGENTIERUNG') :
-            'Keine ' + this.translate.instant('KONTINGENTIERUNG');
-        return kontStr;
-    }
-
-    public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
-        const bgBisStr = this.translate.instant(gk.konfigBeguBisUndMitSchulstufe.toString());
-        return bgBisStr;
-    }
-
-    public isKonfigurationEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
-        return false;
     }
 
     public cancel(): void {

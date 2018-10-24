@@ -24,20 +24,14 @@ import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
-import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
     selector: 'dv-edit-gemeinde',
     templateUrl: './edit-gemeinde.component.html',
-    styleUrls: ['../gemeinde-module.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditGemeindeComponent implements OnInit {
@@ -45,8 +39,6 @@ export class EditGemeindeComponent implements OnInit {
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
-    public beguStart: string;
-    public einschulungTypValues: Array<TSEinschulungTyp>;
     public logoImageUrl: string = '#';
     private fileToUpload!: File;
     private navigationSource: StateDeclaration;
@@ -69,18 +61,16 @@ export class EditGemeindeComponent implements OnInit {
         }
         // TODO: Task KIBON-217: Load from DB
         this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
-        this.einschulungTypValues = getTSEinschulungTypValues();
 
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
-                this.initProperties(stammdaten);
+                this.keineBeschwerdeAdresse = stammdaten.beschwerdeAdresse ? false : true;
                 if (stammdaten.adresse === undefined) {
                     stammdaten.adresse = new TSAdresse();
                 }
                 if (stammdaten.beschwerdeAdresse === undefined) {
                     stammdaten.beschwerdeAdresse = new TSAdresse();
                 }
-                this.beguStart = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
                 return stammdaten;
             }));
     }
@@ -94,7 +84,6 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        this.saveProperties(stammdaten);
         if (this.keineBeschwerdeAdresse) {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
@@ -120,51 +109,6 @@ export class EditGemeindeComponent implements OnInit {
             this.logoImageUrl = e.target.result;
         };
         tmpFileReader.readAsDataURL(this.fileToUpload);
-    }
-
-    public getKonfigKontingentierungString(gk: TSGemeindeKonfiguration): string {
-        const kontStr = gk.konfigKontingentierung ? this.translate.instant('KONTINGENTIERUNG') :
-            'Keine ' + this.translate.instant('KONTINGENTIERUNG');
-        return kontStr;
-    }
-
-    public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
-        const bgBisStr = this.translate.instant(gk.konfigBeguBisUndMitSchulstufe.toString());
-        return bgBisStr;
-    }
-
-    public isKonfigurationEditable(stammdaten: TSGemeindeStammdaten, gk: TSGemeindeKonfiguration): boolean {
-        return TSGemeindeStatus.EINGELADEN === stammdaten.gemeinde.status
-            || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiodeStatus;
-    }
-
-    private initProperties(stammdaten: TSGemeindeStammdaten): void {
-        this.keineBeschwerdeAdresse = stammdaten.beschwerdeAdresse ? false : true;
-        stammdaten.konfigurationsListe.forEach(config => {
-            config.konfigBeguBisUndMitSchulstufe = TSEinschulungTyp.KINDERGARTEN2;
-            config.konfigKontingentierung = false;
-            config.konfigurationen.forEach(property => {
-                if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
-                    config.konfigBeguBisUndMitSchulstufe = (TSEinschulungTyp as any)[property.value];
-                }
-                if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
-                    config.konfigKontingentierung = (property.value === 'true');
-                }
-            });
-        });
-    }
-
-    private saveProperties(stammdaten: TSGemeindeStammdaten): void {
-        stammdaten.konfigurationsListe.forEach(config => {
-            config.konfigurationen.forEach(property => {
-                if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
-                    property.value = config.konfigBeguBisUndMitSchulstufe;
-                }
-                if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
-                    property.value = config.konfigKontingentierung ? 'true' : 'false';
-                }
-            });
-        });
     }
 
     private navigateBack(): void {
