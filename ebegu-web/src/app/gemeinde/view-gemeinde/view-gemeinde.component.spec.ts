@@ -23,13 +23,12 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
-import {AccordionTabDirective} from '../../shared/directive/accordion-tab.directive';
-import {AccordionDirective} from '../../shared/directive/accordion.directive';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeKonfigComponent} from '../gemeinde-konfiguration/gemeinde-konfig.component';
 import {ViewGemeindeComponent} from './view-gemeinde.component';
@@ -47,6 +46,7 @@ describe('ViewGemeindeComponent', () => {
         ['getAllGesuchsperioden']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
     beforeEach(async(() => {
 
@@ -62,12 +62,11 @@ describe('ViewGemeindeComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [
                 ViewGemeindeComponent,
                 GemeindeKonfigComponent,
-                AccordionDirective,
-                AccordionTabDirective,
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();

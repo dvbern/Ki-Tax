@@ -29,8 +29,6 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
-import {AccordionTabDirective} from '../../shared/directive/accordion-tab.directive';
-import {AccordionDirective} from '../../shared/directive/accordion.directive';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeKonfigComponent} from '../gemeinde-konfiguration/gemeinde-konfig.component';
@@ -72,8 +70,6 @@ describe('EditGemeindeComponent', () => {
             declarations: [
                 EditGemeindeComponent,
                 GemeindeKonfigComponent,
-                AccordionDirective,
-                AccordionTabDirective,
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();
