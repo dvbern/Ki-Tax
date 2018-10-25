@@ -76,16 +76,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Valid
 	private IBAN iban;
 
-	@DecimalMin("0.00")
-	@DecimalMax("365.00")
-	@Nullable
-	private BigDecimal oeffnungstage;
-
-	@DecimalMin("0.00")
-	@DecimalMax("24.00")
-	@Nullable
-	private BigDecimal oeffnungsstunden;
-
 	@Enumerated(value = EnumType.STRING)
 	@NotNull
 	@Column(nullable = false)
@@ -128,24 +118,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setIban(IBAN iban) {
 		this.iban = iban;
-	}
-
-	@Nullable
-	public BigDecimal getOeffnungstage() {
-		return oeffnungstage;
-	}
-
-	public void setOeffnungstage(@Nullable BigDecimal oeffnungstage) {
-		this.oeffnungstage = oeffnungstage;
-	}
-
-	@Nullable
-	public BigDecimal getOeffnungsstunden() {
-		return oeffnungsstunden;
-	}
-
-	public void setOeffnungsstunden(@Nullable BigDecimal oeffnungsstunden) {
-		this.oeffnungsstunden = oeffnungsstunden;
 	}
 
 	@Nonnull
@@ -227,8 +199,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		return EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution()) &&
 			Objects.equals(getBetreuungsangebotTyp(), otherInstStammdaten.getBetreuungsangebotTyp()) &&
 			Objects.equals(getIban(), otherInstStammdaten.getIban()) &&
-			MathUtil.isSame(getOeffnungsstunden(), otherInstStammdaten.getOeffnungsstunden()) &&
-			MathUtil.isSame(getOeffnungstage(), otherInstStammdaten.getOeffnungstage()) &&
 			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse());
 	}
 }

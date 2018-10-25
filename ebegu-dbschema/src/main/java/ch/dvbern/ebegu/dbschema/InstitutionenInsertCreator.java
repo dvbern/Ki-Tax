@@ -304,15 +304,13 @@ public class InstitutionenInsertCreator {
 			return null;
 		}
 
-		// INSERT INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, oeffnungsstunden, oeffnungstage, institution_id, adresse_id) VALUES ('11111111-1111-1111-1111-111111111101', '2016-07-26 00:00:00', '2016-07-26 00:00:00', 'flyway', 'flyway', 0, '1000-01-01', '9999-12-31', 'KITA', null, 11.50, 240.00, '11111111-1111-1111-1111-111111111101', '11111111-1111-1111-1111-111111111101');
+		// INSERT INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, institution_id, adresse_id) VALUES ('11111111-1111-1111-1111-111111111101', '2016-07-26 00:00:00', '2016-07-26 00:00:00', 'flyway', 'flyway', 0, '1000-01-01', '9999-12-31', 'KITA', null, 11.50, 240.00, '11111111-1111-1111-1111-111111111101', '11111111-1111-1111-1111-111111111101');
 		String id = UUID.randomUUID().toString();
 		String iban = readString(row, AdministrationService.COL_IBAN);
-		String stunden = readDouble(row, AdministrationService.COL_OEFFNUNGSSTUNDEN);
-		String tage = readDouble(row, AdministrationService.COL_OEFFNUNGSTAGE);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO institution_stammdaten ");
-		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, oeffnungsstunden, oeffnungstage, institution_id, adresse_id) ");
+		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, institution_id, adresse_id) ");
 		sb.append("VALUES (");
 		sb.append("'").append(id).append("', ");    // id
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
@@ -324,8 +322,6 @@ public class InstitutionenInsertCreator {
 		sb.append("'9999-12-31', ");                // gueltig_bis,
 		sb.append("'").append(typ.name()).append("', "); // betreuungsangebot_typ,
 		sb.append(toStringOrNull(iban)).append(", "); // iban
-		sb.append(toBigDecimalOrNull(stunden)).append(", "); // oeffnungsstunden,
-		sb.append(toBigDecimalOrNull(tage)).append(", "); // oeffnungstage,
 		sb.append(toStringOrNull(institutionsId)).append(", "); // institution_id
 		sb.append(toStringOrNull(adresseId)); // adresse_id
 		sb.append(");");

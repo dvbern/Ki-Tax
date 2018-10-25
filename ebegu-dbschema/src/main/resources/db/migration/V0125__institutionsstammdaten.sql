@@ -23,3 +23,11 @@ ALTER TABLE institution_stammdaten_tagesschule MODIFY gueltig_bis DATE NOT NULL;
 
 ALTER TABLE institution_stammdaten_ferieninsel MODIFY gueltig_ab DATE NOT NULL;
 ALTER TABLE institution_stammdaten_ferieninsel MODIFY gueltig_bis DATE NOT NULL;
+
+# oeffnungsstunden und oeffnungstage sind neu eine Einstellung
+
+ALTER TABLE institution_stammdaten DROP oeffnungsstunden;
+ALTER TABLE institution_stammdaten DROP oeffnungstage;
+
+ALTER TABLE institution_stammdaten_aud DROP oeffnungsstunden;
+ALTER TABLE institution_stammdaten_aud DROP oeffnungstage;

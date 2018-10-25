@@ -1003,8 +1003,6 @@ export default class EbeguRestUtil {
         if (institutionStammdaten) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdaten, institutionStammdaten);
             restInstitutionStammdaten.iban = institutionStammdaten.iban;
-            restInstitutionStammdaten.oeffnungsstunden = institutionStammdaten.oeffnungsstunden;
-            restInstitutionStammdaten.oeffnungstage = institutionStammdaten.oeffnungstage;
             restInstitutionStammdaten.betreuungsangebotTyp = institutionStammdaten.betreuungsangebotTyp;
             restInstitutionStammdaten.institution = this.institutionToRestObject({}, institutionStammdaten.institution);
             restInstitutionStammdaten.adresse = this.adresseToRestObject({}, institutionStammdaten.adresse);
@@ -1028,8 +1026,6 @@ export default class EbeguRestUtil {
         if (institutionStammdatenFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTS, institutionStammdatenFromServer);
             institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
-            institutionStammdatenTS.oeffnungsstunden = institutionStammdatenFromServer.oeffnungsstunden;
-            institutionStammdatenTS.oeffnungstage = institutionStammdatenFromServer.oeffnungstage;
             institutionStammdatenTS.betreuungsangebotTyp = institutionStammdatenFromServer.betreuungsangebotTyp;
             institutionStammdatenTS.institution =
                 this.parseInstitution(new TSInstitution(), institutionStammdatenFromServer.institution);

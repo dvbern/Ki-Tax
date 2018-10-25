@@ -1333,8 +1333,6 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull final InstitutionStammdaten persistedInstStammdaten) {
 		final JaxInstitutionStammdaten jaxInstStammdaten = new JaxInstitutionStammdaten();
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
-		jaxInstStammdaten.setOeffnungstage(persistedInstStammdaten.getOeffnungstage());
-		jaxInstStammdaten.setOeffnungsstunden(persistedInstStammdaten.getOeffnungsstunden());
 		if (persistedInstStammdaten.getIban() != null) {
 			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
 		}
@@ -1368,8 +1366,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionStammdaten.getAdresse());
 
 		convertAbstractDateRangedFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
-		institutionStammdaten.setOeffnungstage(institutionStammdatenJAXP.getOeffnungstage());
-		institutionStammdaten.setOeffnungsstunden(institutionStammdatenJAXP.getOeffnungsstunden());
 		if (institutionStammdatenJAXP.getIban() != null) {
 			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
 		}

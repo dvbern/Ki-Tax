@@ -271,8 +271,6 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		}
 		BetreuungsangebotTyp typ = BetreuungsangebotTyp.valueOf(angebot);
 		String iban = readString(row, AdministrationService.COL_IBAN);
-		String stunden = readDouble(row, AdministrationService.COL_OEFFNUNGSSTUNDEN);
-		String tage = readDouble(row, AdministrationService.COL_OEFFNUNGSTAGE);
 
 		String strasse = readString(row, AdministrationService.COL_STRASSE);
 		String hausnummer = readString(row, AdministrationService.COL_HAUSNUMMER);
@@ -293,7 +291,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 				// Institution ist schon bekannt -> updaten
 				String adresseId = stammdatenOptional.get().getAdresse().getId();
 				listAdressen.add(updateAdresse(adresseId, hausnummer, ort, plz, strasse, zusatzzeile));
-				listInstitutionsStammdaten.add(updateInstitutionsStammdaten(institutionsId, typ, iban, stunden, tage));
+				listInstitutionsStammdaten.add(updateInstitutionsStammdaten(institutionsId, typ, iban));
 			} else {
 				throw new IllegalStateException("InstitutionStammdaten nicht gefunden!");
 			}
@@ -302,15 +300,15 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 			String adresseId = UUID.randomUUID().toString();
 			listAdressen.add(insertAdresse(adresseId, hausnummer, ort, plz, strasse, zusatzzeile));
 			stammdatenId = UUID.randomUUID().toString();
-			listInstitutionsStammdaten.add(insertInstitutionsStammdaten(stammdatenId, institutionsId, adresseId, typ, iban, stunden, tage));
+			listInstitutionsStammdaten.add(insertInstitutionsStammdaten(stammdatenId, institutionsId, adresseId, typ, iban));
 		}
 		return stammdatenId;
 	}
 
-	private String insertInstitutionsStammdaten(String id, String institutionsId, String adresseId, BetreuungsangebotTyp typ, String iban, String stunden, String tage) {
+	private String insertInstitutionsStammdaten(String id, String institutionsId, String adresseId, BetreuungsangebotTyp typ, String iban) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO institution_stammdaten ");
-		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, oeffnungsstunden, oeffnungstage, institution_id, adresse_id) ");
+		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, institution_id, adresse_id) ");
 		sb.append("VALUES (");
 		sb.append('\'').append(id).append("', ");    // id
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
@@ -322,25 +320,19 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		sb.append("'9999-12-31', ");                // gueltig_bis,
 		sb.append('\'').append(typ.name()).append("', "); // betreuungsangebot_typ,
 		sb.append(toStringOrNull(iban)).append(", "); // iban
-		sb.append(toBigDecimalOrNull(stunden)).append(", "); // oeffnungsstunden,
-		sb.append(toBigDecimalOrNull(tage)).append(", "); // oeffnungstage,
 		sb.append(toStringOrNull(institutionsId)).append(", "); // institution_id
 		sb.append(toStringOrNull(adresseId)); // adresse_id
 		sb.append(");");
 		return sb.toString();
 	}
 
-	private String updateInstitutionsStammdaten(String id, BetreuungsangebotTyp typ, String iban, String stunden, String tage) {
+	private String updateInstitutionsStammdaten(String id, BetreuungsangebotTyp typ, String iban) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UPDATE institution_stammdaten set");
 		sb.append(" betreuungsangebot_typ = ");
 		sb.append('\'').append(typ.name()).append('\''); // typ
 		sb.append(", iban = ");
 		sb.append(toStringOrNull(iban));  // ort
-		sb.append(", oeffnungsstunden = ");
-		sb.append(toBigDecimalOrNull(stunden));  // stunden
-		sb.append(", oeffnungstage = ");
-		sb.append(toBigDecimalOrNull(tage));  // tage
 		sb.append(" where id = '");
 		sb.append(id);    // id
 		sb.append("';");
@@ -457,7 +449,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 			PrintWriter pw = new PrintWriter(fos);
 			LOG.info("Writing File to: " + fos.getAbsolutePath());
 
-			pw.println("TrägerschaftId,Trägerschaft,Trägerschaft E-Mail,InstitutionId,Name,Strasse,Hausnummer,Plz,Ort,Zusatzzeile,E-Mail,StammdatenId,Angebot,IBAN,Öffnungsstunden,Öffnungstage");
+			pw.println("TrägerschaftId,Trägerschaft,Trägerschaft E-Mail,InstitutionId,Name,Strasse,Hausnummer,Plz,Ort,Zusatzzeile,E-Mail,StammdatenId,Angebot,IBAN");
 
 			Collection<InstitutionStammdaten> stammdatenList = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 			for (InstitutionStammdaten stammdaten : stammdatenList) {
@@ -492,8 +484,6 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 					append(sb, stammdaten.getBetreuungsangebotTyp().name());
 					String iban = stammdaten.getIban() != null ? stammdaten.getIban().getIban() : "";
 					append(sb, iban);
-					append(sb, stammdaten.getOeffnungsstunden());
-					append(sb, stammdaten.getOeffnungstage());
 
 					pw.println(sb);
 				}

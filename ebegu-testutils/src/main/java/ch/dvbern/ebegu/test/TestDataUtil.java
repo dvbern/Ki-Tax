@@ -442,8 +442,6 @@ public final class TestDataUtil {
 	public static InstitutionStammdaten createDefaultInstitutionStammdaten() {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(365));
 		instStammdaten.setGueltigkeit(new DateRange(Constants.GESUCHSPERIODE_17_18));
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -454,8 +452,6 @@ public final class TestDataUtil {
 	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleForInstitution(@Nonnull Institution institution) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(365));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		instStammdaten.setInstitution(institution);
@@ -466,8 +462,6 @@ public final class TestDataUtil {
 	public static InstitutionStammdaten createInstitutionStammdatenFerieninselForInstitution(@Nonnull Institution institution) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(365));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
 		instStammdaten.setInstitution(institution);
@@ -479,8 +473,6 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(11.50));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(240));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -494,8 +486,6 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(9));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(244));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -509,8 +499,6 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA);
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(11.50));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(240));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -524,8 +512,6 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(9));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(240));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -539,8 +525,6 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL);
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(9));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(120));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
 		instStammdaten.setInstitution(createDefaultInstitution());

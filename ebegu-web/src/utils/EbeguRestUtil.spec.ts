@@ -346,8 +346,6 @@ describe('EbeguRestUtil', () => {
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
                 const myInstitutionStammdaten = new TSInstitutionStammdaten('iban',
-                    oeffnungsTage,
-                    12,
                     TSBetreuungsangebotTyp.KITA,
                     myInstitution,
                     undefined,
@@ -361,8 +359,6 @@ describe('EbeguRestUtil', () => {
                     myInstitutionStammdaten);
                 expect(restInstitutionStammdaten).toBeDefined();
                 expect(restInstitutionStammdaten.iban).toEqual(myInstitutionStammdaten.iban);
-                expect(restInstitutionStammdaten.oeffnungsstunden).toEqual(myInstitutionStammdaten.oeffnungsstunden);
-                expect(restInstitutionStammdaten.oeffnungstage).toEqual(myInstitutionStammdaten.oeffnungstage);
                 expect(restInstitutionStammdaten.gueltigAb)
                     .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
                 expect(restInstitutionStammdaten.gueltigBis)

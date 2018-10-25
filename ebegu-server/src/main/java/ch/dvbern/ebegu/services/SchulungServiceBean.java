@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -294,8 +293,6 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(id);
 		instStammdaten.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
-		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(11.50));
-		instStammdaten.setOeffnungstage(BigDecimal.valueOf(240));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(betreuungsangebotTyp);
 		instStammdaten.setAdresse(createAdresse(id));

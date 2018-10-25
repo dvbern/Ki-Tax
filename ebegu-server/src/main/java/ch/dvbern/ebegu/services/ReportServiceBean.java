@@ -449,9 +449,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (betreuung.getBetreuungsangebotTyp() != null) {
 				row.setBetreuungsTyp(betreuung.getBetreuungsangebotTyp().name());
 			}
-			if (betreuung.getInstitutionStammdaten() != null) {
-				row.setOeffnungstage(betreuung.getInstitutionStammdaten().getOeffnungstage());
-			}
 			kantonDataRowList.add(row);
 		}
 		return kantonDataRowList;
