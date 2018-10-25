@@ -108,9 +108,8 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		createGesuchsperiode();
 		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
 		String id = insertedInstitutionStammdaten.getInstitution().getId();
-		Collection<InstitutionStammdaten> allInstitutionStammdatenByInstitution = institutionStammdatenService.getAllInstitutionStammdatenByInstitution(id);
-		Assert.assertEquals(1, allInstitutionStammdatenByInstitution.size());
-
+		InstitutionStammdaten stammdatenByInstitution = institutionStammdatenService.getInstitutionStammdatenByInstitution(id);
+		Assert.assertNotNull(stammdatenByInstitution);
 	}
 
 	@Test

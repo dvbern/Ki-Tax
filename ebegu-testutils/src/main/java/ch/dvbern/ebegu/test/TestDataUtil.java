@@ -323,7 +323,7 @@ public final class TestDataUtil {
 		return mandant;
 	}
 
-	@Nullable
+	@Nonnull
 	public static Mandant getMandantKantonBern(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
 		if (mandant == null) {
@@ -442,7 +442,7 @@ public final class TestDataUtil {
 	public static InstitutionStammdaten createDefaultInstitutionStammdaten() {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setGueltigkeit(new DateRange(Constants.GESUCHSPERIODE_17_18));
+		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
 		instStammdaten.setAdresse(createDefaultAdresse());

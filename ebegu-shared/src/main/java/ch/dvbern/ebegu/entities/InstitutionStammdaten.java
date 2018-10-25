@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -29,21 +28,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.validationgroups.InstitutionsStammdatenInsertValidationGroup;
-import ch.dvbern.ebegu.validators.CheckOnlyOneInstitutionsStammdatenPerGesuchsperiode;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.hibernate.envers.Audited;
 
@@ -65,7 +58,6 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@Index(name = "IX_institution_stammdaten_gueltig_bis", columnList = "gueltigBis")
 	}
 )
-@CheckOnlyOneInstitutionsStammdatenPerGesuchsperiode (groups = InstitutionsStammdatenInsertValidationGroup.class)
 //@Cacheable
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class InstitutionStammdaten extends AbstractDateRangedEntity {
