@@ -324,7 +324,7 @@ public final class TestDataUtil {
 		return mandant;
 	}
 
-	@Nullable
+	@Nonnull
 	public static Mandant getMandantKantonBern(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
 		if (mandant == null) {
@@ -343,7 +343,7 @@ public final class TestDataUtil {
 			gemeinde.setName("Testgemeinde");
 			gemeinde.setBfsNummer(SEQUENCE.incrementAndGet());
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
-			gemeinde.setMandant(Objects.requireNonNull(getMandantKantonBern(persistence)));
+			gemeinde.setMandant(getMandantKantonBern(persistence));
 			gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
 			return persistence.persist(gemeinde);
 		}
@@ -1215,7 +1215,7 @@ public final class TestDataUtil {
 		stammdaten.setDefaultBenutzerBG(verantwortlicherBG);
 		stammdaten.setDefaultBenutzerTS(verantwortlicherTS);
 		stammdaten.setAdresse(persistence.merge(createDefaultAdresse()));
-		stammdaten.setGemeinde(persistence.merge(getTestGemeinde(persistence)));
+		stammdaten.setGemeinde(getTestGemeinde(persistence));
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
 		stammdaten.setMail("info@bern.ch");
 

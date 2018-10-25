@@ -748,7 +748,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			//VERANTWORTLICHE
 			if (!gesuch.isMutation()) {
 				// in case of erstgesuch: Verantwortliche werden beim einlesen gesetzt und kommen vom client
-				setVerantwortliche(usernameJA, usernameSCH, gesuch, false, false);
+				setVerantwortliche(usernameJA, usernameSCH, gesuch);
 			} else {
 				// in case of mutation, we take default Verantwortliche and set them only if not set...
 				Optional<GemeindeStammdaten> gemeindeStammdaten =
@@ -775,15 +775,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		throw new EbeguEntityNotFoundException("antragFreigeben", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
 	}
 
-	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
 		SACHBEARBEITER_TS, GESUCHSTELLER })
-	public boolean setVerantwortliche(
+	private boolean setVerantwortliche(
 		@Nullable String usernameBG,
 		@Nullable String usernameTS,
-		Gesuch gesuch,
-		boolean onlyIfNotSet,
-		boolean persist) {
+		@Nonnull Gesuch gesuch) {
 
 		Benutzer verantwortlicherBG = null;
 		Benutzer verantwortlicherTS = null;
@@ -795,7 +792,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			verantwortlicherTS = benutzerService.findBenutzer(usernameTS).orElse(null);
 		}
 
-		return setVerantwortliche(verantwortlicherBG, verantwortlicherTS, gesuch, onlyIfNotSet, persist);
+		return setVerantwortliche(verantwortlicherBG, verantwortlicherTS, gesuch, false, false);
 	}
 
 	@Override
@@ -804,7 +801,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public boolean setVerantwortliche(
 		@Nullable Benutzer verantwortlicherBG,
 		@Nullable Benutzer verantwortlicherTS,
-		Gesuch gesuch,
+		@Nonnull Gesuch gesuch,
 		boolean onlyIfNotSet,
 		boolean persist) {
 
