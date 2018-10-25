@@ -28,6 +28,7 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../shared/shared.module';
+import {GemeindeKonfigComponent} from '../gemeinde-konfiguration/gemeinde-konfig.component';
 import {ViewGemeindeComponent} from './view-gemeinde.component';
 
 describe('ViewGemeindeComponent', () => {
@@ -50,6 +51,7 @@ describe('ViewGemeindeComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
+                GemeindeKonfigComponent,
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
