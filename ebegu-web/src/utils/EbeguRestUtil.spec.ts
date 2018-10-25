@@ -65,7 +65,6 @@ describe('EbeguRestUtil', () => {
     const pensum50 = 50;
     const monatlicheBetreuungskosten200 = 200.2;
     const monatlicheBetreuungskosten500 = 500.5;
-    const oeffnungsTage = 250;
 
     beforeEach(angular.mock.module('pascalprecht.translate'));
 
@@ -245,8 +244,6 @@ describe('EbeguRestUtil', () => {
         describe('parseBetreuung()', () => {
             it('should transform TSBetreuung to REST object and back', () => {
                 const instStam = new TSInstitutionStammdaten('iban',
-                    oeffnungsTage,
-                    12,
                     TSBetreuungsangebotTyp.KITA,
                     createInstitution(),
                     undefined,
