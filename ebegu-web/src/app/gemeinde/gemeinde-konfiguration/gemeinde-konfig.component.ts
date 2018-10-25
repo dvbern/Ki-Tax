@@ -20,7 +20,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {StateService, Transition} from '@uirouter/core';
+import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import * as moment from 'moment';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
@@ -47,7 +47,6 @@ export class GemeindeKonfigComponent implements OnInit {
 
     public constructor(
         private readonly $transition$: Transition,
-        private readonly $state: StateService,
         private readonly translate: TranslateService,
     ) {
     }

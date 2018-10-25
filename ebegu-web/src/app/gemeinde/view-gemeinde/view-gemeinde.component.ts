@@ -27,7 +27,6 @@ import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
     selector: 'dv-view-gemeinde',
@@ -48,7 +47,6 @@ export class ViewGemeindeComponent implements OnInit {
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly translate: TranslateService,
-        private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly authServiceRS: AuthServiceRS,
     ) {

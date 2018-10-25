@@ -18,7 +18,7 @@
 import {IHttpService, ILogService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
-import {catchError, switchMap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';

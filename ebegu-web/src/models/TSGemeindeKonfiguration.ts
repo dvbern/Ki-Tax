@@ -20,7 +20,6 @@
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
 import TSEinstellung from './TSEinstellung';
-import TSGesuchsperiode from './TSGesuchsperiode';
 
 export default class TSGemeindeKonfiguration {
     public gesuchsperiodeName: string;
