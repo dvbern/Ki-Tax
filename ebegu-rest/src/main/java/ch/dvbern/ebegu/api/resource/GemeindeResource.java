@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -39,6 +41,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
@@ -49,6 +52,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -62,6 +66,7 @@ import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
+import org.jboss.resteasy.annotations.cache.Cache;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
@@ -277,5 +282,28 @@ public class GemeindeResource {
 		stammdaten.setLogoContent(fileList.get(0).getContent());
 		gemeindeService.saveGemeindeStammdaten(stammdaten);
 		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Returns the logo image of the klub with the given id or an errorcode if none is available")
+	@GET
+	@Path("/logo/{gemeindeId}")
+	@Cache(maxAge = 172800)
+	public Response downloadLogo(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Context HttpServletRequest request) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+		if (stammdaten.isPresent()) {
+			try {
+				return RestUtil.buildDownloadResponse(false, null, "image/jpeg",
+					stammdaten.get().getLogoContent());
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
+			}
+		} else {
+			return Response.status(Status.NO_CONTENT).build();
+		}
+
 	}
 }

@@ -65,7 +65,7 @@ export class ViewGemeindeComponent implements OnInit {
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.initStrings(stammdaten);
-                this.keineBeschwerdeAdresse = stammdaten.beschwerdeAdresse ? false : true;
+                this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
                 return stammdaten;
             }));
     }

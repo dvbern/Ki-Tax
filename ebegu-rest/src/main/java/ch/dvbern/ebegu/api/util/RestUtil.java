@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.util;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,16 +94,28 @@ public final class RestUtil {
 		return request.getRequestURI().startsWith(blobdataPath);
 	}
 
-	public static Response buildDownloadResponse(FileMetadata fileMetadata, boolean attachment) throws IOException {
+	public static Response buildDownloadResponse(boolean attachment, String filename, String filetype, byte[] content) throws IOException {
+		String contentType = filetype;
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+		return buildResponse(attachment, contentType, content, filename);
+	}
 
+
+	public static Response buildDownloadResponse(FileMetadata fileMetadata, boolean attachment) throws IOException {
 		Path filePath = Paths.get(fileMetadata.getFilepfad());
 		//if no guess can be made assume application/octet-stream
 		String contentType = Files.probeContentType(filePath);
 		if (contentType == null) {
 			contentType = "application/octet-stream";
 		}
-		final byte[] bytes = Files.readAllBytes(filePath);
+		final byte[] content = Files.readAllBytes(filePath);
 		String filename = fileMetadata.getFilename();
+		return buildResponse(attachment, contentType, content, filename);
+	}
+
+	private static Response buildResponse(boolean attachment, String contentType, byte[] content, String filename) throws UnsupportedEncodingException {
 		//Prepare Headerfield Content-Disposition:
 		//we want percantage-encoding instead of url-encoding (spaces are %20 in percentage encoding but + in url-encoding)
 		String isoEncodedFilename = URLEncoder.encode(filename, "ISO-8859-1").replace("+", "%20"); //percantage encoding mit utf-8 und %20 fuer space statt +
@@ -112,11 +125,10 @@ public final class RestUtil {
 		String filenameStarParam = "filename*=UTF-8''" + utfEncodedFilename;   //utf-8 url encoded filename https://tools.ietf.org/html/rfc5987
 		String disposition = (attachment ? "attachment; " : "inline;") + simpleFilename + filenameStarParam;
 
-		return Response.ok(bytes)
+		return Response.ok(content)
 			.header(HttpHeaders.CONTENT_DISPOSITION, disposition)
-			.header(HttpHeaders.CONTENT_LENGTH, bytes.length)
+			.header(HttpHeaders.CONTENT_LENGTH, content.length)
 			.type(MediaType.valueOf(contentType)).build();
-
 	}
 
 	/**

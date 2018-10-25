@@ -30,6 +30,7 @@ import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
+import {GemeindeKonfigComponent} from '../gemeinde-konfiguration/gemeinde-konfig.component';
 import {EditGemeindeComponent} from './edit-gemeinde.component';
 
 describe('EditGemeindeComponent', () => {
@@ -54,6 +55,7 @@ describe('EditGemeindeComponent', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
+                GemeindeKonfigComponent,
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
