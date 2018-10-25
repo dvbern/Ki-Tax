@@ -55,7 +55,6 @@ describe('EditGemeindeComponent', () => {
                 SharedModule,
                 NoopAnimationsModule,
                 MaterialModule,
-                GemeindeKonfigComponent,
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
@@ -68,6 +67,7 @@ describe('EditGemeindeComponent', () => {
             ],
             declarations: [
                 EditGemeindeComponent,
+                GemeindeKonfigComponent,
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();

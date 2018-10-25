@@ -51,7 +51,6 @@ describe('ViewGemeindeComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                GemeindeKonfigComponent,
             ],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
@@ -62,6 +61,7 @@ describe('ViewGemeindeComponent', () => {
             ],
             declarations: [
                 ViewGemeindeComponent,
+                GemeindeKonfigComponent,
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();
