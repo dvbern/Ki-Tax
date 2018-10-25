@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -44,7 +43,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -392,33 +390,11 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		return null;
 	}
 
-	@Nullable
-	private String readDouble(Row row, int columnIndex) {
-		Cell cell = row.getCell(columnIndex);
-		if (cell != null) {
-			cell.setCellType(CellType.NUMERIC);
-			return Double.toString(cell.getNumericCellValue());
-		}
-		return null;
-	}
-
 	private String toStringOrNull(String aStringOrNull) {
 		if (aStringOrNull == null) {
 			return "null";
 		}
 		return '\'' + aStringOrNull + '\'';
-	}
-
-	private String toBigDecimalOrNull(String aStringOrNull) {
-		if (aStringOrNull == null) {
-			return "null";
-		}
-		// Mit 2 Nachkommastellen
-		BigDecimal from = MathUtil.DEFAULT.from(new BigDecimal(aStringOrNull));
-		if (from != null) {
-			return from.toString();
-		}
-		return "null";
 	}
 
 	private PrintWriter getPrintWriter() {
@@ -498,13 +474,6 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 
 	private void append(@Nonnull StringBuilder sb, @Nullable String s) {
 		if (StringUtils.isNotEmpty(s)) {
-			sb.append(s);
-		}
-		sb.append(',');
-	}
-
-	private void append(@Nonnull StringBuilder sb, @Nullable BigDecimal s) {
-		if (s != null) {
 			sb.append(s);
 		}
 		sb.append(',');
