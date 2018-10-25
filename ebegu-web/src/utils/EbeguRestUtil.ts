@@ -970,6 +970,7 @@ export default class EbeguRestUtil {
             restInstitution.mandant = this.mandantToRestObject({}, institution.mandant);
             restInstitution.traegerschaft = this.traegerschaftToRestObject({}, institution.traegerschaft);
             restInstitution.mail = institution.mail;
+            restInstitution.status = institution.status;
             return restInstitution;
         }
         return undefined;
@@ -983,6 +984,7 @@ export default class EbeguRestUtil {
             institutionTS.traegerschaft =
                 this.parseTraegerschaft(new TSTraegerschaft(), institutionFromServer.traegerschaft);
             institutionTS.mail = institutionFromServer.mail;
+            institutionTS.status = institutionFromServer.status;
             return institutionTS;
         }
         return undefined;

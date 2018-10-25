@@ -64,3 +64,8 @@ DELETE FROM institution_stammdaten WHERE gueltig_bis < now();
 
 ALTER TABLE institution_stammdaten
 	ADD CONSTRAINT UK_institution_stammdaten_institution_id UNIQUE (institution_id);
+
+# Neues Feld Status auf Institution
+
+ALTER TABLE institution ADD status VARCHAR(255) NOT NULL DEFAULT 'EINGELADEN';
+ALTER TABLE institution_aud ADD status VARCHAR(255);
