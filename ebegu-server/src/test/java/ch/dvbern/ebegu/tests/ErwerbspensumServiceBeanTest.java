@@ -252,7 +252,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void isErwerbspensumRequired_ErweiterteBeduerfnisse_NotRequired() {
+	public void isErwerbspensumRequired_ErweiterteBeduerfnisse_Required() {
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
 			instService,
 			persistence,
@@ -266,7 +266,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 			persistence.merge(betreuung);
 		});
 
-		Assert.assertFalse(erwerbspensumService.isErwerbspensumRequired(gesuch));
+		Assert.assertTrue(erwerbspensumService.isErwerbspensumRequired(gesuch));
 	}
 
 	private ErwerbspensumContainer insertNewEntity() {
