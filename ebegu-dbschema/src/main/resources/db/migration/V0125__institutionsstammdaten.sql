@@ -31,3 +31,36 @@ ALTER TABLE institution_stammdaten DROP oeffnungstage;
 
 ALTER TABLE institution_stammdaten_aud DROP oeffnungsstunden;
 ALTER TABLE institution_stammdaten_aud DROP oeffnungstage;
+
+# Relation InstitutionStammdaten und Institution ist neu 1:1. d.h. neuer UK, pro Institution darf es in DB nur
+# noch ein Stammdaten haben. Alle Referenzen muessen geloescht werden
+
+DELETE FROM zahlungsposition;
+DELETE FROM zahlung;
+DELETE FROM pain001dokument;
+DELETE FROM zahlungsauftrag;
+
+DELETE FROM betreuungspensum_container WHERE betreuung_id IN (
+	SELECT id FROM betreuung WHERE institution_stammdaten_id IN (
+		SELECT id FROM institution_stammdaten WHERE gueltig_bis < now()));
+
+DELETE FROM betreuungsmitteilung_pensum WHERE betreuungsmitteilung_id IN (
+	SELECT id FROM mitteilung WHERE betreuung_id IN (
+		SELECT id FROM betreuung WHERE institution_stammdaten_id IN (
+			SELECT id FROM institution_stammdaten WHERE gueltig_bis < now())));
+
+DELETE FROM mitteilung WHERE betreuung_id IN (
+	SELECT id FROM betreuung WHERE institution_stammdaten_id IN (
+		SELECT id FROM institution_stammdaten WHERE gueltig_bis < now()));
+
+DELETE FROM abwesenheit_container WHERE betreuung_id IN (
+	SELECT id FROM betreuung WHERE institution_stammdaten_id IN (
+		SELECT id FROM institution_stammdaten WHERE gueltig_bis < now()));
+
+DELETE FROM betreuung WHERE institution_stammdaten_id IN (
+	SELECT id FROM institution_stammdaten WHERE gueltig_bis < now());
+
+DELETE FROM institution_stammdaten WHERE gueltig_bis < now();
+
+ALTER TABLE institution_stammdaten
+	ADD CONSTRAINT UK_institution_stammdaten_institution_id UNIQUE (institution_id);

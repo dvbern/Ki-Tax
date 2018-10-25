@@ -57,7 +57,8 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "adresse_id", name = "UK_institution_stammdaten_adresse_id"),
-		@UniqueConstraint(columnNames = "adresse_kontoinhaber_id", name = "UK_institution_stammdaten_adressekontoinhaber_id")
+		@UniqueConstraint(columnNames = "adresse_kontoinhaber_id", name = "UK_institution_stammdaten_adressekontoinhaber_id"),
+		@UniqueConstraint(columnNames = "institution_id", name= "UK_institution_stammdaten_institution_id")
 	},
 	indexes = {
 		@Index(name = "IX_institution_stammdaten_gueltig_ab", columnList = "gueltigAb"),
@@ -82,7 +83,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 	@NotNull
-	@ManyToOne(optional = false)
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_institution_id"), nullable = false)
 	private Institution institution;
 
