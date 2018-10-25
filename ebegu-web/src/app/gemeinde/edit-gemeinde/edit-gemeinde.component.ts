@@ -62,7 +62,7 @@ export class EditGemeindeComponent implements OnInit {
 
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
-                this.keineBeschwerdeAdresse = stammdaten.beschwerdeAdresse ? false : true;
+                this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
                 if (stammdaten.adresse === undefined) {
                     stammdaten.adresse = new TSAdresse();
                 }
