@@ -131,7 +131,7 @@ public class ErwerbspensumRuleTest {
 		Assert.assertNotNull(noBemerkungAbschn);
 		Assert.assertEquals(1, noBemerkungAbschn.size());
 		Assert.assertEquals(100, noBemerkungAbschn.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(noBemerkungAbschn.get(0).getBemerkungen().contains("Erwerbspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 1"));
+		Assert.assertTrue(noBemerkungAbschn.get(0).getBemerkungen().contains("Beschäftigungspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 1"));
 	}
 
 	@Test
@@ -146,8 +146,8 @@ public class ErwerbspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(result.get(0).getBemerkungen().contains("Maximaler Anspruch Erwerbspensum 100 %"));
-		Assert.assertTrue(result.get(0).getBemerkungen().contains("Maximaler Anspruch Erwerbspensum 100 %"));
+		Assert.assertTrue(result.get(0).getBemerkungen().contains("Maximaler Anspruch Beschäftigungspensum 100 %"));
+		Assert.assertTrue(result.get(0).getBemerkungen().contains("Maximaler Anspruch Beschäftigungspensum 100 %"));
 	}
 
 	@Test
@@ -317,7 +317,7 @@ public class ErwerbspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(40, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertEquals("ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%", result.get(0).getBemerkungen()); // Es muss eine Bemerkung geben, da der maximale Wert fuer Zuschlag ueberschrittet wurde
+		Assert.assertEquals("ERWERBSPENSUM: Der Zuschlag zum Beschäftigungspensum beträgt max. 20%", result.get(0).getBemerkungen()); // Es muss eine Bemerkung geben, da der maximale Wert fuer Zuschlag ueberschrittet wurde
 	}
 
 	@Test
@@ -332,9 +332,9 @@ public class ErwerbspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(result.get(0).getBemerkungen().contains("Maximaler Anspruch Erwerbspensum 100 %"));
-		Assert.assertTrue(result.get(0).getBemerkungen().contains("Erwerbspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 1"));
-		Assert.assertTrue(result.get(0).getBemerkungen().contains("Erwerbspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 2"));
+		Assert.assertTrue(result.get(0).getBemerkungen().contains("Maximaler Anspruch Beschäftigungspensum 100 %"));
+		Assert.assertTrue(result.get(0).getBemerkungen().contains("Beschäftigungspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 1"));
+		Assert.assertTrue(result.get(0).getBemerkungen().contains("Beschäftigungspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 2"));
 	}
 
 	@Test
@@ -349,9 +349,9 @@ public class ErwerbspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(95, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(result.get(0).getBemerkungen().contains("Erwerbspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 1"));
-		Assert.assertFalse(result.get(0).getBemerkungen().contains("Erwerbspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 2"));
-		Assert.assertTrue(result.get(0).getBemerkungen().contains("Der Zuschlag zum Erwerbspensum beträgt max."));
+		Assert.assertTrue(result.get(0).getBemerkungen().contains("Beschäftigungspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 1"));
+		Assert.assertFalse(result.get(0).getBemerkungen().contains("Beschäftigungspensum + Zuschlag sind auf 100% limitiert für Gesuchsteller 2"));
+		Assert.assertTrue(result.get(0).getBemerkungen().contains("Der Zuschlag zum Beschäftigungspensum beträgt max."));
 	}
 
 	private Betreuung createGesuch(final boolean gs2) {
