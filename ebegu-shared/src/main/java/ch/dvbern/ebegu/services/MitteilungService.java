@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -85,26 +86,30 @@ public interface MitteilungService {
 	Collection<Mitteilung> findAllMitteilungenForBetreuung(@Nonnull Betreuung betreuung);
 
 	/**
-	 * Gibt alle Mitteilungen fuer das uebergebene Dossier zurueck, welche fuer den eingeloggten Benutzer sichtbar sind.
+	 * Gibt alle Mitteilungen fuer das uebergebene Dossier zurueck, welche fuer den eingeloggten Benutzer sichtbar
+	 * sind.
 	 */
 	@Nonnull
 	Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt alle Mitteilungen fuer die uebergebene Betreuung zurueck, welche fuer den eingeloggten Benutzer sichtbar sind.
+	 * Gibt alle Mitteilungen fuer die uebergebene Betreuung zurueck, welche fuer den eingeloggten Benutzer sichtbar
+	 * sind.
 	 */
 	@Nonnull
 	Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Betreuung betreuung);
 
 	/**
-	 * Gibt den Entwurf einer Mitteilung zurueck, welche zum uebergebenen Dossier erfasst wurde. Es gibt einen Entwurf pro Amt, d.h. alle Mitarbeiter
+	 * Gibt den Entwurf einer Mitteilung zurueck, welche zum uebergebenen Dossier erfasst wurde. Es gibt einen Entwurf
+	 * pro Amt, d.h. alle Mitarbeiter
 	 * des Jugendamtes "teilen" sich einen Entwurf, dasselbe gilt fuer die Mitarbeiter des Schulamtes.
 	 */
 	@Nullable
 	Mitteilung getEntwurfForCurrentRolle(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt den Entwurf einer Mitteilung zurueck, welche zur uebergebenen Betreuung erfasst wurde. Es gibt einen Entwurf pro Amt, d.h. alle Mitarbeiter
+	 * Gibt den Entwurf einer Mitteilung zurueck, welche zur uebergebenen Betreuung erfasst wurde. Es gibt einen
+	 * Entwurf pro Amt, d.h. alle Mitarbeiter
 	 * des Jugendamtes "teilen" sich einen Entwurf, dasselbe gilt fuer die Mitarbeiter des Schulamtes.
 	 */
 	@Nullable
@@ -133,13 +138,15 @@ public interface MitteilungService {
 	Collection<Mitteilung> setAllNewMitteilungenOfDossierGelesen(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt alle ungelesenen Mitteilungen (Status NEU) fuer das uebergebene Dossier zurueck, welche fuer den eingeloggten Benutzer sichtbar sind
+	 * Gibt alle ungelesenen Mitteilungen (Status NEU) fuer das uebergebene Dossier zurueck, welche fuer den
+	 * eingeloggten Benutzer sichtbar sind
 	 */
 	@Nonnull
 	Collection<Mitteilung> getNewMitteilungenOfDossierForCurrentRolle(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt die Anzahl aller ungelesenen Mitteilungen (Status NEU), welche fuer den eingeloggten Benutzer sichtbar sind.
+	 * Gibt die Anzahl aller ungelesenen Mitteilungen (Status NEU), welche fuer den eingeloggten Benutzer sichtbar
+	 * sind.
 	 */
 	@Nonnull
 	Long getAmountNewMitteilungenForCurrentBenutzer();
@@ -151,8 +158,10 @@ public interface MitteilungService {
 	Betreuungsmitteilung sendBetreuungsmitteilung(@Nonnull Betreuungsmitteilung betreuungsmitteilung);
 
 	/**
-	 * Applies all passed Betreuungspensen from the Betreuungsmitteilung to the existing Betreuung with the same number.
-	 * If the newest Antrag is verfuegt, it will create a new Mutation out of it and apply the changes in this new Antrag.
+	 * Applies all passed Betreuungspensen from the Betreuungsmitteilung to the existing Betreuung with the same
+	 * number.
+	 * If the newest Antrag is verfuegt, it will create a new Mutation out of it and apply the changes in this new
+	 * Antrag.
 	 * Returns the Antrag, in which the mitteilung was applied, which is much more useful than the mitteilung itself
 	 * since normally you only need to know where the mitteilung was applied.
 	 */
@@ -166,7 +175,8 @@ public interface MitteilungService {
 	Optional<Betreuungsmitteilung> findNewestBetreuungsmitteilung(@Nonnull String betreuungId);
 
 	/**
-	 * Die uebergebene Mitteilung wird ans Jugendamt delegiert. Dabei wird als Empfaenger der VerantwortlicheJA des Falls gesetzt, falls ein
+	 * Die uebergebene Mitteilung wird ans Jugendamt delegiert. Dabei wird als Empfaenger der VerantwortlicheJA des
+	 * Falls gesetzt, falls ein
 	 * solcher vorhanden ist, sonst der Default-Verantwortliche des Jugendamtes.
 	 * Die Meldung wird fuer den neuen Empfaenger wieder auf NEU gesetzt.
 	 */
@@ -174,18 +184,23 @@ public interface MitteilungService {
 	Mitteilung mitteilungUebergebenAnJugendamt(@Nonnull String mitteilungId);
 
 	/**
-	 * Die uebergebene Mitteilung wird ans Schulamt delegiert. Dabei wird als Empfaenger der VerantwortlicheSCH des Falls gesetzt, falls ein
+	 * Die uebergebene Mitteilung wird ans Schulamt delegiert. Dabei wird als Empfaenger der VerantwortlicheSCH des
+	 * Falls gesetzt, falls ein
 	 * solcher vorhanden ist, sonst der Default-Verantwortliche des Schulamtes
 	 * Die Meldung wird fuer den neuen Empfaenger wieder auf NEU gesetzt.
 	 */
 	@Nonnull
-	Mitteilung mitteilungUebergebenAnSchulamt(@Nonnull String mitteilungId);
+	Mitteilung mitteilungUebergebenAnSchulamt(@Nonnull String mitteilungId) throws EbeguRuntimeException;
 
 	/**
-	 * Methode welche jeweils eine bestimmte Menge an Suchresultate fuer die Paginatete Suchtabelle zuruckgibt. Wenn das Flag includeClosed auf true
+	 * Methode welche jeweils eine bestimmte Menge an Suchresultate fuer die Paginatete Suchtabelle zuruckgibt. Wenn
+	 * das Flag includeClosed auf true
 	 * gesetzt ist, werden auch bereits abgeschlossene Mitteilungen geliefert.
+	 *
 	 * @return Resultatpaar, der erste Wert im Paar ist die Anzahl Resultate, der zweite Wert ist die Resultatliste
 	 */
 	@Nonnull
-	Pair<Long, List<Mitteilung>> searchMitteilungen(@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto, @Nonnull Boolean includeClosed);
+	Pair<Long, List<Mitteilung>> searchMitteilungen(
+		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
+		@Nonnull Boolean includeClosed);
 }

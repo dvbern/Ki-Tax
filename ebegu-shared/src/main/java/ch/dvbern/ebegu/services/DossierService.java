@@ -77,15 +77,18 @@ public interface DossierService {
 	Dossier getOrCreateDossierAndFallForCurrentUserAsBesitzer(@Nonnull String gemeindeId);
 
 	/**
-	 * Checks whether the given Dossier has at least one Mitteilung or not. Will throw an exception if the dossier is not found.
+	 * Checks whether the given Dossier has at least one Mitteilung or not. Will throw an exception if the dossier is
+	 * not found.
 	 */
 	boolean hasDossierAnyMitteilung(@NotNull String dossierId);
 
 	/**
 	 * Logik fuer die Ermittlung des Hauptverantwortlichen:
 	 * (1) Wenn ein JA-Verantwortlicher gesetzt ist, ist dieser der Hauptverantwortlicher
-	 * (2) Wenn kein JA-Verantwortlicher gesetzt ist, aber ein SCH-Verantwortlicher, ist dieser der Hauptverantwortlicher
-	 * (3) Wenn noch gar nichts gesetzt ist (z.B. noch gar kein Gesuch erfasst) wird der DefaultVerantwortlicherJA zurueckgegeben
+	 * (2) Wenn kein JA-Verantwortlicher gesetzt ist, aber ein SCH-Verantwortlicher, ist dieser der
+	 * Hauptverantwortlicher
+	 * (3) Wenn noch gar nichts gesetzt ist (z.B. noch gar kein Gesuch erfasst) wird der DefaultVerantwortlicherJA
+	 * zurueckgegeben
 	 */
 	@Nonnull
 	Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Dossier dossier);
