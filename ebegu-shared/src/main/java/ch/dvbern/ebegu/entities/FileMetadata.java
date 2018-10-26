@@ -31,6 +31,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
 
 /**
  * Gemeinsame Basisklasse für speichern von Files. Der Content wird dabei nicht gespeichert sondern
@@ -52,7 +53,7 @@ public abstract class FileMetadata extends AbstractMutableEntity {
 	private String filename;
 
 	//Dokument soll nicht in DB gespeichert werden, sondern in File-System. Wie genau ist noch nicht klar und muss noch evaluiert werden!
-	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
+	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
 	@Column(nullable = false)
 	@NotNull
 	private String filepfad;
