@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
 
+@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 @Audited
 @Entity
 public class ErweiterteBetreuung extends AbstractMutableEntity {
@@ -25,7 +26,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	private Boolean erweiterteBeduerfnisse = false;
 
 	@Nullable
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_fachstelle_id"))
 	private Fachstelle fachstelle;
 

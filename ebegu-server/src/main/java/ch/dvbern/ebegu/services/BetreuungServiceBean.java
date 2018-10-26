@@ -477,7 +477,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
-	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer must be set to null")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT,
 		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
 	public void removeBetreuung(@Nonnull String betreuungId) {
@@ -487,10 +486,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.ERROR_ENTITY_NOT_FOUND, betreuungId));
 
 		handleDependingMitteilungenWhenDeletingBetreuung(betreuungId, betreuungToRemove);
-
-		// must be set to null so that hibernate understands it must remove it
-		//noinspection ConstantConditions
-		betreuungToRemove.setErweiterteBetreuungContainer(null);
 
 		final String gesuchId = betreuungToRemove.extractGesuch().getId();
 		removeBetreuung(betreuungToRemove);
@@ -522,12 +517,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
+	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer must be set to null")
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
 	public void removeBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung);
 		authorizer.checkWriteAuthorization(betreuung);
 		final Gesuch gesuch = betreuung.extractGesuch();
+
+		// must be set to null so that hibernate understands it must remove it
+		//noinspection ConstantConditions
+		betreuung.setErweiterteBetreuungContainer(null);
 
 		persistence.remove(betreuung);
 

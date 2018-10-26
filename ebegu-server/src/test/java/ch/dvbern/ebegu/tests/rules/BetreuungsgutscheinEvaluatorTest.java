@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -179,6 +180,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 
 	private Betreuung createBetreuungWithPensum(Gesuch gesuch, DateRange gueltigkeit) {
 		Betreuung betreuung = new Betreuung();
+
 		KindContainer kindContainer = new KindContainer();
 		betreuung.setKind(kindContainer);
 		kindContainer.getBetreuungen().add(betreuung);
@@ -187,8 +189,10 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuung.getKind().getKindJA().setGeburtsdatum(LocalDate.now().minusYears(4));
 		betreuung.getKind().getKindJA().setKinderabzug(Kinderabzug.GANZER_ABZUG);
 		gesuch.getKindContainers().add(betreuung.getKind());
+
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
+
 		betreuung.setBetreuungspensumContainers(new HashSet<>());
 		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
 		betreuungspensumContainer.setBetreuung(betreuung);
@@ -196,7 +200,12 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(gueltigkeit);
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(60);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
+
 		betreuung.setKeineKesbPlatzierung(true);
+
+		ErweiterteBetreuungContainer erwBetContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		betreuung.setErweiterteBetreuungContainer(erwBetContainer);
+
 		return betreuung;
 	}
 }

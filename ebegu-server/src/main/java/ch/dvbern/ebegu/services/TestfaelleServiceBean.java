@@ -488,8 +488,11 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	 */
 	@Override
 	@Nonnull
-	public Gesuch createAndSaveGesuch(@Nonnull AbstractTestfall fromTestfall, boolean verfuegen,
-		@Nullable Benutzer besitzer) {
+	public Gesuch createAndSaveGesuch(
+		@Nonnull AbstractTestfall fromTestfall,
+		boolean verfuegen,
+		@Nullable Benutzer besitzer
+	) {
 		final List<Gesuch> gesuche = gesuchService.findGesuchByGSName(fromTestfall.getNachname(), fromTestfall.getVorname());
 		if (!gesuche.isEmpty()) {
 			fromTestfall.setFall(gesuche.iterator().next().getFall());

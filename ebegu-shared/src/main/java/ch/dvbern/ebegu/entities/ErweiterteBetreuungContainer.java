@@ -10,7 +10,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -25,9 +24,11 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 4847428166714262413L;
 
-	@NotNull
-	@OneToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_betreuung_id"), nullable = false)
+	// This cannot really be null because there is no sense in having an ErweiterteBetreuungContainer without Betreuung
+	// anyway this bidirectional relation cannot have both sides being Nullable=false, because one must exist before the other
+	@Nullable
+	@OneToOne(optional = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_betreuung_id"))
 	private Betreuung betreuung;
 
 	@Nullable
@@ -36,16 +37,18 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_erweiterte_betreuung_gs"))
 	private ErweiterteBetreuung erweiterteBetreuungGS;
 
+	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_erweiterte_betreuung_ja"))
 	private ErweiterteBetreuung erweiterteBetreuungJA;
 
+	@Nullable
 	public Betreuung getBetreuung() {
 		return betreuung;
 	}
 
-	public void setBetreuung(@NotNull Betreuung betreuung) {
+	public void setBetreuung(@Nullable Betreuung betreuung) {
 		this.betreuung = betreuung;
 	}
 
@@ -58,11 +61,12 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 		this.erweiterteBetreuungGS = erweiterteBetreuungGS;
 	}
 
+	@Nullable
 	public ErweiterteBetreuung getErweiterteBetreuungJA() {
 		return erweiterteBetreuungJA;
 	}
 
-	public void setErweiterteBetreuungJA(ErweiterteBetreuung erweiterteBetreuungJA) {
+	public void setErweiterteBetreuungJA(@Nullable ErweiterteBetreuung erweiterteBetreuungJA) {
 		this.erweiterteBetreuungJA = erweiterteBetreuungJA;
 	}
 
@@ -90,7 +94,11 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 		case MUTATION:
 			target.setBetreuung(targetErweiterteBetreuung);
 			target.setErweiterteBetreuungGS(null);
-			target.setErweiterteBetreuungJA(this.getErweiterteBetreuungJA().copyErweiterteBetreuung(new ErweiterteBetreuung(), copyType));
+			target.setErweiterteBetreuungJA(
+				this.getErweiterteBetreuungJA() != null
+					? this.getErweiterteBetreuungJA().copyErweiterteBetreuung(new ErweiterteBetreuung(), copyType)
+					: null
+			);
 			break;
 		case ERNEUERUNG:
 		case MUTATION_NEUES_DOSSIER:

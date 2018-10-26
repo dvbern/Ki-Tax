@@ -40,7 +40,7 @@ CREATE TABLE erweiterte_betreuung_container (
 	user_mutiert              VARCHAR(36) NOT NULL,
 	version                   BIGINT      NOT NULL,
 	vorgaenger_id             VARCHAR(36),
-	betreuung_id              VARCHAR(36) NOT NULL,
+	betreuung_id              VARCHAR(36),
 	erweiterte_betreuunggs_id VARCHAR(36),
 	erweiterte_betreuungja_id VARCHAR(36),
 	PRIMARY KEY (id)

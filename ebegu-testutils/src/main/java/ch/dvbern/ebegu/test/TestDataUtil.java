@@ -64,6 +64,8 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fachstelle;
@@ -1505,5 +1507,13 @@ public final class TestDataUtil {
 		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
 		zeitabschnitt.setZuSpaetEingereicht(false);
 		return zeitabschnitt;
+	}
+
+	public static ErweiterteBetreuungContainer createDefaultErweiterteBetreuungContainer() {
+		ErweiterteBetreuungContainer erwBetContainer = new ErweiterteBetreuungContainer();
+		ErweiterteBetreuung erwBet = new ErweiterteBetreuung();
+		erwBet.setErweiterteBeduerfnisse(false);
+		erwBetContainer.setErweiterteBetreuungJA(erwBet);
+		return erwBetContainer;
 	}
 }
