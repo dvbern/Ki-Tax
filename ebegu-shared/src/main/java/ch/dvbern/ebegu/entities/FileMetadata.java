@@ -54,7 +54,7 @@ public abstract class FileMetadata extends AbstractMutableEntity {
 
 	//Dokument soll nicht in DB gespeichert werden, sondern in File-System. Wie genau ist noch nicht klar und muss noch evaluiert werden!
 	@Size(min = 1, max = DB_TEXTAREA_LENGTH)
-	@Column(nullable = false)
+	@Column(nullable = false, length = DB_TEXTAREA_LENGTH)
 	@NotNull
 	private String filepfad;
 
