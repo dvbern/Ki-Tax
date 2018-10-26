@@ -492,8 +492,8 @@ public final class TestDataUtil {
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setId(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN);
-		instStammdaten.getInstitution().setName("Kita 2 Aaregg");
+		instStammdaten.getInstitution().setId(AbstractTestfall.ID_INSTITUTION_TAGESFAMILIEN);
+		instStammdaten.getInstitution().setName("Tagesfamilien");
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
 	}

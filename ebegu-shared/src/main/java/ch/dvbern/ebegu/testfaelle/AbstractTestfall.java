@@ -83,6 +83,8 @@ public abstract class AbstractTestfall {
 
 	public static final String ID_INSTITUTION_WEISSENSTEIN = "ab353df1-47ca-4618-b849-2265cf1c356a";
 	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA = "776329bf-658e-40e1-bfa8-9873996e020e";
+
+	public static final String ID_INSTITUTION_TAGESFAMILIEN = "f44566b2-b0b7-45fa-87d2-c5edd0d75384";
 	public static final String ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN = "3304040a-3eb7-426c-a838-51981df87cec";
 
 	public static final String ID_INSTITUTION_BRUENNEN = "1b6f476f-e0f5-4380-9ef6-836d688853a3";

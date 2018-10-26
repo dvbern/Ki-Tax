@@ -204,6 +204,8 @@ public abstract class AbstractEbeguTest {
 
 		institutionService.createInstitution(institutionStammdatenKitaAaregg.getInstitution());
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenKitaAaregg);
+
+		institutionService.createInstitution(institutionStammdatenTagesfamilien.getInstitution());
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenTagesfamilien);
 
 		institutionService.createInstitution(institutionStammdatenKitaBruennen.getInstitution());
