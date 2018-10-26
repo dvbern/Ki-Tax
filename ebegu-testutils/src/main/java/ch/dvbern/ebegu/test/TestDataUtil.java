@@ -45,7 +45,6 @@ import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
-import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -75,6 +74,7 @@ import ch.dvbern.ebegu.entities.FerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -95,7 +95,6 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
@@ -111,6 +110,7 @@ import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -248,7 +248,8 @@ public final class TestDataUtil {
 	}
 
 	public static EinkommensverschlechterungContainer createDefaultEinkommensverschlechterungsContainer() {
-		EinkommensverschlechterungContainer einkommensverschlechterungContainer = new EinkommensverschlechterungContainer();
+		EinkommensverschlechterungContainer einkommensverschlechterungContainer =
+			new EinkommensverschlechterungContainer();
 
 		einkommensverschlechterungContainer.setEkvGSBasisJahrPlus1(createDefaultEinkommensverschlechterung());
 
@@ -449,7 +450,8 @@ public final class TestDataUtil {
 		return instStammdaten;
 	}
 
-	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleForInstitution(@Nonnull Institution institution) {
+	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleForInstitution(
+		@Nonnull Institution institution) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
@@ -459,7 +461,8 @@ public final class TestDataUtil {
 		return instStammdaten;
 	}
 
-	public static InstitutionStammdaten createInstitutionStammdatenFerieninselForInstitution(@Nonnull Institution institution) {
+	public static InstitutionStammdaten createInstitutionStammdatenFerieninselForInstitution(
+		@Nonnull Institution institution) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
@@ -677,7 +680,9 @@ public final class TestDataUtil {
 	public static Gesuchsperiode createCustomGesuchsperiode(int firstYear, int secondYear) {
 		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(firstYear, Month.AUGUST, 1), LocalDate.of(secondYear, Month.JULY, 31)));
+		gesuchsperiode.setGueltigkeit(new DateRange(
+			LocalDate.of(firstYear, Month.AUGUST, 1),
+			LocalDate.of(secondYear, Month.JULY, 31)));
 		return gesuchsperiode;
 	}
 
@@ -690,8 +695,10 @@ public final class TestDataUtil {
 	}
 
 	public static EinkommensverschlechterungInfoContainer createDefaultEinkommensverschlechterungsInfoContainer(Gesuch gesuch) {
-		final EinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer = new EinkommensverschlechterungInfoContainer();
-		einkommensverschlechterungInfoContainer.setEinkommensverschlechterungInfoJA(createDefaultEinkommensverschlechterungsInfo());
+		final EinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer =
+			new EinkommensverschlechterungInfoContainer();
+		einkommensverschlechterungInfoContainer.setEinkommensverschlechterungInfoJA(
+			createDefaultEinkommensverschlechterungsInfo());
 		einkommensverschlechterungInfoContainer.setGesuch(gesuch);
 		gesuch.setEinkommensverschlechterungInfoContainer(einkommensverschlechterungInfoContainer);
 
@@ -748,11 +755,15 @@ public final class TestDataUtil {
 		}
 		gesuch.setGesuchsteller1(new GesuchstellerContainer());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.setFinanzielleSituationJA(new FinanzielleSituation());
 		if (zweiGesuchsteller) {
 			gesuch.setGesuchsteller2(new GesuchstellerContainer());
 			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
-			gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
+			gesuch.getGesuchsteller2()
+				.getFinanzielleSituationContainer()
+				.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
 		Betreuung betreuung = new Betreuung();
 		betreuung.setKind(new KindContainer());
@@ -775,7 +786,8 @@ public final class TestDataUtil {
 		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
+		Testfall01_WaeltiDagmar testfall =
+			new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -787,34 +799,48 @@ public final class TestDataUtil {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(einkommen);
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.setFinanzielleSituationJA(new FinanzielleSituation());
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setNettolohn(einkommen);
 	}
 
-	public static void setEinkommensverschlechterung(Gesuch gesuch, GesuchstellerContainer gesuchsteller, BigDecimal einkommen, boolean basisJahrPlus1) {
+	public static void setEinkommensverschlechterung(
+		Gesuch gesuch,
+		GesuchstellerContainer gesuchsteller,
+		BigDecimal einkommen,
+		boolean basisJahrPlus1) {
 		if (gesuchsteller.getEinkommensverschlechterungContainer() == null) {
 			gesuchsteller.setEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer());
 		}
 		if (gesuch.extractEinkommensverschlechterungInfo() == null) {
 			gesuch.setEinkommensverschlechterungInfoContainer(new EinkommensverschlechterungInfoContainer());
-			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
+			EinkommensverschlechterungInfo einkommensverschlechterungInfo =
+				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(false);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
 		}
 		if (basisJahrPlus1) {
-			gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
+			gesuchsteller.getEinkommensverschlechterungContainer()
+				.setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
 			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohnAug(einkommen);
-			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
+			EinkommensverschlechterungInfo einkommensverschlechterungInfo =
+				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
 			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(STICHTAG_EKV_1);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		} else {
-			gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(new Einkommensverschlechterung());
+			gesuchsteller.getEinkommensverschlechterungContainer()
+				.setEkvJABasisJahrPlus2(new Einkommensverschlechterung());
 			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2().setNettolohnAug(einkommen);
-			EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
+			EinkommensverschlechterungInfo einkommensverschlechterungInfo =
+				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(true);
 			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus2(STICHTAG_EKV_2);
@@ -842,16 +868,23 @@ public final class TestDataUtil {
 	/**
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(InstitutionService instService, Persistence persistence,
+	public static Gesuch createAndPersistWaeltiDagmarGesuch(
+		InstitutionService instService, Persistence persistence,
 		@Nullable LocalDate eingangsdatum, AntragStatus status) {
 
-		return createAndPersistWaeltiDagmarGesuch(instService, persistence, eingangsdatum, status, TestDataUtil.createGesuchsperiode1718());
+		return createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			eingangsdatum,
+			status,
+			TestDataUtil.createGesuchsperiode1718());
 	}
 
 	/**
 	 * Hilfsmethode die den Testfall Waelti Dagmar erstellt und speichert
 	 */
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
+	public static Gesuch createAndPersistWaeltiDagmarGesuch(
+		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
@@ -862,7 +895,10 @@ public final class TestDataUtil {
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
-	public static Gesuch createAndPersistWaeltiDagmarGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum) {
+	public static Gesuch createAndPersistWaeltiDagmarGesuch(
+		InstitutionService instService,
+		Persistence persistence,
+		@Nullable LocalDate eingangsdatum) {
 		return createAndPersistWaeltiDagmarGesuch(instService, persistence, eingangsdatum, null);
 	}
 
@@ -891,17 +927,23 @@ public final class TestDataUtil {
 		}
 	}
 
-	public static Gesuch createAndPersistFeutzYvonneGesuch(InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, AntragStatus status) {
+	public static Gesuch createAndPersistFeutzYvonneGesuch(
+		InstitutionService instService,
+		Persistence persistence,
+		LocalDate eingangsdatum,
+		AntragStatus status) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall02_FeutzYvonne testfall =
+			new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
 
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
-	public static Gesuch createAndPersistFeutzYvonneGesuch(InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
+	public static Gesuch createAndPersistFeutzYvonneGesuch(
+		InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
 		gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
@@ -912,7 +954,8 @@ public final class TestDataUtil {
 		return persistAllEntities(persistence, eingangsdatum, testfall, null);
 	}
 
-	public static Gesuch createAndPersistBeckerNoraGesuch(InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum,
+	public static Gesuch createAndPersistBeckerNoraGesuch(
+		InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
@@ -930,8 +973,9 @@ public final class TestDataUtil {
 
 	}
 
-	private static Gesuch persistAllEntities(@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum, @Nonnull AbstractTestfall testfall,
-			@Nullable AntragStatus status) {
+	private static Gesuch persistAllEntities(
+		@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum, @Nonnull AbstractTestfall testfall,
+		@Nullable AntragStatus status) {
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 		testfall.createFall(verantwortlicher);
 		if (status != null) {
@@ -1016,8 +1060,9 @@ public final class TestDataUtil {
 		persistence.persist(gesuch);
 	}
 
-	public static Gesuch createAndPersistGesuch(@Nonnull Persistence persistence, @Nullable Gemeinde gemeinde, @Nullable AntragStatus status,
-			@Nullable Gesuchsperiode gesuchsperiode) {
+	public static Gesuch createAndPersistGesuch(
+		@Nonnull Persistence persistence, @Nullable Gemeinde gemeinde, @Nullable AntragStatus status,
+		@Nullable Gesuchsperiode gesuchsperiode) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		if (gesuchsperiode != null) {
 			gesuch.setGesuchsperiode(gesuchsperiode);
@@ -1048,7 +1093,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistGesuch(Persistence persistence, Gemeinde gemeinde) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		Benutzer benutzer = createAndPersistBenutzer(persistence, gemeinde);
-			gesuch.getDossier().setGemeinde(gemeinde);
+		gesuch.getDossier().setGemeinde(gemeinde);
 		gesuch.getDossier().setVerantwortlicherBG(benutzer);
 		persistence.persist(gesuch.getFall());
 
@@ -1094,7 +1139,10 @@ public final class TestDataUtil {
 		return dossier;
 	}
 
-	public static WizardStep createWizardStepObject(Gesuch gesuch, WizardStepName wizardStepName, WizardStepStatus stepStatus) {
+	public static WizardStep createWizardStepObject(
+		Gesuch gesuch,
+		WizardStepName wizardStepName,
+		WizardStepStatus stepStatus) {
 		final WizardStep jaxWizardStep = new WizardStep();
 		jaxWizardStep.setGesuch(gesuch);
 		jaxWizardStep.setWizardStepName(wizardStepName);
@@ -1116,7 +1164,7 @@ public final class TestDataUtil {
 		saveEinstellung(KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode, persistence);
-		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG,"140", gesuchsperiode, persistence);
+		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, "140", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG, "100", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_SCHULE_PRO_TG, "75", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD, "11.90", gesuchsperiode, persistence);
@@ -1130,21 +1178,37 @@ public final class TestDataUtil {
 		saveEinstellung(ZUSCHLAG_BEHINDERUNG_PRO_TG, "50", gesuchsperiode, persistence);
 		saveEinstellung(ZUSCHLAG_BEHINDERUNG_PRO_STD, "4.25", gesuchsperiode, persistence);
 		saveEinstellung(MIN_VERGUENSTIGUNG_PRO_TG, "7", gesuchsperiode, persistence);
-		saveEinstellung(MIN_VERGUENSTIGUNG_PRO_STD,"0.70", gesuchsperiode, persistence);
+		saveEinstellung(MIN_VERGUENSTIGUNG_PRO_STD, "0.70", gesuchsperiode, persistence);
 	}
 
-	public static void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode, Persistence persistence) {
+	public static void saveEinstellung(
+		EinstellungKey key,
+		String value,
+		Gesuchsperiode gesuchsperiode,
+		Persistence persistence) {
 		Einstellung einstellung = new Einstellung(key, value, gesuchsperiode);
 		persistence.persist(einstellung);
 	}
 
-	public static void saveParameter(ApplicationPropertyKey key, String value, Persistence persistence) {
-		ApplicationProperty applicationProperty = new ApplicationProperty(key, value);
-		persistence.persist(applicationProperty);
+	public static void createStammdatenDefaultVerantwortliche(
+		@Nonnull Persistence persistence,
+		@Nonnull Benutzer verantwortlicherTS,
+		@Nonnull Benutzer verantwortlicherBG) {
+
+		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
+		stammdaten.setDefaultBenutzerBG(verantwortlicherBG);
+		stammdaten.setDefaultBenutzerTS(verantwortlicherTS);
+		stammdaten.setAdresse(persistence.merge(createDefaultAdresse()));
+		stammdaten.setGemeinde(getTestGemeinde(persistence));
+		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
+		stammdaten.setMail("info@bern.ch");
+
+		persistence.merge(stammdaten);
 	}
 
-	public static Benutzer createBenutzerWithDefaultGemeinde(UserRole role, String userName, @Nullable Traegerschaft traegerschaft,
-		@Nullable Institution institution, @Nonnull  Mandant mandant, @Nonnull Persistence persistence) {
+	public static Benutzer createBenutzerWithDefaultGemeinde(
+		UserRole role, String userName, @Nullable Traegerschaft traegerschaft,
+		@Nullable Institution institution, @Nonnull Mandant mandant, @Nonnull Persistence persistence) {
 		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant);
 		if (role.isRoleGemeindeabhaengig()) {
 			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getTestGemeinde(persistence));
@@ -1152,8 +1216,9 @@ public final class TestDataUtil {
 		return benutzer;
 	}
 
-	public static Benutzer createBenutzer(UserRole role, String userName, @Nullable Traegerschaft traegerschaft, @Nullable Institution institution,
-			@Nonnull  Mandant mandant) {
+	public static Benutzer createBenutzer(
+		UserRole role, String userName, @Nullable Traegerschaft traegerschaft, @Nullable Institution institution,
+		@Nonnull Mandant mandant) {
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setUsername(userName);
 		benutzer.setNachname(Constants.ANONYMOUS_USER_USERNAME);
@@ -1172,8 +1237,9 @@ public final class TestDataUtil {
 	public static Benutzer createAndPersistJABenutzer(Persistence persistence) {
 		final Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, UUID.randomUUID().toString(),
-			null, null, mandant, persistence);
+		final Benutzer benutzer =
+			TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, UUID.randomUUID().toString(),
+				null, null, mandant, persistence);
 		persistence.persist(benutzer);
 		return benutzer;
 	}
@@ -1183,8 +1249,13 @@ public final class TestDataUtil {
 		persistence.persist(traegerschaft);
 		final Mandant mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
-		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, UUID.randomUUID().toString(),
-			traegerschaft, null, mandant, persistence);
+		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(
+			UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
+			UUID.randomUUID().toString(),
+			traegerschaft,
+			null,
+			mandant,
+			persistence);
 		persistence.persist(benutzer);
 		return benutzer;
 	}
@@ -1227,7 +1298,8 @@ public final class TestDataUtil {
 			createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(adresseGS1.getGesuchstellerAdresseJA());
 		adresseGS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
-		adresseGS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
+		adresseGS1.getGesuchstellerAdresseJA()
+			.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
 		adressen1.add(adresseGS1);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setAdressen(adressen1);
@@ -1238,7 +1310,8 @@ public final class TestDataUtil {
 				.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
 			Objects.requireNonNull(adresseGS2.getGesuchstellerAdresseJA());
 			adresseGS2.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
-			adresseGS2.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
+			adresseGS2.getGesuchstellerAdresseJA()
+				.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
 			adressen2.add(adresseGS2);
 			Objects.requireNonNull(gesuch.getGesuchsteller2());
 			gesuch.getGesuchsteller2().setAdressen(adressen2);
@@ -1273,7 +1346,8 @@ public final class TestDataUtil {
 
 	private static Abwesenheit createShortAbwesenheit(final Gesuchsperiode gesuchsperiode) {
 		final Abwesenheit abwesenheit = new Abwesenheit();
-		abwesenheit.setGueltigkeit(new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1),
+		abwesenheit.setGueltigkeit(new DateRange(
+			gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1),
 			gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1).plusDays(ABWESENHEIT_DAYS_LIMIT - 1)));
 		return abwesenheit;
 	}
@@ -1286,7 +1360,8 @@ public final class TestDataUtil {
 
 	private static Abwesenheit createLongAbwesenheit(final Gesuchsperiode gesuchsperiode) {
 		final Abwesenheit abwesenheit = new Abwesenheit();
-		abwesenheit.setGueltigkeit(new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1),
+		abwesenheit.setGueltigkeit(new DateRange(
+			gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1),
 			gesuchsperiode.getGueltigkeit().getGueltigAb().plusMonths(1).plusDays(ABWESENHEIT_DAYS_LIMIT)));
 		return abwesenheit;
 	}
@@ -1300,7 +1375,8 @@ public final class TestDataUtil {
 	}
 
 	@SuppressWarnings("MagicNumber")
-	public static Betreuungsmitteilung createBetreuungmitteilung(Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
+	public static Betreuungsmitteilung createBetreuungmitteilung(
+		Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
 		Benutzer sender, MitteilungTeilnehmerTyp senderTyp) {
 		final Betreuungsmitteilung mitteilung = new Betreuungsmitteilung();
 		fillOutMitteilung(dossier, empfaenger, empfaengerTyp, sender, senderTyp, mitteilung);
@@ -1318,15 +1394,22 @@ public final class TestDataUtil {
 		return mitteilung;
 	}
 
-	public static Mitteilung createMitteilung(Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
+	public static Mitteilung createMitteilung(
+		Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp,
 		Benutzer sender, MitteilungTeilnehmerTyp senderTyp) {
 		Mitteilung mitteilung = new Mitteilung();
 		fillOutMitteilung(dossier, empfaenger, empfaengerTyp, sender, senderTyp, mitteilung);
 		return mitteilung;
 	}
 
-	private static void fillOutMitteilung(Dossier dossier, Benutzer empfaenger, MitteilungTeilnehmerTyp empfaengerTyp, Benutzer sender, MitteilungTeilnehmerTyp
-		senderTyp, Mitteilung mitteilung) {
+	private static void fillOutMitteilung(
+		Dossier dossier,
+		Benutzer empfaenger,
+		MitteilungTeilnehmerTyp empfaengerTyp,
+		Benutzer sender,
+		MitteilungTeilnehmerTyp
+			senderTyp,
+		Mitteilung mitteilung) {
 		mitteilung.setDossier(dossier);
 		mitteilung.setEmpfaenger(empfaenger);
 		mitteilung.setSender(sender);
@@ -1343,7 +1426,10 @@ public final class TestDataUtil {
 		return filterDTO;
 	}
 
-	public static Betreuung persistBetreuung(BetreuungService betreuungService, Persistence persistence, @Nullable Gesuchsperiode gesuchsperiode) {
+	public static Betreuung persistBetreuung(
+		BetreuungService betreuungService,
+		Persistence persistence,
+		@Nullable Gesuchsperiode gesuchsperiode) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		for (BetreuungspensumContainer container : betreuung.getBetreuungspensumContainers()) {
 			persistence.persist(container);
@@ -1362,10 +1448,10 @@ public final class TestDataUtil {
 		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, null, null, gesuchsperiode);
-//		if (gesuchsperiode != null) {
-//			gesuch.setGesuchsperiode(gesuchsperiode);
-//			gesuch = persistence.merge(gesuch);
-//		}
+		//		if (gesuchsperiode != null) {
+		//			gesuch.setGesuchsperiode(gesuchsperiode);
+		//			gesuch = persistence.merge(gesuch);
+		//		}
 		betreuung.getKind().setGesuch(gesuch);
 		persistence.persist(betreuung.getKind());
 
@@ -1392,11 +1478,15 @@ public final class TestDataUtil {
 		return gesuchService.updateGesuch(verfuegenGesuch, true, null);
 	}
 
-	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Persistence persistence, @Nonnull GesuchService gesuchService) {
+	public static Gesuch persistNewGesuchInStatus(
+		@Nonnull AntragStatus status,
+		@Nonnull Persistence persistence,
+		@Nonnull GesuchService gesuchService) {
 		return persistNewGesuchInStatus(status, Eingangsart.ONLINE, persistence, gesuchService);
 	}
 
-	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
+	public static Gesuch persistNewGesuchInStatus(
+		@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
 		@Nonnull GesuchService gesuchService, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
@@ -1411,13 +1501,16 @@ public final class TestDataUtil {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
 		gesuchService.createGesuch(gesuch);
 		return gesuch;
 	}
 
-	public static Gesuch persistNewGesuchInStatus(@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
-			@Nonnull GesuchService gesuchService) {
+	public static Gesuch persistNewGesuchInStatus(
+		@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
+		@Nonnull GesuchService gesuchService) {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
 		gesuch.setEingangsart(Eingangsart.PAPIER);
@@ -1431,7 +1524,9 @@ public final class TestDataUtil {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
 		gesuchService.createGesuch(gesuch);
 		return gesuch;
 	}
