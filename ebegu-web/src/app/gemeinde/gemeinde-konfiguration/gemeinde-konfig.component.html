@@ -31,7 +31,7 @@
                     </div>
                 </tab-title>
                 <tab-body>
-                    <div class="row marginBottom20">
+                    <div class="row">
                         <!-- Betreuungsgutscheine anbieten ab -->
                         <div class="col-sm-6">
                             <div class="form-group">
@@ -45,15 +45,14 @@
                                               [(ngModel)]="konf.editMode">
                                     {{'KONFIGURATION_EDIT'|translate}}</mat-checkbox>
                             </div>
-
                         </div>
                         <div *ngIf="!konf.editMode" class="col-sm-6">
                             <div class="form-group">
                                 <!-- Gemeinde-Konfiguraiton read only -->
                                 <h3 translate>GEMEINDE_REGELN</h3>
-                                <label translate>BEGU_KITAS_BIS_UND_MIT</label>
-                                <p><strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></p>
-                                <p><b>{{getKonfigKontingentierungString(konfigurationsListe[i])}}</b></p>
+                                <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
+                                <p *ngIf="!konfigurationsListe[i].konfigKontingentierung" class="line-through">{{getKonfigKontingentierungString(konfigurationsListe[i])}}</p>
+                                <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString(konfigurationsListe[i])}}</p>
                             </div>
                         </div>
                         <div *ngIf="konf.editMode" class="col-sm-6">

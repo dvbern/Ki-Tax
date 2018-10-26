@@ -17,11 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
@@ -44,6 +46,7 @@ describe('ViewGemeindeComponent', () => {
         ['getAllGesuchsperioden']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
     beforeEach(async(() => {
 
@@ -53,15 +56,18 @@ describe('ViewGemeindeComponent', () => {
                 NoopAnimationsModule,
                 GemeindeKonfigComponent,
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [
                 ViewGemeindeComponent,
+                GemeindeKonfigComponent,
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();

@@ -19,7 +19,6 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
@@ -47,7 +46,6 @@ export class EditGemeindeComponent implements OnInit {
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
-        private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
     ) {
