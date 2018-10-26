@@ -2547,7 +2547,7 @@ export default class EbeguRestUtil {
 
     public parseWorkJobList(jobWrapper: any): Array<TSWorkJob> {
         return jobWrapper && jobWrapper.jobs
-            ? jobWrapper.map((item: any) => this.parseWorkJob(new TSWorkJob(), item))
+            ? jobWrapper.jobs.map((item: any) => this.parseWorkJob(new TSWorkJob(), item))
             : [];
     }
 

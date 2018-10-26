@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -71,7 +72,6 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
@@ -113,8 +113,10 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  */
 @Stateless
 @Local(BetreuungService.class)
-@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+	ADMIN_TRAEGERSCHAFT,
+	SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, STEUERAMT,
+	ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 public class BetreuungServiceBean extends AbstractBaseService implements BetreuungService {
 
 	public static final String BETREUUNG_DARF_NICHT_NULL_SEIN = "betreuung darf nicht null sein";
@@ -139,7 +141,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Inject
 	private BenutzerService benutzerService;
 	@Inject
-	private ApplicationPropertyService applicationPropertyService;
+	private GemeindeService gemeindeService;
 	@Inject
 	private PrincipalBean principalBean;
 
@@ -147,7 +149,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Betreuung saveBetreuung(@Valid @Nonnull Betreuung betreuung, @Nonnull Boolean isAbwesenheit) {
 		Objects.requireNonNull(betreuung);
@@ -165,10 +168,12 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		// We need to update (copy) all other Betreuungen with same BGNummer (on all other Mutationen and Erstgesuch)
 		final List<Betreuung> betreuungByBGNummer = findAnmeldungenByBGNummer(mergedBetreuung.getBGNummer());
-		betreuungByBGNummer.stream().filter(b -> b.isAngebotSchulamt() && !Objects.equals(betreuung.getId(), b.getId())).forEach(b -> {
-			b.copyAnmeldung(betreuung);
-			persistence.merge(b);
-		});
+		betreuungByBGNummer.stream()
+			.filter(b -> b.isAngebotSchulamt() && !Objects.equals(betreuung.getId(), b.getId()))
+			.forEach(b -> {
+				b.copyAnmeldung(betreuung);
+				persistence.merge(b);
+			});
 
 		// we need to manually add this new Betreuung to the Kind
 		final Set<Betreuung> betreuungen = mergedBetreuung.getKind().getBetreuungen();
@@ -177,27 +182,41 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		//jetzt noch wizard step updaten
 		if (isAbwesenheit) {
-			wizardStepService.updateSteps(mergedBetreuung.getKind().getGesuch().getId(), null, null, WizardStepName.ABWESENHEIT);
+			wizardStepService.updateSteps(
+				mergedBetreuung.getKind().getGesuch().getId(),
+				null,
+				null,
+				WizardStepName.ABWESENHEIT);
 		} else {
-			wizardStepService.updateSteps(mergedBetreuung.getKind().getGesuch().getId(), null, null, WizardStepName.BETREUUNG);
+			wizardStepService.updateSteps(
+				mergedBetreuung.getKind().getGesuch().getId(),
+				null,
+				null,
+				WizardStepName.BETREUUNG);
 		}
 
 		Gesuch mergedGesuch = gesuchService.updateBetreuungenStatus(mergedBetreuung.extractGesuch());
 
 		if (updateVerantwortlicheNeeded(mergedGesuch.getEingangsart(), mergedBetreuung.getBetreuungsstatus(), isNew)) {
-			String propertyDefaultVerantwortlicherBG = applicationPropertyService.findApplicationPropertyAsString(
-				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_BG);
-			String propertyDefaultVerantwortlicherTS = applicationPropertyService.findApplicationPropertyAsString(
-				ApplicationPropertyKey.DEFAULT_VERANTWORTLICHER_TS);
-			gesuchService.setVerantwortliche(propertyDefaultVerantwortlicherBG, propertyDefaultVerantwortlicherTS,
-				mergedBetreuung.extractGesuch(), true, true);
-		}
+			Optional<GemeindeStammdaten> gemeindeStammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(mergedGesuch
+					.getDossier()
+					.getGemeinde()
+					.getId());
 
+			Benutzer benutzerBG = gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerBG).orElse(null);
+			Benutzer benutzerTS = gemeindeStammdaten.map(GemeindeStammdaten::getDefaultBenutzerTS).orElse(null);
+
+			gesuchService.setVerantwortliche(benutzerBG, benutzerTS, mergedBetreuung.extractGesuch(), true, true);
+		}
 
 		return mergedBetreuung;
 	}
 
-	private boolean updateVerantwortlicheNeeded(Eingangsart eingangsart, Betreuungsstatus betreuungsstatus, boolean isNew) {
+	private boolean updateVerantwortlicheNeeded(
+		Eingangsart eingangsart,
+		Betreuungsstatus betreuungsstatus,
+		boolean isNew) {
 		if (!isNew) {
 			// nur neue Betreuungen duerfen den Verantwortlichen setzen
 			return false;
@@ -214,7 +233,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION })
 	public Betreuung betreuungPlatzAbweisen(@Valid @Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
@@ -223,20 +243,25 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			// Bei Ablehnung einer Betreuung muss eine E-Mail geschickt werden
 			mailService.sendInfoBetreuungAbgelehnt(persistedBetreuung);
 		} catch (MailException e) {
-			LOG.error("Mail InfoBetreuungAbgelehnt konnte nicht verschickt werden fuer Betreuung {}", betreuung.getId(), e);
+			LOG.error(
+				"Mail InfoBetreuungAbgelehnt konnte nicht verschickt werden fuer Betreuung {}",
+				betreuung.getId(),
+				e);
 		}
 		return persistedBetreuung;
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION })
 	public Betreuung betreuungPlatzBestaetigen(@Valid @Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 
 		// Erst jetzt kann der Zeitraum der Betreuung im Vergleich zur Institution geprueft werden
 		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
-		Set<ConstraintViolation<Betreuung>> violations = validator.validate(betreuung, BetreuungBestaetigenValidationGroup.class);
+		Set<ConstraintViolation<Betreuung>> violations =
+			validator.validate(betreuung, BetreuungBestaetigenValidationGroup.class);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
 		}
@@ -250,15 +275,18 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				mailService.sendInfoBetreuungenBestaetigt(gesuch);
 			}
 		} catch (MailException e) {
-			LOG.error("Mail InfoBetreuungenBestaetigt konnte nicht verschickt werden fuer Betreuung {}", betreuung.getId(), e);
+			LOG.error(
+				"Mail InfoBetreuungenBestaetigt konnte nicht verschickt werden fuer Betreuung {}",
+				betreuung.getId(),
+				e);
 		}
 		return persistedBetreuung;
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS,
-		ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Betreuung anmeldungSchulamtUebernehmen(@Valid @Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
@@ -267,15 +295,18 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
 			mailService.sendInfoSchulamtAnmeldungUebernommen(persistedBetreuung);
 		} catch (MailException e) {
-			LOG.error("Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung {}", betreuung.getId(), e);
+			LOG.error(
+				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung {}",
+				betreuung.getId(),
+				e);
 		}
 		return persistedBetreuung;
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS,
-		ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Betreuung anmeldungSchulamtAblehnen(@Valid @Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_ABGELEHNT);
@@ -284,15 +315,18 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
 			mailService.sendInfoSchulamtAnmeldungAbgelehnt(persistedBetreuung);
 		} catch (MailException e) {
-			LOG.error("Mail InfoSchulamtAnmeldungAbgelehnt konnte nicht verschickt werden fuer Betreuung {}", betreuung.getId(), e);
+			LOG.error(
+				"Mail InfoSchulamtAnmeldungAbgelehnt konnte nicht verschickt werden fuer Betreuung {}",
+				betreuung.getId(),
+				e);
 		}
 		return persistedBetreuung;
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS,
-		ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TS, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public Betreuung anmeldungSchulamtFalscheInstitution(@Valid @Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION);
@@ -302,18 +336,18 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuung> findBetreuung(@Nonnull String key) {
 		return findBetreuung(key, true);
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuung> findBetreuung(@Nonnull String key, boolean doAuthCheck) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		Betreuung betr = persistence.find(Betreuung.class, key);
@@ -340,7 +374,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		final int kindNummer = getKindNummerFromBGNummer(bgNummer);
 		final int yearFromBGNummer = getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
-		final Optional<Gesuchsperiode> gesuchsperiodeOptional = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
+		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
 		Gesuchsperiode gesuchsperiode;
 		if (gesuchsperiodeOptional.isPresent()) {
 			gesuchsperiode = gesuchsperiodeOptional.get();
@@ -354,12 +389,15 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Root<Betreuung> root = query.from(Betreuung.class);
 		final Join<Betreuung, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
-		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(KindContainer_.gesuch, JoinType.LEFT);
+		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
+			KindContainer_.gesuch,
+			JoinType.LEFT);
 		final Join<Gesuch, Dossier> dossierJoin = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
 		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
 
 		Predicate predBetreuungNummer = cb.equal(root.get(Betreuung_.betreuungNummer), betreuungNummer);
-		Predicate predBetreuungAusgeloest = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloest);
+		Predicate predBetreuungAusgeloest =
+			root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloest);
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
@@ -372,7 +410,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		predicates.add(predBetreuungAusgeloest);
 
 		if (getOnlyAktuelle) {
-			Predicate predAktuelleBetreuung = cb.equal(root.get(Betreuung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+			Predicate predAktuelleBetreuung =
+				cb.equal(root.get(Betreuung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 			Predicate predNormaleBetreuung = cb.isNull(root.get(Betreuung_.anmeldungMutationZustand));
 			predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));
 		}
@@ -383,12 +422,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	@Nonnull
 	public Optional<Betreuung> findGueltigeBetreuungByBGNummer(@Nonnull String bgNummer) {
 		final int yearFromBGNummer = getYearFromBGNummer(bgNummer);
 		// der letzte Tag im Jahr, von der BetreuungsId sollte immer zur richtigen Gesuchsperiode zählen.
-		final Optional<Gesuchsperiode> gesuchsperiodeOptional = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
+		final Optional<Gesuchsperiode> gesuchsperiodeOptional =
+			gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.ofYearDay(yearFromBGNummer, 365));
 		if (!gesuchsperiodeOptional.isPresent()) {
 			return Optional.empty();
 		}
@@ -403,7 +443,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Root<Betreuung> root = query.from(Betreuung.class);
 		final Join<Betreuung, KindContainer> kindjoin = root.join(Betreuung_.kind, JoinType.LEFT);
-		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(KindContainer_.gesuch, JoinType.LEFT);
+		final Join<KindContainer, Gesuch> kindContainerGesuchJoin = kindjoin.join(
+			KindContainer_.gesuch,
+			JoinType.LEFT);
 		final Join<Gesuch, Dossier> dossierJoin = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
 		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
 
@@ -456,9 +498,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Betreuung> findBetreuungWithBetreuungsPensen(@Nonnull String key) {
 		Objects.requireNonNull(key, "id muss gesetzt sein");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -477,13 +519,15 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT,
 		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
 	public void removeBetreuung(@Nonnull String betreuungId) {
 		Objects.requireNonNull(betreuungId);
 		Optional<Betreuung> betrToRemoveOpt = findBetreuung(betreuungId);
-		Betreuung betreuungToRemove = betrToRemoveOpt.orElseThrow(() -> new EbeguEntityNotFoundException("removeBetreuung", ErrorCodeEnum
-			.ERROR_ENTITY_NOT_FOUND, betreuungId));
+		Betreuung betreuungToRemove =
+			betrToRemoveOpt.orElseThrow(() -> new EbeguEntityNotFoundException("removeBetreuung", ErrorCodeEnum
+				.ERROR_ENTITY_NOT_FOUND, betreuungId));
 
 		handleDependingMitteilungenWhenDeletingBetreuung(betreuungId, betreuungToRemove);
 
@@ -498,27 +542,35 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	 * removes Betreuungsmitteilungen of this Betreuung and removes the relation of all depending Mitteilunges
 	 */
 	private void handleDependingMitteilungenWhenDeletingBetreuung(@Nonnull String betreuungId, @Nonnull Betreuung betreuungToRemove) {
-		Collection<Mitteilung> mitteilungenForBetreuung = this.mitteilungService.findAllMitteilungenForBetreuung(betreuungToRemove);
+		Collection<Mitteilung> mitteilungenForBetreuung =
+			this.mitteilungService.findAllMitteilungenForBetreuung(betreuungToRemove);
 		mitteilungenForBetreuung.stream()
 			.filter(mitteilung -> mitteilung.getClass().equals(Mitteilung.class))
 			.forEach(mitteilung ->
 			{
 				mitteilung.setBetreuung(null);
-				LOG.debug("Betreuung '{}' will be removed. Removing Relation in Mitteilung: '{}'", betreuungId, mitteilung.getId());
+				LOG.debug(
+					"Betreuung '{}' will be removed. Removing Relation in Mitteilung: '{}'",
+					betreuungId,
+					mitteilung.getId());
 				persistence.merge(mitteilung);
 			});
 
 		mitteilungenForBetreuung.stream()
 			.filter(mitteilung -> mitteilung.getClass().equals(Betreuungsmitteilung.class))
 			.forEach(betMitteilung -> {
-				LOG.debug("Betreuung '{}' will be removed. Removing dependent Betreuungsmitteilung: '{}'", betreuungId, betMitteilung.getId());
+				LOG.debug(
+					"Betreuung '{}' will be removed. Removing dependent Betreuungsmitteilung: '{}'",
+					betreuungId,
+					betMitteilung.getId());
 				persistence.remove(Betreuungsmitteilung.class, betMitteilung.getId());
 			});
 	}
 
 	@Override
 	@SuppressFBWarnings(value = "NP_NONNULL_PARAM_VIOLATION", justification = "ErweiterteBetreuungContainer must be set to null")
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS })
 	public void removeBetreuung(@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung);
@@ -540,27 +592,31 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS, SACHBEARBEITER_TS })
 	public Collection<Betreuung> getPendenzenBetreuungen() {
-		Collection<Institution> instForCurrBenutzer = institutionService.getAllowedInstitutionenForCurrentBenutzer(true);
+		Collection<Institution> instForCurrBenutzer =
+			institutionService.getAllowedInstitutionenForCurrentBenutzer(true);
 		if (!instForCurrBenutzer.isEmpty()) {
-			return getPendenzenForInstitution((Institution[]) instForCurrBenutzer.toArray(new Institution[instForCurrBenutzer.size()]));
+			return getPendenzenForInstitution((Institution[]) instForCurrBenutzer.toArray(new Institution[instForCurrBenutzer
+				.size()]));
 		}
 		return Collections.emptyList();
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<Betreuung> findAllBetreuungenFromGesuch(@Nonnull String gesuchId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 		Root<Betreuung> root = query.from(Betreuung.class);
 		// Betreuung from Gesuch
-		Predicate predicateInstitution = root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(AbstractEntity_.id).in(gesuchId);
+		Predicate predicateInstitution =
+			root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(AbstractEntity_.id).in(gesuchId);
 
 		query.where(predicateInstitution);
 		authorizer.checkReadAuthorizationGesuchId(gesuchId);
@@ -569,9 +625,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
+		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<Betreuung> findAllBetreuungenWithVerfuegungForDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 
@@ -581,7 +637,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Root<Betreuung> root = query.from(Betreuung.class);
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
-		Predicate fallPredicate = cb.equal(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.dossier), dossier);
+		Predicate fallPredicate =
+			cb.equal(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.dossier), dossier);
 		predicatesToUse.add(fallPredicate);
 
 		Predicate predicateBetreuung = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.hasVerfuegung);
@@ -591,12 +648,14 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		predicatesToUse.add(verfuegungPredicate);
 
 		Collection<Institution> institutionen = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
-		Predicate predicateInstitution = root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.institution)
+		Predicate predicateInstitution = root.get(Betreuung_.institutionStammdaten)
+			.get(InstitutionStammdaten_.institution)
 			.in(Collections.singletonList(institutionen));
 		predicatesToUse.add(predicateInstitution);
 
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse)).orderBy(cb.desc(root.get(Betreuung_.verfuegung)
-			.get(AbstractEntity_.timestampErstellt)));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse))
+			.orderBy(cb.desc(root.get(Betreuung_.verfuegung)
+				.get(AbstractEntity_.timestampErstellt)));
 
 		List<Betreuung> criteriaResults = persistence.getCriteriaResults(query);
 
@@ -606,7 +665,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	/**
-	 * Liest alle Betreuungen die zu einer der mitgegebenen Institution gehoeren und die im Status WARTEN sind. Wenn der Benutzer vom Schulamt
+	 * Liest alle Betreuungen die zu einer der mitgegebenen Institution gehoeren und die im Status WARTEN sind. Wenn
+	 * der Benutzer vom Schulamt
 	 * ist, dann werden nur die Institutionsstammdaten der Art FERIENINSEL oder TAGESSCHULE betrachtet.
 	 */
 	@Nonnull
@@ -615,7 +675,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (!benutzerOptional.isPresent()) {
-			throw new EbeguRuntimeException("getPendenzenForInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "current user not found");
+			throw new EbeguRuntimeException(
+				"getPendenzenForInstitution",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"current user not found");
 		}
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
 
@@ -626,35 +689,49 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		List<Predicate> predicates = new ArrayList<>();
 
 		if (role.isRoleSchulamt()) {
-			predicates.add(root.get(Betreuung_.betreuungsstatus).in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+			predicates.add(root.get(Betreuung_.betreuungsstatus)
+				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
 		} else { // for Institution or Traegerschaft. by default
-			predicates.add(root.get(Betreuung_.betreuungsstatus).in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+			predicates.add(root.get(Betreuung_.betreuungsstatus)
+				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
 		}
 
 		// nur Aktuelle Anmeldungen
-		Predicate predAktuelleBetreuung = cb.equal(root.get(Betreuung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+		Predicate predAktuelleBetreuung =
+			cb.equal(root.get(Betreuung_.anmeldungMutationZustand), AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 		Predicate predNormaleBetreuung = cb.isNull(root.get(Betreuung_.anmeldungMutationZustand));
 		predicates.add(cb.or(predAktuelleBetreuung, predNormaleBetreuung));
 
 		// Institution
-		predicates.add(root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.institution).in(Arrays.asList(institutionen)));
+		predicates.add(root.get(Betreuung_.institutionStammdaten)
+			.get(InstitutionStammdaten_.institution)
+			.in(Arrays.asList(institutionen)));
 		// Gesuchsperiode darf nicht geschlossen sein
-		predicates.add(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.gesuchsperiode).get(Gesuchsperiode_.status).in
-			(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
+		predicates.add(root.get(Betreuung_.kind)
+			.get(KindContainer_.gesuch)
+			.get(Gesuch_.gesuchsperiode)
+			.get(Gesuchsperiode_.status)
+			.in
+				(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
 		if (role.isRoleSchulamt()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
 				(AntragStatus.FOR_ADMIN_ROLE));
 			// SCH darf nur Schulamt Betreuungen als PEndeny erhalten
-			Predicate predicateTagesschule = cb.equal(root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.TAGESSCHULE);
-			Predicate predicateFerieninsel = cb.equal(root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.FERIENINSEL);
+			Predicate predicateTagesschule = cb.equal(
+				root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp),
+				BetreuungsangebotTyp.TAGESSCHULE);
+			Predicate predicateFerieninsel = cb.equal(
+				root.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp),
+				BetreuungsangebotTyp.FERIENINSEL);
 			predicates.add(cb.or(predicateTagesschule, predicateFerieninsel));
 		}
 
 		if (role.isRoleGemeindeabhaengig()) {
-			final Join<Dossier, Gemeinde> gemeindeJoin = root.join(Betreuung_.kind, JoinType.LEFT).join(KindContainer_.gesuch, JoinType.LEFT)
-				.join(Gesuch_.dossier, JoinType.LEFT).join(Dossier_.gemeinde, JoinType.LEFT);
+			final Join<Dossier, Gemeinde> gemeindeJoin =
+				root.join(Betreuung_.kind, JoinType.LEFT).join(KindContainer_.gesuch, JoinType.LEFT)
+					.join(Gesuch_.dossier, JoinType.LEFT).join(Dossier_.gemeinde, JoinType.LEFT);
 			FilterFunctions.setGemeindeFilterForCurrentUser(benutzerOptional.get(),
 				gemeindeJoin, predicates);
 		}
@@ -679,14 +756,15 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		betreuung.setBetreuungsstatus(status);
 		final Betreuung persistedBetreuung = saveBetreuung(betreuung, false);
 		authorizer.checkWriteAuthorization(persistedBetreuung);
-		wizardStepService.updateSteps(persistedBetreuung.extractGesuch().getId(), null, null, WizardStepName.VERFUEGEN);
+		wizardStepService.updateSteps(persistedBetreuung.extractGesuch().getId(), null, null,
+			WizardStepName.VERFUEGEN);
 		return persistedBetreuung;
 	}
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, REVISOR,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<Betreuung> getAllBetreuungenWithMissingStatistics() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
@@ -706,15 +784,17 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, REVISOR,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS,
+		SACHBEARBEITER_TS, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<Abwesenheit> getAllAbwesenheitenWithMissingStatistics() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Abwesenheit> query = cb.createQuery(Abwesenheit.class);
 
 		Root<Abwesenheit> root = query.from(Abwesenheit.class);
-		Join<Abwesenheit, AbwesenheitContainer> joinAbwesenheitContainer = root.join(Abwesenheit_.abwesenheitContainer, JoinType.LEFT);
-		Join<AbwesenheitContainer, Betreuung> joinBetreuung = joinAbwesenheitContainer.join(AbwesenheitContainer_.betreuung, JoinType.LEFT);
+		Join<Abwesenheit, AbwesenheitContainer> joinAbwesenheitContainer =
+			root.join(Abwesenheit_.abwesenheitContainer, JoinType.LEFT);
+		Join<AbwesenheitContainer, Betreuung> joinBetreuung =
+			joinAbwesenheitContainer.join(AbwesenheitContainer_.betreuung, JoinType.LEFT);
 		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(Betreuung_.kind, JoinType.LEFT);
 		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch, JoinType.LEFT);
 
