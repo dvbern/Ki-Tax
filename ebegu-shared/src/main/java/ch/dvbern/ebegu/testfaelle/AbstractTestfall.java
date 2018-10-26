@@ -82,11 +82,11 @@ public abstract class AbstractTestfall {
 	public static final String ID_MANDANT_KANTON_BERN = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";
 
 	public static final String ID_INSTITUTION_WEISSENSTEIN = "ab353df1-47ca-4618-b849-2265cf1c356a";
-	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA = "945e3eef-8f43-43d2-a684-4aa61089684b";
+	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA = "776329bf-658e-40e1-bfa8-9873996e020e";
 	public static final String ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN = "3304040a-3eb7-426c-a838-51981df87cec";
 
 	public static final String ID_INSTITUTION_BRUENNEN = "1b6f476f-e0f5-4380-9ef6-836d688853a3";
-	public static final String ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA = "9a0eb656-b6b7-4613-8f55-4e0e4720455e";
+	public static final String ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA = "cf68cf60-f7f0-45f1-8596-1ef24739fe5e";
 
 	public static final String ID_INSTITUTION_BERN = "f7abc530-5d1d-4f1c-a198-9039232974a0";
 	public static final String ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE = "199ac4a1-448f-4d4c-b3a6-5aee21f89613";

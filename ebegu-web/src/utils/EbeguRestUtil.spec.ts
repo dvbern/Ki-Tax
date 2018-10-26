@@ -341,6 +341,7 @@ describe('EbeguRestUtil', () => {
                 const tsModul = new TSModulTagesschule();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
+                tsInstStammdatenTagesschule.gueltigkeit = new TSDateRange();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
                 const myInstitutionStammdaten = new TSInstitutionStammdaten('iban',
                     TSBetreuungsangebotTyp.KITA,
@@ -356,12 +357,9 @@ describe('EbeguRestUtil', () => {
                     myInstitutionStammdaten);
                 expect(restInstitutionStammdaten).toBeDefined();
                 expect(restInstitutionStammdaten.iban).toEqual(myInstitutionStammdaten.iban);
-                expect(restInstitutionStammdaten.gueltigAb)
-                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
-                expect(restInstitutionStammdaten.gueltigBis)
-                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
-                expect(restInstitutionStammdaten.betreuungsangebotTyp)
-                    .toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
+                expect(restInstitutionStammdaten.gueltigAb).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
+                expect(restInstitutionStammdaten.gueltigBis).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
+                expect(restInstitutionStammdaten.betreuungsangebotTyp).toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
                 expect(restInstitutionStammdaten.institution.name).toEqual(myInstitutionStammdaten.institution.name);
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule).toBeDefined();
