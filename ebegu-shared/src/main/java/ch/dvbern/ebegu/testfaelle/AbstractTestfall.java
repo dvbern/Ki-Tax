@@ -53,7 +53,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -81,19 +80,10 @@ public abstract class AbstractTestfall {
 
 	public static final String ID_MANDANT_KANTON_BERN = "e3736eb8-6eef-40ef-9e52-96ab48d8f220";
 
-	public static final String ID_INSTITUTION_WEISSENSTEIN = "ab353df1-47ca-4618-b849-2265cf1c356a";
 	public static final String ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA = "776329bf-658e-40e1-bfa8-9873996e020e";
-
-	public static final String ID_INSTITUTION_TAGESFAMILIEN = "f44566b2-b0b7-45fa-87d2-c5edd0d75384";
 	public static final String ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN = "3304040a-3eb7-426c-a838-51981df87cec";
-
-	public static final String ID_INSTITUTION_BRUENNEN = "1b6f476f-e0f5-4380-9ef6-836d688853a3";
 	public static final String ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA = "cf68cf60-f7f0-45f1-8596-1ef24739fe5e";
-
-	public static final String ID_INSTITUTION_BERN = "f7abc530-5d1d-4f1c-a198-9039232974a0";
 	public static final String ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE = "199ac4a1-448f-4d4c-b3a6-5aee21f89613";
-
-	public static final String ID_INSTITUTION_GUARDA = "cb248ea4-df29-496e-ad00-1decb180859e";
 	public static final String ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL = "9d8ff34f-8856-4dd3-ade2-2469aadac0ed";
 
 	protected final Gesuchsperiode gesuchsperiode;
@@ -302,13 +292,9 @@ public abstract class AbstractTestfall {
 		return kindContainer;
 	}
 
-	protected Betreuung createBetreuung(BetreuungsangebotTyp betreuungsangebotTyp, String institutionsId) {
-		return createBetreuung(betreuungsangebotTyp, institutionsId, false);
-	}
-
-	protected Betreuung createBetreuung(BetreuungsangebotTyp betreuungsangebotTyp, String institutionsId, boolean bestaetigt) {
+	protected Betreuung createBetreuung(String institutionStammdatenId, boolean bestaetigt) {
 		Betreuung betreuung = new Betreuung();
-		betreuung.setInstitutionStammdaten(createInstitutionStammdaten(betreuungsangebotTyp, institutionsId));
+		betreuung.setInstitutionStammdaten(createInstitutionStammdaten(institutionStammdatenId));
 		if (!bestaetigt) {
 			betreuung.setBetreuungsstatus(Betreuungsstatus.WARTEN);
 		} else {
@@ -321,13 +307,13 @@ public abstract class AbstractTestfall {
 	}
 
 	@Nonnull
-	protected InstitutionStammdaten createInstitutionStammdaten(BetreuungsangebotTyp betreuungsangebotTyp, String institutionsId) {
+	protected InstitutionStammdaten createInstitutionStammdaten(String institutionsStammdatenId) {
 		for (InstitutionStammdaten institutionStammdaten : institutionStammdatenList) {
-			if (institutionStammdaten.getBetreuungsangebotTyp() == betreuungsangebotTyp && institutionStammdaten.getInstitution().getId().equals(institutionsId)) {
+			if (institutionStammdaten.getId().equals(institutionsStammdatenId)) {
 				return institutionStammdaten;
 			}
 		}
-		throw new IllegalStateException("Institutionsstammdaten sind nicht vorhanden: " + institutionsId);
+		throw new IllegalStateException("Institutionsstammdaten sind nicht vorhanden: " + institutionsStammdatenId);
 	}
 
 	@Deprecated

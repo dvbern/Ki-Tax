@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -450,28 +451,6 @@ public final class TestDataUtil {
 		return instStammdaten;
 	}
 
-	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleForInstitution(
-		@Nonnull Institution institution) {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
-		instStammdaten.setInstitution(institution);
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
-	}
-
-	public static InstitutionStammdaten createInstitutionStammdatenFerieninselForInstitution(
-		@Nonnull Institution institution) {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
-		instStammdaten.setInstitution(institution);
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
-	}
-
 	public static InstitutionStammdaten createInstitutionStammdatenKitaWeissenstein() {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
@@ -479,7 +458,6 @@ public final class TestDataUtil {
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setId(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN);
 		instStammdaten.getInstitution().setName("Kita Aaregg");
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
@@ -492,7 +470,6 @@ public final class TestDataUtil {
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setId(AbstractTestfall.ID_INSTITUTION_TAGESFAMILIEN);
 		instStammdaten.getInstitution().setName("Tagesfamilien");
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
@@ -505,7 +482,6 @@ public final class TestDataUtil {
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setId(AbstractTestfall.ID_INSTITUTION_BRUENNEN);
 		instStammdaten.getInstitution().setName("Kita Brünnen");
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
@@ -518,7 +494,6 @@ public final class TestDataUtil {
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setId(AbstractTestfall.ID_INSTITUTION_BERN);
 		instStammdaten.getInstitution().setName("Tagesschule Bern");
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
@@ -531,10 +506,76 @@ public final class TestDataUtil {
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
 		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setId(AbstractTestfall.ID_INSTITUTION_GUARDA);
 		instStammdaten.getInstitution().setName("Ferieninsel Guarda");
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
+	}
+
+	public static Collection<InstitutionStammdaten> saveInstitutionsstammdatenForTestfaelle(@Nonnull Persistence persistence) {
+		final InstitutionStammdaten institutionStammdatenKitaAaregg = createInstitutionStammdatenKitaWeissenstein();
+		final InstitutionStammdaten institutionStammdatenKitaBruennen = createInstitutionStammdatenKitaBruennen();
+		final InstitutionStammdaten institutionStammdatenTagesfamilien = createInstitutionStammdatenTagesfamilien();
+		final InstitutionStammdaten institutionStammdatenTagesschuleBruennen = createInstitutionStammdatenTagesschuleBern();
+		final InstitutionStammdaten institutionStammdatenFerieninselBruennen = createInstitutionStammdatenFerieninselGuarda();
+		final Mandant mandant = createDefaultMandant();
+
+		institutionStammdatenKitaAaregg.getInstitution().setMandant(mandant);
+		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
+		institutionStammdatenTagesfamilien.getInstitution().setMandant(mandant);
+		institutionStammdatenTagesschuleBruennen.getInstitution().setMandant(mandant);
+		institutionStammdatenFerieninselBruennen.getInstitution().setMandant(mandant);
+
+		Collection<InstitutionStammdaten> list = new ArrayList<>();
+		list.add(saveInstitutionStammdatenIfNecessary(persistence, institutionStammdatenKitaAaregg));
+		list.add(saveInstitutionStammdatenIfNecessary(persistence, institutionStammdatenTagesfamilien));
+		list.add(saveInstitutionStammdatenIfNecessary(persistence, institutionStammdatenKitaBruennen));
+		list.add(saveInstitutionStammdatenIfNecessary(persistence, institutionStammdatenTagesschuleBruennen));
+		list.add(saveInstitutionStammdatenIfNecessary(persistence, institutionStammdatenFerieninselBruennen));
+		return list;
+	}
+
+	private static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nullable InstitutionStammdaten institutionStammdaten) {
+		if (institutionStammdaten != null) {
+			Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
+			InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());
+			if (found == null) {
+				institutionStammdaten.setInstitution(institution);
+				return persistence.merge(institutionStammdaten);
+			}
+			return found;
+		}
+		return null;
+	}
+
+	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nullable Institution institution) {
+		if (institution != null) {
+			saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
+			saveMandantIfNecessary(persistence, institution.getMandant());
+			Institution found = persistence.find(Institution.class, institution.getId());
+			if (found == null) {
+				found = persistEntity(persistence, institution);
+			}
+			return found;
+		}
+		return null;
+	}
+
+	private static void saveTraegerschaftIfNecessary(@Nonnull Persistence persistence, @Nullable Traegerschaft traegerschaft) {
+		if (traegerschaft != null) {
+			Traegerschaft found = persistence.find(Traegerschaft.class, traegerschaft.getId());
+			if (found == null) {
+				persistEntity(persistence, traegerschaft);
+			}
+		}
+	}
+
+	private static void saveMandantIfNecessary(@Nonnull Persistence persistence, @Nullable Mandant mandant) {
+		if (mandant != null) {
+			Mandant found = persistence.find(Mandant.class, mandant.getId());
+			if (found == null) {
+				persistEntity(persistence, mandant);
+			}
+		}
 	}
 
 	private static Kind createDefaultKind(boolean addFachstelle) {
@@ -906,20 +947,7 @@ public final class TestDataUtil {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				InstitutionStammdaten institutionStammdaten = betreuung.getInstitutionStammdaten();
-				Traegerschaft traegerschaft = institutionStammdaten.getInstitution().getTraegerschaft();
-				if (traegerschaft != null && persistence.find(Traegerschaft.class, traegerschaft.getId()) == null) {
-					persistence.merge(traegerschaft);
-				}
-				Mandant mandant = institutionStammdaten.getInstitution().getMandant();
-				if (mandant != null && persistence.find(Mandant.class, mandant.getId()) == null) {
-					persistence.merge(mandant);
-				}
-				if (persistence.find(Institution.class, institutionStammdaten.getInstitution().getId()) == null) {
-					persistence.merge(institutionStammdaten.getInstitution());
-				}
-				if (persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId()) == null) {
-					persistence.merge(institutionStammdaten);
-				}
+				saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
 				if (betreuung.getKind().getKindJA().getPensumFachstelle() != null) {
 					persistence.merge(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 				}
@@ -928,39 +956,28 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(
-		InstitutionService instService,
 		Persistence persistence,
 		LocalDate eingangsdatum,
 		AntragStatus status) {
-		instService.getAllInstitutionen();
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
 		Testfall02_FeutzYvonne testfall =
 			new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
-
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(
-		InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
-		gesuchsperiode) {
-		instService.getAllInstitutionen();
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
+		Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode gesuchsperiode) {
 
+		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
+		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, null);
 	}
 
 	public static Gesuch createAndPersistBeckerNoraGesuch(
-		InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum,
+		Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
-		instService.getAllInstitutionen();
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+
+		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
 		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
 	}
@@ -970,7 +987,6 @@ public final class TestDataUtil {
 		persistence.merge(inst.getMandant());
 		persistence.merge(inst.getTraegerschaft());
 		return persistence.merge(inst);
-
 	}
 
 	private static Gesuch persistAllEntities(
@@ -986,11 +1002,7 @@ public final class TestDataUtil {
 		testfall.getDossier().setGemeinde(getTestGemeinde(persistence));
 		persistence.persist(testfall.getGesuch().getFall());
 		persistence.persist(testfall.getGesuch().getDossier());
-		if (testfall.getGesuch().getGesuchsperiode().isNew()) {
-			persistence.persist(testfall.getGesuch().getGesuchsperiode());
-		} else {
-			persistence.merge(testfall.getGesuch().getGesuchsperiode());
-		}
+		persistEntity(persistence, testfall.getGesuch().getGesuchsperiode());
 		persistence.persist(testfall.getGesuch());
 		Gesuch gesuch = testfall.fillInGesuch();
 		ensureFachstelleAndInstitutionsExist(persistence, gesuch);
@@ -1052,11 +1064,7 @@ public final class TestDataUtil {
 		kindContainers.add(kind);
 		gesuch.setKindContainers(kindContainers);
 
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution());
-		persistence.persist(betreuung.getInstitutionStammdaten());
-
+		saveInstitutionStammdatenIfNecessary(persistence, betreuung.getInstitutionStammdaten());
 		persistence.persist(gesuch);
 	}
 
@@ -1437,10 +1445,7 @@ public final class TestDataUtil {
 		for (AbwesenheitContainer abwesenheit : betreuung.getAbwesenheitContainers()) {
 			persistence.persist(abwesenheit);
 		}
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution());
-		persistence.persist(betreuung.getInstitutionStammdaten());
+		saveInstitutionStammdatenIfNecessary(persistence, betreuung.getInstitutionStammdaten());
 		Objects.requireNonNull(betreuung.getKind().getKindGS());
 		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
 		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
@@ -1448,10 +1453,6 @@ public final class TestDataUtil {
 		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
 
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, null, null, gesuchsperiode);
-		//		if (gesuchsperiode != null) {
-		//			gesuch.setGesuchsperiode(gesuchsperiode);
-		//			gesuch = persistence.merge(gesuch);
-		//		}
 		betreuung.getKind().setGesuch(gesuch);
 		persistence.persist(betreuung.getKind());
 
@@ -1462,20 +1463,16 @@ public final class TestDataUtil {
 
 	}
 
-	public static Betreuung persistBetreuung(BetreuungService betreuungService, Persistence persistence) {
-		return persistBetreuung(betreuungService, persistence, null);
-	}
-
 	/**
 	 * Verfuegt das uebergebene Gesuch. Dies muss in Status IN_BEARBEITUNG_JA uebergeben werden.
 	 */
-	public static Gesuch gesuchVerfuegen(@Nonnull Gesuch gesuch, @Nonnull GesuchService gesuchService) {
+	public static void gesuchVerfuegen(@Nonnull Gesuch gesuch, @Nonnull GesuchService gesuchService) {
 		gesuch.setStatus(AntragStatus.GEPRUEFT);
 		final Gesuch gesuchToVerfuegt = gesuchService.updateGesuch(gesuch, true, null);
 		gesuchToVerfuegt.setStatus(AntragStatus.VERFUEGEN);
 		final Gesuch verfuegenGesuch = gesuchService.updateGesuch(gesuchToVerfuegt, true, null);
 		verfuegenGesuch.setStatus(AntragStatus.VERFUEGT);
-		return gesuchService.updateGesuch(verfuegenGesuch, true, null);
+		gesuchService.updateGesuch(verfuegenGesuch, true, null);
 	}
 
 	public static Gesuch persistNewGesuchInStatus(

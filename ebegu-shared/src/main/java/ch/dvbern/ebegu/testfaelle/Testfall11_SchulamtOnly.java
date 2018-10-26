@@ -29,7 +29,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 
@@ -70,16 +69,14 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 
 		// Betreuungen
 		// Kind 1: Tagesschule Bern
-		Betreuung betreuungTagesschuleBern = createBetreuung(BetreuungsangebotTyp.TAGESSCHULE, ID_INSTITUTION_BERN,
-			betreuungenBestaetigt);
+		Betreuung betreuungTagesschuleBern = createBetreuung(ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE, betreuungenBestaetigt);
 		betreuungTagesschuleBern.setKind(kind1);
 		kind1.getBetreuungen().add(betreuungTagesschuleBern);
 		BetreuungspensumContainer betreuungspensumTagiAaregg = createBetreuungspensum(100, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
 		betreuungspensumTagiAaregg.setBetreuung(betreuungTagesschuleBern);
 		betreuungTagesschuleBern.getBetreuungspensumContainers().add(betreuungspensumTagiAaregg);
 		// Kind 2: Ferieninsel Guarda
-		Betreuung betreuungFerieninselGuarda = createBetreuung(BetreuungsangebotTyp.FERIENINSEL, ID_INSTITUTION_GUARDA,
-			betreuungenBestaetigt);
+		Betreuung betreuungFerieninselGuarda = createBetreuung(ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL, betreuungenBestaetigt);
 		betreuungFerieninselGuarda.setKind(kind2);
 		kind2.getBetreuungen().add(betreuungFerieninselGuarda);
 		BetreuungspensumContainer betreuungspensumKitaAaregg = createBetreuungspensum(100, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
