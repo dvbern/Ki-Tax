@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.ApplicationProperty;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 
 /**
@@ -32,7 +31,8 @@ import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 public interface ApplicationPropertyService {
 
 	/**
-	 * Speichert das property neu in der DB falls der Key noch nicht existeirt. Ansonsten wird ein neues Property mit diesem
+	 * Speichert das property neu in der DB falls der Key noch nicht existeirt. Ansonsten wird ein neues Property mit
+	 * diesem
 	 * Key erstellt
 	 *
 	 * @param key name des Property
@@ -49,10 +49,8 @@ public interface ApplicationPropertyService {
 	@Nonnull
 	Optional<ApplicationProperty> readApplicationProperty(@Nonnull ApplicationPropertyKey key);
 
-
 	/**
 	 * List die Liste der zugelassenen Mimetypes
-	 * @return
 	 */
 	@Nonnull
 	Collection<String> readMimeTypeWhitelist();
@@ -104,16 +102,4 @@ public interface ApplicationPropertyService {
 	 */
 	@Nonnull
 	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, boolean defaultValue);
-
-	/**
-	 * Gibt den DefaultVerantwortlichen BG zurueck.
-	 */
-	@Nonnull
-	Optional<Benutzer> readDefaultVerantwortlicherBGFromProperties();
-
-	/**
-	 * Gibt den DefaultVerantwortlichen TS zurueck.
-	 */
-	@Nonnull
-	Optional<Benutzer> readDefaultVerantwortlicherTSFromProperties();
 }
