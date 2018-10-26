@@ -45,7 +45,6 @@ import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
-import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
@@ -75,6 +74,7 @@ import ch.dvbern.ebegu.entities.FerieninselZeitraum;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -95,7 +95,6 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
@@ -111,6 +110,7 @@ import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -328,7 +328,7 @@ public final class TestDataUtil {
 		return mandant;
 	}
 
-	@Nullable
+	@Nonnull
 	public static Mandant getMandantKantonBern(@Nonnull Persistence persistence) {
 		Mandant mandant = persistence.find(Mandant.class, AbstractTestfall.ID_MANDANT_KANTON_BERN);
 		if (mandant == null) {
@@ -835,7 +835,6 @@ public final class TestDataUtil {
 		GesuchstellerContainer gesuchsteller,
 		BigDecimal einkommen,
 		boolean basisJahrPlus1) {
-
 		if (gesuchsteller.getEinkommensverschlechterungContainer() == null) {
 			gesuchsteller.setEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer());
 		}
@@ -923,7 +922,6 @@ public final class TestDataUtil {
 		InstitutionService instService,
 		Persistence persistence,
 		@Nullable LocalDate eingangsdatum) {
-
 		return createAndPersistWaeltiDagmarGesuch(instService, persistence, eingangsdatum, null);
 	}
 
@@ -957,7 +955,6 @@ public final class TestDataUtil {
 		Persistence persistence,
 		LocalDate eingangsdatum,
 		AntragStatus status) {
-
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
@@ -973,7 +970,6 @@ public final class TestDataUtil {
 		Persistence persistence,
 		LocalDate eingangsdatum,
 		Gesuchsperiode gesuchsperiode) {
-
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
@@ -989,7 +985,6 @@ public final class TestDataUtil {
 		@Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
-
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
@@ -1011,7 +1006,6 @@ public final class TestDataUtil {
 		@Nullable LocalDate eingangsdatum,
 		@Nonnull AbstractTestfall testfall,
 		@Nullable AntragStatus status) {
-
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 		testfall.createFall(verantwortlicher);
 		if (status != null) {
@@ -1101,7 +1095,6 @@ public final class TestDataUtil {
 		@Nullable Gemeinde gemeinde,
 		@Nullable AntragStatus status,
 		@Nullable Gesuchsperiode gesuchsperiode) {
-
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		if (gesuchsperiode != null) {
 			gesuch.setGesuchsperiode(gesuchsperiode);
@@ -1182,7 +1175,6 @@ public final class TestDataUtil {
 		Gesuch gesuch,
 		WizardStepName wizardStepName,
 		WizardStepStatus stepStatus) {
-
 		final WizardStep jaxWizardStep = new WizardStep();
 		jaxWizardStep.setGesuch(gesuch);
 		jaxWizardStep.setWizardStepName(wizardStepName);
@@ -1242,14 +1234,24 @@ public final class TestDataUtil {
 		String value,
 		Gesuchsperiode gesuchsperiode,
 		Persistence persistence) {
-
 		Einstellung einstellung = new Einstellung(key, value, gesuchsperiode);
 		persistence.persist(einstellung);
 	}
 
-	public static void saveParameter(ApplicationPropertyKey key, String value, Persistence persistence) {
-		ApplicationProperty applicationProperty = new ApplicationProperty(key, value);
-		persistence.persist(applicationProperty);
+	public static void createStammdatenDefaultVerantwortliche(
+		@Nonnull Persistence persistence,
+		@Nonnull Benutzer verantwortlicherTS,
+		@Nonnull Benutzer verantwortlicherBG) {
+
+		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
+		stammdaten.setDefaultBenutzerBG(verantwortlicherBG);
+		stammdaten.setDefaultBenutzerTS(verantwortlicherTS);
+		stammdaten.setAdresse(persistence.merge(createDefaultAdresse()));
+		stammdaten.setGemeinde(getTestGemeinde(persistence));
+		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
+		stammdaten.setMail("info@bern.ch");
+
+		persistence.merge(stammdaten);
 	}
 
 	public static Benutzer createBenutzerWithDefaultGemeinde(
@@ -1268,7 +1270,6 @@ public final class TestDataUtil {
 		@Nullable Traegerschaft traegerschaft,
 		@Nullable Institution institution,
 		@Nonnull Mandant mandant) {
-
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setUsername(userName);
 		benutzer.setNachname(Constants.ANONYMOUS_USER_USERNAME);
