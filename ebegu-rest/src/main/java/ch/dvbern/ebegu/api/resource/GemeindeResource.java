@@ -266,7 +266,7 @@ public class GemeindeResource {
 
 	@ApiOperation(value = "Stores the logo image of the Gemeinde with the given id")
 	@POST
-	@Path("/logo/{gemeindeId}")
+	@Path("/logo/data/{gemeindeId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response uploadLogo(
@@ -288,7 +288,7 @@ public class GemeindeResource {
 
 	@ApiOperation(value = "Returns the logo image of the Gemeinde with the given id or an errorcode if none is available")
 	@GET
-	@Path("/logo/{gemeindeId}")
+	@Path("/logo/data/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response downloadLogo(
@@ -298,8 +298,8 @@ public class GemeindeResource {
 		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 		if (stammdaten.isPresent()) {
 			try {
-				return RestUtil.buildDownloadResponse(false, null, "image/jpeg",
-					stammdaten.get().getLogoContent());
+				return RestUtil.buildDownloadResponse(false, "logo",
+					"application/octet-stream", stammdaten.get().getLogoContent());
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
 			}

@@ -61,6 +61,7 @@ public final class RestUtil {
 
 	private static final Pattern MATCH_QUOTE = Pattern.compile("\"");
 	private static final String BLOB_DOWNLOAD_PATH = "/blobs/temp/blobdata/";
+	private static final String LOGO_DOWNLOAD_PATH = "/gemeinde/logo/data/";
 
 	private RestUtil() {
 		//nop
@@ -91,7 +92,8 @@ public final class RestUtil {
 	public static boolean isFileDownloadRequest(@Nonnull HttpServletRequest request) {
 		String context = request.getContextPath() + API_ROOT_PATH;
 		final String blobdataPath = context + BLOB_DOWNLOAD_PATH;
-		return request.getRequestURI().startsWith(blobdataPath);
+		final String logoPath = context + LOGO_DOWNLOAD_PATH;
+		return request.getRequestURI().startsWith(blobdataPath) || request.getRequestURI().startsWith(logoPath);
 	}
 
 	public static Response buildDownloadResponse(boolean attachment, String filename, String filetype, byte[] content) throws IOException {
