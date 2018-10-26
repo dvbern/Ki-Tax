@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -340,28 +342,18 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	private void insertInstitutionsstammdatenForTestfaelle(@Nonnull TestdataSetupConfig config, @Nonnull Mandant mandant) {
 		final InstitutionStammdaten institutionStammdatenKitaAaregg = config.getKitaWeissenstein();
 		final InstitutionStammdaten institutionStammdatenKitaBruennen = config.getKitaBruennen();
-		final InstitutionStammdaten institutionStammdatenKita2Aaregg = config.getKita2Weissenstein();
+		final InstitutionStammdaten institutionStammdatenTagesfamilien = config.getTagesfamilien();
 		final InstitutionStammdaten institutionStammdatenTagesschuleBruennen = config.getTagesschuleBruennen();
 		final InstitutionStammdaten institutionStammdatenFerieninselBruennen = config.getFerieninselBruennen();
 
-		Traegerschaft traegerschaftAaregg = institutionStammdatenKitaAaregg.getInstitution().getTraegerschaft();
-		traegerschaftAaregg = persistence.persist(traegerschaftAaregg);
-
-		Traegerschaft traegerschaftBruennen = institutionStammdatenKitaBruennen.getInstitution().getTraegerschaft();
-		traegerschaftBruennen = persistence.persist(traegerschaftBruennen);
-
 		institutionStammdatenKitaAaregg.getInstitution().setMandant(mandant);
-		institutionStammdatenKitaAaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
 		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
-		institutionStammdatenKitaBruennen.getInstitution().setTraegerschaft(traegerschaftBruennen);
-		institutionStammdatenKita2Aaregg.getInstitution().setMandant(mandant);
-		institutionStammdatenKita2Aaregg.getInstitution().setTraegerschaft(traegerschaftAaregg);
+		institutionStammdatenTagesfamilien.getInstitution().setMandant(mandant);
+		institutionStammdatenTagesschuleBruennen.getInstitution().setMandant(mandant);
+		institutionStammdatenFerieninselBruennen.getInstitution().setMandant(mandant);
 
-		institutionService.createInstitution(institutionStammdatenKitaAaregg.getInstitution());
 		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaAaregg);
-		saveInstitutionStammdatenIfNecessary(institutionStammdatenKita2Aaregg);
-
-		institutionService.createInstitution(institutionStammdatenKitaBruennen.getInstitution());
+		saveInstitutionStammdatenIfNecessary(institutionStammdatenTagesfamilien);
 		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaBruennen);
 		saveInstitutionStammdatenIfNecessary(institutionStammdatenTagesschuleBruennen);
 		saveInstitutionStammdatenIfNecessary(institutionStammdatenFerieninselBruennen);
@@ -369,11 +361,31 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	private void saveInstitutionStammdatenIfNecessary(@Nullable InstitutionStammdaten institutionStammdaten) {
 		if (institutionStammdaten != null) {
-			InstitutionStammdaten existing = institutionStammdatenService
-				.getInstitutionStammdatenByInstitution(
-				institutionStammdaten.getInstitution().getId());
-			if (existing == null) {
+			saveInstitutionIfNecessary(institutionStammdaten.getInstitution());
+			Optional<InstitutionStammdaten> optionalStammdaten = institutionStammdatenService
+				.findInstitutionStammdaten(
+				institutionStammdaten.getId());
+			if (!optionalStammdaten.isPresent()) {
 				institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
+			}
+		}
+	}
+
+	private void saveInstitutionIfNecessary(@Nullable Institution institution) {
+		if (institution != null) {
+			saveTraegerschaftIfNecessary(institution.getTraegerschaft());
+			Institution found = persistence.find(Institution.class, institution.getId());
+			if (found == null) {
+				persistence.persist(institution);
+			}
+		}
+	}
+
+	private void saveTraegerschaftIfNecessary(@Nullable Traegerschaft traegerschaft) {
+		if (traegerschaft != null) {
+			Traegerschaft found = persistence.find(Traegerschaft.class, traegerschaft.getId());
+			if (found == null) {
+				persistence.persist(traegerschaft);
 			}
 		}
 	}

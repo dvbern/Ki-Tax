@@ -768,8 +768,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Betreuung betreuung = TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution());
-		persistence.persist(betreuung.getInstitutionStammdaten());
 		betreuungService.saveBetreuung(betreuung, false);
 
 		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
