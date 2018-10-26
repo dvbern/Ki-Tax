@@ -73,14 +73,6 @@ export class DvSkiplinksController implements IDVFocusableController {
         angular.element('.sidenav.gesuchMenu button').first().focus();
     }
 
-    public showKontakt(): void {
-        this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
-            title: '',
-            text: this.ebeguUtil.getKontaktJugendamt(),
-            parentController: this,
-        });
-    }
-
     /**
      * Sets the focus back to the Kontakt icon.
      */

@@ -643,8 +643,11 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public showKontakt(): void {
         const text = this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
-            return `<span>${gemeindeDaten.gemeinde.name}</span><br>
+            return `<span>${gemeindeDaten.adresse.organisation ? gemeindeDaten.adresse.organisation : ''}
+                          ${gemeindeDaten.gemeinde.name}
+                    </span><br>
                     <span>${gemeindeDaten.adresse.strasse} ${gemeindeDaten.adresse.hausnummer}</span><br>
+                    <span>${gemeindeDaten.adresse.plz} ${gemeindeDaten.adresse.ort}</span><br>
                     <a href="tel:${gemeindeDaten.telefon}">${gemeindeDaten.telefon}</a><br>
                     <a href="mailto:${gemeindeDaten.mail}">${gemeindeDaten.mail}</a>`;
         }));

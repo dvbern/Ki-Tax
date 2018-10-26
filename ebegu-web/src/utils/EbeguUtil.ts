@@ -363,12 +363,4 @@ export default class EbeguUtil {
             EbeguUtil.handleSmarttablesUpdateBug(list);
         }
     }
-
-    public getKontaktJugendamt(): string {
-        return '<span>Jugendamt</span><br>'
-            + '<span>Effingerstrasse 21</span><br>'
-            + '<span>3008 Bern</span><br>'
-            + '<a href="tel:0313215115"><span>031 321 51 15</span></a><br>'
-            + '<a href="mailto:kinderbetreuung@bern.ch"><span>kinderbetreuung@bern.ch</span></a>';
-    }
 }
