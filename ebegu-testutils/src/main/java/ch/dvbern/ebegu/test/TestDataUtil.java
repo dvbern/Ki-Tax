@@ -160,6 +160,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
 
 /**
  * comments homa
@@ -454,6 +458,7 @@ public final class TestDataUtil {
 
 	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleForInstitution(
 		@Nonnull Institution institution) {
+
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
@@ -467,6 +472,7 @@ public final class TestDataUtil {
 
 	public static InstitutionStammdaten createInstitutionStammdatenFerieninselForInstitution(
 		@Nonnull Institution institution) {
+
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setOeffnungsstunden(BigDecimal.valueOf(24));
@@ -902,6 +908,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistWaeltiDagmarGesuch(
 		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
+
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -959,8 +966,10 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(
-		InstitutionService instService, Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
-		gesuchsperiode) {
+		InstitutionService instService,
+		Persistence persistence,
+		LocalDate eingangsdatum,
+		Gesuchsperiode gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
@@ -971,8 +980,11 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistBeckerNoraGesuch(
-		InstitutionService instService, Persistence persistence, @Nullable LocalDate eingangsdatum,
-		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
+		InstitutionService instService,
+		Persistence persistence,
+		@Nullable LocalDate eingangsdatum,
+		@Nullable AntragStatus status,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
@@ -990,7 +1002,9 @@ public final class TestDataUtil {
 	}
 
 	private static Gesuch persistAllEntities(
-		@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum, @Nonnull AbstractTestfall testfall,
+		@Nonnull Persistence persistence,
+		@Nullable LocalDate eingangsdatum,
+		@Nonnull AbstractTestfall testfall,
 		@Nullable AntragStatus status) {
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 		testfall.createFall(verantwortlicher);
@@ -1077,7 +1091,9 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistGesuch(
-		@Nonnull Persistence persistence, @Nullable Gemeinde gemeinde, @Nullable AntragStatus status,
+		@Nonnull Persistence persistence,
+		@Nullable Gemeinde gemeinde,
+		@Nullable AntragStatus status,
 		@Nullable Gesuchsperiode gesuchsperiode) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		if (gesuchsperiode != null) {
@@ -1168,10 +1184,26 @@ public final class TestDataUtil {
 	}
 
 	public static void prepareParameters(Gesuchsperiode gesuchsperiode, Persistence persistence) {
-		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, "3760", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, "5900", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, "6970", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, "7500", gesuchsperiode, persistence);
+		saveEinstellung(
+			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+			gesuchsperiode,
+			persistence);
+		saveEinstellung(
+			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+			gesuchsperiode,
+			persistence);
+		saveEinstellung(
+			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+			gesuchsperiode,
+			persistence);
+		saveEinstellung(
+			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+			gesuchsperiode,
+			persistence);
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_KITA_MIN, "0", gesuchsperiode, persistence);
@@ -1233,7 +1265,10 @@ public final class TestDataUtil {
 	}
 
 	public static Benutzer createBenutzer(
-		UserRole role, String userName, @Nullable Traegerschaft traegerschaft, @Nullable Institution institution,
+		UserRole role,
+		String userName,
+		@Nullable Traegerschaft traegerschaft,
+		@Nullable Institution institution,
 		@Nonnull Mandant mandant) {
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setUsername(userName);
