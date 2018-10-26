@@ -21,10 +21,14 @@ import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/co
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
+import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
+import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSBenutzer from '../../../models/TSBenutzer';
+import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
@@ -42,6 +46,7 @@ export class ViewGemeindeComponent implements OnInit {
     private fileToUpload!: File;
     public logoImageUrl: string = '#';
     private gemeindeId: string;
+    private navigationDest: StateDeclaration;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -57,6 +62,7 @@ export class ViewGemeindeComponent implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
+        this.navigationDest = this.$transition$.to();
         this.logoImageUrl = this.gemeindeRS.getLogoUrl(this.gemeindeId);
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
@@ -64,6 +70,10 @@ export class ViewGemeindeComponent implements OnInit {
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
                 return stammdaten;
             }));
+    }
+
+    public canUploadLogo(): boolean {
+        return true; // 'gemeinde.edit' === this.navigationDest.name;
     }
 
     public mitarbeiterBearbeiten(): void {
@@ -84,17 +94,20 @@ export class ViewGemeindeComponent implements OnInit {
     }
 
     public handleLogoUpload(files: FileList): void {
-    // todo KIBON-217 auslagern??? es ist in edit-gemeinde dupliziert
+        // todo KIBON-217 in Komponente auslagern, es ist in edit-gemeinde dupliziert
         this.fileToUpload = files[0];
         const tmpFileReader = new FileReader();
-        tmpFileReader.onload = (e: any): void => {
-            this.logoImageUrl = e.target.result;
+        tmpFileReader.onload = (event: any): void => {
+            this.logoImageUrl = event.target.result;
         };
         tmpFileReader.readAsDataURL(this.fileToUpload);
 
-        if (this.fileToUpload && this.fileToUpload.type.includes('image/')) {
-            this.gemeindeRS.postLogoImage(this.gemeindeId, this.fileToUpload);
+        if (!(this.fileToUpload && this.fileToUpload.type.includes('image/'))) {
+            return;
         }
+        this.gemeindeRS.postLogoImage(this.gemeindeId, this.fileToUpload).then(() => {
+            this.stammdaten$.pipe();
+        });
     }
 
     private initStrings(stammdaten: TSGemeindeStammdaten): void {

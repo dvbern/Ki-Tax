@@ -29,8 +29,7 @@
 
             <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
             <div class="viewTitle">
-                <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer}
-                    }}</h2>
+                <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer} }}</h2>
                 <hr class="header">
             </div>
 
@@ -38,9 +37,9 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <h3 translate>ADMINISTRATOREN</h3>
-                            <p>{{stammdaten.administratoren}}</p>
-                            <h3 translate>SACHBEARBEITER</h3>
+                            <p><strong translate>ADMINISTRATOREN</strong></p>
+                            <p class="marginBottom10">{{stammdaten.administratoren}}</p>
+                            <p><strong translate>SACHBEARBEITER</strong></p>
                             <p>{{stammdaten.sachbearbeiter}}</p>
                         </div>
                         <div class="form-group">
@@ -52,10 +51,10 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <div >
+                            <div class="marginBottom10">
                                 <img [src]="logoImageUrl" [height]="180" class="gemeinde-profil-image">
                             </div>
-                            <div>
+                            <div *ngIf="canUploadLogo()">
                                 <input #fileInput type="file" accept='image/*'
                                        (change)="handleLogoUpload(fileInput.files)"
                                        class="gemeinde-profil-fileinput">

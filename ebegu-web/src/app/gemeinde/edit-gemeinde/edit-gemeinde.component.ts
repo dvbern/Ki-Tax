@@ -57,9 +57,7 @@ export class EditGemeindeComponent implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
-        // TODO: Task KIBON-217: Load from DB
-        this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
-
+        this.logoImageUrl = this.gemeindeRS.getLogoUrl(this.gemeindeId);
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
