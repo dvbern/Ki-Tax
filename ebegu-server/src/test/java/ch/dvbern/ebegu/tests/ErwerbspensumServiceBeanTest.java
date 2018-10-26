@@ -264,7 +264,7 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		final KindContainer kind = gesuch.getKindContainers().iterator().next();
 
 		kind.getBetreuungen().forEach(betreuung -> {
-			if(betreuung.getErweiterteBetreuungContainer() == null){
+			if (betreuung.getErweiterteBetreuungContainer() == null) {
 				betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
 				betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(new ErweiterteBetreuung());
 			}
