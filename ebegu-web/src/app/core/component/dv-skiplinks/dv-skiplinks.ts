@@ -15,13 +15,8 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import {ShowTooltipController} from '../../../../gesuch/dialog/ShowTooltipController';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {IDVFocusableController} from '../IDVFocusableController';
-
-const showKontaktTemplate = require('../../../../gesuch/dialog/showKontaktTemplate.html');
 
 export class DvSkiplinksComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -41,8 +36,6 @@ export class DvSkiplinksController implements IDVFocusableController {
 
     public constructor(
         private readonly $state: StateService,
-        private readonly dvDialog: DvDialog,
-        private readonly ebeguUtil: EbeguUtil,
     ) {
     }
 
