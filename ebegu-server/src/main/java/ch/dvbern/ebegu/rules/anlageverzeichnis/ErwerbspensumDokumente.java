@@ -39,6 +39,7 @@ import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_AUSBILDUNG;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_LANG_ARBEITSWEG;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_RAV;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT;
@@ -125,6 +126,7 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_AUSBILDUNG));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_RAV));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, BESTAETIGUNG_ARZT));
+				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_UNREG_ARBEITSZ));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_LANG_ARBEITSWEG));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_SONSTIGEN_ZUSCHLAG));
@@ -175,7 +177,9 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		case NACHWEIS_RAV:
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.RAV;
 		case BESTAETIGUNG_ARZT:
-			return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN;
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_INDIKATION;
+		case NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM:
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
 		case NACHWEIS_UNREG_ARBEITSZ:
 			return erwerbspensum.getZuschlagZuErwerbspensum()
 				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.UNREGELMAESSIGE_ARBEITSZEITEN;

@@ -106,7 +106,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		final Erwerbspensum erwerbspensumJA = erwerbspensumContainer.getErwerbspensumJA();
 		Assert.assertNotNull(erwerbspensumJA);
 		if (gesundheitlicheEinschraenkungen) {
-			erwerbspensumJA.setTaetigkeit(Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN);
+			erwerbspensumJA.setTaetigkeit(Taetigkeit.GESUNDHEITLICHE_INDIKATION);
 		} else {
 			erwerbspensumJA.setTaetigkeit(taetigkeit);
 		}
