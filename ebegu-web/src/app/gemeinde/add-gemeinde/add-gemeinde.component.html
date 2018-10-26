@@ -49,7 +49,7 @@
                             <label translate for="gemeinde_ID">GEMEINDE_BFS_NR</label>
                             <input id="bfs_nummer_ID" type="number" name="bfs_nummer" #name="ngModel"
                                    [(ngModel)]="gemeinde.bfsNummer"
-                                   [min]="1" [max]="6806" [maxlength]="4" class="form-control" required>
+                                   [min]="1" [max]="max" [maxlength]="4" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.bfs_nummer?.errors"
                                                inputId="bfs_nummer_ID">
                             </dv-error-messages>
