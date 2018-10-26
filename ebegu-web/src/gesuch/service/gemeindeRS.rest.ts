@@ -141,6 +141,14 @@ export default class GemeindeRS implements IEntityRS {
         });
     }
 
+    public getLogoUrl(gemeindeId: string): string {
+        return `${this.serviceURL}/logo/${encodeURIComponent(gemeindeId)}`;
+    }
+
+    public testGetLogo(gemeindeId: string): IPromise<any> {
+        return this.$http.get(this.getLogoUrl(gemeindeId)).then(response => response.data);
+    }
+
     public postLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
@@ -149,9 +157,8 @@ export default class GemeindeRS implements IEntityRS {
     }
 
     private uploadLogo(gemeindeId: string, formData: FormData): IPromise<any> {
-        const uploadUrl = `${this.serviceURL}/logo/${encodeURIComponent(gemeindeId)}`;
         let result: IPromise<any>;
-        result = this.$http.post(uploadUrl, formData, {
+        result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}})
             .then((response: any) => {
@@ -164,10 +171,4 @@ export default class GemeindeRS implements IEntityRS {
         return result;
     }
 
-    /*
-    private uploadLogo(gemeindeId: string, formData: FormData): void {
-        this.httpClient.post<any>(`${this.serviceURL}/logo/${encodeURIComponent(gemeindeId)}`, formData)
-            .subscribe(() => {});
-    }
-    */
 }

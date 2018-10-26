@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -263,6 +264,7 @@ public class GemeindeResource {
 
 	}
 
+	@ApiOperation(value = "Stores the logo image of the Gemeinde with the given id")
 	@POST
 	@Path("/logo/{gemeindeId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -284,13 +286,13 @@ public class GemeindeResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation(value = "Returns the logo image of the klub with the given id or an errorcode if none is available")
+	@ApiOperation(value = "Returns the logo image of the Gemeinde with the given id or an errorcode if none is available")
 	@GET
 	@Path("/logo/{gemeindeId}")
-	@Cache(maxAge = 172800)
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response downloadLogo(
-		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
-		@Context HttpServletRequest request) {
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
