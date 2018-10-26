@@ -37,8 +37,8 @@ public enum UserRole {
 	ADMIN_GEMEINDE(RollenAbhaengigkeit.GEMEINDE),
 	SACHBEARBEITER_TS(RollenAbhaengigkeit.GEMEINDE),
 	SACHBEARBEITER_GEMEINDE(RollenAbhaengigkeit.GEMEINDE),
-	ADMIN_MANDANT(RollenAbhaengigkeit.NONE),
-	SACHBEARBEITER_MANDANT(RollenAbhaengigkeit.NONE),
+	ADMIN_MANDANT(RollenAbhaengigkeit.KANTON),
+	SACHBEARBEITER_MANDANT(RollenAbhaengigkeit.KANTON),
 	GESUCHSTELLER(RollenAbhaengigkeit.NONE);
 
 	@Nonnull

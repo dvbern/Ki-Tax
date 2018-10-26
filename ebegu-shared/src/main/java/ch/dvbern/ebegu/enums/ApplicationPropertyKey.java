@@ -31,18 +31,6 @@ public enum ApplicationPropertyKey {
 	BACKGROUND_COLOR,
 
 	/**
-	 * Wenn eine Nachricht zu einem Fall eintrifft, welcher noch keinen Verantwortlichen BG hat, so soll diese an den
-	 * Default-Verantwortlichen BG geschickt werden.
-	 */
-	DEFAULT_VERANTWORTLICHER_BG,
-
-	/**
-	 * Wenn eine Nachricht zu einem Fall eintrifft, welcher noch keinen Verantwortlichen TS hat, so soll diese an den
-	 * Default-Verantwortlichen TS geschickt werden.
-	 */
-	DEFAULT_VERANTWORTLICHER_TS,
-
-	/**
 	 * {Dbtr}{Nm} Name des Zahlungspflichtigen
 	 */
 	DEBTOR_NAME,

@@ -25,12 +25,14 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Displayable;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 
 public enum RollenAbhaengigkeit {
 	GEMEINDE(Gemeinde.class),
 	INSTITUTION(Institution.class),
 	TRAEGERSCHAFT(Traegerschaft.class),
+	KANTON(Mandant.class),
 	NONE(null);
 
 	@Nullable

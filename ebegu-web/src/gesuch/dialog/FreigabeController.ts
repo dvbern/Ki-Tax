@@ -13,13 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import BenutzerRS from '../../app/core/service/benutzerRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSBenutzer from '../../models/TSBenutzer';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import DossierRS from '../service/dossierRS.rest';
+import GemeindeRS from '../service/gemeindeRS.rest';
 import GesuchRS from '../service/gesuchRS.rest';
 import IPromise = angular.IPromise;
 import IDialogService = angular.material.IDialogService;
@@ -37,7 +38,8 @@ export class FreigabeController {
         'BenutzerRS',
         'AuthServiceRS',
         '$translate',
-        'ApplicationPropertyRS',
+        'GemeindeRS',
+        'DossierRS'
     ];
 
     public gesuch: TSAntragDTO;
@@ -57,7 +59,8 @@ export class FreigabeController {
         private readonly benutzerRS: BenutzerRS,
         private readonly authService: AuthServiceRS,
         private readonly $translate: ITranslateService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly dossierRS: DossierRS,
     ) {
 
         gesuchRS.findGesuchForFreigabe(this.docID).then((response: TSAntragDTO) => {
@@ -95,8 +98,10 @@ export class FreigabeController {
             this.selectedUserBG = this.gesuch.verantwortlicherUsernameBG;
         } else if (this.authService.isOneOfRoles(this.TSRoleUtil.getSchulamtOnlyRoles())) {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
-            this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_BG').then(username => {
-                this.selectedUserBG = username.value;
+            this.dossierRS.findDossier(this.gesuch.dossierId).then(dossier => {
+                this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
+                    this.selectedUserBG = stammdaten.defaultBenutzerBG.username;
+                });
             });
         } else {
             this.selectedUserBG = this.authService.getPrincipal().username;
@@ -109,8 +114,10 @@ export class FreigabeController {
             // Noch kein Verantwortlicher aus Vorjahr vorhanden
             this.selectedUserTS = this.authService.getPrincipal().username;
         } else {
-            this.applicationPropertyRS.getByName('DEFAULT_VERANTWORTLICHER_TS').then(username => {
-                this.selectedUserTS = username.value;
+            this.dossierRS.findDossier(this.gesuch.dossierId).then(dossier => {
+                this.gemeindeRS.getGemeindeStammdaten(dossier.gemeinde.id).then(stammdaten => {
+                    this.selectedUserTS = stammdaten.defaultBenutzerTS.username;
+                });
             });
         }
     }
