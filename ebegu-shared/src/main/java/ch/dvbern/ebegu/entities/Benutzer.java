@@ -278,6 +278,8 @@ public class Benutzer extends AbstractMutableEntity {
 			return requireNonNull(getInstitution()).getName();
 		case TRAEGERSCHAFT:
 			return requireNonNull(getTraegerschaft()).getName();
+		case KANTON:
+			return requireNonNull(getMandant()).getName();
 		}
 
 		throw new IllegalStateException("No mapping defined for " + rollenAbhaengigkeit);
