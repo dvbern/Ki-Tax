@@ -85,7 +85,7 @@ export class EditGemeindeComponent implements OnInit {
             stammdaten.beschwerdeAdresse = undefined;
         }
         if (this.fileToUpload && this.fileToUpload.type.includes('image/')) {
-            this.gemeindeRS.postLogoImage(stammdaten.gemeinde.id, this.fileToUpload);
+            this.gemeindeRS.uploadLogoImage(stammdaten.gemeinde.id, this.fileToUpload);
         }
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => this.navigateBack());
     }

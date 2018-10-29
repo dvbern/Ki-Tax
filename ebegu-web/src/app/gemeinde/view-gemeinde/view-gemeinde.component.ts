@@ -25,10 +25,7 @@ import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
-import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import TSBenutzer from '../../../models/TSBenutzer';
-import TSGemeindeKonfiguration from '../../../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
@@ -43,10 +40,7 @@ export class ViewGemeindeComponent implements OnInit {
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
     public korrespondenzsprache: string;
-    private fileToUpload!: File;
-    public logoImageUrl: string = '#';
     private gemeindeId: string;
-    private navigationDest: StateDeclaration;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -62,23 +56,12 @@ export class ViewGemeindeComponent implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
-        this.navigationDest = this.$transition$.to();
-        this.logoImageUrl = this.gemeindeRS.getLogoUrl(this.gemeindeId);
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.initStrings(stammdaten);
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
                 return stammdaten;
             }));
-    }
-
-    public canUploadLogo(): boolean {
-        return true; // 'gemeinde.edit' === this.navigationDest.name;
-    }
-
-    public mitarbeiterBearbeiten(): void {
-        // TODO: Implement Mitarbeiter Bearbeiten Button Action
-        this.gemeindeRS.testGetLogo(this.gemeindeId);
     }
 
     public editGemeindeStammdaten(): void {
@@ -91,23 +74,6 @@ export class ViewGemeindeComponent implements OnInit {
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
-    }
-
-    public handleLogoUpload(files: FileList): void {
-        // todo KIBON-217 in Komponente auslagern, es ist in edit-gemeinde dupliziert
-        this.fileToUpload = files[0];
-        const tmpFileReader = new FileReader();
-        tmpFileReader.onload = (event: any): void => {
-            this.logoImageUrl = event.target.result;
-        };
-        tmpFileReader.readAsDataURL(this.fileToUpload);
-
-        if (!(this.fileToUpload && this.fileToUpload.type.includes('image/'))) {
-            return;
-        }
-        this.gemeindeRS.postLogoImage(this.gemeindeId, this.fileToUpload).then(() => {
-            this.stammdaten$.pipe();
-        });
     }
 
     private initStrings(stammdaten: TSGemeindeStammdaten): void {

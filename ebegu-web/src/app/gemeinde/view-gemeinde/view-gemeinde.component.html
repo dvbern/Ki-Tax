@@ -24,47 +24,11 @@
       (ngSubmit)="editGemeindeStammdaten()"
       novalidate>
 
-    <div class="row marginTop20 marginBottom10">
-        <div class="col-md-8 col-md-offset-2 ">
-
-            <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
-            <div class="viewTitle">
-                <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer} }}</h2>
-                <hr class="header">
-            </div>
-
-            <fieldset>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <p><strong translate>ADMINISTRATOREN</strong></p>
-                            <p class="marginBottom10">{{stammdaten.administratoren}}</p>
-                            <p><strong translate>SACHBEARBEITER</strong></p>
-                            <p>{{stammdaten.sachbearbeiter}}</p>
-                        </div>
-                        <div class="form-group">
-                            <button type="button" class="dv-btn mitarbeiter-bearbeiten-button"
-                                    (click)="mitarbeiterBearbeiten()"
-                                    [textContent]="'BENUTZER_EDIT' | translate">
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <div class="marginBottom10">
-                                <img [src]="logoImageUrl" [height]="180" class="gemeinde-profil-image">
-                            </div>
-                            <div *ngIf="canUploadLogo()">
-                                <input #fileInput type="file" accept='image/*'
-                                       (change)="handleLogoUpload(fileInput.files)"
-                                       class="gemeinde-profil-fileinput">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-    </div>
+    <dv-gemeinde-header
+        [gemeinde]="stammdaten.gemeinde"
+        [administratoren]="stammdaten.administratoren"
+        [sachbearbeiter]="stammdaten.sachbearbeiter">
+    </dv-gemeinde-header>
 
     <dv-full-height-container>
         <div class="dv-content">

@@ -146,17 +146,22 @@ export default class GemeindeRS implements IEntityRS {
     }
 
     public testGetLogo(gemeindeId: string): IPromise<any> {
-        return this.$http.get(this.getLogoUrl(gemeindeId)).then(response => response.data);
+        return this.$http.get(this.getLogoUrl(gemeindeId), {
+            headers: {
+                'Content-Type': 'application/jpeg',
+            }}).then((response: any) => {
+                return response.data;
+            });
     }
 
-    public postLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+    public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
         formData.append('kat', fileToUpload, encodeURIComponent('logo'));
-        return this.uploadLogo(gemeindeId, formData);
+        return this.postLogo(gemeindeId, formData);
     }
 
-    private uploadLogo(gemeindeId: string, formData: FormData): IPromise<any> {
+    private postLogo(gemeindeId: string, formData: FormData): IPromise<any> {
         let result: IPromise<any>;
         result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
             transformRequest: angular.identity,

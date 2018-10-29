@@ -786,7 +786,6 @@ export default class EbeguRestUtil {
             stammdatenTS.webseite = stammdatenFromServer.webseite;
             stammdatenTS.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
             stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
-            stammdatenTS.logoUrl = stammdatenFromServer.logoUrl;
             stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
             stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
             stammdatenTS.konfigurationsListe =
