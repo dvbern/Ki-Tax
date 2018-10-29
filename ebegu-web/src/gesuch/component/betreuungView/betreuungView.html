@@ -211,7 +211,7 @@
                     </div>
 
                     <!--Kesb Platzierung-->
-                    <div class="row marginBottom50 marginTop20"
+                    <div class="row marginTop20"
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="!vm.isSchulamt()">
@@ -227,6 +227,50 @@
                         </div>
                     </div>
 
+                    <!--erweiterte Beduerfnisse-->
+                    <div class="row marginTop20" ng-if="vm.showErweiterteBeduerfnisse()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
+                                             name="erweiterteBeduerfnisse"
+                                             aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
+                                             dv-enable-element
+                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+                                             dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
+                                    <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
+                                </md-checkbox>
+                                <dv-bisher gs="vm.getErweiterteBetreuungGS().erweiterteBeduerfnisse"
+                                           ja="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
+                                           specific-bisher-text="vm.getTextFachstelleKorrekturJA()"></dv-bisher>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Fachstelle erweiterte Beduerfnisse-->
+                    <div ng-if="vm.isFachstelleRequired()">
+                        <div class="row marginBottom20">
+                            <div class="col-sm-12 dv-input-container-medium form-group">
+                                <label class="md-no-float required" data-translate="FACHSTELLE" for="fachstelle">
+                                </label>
+                                <div class="dv-select-style">
+                                    <select aria-describedby="fachstelle-error"
+                                            name="fachstelle"
+                                            id="fachstelle"
+                                            ng-model="vm.fachstelleId"
+                                            class="form-control"
+                                            ng-options="fachstelle.id as fachstelle.name for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
+                                            ng-required="vm.isFachstelleRequired()"
+                                            ng-disabled="!vm.enableErweiterteBeduerfnisse()"
+                                            ng-change="vm.setSelectedFachsstelle()">
+                                    </select>
+                                    <dv-bisher gs="vm.getErweiterteBetreuungGS().fachstelle.name"
+                                               ja="vm.getErweiterteBetreuungJA().fachstelle.name">
+                                    <dv-error-messages input-id="fachstelle" for="vm.form.fachstelle.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
 
                 <fieldset ng-disabled="vm.isGesuchReadonly() && !vm.isMutationsmeldungStatus">
@@ -379,26 +423,8 @@
                                                   ng-model="vm.getBetreuungModel().grundAblehnung"
                                                   ng-disabled="!vm.isBetreuungsstatusWarten() || vm.isSavingData"
                                                   maxlength="4000">
-                            </textarea>
+                                        </textarea>
                                     </dv-input-container>
-                                </div>
-                            </div>
-
-                            <!--erweiterte Beduerfnisse-->
-                            <div class="row marginTop40 marginBottom40" ng-if="vm.showErweiterteBeduerfnisse()">
-                                <div class="col-xs-12 dv-input-container-question">
-                                    <div class="checkbox">
-                                        <md-checkbox ng-model="vm.getBetreuungModel().erweiterteBeduerfnisse"
-                                                     name="erweiterteBeduerfnisse"
-                                                     aria-label="{{'ERWEITERTE_BEDUERFNISSE'|translate}}"
-                                                     dv-enable-element
-                                                     dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                                                     dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
-                                            <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
-                                        </md-checkbox>
-                                        <dv-error-messages
-                                            for="vm.form.erweiterteBeduerfnisse.$error"></dv-error-messages>
-                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -556,7 +582,6 @@
 
                     </div>
 
-
                     <!--Platz anfordern-->
                     <div class="dv-navigation-item"
                          dv-show-element
@@ -566,6 +591,18 @@
                             <span data-translate="PLATZBESTAETIGUNG_ANFORDERN"></span>
                         </dv-loading-button>
                     </div>
+
+                    <!-- Save -->
+                    <div class="dv-navigation-item"
+                         dv-show-element
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+                         dv-show-expression="vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehend()">
+                        <dv-loading-button button-click="vm.saveBetreuung()">
+                            <span data-translate="SPEICHERN_UPPER"></span>
+                        </dv-loading-button>
+                    </div>
+
+                    <!-- Abbrechen -->
                     <div class="dv-navigation-item">
                         <dv-loading-button button-click="vm.cancel()" button-class="cancel-button"
                                            type="reset">

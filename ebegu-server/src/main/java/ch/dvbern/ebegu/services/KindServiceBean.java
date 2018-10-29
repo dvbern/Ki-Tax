@@ -35,6 +35,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -42,7 +44,6 @@ import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
-import ch.dvbern.ebegu.entities.Kind_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -59,9 +60,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
@@ -79,7 +80,6 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	private Persistence persistence;
 	@Inject
 	private WizardStepService wizardStepService;
-
 	@Inject
 	private GesuchService gesuchService;
 
@@ -117,7 +117,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		final CriteriaQuery<KindContainer> query = cb.createQuery(KindContainer.class);
 		Root<KindContainer> root = query.from(KindContainer.class);
 		// Kinder from Gesuch
-		Predicate predicateInstitution = root.get(KindContainer_.gesuch).get(Gesuch_.id).in(gesuchId);
+		Predicate predicateInstitution = root.get(KindContainer_.gesuch).get(AbstractEntity_.id).in(gesuchId);
 
 		query.where(predicateInstitution);
 		return persistence.getCriteriaResults(query);
@@ -128,11 +128,13 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	public void removeKind(@Nonnull KindContainer kind) {
 		final Gesuch gesuch = kind.getGesuch();
 		final String gesuchId = gesuch.getId();
+
 		persistence.remove(kind);
-		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.KINDER);
 
 		// the kind needs to be removed from the object as well
 		gesuch.getKindContainers().removeIf(k -> k.getId().equalsIgnoreCase(kind.getId()));
+
+		wizardStepService.updateSteps(gesuchId, null, null, WizardStepName.KINDER);
 
 		gesuchService.updateBetreuungenStatus(gesuch);
 	}
@@ -189,22 +191,22 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		Join<KindContainer, Gesuch> joinGesuch = root.join(KindContainer_.gesuch, JoinType.LEFT);
 
 		query.multiselect(
-			joinGesuch.get(Gesuch_.id),
+			joinGesuch.get(AbstractEntity_.id),
 			joinGesuch.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.fallNummer),
 			cb.literal(kindContainer.getKindNummer()),
 			root.get(KindContainer_.kindNummer),
-			joinGesuch.get(Gesuch_.timestampErstellt)
+			joinGesuch.get(AbstractEntity_.timestampErstellt)
 		).distinct(true);
 
 		// Identische Merkmale
-		Predicate predicateName = cb.equal(joinKind.get(Kind_.nachname), kindContainer.getKindJA().getNachname());
-		Predicate predicateVorname = cb.equal(joinKind.get(Kind_.vorname), kindContainer.getKindJA().getVorname());
-		Predicate predicateGeburtsdatum = cb.equal(joinKind.get(Kind_.geburtsdatum), kindContainer.getKindJA().getGeburtsdatum());
+		Predicate predicateName = cb.equal(joinKind.get(AbstractPersonEntity_.nachname), kindContainer.getKindJA().getNachname());
+		Predicate predicateVorname = cb.equal(joinKind.get(AbstractPersonEntity_.vorname), kindContainer.getKindJA().getVorname());
+		Predicate predicateGeburtsdatum = cb.equal(joinKind.get(AbstractPersonEntity_.geburtsdatum), kindContainer.getKindJA().getGeburtsdatum());
 		// Aber nicht vom selben Dossier
 		Predicate predicateOtherDossier = cb.notEqual(joinGesuch.get(Gesuch_.dossier), kindContainer.getGesuch().getDossier());
 		// Nur das zuletzt gueltige Gesuch
 		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.FOR_KIND_DUBLETTEN);
-		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(joinGesuch.get(AbstractEntity_.timestampErstellt)));
 		query.where(predicateName, predicateVorname, predicateGeburtsdatum, predicateOtherDossier, predicateStatus);
 
 		return persistence.getCriteriaResults(query);

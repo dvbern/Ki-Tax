@@ -288,8 +288,11 @@ public class MailTemplateConfiguration {
 	private String getRollenZusatz(@Nonnull Einladung einladung, @Nullable Benutzer eingeladener) {
 		if (einladung.getEinladungTyp() == EinladungTyp.MITARBEITER) {
 			requireNonNull(eingeladener, "For an Einladung of the type Mitarbeiter a user must be set");
-			return '(' + eingeladener.extractRollenAbhaengigkeitAsString() + ')';
+			String abhaengigkeitAsString = eingeladener.extractRollenAbhaengigkeitAsString();
+
+			return abhaengigkeitAsString.isEmpty() ? "" : "(" + abhaengigkeitAsString + ")";
 		}
+
 		return einladung.getEinladungObjectName()
 			.orElse("");
 	}

@@ -42,6 +42,7 @@ import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 
 import {ShowTooltipController} from '../../dialog/ShowTooltipController';
 import DossierRS from '../../service/dossierRS.rest';
+import GemeindeRS from '../../service/gemeindeRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import GesuchRS from '../../service/gesuchRS.rest';
 import IPromise = angular.IPromise;
@@ -100,6 +101,7 @@ export class DossierToolbarController implements IDVFocusableController {
         'unsavedWarningSharedService',
         'MitteilungRS',
         'DossierRS',
+        'GemeindeRS',
     ];
 
     public antragList: Array<TSAntragDTO>;
@@ -135,6 +137,7 @@ export class DossierToolbarController implements IDVFocusableController {
                        private readonly unsavedWarningSharedService: any,
                        private readonly mitteilungRS: MitteilungRS,
                        private readonly dossierRS: DossierRS,
+                       private readonly gemeindeRS: GemeindeRS,
     ) {
 
     }
@@ -639,9 +642,15 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public showKontakt(): void {
-        const text = this.dossier.isHauptverantwortlicherTS() ?
-            this.ebeguUtil.getKontaktSchulamt() :
-            this.ebeguUtil.getKontaktJugendamt();
+        const text = this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
+            return `<span>${gemeindeDaten.adresse.organisation ? gemeindeDaten.adresse.organisation : ''}
+                          ${gemeindeDaten.gemeinde.name}
+                    </span><br>
+                    <span>${gemeindeDaten.adresse.strasse} ${gemeindeDaten.adresse.hausnummer}</span><br>
+                    <span>${gemeindeDaten.adresse.plz} ${gemeindeDaten.adresse.ort}</span><br>
+                    <a href="tel:${gemeindeDaten.telefon}">${gemeindeDaten.telefon}</a><br>
+                    <a href="mailto:${gemeindeDaten.mail}">${gemeindeDaten.mail}</a>`;
+        }));
         this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
             title: '',
             text,
