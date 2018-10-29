@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpRequestTransformer, IHttpService, ILogService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
@@ -164,7 +164,7 @@ export default class GemeindeRS implements IEntityRS {
     private postLogo(gemeindeId: string, formData: FormData): IPromise<any> {
         let result: IPromise<any>;
         result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
-            transformRequest: (request) => request,
+            transformRequest: (request: IHttpRequestTransformer) => request,
             headers: {'Content-Type': undefined}})
             .then((response: any) => {
                 this.$log.debug('Upload Gemeinde Logo ', response.data);
