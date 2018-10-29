@@ -102,10 +102,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
 
 /**
  * Service fuer erstellen und mutieren von Testfällen
@@ -463,19 +463,19 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	public void insertParametersForTestfaelle(@Nonnull Gesuchsperiode gesuchsperiode) {
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS,
 			gesuchsperiode);
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS,
 			gesuchsperiode);
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS,
 			gesuchsperiode);
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS,
 			gesuchsperiode);
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode);
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode);
