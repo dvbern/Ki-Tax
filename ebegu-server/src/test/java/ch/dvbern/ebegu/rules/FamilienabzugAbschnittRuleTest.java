@@ -49,7 +49,6 @@ import org.junit.Test;
 /**
  * Tests fuer FamilienabzugAbschnittRule
  */
-@Ignore
 public class FamilienabzugAbschnittRuleTest {
 
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse3 = BigDecimal.valueOf(3800);

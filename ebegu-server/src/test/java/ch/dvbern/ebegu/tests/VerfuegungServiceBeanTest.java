@@ -49,7 +49,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -115,7 +114,6 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void calculateVerfuegung() {
 
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);

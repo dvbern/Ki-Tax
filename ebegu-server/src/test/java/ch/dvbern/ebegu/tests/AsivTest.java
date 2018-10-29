@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.services.VerfuegungService;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02;
@@ -49,7 +50,6 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
-import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -57,7 +57,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -116,7 +115,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		gemeinde = TestDataUtil.getGemeindeBern(persistence);
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_01() {
 		// Erstgesuch erstellen
@@ -136,7 +134,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_02() {
 		// Erstgesuch erstellen
@@ -156,7 +153,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_03() {
 		// Erstgesuch erstellen
@@ -176,7 +172,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_04() {
 		// Erstgesuch erstellen
@@ -196,7 +191,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_05() {
 		// Erstgesuch erstellen
@@ -216,7 +210,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_06() {
 		// Erstgesuch erstellen
@@ -236,7 +229,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_07() {
 		// Erstgesuch erstellen
@@ -256,7 +248,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_08() {
 		// Erstgesuch erstellen
@@ -276,7 +267,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_09() {
 		// Erstgesuch erstellen
@@ -296,7 +286,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		}
 	}
 
-	@Ignore
 	@Test
 	public void testfall_ASIV_10() {
 		// Erstgesuch erstellen
