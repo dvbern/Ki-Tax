@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -31,7 +30,6 @@ import java.util.UUID;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.services.AdministrationService;
-import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -165,16 +163,6 @@ public class InstitutionenInsertCreator {
 		if (cell != null) {
 			cell.setCellType(CellType.STRING);
 			return cell.getStringCellValue();
-		} else {
-			return null;
-		}
-	}
-
-	private String readDouble(Row row, int columnIndex) {
-		Cell cell = row.getCell(columnIndex);
-		if (cell != null) {
-			cell.setCellType(CellType.NUMERIC);
-			return Double.toString(cell.getNumericCellValue());
 		} else {
 			return null;
 		}
@@ -335,19 +323,6 @@ public class InstitutionenInsertCreator {
 			return "null";
 		} else {
 			return "'" + aStringOrNull + "'";
-		}
-	}
-
-	private String toBigDecimalOrNull(String aStringOrNull) {
-		if (aStringOrNull == null) {
-			return "null";
-		} else {
-			// Mit 2 Nachkommastellen
-			BigDecimal from = MathUtil.DEFAULT.from(new BigDecimal(aStringOrNull));
-			if (from != null) {
-				return from.toString();
-			}
-			return "null";
 		}
 	}
 

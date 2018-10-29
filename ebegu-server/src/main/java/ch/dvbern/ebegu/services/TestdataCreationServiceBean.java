@@ -406,17 +406,26 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		final InstitutionStammdaten institutionStammdatenTagesschuleBruennen = config.getTagesschuleBruennen();
 		final InstitutionStammdaten institutionStammdatenFerieninselBruennen = config.getFerieninselBruennen();
 
-		institutionStammdatenKitaAaregg.getInstitution().setMandant(mandant);
-		institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
-		institutionStammdatenTagesfamilien.getInstitution().setMandant(mandant);
-		institutionStammdatenTagesschuleBruennen.getInstitution().setMandant(mandant);
-		institutionStammdatenFerieninselBruennen.getInstitution().setMandant(mandant);
-
-		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaAaregg);
-		saveInstitutionStammdatenIfNecessary(institutionStammdatenTagesfamilien);
-		saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaBruennen);
-		saveInstitutionStammdatenIfNecessary(institutionStammdatenTagesschuleBruennen);
-		saveInstitutionStammdatenIfNecessary(institutionStammdatenFerieninselBruennen);
+		if (institutionStammdatenKitaAaregg != null) {
+			institutionStammdatenKitaAaregg.getInstitution().setMandant(mandant);
+			saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaAaregg);
+		}
+		if (institutionStammdatenKitaBruennen != null) {
+			institutionStammdatenKitaBruennen.getInstitution().setMandant(mandant);
+			saveInstitutionStammdatenIfNecessary(institutionStammdatenKitaBruennen);
+		}
+		if (institutionStammdatenTagesfamilien != null) {
+			institutionStammdatenTagesfamilien.getInstitution().setMandant(mandant);
+			saveInstitutionStammdatenIfNecessary(institutionStammdatenTagesfamilien);
+		}
+		if (institutionStammdatenTagesschuleBruennen != null) {
+			institutionStammdatenTagesschuleBruennen.getInstitution().setMandant(mandant);
+			saveInstitutionStammdatenIfNecessary(institutionStammdatenTagesschuleBruennen);
+		}
+		if (institutionStammdatenFerieninselBruennen != null) {
+			institutionStammdatenFerieninselBruennen.getInstitution().setMandant(mandant);
+			saveInstitutionStammdatenIfNecessary(institutionStammdatenFerieninselBruennen);
+		}
 	}
 
 	private void saveInstitutionStammdatenIfNecessary(@Nullable InstitutionStammdaten institutionStammdaten) {
