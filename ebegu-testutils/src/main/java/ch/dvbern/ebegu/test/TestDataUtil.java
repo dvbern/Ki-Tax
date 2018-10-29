@@ -534,7 +534,7 @@ public final class TestDataUtil {
 		return list;
 	}
 
-	private static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nullable InstitutionStammdaten institutionStammdaten) {
+	public static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nullable InstitutionStammdaten institutionStammdaten) {
 		if (institutionStammdaten != null) {
 			Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
 			InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());

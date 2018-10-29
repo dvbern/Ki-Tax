@@ -110,7 +110,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 	private void assertEmpty() {
 		Assert.assertEquals(3, adresseService.getAllAdressen().size());
 		Assert.assertEquals(3, institutionStammdatenService.getAllInstitutionStammdaten().size());
-		Assert.assertEquals(2, institutionService.getAllInstitutionen().size());
+		Assert.assertEquals(3, institutionService.getAllInstitutionen().size());
 		Assert.assertTrue(traegerschaftService.getAllTraegerschaften().isEmpty());
 		Assert.assertEquals(anzahlUserSchonVorhanden, benutzerService.getAllBenutzer().size());
 	}
