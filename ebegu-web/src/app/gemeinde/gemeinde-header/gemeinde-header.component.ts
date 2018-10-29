@@ -19,7 +19,6 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -43,7 +42,6 @@ export class GemeindeHeaderComponent implements OnInit {
     public constructor(
         private readonly $transition$: Transition,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly translate: TranslateService,
     ) {
     }
 
