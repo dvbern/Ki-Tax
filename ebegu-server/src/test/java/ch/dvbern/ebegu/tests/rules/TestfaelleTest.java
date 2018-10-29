@@ -22,14 +22,13 @@ import java.util.List;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
 import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
 import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
-import ch.dvbern.ebegu.test.TestDataUtil;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -38,16 +37,6 @@ import org.junit.Test;
 public class TestfaelleTest extends AbstractBGRechnerTest {
 
 	@Test
-	public void indexOfTest() {
-		String deployuri = "/ebegu/index.jsp";
-		int slashLoc = deployuri.indexOf("/", 1);
-		if (slashLoc != -1) {
-			deployuri = deployuri.substring(0, slashLoc);
-		}
-	}
-
-	@Test
-	@Ignore
 	public void testfall01_WaeltiDagmar() {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -64,7 +53,6 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 	}
 
 	@Test
-	@Ignore
 	public void testfall02_FeutzYvonne() {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -81,7 +69,6 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 	}
 
 	@Test
-	@Ignore
 	public void testfall03_PerreiraMarcia() {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -112,7 +99,6 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 	}
 
 	@Test
-	@Ignore
 	public void testfall05_LuethiMeret() {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -128,7 +114,6 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 	}
 
 	@Test
-	@Ignore
 	public void testfall06_BeckerNora() {
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());

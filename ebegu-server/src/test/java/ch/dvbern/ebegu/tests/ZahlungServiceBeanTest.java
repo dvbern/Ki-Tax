@@ -62,7 +62,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -154,7 +153,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * werden.
 	 */
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenNormalUndMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
@@ -195,7 +193,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * In der Zahlung muessen alle Korrekturen angezeigt werden aber die von erster Mutation nicht.
 	 */
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenNormalUndTwoMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
@@ -245,7 +242,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * ignoriert angezeigt
 	 */
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenNormalUndMutationChangeIgnoriert() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
@@ -277,7 +273,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenMitNachzahlung() {
 		createGesuch(true);
 		// Anzahl Zahlungen: Anzahl Monate seit Periodenbeginn, inkl. dem aktuellen
@@ -299,7 +294,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenMitKorrekturMultiple() {
 		Gesuch erstgesuch = createGesuch(true, DATUM_AUGUST.minusDays(1), AntragStatus.VERFUEGT); // Becker Yasmin,
 		// 01.08.2016 - 31.07.2017, EWP 60%
@@ -376,7 +370,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenMitKorrekturMonatUeberspringen() {
 		Gesuch erstgesuch = createGesuch(true, DATUM_AUGUST.minusDays(1), AntragStatus.VERFUEGT); // Becker Yasmin,
 		// 01.08.2016 - 31.07.2017, EWP 60%
@@ -458,7 +451,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void zahlungsauftragAusloesen() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
@@ -474,7 +466,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void findZahlungsauftrag() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
@@ -485,7 +476,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void deleteZahlungsauftrag() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
@@ -497,7 +487,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void getAllZahlungsauftraege() {
 		Assert.assertTrue(zahlungService.getAllZahlungsauftraege().isEmpty());
 
@@ -507,7 +496,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void zahlungBestaetigen() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
