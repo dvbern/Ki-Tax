@@ -147,7 +147,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Nonnull
 	public StringBuilder createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen,
 			@Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId) {
-		return this.createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, null, gesuchsPeriodeId, gemeindeId);
+		return createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, null, gesuchsPeriodeId, gemeindeId);
 	}
 
 	@Nonnull
@@ -488,8 +488,11 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	 */
 	@Override
 	@Nonnull
-	public Gesuch createAndSaveGesuch(@Nonnull AbstractTestfall fromTestfall, boolean verfuegen,
-		@Nullable Benutzer besitzer) {
+	public Gesuch createAndSaveGesuch(
+		@Nonnull AbstractTestfall fromTestfall,
+		boolean verfuegen,
+		@Nullable Benutzer besitzer
+	) {
 		final List<Gesuch> gesuche = gesuchService.findGesuchByGSName(fromTestfall.getNachname(), fromTestfall.getVorname());
 		if (!gesuche.isEmpty()) {
 			fromTestfall.setFall(gesuche.iterator().next().getFall());

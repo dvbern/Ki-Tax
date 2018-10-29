@@ -64,6 +64,8 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fachstelle;
@@ -161,6 +163,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
 
 /**
  * comments homa
@@ -403,6 +409,8 @@ public final class TestDataUtil {
 		fachstelle.setName("Fachstelle1");
 		fachstelle.setBeschreibung("Kinder Fachstelle");
 		fachstelle.setBehinderungsbestaetigung(true);
+		fachstelle.setFachstelleAnspruch(true);
+		fachstelle.setFachstelleErweiterteBetreuung(false);
 		return fachstelle;
 	}
 
@@ -662,6 +670,9 @@ public final class TestDataUtil {
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
 		betreuung.setKeineKesbPlatzierung(true);
+		final ErweiterteBetreuungContainer erweiterteBetreuungContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		erweiterteBetreuungContainer.setBetreuung(betreuung);
+		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
 		return betreuung;
 	}
 
@@ -673,6 +684,9 @@ public final class TestDataUtil {
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setKind(createDefaultKindContainer());
+		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		erweitContainer.setBetreuung(betreuung);
+		betreuung.setErweiterteBetreuungContainer(erweitContainer);
 		return betreuung;
 	}
 
@@ -927,6 +941,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistWaeltiDagmarGesuch(
 		@Nonnull InstitutionService instService, @Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
+
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
@@ -966,7 +981,8 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(
-		Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode gesuchsperiode) {
+		 Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
+		gesuchsperiode) {
 
 		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
@@ -974,7 +990,7 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistBeckerNoraGesuch(
-		Persistence persistence, @Nullable LocalDate eingangsdatum,
+		 Persistence persistence, @Nullable LocalDate eingangsdatum,
 		@Nullable AntragStatus status, @Nonnull Gesuchsperiode gesuchsperiode) {
 
 		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
@@ -990,7 +1006,9 @@ public final class TestDataUtil {
 	}
 
 	private static Gesuch persistAllEntities(
-		@Nonnull Persistence persistence, @Nullable LocalDate eingangsdatum, @Nonnull AbstractTestfall testfall,
+		@Nonnull Persistence persistence,
+		@Nullable LocalDate eingangsdatum,
+		@Nonnull AbstractTestfall testfall,
 		@Nullable AntragStatus status) {
 		Benutzer verantwortlicher = createAndPersistBenutzer(persistence);
 		testfall.createFall(verantwortlicher);
@@ -1069,7 +1087,9 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistGesuch(
-		@Nonnull Persistence persistence, @Nullable Gemeinde gemeinde, @Nullable AntragStatus status,
+		@Nonnull Persistence persistence,
+		@Nullable Gemeinde gemeinde,
+		@Nullable AntragStatus status,
 		@Nullable Gesuchsperiode gesuchsperiode) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		if (gesuchsperiode != null) {
@@ -1160,10 +1180,26 @@ public final class TestDataUtil {
 	}
 
 	public static void prepareParameters(Gesuchsperiode gesuchsperiode, Persistence persistence) {
-		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3, "3760", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4, "5900", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5, "6970", gesuchsperiode, persistence);
-		saveEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, "7500", gesuchsperiode, persistence);
+		saveEinstellung(
+			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+			gesuchsperiode,
+			persistence);
+		saveEinstellung(
+			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+			gesuchsperiode,
+			persistence);
+		saveEinstellung(
+			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+			gesuchsperiode,
+			persistence);
+		saveEinstellung(
+			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+			gesuchsperiode,
+			persistence);
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode, persistence);
 		saveEinstellung(PARAM_PENSUM_KITA_MIN, "0", gesuchsperiode, persistence);
@@ -1225,7 +1261,10 @@ public final class TestDataUtil {
 	}
 
 	public static Benutzer createBenutzer(
-		UserRole role, String userName, @Nullable Traegerschaft traegerschaft, @Nullable Institution institution,
+		UserRole role,
+		String userName,
+		@Nullable Traegerschaft traegerschaft,
+		@Nullable Institution institution,
 		@Nonnull Mandant mandant) {
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setUsername(userName);
@@ -1579,5 +1618,13 @@ public final class TestDataUtil {
 		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
 		zeitabschnitt.setZuSpaetEingereicht(false);
 		return zeitabschnitt;
+	}
+
+	public static ErweiterteBetreuungContainer createDefaultErweiterteBetreuungContainer() {
+		ErweiterteBetreuungContainer erwBetContainer = new ErweiterteBetreuungContainer();
+		ErweiterteBetreuung erwBet = new ErweiterteBetreuung();
+		erwBet.setErweiterteBeduerfnisse(false);
+		erwBetContainer.setErweiterteBetreuungJA(erwBet);
+		return erwBetContainer;
 	}
 }

@@ -53,7 +53,8 @@ public class EinkommenCalcRuleTest {
 
 	@Test
 	public void testKitaEinkommenZuHoch() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(180000), BetreuungsangebotTyp.KITA, 100, new BigDecimal(1000)));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(180000),
+			BetreuungsangebotTyp.KITA, 100, new BigDecimal(1000)));
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());

@@ -62,6 +62,9 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	@NotNull
 	private List<JaxAbwesenheitContainer> abwesenheitContainers = new ArrayList<>();
 
+	@NotNull
+	private JaxErweiterteBetreuungContainer erweiterteBetreuungContainer;
+
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	private String grundAblehnung;
@@ -77,9 +80,6 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	@NotNull
 	private Boolean keineKesbPlatzierung;
-
-	@NotNull
-	private Boolean erweiterteBeduerfnisse;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -150,6 +150,16 @@ public class JaxBetreuung extends JaxAbstractDTO {
 		this.abwesenheitContainers = abwesenheiten;
 	}
 
+	@Nonnull
+	public JaxErweiterteBetreuungContainer getErweiterteBetreuungContainer() {
+		return erweiterteBetreuungContainer;
+	}
+
+	public void setErweiterteBetreuungContainer(
+		@Nonnull JaxErweiterteBetreuungContainer erweiterteBetreuungContainer) {
+		this.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
+	}
+
 	@Nullable
 	public String getGrundAblehnung() {
 		return grundAblehnung;
@@ -190,14 +200,6 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
-	}
-
-	public Boolean getErweiterteBeduerfnisse() {
-		return erweiterteBeduerfnisse;
-	}
-
-	public void setErweiterteBeduerfnisse(Boolean erweiterteBeduerfnisse) {
-		this.erweiterteBeduerfnisse = erweiterteBeduerfnisse;
 	}
 
 	@Nullable

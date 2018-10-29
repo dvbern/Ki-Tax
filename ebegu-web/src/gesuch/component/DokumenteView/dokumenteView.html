@@ -39,6 +39,12 @@
                                        on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteKinder)">
                     </dv-dokumente-list>
 
+                    <dv-dokumente-list dokumente="vm.dokumenteErwBetr" table-id="dokumenteErweiterteBetreuung"
+                                       table-title="DOK_ERWEITERTE_BETREUUNG"
+                                       on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteErwBetr)"
+                                       on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteErwBetr)">
+                    </dv-dokumente-list>
+
                     <dv-dokumente-list dokumente="vm.dokumenteFinSit" table-id="dokumenteFinSit"
                                        table-title="DOK_FINANZIELLE_SITUATION"
                                        tag="DOK_JAHR"

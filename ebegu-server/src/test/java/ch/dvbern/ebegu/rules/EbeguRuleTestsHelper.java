@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -134,6 +135,11 @@ public class EbeguRuleTestsHelper {
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
 		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
+
+		ErweiterteBetreuungContainer container = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		container.setBetreuung(betreuung);
+		betreuung.setErweiterteBetreuungContainer(container);
+
 		return betreuung;
 	}
 }

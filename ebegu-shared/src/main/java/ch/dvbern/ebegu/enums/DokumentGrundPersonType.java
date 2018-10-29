@@ -22,5 +22,5 @@ package ch.dvbern.ebegu.enums;
  */
 public enum DokumentGrundPersonType {
 	KIND,
-	GESUCHSTELLER
+	GESUCHSTELLER,
 }

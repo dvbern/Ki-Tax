@@ -31,6 +31,7 @@ import TSBetreuung from '../models/TSBetreuung';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
 import TSDossier from '../models/TSDossier';
+import TSErweiterteBetreuungContainer from '../models/TSErweiterteBetreuungContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import {TSFachstelle} from '../models/TSFachstelle';
 import TSFall from '../models/TSFall';
@@ -275,11 +276,13 @@ describe('EbeguRestUtil', () => {
                 const tsAbwesenheitContainer = new TSAbwesenheitContainer(tsAbwesenheitGS,
                     tsAbwesenheitJA);
                 const abwesenheitContainers = [tsAbwesenheitContainer];
+                const erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
 
                 const betreuung = new TSBetreuung(instStam,
                     TSBetreuungsstatus.AUSSTEHEND,
                     betContainers,
                     abwesenheitContainers,
+                    erweiterteBetreuungContainer,
                     2);
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuung);
 
