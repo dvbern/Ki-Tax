@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU Affero General Public License as
-  ~ published by the Free Software Foundation, either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Affero General Public License for more details.
-  ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
-  -->
-
 <verfuegungszeitAbschnitte>
     <nummer>1</nummer>
     <nameKind>Julio Abwesend</nameKind>
@@ -23,88 +8,88 @@
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.08.2016</gueltigAb>
         <gueltigBis>31.08.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.09.2016</gueltigAb>
         <gueltigBis>30.09.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.10.2016</gueltigAb>
         <gueltigBis>31.10.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>84.25</elternbeitrag>
+        <elternbeitrag>164.60</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.11.2016</gueltigAb>
         <gueltigBis>09.11.2016</gueltigBis>
-        <vollkosten>581.35</vollkosten>
+        <vollkosten>600.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen>ABWESENHEIT: Ab dem 31. Tag einer Abwesenheit (Krankheit oder Unfall des Kinds und bei Mutterschaft ausgeschlossen) entfällt der Gutschein.</bemerkungen>
         <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>996.55</elternbeitrag>
+        <elternbeitrag>1066.65</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>10.11.2016</gueltigAb>
         <gueltigBis>25.11.2016</gueltigBis>
-        <vollkosten>996.55</vollkosten>
+        <vollkosten>1066.65</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>36.10</elternbeitrag>
+        <elternbeitrag>91.45</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>26.11.2016</gueltigAb>
         <gueltigBis>30.11.2016</gueltigBis>
-        <vollkosten>249.15</vollkosten>
+        <vollkosten>333.35</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.12.2016</gueltigAb>
         <gueltigBis>31.12.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.01.2017</gueltigAb>
         <gueltigBis>31.01.2017</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>

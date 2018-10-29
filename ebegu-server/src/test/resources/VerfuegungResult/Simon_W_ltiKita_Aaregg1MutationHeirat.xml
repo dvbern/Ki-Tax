@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU Affero General Public License as
-  ~ published by the Free Software Foundation, either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Affero General Public License for more details.
-  ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
-  -->
-
 <verfuegungszeitAbschnitte>
     <nummer>1</nummer>
     <nameKind>Simon Wälti</nameKind>
@@ -22,82 +7,82 @@
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
-        <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <betreuungspensum>80.00</betreuungspensum>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.08.2016</gueltigAb>
         <gueltigBis>31.08.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
-        <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <betreuungspensum>80.00</betreuungspensum>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.09.2016</gueltigAb>
         <gueltigBis>30.09.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
-        <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <betreuungspensum>80.00</betreuungspensum>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.10.2016</gueltigAb>
         <gueltigBis>31.10.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
-        <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <betreuungspensum>80.00</betreuungspensum>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.11.2016</gueltigAb>
         <gueltigBis>30.11.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
-        <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>264.80</elternbeitrag>
+        <betreuungspensum>80.00</betreuungspensum>
+        <elternbeitrag>548.70</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.12.2016</gueltigAb>
         <gueltigBis>31.12.2016</gueltigBis>
-        <vollkosten>1827.05</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
-        <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>120.35</elternbeitrag>
+        <betreuungspensum>80.00</betreuungspensum>
+        <elternbeitrag>247.80</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.01.2017</gueltigAb>
         <gueltigBis>14.01.2017</gueltigBis>
-        <vollkosten>830.45</vollkosten>
+        <vollkosten>903.25</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>60</anspruchberechtigtesPensum>
         <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 1 auf 2 Gesuchsteller
 ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
-        <betreuungspensum>80</betreuungspensum>
-        <elternbeitrag>108.30</elternbeitrag>
+        <betreuungspensum>80.00</betreuungspensum>
+        <elternbeitrag>499.85</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>15.01.2017</gueltigAb>
         <gueltigBis>31.01.2017</gueltigBis>
-        <vollkosten>747.45</vollkosten>
+        <vollkosten>1096.75</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
-        <abzugFamGroesse>11280</abzugFamGroesse>
+        <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>60</anspruchberechtigtesPensum>
         <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 1 auf 2 Gesuchsteller
 ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
@@ -109,7 +94,7 @@ ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
         <vollkosten>0.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
-        <abzugFamGroesse>11280</abzugFamGroesse>
+        <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>60</anspruchberechtigtesPensum>
         <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 1 auf 2 Gesuchsteller
 ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
@@ -121,7 +106,7 @@ ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
         <vollkosten>0.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
-        <abzugFamGroesse>11280</abzugFamGroesse>
+        <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>60</anspruchberechtigtesPensum>
         <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 1 auf 2 Gesuchsteller
 ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
@@ -133,7 +118,7 @@ ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
         <vollkosten>0.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
-        <abzugFamGroesse>11280</abzugFamGroesse>
+        <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>60</anspruchberechtigtesPensum>
         <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 1 auf 2 Gesuchsteller
 ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
@@ -145,7 +130,7 @@ ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
         <vollkosten>0.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
-        <abzugFamGroesse>11280</abzugFamGroesse>
+        <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>60</anspruchberechtigtesPensum>
         <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 1 auf 2 Gesuchsteller
 ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
@@ -157,7 +142,7 @@ ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
         <vollkosten>0.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
-        <abzugFamGroesse>11280</abzugFamGroesse>
+        <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>60</anspruchberechtigtesPensum>
         <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 1 auf 2 Gesuchsteller
 ERWERBSPENSUM: Der Zuschlag zum Erwerbspensum beträgt max. 20%</bemerkungen>
