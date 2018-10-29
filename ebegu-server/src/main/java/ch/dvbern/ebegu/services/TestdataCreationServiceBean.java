@@ -115,8 +115,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
 	@Inject
-	private InstitutionService institutionService;
-	@Inject
 	private GesuchService gesuchService;
 	@Inject
 	private TestfaelleService testfaelleService;
