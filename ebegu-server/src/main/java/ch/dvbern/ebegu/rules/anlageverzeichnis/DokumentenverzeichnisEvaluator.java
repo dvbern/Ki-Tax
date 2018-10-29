@@ -33,6 +33,7 @@ public class DokumentenverzeichnisEvaluator {
 	private final AbstractDokumente erwerbspensumDokumente = new ErwerbspensumDokumente();
 	private final AbstractDokumente finanzielleSituationDokumente = new FinanzielleSituationDokumente();
 	private final AbstractDokumente einkommensverschlechterungDokumente = new EinkommensverschlechterungDokumente();
+	private final AbstractDokumente betreuungDokumente = new BetreuungDokumente();
 
 	public Set<DokumentGrund> calculate(Gesuch gesuch) {
 
@@ -44,6 +45,7 @@ public class DokumentenverzeichnisEvaluator {
 			erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
 			finanzielleSituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
 			einkommensverschlechterungDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
+			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
 		}
 
 		return anlageVerzeichnis;

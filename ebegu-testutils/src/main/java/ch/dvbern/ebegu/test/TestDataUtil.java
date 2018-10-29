@@ -63,6 +63,8 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fachstelle;
@@ -406,6 +408,8 @@ public final class TestDataUtil {
 		fachstelle.setName("Fachstelle1");
 		fachstelle.setBeschreibung("Kinder Fachstelle");
 		fachstelle.setBehinderungsbestaetigung(true);
+		fachstelle.setFachstelleAnspruch(true);
+		fachstelle.setFachstelleErweiterteBetreuung(false);
 		return fachstelle;
 	}
 
@@ -643,6 +647,9 @@ public final class TestDataUtil {
 		betreuung.setKind(kind);
 		betreuung.setBelegungTagesschule(createDefaultBelegungTagesschule());
 		betreuung.setKeineKesbPlatzierung(true);
+		final ErweiterteBetreuungContainer erweiterteBetreuungContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		erweiterteBetreuungContainer.setBetreuung(betreuung);
+		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
 		return betreuung;
 	}
 
@@ -654,6 +661,9 @@ public final class TestDataUtil {
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setKind(createDefaultKindContainer());
+		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
+		erweitContainer.setBetreuung(betreuung);
+		betreuung.setErweiterteBetreuungContainer(erweitContainer);
 		return betreuung;
 	}
 
@@ -1633,5 +1643,13 @@ public final class TestDataUtil {
 		zeitabschnitt.setEinkommensjahr(PERIODE_JAHR_1);
 		zeitabschnitt.setZuSpaetEingereicht(false);
 		return zeitabschnitt;
+	}
+
+	public static ErweiterteBetreuungContainer createDefaultErweiterteBetreuungContainer() {
+		ErweiterteBetreuungContainer erwBetContainer = new ErweiterteBetreuungContainer();
+		ErweiterteBetreuung erwBet = new ErweiterteBetreuung();
+		erwBet.setErweiterteBeduerfnisse(false);
+		erwBetContainer.setErweiterteBetreuungJA(erwBet);
+		return erwBetContainer;
 	}
 }

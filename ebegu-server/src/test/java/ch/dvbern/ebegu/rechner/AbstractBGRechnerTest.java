@@ -28,6 +28,8 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -197,7 +199,11 @@ public class AbstractBGRechnerTest {
 		@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
 		Betreuung betreuung = new Betreuung();
-		betreuung.setErweiterteBeduerfnisse(besondereBeduerfnisse);
+		ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer();
+		ErweiterteBetreuung erweiterteBetreuung = new ErweiterteBetreuung();
+		erweiterteBetreuung.setErweiterteBeduerfnisse(besondereBeduerfnisse);
+		erweiterteBetreuungContainer.setErweiterteBetreuungJA(erweiterteBetreuung);
+		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainer);
 		Kind kind = new Kind();
 		kind.setGeburtsdatum(geburtsdatumKind);
 		kind.setEinschulungTyp(eingeschult ? EinschulungTyp.KLASSE1 : EinschulungTyp.VORSCHULALTER);
