@@ -103,6 +103,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	private static final String INSTITUTION_FORELLE_ID = "22222222-1111-1111-1111-111111111111";
 	private static final String INSTITUTION_HECHT_ID = "22222222-1111-1111-1111-222222222222";
+	private static final String INSTITUTION_LACHS_ID = "22222222-1111-1111-1111-333333333333";
 
 	private static final String KITA_FORELLE_ID = "33333333-1111-1111-1111-111111111111";
 	private static final String TAGESELTERN_FORELLE_ID = "33333333-1111-1111-2222-111111111111";
@@ -220,6 +221,10 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		if (institutionService.findInstitution(INSTITUTION_HECHT_ID).isPresent()) {
 			institutionService.deleteInstitution(INSTITUTION_HECHT_ID);
 		}
+		if (institutionService.findInstitution(INSTITUTION_LACHS_ID).isPresent()) {
+			institutionService.deleteInstitution(INSTITUTION_LACHS_ID);
+		}
+
 		if (traegerschaftService.findTraegerschaft(TRAEGERSCHAFT_FISCH_ID).isPresent()) {
 			traegerschaftService.removeTraegerschaft(TRAEGERSCHAFT_FISCH_ID);
 		}
@@ -230,12 +235,15 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		// TODO wir sollten fuer die Schulung auch eine Gemeinde auswaehlen (sollte bei der Umsetzung von Schulung geaendert werden)
 		Gemeinde gemeinde = gemeindeService.getFirst();
 		Traegerschaft traegerschaftFisch = createTraegerschaft(TRAEGERSCHAFT_FISCH_ID, "Fisch");
+
 		Institution institutionForelle = createtInstitution(INSTITUTION_FORELLE_ID, "Forelle", traegerschaftFisch);
 		Institution institutionHecht = createtInstitution(INSTITUTION_HECHT_ID, "Hecht", traegerschaftFisch);
+		Institution institutionLachs = createtInstitution(INSTITUTION_LACHS_ID, "Lachs", traegerschaftFisch);
 
 		InstitutionStammdaten kitaForelle = createInstitutionStammdaten(KITA_FORELLE_ID, institutionForelle, BetreuungsangebotTyp.KITA);
-		InstitutionStammdaten tageselternForelle = createInstitutionStammdaten(TAGESELTERN_FORELLE_ID, institutionForelle, BetreuungsangebotTyp.TAGESFAMILIEN);
+		InstitutionStammdaten tageselternForelle = createInstitutionStammdaten(TAGESELTERN_FORELLE_ID, institutionLachs, BetreuungsangebotTyp.TAGESFAMILIEN);
 		InstitutionStammdaten kitaHecht = createInstitutionStammdaten(KITA_HECHT_ID, institutionHecht, BetreuungsangebotTyp.KITA);
+
 		List<InstitutionStammdaten> institutionenForSchulung = new LinkedList<>();
 		institutionenForSchulung.add(kitaForelle);
 		institutionenForSchulung.add(tageselternForelle);
