@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource.auth;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.EJBAccessException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.connector.ILoginConnectorResource;
+import ch.dvbern.ebegu.api.dtos.JaxEinladungWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
@@ -37,7 +39,6 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.ConnectorException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -161,10 +162,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	@Override
-	public JaxExternalBenutzer updateBenutzer(
+	public JaxEinladungWrapper updateBenutzer(
 		@Nonnull String benutzerId,
-		@Nonnull JaxExternalBenutzer externalBenutzer)
-		throws ConnectorException {
+		@Nonnull JaxExternalBenutzer externalBenutzer) {
 
 		requireNonNull(benutzerId);
 		requireNonNull(externalBenutzer);
@@ -181,7 +181,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (!persistedEmail.equals(externalEmail)) {
 			String msg = ServerMessageUtil.translateEnumValue(ERROR_EMAIL_MISMATCH, persistedEmail, externalEmail);
 
-			throw new ConnectorException(msg);
+			// TODO which user should be returned? maybe none?
+			return convertEinladungWrapperToJax(existingBenutzer, msg);
+//			throw new ConnectorException(msg);
 		}
 
 		toBenutzer(externalBenutzer, existingBenutzer);
@@ -192,7 +194,15 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 		Benutzer updatedBenutzer = benutzerService.updateOrStoreUserFromIAM(existingBenutzer);
 
-		return convertBenutzerToJax(updatedBenutzer);
+		return convertEinladungWrapperToJax(updatedBenutzer, null);
+	}
+
+	private JaxEinladungWrapper convertEinladungWrapperToJax(@Nonnull Benutzer benutzer, @Nullable String msg){
+		JaxEinladungWrapper wrapper = new JaxEinladungWrapper();
+		wrapper.setBenutzer(convertBenutzerToJax(benutzer));
+		wrapper.setMessage(msg);
+
+		return wrapper;
 	}
 
 	@Nonnull

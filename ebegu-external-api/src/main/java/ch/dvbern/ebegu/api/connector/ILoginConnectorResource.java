@@ -27,10 +27,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import ch.dvbern.ebegu.api.dtos.JaxEinladungWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
-import ch.dvbern.ebegu.errors.ConnectorException;
 
 @Path("/connector")
 public interface ILoginConnectorResource {
@@ -69,9 +69,9 @@ public interface ILoginConnectorResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Nonnull
-	JaxExternalBenutzer updateBenutzer(
+	JaxEinladungWrapper updateBenutzer(
 		@Nonnull @NotNull @PathParam("benutzerId") String benutzerId,
-		@Nonnull @NotNull @Valid JaxExternalBenutzer externalBenutzer) throws ConnectorException;
+		@Nonnull @NotNull @Valid JaxExternalBenutzer externalBenutzer);
 
 	/**
 	 * @return the first and only Mandant that currently exists
