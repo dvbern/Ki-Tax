@@ -721,6 +721,11 @@ public final class TestDataUtil {
 		return persistence.persist(gesuchsperiodeXXYY);
 	}
 
+	public static Gesuchsperiode createAndPersistCustomGesuchsperiode(Persistence persistence, int yearFrom, int yearTo) {
+		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(yearFrom, yearTo);
+		return persistence.persist(gesuchsperiodeXXYY);
+	}
+
 	public static Gesuchsperiode createGesuchsperiode1617() {
 		return createGesuchsperiodeXXYY(2016, 2017);
 	}

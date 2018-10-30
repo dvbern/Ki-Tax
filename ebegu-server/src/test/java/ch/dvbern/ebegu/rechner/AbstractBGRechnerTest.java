@@ -71,6 +71,9 @@ public class AbstractBGRechnerTest {
 	private static final MathUtil MATH = MathUtil.DEFAULT;
 	private static final long VOLLKOSTEN_DEFAULT = 2000;
 	private static final long VOLLKOSTEN_NULL = 0;
+	private static final int BASISJAHR = 2016;
+	private static final int BASISJAHR_PLUS_1 = 2017;
+	private static final int BASISJAHR_PLUS_2 = 2018;
 
 	@Before
 	public void setUpCalcuator() {
@@ -468,16 +471,16 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Erster Monat
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 70000.00, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(august, 70000.00, BASISJAHR, 0, 70000, 2);
 		// Letzter Monat vor Mutation
 		VerfuegungZeitabschnitt oktober = verfuegung.getZeitabschnitte().get(3);
-		assertZeitabschnittFinanzdaten(oktober, 70000.00, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(oktober, 70000.00, BASISJAHR, 0, 70000, 2);
 		// Erster Monat nach Mutation
 		VerfuegungZeitabschnitt november = verfuegung.getZeitabschnitte().get(5);
-		assertZeitabschnittFinanzdaten(november, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(november, 100000, BASISJAHR, 11400, 88600, 3);
 		// Letzter Monat
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(12);
-		assertZeitabschnittFinanzdaten(juli, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(juli, 100000, BASISJAHR, 11400, 88600, 3);
 	}
 
 	/**
@@ -489,16 +492,16 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Erster Monat
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(august, 100000, BASISJAHR, 11400, 88600, 3);
 		// Letzter Monat vor Mutation
 		VerfuegungZeitabschnitt oktober = verfuegung.getZeitabschnitte().get(3);
-		assertZeitabschnittFinanzdaten(oktober, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(oktober, 100000, BASISJAHR, 11400, 88600, 3);
 		// Erster Monat nach Mutation
 		VerfuegungZeitabschnitt november = verfuegung.getZeitabschnitte().get(5);
-		assertZeitabschnittFinanzdaten(november, 70000.00, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(november, 70000.00, BASISJAHR, 0, 70000, 2);
 		// Letzter Monat
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(12);
-		assertZeitabschnittFinanzdaten(juli, 70000.00, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(juli, 70000.00, BASISJAHR, 0, 70000, 2);
 	}
 
 	/**
@@ -510,16 +513,16 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Erster Monat
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 70000.00, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(august, 70000.00, BASISJAHR, 0, 70000, 2);
 		// Letzter Monat vor EKV
 		VerfuegungZeitabschnitt november = verfuegung.getZeitabschnitte().get(2);
-		assertZeitabschnittFinanzdaten(november, 70000.00, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(november, 70000.00, BASISJAHR, 0, 70000, 2);
 		// Erster Monat nach EKV
 		VerfuegungZeitabschnitt dezember = verfuegung.getZeitabschnitte().get(3);
-		assertZeitabschnittFinanzdaten(dezember, 49000, 2016, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(dezember, 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		// Letzter Monat
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-		assertZeitabschnittFinanzdaten(juli, 49000, 2016, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(juli, 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 	}
 
 	/**
@@ -531,16 +534,16 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Erster Monat
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(august, 100000, BASISJAHR, 11400, 88600, 3);
 		// Letzter Monat vor EKV
 		VerfuegungZeitabschnitt november = verfuegung.getZeitabschnitte().get(2);
-		assertZeitabschnittFinanzdaten(november, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(november, 100000, BASISJAHR, 11400, 88600, 3);
 		// Erster Monat nach EKV
 		VerfuegungZeitabschnitt dezember = verfuegung.getZeitabschnitte().get(3);
-		assertZeitabschnittFinanzdaten(dezember, 49000, 2016, 11400, 37600, 3);
+		assertZeitabschnittFinanzdaten(dezember, 49000, BASISJAHR_PLUS_1, 11400, 37600, 3);
 		// Letzter Monat
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-		assertZeitabschnittFinanzdaten(juli, 49000, 2016, 11400, 37600, 3);
+		assertZeitabschnittFinanzdaten(juli, 49000, BASISJAHR_PLUS_1, 11400, 37600, 3);
 	}
 
 	/**
@@ -552,13 +555,13 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Vor EKV
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 70000.00, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(august, 70000.00, BASISJAHR, 0, 70000, 2);
 		// EKV
 		VerfuegungZeitabschnitt oktober = verfuegung.getZeitabschnitte().get(3);
-		assertZeitabschnittFinanzdaten(oktober, 49000, 2016, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(oktober, 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		// Heirat
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(12);
-		assertZeitabschnittFinanzdaten(juli, 79000, 2016, 11400, 67600, 3);
+		assertZeitabschnittFinanzdaten(juli, 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
 	}
 
 	/**
@@ -570,13 +573,13 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Vor EKV
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 70000.00, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(august, 70000.00, BASISJAHR, 0, 70000, 2);
 		// EKV
 		VerfuegungZeitabschnitt oktober = verfuegung.getZeitabschnitte().get(3);
-		assertZeitabschnittFinanzdaten(oktober, 49000, 2016, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(oktober, 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		// Heirat
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(12);
-		assertZeitabschnittFinanzdaten(juli, 120000, 2015, 11400, 108600, 3);
+		assertZeitabschnittFinanzdaten(juli, 120000, BASISJAHR, 11400, 108600, 3);
 	}
 
 	/**
@@ -588,13 +591,13 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Vor EKV
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(august, 100000, BASISJAHR, 11400, 88600, 3);
 		// EKV
 		VerfuegungZeitabschnitt oktober = verfuegung.getZeitabschnitte().get(3);
-		assertZeitabschnittFinanzdaten(oktober, 71000, 2016, 11400, 59600, 3);
+		assertZeitabschnittFinanzdaten(oktober, 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
 		// Trennung
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(12);
-		assertZeitabschnittFinanzdaten(juli, 49000, 2016, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(juli, 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 	}
 
 	/**
@@ -606,13 +609,13 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Vor EKV
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(august, 100000, BASISJAHR, 11400, 88600, 3);
 		// EKV
 		VerfuegungZeitabschnitt oktober = verfuegung.getZeitabschnitte().get(3);
-		assertZeitabschnittFinanzdaten(oktober, 79000, 2016, 11400, 67600, 3);
+		assertZeitabschnittFinanzdaten(oktober, 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
 		// Trennung
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(12);
-		assertZeitabschnittFinanzdaten(juli, 70000, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(juli, 70000, BASISJAHR, 0, 70000, 2);
 	}
 
 	/**
@@ -624,13 +627,13 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Vor EKV
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 70000, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(august, 70000, BASISJAHR, 0, 70000, 2);
 		// EKV
 		VerfuegungZeitabschnitt oktober = verfuegung.getZeitabschnitte().get(7);
-		assertZeitabschnittFinanzdaten(oktober, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(oktober, 100000, BASISJAHR, 11400, 88600, 3);
 		// Heirat
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(12);
-		assertZeitabschnittFinanzdaten(juli, 79000, 2017, 11400, 67600, 3);
+		assertZeitabschnittFinanzdaten(juli, 79000, BASISJAHR_PLUS_2, 11400, 67600, 3);
 	}
 
 	/**
@@ -642,12 +645,12 @@ public class AbstractBGRechnerTest {
 		Assert.assertNotNull(verfuegung);
 		// Vor EKV
 		VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-		assertZeitabschnittFinanzdaten(august, 100000, 2015, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(august, 100000, BASISJAHR, 11400, 88600, 3);
 		// EKV
 		VerfuegungZeitabschnitt april = verfuegung.getZeitabschnitte().get(8);
-		assertZeitabschnittFinanzdaten(april, 70000, 2015, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(april, 70000, BASISJAHR, 0, 70000, 2);
 		// Trennung
 		VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(12);
-		assertZeitabschnittFinanzdaten(juli, 50000, 2017, 0, 50000, 2);
+		assertZeitabschnittFinanzdaten(juli, 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
 	}
 }

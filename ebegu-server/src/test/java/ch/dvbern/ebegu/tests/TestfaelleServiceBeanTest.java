@@ -69,6 +69,9 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	@Inject
 	private Persistence persistence;
 
+	private static final int BASISJAHR_PLUS_1 = 2017;
+	private static final int BASISJAHR_PLUS_2 = 2018;
+
 	/**
 	 * Wenn true werden die Testergebnisse neu in die Testfiles geschrieben. Muss für testen immer false sein!
 	 */
@@ -161,7 +164,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.DECEMBER, 15), LocalDate.of(2017, Month.JANUARY, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 15), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationHeirat");
 	}
 
@@ -170,7 +173,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(2017, Month.FEBRUARY, 15), LocalDate.of(2017, Month.FEBRUARY, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 15), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationHeirat");
 	}
 
@@ -179,7 +182,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.SEPTEMBER, 30), LocalDate.of(2016, Month.OCTOBER, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 30), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationScheidung");
 	}
 
@@ -191,7 +194,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.NOVEMBER, 15), LocalDate.of(2016, Month.OCTOBER, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 15), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationScheidung");
 	}
 
@@ -330,10 +333,10 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	 */
 	@Override
 	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1617();
-		gesuchsperiode1617.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1617);
-		return gesuchsperiode1617;
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
+		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
+		return gesuchsperiode;
 	}
 }
 

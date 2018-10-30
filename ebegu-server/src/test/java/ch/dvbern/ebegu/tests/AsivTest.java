@@ -310,7 +310,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	 */
 	@Override
 	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(2016, 2017);
+		gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
 		return gesuchsperiode;

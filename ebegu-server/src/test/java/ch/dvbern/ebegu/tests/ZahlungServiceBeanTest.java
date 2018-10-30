@@ -98,12 +98,15 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	private Gesuchsperiode gesuchsperiode;
 	private String gemeindeId;
 
-	private static final LocalDateTime DATUM_GENERIERT = LocalDateTime.of(2017, Month.JUNE, 20, 0, 0);
+	private static final int BASISJAHR_PLUS_1 = 2017;
+	private static final int BASISJAHR_PLUS_2 = 2018;
+
+	private static final LocalDateTime DATUM_GENERIERT = LocalDateTime.of(BASISJAHR_PLUS_2, Month.JUNE, 20, 0, 0);
 	private static final LocalDate DATUM_FAELLIG = DATUM_GENERIERT.plusDays(3).toLocalDate();
 
-	private static final LocalDate DATUM_AUGUST = LocalDate.of(2016, Month.AUGUST, 20);
-	private static final LocalDate DATUM_SEPTEMBER = LocalDate.of(2016, Month.SEPTEMBER, 20);
-	private static final LocalDate DATUM_OKTOBER = LocalDate.of(2016, Month.OCTOBER, 20);
+	private static final LocalDate DATUM_AUGUST = LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 20);
+	private static final LocalDate DATUM_SEPTEMBER = LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 20);
+	private static final LocalDate DATUM_OKTOBER = LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 20);
 
 	@Before
 	public void init() {
@@ -296,7 +299,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void zahlungsauftragErstellenMitKorrekturMultiple() {
 		Gesuch erstgesuch = createGesuch(true, DATUM_AUGUST.minusDays(1), AntragStatus.VERFUEGT); // Becker Yasmin,
-		// 01.08.2016 - 31.07.2017, EWP 60%
+		// 01.08.BASISJAHR_PLUS_1 - 31.07.BASISJAHR_PLUS_2_1, EWP 60%
 
 		// Zahlung August ausloesen:
 		// Erwartet:    1 NORMALE Zahlung August
@@ -372,7 +375,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void zahlungsauftragErstellenMitKorrekturMonatUeberspringen() {
 		Gesuch erstgesuch = createGesuch(true, DATUM_AUGUST.minusDays(1), AntragStatus.VERFUEGT); // Becker Yasmin,
-		// 01.08.2016 - 31.07.2017, EWP 60%
+		// 01.08.BASISJAHR_PLUS_1 - 31.07.BASISJAHR_PLUS_2_1, EWP 60%
 
 		// Zahlung August ausloesen
 		// Erwartet:    1 NORMALE Zahlung August
@@ -520,7 +523,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Override
 	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		return gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
 	}
