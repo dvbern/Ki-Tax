@@ -19,6 +19,7 @@
 
 import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
@@ -38,16 +39,19 @@ export class GemeindeHeaderComponent implements OnInit {
     private fileToUpload!: File;
     private navigationDest: StateDeclaration;
     public logoImageUrl: string = '#';
+    public gemeindeTitel: string;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly translate: TranslateService,
     ) {
     }
 
     public ngOnInit(): void {
         this.navigationDest = this.$transition$.to();
         this.logoImageUrl = this.gemeindeRS.getLogoUrl(this.gemeinde.id);
+        this.translate.instant('GEMEINDE_NAME', {name: this.gemeinde.name, bfs: this.gemeinde.bfsNummer});
     }
 
     public canUploadLogo(): boolean {
