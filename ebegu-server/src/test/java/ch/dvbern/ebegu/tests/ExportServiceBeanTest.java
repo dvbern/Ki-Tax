@@ -90,7 +90,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	 */
 	@Override
 	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode1617 = TestDataUtil.createCustomGesuchsperiode(2016, 2017);
+		Gesuchsperiode gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode1617.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode1617 = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1617);
 		return gesuchsperiode1617;
