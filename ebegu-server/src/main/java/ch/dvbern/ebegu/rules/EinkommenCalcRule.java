@@ -25,6 +25,8 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Setzt fuer die Zeitabschnitte das Massgebende Einkommen. Sollte der Maximalwert uebschritte werden so wird das Pensum auf 0 gesetzt
@@ -33,6 +35,8 @@ import ch.dvbern.ebegu.types.DateRange;
  * Regel 16.7 Maximales Einkommen
  */
 public class EinkommenCalcRule extends AbstractCalcRule {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EinkommenCalcRule.class);
 
 	private final BigDecimal maximalesEinkommen;
 
@@ -86,6 +90,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();
 		int basisjahrPlus1 = betreuung.extractGesuchsperiode().getBasisJahrPlus1();
 		int basisjahrPlus2 = betreuung.extractGesuchsperiode().getBasisJahrPlus2();
+		LOGGER.warn("EINKOMMENSJAHR: setting MassgebendesEinkommen. Einkommensjahr vorher = " + verfuegungZeitabschnitt.getEinkommensjahr());
 		if (isEkv1) {
 			if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
@@ -132,6 +137,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
 		}
 
+		LOGGER.warn("EINKOMMENSJAHR: setting MassgebendesEinkommen. Einkommensjahr nachher = " + verfuegungZeitabschnitt.getEinkommensjahr());
 		handleSpecialCases(finanzDatenDTO, verfuegungZeitabschnitt, basisjahrPlus1);
 
 	}
