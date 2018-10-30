@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.SequenceType;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -127,16 +128,16 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name) {
 		requireNonNull(name, "Gemeindename muss gesetzt sein");
-		Optional<Gemeinde> go = criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
-		authorizer.checkReadAuthorization(go.orElse(null));
-		return go;
+		Optional<Gemeinde> gemeindeOpt = criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
+		authorizer.checkReadAuthorization(gemeindeOpt.orElse(null));
+		return gemeindeOpt;
 	}
 
 	@Nonnull
 	private Optional<Gemeinde> findGemeindeByBSF(@Nullable Long bsf) {
-		Optional<Gemeinde> go = criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, bsf, Gemeinde_.bfsNummer);
-		authorizer.checkReadAuthorization(go.orElse(null));
-		return go;
+		Optional<Gemeinde> gemeindeOpt = criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, bsf, Gemeinde_.bfsNummer);
+		authorizer.checkReadAuthorization(gemeindeOpt.orElse(null));
+		return gemeindeOpt;
 	}
 
 	@Nonnull
@@ -235,12 +236,25 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS, SACHBEARBEITER_GEMEINDE })
 	public GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten) {
-		Objects.requireNonNull(stammdaten);
+		requireNonNull(stammdaten);
 		authorizer.checkWriteAuthorization(stammdaten.getGemeinde());
 		if (stammdaten.isNew()) {
 			initGemeindeNummerAndMandant(stammdaten.getGemeinde());
 		}
 		return persistence.merge(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public GemeindeStammdaten uploadLogo(@Nonnull String gemeindeId, @Nonnull byte[] content) {
+		requireNonNull(gemeindeId);
+		requireNonNull(content);
+
+		final GemeindeStammdaten stammdaten = getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(
+			() -> new EbeguEntityNotFoundException("uploadLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId)
+		);
+		stammdaten.setLogoContent(content);
+		return saveGemeindeStammdaten(stammdaten);
 	}
 
 }

@@ -94,20 +94,22 @@
                         </div>
                     </div>
                     <!-- Beschwerdeadresse -->
-                    <div *ngIf="keineBeschwerdeAdresse" class="col-sm-6">
+                    <div *ngIf="keineBeschwerdeAdresse; else displayBeschwerdeAdresse" class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>BESCHWERDE_ADRESSE</h3>
                             <p translate>BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT</p>
                         </div>
                     </div>
-                    <div *ngIf="!keineBeschwerdeAdresse" class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>BESCHWERDE_ADRESSE</h3>
-                            <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
-                            <p>{{stammdaten.beschwerdeAdresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
-                            <p>{{stammdaten.beschwerdeAdresse.plz}} {{stammdaten.adresse.ort}}</p>
+                    <ng-template #displayBeschwerdeAdresse>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>BESCHWERDE_ADRESSE</h3>
+                                <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
+                                <p>{{stammdaten.beschwerdeAdresse.strasse}} {{stammdaten.beschwerdeAdresse.hausnummer}}</p>
+                                <p>{{stammdaten.beschwerdeAdresse.plz}} {{stammdaten.beschwerdeAdresse.ort}}</p>
+                            </div>
                         </div>
-                    </div>
+                    </ng-template>
                 </div>
                 <div class="row">
                     <!-- Korrespondenzsprache -->

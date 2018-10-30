@@ -39,7 +39,7 @@ export class EditGemeindeComponent implements OnInit {
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
     public logoImageUrl: string = '#';
-    private fileToUpload!: File;
+    private fileToUpload: File;
     private navigationSource: StateDeclaration;
     private gemeindeId: string;
 
@@ -78,7 +78,7 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): void {
-        if (!this.form.valid) {
+        if (!this.validateData(stammdaten)) {
             return;
         }
         this.errorService.clearAll();
@@ -90,6 +90,11 @@ export class EditGemeindeComponent implements OnInit {
             this.gemeindeRS.postLogoImage(stammdaten.gemeinde.id, this.fileToUpload);
         }
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => this.navigateBack());
+    }
+
+    private validateData(stammdaten: TSGemeindeStammdaten): boolean {
+        return (stammdaten.korrespondenzspracheDe || stammdaten.korrespondenzspracheFr)
+            && this.form.valid;
     }
 
     public mitarbeiterBearbeiten(): void {

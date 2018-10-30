@@ -58,18 +58,14 @@ export class GemeindeKonfigComponent implements OnInit {
         this.initProperties();
     }
 
-    public getKonfigKontingentierungString(gk: TSGemeindeKonfiguration): string {
-        const kontStr = gk.konfigKontingentierung ? this.translate.instant('KONTINGENTIERUNG') :
-            ` ${this.translate.instant('KONTINGENTIERUNG')} `;
-        return kontStr;
+    public getKonfigKontingentierungString(): string {
+        return this.translate.instant('KONTINGENTIERUNG');
     }
 
     public changeKonfigKontingentierung(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen.forEach(property => {
-            if (TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key) {
-                property.value = gk.konfigKontingentierung ? 'true' : 'false';
-            }
-        });
+        gk.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED === property.key)
+            .forEach(property => { property.value = gk.konfigKontingentierung ? 'true' : 'false'; });
     }
 
     public getKonfigBeguBisUndMitSchulstufeString(gk: TSGemeindeKonfiguration): string {
@@ -78,11 +74,9 @@ export class GemeindeKonfigComponent implements OnInit {
     }
 
     public changeKonfigBeguBisUndMitSchulstufe(gk: TSGemeindeKonfiguration): void {
-        gk.konfigurationen.forEach(property => {
-            if (TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key) {
-                property.value = gk.konfigBeguBisUndMitSchulstufe;
-            }
-        });
+        gk.konfigurationen
+            .filter(property => TSEinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE === property.key)
+            .forEach(property => { property.value = gk.konfigBeguBisUndMitSchulstufe; });
     }
 
     public isKonfigurationEditable(gk: TSGemeindeKonfiguration): boolean {

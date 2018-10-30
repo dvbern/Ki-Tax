@@ -39,7 +39,7 @@ export class ViewGemeindeComponent implements OnInit {
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
     public korrespondenzsprache: string;
-    private fileToUpload!: File;
+    private fileToUpload: File;
     public logoImageUrl: string = '#';
     private gemeindeId: string;
 
@@ -95,16 +95,14 @@ export class ViewGemeindeComponent implements OnInit {
     }
 
     private initStrings(stammdaten: TSGemeindeStammdaten): void {
+        const languages: string[] = [];
         if (stammdaten.korrespondenzspracheDe) {
-            this.korrespondenzsprache = this.translate.instant('DEUTSCH');
+            languages.push(this.translate.instant('DEUTSCH'));
         }
-        if (!stammdaten.korrespondenzspracheFr) {
-            return;
+        if (stammdaten.korrespondenzspracheFr) {
+            languages.push(this.translate.instant('FRANZOESISCH'));
         }
-        if (this.korrespondenzsprache.length > 0) {
-            this.korrespondenzsprache += ', ';
-        }
-        this.korrespondenzsprache += this.translate.instant('FRANZOESISCH');
+        this.korrespondenzsprache = languages.join(', ');
     }
 
     public cancel(): void {

@@ -91,4 +91,10 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten);
+
+	/**
+	 * Updates the logo of the given Gemeinde wth the given content
+	 */
+	@Nonnull
+	GemeindeStammdaten uploadLogo(@Nonnull String gemeindeId, @Nonnull byte[] content);
 }

@@ -121,7 +121,8 @@
                             <label translate for="telefon_id">TELEFON</label>
                             <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.telefon"
-                                   [maxlength]="255" class="form-control">
+                                   [maxlength]="255" class="form-control"
+                                   required>
                             <dv-error-messages [errorObject]="form.controls.telefon_id?.errors" inputId="telefon_id"></dv-error-messages>
                         </div>
                     </div>
@@ -154,7 +155,8 @@
                             <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.webseite"
                                    [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.webseite_id?.errors" inputId="webseite_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.webseite_id?.errors"
+                                               inputId="webseite_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -182,6 +184,12 @@
                                               [(ngModel)]="stammdaten.korrespondenzspracheFr">
                                     {{'FRANZOESISCH'|translate}}
                                 </mat-checkbox>
+                                <div class="dv-error-messages"
+                                     *ngIf="!stammdaten.korrespondenzspracheDe && !stammdaten.korrespondenzspracheFr">
+                                    <div class="error">
+                                        {{ 'ERROR_REQUIRED' | translate }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

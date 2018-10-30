@@ -29,7 +29,6 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
@@ -41,7 +40,6 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
@@ -168,16 +166,6 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 			throw new IllegalArgumentException("Die Korrespondenzsprache muss gesetzt sein");
 		}
 
-		// Konfiguration
-		// Die Gemeindekonfigurationen kann nur in folgenden Fällen bearbeitet werden:
-		// - wenn die Gesuchsperiode im Status "Entwurf" ist
-		// - wenn die Gemeinde im Status "Eingeladen" ist
-		boolean eingeladen = GemeindeStatus.EINGELADEN.equals(jaxStammdaten.getGemeinde().getStatus());
-		for (JaxGemeindeKonfiguration konfiguraion : jaxStammdaten.getKonfigurationsListe()) {
-			if (eingeladen || GesuchsperiodeStatus.ENTWURF.equals(konfiguraion.getGesuchsperiodeStatus())) {
-				saveGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguraion);
-			}
-		}
 		return stammdaten;
 	}
 
@@ -226,11 +214,13 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		}
 
 		// Konfiguration
-		if (GemeindeStatus.EINGELADEN.equals(stammdaten.getGemeinde().getStatus())) {
+		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
 			// Ist die Gemeinde noch im Status EINGELADEN, laden wir nur die Konfiguration der richtigen Gesuchsperiode
 			// Die Gesuchsperiode wo das BEGU Startdatum drin liett, falls diese bereits existert,
 			// falss diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
-			Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde().getBetreuungsgutscheineStartdatum());
+			// todo KIBON-245 now or newest one?? --> xaver fragen
+			Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
+				.getBetreuungsgutscheineStartdatum());
 			Optional<Gesuchsperiode> gpAktuell = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now());
 			Gesuchsperiode gesuchsperiode = null;
 			if (gpBeguStart.isPresent()) {
@@ -263,22 +253,4 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		return konfiguration;
 	}
 
-	private void saveGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull JaxGemeindeKonfiguration konfiguration) {
-		if (konfiguration.getGesuchsperiodeId() != null) {
-			Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiodeId());
-			if (gesuchsperiode.isPresent()) {
-				for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
-					Einstellung einstellung = einstellungService.findEinstellung(jaxKonfig.getKey(), gemeinde, gesuchsperiode.get());
-					if (!gemeinde.equals(einstellung.getGemeinde()) || !gesuchsperiode.get().equals(einstellung.getGesuchsperiode())) {
-						einstellung = new Einstellung();
-						einstellung.setKey(jaxKonfig.getKey());
-						einstellung.setGemeinde(gemeinde);
-						einstellung.setGesuchsperiode(gesuchsperiode.get());
-					}
-					einstellung.setValue(jaxKonfig.getValue());
-					einstellungService.saveEinstellung(einstellung);
-				}
-			}
-		}
-	}
 }
