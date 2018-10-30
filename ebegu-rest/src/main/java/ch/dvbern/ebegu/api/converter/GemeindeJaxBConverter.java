@@ -218,15 +218,14 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 			// Ist die Gemeinde noch im Status EINGELADEN, laden wir nur die Konfiguration der richtigen Gesuchsperiode
 			// Die Gesuchsperiode wo das BEGU Startdatum drin liett, falls diese bereits existert,
 			// falss diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
-			// todo KIBON-245 now or newest one?? --> xaver fragen
 			Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
 				.getBetreuungsgutscheineStartdatum());
-			Optional<Gesuchsperiode> gpAktuell = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now());
+			Optional<Gesuchsperiode> gpNewest = gesuchsperiodeService.findNewestGesuchsperiode();
 			Gesuchsperiode gesuchsperiode = null;
 			if (gpBeguStart.isPresent()) {
 				gesuchsperiode = gpBeguStart.get();
-			} else if (gpAktuell.isPresent()) {
-				gesuchsperiode = gpAktuell.get();
+			} else if (gpNewest.isPresent()) {
+				gesuchsperiode = gpNewest.get();
 			}
 			if (gesuchsperiode != null) {
 				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(), gesuchsperiode));
