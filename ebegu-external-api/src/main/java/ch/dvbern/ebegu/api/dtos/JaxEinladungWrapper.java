@@ -33,8 +33,8 @@ public class JaxEinladungWrapper implements Serializable {
 	@Nullable
 	private String message = null;
 
-	@Nonnull
-	private JaxExternalBenutzer benutzer;
+	@Nullable
+	private JaxExternalBenutzer benutzer = null;
 
 	@Nullable
 	public String getMessage() {
@@ -45,12 +45,12 @@ public class JaxEinladungWrapper implements Serializable {
 		this.message = message;
 	}
 
-	@Nonnull
+	@Nullable
 	public JaxExternalBenutzer getBenutzer() {
 		return benutzer;
 	}
 
-	public void setBenutzer(@Nonnull JaxExternalBenutzer benutzer) {
+	public void setBenutzer(@Nullable JaxExternalBenutzer benutzer) {
 		this.benutzer = benutzer;
 	}
 }

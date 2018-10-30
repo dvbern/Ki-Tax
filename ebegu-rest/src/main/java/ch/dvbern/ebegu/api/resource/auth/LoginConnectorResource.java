@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_EMAIL_MISMATCH;
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -170,10 +171,12 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		requireNonNull(externalBenutzer);
 		checkLocalAccessOnly();
 
-		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"Benutzer not found",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId).orElse(null);
+
+		//if user not exists return error msg to connector
+		if(existingBenutzer == null){
+			return convertEinladungWrapperToJax(existingBenutzer, ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND));
+		}
 
 		String persistedEmail = existingBenutzer.getEmail();
 		String externalEmail = externalBenutzer.getEmail();
@@ -181,9 +184,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (!persistedEmail.equals(externalEmail)) {
 			String msg = ServerMessageUtil.translateEnumValue(ERROR_EMAIL_MISMATCH, persistedEmail, externalEmail);
 
-			// TODO which user should be returned? maybe none?
+			//return the message to connector and stop process
 			return convertEinladungWrapperToJax(existingBenutzer, msg);
-//			throw new ConnectorException(msg);
 		}
 
 		toBenutzer(externalBenutzer, existingBenutzer);
@@ -197,9 +199,11 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		return convertEinladungWrapperToJax(updatedBenutzer, null);
 	}
 
-	private JaxEinladungWrapper convertEinladungWrapperToJax(@Nonnull Benutzer benutzer, @Nullable String msg){
+	private JaxEinladungWrapper convertEinladungWrapperToJax(@Nullable Benutzer benutzer, @Nullable String msg){
 		JaxEinladungWrapper wrapper = new JaxEinladungWrapper();
-		wrapper.setBenutzer(convertBenutzerToJax(benutzer));
+		if(benutzer != null) {
+			wrapper.setBenutzer(convertBenutzerToJax(benutzer));
+		}
 		wrapper.setMessage(msg);
 
 		return wrapper;
