@@ -313,7 +313,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		createMutationBetreuungspensum(
 			erstgesuch,
 			gesuchsperiode.getGueltigkeit().getGueltigAb(),
-			50,
+			40,
 			DATUM_AUGUST.plusWeeks(1));
 
 		// Zahlung September ausloesen:
@@ -340,7 +340,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		createMutationBetreuungspensum(
 			erstgesuch,
 			gesuchsperiode.getGueltigkeit().getGueltigAb(),
-			40,
+			30,
 			DATUM_SEPTEMBER.plusWeeks(1));
 
 		// Zahlung Oktober ausloesen:
@@ -389,7 +389,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		createMutationBetreuungspensum(
 			erstgesuch,
 			gesuchsperiode.getGueltigkeit().getGueltigAb(),
-			50,
+			40,
 			DATUM_AUGUST.plusWeeks(1));
 
 		// Zahlung September wird nicht ausgeloest
@@ -445,7 +445,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Zahlung zahlung = zahlungsauftrag.getZahlungen().get(0);
 		assertZahlung(zahlung, countMonate);
 		for (int i = 0; i < countMonate; i++) {
-			assertZahlungsdetail(zahlung.getZahlungspositionen().get(i), ZahlungspositionStatus.NORMAL, 1289.30);
+			assertZahlungsdetail(zahlung.getZahlungspositionen().get(i), ZahlungspositionStatus.NORMAL, 780.55);
 		}
 		zahlungService.zahlungsauftragAusloesen(zahlungsauftrag.getId());
 	}
@@ -541,7 +541,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createGesuch(boolean verfuegen) {
-		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeindeId, gesuchsperiode);
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, verfuegen, verfuegen, gemeindeId, gesuchsperiode);
 	}
 
 	@Nullable
