@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -71,7 +72,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @PermitAll
 public class DossierServiceBean extends AbstractBaseService implements DossierService {
 
-
 	@Inject
 	private Persistence persistence;
 
@@ -91,9 +91,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	private MitteilungService mitteilungService;
 
 	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
-	@Inject
 	private GemeindeService gemeindeService;
 
 	@Nonnull
@@ -110,14 +107,15 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Nonnull
 	@Override
 	public Collection<Dossier> findDossiersByFall(@Nonnull String fallId) {
-		final Fall fall = fallService.findFall(fallId).orElseThrow(() -> new EbeguEntityNotFoundException("findDossiersByFall",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
+		final Fall fall =
+			fallService.findFall(fallId).orElseThrow(() -> new EbeguEntityNotFoundException("findDossiersByFall",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, fallId));
 
 		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
 
 		return dossiers.stream()
 			.filter(authorizer::isReadCompletelyAuthorizedDossier).
-			collect(Collectors.toList());
+				collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -136,10 +134,10 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		return Optional.ofNullable(criteriaSingleResult);
 	}
 
-
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public Dossier saveDossier(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier);
 		authorizer.checkWriteAuthorizationDossier(dossier);
@@ -180,8 +178,10 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		}
 
 		Optional<Gemeinde> gemeindeOptional = gemeindeService.findGemeinde(gemeindeId);
-		Gemeinde gemeinde = gemeindeOptional.orElseThrow(() -> new EbeguEntityNotFoundException("getOrCreateDossierAndFallForCurrentUserAsBesitzer",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		Gemeinde gemeinde = gemeindeOptional.orElseThrow(() -> new EbeguEntityNotFoundException(
+			"getOrCreateDossierAndFallForCurrentUserAsBesitzer",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			gemeindeId));
 		//noinspection ConstantConditions
 
 		Objects.requireNonNull(fallOptional.get());
@@ -200,30 +200,41 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Override
 	public boolean hasDossierAnyMitteilung(@Nonnull String dossierId) {
 		final Optional<Dossier> dossierOptional = findDossier(dossierId);
-		final Dossier dossier = dossierOptional.orElseThrow(() -> new EbeguEntityNotFoundException("hasDossierAnyMitteilung",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
-		final Collection<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.getMitteilungenForCurrentRolle(dossier);
+		final Dossier dossier =
+			dossierOptional.orElseThrow(() -> new EbeguEntityNotFoundException("hasDossierAnyMitteilung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		final Collection<Mitteilung> mitteilungenForCurrentRolle =
+			mitteilungService.getMitteilungenForCurrentRolle(dossier);
 		return !mitteilungenForCurrentRolle.isEmpty();
 	}
 
 	@Nonnull
 	@Override
 	public Optional<Benutzer> getHauptOrDefaultVerantwortlicher(@Nonnull Dossier dossier) {
-		Benutzer verantwortlicher = dossier.getHauptVerantwortlicher();
-		if (verantwortlicher == null) {
-			return applicationPropertyService.readDefaultVerantwortlicherBGFromProperties();
+		Optional<Benutzer> verantwortlicher = Optional.ofNullable(dossier.getHauptVerantwortlicher());
+
+		if (verantwortlicher.isPresent()) {
+			return verantwortlicher;
 		}
-		return Optional.of(verantwortlicher);
+
+		Optional<GemeindeStammdaten> stammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(dossier.getGemeinde().getId());
+
+		return stammdaten.isPresent()
+			? Optional.ofNullable(stammdaten.get().getDefaultBenutzerBG())
+			: Optional.empty();
 	}
 
 	@Nonnull
 	@Override
 	public Dossier setVerantwortlicherBG(@Nonnull String dossierId, @Nullable Benutzer benutzer) {
-		final Dossier dossier = findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		final Dossier dossier =
+			findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherBG",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
 		dossier.setVerantwortlicherBG(benutzer);
 
-		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
+		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern
+		// des Falls
 		validateVerantwortlicher(dossier, ChangeVerantwortlicherBGValidationGroup.class);
 		return saveDossier(dossier);
 	}
@@ -231,11 +242,13 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Nonnull
 	@Override
 	public Dossier setVerantwortlicherTS(@Nonnull String dossierId, @Nullable Benutzer benutzer) {
-		final Dossier dossier = findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		final Dossier dossier =
+			findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("setVerantwortlicherTS",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
 		dossier.setVerantwortlicherTS(benutzer);
 
-		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern des Falls
+		// Die Validierung bezüglich der Rolle des Verantwortlichen darf nur hier erfolgen, nicht bei jedem Speichern
+		// des Falls
 		validateVerantwortlicher(dossier, ChangeVerantwortlicherTSValidationGroup.class);
 		return saveDossier(dossier);
 	}

@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -170,6 +171,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 
 		FamiliensituationContainer familiensituationContainer = gesuch.getFamiliensituationContainer();
 		Assert.assertNotNull(familiensituationContainer);
+		assert familiensituationContainer.getFamiliensituationJA() != null;
 		Familiensituation oldFamiliensituation = new Familiensituation(familiensituationContainer.getFamiliensituationJA());
 		final Familiensituation newFamiliensituation = gesuch.extractFamiliensituation();
 		Assert.assertNotNull(newFamiliensituation);
@@ -233,6 +235,13 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 
 		final Iterator<KindContainer> kinderIterator = gesuch.getKindContainers().iterator();
 		KindContainer kind = kinderIterator.next();
+
+		final Iterator<Betreuung> betreuungIterator = kind.getBetreuungen().iterator();
+		betreuungIterator.forEachRemaining(betreuung -> {
+			persistence.remove(ErweiterteBetreuungContainer.class, betreuung.getErweiterteBetreuungContainer().getId());
+			persistence.remove(Betreuung.class, betreuung.getId());
+		});
+
 		persistence.remove(KindContainer.class, kind.getId());
 
 		final List<WizardStep> wizardSteps = wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.KINDER);

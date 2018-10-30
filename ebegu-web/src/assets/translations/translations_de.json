@@ -467,9 +467,9 @@
     "FALSCHE_ANGABEN": "Falsche Angaben",
     "ANGABEN_KORRIGIEREN": "Angaben korrigieren",
     "VERTRAG": "Ich habe einen Vertrag mit der Institution.",
+    "ERWEITERTE_BEDUERFNISSE": "Hat Ihr Kind besondere Bedürfnisse und einen darin begründeten ausserordentlichen Betreuungsaufwand?",
     "KEINE_KESB_PLATZIERUNG": "Ich bestätige, dass die Betreuung NICHT auf Grund einer KESB-Platzierung erfolgt.",
     "KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden von der KESB übernommen.",
-    "ERWEITERTE_BEDUERFNISSE": "Erweiterte Bedürfnisse",
     "INSTITUTION": "Institution",
     "INSTITUTION_ANGABEN": "Institution – Allgemeine Angaben",
     "INSTITUTION_ADRESSE": "Adresse",
@@ -791,6 +791,7 @@
     "DOK_SONSTIGES": "Sonstige Nachweise",
     "DOK_PAPIERGESUCH": "Papiergesuch",
     "DOK_FREIGABEQUITTUNG": "Freigabequittung",
+    "DOK_ERWEITERTE_BETREUUNG": "Erweiterte Betreuung",
     "ERROR_FILE_TOO_LARGE": "File ist zu gross (Maximal 10MB)",
     "NACHWEIS_TRENNUNG": "Trennungsvereinbarung / Scheidungsurteil / Sonstiger Nachweis über Trennung / Eheschutzverfahren",
     "FACHSTELLENBEST_SOZ": "Fachstellenbestätigung (soziale Indikation)",
@@ -1370,7 +1371,6 @@
     "HOURS": "Stunden",
     "PER_MONTH": "pro Monat",
     "OR": "oder",
-    "MONATLICHE_BETREUUNGSKOSTEN_HELP": "Erfassen Sie hier die monatlichen Betreuungskosten (ohne Verpflegungskosten).<br>Auch bei untermonatlichen Eintritten müssen die monatlichen Kosten erfasst werden. Falls sich der Tarif ändert, erstellen Sie ein neues Betreuungspensum.",
     "GEMEINDE_STAMMDATEN": "Gemeinde Stammdaten",
     "KONTAKTADRESSE": "Kontaktadresse",
     "ADRESSE_ANSCHRIFT": "Anschrift",
@@ -1388,5 +1388,6 @@
     "BENUTZER_EDIT": "Mitarbeiter bearbeiten",
     "STAMMDATEN_EDIT": "Stammdaten bearbeiten",
     "KONFIGURATION_EDIT": "Konfiguration bearbeiten",
-    "GEMEINDE_SPEICHERN": "Gemeinde Speichern"
+    "GEMEINDE_SPEICHERN": "Gemeinde Speichern",
+    "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND": "Bestätigung über den ausserordentlichen Betreuungsaufwand"
 }

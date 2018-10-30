@@ -38,10 +38,15 @@ public class JaxFachstelle extends JaxAbstractDTO {
 	@NotNull
 	private String name;
 
+	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String beschreibung;
 
 	private boolean behinderungsbestaetigung;
+
+	private boolean fachstelleAnspruch;
+
+	private boolean fachstelleErweiterteBetreuung;
 
 	public String getName() {
 		return name;
@@ -66,5 +71,21 @@ public class JaxFachstelle extends JaxAbstractDTO {
 
 	public void setBehinderungsbestaetigung(boolean behinderungsbestaetigung) {
 		this.behinderungsbestaetigung = behinderungsbestaetigung;
+	}
+
+	public boolean isFachstelleAnspruch() {
+		return fachstelleAnspruch;
+	}
+
+	public void setFachstelleAnspruch(boolean fachstelleAnspruch) {
+		this.fachstelleAnspruch = fachstelleAnspruch;
+	}
+
+	public boolean isFachstelleErweiterteBetreuung() {
+		return fachstelleErweiterteBetreuung;
+	}
+
+	public void setFachstelleErweiterteBetreuung(boolean fachstelleErweiterteBetreuung) {
+		this.fachstelleErweiterteBetreuung = fachstelleErweiterteBetreuung;
 	}
 }

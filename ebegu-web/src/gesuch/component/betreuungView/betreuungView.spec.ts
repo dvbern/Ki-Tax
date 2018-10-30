@@ -219,7 +219,6 @@ describe('betreuungView', () => {
             it('must change the status of the Betreuung to ABGEWIESEN and restore initial values of Betreuung', () => {
                 spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue($q.when({}));
                 spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.stub();
-                betreuungView.model.erweiterteBeduerfnisse = true;
                 betreuungView.model.grundAblehnung = 'mein Grund';
                 expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
                     .toEqual(TSBetreuungsstatus.AUSSTEHEND);
@@ -228,11 +227,13 @@ describe('betreuungView', () => {
                 betreuungView.platzAbweisen();
 
                 // Status wird serverseitig gesetzt
-                expect(gesuchModelManager.getBetreuungToWorkWith().betreuungsstatus)
+                const betreuungToWorkWith = gesuchModelManager.getBetreuungToWorkWith();
+                expect(betreuungToWorkWith.betreuungsstatus)
                     .toEqual(TSBetreuungsstatus.AUSSTEHEND);
-                expect(gesuchModelManager.getBetreuungToWorkWith().grundAblehnung).toEqual('mein Grund');
-                expect(gesuchModelManager.getBetreuungToWorkWith().datumAblehnung).toEqual(DateUtil.today());
-                expect(gesuchModelManager.getBetreuungToWorkWith().erweiterteBeduerfnisse).toBe(true);
+                expect(betreuungToWorkWith.grundAblehnung).toEqual('mein Grund');
+                expect(betreuungToWorkWith.datumAblehnung).toEqual(DateUtil.today());
+                // it must be false because is the value by default
+                expect(betreuungToWorkWith.erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse).toBe(false);
                 // tslint:disable-next-line:no-unbound-method
                 expect(gesuchModelManager.saveBetreuung).toHaveBeenCalled();
             });
