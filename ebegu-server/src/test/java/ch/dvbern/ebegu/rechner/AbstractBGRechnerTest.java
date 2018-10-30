@@ -312,11 +312,11 @@ public class AbstractBGRechnerTest {
 					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 40, 40, 40, VOLLKOSTEN_DEFAULT, 366.90, 546.60);
+				assertZeitabschnitt(august, 40, 40, 40, VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
 
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 40, 40, 40, VOLLKOSTEN_DEFAULT, 366.90, 546.60);
+				assertZeitabschnitt(juli, 40, 40, 40, VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
 			}
 			if ("Tamara".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
@@ -330,10 +330,10 @@ public class AbstractBGRechnerTest {
 					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 60, 40, 40, VOLLKOSTEN_DEFAULT, 362.75, 637.70);
+				assertZeitabschnitt(august, 60, 40, 40, VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 60, 40, 40, VOLLKOSTEN_DEFAULT, 362.75, 637.70);
+				assertZeitabschnitt(juli, 60, 40, 40, VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
 			}
 		}
 	}
@@ -352,20 +352,20 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(69078.00),
+					MathUtil.GANZZAHL.from(68678.00),
 					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 50, 50, 50, VOLLKOSTEN_DEFAULT, 844.90, 297.00);
+				assertZeitabschnitt(august, 50, 50, 50, VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 50, 50, 50, VOLLKOSTEN_DEFAULT, 844.90, 297.00);
+				assertZeitabschnitt(juli, 50, 50, 50, VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
 			}
 		}
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia} auf
+	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura} auf
 	 * korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall04WaltherLaura(Gesuch gesuch) {
@@ -391,7 +391,7 @@ public class AbstractBGRechnerTest {
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar} auf korrekte berechnung zu
+	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret} auf korrekte berechnung zu
 	 * pruefen
 	 */
 	public static void checkTestfall05LuethiMeret(Gesuch gesuch) {
@@ -404,26 +404,26 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(98949.85)),
+					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(98830.00)),
 					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat 50%
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 50, 70, 50, VOLLKOSTEN_DEFAULT, 586.60, 555.30);
+				assertZeitabschnitt(august, 50, 70, 50, VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
 				// Letzter Monat 50%
 				VerfuegungZeitabschnitt dezember = verfuegung.getZeitabschnitte().get(4);
-				assertZeitabschnitt(dezember, 50, 70, 50, VOLLKOSTEN_DEFAULT, 586.60, 555.30);
+				assertZeitabschnitt(dezember, 50, 70, 50, VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
 				// Erster Monat 60 %
 				VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-				assertZeitabschnitt(januar, 60, 70, 60, VOLLKOSTEN_DEFAULT, 703.95, 666.35);
+				assertZeitabschnitt(januar, 60, 70, 60, VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
 				// Letzter Monat 60 %
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 60, 70, 60, VOLLKOSTEN_DEFAULT, 703.95, 666.35);
+				assertZeitabschnitt(juli, 60, 70, 60, VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
 			}
 		}
 	}
 
 	/**
-	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia} auf
+	 * hilfsmethode um den {@link ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora} auf
 	 * korrekte berechnung zu pruefen
 	 */
 	public static void checkTestfall06BeckerNora(Gesuch gesuch) {
@@ -436,11 +436,11 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7520)),
+					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7600)),
 					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 100, 100, 100, VOLLKOSTEN_DEFAULT, 1562.40, 105.00);
+				assertZeitabschnitt(august, 100, 60, 60, VOLLKOSTEN_DEFAULT, 1200.00, 800.00);
 			}
 			if ("Yasmin".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
@@ -450,11 +450,11 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7520)),
+					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7600)),
 					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 100, 60, 60, VOLLKOSTEN_DEFAULT, 1289.30, 81.00);
+				assertZeitabschnitt(august, 100, 60, 60, VOLLKOSTEN_DEFAULT, 1200.00, 800.00);
 			}
 		}
 	}

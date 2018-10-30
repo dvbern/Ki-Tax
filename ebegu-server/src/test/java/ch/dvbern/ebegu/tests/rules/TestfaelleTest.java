@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
 import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
 import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -36,12 +37,19 @@ import org.junit.Test;
  */
 public class TestfaelleTest extends AbstractBGRechnerTest {
 
+	private static final List<InstitutionStammdaten> INSTITUTIONS_STAMMDATEN_LIST = new ArrayList<>();
+
+	@BeforeClass
+	public static void setup() {
+		INSTITUTIONS_STAMMDATEN_LIST.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		INSTITUTIONS_STAMMDATEN_LIST.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
+		INSTITUTIONS_STAMMDATEN_LIST.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
+	}
+
 	@Test
 	public void testfall01_WaeltiDagmar() {
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
-		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall01_WaeltiDagmar testfall = new Testfall01_WaeltiDagmar(TestDataUtil.createGesuchsperiode1718(),
+			INSTITUTIONS_STAMMDATEN_LIST);
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
@@ -54,10 +62,8 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void testfall02_FeutzYvonne() {
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
-		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(),
+			INSTITUTIONS_STAMMDATEN_LIST);
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
@@ -70,9 +76,8 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void testfall03_PerreiraMarcia() {
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall03_PerreiraMarcia testfall = new Testfall03_PerreiraMarcia(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall03_PerreiraMarcia testfall = new Testfall03_PerreiraMarcia(TestDataUtil.createGesuchsperiode1718(),
+			INSTITUTIONS_STAMMDATEN_LIST);
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
@@ -85,9 +90,8 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void testfall04_WaltherLaura() {
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall04_WaltherLaura testfall = new Testfall04_WaltherLaura(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall04_WaltherLaura testfall = new Testfall04_WaltherLaura(TestDataUtil.createGesuchsperiode1718(),
+			INSTITUTIONS_STAMMDATEN_LIST);
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
@@ -100,9 +104,8 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void testfall05_LuethiMeret() {
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		Testfall05_LuethiMeret testfall = new Testfall05_LuethiMeret(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall05_LuethiMeret testfall = new Testfall05_LuethiMeret(TestDataUtil.createGesuchsperiode1718(),
+			INSTITUTIONS_STAMMDATEN_LIST);
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
@@ -115,10 +118,8 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void testfall06_BeckerNora() {
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesfamilien());
-		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
+		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(TestDataUtil.createGesuchsperiode1718(),
+			INSTITUTIONS_STAMMDATEN_LIST);
 
 		testfall.createFall();
 		testfall.createGesuch(LocalDate.of(2016, 7, 1));
