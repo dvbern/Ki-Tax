@@ -22,7 +22,7 @@
 
         <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
         <div class="viewTitle">
-            <h2>{{gemeindeTitel}}</h2>
+            <h2>{{getGemeindeTitel()}}</h2>
             <hr class="header">
         </div>
 
@@ -38,7 +38,7 @@
                     <div class="form-group">
                         <button type="button" class="dv-btn mitarbeiter-bearbeiten-button"
                                 (click)="mitarbeiterBearbeiten()"
-                                [textContent]="'BENUTZER_EDIT' | translate">
+                                translate>BENUTZER_EDIT
                         </button>
                     </div>
                 </div>

@@ -43,6 +43,8 @@ import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
         AddGemeindeComponent,
         EditGemeindeComponent,
         ViewGemeindeComponent,
+        GemeindeKonfigComponent,
+        GemeindeHeaderComponent,
     ],
     entryComponents: [
         GemeindeListComponent,

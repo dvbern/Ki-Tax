@@ -30,7 +30,7 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../shared/shared.module';
-import {GemeindeKonfigComponent} from '../gemeinde-konfiguration/gemeinde-konfig.component';
+import {GemeindeModule} from '../gemeinde.module';
 import {ViewGemeindeComponent} from './view-gemeinde.component';
 
 describe('ViewGemeindeComponent', () => {
@@ -54,7 +54,7 @@ describe('ViewGemeindeComponent', () => {
             imports: [
                 SharedModule,
                 NoopAnimationsModule,
-                GemeindeKonfigComponent,
+                GemeindeModule,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -66,8 +66,6 @@ describe('ViewGemeindeComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [
-                ViewGemeindeComponent,
-                GemeindeKonfigComponent,
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();

@@ -39,7 +39,6 @@ export class GemeindeHeaderComponent implements OnInit {
     private fileToUpload!: File;
     private navigationDest: StateDeclaration;
     public logoImageUrl: string = '#';
-    public gemeindeTitel: string;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -51,15 +50,19 @@ export class GemeindeHeaderComponent implements OnInit {
     public ngOnInit(): void {
         this.navigationDest = this.$transition$.to();
         this.logoImageUrl = this.gemeindeRS.getLogoUrl(this.gemeinde.id);
-        this.translate.instant('GEMEINDE_NAME', {name: this.gemeinde.name, bfs: this.gemeinde.bfsNummer});
-    }
-
-    public canUploadLogo(): boolean {
-        return 'gemeinde.edit' === this.navigationDest.name;
     }
 
     public mitarbeiterBearbeiten(): void {
         // TODO: Implement Mitarbeiter Bearbeiten Button Action
+    }
+
+    public getGemeindeTitel(): string {
+        return this.translate.instant('GEMEINDE_NAME',
+            {name: this.gemeinde.name, bfs: this.gemeinde.bfsNummer});
+    }
+
+    public canUploadLogo(): boolean {
+        return 'gemeinde.edit' === this.navigationDest.name;
     }
 
     public handleLogoUpload(files: FileList): void {
