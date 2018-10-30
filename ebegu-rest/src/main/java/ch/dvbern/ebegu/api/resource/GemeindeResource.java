@@ -24,10 +24,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -54,8 +52,8 @@ import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
-import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -67,7 +65,6 @@ import ch.dvbern.ebegu.services.GemeindeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
-import org.jboss.resteasy.annotations.cache.Cache;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**

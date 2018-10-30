@@ -121,7 +121,8 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public GemeindeStammdaten gemeindeStammdatenToEntity(@Nonnull final JaxGemeindeStammdaten jaxStammdaten, @Nonnull final GemeindeStammdaten stammdaten) {
+	public GemeindeStammdaten gemeindeStammdatenToEntity(@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull final GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
 		requireNonNull(stammdaten.getAdresse());
 		requireNonNull(jaxStammdaten);

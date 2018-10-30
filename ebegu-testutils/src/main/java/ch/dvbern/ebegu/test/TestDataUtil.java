@@ -1260,6 +1260,7 @@ public final class TestDataUtil {
 		stammdaten.setGemeinde(getTestGemeinde(persistence));
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
 		stammdaten.setMail("info@bern.ch");
+		stammdaten.setLogoContent(new byte[0]);
 
 		persistence.merge(stammdaten);
 	}
