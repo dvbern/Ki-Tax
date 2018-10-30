@@ -229,7 +229,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			abzugFromServer = pauschalabzugProPersonFamiliengroesse4;
 		} else if (famGrAnzahlPersonen == 5) {
 			abzugFromServer = pauschalabzugProPersonFamiliengroesse5;
-		} else {
+		} else if (famGrAnzahlPersonen > 5) {
 			abzugFromServer = pauschalabzugProPersonFamiliengroesse6;
 		}
 

@@ -67,6 +67,8 @@ import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxEnversRevision;
+import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensum;
 import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
@@ -131,6 +133,8 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fachstelle;
@@ -1229,6 +1233,8 @@ public class JaxBConverter extends AbstractConverter {
 		fachstelle.setName(fachstelleJAXP.getName());
 		fachstelle.setBeschreibung(fachstelleJAXP.getBeschreibung());
 		fachstelle.setBehinderungsbestaetigung(fachstelleJAXP.isBehinderungsbestaetigung());
+		fachstelle.setFachstelleAnspruch(fachstelleJAXP.isFachstelleAnspruch());
+		fachstelle.setFachstelleErweiterteBetreuung(fachstelleJAXP.isFachstelleErweiterteBetreuung());
 		return fachstelle;
 	}
 
@@ -1238,6 +1244,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFachstelle.setName(persistedFachstelle.getName());
 		jaxFachstelle.setBeschreibung(persistedFachstelle.getBeschreibung());
 		jaxFachstelle.setBehinderungsbestaetigung(persistedFachstelle.isBehinderungsbestaetigung());
+		jaxFachstelle.setFachstelleAnspruch(persistedFachstelle.isFachstelleAnspruch());
+		jaxFachstelle.setFachstelleErweiterteBetreuung(persistedFachstelle.isFachstelleErweiterteBetreuung());
 		return jaxFachstelle;
 	}
 
@@ -2034,13 +2042,18 @@ public class JaxBConverter extends AbstractConverter {
 		);
 		setBetreuungInbetreuungsPensumContainers(betreuung.getBetreuungspensumContainers(), betreuung);
 
+		betreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToEntity(
+			betreuungJAXP.getErweiterteBetreuungContainer(),
+			betreuung.getErweiterteBetreuungContainer()
+		));
+		betreuung.getErweiterteBetreuungContainer().setBetreuung(betreuung);
+
 		abwesenheitContainersToEntity(betreuungJAXP.getAbwesenheitContainers(), betreuung.getAbwesenheitContainers());
 		setBetreuungInAbwesenheiten(betreuung.getAbwesenheitContainers(), betreuung);
 
 		betreuung.setBetreuungsstatus(betreuungJAXP.getBetreuungsstatus());
 		betreuung.setVertrag(betreuungJAXP.getVertrag());
 		betreuung.setKeineKesbPlatzierung(betreuungJAXP.getKeineKesbPlatzierung());
-		betreuung.setErweiterteBeduerfnisse(betreuungJAXP.getErweiterteBeduerfnisse());
 
 		// InstitutionStammdaten muessen bereits existieren
 		if (betreuungJAXP.getInstitutionStammdaten() != null) {
@@ -2096,6 +2109,40 @@ public class JaxBConverter extends AbstractConverter {
 		return betreuung;
 	}
 
+	private ErweiterteBetreuung erweiterteBetreuungToEntity(
+		@Nonnull final JaxErweiterteBetreuung erweiterteBetreuungJAXP,
+		@Nonnull final ErweiterteBetreuung erweiterteBetreuung) {
+
+		requireNonNull(erweiterteBetreuung);
+		requireNonNull(erweiterteBetreuungJAXP);
+
+		convertAbstractVorgaengerFieldsToEntity(erweiterteBetreuungJAXP, erweiterteBetreuung);
+
+		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
+
+		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
+		if(Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())){
+			requireNonNull(erweiterteBetreuungJAXP.getFachstelle(), "Fachstelle muss existieren");
+			requireNonNull(
+				erweiterteBetreuungJAXP.getFachstelle().getId(),
+				"Fachstelle muss bereits gespeichert sein");
+
+			final Optional<Fachstelle> fachstelleFromDB =
+				fachstelleService.findFachstelle(erweiterteBetreuungJAXP.getFachstelle().getId());
+
+			if (!fachstelleFromDB.isPresent()) {
+				throw new EbeguEntityNotFoundException(
+					"erweiterteBetreuungToEntity",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					erweiterteBetreuungJAXP.getFachstelle().getId());
+			}
+			// Fachstelle darf nicht vom Client ueberschrieben werden
+			erweiterteBetreuung.setFachstelle(fachstelleFromDB.get());
+		}
+
+		return erweiterteBetreuung;
+	}
+
 	@Nullable
 	private BelegungTagesschule belegungTagesschuleToEntity(
 		@Nullable JaxBelegungTagesschule belegungTagesschuleJAXP,
@@ -2109,10 +2156,9 @@ public class JaxBConverter extends AbstractConverter {
 				moduleTagesschuleListToEntity(belegungTagesschuleJAXP.getModuleTagesschule(),
 					instStammdatenTagesschule.getModuleTagesschule(), instStammdatenTagesschule);
 			if (convertedModule != null) {
-				//change the existing collection to reflect changes
+				// change the existing collection to reflect changes
 				// Already tested: All existing module of the list remain as they were, that means their data are
-				// updated
-				// and the objects are not created again. ID and InsertTimeStamp are the same as before
+				// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
 				belegungTagesschule.getModuleTagesschule().clear();
 				belegungTagesschule.getModuleTagesschule().addAll(convertedModule);
 			}
@@ -2342,11 +2388,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setDatumAblehnung(betreuungFromServer.getDatumAblehnung());
 		jaxBetreuung.setDatumBestaetigung(betreuungFromServer.getDatumBestaetigung());
 		jaxBetreuung.setBetreuungspensumContainers(betreuungsPensumContainersToJax(betreuungFromServer.getBetreuungspensumContainers()));
+		jaxBetreuung.setErweiterteBetreuungContainer(erweiterteBetreuungContainerToJax(betreuungFromServer.getErweiterteBetreuungContainer()));
 		jaxBetreuung.setAbwesenheitContainers(abwesenheitContainersToJax(betreuungFromServer.getAbwesenheitContainers()));
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
 		jaxBetreuung.setKeineKesbPlatzierung(betreuungFromServer.getKeineKesbPlatzierung());
-		jaxBetreuung.setErweiterteBeduerfnisse(betreuungFromServer.getErweiterteBeduerfnisse());
 		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenToJAX(betreuungFromServer.getInstitutionStammdaten()));
 		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
 		if (betreuungFromServer.getKind() != null) {
@@ -2654,6 +2700,69 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 
 		return jaxBetreuungspensum;
+	}
+
+	@Nonnull
+	public ErweiterteBetreuungContainer erweiterteBetreuungContainerToEntity(
+		@Nonnull final JaxErweiterteBetreuungContainer containerJAX,
+		@Nullable ErweiterteBetreuungContainer container) {
+		requireNonNull(containerJAX);
+
+		container = container == null ? new ErweiterteBetreuungContainer() : container;
+
+		convertAbstractVorgaengerFieldsToEntity(containerJAX, container);
+
+		if (containerJAX.getErweiterteBetreuungGS() != null) {
+			ErweiterteBetreuung erwBetToMergeWith =
+				Optional.ofNullable(container.getErweiterteBetreuungGS()).orElse(new ErweiterteBetreuung());
+			container.setErweiterteBetreuungGS(erweiterteBetreuungToEntity(
+				containerJAX.getErweiterteBetreuungGS(),
+				erwBetToMergeWith));
+		}
+		if (containerJAX.getErweiterteBetreuungJA() != null) {
+			ErweiterteBetreuung erwBetToMergeWith =
+				Optional.ofNullable(container.getErweiterteBetreuungJA()).orElse(new ErweiterteBetreuung());
+			container.setErweiterteBetreuungJA(erweiterteBetreuungToEntity(
+				containerJAX.getErweiterteBetreuungJA(),
+				erwBetToMergeWith));
+		}
+		return container;
+	}
+
+	@Nonnull
+	private JaxErweiterteBetreuungContainer erweiterteBetreuungContainerToJax(
+		@Nonnull ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
+
+		JaxErweiterteBetreuungContainer jaxErweiterteBetreuungContainer = new JaxErweiterteBetreuungContainer();
+		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuungContainer, jaxErweiterteBetreuungContainer);
+
+		if (erweiterteBetreuungContainer.getErweiterteBetreuungGS() != null) {
+			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungGS());
+			jaxErweiterteBetreuungContainer.setErweiterteBetreuungGS(jaxErweiterteBetreuung);
+		}
+
+		if (erweiterteBetreuungContainer.getErweiterteBetreuungJA() != null) {
+			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungJA());
+			jaxErweiterteBetreuungContainer.setErweiterteBetreuungJA(jaxErweiterteBetreuung);
+		}
+
+		return jaxErweiterteBetreuungContainer;
+	}
+
+	@Nonnull
+	private JaxErweiterteBetreuung erweiterteBetreuungToJax(@Nonnull ErweiterteBetreuung erweiterteBetreuung) {
+
+		requireNonNull(erweiterteBetreuung, "Erweiterte Betreuung muss gesetzt sein");
+
+		JaxErweiterteBetreuung jaxErweiterteBetreuung = new JaxErweiterteBetreuung();
+		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
+		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
+
+		if(erweiterteBetreuung.getFachstelle() != null) {
+			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
+		}
+
+		return jaxErweiterteBetreuung;
 	}
 
 	@Nonnull

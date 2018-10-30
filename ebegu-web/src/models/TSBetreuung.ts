@@ -25,6 +25,7 @@ import TSBetreuungspensumContainer from './TSBetreuungspensumContainer';
 import TSGesuchsperiode from './TSGesuchsperiode';
 import TSInstitutionStammdaten from './TSInstitutionStammdaten';
 import TSVerfuegung from './TSVerfuegung';
+import TSErweiterteBetreuungContainer from './TSErweiterteBetreuungContainer';
 
 export default class TSBetreuung extends TSAbstractMutableEntity {
 
@@ -32,12 +33,12 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _betreuungsstatus: TSBetreuungsstatus;
     private _betreuungspensumContainers: Array<TSBetreuungspensumContainer>;
     private _abwesenheitContainers: Array<TSAbwesenheitContainer>;
+    private _erweiterteBetreuungContainer: TSErweiterteBetreuungContainer;
     private _grundAblehnung: string;
     private _betreuungNummer: number;
     private _verfuegung: TSVerfuegung;
     private _vertrag: boolean;
     private _keineKesbPlatzierung: boolean;
-    private _erweiterteBeduerfnisse: boolean;
     private _datumAblehnung: moment.Moment;
     private _datumBestaetigung: moment.Moment;
     private _kindFullname: string;
@@ -58,11 +59,11 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         betreuungsstatus?: TSBetreuungsstatus,
         betreuungspensumContainers?: Array<TSBetreuungspensumContainer>,
         abwesenheitContainers?: Array<TSAbwesenheitContainer>,
+        erweiterteBetreuungContainer?: TSErweiterteBetreuungContainer,
         betreuungNummer?: number,
         verfuegung?: TSVerfuegung,
         vertrag?: boolean,
         keineKesbPlatzierung?: boolean,
-        erweiterteBeduerfnisse?: boolean,
         grundAblehnung?: string,
         datumAblehnung?: moment.Moment,
         datumBestaetigung?: moment.Moment,
@@ -84,12 +85,12 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         this._betreuungsstatus = betreuungsstatus ? betreuungsstatus : TSBetreuungsstatus.AUSSTEHEND;
         this._betreuungspensumContainers = betreuungspensumContainers ? betreuungspensumContainers : [];
         this._abwesenheitContainers = abwesenheitContainers ? abwesenheitContainers : [];
+        this._erweiterteBetreuungContainer = erweiterteBetreuungContainer;
         this._grundAblehnung = grundAblehnung;
         this._betreuungNummer = betreuungNummer;
         this._verfuegung = verfuegung;
         this._vertrag = !!vertrag;
         this._keineKesbPlatzierung = !!keineKesbPlatzierung;
-        this._erweiterteBeduerfnisse = !!erweiterteBeduerfnisse;
         this._datumAblehnung = datumAblehnung;
         this._datumBestaetigung = datumBestaetigung;
         this._kindFullname = kindFullname;
@@ -138,6 +139,14 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         this._abwesenheitContainers = value;
     }
 
+    public get erweiterteBetreuungContainer(): TSErweiterteBetreuungContainer {
+        return this._erweiterteBetreuungContainer;
+    }
+
+    public set erweiterteBetreuungContainer(value: TSErweiterteBetreuungContainer) {
+        this._erweiterteBetreuungContainer = value;
+    }
+
     public get grundAblehnung(): string {
         return this._grundAblehnung;
     }
@@ -176,14 +185,6 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
 
     public set keineKesbPlatzierung(value: boolean) {
         this._keineKesbPlatzierung = value;
-    }
-
-    public get erweiterteBeduerfnisse(): boolean {
-        return this._erweiterteBeduerfnisse;
-    }
-
-    public set erweiterteBeduerfnisse(value: boolean) {
-        this._erweiterteBeduerfnisse = value;
     }
 
     public get datumAblehnung(): moment.Moment {
