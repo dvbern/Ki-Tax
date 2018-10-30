@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -600,7 +601,20 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		if (verfuegen) {
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
+
 			verfuegungService.calculateVerfuegung(gesuch);
+			// Jetzt muss das Einkommensjahr auf allen Zeitabschnitten gesetzt sein
+			LOG.warn("NACH BERECHNEN GESUCH...");
+			for (Betreuung betreuung : gesuch.extractAllBetreuungen()	) {
+				if (betreuung.getVerfuegung() != null) {
+					LOG.warn("BETREUUNG " + betreuung.getKind().getKindJA().getFullName());
+					for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung()
+						.getZeitabschnitte()) {
+						LOG.warn("EINKOMMENSJAHR " + verfuegungZeitabschnitt.toString());
+					}
+				}
+			}
+			LOG.warn("...NACH BERECHNEN GESUCH");
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 				.filter(betreuung -> !betreuung.isAngebotSchulamt())
 				.forEach(betreuung -> verfuegungService.setZahlungsstatus(betreuung.getVerfuegung(), betreuung.getId(), ignorierenInZahlungslauf)
