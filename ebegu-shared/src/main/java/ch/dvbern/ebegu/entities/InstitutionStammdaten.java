@@ -190,7 +190,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		}
 		final InstitutionStammdaten otherInstStammdaten = (InstitutionStammdaten) other;
 		return EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution()) &&
-			Objects.equals(getBetreuungsangebotTyp(), otherInstStammdaten.getBetreuungsangebotTyp()) &&
+			getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp() &&
 			Objects.equals(getIban(), otherInstStammdaten.getIban()) &&
 			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse());
 	}

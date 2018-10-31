@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
@@ -30,6 +31,7 @@ import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
+import {GemeindeKonfigComponent} from '../gemeinde-konfiguration/gemeinde-konfig.component';
 import {EditGemeindeComponent} from './edit-gemeinde.component';
 
 describe('EditGemeindeComponent', () => {
@@ -55,6 +57,7 @@ describe('EditGemeindeComponent', () => {
                 NoopAnimationsModule,
                 MaterialModule,
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
@@ -66,6 +69,7 @@ describe('EditGemeindeComponent', () => {
             ],
             declarations: [
                 EditGemeindeComponent,
+                GemeindeKonfigComponent,
             ],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
         ).compileComponents();
