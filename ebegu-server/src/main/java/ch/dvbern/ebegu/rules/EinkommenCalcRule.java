@@ -90,7 +90,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();
 		int basisjahrPlus1 = betreuung.extractGesuchsperiode().getBasisJahrPlus1();
 		int basisjahrPlus2 = betreuung.extractGesuchsperiode().getBasisJahrPlus2();
-		LOGGER.warn("EINKOMMENSJAHR: setting MassgebendesEinkommen. Einkommensjahr vorher = " + verfuegungZeitabschnitt.getEinkommensjahr());
+		LOGGER.warn("EINKOMMENSJAHR: setting MassgebendesEinkommen. Einkommensjahr vorher = " + verfuegungZeitabschnitt.getEinkommensjahr() + " basisjahr = " + basisjahr);
 		if (isEkv1) {
 			if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
