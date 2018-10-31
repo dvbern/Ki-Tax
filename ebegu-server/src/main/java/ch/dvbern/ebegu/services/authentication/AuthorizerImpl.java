@@ -128,7 +128,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (gemeinde != null) {
 			boolean allGemeindenAllowed = principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
 			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
-				principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR);
+				principalBean.isCallerInAnyOfRole(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR);
 			if (!allGemeindenAllowed && !allowedForGemeinde) {
 				throwViolation(gemeinde);
 			}
