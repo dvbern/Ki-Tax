@@ -116,7 +116,7 @@ public class InstitutionenInsertCreator {
 			}
 
 			if (traegerschaftsId == null) {
-				LOG.error("TraegerschaftsId ist null, breche ab. " + row.getRowNum());
+				LOG.error("TraegerschaftsId ist null, breche ab. {}", row.getRowNum());
 				return;
 			}
 		}
@@ -131,19 +131,19 @@ public class InstitutionenInsertCreator {
 			institutionenMap.put(institutionsKey, institutionsId);
 		}
 		if (institutionsId == null) {
-			LOG.error("institutionsId ist null, breche ab. " + row.getRowNum());
+			LOG.error("institutionsId ist null, breche ab. {}", row.getRowNum());
 			return;
 		}
 		// Adressen
 		String adresseId = writeAdresse(row);
 		if (adresseId == null) {
-			LOG.error("adresseId ist null, breche ab. " + row.getRowNum());
+			LOG.error("adresseId ist null, breche ab. {}", row.getRowNum());
 			return;
 		}
 		// Institutionsstammdaten
 		String angebot = readString(row, AdministrationService.COL_ANGEBOT);
 		if (angebot == null) {
-			LOG.error("angebot is null: " + row.getRowNum());
+			LOG.error("angebot is null: {}", row.getRowNum());
 			return;
 		}
 		try {
@@ -153,7 +153,7 @@ public class InstitutionenInsertCreator {
 			if ("TAGESELTERN".equalsIgnoreCase(angebot)) {
 				writeInstitutionStammdaten(row, institutionsId, adresseId, BetreuungsangebotTyp.TAGESFAMILIEN);
 			} else {
-				LOG.warn("Unbekannter Betreuungsangebot-Typ: " + angebot);
+				LOG.warn("Unbekannter Betreuungsangebot-Typ: {}", angebot);
 			}
 		}
 	}
@@ -163,9 +163,8 @@ public class InstitutionenInsertCreator {
 		if (cell != null) {
 			cell.setCellType(CellType.STRING);
 			return cell.getStringCellValue();
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	private String writeAdresse(Row row) {
@@ -177,15 +176,15 @@ public class InstitutionenInsertCreator {
 		String zusatzzeile = readString(row, AdministrationService.COL_ZUSATZZEILE);
 
 		if (strasse == null) {
-			LOG.error("strasse is null: " + row.getRowNum());
+			LOG.error("strasse is null: {}", row.getRowNum());
 			return null;
 		}
 		if (plz == null) {
-			LOG.error("plz is null: " + row.getRowNum());
+			LOG.error("plz is null: {}", row.getRowNum());
 			return null;
 		}
 		if (ort == null) {
-			LOG.error("ort is null: " + row.getRowNum());
+			LOG.error("ort is null: {}", row.getRowNum());
 			return null;
 		}
 
@@ -193,7 +192,7 @@ public class InstitutionenInsertCreator {
 		sb.append("INSERT INTO adresse ");
 		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde, gueltig_ab, gueltig_bis, hausnummer, land, ort, plz, strasse, zusatzzeile) ");
 		sb.append("VALUES (");
-		sb.append("'").append(id).append("', ");    // id
+		sb.append('\'').append(id).append("', ");    // id
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
 		sb.append("'flyway', ");                    // user_erstellt
@@ -220,11 +219,11 @@ public class InstitutionenInsertCreator {
 		String traegerschaftEmail = readString(row, AdministrationService.COL_TRAEGERSCHAFT_MAIL);
 
 		if (traegerschaftsname == null) {
-			LOG.error("institutionsname is null: " + row.getRowNum());
+			LOG.error("institutionsname is null: {}", row.getRowNum());
 			return null;
 		}
 		if (traegerschaftEmail == null) {
-			LOG.error("traegerschaftEmail is null: " + row.getRowNum());
+			LOG.error("traegerschaftEmail is null: {}", row.getRowNum());
 			return null;
 		}
 
@@ -232,7 +231,7 @@ public class InstitutionenInsertCreator {
 		sb.append("INSERT INTO traegerschaft ");
 		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mail) ");
 		sb.append("VALUES (");
-		sb.append("'").append(id).append("', ");    // id
+		sb.append('\'').append(id).append("', ");    // id
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
 		sb.append("'flyway', ");                    // user_erstellt
@@ -253,11 +252,11 @@ public class InstitutionenInsertCreator {
 		String institutionsEmail = readString(row, AdministrationService.COL_INSTITUTION_MAIL);
 
 		if (institutionsname == null) {
-			LOG.error("institutionsname is null: " + row.getRowNum());
+			LOG.error("institutionsname is null: {}", row.getRowNum());
 			return null;
 		}
 		if (institutionsEmail == null) {
-			LOG.error("institutionsEmail is null: " + row.getRowNum());
+			LOG.error("institutionsEmail is null: {}", row.getRowNum());
 			return null;
 		}
 
@@ -265,14 +264,14 @@ public class InstitutionenInsertCreator {
 		sb.append("INSERT INTO institution ");
 		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, mandant_id, traegerschaft_id, active, mail) ");
 		sb.append("VALUES (");
-		sb.append("'").append(id).append("', ");    // id
+		sb.append('\'').append(id).append("', ");    // id
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
 		sb.append("'flyway', ");                    // user_erstellt
 		sb.append("'flyway', ");                    // user_mutiert
 		sb.append("0, ");                            // version,
 		sb.append(toStringOrNull(institutionsname)).append(", "); // name
-		sb.append("'").append(AdministrationService.MANDANT_ID_BERN).append("', ");    // mandant_id,
+		sb.append('\'').append(AdministrationService.MANDANT_ID_BERN).append("', ");    // mandant_id,
 		sb.append(toStringOrNull(traegerschaftId)).append(", "); // name
 		sb.append("true, "); // active
 		sb.append(toStringOrNull(institutionsEmail)); // mail
@@ -284,11 +283,11 @@ public class InstitutionenInsertCreator {
 
 	private String writeInstitutionStammdaten(Row row, String institutionsId, String adresseId, BetreuungsangebotTyp typ) {
 		if (institutionsId == null) {
-			LOG.error("institutionsId is null: " + row.getRowNum());
+			LOG.error("institutionsId is null: {}", row.getRowNum());
 			return null;
 		}
 		if (adresseId == null) {
-			LOG.error("adresseId is null: " + row.getRowNum());
+			LOG.error("adresseId is null: {}", row.getRowNum());
 			return null;
 		}
 
@@ -300,7 +299,7 @@ public class InstitutionenInsertCreator {
 		sb.append("INSERT INTO institution_stammdaten ");
 		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, institution_id, adresse_id) ");
 		sb.append("VALUES (");
-		sb.append("'").append(id).append("', ");    // id
+		sb.append('\'').append(id).append("', ");    // id
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
 		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
 		sb.append("'flyway', ");                    // user_erstellt
@@ -308,7 +307,7 @@ public class InstitutionenInsertCreator {
 		sb.append("0, ");                    // version,
 		sb.append("'1000-01-01', ");                // gueltig_ab,
 		sb.append("'9999-12-31', ");                // gueltig_bis,
-		sb.append("'").append(typ.name()).append("', "); // betreuungsangebot_typ,
+		sb.append('\'').append(typ.name()).append("', "); // betreuungsangebot_typ,
 		sb.append(toStringOrNull(iban)).append(", "); // iban
 		sb.append(toStringOrNull(institutionsId)).append(", "); // institution_id
 		sb.append(toStringOrNull(adresseId)); // adresse_id
@@ -321,18 +320,19 @@ public class InstitutionenInsertCreator {
 	private String toStringOrNull(String aStringOrNull) {
 		if (aStringOrNull == null) {
 			return "null";
-		} else {
-			return "'" + aStringOrNull + "'";
 		}
+		return '\'' + aStringOrNull + '\'';
 	}
 
+	// this class is not really a part of the software itself. For this reason it is not important that some code is duplicated
+	@SuppressWarnings("Duplicates")
 	private PrintWriter getPrintWriter() {
 		if (printWriter == null) {
 			try {
 				File output = new File(OUTPUT_FILE);
 				FileOutputStream fos = new FileOutputStream(output.getAbsolutePath());
 				printWriter = new PrintWriter(fos);
-				LOG.info("File generiert: " + output.getAbsolutePath());
+				LOG.info("File generiert: {}", output.getAbsolutePath());
 			} catch (FileNotFoundException e) {
 				LOG.error("Konnte Outputfile nicht erstellen", e);
 			}
