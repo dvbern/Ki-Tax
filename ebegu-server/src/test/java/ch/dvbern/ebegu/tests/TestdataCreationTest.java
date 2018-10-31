@@ -93,7 +93,7 @@ public class TestdataCreationTest extends AbstractTestdataCreationTest {
 	public void createErstgesuchForAnotherPeriode() {
 		Gesuchsperiode nextGesuchsperiode = TestDataUtil.createAndPersistCustomGesuchsperiode(persistence, gesuchsperiode.getBasisJahr(), gesuchsperiode.getBasisJahrPlus1());
 		TestDataUtil.prepareParameters(nextGesuchsperiode, persistence);
-		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(TestfallName.LUETHI_MERET, nextGesuchsperiode, LocalDate.now(), LocalDateTime.now());
+		ErstgesuchConfig config = ErstgesuchConfig.createErstgesuch(TestfallName.LUETHI_MERET, nextGesuchsperiode, LocalDate.now());
 		Gesuch erstgesuch = testdataCreationService.createErstgesuch(config);
 		Assert.assertNotNull(erstgesuch);
 		Assert.assertNotNull(erstgesuch.getGesuchsperiode());
