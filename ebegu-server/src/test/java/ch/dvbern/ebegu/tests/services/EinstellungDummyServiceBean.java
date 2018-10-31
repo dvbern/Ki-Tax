@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
@@ -63,6 +64,7 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 		dummyObjects.put(PARAM_PENSUM_TAGESELTERN_MIN, new Einstellung(PARAM_PENSUM_TAGESELTERN_MIN, "20", gesuchsperiode1718));
 		dummyObjects.put(PARAM_PENSUM_TAGESSCHULE_MIN, new Einstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode1718));
 		dummyObjects.put(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, new Einstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode1718));
+		dummyObjects.put(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, new Einstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, "KINDERGARTEN2", gesuchsperiode1718));
 	}
 
 	@Nonnull
