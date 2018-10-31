@@ -15,8 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource.auth;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.EJBAccessException;
