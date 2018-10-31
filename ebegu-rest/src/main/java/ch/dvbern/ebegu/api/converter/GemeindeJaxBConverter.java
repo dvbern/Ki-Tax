@@ -215,18 +215,7 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 
 		// Konfiguration
 		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
-			// Ist die Gemeinde noch im Status EINGELADEN, laden wir nur die Konfiguration der richtigen Gesuchsperiode
-			// Die Gesuchsperiode wo das BEGU Startdatum drin liett, falls diese bereits existert,
-			// falss diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
-			Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
-				.getBetreuungsgutscheineStartdatum());
-			Optional<Gesuchsperiode> gpNewest = gesuchsperiodeService.findNewestGesuchsperiode();
-			Gesuchsperiode gesuchsperiode = null;
-			if (gpBeguStart.isPresent()) {
-				gesuchsperiode = gpBeguStart.get();
-			} else if (gpNewest.isPresent()) {
-				gesuchsperiode = gpNewest.get();
-			}
+			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
 			if (gesuchsperiode != null) {
 				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(), gesuchsperiode));
 			}
@@ -237,6 +226,19 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 			}
 		}
 		return jaxStammdaten;
+	}
+
+	/**
+	 * Ist die Gemeinde noch im Status EINGELADEN, laden wir nur die Konfiguration der richtigen Gesuchsperiode
+	 * Die Gesuchsperiode wo das BEGU Startdatum drin liegt, falls diese bereits existert,
+	 * falls diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
+	 */
+	private Gesuchsperiode findRelevantGesuchsperiode(@Nonnull GemeindeStammdaten stammdaten) {
+		Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
+			.getBetreuungsgutscheineStartdatum());
+		Optional<Gesuchsperiode> gpNewest = gesuchsperiodeService.findNewestGesuchsperiode();
+
+		return gpBeguStart.orElseGet(() -> gpNewest.orElse(null));
 	}
 
 	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {

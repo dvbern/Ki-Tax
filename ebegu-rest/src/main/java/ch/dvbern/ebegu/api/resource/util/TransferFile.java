@@ -33,7 +33,7 @@ public class TransferFile {
 		this.filename = filename;
 		this.filesize = content.length;
 		this.filetype = filetype;
-		this.setContent(content);
+		setContentNullSave(content);
 	}
 
 	public String getFilename() {
@@ -68,6 +68,10 @@ public class TransferFile {
 	}
 
 	public void setContent(byte[] content) {
+		setContentNullSave(content);
+	}
+
+	private void setContentNullSave(byte[] content) {
 		if (content == null) {
 			this.content = EMPTY_ARRAY;
 		} else {
