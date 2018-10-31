@@ -21,7 +21,6 @@ import GesuchModelManager from '../../service/gesuchModelManager';
 export class DvFinanzielleSituationRequire implements IComponentOptions {
     public transclude = false;
     public bindings = {
-        areThereOnlySchulamtangebote: '=',
         sozialhilfeBezueger: '=',
         verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '=',
@@ -60,23 +59,15 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     /**
-     * Das Feld sozialhilfeBezueger muss nur angezeigt werden, wenn es ein rein Schulamtgesuch ist.
-     */
-    public showSozialhilfeBezueger(): boolean {
-        return this.areThereOnlySchulamtangebote;
-    }
-
-    /**
      * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
      * nein beantwortet wurde.
      */
     public showVerguenstigungGewuenscht(): boolean {
-        return this.showSozialhilfeBezueger() && !this.sozialhilfeBezueger;
+        return !this.sozialhilfeBezueger;
     }
 
     public setFinanziellesituationRequired(): void {
-        this.finanzielleSituationRequired = !this.showSozialhilfeBezueger()
-            || (this.showVerguenstigungGewuenscht() && this.verguenstigungGewuenscht);
+        this.finanzielleSituationRequired = (this.showVerguenstigungGewuenscht() && this.verguenstigungGewuenscht);
     }
 
     public getMaxMassgebendesEinkommen(): string {

@@ -432,9 +432,7 @@ export class NavigatorController implements IController {
             case TSWizardStepName.ERWERBSPENSUM:
                 return this.state.go('gesuch.erwerbsPensen', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION:
-                return this.gesuchModelManager.showFinanzielleSituationStart() ?
-                    this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam) :
-                    this.state.go('gesuch.finanzielleSituation', {gesuchstellerNumber: '1', gesuchId});
+                return this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam);
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
                 return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
             case TSWizardStepName.DOKUMENTE:

@@ -1495,15 +1495,6 @@ export default class GesuchModelManager {
                 && !this.getGesuch().extractFamiliensituation().sozialhilfeBezueger);
     }
 
-    public showFinanzielleSituationStart(): boolean {
-        return this.isGesuchsteller2Required() ||
-            (
-                this.getGesuchsperiode()
-                && this.getGesuchsperiode().hasTagesschulenAnmeldung()
-                && this.areThereOnlySchulamtAngebote()
-            );
-    }
-
     /**
      * gibt true zurueck wenn es keine defaultTagesschule ist oder wenn es eine defaultTagesschule ist aber die
      * Gesuchsperiode noch keine TagesschulenAnmeldung erlaubt.
