@@ -1489,9 +1489,7 @@ export default class GesuchModelManager {
             return false;
         }
 
-        return !this.getGesuchsperiode().hasTagesschulenAnmeldung()
-            || !this.areThereOnlySchulamtAngebote()
-            || (this.getGesuch().extractFamiliensituation().verguenstigungGewuenscht
+        return (this.getGesuch().extractFamiliensituation().verguenstigungGewuenscht
                 && !this.getGesuch().extractFamiliensituation().sozialhilfeBezueger);
     }
 

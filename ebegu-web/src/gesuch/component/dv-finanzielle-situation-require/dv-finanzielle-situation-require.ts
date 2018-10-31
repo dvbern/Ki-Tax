@@ -16,6 +16,7 @@
 import {IComponentOptions, IController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
 export class DvFinanzielleSituationRequire implements IComponentOptions {
@@ -63,7 +64,7 @@ export class DVFinanzielleSituationRequireController implements IController {
      * nein beantwortet wurde.
      */
     public showVerguenstigungGewuenscht(): boolean {
-        return !this.sozialhilfeBezueger;
+        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger;
     }
 
     public setFinanziellesituationRequired(): void {
