@@ -26,7 +26,7 @@ import {SharedModule} from '../../shared/shared.module';
 
 import {EinladungAbschliessenComponent} from './einladung-abschliessen.component';
 
-fdescribe('EinladungAbschliessenComponent', () => {
+describe('EinladungAbschliessenComponent', () => {
     let component: EinladungAbschliessenComponent;
     let fixture: ComponentFixture<EinladungAbschliessenComponent>;
 
