@@ -36,7 +36,7 @@ describe('EinladungAbschliessenComponent', () => {
             ['getInstitutionenForCurrentBenutzer']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-            ['principal$', 'getVisibleRolesForPrincipal']);
+            ['', 'getVisibleRolesForPrincipal']);
 
         TestBed.configureTestingModule({
             imports: [
