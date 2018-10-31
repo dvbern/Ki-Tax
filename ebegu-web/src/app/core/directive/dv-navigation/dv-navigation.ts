@@ -358,13 +358,7 @@ export class NavigatorController implements IController {
                     return this.navigateToStepFinanzielleSituation('1');
                 }
 
-                if (this.gesuchModelManager.getGesuchstellerNumber() === 1 && (
-                    this.gesuchModelManager.isGesuchsteller2Required()
-                    || (
-                        this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung()
-                        && this.gesuchModelManager.areThereOnlySchulamtAngebote()
-                    )
-                )) {
+                if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                     return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
                 }
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
