@@ -164,7 +164,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		}
 
 
-		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, true, null);
+		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, config.isVerfuegt(), null);
 		if (config.isVerfuegt()) {
 			gesuch.setTimestampVerfuegt(config.getTimestampVerfuegt());
 		}
