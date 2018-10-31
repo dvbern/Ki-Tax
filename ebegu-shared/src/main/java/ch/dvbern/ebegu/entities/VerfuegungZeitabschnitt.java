@@ -49,8 +49,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.math.BigDecimal.ZERO;
 
@@ -63,7 +61,6 @@ import static java.math.BigDecimal.ZERO;
 public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements Comparable<VerfuegungZeitabschnitt> {
 
 	private static final long serialVersionUID = 7250339356897563374L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(VerfuegungZeitabschnitt.class);
 
 	// Zwischenresulate aus DATA-Rules ("Abschnitt")
 
@@ -242,7 +239,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.kategorieZuschlagZumErwerbspensum = toCopy.kategorieZuschlagZumErwerbspensum;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
 		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
-		LOGGER.warn("EINKOMMENSJAHR: Nach Konstruktor = " + this.einkommensjahr);
 	}
 
 	/**
@@ -634,7 +630,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		if (other.getEinkommensjahr() != null) {
 			this.setEinkommensjahr(other.getEinkommensjahr());
 		}
-		LOGGER.warn("EINKOMMENSJAHR: adding Zeitabschnitt. Einkommensjahr neu = " + this.getEinkommensjahr());
 		this.setHasSecondGesuchstellerForFinanzielleSituation(this.isHasSecondGesuchstellerForFinanzielleSituation() || other.isHasSecondGesuchstellerForFinanzielleSituation());
 
 		this.ekv1Alleine = (this.ekv1Alleine || other.ekv1Alleine);

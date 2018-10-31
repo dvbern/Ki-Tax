@@ -71,11 +71,9 @@ import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
 import ch.dvbern.ebegu.util.testdata.TestdataSetupConfig;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG;
@@ -117,8 +115,6 @@ import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGR
 @RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
 public class TestdataCreationServiceBean extends AbstractBaseService implements TestdataCreationService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TestdataCreationServiceBean.class);
-
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject
@@ -147,23 +143,6 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		Gesuchsperiode gesuchsperiode = getGesuchsperiode(null, config);
 		Gemeinde gemeinde = getGemeinde(null, config);
 		AbstractTestfall testfall = createTestfall(config, gesuchsperiode, gemeinde);
-
-		if (config.getTestfallName() == TestfallName.LUETHI_MERET) {
-			LOGGER.warn("TESTFALL LUEHTI");
-			LOGGER.warn(gemeinde.getName());
-			LOGGER.warn("Gesuchsperiode " + gesuchsperiode.getGesuchsperiodeString());
-			Collection<Gesuchsperiode> gpList = criteriaQueryHelper.getAll(Gesuchsperiode.class);
-			for (Gesuchsperiode gesuchsperiode1 : gpList) {
-				LOGGER.warn(gesuchsperiode1.getGesuchsperiodeString());
-			}
-			LOGGER.warn("Einstellungen");
-			Collection<Einstellung> einstellungList = criteriaQueryHelper.getAll(Einstellung.class);
-			for (Einstellung einstellung : einstellungList) {
-				LOGGER.warn(einstellung.toString());
-			}
-		}
-
-
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, config.isVerfuegt(), null);
 		if (config.isVerfuegt()) {
 			gesuch.setTimestampVerfuegt(config.getTimestampVerfuegt());
