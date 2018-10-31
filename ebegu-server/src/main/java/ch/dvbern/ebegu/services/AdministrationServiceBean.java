@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -44,7 +43,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -176,34 +174,32 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 	}
 
 	private String insertTraegerschaft(String id, String traegerschaftsname, String traegerschaftEmail) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO traegerschaft ");
-		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mail) ");
-		sb.append("VALUES (");
-		sb.append('\'').append(id).append("', ");    // id
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
-		sb.append("'flyway', ");                    // user_erstellt
-		sb.append("'flyway', ");                    // user_mutiert
-		sb.append("0, ");                            // version,
-		sb.append(toStringOrNull(traegerschaftsname)).append(", "); // name
-		sb.append("true, ");                                // active
-		sb.append(toStringOrNull(traegerschaftEmail));  // mail
-		sb.append(");");
-		return sb.toString();
+		String sb = "INSERT INTO traegerschaft "
+			+ "(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mail) "
+			+ "VALUES ("
+			+ '\'' + id + "', "    // id
+			+ "'2016-01-01 00:00:00', "        // timestamp_erstellt
+			+ "'2016-01-01 00:00:00', "        // timestamp_mutiert
+			+ "'flyway', "                    // user_erstellt
+			+ "'flyway', "                    // user_mutiert
+			+ "0, "                            // version,
+			+ toStringOrNull(traegerschaftsname) + ", " // name
+			+ "true, "                                // active
+			+ toStringOrNull(traegerschaftEmail)  // mail
+			+ ");";
+		return sb;
 	}
 
 	private String updateTraegerschaft(String id, String traegerschaftsname, String traegerschaftEmail) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("UPDATE traegerschaft set");
-		sb.append(" name = ");
-		sb.append(toStringOrNull(traegerschaftsname)); // name
-		sb.append(", mail = ");
-		sb.append(toStringOrNull(traegerschaftEmail));  // mail
-		sb.append(" where id = '");
-		sb.append(id);    // id
-		sb.append("';");
-		return sb.toString();
+		String sb = "UPDATE traegerschaft set"
+			+ " name = "
+			+ toStringOrNull(traegerschaftsname) // name
+			+ ", mail = "
+			+ toStringOrNull(traegerschaftEmail)  // mail
+			+ " where id = '"
+			+ id    // id
+			+ "';";
+		return sb;
 	}
 
 	private String writeInstitution(Row row, String institutionId, String traegerschaftId) {
@@ -230,38 +226,36 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 	}
 
 	private String insertInstitution(String id, String traegerschaftId, String institutionsname, String institutionsEmail) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO institution ");
-		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, mandant_id, traegerschaft_id, active, mail) ");
-		sb.append("VALUES (");
-		sb.append('\'').append(id).append("', ");    // id
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
-		sb.append("'flyway', ");                    // user_erstellt
-		sb.append("'flyway', ");                    // user_mutiert
-		sb.append("0, ");                            // version,
-		sb.append(toStringOrNull(institutionsname)).append(", "); // name
-		sb.append('\'').append(MANDANT_ID_BERN).append("', ");    // mandant_id,
-		sb.append(toStringOrNull(traegerschaftId)).append(", "); // name
-		sb.append("true, "); // active
-		sb.append(toStringOrNull(institutionsEmail)); // mail
-		sb.append(");");
-		return sb.toString();
+		String sb = "INSERT INTO institution "
+			+ "(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, mandant_id, traegerschaft_id, active, mail) "
+			+ "VALUES ("
+			+ '\'' + id + "', "    // id
+			+ "'2016-01-01 00:00:00', "        // timestamp_erstellt
+			+ "'2016-01-01 00:00:00', "        // timestamp_mutiert
+			+ "'flyway', "                    // user_erstellt
+			+ "'flyway', "                    // user_mutiert
+			+ "0, "                            // version,
+			+ toStringOrNull(institutionsname) + ", " // name
+			+ '\'' + MANDANT_ID_BERN + "', "    // mandant_id,
+			+ toStringOrNull(traegerschaftId) + ", " // name
+			+ "true, " // active
+			+ toStringOrNull(institutionsEmail) // mail
+			+ ");";
+		return sb;
 	}
 
 	private String updateInstitution(String id, String traegerschaftId, String institutionsname, String institutionsEmail) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("UPDATE institution set");
-		sb.append(" name = ");
-		sb.append(toStringOrNull(institutionsname)); // name
-		sb.append(", mail = ");
-		sb.append(toStringOrNull(institutionsEmail));  // mail
-		sb.append(", traegerschaft_id = ");
-		sb.append(toStringOrNull(traegerschaftId));  // traegerschaft_id
-		sb.append(" where id = '");
-		sb.append(id);    // id
-		sb.append("';");
-		return sb.toString();
+		String sb = "UPDATE institution set"
+			+ " name = "
+			+ toStringOrNull(institutionsname) // name
+			+ ", mail = "
+			+ toStringOrNull(institutionsEmail)  // mail
+			+ ", traegerschaft_id = "
+			+ toStringOrNull(traegerschaftId)  // traegerschaft_id
+			+ " where id = '"
+			+ id    // id
+			+ "';";
+		return sb;
 	}
 
 	private String writeInstitutionStammdaten(Row row, String stammdatenId, String institutionsId) {
@@ -271,8 +265,6 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		}
 		BetreuungsangebotTyp typ = BetreuungsangebotTyp.valueOf(angebot);
 		String iban = readString(row, AdministrationService.COL_IBAN);
-		String stunden = readDouble(row, AdministrationService.COL_OEFFNUNGSSTUNDEN);
-		String tage = readDouble(row, AdministrationService.COL_OEFFNUNGSTAGE);
 
 		String strasse = readString(row, AdministrationService.COL_STRASSE);
 		String hausnummer = readString(row, AdministrationService.COL_HAUSNUMMER);
@@ -293,7 +285,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 				// Institution ist schon bekannt -> updaten
 				String adresseId = stammdatenOptional.get().getAdresse().getId();
 				listAdressen.add(updateAdresse(adresseId, hausnummer, ort, plz, strasse, zusatzzeile));
-				listInstitutionsStammdaten.add(updateInstitutionsStammdaten(institutionsId, typ, iban, stunden, tage));
+				listInstitutionsStammdaten.add(updateInstitutionsStammdaten(institutionsId, typ, iban));
 			} else {
 				throw new IllegalStateException("InstitutionStammdaten nicht gefunden!");
 			}
@@ -302,92 +294,84 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 			String adresseId = UUID.randomUUID().toString();
 			listAdressen.add(insertAdresse(adresseId, hausnummer, ort, plz, strasse, zusatzzeile));
 			stammdatenId = UUID.randomUUID().toString();
-			listInstitutionsStammdaten.add(insertInstitutionsStammdaten(stammdatenId, institutionsId, adresseId, typ, iban, stunden, tage));
+			listInstitutionsStammdaten.add(insertInstitutionsStammdaten(stammdatenId, institutionsId, adresseId, typ, iban));
 		}
 		return stammdatenId;
 	}
 
-	private String insertInstitutionsStammdaten(String id, String institutionsId, String adresseId, BetreuungsangebotTyp typ, String iban, String stunden, String tage) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO institution_stammdaten ");
-		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, oeffnungsstunden, oeffnungstage, institution_id, adresse_id) ");
-		sb.append("VALUES (");
-		sb.append('\'').append(id).append("', ");    // id
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
-		sb.append("'flyway', ");                    // user_erstellt
-		sb.append("'flyway', ");                    // user_mutiert
-		sb.append("0, ");                    // version,
-		sb.append("'1000-01-01', ");                // gueltig_ab,
-		sb.append("'9999-12-31', ");                // gueltig_bis,
-		sb.append('\'').append(typ.name()).append("', "); // betreuungsangebot_typ,
-		sb.append(toStringOrNull(iban)).append(", "); // iban
-		sb.append(toBigDecimalOrNull(stunden)).append(", "); // oeffnungsstunden,
-		sb.append(toBigDecimalOrNull(tage)).append(", "); // oeffnungstage,
-		sb.append(toStringOrNull(institutionsId)).append(", "); // institution_id
-		sb.append(toStringOrNull(adresseId)); // adresse_id
-		sb.append(");");
-		return sb.toString();
+	private String insertInstitutionsStammdaten(String id, String institutionsId, String adresseId, BetreuungsangebotTyp typ, String iban) {
+		String sb = "INSERT INTO institution_stammdaten "
+			+ "(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, "
+			+ "institution_id, adresse_id) "
+			+ "VALUES ("
+			+ '\'' + id + "', "    // id
+			+ "'2016-01-01 00:00:00', "        // timestamp_erstellt
+			+ "'2016-01-01 00:00:00', "        // timestamp_mutiert
+			+ "'flyway', "                    // user_erstellt
+			+ "'flyway', "                    // user_mutiert
+			+ "0, "                    // version,
+			+ "'1000-01-01', "                // gueltig_ab,
+			+ "'9999-12-31', "                // gueltig_bis,
+			+ '\'' + typ.name() + "', " // betreuungsangebot_typ,
+			+ toStringOrNull(iban) + ", " // iban
+			+ toStringOrNull(institutionsId) + ", " // institution_id
+			+ toStringOrNull(adresseId) // adresse_id
+			+ ");";
+		return sb;
 	}
 
-	private String updateInstitutionsStammdaten(String id, BetreuungsangebotTyp typ, String iban, String stunden, String tage) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("UPDATE institution_stammdaten set");
-		sb.append(" betreuungsangebot_typ = ");
-		sb.append('\'').append(typ.name()).append('\''); // typ
-		sb.append(", iban = ");
-		sb.append(toStringOrNull(iban));  // ort
-		sb.append(", oeffnungsstunden = ");
-		sb.append(toBigDecimalOrNull(stunden));  // stunden
-		sb.append(", oeffnungstage = ");
-		sb.append(toBigDecimalOrNull(tage));  // tage
-		sb.append(" where id = '");
-		sb.append(id);    // id
-		sb.append("';");
-		return sb.toString();
+	private String updateInstitutionsStammdaten(String id, BetreuungsangebotTyp typ, String iban) {
+		String sb = "UPDATE institution_stammdaten set"
+			+ " betreuungsangebot_typ = "
+			+ '\'' + typ.name() + '\'' // typ
+			+ ", iban = "
+			+ toStringOrNull(iban)  // ort
+			+ " where id = '"
+			+ id    // id
+			+ "';";
+		return sb;
 	}
 
 	private String insertAdresse(String id, String hausnummer, String ort, String plz, String strasse, String zusatzzeile) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO adresse ");
-		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde, gueltig_ab, gueltig_bis, hausnummer, land, ort, plz, strasse, zusatzzeile) ");
-		sb.append("VALUES (");
-		sb.append('\'').append(id).append("', ");    // id
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
-		sb.append("'flyway', ");                    // user_erstellt
-		sb.append("'flyway', ");                    // user_mutiert
-		sb.append("0, ");                            // version,
-		sb.append("null, ");                        // gemeinde,
-		sb.append("'1000-01-01', ");                // gueltig_ab,
-		sb.append("'9999-12-31', ");                // gueltig_bis,
-		sb.append(toStringOrNull(hausnummer)).append(", "); // hausnummer
-		sb.append("'CH', ");                        // land,
-		sb.append(toStringOrNull(ort)).append(", "); // ort
-		sb.append(toStringOrNull(plz)).append(", "); // plz
-		sb.append(toStringOrNull(strasse)).append(", "); // strasse
-		sb.append(toStringOrNull(zusatzzeile));    // zusatzzeile
-		sb.append(");");
-		return sb.toString();
+		String sb = "INSERT INTO adresse "
+			+ "(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde, gueltig_ab, gueltig_bis, hausnummer, land, ort, "
+			+ "plz, strasse, zusatzzeile) "
+			+ "VALUES ("
+			+ '\'' + id + "', "    // id
+			+ "'2016-01-01 00:00:00', "        // timestamp_erstellt
+			+ "'2016-01-01 00:00:00', "        // timestamp_mutiert
+			+ "'flyway', "                    // user_erstellt
+			+ "'flyway', "                    // user_mutiert
+			+ "0, "                            // version,
+			+ "null, "                        // gemeinde,
+			+ "'1000-01-01', "                // gueltig_ab,
+			+ "'9999-12-31', "                // gueltig_bis,
+			+ toStringOrNull(hausnummer) + ", " // hausnummer
+			+ "'CH', "                        // land,
+			+ toStringOrNull(ort) + ", " // ort
+			+ toStringOrNull(plz) + ", " // plz
+			+ toStringOrNull(strasse) + ", " // strasse
+			+ toStringOrNull(zusatzzeile)    // zusatzzeile
+			+ ");";
+		return sb;
 	}
 
 	private String updateAdresse(String id, String hausnummer, String ort, String plz, String strasse, String zusatzzeile) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("UPDATE adresse set");
-		sb.append(" hausnummer = ");
-		sb.append(toStringOrNull(hausnummer)); // hausnummer
-		sb.append(", ort = ");
-		sb.append(toStringOrNull(ort));  // ort
-		sb.append(", plz = ");
-		sb.append(toStringOrNull(plz));  // plz
-		sb.append(", strasse = ");
-		sb.append(toStringOrNull(strasse));  // strasse
-		sb.append(", zusatzzeile = ");
-		sb.append(toStringOrNull(zusatzzeile));  // zusatzzeile
-		sb.append(" where id = '");
-		sb.append(id);    // id
-		sb.append("';");
-		return sb.toString();
+		String sb = "UPDATE adresse set"
+			+ " hausnummer = "
+			+ toStringOrNull(hausnummer) // hausnummer
+			+ ", ort = "
+			+ toStringOrNull(ort)  // ort
+			+ ", plz = "
+			+ toStringOrNull(plz)  // plz
+			+ ", strasse = "
+			+ toStringOrNull(strasse)  // strasse
+			+ ", zusatzzeile = "
+			+ toStringOrNull(zusatzzeile)  // zusatzzeile
+			+ " where id = '"
+			+ id    // id
+			+ "';";
+		return sb;
 	}
 
 	@Nullable
@@ -400,16 +384,6 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		return null;
 	}
 
-	@Nullable
-	private String readDouble(Row row, int columnIndex) {
-		Cell cell = row.getCell(columnIndex);
-		if (cell != null) {
-			cell.setCellType(CellType.NUMERIC);
-			return Double.toString(cell.getNumericCellValue());
-		}
-		return null;
-	}
-
 	private String toStringOrNull(String aStringOrNull) {
 		if (aStringOrNull == null) {
 			return "null";
@@ -417,25 +391,14 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		return '\'' + aStringOrNull + '\'';
 	}
 
-	private String toBigDecimalOrNull(String aStringOrNull) {
-		if (aStringOrNull == null) {
-			return "null";
-		}
-		// Mit 2 Nachkommastellen
-		BigDecimal from = MathUtil.DEFAULT.from(new BigDecimal(aStringOrNull));
-		if (from != null) {
-			return from.toString();
-		}
-		return "null";
-	}
-
+	@SuppressWarnings("Duplicates")
 	private PrintWriter getPrintWriter() {
 		if (printWriter == null) {
 			try {
 				File output = new File(OUTPUT_FILE);
 				FileOutputStream fos = new FileOutputStream(output.getAbsolutePath());
 				printWriter = new PrintWriter(fos);
-				LOG.info("File generiert: " + output.getAbsolutePath());
+				LOG.info("File generiert: {}", output.getAbsolutePath());
 			} catch (FileNotFoundException e) {
 				LOG.error("Konnte Outputfile nicht erstellen", e);
 			}
@@ -455,9 +418,9 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		try {
 			File fos = new File("Institutionen_" + formatter.format(LocalDate.now()) + ".csv");
 			PrintWriter pw = new PrintWriter(fos);
-			LOG.info("Writing File to: " + fos.getAbsolutePath());
+			LOG.info("Writing File to: {}", fos.getAbsolutePath());
 
-			pw.println("TrägerschaftId,Trägerschaft,Trägerschaft E-Mail,InstitutionId,Name,Strasse,Hausnummer,Plz,Ort,Zusatzzeile,E-Mail,StammdatenId,Angebot,IBAN,Öffnungsstunden,Öffnungstage");
+			pw.println("TrägerschaftId,Trägerschaft,Trägerschaft E-Mail,InstitutionId,Name,Strasse,Hausnummer,Plz,Ort,Zusatzzeile,E-Mail,StammdatenId,Angebot,IBAN");
 
 			Collection<InstitutionStammdaten> stammdatenList = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 			for (InstitutionStammdaten stammdaten : stammdatenList) {
@@ -492,8 +455,6 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 					append(sb, stammdaten.getBetreuungsangebotTyp().name());
 					String iban = stammdaten.getIban() != null ? stammdaten.getIban().getIban() : "";
 					append(sb, iban);
-					append(sb, stammdaten.getOeffnungsstunden());
-					append(sb, stammdaten.getOeffnungstage());
 
 					pw.println(sb);
 				}
@@ -508,13 +469,6 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 
 	private void append(@Nonnull StringBuilder sb, @Nullable String s) {
 		if (StringUtils.isNotEmpty(s)) {
-			sb.append(s);
-		}
-		sb.append(',');
-	}
-
-	private void append(@Nonnull StringBuilder sb, @Nullable BigDecimal s) {
-		if (s != null) {
 			sb.append(s);
 		}
 		sb.append(',');

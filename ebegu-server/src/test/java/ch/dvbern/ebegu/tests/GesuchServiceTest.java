@@ -664,7 +664,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testRemoveOnlineMutation() {
 		final Benutzer userGS = loginAsGesuchsteller("gesuchst");
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Benutzer sachbearbeiterJA = loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
@@ -703,7 +703,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAllWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=WARTEN, 2nd Betreuung=WARTEN
@@ -713,7 +713,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testupdateBetreuungenStatusBestaetigtWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=BESTAETIGT, 2nd Betreuung=WARTEN
@@ -725,7 +725,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAlleBestaetigt() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=BESTAETIGT, 2nd Betreuung=BESTAETIGT
@@ -736,7 +736,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAbgewiesenWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=ABGEWIESEN, 2nd Betreuung=WARTEN
@@ -749,7 +749,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testChangeFinSitStatusAbgelehnt() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertTrue(gesuch.isHasFSDokument());
 		Assert.assertNull(gesuch.getFinSitStatus());
 
@@ -768,8 +768,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Betreuung betreuung = TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution());
-		persistence.persist(betreuung.getInstitutionStammdaten());
 		betreuungService.saveBetreuung(betreuung, false);
 
 		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));

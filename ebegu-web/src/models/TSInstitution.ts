@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSMandant} from './TSMandant';
 import {TSTraegerschaft} from './TSTraegerschaft';
@@ -22,13 +23,15 @@ export default class TSInstitution extends TSAbstractMutableEntity {
     private _traegerschaft: TSTraegerschaft;
     private _mandant: TSMandant;
     private _mail: string;
+    private _status: TSInstitutionStatus;
 
-    public constructor(name?: string, tragerschaft?: TSTraegerschaft, mandant?: TSMandant, mail?: string) {
+    public constructor(name?: string, tragerschaft?: TSTraegerschaft, mandant?: TSMandant, mail?: string, status?: TSInstitutionStatus) {
         super();
         this._name = name;
         this._traegerschaft = tragerschaft;
         this._mandant = mandant;
         this._mail = mail;
+        this._status = status;
     }
 
     public get name(): string {
@@ -61,5 +64,13 @@ export default class TSInstitution extends TSAbstractMutableEntity {
 
     public set mail(value: string) {
         this._mail = value;
+    }
+
+    public get status(): TSInstitutionStatus {
+        return this._status;
+    }
+
+    public set status(value: TSInstitutionStatus) {
+        this._status = value;
     }
 }

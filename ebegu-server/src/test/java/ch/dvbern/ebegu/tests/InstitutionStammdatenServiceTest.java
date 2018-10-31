@@ -85,14 +85,6 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void getAllInstitutionStammdatenByDateTest() {
 		Assert.assertNotNull(institutionStammdatenService);
-
-		try {
-			insertInstitutionStammdaten();
-			Assert.fail("Should throw exception because Institutionstammdaten defined outside any Gesuchsperiode");
-		} catch(Exception e) {
-			//noop
-		}
-
 		createGesuchsperiode();
 		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
 
@@ -108,9 +100,8 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		createGesuchsperiode();
 		InstitutionStammdaten insertedInstitutionStammdaten = insertInstitutionStammdaten();
 		String id = insertedInstitutionStammdaten.getInstitution().getId();
-		Collection<InstitutionStammdaten> allInstitutionStammdatenByInstitution = institutionStammdatenService.getAllInstitutionStammdatenByInstitution(id);
-		Assert.assertEquals(1, allInstitutionStammdatenByInstitution.size());
-
+		InstitutionStammdaten stammdatenByInstitution = institutionStammdatenService.getInstitutionStammdatenByInstitution(id);
+		Assert.assertNotNull(stammdatenByInstitution);
 	}
 
 	@Test
@@ -209,46 +200,6 @@ public class InstitutionStammdatenServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(all);
 		Assert.assertEquals(1, all.size());
 		Assert.assertTrue(all.contains(ueberlappendTotal));
-	}
-
-	@Test
-	public void getAllActiveInstitutionStammdatenByGesuchsperiodeCompletelyBefore() {
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-
-		mandant = persistence.persist(mandant);
-		final Gesuchsperiode gesuchsperiode1718 = createGesuchsperiode();
-		Institution institution = TestDataUtil.createDefaultInstitution();
-		institution.setTraegerschaft(null);
-		institution.setMandant(mandant);
-		institution = persistence.persist(institution);
-		LocalDate gpStart = gesuchsperiode1718.getGueltigkeit().getGueltigAb();
-
-		try {
-			addInstitutionsstammdaten(institution, gpStart.minusWeeks(2), gpStart.minusWeeks(1));
-			Assert.fail("Should throw exception because Institutionstammdaten defined outside any Gesuchsperiode");
-		} catch(Exception e) {
-			//noop
-		}
-	}
-
-	@Test
-	public void getAllActiveInstitutionStammdatenByGesuchsperiodeCompletelyAfter() {
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-		createGesuchsperiode();
-		mandant = persistence.persist(mandant);
-		final Gesuchsperiode gesuchsperiode1718 = createGesuchsperiode();
-		Institution institution = TestDataUtil.createDefaultInstitution();
-		institution.setTraegerschaft(null);
-		institution.setMandant(mandant);
-		institution = persistence.persist(institution);
-		LocalDate gpEnde = gesuchsperiode1718.getGueltigkeit().getGueltigBis();
-
-		try {
-			addInstitutionsstammdaten(institution, gpEnde.plusWeeks(1), gpEnde.plusWeeks(2));
-			Assert.fail("Should throw exception because Institutionstammdaten defined outside any Gesuchsperiode");
-		} catch(Exception e) {
-			//noop
-		}
 	}
 
 	// HELP METHODS

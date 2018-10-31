@@ -197,23 +197,23 @@ public class InstitutionStammdatenResource {
 	 * Sucht in der DB alle InstitutionStammdaten, bei welchen die Institutions-id dem übergabeparameter entspricht
 	 *
 	 * @param institutionJAXPId ID der gesuchten Institution
-	 * @return Liste mit allen InstitutionStammdaten die der Bedingung folgen
+	 * @return Die InstitutionStammdaten dieser Institution
 	 */
 	@ApiOperation(value = "Gibt alle Institutionsstammdaten der uebergebenen Institution zurueck.",
-		responseContainer = "List", response = JaxInstitutionStammdaten.class)
+		response = JaxInstitutionStammdaten.class)
 	@Nonnull
 	@GET
 	@Path("/institution/{institutionId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdaten> getAllInstitutionStammdatenByInstitution(
+	public JaxInstitutionStammdaten getInstitutionStammdatenByInstitution(
 		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
 
 		Objects.requireNonNull(institutionJAXPId.getId());
 		String institutionID = converter.toEntityId(institutionJAXPId);
-		return institutionStammdatenService.getAllInstitutionStammdatenByInstitution(institutionID).stream()
-			.map(instStammdaten -> converter.institutionStammdatenToJAX(instStammdaten))
-			.collect(Collectors.toList());
+		InstitutionStammdaten stammdaten =
+			institutionStammdatenService.getInstitutionStammdatenByInstitution(institutionID);
+		return converter.institutionStammdatenToJAX(stammdaten);
 	}
 
 	/**

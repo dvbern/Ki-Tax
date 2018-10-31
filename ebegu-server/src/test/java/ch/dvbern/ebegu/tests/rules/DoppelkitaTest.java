@@ -26,14 +26,15 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
-import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel1;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel2;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel3;
-import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
 
 /**
  * Test der die vom JA gemeldeten Testfaelle für Doppelkitas ueberprueft.
@@ -63,7 +64,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
-				if (betreuung.getInstitutionStammdaten().getInstitution().getId().equals(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN)) {
+				if (betreuung.getInstitutionStammdaten().getId().equals(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA)) {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// August
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
@@ -105,7 +106,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
-				if (betreuung.getInstitutionStammdaten().getInstitution().getId().equals(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN)) {
+				if (betreuung.getInstitutionStammdaten().getId().equals(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA)) {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
@@ -147,7 +148,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				Verfuegung verfuegung = betreuung.getVerfuegung();
 				Assert.assertNotNull(verfuegung);
-				if (betreuung.getInstitutionStammdaten().getInstitution().getId().equals(AbstractTestfall.ID_INSTITUTION_WEISSENSTEIN)) {
+				if (betreuung.getInstitutionStammdaten().getId().equals(ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA)) {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
