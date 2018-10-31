@@ -58,18 +58,18 @@ public class Einstellung extends AbstractEntity {
 
 	@Nullable
 	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_einstellung_mandant_id"))
+	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_einstellung_mandant_id"))
 	private Mandant mandant;
 
 	@Nullable
 	@ManyToOne(optional = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_einstellung_gemeinde_id"))
+	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_einstellung_gemeinde_id"))
 	private Gemeinde gemeinde;
 
 	@NotNull
 	@Nonnull
 	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_einstellung_gesuchsperiode_id"))
+	@JoinColumn(updatable = false, foreignKey = @ForeignKey(name = "FK_einstellung_gesuchsperiode_id"))
 	private Gesuchsperiode gesuchsperiode;
 
 	public Einstellung() {
