@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -186,19 +187,19 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		requireNonNull(stammdaten);
 		requireNonNull(stammdaten.getGemeinde());
 		requireNonNull(stammdaten.getAdresse());
-
 		final JaxGemeindeStammdaten jaxStammdaten = new JaxGemeindeStammdaten();
 		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
 		Collection<Benutzer> administratoren = benutzerService.getGemeindeAdministratoren(stammdaten.getGemeinde());
 		Collection<Benutzer> sachbearbeiter = benutzerService.getGemeindeSachbearbeiter(stammdaten.getGemeinde());
-		jaxStammdaten.setAdministratoren(administratoren.stream().map(Benutzer::getFullName).collect(Collectors.joining(", ")));
-		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream().map(Benutzer::getFullName).collect(Collectors.joining(", ")));
+		jaxStammdaten.setAdministratoren(administratoren.stream().map(Benutzer::getFullName).collect(Collectors
+			.joining(", ")));
+		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream().map(Benutzer::getFullName).collect(Collectors.joining
+			(", ")));
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
 		jaxStammdaten.setAdresse(converter.adresseToJAX(stammdaten.getAdresse()));
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-
 		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(true);
 			jaxStammdaten.setKorrespondenzspracheFr(false);
@@ -213,7 +214,6 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 			.stream().map(converter::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(converter::benutzerToJaxBenutzer).collect(Collectors.toList()));
-
 		if (!stammdaten.isNew()) {
 			if (stammdaten.getDefaultBenutzerBG() != null) {
 				jaxStammdaten.setDefaultBenutzerBG(converter.benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
@@ -225,13 +225,18 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 				jaxStammdaten.setBeschwerdeAdresse(converter.adresseToJAX(stammdaten.getBeschwerdeAdresse()));
 			}
 		}
-
 		// Konfiguration
+		gemeindeKonfigurationToJAX(stammdaten, jaxStammdaten);
+		return jaxStammdaten;
+	}
+
+	private void gemeindeKonfigurationToJAX(@Nonnull final GemeindeStammdaten stammdaten, JaxGemeindeStammdaten jaxStammdaten) {
 		if (GemeindeStatus.EINGELADEN.equals(stammdaten.getGemeinde().getStatus())) {
 			// Ist die Gemeinde noch im Status EINGELADEN, laden wir nur die Konfiguration der richtigen Gesuchsperiode
-			// Die Gesuchsperiode wo das BEGU Startdatum drin liett, falls diese bereits existert,
+			// Die Gesuchsperiode wo das BEGU Startdatum drin liegt, falls diese bereits existert,
 			// falss diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
-			Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde().getBetreuungsgutscheineStartdatum());
+			Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
+				.getBetreuungsgutscheineStartdatum());
 			Optional<Gesuchsperiode> gpAktuell = gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.now());
 			Gesuchsperiode gesuchsperiode = null;
 			if (gpBeguStart.isPresent()) {
@@ -240,23 +245,26 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 				gesuchsperiode = gpAktuell.get();
 			}
 			if (gesuchsperiode != null) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(), gesuchsperiode));
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
+					gesuchsperiode));
 			}
 		} else {
 			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
 			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(), gesuchsperiode));
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
+					gesuchsperiode));
 			}
 		}
-		return jaxStammdaten;
 	}
 
-	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode
+		gesuchsperiode) {
 		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName());
 		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());
 		konfiguration.setGesuchsperiodeStatus(gesuchsperiode.getStatus());
-		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
+		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService.getAllEinstellungenByGemeindeAsMap
+			(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
 			.filter(map -> map.getKey().name().startsWith("GEMEINDE_"))
 			.map(x -> converter.einstellungToJAX(x.getValue()))
@@ -264,13 +272,17 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		return konfiguration;
 	}
 
-	private void saveGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull JaxGemeindeKonfiguration konfiguration) {
+	private void saveGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull JaxGemeindeKonfiguration
+		konfiguration) {
 		if (konfiguration.getGesuchsperiodeId() != null) {
-			Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiodeId());
+			Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration
+				.getGesuchsperiodeId());
 			if (gesuchsperiode.isPresent()) {
 				for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
-					Einstellung einstellung = einstellungService.findEinstellung(jaxKonfig.getKey(), gemeinde, gesuchsperiode.get());
-					if (!gemeinde.equals(einstellung.getGemeinde()) || !gesuchsperiode.get().equals(einstellung.getGesuchsperiode())) {
+					Einstellung einstellung = einstellungService.findEinstellung(jaxKonfig.getKey(), gemeinde,
+						gesuchsperiode.get());
+					if (!gemeinde.equals(einstellung.getGemeinde()) || !gesuchsperiode.get().equals(einstellung
+						.getGesuchsperiode())) {
 						einstellung = new Einstellung();
 						einstellung.setKey(jaxKonfig.getKey());
 						einstellung.setGemeinde(gemeinde);

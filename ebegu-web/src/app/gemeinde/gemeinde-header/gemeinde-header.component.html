@@ -45,11 +45,11 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <div class="marginTop10 marginBottom10">
-                            <img [src]="logoImageUrl" [height]="180" class="gemeinde-profil-image">
+                            <img [src]="logoImageUrl$ | async" [height]="180" class="gemeinde-profil-image">
                         </div>
                         <div *ngIf="canUploadLogo()">
                             <input #fileInput type="file" accept='image/*'
-                                   (change)="handleLogoUpload(fileInput.files)"
+                                   (change)="srcChange(fileInput.files)"
                                    class="gemeinde-profil-fileinput">
                         </div>
                     </div>

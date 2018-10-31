@@ -14,21 +14,23 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import {Observable, of} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
+import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
-  selector: 'dv-gemeinde-header',
-  templateUrl: './gemeinde-header.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-gemeinde-header',
+    templateUrl: './gemeinde-header.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeHeaderComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
@@ -36,20 +38,22 @@ export class GemeindeHeaderComponent implements OnInit {
     @Input() public administratoren: string;
     @Input() public sachbearbeiter: string;
 
-    private fileToUpload!: File;
+    private fileToUpload: File;
     private navigationDest: StateDeclaration;
-    public logoImageUrl: string = '#';
+    public logoImageUrl$: Observable<string>;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly gemeindeRS: GemeindeRS,
         private readonly translate: TranslateService,
+        private readonly errorService: ErrorService,
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
     }
 
     public ngOnInit(): void {
         this.navigationDest = this.$transition$.to();
-        this.logoImageUrl = this.gemeindeRS.getLogoUrl(this.gemeinde.id);
+        this.logoImageUrl$ = of(this.gemeindeRS.getLogoUrl(this.gemeinde.id));
     }
 
     public mitarbeiterBearbeiten(): void {
@@ -65,18 +69,25 @@ export class GemeindeHeaderComponent implements OnInit {
         return 'gemeinde.edit' === this.navigationDest.name;
     }
 
-    public handleLogoUpload(files: FileList): void {
+    public srcChange(files: FileList): void {
         this.fileToUpload = files[0];
         const tmpFileReader = new FileReader();
-        tmpFileReader.onload = (event: any): void => {
-            this.logoImageUrl = event.target.result;
-        };
         tmpFileReader.readAsDataURL(this.fileToUpload);
+        tmpFileReader.onload = (event: any): void => {
+            if (!(this.fileToUpload && this.fileToUpload.type.includes('image/'))) {
+                return; // upload only images
+            }
+            this.gemeindeRS.uploadLogoImage(this.gemeinde.id, this.fileToUpload).then(() => {
+                const result: string = event.target.result;
+                this.logoImageUrl$ = of(result);
+                // markForCheck needed for the image to refresh
+                this.changeDetectorRef.markForCheck();
+            }, () => {
+                this.errorService.clearAll();
+                this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
+            });
+        };
 
-        if (!(this.fileToUpload && this.fileToUpload.type.includes('image/'))) {
-            return;
-        }
-        this.gemeindeRS.uploadLogoImage(this.gemeinde.id, this.fileToUpload);
     }
 
 }

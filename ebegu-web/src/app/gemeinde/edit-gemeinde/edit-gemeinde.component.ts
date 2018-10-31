@@ -38,8 +38,6 @@ export class EditGemeindeComponent implements OnInit {
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
-    public logoImageUrl: string = '#';
-    private fileToUpload!: File;
     private navigationSource: StateDeclaration;
     private gemeindeId: string;
 
@@ -57,7 +55,6 @@ export class EditGemeindeComponent implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
-        this.logoImageUrl = this.gemeindeRS.getLogoUrl(this.gemeindeId);
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
@@ -84,9 +81,6 @@ export class EditGemeindeComponent implements OnInit {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
         }
-        if (this.fileToUpload && this.fileToUpload.type.includes('image/')) {
-            this.gemeindeRS.uploadLogoImage(stammdaten.gemeinde.id, this.fileToUpload);
-        }
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => this.navigateBack());
     }
 
@@ -96,15 +90,6 @@ export class EditGemeindeComponent implements OnInit {
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
-    }
-
-    public handleLogoUpload(files: FileList): void {
-        this.fileToUpload = files[0];
-        const tmpFileReader = new FileReader();
-        tmpFileReader.onload = (e: any): void => {
-            this.logoImageUrl = e.target.result;
-        };
-        tmpFileReader.readAsDataURL(this.fileToUpload);
     }
 
     private navigateBack(): void {

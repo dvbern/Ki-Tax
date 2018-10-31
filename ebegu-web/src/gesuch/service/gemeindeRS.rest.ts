@@ -142,7 +142,7 @@ export default class GemeindeRS implements IEntityRS {
     }
 
     public getLogoUrl(gemeindeId: string): string {
-        return `${this.serviceURL}/logo/data/${encodeURIComponent(gemeindeId)}`;
+        return `${this.serviceURL}/logo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
     }
 
     public testGetLogo(gemeindeId: string): IPromise<any> {
