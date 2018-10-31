@@ -118,12 +118,9 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
                     gsfullname: this.gesuchModelManager.getGesuch().gesuchsteller2
                         ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '',
                 });
-                return this.dvDialog.showDialog(removeDialogTemplate, RemoveDialogController, {
+                return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'FAMILIENSITUATION_WARNING',
                     deleteText: descriptionText,
-                    parentController: undefined,
-                    elementID: undefined,
-                    form: this.form,
                 }).then(() => {   // User confirmed changes
                     return this.save();
                 });

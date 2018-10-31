@@ -16,6 +16,7 @@
 import {IComponentOptions, IController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
@@ -68,7 +69,13 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     public setFinanziellesituationRequired(): void {
-        this.finanzielleSituationRequired = (this.showVerguenstigungGewuenscht() && this.verguenstigungGewuenscht);
+        const required: boolean = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger
+                    && EbeguUtil.isNotNullOrUndefined(this.verguenstigungGewuenscht) && this.verguenstigungGewuenscht;
+        // Wenn es sich geändert hat, müssen gewisse Daten gesetzt werden
+        if (required !== this.finanzielleSituationRequired) {
+            this.gesuchModelManager.getGesuch().finSitStatus = required ? null : TSFinSitStatus.AKZEPTIERT;
+        }
+        this.finanzielleSituationRequired = required;
     }
 
     public getMaxMassgebendesEinkommen(): string {

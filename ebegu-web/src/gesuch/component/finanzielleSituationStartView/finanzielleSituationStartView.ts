@@ -126,12 +126,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
                 return this.$q.when(this.gesuchModelManager.getGesuch());
             }
             if (this.finanzielleSituationTurnedNotRequired()) {
-                return this.dvDialog.showDialog(removeDialogTemplate, RemoveDialogController, {
+                return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'FINSIT_WARNING',
                     deleteText: 'FINSIT_WARNING_BESCHREIBUNG',
-                    parentController: undefined,
-                    elementID: undefined,
-                    form: this.form,
                 }).then(() => {   // User confirmed changes
                     return this.save();
                 });

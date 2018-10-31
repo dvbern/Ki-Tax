@@ -216,7 +216,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
      */
     public isFinanziellesituationPDFVisible(): boolean {
         if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
-            || !this.gesuchModelManager.isFinanzielleSituationDesired()) {
+            || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
             return false;
         }
         const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
@@ -229,8 +229,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     }
 
-    public isFinanzielleSituationDesired(): boolean {
-        return this.gesuchModelManager.isFinanzielleSituationDesired();
+    public isFinanzielleSituationRequired(): boolean {
+        return this.gesuchModelManager.isFinanzielleSituationRequired();
     }
 
     public isBegleitschreibenVisible(): boolean {
@@ -660,7 +660,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private setHasFSDokumentAccordingToFinSitState(): void {
-        this.getGesuch().hasFSDokument = !this.isFinSitAbglehnt();
+        this.getGesuch().hasFSDokument = this.gesuchModelManager.isFinanzielleSituationRequired() && !this.isFinSitAbglehnt();
     }
 
     public fsDokumentChanged(): void {

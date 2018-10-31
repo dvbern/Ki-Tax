@@ -1484,7 +1484,7 @@ export default class GesuchModelManager {
     /**
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
-    public isFinanzielleSituationDesired(): boolean {
+    public isFinanzielleSituationRequired(): boolean {
         if (!this.getGesuch() || !this.getGesuchsperiode()) {
             return false;
         }

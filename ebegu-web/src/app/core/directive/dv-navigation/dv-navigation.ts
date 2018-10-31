@@ -260,7 +260,7 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
-                if (!this.gesuchModelManager.isFinanzielleSituationDesired()) {
+                if (!this.gesuchModelManager.isFinanzielleSituationRequired()) {
                     return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
                 }
                 if (this.gesuchModelManager.getGesuchstellerNumber() === 1
@@ -271,7 +271,7 @@ export class NavigatorController implements IController {
             }
             if (this.dvSubStep === 2) {
                 if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
-                    || !this.gesuchModelManager.isFinanzielleSituationDesired()) {
+                    || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
                     return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
                 }
                 return this.navigateToStepFinanzielleSituation('1');
