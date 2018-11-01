@@ -1488,9 +1488,8 @@ export default class GesuchModelManager {
         if (!this.getGesuch() || !this.getGesuchsperiode()) {
             return false;
         }
-
-        return (this.getGesuch().extractFamiliensituation().verguenstigungGewuenscht
-                && !this.getGesuch().extractFamiliensituation().sozialhilfeBezueger);
+        return EbeguUtil.isNullOrFalse(this.getGesuch().extractFamiliensituation().sozialhilfeBezueger)
+            && !EbeguUtil.isNullOrFalse(this.getGesuch().extractFamiliensituation().verguenstigungGewuenscht);
     }
 
     /**
