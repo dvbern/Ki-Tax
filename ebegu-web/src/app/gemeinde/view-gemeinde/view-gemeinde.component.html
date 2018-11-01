@@ -43,7 +43,7 @@
                             <h3 translate>SACHBEARBEITER</h3>
                             <p>{{stammdaten.sachbearbeiter}}</p>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" *ngIf="isStammdatenEditable()">
                             <button type="button" class="dv-btn mitarbeiter-bearbeiten-button"
                                     (click)="mitarbeiterBearbeiten()"
                                     [textContent]="'BENUTZER_EDIT' | translate">

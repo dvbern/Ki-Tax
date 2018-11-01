@@ -69,7 +69,7 @@ export class ViewGemeindeComponent implements OnInit {
     }
 
     public mitarbeiterBearbeiten(): void {
-        // TODO: Implement Mitarbeiter Bearbeiten Button Action
+        this.$state.go('admin.benutzerlist')
     }
 
     public editGemeindeStammdaten(): void {
