@@ -192,11 +192,9 @@ public abstract class AbstractTestfall {
 	}
 
 	private void setFinSitFieldsOfFamiliensituation(@Nonnull Familiensituation familiensituation) {
-		if (gesuchsperiode.hasTagesschulenAnmeldung()) {
-			// by default verguenstigung gewuenscht
-			familiensituation.setSozialhilfeBezueger(false);
-			familiensituation.setVerguenstigungGewuenscht(true);
-		}
+		// by default verguenstigung gewuenscht
+		familiensituation.setSozialhilfeBezueger(false);
+		familiensituation.setVerguenstigungGewuenscht(true);
 	}
 
 	protected Gesuch createAlleinerziehend() {

@@ -76,6 +76,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.gemeinsameSteuererklaerung = that.getGemeinsameSteuererklaerung();
 			this.gesuchstellerKardinalitaet = that.getGesuchstellerKardinalitaet();
 			this.aenderungPer = that.getAenderungPer();
+			this.sozialhilfeBezueger = that.getSozialhilfeBezueger();
+			this.verguenstigungGewuenscht = that.getVerguenstigungGewuenscht();
 		}
 	}
 

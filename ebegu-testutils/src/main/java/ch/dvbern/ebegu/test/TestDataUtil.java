@@ -291,6 +291,9 @@ public final class TestDataUtil {
 		Familiensituation familiensituation = new Familiensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+		// by default verguenstigung gewuenscht
+		familiensituation.setSozialhilfeBezueger(false);
+		familiensituation.setVerguenstigungGewuenscht(true);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		return familiensituation;
 	}
