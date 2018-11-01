@@ -160,7 +160,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testVerfuegung_WaeltiDagmar_mutationHeirat() {
-		//waelti dagmar arbeitet 60% und hat 20% zuschlag zum ewp
+		//waelti dagmar arbeitet 80%
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
