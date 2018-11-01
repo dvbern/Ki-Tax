@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.InstitutionStatus;
+
 /**
  * Created by imanol on 17.03.16.
  * DTO fuer Institution
@@ -34,11 +36,16 @@ public class JaxInstitution extends JaxAbstractDTO {
 	private String name;
 
 	private JaxTraegerschaft traegerschaft;
+
 	@NotNull
 	private JaxMandant mandant;
 
 	@NotNull
 	private String mail;
+
+	@NotNull
+	private InstitutionStatus status = InstitutionStatus.EINGELADEN;
+
 
 	public String getName() {
 		return name;
@@ -70,5 +77,13 @@ public class JaxInstitution extends JaxAbstractDTO {
 
 	public void setMail(String mail) {
 		this.mail = mail;
+	}
+
+	public InstitutionStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(InstitutionStatus status) {
+		this.status = status;
 	}
 }

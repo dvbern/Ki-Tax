@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpRequestTransformer, IHttpService, ILogService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
@@ -32,7 +32,8 @@ import GlobalCacheService from './globalCacheService';
 
 export default class GemeindeRS implements IEntityRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', 'AuthServiceRS'];
+    public static $inject =
+        ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'GlobalCacheService', 'AuthServiceRS'];
     public serviceURL: string;
 
     private readonly principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
@@ -140,18 +141,30 @@ export default class GemeindeRS implements IEntityRS {
         });
     }
 
-    public postLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
-        const formData = new FormData();
-        formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
-        return this.uploadLogo(gemeindeId, formData);
+    public getLogoUrl(gemeindeId: string): string {
+        return `${this.serviceURL}/logo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
     }
 
-    private uploadLogo(gemeindeId: string, formData: FormData): IPromise<any> {
-        return this.$http.post(`${this.serviceURL}/stammdaten/${encodeURIComponent(gemeindeId)}`, formData)
+    public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+        const formData = new FormData();
+        formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
+        formData.append('kat', fileToUpload, encodeURIComponent('logo'));
+        return this.postLogo(gemeindeId, formData);
+    }
+
+    private postLogo(gemeindeId: string, formData: FormData): IPromise<any> {
+        let result: IPromise<any>;
+        result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
+            transformRequest: (request: IHttpRequestTransformer) => request,
+            headers: {'Content-Type': undefined}})
             .then((response: any) => {
                 this.$log.debug('Upload Gemeinde Logo ', response.data);
                 return response.data;
-        });
+            });
+        if (!result) {
+            this.$log.error(`Upload Gemeinde (${gemeindeId}) Logo failed`);
+        }
+        return result;
     }
 
 }

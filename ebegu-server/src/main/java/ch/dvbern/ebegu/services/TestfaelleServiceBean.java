@@ -461,13 +461,13 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		Optional<InstitutionStammdaten> optionalAaregg = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
 		Optional<InstitutionStammdaten> optionalBruennen = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA);
-		Optional<InstitutionStammdaten> optionalTagiAaregg = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
+		Optional<InstitutionStammdaten> optionalTagesfamilien = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
 		Optional<InstitutionStammdaten> optionalTagesschule = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
 		Optional<InstitutionStammdaten> optionalFerieninsel = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL);
 
 		optionalAaregg.ifPresent(institutionStammdatenList::add);
 		optionalBruennen.ifPresent(institutionStammdatenList::add);
-		optionalTagiAaregg.ifPresent(institutionStammdatenList::add);
+		optionalTagesfamilien.ifPresent(institutionStammdatenList::add);
 		optionalTagesschule.ifPresent(institutionStammdatenList::add);
 		optionalFerieninsel.ifPresent(institutionStammdatenList::add);
 		return institutionStammdatenList;
@@ -600,6 +600,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		if (verfuegen) {
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
+
 			verfuegungService.calculateVerfuegung(gesuch);
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 				.filter(betreuung -> !betreuung.isAngebotSchulamt())

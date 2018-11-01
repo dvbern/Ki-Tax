@@ -1389,5 +1389,6 @@
     "STAMMDATEN_EDIT": "Stammdaten bearbeiten",
     "KONFIGURATION_EDIT": "Konfiguration bearbeiten",
     "GEMEINDE_SPEICHERN": "Gemeinde Speichern",
-    "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND": "Bestätigung über den ausserordentlichen Betreuungsaufwand"
+    "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND": "Bestätigung über den ausserordentlichen Betreuungsaufwand",
+    "GEMEINDE_LOGO_ZU_GROSS": "Das Gemeinde-Logo ist zu gross!"
 }

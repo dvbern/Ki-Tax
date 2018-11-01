@@ -169,8 +169,8 @@ public abstract class AbstractEbeguTest {
 	/**
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
-	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
+	protected Gesuchsperiode createGesuchsperiode() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		return gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
 	}
@@ -204,6 +204,8 @@ public abstract class AbstractEbeguTest {
 
 		institutionService.createInstitution(institutionStammdatenKitaAaregg.getInstitution());
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenKitaAaregg);
+
+		institutionService.createInstitution(institutionStammdatenTagesfamilien.getInstitution());
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdatenTagesfamilien);
 
 		institutionService.createInstitution(institutionStammdatenKitaBruennen.getInstitution());

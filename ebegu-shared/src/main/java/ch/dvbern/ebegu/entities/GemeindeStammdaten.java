@@ -182,7 +182,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.korrespondenzsprache = korrespondenzsprache;
 	}
 
-	@Nullable
+	@Nonnull
 	public byte[] getLogoContent() {
 		if (logoContent == null) {
 			return EMPTY_BYTE_ARRAY;

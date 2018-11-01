@@ -88,10 +88,10 @@ export class InstitutionStammdatenRS {
             });
     }
 
-    public getAllInstitutionStammdatenByInstitution(institutionID: string): IPromise<TSInstitutionStammdaten[]> {
+    public getInstitutionStammdatenByInstitution(institutionID: string): IPromise<TSInstitutionStammdaten> {
         return this.$http.get(`${this.serviceURL}/institution/${encodeURIComponent(institutionID)}`)
             .then((response: any) => {
-                return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);
+                return this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data);
             });
     }
 

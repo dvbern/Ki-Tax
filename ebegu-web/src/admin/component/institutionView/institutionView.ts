@@ -111,9 +111,10 @@ export class InstitutionViewController extends AbstractAdminViewController {
         this.selectedInstitution = institution;
         this.selectedInstitutionStammdaten = undefined;
         if (!this.isCreateInstitutionsMode()) {
-            this.institutionStammdatenRS.getAllInstitutionStammdatenByInstitution(this.selectedInstitution.id).then(
+            this.institutionStammdatenRS.getInstitutionStammdatenByInstitution(this.selectedInstitution.id).then(
                 loadedInstStammdaten => {
-                    this.instStammdatenList = loadedInstStammdaten;
+                    this.instStammdatenList = []; // Ist aktuell hier noch als Liste. Im Model 1:1
+                    this.instStammdatenList.push(loadedInstStammdaten);
                 });
         }
         this.errormessage = undefined;

@@ -299,8 +299,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		institutionStammdaten.getInstitution().setTraegerschaft(null);
 		institutionStammdaten.getGueltigkeit().setGueltigAb(kitaFrom);
 		institutionStammdaten.getGueltigkeit().setGueltigBis(kitaUntil);
-		persistence.persist(institutionStammdaten.getInstitution());
-		institutionStammdaten = persistence.persist(institutionStammdaten);
+		institutionStammdaten = TestDataUtil.saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
 		betreuung.setInstitutionStammdaten(institutionStammdaten);
 
 		// (1) Pensum exakt gleich wie Kita-Zeitraum
@@ -448,10 +447,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		institutionStammdaten.getGueltigkeit().setGueltigAb(kitaFrom);
 		institutionStammdaten.getGueltigkeit().setGueltigBis(kitaUntil);
-		persistence.merge(institutionStammdaten.getInstitution().getMandant());
-		persistence.merge(institutionStammdaten.getInstitution().getTraegerschaft());
-		persistence.merge(institutionStammdaten.getInstitution());
-		institutionStammdaten = persistence.merge(institutionStammdaten);
+		institutionStammdaten = TestDataUtil.saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
 		betreuung.setInstitutionStammdaten(institutionStammdaten);
 	}
 }

@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.converter;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -119,7 +118,10 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public GemeindeStammdaten gemeindeStammdatenToEntity(@Nonnull final JaxGemeindeStammdaten jaxStammdaten, @Nonnull final GemeindeStammdaten stammdaten) {
+	public GemeindeStammdaten gemeindeStammdatenToEntity(
+		@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull final GemeindeStammdaten stammdaten
+	) {
 		requireNonNull(stammdaten);
 		requireNonNull(stammdaten.getAdresse());
 		requireNonNull(jaxStammdaten);
@@ -173,19 +175,21 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		requireNonNull(stammdaten);
 		requireNonNull(stammdaten.getGemeinde());
 		requireNonNull(stammdaten.getAdresse());
-
 		final JaxGemeindeStammdaten jaxStammdaten = new JaxGemeindeStammdaten();
 		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
 		Collection<Benutzer> administratoren = benutzerService.getGemeindeAdministratoren(stammdaten.getGemeinde());
 		Collection<Benutzer> sachbearbeiter = benutzerService.getGemeindeSachbearbeiter(stammdaten.getGemeinde());
-		jaxStammdaten.setAdministratoren(administratoren.stream().map(Benutzer::getFullName).collect(Collectors.joining(", ")));
-		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream().map(Benutzer::getFullName).collect(Collectors.joining(", ")));
+		jaxStammdaten.setAdministratoren(administratoren.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
 		jaxStammdaten.setAdresse(converter.adresseToJAX(stammdaten.getAdresse()));
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-
 		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(true);
 			jaxStammdaten.setKorrespondenzspracheFr(false);
@@ -200,7 +204,6 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 			.stream().map(converter::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(converter::benutzerToJaxBenutzer).collect(Collectors.toList()));
-
 		if (!stammdaten.isNew()) {
 			if (stammdaten.getDefaultBenutzerBG() != null) {
 				jaxStammdaten.setDefaultBenutzerBG(converter.benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
@@ -212,19 +215,21 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 				jaxStammdaten.setBeschwerdeAdresse(converter.adresseToJAX(stammdaten.getBeschwerdeAdresse()));
 			}
 		}
-
 		// Konfiguration
 		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
 			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
 			if (gesuchsperiode != null) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(), gesuchsperiode));
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
+					gesuchsperiode));
 			}
 		} else {
 			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
 			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(), gesuchsperiode));
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
+					gesuchsperiode));
 			}
 		}
+
 		return jaxStammdaten;
 	}
 
@@ -246,7 +251,8 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName());
 		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());
 		konfiguration.setGesuchsperiodeStatus(gesuchsperiode.getStatus());
-		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
+		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
+			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
 			.filter(map -> map.getKey().name().startsWith("GEMEINDE_"))
 			.map(x -> converter.einstellungToJAX(x.getValue()))

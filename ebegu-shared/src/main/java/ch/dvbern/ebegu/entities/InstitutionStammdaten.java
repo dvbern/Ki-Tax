@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -29,21 +28,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.validationgroups.InstitutionsStammdatenInsertValidationGroup;
-import ch.dvbern.ebegu.validators.CheckOnlyOneInstitutionsStammdatenPerGesuchsperiode;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.hibernate.envers.Audited;
 
@@ -57,14 +50,14 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "adresse_id", name = "UK_institution_stammdaten_adresse_id"),
-		@UniqueConstraint(columnNames = "adresse_kontoinhaber_id", name = "UK_institution_stammdaten_adressekontoinhaber_id")
+		@UniqueConstraint(columnNames = "adresse_kontoinhaber_id", name = "UK_institution_stammdaten_adressekontoinhaber_id"),
+		@UniqueConstraint(columnNames = "institution_id", name= "UK_institution_stammdaten_institution_id")
 	},
 	indexes = {
 		@Index(name = "IX_institution_stammdaten_gueltig_ab", columnList = "gueltigAb"),
 		@Index(name = "IX_institution_stammdaten_gueltig_bis", columnList = "gueltigBis")
 	}
 )
-@CheckOnlyOneInstitutionsStammdatenPerGesuchsperiode (groups = InstitutionsStammdatenInsertValidationGroup.class)
 //@Cacheable
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class InstitutionStammdaten extends AbstractDateRangedEntity {
@@ -76,23 +69,13 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Valid
 	private IBAN iban;
 
-	@DecimalMin("0.00")
-	@DecimalMax("365.00")
-	@Nullable
-	private BigDecimal oeffnungstage;
-
-	@DecimalMin("0.00")
-	@DecimalMax("24.00")
-	@Nullable
-	private BigDecimal oeffnungsstunden;
-
 	@Enumerated(value = EnumType.STRING)
 	@NotNull
 	@Column(nullable = false)
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 	@NotNull
-	@ManyToOne(optional = false)
+	@OneToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_institution_id"), nullable = false)
 	private Institution institution;
 
@@ -128,24 +111,6 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setIban(IBAN iban) {
 		this.iban = iban;
-	}
-
-	@Nullable
-	public BigDecimal getOeffnungstage() {
-		return oeffnungstage;
-	}
-
-	public void setOeffnungstage(@Nullable BigDecimal oeffnungstage) {
-		this.oeffnungstage = oeffnungstage;
-	}
-
-	@Nullable
-	public BigDecimal getOeffnungsstunden() {
-		return oeffnungsstunden;
-	}
-
-	public void setOeffnungsstunden(@Nullable BigDecimal oeffnungsstunden) {
-		this.oeffnungsstunden = oeffnungsstunden;
 	}
 
 	@Nonnull
@@ -225,10 +190,8 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		}
 		final InstitutionStammdaten otherInstStammdaten = (InstitutionStammdaten) other;
 		return EbeguUtil.isSameObject(getInstitution(), otherInstStammdaten.getInstitution()) &&
-			Objects.equals(getBetreuungsangebotTyp(), otherInstStammdaten.getBetreuungsangebotTyp()) &&
+			getBetreuungsangebotTyp() == otherInstStammdaten.getBetreuungsangebotTyp() &&
 			Objects.equals(getIban(), otherInstStammdaten.getIban()) &&
-			MathUtil.isSame(getOeffnungsstunden(), otherInstStammdaten.getOeffnungsstunden()) &&
-			MathUtil.isSame(getOeffnungstage(), otherInstStammdaten.getOeffnungstage()) &&
 			EbeguUtil.isSameObject(getAdresse(), otherInstStammdaten.getAdresse());
 	}
 }
