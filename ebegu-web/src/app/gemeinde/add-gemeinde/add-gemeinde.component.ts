@@ -40,7 +40,7 @@ export class AddGemeindeComponent implements OnInit {
     public adminMail: string = undefined;
     public beguStartDatumMin: moment.Moment;
     public gesuchsperiodeList: Array<TSGesuchsperiode>;
-    public max: number = 6806;
+    public maxBFSNummer: number = 6806;
 
     public constructor(
         private readonly $transition$: Transition,

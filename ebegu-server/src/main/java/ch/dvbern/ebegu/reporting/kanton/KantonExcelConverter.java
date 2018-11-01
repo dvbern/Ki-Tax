@@ -57,7 +57,6 @@ public class KantonExcelConverter implements ExcelConverter {
 			BigDecimal anspruchsPensum = dataRow.getBgPensum();
 			excelRowGroup.addValue(MergeFieldKanton.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldKanton.betreuungsTyp, dataRow.getBetreuungsTyp());
-			excelRowGroup.addValue(MergeFieldKanton.oeffnungstage, dataRow.getOeffnungstage());
 			if (anspruchsPensum.compareTo(BigDecimal.ZERO) > 0) {
 				excelRowGroup.addValue(MergeFieldKanton.bgPensum, anspruchsPensum);
 				excelRowGroup.addValue(MergeFieldKanton.elternbeitrag, dataRow.getElternbeitrag());

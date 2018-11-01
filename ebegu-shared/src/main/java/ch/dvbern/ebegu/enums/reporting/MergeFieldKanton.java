@@ -44,8 +44,7 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	elternbeitrag(new SimpleMergeField<>("elternbeitrag", BIGDECIMAL_CONVERTER)),
 	verguenstigung(new SimpleMergeField<>("verguenstigung", BIGDECIMAL_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
-	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER)),
-	oeffnungstage(new SimpleMergeField<>("oeffnungstage", BIGDECIMAL_CONVERTER));
+	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

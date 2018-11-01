@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -122,7 +121,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 			return false;
 		}
 		final Gesuchsperiode otherGesuchsperiode = (Gesuchsperiode) other;
-		return Objects.equals(this.getStatus(), otherGesuchsperiode.getStatus());
+		return this.getStatus() == otherGesuchsperiode.getStatus();
 	}
 
 	@Override
@@ -143,7 +142,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 		DateRange gueltigkeit = this.getGueltigkeit();
 		return Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigAb()) + " - "
 			+ Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigBis())
-			+ "  (" + ServerMessageUtil.translateEnumValue(status) + ")";
+			+ " (" + ServerMessageUtil.translateEnumValue(status) + ")";
 	}
 
 	public boolean hasTagesschulenAnmeldung() {

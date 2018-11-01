@@ -15,32 +15,41 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * DTO fuer InstitutionStammdatenTagesschule
+ * This Transfer Object is used to transfer the external user together with messages (error)
  */
-@XmlRootElement(name = "institutionStammdatenTagesschule")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDTO {
+public class JaxEinladungWrapper implements Serializable {
 
-	private static final long serialVersionUID = 6958211446966611467L;
+	private static final long serialVersionUID = 3338519549993818460L;
 
-	@NotNull
-	private List<JaxModulTagesschule> moduleTagesschule = new ArrayList<>();
+	@Nullable
+	private String errorMessage = null;
 
-	@NotNull
-	public List<JaxModulTagesschule> getModuleTagesschule() {
-		return moduleTagesschule;
+	@Nullable
+	private JaxExternalBenutzer benutzer = null;
+
+	@Nullable
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
-	public void setModuleTagesschule(@NotNull List<JaxModulTagesschule> moduleTagesschule) {
-		this.moduleTagesschule = moduleTagesschule;
+	public void setErrorMessage(@Nullable String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	@Nullable
+	public JaxExternalBenutzer getBenutzer() {
+		return benutzer;
+	}
+
+	public void setBenutzer(@Nullable JaxExternalBenutzer benutzer) {
+		this.benutzer = benutzer;
 	}
 }

@@ -60,7 +60,7 @@ public final class MultipartFormToFileConverter {
 				"form-parameter '" + PART_FILE + "' not found");
 
 		return inputParts.stream()
-				.map(inputPart -> toBlobData(inputPart))
+				.map(MultipartFormToFileConverter::toBlobData)
 				.collect(Collectors.toList());
 	}
 

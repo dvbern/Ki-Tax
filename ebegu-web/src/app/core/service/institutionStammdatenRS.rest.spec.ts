@@ -51,8 +51,7 @@ describe('institutionStammdatenRS', () => {
         today = DateUtil.today();
         mockInstitution = new TSInstitution('Institution_Test');
         mockAdresse = new TSAdresse();
-        const oeffnungstage = 250;
-        mockInstitutionStammdaten = new TSInstitutionStammdaten('InstStammDaten_Test', oeffnungstage, 12,
+        mockInstitutionStammdaten = new TSInstitutionStammdaten('InstStammDaten_Test',
             TSBetreuungsangebotTyp.KITA, mockInstitution, mockAdresse, new TSDateRange(today, today));
         mockInstitutionStammdaten.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
         mockInstitutionStammdatenRest = ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);

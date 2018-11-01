@@ -122,13 +122,18 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
-
+	/**
+	 * All non-gemeinde-roles are allowed to see any gemeinde. This is needed because Institutionen and Gesuchsteller need to
+	 * see all gemeinde. All other roles which must have a gemeinde linked to it can only see those gemeinde which they belong to
+	 */
 	@Override
 	public void checkReadAuthorization(@Nullable Gemeinde gemeinde) {
 		if (gemeinde != null) {
-			boolean allGemeindenAllowed = principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			boolean allGemeindenAllowed = principalBean.isCallerInAnyOfRole(
+				UserRole.getRolesWithoutAbhaengigkeit(RollenAbhaengigkeit.GEMEINDE));
 			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
-				principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, REVISOR, SACHBEARBEITER_BG, SACHBEARBEITER_TS);
+				principalBean.isCallerInAnyOfRole(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR);
 			if (!allGemeindenAllowed && !allowedForGemeinde) {
 				throwViolation(gemeinde);
 			}

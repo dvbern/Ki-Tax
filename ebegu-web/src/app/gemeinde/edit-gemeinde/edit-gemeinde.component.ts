@@ -73,7 +73,7 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public persistGemeindeStammdaten(stammdaten: TSGemeindeStammdaten): void {
-        if (!this.form.valid) {
+        if (!this.validateData(stammdaten)) {
             return;
         }
         this.errorService.clearAll();
@@ -82,6 +82,11 @@ export class EditGemeindeComponent implements OnInit {
             stammdaten.beschwerdeAdresse = undefined;
         }
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => this.navigateBack());
+    }
+
+    private validateData(stammdaten: TSGemeindeStammdaten): boolean {
+        return (stammdaten.korrespondenzspracheDe || stammdaten.korrespondenzspracheFr)
+            && this.form.valid;
     }
 
     public mitarbeiterBearbeiten(): void {
@@ -93,10 +98,15 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     private navigateBack(): void {
-        if (this.navigationSource.name) {
-            this.$state.go(this.navigationSource, {gemeindeId: this.gemeindeId});
+        if (!this.navigationSource.name) {
+            this.$state.go('gemeinde.list');
             return;
         }
-        this.$state.go('gemeinde.list');
+
+        const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
+            ? 'gemeinde.view'
+            : this.navigationSource;
+
+        this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
     }
 }

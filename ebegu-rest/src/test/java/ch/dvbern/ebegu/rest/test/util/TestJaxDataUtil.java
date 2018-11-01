@@ -306,9 +306,7 @@ public final class TestJaxDataUtil {
 	public static JaxInstitutionStammdaten createTestJaxInstitutionsStammdaten() {
 		JaxInstitutionStammdaten institutionStammdaten = new JaxInstitutionStammdaten();
 		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		institutionStammdaten.setOeffnungsstunden(new BigDecimal(10));
 		institutionStammdaten.setGueltigAb(Constants.DEFAULT_GUELTIGKEIT.getGueltigAb());
-		institutionStammdaten.setOeffnungstage(new BigDecimal(250));
 		institutionStammdaten.setAdresse(createTestJaxAdr("JA").getAdresseJA());
 		return institutionStammdaten;
 	}

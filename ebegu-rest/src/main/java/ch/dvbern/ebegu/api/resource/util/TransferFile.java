@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 public class TransferFile {
 
+	public static final byte[] EMPTY_ARRAY = new byte[0];
 	private String filename;
 	private long filesize;
 	private String filetype;
@@ -61,15 +62,18 @@ public class TransferFile {
 
 	public byte[] getContent() {
 		if (content == null) {
-			return new byte[0];
-		} else {
-			return Arrays.copyOf(content, content.length);
+			return EMPTY_ARRAY;
 		}
+		return Arrays.copyOf(content, content.length);
 	}
 
 	public void setContent(byte[] content) {
+		setContentNullSave(content);
+	}
+
+	private void setContentNullSave(byte[] content) {
 		if (content == null) {
-			this.content = new byte[0];
+			this.content = EMPTY_ARRAY;
 		} else {
 			this.content = Arrays.copyOf(content, content.length);
 		}

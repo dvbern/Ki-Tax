@@ -44,34 +44,36 @@
                                     {{'KONFIGURATION_EDIT'|translate}}</mat-checkbox>
                             </div>
                         </div>
-                        <div *ngIf="!konf.editMode" class="col-sm-6">
+                        <div *ngIf="!konf.editMode; else displayEditMode" class="col-sm-6">
                             <div class="form-group">
                                 <!-- Gemeinde-Konfiguraiton read only -->
                                 <h3 translate>GEMEINDE_REGELN</h3>
                                 <label>{{'BEGU_KITAS_BIS_UND_MIT'|translate}}&nbsp;<strong>{{getKonfigBeguBisUndMitSchulstufeString(konfigurationsListe[i])}}</strong></label>
-                                <p *ngIf="!konfigurationsListe[i].konfigKontingentierung" class="line-through">{{getKonfigKontingentierungString(konfigurationsListe[i])}}</p>
-                                <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString(konfigurationsListe[i])}}</p>
+                                <p *ngIf="!konfigurationsListe[i].konfigKontingentierung" class="line-through">{{getKonfigKontingentierungString()}}</p>
+                                <p *ngIf="konfigurationsListe[i].konfigKontingentierung">{{getKonfigKontingentierungString()}}</p>
                             </div>
                         </div>
-                        <div *ngIf="konf.editMode" class="col-sm-6">
-                            <div class="form-group">
-                                <!-- Gemeinde-Konfiguraiton editierbar -->
-                                <h3 translate>GEMEINDE_REGELN</h3>
-                                <label translate>BEGU_KITAS_BIS_UND_MIT</label>
-                                <mat-select [(ngModel)]="konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
-                                            (selectionChange)="changeKonfigBeguBisUndMitSchulstufe(konfigurationsListe[i])"
-                                            id="begu_kitas_bis_und_mit_id" name="begu_kitas_bis_und_mit_id" class="form-control">
-                                    <mat-option *ngFor="let etv of einschulungTypValues" [value]="etv">{{etv | translate}}
-                                    </mat-option>
-                                </mat-select>
+                        <ng-template #displayEditMode>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <!-- Gemeinde-Konfiguraiton editierbar -->
+                                    <h3 translate>GEMEINDE_REGELN</h3>
+                                    <label translate>BEGU_KITAS_BIS_UND_MIT</label>
+                                    <mat-select [(ngModel)]="konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
+                                                (selectionChange)="changeKonfigBeguBisUndMitSchulstufe(konfigurationsListe[i])"
+                                                id="begu_kitas_bis_und_mit_id" name="begu_kitas_bis_und_mit_id" class="form-control">
+                                        <mat-option *ngFor="let etv of einschulungTypValues" [value]="etv">{{etv | translate}}
+                                        </mat-option>
+                                    </mat-select>
+                                </div>
+                                <div class="form-group">
+                                    <mat-checkbox id="kontingentierung_id" name="kontingentierung_id"
+                                                  [(ngModel)]="konfigurationsListe[i].konfigKontingentierung"
+                                                  (change)="changeKonfigKontingentierung(konfigurationsListe[i])">
+                                        {{'KONTINGENTIERUNG'|translate}}</mat-checkbox>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <mat-checkbox id="kontingentierung_id" name="kontingentierung_id"
-                                              [(ngModel)]="konfigurationsListe[i].konfigKontingentierung"
-                                              (change)="changeKonfigKontingentierung(konfigurationsListe[i])">
-                                    {{'KONTINGENTIERUNG'|translate}}</mat-checkbox>
-                            </div>
-                        </div>
+                        </ng-template>
                     </div>
                 </tab-body>
             </dv-accordion-tab>
