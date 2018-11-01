@@ -90,6 +90,9 @@ public class EbeguUtil {
 	/**
 	 * Returns true if both strings have the same content or both are null or emptystrings
 	 * or one is emptystring and the other is null
+	 * Achtung: Diese Logik befindet sich ebenfalls clientseitig hier:
+	 * EbeguUtil.ts#isFinanzielleSituationRequiredForGesuch bzw.
+	 * EbeguUtil.ts#isFinanzielleSituationRequired
 	 */
 	public static boolean isSameOrNullBoolean(@Nullable Boolean thisBoolean, @Nullable Boolean otherBoolean) {
 		return (isNullOrFalse(thisBoolean) && isNullOrFalse(otherBoolean))

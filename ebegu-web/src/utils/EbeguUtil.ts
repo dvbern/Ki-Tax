@@ -219,6 +219,10 @@ export default class EbeguUtil {
         return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
     }
 
+    /**
+     * Achtung: Diese Logik befindet sich ebenfalls serverseitig hier:
+     * EbeguUtil.java#isFinanzielleSituationRequired
+     */
     public static isFinanzielleSituationRequiredForGesuch(gesuch: TSGesuch): boolean {
         if (!gesuch) {
             return false;
