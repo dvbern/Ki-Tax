@@ -145,15 +145,6 @@ export default class GemeindeRS implements IEntityRS {
         return `${this.serviceURL}/logo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
     }
 
-    public testGetLogo(gemeindeId: string): IPromise<any> {
-        return this.$http.get(this.getLogoUrl(gemeindeId), {
-            headers: {
-                'Content-Type': 'application/jpeg',
-            }}).then((response: any) => {
-                return response.data;
-            });
-    }
-
     public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));

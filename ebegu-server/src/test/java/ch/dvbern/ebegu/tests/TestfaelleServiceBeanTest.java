@@ -164,7 +164,8 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 15), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 15),
+			LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationHeirat");
 	}
 

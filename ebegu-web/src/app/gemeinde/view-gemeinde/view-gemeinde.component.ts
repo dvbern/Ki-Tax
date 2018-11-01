@@ -24,7 +24,6 @@ import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
@@ -69,10 +68,6 @@ export class ViewGemeindeComponent implements OnInit {
 
     public isStammdatenEditable(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
-    }
-
-    public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
-        return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
     private initStrings(stammdaten: TSGemeindeStammdaten): void {

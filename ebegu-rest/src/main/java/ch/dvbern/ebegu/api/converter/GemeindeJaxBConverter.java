@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.api.converter;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +25,6 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -120,8 +118,10 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public GemeindeStammdaten gemeindeStammdatenToEntity(@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
-		@Nonnull final GemeindeStammdaten stammdaten) {
+	public GemeindeStammdaten gemeindeStammdatenToEntity(
+		@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull final GemeindeStammdaten stammdaten
+	) {
 		requireNonNull(stammdaten);
 		requireNonNull(stammdaten.getAdresse());
 		requireNonNull(jaxStammdaten);
@@ -179,10 +179,12 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
 		Collection<Benutzer> administratoren = benutzerService.getGemeindeAdministratoren(stammdaten.getGemeinde());
 		Collection<Benutzer> sachbearbeiter = benutzerService.getGemeindeSachbearbeiter(stammdaten.getGemeinde());
-		jaxStammdaten.setAdministratoren(administratoren.stream().map(Benutzer::getFullName).collect(Collectors
-			.joining(", ")));
-		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream().map(Benutzer::getFullName).collect(Collectors.joining
-			(", ")));
+		jaxStammdaten.setAdministratoren(administratoren.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
 		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
 		jaxStammdaten.setAdresse(converter.adresseToJAX(stammdaten.getAdresse()));
 		jaxStammdaten.setMail(stammdaten.getMail());
@@ -227,6 +229,8 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 					gesuchsperiode));
 			}
 		}
+
+		return jaxStammdaten;
 	}
 
 	/**
@@ -247,8 +251,8 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName());
 		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());
 		konfiguration.setGesuchsperiodeStatus(gesuchsperiode.getStatus());
-		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService.getAllEinstellungenByGemeindeAsMap
-			(gemeinde, gesuchsperiode);
+		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
+			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
 			.filter(map -> map.getKey().name().startsWith("GEMEINDE_"))
 			.map(x -> converter.einstellungToJAX(x.getValue()))

@@ -454,7 +454,7 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 		final List<WizardStep> wizardSteps = wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.DOKUMENTE);
 		Assert.assertEquals(11, wizardSteps.size());
 
-		Assert.assertEquals(WizardStepStatus.OK, findStepByName(wizardSteps, WizardStepName.DOKUMENTE).getWizardStepStatus());
+		Assert.assertEquals(WizardStepStatus.IN_BEARBEITUNG, findStepByName(wizardSteps, WizardStepName.DOKUMENTE).getWizardStepStatus());
 	}
 
 	@Test

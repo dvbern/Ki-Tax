@@ -97,10 +97,7 @@ public final class RestUtil {
 	}
 
 	public static Response buildDownloadResponse(boolean attachment, String filename, String filetype, byte[] content) throws IOException {
-		String contentType = filetype;
-		if (contentType == null) {
-			contentType = "application/octet-stream";
-		}
+		String contentType = (filetype == null) ? "application/octet-stream" : filetype;
 		return buildResponse(attachment, contentType, content, filename);
 	}
 

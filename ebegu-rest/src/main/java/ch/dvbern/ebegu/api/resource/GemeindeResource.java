@@ -322,7 +322,7 @@ public class GemeindeResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation(value = "Returns the logo image of the Gemeinde with the given id or an errorcode if none is available")
+	@ApiOperation("Returns the logo image of the Gemeinde with the given id or an errorcode if none is available")
 	@GET
 	@Path("/logo/data/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
@@ -339,9 +339,8 @@ public class GemeindeResource {
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
 			}
-		} else {
-			return Response.status(Status.NO_CONTENT).build();
 		}
 
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }
