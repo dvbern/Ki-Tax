@@ -819,6 +819,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		famsit.setGemeinsameSteuererklaerung(true);
 		famsit.setAenderungPer(aenderungPer);
+		famsit.setSozialhilfeBezueger(false);
+		famsit.setVerguenstigungGewuenscht(true);
 		return famsit;
 	}
 
@@ -828,6 +830,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		famsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		famsit.setAenderungPer(aenderungPer);
+		famsit.setSozialhilfeBezueger(false);
+		famsit.setVerguenstigungGewuenscht(true);
 		return famsit;
 	}
 }
