@@ -64,6 +64,17 @@ public class ErstgesuchConfig {
 		return config;
 	}
 
+	public static ErstgesuchConfig createErstgesuch(@Nonnull TestfallName testfallName, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull LocalDate
+		eingangsdatum) {
+		ErstgesuchConfig config = new ErstgesuchConfig();
+		config.setTestfallName(testfallName);
+		config.setGesuchsperiode(gesuchsperiode);
+		config.setEingangsdatum(eingangsdatum);
+		config.setBetreuungenBestaetigt(true);
+		config.setVerfuegt(false);
+		return config;
+	}
+
 	public Gesuchsperiode getGesuchsperiode() {
 		return gesuchsperiode;
 	}

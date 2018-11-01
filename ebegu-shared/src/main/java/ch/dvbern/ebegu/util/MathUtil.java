@@ -130,6 +130,14 @@ public enum MathUtil {
 		if (src == null) {
 			return null;
 		}
+		return fromNullSafe(src);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
+	@Nonnull
+	public BigDecimal fromNullSafe(@Nonnull Double src) {
 		BigDecimal val = new BigDecimal(String.valueOf(src))
 			.setScale(scale, roundingMode);
 		return validatePrecision(val);

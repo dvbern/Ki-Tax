@@ -55,7 +55,7 @@ public class Testfall_ASIV_09 extends AbstractASIVTestfall {
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
 		erstgesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100, 0);
+		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensum);
 		// Kinder
 		KindContainer kind = createKind(Geschlecht.MAENNLICH, "ASIV", "Kind", LocalDate.of(2014, Month.APRIL, 13), Kinderabzug.GANZER_ABZUG, true);
@@ -87,7 +87,7 @@ public class Testfall_ASIV_09 extends AbstractASIVTestfall {
 		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer();
 		mutation.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100, 0);
+		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100);
 		gesuchsteller2.addErwerbspensumContainer(erwerbspensum);
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainerGS2 = createFinanzielleSituationContainer();

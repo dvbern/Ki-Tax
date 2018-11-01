@@ -58,7 +58,7 @@ public class Testfall_DoppelKita_Regel3 extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensum = createErwerbspensum(60, 0);
+		ErwerbspensumContainer erwerbspensum = createErwerbspensum(60);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensum);
 		// Kinder
 		KindContainer kind = createKind(Geschlecht.MAENNLICH, "Doppelkita", "Dodi", LocalDate.of(2014, Month.APRIL, 13), Kinderabzug.GANZER_ABZUG, true);

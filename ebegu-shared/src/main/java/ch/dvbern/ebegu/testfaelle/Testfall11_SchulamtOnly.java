@@ -55,7 +55,7 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(FAMILIENNAME, "Pirmin");
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(60, 0);
+		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(60);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensumGS1);
 		// Kinder
 		KindContainer kind1 = createKind(Geschlecht.MAENNLICH, FAMILIENNAME, "Luan", LocalDate.of(2006, Month

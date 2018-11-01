@@ -600,6 +600,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		if (verfuegen) {
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
+
 			verfuegungService.calculateVerfuegung(gesuch);
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 				.filter(betreuung -> !betreuung.isAngebotSchulamt())

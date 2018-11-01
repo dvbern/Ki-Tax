@@ -57,7 +57,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -381,19 +380,6 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(11, wizardSteps.size());
 
 		Assert.assertEquals(WizardStepStatus.OK, findStepByName(wizardSteps, WizardStepName.ERWERBSPENSUM).getWizardStepStatus());
-	}
-
-	/**
-	 * Nicht sinnvoller Test, da der Status der Finanzieller Situation direkt im Web gesetzt und gespeichert wird.
-	 * Daher bringt es nicht zu testen, was nie gebraucht wird
-	 */
-	@Test
-	@Ignore
-	public void updateWizardStepFinanzielleSituation() {
-		final List<WizardStep> wizardSteps = wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.FINANZIELLE_SITUATION);
-		Assert.assertEquals(11, wizardSteps.size());
-
-		Assert.assertEquals(WizardStepStatus.OK, findStepByName(wizardSteps, WizardStepName.FINANZIELLE_SITUATION).getWizardStepStatus());
 	}
 
 	@Test

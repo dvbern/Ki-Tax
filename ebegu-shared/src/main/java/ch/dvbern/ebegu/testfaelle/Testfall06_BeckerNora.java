@@ -56,7 +56,7 @@ public class Testfall06_BeckerNora extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer(FAMILIENNAME, "Nora");
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(60, 0);
+		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(60);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensumGS1);
 		// Kinder
 		KindContainer kind1 = createKind(Geschlecht.MAENNLICH, FAMILIENNAME, "Timon", LocalDate.of(2006, Month.DECEMBER, 25), Kinderabzug.HALBER_ABZUG, true);

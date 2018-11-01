@@ -71,7 +71,7 @@ public class Testfall10_UmzugVorGesuchsperiode extends AbstractTestfall {
 		gesuchsteller1.getAdressen().add(umzugInBern);
 
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensum = createErwerbspensum(60, 20);
+		ErwerbspensumContainer erwerbspensum = createErwerbspensum(80);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensum);
 		// Kinder
 		KindContainer kind = createKind(Geschlecht.WEIBLICH, getNachname(), "Estrella", LocalDate.of(2014, Month.APRIL, 13), Kinderabzug.GANZER_ABZUG, true);
