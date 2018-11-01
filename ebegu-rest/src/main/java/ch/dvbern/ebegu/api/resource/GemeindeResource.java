@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
@@ -51,6 +53,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -299,8 +302,9 @@ public class GemeindeResource {
 		}
 	}
 
+	@ApiOperation("Stores the logo image of the Gemeinde with the given id")
 	@POST
-	@Path("/logo/{gemeindeId}")
+	@Path("/logo/data/{gemeindeId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response uploadLogo(
@@ -316,5 +320,27 @@ public class GemeindeResource {
 		gemeindeService.uploadLogo(gemeindeId, fileList.get(0).getContent());
 
 		return Response.ok().build();
+	}
+
+	@ApiOperation("Returns the logo image of the Gemeinde with the given id or an errorcode if none is available")
+	@GET
+	@Path("/logo/data/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response downloadLogo(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+		if (stammdaten.isPresent()) {
+			try {
+				return RestUtil.buildDownloadResponse(false, "logo",
+					"application/octet-stream", stammdaten.get().getLogoContent());
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }
