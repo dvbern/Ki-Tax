@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -27,6 +26,8 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
@@ -120,7 +121,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 			return false;
 		}
 		final Gesuchsperiode otherGesuchsperiode = (Gesuchsperiode) other;
-		return Objects.equals(this.getStatus(), otherGesuchsperiode.getStatus());
+		return this.getStatus() == otherGesuchsperiode.getStatus();
 	}
 
 	@Override
@@ -135,6 +136,13 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 		DateRange gueltigkeit = this.getGueltigkeit();
 		return gueltigkeit.getGueltigAb().getYear() + "/"
 			+ gueltigkeit.getGueltigBis().getYear();
+	}
+
+	public String getGesuchsperiodeDisplayName() {
+		DateRange gueltigkeit = this.getGueltigkeit();
+		return Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigAb()) + " - "
+			+ Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigBis())
+			+ " (" + ServerMessageUtil.translateEnumValue(status) + ")";
 	}
 
 	public boolean hasTagesschulenAnmeldung() {

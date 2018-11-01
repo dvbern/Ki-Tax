@@ -17,11 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
+import {GemeindeKonfigComponent} from './gemeinde-konfiguration/gemeinde-konfig.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
 import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
@@ -32,17 +33,23 @@ import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
         GemeindeRoutingModule,
         MaterialModule,
     ],
+    // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
+    // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
+    // See https://stackoverflow.com/a/51214263
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
         ViewGemeindeComponent,
+        GemeindeKonfigComponent,
     ],
     entryComponents: [
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
         ViewGemeindeComponent,
+        GemeindeKonfigComponent,
     ],
     providers: [],
 })

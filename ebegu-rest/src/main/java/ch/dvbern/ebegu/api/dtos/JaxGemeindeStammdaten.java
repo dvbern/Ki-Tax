@@ -19,6 +19,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -51,8 +52,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	@Nullable
 	private JaxAdresse beschwerdeAdresse;
 	@NotNull
-	private boolean keineBeschwerdeAdresse;
-	@NotNull
 	private String mail;
 	@Nullable
 	private String telefon;
@@ -68,14 +67,10 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
 	private List<JaxBenutzer> benutzerListeTS; // Für die ComboBox Standardverantwortliche TS
-
 	// ---------- Konfiguration ----------
 	@NotNull
-	private boolean kontingentierung;
+	private List<JaxGemeindeKonfiguration> konfigurationsListe = new ArrayList<>();
 
-	// todo KIBON-245 dies MUSS ein Enum sein, da es dann validiert ist, dass der Wert richtig ist, sonst koennte man irgendeinen Wert speichern
-	@Nullable
-	private String beguBisUndMitSchulstufe;
 
 	@Nullable
 	public String getAdministratoren() {
@@ -138,14 +133,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.beschwerdeAdresse = beschwerdeAdresse;
 	}
 
-	public boolean isKeineBeschwerdeAdresse() {
-		return keineBeschwerdeAdresse;
-	}
-
-	public void setKeineBeschwerdeAdresse(boolean keineBeschwerdeAdresse) {
-		this.keineBeschwerdeAdresse = keineBeschwerdeAdresse;
-	}
-
 	public String getMail() {
 		return mail;
 	}
@@ -188,23 +175,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.korrespondenzspracheFr = korrespondenzspracheFr;
 	}
 
-	public boolean isKontingentierung() {
-		return kontingentierung;
-	}
-
-	public void setKontingentierung(boolean kontingentierung) {
-		this.kontingentierung = kontingentierung;
-	}
-
-	@Nullable
-	public String getBeguBisUndMitSchulstufe() {
-		return beguBisUndMitSchulstufe;
-	}
-
-	public void setBeguBisUndMitSchulstufe(@Nullable String beguBisUndMitSchulstufe) {
-		this.beguBisUndMitSchulstufe = beguBisUndMitSchulstufe;
-	}
-
 	@Nullable
 	public List<JaxBenutzer> getBenutzerListeBG() {
 		return benutzerListeBG;
@@ -231,4 +201,13 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	public void setLogoUrl(@Nullable String logoUrl) {
 		this.logoUrl = logoUrl;
 	}
+
+	public List<JaxGemeindeKonfiguration> getKonfigurationsListe() {
+		return konfigurationsListe;
+	}
+
+	public void setKonfigurationsListe(List<JaxGemeindeKonfiguration> konfigurationsListe) {
+		this.konfigurationsListe = konfigurationsListe;
+	}
+
 }

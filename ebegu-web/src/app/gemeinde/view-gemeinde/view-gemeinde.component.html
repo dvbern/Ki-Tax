@@ -16,10 +16,11 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
+
 <form role="form"
       #form="ngForm"
       [ngClass]="{'ng-submitted': form.submitted}"
-      *ngIf="stammdaten"
+      *ngIf="stammdaten$ | async as stammdaten"
       (ngSubmit)="editGemeindeStammdaten()"
       novalidate>
 
@@ -28,7 +29,8 @@
 
             <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
             <div class="viewTitle">
-                <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer} }}</h2>
+                <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer}
+                    }}</h2>
                 <hr class="header">
             </div>
 
@@ -42,7 +44,8 @@
                             <p>{{stammdaten.sachbearbeiter}}</p>
                         </div>
                         <div class="form-group">
-                            <button type="button" class="dv-btn mitarbeiter-bearbeiten-button" (click)="mitarbeiterBearbeiten()"
+                            <button type="button" class="dv-btn mitarbeiter-bearbeiten-button"
+                                    (click)="mitarbeiterBearbeiten()"
                                     [textContent]="'BENUTZER_EDIT' | translate">
                             </button>
                         </div>
@@ -50,10 +53,11 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <div class="marginBottom10">
-                                <img [src]="previewImageURL" [height]="180" class="klub-logo-dialog-image">
+                                <img [src]="logoImageUrl" [height]="180" class="klub-logo-dialog-image">
                             </div>
                             <div>
-                                <input #fileInput type="file" accept='image/*' (change)="handleInput(fileInput.files)"
+                                <input #fileInput type="file" accept='image/*'
+                                       (change)="handleLogoUpload(fileInput.files)"
                                        class="klub-logo-dialog-fileinput">
                             </div>
                         </div>
@@ -90,20 +94,22 @@
                         </div>
                     </div>
                     <!-- Beschwerdeadresse -->
-                    <div *ngIf="stammdaten.keineBeschwerdeAdresse" class="col-sm-6">
+                    <div *ngIf="keineBeschwerdeAdresse; else displayBeschwerdeAdresse" class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>BESCHWERDE_ADRESSE</h3>
                             <p translate>BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT</p>
                         </div>
                     </div>
-                    <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>BESCHWERDE_ADRESSE</h3>
-                            <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
-                            <p>{{stammdaten.beschwerdeAdresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
-                            <p>{{stammdaten.beschwerdeAdresse.plz}} {{stammdaten.adresse.ort}}</p>
+                    <ng-template #displayBeschwerdeAdresse>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>BESCHWERDE_ADRESSE</h3>
+                                <p>{{stammdaten.beschwerdeAdresse.organisation}}</p>
+                                <p>{{stammdaten.beschwerdeAdresse.strasse}} {{stammdaten.beschwerdeAdresse.hausnummer}}</p>
+                                <p>{{stammdaten.beschwerdeAdresse.plz}} {{stammdaten.beschwerdeAdresse.ort}}</p>
+                            </div>
                         </div>
-                    </div>
+                    </ng-template>
                 </div>
                 <div class="row">
                     <!-- Korrespondenzsprache -->
@@ -124,37 +130,27 @@
 
                 <div class="row">
                     <div class="dv-footer">
-                        <dv-loading-button [type]="'submit'">
+                        <dv-loading-button *ngIf="isStammdatenEditable()"
+                                           [type]="'submit'">
                             <span translate>STAMMDATEN_EDIT</span>
                         </dv-loading-button>
+                        <button type="button" class="dv-btn cancel-button"
+                                (click)="cancel()"
+                                [textContent]="'CANCEL' | translate">
+                        </button>
                     </div>
                 </div>
 
             </fieldset>
 
             <fieldset>
-                <div class="viewTitle">
-                    <h3 translate>BEGU_KONFIGURATION</h3>
-                    <hr class="header">
-                </div>
-                <div class="row">
-                    <!-- Betreuungsgutscheine anbieten ab -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>BEGU_START</h3>
-                            <p>{{beguStart}}</p>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>GEMEINDE_REGELN</h3>
-                            <label translate>BEGU_KITAS_BIS_UND_MIT</label>
-                            <p>{{stammdaten.beguBisUndMitSchulstufe}}</p>
-                            <p>{{kontinggentierung}}</p>
-                        </div>
-                    </div>
-                </div>
+                <dv-gemeinde-konfiguration
+                    [konfigurationsListe]="stammdaten.konfigurationsListe"
+                    [gemeindeStatus]="stammdaten.gemeinde.status"
+                    [beguStartDate]="stammdaten.gemeinde.betreuungsgutscheineStartdatum">
+                </dv-gemeinde-konfiguration>
             </fieldset>
+
         </div>
     </dv-full-height-container>
 </form>
