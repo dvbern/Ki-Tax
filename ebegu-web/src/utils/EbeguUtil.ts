@@ -190,7 +190,7 @@ export default class EbeguUtil {
     }
 
     public static isNullOrFalse(data: boolean): boolean {
-        return this.isNullOrUndefined(data) || data === false;
+        return this.isNullOrUndefined(data) || !data ;
     }
 
     public static isEmptyStringNullOrUndefined(data: string): boolean {

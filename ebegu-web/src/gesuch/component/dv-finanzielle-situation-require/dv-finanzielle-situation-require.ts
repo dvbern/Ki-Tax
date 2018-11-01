@@ -69,7 +69,7 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     public setFinanziellesituationRequired(): void {
-        const required: boolean = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger
+        const required = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger
                     && EbeguUtil.isNotNullOrUndefined(this.verguenstigungGewuenscht) && this.verguenstigungGewuenscht;
         // Wenn es sich geändert hat, müssen gewisse Daten gesetzt werden
         if (required !== this.finanzielleSituationRequired) {
