@@ -33,7 +33,7 @@ public class TransferFile {
 		this.filename = filename;
 		this.filesize = content.length;
 		this.filetype = filetype;
-		setContentNullSave(content);
+		this.content = Arrays.copyOf(content, content.length);
 	}
 
 	public String getFilename() {
