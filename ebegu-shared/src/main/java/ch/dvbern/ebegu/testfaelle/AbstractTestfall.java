@@ -263,17 +263,13 @@ public abstract class AbstractTestfall {
 		return wohnadresse;
 	}
 
-	protected ErwerbspensumContainer createErwerbspensum(int prozent, int zuschlagsprozent) {
+	protected ErwerbspensumContainer createErwerbspensum(int prozent) {
 		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
 		Erwerbspensum erwerbspensum = new Erwerbspensum();
 		erwerbspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
 		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
 		erwerbspensum.setPensum(prozent);
-		if (zuschlagsprozent > 0) {
-			erwerbspensum.setZuschlagZuErwerbspensum(true);
-			erwerbspensum.setZuschlagsprozent(zuschlagsprozent);
-			erwerbspensum.setZuschlagsgrund(Zuschlagsgrund.LANGER_ARBWEITSWEG);
-		}
+		erwerbspensum.setZuschlagZuErwerbspensum(false);
 		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
 		return erwerbspensumContainer;
 	}

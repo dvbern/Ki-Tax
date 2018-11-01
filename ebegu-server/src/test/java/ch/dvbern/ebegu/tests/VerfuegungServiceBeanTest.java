@@ -87,7 +87,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void setUp() {
-		gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
 

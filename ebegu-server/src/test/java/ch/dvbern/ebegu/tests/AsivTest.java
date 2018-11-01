@@ -108,7 +108,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
-		gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode();
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
@@ -309,7 +309,7 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
 	@Override
-	protected Gesuchsperiode createGesuchsperiode(boolean active) {
+	protected Gesuchsperiode createGesuchsperiode() {
 		gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);

@@ -86,7 +86,7 @@ public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 		gesuchsteller1.getAdressen().add(umzugAusBern);
 
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensum = createErwerbspensum(60, 20);
+		ErwerbspensumContainer erwerbspensum = createErwerbspensum(80);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensum);
 		// Kinder
 		KindContainer kind = createKind(Geschlecht.MAENNLICH, getNachname(), "Paco", LocalDate.of(2014, Month.APRIL, 13), Kinderabzug.GANZER_ABZUG, true);

@@ -59,9 +59,9 @@ public class Testfall04_WaltherLaura extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(FAMILIENNAME, "Thomas");
 		gesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(90, 0);
+		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(90);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensumGS1);
-		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(60, 0);
+		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(60);
 		gesuchsteller2.addErwerbspensumContainer(erwerbspensumGS2);
 		// Kinder
 		KindContainer kind1 = createKind(Geschlecht.WEIBLICH, FAMILIENNAME, "Lorenz", LocalDate.of(2013, Month.FEBRUARY, 17), Kinderabzug.GANZER_ABZUG, true);

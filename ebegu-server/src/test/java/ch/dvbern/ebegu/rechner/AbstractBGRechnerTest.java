@@ -431,34 +431,25 @@ public class AbstractBGRechnerTest {
 	 */
 	public static void checkTestfall06BeckerNora(Gesuch gesuch) {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
-			if ("Timon".equals(kindContainer.getKindJA().getVorname())) {
-				assertEquals(1, kindContainer.getBetreuungen().size());
-				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
+			checkKindOfNora(kindContainer, "Timon");
+			checkKindOfNora(kindContainer, "Yasmin");
+		}
+	}
 
-				Verfuegung verfuegung = betreuung.getVerfuegung();
-				Assert.assertNotNull(verfuegung);
-				assertEquals(12, verfuegung.getZeitabschnitte().size());
-				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7600)),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
-				// Erster Monat
-				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 100, 60, 60, VOLLKOSTEN_DEFAULT, 1200.00, 800.00);
-			}
-			if ("Yasmin".equals(kindContainer.getKindJA().getVorname())) {
-				assertEquals(1, kindContainer.getBetreuungen().size());
-				Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
+	private static void checkKindOfNora(KindContainer kindContainer, String kindName) {
+		if (kindName.equals(kindContainer.getKindJA().getVorname())) {
+			assertEquals(1, kindContainer.getBetreuungen().size());
+			Betreuung betreuung = kindContainer.getBetreuungen().iterator().next();
 
-				Verfuegung verfuegung = betreuung.getVerfuegung();
-				Assert.assertNotNull(verfuegung);
-				assertEquals(12, verfuegung.getZeitabschnitte().size());
-				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7600)),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
-				// Erster Monat
-				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 100, 60, 60, VOLLKOSTEN_DEFAULT, 1200.00, 800.00);
-			}
+			Verfuegung verfuegung = betreuung.getVerfuegung();
+			Assert.assertNotNull(verfuegung);
+			assertEquals(12, verfuegung.getZeitabschnitte().size());
+			assertEquals(
+				MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7600)),
+				verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+			// Erster Monat
+			VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
+			assertZeitabschnitt(august, 100, 60, 60, VOLLKOSTEN_DEFAULT, 1200.00, 800.00);
 		}
 	}
 

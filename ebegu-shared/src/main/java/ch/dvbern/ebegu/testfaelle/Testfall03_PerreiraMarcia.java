@@ -57,9 +57,9 @@ public class Testfall03_PerreiraMarcia extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer("Cortes", "Ignazi");
 		gesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(50, 0);
+		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(50);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensumGS1);
-		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(100, 0);
+		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(100);
 		gesuchsteller2.addErwerbspensumContainer(erwerbspensumGS2);
 		// Kinder
 		KindContainer kind1 = createKind(Geschlecht.MAENNLICH, "Cortes", "Jose", LocalDate.of(2015, Month.MAY, 22), Kinderabzug.GANZER_ABZUG, true);

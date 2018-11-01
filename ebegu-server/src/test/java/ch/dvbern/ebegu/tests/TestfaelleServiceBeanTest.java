@@ -82,7 +82,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
-		gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode();
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
@@ -332,11 +332,11 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
 	@Override
-	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
-		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
-		return gesuchsperiode;
+	protected Gesuchsperiode createGesuchsperiode() {
+		Gesuchsperiode customGesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
+		customGesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiodeService.saveGesuchsperiode(customGesuchsperiode);
+		return customGesuchsperiode;
 	}
 }
 

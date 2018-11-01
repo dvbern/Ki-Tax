@@ -78,7 +78,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
-		gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode();
 		gemeinde = TestDataUtil.getGemeindeBern(persistence);
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
@@ -89,7 +89,7 @@ public class ExportServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
 	@Override
-	protected Gesuchsperiode createGesuchsperiode(boolean active) {
+	protected Gesuchsperiode createGesuchsperiode() {
 		Gesuchsperiode gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode1617.setStatus(GesuchsperiodeStatus.AKTIV);
 		gesuchsperiode1617 = gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1617);

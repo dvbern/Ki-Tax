@@ -43,7 +43,6 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -56,7 +55,7 @@ public class FamilienabzugAbschnittRuleTest {
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse5 = BigDecimal.valueOf(7040);
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse6 = BigDecimal.valueOf(7580);
 
-	private static final double DELTA = 1e-15;
+	private static final double DELTA = 1.0e-15;
 	public static final LocalDate DATE_2005 = LocalDate.of(2005, 12, 31);
 
 	private final FamilienabzugAbschnittRule famabAbschnittRule =

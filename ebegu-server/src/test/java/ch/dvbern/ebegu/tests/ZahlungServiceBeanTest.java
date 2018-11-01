@@ -110,7 +110,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
-		gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode();
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		gemeindeId = Objects.requireNonNull(TestDataUtil.getGemeindeBern(persistence)).getId();
@@ -522,10 +522,10 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Override
-	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
-		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		return gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
+	protected Gesuchsperiode createGesuchsperiode() {
+		Gesuchsperiode customGesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
+		customGesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		return gesuchsperiodeService.saveGesuchsperiode(customGesuchsperiode);
 	}
 
 	private Gesuch createGesuch(boolean verfuegen, LocalDate verfuegungsdatum, @Nullable AntragStatus status) {
