@@ -20,11 +20,13 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {Transition} from '@uirouter/core';
+import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Observable, of} from 'rxjs';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
@@ -48,6 +50,8 @@ export class GemeindeHeaderComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly errorService: ErrorService,
         private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -57,7 +61,11 @@ export class GemeindeHeaderComponent implements OnInit {
     }
 
     public mitarbeiterBearbeiten(): void {
-        // TODO: Implement Mitarbeiter Bearbeiten Button Action
+        this.$state.go('admin.benutzerlist');
+    }
+
+    public isStammdatenEditable(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
     }
 
     public getGemeindeTitel(): string {
