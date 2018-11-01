@@ -163,10 +163,10 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
-import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
+import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
 
 /**
  * comments homa
@@ -198,14 +198,14 @@ public final class TestDataUtil {
 	private TestDataUtil() {
 	}
 
-	public static GesuchstellerAdresseContainer createDefaultGesuchstellerAdresseContainer(GesuchstellerContainer gsContainer) {
+	public static GesuchstellerAdresseContainer createDefaultGesuchstellerAdresseContainer(@Nonnull GesuchstellerContainer gsContainer) {
 		final GesuchstellerAdresseContainer gsAdressCont = new GesuchstellerAdresseContainer();
 		gsAdressCont.setGesuchstellerContainer(gsContainer);
 		gsAdressCont.setGesuchstellerAdresseJA(createDefaultGesuchstellerAdresse());
 		return gsAdressCont;
 	}
 
-	public static GesuchstellerAdresseContainer createDefaultGesuchstellerAdresseContainerGS(GesuchstellerContainer gsContainer) {
+	public static GesuchstellerAdresseContainer createDefaultGesuchstellerAdresseContainerGS(@Nonnull GesuchstellerContainer gsContainer) {
 		final GesuchstellerAdresseContainer gsAdressCont = new GesuchstellerAdresseContainer();
 		gsAdressCont.setGesuchstellerContainer(gsContainer);
 		gsAdressCont.setGesuchstellerAdresseGS(createDefaultGesuchstellerAdresse());
@@ -351,7 +351,7 @@ public final class TestDataUtil {
 			gemeinde.setBfsNummer(SEQUENCE.incrementAndGet());
 			gemeinde.setStatus(GemeindeStatus.AKTIV);
 			gemeinde.setMandant(getMandantKantonBern(persistence));
-			gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
+			gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 			return persistence.persist(gemeinde);
 		}
 		return gemeinde;
@@ -387,7 +387,7 @@ public final class TestDataUtil {
 		gemeinde.setGemeindeNummer(1);
 		gemeinde.setBfsNummer(351L);
 		gemeinde.setMandant(createDefaultMandant());
-		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
+		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		return gemeinde;
 	}
 
@@ -400,7 +400,7 @@ public final class TestDataUtil {
 		gemeinde.setGemeindeNummer(2);
 		gemeinde.setBfsNummer(363L);
 		gemeinde.setMandant(createDefaultMandant());
-		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 01, 01));
+		gemeinde.setBetreuungsgutscheineStartdatum(LocalDate.of(2016, 1, 1));
 		return gemeinde;
 	}
 
@@ -542,11 +542,12 @@ public final class TestDataUtil {
 		return list;
 	}
 
+	@Nullable
 	public static InstitutionStammdaten saveInstitutionStammdatenIfNecessary(@Nonnull Persistence persistence, @Nullable InstitutionStammdaten institutionStammdaten) {
 		if (institutionStammdaten != null) {
 			Institution institution = saveInstitutionIfNecessary(persistence, institutionStammdaten.getInstitution());
 			InstitutionStammdaten found = persistence.find(InstitutionStammdaten.class, institutionStammdaten.getId());
-			if (found == null) {
+			if (found == null && institution != null) {
 				institutionStammdaten.setInstitution(institution);
 				return persistence.merge(institutionStammdaten);
 			}
@@ -555,6 +556,7 @@ public final class TestDataUtil {
 		return null;
 	}
 
+	@Nullable
 	private static Institution saveInstitutionIfNecessary(@Nonnull Persistence persistence, @Nullable Institution institution) {
 		if (institution != null) {
 			saveTraegerschaftIfNecessary(persistence, institution.getTraegerschaft());
@@ -716,6 +718,11 @@ public final class TestDataUtil {
 
 	public static Gesuchsperiode createAndPersistGesuchsperiode1718(Persistence persistence) {
 		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(2017, 2018);
+		return persistence.persist(gesuchsperiodeXXYY);
+	}
+
+	public static Gesuchsperiode createAndPersistCustomGesuchsperiode(Persistence persistence, int yearFrom, int yearTo) {
+		Gesuchsperiode gesuchsperiodeXXYY = createGesuchsperiodeXXYY(yearFrom, yearTo);
 		return persistence.persist(gesuchsperiodeXXYY);
 	}
 
@@ -925,7 +932,7 @@ public final class TestDataUtil {
 	 */
 	public static Gesuch createAndPersistWaeltiDagmarGesuch(
 		InstitutionService instService, Persistence persistence,
-		@Nullable LocalDate eingangsdatum, AntragStatus status) {
+		@Nullable LocalDate eingangsdatum, @Nullable AntragStatus status) {
 
 		return createAndPersistWaeltiDagmarGesuch(
 			instService,
@@ -973,7 +980,7 @@ public final class TestDataUtil {
 	public static Gesuch createAndPersistFeutzYvonneGesuch(
 		Persistence persistence,
 		LocalDate eingangsdatum,
-		AntragStatus status) {
+		@Nullable AntragStatus status) {
 		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
 		Testfall02_FeutzYvonne testfall =
 			new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), institutionStammdatenList);
@@ -1182,22 +1189,22 @@ public final class TestDataUtil {
 	public static void prepareParameters(Gesuchsperiode gesuchsperiode, Persistence persistence) {
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS,
 			gesuchsperiode,
 			persistence);
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS,
 			gesuchsperiode,
 			persistence);
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS,
 			gesuchsperiode,
 			persistence);
 		saveEinstellung(
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
-			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+			PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS,
 			gesuchsperiode,
 			persistence);
 		saveEinstellung(PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, "20", gesuchsperiode, persistence);
@@ -1341,6 +1348,7 @@ public final class TestDataUtil {
 
 	public static void createDefaultAdressenForGS(final Gesuch gesuch, final boolean gs2) {
 		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		final GesuchstellerAdresseContainer adresseGS1 = TestDataUtil.
 			createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(adresseGS1.getGesuchstellerAdresseJA());
@@ -1353,6 +1361,7 @@ public final class TestDataUtil {
 
 		if (gs2) {
 			List<GesuchstellerAdresseContainer> adressen2 = new ArrayList<>();
+			Objects.requireNonNull(gesuch.getGesuchsteller2());
 			final GesuchstellerAdresseContainer adresseGS2 = TestDataUtil
 				.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
 			Objects.requireNonNull(adresseGS2.getGesuchstellerAdresseJA());

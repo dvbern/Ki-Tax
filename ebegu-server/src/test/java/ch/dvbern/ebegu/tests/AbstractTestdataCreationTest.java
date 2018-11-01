@@ -39,7 +39,7 @@ public abstract class AbstractTestdataCreationTest extends AbstractEbeguLoginTes
 	@Before
 	public void init() {
 		// Tests initialisieren
-		gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode();
 		final InstitutionStammdaten kitaAaregg = TestDataUtil.createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten kitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
 		final InstitutionStammdaten tagesfamilien = TestDataUtil.createInstitutionStammdatenTagesfamilien();

@@ -733,6 +733,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			+ " Vollkosten: " + vollkosten + '\t'
 			+ " Elternbeitrag: " + elternbeitrag + '\t'
 			+ " Bemerkungen: " + bemerkungen + '\t'
+			+ " Einkommensjahr: " + einkommensjahr + '\t'
 			+ " Einkommen: " + massgebendesEinkommenVorAbzugFamgr + '\t'
 			+ " Abzug Fam: " + abzugFamGroesse;
 		return sb;

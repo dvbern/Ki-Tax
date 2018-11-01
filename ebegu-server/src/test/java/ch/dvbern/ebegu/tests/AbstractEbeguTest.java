@@ -169,8 +169,8 @@ public abstract class AbstractEbeguTest {
 	/**
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
-	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
+	protected Gesuchsperiode createGesuchsperiode() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718();
 		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
 		return gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
 	}

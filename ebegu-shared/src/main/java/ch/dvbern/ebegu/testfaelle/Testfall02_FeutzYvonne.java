@@ -59,9 +59,9 @@ public class Testfall02_FeutzYvonne extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(FAMILIENNAME, "Tizian");
 		gesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(40, 0);
+		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(40);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensumGS1);
-		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(100, 0);
+		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(100);
 		gesuchsteller2.addErwerbspensumContainer(erwerbspensumGS2);
 		// Kinder
 		KindContainer kind1 = createKind(Geschlecht.WEIBLICH, FAMILIENNAME, "Tamara", LocalDate.of(2009, Month.JULY, 11), Kinderabzug.GANZER_ABZUG, true);

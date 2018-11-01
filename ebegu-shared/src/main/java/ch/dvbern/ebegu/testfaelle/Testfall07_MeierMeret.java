@@ -56,9 +56,9 @@ public class Testfall07_MeierMeret extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(FAMILIENNAME, "Jan");
 		gesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(70, 0);
+		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(70);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensumGS1);
-		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(60, 0);
+		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(60);
 		gesuchsteller2.addErwerbspensumContainer(erwerbspensumGS2);
 		// Kinder
 		KindContainer kind1 = createKind(Geschlecht.WEIBLICH, FAMILIENNAME, "Tanja", LocalDate.of(2013, Month.JANUARY, 29), Kinderabzug.GANZER_ABZUG, true);
