@@ -37,7 +37,6 @@ export class DVFinanzielleSituationRequireController implements IController {
     public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
 
     public finanzielleSituationRequired: boolean;
-    public areThereOnlySchulamtangebote: boolean;
     public sozialhilfeBezueger: boolean;
     public verguenstigungGewuenscht: boolean;
 
@@ -69,10 +68,9 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     public setFinanziellesituationRequired(): void {
-        const required = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger
-                    && EbeguUtil.isNotNullOrUndefined(this.verguenstigungGewuenscht) && this.verguenstigungGewuenscht;
+        const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.verguenstigungGewuenscht);
         // Wenn es sich geändert hat, müssen gewisse Daten gesetzt werden
-        if (required !== this.finanzielleSituationRequired) {
+        if (required !== this.finanzielleSituationRequired && this.gesuchModelManager.getGesuch()) {
             this.gesuchModelManager.getGesuch().finSitStatus = required ? null : TSFinSitStatus.AKZEPTIERT;
         }
         this.finanzielleSituationRequired = required;

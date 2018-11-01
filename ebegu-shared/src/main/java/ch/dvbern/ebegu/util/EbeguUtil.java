@@ -100,6 +100,14 @@ public class EbeguUtil {
 		return value == null || !value;
 	}
 
+	public static boolean isNotNullAndTrue(@Nullable Boolean value) {
+		return value != null && value;
+	}
+
+	public static boolean isNotNullAndFalse(@Nullable Boolean value) {
+		return value != null && !value;
+	}
+
 	/**
 	 * Returns true if both list are null or if they have the same number of elements
 	 */
@@ -115,8 +123,8 @@ public class EbeguUtil {
 
 	public static boolean isFinanzielleSituationRequired(@Nonnull Gesuch gesuch) {
 		return gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& EbeguUtil.isNullOrFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
-			&& !EbeguUtil.isNullOrFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht());
+			&& (!EbeguUtil.isNotNullAndTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
+			|| !EbeguUtil.isNotNullAndFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht()));
 	}
 
 	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {

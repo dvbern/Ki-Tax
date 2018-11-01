@@ -189,8 +189,12 @@ export default class EbeguUtil {
         return !EbeguUtil.isNullOrUndefined(data);
     }
 
-    public static isNullOrFalse(data: boolean): boolean {
-        return this.isNullOrUndefined(data) || !data ;
+    public static isNotNullAndTrue(data: boolean): boolean {
+        return this.isNotNullOrUndefined(data) && data;
+    }
+
+    public static isNotNullAndFalse(data: boolean): boolean {
+        return this.isNotNullOrUndefined(data) && !data;
     }
 
     public static isEmptyStringNullOrUndefined(data: string): boolean {
@@ -213,6 +217,23 @@ export default class EbeguUtil {
         const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
 
         return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
+    }
+
+    public static isFinanzielleSituationRequiredForGesuch(gesuch: TSGesuch): boolean {
+        if (!gesuch) {
+            return false;
+        }
+        return EbeguUtil.isNotNullOrUndefined(gesuch)
+            && EbeguUtil.isNotNullOrUndefined(gesuch.familiensituationContainer)
+            && EbeguUtil.isNotNullOrUndefined(gesuch.familiensituationContainer.familiensituationJA)
+            && EbeguUtil.isFinanzielleSituationRequired(
+                gesuch.familiensituationContainer.familiensituationJA.sozialhilfeBezueger,
+                gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht);
+    }
+
+    public static isFinanzielleSituationRequired(sozialhilfeBezueger: boolean, verguenstigungGewuenscht: boolean): boolean {
+        return !EbeguUtil.isNotNullAndTrue(sozialhilfeBezueger)
+            || !EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht);
     }
 
     /**
