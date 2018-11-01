@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(name = "institutionStammdatenTagesschule")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDTO {
+public class JaxInstitutionStammdatenTagesschule extends JaxAbstractDateRangedDTO {
 
 	private static final long serialVersionUID = 6958211446966611467L;
 
