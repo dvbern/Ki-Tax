@@ -115,10 +115,15 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     private navigateBack(): void {
-        if (this.navigationSource.name) {
-            this.$state.go(this.navigationSource, {gemeindeId: this.gemeindeId});
+        if (!this.navigationSource.name) {
+            this.$state.go('gemeinde.list');
             return;
         }
-        this.$state.go('gemeinde.list');
+
+        const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
+            ? 'gemeinde.view'
+            : this.navigationSource;
+
+        this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
     }
 }

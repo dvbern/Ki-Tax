@@ -140,6 +140,12 @@ public enum UserRole {
 			.collect(Collectors.toList());
 	}
 
+	public static List<UserRole> getRolesWithoutAbhaengigkeit(RollenAbhaengigkeit abhaengigkeit) {
+		return Arrays.stream(UserRole.values())
+			.filter(userRole -> userRole.getRollenAbhaengigkeit() != abhaengigkeit)
+			.collect(Collectors.toList());
+	}
+
 	public static List<UserRole> getRolesByAbhaengigkeiten(List<RollenAbhaengigkeit> abhaengigkeitList) {
 		return Arrays.stream(UserRole.values())
 			.filter(userRole -> abhaengigkeitList.contains(userRole.getRollenAbhaengigkeit()))
