@@ -19,6 +19,8 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -29,6 +31,7 @@ import {EinladungAbschliessenComponent} from './einladung-abschliessen.component
 describe('EinladungAbschliessenComponent', () => {
     let component: EinladungAbschliessenComponent;
     let fixture: ComponentFixture<EinladungAbschliessenComponent>;
+    let superadmin: TSBenutzer;
 
     beforeEach(async(() => {
         const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
@@ -36,7 +39,14 @@ describe('EinladungAbschliessenComponent', () => {
             ['getInstitutionenForCurrentBenutzer']);
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-            ['', 'getVisibleRolesForPrincipal']);
+            ['getVisibleRolesForPrincipal']);
+
+        superadmin = TestDataUtil.createSuperadmin();
+        authServiceSpy.principal$ = of(superadmin) as any;
+        authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
+        insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
+        traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
+        transitionSpy.params.and.returnValue({inputId: undefined});
 
         TestBed.configureTestingModule({
             imports: [
@@ -52,19 +62,14 @@ describe('EinladungAbschliessenComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ]
         })
+            .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
-
-        const superadmin = TestDataUtil.createSuperadmin();
-        authServiceSpy.principal$ = of(superadmin) as any;
-        authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
-        insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
-        traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
-        transitionSpy.params.and.returnValue({inputId: undefined});
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(EinladungAbschliessenComponent);
         component = fixture.componentInstance;
+        component.principal = superadmin;
         fixture.detectChanges();
     });
 

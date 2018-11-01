@@ -202,7 +202,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	private JaxEinladungWrapper convertEinladungWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg){
 		JaxEinladungWrapper wrapper = new JaxEinladungWrapper();
 		wrapper.setBenutzer(benutzer);
-		wrapper.setMessage(msg);
+		wrapper.setErrorMessage(msg);
 
 		return wrapper;
 	}

@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.io.Serializable;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -31,18 +30,18 @@ public class JaxEinladungWrapper implements Serializable {
 	private static final long serialVersionUID = 3338519549993818460L;
 
 	@Nullable
-	private String message = null;
+	private String errorMessage = null;
 
 	@Nullable
 	private JaxExternalBenutzer benutzer = null;
 
 	@Nullable
-	public String getMessage() {
-		return message;
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
-	public void setMessage(@Nullable String message) {
-		this.message = message;
+	public void setErrorMessage(@Nullable String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
 	@Nullable
