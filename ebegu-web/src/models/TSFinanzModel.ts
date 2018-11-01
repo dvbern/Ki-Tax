@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import EbeguUtil from '../utils/EbeguUtil';
 import TSEinkommensverschlechterung from './TSEinkommensverschlechterung';
 import TSEinkommensverschlechterungContainer from './TSEinkommensverschlechterungContainer';
 import TSEinkommensverschlechterungInfoContainer from './TSEinkommensverschlechterungInfoContainer';
@@ -323,7 +324,9 @@ export default class TSFinanzModel {
     /**
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
-    public isFinanzielleSituationDesired(): boolean {
-        return this.verguenstigungGewuenscht && !this.sozialhilfeBezueger;
+    public isFinanzielleSituationRequired(): boolean {
+        const required: boolean = EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger
+            && EbeguUtil.isNotNullOrUndefined(this.verguenstigungGewuenscht) && this.verguenstigungGewuenscht;
+        return required;
     }
 }

@@ -148,7 +148,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public finanzielleSituationTurnedNotRequired(): boolean {
-        return this.initialModel.isFinanzielleSituationDesired() && !this.model.isFinanzielleSituationDesired();
+        return this.initialModel.isFinanzielleSituationRequired() && !this.model.isFinanzielleSituationRequired();
     }
 
     public getFinanzielleSituationGS1(): TSFinanzielleSituation {
