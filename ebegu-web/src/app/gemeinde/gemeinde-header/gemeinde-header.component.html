@@ -35,7 +35,7 @@
                         <p><strong translate>SACHBEARBEITER</strong></p>
                         <p>{{sachbearbeiter}}</p>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" *ngIf="isEditionMode()">
                         <button type="button" class="dv-btn mitarbeiter-bearbeiten-button"
                                 (click)="mitarbeiterBearbeiten()"
                                 translate>BENUTZER_EDIT
@@ -47,7 +47,7 @@
                         <div class="marginTop10 marginBottom10">
                             <img [src]="logoImageUrl$ | async" [height]="180" class="gemeinde-profil-image">
                         </div>
-                        <div *ngIf="canUploadLogo()">
+                        <div *ngIf="isEditionMode()">
                             <input #fileInput type="file" accept='image/*'
                                    (change)="srcChange(fileInput.files)"
                                    class="gemeinde-profil-fileinput">

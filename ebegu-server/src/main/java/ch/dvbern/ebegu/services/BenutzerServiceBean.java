@@ -337,14 +337,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Override
 	@PermitAll
 	public Collection<Benutzer> getGemeindeAdministratoren(Gemeinde gemeinde) {
-		return getBenutzersOfRoles(Collections.singletonList(UserRole.ADMIN_GEMEINDE), gemeinde);
+		return getBenutzersOfRoles(UserRole.getAllGemeindeAdminRoles(), gemeinde);
 	}
 
 	@Nonnull
 	@Override
 	@PermitAll
 	public Collection<Benutzer> getGemeindeSachbearbeiter(Gemeinde gemeinde) {
-		return getBenutzersOfRoles(Collections.singletonList(UserRole.SACHBEARBEITER_GEMEINDE), gemeinde);
+		return getBenutzersOfRoles(UserRole.getAllGemeindeSachbearbeiterRoles(), gemeinde);
 	}
 
 	@Nonnull
