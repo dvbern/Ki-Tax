@@ -27,7 +27,7 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-12 dv-input-container-medium">
+                <div class="col-sm-6">
                     <div class="form-group">
                         <!-- Name -->
                         <label translate for="nachname_ID">NAME</label>
@@ -41,7 +41,8 @@
                                            inputId="nachname_ID">
                         </dv-error-messages>
                     </div>
-
+                </div>
+                <div class="col-sm-6">
                     <div class="form-group">
                         <!-- Vorname -->
                         <label translate for="vorname_ID">VORNAME</label>
@@ -55,7 +56,11 @@
                                            inputId="vorname_ID">
                         </dv-error-messages>
                     </div>
+                </div>
+            </div>
 
+            <div class="row">
+                <div class="col-sm-6">
                     <div class="form-group">
                         <!-- E-Mail -->
                         <label translate for="email_ID">EMAIL</label>
@@ -70,12 +75,11 @@
                                            inputId="email_ID">
                         </dv-error-messages>
                     </div>
-
-                    <dv-berechtigung [berechtigung]="benutzer.currentBerechtigung"
-                                     [excludedRoles]="excludedRoles">
-                    </dv-berechtigung>
                 </div>
             </div>
+            <dv-berechtigung displayClass="col-sm-6" [berechtigung]="benutzer.currentBerechtigung"
+                             [excludedRoles]="excludedRoles">
+            </dv-berechtigung>
         </div>
 
         <div class="dv-footer">
