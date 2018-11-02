@@ -1254,6 +1254,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedInstitution, jaxInstitution);
 		jaxInstitution.setName(persistedInstitution.getName());
 		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
+		jaxInstitution.setStatus(persistedInstitution.getStatus());
 		if (persistedInstitution.getTraegerschaft() != null) {
 			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
 		}
@@ -1267,6 +1268,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(institutionJAXP, institution);
 		institution.setName(institutionJAXP.getName());
 		institution.setMail(institutionJAXP.getMail());
+		institution.setStatus(institutionJAXP.getStatus());
 
 		if (institutionJAXP.getMandant() != null && institutionJAXP.getMandant().getId() != null) {
 			final Optional<Mandant> mandantFromDB = mandantService.findMandant(institutionJAXP.getMandant().getId());
@@ -1315,8 +1317,6 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull final InstitutionStammdaten persistedInstStammdaten) {
 		final JaxInstitutionStammdaten jaxInstStammdaten = new JaxInstitutionStammdaten();
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
-		jaxInstStammdaten.setOeffnungstage(persistedInstStammdaten.getOeffnungstage());
-		jaxInstStammdaten.setOeffnungsstunden(persistedInstStammdaten.getOeffnungsstunden());
 		if (persistedInstStammdaten.getIban() != null) {
 			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
 		}
@@ -1350,8 +1350,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionStammdaten.getAdresse());
 
 		convertAbstractDateRangedFieldsToEntity(institutionStammdatenJAXP, institutionStammdaten);
-		institutionStammdaten.setOeffnungstage(institutionStammdatenJAXP.getOeffnungstage());
-		institutionStammdaten.setOeffnungsstunden(institutionStammdatenJAXP.getOeffnungsstunden());
 		if (institutionStammdatenJAXP.getIban() != null) {
 			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
 		}
@@ -1409,7 +1407,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		final JaxInstitutionStammdatenFerieninsel jaxInstStammdatenFerieninsel =
 			new JaxInstitutionStammdatenFerieninsel();
-		convertAbstractVorgaengerFieldsToJAX(persistedInstStammdatenFerieninsel, jaxInstStammdatenFerieninsel);
+		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenFerieninsel, jaxInstStammdatenFerieninsel);
 		jaxInstStammdatenFerieninsel.setAusweichstandortFruehlingsferien(persistedInstStammdatenFerieninsel.getAusweichstandortFruehlingsferien());
 		jaxInstStammdatenFerieninsel.setAusweichstandortHerbstferien(persistedInstStammdatenFerieninsel.getAusweichstandortHerbstferien());
 		jaxInstStammdatenFerieninsel.setAusweichstandortSommerferien(persistedInstStammdatenFerieninsel.getAusweichstandortSommerferien());
@@ -1426,7 +1424,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionStammdatenFerieninselJAXP);
 		requireNonNull(institutionStammdatenFerieninsel);
 
-		convertAbstractVorgaengerFieldsToEntity(
+		convertAbstractDateRangedFieldsToEntity(
 			institutionStammdatenFerieninselJAXP,
 			institutionStammdatenFerieninsel
 		);
@@ -1444,7 +1442,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		final JaxInstitutionStammdatenTagesschule jaxInstStammdatenTagesschule =
 			new JaxInstitutionStammdatenTagesschule();
-		convertAbstractVorgaengerFieldsToJAX(persistedInstStammdatenTagesschule, jaxInstStammdatenTagesschule);
+		convertAbstractDateRangedFieldsToJAX(persistedInstStammdatenTagesschule, jaxInstStammdatenTagesschule);
 		jaxInstStammdatenTagesschule.setModuleTagesschule(moduleTagesschuleListToJax(persistedInstStammdatenTagesschule.getModuleTagesschule()));
 
 		return jaxInstStammdatenTagesschule;
@@ -1458,7 +1456,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institutionStammdatenTagesschuleJAXP);
 		requireNonNull(institutionStammdatenTagesschule);
 
-		convertAbstractVorgaengerFieldsToEntity(
+		convertAbstractDateRangedFieldsToEntity(
 			institutionStammdatenTagesschuleJAXP,
 			institutionStammdatenTagesschule);
 

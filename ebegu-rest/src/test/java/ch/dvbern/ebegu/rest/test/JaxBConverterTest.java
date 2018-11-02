@@ -114,9 +114,9 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		final InstitutionStammdaten kitaAaregg = TestDataUtil.createInstitutionStammdatenKitaWeissenstein();
 		final InstitutionStammdaten kitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
-		final InstitutionStammdaten kita2Aaregg = TestDataUtil.createInstitutionStammdatenTagesfamilien();
+		final InstitutionStammdaten tagesfamilien = TestDataUtil.createInstitutionStammdatenTagesfamilien();
 		Mandant mandant = TestDataUtil.createDefaultMandant();
-		TestdataSetupConfig setupConfig = new TestdataSetupConfig(mandant, kitaBruennen, kitaAaregg, kita2Aaregg, gesuchsperiode);
+		TestdataSetupConfig setupConfig = new TestdataSetupConfig(mandant, kitaBruennen, kitaAaregg, tagesfamilien, gesuchsperiode);
 		testdataCreationService.setupTestdata(setupConfig);
 	}
 
