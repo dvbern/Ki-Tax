@@ -19,30 +19,26 @@
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
-import {of} from 'rxjs';
+import {StateDeclaration} from '@uirouter/core/lib-esm';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
-import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
-import {GemeindeModule} from '../gemeinde.module';
-import {EditGemeindeComponent} from './edit-gemeinde.component';
+import {GemeindeHeaderComponent} from './gemeinde-header.component';
 
-describe('EditGemeindeComponent', () => {
+describe('GemeindeHeaderComponent', () => {
 
-    let component: EditGemeindeComponent;
-    let fixture: ComponentFixture<EditGemeindeComponent>;
+    const url = 'http://logo.png';
+    const transitionTo: StateDeclaration = {name: 'gemeinde.edit'};
+    let component: GemeindeHeaderComponent;
+    let fixture: ComponentFixture<GemeindeHeaderComponent>;
 
     const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-        ['getGemeindenForPrincipal$', 'findGemeinde']);
+        ['uploadLogoImage', 'getLogoUrl']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
-        ['getAllGesuchsperioden']);
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
+    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['to']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
 
     beforeEach(async(() => {
@@ -50,9 +46,6 @@ describe('EditGemeindeComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
-                NoopAnimationsModule,
-                MaterialModule,
-                GemeindeModule,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
@@ -62,24 +55,43 @@ describe('EditGemeindeComponent', () => {
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
             ],
             declarations: [
+                GemeindeHeaderComponent,
             ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
-        ).compileComponents();
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
 
-        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
-            [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
-        transitionSpy.params.and.returnValue({});
-        transitionSpy.from.and.returnValue({});
-        gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
+        gemeindeServiceSpy.getLogoUrl.and.returnValue(url);
+        transitionSpy.to.and.returnValue(transitionTo);
     }));
 
     beforeEach(async(() => {
-        fixture = TestBed.createComponent(EditGemeindeComponent);
+        fixture = TestBed.createComponent(GemeindeHeaderComponent);
         component = fixture.componentInstance;
+        component.gemeinde = TestDataUtil.createGemeindeBern();
         fixture.detectChanges();
     }));
 
     it('should create', async(() => {
         expect(component).toBeTruthy();
     }));
+
+    it('should set LogoUrl', async(() => {
+        component.logoImageUrl$.subscribe(
+            next => expect(next).toBe(url),
+            () => {},
+        );
+    }));
+
+    describe('isEditionMode', () => {
+        it('should be true if transition.to is view.gemeinde', async(() => {
+            transitionTo.name = 'gemeinde.edit';
+            component.ngOnInit();
+            expect(component.isEditionMode()).toBe(true);
+        }));
+        it('should be false if transition.to is NOT view.gemeinde', async(() => {
+            transitionTo.name = 'otherTransition';
+            component.ngOnInit();
+            expect(component.isEditionMode()).toBe(false);
+        }));
+    });
 });

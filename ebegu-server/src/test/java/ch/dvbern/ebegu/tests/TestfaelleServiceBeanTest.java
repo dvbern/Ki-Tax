@@ -45,7 +45,6 @@ import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,6 +69,9 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	@Inject
 	private Persistence persistence;
 
+	private static final int BASISJAHR_PLUS_1 = 2017;
+	private static final int BASISJAHR_PLUS_2 = 2018;
+
 	/**
 	 * Wenn true werden die Testergebnisse neu in die Testfiles geschrieben. Muss für testen immer false sein!
 	 */
@@ -80,7 +82,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Before
 	public void init() {
-		gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode();
 		final Mandant mandant = insertInstitutionen();
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
@@ -88,77 +90,66 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_WaeltiDagmar() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_FeutzIvonne() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.FEUTZ_IVONNE, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_BeckerNora() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_LuethiMeret() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.LUETHI_MERET, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_PerreiraMarcia() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_WaltherLaura() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WALTHER_LAURA, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_MeierMeret() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_UmzugAusInAusBern() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.UMZUG_AUS_IN_AUS_BERN, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_UmzugVorGesuchsperiode() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.UMZUG_VOR_GESUCHSPERIODE, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_Abwesenheit() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.ABWESENHEIT, true, true, gemeinde, gesuchsperiode);
 		ueberpruefeVerfuegungszeitabschnitte(gesuch, null);
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_SchulamtOnly() {
 		//TODO: @Reviewer, ich kann dieser Testfall nicht als verfügt persisten. verstehe aber nicht wieso.
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.SCHULAMT_ONLY, true, false, gemeinde, gesuchsperiode);
@@ -168,33 +159,31 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_WaeltiDagmar_mutationHeirat() {
-		//waelti dagmar arbeitet 60% und hat 20% zuschlag zum ewp
+		//waelti dagmar arbeitet 80%
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.DECEMBER, 15), LocalDate.of(2017, Month.JANUARY, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 15),
+			LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationHeirat");
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_BeckerNora_mutationHeirat() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(2017, Month.FEBRUARY, 15), LocalDate.of(2017, Month.FEBRUARY, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 15), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationHeirat");
 	}
 
 	@Test
-	@Ignore
 	public void testVerfuegung_PerreiraMarcia_mutationScheidung() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.SEPTEMBER, 30), LocalDate.of(2016, Month.OCTOBER, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 30), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationScheidung");
 	}
 
@@ -202,12 +191,11 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Diese Scheidung wurde zu spät eingereicht!
 	 */
 	@Test
-	@Ignore
 	public void testVerfuegung_MeierMeret_mutationScheidung() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(2016, Month.NOVEMBER, 15), LocalDate.of(2016, Month.OCTOBER, 15), true);
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 15), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15), true);
 		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationScheidung");
 	}
 
@@ -345,11 +333,11 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Helper für init. Speichert Gesuchsperiode in DB
 	 */
 	@Override
-	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode1617 = TestDataUtil.createGesuchsperiode1617();
-		gesuchsperiode1617.setStatus(GesuchsperiodeStatus.AKTIV);
-		gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode1617);
-		return gesuchsperiode1617;
+	protected Gesuchsperiode createGesuchsperiode() {
+		Gesuchsperiode customGesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
+		customGesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		gesuchsperiodeService.saveGesuchsperiode(customGesuchsperiode);
+		return customGesuchsperiode;
 	}
 }
 

@@ -15,8 +15,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.math.BigDecimal;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,10 +34,6 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 	private static final long serialVersionUID = -1893677808323618626L;
 	@Nullable
 	private String iban;
-	@Nullable
-	private BigDecimal oeffnungstage;
-	@Nullable
-	private BigDecimal oeffnungsstunden;
 	@Nullable
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 	@NotNull
@@ -64,24 +58,6 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 
 	public void setIban(@Nullable String iban) {
 		this.iban = iban;
-	}
-
-	@Nullable
-	public BigDecimal getOeffnungstage() {
-		return oeffnungstage;
-	}
-
-	public void setOeffnungstage(@Nullable BigDecimal oeffnungstage) {
-		this.oeffnungstage = oeffnungstage;
-	}
-
-	@Nullable
-	public BigDecimal getOeffnungsstunden() {
-		return oeffnungsstunden;
-	}
-
-	public void setOeffnungsstunden(@Nullable BigDecimal oeffnungsstunden) {
-		this.oeffnungsstunden = oeffnungsstunden;
 	}
 
 	@Nullable

@@ -24,7 +24,6 @@ import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
@@ -39,8 +38,6 @@ export class ViewGemeindeComponent implements OnInit {
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
     public korrespondenzsprache: string;
-    private fileToUpload: File;
-    public logoImageUrl: string = '#';
     private gemeindeId: string;
 
     public constructor(
@@ -57,9 +54,6 @@ export class ViewGemeindeComponent implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
-        // TODO: Task KIBON-217: Load from DB
-        this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
-
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.initStrings(stammdaten);
@@ -68,30 +62,12 @@ export class ViewGemeindeComponent implements OnInit {
             }));
     }
 
-    public mitarbeiterBearbeiten(): void {
-        // TODO: Implement Mitarbeiter Bearbeiten Button Action
-    }
-
     public editGemeindeStammdaten(): void {
         this.$state.go('gemeinde.edit', {gemeindeId: this.gemeindeId});
     }
 
     public isStammdatenEditable(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
-    }
-
-    public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
-        return b1 && b2 ? b1.username === b2.username : b1 === b2;
-    }
-
-    public handleLogoUpload(files: FileList): void {
-    // todo KIBON-217 auslagern??? es ist in edit-gemeinde dupliziert
-        this.fileToUpload = files[0];
-        const tmpFileReader = new FileReader();
-        tmpFileReader.onload = (e: any): void => {
-            this.logoImageUrl = e.target.result;
-        };
-        tmpFileReader.readAsDataURL(this.fileToUpload);
     }
 
     private initStrings(stammdaten: TSGemeindeStammdaten): void {

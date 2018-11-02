@@ -38,8 +38,6 @@ export class EditGemeindeComponent implements OnInit {
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
-    public logoImageUrl: string = '#';
-    private fileToUpload: File;
     private navigationSource: StateDeclaration;
     private gemeindeId: string;
 
@@ -57,9 +55,6 @@ export class EditGemeindeComponent implements OnInit {
         if (!this.gemeindeId) {
             return;
         }
-        // TODO: Task KIBON-217: Load from DB
-        this.logoImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
-
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
@@ -86,9 +81,6 @@ export class EditGemeindeComponent implements OnInit {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
         }
-        if (this.fileToUpload && this.fileToUpload.type.includes('image/')) {
-            this.gemeindeRS.postLogoImage(stammdaten.gemeinde.id, this.fileToUpload);
-        }
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => this.navigateBack());
     }
 
@@ -105,20 +97,16 @@ export class EditGemeindeComponent implements OnInit {
         return b1 && b2 ? b1.username === b2.username : b1 === b2;
     }
 
-    public handleLogoUpload(files: FileList): void {
-        this.fileToUpload = files[0];
-        const tmpFileReader = new FileReader();
-        tmpFileReader.onload = (e: any): void => {
-            this.logoImageUrl = e.target.result;
-        };
-        tmpFileReader.readAsDataURL(this.fileToUpload);
-    }
-
     private navigateBack(): void {
-        if (this.navigationSource.name) {
-            this.$state.go(this.navigationSource, {gemeindeId: this.gemeindeId});
+        if (!this.navigationSource.name) {
+            this.$state.go('gemeinde.list');
             return;
         }
-        this.$state.go('gemeinde.list');
+
+        const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
+            ? 'gemeinde.view'
+            : this.navigationSource;
+
+        this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
     }
 }

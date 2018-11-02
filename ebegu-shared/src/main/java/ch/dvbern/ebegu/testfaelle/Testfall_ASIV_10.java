@@ -57,16 +57,16 @@ public class Testfall_ASIV_10 extends AbstractASIVTestfall {
 		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer();
 		erstgesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
-		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100, 0);
+		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensum);
-		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(100, 0);
+		ErwerbspensumContainer erwerbspensumGS2 = createErwerbspensum(100);
 		gesuchsteller2.addErwerbspensumContainer(erwerbspensumGS2);
 		// Kinder
 		KindContainer kind = createKind(Geschlecht.MAENNLICH, "ASIV", "Kind", LocalDate.of(2014, Month.APRIL, 13), Kinderabzug.GANZER_ABZUG, true);
 		kind.setGesuch(erstgesuch);
 		erstgesuch.getKindContainers().add(kind);
 		// Kita Brünnen
-		Betreuung betreuungKitaBruennen = createBetreuung(BetreuungsangebotTyp.KITA, ID_INSTITUTION_BRUENNEN, true);
+		Betreuung betreuungKitaBruennen = createBetreuung(ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA, true);
 		betreuungKitaBruennen.setKind(kind);
 		kind.getBetreuungen().add(betreuungKitaBruennen);
 		BetreuungspensumContainer betreuungspensumKitaBruennen = createBetreuungspensum(100, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.AUGUST, 1), LocalDate.of(gesuchsperiode.getBasisJahrPlus2(), Month.JULY, 31));
