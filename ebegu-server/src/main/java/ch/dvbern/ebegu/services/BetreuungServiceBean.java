@@ -711,8 +711,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(KindContainer_.gesuch)
 			.get(Gesuch_.gesuchsperiode)
 			.get(Gesuchsperiode_.status)
-			.in
-				(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
+			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
 		if (role.isRoleSchulamt()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
