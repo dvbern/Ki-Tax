@@ -17,7 +17,7 @@
 
 <div class="row">
     <!-- Rolle -->
-    <div class="col-sm-12">
+    <div [class]="displayClass">
         <div class="form-group">
             <dv-benutzer-rolle [inputId]="rolleId"
                                [name]="rolleId"
@@ -30,7 +30,7 @@
     </div>
 
     <!-- Gemeinde(n) -->
-    <div class="col-sm-12" *ngIf="berechtigung.hasGemeindeRole()">
+    <div [class]="displayClass" *ngIf="berechtigung.hasGemeindeRole()">
         <dv-gemeinde-multiselect [selected]="berechtigung.gemeindeList"
                                  [disabled]="disabled"
                                  [required]="true">
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Institution -->
-    <div class="col-sm-12" *ngIf="berechtigung.hasInstitutionRole()">
+    <div [class]="displayClass" *ngIf="berechtigung.hasInstitutionRole()">
         <div class="form-group">
             <label translate [for]="institutionId">INSTITUTION</label>
             <div class="dv-select-style">
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Traegerschaft -->
-    <div class="col-sm-12" *ngIf="berechtigung.hasTraegerschaftRole()">
+    <div [class]="displayClass" *ngIf="berechtigung.hasTraegerschaftRole()">
         <div class="form-group">
             <label translate [for]="traegerschaftId">TRAEGERSCHAFT</label>
             <div class="dv-select-style">
