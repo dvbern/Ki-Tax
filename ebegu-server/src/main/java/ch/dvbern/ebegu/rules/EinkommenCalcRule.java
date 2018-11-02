@@ -52,14 +52,14 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		Familiensituation familiensituation = betreuung.extractGesuch().extractFamiliensituation();
 		if (familiensituation != null) {
 			int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();
-			if (familiensituation.getSozialhilfeBezueger() != null && familiensituation.getSozialhilfeBezueger()) {
+			if (Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger())) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
 				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG);
 				return;
 			}
-			if (familiensituation.getVerguenstigungGewuenscht() != null && !familiensituation.getVerguenstigungGewuenscht()) {
+			if (Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht())) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);

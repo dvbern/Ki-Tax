@@ -185,8 +185,8 @@ public class Familiensituation extends AbstractMutableEntity {
 		}
 		final Familiensituation otherFamiliensituation = (Familiensituation) other;
 		return Objects.equals(getAenderungPer(), otherFamiliensituation.getAenderungPer()) &&
-			Objects.equals(getFamilienstatus(), otherFamiliensituation.getFamilienstatus()) &&
-			Objects.equals(getGesuchstellerKardinalitaet(), otherFamiliensituation.getGesuchstellerKardinalitaet()) &&
+			getFamilienstatus() == otherFamiliensituation.getFamilienstatus() &&
+			getGesuchstellerKardinalitaet() == otherFamiliensituation.getGesuchstellerKardinalitaet() &&
 			EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung(), otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht());

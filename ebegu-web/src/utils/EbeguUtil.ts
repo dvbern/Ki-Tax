@@ -235,9 +235,15 @@ export default class EbeguUtil {
                 gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht);
     }
 
+    /**
+     * Both parameters must always be set, thuogh they are nullable in the Familiensituation because they are not set while
+     * creating the object but later while filling out the finanzielle situation.
+     *
+     * For the finanzielle situation to be required:
+     * sozialhilfeBezueger=false and verguenstigungGewuenscht=true
+     */
     public static isFinanzielleSituationRequired(sozialhilfeBezueger: boolean, verguenstigungGewuenscht: boolean): boolean {
-        return !EbeguUtil.isNotNullAndTrue(sozialhilfeBezueger)
-            || !EbeguUtil.isNotNullAndFalse(verguenstigungGewuenscht);
+        return sozialhilfeBezueger === false && verguenstigungGewuenscht === true;
     }
 
     /**

@@ -260,6 +260,13 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
+                if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
+                    || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
+                    return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
+                }
+                return this.navigateToStepFinanzielleSituation('1');
+            }
+            if (this.dvSubStep === 2) {
                 if (!this.gesuchModelManager.isFinanzielleSituationRequired()) {
                     return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
                 }
@@ -268,13 +275,6 @@ export class NavigatorController implements IController {
                     return this.navigateToStepFinanzielleSituation('2');
                 }
                 return this.navigateToFinanziellSituationResultate();
-            }
-            if (this.dvSubStep === 2) {
-                if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
-                    || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
-                    return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
-                }
-                return this.navigateToStepFinanzielleSituation('1');
             }
             if (this.dvSubStep === 3) {
                 return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
@@ -354,6 +354,9 @@ export class NavigatorController implements IController {
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
+                return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
+            }
+            if (this.dvSubStep === 2) {
                 if ((this.gesuchModelManager.getGesuchstellerNumber() === 2)) {
                     return this.navigateToStepFinanzielleSituation('1');
                 }
@@ -361,9 +364,6 @@ export class NavigatorController implements IController {
                 if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                     return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
                 }
-                return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
-            }
-            if (this.dvSubStep === 2) {
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 3) {

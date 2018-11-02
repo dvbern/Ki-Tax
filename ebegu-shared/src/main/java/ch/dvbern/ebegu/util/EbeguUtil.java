@@ -32,12 +32,16 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import com.google.common.collect.ArrayListMultimap;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
  * Allgemeine Utils fuer EBEGU
  */
-public class EbeguUtil {
+public final class EbeguUtil {
+
+	private EbeguUtil() {
+	}
 
 	/**
 	 * Berechnet ob die Daten bei der Familiensituation von einem GS auf 2 GS geaendert wurde.
@@ -103,14 +107,6 @@ public class EbeguUtil {
 		return value == null || !value;
 	}
 
-	public static boolean isNotNullAndTrue(@Nullable Boolean value) {
-		return value != null && value;
-	}
-
-	public static boolean isNotNullAndFalse(@Nullable Boolean value) {
-		return value != null && !value;
-	}
-
 	/**
 	 * Returns true if both list are null or if they have the same number of elements
 	 */
@@ -126,8 +122,8 @@ public class EbeguUtil {
 
 	public static boolean isFinanzielleSituationRequired(@Nonnull Gesuch gesuch) {
 		return gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& (!EbeguUtil.isNotNullAndTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
-			|| !EbeguUtil.isNotNullAndFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht()));
+			&& (BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
+			|| BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht()));
 	}
 
 	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {
