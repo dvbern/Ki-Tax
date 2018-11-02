@@ -23,10 +23,8 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Observable, of} from 'rxjs';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSGemeinde from '../../../models/TSGemeinde';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
@@ -51,7 +49,6 @@ export class GemeindeHeaderComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
-        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -64,16 +61,16 @@ export class GemeindeHeaderComponent implements OnInit {
         this.$state.go('admin.benutzerlist');
     }
 
-    public isStammdatenEditable(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
-    }
-
     public getGemeindeTitel(): string {
         return this.translate.instant('GEMEINDE_NAME',
             {name: this.gemeinde.name, bfs: this.gemeinde.bfsNummer});
     }
 
-    public canUploadLogo(): boolean {
+    /**
+     * If we are in edition mode we should be able to edit everything. All users that open 'gemeinde.edit'
+     * must be allowed to edit the gemeinde. For this reason the role doesn't need to be checked here again.
+     */
+    public isEditionMode(): boolean {
         return 'gemeinde.edit' === this.navigationDest.name;
     }
 
