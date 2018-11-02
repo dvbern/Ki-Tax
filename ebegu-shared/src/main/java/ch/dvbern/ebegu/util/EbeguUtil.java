@@ -122,8 +122,8 @@ public final class EbeguUtil {
 
 	public static boolean isFinanzielleSituationRequired(@Nonnull Gesuch gesuch) {
 		return gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& (BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
-			|| BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht()));
+			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
+			&& BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht());
 	}
 
 	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {
