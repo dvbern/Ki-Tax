@@ -79,7 +79,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
 		if (betreuung.getBetreuungsangebotTyp().isJugendamt()) {
-			if (verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) > 0) {
+			if (verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 				//maximales einkommen wurde ueberschritten
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
