@@ -19,6 +19,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
@@ -40,6 +41,8 @@ describe('EinladungAbschliessenComponent', () => {
         const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
             ['getVisibleRolesForPrincipal']);
+        const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
+            ['uploadLogoImage', 'getLogoUrl']);
 
         superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
@@ -60,6 +63,7 @@ describe('EinladungAbschliessenComponent', () => {
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: GemeindeRS, useValue: gemeindeServiceSpy},
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
