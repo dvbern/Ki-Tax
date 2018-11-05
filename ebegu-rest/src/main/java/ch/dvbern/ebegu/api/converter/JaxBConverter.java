@@ -178,6 +178,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AdresseService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -2914,11 +2915,19 @@ public class JaxBConverter extends AbstractConverter {
 			berechtigung.setTraegerschaft(null);
 		}
 
-		// Gemeinden
-		final Set<Gemeinde> gemeindeListe =
-			gemeindeConverter.gemeindeListToEntity(jaxBerechtigung.getGemeindeList(), berechtigung.getGemeindeList());
+		// Gemeinden: Duerfen nicht vom Frontend übernommen werden, sondern müssen aus der DB gelesen werden!
+		final Set<Gemeinde> gemeindeListe = new HashSet<>();
+		for (JaxGemeinde jaxGemeinde : jaxBerechtigung.getGemeindeList()) {
+			if (jaxGemeinde.getId() != null) {
+				Gemeinde gemeinde = gemeindeService.findGemeinde(jaxGemeinde.getId())
+					.orElseThrow(() -> new EbeguRuntimeException(
+						"findGemeinde",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						jaxGemeinde.getId()));
+				gemeindeListe.add(gemeinde);
+			}
+		}
 		berechtigung.setGemeindeList(gemeindeListe);
-
 		return berechtigung;
 	}
 
