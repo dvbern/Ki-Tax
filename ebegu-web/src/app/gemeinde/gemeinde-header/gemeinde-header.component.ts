@@ -72,7 +72,7 @@ export class GemeindeHeaderComponent implements OnInit {
     }
 
     public areMitarbeiterVisible(): boolean {
-        const allowedRoles: TSRole[] = PERMISSIONS[Permission.ROLE_GEMEINDE];
+        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE];
         allowedRoles.push(TSRole.SUPER_ADMIN);
         return this.authServiceRS.isOneOfRoles(allowedRoles);
     }
