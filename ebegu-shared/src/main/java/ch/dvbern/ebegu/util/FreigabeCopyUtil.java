@@ -97,6 +97,8 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setGemeinsameSteuererklaerung(familiensituationJA.getGemeinsameSteuererklaerung());
 		familiensituationGS.setGesuchstellerKardinalitaet(familiensituationJA.getGesuchstellerKardinalitaet());
 		familiensituationGS.setAenderungPer(familiensituationJA.getAenderungPer());
+		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
+		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
 	}
 
 	private static void copyKindContainer(@Nullable KindContainer container) {

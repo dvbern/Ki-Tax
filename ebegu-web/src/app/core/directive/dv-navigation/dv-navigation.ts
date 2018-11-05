@@ -260,7 +260,16 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
-                if (!this.gesuchModelManager.isFinanzielleSituationDesired()) {
+                // finanzielleSituationStart
+                if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
+                    || !this.gesuchModelManager.isFinanzielleSituationRequired()) {
+                    return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
+                }
+                return this.navigateToStepFinanzielleSituation('1');
+            }
+            if (this.dvSubStep === 2) {
+                // finanzielleSituation
+                if (!this.gesuchModelManager.isFinanzielleSituationRequired()) {
                     return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
                 }
                 if (this.gesuchModelManager.getGesuchstellerNumber() === 1
@@ -269,14 +278,8 @@ export class NavigatorController implements IController {
                 }
                 return this.navigateToFinanziellSituationResultate();
             }
-            if (this.dvSubStep === 2) {
-                if (!this.gesuchModelManager.isFinanzielleSituationEnabled()
-                    || !this.gesuchModelManager.isFinanzielleSituationDesired()) {
-                    return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
-                }
-                return this.navigateToStepFinanzielleSituation('1');
-            }
             if (this.dvSubStep === 3) {
+                // finanzielleSituationResultate
                 return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
             }
 
@@ -354,22 +357,16 @@ export class NavigatorController implements IController {
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
+                return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
+            }
+            if (this.dvSubStep === 2) {
                 if ((this.gesuchModelManager.getGesuchstellerNumber() === 2)) {
                     return this.navigateToStepFinanzielleSituation('1');
                 }
 
-                if (this.gesuchModelManager.getGesuchstellerNumber() === 1 && (
-                    this.gesuchModelManager.isGesuchsteller2Required()
-                    || (
-                        this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung()
-                        && this.gesuchModelManager.areThereOnlySchulamtAngebote()
-                    )
-                )) {
+                if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
                     return this.navigateToStep(TSWizardStepName.FINANZIELLE_SITUATION);
                 }
-                return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
-            }
-            if (this.dvSubStep === 2) {
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
             if (this.dvSubStep === 3) {
@@ -432,9 +429,7 @@ export class NavigatorController implements IController {
             case TSWizardStepName.ERWERBSPENSUM:
                 return this.state.go('gesuch.erwerbsPensen', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION:
-                return this.gesuchModelManager.showFinanzielleSituationStart() ?
-                    this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam) :
-                    this.state.go('gesuch.finanzielleSituation', {gesuchstellerNumber: '1', gesuchId});
+                return this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam);
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
                 return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
             case TSWizardStepName.DOKUMENTE:
