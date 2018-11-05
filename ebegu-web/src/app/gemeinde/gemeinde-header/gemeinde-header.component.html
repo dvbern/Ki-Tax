@@ -28,7 +28,7 @@
 
         <fieldset>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-6" *ngIf="areMitarbeiterVisible()">
                     <div class="form-group">
                         <p><strong translate>ADMINISTRATOREN</strong></p>
                         <p class="marginBottom10">{{administratoren}}</p>

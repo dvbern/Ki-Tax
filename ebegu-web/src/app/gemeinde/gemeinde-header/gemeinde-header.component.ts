@@ -23,8 +23,12 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {Observable, of} from 'rxjs';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSGemeinde from '../../../models/TSGemeinde';
+import {Permission} from '../../authorisation/Permission';
+import {PERMISSIONS} from '../../authorisation/Permissions';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
@@ -49,6 +53,7 @@ export class GemeindeHeaderComponent implements OnInit {
         private readonly errorService: ErrorService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -64,6 +69,12 @@ export class GemeindeHeaderComponent implements OnInit {
     public getGemeindeTitel(): string {
         return this.translate.instant('GEMEINDE_NAME',
             {name: this.gemeinde.name, bfs: this.gemeinde.bfsNummer});
+    }
+
+    public areMitarbeiterVisible(): boolean {
+        const allowedRoles: TSRole[] = PERMISSIONS[Permission.ROLE_GEMEINDE];
+        allowedRoles.push(TSRole.SUPER_ADMIN);
+        return this.authServiceRS.isOneOfRoles(allowedRoles);
     }
 
     /**
