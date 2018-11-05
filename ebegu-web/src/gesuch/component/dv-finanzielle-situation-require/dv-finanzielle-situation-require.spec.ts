@@ -54,7 +54,7 @@ describe('finanzielleSituationRequire', () => {
     describe('Test for boolean finanzielleSituationRequired', () => {
         it('should be true when nothing is set', () => {
             controller.setFinanziellesituationRequired();
-            expect(controller.finanzielleSituationRequired).toBe(true);
+            expect(controller.finanzielleSituationRequired).toBe(false);
         });
         it('should be true when not sozialhilfeBezueger and verguenstigungGewuenscht',
             () => {
@@ -68,7 +68,7 @@ describe('finanzielleSituationRequire', () => {
                 controller.sozialhilfeBezueger = false;
                 controller.verguenstigungGewuenscht = false;
                 controller.setFinanziellesituationRequired();
-                expect(controller.finanzielleSituationRequired).toBe(true);
+                expect(controller.finanzielleSituationRequired).toBe(false);
             });
     });
 });

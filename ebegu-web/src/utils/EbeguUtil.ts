@@ -243,7 +243,7 @@ export default class EbeguUtil {
      * sozialhilfeBezueger=false and verguenstigungGewuenscht=true
      */
     public static isFinanzielleSituationRequired(sozialhilfeBezueger: boolean, verguenstigungGewuenscht: boolean): boolean {
-        return sozialhilfeBezueger === false && verguenstigungGewuenscht === true;
+        return sozialhilfeBezueger === false && verguenstigungGewuenscht; // tslint:disable-line:no-boolean-literal-compare
     }
 
     /**
