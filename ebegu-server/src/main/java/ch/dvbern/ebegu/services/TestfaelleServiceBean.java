@@ -438,6 +438,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			final Gesuch mutation = gesuchOptional.get();
 			final FamiliensituationContainer familiensituationContainer = mutation.getFamiliensituationContainer();
 			Objects.requireNonNull(familiensituationContainer, "Familiensituation muss gesetzt sein");
+			Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA(), "FamiliensituationJA muss gesetzt sein");
+			newFamsit.setSozialhilfeBezueger(familiensituationContainer.getFamiliensituationJA().getSozialhilfeBezueger());
+			newFamsit.setVerguenstigungGewuenscht(familiensituationContainer.getFamiliensituationJA().getVerguenstigungGewuenscht());
 			familiensituationContainer.setFamiliensituationErstgesuch(familiensituationContainer.getFamiliensituationJA());
 			familiensituationContainer.setFamiliensituationJA(newFamsit);
 			familiensituationService.saveFamiliensituation(mutation, familiensituationContainer, null);
