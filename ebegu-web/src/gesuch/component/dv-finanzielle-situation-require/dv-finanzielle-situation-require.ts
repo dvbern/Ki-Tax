@@ -16,12 +16,13 @@
 import {IComponentOptions, IController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import GesuchModelManager from '../../service/gesuchModelManager';
 
 export class DvFinanzielleSituationRequire implements IComponentOptions {
     public transclude = false;
     public bindings = {
-        areThereOnlySchulamtangebote: '=',
         sozialhilfeBezueger: '=',
         verguenstigungGewuenscht: '=',
         finanzielleSituationRequired: '=',
@@ -36,7 +37,6 @@ export class DVFinanzielleSituationRequireController implements IController {
     public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
 
     public finanzielleSituationRequired: boolean;
-    public areThereOnlySchulamtangebote: boolean;
     public sozialhilfeBezueger: boolean;
     public verguenstigungGewuenscht: boolean;
 
@@ -60,23 +60,20 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     /**
-     * Das Feld sozialhilfeBezueger muss nur angezeigt werden, wenn es ein rein Schulamtgesuch ist.
-     */
-    public showSozialhilfeBezueger(): boolean {
-        return this.areThereOnlySchulamtangebote;
-    }
-
-    /**
      * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
      * nein beantwortet wurde.
      */
     public showVerguenstigungGewuenscht(): boolean {
-        return this.showSozialhilfeBezueger() && !this.sozialhilfeBezueger;
+        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger;
     }
 
     public setFinanziellesituationRequired(): void {
-        this.finanzielleSituationRequired = !this.showSozialhilfeBezueger()
-            || (this.showVerguenstigungGewuenscht() && this.verguenstigungGewuenscht);
+        const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.verguenstigungGewuenscht);
+        // Wenn es sich geändert hat, müssen gewisse Daten gesetzt werden
+        if (required !== this.finanzielleSituationRequired && this.gesuchModelManager.getGesuch()) {
+            this.gesuchModelManager.getGesuch().finSitStatus = required ? null : TSFinSitStatus.AKZEPTIERT;
+        }
+        this.finanzielleSituationRequired = required;
     }
 
     public getMaxMassgebendesEinkommen(): string {

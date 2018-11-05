@@ -80,10 +80,6 @@ export class GesuchRouteController implements IController {
         this.userFullName = this.antragStatusHistoryRS.getUserFullname();
     }
 
-    public showFinanzielleSituationStart(): boolean {
-        return this.gesuchModelManager.showFinanzielleSituationStart();
-    }
-
     public getDateFromGesuch(): string {
         if (this.gesuchModelManager && this.gesuchModelManager.getGesuch()) {
             return DateUtil.momentToLocalDateFormat(this.gesuchModelManager.getGesuch().eingangsdatum, 'DD.MM.YYYY');
