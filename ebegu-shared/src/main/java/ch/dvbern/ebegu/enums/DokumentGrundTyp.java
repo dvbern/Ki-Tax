@@ -26,7 +26,8 @@ public enum DokumentGrundTyp {
 	EINKOMMENSVERSCHLECHTERUNG,
 	SONSTIGE_NACHWEISE,
 	PAPIERGESUCH,
-	FREIGABEQUITTUNG;
+	FREIGABEQUITTUNG,
+	ERWEITERTE_BETREUUNG;
 
 	public static boolean isSonstigeOrPapiergesuch(DokumentGrundTyp dokumentGrundTyp) {
 		return dokumentGrundTyp == DokumentGrundTyp.SONSTIGE_NACHWEISE || dokumentGrundTyp == DokumentGrundTyp.PAPIERGESUCH;

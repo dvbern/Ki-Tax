@@ -38,8 +38,6 @@ public interface AdministrationService {
 	int COL_STAMMDATEN_ID = 11;
 	int COL_ANGEBOT = 12;
 	int COL_IBAN = 13;
-	int COL_OEFFNUNGSSTUNDEN = 14;
-	int COL_OEFFNUNGSTAGE = 15;
 
 	/**
 	 * Erstellt ein SQL-Skript mit Inserts/Updates.

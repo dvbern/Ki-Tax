@@ -42,6 +42,7 @@ export class BerechtigungComponent {
     @Input() public berechtigung: TSBerechtigung;
     @Input() public disabled: boolean = false;
     @Input() public readonly excludedRoles: TSRole[] = [];
+    @Input() public readonly displayClass: string = 'col-sm-12';
 
     public readonly inputId = `berechtigung-${nextId++}`;
     public readonly rolleId: string;

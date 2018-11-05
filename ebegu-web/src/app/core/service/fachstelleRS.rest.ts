@@ -67,8 +67,19 @@ export class FachstelleRS {
         );
     }
 
+    public getAnspruchFachstellen(): IPromise<TSFachstelle[]> {
+        return this.http.get(`${this.serviceURL}/anspruch`).then(
+            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
+        );
+    }
+
+    public getErweiterteBetreuungFachstellen(): IPromise<TSFachstelle[]> {
+        return this.http.get(`${this.serviceURL}/erweiterteBetreuung`).then(
+            (response: any) => this.ebeguRestUtil.parseFachstellen(response.data),
+        );
+    }
+
     public getServiceName(): string {
         return 'FachstelleRS';
     }
-
 }

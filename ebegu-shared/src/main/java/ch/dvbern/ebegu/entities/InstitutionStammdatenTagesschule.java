@@ -33,7 +33,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class InstitutionStammdatenTagesschule extends AbstractMutableEntity implements Comparable<InstitutionStammdatenTagesschule> {
+public class InstitutionStammdatenTagesschule extends AbstractDateRangedEntity implements Comparable<InstitutionStammdatenTagesschule> {
 
 	private static final long serialVersionUID = 3991623541799163623L;
 
@@ -61,6 +61,13 @@ public class InstitutionStammdatenTagesschule extends AbstractMutableEntity impl
 		return true;
 	}
 
+	@Override
+	public int compareTo(InstitutionStammdatenTagesschule o) {
+		CompareToBuilder builder = new CompareToBuilder();
+		builder.append(this.getId(), o.getId());
+		return builder.toComparison();
+	}
+
 	@Nullable
 	public Set<ModulTagesschule> getModuleTagesschule() {
 		return moduleTagesschule;
@@ -68,12 +75,5 @@ public class InstitutionStammdatenTagesschule extends AbstractMutableEntity impl
 
 	public void setModuleTagesschule(@Nullable Set<ModulTagesschule> moduleTagesschule) {
 		this.moduleTagesschule = moduleTagesschule;
-	}
-
-	@Override
-	public int compareTo(InstitutionStammdatenTagesschule o) {
-		CompareToBuilder builder = new CompareToBuilder();
-		builder.append(this.getId(), o.getId());
-		return builder.toComparison();
 	}
 }

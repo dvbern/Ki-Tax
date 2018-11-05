@@ -202,7 +202,8 @@ export default class AuthServiceRS {
                 return PERMISSIONS[Permission.ROLE_GEMEINDE];
 
             default:
-                throw new Error(`Role visibility not yet implemented for role ${this.getPrincipalRole()}`);
+                // by default the role of the user itself. the user can always see his role
+                return [this.getPrincipalRole()];
         }
     }
 }

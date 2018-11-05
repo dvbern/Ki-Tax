@@ -28,26 +28,37 @@
             <div class="row">
                 <div class="col-md-6">
                     <h3 translate>KIBON_DATEN</h3>
-
-                    <dv-berechtigung [disabled]="true" [berechtigung]="principal.currentBerechtigung"></dv-berechtigung>
+                    <hr class="header">
+                    <fieldset>
+                        <div class="marginTop20">
+                            <dv-berechtigung displayClass="col-sm-12"
+                                             [disabled]="true"
+                                             [berechtigung]="principal.currentBerechtigung">
+                            </dv-berechtigung>
+                        </div>
+                    </fieldset>
                 </div>
                 <div class="col-md-6">
                     <h3 translate>BE_LOGIN_DATEN</h3>
-
-                    <table class="table">
-                        <tr>
-                            <td translate>VORNAME</td>
-                            <td>{{principal.vorname}}</td>
-                        </tr>
-                        <tr>
-                            <td translate>NAME</td>
-                            <td>{{principal.nachname}}</td>
-                        </tr>
-                        <tr>
-                            <td translate>EMAIL</td>
-                            <td>{{principal.email}}</td>
-                        </tr>
-                    </table>
+                    <hr class="header">
+                    <fieldset>
+                        <div class="marginTop20">
+                            <table class="table">
+                                <tr>
+                                    <td translate>VORNAME</td>
+                                    <td>{{principal.vorname}}</td>
+                                </tr>
+                                <tr>
+                                    <td translate>NAME</td>
+                                    <td>{{principal.nachname}}</td>
+                                </tr>
+                                <tr>
+                                    <td translate>EMAIL</td>
+                                    <td>{{principal.email}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
         </div>

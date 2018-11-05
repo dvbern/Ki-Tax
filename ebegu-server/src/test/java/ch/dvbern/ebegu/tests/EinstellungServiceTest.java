@@ -53,7 +53,7 @@ public class EinstellungServiceTest extends AbstractEbeguLoginTest {
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 
-	private static final EinstellungKey PARAM_KEY = EinstellungKey.BG_BIS_UND_MIT_SCHULSTUFE;
+	private static final EinstellungKey PARAM_KEY = EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 	private Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
 	private Gemeinde gemeinde = null;
 

@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
@@ -37,6 +38,7 @@ public class AbstractDateRangedEntity extends AbstractMutableEntity implements G
 
 	private static final long serialVersionUID = -7541083148864749528L;
 
+	@NotNull
 	@Nonnull
 	@Embedded
 	@Valid

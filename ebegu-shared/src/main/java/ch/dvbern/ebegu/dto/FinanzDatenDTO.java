@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -24,7 +25,9 @@ import java.time.LocalDate;
  * die Werte massgebendesEinkommenBasisjahrPlus1, massgebendesEinkommenBasisjahrPlus1 und datumVonBasisjahrPlus1 sowie
  * datumVonBasisjahrPlus2 sind nur gesetzt wenn die jeweilige Einkommensverschlechterung akzeptiert wurde
  */
-public class FinanzDatenDTO {
+public class FinanzDatenDTO implements Serializable {
+
+	private static final long serialVersionUID = -1595385522554790800L;
 
 	private BigDecimal massgebendesEinkBjVorAbzFamGr = BigDecimal.ZERO;
 	private BigDecimal massgebendesEinkBjP1VorAbzFamGr = BigDecimal.ZERO;

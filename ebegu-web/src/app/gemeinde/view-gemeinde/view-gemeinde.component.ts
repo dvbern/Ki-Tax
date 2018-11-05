@@ -17,15 +17,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
+import {from, Observable} from 'rxjs';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
-import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
-import ErrorService from '../../core/errors/service/ErrorService';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
 @Component({
     selector: 'dv-view-gemeinde',
@@ -35,97 +35,54 @@ import ErrorService from '../../core/errors/service/ErrorService';
 export class ViewGemeindeComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
-    public stammdaten: TSGemeindeStammdaten;
+    public stammdaten$: Observable<TSGemeindeStammdaten>;
+    public keineBeschwerdeAdresse: boolean;
     public korrespondenzsprache: string;
-    public kontinggentierung: string;
-    public beguStart: string;
-    public einschulungTypValues: Array<TSEinschulungTyp>;
-    private fileToUpload!: File;
-    public previewImageURL: string = '#';
+    private gemeindeId: string;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly translate: TranslateService,
-        private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
     public ngOnInit(): void {
-        const gemeindeId: string = this.$transition$.params().gemeindeId;
-        if (!gemeindeId) {
+        this.gemeindeId = this.$transition$.params().gemeindeId;
+        if (!this.gemeindeId) {
             return;
         }
-        // TODO: Task KIBON-217: Load from DB
-        this.previewImageURL = 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Ostermundigen-coat_of_arms.svg';
-        this.einschulungTypValues = getTSEinschulungTypValues();
+        this.stammdaten$ = from(
+            this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
+                this.initStrings(stammdaten);
+                this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
+                return stammdaten;
+            }));
+    }
 
-        this.gemeindeRS.getGemeindeStammdaten(gemeindeId).then(resStamm => {
-            // TODO: GemeindeStammdaten über ein Observable laden, so entfällt changeDetectorRef.markForCheck(), siehe
-            this.stammdaten = resStamm;
+    public editGemeindeStammdaten(): void {
+        this.$state.go('gemeinde.edit', {gemeindeId: this.gemeindeId});
+    }
 
-            this.initStrings();
+    public isStammdatenEditable(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
+    }
 
-            this.changeDetectorRef.markForCheck();
-        });
+    private initStrings(stammdaten: TSGemeindeStammdaten): void {
+        const languages: string[] = [];
+        if (stammdaten.korrespondenzspracheDe) {
+            languages.push(this.translate.instant('DEUTSCH'));
+        }
+        if (stammdaten.korrespondenzspracheFr) {
+            languages.push(this.translate.instant('FRANZOESISCH'));
+        }
+        this.korrespondenzsprache = languages.join(', ');
     }
 
     public cancel(): void {
         this.navigateBack();
-    }
-
-    public persistGemeindeStammdaten(): void {
-        if (!this.form.valid) {
-            return;
-        }
-        this.errorService.clearAll();
-        this.gemeindeRS.saveGemeindeStammdaten(this.stammdaten).then(response => {
-            this.stammdaten = response;
-            this.navigateBack();
-        });
-    }
-
-    public mitarbeiterBearbeiten(): void {
-        // TODO: Implement Mitarbeiter Bearbeiten Button Action
-    }
-
-    public editGemeindeStammdaten(): void {
-        this.$state.go('gemeinde.edit', {gemeindeId: this.stammdaten.gemeinde.id});
-    }
-
-    public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
-        return b1 && b2 ? b1.username === b2.username : b1 === b2;
-    }
-
-    // todo KIBON-217 auslagern??? es ist in edit-gemeinde dupliziert
-    public handleInput(files: FileList): void {
-        this.fileToUpload = files[0];
-        const tmpFileReader = new FileReader();
-        tmpFileReader.onload = (e: any): void => {
-            this.previewImageURL = e.target.result;
-        };
-        tmpFileReader.readAsDataURL(this.fileToUpload);
-    }
-
-    private initStrings(): void {
-        this.beguStart = this.stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
-        const kontingentierung: string = this.translate.instant('KONTINGENTIERUNG');
-        this.kontinggentierung = 'Keine ' + kontingentierung;
-        if (this.stammdaten.kontingentierung) {
-            this.kontinggentierung = kontingentierung;
-        }
-        if (this.stammdaten.korrespondenzspracheDe) {
-            this.korrespondenzsprache = this.translate.instant('DEUTSCH');
-        }
-        if (!this.stammdaten.korrespondenzspracheFr) {
-            return;
-        }
-        if (this.korrespondenzsprache.length > 0) {
-            this.korrespondenzsprache += ', ';
-        }
-        this.korrespondenzsprache += this.translate.instant('FRANZOESISCH');
     }
 
     private navigateBack(): void {

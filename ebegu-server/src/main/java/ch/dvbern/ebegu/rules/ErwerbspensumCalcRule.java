@@ -15,8 +15,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -26,6 +24,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Berechnet die hoehe des ErwerbspensumRule eines bestimmten Erwerbspensums
@@ -45,9 +45,9 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
-			Objects.requireNonNull(betreuung.extractGesuch(), "Gesuch muss gesetzt sein");
-			Objects.requireNonNull(betreuung.extractGesuch().extractFamiliensituation(), "Familiensituation muss gesetzt sein");
+		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
+			requireNonNull(betreuung.extractGesuch(), "Gesuch muss gesetzt sein");
+			requireNonNull(betreuung.extractGesuch().extractFamiliensituation(), "Familiensituation muss gesetzt sein");
 			boolean hasSecondGesuchsteller = hasSecondGSForZeit(betreuung, verfuegungZeitabschnitt.getGueltigkeit());
 			int erwerbspensumOffset = hasSecondGesuchsteller ? 100 : 0;
 			// Erwerbspensum ist immer die erste Rule, d.h. es wird das Erwerbspensum mal als Anspruch angenommen
@@ -70,7 +70,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	}
 
 	private Integer calculateZuschlagGS1(int erwerbspensum, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		Integer zuschlag = verfuegungZeitabschnitt.getZuschlagErwerbspensumGS1() != null ? verfuegungZeitabschnitt.getZuschlagErwerbspensumGS1() : 0;
+		int zuschlag = verfuegungZeitabschnitt.getZuschlagErwerbspensumGS1() != null ? verfuegungZeitabschnitt.getZuschlagErwerbspensumGS1() : 0;
 		if ((erwerbspensum + zuschlag) > 100) {
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ZUSCHLAG_GS1_MSG);
 			zuschlag = 100 - erwerbspensum;    //zuschlag ist maximal die differenz zu 100%
@@ -147,7 +147,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	private boolean hasSecondGSForZeit(@Nonnull Betreuung betreuung, @Nonnull DateRange gueltigkeit) {
 		final Gesuch gesuch = betreuung.extractGesuch();
-		final Familiensituation familiensituation = Objects.requireNonNull(gesuch.extractFamiliensituation());
+		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
 		final Familiensituation familiensituationErstGesuch = gesuch.extractFamiliensituationErstgesuch();
 
 		if (familiensituation.getAenderungPer() != null

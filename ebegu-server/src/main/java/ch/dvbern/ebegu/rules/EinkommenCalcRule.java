@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -56,17 +57,27 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
 		if (betreuung.getBetreuungsangebotTyp().isJugendamt()) {
-			if (verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) > 0) {
+			if (verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 				//maximales einkommen wurde ueberschritten
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
-					verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
+					reduceAnspruchInNormalCase(betreuung, verfuegungZeitabschnitt);
 					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG);
 				} else {
 					verfuegungZeitabschnitt.setBezahltVollkosten(true);
 					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_VOLLKOSTEN_MSG);
 				}
 			}
+		}
+	}
+
+	/**
+	 * If the Betreuung is set as "erweiterteBeduerfniss" there is no need to reduce the Anspruch tu zero when the incomes are too high.
+	 * This is because the child still has Anspruch, though it will only get a redutcion of the costs due to this erweiterteBeduerfniss
+	 */
+	private void reduceAnspruchInNormalCase(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		if (!Objects.requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA()).getErweiterteBeduerfnisse()) {
+			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 		}
 	}
 

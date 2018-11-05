@@ -86,8 +86,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		TestDataUtil.persistNewGesuchInStatus(AntragStatus.VERFUEGT, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
 
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		final Gesuch gesuch3 = createAndPersistFeutzYvonneGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
+		TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		final Gesuch gesuch3 = createAndPersistFeutzYvonneGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
 		filterDTO.getSort().setPredicate("fallNummer");
 		filterDTO.getSort().setReverse(true);     //aufsteigend
@@ -109,7 +109,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchByFamilienname() {
 		TestDataUtil.persistNewGesuchInStatus(AntragStatus.ERSTE_MAHNUNG, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
-		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null,
+		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(
+			persistence, LocalDate.of(1980, Month.MARCH, 25), null,
 			gesuchsperiode);
 		TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
@@ -134,8 +135,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testPaginationEdgeCases() {
 		TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
 		filterDTO.getPagination().setStart(0);
 		filterDTO.getPagination().setNumber(10);
@@ -162,8 +163,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchByGesuchsperiode() {
 		TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Gesuchsperiode periode = TestDataUtil.createCustomGesuchsperiode(TestDataUtil.PERIODE_JAHR_1, TestDataUtil.PERIODE_JAHR_2);
 
 		Gesuchsperiode nextPeriode = TestDataUtil.createCustomGesuchsperiode(TestDataUtil.PERIODE_JAHR_1 + 1, TestDataUtil.PERIODE_JAHR_2 + 1);
@@ -198,7 +199,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchWithRoleGesuchsteller() {
 		TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
 		Pair<Long, List<Gesuch>> firstResult = searchService.searchAllAntraege(filterDTO);
@@ -212,9 +213,11 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testSearchWithRoleSachbearbeiterInst() {
+
 		Gesuch gesDagmar = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25),
 			AntragStatus.IN_BEARBEITUNG_GS, gesuchsperiode);
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25),
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(
+			persistence, LocalDate.of(1980, Month.MARCH, 25),
 			AntragStatus.IN_BEARBEITUNG_JA, gesuchsperiode);
 
 		AntragTableFilterDTO filterDTO = TestDataUtil.createAntragTableFilterDTO();
@@ -290,7 +293,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchPendenzenJA() {
 		TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
-		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25),
+		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(
+			persistence, LocalDate.of(1980, Month.MARCH, 25),
 			null, gesuchsperiode);
 		TestDataUtil.gesuchVerfuegen(gesuch, gesuchService);
 

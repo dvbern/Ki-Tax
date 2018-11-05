@@ -29,7 +29,7 @@ public class TestdataSetupConfig {
 	private Gemeinde gemeinde;
 	private InstitutionStammdaten kitaBruennen;
 	private InstitutionStammdaten kitaWeissenstein;
-	private InstitutionStammdaten kita2Weissenstein;
+	private InstitutionStammdaten tagesfamilien;
 	private InstitutionStammdaten tagesschuleBruennen;
 	private InstitutionStammdaten ferieninselBruennen;
 
@@ -40,22 +40,22 @@ public class TestdataSetupConfig {
 
 	public TestdataSetupConfig(
 		Mandant mandant, InstitutionStammdaten kitaBruennen, InstitutionStammdaten kitaWeissenstein,
-		InstitutionStammdaten kita2Weissenstein) {
+		InstitutionStammdaten tagesfamilien) {
 		this.mandant = mandant;
 		this.kitaBruennen = kitaBruennen;
 		this.kitaWeissenstein = kitaWeissenstein;
-		this.kita2Weissenstein = kita2Weissenstein;
+		this.tagesfamilien = tagesfamilien;
 	}
 
 	public TestdataSetupConfig(
 		Mandant mandant,
 		InstitutionStammdaten kitaBruennen,
 		InstitutionStammdaten kitaWeissenstein,
-		InstitutionStammdaten kita2Weissenstein, Gesuchsperiode gesuchsperiode) {
+		InstitutionStammdaten tagesfamilien, Gesuchsperiode gesuchsperiode) {
 		this.mandant = mandant;
 		this.kitaBruennen = kitaBruennen;
 		this.kitaWeissenstein = kitaWeissenstein;
-		this.kita2Weissenstein = kita2Weissenstein;
+		this.tagesfamilien = tagesfamilien;
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
@@ -63,7 +63,7 @@ public class TestdataSetupConfig {
 		Mandant mandant,
 		InstitutionStammdaten kitaBruennen,
 		InstitutionStammdaten kitaWeissenstein,
-		InstitutionStammdaten kita2Weissenstein,
+		InstitutionStammdaten tagesfamilien,
 		InstitutionStammdaten tagesschuleBruennen,
 		InstitutionStammdaten ferieninselBruennen,
 		Gesuchsperiode gesuchsperiode) {
@@ -71,7 +71,7 @@ public class TestdataSetupConfig {
 		this.mandant = mandant;
 		this.kitaBruennen = kitaBruennen;
 		this.kitaWeissenstein = kitaWeissenstein;
-		this.kita2Weissenstein = kita2Weissenstein;
+		this.tagesfamilien = tagesfamilien;
 		this.tagesschuleBruennen = tagesschuleBruennen;
 		this.ferieninselBruennen = ferieninselBruennen;
 		this.gesuchsperiode = gesuchsperiode;
@@ -101,12 +101,12 @@ public class TestdataSetupConfig {
 		this.kitaWeissenstein = kitaWeissenstein;
 	}
 
-	public InstitutionStammdaten getKita2Weissenstein() {
-		return kita2Weissenstein;
+	public InstitutionStammdaten getTagesfamilien() {
+		return tagesfamilien;
 	}
 
-	public void setKita2Weissenstein(InstitutionStammdaten kita2Weissenstein) {
-		this.kita2Weissenstein = kita2Weissenstein;
+	public void setTagesfamilien(InstitutionStammdaten tagesfamilien) {
+		this.tagesfamilien = tagesfamilien;
 	}
 
 	public Gesuchsperiode getGesuchsperiode() {

@@ -21,6 +21,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -28,6 +30,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -66,6 +69,12 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	@NotNull
 	@Column(nullable = false)
 	private Boolean active = true;
+
+	@NotNull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private InstitutionStatus status = InstitutionStatus.EINGELADEN;
+
 
 	public Institution() {
 	}
@@ -115,6 +124,14 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		this.active = active;
 	}
 
+	public InstitutionStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(InstitutionStatus status) {
+		this.status = status;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -129,6 +146,7 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		}
 		final Institution otherInstitution = (Institution) other;
 		return Objects.equals(getMail(), otherInstitution.getMail()) &&
+			Objects.equals(getStatus(), otherInstitution.getStatus()) &&
 			Objects.equals(getName(), otherInstitution.getName());
 	}
 

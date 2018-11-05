@@ -116,6 +116,11 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@SortNatural
 	private Set<BetreuungspensumContainer> betreuungspensumContainers = new TreeSet<>();
 
+	@NotNull
+	@Valid
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
+	private ErweiterteBetreuungContainer erweiterteBetreuungContainer;
+
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	private Set<AbwesenheitContainer> abwesenheitContainers = new TreeSet<>();
@@ -153,10 +158,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@NotNull
 	@Column(nullable = false)
 	private Boolean keineKesbPlatzierung = false;
-
-	@NotNull
-	@Column(nullable = false)
-	private Boolean erweiterteBeduerfnisse = false;
 
 	@Nullable
 	@Column(nullable = true)
@@ -229,6 +230,16 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		this.abwesenheitContainers = abwesenheiten;
 	}
 
+	@Nonnull
+	public ErweiterteBetreuungContainer getErweiterteBetreuungContainer() {
+		return erweiterteBetreuungContainer;
+	}
+
+	@SuppressWarnings("NullableProblems")
+	public void setErweiterteBetreuungContainer(@Nonnull ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
+		this.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
+	}
+
 	@Nullable
 	public String getGrundAblehnung() {
 		return grundAblehnung;
@@ -287,14 +298,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	public void setKeineKesbPlatzierung(Boolean keineKesbPlatzierung) {
 		this.keineKesbPlatzierung = keineKesbPlatzierung;
-	}
-
-	public Boolean getErweiterteBeduerfnisse() {
-		return erweiterteBeduerfnisse;
-	}
-
-	public void setErweiterteBeduerfnisse(Boolean erweiterteBeduerfnisse) {
-		this.erweiterteBeduerfnisse = erweiterteBeduerfnisse;
 	}
 
 	@Nullable
@@ -378,21 +381,25 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		final Betreuung otherBetreuung = (Betreuung) other;
 
 		boolean pensenSame = this.getBetreuungspensumContainers().stream().allMatch(
-			(pensCont) -> otherBetreuung.getBetreuungspensumContainers().stream().anyMatch(otherPensenCont -> otherPensenCont.isSame(pensCont)));
+			pensCont -> otherBetreuung.getBetreuungspensumContainers().stream()
+				.anyMatch(otherPensenCont -> otherPensenCont.isSame(pensCont)));
 
 		boolean abwesenheitenSame = true;
 		if (inklAbwesenheiten) {
 			abwesenheitenSame = this.getAbwesenheitContainers().stream().allMatch(
-				(abwesenheitCont) -> otherBetreuung.getAbwesenheitContainers().stream().anyMatch(otherAbwesenheitCont -> otherAbwesenheitCont.isSame(abwesenheitCont)));
+				abwesenheitCont -> otherBetreuung.getAbwesenheitContainers().stream()
+					.anyMatch(otherAbwesenheitCont -> otherAbwesenheitCont.isSame(abwesenheitCont)));
 		}
 		boolean statusSame = true;
 		if (inklStatus) {
 			statusSame = this.getBetreuungsstatus() == otherBetreuung.getBetreuungsstatus();
 		}
 		boolean stammdatenSame = this.getInstitutionStammdaten().isSame(otherBetreuung.getInstitutionStammdaten());
-		boolean erwBeduerfnisseSame = Objects.equals(getErweiterteBeduerfnisse(), otherBetreuung
-			.getErweiterteBeduerfnisse());
-		return pensenSame && abwesenheitenSame && statusSame && stammdatenSame && erwBeduerfnisseSame;
+
+		boolean sameErweiterteBeduerfnisse =
+			getErweiterteBetreuungContainer().isSame(otherBetreuung.getErweiterteBetreuungContainer());
+
+		return pensenSame && abwesenheitenSame && statusSame && stammdatenSame && sameErweiterteBeduerfnisse;
 	}
 
 	@Transient
@@ -467,9 +474,8 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	public Verfuegung getVerfuegungOrVorgaengerVerfuegung() {
 		if (getVerfuegung() != null) {
 			return getVerfuegung();
-		} else {
-			return getVorgaengerVerfuegung();
 		}
+		return getVorgaengerVerfuegung();
 	}
 
 	@Nullable
@@ -508,6 +514,12 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			for (AbwesenheitContainer abwesenheitContainer : this.getAbwesenheitContainers()) {
 				target.getAbwesenheitContainers().add(abwesenheitContainer.copyAbwesenheitContainer(new AbwesenheitContainer(), copyType, target));
 			}
+
+			if(erweiterteBetreuungContainer != null){
+				target.setErweiterteBetreuungContainer(erweiterteBetreuungContainer
+					.copyErweiterteBetreuungContainer(new ErweiterteBetreuungContainer(), copyType, target));
+			}
+
 			if (belegungFerieninsel != null) {
 				target.setBelegungFerieninsel(belegungFerieninsel.copyBelegungFerieninsel(new BelegungFerieninsel(), copyType));
 			}
@@ -518,7 +530,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			target.setBetreuungNummer(this.getBetreuungNummer());
 			target.setVerfuegung(null);
 			target.setVertrag(this.getVertrag());
-			target.setErweiterteBeduerfnisse(this.getErweiterteBeduerfnisse());
 			target.setDatumAblehnung(this.getDatumAblehnung());
 			target.setDatumBestaetigung(this.getDatumBestaetigung());
 			target.setBetreuungMutiert(null);

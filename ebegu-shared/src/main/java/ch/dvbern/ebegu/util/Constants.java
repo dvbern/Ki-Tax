@@ -30,6 +30,7 @@ public final class Constants {
 	public static final int DB_DEFAULT_MAX_LENGTH = 255;
 	public static final int DB_TEXTAREA_LENGTH = 4000;
 	public static final int DB_DEFAULT_SHORT_LENGTH = 100;
+	public static final int ONE_MEG = 1048576;
 	public static final int TEN_MEG = 10485760;
 
 	public static final int UUID_LENGTH = 36;
@@ -45,7 +46,8 @@ public final class Constants {
 	public static final String REGEX_EMAIL = "[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}";
 	public static final String REGEX_TELEFON = "(0|\\+41|0041)[ ]*[\\d]{2}[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
 	public static final String REGEX_TELEFON_MOBILE = "(0|\\+41|0041)[ ]*(74|75|76|77|78|79)[ ]*[\\d]{3}[ ]*[\\d]{2}[ ]*[\\d]{2}";
-	public static final String REGEX_URL = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+	public static final String REGEX_URL =
+		"^$|[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)";
 	public static final String PATTERN_DATE = "dd.MM.yyyy";
 	public static final String PATTERN_FILENAME_DATE_TIME = "dd.MM.yyyy_HH.mm.ss";
 	public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(Constants.PATTERN_DATE);
@@ -89,10 +91,10 @@ public final class Constants {
 	public static final String LOGINCONNECTOR_USER_USERNAME = "LoginConnector";
 	public static final String UNKNOWN = "UNKNOWN";
 
-	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 = "3800";
-	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4 = "6000";
-	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5 = "7000";
-	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6 = "7700";
+	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS = "3800";
+	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS = "6000";
+	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS = "7000";
+	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS = "7700";
 
 	private Constants() {
 		//this prevents even the native class from

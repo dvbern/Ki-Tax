@@ -22,6 +22,8 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -262,7 +264,13 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		final KindContainer kind = gesuch.getKindContainers().iterator().next();
 
 		kind.getBetreuungen().forEach(betreuung -> {
-			betreuung.setErweiterteBeduerfnisse(true);
+			if (betreuung.getErweiterteBetreuungContainer() == null) {
+				betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
+				betreuung.getErweiterteBetreuungContainer().setErweiterteBetreuungJA(new ErweiterteBetreuung());
+			}
+			betreuung.getErweiterteBetreuungContainer()
+				.getErweiterteBetreuungJA()
+				.setErweiterteBeduerfnisse(true);
 			persistence.merge(betreuung);
 		});
 

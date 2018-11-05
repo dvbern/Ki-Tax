@@ -36,7 +36,10 @@ import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
+import TSErweiterteBetreuung from '../../../models/TSErweiterteBetreuung';
+import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuungContainer';
 import TSExceptionReport from '../../../models/TSExceptionReport';
+import {TSFachstelle} from '../../../models/TSFachstelle';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
@@ -104,6 +107,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public moduleBackup: TSModulTagesschule[] = undefined;
     public aktuellGueltig: boolean = true;
     public isDuplicated: boolean = false;
+    // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
+    public fachstelleId: string;
 
     public constructor(
         private readonly $state: StateService,
@@ -133,7 +138,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
-
         if (kindIndex >= 0) {
             this.gesuchModelManager.setKindIndex(kindIndex);
             if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
@@ -144,12 +148,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
                 this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
             } else {
-                // wenn betreuung-nummer nicht definiert ist heisst dass, das wir ein neues erstellen sollten
+                // wenn betreuung-nummer nicht definiert ist heisst das, dass wir ein neues erstellen sollten
                 this.model = this.initEmptyBetreuung();
                 this.initialBetreuung = angular.copy(this.model);
-                this.betreuungIndex = this.gesuchModelManager.getKindToWorkWith().betreuungen ?
-                    this.gesuchModelManager.getKindToWorkWith().betreuungen.length :
-                    0;
+                this.betreuungIndex = this.gesuchModelManager.getKindToWorkWith().betreuungen
+                    ? this.gesuchModelManager.getKindToWorkWith().betreuungen.length
+                    : 0;
                 this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
             }
 
@@ -166,6 +170,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.betreuungsangebot = undefined;
             }
             this.initViewModel();
+
+            if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
+                this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
+            }
 
             // just to read!
             this.kindModel = this.gesuchModelManager.getKindToWorkWith();
@@ -193,6 +201,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public initEmptyBetreuung(): TSBetreuung {
         const tsBetreuung = new TSBetreuung();
+        tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
+        tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
         return tsBetreuung;
@@ -210,6 +220,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.gesuchModelManager.getActiveInstitutionenList()
             || this.gesuchModelManager.getActiveInstitutionenList().length <= 0) {
             this.gesuchModelManager.updateActiveInstitutionenList();
+        }
+        if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
+            this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
+        }
+        if (!this.gesuchModelManager.getFachstellenErweiterteBetreuungList()
+            || this.gesuchModelManager.getFachstellenErweiterteBetreuungList().length <= 0) {
+            this.gesuchModelManager.updateFachstellenErweiterteBetreuungList();
         }
     }
 
@@ -319,6 +336,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
             return undefined;
         });
+    }
+
+    /**
+     * This method saves the Betreuung as it is and it doesn't trigger any other action.
+     */
+    public saveBetreuung(): void {
+        if (this.isGesuchValid()) {
+            this.save(null, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        }
     }
 
     /**
@@ -522,6 +548,21 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return undefined;
     }
 
+    public getErweiterteBetreuungJA(): TSErweiterteBetreuung {
+        if (this.getBetreuungModel() && this.getBetreuungModel().erweiterteBetreuungContainer) {
+            return this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA;
+        }
+        return undefined;
+    }
+
+    public getErweiterteBetreuungGS(): TSErweiterteBetreuung {
+        if (this.getBetreuungModel() && this.getBetreuungModel().erweiterteBetreuungContainer) {
+            return this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungGS;
+        }
+
+        return undefined;
+    }
+
     public getBetreuungspensen(): Array<TSBetreuungspensumContainer> {
         if (this.getBetreuungModel()) {
             return this.getBetreuungModel().betreuungspensumContainers;
@@ -601,7 +642,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public platzAbweisen(): void {
         // copy values modified by the Institution in initialBetreuung
-        this.initialBetreuung.erweiterteBeduerfnisse = this.getBetreuungModel().erweiterteBeduerfnisse;
+
         this.initialBetreuung.grundAblehnung = this.getBetreuungModel().grundAblehnung;
         // restore initialBetreuung
         this.model = angular.copy(this.initialBetreuung);
@@ -619,7 +660,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.getBetreuungspensum(i).betreuungspensumJA.pensum = 0;
             this.getBetreuungspensum(i).betreuungspensumJA.nichtEingetreten = true;
         }
-        this.getBetreuungModel().erweiterteBeduerfnisse = false;
+
         this.save(TSBetreuungsstatus.STORNIERT, PENDENZEN_BETREUUNG, undefined);
     }
 
@@ -730,12 +771,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     /**
      * Erweiterte Beduerfnisse wird nur beim Institutionen oder Traegerschaften eingeblendet oder wenn das Feld schon
-     * als true gesetzt ist ACHTUNG: Hier benutzen wir die Direktive dv-show-element nicht, da es unterschiedliche
-     * Bedingungen für jede Rolle gibt.
+     * als true gesetzt ist.
      */
     public showErweiterteBeduerfnisse(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
-            || this.getBetreuungModel().erweiterteBeduerfnisse;
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles())
+            || this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse;
     }
 
     public showFalscheAngaben(): boolean {
@@ -915,7 +956,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableErweiterteBeduerfnisse(): boolean {
-        return (this.isBetreuungsstatusWarten() && !this.isSavingData) || this.isMutationsmeldungStatus;
+        const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
+        const gemeindeUser = this.authServiceRS
+            .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
+
+        return !this.isSavingData
+            && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
+            && ((gesuchsteller && this.isBetreuungsstatusAusstehend())
+                || gemeindeUser);
     }
 
     /**
@@ -940,5 +988,29 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.getBetreuungModel().institutionStammdaten = undefined;
         }
         this.setSelectedInstitutionStammdaten();
+    }
+
+    public isFachstelleRequired(): boolean {
+        return this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse;
+    }
+
+    public setSelectedFachsstelle(): void {
+        const fachstellenList = this.getFachstellenList();
+        const found = fachstellenList.find(f => f.id === this.fachstelleId);
+        if (found) {
+            this.getErweiterteBetreuungJA().fachstelle = found;
+        }
+    }
+
+    public getFachstellenList(): Array<TSFachstelle> {
+        return this.gesuchModelManager.getFachstellenErweiterteBetreuungList();
+    }
+
+    public getTextFachstelleKorrekturJA(): string {
+        if ((this.getErweiterteBetreuungGS() && this.getErweiterteBetreuungGS().erweiterteBeduerfnisse)
+            && (this.getErweiterteBetreuungJA() && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)) {
+            return this.getErweiterteBetreuungGS().fachstelle.name;
+        }
+        return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 }

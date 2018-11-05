@@ -62,7 +62,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -99,16 +98,19 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	private Gesuchsperiode gesuchsperiode;
 	private String gemeindeId;
 
-	private static final LocalDateTime DATUM_GENERIERT = LocalDateTime.of(2017, Month.JUNE, 20, 0, 0);
+	private static final int BASISJAHR_PLUS_1 = 2017;
+	private static final int BASISJAHR_PLUS_2 = 2018;
+
+	private static final LocalDateTime DATUM_GENERIERT = LocalDateTime.of(BASISJAHR_PLUS_2, Month.JUNE, 20, 0, 0);
 	private static final LocalDate DATUM_FAELLIG = DATUM_GENERIERT.plusDays(3).toLocalDate();
 
-	private static final LocalDate DATUM_AUGUST = LocalDate.of(2016, Month.AUGUST, 20);
-	private static final LocalDate DATUM_SEPTEMBER = LocalDate.of(2016, Month.SEPTEMBER, 20);
-	private static final LocalDate DATUM_OKTOBER = LocalDate.of(2016, Month.OCTOBER, 20);
+	private static final LocalDate DATUM_AUGUST = LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 20);
+	private static final LocalDate DATUM_SEPTEMBER = LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 20);
+	private static final LocalDate DATUM_OKTOBER = LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 20);
 
 	@Before
 	public void init() {
-		gesuchsperiode = createGesuchsperiode(true);
+		gesuchsperiode = createGesuchsperiode();
 		insertInstitutionen();
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		gemeindeId = Objects.requireNonNull(TestDataUtil.getGemeindeBern(persistence)).getId();
@@ -154,7 +156,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * werden.
 	 */
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenNormalUndMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
@@ -195,7 +196,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * In der Zahlung muessen alle Korrekturen angezeigt werden aber die von erster Mutation nicht.
 	 */
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenNormalUndTwoMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
@@ -245,7 +245,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	 * ignoriert angezeigt
 	 */
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenNormalUndMutationChangeIgnoriert() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
@@ -277,7 +276,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenMitNachzahlung() {
 		createGesuch(true);
 		// Anzahl Zahlungen: Anzahl Monate seit Periodenbeginn, inkl. dem aktuellen
@@ -299,10 +297,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenMitKorrekturMultiple() {
 		Gesuch erstgesuch = createGesuch(true, DATUM_AUGUST.minusDays(1), AntragStatus.VERFUEGT); // Becker Yasmin,
-		// 01.08.2016 - 31.07.2017, EWP 60%
+		// 01.08.BASISJAHR_PLUS_1 - 31.07.BASISJAHR_PLUS_2_1, EWP 60%
 
 		// Zahlung August ausloesen:
 		// Erwartet:    1 NORMALE Zahlung August
@@ -319,7 +316,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		createMutationBetreuungspensum(
 			erstgesuch,
 			gesuchsperiode.getGueltigkeit().getGueltigAb(),
-			50,
+			40,
 			DATUM_AUGUST.plusWeeks(1));
 
 		// Zahlung September ausloesen:
@@ -346,7 +343,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		createMutationBetreuungspensum(
 			erstgesuch,
 			gesuchsperiode.getGueltigkeit().getGueltigAb(),
-			40,
+			30,
 			DATUM_SEPTEMBER.plusWeeks(1));
 
 		// Zahlung Oktober ausloesen:
@@ -376,10 +373,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void zahlungsauftragErstellenMitKorrekturMonatUeberspringen() {
 		Gesuch erstgesuch = createGesuch(true, DATUM_AUGUST.minusDays(1), AntragStatus.VERFUEGT); // Becker Yasmin,
-		// 01.08.2016 - 31.07.2017, EWP 60%
+		// 01.08.BASISJAHR_PLUS_1 - 31.07.BASISJAHR_PLUS_2_1, EWP 60%
 
 		// Zahlung August ausloesen
 		// Erwartet:    1 NORMALE Zahlung August
@@ -396,7 +392,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		createMutationBetreuungspensum(
 			erstgesuch,
 			gesuchsperiode.getGueltigkeit().getGueltigAb(),
-			50,
+			40,
 			DATUM_AUGUST.plusWeeks(1));
 
 		// Zahlung September wird nicht ausgeloest
@@ -452,13 +448,12 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Zahlung zahlung = zahlungsauftrag.getZahlungen().get(0);
 		assertZahlung(zahlung, countMonate);
 		for (int i = 0; i < countMonate; i++) {
-			assertZahlungsdetail(zahlung.getZahlungspositionen().get(i), ZahlungspositionStatus.NORMAL, 1289.30);
+			assertZahlungsdetail(zahlung.getZahlungspositionen().get(i), ZahlungspositionStatus.NORMAL, 780.55);
 		}
 		zahlungService.zahlungsauftragAusloesen(zahlungsauftrag.getId());
 	}
 
 	@Test
-	@Ignore
 	public void zahlungsauftragAusloesen() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
@@ -474,7 +469,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void findZahlungsauftrag() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
@@ -485,7 +479,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void deleteZahlungsauftrag() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
@@ -497,7 +490,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void getAllZahlungsauftraege() {
 		Assert.assertTrue(zahlungService.getAllZahlungsauftraege().isEmpty());
 
@@ -507,7 +499,6 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	@Ignore
 	public void zahlungBestaetigen() {
 		createGesuch(true);
 		Zahlungsauftrag zahlungsauftrag =
@@ -531,10 +522,10 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Override
-	protected Gesuchsperiode createGesuchsperiode(boolean active) {
-		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1617();
-		gesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
-		return gesuchsperiodeService.saveGesuchsperiode(gesuchsperiode);
+	protected Gesuchsperiode createGesuchsperiode() {
+		Gesuchsperiode customGesuchsperiode = TestDataUtil.createCustomGesuchsperiode(BASISJAHR_PLUS_1, BASISJAHR_PLUS_2);
+		customGesuchsperiode.setStatus(GesuchsperiodeStatus.AKTIV);
+		return gesuchsperiodeService.saveGesuchsperiode(customGesuchsperiode);
 	}
 
 	private Gesuch createGesuch(boolean verfuegen, LocalDate verfuegungsdatum, @Nullable AntragStatus status) {
@@ -553,7 +544,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Nonnull
 	private Gesuch createGesuch(boolean verfuegen) {
-		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.BECKER_NORA, verfuegen, verfuegen, gemeindeId, gesuchsperiode);
+		return testfaelleService.createAndSaveTestfaelle(TestfaelleService.PERREIRA_MARCIA, verfuegen, verfuegen, gemeindeId, gesuchsperiode);
 	}
 
 	@Nullable

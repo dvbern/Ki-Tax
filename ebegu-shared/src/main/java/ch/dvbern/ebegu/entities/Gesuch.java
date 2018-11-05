@@ -584,6 +584,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Transient
+	@Nonnull
 	public List<Betreuung> extractAllBetreuungen() {
 		final List<Betreuung> list = new ArrayList<>();
 		for (final KindContainer kind : getKindContainers()) {

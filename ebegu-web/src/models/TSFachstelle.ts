@@ -20,12 +20,22 @@ export class TSFachstelle extends TSAbstractMutableEntity {
     private _name: string;
     private _beschreibung: string;
     private _behinderungsbestaetigung: boolean;
+    private _fachstelleAnspruch: boolean;
+    private _fachstelleErweiterteBetreuung: boolean;
 
-    public constructor(name?: string, beschreibung?: string, behinderungsbestaetigung?: boolean) {
+    public constructor(
+        name?: string,
+        beschreibung?: string,
+        behinderungsbestaetigung?: boolean,
+        fachstelleAnspruch?: boolean,
+        fachstelleErweiterteBetreuung?: boolean
+    ) {
         super();
         this._name = name;
         this._beschreibung = beschreibung;
         this._behinderungsbestaetigung = behinderungsbestaetigung;
+        this._fachstelleAnspruch = !!fachstelleAnspruch;
+        this._fachstelleErweiterteBetreuung = !!fachstelleErweiterteBetreuung;
     }
 
     public get name(): string {
@@ -50,5 +60,21 @@ export class TSFachstelle extends TSAbstractMutableEntity {
 
     public set behinderungsbestaetigung(value: boolean) {
         this._behinderungsbestaetigung = value;
+    }
+
+    public get fachstelleAnspruch(): boolean {
+        return this._fachstelleAnspruch;
+    }
+
+    public set fachstelleAnspruch(value: boolean) {
+        this._fachstelleAnspruch = value;
+    }
+
+    public get fachstelleErweiterteBetreuung(): boolean {
+        return this._fachstelleErweiterteBetreuung;
+    }
+
+    public set fachstelleErweiterteBetreuung(value: boolean) {
+        this._fachstelleErweiterteBetreuung = value;
     }
 }
