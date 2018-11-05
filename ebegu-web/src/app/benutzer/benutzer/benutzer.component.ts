@@ -107,7 +107,7 @@ export class BenutzerComponent implements OnInit {
             if (PERMISSIONS[Permission.ROLE_GEMEINDE].indexOf(this.currentBerechtigung.role) > -1) {
                 this.benutzerRS.isBenutzerDefaultBenutzerOfAnyGemeinde(this.selectedUser.username)
                     .then(isDefaultUser => {
-                        this.isDefaultVerantwortlicher = (isDefaultUser === true);
+                        this.isDefaultVerantwortlicher = isDefaultUser;
                     });
             }
             this.changeDetectorRef.markForCheck();
