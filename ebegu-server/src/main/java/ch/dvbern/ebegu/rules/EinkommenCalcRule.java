@@ -16,15 +16,17 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Setzt fuer die Zeitabschnitte das Massgebende Einkommen. Sollte der Maximalwert uebschritte werden so wird das Pensum auf 0 gesetzt
@@ -45,6 +47,28 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	@Override
 	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 
+		// Es gibt zwei Faelle, in denen die Finanzielle Situation nicht bekannt ist:
+		// - Sozialhilfeempfaenger: Wir rechnen mit Einkommen = 0
+		// - Keine Vergünstigung gewünscht: Wir rechnen mit dem Maximalen Einkommen
+		Familiensituation familiensituation = betreuung.extractGesuch().extractFamiliensituation();
+		if (familiensituation != null) {
+			int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();
+			if (Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger())) {
+				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
+				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
+				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
+				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG);
+				return;
+			}
+			if (Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht())) {
+				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
+				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
+				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
+				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG);
+				return;
+			}
+		}
+
 		// Die Finanzdaten berechnen
 		FinanzDatenDTO finanzDatenDTO;
 		if (verfuegungZeitabschnitt.isHasSecondGesuchstellerForFinanzielleSituation()) {
@@ -56,7 +80,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		}
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
-		if (betreuung.getBetreuungsangebotTyp().isJugendamt()) {
+		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt()) {
 			if (verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 				//maximales einkommen wurde ueberschritten
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
@@ -76,7 +100,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	 * This is because the child still has Anspruch, though it will only get a redutcion of the costs due to this erweiterteBeduerfniss
 	 */
 	private void reduceAnspruchInNormalCase(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (!Objects.requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA()).getErweiterteBeduerfnisse()) {
+		if (!requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA()).getErweiterteBeduerfnisse()) {
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 		}
 	}
@@ -86,6 +110,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();
 		int basisjahrPlus1 = betreuung.extractGesuchsperiode().getBasisJahrPlus1();
 		int basisjahrPlus2 = betreuung.extractGesuchsperiode().getBasisJahrPlus2();
+
 		if (isEkv1) {
 			if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());

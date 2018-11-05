@@ -724,7 +724,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				setWizardStepOkOrMutiert(wizardStep);
 			}
 			if (dominantType == BetreuungsangebotTyp.KITA && EbeguUtil.isFinanzielleSituationNotIntroduced(wizardStep.getGesuch())
+				&& EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())
 				&& wizardStep.getWizardStepStatus() != WizardStepStatus.IN_BEARBEITUNG) {
+
 				wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 			}
 			if (dominantType == BetreuungsangebotTyp.TAGESSCHULE) {

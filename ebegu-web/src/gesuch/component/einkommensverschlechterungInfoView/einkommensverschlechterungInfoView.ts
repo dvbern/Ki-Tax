@@ -203,12 +203,9 @@ export class EinkommensverschlechterungInfoViewController
                 return this.$q.when(this.model);
             }
             if (this.isConfirmationRequired()) {
-                return this.dvDialog.showDialog(removeDialogTemplate, RemoveDialogController, {
+                return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                     title: 'EINKVERS_WARNING',
                     deleteText: 'EINKVERS_WARNING_BESCHREIBUNG',
-                    parentController: undefined,
-                    elementID: undefined,
-                    form: this.form,
                 }).then(() => {   // User confirmed changes
                     return this.save();
                 });
@@ -396,6 +393,6 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public isFinanzielleSituationRequired(): boolean {
-        return this.gesuchModelManager.isFinanzielleSituationEnabled() && this.gesuchModelManager.isFinanzielleSituationDesired();
+        return this.gesuchModelManager.isFinanzielleSituationEnabled() && this.gesuchModelManager.isFinanzielleSituationRequired();
     }
 }

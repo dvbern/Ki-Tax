@@ -1484,24 +1484,8 @@ export default class GesuchModelManager {
     /**
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
-    public isFinanzielleSituationDesired(): boolean {
-        if (!this.getGesuch() || !this.getGesuchsperiode()) {
-            return false;
-        }
-
-        return !this.getGesuchsperiode().hasTagesschulenAnmeldung()
-            || !this.areThereOnlySchulamtAngebote()
-            || (this.getGesuch().extractFamiliensituation().verguenstigungGewuenscht
-                && !this.getGesuch().extractFamiliensituation().sozialhilfeBezueger);
-    }
-
-    public showFinanzielleSituationStart(): boolean {
-        return this.isGesuchsteller2Required() ||
-            (
-                this.getGesuchsperiode()
-                && this.getGesuchsperiode().hasTagesschulenAnmeldung()
-                && this.areThereOnlySchulamtAngebote()
-            );
+    public isFinanzielleSituationRequired(): boolean {
+        return EbeguUtil.isFinanzielleSituationRequiredForGesuch(this.getGesuch());
     }
 
     /**
