@@ -105,8 +105,8 @@ export class BenutzerComponent implements OnInit {
             // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
             // "Default-Verantwortlichen" des entsprechenden Amtes handelt
             if (PERMISSIONS[Permission.ROLE_GEMEINDE].indexOf(this.currentBerechtigung.role) > -1) {
-                this.benutzerRS.isBenutzerDefaultBenutzerOfAnyGemeinde(this.selectedUser.username).then(result => {
-                    this.isDefaultVerantwortlicher = (result === true);
+                this.benutzerRS.isBenutzerDefaultBenutzerOfAnyGemeinde(this.selectedUser.username).then(isDefaultUser => {
+                    this.isDefaultVerantwortlicher = (isDefaultUser === true);
                 });
             }
             this.changeDetectorRef.markForCheck();
