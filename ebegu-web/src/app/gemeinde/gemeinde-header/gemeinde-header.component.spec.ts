@@ -21,6 +21,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib-esm';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
@@ -39,6 +40,7 @@ describe('GemeindeHeaderComponent', () => {
         ['uploadLogoImage', 'getLogoUrl']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['to']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
 
     beforeEach(async(() => {
@@ -53,6 +55,7 @@ describe('GemeindeHeaderComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [
                 GemeindeHeaderComponent,
