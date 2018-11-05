@@ -21,6 +21,7 @@ import {Transition} from '@uirouter/core';
 @Component({
     selector: 'dv-login-info',
     templateUrl: './login-info.component.html',
+    styleUrls: ['./login-info.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginInfoComponent {
