@@ -359,6 +359,7 @@ public class BenutzerResource {
 	@Path("/isdefaultuser/{username}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
 	public boolean isBenutzerDefaultBenutzerOfAnyGemeinde(
 		@Nonnull @NotNull @PathParam("username") String username) {
 
