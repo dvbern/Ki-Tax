@@ -177,7 +177,7 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		case NACHWEIS_RAV:
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.RAV;
 		case BESTAETIGUNG_ARZT:
-			return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_INDIKATION;
+			return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN;
 		case NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM:
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
 		case NACHWEIS_UNREG_ARBEITSZ:

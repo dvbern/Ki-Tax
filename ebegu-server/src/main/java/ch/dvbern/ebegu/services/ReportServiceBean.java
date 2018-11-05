@@ -1069,7 +1069,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.RAV == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs1EwpRav(row.getGs1EwpRav() + erwerbspensumJA.getPensum());
 			}
-			if (Taetigkeit.GESUNDHEITLICHE_INDIKATION == erwerbspensumJA.getTaetigkeit()) {
+			if (Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs1EwpGesundhtl(row.getGs1EwpGesundhtl() + erwerbspensumJA.getPensum());
 			}
 			if (erwerbspensumJA.getZuschlagZuErwerbspensum()) {
@@ -1111,7 +1111,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.RAV == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs2EwpRav(row.getGs2EwpRav() + erwerbspensumJA.getPensum());
 			}
-			if (Taetigkeit.GESUNDHEITLICHE_INDIKATION == erwerbspensumJA.getTaetigkeit()) {
+			if (Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs2EwpGesundhtl(row.getGs2EwpGesundhtl() + erwerbspensumJA.getPensum());
 			}
 			if (erwerbspensumJA.getZuschlagZuErwerbspensum()) {
