@@ -42,7 +42,7 @@ describe('EinladungAbschliessenComponent', () => {
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
             ['getVisibleRolesForPrincipal']);
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-            ['uploadLogoImage', 'getLogoUrl']);
+            ['uploadLogoImage', 'getLogoUrl', 'getGemeindenForPrincipal$']);
 
         superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
@@ -50,13 +50,14 @@ describe('EinladungAbschliessenComponent', () => {
         insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({inputId: undefined});
+        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of({}));
 
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
             ],
             declarations: [
-                EinladungAbschliessenComponent
+                EinladungAbschliessenComponent,
             ],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
