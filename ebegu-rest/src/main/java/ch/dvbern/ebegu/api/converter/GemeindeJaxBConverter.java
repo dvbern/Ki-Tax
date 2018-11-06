@@ -20,8 +20,6 @@ package ch.dvbern.ebegu.api.converter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -44,16 +42,11 @@ import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
-import ch.dvbern.ebegu.util.StreamsUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.requireNonNull;
 
 @RequestScoped
 public class GemeindeJaxBConverter extends AbstractConverter {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(GemeindeJaxBConverter.class);
 
 	@Inject
 	private JaxBConverter converter;
@@ -93,28 +86,6 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
 
 		return jaxGemeinde;
-	}
-
-	@Nonnull
-	public Set<Gemeinde> gemeindeListToEntity(
-		@Nonnull Set<JaxGemeinde> jaxGemeindeList,
-		@Nonnull Set<Gemeinde> gemeindeList) {
-
-		final Set<Gemeinde> transformedGemeindeList = new TreeSet<>();
-		for (final JaxGemeinde jaxGemeinde : jaxGemeindeList) {
-			final Gemeinde gemeindeToMergeWith = gemeindeList
-				.stream()
-				.filter(existingGemeinde -> existingGemeinde.getId().equalsIgnoreCase(jaxGemeinde.getId()))
-				.reduce(StreamsUtil.toOnlyElement())
-				.orElse(new Gemeinde());
-			final Gemeinde gemeindeToAdd = gemeindeToEntity(jaxGemeinde, gemeindeToMergeWith);
-			final boolean added = transformedGemeindeList.add(gemeindeToAdd);
-			if (!added) {
-				LOGGER.warn(JaxBConverter.DROPPED_DUPLICATE_CONTAINER + "{}", gemeindeToAdd);
-			}
-		}
-
-		return transformedGemeindeList;
 	}
 
 	@Nonnull

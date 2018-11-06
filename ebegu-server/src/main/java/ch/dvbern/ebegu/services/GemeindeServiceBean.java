@@ -121,7 +121,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	public Optional<Gemeinde> findGemeinde(@Nonnull String id) {
 		requireNonNull(id, "id muss gesetzt sein");
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, id);
-		authorizer.checkReadAuthorization(gemeinde);
 		return Optional.ofNullable(gemeinde);
 	}
 
@@ -130,14 +129,12 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name) {
 		requireNonNull(name, "Gemeindename muss gesetzt sein");
 		Optional<Gemeinde> gemeindeOpt = criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
-		authorizer.checkReadAuthorization(gemeindeOpt.orElse(null));
 		return gemeindeOpt;
 	}
 
 	@Nonnull
 	private Optional<Gemeinde> findGemeindeByBSF(@Nullable Long bsf) {
 		Optional<Gemeinde> gemeindeOpt = criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, bsf, Gemeinde_.bfsNummer);
-		authorizer.checkReadAuthorization(gemeindeOpt.orElse(null));
 		return gemeindeOpt;
 	}
 
@@ -150,7 +147,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 			throw new EbeguRuntimeException("getFirst", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
 		Gemeinde gemeinde = gemeinden.iterator().next();
-		authorizer.checkReadAuthorization(gemeinde);
 		return gemeinde;
 	}
 

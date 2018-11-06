@@ -15,9 +15,8 @@
 
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
-import * as moment from 'moment';
 import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
-import {TSGemeindeStatus} from '../../models/enums/TSGemeindeStatus';
+import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSGemeinde from '../../models/TSGemeinde';
@@ -35,8 +34,8 @@ import AuthServiceRS from '../service/AuthServiceRS.rest';
 })
 export class LocalLoginComponent {
 
-    private static readonly BFS_BERN = 351;
-    private static readonly BFS_OSTERMUNDIGEN = 363;
+    private static readonly ID_BERN = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
+    private static readonly ID_OSTERMUNDIGEN = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
 
     @Input() public returnTo: TargetState;
 
@@ -95,8 +94,8 @@ export class LocalLoginComponent {
     public devMode: boolean;
 
     private readonly mandant: TSMandant;
-    private readonly gemeindeBern: TSGemeinde;
-    private readonly gemeindeOstermundigen: TSGemeinde;
+    private gemeindeBern: TSGemeinde;
+    private gemeindeOstermundigen: TSGemeinde;
     private readonly institution: TSInstitution;
     private readonly traegerschaftStadtBern: TSTraegerschaft;
     private readonly traegerschaftLeoLea: TSTraegerschaft;
@@ -106,11 +105,10 @@ export class LocalLoginComponent {
         private readonly authServiceRS: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly stateService: StateService,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
 
         this.mandant = LocalLoginComponent.getMandant();
-        this.gemeindeBern = LocalLoginComponent.getGemeindeBern();
-        this.gemeindeOstermundigen = LocalLoginComponent.getGemeindeOstermundigen();
         this.traegerschaftStadtBern = LocalLoginComponent.getTraegerschaftStadtBern();
         this.traegerschaftLeoLea = LocalLoginComponent.getTraegerschaftLeoLea();
         this.traegerschaftSGF = LocalLoginComponent.getTraegerschaftSGF();
@@ -118,7 +116,16 @@ export class LocalLoginComponent {
         this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
         });
-        this.initUsers();
+
+        // getAktiveGemeinden() can be called by anonymous.
+        this.gemeindeRS.getAktiveGemeinden().then(aktiveGemeinden => {
+            this.gemeindeBern = aktiveGemeinden
+                .find(gemeinde => gemeinde.id === LocalLoginComponent.ID_BERN);
+            this.gemeindeOstermundigen = aktiveGemeinden
+                .find(gemeinde => gemeinde.id === LocalLoginComponent.ID_OSTERMUNDIGEN);
+
+            this.initUsers();
+        });
     }
 
     /**
@@ -129,34 +136,6 @@ export class LocalLoginComponent {
         mandant.name = 'TestMandant';
         mandant.id = 'e3736eb8-6eef-40ef-9e52-96ab48d8f220';
         return mandant;
-    }
-
-    /**
-     * Gemeinde Bern wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getGemeindeBern(): TSGemeinde {
-        const bern = new TSGemeinde();
-        bern.name = 'Bern';
-        bern.id = 'ea02b313-e7c3-4b26-9ef7-e413f4046db2';
-        bern.gemeindeNummer = 1;
-        bern.bfsNummer = LocalLoginComponent.BFS_BERN;
-        bern.status = TSGemeindeStatus.AKTIV;
-        bern.betreuungsgutscheineStartdatum = moment('01.01.2016', 'DD.MM.YYYY');
-        return bern;
-    }
-
-    /**
-     * Gemeinde Ostermundigen wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getGemeindeOstermundigen(): TSGemeinde {
-        const ostermundigen = new TSGemeinde();
-        ostermundigen.name = 'Ostermundigen';
-        ostermundigen.id = '80a8e496-b73c-4a4a-a163-a0b2caf76487';
-        ostermundigen.gemeindeNummer = 2;
-        ostermundigen.bfsNummer = LocalLoginComponent.BFS_OSTERMUNDIGEN;
-        ostermundigen.status = TSGemeindeStatus.AKTIV;
-        ostermundigen.betreuungsgutscheineStartdatum = moment('01.01.2016', 'DD.MM.YYYY');
-        return ostermundigen;
     }
 
     /**

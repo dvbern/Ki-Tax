@@ -2916,6 +2916,11 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		// Gemeinden: Duerfen nicht vom Frontend übernommen werden, sondern müssen aus der DB gelesen werden!
+		loadGemeindenFromJax(jaxBerechtigung, berechtigung);
+		return berechtigung;
+	}
+
+	private void loadGemeindenFromJax(@Nonnull JaxBerechtigung jaxBerechtigung, @Nonnull Berechtigung berechtigung) {
 		final Set<Gemeinde> gemeindeListe = new HashSet<>();
 		for (JaxGemeinde jaxGemeinde : jaxBerechtigung.getGemeindeList()) {
 			if (jaxGemeinde.getId() != null) {
@@ -2928,7 +2933,6 @@ public class JaxBConverter extends AbstractConverter {
 			}
 		}
 		berechtigung.setGemeindeList(gemeindeListe);
-		return berechtigung;
 	}
 
 	public JaxBerechtigung berechtigungToJax(Berechtigung berechtigung) {
