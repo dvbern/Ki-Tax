@@ -17,20 +17,19 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form role="form"
-      #form="ngForm"
-      [ngClass]="{'ng-submitted': form.submitted}"
-      *ngIf="stammdaten$ | async as stammdaten"
-      (ngSubmit)="editGemeindeStammdaten()"
-      novalidate>
+<dv-full-height-inner-padding-container>
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          *ngIf="stammdaten$ | async as stammdaten"
+          (ngSubmit)="editGemeindeStammdaten()"
+          novalidate>
 
-    <dv-gemeinde-header
-        [gemeinde]="stammdaten.gemeinde"
-        [administratoren]="stammdaten.administratoren"
-        [sachbearbeiter]="stammdaten.sachbearbeiter">
-    </dv-gemeinde-header>
-
-    <dv-full-height-container>
+        <dv-gemeinde-header
+            [gemeinde]="stammdaten.gemeinde"
+            [administratoren]="stammdaten.administratoren"
+            [sachbearbeiter]="stammdaten.sachbearbeiter">
+        </dv-gemeinde-header>
         <div class="dv-content">
             <fieldset>
                 <div class="viewTitle">
@@ -90,20 +89,6 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="dv-footer">
-                        <dv-loading-button *ngIf="isStammdatenEditable()"
-                                           [type]="'submit'">
-                            <span translate>STAMMDATEN_EDIT</span>
-                        </dv-loading-button>
-                        <button type="button" class="dv-btn cancel-button"
-                                (click)="cancel()"
-                                [textContent]="'CANCEL' | translate">
-                        </button>
-                    </div>
-                </div>
-
             </fieldset>
 
             <fieldset>
@@ -115,5 +100,15 @@
             </fieldset>
 
         </div>
-    </dv-full-height-container>
-</form>
+        <div class="dv-footer">
+            <dv-loading-button *ngIf="isStammdatenEditable()"
+                               [type]="'submit'">
+                <span translate>GEMEINDE_EDIT</span>
+            </dv-loading-button>
+            <button type="button" class="dv-btn cancel-button"
+                    (click)="cancel()"
+                    [textContent]="'CANCEL' | translate">
+            </button>
+        </div>
+    </form>
+</dv-full-height-inner-padding-container>

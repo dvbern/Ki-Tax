@@ -30,6 +30,7 @@ import ErrorService from '../../core/errors/service/ErrorService';
 @Component({
     selector: 'dv-gemeinde-header',
     templateUrl: './gemeinde-header.component.html',
+    styleUrls: ['./gemeinde-header.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GemeindeHeaderComponent implements OnInit {
