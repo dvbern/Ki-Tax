@@ -47,6 +47,7 @@ public class MigrateSchemaTest {
 				}
 			}
 		}
+		System.out.println("All Files checked!");
 	}
 
 	private String getRevisionNumberFromFilename(String filename) {
