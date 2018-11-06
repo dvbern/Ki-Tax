@@ -42,7 +42,7 @@ describe('EinladungAbschliessenComponent', () => {
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
             ['getVisibleRolesForPrincipal']);
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-            ['uploadLogoImage', 'getLogoUrl']);
+            ['uploadLogoImage', 'getLogoUrl', 'getGemeindenForPrincipal$']);
 
         superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
