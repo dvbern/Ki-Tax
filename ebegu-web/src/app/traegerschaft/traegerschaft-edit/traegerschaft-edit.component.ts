@@ -10,7 +10,6 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 @Component({
     selector: 'dv-traegerschaft-edit',
     templateUrl: './traegerschaft-edit.component.html',
-    styleUrls: ['./traegerschaft-edit.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TraegerschaftEditComponent implements OnInit {
@@ -46,7 +45,7 @@ export class TraegerschaftEditComponent implements OnInit {
             return;
         }
         this.errorService.clearAll();
-        this.traegerschaftRS.updateTraegerschaft(stammdaten).then(() => this.navigateBack());
+        this.traegerschaftRS.saveTraegerschaft(stammdaten).then(() => this.navigateBack());
     }
 
     public cancel(): void {

@@ -13,7 +13,6 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 @Component({
   selector: 'dv-traegerschaft-list',
   templateUrl: './traegerschaft-list.component.html',
-  styleUrls: ['./traegerschaft-list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TraegerschaftListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
