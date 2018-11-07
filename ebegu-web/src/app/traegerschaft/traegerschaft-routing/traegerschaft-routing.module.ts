@@ -82,4 +82,3 @@ export class TraegerschaftRoutingModule {
 function getTraegerschaften(traegerschaftRS: TraegerschaftRS): IPromise<TSTraegerschaft[]> {
     return traegerschaftRS.getAllActiveTraegerschaften();
 }
-

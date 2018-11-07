@@ -26,21 +26,18 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
     templateUrl: './traegerschaft-add.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TraegerschaftAddComponent implements OnInit {
+export class TraegerschaftAddComponent {
 
     @ViewChild(NgForm) public form: NgForm;
 
     public traegerschaft: TSTraegerschaft = undefined;
 
-    constructor(
+    public constructor(
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly traegerschaftRS: TraegerschaftRS,
     ) {
         this.traegerschaft = new TSTraegerschaft();
-    }
-
-    ngOnInit() {
     }
 
     public cancel(): void {

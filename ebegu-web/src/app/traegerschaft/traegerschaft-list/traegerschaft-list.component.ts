@@ -24,7 +24,6 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import ErrorService from '../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({

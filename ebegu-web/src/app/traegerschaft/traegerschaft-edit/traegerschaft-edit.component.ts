@@ -37,7 +37,7 @@ export class TraegerschaftEditComponent implements OnInit {
     private traegerschaftId: string;
     private navigationSource: StateDeclaration;
 
-    constructor(
+    public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
@@ -45,7 +45,7 @@ export class TraegerschaftEditComponent implements OnInit {
 
     ) { }
 
-    ngOnInit() {
+    public ngOnInit(): void {
         this.navigationSource = this.$transition$.from();
         this.traegerschaftId = this.$transition$.params().traegerschaftId;
         if (!this.traegerschaftId) {

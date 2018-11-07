@@ -60,7 +60,7 @@ describe('traegerschaftRS', () => {
 
         });
 
-       describe('createTraegerschaft', () => {
+        describe('createTraegerschaft', () => {
             it('should create a traegerschaft', () => {
                 let createdTraegerschaft: TSTraegerschaft;
                 const url = traegerschaftRS.serviceURL;
