@@ -37,8 +37,8 @@ public enum UserRole {
 	ADMIN_GEMEINDE(RollenAbhaengigkeit.GEMEINDE),
 	SACHBEARBEITER_TS(RollenAbhaengigkeit.GEMEINDE),
 	SACHBEARBEITER_GEMEINDE(RollenAbhaengigkeit.GEMEINDE),
-	ADMIN_MANDANT(RollenAbhaengigkeit.NONE),
-	SACHBEARBEITER_MANDANT(RollenAbhaengigkeit.NONE),
+	ADMIN_MANDANT(RollenAbhaengigkeit.KANTON),
+	SACHBEARBEITER_MANDANT(RollenAbhaengigkeit.KANTON),
 	GESUCHSTELLER(RollenAbhaengigkeit.NONE);
 
 	@Nonnull
@@ -134,9 +134,23 @@ public enum UserRole {
 		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS);
 	}
 
+	public static List<UserRole> getAllGemeindeAdminRoles() {
+		return Arrays.asList(ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS);
+	}
+
+	public static List<UserRole> getAllGemeindeSachbearbeiterRoles() {
+		return Arrays.asList(SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS);
+	}
+
 	public static List<UserRole> getRolesByAbhaengigkeit(RollenAbhaengigkeit abhaengigkeit) {
 		return Arrays.stream(UserRole.values())
 			.filter(userRole -> userRole.getRollenAbhaengigkeit() == abhaengigkeit)
+			.collect(Collectors.toList());
+	}
+
+	public static List<UserRole> getRolesWithoutAbhaengigkeit(RollenAbhaengigkeit abhaengigkeit) {
+		return Arrays.stream(UserRole.values())
+			.filter(userRole -> userRole.getRollenAbhaengigkeit() != abhaengigkeit)
 			.collect(Collectors.toList());
 	}
 

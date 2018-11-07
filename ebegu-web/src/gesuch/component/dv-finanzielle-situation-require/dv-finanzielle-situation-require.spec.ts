@@ -54,28 +54,21 @@ describe('finanzielleSituationRequire', () => {
     describe('Test for boolean finanzielleSituationRequired', () => {
         it('should be true when nothing is set', () => {
             controller.setFinanziellesituationRequired();
-            expect(controller.finanzielleSituationRequired).toBe(true);
+            expect(controller.finanzielleSituationRequired).toBe(false);
         });
-        it('should be true when areThereOnlySchulamtangebote is false', () => {
-            controller.areThereOnlySchulamtangebote = false;
-            controller.setFinanziellesituationRequired();
-            expect(controller.finanzielleSituationRequired).toBe(true);
-        });
-        it('should be true when areThereOnlySchulamtangebote is false, not sozialhilfeBezueger and verguenstigungGewuenscht',
+        it('should be true when not sozialhilfeBezueger and verguenstigungGewuenscht',
             () => {
-                controller.areThereOnlySchulamtangebote = false;
                 controller.sozialhilfeBezueger = false;
                 controller.verguenstigungGewuenscht = true;
                 controller.setFinanziellesituationRequired();
                 expect(controller.finanzielleSituationRequired).toBe(true);
             });
-        it('should be true when areThereOnlySchulamtangebote is false, not sozialhilfeBezueger and verguenstigungGewuenscht',
+        it('should be true when not sozialhilfeBezueger and verguenstigungGewuenscht',
             () => {
-                controller.areThereOnlySchulamtangebote = false;
                 controller.sozialhilfeBezueger = false;
                 controller.verguenstigungGewuenscht = false;
                 controller.setFinanziellesituationRequired();
-                expect(controller.finanzielleSituationRequired).toBe(true);
+                expect(controller.finanzielleSituationRequired).toBe(false);
             });
     });
 });

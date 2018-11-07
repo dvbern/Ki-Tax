@@ -31,6 +31,7 @@ import TSBetreuung from '../models/TSBetreuung';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
 import TSDossier from '../models/TSDossier';
+import TSErweiterteBetreuungContainer from '../models/TSErweiterteBetreuungContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import {TSFachstelle} from '../models/TSFachstelle';
 import TSFall from '../models/TSFall';
@@ -65,7 +66,6 @@ describe('EbeguRestUtil', () => {
     const pensum50 = 50;
     const monatlicheBetreuungskosten200 = 200.2;
     const monatlicheBetreuungskosten500 = 500.5;
-    const oeffnungsTage = 250;
 
     beforeEach(angular.mock.module('pascalprecht.translate'));
 
@@ -245,8 +245,6 @@ describe('EbeguRestUtil', () => {
         describe('parseBetreuung()', () => {
             it('should transform TSBetreuung to REST object and back', () => {
                 const instStam = new TSInstitutionStammdaten('iban',
-                    oeffnungsTage,
-                    12,
                     TSBetreuungsangebotTyp.KITA,
                     createInstitution(),
                     undefined,
@@ -278,11 +276,13 @@ describe('EbeguRestUtil', () => {
                 const tsAbwesenheitContainer = new TSAbwesenheitContainer(tsAbwesenheitGS,
                     tsAbwesenheitJA);
                 const abwesenheitContainers = [tsAbwesenheitContainer];
+                const erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
 
                 const betreuung = new TSBetreuung(instStam,
                     TSBetreuungsstatus.AUSSTEHEND,
                     betContainers,
                     abwesenheitContainers,
+                    erweiterteBetreuungContainer,
                     2);
                 TestDataUtil.setAbstractMutableFieldsUndefined(betreuung);
 
@@ -344,10 +344,9 @@ describe('EbeguRestUtil', () => {
                 const tsModul = new TSModulTagesschule();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
+                tsInstStammdatenTagesschule.gueltigkeit = new TSDateRange();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
                 const myInstitutionStammdaten = new TSInstitutionStammdaten('iban',
-                    oeffnungsTage,
-                    12,
                     TSBetreuungsangebotTyp.KITA,
                     myInstitution,
                     undefined,
@@ -361,14 +360,9 @@ describe('EbeguRestUtil', () => {
                     myInstitutionStammdaten);
                 expect(restInstitutionStammdaten).toBeDefined();
                 expect(restInstitutionStammdaten.iban).toEqual(myInstitutionStammdaten.iban);
-                expect(restInstitutionStammdaten.oeffnungsstunden).toEqual(myInstitutionStammdaten.oeffnungsstunden);
-                expect(restInstitutionStammdaten.oeffnungstage).toEqual(myInstitutionStammdaten.oeffnungstage);
-                expect(restInstitutionStammdaten.gueltigAb)
-                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
-                expect(restInstitutionStammdaten.gueltigBis)
-                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
-                expect(restInstitutionStammdaten.betreuungsangebotTyp)
-                    .toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
+                expect(restInstitutionStammdaten.gueltigAb).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
+                expect(restInstitutionStammdaten.gueltigBis).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
+                expect(restInstitutionStammdaten.betreuungsangebotTyp).toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
                 expect(restInstitutionStammdaten.institution.name).toEqual(myInstitutionStammdaten.institution.name);
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule).toBeDefined();

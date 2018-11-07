@@ -98,7 +98,8 @@ export default class GesuchModelManager {
     public basisJahrPlusNumber: number = 1;
     private kindIndex: number;
     private betreuungIndex: number;
-    private fachstellenList: Array<TSFachstelle>;
+    private fachstellenAnspruchList: Array<TSFachstelle>;
+    private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
     private activInstitutionenList: Array<TSInstitutionStammdaten>;
 
     public ewkResultatGS1: TSEWKResultat;
@@ -239,9 +240,15 @@ export default class GesuchModelManager {
         return this.gesuch ? this.gesuch.extractFamiliensituationErstgesuch() : undefined;
     }
 
-    public updateFachstellenList(): void {
-        this.fachstelleRS.getAllFachstellen().then((response: TSFachstelle[]) => {
-            this.fachstellenList = response;
+    public updateFachstellenAnspruchList(): void {
+        this.fachstelleRS.getAnspruchFachstellen().then((response: TSFachstelle[]) => {
+            this.fachstellenAnspruchList = response;
+        });
+    }
+
+    public updateFachstellenErweiterteBetreuungList(): void {
+        this.fachstelleRS.getErweiterteBetreuungFachstellen().then((response: TSFachstelle[]) => {
+            this.fachstellenErweiterteBetreuungList = response;
         });
     }
 
@@ -486,13 +493,22 @@ export default class GesuchModelManager {
         return -1;
     }
 
-    public getFachstellenList(): Array<TSFachstelle> {
-        if (this.fachstellenList === undefined) {
-            this.fachstellenList = []; // init empty while we wait for promise
-            this.updateFachstellenList();
+    public getFachstellenAnspruchList(): Array<TSFachstelle> {
+        if (this.fachstellenAnspruchList === undefined) {
+            this.fachstellenAnspruchList = []; // init empty while we wait for promise
+            this.updateFachstellenAnspruchList();
         }
 
-        return this.fachstellenList;
+        return this.fachstellenAnspruchList;
+    }
+
+    public getFachstellenErweiterteBetreuungList(): Array<TSFachstelle> {
+        if (this.fachstellenErweiterteBetreuungList === undefined) {
+            this.fachstellenErweiterteBetreuungList = []; // init empty while we wait for promise
+            this.updateFachstellenErweiterteBetreuungList();
+        }
+
+        return this.fachstellenErweiterteBetreuungList;
     }
 
     public getActiveInstitutionenList(): Array<TSInstitutionStammdaten> {
@@ -722,9 +738,10 @@ export default class GesuchModelManager {
                 return this.betreuungRS.anmeldungSchulamtAblehnen(betreuungToSave, kindId, this.gesuch.id);
             case TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION:
                 return this.betreuungRS.anmeldungSchulamtFalscheInstitution(betreuungToSave, kindId, this.gesuch.id);
+            case null:
+                return this.betreuungRS.saveBetreuung(betreuungToSave, kindId, this.gesuch.id, abwesenheit);
             default:
                 betreuungToSave.betreuungsstatus = betreuungsstatusNeu;
-
                 return this.betreuungRS.saveBetreuung(betreuungToSave, kindId, this.gesuch.id, abwesenheit);
         }
     }
@@ -1467,24 +1484,8 @@ export default class GesuchModelManager {
     /**
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
-    public isFinanzielleSituationDesired(): boolean {
-        if (!this.getGesuch() || !this.getGesuchsperiode()) {
-            return false;
-        }
-
-        return !this.getGesuchsperiode().hasTagesschulenAnmeldung()
-            || !this.areThereOnlySchulamtAngebote()
-            || (this.getGesuch().extractFamiliensituation().verguenstigungGewuenscht
-                && !this.getGesuch().extractFamiliensituation().sozialhilfeBezueger);
-    }
-
-    public showFinanzielleSituationStart(): boolean {
-        return this.isGesuchsteller2Required() ||
-            (
-                this.getGesuchsperiode()
-                && this.getGesuchsperiode().hasTagesschulenAnmeldung()
-                && this.areThereOnlySchulamtAngebote()
-            );
+    public isFinanzielleSituationRequired(): boolean {
+        return EbeguUtil.isFinanzielleSituationRequiredForGesuch(this.getGesuch());
     }
 
     /**

@@ -16,14 +16,17 @@
 package ch.dvbern.ebegu.api.resource.auth;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.EJBAccessException;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.connector.ILoginConnectorResource;
+import ch.dvbern.ebegu.api.dtos.JaxEinladungWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
@@ -37,7 +40,6 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.ConnectorException;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -48,6 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_EMAIL_MISMATCH;
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -161,19 +164,20 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	@Override
-	public JaxExternalBenutzer updateBenutzer(
+	public JaxEinladungWrapper updateBenutzer(
 		@Nonnull String benutzerId,
-		@Nonnull JaxExternalBenutzer externalBenutzer)
-		throws ConnectorException {
+		@Nonnull JaxExternalBenutzer externalBenutzer) {
 
 		requireNonNull(benutzerId);
 		requireNonNull(externalBenutzer);
 		checkLocalAccessOnly();
 
-		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"Benutzer not found",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId).orElse(null);
+
+		//if user not exists return error msg to connector
+		if(existingBenutzer == null){
+			return convertEinladungWrapperToJax(externalBenutzer, ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND));
+		}
 
 		String persistedEmail = existingBenutzer.getEmail();
 		String externalEmail = externalBenutzer.getEmail();
@@ -181,7 +185,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (!persistedEmail.equals(externalEmail)) {
 			String msg = ServerMessageUtil.translateEnumValue(ERROR_EMAIL_MISMATCH, persistedEmail, externalEmail);
 
-			throw new ConnectorException(msg);
+			//return the message to connector and stop process
+			return convertEinladungWrapperToJax(externalBenutzer, msg);
 		}
 
 		toBenutzer(externalBenutzer, existingBenutzer);
@@ -191,8 +196,15 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		}
 
 		Benutzer updatedBenutzer = benutzerService.updateOrStoreUserFromIAM(existingBenutzer);
+		return convertEinladungWrapperToJax(convertBenutzerToJax(updatedBenutzer), null);
+	}
 
-		return convertBenutzerToJax(updatedBenutzer);
+	private JaxEinladungWrapper convertEinladungWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg){
+		JaxEinladungWrapper wrapper = new JaxEinladungWrapper();
+		wrapper.setBenutzer(benutzer);
+		wrapper.setErrorMessage(msg);
+
+		return wrapper;
 	}
 
 	@Nonnull

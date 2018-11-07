@@ -10,7 +10,7 @@ export class LoadingButtonDirective extends UpgradeComponent {
     @Input() public delay: string;
     @Input() public buttonClass: string;
     @Input() public forceWaitService: string;
-    @Input() public buttonDisabled: '<';
+    @Input() public buttonDisabled: boolean;
     @Input() public ariaLabel: string;
     @Input() public inputId: string;
 

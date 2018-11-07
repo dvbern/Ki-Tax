@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -38,6 +39,10 @@ import ch.dvbern.ebegu.entities.WizardStep;
  */
 @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 public interface Authorizer {
+
+	void checkReadAuthorization(@Nullable Gemeinde gemeinde);
+
+	void checkWriteAuthorization(@Nullable Gemeinde gemeinde);
 
 	void checkReadAuthorization(@Nullable Gesuch gesuch);
 

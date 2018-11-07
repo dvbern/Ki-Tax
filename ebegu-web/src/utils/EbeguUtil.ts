@@ -189,6 +189,14 @@ export default class EbeguUtil {
         return !EbeguUtil.isNullOrUndefined(data);
     }
 
+    public static isNotNullAndTrue(data: boolean): boolean {
+        return this.isNotNullOrUndefined(data) && data;
+    }
+
+    public static isNotNullAndFalse(data: boolean): boolean {
+        return this.isNotNullOrUndefined(data) && !data;
+    }
+
     public static isEmptyStringNullOrUndefined(data: string): boolean {
         return !data;
     }
@@ -209,6 +217,33 @@ export default class EbeguUtil {
         const gemeindeNr = EbeguUtil.addZerosToGemeindeNummer(gemeinde.gemeindeNummer);
 
         return `${year}.${fallNr}.${gemeindeNr}.${kindNr}.${betreuungNumber}`;
+    }
+
+    /**
+     * Achtung: Diese Logik befindet sich ebenfalls serverseitig hier:
+     * EbeguUtil.java#isFinanzielleSituationRequired
+     */
+    public static isFinanzielleSituationRequiredForGesuch(gesuch: TSGesuch): boolean {
+        if (!gesuch) {
+            return false;
+        }
+        return EbeguUtil.isNotNullOrUndefined(gesuch)
+            && EbeguUtil.isNotNullOrUndefined(gesuch.familiensituationContainer)
+            && EbeguUtil.isNotNullOrUndefined(gesuch.familiensituationContainer.familiensituationJA)
+            && EbeguUtil.isFinanzielleSituationRequired(
+                gesuch.familiensituationContainer.familiensituationJA.sozialhilfeBezueger,
+                gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht);
+    }
+
+    /**
+     * Both parameters must always be set, thuogh they are nullable in the Familiensituation because they are not set while
+     * creating the object but later while filling out the finanzielle situation.
+     *
+     * For the finanzielle situation to be required:
+     * sozialhilfeBezueger=false and verguenstigungGewuenscht=true
+     */
+    public static isFinanzielleSituationRequired(sozialhilfeBezueger: boolean, verguenstigungGewuenscht: boolean): boolean {
+        return sozialhilfeBezueger === false && verguenstigungGewuenscht; // tslint:disable-line:no-boolean-literal-compare
     }
 
     /**
@@ -362,22 +397,5 @@ export default class EbeguUtil {
             list[index] = element;
             EbeguUtil.handleSmarttablesUpdateBug(list);
         }
-    }
-
-    public getKontaktJugendamt(): string {
-        return '<span>Jugendamt</span><br>'
-            + '<span>Effingerstrasse 21</span><br>'
-            + '<span>3008 Bern</span><br>'
-            + '<a href="tel:0313215115"><span>031 321 51 15</span></a><br>'
-            + '<a href="mailto:kinderbetreuung@bern.ch"><span>kinderbetreuung@bern.ch</span></a>';
-    }
-
-    // tslint:disable-next-line:no-identical-functions
-    public getKontaktSchulamt(): string {
-        return '<span>Schulamt</span><br>'
-            + '<span>Effingerstrasse 21</span><br>'
-            + '<span>3008 Bern</span><br>'
-            + '<a href="tel:0313216469"><span>031 321 64 69</span></a><br>'
-            + '<a href="mailto:tagesschulen@bern.ch"><span>tagesschulen@bern.ch</span></a>';
     }
 }

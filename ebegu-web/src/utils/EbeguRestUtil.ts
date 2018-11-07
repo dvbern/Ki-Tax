@@ -56,6 +56,8 @@ import TSEinkommensverschlechterungContainer from '../models/TSEinkommensverschl
 import TSEinkommensverschlechterungInfo from '../models/TSEinkommensverschlechterungInfo';
 import TSEinkommensverschlechterungInfoContainer from '../models/TSEinkommensverschlechterungInfoContainer';
 import TSEinstellung from '../models/TSEinstellung';
+import TSErweiterteBetreuung from '../models/TSErweiterteBetreuung';
+import TSErweiterteBetreuungContainer from '../models/TSErweiterteBetreuungContainer';
 import TSErwerbspensum from '../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../models/TSErwerbspensumContainer';
 import TSEWKAdresse from '../models/TSEWKAdresse';
@@ -75,6 +77,7 @@ import TSFinanzielleSituation from '../models/TSFinanzielleSituation';
 import TSFinanzielleSituationContainer from '../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../models/TSFinanzModel';
 import TSGemeinde from '../models/TSGemeinde';
+import TSGemeindeKonfiguration from '../models/TSGemeindeKonfiguration';
 import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
@@ -156,6 +159,12 @@ export default class EbeguRestUtil {
             return tsEinstellung;
         }
         return undefined;
+    }
+
+    private einstellungListToRestObject(einstellungListTS: Array<TSEinstellung>): Array<any> {
+        return einstellungListTS
+            ? einstellungListTS.map(item => this.einstellungToRestObject({}, item))
+            : [];
     }
 
     public einstellungToRestObject(restEinstellung: any, tsEinstellung: TSEinstellung): TSEinstellung {
@@ -703,6 +712,15 @@ export default class EbeguRestUtil {
             : [];
     }
 
+    public parseGemeindeList(data: any): TSGemeinde[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseGemeinde(new TSGemeinde(), item))
+            : [this.parseGemeinde(new TSGemeinde(), data)];
+    }
+
     public gemeindeToRestObject(restGemeinde: any, gemeinde: TSGemeinde): TSGemeinde {
         if (gemeinde) {
             this.abstractEntityToRestObject(restGemeinde, gemeinde);
@@ -715,15 +733,6 @@ export default class EbeguRestUtil {
             return restGemeinde;
         }
         return undefined;
-    }
-
-    public parseGemeindeList(data: any): TSGemeinde[] {
-        if (!data) {
-            return [];
-        }
-        return Array.isArray(data)
-            ? data.map(item => this.parseGemeinde(new TSGemeinde(), item))
-            : [this.parseGemeinde(new TSGemeinde(), data)];
     }
 
     public parseGemeinde(gemeindeTS: TSGemeinde, gemeindeFromServer: any): TSGemeinde {
@@ -749,25 +758,21 @@ export default class EbeguRestUtil {
             restStammdaten.gemeinde = this.gemeindeToRestObject({}, stammdaten.gemeinde);
             restStammdaten.adresse = this.adresseToRestObject({}, stammdaten.adresse);
             restStammdaten.beschwerdeAdresse = this.adresseToRestObject({}, stammdaten.beschwerdeAdresse);
-            restStammdaten.keineBeschwerdeAdresse = stammdaten.keineBeschwerdeAdresse;
             restStammdaten.mail = stammdaten.mail;
             restStammdaten.telefon = stammdaten.telefon;
             restStammdaten.webseite = stammdaten.webseite;
             restStammdaten.korrespondenzspracheDe = stammdaten.korrespondenzspracheDe;
             restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
-            restStammdaten.kontingentierung = stammdaten.kontingentierung;
-            restStammdaten.beguBisUndMitSchulstufe = stammdaten.beguBisUndMitSchulstufe;
+            restStammdaten.konfigurationsListe =
+                this.gemeindeKonfigurationListToRestObject(stammdaten.konfigurationsListe);
 
             return restStammdaten;
         }
         return undefined;
     }
 
-    public parseGemeindeStammdaten(
-        stammdatenTS: TSGemeindeStammdaten,
-        stammdatenFromServer: any
-    ): TSGemeindeStammdaten {
-
+    public parseGemeindeStammdaten(stammdatenTS: TSGemeindeStammdaten,
+                                   stammdatenFromServer: any): TSGemeindeStammdaten {
         if (stammdatenFromServer) {
             this.parseAbstractEntity(stammdatenTS, stammdatenFromServer);
 
@@ -778,19 +783,55 @@ export default class EbeguRestUtil {
             stammdatenTS.gemeinde = this.parseGemeinde(new TSGemeinde(), stammdatenFromServer.gemeinde);
             stammdatenTS.adresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.adresse);
             stammdatenTS.beschwerdeAdresse = this.parseAdresse(new TSAdresse(), stammdatenFromServer.beschwerdeAdresse);
-            stammdatenTS.keineBeschwerdeAdresse = stammdatenFromServer.keineBeschwerdeAdresse;
             stammdatenTS.mail = stammdatenFromServer.mail;
             stammdatenTS.telefon = stammdatenFromServer.telefon;
             stammdatenTS.webseite = stammdatenFromServer.webseite;
             stammdatenTS.korrespondenzspracheDe = stammdatenFromServer.korrespondenzspracheDe;
             stammdatenTS.korrespondenzspracheFr = stammdatenFromServer.korrespondenzspracheFr;
-            stammdatenTS.kontingentierung = stammdatenFromServer.kontingentierung;
-            stammdatenTS.beguBisUndMitSchulstufe = stammdatenFromServer.beguBisUndMitSchulstufe;
-            stammdatenTS.logoUrl = stammdatenFromServer.logoUrl;
             stammdatenTS.benutzerListeBG = stammdatenFromServer.benutzerListeBG;
             stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
+            stammdatenTS.konfigurationsListe =
+                this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
 
             return stammdatenTS;
+        }
+        return undefined;
+    }
+
+    private gemeindeKonfigurationListToRestObject(konfigurationListTS: Array<TSGemeindeKonfiguration>): Array<any> {
+        return konfigurationListTS
+            ? konfigurationListTS.map(item => this.gemeindeKonfigurationToRestObject({}, item))
+            : [];
+    }
+
+    public gemeindeKonfigurationToRestObject(restKonfiguration: any,
+                                             konfiguration: TSGemeindeKonfiguration): TSGemeindeKonfiguration {
+        if (konfiguration) {
+            restKonfiguration.gesuchsperiodeId = konfiguration.gesuchsperiodeId;
+            restKonfiguration.gesuchsperiodeStatus = konfiguration.gesuchsperiodeStatus;
+            restKonfiguration.konfigurationen = this.einstellungListToRestObject(konfiguration.konfigurationen);
+            return restKonfiguration;
+        }
+        return undefined;
+    }
+
+    public parseGemeindeKonfigurationList(data: any): TSGemeindeKonfiguration[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseGemeindeKonfiguration(new TSGemeindeKonfiguration(), item))
+            : [this.parseGemeindeKonfiguration(new TSGemeindeKonfiguration(), data)];
+    }
+
+    public parseGemeindeKonfiguration(konfigurationTS: TSGemeindeKonfiguration,
+                                      konfigurationFromServer: any): TSGemeindeKonfiguration {
+        if (konfigurationFromServer) {
+            konfigurationTS.gesuchsperiodeName = konfigurationFromServer.gesuchsperiodeName;
+            konfigurationTS.gesuchsperiodeId = konfigurationFromServer.gesuchsperiodeId;
+            konfigurationTS.gesuchsperiodeStatus = konfigurationFromServer.gesuchsperiodeStatus;
+            konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
+            return konfigurationTS;
         }
         return undefined;
     }
@@ -894,6 +935,8 @@ export default class EbeguRestUtil {
         restFachstelle.name = fachstelle.name;
         restFachstelle.beschreibung = fachstelle.beschreibung;
         restFachstelle.behinderungsbestaetigung = fachstelle.behinderungsbestaetigung;
+        restFachstelle.fachstelleAnspruch = fachstelle.fachstelleAnspruch;
+        restFachstelle.fachstelleErweiterteBetreuung = fachstelle.fachstelleErweiterteBetreuung;
         return restFachstelle;
     }
 
@@ -911,6 +954,8 @@ export default class EbeguRestUtil {
         parsedFachstelle.name = receivedFachstelle.name;
         parsedFachstelle.beschreibung = receivedFachstelle.beschreibung;
         parsedFachstelle.behinderungsbestaetigung = receivedFachstelle.behinderungsbestaetigung;
+        parsedFachstelle.fachstelleAnspruch = receivedFachstelle.fachstelleAnspruch;
+        parsedFachstelle.fachstelleErweiterteBetreuung = receivedFachstelle.fachstelleErweiterteBetreuung;
         return parsedFachstelle;
     }
 
@@ -970,6 +1015,7 @@ export default class EbeguRestUtil {
             restInstitution.mandant = this.mandantToRestObject({}, institution.mandant);
             restInstitution.traegerschaft = this.traegerschaftToRestObject({}, institution.traegerschaft);
             restInstitution.mail = institution.mail;
+            restInstitution.status = institution.status;
             return restInstitution;
         }
         return undefined;
@@ -983,6 +1029,7 @@ export default class EbeguRestUtil {
             institutionTS.traegerschaft =
                 this.parseTraegerschaft(new TSTraegerschaft(), institutionFromServer.traegerschaft);
             institutionTS.mail = institutionFromServer.mail;
+            institutionTS.status = institutionFromServer.status;
             return institutionTS;
         }
         return undefined;
@@ -1003,8 +1050,6 @@ export default class EbeguRestUtil {
         if (institutionStammdaten) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdaten, institutionStammdaten);
             restInstitutionStammdaten.iban = institutionStammdaten.iban;
-            restInstitutionStammdaten.oeffnungsstunden = institutionStammdaten.oeffnungsstunden;
-            restInstitutionStammdaten.oeffnungstage = institutionStammdaten.oeffnungstage;
             restInstitutionStammdaten.betreuungsangebotTyp = institutionStammdaten.betreuungsangebotTyp;
             restInstitutionStammdaten.institution = this.institutionToRestObject({}, institutionStammdaten.institution);
             restInstitutionStammdaten.adresse = this.adresseToRestObject({}, institutionStammdaten.adresse);
@@ -1028,8 +1073,6 @@ export default class EbeguRestUtil {
         if (institutionStammdatenFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTS, institutionStammdatenFromServer);
             institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
-            institutionStammdatenTS.oeffnungsstunden = institutionStammdatenFromServer.oeffnungsstunden;
-            institutionStammdatenTS.oeffnungstage = institutionStammdatenFromServer.oeffnungstage;
             institutionStammdatenTS.betreuungsangebotTyp = institutionStammdatenFromServer.betreuungsangebotTyp;
             institutionStammdatenTS.institution =
                 this.parseInstitution(new TSInstitution(), institutionStammdatenFromServer.institution);
@@ -1063,7 +1106,7 @@ export default class EbeguRestUtil {
         institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel,
     ): any {
         if (institutionStammdatenFerieninsel) {
-            this.abstractMutableEntityToRestObject(restInstitutionStammdatenFerieninsel,
+            this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenFerieninsel,
                 institutionStammdatenFerieninsel);
             restInstitutionStammdatenFerieninsel.ausweichstandortFruehlingsferien =
                 institutionStammdatenFerieninsel.ausweichstandortFruehlingsferien;
@@ -1083,7 +1126,7 @@ export default class EbeguRestUtil {
         institutionStammdatenFerieninselFromServer: any,
     ): TSInstitutionStammdatenFerieninsel {
         if (institutionStammdatenFerieninselFromServer) {
-            this.parseAbstractMutableEntity(institutionStammdatenFerieninselTS,
+            this.parseDateRangeEntity(institutionStammdatenFerieninselTS,
                 institutionStammdatenFerieninselFromServer);
             institutionStammdatenFerieninselTS.ausweichstandortFruehlingsferien =
                 institutionStammdatenFerieninselFromServer.ausweichstandortFruehlingsferien;
@@ -1103,7 +1146,7 @@ export default class EbeguRestUtil {
         institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule,
     ): any {
         if (institutionStammdatenTagesschule) {
-            this.abstractMutableEntityToRestObject(restInstitutionStammdatenTagesschule,
+            this.abstractDateRangeEntityToRestObject(restInstitutionStammdatenTagesschule,
                 institutionStammdatenTagesschule);
             restInstitutionStammdatenTagesschule.moduleTagesschule =
                 this.moduleTagesschuleArrayToRestObject(institutionStammdatenTagesschule.moduleTagesschule);
@@ -1117,7 +1160,7 @@ export default class EbeguRestUtil {
         institutionStammdatenTagesschuleFromServer: any,
     ): TSInstitutionStammdatenTagesschule {
         if (institutionStammdatenTagesschuleFromServer) {
-            this.parseAbstractMutableEntity(institutionStammdatenTagesschuleTS,
+            this.parseDateRangeEntity(institutionStammdatenTagesschuleTS,
                 institutionStammdatenTagesschuleFromServer);
             institutionStammdatenTagesschuleTS.moduleTagesschule =
                 this.parseModuleTagesschuleArray(institutionStammdatenTagesschuleFromServer.moduleTagesschule);
@@ -1503,7 +1546,6 @@ export default class EbeguRestUtil {
         restBetreuung.datumBestaetigung = DateUtil.momentToLocalDate(betreuung.datumBestaetigung);
         restBetreuung.vertrag = betreuung.vertrag;
         restBetreuung.keineKesbPlatzierung = betreuung.keineKesbPlatzierung;
-        restBetreuung.erweiterteBeduerfnisse = betreuung.erweiterteBeduerfnisse;
         if (betreuung.institutionStammdaten) {
             restBetreuung.institutionStammdaten =
                 this.institutionStammdatenToRestObject({}, betreuung.institutionStammdaten);
@@ -1520,6 +1562,10 @@ export default class EbeguRestUtil {
             betreuung.abwesenheitContainers.forEach((abwesenheitCont: TSAbwesenheitContainer) => {
                 restBetreuung.abwesenheitContainers.push(this.abwesenheitContainerToRestObject({}, abwesenheitCont));
             });
+        }
+        if (betreuung.erweiterteBetreuungContainer) {
+            restBetreuung.erweiterteBetreuungContainer =
+                this.erweiterteBetreuungContainerToRestObject({}, betreuung.erweiterteBetreuungContainer);
         }
         restBetreuung.kindFullname = betreuung.kindFullname;
         restBetreuung.kindNummer = betreuung.kindNummer;
@@ -1608,7 +1654,6 @@ export default class EbeguRestUtil {
             betreuungTS.datumBestaetigung = DateUtil.localDateToMoment(betreuungFromServer.datumBestaetigung);
             betreuungTS.vertrag = betreuungFromServer.vertrag;
             betreuungTS.keineKesbPlatzierung = betreuungFromServer.keineKesbPlatzierung;
-            betreuungTS.erweiterteBeduerfnisse = betreuungFromServer.erweiterteBeduerfnisse;
             betreuungTS.betreuungsstatus = betreuungFromServer.betreuungsstatus;
             betreuungTS.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                 betreuungFromServer.institutionStammdaten);
@@ -1616,6 +1661,11 @@ export default class EbeguRestUtil {
                 this.parseBetreuungspensumContainers(betreuungFromServer.betreuungspensumContainers);
             betreuungTS.abwesenheitContainers =
                 this.parseAbwesenheitContainers(betreuungFromServer.abwesenheitContainers);
+            betreuungTS.erweiterteBetreuungContainer =
+                this.parseErweiterteBetreuungContainer(
+                    new TSErweiterteBetreuungContainer(),
+                    betreuungFromServer.erweiterteBetreuungContainer
+                );
             betreuungTS.betreuungNummer = betreuungFromServer.betreuungNummer;
             betreuungTS.verfuegung = this.parseVerfuegung(new TSVerfuegung(), betreuungFromServer.verfuegung);
             betreuungTS.kindFullname = betreuungFromServer.kindFullname;
@@ -1718,6 +1768,69 @@ export default class EbeguRestUtil {
         if (abwesenheitFromServer) {
             this.parseDateRangeEntity(abwesenheitTS, abwesenheitFromServer);
             return abwesenheitTS;
+        }
+        return undefined;
+    }
+
+    public erweiterteBetreuungContainerToRestObject(
+        restErweiterteBetreuungContainer: any,
+        erweiterteBetreuungContainer: TSErweiterteBetreuungContainer,
+    ): TSErweiterteBetreuungContainer {
+        this.abstractMutableEntityToRestObject(restErweiterteBetreuungContainer, erweiterteBetreuungContainer);
+
+        if (erweiterteBetreuungContainer.erweiterteBetreuungGS) {
+            restErweiterteBetreuungContainer.erweiterteBetreuungGS =
+                this.erweiterteBetreuungToRestObject({}, erweiterteBetreuungContainer.erweiterteBetreuungGS);
+        }
+        if (erweiterteBetreuungContainer.erweiterteBetreuungJA) {
+            restErweiterteBetreuungContainer.erweiterteBetreuungJA =
+                this.erweiterteBetreuungToRestObject({}, erweiterteBetreuungContainer.erweiterteBetreuungJA);
+        }
+        return restErweiterteBetreuungContainer;
+    }
+
+    public parseErweiterteBetreuungContainer(
+        containerTS: TSErweiterteBetreuungContainer,
+        containerFromServer: any,
+    ): TSErweiterteBetreuungContainer {
+        if (containerFromServer) {
+            this.parseAbstractMutableEntity(containerTS, containerFromServer);
+
+            containerTS.erweiterteBetreuungGS =
+                this.parseErweiterteBetreuung(containerTS.erweiterteBetreuungGS || new TSErweiterteBetreuung(),
+                    containerFromServer.erweiterteBetreuungGS);
+            containerTS.erweiterteBetreuungJA =
+                this.parseErweiterteBetreuung(containerTS.erweiterteBetreuungJA || new TSErweiterteBetreuung(),
+                    containerFromServer.erweiterteBetreuungJA);
+            return containerTS;
+        }
+        return undefined;
+    }
+
+    public erweiterteBetreuungToRestObject(
+        restErweiterteBetreuung: any,
+        erweiterteBetreuung: TSErweiterteBetreuung,
+    ): TSErweiterteBetreuung {
+        this.abstractMutableEntityToRestObject(restErweiterteBetreuung, erweiterteBetreuung);
+        restErweiterteBetreuung.erweiterteBeduerfnisse = erweiterteBetreuung.erweiterteBeduerfnisse;
+        if (erweiterteBetreuung.fachstelle) {
+            restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
+        }
+        return restErweiterteBetreuung;
+    }
+
+    public parseErweiterteBetreuung(
+        erweiterteBetreuungTS: TSErweiterteBetreuung,
+        erweiterteBetreuungFromServer: any,
+    ): TSErweiterteBetreuung {
+        if (erweiterteBetreuungFromServer) {
+            this.parseAbstractMutableEntity(erweiterteBetreuungFromServer, erweiterteBetreuungTS);
+            erweiterteBetreuungTS.erweiterteBeduerfnisse = erweiterteBetreuungFromServer.erweiterteBeduerfnisse;
+            if (erweiterteBetreuungFromServer.fachstelle) {
+                erweiterteBetreuungTS.fachstelle =
+                    this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);
+            }
+            return erweiterteBetreuungTS;
         }
         return undefined;
     }

@@ -61,6 +61,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public dokumenteFamSit: TSDokumentGrund[] = [];
     public dokumenteErwp: TSDokumentGrund[] = [];
     public dokumenteKinder: TSDokumentGrund[] = [];
+    public dokumenteErwBetr: TSDokumentGrund[] = [];
     public dokumenteSonst: TSDokumentGrund[] = [];
     public dokumentePapiergesuch: TSDokumentGrund[] = [];
     public dokumenteFreigabequittung: TSDokumentGrund[] = [];
@@ -99,6 +100,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                 this.searchDokumente(alleDokumente, this.dokumenteFamSit, TSDokumentGrundTyp.FAMILIENSITUATION);
                 this.searchDokumente(alleDokumente, this.dokumenteErwp, TSDokumentGrundTyp.ERWERBSPENSUM);
                 this.searchDokumente(alleDokumente, this.dokumenteKinder, TSDokumentGrundTyp.KINDER);
+                this.searchDokumente(alleDokumente, this.dokumenteErwBetr, TSDokumentGrundTyp.ERWEITERTE_BETREUUNG);
                 this.searchDokumente(alleDokumente, this.dokumenteSonst, TSDokumentGrundTyp.SONSTIGE_NACHWEISE);
                 this.searchDokumente(alleDokumente, this.dokumentePapiergesuch, TSDokumentGrundTyp.PAPIERGESUCH);
                 this.searchDokumente(alleDokumente,

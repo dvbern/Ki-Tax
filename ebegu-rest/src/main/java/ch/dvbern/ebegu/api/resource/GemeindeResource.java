@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,24 +39,38 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
-import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
+import ch.dvbern.ebegu.api.resource.util.TransferFile;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.Validate;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 /**
  * Resource fuer Gemeinde
@@ -70,6 +85,12 @@ public class GemeindeResource {
 
 	@Inject
 	private BenutzerService benutzerService;
+
+	@Inject
+	private EinstellungService einstellungService;
+
+	@Inject
+	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -196,7 +217,7 @@ public class GemeindeResource {
 			stammdatenFromDB = initGemeindeStammdaten(gemeindeId);
 		}
 		return stammdatenFromDB
-			.map(stammdaten -> converter.gemeindeStammdatenToJAX(stammdaten))
+			.map(stammdaten -> gemeindeConverter.gemeindeStammdatenToJAX(stammdaten))
 			.orElse(null);
 	}
 
@@ -238,17 +259,88 @@ public class GemeindeResource {
 		if (stammdaten.isNew()) {
 			stammdaten.setAdresse(new Adresse());
 		}
-		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
+		GemeindeStammdaten convertedStammdaten = gemeindeConverter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
+
+		// Konfiguration
+		// Die Gemeindekonfigurationen kann nur in folgenden Fällen bearbeitet werden:
+		// - wenn die Gesuchsperiode im Status "Entwurf" ist
+		// - wenn die Gemeinde im Status "Eingeladen" ist
+		boolean eingeladen = GemeindeStatus.EINGELADEN == jaxStammdaten.getGemeinde().getStatus();
+		jaxStammdaten.getKonfigurationsListe().forEach(konfiguration -> {
+			if (eingeladen || GesuchsperiodeStatus.ENTWURF == konfiguration.getGesuchsperiodeStatus()) {
+				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
+			}
+		});
 
 		// Statuswechsel
-		if (stammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
-			stammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
+		if (convertedStammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
+			convertedStammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
 		}
 
 		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
 
-		return converter.gemeindeStammdatenToJAX(persistedStammdaten);
+		return gemeindeConverter.gemeindeStammdatenToJAX(persistedStammdaten);
 
 	}
 
+	private void saveJaxGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull JaxGemeindeKonfiguration konfiguration) {
+		if (konfiguration.getGesuchsperiodeId() != null) {
+			Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiodeId());
+			if (gesuchsperiode.isPresent()) {
+				for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
+					Einstellung einstellung = einstellungService.findEinstellung(jaxKonfig.getKey(), gemeinde, gesuchsperiode.get());
+					if (!gemeinde.equals(einstellung.getGemeinde()) || !gesuchsperiode.get().equals(einstellung.getGesuchsperiode())) {
+						einstellung = new Einstellung();
+						einstellung.setKey(jaxKonfig.getKey());
+						einstellung.setGemeinde(gemeinde);
+						einstellung.setGesuchsperiode(gesuchsperiode.get());
+					}
+					einstellung.setValue(jaxKonfig.getValue());
+					einstellungService.saveEinstellung(einstellung);
+				}
+			}
+		}
+	}
+
+	@ApiOperation("Stores the logo image of the Gemeinde with the given id")
+	@POST
+	@Path("/logo/data/{gemeindeId}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadLogo(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull MultipartFormDataInput input) {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+
+		Validate.notEmpty(fileList, "Need to upload something");
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+
+		gemeindeService.uploadLogo(gemeindeId, fileList.get(0).getContent());
+
+		return Response.ok().build();
+	}
+
+	@ApiOperation("Returns the logo image of the Gemeinde with the given id or an errorcode if none is available")
+	@GET
+	@Path("/logo/data/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public Response downloadLogo(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+		if (stammdaten.isPresent()) {
+			try {
+				return RestUtil.buildDownloadResponse(false, "logo",
+					"application/octet-stream", stammdaten.get().getLogoContent());
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
+	}
 }

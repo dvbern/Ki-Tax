@@ -88,9 +88,9 @@ import ch.dvbern.ebegu.services.TestdataCreationService;
 import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.services.WizardStepService;
 import ch.dvbern.ebegu.services.ZahlungService;
-import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
@@ -103,7 +103,6 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -168,13 +167,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public static final int ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE = 60;
 	public static final int ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG = 90;
 
-	private Gesuchsperiode gesuchsperiode;
-
-	@Before
-	public void setUp() {
-		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
-		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
-	}
 
 	@Test
 	public void createGesuch() {
@@ -664,7 +656,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testRemoveOnlineMutation() {
 		final Benutzer userGS = loginAsGesuchsteller("gesuchst");
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Benutzer sachbearbeiterJA = loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
@@ -703,7 +695,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAllWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=WARTEN, 2nd Betreuung=WARTEN
@@ -713,7 +705,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testupdateBetreuungenStatusBestaetigtWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=BESTAETIGT, 2nd Betreuung=WARTEN
@@ -725,7 +717,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAlleBestaetigt() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=BESTAETIGT, 2nd Betreuung=BESTAETIGT
@@ -736,7 +728,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testupdateBetreuungenStatusAbgewiesenWarten() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus()); // by default
 
 		// 1st Betreuung=ABGEWIESEN, 2nd Betreuung=WARTEN
@@ -749,7 +741,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	@Test
 	public void testChangeFinSitStatusAbgelehnt() {
-		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(institutionService, persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
 		Assert.assertTrue(gesuch.isHasFSDokument());
 		Assert.assertNull(gesuch.getFinSitStatus());
 
@@ -768,8 +760,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Betreuung betreuung = TestDataUtil.createAnmeldungTagesschule(erstgesuch.getKindContainers().iterator().next());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getMandant());
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
-		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution());
-		persistence.persist(betreuung.getInstitutionStammdaten());
 		betreuungService.saveBetreuung(betreuung, false);
 
 		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));

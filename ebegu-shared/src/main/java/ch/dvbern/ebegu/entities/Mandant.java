@@ -32,7 +32,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @Audited
 @Entity
-public class Mandant extends AbstractMutableEntity {
+public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	private static final long serialVersionUID = -8433487433884700618L;
 	public static final String MANDANT_PARAMETER = "mandant";

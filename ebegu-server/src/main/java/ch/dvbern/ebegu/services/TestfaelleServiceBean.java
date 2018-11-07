@@ -147,7 +147,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Nonnull
 	public StringBuilder createAndSaveTestfaelle(@Nonnull String fallid, boolean betreuungenBestaetigt, boolean verfuegen,
 			@Nullable String gesuchsPeriodeId, @Nonnull String gemeindeId) {
-		return this.createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, null, gesuchsPeriodeId, gemeindeId);
+		return createAndSaveTestfaelle(fallid, 1, betreuungenBestaetigt, verfuegen, null, gesuchsPeriodeId, gemeindeId);
 	}
 
 	@Nonnull
@@ -438,6 +438,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			final Gesuch mutation = gesuchOptional.get();
 			final FamiliensituationContainer familiensituationContainer = mutation.getFamiliensituationContainer();
 			Objects.requireNonNull(familiensituationContainer, "Familiensituation muss gesetzt sein");
+			Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA(), "FamiliensituationJA muss gesetzt sein");
+			newFamsit.setSozialhilfeBezueger(familiensituationContainer.getFamiliensituationJA().getSozialhilfeBezueger());
+			newFamsit.setVerguenstigungGewuenscht(familiensituationContainer.getFamiliensituationJA().getVerguenstigungGewuenscht());
 			familiensituationContainer.setFamiliensituationErstgesuch(familiensituationContainer.getFamiliensituationJA());
 			familiensituationContainer.setFamiliensituationJA(newFamsit);
 			familiensituationService.saveFamiliensituation(mutation, familiensituationContainer, null);
@@ -461,13 +464,13 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		Optional<InstitutionStammdaten> optionalAaregg = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
 		Optional<InstitutionStammdaten> optionalBruennen = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA);
-		Optional<InstitutionStammdaten> optionalTagiAaregg = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
+		Optional<InstitutionStammdaten> optionalTagesfamilien = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
 		Optional<InstitutionStammdaten> optionalTagesschule = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
 		Optional<InstitutionStammdaten> optionalFerieninsel = institutionStammdatenService.findInstitutionStammdaten(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL);
 
 		optionalAaregg.ifPresent(institutionStammdatenList::add);
 		optionalBruennen.ifPresent(institutionStammdatenList::add);
-		optionalTagiAaregg.ifPresent(institutionStammdatenList::add);
+		optionalTagesfamilien.ifPresent(institutionStammdatenList::add);
 		optionalTagesschule.ifPresent(institutionStammdatenList::add);
 		optionalFerieninsel.ifPresent(institutionStammdatenList::add);
 		return institutionStammdatenList;
@@ -488,8 +491,11 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	 */
 	@Override
 	@Nonnull
-	public Gesuch createAndSaveGesuch(@Nonnull AbstractTestfall fromTestfall, boolean verfuegen,
-		@Nullable Benutzer besitzer) {
+	public Gesuch createAndSaveGesuch(
+		@Nonnull AbstractTestfall fromTestfall,
+		boolean verfuegen,
+		@Nullable Benutzer besitzer
+	) {
 		final List<Gesuch> gesuche = gesuchService.findGesuchByGSName(fromTestfall.getNachname(), fromTestfall.getVorname());
 		if (!gesuche.isEmpty()) {
 			fromTestfall.setFall(gesuche.iterator().next().getFall());
@@ -597,6 +603,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		if (verfuegen) {
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
+
 			verfuegungService.calculateVerfuegung(gesuch);
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 				.filter(betreuung -> !betreuung.isAngebotSchulamt())
@@ -816,6 +823,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		famsit.setGemeinsameSteuererklaerung(true);
 		famsit.setAenderungPer(aenderungPer);
+		famsit.setSozialhilfeBezueger(false);
+		famsit.setVerguenstigungGewuenscht(true);
 		return famsit;
 	}
 
@@ -825,6 +834,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		famsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		famsit.setAenderungPer(aenderungPer);
+		famsit.setSozialhilfeBezueger(false);
+		famsit.setVerguenstigungGewuenscht(true);
 		return famsit;
 	}
 }

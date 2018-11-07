@@ -32,12 +32,16 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import com.google.common.collect.ArrayListMultimap;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
  * Allgemeine Utils fuer EBEGU
  */
-public class EbeguUtil {
+public final class EbeguUtil {
+
+	private EbeguUtil() {
+	}
 
 	/**
 	 * Berechnet ob die Daten bei der Familiensituation von einem GS auf 2 GS geaendert wurde.
@@ -90,6 +94,9 @@ public class EbeguUtil {
 	/**
 	 * Returns true if both strings have the same content or both are null or emptystrings
 	 * or one is emptystring and the other is null
+	 * Achtung: Diese Logik befindet sich ebenfalls clientseitig hier:
+	 * EbeguUtil.ts#isFinanzielleSituationRequiredForGesuch bzw.
+	 * EbeguUtil.ts#isFinanzielleSituationRequired
 	 */
 	public static boolean isSameOrNullBoolean(@Nullable Boolean thisBoolean, @Nullable Boolean otherBoolean) {
 		return (isNullOrFalse(thisBoolean) && isNullOrFalse(otherBoolean))
@@ -113,17 +120,18 @@ public class EbeguUtil {
 		return false;
 	}
 
+	/**
+	 * finanzielle situation ist by default nicht zwingend, ausser es ist getSozialhilfeBezueger=false und
+	 * getVerguenstigungGewuenscht=true
+	 */
 	public static boolean isFinanzielleSituationRequired(@Nonnull Gesuch gesuch) {
-		return !gesuch.getGesuchsperiode().hasTagesschulenAnmeldung() ||
-			((gesuch.getGesuchsperiode().hasTagesschulenAnmeldung() && gesuch.hasBetreuungOfJugendamt()) ||
-				gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-					&& Objects.equals(false, gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
-					&& Objects.equals(true, gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht()));
+		return gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
+			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
+			&& BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht());
 	}
 
 	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {
-		return gesuch.getGesuchsperiode().hasTagesschulenAnmeldung() &&
-			(gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
+		return (gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() == null);
 	}
 

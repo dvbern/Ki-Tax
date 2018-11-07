@@ -20,49 +20,15 @@
 <form role="form"
       #form="ngForm"
       [ngClass]="{'ng-submitted': form.submitted}"
-      *ngIf="stammdaten"
-      (ngSubmit)="persistGemeindeStammdaten()"
+      *ngIf="stammdaten$ | async as stammdaten"
+      (ngSubmit)="persistGemeindeStammdaten(stammdaten)"
       novalidate>
 
-    <div class="row marginTop20 marginBottom10">
-        <div class="col-md-8 col-md-offset-2 ">
-
-            <h1 class="access-for-all-title" translate>AFA_GEMEINDEVERWALTUNG</h1>
-            <div class="viewTitle">
-                <h2>{{'GEMEINDE_NAME' | translate: {name: stammdaten.gemeinde.name, bfs: stammdaten.gemeinde.bfsNummer} }}</h2>
-                <hr class="header">
-            </div>
-
-            <fieldset>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>ADMINISTRATOREN</h3>
-                            <p>{{stammdaten.administratoren}}</p>
-                            <h3 translate>SACHBEARBEITER</h3>
-                            <p>{{stammdaten.sachbearbeiter}}</p>
-                        </div>
-                        <div class="form-group">
-                            <button type="button" class="dv-btn mitarbeiter-bearbeiten-button" (click)="mitarbeiterBearbeiten()"
-                                    [textContent]="'BENUTZER_EDIT' | translate">
-                            </button>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <div class="marginBottom10">
-                                <img [src]="previewImageURL" [height]="180" class="klub-logo-dialog-image">
-                            </div>
-                            <div>
-                                <input #fileInput type="file" accept='image/*' (change)="handleInput(fileInput.files)"
-                                       class="klub-logo-dialog-fileinput">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
-    </div>
+    <dv-gemeinde-header
+        [gemeinde]="stammdaten.gemeinde"
+        [administratoren]="stammdaten.administratoren"
+        [sachbearbeiter]="stammdaten.sachbearbeiter">
+    </dv-gemeinde-header>
 
     <dv-full-height-container>
         <div class="dv-content">
@@ -121,7 +87,8 @@
                             <label translate for="telefon_id">TELEFON</label>
                             <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.telefon"
-                                   [maxlength]="255" class="form-control">
+                                   [maxlength]="255" class="form-control"
+                                   required>
                             <dv-error-messages [errorObject]="form.controls.telefon_id?.errors" inputId="telefon_id"></dv-error-messages>
                         </div>
                     </div>
@@ -154,7 +121,8 @@
                             <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.webseite"
                                    [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.webseite_id?.errors" inputId="webseite_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.webseite_id?.errors"
+                                               inputId="webseite_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -164,7 +132,7 @@
                         <div class="form-group">
                             <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
                             <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
-                                          [(ngModel)]="stammdaten.keineBeschwerdeAdresse">
+                                          [(ngModel)]="keineBeschwerdeAdresse">
                                 {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                             </mat-checkbox>
                         </div>
@@ -182,11 +150,17 @@
                                               [(ngModel)]="stammdaten.korrespondenzspracheFr">
                                     {{'FRANZOESISCH'|translate}}
                                 </mat-checkbox>
+                                <div class="dv-error-messages"
+                                     *ngIf="!stammdaten.korrespondenzspracheDe && !stammdaten.korrespondenzspracheFr">
+                                    <div class="error">
+                                        {{ 'ERROR_REQUIRED' | translate }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!keineBeschwerdeAdresse" class="row">
                     <!-- Beschwerde-Adresse -->
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -199,7 +173,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!keineBeschwerdeAdresse" class="row">
                     <!-- Strasse -->
                     <div class="col-sm-5">
                         <div class="form-group">
@@ -221,7 +195,7 @@
                         </div>
                     </div>
                 </div>
-                <div *ngIf="!stammdaten.keineBeschwerdeAdresse" class="row">
+                <div *ngIf="!keineBeschwerdeAdresse" class="row">
                     <!-- PLZ -->
                     <div class="col-sm-1">
                         <div class="form-group">
@@ -264,49 +238,12 @@
                 </div>
             </fieldset>
 
-
             <fieldset>
-                <div class="viewTitle">
-                    <h3 translate>BEGU_KONFIGURATION</h3>
-                    <hr class="header">
-                </div>
-                <div class="row">
-                    <!-- Betreuungsgutscheine anbieten ab -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>BEGU_START</h3>
-                            <p>{{beguStart}}</p>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- Kontingentierung -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate for="kontingentierung_id">EIGENSCHAFTEN</h3>
-                            <mat-checkbox id="kontingentierung_id" name="kontingentierung_id"
-                                          [(ngModel)]="stammdaten.kontingentierung">
-                                {{'KONTINGENTIERUNG'|translate}}
-                            </mat-checkbox>
-                        </div>
-                    </div>
-                    <!-- Betreuungsgutscheine für Kitas anbieten bis und mit -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate>GEMEINDE_REGELN</h3>
-                            <label translate for="begu_kitas_bis_und_mit_id">BEGU_KITAS_BIS_UND_MIT</label>
-                            <mat-select [(ngModel)]="stammdaten.beguBisUndMitSchulstufe" id="begu_kitas_bis_und_mit_id" name="begu_kitas_bis_und_mit_id"
-                                        class="form-control">
-                                <mat-option *ngFor="let etv of einschulungTypValues" [value]="etv">{{etv | translate}}
-                                </mat-option>
-                            </mat-select>
-                        </div>
-                    </div>
-                </div>
+                <dv-gemeinde-konfiguration
+                    [konfigurationsListe]="stammdaten.konfigurationsListe"
+                    [gemeindeStatus]="stammdaten.gemeinde.status"
+                    [beguStartDate]="stammdaten.gemeinde.betreuungsgutscheineStartdatum">
+                </dv-gemeinde-konfiguration>
             </fieldset>
         </div>
 

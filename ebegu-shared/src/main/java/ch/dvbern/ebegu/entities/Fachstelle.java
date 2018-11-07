@@ -50,6 +50,12 @@ public class Fachstelle extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean behinderungsbestaetigung;
 
+	@Column(nullable = false)
+	private boolean fachstelleAnspruch;
+
+	@Column(nullable = false)
+	private boolean fachstelleErweiterteBetreuung;
+
 	public Fachstelle() {
 	}
 
@@ -77,6 +83,22 @@ public class Fachstelle extends AbstractMutableEntity {
 
 	public void setBehinderungsbestaetigung(boolean behinderungsbestaetigung) {
 		this.behinderungsbestaetigung = behinderungsbestaetigung;
+	}
+
+	public boolean isFachstelleAnspruch() {
+		return fachstelleAnspruch;
+	}
+
+	public void setFachstelleAnspruch(boolean fachstelleAnspruch) {
+		this.fachstelleAnspruch = fachstelleAnspruch;
+	}
+
+	public boolean isFachstelleErweiterteBetreuung() {
+		return fachstelleErweiterteBetreuung;
+	}
+
+	public void setFachstelleErweiterteBetreuung(boolean fachstelleErweiterteBetreuung) {
+		this.fachstelleErweiterteBetreuung = fachstelleErweiterteBetreuung;
 	}
 
 	@Override
