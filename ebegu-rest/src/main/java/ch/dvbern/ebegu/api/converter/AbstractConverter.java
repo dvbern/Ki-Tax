@@ -200,6 +200,7 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setPensum(jaxPensum.getPensum());
+		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 	}
 
 	protected void convertAbstractPensumFieldsToEntity(
@@ -208,6 +209,7 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setPensum(jaxPensum.getPensum());
+		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -232,6 +234,7 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setPensum(pensum.getPensum());
+		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 	}
 
 	protected void convertAbstractPensumFieldsToJAX(
@@ -240,6 +243,7 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToJAX(pensum, jaxPensum);
 		jaxPensum.setPensum(pensum.getPensum());
+		jaxPensum.setUnitForDisplay(pensum.getUnitForDisplay());
 	}
 
 }
