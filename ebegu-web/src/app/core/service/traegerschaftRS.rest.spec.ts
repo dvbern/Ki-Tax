@@ -20,7 +20,7 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {TraegerschaftRS} from './traegerschaftRS.rest';
 
-describe('institutionStammdatenRS', () => {
+describe('traegerschaftRS', () => {
 
     let traegerschaftRS: TraegerschaftRS;
     let $httpBackend: IHttpBackendService;
@@ -60,18 +60,17 @@ describe('institutionStammdatenRS', () => {
 
         });
 
-        describe('createTraegerschaft', () => {
+       describe('createTraegerschaft', () => {
             it('should create a traegerschaft', () => {
                 let createdTraegerschaft: TSTraegerschaft;
                 const url = traegerschaftRS.serviceURL;
-                $httpBackend.expectPUT(url, mockTraegerschaftRest).respond(mockTraegerschaftRest);
+                $httpBackend.expectPOST(url, mockTraegerschaftRest).respond(mockTraegerschaftRest);
 
                 traegerschaftRS.createTraegerschaft(mockTraegerschaft, 'myAdminMail')
                     .then(result => {
                         createdTraegerschaft = result;
+                        checkFieldValues(createdTraegerschaft, mockTraegerschaft);
                     });
-                $httpBackend.flush();
-                checkFieldValues(createdTraegerschaft, mockTraegerschaft);
             });
         });
 

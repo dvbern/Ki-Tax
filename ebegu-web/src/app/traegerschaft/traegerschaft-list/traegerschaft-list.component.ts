@@ -44,7 +44,6 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     public constructor(
         private readonly traegerschaftRS: TraegerschaftRS,
-        private readonly errorService: ErrorService,
         private readonly dialog: MatDialog,
         authServiceRS: AuthServiceRS,
         private readonly $state: StateService,
