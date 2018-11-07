@@ -246,6 +246,32 @@
                     </div>
                     <!--fachstelle-->
                     <div ng-if="vm.isFachstelleRequired()">
+                        <!--integration-->
+                        <div class="row">
+                            <div class="col-xs-12 dv-input-container-small">
+                                <div class="form-group">
+                                    <label class="md-no-float required" id="integration" data-translate="INTEGRATION"></label>
+                                    <dv-radio-container name="integration" class="input-element"
+                                                        ng-required="vm.isFachstelleRequired()"
+                                                        items="vm.integrationTypes"
+                                                        ng-model="vm.getPensumFachstelle().integrationTyp"
+                                                        dv-enable-element
+                                                        dv-enable-allowed-roles="vm.allowedRoles"
+                                                        dv-enable-expression="!vm.isGesuchReadonly()"
+                                                        aria-label="{{ 'INTEGRATION' | translate }}"
+                                                        aria-described-by="integration-error">
+                                    </dv-radio-container>
+                                    <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.integrationTyp"
+                                               ja="vm.getContainer().kindJA.pensumFachstelle.integrationTyp"
+                                               show-if-bisher-none="false"
+                                               block-existed="vm.showFachstelleGS === true"></dv-bisher>
+                                    <dv-error-messages input-id="integration" for="vm.form.integration.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--fachstelle-->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-medium form-group">
                                 <label class="md-no-float required" data-translate="FACHSTELLE" for="fachstelle">

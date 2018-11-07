@@ -18,6 +18,7 @@ import * as moment from 'moment';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
+import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
 import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -58,6 +59,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         '$translate',
         '$timeout',
     ];
+    public integrationTypes: Array<string>;
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;
     public einschulungTypValues: Array<TSEinschulungTyp>;
@@ -99,6 +101,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private initViewModel(): void {
+        this.integrationTypes = EnumEx.getNames(TSIntegrationTyp);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
         this.einschulungTypValues = getTSEinschulungTypValues();
