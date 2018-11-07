@@ -1167,6 +1167,7 @@
     "AFA_GESUCHSFORMULAR": "Gesuchsformular",
     "AFA_BENUTZERVERWALTUNG": "Benutzerverwaltung",
     "AFA_GEMEINDEVERWALTUNG": "Gemeindeverwaltung",
+    "AFA_TRAEGERSCHAFTVERWALTUNG": "Trägerschaften Verwaltung",
     "BESTAETIGUNG_DIALOG": "Bestätigungs",
     "DOKUMENT_DOWNLOAD": "Dokument herunterladen",
     "DOKUMENT_LOOK": "Dokument betrachten",
@@ -1374,6 +1375,7 @@
     "PER_MONTH": "pro Monat",
     "OR": "oder",
     "GEMEINDE_STAMMDATEN": "Gemeinde Stammdaten",
+    "TRAEGERSCHAFT_STAMMDATEN": "Trägerschaft Stammdaten",
     "KONTAKTADRESSE": "Kontaktadresse",
     "ADRESSE_ANSCHRIFT": "Anschrift",
     "ADRESSE_NUMMER": "Nummer",
@@ -1391,6 +1393,7 @@
     "STAMMDATEN_EDIT": "Stammdaten bearbeiten",
     "KONFIGURATION_EDIT": "Konfiguration bearbeiten",
     "GEMEINDE_SPEICHERN": "Gemeinde Speichern",
+    "TRAEGERSCHAFT_SPEICHERN": "Trägerschaft speichern",
     "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND": "Bestätigung über den ausserordentlichen Betreuungsaufwand",
     "GEMEINDE_LOGO_ZU_GROSS": "Das Gemeinde-Logo ist zu gross!"
 }

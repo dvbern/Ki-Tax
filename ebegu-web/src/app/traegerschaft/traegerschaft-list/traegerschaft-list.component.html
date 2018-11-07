@@ -1,0 +1,74 @@
+<!--
+  ~ Ki-Tax: System for the management of external childcare subsidies
+  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<div class="traegerschaftView adminModul" flex="auto">
+
+    <div class="col-md-8 col-md-offset-2">
+
+        <h1 class="access-for-all-title" translate>AFA_TRAEGERSCHAFTVERWALTUNG</h1>
+        <div class="viewTitle">
+            <h2 translate>TRAEGERSCHAFT</h2>
+            <hr class="header">
+        </div>
+
+        <!--Tabelle zum anzeigen aller Traegerschaften-->
+        <div class="table-responsive traegerschaft-table">
+
+            <mat-table #table [dataSource]="dataSource" matSort>
+                <!-- Column Name -->
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'TRAEGERSCHAFT' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let traegerschaft"
+                              (click)="openTraegerschaft(traegerschaft)">
+                        {{traegerschaft.name}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column remove -->
+                <ng-container matColumnDef="remove">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let traegerschaft">
+                        <dv-loading-button [buttonDisabled]="isReadonly()"
+                                           buttonClass="dv-btn-sm"
+                                           (buttonClick)="removeTraegerschaft(traegerschaft)">
+                            <i class="fa fa-minus"></i>
+                        </dv-loading-button>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+        </div>
+
+        <div class="mat-row" *ngIf="showNoContentMessage()"
+             [textContent]="'TRAEGERSCHAFTEN_NOCH_KEINE' | translate">
+        </div>
+
+
+
+        <div class="marginTop50 row">
+            <div class="col-md-3">
+                <!-- Knopf unterhalb der Tabelle zum hinzufügen einer neuen Traegerschaft -->
+                <dv-loading-button (buttonClick)="addTraegerschaft();">
+                    <span translate>TRAEGERSCHAFT_HINZUFUEGEN</span>
+                </dv-loading-button>
+            </div>
+        </div>
+
+    </div>
+</div>
