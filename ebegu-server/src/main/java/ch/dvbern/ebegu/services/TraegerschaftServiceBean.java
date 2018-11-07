@@ -28,6 +28,8 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Institution;
@@ -65,6 +67,21 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Inject
 	private InstitutionService institutionService;
 
+	@Inject
+	private BenutzerService benutzerService;
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminMail) {
+		Objects.requireNonNull(traegerschaft);
+		Objects.requireNonNull(adminMail);
+		Traegerschaft persistedTraegerschaft = persistence.persist(traegerschaft);
+		final Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
+			.orElseGet(() -> benutzerService.createAdminTraegerschaftByEmail(adminMail, persistedTraegerschaft));
+		benutzerService.einladen(Einladung.forTraegerschaft(benutzer, persistedTraegerschaft));
+		return traegerschaft;
+	}
 
 	@Nonnull
 	@Override

@@ -66,7 +66,7 @@ describe('institutionStammdatenRS', () => {
                 const url = traegerschaftRS.serviceURL;
                 $httpBackend.expectPUT(url, mockTraegerschaftRest).respond(mockTraegerschaftRest);
 
-                traegerschaftRS.createTraegerschaft(mockTraegerschaft)
+                traegerschaftRS.createTraegerschaft(mockTraegerschaft, 'myAdminMail')
                     .then(result => {
                         createdTraegerschaft = result;
                     });
@@ -75,7 +75,7 @@ describe('institutionStammdatenRS', () => {
             });
         });
 
-        describe('updateTraegerschaft', () => {
+        describe('saveTraegerschaft', () => {
             it('should update a traegerschaft', () => {
                 mockTraegerschaft.name = 'changedname';
                 mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
@@ -83,7 +83,7 @@ describe('institutionStammdatenRS', () => {
                 $httpBackend.expectPUT(traegerschaftRS.serviceURL,
                     mockTraegerschaftRest).respond(mockTraegerschaftRest);
 
-                traegerschaftRS.updateTraegerschaft(mockTraegerschaft)
+                traegerschaftRS.saveTraegerschaft(mockTraegerschaft)
                     .then(result => {
                         updatedTraegerschaft = result;
                     });
