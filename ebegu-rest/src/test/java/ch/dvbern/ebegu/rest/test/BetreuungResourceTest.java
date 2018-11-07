@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.PensumFachstelleJaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
@@ -95,6 +96,8 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	private JaxBConverter converter;
 	@Inject
 	private GemeindeJaxBConverter gemeindeConverter;
+	@Inject
+	private PensumFachstelleJaxBConverter pensumFachstelleConverter;
 	@Inject
 	private Persistence persistence;
 
@@ -238,8 +241,8 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 			DUMMY_URIINFO,
 			DUMMY_RESPONSE));
 		PensumFachstelle returnedPensumFachstelle = pensumFachstelleService.savePensumFachstelle(
-			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
-		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);
+			pensumFachstelleConverter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
+		JaxPensumFachstelle convertedPensumFachstelle = pensumFachstelleConverter.pensumFachstelleToJax(returnedPensumFachstelle);
 		jaxKind.getKindGS().setPensumFachstelle(convertedPensumFachstelle);
 		jaxKind.getKindJA().setPensumFachstelle(convertedPensumFachstelle);
 		kindResource.saveKind(converter.toJaxId(returnedGesuch), jaxKind, DUMMY_URIINFO, DUMMY_RESPONSE);

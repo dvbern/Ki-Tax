@@ -1511,6 +1511,7 @@ export default class EbeguRestUtil {
     private pensumFachstelleToRestObject(restPensumFachstelle: any, pensumFachstelle: TSPensumFachstelle): any {
         this.abstractDateRangeEntityToRestObject(restPensumFachstelle, pensumFachstelle);
         restPensumFachstelle.pensum = pensumFachstelle.pensum;
+        restPensumFachstelle.integrationTyp = pensumFachstelle.integrationTyp;
         if (pensumFachstelle.fachstelle) {
             restPensumFachstelle.fachstelle = this.fachstelleToRestObject({}, pensumFachstelle.fachstelle);
         }
@@ -1523,6 +1524,7 @@ export default class EbeguRestUtil {
         if (pensumFachstelleFromServer) {
             this.parseDateRangeEntity(pensumFachstelleTS, pensumFachstelleFromServer);
             pensumFachstelleTS.pensum = pensumFachstelleFromServer.pensum;
+            pensumFachstelleTS.integrationTyp = pensumFachstelleFromServer.integrationTyp;
             if (pensumFachstelleFromServer.fachstelle) {
                 pensumFachstelleTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), pensumFachstelleFromServer.fachstelle);

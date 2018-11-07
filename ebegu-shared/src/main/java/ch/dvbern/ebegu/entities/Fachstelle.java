@@ -47,6 +47,7 @@ public class Fachstelle extends AbstractMutableEntity {
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String beschreibung;
 
+//	todo KIBON-102 remove
 	@Column(nullable = false)
 	private boolean behinderungsbestaetigung;
 

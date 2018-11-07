@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rest.test;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.PensumFachstelleJaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -47,7 +48,8 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 
 	@Inject
 	private Persistence persistence;
-
+	@Inject
+	private PensumFachstelleJaxBConverter pensumFachstelleConverter;
 	@Inject
 	private JaxBConverter converter;
 
@@ -72,11 +74,11 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		Assert.assertNotNull(kind.getKindJA().getPensumFachstelle());
 		Assert.assertEquals(Constants.END_OF_TIME, kind.getKindJA().getPensumFachstelle().getGueltigkeit().getGueltigBis());
 
-		JaxPensumFachstelle jaxPenFachstelle = converter.pensumFachstelleToJax(kind.getKindJA().getPensumFachstelle());
+		JaxPensumFachstelle jaxPenFachstelle = pensumFachstelleConverter.pensumFachstelleToJax(kind.getKindJA().getPensumFachstelle());
 		Assert.assertNotNull("Es darf nicht null sein", jaxPenFachstelle);
 		Assert.assertNull("Gueltig bis wird nicht transformiert", jaxPenFachstelle.getGueltigBis());
 
-		PensumFachstelle reconvertedPensum = converter.pensumFachstelleToEntity(jaxPenFachstelle, new PensumFachstelle());
+		PensumFachstelle reconvertedPensum = pensumFachstelleConverter.pensumFachstelleToEntity(jaxPenFachstelle, new PensumFachstelle());
 		Assert.assertEquals(Constants.END_OF_TIME, reconvertedPensum.getGueltigkeit().getGueltigBis());
 	}
 

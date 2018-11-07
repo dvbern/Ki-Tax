@@ -95,7 +95,6 @@ import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
-import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
@@ -199,7 +198,6 @@ import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.MandantService;
-import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -236,8 +234,6 @@ public class JaxBConverter extends AbstractConverter {
 	private GesuchstellerService gesuchstellerService;
 	@Inject
 	private GesuchstellerAdresseService gesuchstellerAdresseService;
-	@Inject
-	private PensumFachstelleService pensumFachstelleService;
 	@Inject
 	private FachstelleService fachstelleService;
 	@Inject
@@ -278,6 +274,8 @@ public class JaxBConverter extends AbstractConverter {
 	private EinstellungService einstellungService;
 	@Inject
 	private GemeindeJaxBConverter gemeindeConverter;
+	@Inject
+	private PensumFachstelleJaxBConverter pensumFachstelleConverter;
 	@Inject
 	private Persistence persistence;
 
@@ -423,7 +421,7 @@ public class JaxBConverter extends AbstractConverter {
 			throw new NotImplementedException("Diese Funktion ist erst fuer ApplicationProperties umgesetzt!");
 		}
 		jaxEnversRevision.setRev(revisionEntity.getId());
-		jaxEnversRevision.setRevTimeStamp(DateConvertUtils.asLocalDateTime(revisionEntity.getRevisionDate()));
+		jaxEnversRevision.setRevTimeStamp(requireNonNull(DateConvertUtils.asLocalDateTime(revisionEntity.getRevisionDate())));
 		jaxEnversRevision.setAccessType(accessType);
 
 		return jaxEnversRevision;
@@ -476,15 +474,14 @@ public class JaxBConverter extends AbstractConverter {
 		List<GesuchstellerAdresseContainer> wohnadressen = gesuchstellerCont.getAdressen().stream()
 			.filter(gesuchstellerAdresse -> !gesuchstellerAdresse.extractIsKorrespondenzAdresse()
 				&& !gesuchstellerAdresse.extractIsRechnungsAdresse())
-			.sorted(Comparator.comparing(o -> o.extractGueltigkeit().getGueltigAb()))
+			.sorted(Comparator.comparing(o -> requireNonNull(o.extractGueltigkeit()).getGueltigAb()))
 			.collect(Collectors.toList());
 		for (int i = 0; i < wohnadressen.size(); i++) {
 			if ((i < wohnadressen.size() - 1)) {
-				wohnadressen.get(i).extractGueltigkeit().setGueltigBis(wohnadressen.get(i + 1)
-					.extractGueltigkeit().getGueltigAb().minusDays(1));
+				requireNonNull(wohnadressen.get(i).extractGueltigkeit()).setGueltigBis(
+					requireNonNull(wohnadressen.get(i + 1).extractGueltigkeit()).getGueltigAb().minusDays(1));
 			} else {
-				wohnadressen.get(i)
-					.extractGueltigkeit()
+				requireNonNull(wohnadressen.get(i).extractGueltigkeit())
 					.setGueltigBis(Constants.END_OF_TIME); // by default das letzte Datum hat BIS=END_OF_TIME
 			}
 		}
@@ -544,7 +541,8 @@ public class JaxBConverter extends AbstractConverter {
 					if (o2.extractGueltigkeit() == null) {
 						return -1;
 					}
-					return o1.extractGueltigkeit().getGueltigAb().compareTo(o2.extractGueltigkeit().getGueltigAb());
+					return requireNonNull(o1.extractGueltigkeit()).getGueltigAb().compareTo(
+						requireNonNull(o2.extractGueltigkeit()).getGueltigAb());
 				}).collect(Collectors.toList())
 			));
 		}
@@ -715,7 +713,7 @@ public class JaxBConverter extends AbstractConverter {
 				evkInfoToMergeWith));
 		}
 		if (containerJAX.getEinkommensverschlechterungInfoJA() != null) {
-			evkInfoToMergeWith = Optional.ofNullable(container.getEinkommensverschlechterungInfoJA())
+			evkInfoToMergeWith = Optional.of(container.getEinkommensverschlechterungInfoJA())
 				.orElseGet(EinkommensverschlechterungInfo::new);
 			container.setEinkommensverschlechterungInfoJA(einkommensverschlechterungInfoToEntity(
 				containerJAX.getEinkommensverschlechterungInfoJA(),
@@ -1577,61 +1575,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
-		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumFachstelle(pensumFachstelleConverter.pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		return jaxKind;
-	}
-
-	@Nullable
-	public JaxPensumFachstelle pensumFachstelleToJax(@Nullable final PensumFachstelle persistedPensumFachstelle) {
-		if (persistedPensumFachstelle == null) {
-			return null;
-		}
-		final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
-		convertAbstractPensumFieldsToJAX(persistedPensumFachstelle, jaxPensumFachstelle);
-		jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
-		return jaxPensumFachstelle;
-	}
-
-	public PensumFachstelle pensumFachstelleToEntity(
-		final JaxPensumFachstelle pensumFachstelleJAXP,
-		final PensumFachstelle pensumFachstelle) {
-		requireNonNull(pensumFachstelleJAXP.getFachstelle(), "Fachstelle muss existieren");
-		requireNonNull(
-			pensumFachstelleJAXP.getFachstelle().getId(),
-			"Fachstelle muss bereits gespeichert sein");
-		convertAbstractPensumFieldsToEntity(pensumFachstelleJAXP, pensumFachstelle);
-
-		final Optional<Fachstelle> fachstelleFromDB =
-			fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
-		if (fachstelleFromDB.isPresent()) {
-			// Fachstelle darf nicht vom Client ueberschrieben werden
-			pensumFachstelle.setFachstelle(fachstelleFromDB.get());
-		} else {
-			throw new EbeguEntityNotFoundException(
-				"pensumFachstelleToEntity",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				pensumFachstelleJAXP.getFachstelle()
-					.getId());
-		}
-
-		return pensumFachstelle;
-	}
-
-	private PensumFachstelle toStorablePensumFachstelle(@Nonnull final JaxPensumFachstelle pensumFsToSave) {
-		PensumFachstelle pensumToMergeWith = new PensumFachstelle();
-		if (pensumFsToSave.getId() != null) {
-			final Optional<PensumFachstelle> pensumFachstelleOpt =
-				pensumFachstelleService.findPensumFachstelle(pensumFsToSave.getId());
-			if (pensumFachstelleOpt.isPresent()) {
-				pensumToMergeWith = pensumFachstelleOpt.get();
-			} else {
-				throw new EbeguEntityNotFoundException(
-					"toStorablePensumFachstelle",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					pensumFsToSave.getId());
-			}
-		}
-		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
 	}
 
 	public JaxKindContainer kindContainerToJAX(final KindContainer persistedKind) {
@@ -1660,7 +1605,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		PensumFachstelle updtPensumFachstelle = null;
 		if (kindJAXP.getPensumFachstelle() != null) {
-			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
+			updtPensumFachstelle = pensumFachstelleConverter.toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
 		}
 		kind.setPensumFachstelle(updtPensumFachstelle);
 

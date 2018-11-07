@@ -75,6 +75,9 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind kind) {
+		// todo KIBON-102 return this:
+		// kind.getPensumFachstelle() != null && kind.getPensumFachstelle().getFachstelle() != null
+		// evtl. ein Kommentar hinzufügen jenach dem ob es Sozial oder Sprachlich ist -> z.B. "Fachstellenbestätigung sprachliche Integration"
 		if (kind != null) {
 			switch (dokumentTyp) {
 			case FACHSTELLENBEST_SOZ:
