@@ -104,8 +104,9 @@ export class KommentarViewController {
                 if (promiseValue.dokumentGruende.length === 1) {
                     this.dokumentePapiergesuch = promiseValue.dokumentGruende[0];
                 } else if (promiseValue.dokumentGruende.length > 1) {
-                    this.$log.error('Falsche anzahl Dokumente beim Laden vom Papiergesuch. Es sollte 1 sein, ist aber ' +
-                        promiseValue.dokumentGruende.length);
+                    this.$log.error(
+                        `Falsche anzahl Dokumente beim Laden vom Papiergesuch. Es sollte 1 sein, ist aber
+                        ${promiseValue.dokumentGruende.length}`);
                 }
                 return promiseValue;
             });
