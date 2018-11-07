@@ -50,13 +50,14 @@ describe('EinladungAbschliessenComponent', () => {
         insitutionSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({inputId: undefined});
+        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of({}));
 
         TestBed.configureTestingModule({
             imports: [
                 SharedModule,
             ],
             declarations: [
-                EinladungAbschliessenComponent
+                EinladungAbschliessenComponent,
             ],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
