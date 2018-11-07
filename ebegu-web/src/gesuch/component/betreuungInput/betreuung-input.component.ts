@@ -114,7 +114,7 @@ export class BetreuungInputComponent implements IController {
     private parseToPensumUnit(): void {
         this.pensumValue = this.pensumContainer.betreuungspensumJA.unitForDisplay === TSPensumUnits.PERCENTAGE
             ? this.pensumContainer.betreuungspensumJA.pensum
-            : this.pensumContainer.betreuungspensumJA.pensum * this.multiplier;
+            : Number((this.pensumContainer.betreuungspensumJA.pensum * this.multiplier).toFixed(2));
     }
 
     private parseToPercentage(): void {
