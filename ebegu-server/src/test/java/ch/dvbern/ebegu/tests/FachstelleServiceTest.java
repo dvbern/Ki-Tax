@@ -58,7 +58,6 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 		Fachstelle nextFamsit = allFachstellen.iterator().next();
 		Assert.assertEquals("Fachstelle1", nextFamsit.getName());
 		Assert.assertEquals("Kinder Fachstelle", nextFamsit.getBeschreibung());
-		Assert.assertTrue(nextFamsit.isBehinderungsbestaetigung());
 	}
 
 	@Test

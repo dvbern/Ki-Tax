@@ -1231,7 +1231,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(fachstelleJAXP, fachstelle);
 		fachstelle.setName(fachstelleJAXP.getName());
 		fachstelle.setBeschreibung(fachstelleJAXP.getBeschreibung());
-		fachstelle.setBehinderungsbestaetigung(fachstelleJAXP.isBehinderungsbestaetigung());
 		fachstelle.setFachstelleAnspruch(fachstelleJAXP.isFachstelleAnspruch());
 		fachstelle.setFachstelleErweiterteBetreuung(fachstelleJAXP.isFachstelleErweiterteBetreuung());
 		return fachstelle;
@@ -1242,7 +1241,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedFachstelle, jaxFachstelle);
 		jaxFachstelle.setName(persistedFachstelle.getName());
 		jaxFachstelle.setBeschreibung(persistedFachstelle.getBeschreibung());
-		jaxFachstelle.setBehinderungsbestaetigung(persistedFachstelle.isBehinderungsbestaetigung());
 		jaxFachstelle.setFachstelleAnspruch(persistedFachstelle.isFachstelleAnspruch());
 		jaxFachstelle.setFachstelleErweiterteBetreuung(persistedFachstelle.isFachstelleErweiterteBetreuung());
 		return jaxFachstelle;

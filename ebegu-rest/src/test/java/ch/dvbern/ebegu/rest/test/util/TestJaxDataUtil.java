@@ -238,7 +238,6 @@ public final class TestJaxDataUtil {
 	public static JaxFachstelle createTestJaxFachstelle() {
 		JaxFachstelle jaxFachstelle = new JaxFachstelle();
 		jaxFachstelle.setName("Fachstelle_Test");
-		jaxFachstelle.setBehinderungsbestaetigung(false);
 		jaxFachstelle.setBeschreibung("Notizen der Fachstelle");
 		return jaxFachstelle;
 	}

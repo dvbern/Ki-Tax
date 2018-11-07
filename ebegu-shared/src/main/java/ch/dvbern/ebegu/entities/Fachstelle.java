@@ -47,10 +47,6 @@ public class Fachstelle extends AbstractMutableEntity {
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String beschreibung;
 
-//	todo KIBON-102 remove
-	@Column(nullable = false)
-	private boolean behinderungsbestaetigung;
-
 	@Column(nullable = false)
 	private boolean fachstelleAnspruch;
 
@@ -76,14 +72,6 @@ public class Fachstelle extends AbstractMutableEntity {
 
 	public void setBeschreibung(@Nullable String beschreibung) {
 		this.beschreibung = beschreibung;
-	}
-
-	public boolean isBehinderungsbestaetigung() {
-		return behinderungsbestaetigung;
-	}
-
-	public void setBehinderungsbestaetigung(boolean behinderungsbestaetigung) {
-		this.behinderungsbestaetigung = behinderungsbestaetigung;
 	}
 
 	public boolean isFachstelleAnspruch() {
@@ -116,7 +104,6 @@ public class Fachstelle extends AbstractMutableEntity {
 		}
 		final Fachstelle otherGesuchsteller = (Fachstelle) other;
 		return Objects.equals(getName(), otherGesuchsteller.getName()) &&
-			Objects.equals(getBeschreibung(), otherGesuchsteller.getBeschreibung()) &&
-			Objects.equals(isBehinderungsbestaetigung(), otherGesuchsteller.isBehinderungsbestaetigung());
+			Objects.equals(getBeschreibung(), otherGesuchsteller.getBeschreibung());
 	}
 }

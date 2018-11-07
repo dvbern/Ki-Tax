@@ -411,7 +411,6 @@ public final class TestDataUtil {
 		Fachstelle fachstelle = new Fachstelle();
 		fachstelle.setName("Fachstelle1");
 		fachstelle.setBeschreibung("Kinder Fachstelle");
-		fachstelle.setBehinderungsbestaetigung(true);
 		fachstelle.setFachstelleAnspruch(true);
 		fachstelle.setFachstelleErweiterteBetreuung(false);
 		return fachstelle;
