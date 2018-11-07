@@ -35,6 +35,9 @@ public class DokumentenverzeichnisEvaluator {
 	private final AbstractDokumente einkommensverschlechterungDokumente = new EinkommensverschlechterungDokumente();
 	private final AbstractDokumente betreuungDokumente = new BetreuungDokumente();
 
+	/**
+	 * Gibt die *zwingenden* DokumentGruende fuer das uebergebene Gesuch zurueck.
+	 */
 	public Set<DokumentGrund> calculate(Gesuch gesuch) {
 
 		Set<DokumentGrund> anlageVerzeichnis = new HashSet<>();
@@ -67,5 +70,29 @@ public class DokumentenverzeichnisEvaluator {
 		DokumentGrund dokumentGrund = new DokumentGrund(DokumentGrundTyp.FREIGABEQUITTUNG, DokumentTyp.ORIGINAL_FREIGABEQUITTUNG);
 		dokumentGrund.setNeeded(false);
 		dokumentGrunds.add(dokumentGrund);
+	}
+
+	/**
+	 * Fuegt alle Dokumente zum Set, welche nicht zwingend sind und daher nicht in der Method calculate() hinzugefuegt
+	 * werden
+	 */
+	public void addOptionalDokumentGruende(Set<DokumentGrund> dokumentGrunds) {
+		addSonstige(dokumentGrunds);
+		addPapiergesuch(dokumentGrunds);
+		addFreigabequittung(dokumentGrunds);
+	}
+
+	/**
+	 * Fuegt alle Dokumente des gewuenschten Typs zum Set, welche nicht zwingend sind und daher nicht in der Method
+	 * calculate() hinzugefuegt werden
+	 */
+	public void addOptionalDokumentGruendeByType(Set<DokumentGrund> dokumentGrunds, DokumentGrundTyp requestedOptionalDocumentType) {
+		if (requestedOptionalDocumentType == DokumentGrundTyp.PAPIERGESUCH) {
+			addPapiergesuch(dokumentGrunds);
+		} else if (requestedOptionalDocumentType == DokumentGrundTyp.FREIGABEQUITTUNG) {
+			addFreigabequittung(dokumentGrunds);
+		} else if (requestedOptionalDocumentType == DokumentGrundTyp.SONSTIGE_NACHWEISE) {
+			addSonstige(dokumentGrunds);
+		}
 	}
 }
