@@ -33,6 +33,10 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
@@ -82,6 +86,8 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	private WizardStepService wizardStepService;
 	@Inject
 	private GesuchService gesuchService;
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
@@ -92,6 +98,15 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		if (!kind.isNew()) {
 			// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
 			updateLuceneIndex(KindContainer.class, kind.getId());
+		}
+
+		// todo KIBON-102 this must still be improved
+		// validation of the KindContainer before saving it
+		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
+		Set<ConstraintViolation<KindContainer>> constraintViolations =
+			validator.validate(kind);
+		if (!constraintViolations.isEmpty()) {
+			throw new ConstraintViolationException(constraintViolations);
 		}
 
 		final KindContainer mergedKind = persistence.merge(kind);

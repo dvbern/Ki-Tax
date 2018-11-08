@@ -23,6 +23,7 @@ import javax.validation.Validation;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumValidator;
+import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
 
 /**
  * This class helps us test our ConstraintValidators without actually starting a CDI container.
@@ -44,6 +45,12 @@ public class ValidationTestConstraintValidatorFactory implements ConstraintValid
 			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
 			//noinspection unchecked
 			return (T) new CheckBetreuungspensumValidator(dummyEinstellungenService, entityManagerFactory);
+		}
+		if (key.equals(CheckPensumFachstelleValidator.class)) {
+			//Mock Service for Parameters
+			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
+			//noinspection unchecked
+			return (T) new CheckPensumFachstelleValidator(dummyEinstellungenService, entityManagerFactory);
 		}
 		ConstraintValidatorFactory delegate = Validation.byDefaultProvider().configure().getDefaultConstraintValidatorFactory();
 		return delegate.getInstance(key);

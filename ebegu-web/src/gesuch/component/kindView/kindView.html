@@ -255,6 +255,7 @@
                                                         ng-required="vm.isFachstelleRequired()"
                                                         items="vm.integrationTypes"
                                                         ng-model="vm.getPensumFachstelle().integrationTyp"
+                                                        ng-change="vm.loadEinstellungenForIntegration()"
                                                         dv-enable-element
                                                         dv-enable-allowed-roles="vm.allowedRoles"
                                                         dv-enable-expression="!vm.isGesuchReadonly()"
@@ -308,7 +309,8 @@
                                            type="number"
                                            name="betreuungspensumFachstelle"
                                            ng-model="vm.getPensumFachstelle().pensum"
-                                           max="100"
+                                           min="{{vm.minValueAllowed}}"
+                                           max="{{vm.maxValueAllowed}}"
                                            dv-max-length
                                            class="form-control"
                                            ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"

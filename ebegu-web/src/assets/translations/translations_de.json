@@ -1394,5 +1394,9 @@
     "GEMEINDE_LOGO_ZU_GROSS": "Das Gemeinde-Logo ist zu gross!",
     "INTEGRATION": "Integration",
     "SOZIALE_INTEGRATION": "Soziale Integration",
-    "SPRACHLICHE_INTEGRATION": "Sprachliche Integration"
+    "SPRACHLICHE_INTEGRATION": "Sprachliche Integration",
+    "FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION": "minimum Pensum für Fachstelle soziale Integration",
+    "FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION": "maximum Pensum für Fachstelle soziale Integration",
+    "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "minimum Pensum für Fachstelle sprachliche Integration",
+    "FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION": "maximum Pensum für Fachstelle sprachliche Integration"
 }
