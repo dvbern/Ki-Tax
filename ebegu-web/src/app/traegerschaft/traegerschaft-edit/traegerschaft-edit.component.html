@@ -15,24 +15,24 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<form role="form"
-      #form="ngForm"
-      [ngClass]="{'ng-submitted': form.submitted}"
-      *ngIf="traegerschaft$ | async as traegerschaft"
-      (ngSubmit)="save(traegerschaft)"
-      novalidate>
+<dv-full-height-inner-padding-container>
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          *ngIf="traegerschaft$ | async as traegerschaft"
+          (ngSubmit)="save(traegerschaft)"
+          novalidate>
 
-    <div class="row marginTop20">
-        <div class="col-md-8 col-md-offset-2 ">
-            <h1 class="access-for-all-title" translate>AFA_TRAEGERSCHAFTVERWALTUNG</h1>
-            <div class="viewTitle">
-                <h2>{{traegerschaft.name}}</h2>
-                <hr class="header">
+        <div class="row marginTop20">
+            <div class="col-md-8 col-md-offset-2 ">
+                <h1 class="access-for-all-title" translate>AFA_TRAEGERSCHAFTVERWALTUNG</h1>
+                <div class="viewTitle">
+                    <h2>{{traegerschaft.name}}</h2>
+                    <hr class="header">
+                </div>
             </div>
         </div>
-    </div>
 
-    <dv-full-height-container>
         <div class="dv-content">
             <fieldset>
 
@@ -70,18 +70,15 @@
         </div>
 
         <!-- Buttons -->
-        <div class="row">
-            <div class="dv-footer">
-                <dv-loading-button [type]="'submit'">
-                    <span translate>TRAEGERSCHAFT_SPEICHERN</span>
-                </dv-loading-button>
+        <div class="dv-footer">
+            <dv-loading-button [type]="'submit'">
+                <span translate>TRAEGERSCHAFT_SPEICHERN</span>
+            </dv-loading-button>
 
-                <button type="button" class="dv-btn cancel-button" (click)="cancel()"
-                        [textContent]="'CANCEL' | translate">
-                </button>
-            </div>
+            <button type="button" class="dv-btn cancel-button" (click)="cancel()"
+                    [textContent]="'CANCEL' | translate">
+            </button>
         </div>
 
-    </dv-full-height-container>
-
-</form>
+    </form>
+</dv-full-height-inner-padding-container>
