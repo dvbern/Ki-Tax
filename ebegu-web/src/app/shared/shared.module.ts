@@ -40,6 +40,7 @@ import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
+import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
 import {UiViewComponent} from './ui-view/ui-view.component';
 
@@ -77,6 +78,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvPosteingangComponent,
         UiViewComponent,
         FullHeightContainerComponent,
+        FullHeightInnerPaddingContainerComponent,
         LoadingButtonDirective,
         AccordionDirective,
         AccordionTabDirective,
@@ -114,6 +116,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgShowElementDirective,
         UiViewComponent,
         FullHeightContainerComponent,
+        FullHeightInnerPaddingContainerComponent,
         LoadingButtonDirective,
         AccordionDirective,
         AccordionTabDirective,
