@@ -142,7 +142,15 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 .forEach(value => { this.minValueAllowed = Number(value.value); });
             response.filter(r => r.key === maxValueEinstellungKey)
                 .forEach(value => { this.maxValueAllowed = Number(value.value); });
+
+            if (this.isOnlyOneValueAllowed()) {
+                this.getModel().pensumFachstelle.pensum = this.minValueAllowed;
+            }
         });
+    }
+
+    private isOnlyOneValueAllowed(): boolean {
+        return this.minValueAllowed === this.maxValueAllowed;
     }
 
     public loadEinstellungenForIntegration(): void {

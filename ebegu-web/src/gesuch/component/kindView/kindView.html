@@ -266,7 +266,8 @@
                                                ja="vm.getContainer().kindJA.pensumFachstelle.integrationTyp"
                                                show-if-bisher-none="false"
                                                block-existed="vm.showFachstelleGS === true"></dv-bisher>
-                                    <dv-error-messages input-id="integration" for="vm.form.integration.$error"
+                                    <dv-error-messages input-id="integration"
+                                                       for="vm.form.integration.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
                             </div>
@@ -315,6 +316,7 @@
                                            class="form-control"
                                            ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
                                            ng-required="vm.isFachstelleRequired()"
+                                           ng-disabled="vm.isOnlyOneValueAllowed()"
                                            ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
                                     <dv-bisher gs="vm.getContainer().kindGS.pensumFachstelle.pensum"
                                                ja="vm.getContainer().kindJA.pensumFachstelle.pensum"
@@ -322,6 +324,8 @@
                                                block-existed="vm.showFachstelleGS === true"></dv-bisher>
                                     <dv-error-messages input-id="betreuungspensumFachstelle"
                                                        for="vm.form.betreuungspensumFachstelle.$error"
+                                                       min-value="vm.minValueAllowed"
+                                                       max-value="vm.maxValueAllowed"
                                                        class="error"></dv-error-messages>
                                 </dv-input-container>
                             </div>

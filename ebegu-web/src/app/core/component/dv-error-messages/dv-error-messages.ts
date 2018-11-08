@@ -20,6 +20,8 @@ export class DvErrorMessagesComponentConfig implements IComponentOptions {
     public bindings = {
         errorObject: '<for',
         inputid: '@inputId',
+        minValue: '<',
+        maxValue: '<',
     };
     public template = require('./dv-error-messages.html');
     public controller = DvErrorMessages;
