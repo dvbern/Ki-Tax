@@ -352,4 +352,17 @@ public class BenutzerResource {
 			.map(history -> converter.berechtigungHistoryToJax(history))
 			.collect(Collectors.toList());
 	}
+
+	@ApiOperation(value = "Gibt true zurueck, wenn der uebergebenen Benutzer in irgendeiner Gemeinde als "
+		+ "Defaultbenutzer gesetzt ist", response = Boolean.class)
+	@GET
+	@Path("/isdefaultuser/{username}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public boolean isBenutzerDefaultBenutzerOfAnyGemeinde(
+		@Nonnull @NotNull @PathParam("username") String username) {
+
+		return benutzerService.isBenutzerDefaultBenutzerOfAnyGemeinde(username);
+	}
 }

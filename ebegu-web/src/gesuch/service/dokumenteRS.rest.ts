@@ -60,17 +60,6 @@ export default class DokumenteRS {
             });
     }
 
-    public getDokumenteByType(gesuch: TSGesuch, dokumentGrundTyp: TSDokumentGrundTyp): IPromise<TSDokumenteDTO> {
-        const grund = encodeURIComponent(TSDokumentGrundTyp[dokumentGrundTyp]);
-        const url = `${this.serviceURL}/byTyp/${encodeURIComponent(gesuch.id)}/${grund}`;
-
-        return this.http.get(url)
-            .then((response: any) => {
-                this.log.debug('PARSING dokumentDTO REST object ', response.data);
-                return this.ebeguRestUtil.parseDokumenteDTO(new TSDokumenteDTO(), response.data);
-            });
-    }
-
     public updateDokumentGrund(dokumentGrund: TSDokumentGrund): IPromise<TSDokumentGrund> {
         let restDokumentGrund = {};
         restDokumentGrund = this.ebeguRestUtil.dokumentGrundToRestObject(restDokumentGrund, dokumentGrund);
