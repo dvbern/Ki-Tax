@@ -53,17 +53,6 @@
                                                inputId="name_id"></dv-error-messages>
                         </div>
                     </div>
-                    <!-- E-Mail -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label translate for="email_id">EMAIL</label>
-                            <input id="email_id" type="email" name="email_id" #name="ngModel"
-                                   [(ngModel)]="traegerschaft.mail"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.email_id?.errors"
-                                               inputId="email_id"></dv-error-messages>
-                        </div>
-                    </div>
                 </div>
 
             </fieldset>

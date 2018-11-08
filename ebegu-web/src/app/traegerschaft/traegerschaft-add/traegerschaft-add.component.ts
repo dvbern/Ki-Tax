@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -26,18 +26,23 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
     templateUrl: './traegerschaft-add.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TraegerschaftAddComponent {
+export class TraegerschaftAddComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
     public traegerschaft: TSTraegerschaft = undefined;
+    public adminMail: string = undefined;
 
     public constructor(
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly traegerschaftRS: TraegerschaftRS,
     ) {
+    }
+
+    public ngOnInit(): void {
         this.traegerschaft = new TSTraegerschaft();
+        this.adminMail = '';
     }
 
     public cancel(): void {
@@ -53,7 +58,7 @@ export class TraegerschaftAddComponent {
     }
 
     private save(): void {
-        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.traegerschaft.mail)
+        this.traegerschaftRS.createTraegerschaft(this.traegerschaft, this.adminMail)
             .then(neueTraegerschaft => {
                 this.traegerschaft = neueTraegerschaft;
                 this.navigateBack();

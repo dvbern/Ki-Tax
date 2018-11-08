@@ -420,7 +420,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 			PrintWriter pw = new PrintWriter(fos);
 			LOG.info("Writing File to: {}", fos.getAbsolutePath());
 
-			pw.println("TrägerschaftId,Trägerschaft,Trägerschaft E-Mail,InstitutionId,Name,Strasse,Hausnummer,Plz,Ort,Zusatzzeile,E-Mail,StammdatenId,Angebot,IBAN");
+			pw.println("TrägerschaftId,Trägerschaft,InstitutionId,Name,Strasse,Hausnummer,Plz,Ort,Zusatzzeile,E-Mail,StammdatenId,Angebot,IBAN");
 
 			Collection<InstitutionStammdaten> stammdatenList = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 			for (InstitutionStammdaten stammdaten : stammdatenList) {
@@ -435,9 +435,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 					if (traegerschaft != null) {
 						append(sb, traegerschaft.getId());
 						append(sb, traegerschaft.getName());
-						append(sb, traegerschaft.getMail());
 					} else {
-						append(sb, "");
 						append(sb, "");
 						append(sb, "");
 					}

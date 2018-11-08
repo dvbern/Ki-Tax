@@ -45,12 +45,10 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
-import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
@@ -92,7 +90,7 @@ public class TraegerschaftResource {
 		return converter.traegerschaftToJAX(traegerschaftService.createTraegerschaft(traegerschaft, adminMail));
 	}
 
-	@ApiOperation(value = "Speichert eine Traegerschaft in der Datenbank", response = JaxTraegerschaft.class)
+	@ApiOperation(value = "Speichert eine bestehende Traegerschaft in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -102,26 +100,17 @@ public class TraegerschaftResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Traegerschaft traegerschaft = Optional.ofNullable(traegerschaftJAXP.getId())
-			.flatMap(id -> traegerschaftService.findTraegerschaft(id))
-			.orElseGet(Traegerschaft::new);
+		Objects.requireNonNull(traegerschaftJAXP);
+		Objects.requireNonNull(traegerschaftJAXP.getId());
 
+		// Diese Methode darf nur fuer eine existierende Traegerschaft verwendet werden. Zum neu Erstellen muss eine
+		// Einladung über #createTraegerschaft() erfolgen
+		Traegerschaft traegerschaft = traegerschaftService.findTraegerschaft(traegerschaftJAXP.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				traegerschaftJAXP.getId()));
 		Traegerschaft convertedTraegerschaft = converter.traegerschaftToEntity(traegerschaftJAXP, traegerschaft);
 		Traegerschaft persistedTraegerschaft = this.traegerschaftService.saveTraegerschaft(convertedTraegerschaft);
-
-		if (convertedTraegerschaft.isNew()) {
-			String mail = traegerschaftJAXP.getMail();
-			if (benutzerService.findBenutzerByEmail(mail).isPresent()) {
-				// an existing user cannot be used to create a new Traegerschaft
-				throw new EbeguRuntimeException("saveTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, mail);
-			}
-			Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(mail, persistedTraegerschaft);
-
-			benutzerService.einladen(Einladung.forTraegerschaft(benutzer, traegerschaft));
-		}
-
-		JaxTraegerschaft jaxTraegerschaft = converter.traegerschaftToJAX(persistedTraegerschaft);
-		return jaxTraegerschaft;
+		return converter.traegerschaftToJAX(persistedTraegerschaft);
 	}
 
 	@ApiOperation(value = "Gibt die Traegerschaft mit der uebergebenen id zurueck.", response = JaxTraegerschaft.class)
