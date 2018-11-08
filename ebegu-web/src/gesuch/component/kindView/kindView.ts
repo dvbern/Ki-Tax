@@ -260,8 +260,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             const bisText = fachstelle.gueltigkeit.gueltigBis ?
                 DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
                 '31.12.9999';
+            const integrationTyp = this.$translate.instant(fachstelle.integrationTyp);
             return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
                 name: fachstelle.fachstelle.name,
+                integration: integrationTyp,
                 pensum: fachstelle.pensum,
                 von: vonText,
                 bis: bisText,

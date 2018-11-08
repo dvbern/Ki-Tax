@@ -57,6 +57,7 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 	public PensumFachstelle copyPensumFachstelle(@Nonnull PensumFachstelle target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractPensumEntity(target, copyType);
 		target.setFachstelle(this.getFachstelle());
+		target.setIntegrationTyp(this.getIntegrationTyp());
 		return target;
 	}
 
@@ -77,7 +78,8 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 			return false;
 		}
 		final PensumFachstelle otherPensumFachstelle = (PensumFachstelle) other;
-		return EbeguUtil.isSameObject(getFachstelle(), otherPensumFachstelle.getFachstelle());
+		return EbeguUtil.isSameObject(getFachstelle(), otherPensumFachstelle.getFachstelle())
+			&& getIntegrationTyp() == otherPensumFachstelle.getIntegrationTyp();
 	}
 
 	public Fachstelle getFachstelle() {

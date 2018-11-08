@@ -156,6 +156,7 @@ public final class FreigabeCopyUtil {
 			kindGS.setPensumFachstelle(new PensumFachstelle());
 			Objects.requireNonNull(kindGS.getPensumFachstelle());
 			kindGS.getPensumFachstelle().setFachstelle(kindJA.getPensumFachstelle().getFachstelle());
+			kindGS.getPensumFachstelle().setIntegrationTyp(kindJA.getPensumFachstelle().getIntegrationTyp());
 			kindGS.getPensumFachstelle().setPensum(kindJA.getPensumFachstelle().getPensum());
 			kindGS.getPensumFachstelle().setGueltigkeit(kindJA.getPensumFachstelle().getGueltigkeit());
 		}
