@@ -49,7 +49,6 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import io.swagger.annotations.Api;
@@ -68,9 +67,6 @@ public class TraegerschaftResource {
 
 	@Inject
 	private InstitutionService institutionService;
-
-	@Inject
-	private BenutzerService benutzerService;
 
 	@Inject
 	private JaxBConverter converter;
