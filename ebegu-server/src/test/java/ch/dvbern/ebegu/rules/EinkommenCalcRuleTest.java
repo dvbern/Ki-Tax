@@ -108,18 +108,6 @@ public class EinkommenCalcRuleTest {
 		Assert.assertEquals(new BigDecimal(20000), result.get(2).getMassgebendesEinkommen());
 	}
 
-	@Test
-	public void testMinimaleErwerbspensen() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(50000), BetreuungsangebotTyp.KITA, 15, new BigDecimal(1000)));
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(0, (new BigDecimal("50000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
-		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).isBezahltVollkosten());
-		Assert.assertFalse(result.get(0).getBemerkungen().isEmpty());
-	}
-
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheVollkosten) {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, angebot, pensum, monatlicheVollkosten);
 		Gesuch gesuch = betreuung.extractGesuch();

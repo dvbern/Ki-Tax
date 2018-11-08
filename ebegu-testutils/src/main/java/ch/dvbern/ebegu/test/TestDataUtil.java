@@ -835,6 +835,7 @@ public final class TestDataUtil {
 		Betreuung betreuung = new Betreuung();
 		betreuung.setKind(new KindContainer());
 		betreuung.getKind().setKindJA(new Kind());
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
