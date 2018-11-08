@@ -15,12 +15,15 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -37,10 +40,14 @@ import static java.util.Objects.requireNonNull;
 public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
 	private final int maxZuschlagValue;
+	private final int minErwerbspensumNichtEingeschult;
+	private final int minErwerbspensumEingeschult;
 
-	public ErwerbspensumCalcRule(DateRange validityPeriod, int maxZuschlagValue) {
+	public ErwerbspensumCalcRule(DateRange validityPeriod, int maxZuschlagValue, int minErwerbspensumNichtEingeschult, int minErwerbspensumEingeschult) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, validityPeriod);
 		this.maxZuschlagValue = maxZuschlagValue;
+		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
+		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;
 	}
 
 	@Override
@@ -50,6 +57,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			requireNonNull(betreuung.extractGesuch().extractFamiliensituation(), "Familiensituation muss gesetzt sein");
 			boolean hasSecondGesuchsteller = hasSecondGSForZeit(betreuung, verfuegungZeitabschnitt.getGueltigkeit());
 			int erwerbspensumOffset = hasSecondGesuchsteller ? 100 : 0;
+			int minimum = getMinimumErwerbspensum(betreuung, hasSecondGesuchsteller);
 			// Erwerbspensum ist immer die erste Rule, d.h. es wird das Erwerbspensum mal als Anspruch angenommen
 			// Das Erwerbspensum muss PRO GESUCHSTELLER auf 100% limitiert werden
 			Integer erwerbspensum1 = calculateErwerbspensumGS1(verfuegungZeitabschnitt);
@@ -61,12 +69,18 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 				zuschlag2 = calculateZuschlagGS2(erwerbspensum2, zuschlag1, verfuegungZeitabschnitt);
 			}
 			int totalZuschlag = zuschlag1 + zuschlag2;
-
 			int anspruch = erwerbspensum1 + erwerbspensum2 + totalZuschlag - erwerbspensumOffset;
-			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch);
-
+			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch, minimum);
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedAnspruch);
 		}
+	}
+
+	private int getMinimumErwerbspensum(@Nonnull Betreuung betreuung, boolean hasSecondGesuchsteller) {
+		EinschulungTyp einschulungTyp = betreuung.getKind().getKindJA().getEinschulungTyp();
+		Objects.requireNonNull(einschulungTyp);
+		int mininum = einschulungTyp.isEingeschult() ? minErwerbspensumEingeschult : minErwerbspensumNichtEingeschult;
+		mininum = hasSecondGesuchsteller ? mininum + 100 : mininum;
+		return mininum;
 	}
 
 	private Integer calculateZuschlagGS1(int erwerbspensum, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
@@ -112,13 +126,18 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	 * wurde bereits in calculateErwerbspensum eingefuegt.
 	 * Am Ende wird der Wert gerundet und zurueckgegeben
 	 */
-	private int checkAndRoundAnspruch(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, int anspruch) {
+	private int checkAndRoundAnspruch(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, int anspruch, int minimum) {
 		if (anspruch <= 0) {
 			anspruch = 0;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
 			verfuegungZeitabschnitt.setKategorieKeinPensum(true);
 		} else if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
+		}
+		// Minimum pruefen
+		if (anspruch < minimum) {
+			anspruch = 0;
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MINIMUM_MSG, minimum);
 		}
 		// Der Anspruch wird immer auf 5-er Schritten gerundet.
 		return MathUtil.roundIntToFives(anspruch);

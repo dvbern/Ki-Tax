@@ -62,6 +62,12 @@ public enum EinstellungKey {
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 
+	// Minimales Erwerbspensum, wenn das Kind nicht eingeschult ist
+	MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+	// Minimales Erwerbspensum, wenn das Kind eingeschult ist
+	MIN_ERWERBSPENSUM_EINGESCHULT,
+
+
 	// Min Pensum Kitas
 	PARAM_PENSUM_KITA_MIN,
 
