@@ -127,4 +127,11 @@ export default class BenutzerRS implements IEntityRS {
                 return this.ebeguRestUtil.parseBerechtigungHistoryList(response.data);
             });
     }
+
+    public isBenutzerDefaultBenutzerOfAnyGemeinde(username: string): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/isdefaultuser/${encodeURIComponent(username)}`)
+            .then((response: any) => {
+                return JSON.parse(response.data);
+            });
+    }
 }

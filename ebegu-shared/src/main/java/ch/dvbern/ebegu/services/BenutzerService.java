@@ -235,4 +235,10 @@ public interface BenutzerService {
 	 */
 	@Nonnull
 	Collection<BerechtigungHistory> getBerechtigungHistoriesForBenutzer(@Nonnull Benutzer benutzer);
+
+	/**
+	 * Gibt zurück, ob der Benutzer mit der übergebenen Username in irgendeiner Gemeinde (für die der eingeloggte
+	 * Benutzer nicht zwingend berechtigt sein muss) als Defaultbenutzer gesetzt ist.
+	 */
+	boolean isBenutzerDefaultBenutzerOfAnyGemeinde(@Nonnull String username);
 }
