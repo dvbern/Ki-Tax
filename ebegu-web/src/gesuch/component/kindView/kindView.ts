@@ -24,6 +24,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
+import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
 import DateUtil from '../../../utils/DateUtil';
 import {EnumEx} from '../../../utils/EnumEx';
@@ -63,6 +64,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public einschulungTypValues: Array<TSEinschulungTyp>;
     public showFachstelle: boolean;
     public showFachstelleGS: boolean;
+    public showAusserordentlicherAnspruch: boolean;
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     public fachstelleId: string;
     public allowedRoles: Array<TSRole>;
@@ -102,17 +104,24 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
         this.einschulungTypValues = getTSEinschulungTypValues();
+        this.initFachstelle();
+        this.initAusserordentlicherAnspruch();
+    }
 
+    private initFachstelle(): void {
         this.showFachstelle = !!(this.model.kindJA.pensumFachstelle);
         this.showFachstelleGS = !!(this.model.kindGS && this.model.kindGS.pensumFachstelle);
         if (this.getPensumFachstelle() && this.getPensumFachstelle().fachstelle) {
             this.fachstelleId = this.getPensumFachstelle().fachstelle.id;
         }
         if (!this.gesuchModelManager.getFachstellenAnspruchList()
-            || this.gesuchModelManager.getFachstellenAnspruchList().length <= 0
-        ) {
+            || this.gesuchModelManager.getFachstellenAnspruchList().length <= 0) {
             this.gesuchModelManager.updateFachstellenAnspruchList();
         }
+    }
+
+    private initAusserordentlicherAnspruch(): void {
+        this.showAusserordentlicherAnspruch = !!(this.model.kindJA.pensumAusserordentlicherAnspruch);
     }
 
     public save(): IPromise<TSKindContainer> {
@@ -161,6 +170,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         }
     }
 
+    public showAusserordentlicherAnspruchClicked(): void {
+        if (this.showAusserordentlicherAnspruch) {
+            this.getModel().pensumAusserordentlicherAnspruch = new TSPensumAusserordentlicherAnspruch();
+        } else {
+            this.getModel().pensumAusserordentlicherAnspruch = undefined;
+        }
+    }
+
     public familienErgaenzendeBetreuungClicked(): void {
         if (!this.getModel().familienErgaenzendeBetreuung) {
             this.showFachstelle = false;
@@ -200,6 +217,17 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public isFachstelleRequired(): boolean {
         return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showFachstelle;
+    }
+
+    public getPensumAusserordentlicherAnspruch(): TSPensumAusserordentlicherAnspruch {
+        if (this.getModel()) {
+            return this.getModel().pensumAusserordentlicherAnspruch;
+        }
+        return undefined;
+    }
+
+    public isAusserordentlicherAnspruchRequired(): boolean {
+        return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
     }
 
     public getDatumEinschulung(): moment.Moment {
