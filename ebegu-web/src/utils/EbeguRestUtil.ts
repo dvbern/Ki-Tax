@@ -1448,7 +1448,8 @@ export default class EbeguRestUtil {
             restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
         }
         if (kind.pensumAusserordentlicherAnspruch) {
-            restKind.pensumAusserordentlicherAnspruch = this.pensumAusserordentlicherAnspruchToRestObject({}, kind.pensumAusserordentlicherAnspruch);
+            restKind.pensumAusserordentlicherAnspruch = this.pensumAusserordentlicherAnspruchToRestObject(
+                {}, kind.pensumAusserordentlicherAnspruch);
         }
         return restKind;
     }
