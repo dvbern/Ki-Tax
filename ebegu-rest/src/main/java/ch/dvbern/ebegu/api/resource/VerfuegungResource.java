@@ -127,7 +127,7 @@ public class VerfuegungResource {
 			Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
 
 			// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum das Gesuch detachen
-			loadRelationsAndDetach(gesuchWithCalcVerfuegung);
+			gesuchService.loadRelationsAndDetach(gesuchWithCalcVerfuegung);
 
 			JaxGesuch gesuchJax = converter.gesuchToJAX(gesuchWithCalcVerfuegung);
 
@@ -224,34 +224,6 @@ public class VerfuegungResource {
 			return converter.verfuegungToJax(persistedVerfuegung);
 		}
 		throw new EbeguEntityNotFoundException("nichtEintreten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungID invalid: " + betreuungId.getId());
-	}
-
-	/**
-	 * Hack, welcher das Gesuch detached, damit es auf keinen Fall gespeichert wird. Vorher muessen die Lazy geloadeten
-	 * BetreuungspensumContainers geladen werden, da danach keine Session mehr zur Verfuegung steht!
-	 */
-	private void loadRelationsAndDetach(Gesuch gesuch) {
-		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
-			betreuung.getBetreuungspensumContainers().size();
-			betreuung.getAbwesenheitContainers().size();
-		}
-		if (gesuch.getGesuchsteller1() != null) {
-			gesuch.getGesuchsteller1().getAdressen().size();
-			gesuch.getGesuchsteller1().getErwerbspensenContainers().size();
-		}
-		if (gesuch.getGesuchsteller2() != null) {
-			gesuch.getGesuchsteller2().getAdressen().size();
-			gesuch.getGesuchsteller2().getErwerbspensenContainers().size();
-		}
-		gesuch.extractAllBetreuungen().forEach(betreuung -> {
-			if (betreuung.getBelegungTagesschule() != null && betreuung.getBelegungTagesschule().getModuleTagesschule() != null) {
-				betreuung.getBelegungTagesschule().getModuleTagesschule().size();
-			}
-			if (betreuung.getBelegungFerieninsel() != null) {
-				betreuung.getBelegungFerieninsel().getTage().size();
-			}
-		});
-		persistence.getEntityManager().detach(gesuch);
 	}
 }
 

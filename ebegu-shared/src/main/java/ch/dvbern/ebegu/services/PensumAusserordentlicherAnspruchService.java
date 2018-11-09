@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 
 /**
@@ -44,4 +45,8 @@ public interface PensumAusserordentlicherAnspruchService {
 	@Nonnull
 	Optional<PensumAusserordentlicherAnspruch> findPensumAusserordentlicherAnspruch(@Nonnull String pensumAusserordentlicherAnspruchId);
 
+	/**
+	 * Ermittelt, ob fuer das uebergebene Gesuch ein ausserordentlicher Anspruch erfasst werden kann
+	 */
+	boolean isAusserordentlicherAnspruchPossible(@Nonnull Gesuch gesuch);
 }
