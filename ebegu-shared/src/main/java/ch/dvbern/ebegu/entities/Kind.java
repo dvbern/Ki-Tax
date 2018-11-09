@@ -68,7 +68,7 @@ public class Kind extends AbstractPersonEntity {
 	@Enumerated(EnumType.STRING)
 	private EinschulungTyp einschulungTyp;
 
-//	@Valid Warning! cannot use @Valid because then we get into an infinite loop in CheckPensumFachstelle
+	@Valid
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_pensum_fachstelle_id"), nullable = true)

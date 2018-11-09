@@ -20,7 +20,6 @@
 package ch.dvbern.ebegu.validators;
 
 import java.text.MessageFormat;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.annotation.Nonnull;
@@ -40,7 +39,6 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang3.Range;
 
@@ -48,13 +46,11 @@ import org.apache.commons.lang3.Range;
  * Validator for PensumFachstelle, checks that the entered betreuungspensum is greather than the minimum
  * that is allowed and lesser than the max that is allowed for the selected IntegrationTyp
  */
-public class CheckPensumFachstelleValidator implements ConstraintValidator<CheckPensumFachstelle, PensumFachstelle> {
+public class CheckPensumFachstelleValidator implements ConstraintValidator<CheckPensumFachstelle, KindContainer> {
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
 	private EinstellungService einstellungService;
-	@Inject
-	private KindService kindService;
 
 	// We need to pass to EinstellungService a new EntityManager to avoid errors like ConcurrentModificatinoException.
 	// So we create it here and pass it to the methods of EinstellungService we need to call.
@@ -72,12 +68,10 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 	 */
 	public CheckPensumFachstelleValidator(
 		@Nonnull EinstellungService service,
-		@Nonnull EntityManagerFactory entityManagerFactory,
-		@Nonnull KindService kindService
+		@Nonnull EntityManagerFactory entityManagerFactory
 	) {
 		this.einstellungService = service;
 		this.entityManagerFactory = entityManagerFactory;
-		this.kindService = kindService;
 	}
 
 	@Override
@@ -86,27 +80,21 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 	}
 
 	@Override
-	public boolean isValid(@Nonnull PensumFachstelle pensumFachstelle, ConstraintValidatorContext context) {
+	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 
-		if (pensumFachstelle.getFachstelle() == null) {
+		if (kindContainer.getKindJA() == null
+			|| kindContainer.getKindJA().getPensumFachstelle() == null
+			|| kindContainer.getKindJA().getPensumFachstelle().getFachstelle() == null
+		) {
 			// Kein PensumFachstelle
 			return true;
 		}
 
 		final EntityManager em = createEntityManager();
 
-		final Optional<KindContainer> optKindContainer = kindService.findKindFromPensumFachstelle(pensumFachstelle.getId(), em);
-		if (!optKindContainer.isPresent()) {
-			// In case there is no kind linked to the PensumFachstelle the validation should return true.
-			// This is required because the first time, when both KindContainer and PesumFachstelle don't exist
-			// a call to kindService.findKindFromPensumFachstelle won't find the kindContainer. For that case we do
-			// an explicit validation of PensumFachstell in KindService.saveKind()
-			return true;
-		}
-		final KindContainer kindContainer = optKindContainer.get();
-
 		final Gemeinde gemeinde = kindContainer.getGesuch().extractGemeinde();
 		final Gesuchsperiode gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
+		final PensumFachstelle pensumFachstelle = kindContainer.getKindJA().getPensumFachstelle();
 
 		Integer minValueAllowed = getValueAsInteger(
 			getMinValueParamFromIntegrationTyp(pensumFachstelle.getIntegrationTyp()),
@@ -152,9 +140,9 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		Gesuchsperiode gesuchsperiode,
 		EntityManager em
 	) {
-		Einstellung minParam = einstellungService
+		Einstellung value = einstellungService
 			.findEinstellung(key, gemeinde, gesuchsperiode, em);
-		return minParam.getValueAsInteger();
+		return value.getValueAsInteger();
 	}
 
 	@Nullable

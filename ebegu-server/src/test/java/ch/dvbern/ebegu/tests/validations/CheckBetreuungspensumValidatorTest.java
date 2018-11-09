@@ -48,7 +48,7 @@ public class CheckBetreuungspensumValidatorTest {
 	public void setUp() {
 		// see https://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/chapter-bootstrapping.html#_constraintvalidatorfactory
 		Configuration<?> config = Validation.byDefaultProvider().configure();
-		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory(null, null));
+		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory(null));
 		this.customFactory = config.buildValidatorFactory();
 	}
 

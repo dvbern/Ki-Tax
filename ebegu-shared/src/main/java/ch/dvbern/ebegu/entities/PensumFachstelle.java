@@ -28,13 +28,11 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
 import org.hibernate.envers.Audited;
 
 /**
  * Entity fuer PensumFachstelle.
  */
-@CheckPensumFachstelle
 @Audited
 @Entity
 public class PensumFachstelle extends AbstractIntegerPensum {

@@ -51,6 +51,8 @@ public class PensumFachstelleServiceBean extends AbstractBaseService implements 
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public PensumFachstelle savePensumFachstelle(@Nonnull PensumFachstelle pensumFachstelle) {
+		// WARNING! This service should be used only for tests. The PensumFachstelle will only be validated with
+		// CheckPensumFachstelleValidator when saving the KindContainer
 		Objects.requireNonNull(pensumFachstelle);
 		return persistence.merge(pensumFachstelle);
 	}

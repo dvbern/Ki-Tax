@@ -29,6 +29,9 @@ public interface PensumFachstelleService {
 	/**
 	 * Aktualisiert die PensumFachstelle in der DB
 	 *
+	 * WARNING! This service should be used only for tests. The PensumFachstelle will only be validated with
+	 * CheckPensumFachstelleValidator when saving the KindContainer
+	 *
 	 * @param pensumFachstelle die PensumFachstelle als DTO
 	 * @return Die aktualisierte PensumFachstelle
 	 */

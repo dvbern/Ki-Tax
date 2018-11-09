@@ -35,14 +35,9 @@ import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
 public class ValidationTestConstraintValidatorFactory implements ConstraintValidatorFactory {
 
 	private final EntityManagerFactory entityManagerFactory;
-	private final KindService kindService;
 
-	public ValidationTestConstraintValidatorFactory(
-		@Nullable EntityManagerFactory entityManagerFactory,
-		@Nullable KindService kindService
-	) {
+	public ValidationTestConstraintValidatorFactory(@Nullable EntityManagerFactory entityManagerFactory) {
 		this.entityManagerFactory = entityManagerFactory;
-		this.kindService = kindService;
 	}
 
 	@Override
@@ -57,7 +52,7 @@ public class ValidationTestConstraintValidatorFactory implements ConstraintValid
 			//Mock Service for Parameters
 			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
 			//noinspection unchecked,ConstantConditions
-			return (T) new CheckPensumFachstelleValidator(dummyEinstellungenService, entityManagerFactory, kindService);
+			return (T) new CheckPensumFachstelleValidator(dummyEinstellungenService, entityManagerFactory);
 		}
 		ConstraintValidatorFactory delegate = Validation.byDefaultProvider().configure().getDefaultConstraintValidatorFactory();
 		return delegate.getInstance(key);

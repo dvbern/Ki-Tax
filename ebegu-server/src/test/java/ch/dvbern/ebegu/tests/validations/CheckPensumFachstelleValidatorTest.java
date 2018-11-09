@@ -19,8 +19,6 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.validation.Configuration;
 import javax.validation.Validation;
@@ -28,9 +26,7 @@ import javax.validation.ValidatorFactory;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
-import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
 import org.junit.Assert;
@@ -39,9 +35,6 @@ import org.junit.Test;
 
 import static ch.dvbern.ebegu.tests.util.ValidationTestHelper.assertNotViolated;
 import static ch.dvbern.ebegu.tests.util.ValidationTestHelper.assertViolated;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.mock;
-import static org.easymock.EasyMock.replay;
 
 /**
  * Tests for CheckPensumFachstelle
@@ -51,87 +44,93 @@ import static org.easymock.EasyMock.replay;
 public class CheckPensumFachstelleValidatorTest {
 
 	private ValidatorFactory customFactory;
-	private KindService kindServiceMock;
 
 	@Before
 	public void setUp() {
-		kindServiceMock = mock(KindService.class);
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		final ValidationTestConstraintValidatorFactory constraintValidatorFactory =
-			new ValidationTestConstraintValidatorFactory(null, kindServiceMock);
+			new ValidationTestConstraintValidatorFactory(null);
 		config.constraintValidatorFactory(constraintValidatorFactory);
 		this.customFactory = config.buildValidatorFactory();
 	}
 
 	@Test
+	public void testKindWithoutPensumFachstelle() {
+		KindContainer kind = createKindWithoutPensumFachstelle();
+
+		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
+			"pensumFachstelle.pensum");
+	}
+
+	@Test
 	public void testSozialPensumTooLow() {
-		PensumFachstelle pensumFachstelle = createKindWithPensumFachstelle(
+		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION,0);
 
-		assertViolated(CheckPensumFachstelle.class, pensumFachstelle, customFactory,
+		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
 			"pensumFachstelle.pensum");
 	}
 
 	@Test
 	public void testSozialPensumTooHigh() {
-		PensumFachstelle pensumFachstelle = createKindWithPensumFachstelle(
+		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION,80);
 
-		assertViolated(CheckPensumFachstelle.class, pensumFachstelle, customFactory,
+		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
 			"pensumFachstelle.pensum");
 	}
 
 	@Test
 	public void testSozialPensumMax() {
-		PensumFachstelle pensumFachstelle = createKindWithPensumFachstelle(
+		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION,60);
 
-		assertNotViolated(CheckPensumFachstelle.class, pensumFachstelle, customFactory,
+		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
 			"pensumFachstelle.pensum");
 	}
 
 	@Test
 	public void testSozialPensumMin() {
-		PensumFachstelle pensumFachstelle = createKindWithPensumFachstelle(
+		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION,20);
 
-		assertNotViolated(CheckPensumFachstelle.class, pensumFachstelle, customFactory,
+		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
 			"pensumFachstelle.pensum");
 	}
 
 	@Test
 	public void testSozialPensumInRange() {
-		PensumFachstelle pensumFachstelle = createKindWithPensumFachstelle(
+		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION,40);
 
-		assertNotViolated(CheckPensumFachstelle.class, pensumFachstelle, customFactory,
+		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
 			"pensumFachstelle.pensum");
 	}
 
 	@Test
 	public void testSprachlichPensumTooLow() {
-		PensumFachstelle pensumFachstelle = createKindWithPensumFachstelle(
+		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION,0);
 
-		assertViolated(CheckPensumFachstelle.class, pensumFachstelle, customFactory,
+		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
 			"pensumFachstelle.pensum");
 	}
 
 	@Test
 	public void testSprachlichPensumTooHigh() {
-		PensumFachstelle pensumFachstelle = createKindWithPensumFachstelle(
+		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION,80);
 
-		assertViolated(CheckPensumFachstelle.class, pensumFachstelle, customFactory,
+		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
 			"pensumFachstelle.pensum");
 	}
 
 	@Test
 	public void testSprachlichPensumInRange() {
-		PensumFachstelle pensumFachstelle = createKindWithPensumFachstelle(
+		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION,40);
 
-		assertNotViolated(CheckPensumFachstelle.class, pensumFachstelle, customFactory,
+		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
 			"pensumFachstelle.pensum");
 	}
 
@@ -139,7 +138,7 @@ public class CheckPensumFachstelleValidatorTest {
 	// HELP METHODS
 
 	@Nonnull
-	private PensumFachstelle createKindWithPensumFachstelle(@Nonnull IntegrationTyp integrationTyp, @Nonnull Integer pensum) {
+	private KindContainer createKindWithPensumFachstelle(@Nonnull IntegrationTyp integrationTyp, @Nonnull Integer pensum) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 
@@ -150,10 +149,15 @@ public class CheckPensumFachstelleValidatorTest {
 		kind.getKindJA().getPensumFachstelle().setIntegrationTyp(integrationTyp);
 		kind.getKindJA().getPensumFachstelle().setPensum(pensum);
 
-		expect(kindServiceMock.findKindFromPensumFachstelle(kind.getKindJA().getPensumFachstelle().getId(), null))
-			.andReturn(Optional.of(kind)).anyTimes();
-		replay(kindServiceMock);
+		return kind;
+	}
 
-		return kind.getKindJA().getPensumFachstelle();
+	@Nonnull
+	private KindContainer createKindWithoutPensumFachstelle() {
+		KindContainer kind = TestDataUtil.createDefaultKindContainer();
+
+		kind.getKindJA().setPensumFachstelle(null);
+
+		return kind;
 	}
 }
