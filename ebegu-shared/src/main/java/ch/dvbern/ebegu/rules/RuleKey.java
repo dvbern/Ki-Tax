@@ -27,6 +27,7 @@ public enum RuleKey {
 	ERWERBSPENSUM,
 	BETREUUNGSPENSUM,
 	FACHSTELLE,
+	AUSSERORDENTLICHER_ANSPRUCH,
 	/**
 	 * Regel 4.2 definiert dass kein Anspruch besteht wenn das massgebende Einkommen zu hoch ist
 	 */

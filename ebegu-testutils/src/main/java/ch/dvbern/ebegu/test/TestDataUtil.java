@@ -92,6 +92,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -615,6 +616,14 @@ public final class TestDataUtil {
 		pensumFachstelle.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
 		pensumFachstelle.setFachstelle(createDefaultFachstelle());
 		return pensumFachstelle;
+	}
+
+	public static PensumAusserordentlicherAnspruch createAusserordentlicherAnspruch(int anspruch) {
+		PensumAusserordentlicherAnspruch pensum = new PensumAusserordentlicherAnspruch();
+		pensum.setPensum(anspruch);
+		pensum.setBegruendung("Test");
+		pensum.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
+		return pensum;
 	}
 
 	public static KindContainer createDefaultKindContainer() {

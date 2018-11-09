@@ -48,6 +48,8 @@ public class EbeguRuleTestsHelper {
 	private static final ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(Constants.DEFAULT_GUELTIGKEIT, 20, 20, 40);
 	private static final FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(Constants.DEFAULT_GUELTIGKEIT);
+	private static final AusserordentlicherAnspruchAbschnittRule ausserordentlicherAnspruchAbschnittRule = new AusserordentlicherAnspruchAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
+	private static final AusserordentlicherAnspruchCalcRule ausserordentlicherAnspruchCalcRule = new AusserordentlicherAnspruchCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
@@ -92,6 +94,7 @@ public class EbeguRuleTestsHelper {
 		List<VerfuegungZeitabschnitt> result = erwerbspensumAbschnittRule.calculate(betreuung, initialenRestanspruchAbschnitte);
 		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
 		result = fachstelleAbschnittRule.calculate(betreuung, result);
+		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);
 		result = zivilstandsaenderungAbschnittRule.calculate(betreuung, result);
 		result = einkommenAbschnittRule.calculate(betreuung, result);
 		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
@@ -100,6 +103,7 @@ public class EbeguRuleTestsHelper {
 		// Anspruch
 		result = erwerbspensumCalcRule.calculate(betreuung, result);
 		result = fachstelleCalcRule.calculate(betreuung, result);
+		result = ausserordentlicherAnspruchCalcRule.calculate(betreuung, result);
 		// Restanspruch
 		// Reduktionen
 		result = maximalesEinkommenCalcRule.calculate(betreuung, result);
