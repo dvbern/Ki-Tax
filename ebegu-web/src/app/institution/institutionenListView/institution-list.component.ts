@@ -13,8 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController} from 'angular';
+import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -23,10 +25,14 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import AbstractAdminViewController from '../../abstractAdminView';
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
 
+@Component({
+    selector: 'dv-institution-list',
+    templateUrl: './institution-list.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+})
 export class InstitutionenListViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public bindings = {
