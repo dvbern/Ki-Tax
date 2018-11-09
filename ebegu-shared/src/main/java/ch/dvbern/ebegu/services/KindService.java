@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.EntityManager;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -67,4 +69,12 @@ public interface KindService {
 	 */
 	@Nonnull
 	Set<KindDubletteDTO> getKindDubletten(@Nonnull String gesuchId);
+
+	/**
+	 * Returns a nullable optional with the KindContainer that is linked with the given PensumFachstelleId
+	 * An EntityManager can be given to execute the query in a different context. If null, the default
+	 * EntityManager will be used.
+	 */
+	@Nonnull
+	Optional<KindContainer> findKindFromPensumFachstelle(@Nonnull String pensumFachstelleId, @Nullable EntityManager em);
 }

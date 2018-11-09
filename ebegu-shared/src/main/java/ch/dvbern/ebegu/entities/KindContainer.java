@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -51,7 +50,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  * Container-Entity fuer die Kinder: Diese muss für jeden Benutzertyp (GS, JA) einzeln gefuehrt werden,
  * damit die Veraenderungen / Korrekturen angezeigt werden koennen.
  */
-@CheckPensumFachstelle
 @Audited
 @Entity
 @Table(

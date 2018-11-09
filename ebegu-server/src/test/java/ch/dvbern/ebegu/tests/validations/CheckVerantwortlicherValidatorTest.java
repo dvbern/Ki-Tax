@@ -47,7 +47,7 @@ public class CheckVerantwortlicherValidatorTest {
 		// see https://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/chapter-bootstrapping.html#_constraintvalidatorfactory
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		//wir verwenden dummy service daher geben wir hier null als em mit
-		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory(null));
+		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory(null, null));
 		this.customFactory = config.buildValidatorFactory();
 		schUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TS, "userSCH", null, null, mandant);
 		jaUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_BG, "userJA", null, null, mandant);

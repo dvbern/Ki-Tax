@@ -22,21 +22,20 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validation;
-import javax.validation.Validator;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
@@ -48,6 +47,7 @@ import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Kind_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -98,15 +98,6 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		if (!kind.isNew()) {
 			// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
 			updateLuceneIndex(KindContainer.class, kind.getId());
-		}
-
-		// todo KIBON-102 this must still be improved
-		// validation of the KindContainer before saving it
-		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
-		Set<ConstraintViolation<KindContainer>> constraintViolations =
-			validator.validate(kind);
-		if (!constraintViolations.isEmpty()) {
-			throw new ConstraintViolationException(constraintViolations);
 		}
 
 		final KindContainer mergedKind = persistence.merge(kind);
@@ -193,6 +184,32 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 			throw new EbeguEntityNotFoundException("getKindDubletten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
 		}
 		return dublettenOfAllKinder;
+	}
+
+	@Nonnull
+	@Override
+	public Optional<KindContainer> findKindFromPensumFachstelle(@Nonnull String pensumFachstelleId, @Nullable EntityManager em) {
+		if (em == null) {
+			em = persistence.getEntityManager();
+		}
+
+		final CriteriaBuilder cb = em.getCriteriaBuilder();
+		final CriteriaQuery<KindContainer> query = cb.createQuery(KindContainer.class);
+
+		Root<KindContainer> root = query.from(KindContainer.class);
+		Join<KindContainer, Kind> joinKind = root.join(KindContainer_.kindJA, JoinType.LEFT);
+
+		Predicate predicatePensumFachstelle = cb
+			.equal(joinKind.get(Kind_.pensumFachstelle).get(AbstractEntity_.id), pensumFachstelleId);
+
+		query.where(predicatePensumFachstelle);
+
+
+		try {
+			return Optional.ofNullable(em.createQuery(query).getSingleResult());
+		} catch (NoResultException e) {
+			return Optional.empty();
+		}
 	}
 
 	@Nonnull

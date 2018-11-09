@@ -15,12 +15,14 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManagerFactory;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorFactory;
 import javax.validation.Validation;
 
 import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumValidator;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
@@ -33,9 +35,14 @@ import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
 public class ValidationTestConstraintValidatorFactory implements ConstraintValidatorFactory {
 
 	private final EntityManagerFactory entityManagerFactory;
+	private final KindService kindService;
 
-	public ValidationTestConstraintValidatorFactory(EntityManagerFactory entityManagerFactory) {
+	public ValidationTestConstraintValidatorFactory(
+		@Nullable EntityManagerFactory entityManagerFactory,
+		@Nullable KindService kindService
+	) {
 		this.entityManagerFactory = entityManagerFactory;
+		this.kindService = kindService;
 	}
 
 	@Override
@@ -49,8 +56,8 @@ public class ValidationTestConstraintValidatorFactory implements ConstraintValid
 		if (key.equals(CheckPensumFachstelleValidator.class)) {
 			//Mock Service for Parameters
 			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
-			//noinspection unchecked
-			return (T) new CheckPensumFachstelleValidator(dummyEinstellungenService, entityManagerFactory);
+			//noinspection unchecked,ConstantConditions
+			return (T) new CheckPensumFachstelleValidator(dummyEinstellungenService, entityManagerFactory, kindService);
 		}
 		ConstraintValidatorFactory delegate = Validation.byDefaultProvider().configure().getDefaultConstraintValidatorFactory();
 		return delegate.getInstance(key);
