@@ -86,8 +86,6 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	private WizardStepService wizardStepService;
 	@Inject
 	private GesuchService gesuchService;
-	@Inject
-	private EinstellungService einstellungService;
 
 	@Nonnull
 	@Override
@@ -206,7 +204,8 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 
 
 		try {
-			return Optional.ofNullable(em.createQuery(query).getSingleResult());
+			final Optional<KindContainer> singleResult = Optional.ofNullable(em.createQuery(query).getSingleResult());
+			return singleResult;
 		} catch (NoResultException e) {
 			return Optional.empty();
 		}

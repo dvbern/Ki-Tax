@@ -38,9 +38,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -98,10 +96,14 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		final EntityManager em = createEntityManager();
 
 		final Optional<KindContainer> optKindContainer = kindService.findKindFromPensumFachstelle(pensumFachstelle.getId(), em);
-		final KindContainer kindContainer = optKindContainer.orElseThrow(() ->
-			new EbeguEntityNotFoundException("isValid(KindContainer)", ErrorCodeEnum.ERROR_MUST_BE_LINKED_TO_KIND,
-				pensumFachstelle.getId())
-		);
+		if (!optKindContainer.isPresent()) {
+			// In case there is no kind linked to the PensumFachstelle the validation should return true.
+			// This is required because the first time, when both KindContainer and PesumFachstelle don't exist
+			// a call to kindService.findKindFromPensumFachstelle won't find the kindContainer. For that case we do
+			// an explicit validation of PensumFachstell in KindService.saveKind()
+			return true;
+		}
+		final KindContainer kindContainer = optKindContainer.get();
 
 		final Gemeinde gemeinde = kindContainer.getGesuch().extractGemeinde();
 		final Gesuchsperiode gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
