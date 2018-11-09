@@ -19,7 +19,8 @@
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span class="ebeguH1 required">
-                <span data-translate="FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER"></span>
+                <span data-translate="FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER"
+                      translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></span>
             </span>
             <dv-radio-container name="sozialhilfeBezueger" class="input-element"
                                 ng-model="vm.sozialhilfeBezueger"
