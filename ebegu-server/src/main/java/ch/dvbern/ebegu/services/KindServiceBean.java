@@ -108,7 +108,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		final KindContainer mergedKind = persistence.merge(kind);
 		mergedKind.getGesuch().addKindContainer(mergedKind);
 
-		// validate explicitly: If KidContainer didn't change but a PensumFachstelle did, the validation won't
+		// validate explicitly: If KindContainer didn't change but a PensumFachstelle did, the validation won't
 		// be automatically triggered
 		Validator validator = validatorFactory.getValidator();
 		Set<ConstraintViolation<KindContainer>> constraintViolations = validator.validate(mergedKind);
