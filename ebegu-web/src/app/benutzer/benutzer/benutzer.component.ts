@@ -33,6 +33,8 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {Permission} from '../../authorisation/Permission';
+import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {LogFactory} from '../../core/logging/LogFactory';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
@@ -102,13 +104,11 @@ export class BenutzerComponent implements OnInit {
             this.initSelectedUser();
             // Falls der Benutzer JA oder SCH Benutzer ist, muss geprüft werden, ob es sich um den
             // "Default-Verantwortlichen" des entsprechenden Amtes handelt
-            if (TSRoleUtil.getAdministratorJugendamtRole().indexOf(this.currentBerechtigung.role) > -1) {
-                // TODO KIBON-256
-                this.isDefaultVerantwortlicher = false;
-            }
-            if (TSRoleUtil.getSchulamtRoles().indexOf(this.currentBerechtigung.role) > -1) {
-                // TODO KIBON-256
-                this.isDefaultVerantwortlicher = false;
+            if (PERMISSIONS[Permission.ROLE_GEMEINDE].indexOf(this.currentBerechtigung.role) > -1) {
+                this.benutzerRS.isBenutzerDefaultBenutzerOfAnyGemeinde(this.selectedUser.username)
+                    .then(isDefaultUser => {
+                        this.isDefaultVerantwortlicher = isDefaultUser;
+                    });
             }
             this.changeDetectorRef.markForCheck();
         });
