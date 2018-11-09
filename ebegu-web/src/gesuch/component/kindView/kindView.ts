@@ -82,7 +82,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
-        private authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -179,8 +179,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         // Anspruch gesetzt ist, oder es sich um einen Gemeinde-User handelt
         return this.getModel().familienErgaenzendeBetreuung && (
             this.showAusserordentlicherAnspruch
-            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())
-        )
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()));
     }
 
     public isAusserordentlicherAnspruchEnabled(): boolean {
@@ -189,11 +188,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showAusserordentlicherAnspruchClicked(): void {
-        if (this.showAusserordentlicherAnspruch) {
-            this.getModel().pensumAusserordentlicherAnspruch = new TSPensumAusserordentlicherAnspruch();
-        } else {
-            this.getModel().pensumAusserordentlicherAnspruch = undefined;
-        }
+        this.getModel().pensumAusserordentlicherAnspruch =
+            this.showAusserordentlicherAnspruch ? new TSPensumAusserordentlicherAnspruch() : undefined;
     }
 
     public familienErgaenzendeBetreuungClicked(): void {
