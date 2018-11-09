@@ -344,11 +344,11 @@
                     <!-- Ausserordentlicher Anpruch? -->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox" ng-show="vm.getModel().familienErgaenzendeBetreuung">
+                            <div class="checkbox" ng-show="vm.showAusserordentlicherAnspruchCheckbox()">
                                 <md-checkbox ng-model="vm.showAusserordentlicherAnspruch"
                                              name="showAusserordentlicherAnspruch" id="showAusserordentlicherAnspruch"
                                              aria-label="{{'AUSSERORDENTLICHER_ANSPRUCH'|translate}}"
-                                             ng-disabled="vm.isGesuchReadonly()"
+                                             ng-disabled="vm.isGesuchReadonly() || !vm.isAusserordentlicherAnspruchEnabled()"
                                              ng-change="vm.showAusserordentlicherAnspruchClicked()">
                                     <span data-translate="AUSSERORDENTLICHER_ANSPRUCH"></span>
                                 </md-checkbox>
@@ -367,7 +367,8 @@
                                     <textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
                                               id="begruendung" name="begruendung"
                                               ng-model="vm.getPensumAusserordentlicherAnspruch().begruendung"
-                                              ng-required="vm.isAusserordentlicherAnspruchRequired()">
+                                              ng-required="vm.isAusserordentlicherAnspruchRequired()"
+                                              ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
 								</textarea>
                                     <dv-error-messages input-id="begruendung" for="vm.form.begruendung.$error"
                                                        class="error"></dv-error-messages>
@@ -389,7 +390,8 @@
                                            max="100" dv-max-length class="form-control"
                                            ng-pattern="vm.CONSTANTS.PATTERN_PERCENTAGE"
                                            ng-required="vm.isAusserordentlicherAnspruchRequired()"
-                                           ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
+                                           ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}"
+                                           ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
                                     <dv-error-messages input-id="betreuungspensumAusserordentlicherAnspruch"
                                                        for="vm.form.betreuungspensumAusserordentlicherAnspruch.$error"
                                                        class="error"></dv-error-messages>
@@ -406,7 +408,8 @@
                                                    class="input-element"
                                                    ng-model="vm.getPensumAusserordentlicherAnspruch().gueltigkeit.gueltigAb"
                                                    ng-required="vm.isAusserordentlicherAnspruchRequired()"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                                   ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
                                     </dv-datepicker>
                                     <dv-error-messages input-id="aussAnspruchDatumAb" class="error"
                                                        for="vm.form.aussAnspruchDatumAb.$error"></dv-error-messages>
@@ -420,7 +423,8 @@
                                                    class="input-element"
                                                    ng-model="vm.getPensumAusserordentlicherAnspruch().gueltigkeit.gueltigBis"
                                                    ng-required="false"
-                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                                   ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                                   ng-disabled="!vm.isAusserordentlicherAnspruchEnabled()">
                                     </dv-datepicker>
                                     <dv-error-messages input-id="aussAnspruchDatumBis" class="error"
                                                        for="vm.form.aussAnspruchDatumBis.$error"></dv-error-messages>

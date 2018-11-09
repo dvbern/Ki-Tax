@@ -16,6 +16,7 @@
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
@@ -28,6 +29,7 @@ import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusser
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
 import DateUtil from '../../../utils/DateUtil';
 import {EnumEx} from '../../../utils/EnumEx';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IKindStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -58,6 +60,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         '$q',
         '$translate',
         '$timeout',
+        'AuthServiceRS',
     ];
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;
@@ -79,6 +82,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
+        private authServiceRS: AuthServiceRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -168,6 +172,20 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         } else {
             this.resetFachstelleFields();
         }
+    }
+
+    public showAusserordentlicherAnspruchCheckbox(): boolean {
+        // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat und entweder bereits ein
+        // Anspruch gesetzt ist, oder es sich um einen Gemeinde-User handelt
+        return this.getModel().familienErgaenzendeBetreuung && (
+            this.showAusserordentlicherAnspruch
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())
+        )
+    }
+
+    public isAusserordentlicherAnspruchEnabled(): boolean {
+        return !this.isGesuchReadonly()
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 
     public showAusserordentlicherAnspruchClicked(): void {
