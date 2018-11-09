@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
@@ -163,6 +164,7 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -199,6 +201,7 @@ import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
@@ -238,6 +241,8 @@ public class JaxBConverter extends AbstractConverter {
 	private GesuchstellerAdresseService gesuchstellerAdresseService;
 	@Inject
 	private PensumFachstelleService pensumFachstelleService;
+	@Inject
+	private PensumAusserordentlicherAnspruchService pensumAusserordentlicherAnspruchService;
 	@Inject
 	private FachstelleService fachstelleService;
 	@Inject
@@ -1578,6 +1583,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
+			persistedKind.getPensumAusserordentlicherAnspruch()));
 		return jaxKind;
 	}
 
@@ -1634,6 +1641,47 @@ public class JaxBConverter extends AbstractConverter {
 		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
 	}
 
+	@Nullable
+	public JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchToJax(
+		@Nullable final PensumAusserordentlicherAnspruch persistedPensumAusserordentlicherAnspruch) {
+
+		if (persistedPensumAusserordentlicherAnspruch == null) {
+			return null;
+		}
+		final JaxPensumAusserordentlicherAnspruch jaxPensumAusserordentlicherAnspruch =
+			new JaxPensumAusserordentlicherAnspruch();
+		convertAbstractPensumFieldsToJAX(persistedPensumAusserordentlicherAnspruch, jaxPensumAusserordentlicherAnspruch);
+		jaxPensumAusserordentlicherAnspruch.setBegruendung(persistedPensumAusserordentlicherAnspruch.getBegruendung());
+		return jaxPensumAusserordentlicherAnspruch;
+	}
+
+	public PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchToEntity(
+		@Nonnull final JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchJAXP,
+		@Nonnull final PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch) {
+
+		convertAbstractPensumFieldsToEntity(pensumAusserordentlicherAnspruchJAXP, pensumAusserordentlicherAnspruch);
+		pensumAusserordentlicherAnspruch.setBegruendung(pensumAusserordentlicherAnspruchJAXP.getBegruendung());
+		return pensumAusserordentlicherAnspruch;
+	}
+
+	@Nonnull
+	private PensumAusserordentlicherAnspruch toStorablePensumAusserordentlicherAnspruch(
+		@Nonnull final JaxPensumAusserordentlicherAnspruch pensumFsToSave) {
+
+		PensumAusserordentlicherAnspruch pensumToMergeWith = new PensumAusserordentlicherAnspruch();
+		if (pensumFsToSave.getId() != null) {
+			final Optional<PensumAusserordentlicherAnspruch> pensumAusserordentlicherAnspruchOpt =
+				pensumAusserordentlicherAnspruchService.findPensumAusserordentlicherAnspruch(pensumFsToSave.getId());
+			if (pensumAusserordentlicherAnspruchOpt.isPresent()) {
+				pensumToMergeWith = pensumAusserordentlicherAnspruchOpt.get();
+			} else {
+				throw new EbeguEntityNotFoundException("toStorablePensumAusserordentlicherAnspruch",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, pensumFsToSave.getId());
+			}
+		}
+		return pensumAusserordentlicherAnspruchToEntity(pensumFsToSave, pensumToMergeWith);
+	}
+
 	public JaxKindContainer kindContainerToJAX(final KindContainer persistedKind) {
 		final JaxKindContainer jaxKindContainer = new JaxKindContainer();
 		convertAbstractVorgaengerFieldsToJAX(persistedKind, jaxKindContainer);
@@ -1663,6 +1711,13 @@ public class JaxBConverter extends AbstractConverter {
 			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
 		}
 		kind.setPensumFachstelle(updtPensumFachstelle);
+
+		PensumAusserordentlicherAnspruch updtPensumAusserordentlicherAnspruch = null;
+		if (kindJAXP.getPensumAusserordentlicherAnspruch() != null) {
+			updtPensumAusserordentlicherAnspruch = toStorablePensumAusserordentlicherAnspruch(
+				kindJAXP.getPensumAusserordentlicherAnspruch());
+		}
+		kind.setPensumAusserordentlicherAnspruch(updtPensumAusserordentlicherAnspruch);
 
 		return kind;
 	}
