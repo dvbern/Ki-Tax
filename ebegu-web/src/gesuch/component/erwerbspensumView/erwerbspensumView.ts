@@ -32,6 +32,7 @@ import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import TSUnbezahlterUrlaub from '../../../models/TSUnbezahlterUrlaub';
+import DateUtil from '../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IErwerbspensumStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -70,6 +71,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public patternPercentage: string;
     public maxZuschlagsprozent: number = 100;
     public hasUnbezahlterUrlaub: boolean;
+    public hasUnbezahlterUrlaubGS: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -221,10 +223,27 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
 
     private initUnbezahlterUrlaub(): void {
         this.hasUnbezahlterUrlaub = !!(this.model.erwerbspensumJA.unbezahlterUrlaub);
+        this.hasUnbezahlterUrlaubGS = !!(this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub);
     }
 
     public unbezahlterUrlaubClicked(): void {
         this.model.erwerbspensumJA.unbezahlterUrlaub =
             this.hasUnbezahlterUrlaub ? new TSUnbezahlterUrlaub() : undefined;
+    }
+
+    public getTextUnbezahlterUrlaubKorrekturJA(): string {
+        if (this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub) {
+            const urlaub: TSUnbezahlterUrlaub = this.model.erwerbspensumGS.unbezahlterUrlaub;
+            const vonText = DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+            const bisText = urlaub.gueltigkeit.gueltigBis ?
+                DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
+                '31.12.9999';
+            return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
+                von: vonText,
+                bis: bisText,
+            });
+        } else {
+            return this.$translate.instant('LABEL_KEINE_ANGABE');
+        }
     }
 }
