@@ -178,11 +178,12 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             this.model.erwerbspensumJA.unbezahlterUrlaub = undefined;
             this.hasUnbezahlterUrlaub = false;
         }
-        if (!this.viewZuschlag()) {
-            this.model.erwerbspensumJA.zuschlagZuErwerbspensum = false;
-            this.model.erwerbspensumJA.zuschlagsprozent = undefined;
-            this.model.erwerbspensumJA.zuschlagsgrund = undefined;
+        if (this.viewZuschlag()) {
+            return;
         }
+        this.model.erwerbspensumJA.zuschlagZuErwerbspensum = false;
+        this.model.erwerbspensumJA.zuschlagsprozent = undefined;
+        this.model.erwerbspensumJA.zuschlagsgrund = undefined;
     }
 
     public erwerbspensumDisabled(): boolean {
@@ -242,8 +243,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
                 von: vonText,
                 bis: bisText,
             });
-        } else {
-            return this.$translate.instant('LABEL_KEINE_ANGABE');
         }
+        return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 }
