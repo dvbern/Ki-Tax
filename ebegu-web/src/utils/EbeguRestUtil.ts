@@ -486,7 +486,8 @@ export default class EbeguRestUtil {
             erwerbspensum.zuschlagsprozent = erwerbspensumFromServer.zuschlagsprozent;
             erwerbspensum.zuschlagZuErwerbspensum = erwerbspensumFromServer.zuschlagZuErwerbspensum;
             erwerbspensum.bezeichnung = erwerbspensumFromServer.bezeichnung;
-            erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
+            erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
+                new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
             return erwerbspensum;
         }
         return undefined;
@@ -500,7 +501,8 @@ export default class EbeguRestUtil {
             restErwerbspensum.zuschlagsprozent = erwerbspensum.zuschlagsprozent;
             restErwerbspensum.zuschlagZuErwerbspensum = erwerbspensum.zuschlagZuErwerbspensum;
             restErwerbspensum.bezeichnung = erwerbspensum.bezeichnung;
-            restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject({}, erwerbspensum.unbezahlterUrlaub);
+            restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
+                {}, erwerbspensum.unbezahlterUrlaub);
             return restErwerbspensum;
         }
         return undefined;
