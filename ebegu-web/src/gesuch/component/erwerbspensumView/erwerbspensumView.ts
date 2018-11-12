@@ -69,7 +69,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public gesuchsteller: TSGesuchstellerContainer;
     public patternPercentage: string;
     public maxZuschlagsprozent: number = 100;
-    public showUnbezahlterUrlaub: boolean;
+    public hasUnbezahlterUrlaub: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -172,13 +172,15 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     public taetigkeitChanged(): void {
-        if (this.viewZuschlag()) {
-            return;
+        if (!this.isUnbezahlterUrlaubVisible()) {
+            this.model.erwerbspensumJA.unbezahlterUrlaub = undefined;
+            this.hasUnbezahlterUrlaub = false;
         }
-
-        this.model.erwerbspensumJA.zuschlagZuErwerbspensum = false;
-        this.model.erwerbspensumJA.zuschlagsprozent = undefined;
-        this.model.erwerbspensumJA.zuschlagsgrund = undefined;
+        if (!this.viewZuschlag()) {
+            this.model.erwerbspensumJA.zuschlagZuErwerbspensum = false;
+            this.model.erwerbspensumJA.zuschlagsprozent = undefined;
+            this.model.erwerbspensumJA.zuschlagsgrund = undefined;
+        }
     }
 
     public erwerbspensumDisabled(): boolean {
@@ -211,12 +213,18 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         return false;
     }
 
-    private initUnbezahlterUrlaub(): void {
-        this.showUnbezahlterUrlaub = !!(this.model.erwerbspensumJA.unbezahlterUrlaub);
+    public isUnbezahlterUrlaubVisible(): boolean {
+        return this.model.erwerbspensumJA
+            && (this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
+                || this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG);
     }
 
-    public showUnbezahlterUrlaubClicked(): void {
+    private initUnbezahlterUrlaub(): void {
+        this.hasUnbezahlterUrlaub = !!(this.model.erwerbspensumJA.unbezahlterUrlaub);
+    }
+
+    public unbezahlterUrlaubClicked(): void {
         this.model.erwerbspensumJA.unbezahlterUrlaub =
-            this.showUnbezahlterUrlaub ? new TSUnbezahlterUrlaub() : undefined;
+            this.hasUnbezahlterUrlaub ? new TSUnbezahlterUrlaub() : undefined;
     }
 }

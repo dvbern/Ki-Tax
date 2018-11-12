@@ -227,14 +227,14 @@
                     </div>
 
                     <!-- Unbezahlter Urlaub? -->
-                    <div class="row">
+                    <div class="row" ng-if="vm.isUnbezahlterUrlaubVisible()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.showUnbezahlterUrlaub"
+                                <md-checkbox ng-model="vm.hasUnbezahlterUrlaub"
                                              name="showUnbezahlterUrlaub" id="showUnbezahlterUrlaub"
                                              aria-label="{{'UNBEZAHLTER_URLAUB'|translate}}"
                                              ng-disabled="vm.erwerbspensumDisabled()"
-                                             ng-change="vm.showUnbezahlterUrlaubClicked()">
+                                             ng-change="vm.unbezahlterUrlaubClicked()">
                                     <span data-translate="UNBEZAHLTER_URLAUB"></span>
                                 </md-checkbox>
                                 <dv-error-messages for="vm.form.showUnbezahlterUrlaub.$error"
@@ -243,14 +243,14 @@
                         </div>
                     </div>
                     <!-- gueltig ab / gueltig bis -->
-                    <div class="row" ng-show="vm.showUnbezahlterUrlaub">
+                    <div class="row" ng-if="vm.hasUnbezahlterUrlaub">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" data-translate="VON" for="urlaubDatumAb"></label>
                                 <dv-datepicker input-id="urlaubDatumAb" name="urlaubDatumAb"
                                                class="input-element"
                                                ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
-                                               ng-required="true"
+                                               ng-required="vm.hasUnbezahlterUrlaub"
                                                ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
                                                ng-disabled="vm.erwerbspensumDisabled()">
                                 </dv-datepicker>
