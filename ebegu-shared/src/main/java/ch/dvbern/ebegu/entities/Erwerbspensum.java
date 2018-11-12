@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.validators.CheckUnbezahlterUrlaub;
 import ch.dvbern.ebegu.validators.CheckZuschlagErwerbspensumZuschlagUndGrund;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
@@ -47,6 +48,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @CheckZuschlagErwerbspensumZuschlagUndGrund
+@CheckUnbezahlterUrlaub
 public class Erwerbspensum extends AbstractIntegerPensum {
 
 	private static final long serialVersionUID = 4649639217797690323L;
