@@ -234,7 +234,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
 
     public getTextUnbezahlterUrlaubKorrekturJA(): string {
         if (this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub) {
-            const urlaub: TSUnbezahlterUrlaub = this.model.erwerbspensumGS.unbezahlterUrlaub;
+            const urlaub = this.model.erwerbspensumGS.unbezahlterUrlaub;
             const vonText = DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
             const bisText = urlaub.gueltigkeit.gueltigBis ?
                 DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
