@@ -31,6 +31,7 @@ import TSEinstellung from '../../../models/TSEinstellung';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import TSUnbezahlterUrlaub from '../../../models/TSUnbezahlterUrlaub';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IErwerbspensumStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -68,6 +69,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public gesuchsteller: TSGesuchstellerContainer;
     public patternPercentage: string;
     public maxZuschlagsprozent: number = 100;
+    public showUnbezahlterUrlaub: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -113,6 +115,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
                 this.maxZuschlagsprozent = Number(found.value);
             }
         });
+        this.initUnbezahlterUrlaub();
     }
 
     public getTaetigkeitenList(): Array<TSTaetigkeit> {
@@ -206,5 +209,14 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public isZuschlagErwerbspensumConfigured(): boolean {
         // Wird aktuell ausgeblendet. Koennte aber spaeter von spezifischen Gemeinden einschaltet werden
         return false;
+    }
+
+    private initUnbezahlterUrlaub(): void {
+        this.showUnbezahlterUrlaub = !!(this.model.erwerbspensumJA.unbezahlterUrlaub);
+    }
+
+    public showUnbezahlterUrlaubClicked(): void {
+        this.model.erwerbspensumJA.unbezahlterUrlaub =
+            this.showUnbezahlterUrlaub ? new TSUnbezahlterUrlaub() : undefined;
     }
 }
