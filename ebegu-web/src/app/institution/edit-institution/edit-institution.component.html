@@ -117,14 +117,17 @@
                             <dv-error-messages [errorObject]="form.controls.ort_id?.errors" inputId="ort_id"></dv-error-messages>
                         </div>
                     </div>
-                    <!-- Betreuungsgutscheine akzeptieren ab -->
+                    <!-- Betreuungsgutscheine akzeptieren ab/bis -->
                     <div class="col-sm-6">
-                        <div class="form-group">
-                            <label translate for="begu_start_id">BEGU_START_ACCEPT</label>
-                            <input id="begu_start_id" type="text" name="begu_start_id"
-                                   [(ngModel)]="beguStartStr"
-                                   class="form-control" disabled="true">
-                        </div>
+                        <label translate>BEGU_START_END</label>
+                    </div>
+                    <div class="col-sm-3">
+                        <input id="begu_start_id" type="text" name="begu_start_id"
+                               [(ngModel)]="beguStartStr" class="form-control" disabled="true">
+                    </div>
+                    <div class="col-sm-3">
+                        <input id="begu_ende_id" type="text" name="begu_ende_id"
+                               [(ngModel)]="beguEndeStr" class="form-control" disabled="true">
                     </div>
                 </div>
             </fieldset>

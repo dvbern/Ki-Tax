@@ -1339,6 +1339,8 @@ public class JaxBConverter extends AbstractConverter {
 			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
 		}
 		jaxInstStammdaten.setBetreuungsangebotTyp(persistedInstStammdaten.getBetreuungsangebotTyp());
+		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
+		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
 		if (persistedInstStammdaten.getInstitutionStammdatenTagesschule() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschuleToJAX(
 				persistedInstStammdaten

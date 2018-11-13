@@ -1357,7 +1357,7 @@
     "GEMEINDENAME": "Gemeindename",
     "GEMEINDE_BFS_NR": "BFS-Nummer",
     "BEGU_START": "Betreuungsgutscheine anbieten ab",
-    "BEGU_START_ACCEPT": "Betreuungsgutscheine akzeptieren ab",
+    "BEGU_START_END": "Betreuungsgutscheine akzeptieren ab / bis",
     "ADMIN_MAIL": "Administrator - E-Mail Adresse",
     "EINLADUNG_SENDEN": "Einladung senden",
     "EINLADUNG_ABSCHLIESSEN": "Registrierung abschliessen",

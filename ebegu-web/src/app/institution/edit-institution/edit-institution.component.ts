@@ -27,6 +27,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
+import * as moment from 'moment';
 
 @Component({
   selector: 'dv-edit-institution',
@@ -40,6 +41,7 @@ export class EditInstitutionComponent implements OnInit {
     public stammdaten: TSInstitutionStammdaten;
     public abweichendeZahlungsAdresse: boolean;
     public beguStartStr: string;
+    public beguEndeStr: string;
     private navigationSource: StateDeclaration;
 
     public constructor(
@@ -65,14 +67,21 @@ export class EditInstitutionComponent implements OnInit {
             this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institution.id).then(stammdaten => {
                 if (stammdaten) {
                     this.stammdaten = stammdaten;
-                    this.beguStartStr = stammdaten.gueltigkeit.gueltigAb.format('DD.MM.YYYY');
                 } else {
                     this.createInstitutionStammdaten();
                 }
+                this.setBeguVonBisStr();
                 this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
                 this.changeDetectorRef.markForCheck();
             });
         });
+    }
+
+    private setBeguVonBisStr(): void {
+        this.beguStartStr = this.stammdaten.gueltigkeit.gueltigAb ?
+            this.stammdaten.gueltigkeit.gueltigAb.format('DD.MM.YYYY') : undefined;
+        this.beguEndeStr = this.stammdaten.gueltigkeit.gueltigBis ?
+            this.stammdaten.gueltigkeit.gueltigBis.format('DD.MM.YYYY') : undefined;
     }
 
     public mitarbeiterBearbeiten(): void {
@@ -95,6 +104,10 @@ export class EditInstitutionComponent implements OnInit {
         if (!this.abweichendeZahlungsAdresse) {
             this.stammdaten.adresseKontoinhaber = undefined;
         }
+        // Prevent phone regex error in case of empty string
+        if (this.stammdaten.telefon === '') {
+            this.stammdaten.telefon = null;
+        }
         this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten).then(() => this.navigateBack());
     }
 
@@ -108,6 +121,7 @@ export class EditInstitutionComponent implements OnInit {
         this.stammdaten = new TSInstitutionStammdaten();
         this.stammdaten.adresse = new TSAdresse();
         this.stammdaten.institution = this.institution;
+        this.stammdaten.gueltigkeit.gueltigAb = moment();
     }
 
     private navigateBack(): void {
@@ -115,11 +129,9 @@ export class EditInstitutionComponent implements OnInit {
             this.$state.go('gemeinde.list');
             return;
         }
-
         const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
             ? 'gemeinde.view'
             : this.navigationSource;
-
         this.$state.go(redirectTo, {institutionId: this.institution.id});
     }
 }
