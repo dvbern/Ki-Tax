@@ -119,4 +119,12 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
+
+	/*
+	In der Datenbank wird das Pensum mit 10 Nachkomastellen gespeichert,
+	dem Benutzer soll es auf 2 Stellen gerunden angezeigt werden
+	 */
+	public BigDecimal getPensumRounded(){
+		return this.pensum.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+	}
 }
