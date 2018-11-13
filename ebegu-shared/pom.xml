@@ -160,6 +160,12 @@
             <groupId>com.github.oxo42</groupId>
             <artifactId>stateless4j</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>ch.dvbern.lib.invoice-generator</groupId>
+            <artifactId>dvbern-lib-invoice</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
