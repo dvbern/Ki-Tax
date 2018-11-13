@@ -164,6 +164,18 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Override
 	@PermitAll
+	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId) {
+		Institution institution = institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
+			("fetchInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+		return criteriaQueryHelper.getEntityByUniqueAttribute(
+			InstitutionStammdaten.class,
+			institution,
+			InstitutionStammdaten_.institution
+		).orElse(null);
+	}
+
+	@Override
+	@PermitAll
 	public Collection<BetreuungsangebotTyp> getBetreuungsangeboteForInstitutionenOfCurrentBenutzer() {
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
 		if (role.isRoleSchulamt()) { // fuer Schulamt muessen wir nichts machen. Direkt Schulamttypes zurueckgeben

@@ -16,6 +16,8 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
+import AbstractAdminViewController from '../../../admin/abstractAdminView';
+import {IInstitutionStateParams} from '../../../admin/admin.route';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
@@ -31,8 +33,6 @@ import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import AbstractAdminViewController from '../../abstractAdminView';
-import {IInstitutionStateParams} from '../../admin.route';
 import IFormController = angular.IFormController;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');

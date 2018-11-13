@@ -1,16 +1,20 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.converter;
@@ -1254,6 +1258,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitution jaxInstitution = new JaxInstitution();
 		convertAbstractVorgaengerFieldsToJAX(persistedInstitution, jaxInstitution);
 		jaxInstitution.setName(persistedInstitution.getName());
+		assert persistedInstitution.getMandant() != null;
 		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
 		jaxInstitution.setStatus(persistedInstitution.getStatus());
 		if (persistedInstitution.getTraegerschaft() != null) {
@@ -1318,6 +1323,18 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull final InstitutionStammdaten persistedInstStammdaten) {
 		final JaxInstitutionStammdaten jaxInstStammdaten = new JaxInstitutionStammdaten();
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
+
+		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
+			persistedInstStammdaten.getInstitution());
+		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
+			persistedInstStammdaten.getInstitution());
+		jaxInstStammdaten.setAdministratoren(administratoren.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+
 		if (persistedInstStammdaten.getIban() != null) {
 			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
 		}
@@ -1354,6 +1371,8 @@ public class JaxBConverter extends AbstractConverter {
 		if (institutionStammdatenJAXP.getIban() != null) {
 			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
 		}
+		institutionStammdaten.setMail(institutionStammdatenJAXP.getMail());
+		institutionStammdaten.setTelefon(institutionStammdatenJAXP.getTelefon());
 		institutionStammdaten.setBetreuungsangebotTyp(institutionStammdatenJAXP.getBetreuungsangebotTyp());
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
 			// wenn InstitutionStammdatenTagesschule vorhanden ist es eine Tagesschule und Objekt muss, wenn noch

@@ -17,16 +17,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
-import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSMandant} from './TSMandant';
-import {TSTraegerschaft} from './TSTraegerschaft';
+import {InstitutionRoutingModule} from './institution-routing.module';
 
-export default class TSInstitution extends TSAbstractMutableEntity {
-    public name: string;
-    public traegerschaft: TSTraegerschaft;
-    public mandant: TSMandant;
-    public mail: string;
-    public status: TSInstitutionStatus;
-}
+describe('InstitutionRoutingModule', () => {
+    let institutionRoutingModule: InstitutionRoutingModule;
+
+    beforeEach(() => {
+        institutionRoutingModule = new InstitutionRoutingModule();
+    });
+
+    it('should create an instance', () => {
+        expect(institutionRoutingModule).toBeTruthy();
+    });
+});

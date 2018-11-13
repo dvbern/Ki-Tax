@@ -1,16 +1,20 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
@@ -19,101 +23,18 @@ import TSAdresse from './TSAdresse';
 import TSInstitution from './TSInstitution';
 import TSInstitutionStammdatenFerieninsel from './TSInstitutionStammdatenFerieninsel';
 import TSInstitutionStammdatenTagesschule from './TSInstitutionStammdatenTagesschule';
-import {TSDateRange} from './types/TSDateRange';
 
 export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity {
-    private _iban: string;
-    private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
-    private _institution: TSInstitution;
-    private _adresse: TSAdresse;
-    private _kontoinhaber: string;
-    private _adresseKontoinhaber: TSAdresse;
-    private _institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
-    private _institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
-
-    public constructor(
-        iban?: string,
-        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
-        institution?: TSInstitution,
-        adresse?: TSAdresse,
-        gueltigkeit?: TSDateRange,
-        kontoinhaber?: string,
-        adresseKontoinhaber?: TSAdresse,
-        institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
-        institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
-    ) {
-        super(gueltigkeit);
-        this._iban = iban;
-        this._betreuungsangebotTyp = betreuungsangebotTyp;
-        this._institution = institution;
-        this._adresse = adresse;
-        this._kontoinhaber = kontoinhaber;
-        this._adresseKontoinhaber = adresseKontoinhaber;
-        this._institutionStammdatenTagesschule = institutionStammdatenTagesschule;
-        this._institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
-    }
-
-    public get iban(): string {
-        return this._iban;
-    }
-
-    public set iban(value: string) {
-        this._iban = value;
-    }
-
-    public get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
-        return this._betreuungsangebotTyp;
-    }
-
-    public set betreuungsangebotTyp(value: TSBetreuungsangebotTyp) {
-        this._betreuungsangebotTyp = value;
-    }
-
-    public get institution(): TSInstitution {
-        return this._institution;
-    }
-
-    public set institution(value: TSInstitution) {
-        this._institution = value;
-    }
-
-    public get adresse(): TSAdresse {
-        return this._adresse;
-    }
-
-    public set adresse(value: TSAdresse) {
-        this._adresse = value;
-    }
-
-    public get kontoinhaber(): string {
-        return this._kontoinhaber;
-    }
-
-    public set kontoinhaber(value: string) {
-        this._kontoinhaber = value;
-    }
-
-    public get adresseKontoinhaber(): TSAdresse {
-        return this._adresseKontoinhaber;
-    }
-
-    public set adresseKontoinhaber(value: TSAdresse) {
-        this._adresseKontoinhaber = value;
-    }
-
-    public get institutionStammdatenTagesschule(): TSInstitutionStammdatenTagesschule {
-        return this._institutionStammdatenTagesschule;
-    }
-
-    public set institutionStammdatenTagesschule(value: TSInstitutionStammdatenTagesschule) {
-        this._institutionStammdatenTagesschule = value;
-    }
-
-    public get institutionStammdatenFerieninsel(): TSInstitutionStammdatenFerieninsel {
-        return this._institutionStammdatenFerieninsel;
-    }
-
-    public set institutionStammdatenFerieninsel(value: TSInstitutionStammdatenFerieninsel) {
-        this._institutionStammdatenFerieninsel = value;
-    }
+    public administratoren: string; // read only
+    public sachbearbeiter: string; // read only
+    public betreuungsangebotTyp: TSBetreuungsangebotTyp;
+    public institution: TSInstitution;
+    public adresse: TSAdresse;
+    public mail: string;
+    public telefon: string;
+    public iban: string;
+    public kontoinhaber: string;
+    public adresseKontoinhaber: TSAdresse;
+    public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
+    public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
 }

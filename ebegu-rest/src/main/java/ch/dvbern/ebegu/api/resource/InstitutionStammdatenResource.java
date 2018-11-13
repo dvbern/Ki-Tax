@@ -194,12 +194,13 @@ public class InstitutionStammdatenResource {
 	}
 
 	/**
-	 * Sucht in der DB alle InstitutionStammdaten, bei welchen die Institutions-id dem übergabeparameter entspricht
+	 * Sucht in der DB alle InstitutionStammdaten, bei welchen die Institutions-id dem übergabeparameter entspricht.
+	 * Falls die Institution keine Stammdaten hat, wird die Ausnahme EbeguEntityNotFoundException geworfen.
 	 *
 	 * @param institutionJAXPId ID der gesuchten Institution
 	 * @return Die InstitutionStammdaten dieser Institution
 	 */
-	@ApiOperation(value = "Gibt alle Institutionsstammdaten der uebergebenen Institution zurueck.",
+	@ApiOperation(value = "Gibt alle Institutionsstammdaten der uebergebenen Institution zurueck, EbeguEntityNotFoundException falls keine vorhanden.",
 		response = JaxInstitutionStammdaten.class)
 	@Nonnull
 	@GET
@@ -214,6 +215,30 @@ public class InstitutionStammdatenResource {
 		InstitutionStammdaten stammdaten =
 			institutionStammdatenService.getInstitutionStammdatenByInstitution(institutionID);
 		return converter.institutionStammdatenToJAX(stammdaten);
+	}
+
+	/**
+	 * Sucht in der DB alle InstitutionStammdaten, bei welchen die Institutions-id dem übergabeparameter entspricht.
+	 * Falls die Institution keine Stammdaten hat gibt sie null zurück, dabei wird keine Ausnahme geworfen.
+	 *
+	 * @param institutionJAXPId ID der gesuchten Institution
+	 * @return Die InstitutionStammdaten dieser Institution
+	 */
+	@ApiOperation(value = "Gibt alle Institutionsstammdaten der uebergebenen Institution zurueck, null falls keine vorhanden.",
+		response = JaxInstitutionStammdaten.class)
+	@Nullable
+	@GET
+	@Path("/institutionornull/{institutionId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxInstitutionStammdaten fetchInstitutionStammdatenByInstitution(
+		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJAXPId) {
+
+		Objects.requireNonNull(institutionJAXPId.getId());
+		String institutionID = converter.toEntityId(institutionJAXPId);
+		InstitutionStammdaten stammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionID);
+		return null==stammdaten ? null : converter.institutionStammdatenToJAX(stammdaten);
 	}
 
 	/**

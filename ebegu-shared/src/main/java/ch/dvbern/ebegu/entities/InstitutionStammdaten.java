@@ -33,9 +33,11 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.hibernate.envers.Audited;
@@ -78,6 +80,17 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@OneToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_institution_id"), nullable = false)
 	private Institution institution;
+
+	@NotNull
+	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
+	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = false)
+	private String mail;
+
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
+	private String telefon;
 
 	@NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -171,6 +184,23 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setInstitutionStammdatenFerieninsel(@Nullable InstitutionStammdatenFerieninsel institutionStammdatenFerieninsel) {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	@Nullable
+	public String getTelefon() {
+		return telefon;
+	}
+
+	public void setTelefon(@Nullable String telefon) {
+		this.telefon = telefon;
 	}
 
 	@Override

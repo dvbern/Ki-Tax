@@ -33,7 +33,9 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 
 	private static final long serialVersionUID = -1893677808323618626L;
 	@Nullable
-	private String iban;
+	private String administratoren;
+	@Nullable
+	private String sachbearbeiter;
 	@Nullable
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 	@NotNull
@@ -42,14 +44,19 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 	private JaxInstitutionStammdatenTagesschule institutionStammdatenTagesschule;
 	@Nullable
 	private JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninsel;
-
+	@NotNull
+	private String mail;
+	@Nullable
+	private String telefon;
 	@NotNull
 	private JaxAdresse adresse;
-
+	@Nullable
+	private String iban;
 	@Nullable
 	private String kontoinhaber;
 	@Nullable
 	private JaxAdresse adresseKontoinhaber;
+
 
 	@Nullable
 	public String getIban() {
@@ -120,4 +127,40 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 	public void setInstitutionStammdatenFerieninsel(@Nullable JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninsel) {
 		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
 	}
+
+	@Nullable
+	public String getAdministratoren() {
+		return administratoren;
+	}
+
+	public void setAdministratoren(@Nullable String administratoren) {
+		this.administratoren = administratoren;
+	}
+
+	@Nullable
+	public String getSachbearbeiter() {
+		return sachbearbeiter;
+	}
+
+	public void setSachbearbeiter(@Nullable String sachbearbeiter) {
+		this.sachbearbeiter = sachbearbeiter;
+	}
+
+	public String getMail() {
+		return mail;
+	}
+
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+
+	@Nullable
+	public String getTelefon() {
+		return telefon;
+	}
+
+	public void setTelefon(@Nullable String telefon) {
+		this.telefon = telefon;
+	}
+
 }

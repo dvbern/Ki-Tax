@@ -1049,10 +1049,12 @@ export default class EbeguRestUtil {
     ): any {
         if (institutionStammdaten) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdaten, institutionStammdaten);
-            restInstitutionStammdaten.iban = institutionStammdaten.iban;
             restInstitutionStammdaten.betreuungsangebotTyp = institutionStammdaten.betreuungsangebotTyp;
             restInstitutionStammdaten.institution = this.institutionToRestObject({}, institutionStammdaten.institution);
             restInstitutionStammdaten.adresse = this.adresseToRestObject({}, institutionStammdaten.adresse);
+            restInstitutionStammdaten.mail = institutionStammdaten.mail;
+            restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
+            restInstitutionStammdaten.iban = institutionStammdaten.iban;
             restInstitutionStammdaten.kontoinhaber = institutionStammdaten.kontoinhaber;
             restInstitutionStammdaten.adresseKontoinhaber =
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
@@ -1072,12 +1074,16 @@ export default class EbeguRestUtil {
     ): TSInstitutionStammdaten {
         if (institutionStammdatenFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTS, institutionStammdatenFromServer);
-            institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
+            institutionStammdatenTS.administratoren = institutionStammdatenFromServer.administratoren;
+            institutionStammdatenTS.sachbearbeiter = institutionStammdatenFromServer.sachbearbeiter;
             institutionStammdatenTS.betreuungsangebotTyp = institutionStammdatenFromServer.betreuungsangebotTyp;
             institutionStammdatenTS.institution =
                 this.parseInstitution(new TSInstitution(), institutionStammdatenFromServer.institution);
             institutionStammdatenTS.adresse =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresse);
+            institutionStammdatenTS.mail = institutionStammdatenFromServer.mail;
+            institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
+            institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
             institutionStammdatenTS.adresseKontoinhaber =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
@@ -1547,7 +1553,7 @@ export default class EbeguRestUtil {
         restBetreuung.vertrag = betreuung.vertrag;
         restBetreuung.keineKesbPlatzierung = betreuung.keineKesbPlatzierung;
         if (betreuung.institutionStammdaten) {
-            restBetreuung.institutionStammdaten =
+            restBetreuung.stammdaten =
                 this.institutionStammdatenToRestObject({}, betreuung.institutionStammdaten);
         }
         if (betreuung.betreuungspensumContainers) {
@@ -1656,7 +1662,7 @@ export default class EbeguRestUtil {
             betreuungTS.keineKesbPlatzierung = betreuungFromServer.keineKesbPlatzierung;
             betreuungTS.betreuungsstatus = betreuungFromServer.betreuungsstatus;
             betreuungTS.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
-                betreuungFromServer.institutionStammdaten);
+                betreuungFromServer.stammdaten);
             betreuungTS.betreuungspensumContainers =
                 this.parseBetreuungspensumContainers(betreuungFromServer.betreuungspensumContainers);
             betreuungTS.abwesenheitContainers =

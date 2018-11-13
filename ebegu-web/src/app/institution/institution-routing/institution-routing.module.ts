@@ -22,51 +22,49 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
-import {AddGemeindeComponent} from '../add-gemeinde/add-gemeinde.component';
-import {EditGemeindeComponent} from '../edit-gemeinde/edit-gemeinde.component';
-import {GemeindeListComponent} from '../gemeinde-list/gemeinde-list.component';
-import {ViewGemeindeComponent} from '../view-gemeinde/view-gemeinde.component';
+import {EditInstitutionComponent} from '../edit-institution/edit-institution.component';
+import {InstitutionListComponent} from '../institutionenListView/institution-list.component';
 
 const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
-        name: 'gemeinde',
+        name: 'institution',
         abstract: true,
-        url: '/gemeinde',
+        url: '/institution',
         component: UiViewComponent,
     },
     {
-        name: 'gemeinde.list',
+        name: 'institution.list',
         url: '/list',
-        component: GemeindeListComponent,
+        component: InstitutionListComponent,
         data: {
             roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
         },
     },
-    {
-        name: 'gemeinde.add',
+/*    {
+        name: 'institution.add',
         url: '/add',
-        component: AddGemeindeComponent,
+        component: InstitutionViewComponentConfig,
         data: {
             roles: TSRoleUtil.getMandantRoles(),
         },
-    },
+    }, */
     {
-        name: 'gemeinde.edit',
-        url: '/edit/:gemeindeId',
-        component: EditGemeindeComponent,
+        name: 'institution.edit',
+        url: '/edit/:institutionId',
+        component: EditInstitutionComponent,
         data: {
             roles: TSRoleUtil.getAdministratorBgTsGemeindeRole(),
         },
     },
-    {
-        name: 'gemeinde.view',
-        url: '/view/:gemeindeId',
-        component: ViewGemeindeComponent,
+/*    {
+        name: 'institution.view',
+        url: '/view/:institutionId',
+        component: InstitutionStammdatenViewController,
         data: {
             roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
         },
-    },
+    }, */
 ];
 
 @NgModule({
@@ -77,5 +75,5 @@ const states: Ng2StateDeclaration[] = [
         UIRouterUpgradeModule,
     ],
 })
-export class GemeindeRoutingModule {
+export class InstitutionRoutingModule {
 }

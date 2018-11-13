@@ -21,20 +21,25 @@
     <form role="form"
           #form="ngForm"
           [ngClass]="{'ng-submitted': form.submitted}"
-          *ngIf="stammdaten$ | async as stammdaten"
-          (ngSubmit)="persistGemeindeStammdaten(stammdaten)"
+          *ngIf="stammdaten"
+          (ngSubmit)="persistStammdaten()"
           novalidate>
 
-        <dv-gemeinde-header
-            [gemeinde]="stammdaten.gemeinde"
+        <dv-stammdaten-header
+            [titel]="getHeaderTitle()"
             [administratoren]="stammdaten.administratoren"
-            [sachbearbeiter]="stammdaten.sachbearbeiter">
-        </dv-gemeinde-header>
+            [sachbearbeiter]="stammdaten.sachbearbeiter"
+            [logoImageUrl]="undefined"
+            [editMitarbeiterAllowed]="true">
+        </dv-stammdaten-header>
         <div class="dv-content">
             <fieldset>
-                <div class="viewTitle">
-                    <h3 translate>GEMEINDE_STAMMDATEN</h3>
+                <div class="viewSubTitle">
+                    <h3 translate>INSTITUTION_STAMMDATEN</h3>
                     <hr class="header">
+                </div>
+                <div class="title">
+                    <h3 translate>KONTAKTADRESSE</h3>
                 </div>
                 <div class="row">
                     <!-- Anschrift -->
@@ -44,7 +49,7 @@
                             <input id="anschrift_id" type="text" name="anschrift_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.organisation"
                                    [maxlength]="255" class="form-control" required
-                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                   placeholder="Kita ...">
                             <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors" inputId="anschrift_id"></dv-error-messages>
                         </div>
                     </div>
@@ -83,11 +88,10 @@
                     <!-- Telefon -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required" translate for="telefon_id">TELEFON</label>
+                            <label translate for="telefon_id">TELEFON</label>
                             <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.telefon"
-                                   [maxlength]="255" class="form-control"
-                                   required>
+                                   [maxlength]="255" class="form-control">
                             <dv-error-messages [errorObject]="form.controls.telefon_id?.errors" inputId="telefon_id"></dv-error-messages>
                         </div>
                     </div>
@@ -113,143 +117,115 @@
                             <dv-error-messages [errorObject]="form.controls.ort_id?.errors" inputId="ort_id"></dv-error-messages>
                         </div>
                     </div>
-                    <!-- Webseite -->
+                    <!-- Betreuungsgutscheine akzeptieren ab -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate for="webseite_id">WEBSEITE</label>
-                            <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.webseite"
-                                   [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.webseite_id?.errors"
-                                               inputId="webseite_id"></dv-error-messages>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- Beschwerde-Adresse Checkbox -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
-                            <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
-                                          [(ngModel)]="keineBeschwerdeAdresse">
-                                {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
-                            </mat-checkbox>
-                        </div>
-                    </div>
-                    <!-- Korrespondenzsprache -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 class="required" translate for="korrespondenzsprache_id">KORRESPONDENZSPRACHE</h3>
-                            <div class="form-group" id="korrespondenzsprache_id">
-                                <mat-checkbox id="korrespondenzspracheDe_id" name="korrespondenzspracheDe_id"
-                                              [(ngModel)]="stammdaten.korrespondenzspracheDe">
-                                    {{'DEUTSCH'|translate}}
-                                </mat-checkbox>
-                                <mat-checkbox id="korrespondenzspracheFr_id" name="korrespondenzspracheFr_id"
-                                              [(ngModel)]="stammdaten.korrespondenzspracheFr">
-                                    {{'FRANZOESISCH'|translate}}
-                                </mat-checkbox>
-                                <div class="dv-error-messages"
-                                    *ngIf="!stammdaten.korrespondenzspracheDe && !stammdaten.korrespondenzspracheFr">
-                                    <div class="error">
-                                        {{ 'ERROR_REQUIRED' | translate }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="!keineBeschwerdeAdresse" class="row">
-                    <!-- Beschwerde-Adresse -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="required" translate for="anschrift_ba_id">ADRESSE_ANSCHRIFT</label>
-                            <input id="anschrift_ba_id" type="text" name="anschrift_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
-                                   [maxlength]="255" class="form-control" required
-                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
-                            <dv-error-messages [errorObject]="form.controls.anschrift_ba_id?.errors" inputId="anschrift_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="!keineBeschwerdeAdresse" class="row">
-                    <!-- Strasse -->
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label class="required" translate for="strasse_ba_id">ADRESSE_STRASSE</label>
-                            <input id="strasse_ba_id" type="text" name="strasse_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.strasse_ba_id?.errors" inputId="strasse_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                    <!-- Hausnummer -->
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label translate for="hausnummer_ba_id">ADRESSE_NUMMER</label>
-                            <input id="hausnummer_ba_id" type="text" name="hausnummer_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
-                                   [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.hausnummer_ba_id?.errors" inputId="hausnummer_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="!keineBeschwerdeAdresse" class="row">
-                    <!-- PLZ -->
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label class="required" translate for="plz_ba_id">ADRESSE_PLZ</label>
-                            <input id="plz_ba_id" type="text" name="plz_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.plz"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.plz_ba_id?.errors" inputId="plz_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                    <!-- Ort -->
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label class="required" translate for="ort_ba_id">ADRESSE_ORT</label>
-                            <input id="ort_ba_id" type="text" name="ort_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.ort"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.ort_ba_id?.errors" inputId="ort_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <!-- Standardverantwortliche BG -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate class="required" for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
-                            <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG" id="verantwortliche_bg_id" name="verantwortliche_bg_id"
-                                        class="form-control" [compareWith]="compareBenutzer" required>
-                                <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
-                                    {{vbg.vorname}} {{vbg.nachname}}
-                                </mat-option>
-                            </mat-select>
-                            <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors" inputId="verantwortliche_bg_id"></dv-error-messages>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
+                            <label translate for="begu_start_id">BEGU_START_ACCEPT</label>
+                            <input id="begu_start_id" type="text" name="begu_start_id"
+                                   [(ngModel)]="beguStartStr"
+                                   class="form-control" disabled="true">
                         </div>
                     </div>
                 </div>
             </fieldset>
-
             <fieldset>
-                <dv-gemeinde-konfiguration
-                    [konfigurationsListe]="stammdaten.konfigurationsListe"
-                    [gemeindeStatus]="stammdaten.gemeinde.status"
-                    [beguStartDate]="stammdaten.gemeinde.betreuungsgutscheineStartdatum">
-                </dv-gemeinde-konfiguration>
+                <div class="title">
+                    <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
+                </div>
+                <div class="row">
+                    <!-- IBAN-Nummer -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="required" translate for="iban_nr_id">IBAN_NUMMER</label>
+                            <input id="iban_nr_id" type="text" name="iban_nr_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.iban"
+                                   [maxlength]="26" class="form-control" required
+                                   placeholder="CHXX XXXX XXXX XXXX XXXX X">
+                            <dv-error-messages [errorObject]="form.controls.iban_nr_id?.errors" inputId="iban_nr_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Anschrift -->
+                    <div class="col-sm-6">
+                        <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <label class="required" translate for="za_anschrift_id">ADRESSE_ANSCHRIFT</label>
+                            <input id="za_anschrift_id" type="text" name="za_anschrift_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresseKontoinhaber.organisation"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.za_anschrift_id?.errors" inputId="za_anschrift_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Kontoinhaber -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="kontoinhaber_id">INSTITUTION_KONTOINHABER</label>
+                            <input id="kontoinhaber_id" type="text" name="kontoinhaber_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.kontoinhaber"
+                                   [maxlength]="255" class="kontoinhaber_id">
+                            <dv-error-messages [errorObject]="form.controls.kontoinhaber_id?.errors" inputId="kontoinhaber_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Strasse -->
+                    <div class="col-sm-5">
+                        <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <label class="required" translate for="za_strasse_id">ADRESSE_STRASSE</label>
+                            <input id="za_strasse_id" type="text" name="za_strasse_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresseKontoinhaber.strasse"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.za_strasse_id?.errors" inputId="za_strasse_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Hausnummer -->
+                    <div class="col-sm-1">
+                        <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <label translate for="za_hausnummer_id">ADRESSE_NUMMER</label>
+                            <input id="za_hausnummer_id" type="text" name="za_hausnummer_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresseKontoinhaber.hausnummer"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.za_hausnummer_id?.errors" inputId="za_hausnummer_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Checkbox Abweichende Zahlungsadresse -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="abweichende_za_id">INSTITUTION_DIFFERENT_ZAHLUNGSADRESSE</label>
+                            <mat-checkbox id="abweichende_za_id" name="abweichende_za_id"
+                                          [(ngModel)]="abweichendeZahlungsAdresse"
+                                          (click)="onAbweichendeZahlungsAdresseClick()">
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                    <!-- PLZ -->
+                    <div class="col-sm-1">
+                        <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <label class="required" translate for="za_plz_id">ADRESSE_PLZ</label>
+                            <input id="za_plz_id" type="text" name="za_plz_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresseKontoinhaber.plz"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.za_plz_id?.errors" inputId="za_plz_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Ort -->
+                    <div class="col-sm-5">
+                        <div *ngIf="abweichendeZahlungsAdresse" class="form-group">
+                            <label class="required" translate for="za_ort_id">ADRESSE_ORT</label>
+                            <input id="za_ort_id" type="text" name="za_ort_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.adresseKontoinhaber.ort"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.za_ort_id?.errors" inputId="za_ort_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
             </fieldset>
         </div>
 
         <!-- Buttons -->
         <div class="dv-footer">
             <dv-loading-button [type]="'submit'">
-                <span translate>GEMEINDE_SPEICHERN</span>
+                <span translate>INSTITUTION_SPEICHERN</span>
             </dv-loading-button>
 
             <button type="button" class="dv-btn cancel-button"

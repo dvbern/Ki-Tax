@@ -15,6 +15,8 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import AbstractAdminViewController from '../../../admin/abstractAdminView';
+import {IInstitutionStammdatenStateParams} from '../../../admin/admin.route';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../../app/core/service/institutionStammdatenRS.rest';
 import ListResourceRS from '../../../app/core/service/listResourceRS.rest';
@@ -30,8 +32,6 @@ import TSInstitutionStammdatenTagesschule from '../../../models/TSInstitutionSta
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import TSLand from '../../../models/types/TSLand';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import AbstractAdminViewController from '../../abstractAdminView';
-import {IInstitutionStammdatenStateParams} from '../../admin.route';
 import IFormController = angular.IFormController;
 
 export class InstitutionStammdatenViewComponentConfig implements IComponentOptions {

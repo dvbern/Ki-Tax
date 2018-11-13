@@ -17,16 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
-import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
-import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import {TSMandant} from './TSMandant';
-import {TSTraegerschaft} from './TSTraegerschaft';
+@import (reference) '../../../../style/variables.less';
 
-export default class TSInstitution extends TSAbstractMutableEntity {
-    public name: string;
-    public traegerschaft: TSTraegerschaft;
-    public mandant: TSMandant;
-    public mail: string;
-    public status: TSInstitutionStatus;
+.gemeindeHeader{
+    background-color: @white;
+    padding: 2.5rem;
 }
+
