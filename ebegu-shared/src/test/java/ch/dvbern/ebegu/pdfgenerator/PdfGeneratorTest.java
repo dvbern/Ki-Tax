@@ -1,17 +1,16 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
+import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
+import org.junit.Test;
+
+@SuppressWarnings("ConstantJUnitAssertArgument")
 public class PdfGeneratorTest {
 
 	private final List<String> gemeindeHeader = Arrays.asList(
@@ -44,26 +43,29 @@ public class PdfGeneratorTest {
 	}
 
 	@Test
-	public void normaleVerfügungTest() throws InvoiceGeneratorException, IOException {
+	public void normaleVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
-		final VerfügungPdfGenerator verfügungPdfGenerator = new VerfügungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		verfügungPdfGenerator.generate(new FileOutputStream("target/Verfügung.pdf"), VerfügungPdfGenerator.Art.NORMAL);
+		final VerfuegungPdfGenerator
+			verfuegungPdfGenerator = new VerfuegungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
+		verfuegungPdfGenerator.generate(new FileOutputStream("target/Verfügung.pdf"), VerfuegungPdfGenerator.Art.NORMAL);
 		Assert.assertTrue(true);
 	}
 
 	@Test
-	public void keinAnspruchVerfügungTest() throws InvoiceGeneratorException, IOException {
+	public void keinAnspruchVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
-		final VerfügungPdfGenerator verfügungPdfGenerator = new VerfügungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		verfügungPdfGenerator.generate(new FileOutputStream("target/KeinAnspruchVerfügung.pdf"), VerfügungPdfGenerator.Art.KEIN_ANSPRUCH);
+		final VerfuegungPdfGenerator
+			verfuegungPdfGenerator = new VerfuegungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
+		verfuegungPdfGenerator.generate(new FileOutputStream("target/KeinAnspruchVerfügung.pdf"), VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
 		Assert.assertTrue(true);
 	}
 
 	@Test
-	public void nichtEintretenVerfügungTest() throws InvoiceGeneratorException, IOException {
+	public void nichtEintretenVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
-		final VerfügungPdfGenerator verfügungPdfGenerator = new VerfügungPdfGenerator(gemeindeLogo, gemeindeHeader, true);
-		verfügungPdfGenerator.generate(new FileOutputStream("target/NichtEintretenVerfügung.pdf"), VerfügungPdfGenerator.Art.NICHT_EINTRETTEN);
+		final VerfuegungPdfGenerator
+			verfuegungPdfGenerator = new VerfuegungPdfGenerator(gemeindeLogo, gemeindeHeader, true);
+		verfuegungPdfGenerator.generate(new FileOutputStream("target/NichtEintretenVerfügung.pdf"), VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
 		Assert.assertTrue(true);
 	}
 

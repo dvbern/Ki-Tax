@@ -1,25 +1,27 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.*;
+import javax.annotation.Nonnull;
+
+import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
+import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.PdfContentByte;
+
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
 public class FinanzielleSituationPdfGenerator {
-
-	private static final Logger LOG = LoggerFactory.getLogger(FinanzielleSituationPdfGenerator.class);
 
 	@Nonnull
 	private final PdfGenerator pdfGenerator;
@@ -28,8 +30,7 @@ public class FinanzielleSituationPdfGenerator {
 		this.pdfGenerator = PdfGenerator.create(gemeindeLogo, gemeindeHeader, draft);
 	}
 
-	@Nonnull
-	public void generate(final OutputStream outputStream) throws InvoiceGeneratorException {
+	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
 
 		final String title = "Berechnung der finanziellen Situation";
 		final List<String> empfaengerAdresse = Arrays.asList(
@@ -135,9 +136,9 @@ public class FinanzielleSituationPdfGenerator {
 			"² Vermögen und Schulden von Partnerin / Partner I und II werden miteinander verrechnet werden. Wenn der Gesamtwert " +
 			"negativ ist, beträgt der zu berücksichtigende Wert 0 Franken.";
 
-		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (pdfGenerator, ctx) -> {
-			Document document = pdfGenerator.getDocument();
-			createFusszeile(pdfGenerator.getDirectContent(), fusszeile);
+		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (generator, ctx) -> {
+			Document document = generator.getDocument();
+			createFusszeile(generator.getDirectContent(), fusszeile);
 			document.add(PdfUtil.creatreIntroTable(intro1));
 			document.add(PdfUtil.createTable(values2017_1, width1Gs, alignement1Gs, 1));
 			document.add(PdfUtil.createTable(values2017_2, width1Gs, alignement1Gs, 1));
@@ -145,7 +146,7 @@ public class FinanzielleSituationPdfGenerator {
 			document.add(PdfUtil.createTable(values2017_4, width1Gs, alignement1Gs, 1, true));
 			document.newPage();
 			document.add(PdfUtil.createBoldParagraph("Provisorisches Einkommen 2018", 2));
-			createFusszeile(pdfGenerator.getDirectContent(), fusszeile);
+			createFusszeile(generator.getDirectContent(), fusszeile);
 			document.add(PdfUtil.creatreIntroTable(intro2));
 			document.add(PdfUtil.createTable(values2018_1, width2Gs, alignement2Gs, 1));
 			document.add(PdfUtil.createTable(values2018_2, width2Gs, alignement2Gs, 1));
@@ -163,7 +164,7 @@ public class FinanzielleSituationPdfGenerator {
 		ColumnText fz = new ColumnText(dirPdfContentByte);
 		final float height = millimetersToPoints(20);
 		final float width = millimetersToPoints(170);
-		final float loverLeftX = millimetersToPoints(PdfLayoutConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM);
+		final float loverLeftX = millimetersToPoints(PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM);
 		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4);
 		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);

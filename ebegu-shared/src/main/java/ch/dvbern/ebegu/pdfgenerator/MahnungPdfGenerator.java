@@ -1,14 +1,15 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
-
-import javax.annotation.Nonnull;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
 
 public class MahnungPdfGenerator {
 
@@ -19,8 +20,7 @@ public class MahnungPdfGenerator {
 		this.pdfGenerator = PdfGenerator.create(gemeindeLogo, gemeindeHeader, draft);
 	}
 
-	@Nonnull
-	public void generate(final OutputStream outputStream, boolean zweiteMahnung) throws InvoiceGeneratorException {
+	public void generate(@Nonnull final OutputStream outputStream, boolean zweiteMahnung) throws InvoiceGeneratorException {
 
 		final String title = "Gesuch für Simone Wälti\n" +
 			"2018/2019 Referenznummer: 18.000126.001\n" +
@@ -37,8 +37,8 @@ public class MahnungPdfGenerator {
 			"Verfügung zu Betreuungsangebot 18.000123.001.2.1",
 			"Berechnung der finanziellen Situation");
 
-		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (pdfGenerator, ctx) -> {
-			Document document = pdfGenerator.getDocument();
+		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (generator, ctx) -> {
+			Document document = generator.getDocument();
 			document.add(PdfUtil.createParagraph("Sehr geehrte Familie"));
 			if (zweiteMahnung) {
 				document.add(PdfUtil.createParagraph("Sie haben von uns am 12.11.2018 eine Mahnung zur Vervollständigung Ihrer Anmeldung " +
@@ -64,7 +64,7 @@ public class MahnungPdfGenerator {
 					"während der Bürozeiten zur Verfügung (Telefonnummer 031 321 51 15 und per E-Mail " +
 					"kinderbetreuung@bern.ch)."));
 			} else {
-				seite2Paragraphs.add(PdfUtil.createParagraph("\nErst nach Eingang dieser zusätzlichen Unterlagen können wir Ihr Gesuch weiter bearbeiten. Wir" +
+				seite2Paragraphs.add(PdfUtil.createParagraph("\nErst nach Eingang dieser zusätzlichen Unterlagen können wir Ihr Gesuch weiter bearbeiten. Wir " +
 					"bitten Sie, die oben aufgeführten Dokumente bis am unter Angabe Ihrer Referenznummer " +
 					"einzureichen.\n\n" +
 				"Wenn Sie Fragen haben oder Probleme beim Beschaffen der Unterlagen, stehen Ihnen unsere " +

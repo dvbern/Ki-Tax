@@ -1,22 +1,30 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
-import com.lowagie.text.*;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Image;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.Utilities;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
-
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.*;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
 public class FreigabequittungPdfGenerator {
 
@@ -29,8 +37,7 @@ public class FreigabequittungPdfGenerator {
 		this.pdfGenerator = PdfGenerator.create(gemeindeLogo, gemeindeHeader, draft);
 	}
 
-	@Nonnull
-	public void generate(final OutputStream outputStream) throws InvoiceGeneratorException {
+	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
 
 		final String title = "Freigabequittung für die Periode 2018/2019";
 		final List<String> empfaengerAdresse = Arrays.asList(
@@ -51,8 +58,8 @@ public class FreigabequittungPdfGenerator {
 		final List<String> dokumente = Arrays.asList(
 			"Arbeitsvertrag",
 			"Steuerveranlagung");
-		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (pdfGenerator, ctx) -> {
-			Document document = pdfGenerator.getDocument();
+		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (generator, ctx) -> {
+			Document document = generator.getDocument();
 			addBarcode(document);
 			document.add(createGesuchstellerTable("18.000117.001", gesuchsteller));
 			document.add(PdfUtil.createSubTitle("Betreuungsangebote"));
@@ -100,9 +107,7 @@ public class FreigabequittungPdfGenerator {
 		table.addCell(new Phrase(referenzNummer, DEFAULT_FONT));
 		table.addCell(new Phrase());
 		table.addCell(new Phrase("Gesuchsteller/in", DEFAULT_FONT));
-		gesuchsteller.forEach(item->{
-			table.addCell(new Phrase(item, DEFAULT_FONT));
-		});
+		gesuchsteller.forEach(item-> table.addCell(new Phrase(item, DEFAULT_FONT)));
 		return table;
 	}
 
@@ -114,7 +119,6 @@ public class FreigabequittungPdfGenerator {
 		} catch (Exception e) {
 			LOG.error("Failed to read the Logo: {}", e.getMessage());
 		}
-
 	}
 
 	@Nonnull
@@ -135,8 +139,6 @@ public class FreigabequittungPdfGenerator {
 		return table;
 	}
 
-
-
 	@Nonnull
 	public static PdfPTable createUnterschriftenTable(@Nonnull final List<String> gesuchsteller) {
 		PdfPTable table = new PdfPTable(2);
@@ -152,5 +154,4 @@ public class FreigabequittungPdfGenerator {
 		});
 		return table;
 	}
-
 }

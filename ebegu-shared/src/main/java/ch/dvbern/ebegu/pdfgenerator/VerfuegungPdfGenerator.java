@@ -1,5 +1,12 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.lib.invoicegenerator.dto.Alignment;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
@@ -7,27 +14,15 @@ import ch.dvbern.lib.invoicegenerator.dto.component.PhraseRenderer;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
-import com.lowagie.text.*;
-import com.lowagie.text.Image;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import javafx.scene.control.Tab;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import java.awt.*;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.*;
-
-import java.util.List;
-
-public class VerfügungPdfGenerator {
+public class VerfuegungPdfGenerator {
 
 	public enum Art {
 		NORMAL,
@@ -46,16 +41,13 @@ public class VerfügungPdfGenerator {
 		"² Verordnung vom 6. November 2013 über die familienergänzende Betreuung von Kindern und Jugendlichen (Betreuungsverordnung; " +
 			"FEBVO; SSSB 862.311)");
 
-	private static final Logger LOG = LoggerFactory.getLogger(VerfügungPdfGenerator.class);
-
-	public VerfügungPdfGenerator(final byte[] gemeindeLogo, final List<String> gemeindeHeader, boolean draft) {
+	public VerfuegungPdfGenerator(final byte[] gemeindeLogo, final List<String> gemeindeHeader, boolean draft) {
 
 		footer = new PhraseRenderer(footerLines, PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM, 280,
 			165, 20, OnPage.FIRST, 8, Alignment.LEFT);
 		this.pdfGenerator = PdfGenerator.create(gemeindeLogo, gemeindeHeader, footer, draft);
 	}
 
-	@Nonnull
 	public void generate(final OutputStream outputStream, final Art art) throws InvoiceGeneratorException {
 		final String[][] daten = {
 			{"von", "bis", "effektive Betreuung", "Anspruch", "vergünstigt", "Vollkosten in CHF", "Vergünstigung in CHF", "Elternbeitrag in CHF"},
@@ -89,21 +81,20 @@ public class VerfügungPdfGenerator {
 		final List<String> bemerkungen = Arrays.asList(
 			"[01.08.2018 - 31.01.2019] RESTANSPRUCH: Anspruch nach unten korrigiert von 80% auf 0% da das Kind weitere Betreuungsangebote beansprucht"
 			);
-		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (pdfGenerator, ctx) -> {
-			Document document = pdfGenerator.getDocument();
+		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (generator, ctx) -> {
+			Document document = generator.getDocument();
 			document.add(PdfUtil.creatreIntroTable(intro));
 			document.add(PdfUtil.createParagraph("Sehr geehrte Familie"));
 			createContent(document, daten, bemerkungen, art);
 		});
 	}
 
-	@Nonnull
 	public void createContent(@Nonnull final Document document, String[][] daten, List<String> bemerkungen, Art art) throws DocumentException {
 		List<Element> bemerkungenElements = Lists.newArrayList();
 		List<Element> gruesseElements = Lists.newArrayList();
 		switch (art) {
 			case NORMAL:
-				footer.setPayload(Arrays.asList());
+				footer.setPayload(Collections.emptyList());
 				document.add(PdfUtil.createParagraph("Für die Betreuung von Simon Wälti, geboren am 13.04.2014, gewähren wir Ihnen einen " +
 					"Betreuungsgutschein mit nachfolgender monatlicher Vergünstigung:", 2));
 				float[] columnWidths = {10, 10, 10, 10, 10, 10, 12, 12};
@@ -114,7 +105,7 @@ public class VerfügungPdfGenerator {
 				document.add(PdfUtil.createKeepTogetherTable(bemerkungenElements, 0, 2));
 				break;
 			case KEIN_ANSPRUCH:
-				footer.setPayload(Arrays.asList());
+				footer.setPayload(Collections.emptyList());
 				document.add(PdfUtil.createParagraph("Simone Wälti, geboren am 13.04.2014, hat für den Zeitraum von 01.08.2018 bis 31.07.2019\n" +
 					"keinen Anspruch auf einen Betreuungsgutschein.", 2));
 				bemerkungenElements.add(PdfUtil.createParagraph("Bemerkungen:"));

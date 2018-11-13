@@ -10,18 +10,22 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.IOException;
+import java.util.List;
+
 import ch.dvbern.lib.invoicegenerator.dto.BaseLayoutConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
-import ch.dvbern.lib.invoicegenerator.dto.component.*;
+import ch.dvbern.lib.invoicegenerator.dto.component.AddressComponent;
+import ch.dvbern.lib.invoicegenerator.dto.component.Logo;
+import ch.dvbern.lib.invoicegenerator.dto.component.PhraseRenderer;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Image;
 import com.lowagie.text.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.IOException;
-import java.util.List;
 
-import static ch.dvbern.lib.invoicegenerator.dto.component.AddressComponent.*;
+import static ch.dvbern.lib.invoicegenerator.dto.component.AddressComponent.ADRESSE_HEIGHT;
+import static ch.dvbern.lib.invoicegenerator.dto.component.AddressComponent.ADRESSE_WIDTH;
 
 public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 
@@ -69,12 +73,8 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 				LOGO_TOP_IN_MM,
 				widthInMm);
 			setLogo(logo);
-		} catch (IOException e) {
-			LOG.error("Failed to read the Logo: {}", e.getMessage());
-		}
-		catch (BadElementException e) {
+		} catch (IOException | BadElementException e) {
 			LOG.error("Failed to read the Logo: {}", e.getMessage());
 		}
 	}
-
 }

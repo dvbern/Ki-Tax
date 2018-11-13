@@ -10,24 +10,34 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.awt.Color;
+import java.math.BigDecimal;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.*;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.List;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.math.BigDecimal;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.*;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_BOLD;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.NEWLINE;
 
 public final class PdfUtil {
 
@@ -173,7 +183,7 @@ public final class PdfUtil {
 		try {
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Failed to set the width", e.getMessage());
+			LOG.error("Failed to set the width: {}", e.getMessage());
 		}
 		table.setWidthPercentage(FULL_WIDTH);
 		table.setHeaderRows(1);

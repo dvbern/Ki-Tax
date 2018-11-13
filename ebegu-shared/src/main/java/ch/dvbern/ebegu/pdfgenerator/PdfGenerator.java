@@ -10,6 +10,12 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.OutputStream;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.lib.invoicegenerator.BaseGenerator;
 import ch.dvbern.lib.invoicegenerator.OnPageHandler;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
@@ -21,15 +27,11 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Utilities;
 
-import javax.annotation.Nonnull;
-import java.io.OutputStream;
-import java.util.List;
-
 
 public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 	@Nonnull
-	public static PdfGenerator create(final byte[] gemeindeLogo, final List<String> gemeindeHeader, final PhraseRenderer footer, final boolean draft) {
+	public static PdfGenerator create(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> gemeindeHeader, @Nullable final PhraseRenderer footer, final boolean draft) {
 		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(gemeindeLogo, gemeindeHeader);
 		layoutConfiguration.setFooter(footer);
 		layoutConfiguration.getStaticComponents().stream()
@@ -43,7 +45,7 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 	}
 
 	@Nonnull
-	public static PdfGenerator create(final byte[] gemeindeLogo, final List<String> gemeindeHeader, boolean draft) {
+	public static PdfGenerator create(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> gemeindeHeader, boolean draft) {
 		return create(gemeindeLogo, gemeindeHeader, null, draft);
 	}
 
@@ -56,7 +58,6 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 		void accept(@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator pdfGenerator, @Nonnull PdfGeneratorContext ctx) throws DocumentException;
 	}
 
-	@Nonnull
 	public void generate(
 		@Nonnull OutputStream outputStream,
 		@Nonnull String title,

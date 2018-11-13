@@ -1,25 +1,24 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.*;
-
-import javax.annotation.Nonnull;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
+import com.lowagie.text.Document;
 
 public class BegleitschreibenPdfGenerator {
 
 	@Nonnull
 	private final PdfGenerator pdfGenerator;
 
-	public BegleitschreibenPdfGenerator(final byte[] gemeindeLogo, final List<String> gemeindeHeader, boolean draft) {
+	public BegleitschreibenPdfGenerator(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> gemeindeHeader, boolean draft) {
 		this.pdfGenerator = PdfGenerator.create(gemeindeLogo, gemeindeHeader, draft);
 	}
 
-	@Nonnull
-	public void generate(final OutputStream outputStream) throws InvoiceGeneratorException {
+	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
 
 		final String title = "Referenznummer: 18.000123.001 - 2018/2019";
 		final List<String> empfaengerAdresse = Arrays.asList(
@@ -34,8 +33,8 @@ public class BegleitschreibenPdfGenerator {
 			"Verfügung zu Betreuungsangebot 18.000123.001.2.1",
 			"Berechnung der finanziellen Situation");
 
-		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (pdfGenerator, ctx) -> {
-			Document document = pdfGenerator.getDocument();
+		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (generator, ctx) -> {
+			Document document = generator.getDocument();
 			document.add(PdfUtil.createParagraph("Sehr geehrte Familie"));
 			document.add(PdfUtil.createParagraph("Wir haben Ihre Unterlagen, mit denen Sie Unterstützung für die Kinderbetreuung beantragen, " +
 				"geprüft. Die Ergebnisse sind in der Beilage ersichtlich. Teilen Sie uns bitte Veränderungen der " +
