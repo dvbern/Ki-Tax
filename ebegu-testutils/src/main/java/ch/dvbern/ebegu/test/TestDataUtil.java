@@ -94,6 +94,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.WizardStep;
@@ -666,6 +667,12 @@ public final class TestDataUtil {
 		return ep;
 	}
 
+	public static void addUnbezahlterUrlaubToErwerbspensum(Erwerbspensum erwerbspensum, LocalDate von, LocalDate bis) {
+		UnbezahlterUrlaub urlaub = new UnbezahlterUrlaub();
+		urlaub.setGueltigkeit(new DateRange(von, bis));
+		erwerbspensum.setUnbezahlterUrlaub(urlaub);
+	}
+
 	public static Betreuung createAnmeldungTagesschule(KindContainer kind) {
 		Betreuung betreuung = new Betreuung();
 		betreuung.setInstitutionStammdaten(createInstitutionStammdatenTagesschuleBern());
@@ -836,6 +843,7 @@ public final class TestDataUtil {
 		betreuung.getKind().setGesuch(gesuch);
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
+
 		return betreuung;
 	}
 

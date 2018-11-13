@@ -223,7 +223,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     private initUnbezahlterUrlaub(): void {
-        this.hasUnbezahlterUrlaub = !!(this.model.erwerbspensumJA.unbezahlterUrlaub);
+        this.hasUnbezahlterUrlaub = !!(this.model.erwerbspensumJA && this.model.erwerbspensumJA.unbezahlterUrlaub);
         this.hasUnbezahlterUrlaubGS = !!(this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub);
     }
 

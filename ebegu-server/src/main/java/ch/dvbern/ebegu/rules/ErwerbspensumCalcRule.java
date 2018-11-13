@@ -60,9 +60,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 				erwerbspensum2 = calculateErwerbspensumGS2(verfuegungZeitabschnitt);
 				zuschlag2 = calculateZuschlagGS2(erwerbspensum2, zuschlag1, verfuegungZeitabschnitt);
 			}
-			int totalZuschlag = zuschlag1 + zuschlag2;
-
-			int anspruch = erwerbspensum1 + erwerbspensum2 + totalZuschlag - erwerbspensumOffset;
+			int anspruch = erwerbspensum1 + erwerbspensum2 + zuschlag1 + zuschlag2 - erwerbspensumOffset;
 			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch);
 
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedAnspruch);

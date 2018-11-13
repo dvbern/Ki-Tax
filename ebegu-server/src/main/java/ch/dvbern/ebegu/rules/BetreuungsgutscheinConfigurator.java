@@ -88,6 +88,10 @@ public class BetreuungsgutscheinConfigurator {
 		ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit);
 		rules.add(erwerbspensumAbschnittRule);
 
+		// - Unbezahlter Urlaub
+		UnbezahlterUrlaubAbschnittRule unbezahlterUrlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit);
+		rules.add(unbezahlterUrlaubAbschnittRule);
+
 		//Familenabzug: Berechnet den Familienabzug aufgrund der Familiengroesse
 		Einstellung param_pauschalabzug_pro_person_familiengroesse_3 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_3, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 muss gesetzt sein");

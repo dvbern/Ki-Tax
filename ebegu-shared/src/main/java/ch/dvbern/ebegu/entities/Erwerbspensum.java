@@ -198,4 +198,12 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 			.append("unbezahlterUrlaub", unbezahlterUrlaub)
 			.toString();
 	}
+
+	public int getPensumInklZuschlag() {
+		int total = getPensum();
+		if (getZuschlagsprozent() != null) {
+			total += getZuschlagsprozent();
+		}
+		return total;
+	}
 }

@@ -2008,8 +2008,13 @@ public class JaxBConverter extends AbstractConverter {
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
 		if (jaxErwerbspensum.getUnbezahlterUrlaub() != null) {
+			UnbezahlterUrlaub existingUrlaub =
+				persistence.find(UnbezahlterUrlaub.class, jaxErwerbspensum.getUnbezahlterUrlaub().getId());
+			if (existingUrlaub == null) {
+				existingUrlaub = new UnbezahlterUrlaub();
+			}
 			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(
-				jaxErwerbspensum.getUnbezahlterUrlaub(), new UnbezahlterUrlaub()));
+				jaxErwerbspensum.getUnbezahlterUrlaub(), existingUrlaub));
 		}
 		return erwerbspensum;
 	}
