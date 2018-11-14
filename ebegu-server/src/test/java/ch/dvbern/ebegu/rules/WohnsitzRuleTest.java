@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -322,7 +323,7 @@ public class WohnsitzRuleTest {
 		betreuungspensumContainer.setBetreuung(betreuung);
 		DateRange gueltigkeit = new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE);
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(100);
+		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(100));
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100, 0));
 		if (zweigesuchsteller) {

@@ -108,10 +108,6 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		this.pensum = pensum;
 	}
 
-	public void setPensum(@Nonnull Integer pensum) {
-		this.pensum = BigDecimal.valueOf(pensum);
-	}
-
 	@Nonnull
 	public BigDecimal getMonatlicheBetreuungskosten() {
 		return monatlicheBetreuungskosten;
@@ -126,6 +122,6 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	dem Benutzer soll es auf 2 Stellen gerunden angezeigt werden
 	 */
 	public BigDecimal getPensumRounded(){
-		return this.pensum.setScale(2, RoundingMode.HALF_EVEN).stripTrailingZeros();
+		return this.pensum.setScale(2, RoundingMode.HALF_EVEN);
 	}
 }
