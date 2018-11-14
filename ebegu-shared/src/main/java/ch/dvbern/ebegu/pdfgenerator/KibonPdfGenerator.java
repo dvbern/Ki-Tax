@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.OutputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -109,11 +110,13 @@ public abstract class KibonPdfGenerator {
 
 	@Nonnull
 	protected List<String> getEmpfaengerHeader() {
-		final List<String> empfaengerAdresse = Arrays.asList(
-			translate(FAMILIE),
-			KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()),
-			KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller2()),
-			KibonPrintUtil.getGesuchstellerAddressAsString(getGesuch().getGesuchsteller1()));
+		final List<String> empfaengerAdresse = new ArrayList<>();
+		empfaengerAdresse.add(translate(FAMILIE));
+		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()));
+		if (getGesuch().getGesuchsteller2() != null) {
+			empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller2()));
+		}
+		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerAddressAsString(getGesuch().getGesuchsteller1()));
 		return empfaengerAdresse;
 	}
 

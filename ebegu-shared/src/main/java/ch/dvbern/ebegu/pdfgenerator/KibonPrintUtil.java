@@ -77,7 +77,6 @@ public final class KibonPrintUtil {
 		Optional<GesuchstellerAdresseContainer> adresseOptional =
 			KibonPrintUtil.getGesuchstellerAdresse(gesuchstellerContainer);
 		if (adresseOptional.isPresent()) {
-			sb.append(LINE_BREAK);
 			GesuchstellerAdresse adresse = adresseOptional.get().getGesuchstellerAdresseJA();
 			Objects.requireNonNull(adresse);
 			sb.append(getAddressAsString(adresse));
@@ -92,6 +91,7 @@ public final class KibonPrintUtil {
 		}
 		//noinspection StringConcatenationMissingWhitespace Es gibt ein NewLine
 		return getGesuchstellerNameAsString(gesuchstellerContainer)
+			+ LINE_BREAK
 			+ getGesuchstellerAddressAsString(gesuchstellerContainer);
 	}
 
