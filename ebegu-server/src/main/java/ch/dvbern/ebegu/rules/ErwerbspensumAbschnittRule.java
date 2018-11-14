@@ -91,7 +91,6 @@ public class ErwerbspensumAbschnittRule extends AbstractAbschnittRule {
 		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
-			Objects.requireNonNull(familiensituation.getAenderungPer());
 			if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
 				// 1GS to 2GS
 				if (gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())
