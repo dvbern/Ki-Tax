@@ -217,14 +217,16 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     public isUnbezahlterUrlaubVisible(): boolean {
-        return this.model.erwerbspensumJA
+        return this.model && this.model.erwerbspensumJA
             && (this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
                 || this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG);
     }
 
     private initUnbezahlterUrlaub(): void {
-        this.hasUnbezahlterUrlaub = !!(this.model.erwerbspensumJA && this.model.erwerbspensumJA.unbezahlterUrlaub);
-        this.hasUnbezahlterUrlaubGS = !!(this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub);
+        this.hasUnbezahlterUrlaub = !!(this.model && this.model.erwerbspensumJA
+            && this.model.erwerbspensumJA.unbezahlterUrlaub);
+        this.hasUnbezahlterUrlaubGS = !!(this.model && this.model.erwerbspensumGS
+            && this.model.erwerbspensumGS.unbezahlterUrlaub);
     }
 
     public unbezahlterUrlaubClicked(): void {
