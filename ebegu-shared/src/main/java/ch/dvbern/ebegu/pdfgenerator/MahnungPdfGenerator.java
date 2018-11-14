@@ -17,44 +17,50 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 
-public class MahnungPdfGenerator {
+public class MahnungPdfGenerator extends KibonPdfGenerator {
 
-	@Nonnull
-	private final PdfGenerator pdfGenerator;
+	private boolean zweiteMahnung;
 
-	public MahnungPdfGenerator(final byte[] gemeindeLogo, final List<String> gemeindeHeader, boolean draft) {
-		this.pdfGenerator = PdfGenerator.create(gemeindeLogo, gemeindeHeader, draft);
+	public MahnungPdfGenerator(
+		@Nonnull Gesuch gesuch,
+		@Nonnull GemeindeStammdaten stammdaten,
+		final boolean draft,
+		final boolean zweiteMahnung) {
+		super(gesuch, stammdaten, draft);
+		this.zweiteMahnung = zweiteMahnung;
 	}
 
-	public void generate(@Nonnull final OutputStream outputStream, boolean zweiteMahnung) throws InvoiceGeneratorException {
-
+	@Nonnull
+	@Override
+	protected String getDocumentTitle() {
 		final String title = "Gesuch für Simone Wälti\n" +
 			"2018/2019 Referenznummer: 18.000126.001\n" +
 			"Unvollständige Angaben/Unterlagen";
-		final List<String> empfaengerAdresse = Arrays.asList(
-			"Familie",
-			"Muster Anna",
-			"Muster Tina",
-			"Nussbaumstrasse 35",
-			"3006 Bern");
+		return title;
+	}
+
+	@Nonnull
+	@Override
+	protected CustomGenerator getCustomGenerator() {
 		final List<String> dokumente = Arrays.asList(
 			"Verfügung zu Betreuungsangebot 18.000123.001.1.1",
 			"Verfügung zu Betreuungsangebot 18.000123.001.1.2",
 			"Verfügung zu Betreuungsangebot 18.000123.001.2.1",
 			"Berechnung der finanziellen Situation");
 
-		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (generator, ctx) -> {
+		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			document.add(PdfUtil.createParagraph("Sehr geehrte Familie"));
 			if (zweiteMahnung) {
@@ -84,7 +90,7 @@ public class MahnungPdfGenerator {
 				seite2Paragraphs.add(PdfUtil.createParagraph("\nErst nach Eingang dieser zusätzlichen Unterlagen können wir Ihr Gesuch weiter bearbeiten. Wir " +
 					"bitten Sie, die oben aufgeführten Dokumente bis am unter Angabe Ihrer Referenznummer " +
 					"einzureichen.\n\n" +
-				"Wenn Sie Fragen haben oder Probleme beim Beschaffen der Unterlagen, stehen Ihnen unsere " +
+					"Wenn Sie Fragen haben oder Probleme beim Beschaffen der Unterlagen, stehen Ihnen unsere " +
 					"Mitarbeitenden gerne während der Bürozeiten zur Verfügung (Telefonnummer 031 321 51 15 " +
 					"und per E-Mail kinderbetreuung@bern.ch)."));
 			}
@@ -92,7 +98,6 @@ public class MahnungPdfGenerator {
 			seite2Paragraphs.add(PdfUtil.createParagraph("Freundliche Grüsse\n"));
 			seite2Paragraphs.add(PdfUtil.createParagraph("\nsig. Xaver Weibel\nSachbearbeitung", 0));
 			document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));
-		});
+		};
 	}
-
 }

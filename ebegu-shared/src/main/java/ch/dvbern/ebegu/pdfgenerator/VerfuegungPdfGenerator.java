@@ -17,18 +17,19 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.lib.invoicegenerator.dto.Alignment;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.component.PhraseRenderer;
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
@@ -40,7 +41,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals") //TODO (team) Entfernen, wenn Dummydaten ersetzt!
-public class VerfuegungPdfGenerator {
+public class VerfuegungPdfGenerator extends KibonPdfGenerator {
 
 	public enum Art {
 		NORMAL,
@@ -49,7 +50,7 @@ public class VerfuegungPdfGenerator {
 	}
 
 	@Nonnull
-	private final PdfGenerator pdfGenerator;
+	private final Art art;
 
 	@Nonnull
 	private final PhraseRenderer footer;
@@ -59,14 +60,26 @@ public class VerfuegungPdfGenerator {
 		"² Verordnung vom 6. November 2013 über die familienergänzende Betreuung von Kindern und Jugendlichen (Betreuungsverordnung; " +
 			"FEBVO; SSSB 862.311)");
 
-	public VerfuegungPdfGenerator(final byte[] gemeindeLogo, final List<String> gemeindeHeader, boolean draft) {
-
+	public VerfuegungPdfGenerator(
+		@Nonnull Gesuch gesuch,
+		@Nonnull GemeindeStammdaten stammdaten,
+		final boolean draft,
+		@Nonnull Art art) {
+		super(gesuch, stammdaten, draft);
+		this.art = art;
 		footer = new PhraseRenderer(footerLines, PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM, 280,
-			165, 20, OnPage.FIRST, 8, Alignment.LEFT);
-		this.pdfGenerator = PdfGenerator.create(gemeindeLogo, gemeindeHeader, footer, draft);
+						165, 20, OnPage.FIRST, 8, Alignment.LEFT);
 	}
 
-	public void generate(final OutputStream outputStream, final Art art) throws InvoiceGeneratorException {
+	@Nonnull
+	@Override
+	protected String getDocumentTitle() {
+		return "Verfügung";
+	}
+
+	@Nonnull
+	@Override
+	protected CustomGenerator getCustomGenerator() {
 		final String[][] daten = {
 			{"von", "bis", "effektive Betreuung", "Anspruch", "vergünstigt", "Vollkosten in CHF", "Vergünstigung in CHF", "Elternbeitrag in CHF"},
 			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
@@ -83,13 +96,6 @@ public class VerfuegungPdfGenerator {
 			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"}
 		};
 
-		final String title = "Verfügung";
-		final List<String> empfaengerAdresse = Arrays.asList(
-			"Familie",
-			"Anna Muster",
-			"Max Muster",
-			"Nussbaumstrasse 35",
-			"3006 Bern");
 		final String[][] intro = {
 			{"Referenznummer", "18.000123.001.1.1"},
 			{"Name", "Dagmar Wälti"},
@@ -98,13 +104,13 @@ public class VerfuegungPdfGenerator {
 		};
 		final List<String> bemerkungen = Arrays.asList(
 			"[01.08.2018 - 31.01.2019] RESTANSPRUCH: Anspruch nach unten korrigiert von 80% auf 0% da das Kind weitere Betreuungsangebote beansprucht"
-			);
-		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (generator, ctx) -> {
+		);
+		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			document.add(PdfUtil.creatreIntroTable(intro));
 			document.add(PdfUtil.createParagraph("Sehr geehrte Familie"));
 			createContent(document, daten, bemerkungen, art);
-		});
+		};
 	}
 
 	public void createContent(@Nonnull final Document document, String[][] daten, List<String> bemerkungen, Art art) throws DocumentException {

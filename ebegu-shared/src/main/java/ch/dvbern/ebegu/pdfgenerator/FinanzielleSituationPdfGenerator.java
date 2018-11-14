@@ -17,14 +17,12 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -39,22 +37,24 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals") //TODO (team) Entfernen, wenn Dummydaten ersetzt!
-public class FinanzielleSituationPdfGenerator {
+public class FinanzielleSituationPdfGenerator extends KibonPdfGenerator {
 
-	@Nonnull
-	private final PdfGenerator pdfGenerator;
-
-	public FinanzielleSituationPdfGenerator(final byte[] gemeindeLogo, final List<String> gemeindeHeader, final boolean draft) {
-		this.pdfGenerator = PdfGenerator.create(gemeindeLogo, gemeindeHeader, draft);
+	public FinanzielleSituationPdfGenerator(
+		@Nonnull Gesuch gesuch,
+		@Nonnull GemeindeStammdaten stammdaten,
+		final boolean draft) {
+		super(gesuch, stammdaten, draft);
 	}
 
-	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
+	@Nonnull
+	@Override
+	protected String getDocumentTitle() {
+		return "Berechnung der finanziellen Situation";
+	}
 
-		final String title = "Berechnung der finanziellen Situation";
-		final List<String> empfaengerAdresse = Arrays.asList(
-			"Jugendamt",
-			"Effingerstrasse 21",
-			"3008 Bern");
+	@Nonnull
+	@Override
+	protected CustomGenerator getCustomGenerator() {
 		final String[][] intro1 = {
 			{"Referenznummer", "18.000123.001.1.1"},
 			{"Berechnungsjahr", "2017"}
@@ -154,7 +154,7 @@ public class FinanzielleSituationPdfGenerator {
 			"² Vermögen und Schulden von Partnerin / Partner I und II werden miteinander verrechnet werden. Wenn der Gesamtwert " +
 			"negativ ist, beträgt der zu berücksichtigende Wert 0 Franken.";
 
-		pdfGenerator.generate(outputStream, title, empfaengerAdresse, (generator, ctx) -> {
+		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			createFusszeile(generator.getDirectContent(), fusszeile);
 			document.add(PdfUtil.creatreIntroTable(intro1));
@@ -175,7 +175,7 @@ public class FinanzielleSituationPdfGenerator {
 			document.add(PdfUtil.createBoldParagraph("Massgebendes Einkommen nach Abzug der Familiengrösse", 2));
 			document.add(PdfUtil.creatreIntroTable(intro3));
 			document.add(PdfUtil.createTable(valuesMassgebendesEinkommen, widthMassgebendesEinkommen, alignementMassgebendesEinkommen, 0));
-		});
+		};
 	}
 
 	private void createFusszeile(PdfContentByte dirPdfContentByte, String fusszeile) throws DocumentException {

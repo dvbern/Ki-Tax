@@ -35,6 +35,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Erstellt pro Brief ein Exemplar für Einzelpersonen und Paare. Jeweils das Beispiel für Alleinstehende wird als Draft
+ * generiert.
+ */
 public class KibonPdfGeneratorTest {
 
 	private GemeindeStammdaten stammdaten;
@@ -68,13 +72,97 @@ public class KibonPdfGeneratorTest {
 
 	@Test
 	public void freigabequittungTest() throws InvoiceGeneratorException, IOException {
-		final FreigabequittungPdfGenerator quittungAlleinstehend = new FreigabequittungPdfGenerator(gesuch_alleinstehend, stammdaten, false,
+		final FreigabequittungPdfGenerator alleinstehend = new FreigabequittungPdfGenerator(gesuch_alleinstehend, stammdaten, true,
 			benoetigteUnterlagen);
-		quittungAlleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Freigabequittung_alleinstehend.pdf"));
+		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Freigabequittung_alleinstehend.pdf"));
 
-		final FreigabequittungPdfGenerator quittungVerheiratet = new FreigabequittungPdfGenerator(gesuch_verheiratet, stammdaten, false,
+		final FreigabequittungPdfGenerator verheiratet = new FreigabequittungPdfGenerator(gesuch_verheiratet, stammdaten, false,
 			benoetigteUnterlagen);
-		quittungVerheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Freigabequittung_verheiratet.pdf"));
+		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Freigabequittung_verheiratet.pdf"));
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void begleitschreibenTest() throws InvoiceGeneratorException, IOException {
+		final BegleitschreibenPdfGenerator alleinstehend =
+			new BegleitschreibenPdfGenerator(gesuch_alleinstehend, stammdaten, true);
+		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Begleitschreiben_alleinstehend.pdf"));
+
+		final BegleitschreibenPdfGenerator verheiratet =
+			new BegleitschreibenPdfGenerator(gesuch_verheiratet, stammdaten, false);
+		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Begleitschreiben_verheiratet.pdf"));
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void normaleVerfuegungTest() throws InvoiceGeneratorException, IOException {
+		final VerfuegungPdfGenerator alleinstehend =
+			new VerfuegungPdfGenerator(gesuch_alleinstehend, stammdaten, true, VerfuegungPdfGenerator.Art.NORMAL);
+		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_alleinstehend.pdf"));
+
+		final VerfuegungPdfGenerator verheiratet =
+			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.NORMAL);
+		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_verheiratet.pdf"));
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void keinAnspruchVerfuegungTest() throws InvoiceGeneratorException, IOException {
+		final VerfuegungPdfGenerator alleinstehend =
+			new VerfuegungPdfGenerator(gesuch_alleinstehend, stammdaten, true, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
+		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/KeinAnspruchVerfügung_alleinstehend.pdf"));
+
+		final VerfuegungPdfGenerator verheiratet =
+			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
+		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/KeinAnspruchVerfügung_verheiratet.pdf"));
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void nichtEintretenVerfuegungTest() throws InvoiceGeneratorException, IOException {
+		final VerfuegungPdfGenerator alleinstehend =
+			new VerfuegungPdfGenerator(gesuch_alleinstehend, stammdaten, true, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
+		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/NichtEintretenVerfügung_alleinstehend.pdf"));
+
+		final VerfuegungPdfGenerator verheiratet =
+			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
+		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/NichtEintretenVerfügung_verheiratet.pdf"));
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void finanzielleSituationTest() throws InvoiceGeneratorException, IOException {
+		final FinanzielleSituationPdfGenerator alleinstehend =
+			new FinanzielleSituationPdfGenerator(gesuch_alleinstehend, stammdaten, true);
+		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_alleinstehend.pdf"));
+
+		final FinanzielleSituationPdfGenerator verheiratet =
+			new FinanzielleSituationPdfGenerator(gesuch_verheiratet, stammdaten, false);
+		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_verheiratet.pdf"));
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void mahnung1Test() throws InvoiceGeneratorException, IOException {
+		final MahnungPdfGenerator alleinstehend =
+			new MahnungPdfGenerator(gesuch_alleinstehend, stammdaten, true, false);
+		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung1_alleinstehend.pdf"));
+
+		final MahnungPdfGenerator verheiratet =
+			new MahnungPdfGenerator(gesuch_verheiratet, stammdaten, false, false);
+		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung1_verheiratet.pdf"));
+		Assert.assertTrue(true);
+	}
+
+	@Test
+	public void mahnung2Test() throws InvoiceGeneratorException, IOException {
+		final MahnungPdfGenerator alleinstehend =
+			new MahnungPdfGenerator(gesuch_alleinstehend, stammdaten, true, true);
+		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2_alleinstehend.pdf"));
+
+		final MahnungPdfGenerator verheiratet =
+			new MahnungPdfGenerator(gesuch_verheiratet, stammdaten, false, true);
+		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2_verheiratet.pdf"));
 		Assert.assertTrue(true);
 	}
 }
