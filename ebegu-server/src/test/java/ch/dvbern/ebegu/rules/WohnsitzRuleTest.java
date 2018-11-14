@@ -65,7 +65,7 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
 		Assert.assertFalse(abschnittInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertEquals(100, abschnittInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern.getBgPensum());
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
 		Assert.assertFalse(abschnittInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertEquals(100, abschnittInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern.getBgPensum());
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
 		Assert.assertFalse(abschnittInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertEquals(100, abschnittInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern.getBgPensum());
 	}
 
 	@Test
@@ -183,7 +183,7 @@ public class WohnsitzRuleTest {
 		Assert.assertTrue(abschnittInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertFalse(abschnittInBern.isWohnsitzNichtInGemeindeGS2());
 		Assert.assertEquals(100, abschnittInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern.getBgPensum());
 		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 16),
 			abschnittInBern.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, abschnittInBern.getGueltigkeit().getGueltigBis());
@@ -226,7 +226,7 @@ public class WohnsitzRuleTest {
 		Assert.assertEquals(zuzugsDatum, abschnittInBern.getGueltigkeit().getGueltigAb());
 		Assert.assertFalse(abschnittInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertEquals(100, abschnittInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern.getBgPensum());
 	}
 
 	@Test
@@ -262,7 +262,7 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
 		Assert.assertFalse(abschnittInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertEquals(100, abschnittInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern.getBgPensum());
 		VerfuegungZeitabschnitt abschnittNichtInBern = zeitabschnittList.get(1);
 		Assert.assertTrue(abschnittNichtInBern.isWohnsitzNichtInGemeindeGS1());
 		//Anspruch noch 2 Monate nach wegzug auf Ende Monat
@@ -307,12 +307,12 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnittInBern2 = zeitabschnittList.get(1);
 		Assert.assertFalse(abschnittInBern2.isWohnsitzNichtInGemeindeGS2());
 		Assert.assertEquals(100, abschnittInBern2.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern2.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern2.getBgPensum());
 
 		VerfuegungZeitabschnitt abschnittInBern3 = zeitabschnittList.get(2);
 		Assert.assertFalse(abschnittInBern3.isWohnsitzNichtInGemeindeGS2());
 		Assert.assertEquals(100, abschnittInBern3.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(100), abschnittInBern3.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern3.getBgPensum());
 	}
 
 	private Betreuung createTestdata(boolean zweigesuchsteller) {

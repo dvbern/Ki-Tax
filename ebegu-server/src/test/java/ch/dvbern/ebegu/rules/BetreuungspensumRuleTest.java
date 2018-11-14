@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,7 +47,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(60), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(BigDecimal.valueOf(500.50), result.get(0).getMonatlicheBetreuungskosten());
 		Assert.assertEquals(60, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -64,7 +65,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(60), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(BigDecimal.valueOf(80), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(BigDecimal.valueOf(200), result.get(0).getMonatlicheBetreuungskosten());
 		Assert.assertEquals(60, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -82,9 +83,9 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(80, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		Assert.assertEquals(BigDecimal.valueOf(500), result.get(0).getMonatlicheBetreuungskosten());
 		result = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung, result);
@@ -103,9 +104,9 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(80, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());  //restanspruch wurde noch nie berechnet
 		// Anspruchsrest fuer naechste Betreuung setzten
 		List<VerfuegungZeitabschnitt> abschnForNxtBetr =
@@ -123,7 +124,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(resultBetr2);
 		Assert.assertEquals(1, resultBetr2.size());
 		Assert.assertEquals(Integer.valueOf(80), resultBetr2.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(BigDecimal.valueOf(40), resultBetr2.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(40), resultBetr2.get(0).getBetreuungspensum());
 		Assert.assertEquals(
 			20,
 			resultBetr2.get(0)
@@ -152,7 +153,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(0), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(BigDecimal.valueOf(80), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(BigDecimal.ZERO, result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
@@ -172,7 +173,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(60), result.get(0).getErwerbspensumGS1());
-		Assert.assertEquals(BigDecimal.valueOf(80), result.get(0).getBetreuungspensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(80), result.get(0).getBetreuungspensum());
 		Assert.assertEquals(60, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(BigDecimal.valueOf(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());

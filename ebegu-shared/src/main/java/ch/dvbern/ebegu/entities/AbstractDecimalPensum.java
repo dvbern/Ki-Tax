@@ -30,6 +30,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
 /**
@@ -122,6 +123,6 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	dem Benutzer soll es auf 2 Stellen gerunden angezeigt werden
 	 */
 	public BigDecimal getPensumRounded(){
-		return this.pensum.setScale(2, RoundingMode.HALF_EVEN);
+		return MathUtil.DEFAULT.from(pensum);
 	}
 }
