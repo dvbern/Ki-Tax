@@ -23,6 +23,7 @@ import TSAdresse from './TSAdresse';
 import TSInstitution from './TSInstitution';
 import TSInstitutionStammdatenFerieninsel from './TSInstitutionStammdatenFerieninsel';
 import TSInstitutionStammdatenTagesschule from './TSInstitutionStammdatenTagesschule';
+import {TSDateRange} from './types/TSDateRange';
 
 export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity {
     public administratoren: string; // read only
@@ -37,4 +38,26 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
     public adresseKontoinhaber: TSAdresse;
     public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
     public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
+
+    public constructor(
+        iban?: string,
+        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
+        institution?: TSInstitution,
+        adresse?: TSAdresse,
+        gueltigkeit?: TSDateRange,
+        kontoinhaber?: string,
+        adresseKontoinhaber?: TSAdresse,
+        institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
+        institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
+    ) {
+        super(gueltigkeit);
+        this.iban = iban;
+        this.betreuungsangebotTyp = betreuungsangebotTyp;
+        this.institution = institution;
+        this.adresse = adresse;
+        this.kontoinhaber = kontoinhaber;
+        this.adresseKontoinhaber = adresseKontoinhaber;
+        this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
+        this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
+    }
 }

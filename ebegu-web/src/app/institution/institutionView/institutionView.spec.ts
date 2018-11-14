@@ -14,8 +14,8 @@
  */
 
 import {IComponentControllerService, IScope} from 'angular';
+import ADMIN_JS_MODULE from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {ADMIN_JS_MODULE} from '../../admin.module';
 
 describe('InstitutionView', () => {
 

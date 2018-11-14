@@ -1,8 +1,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import ErrorService from '../../core/errors/service/ErrorService';
-import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {GemeindeModule} from '../../gemeinde/gemeinde.module';
@@ -21,10 +21,9 @@ describe('EditInstitutionComponent', () => {
     const stammdatenServiceSpy = jasmine.createSpyObj<InstitutionStammdatenRS>(InstitutionStammdatenRS.name,
         ['getInstitutionStammdatenByInstitution']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-    const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
-        ['getAllGesuchsperioden']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
     beforeEach(async(() => {
 
@@ -41,6 +40,7 @@ describe('EditInstitutionComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
                 {provide: InstitutionStammdatenRS, useValue: stammdatenServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [EditInstitutionComponent],
         }).compileComponents();
@@ -49,7 +49,6 @@ describe('EditInstitutionComponent', () => {
         stammdatenServiceSpy.getInstitutionStammdatenByInstitution.and.returnValue(Promise.resolve([]));
         transitionSpy.params.and.returnValue({});
         transitionSpy.from.and.returnValue({});
-        gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
     }));
 
     beforeEach(() => {

@@ -23,10 +23,12 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import * as moment from 'moment';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSAdresse from '../../../models/TSAdresse';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
@@ -51,10 +53,11 @@ export class EditInstitutionComponent implements OnInit {
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
-        private readonly translate: TranslateService,
         private readonly institutionRS: InstitutionRS,
         private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+        private readonly authServiceRS: AuthServiceRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -83,15 +86,12 @@ export class EditInstitutionComponent implements OnInit {
         });
     }
 
-    private setBeguVonBisStr(): void {
-        this.beguStartStr = this.stammdaten.gueltigkeit.gueltigAb ?
-            this.stammdaten.gueltigkeit.gueltigAb.format('DD.MM.YYYY') : undefined;
-        this.beguEndeStr = this.stammdaten.gueltigkeit.gueltigBis ?
-            this.stammdaten.gueltigkeit.gueltigBis.format('DD.MM.YYYY') : undefined;
-    }
-
     public mitarbeiterBearbeiten(): void {
         // TODO: Implement Mitarbeiter Bearbeiten Button Action
+    }
+
+    public isStammdatenEditable(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
 
     public getHeaderTitle(): string {
@@ -107,24 +107,6 @@ export class EditInstitutionComponent implements OnInit {
         } else {
             this.editMode = true;
         }
-    }
-
-    private persistStammdaten(): void {
-        if (!this.form.valid) {
-            return;
-        }
-        this.errorService.clearAll();
-        if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
-            this.stammdaten.adresseKontoinhaber = undefined;
-        }
-        if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
-            this.stammdaten.telefon = null;
-        }
-        this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
-            .then(() => {
-                this.editMode = false;
-                this.changeDetectorRef.markForCheck();
-            });
     }
 
     public submitButtonLabel(): string {
@@ -146,6 +128,31 @@ export class EditInstitutionComponent implements OnInit {
         if (!this.stammdaten.adresseKontoinhaber) {
             this.stammdaten.adresseKontoinhaber = new TSAdresse();
         }
+    }
+
+    private setBeguVonBisStr(): void {
+        this.beguStartStr = this.stammdaten.gueltigkeit.gueltigAb ?
+            this.stammdaten.gueltigkeit.gueltigAb.format('DD.MM.YYYY') : undefined;
+        this.beguEndeStr = this.stammdaten.gueltigkeit.gueltigBis ?
+            this.stammdaten.gueltigkeit.gueltigBis.format('DD.MM.YYYY') : undefined;
+    }
+
+    private persistStammdaten(): void {
+        if (!this.form.valid) {
+            return;
+        }
+        this.errorService.clearAll();
+        if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
+            this.stammdaten.adresseKontoinhaber = undefined;
+        }
+        if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
+            this.stammdaten.telefon = null;
+        }
+        this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
+            .then(() => {
+                this.editMode = false;
+                this.changeDetectorRef.markForCheck();
+            });
     }
 
     private createInstitutionStammdaten(): void {

@@ -274,11 +274,11 @@
         <!-- Buttons -->
         <div class="dv-footer">
 
-            <dv-loading-button *ngIf="editMode" [type]="'submit'">
+            <dv-loading-button *ngIf="editMode && isStammdatenEditable()" [type]="'submit'">
                 <span>{{submitButtonLabel()}}</span>
             </dv-loading-button>
 
-            <dv-loading-button *ngIf="!editMode" [type]="'submit'">
+            <dv-loading-button *ngIf="!editMode && isStammdatenEditable()" [type]="'submit'">
                 <span>{{submitButtonLabel()}}</span>
             </dv-loading-button>
 

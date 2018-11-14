@@ -119,6 +119,14 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getInstitutionProfilEditRoles(): Array<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+        ];
+    }
+
     public static getTraegerschaftInstitutionRoles(): Array<TSRole> {
         return [
             TSRole.SUPER_ADMIN,

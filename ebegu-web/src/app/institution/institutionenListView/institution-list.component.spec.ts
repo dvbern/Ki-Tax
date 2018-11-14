@@ -1,45 +1,68 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IComponentControllerService, IScope} from 'angular';
-import ADMIN_JS_MODULE from '../../../admin/admin.module';
-import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {StateService} from '@uirouter/core';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import ErrorService from '../../core/errors/service/ErrorService';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {SharedModule} from '../../shared/shared.module';
+import {InstitutionListComponent} from './institution-list.component';
 
-describe('institutionenListView', () => {
+describe('InstitutionListComponent', () => {
 
-    beforeEach(angular.mock.module(ADMIN_JS_MODULE.name));
+    let component: InstitutionListComponent;
+    let fixture: ComponentFixture<InstitutionListComponent>;
 
-    beforeEach(angular.mock.module(ngServicesMock));
+    beforeEach(async(() => {
+        const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+            ['getInstitutionenForCurrentBenutzer']);
+        const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+        const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
+            ['isRole', 'isOneOfRoles']);
 
-    let component: any;
-    let scope: IScope;
-    let $componentController: IComponentControllerService;
+        TestBed.configureTestingModule({
+            imports: [
+                SharedModule,
+                NoopAnimationsModule,
+            ],
+            providers: [
+                {provide: InstitutionRS, useValue: insitutionServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+            ],
+            declarations: [InstitutionListComponent],
+        }).compileComponents();
 
-    beforeEach(angular.mock.inject($injector => {
-        $componentController = $injector.get('$componentController');
-        const $rootScope = $injector.get('$rootScope');
-        scope = $rootScope.$new();
+        insitutionServiceSpy.getInstitutionenForCurrentBenutzer.and.returnValue(Promise.resolve([]));
     }));
 
-    it('should be defined', () => {
-        /*
-         To initialise your component controller you have to setup your (mock) bindings and
-         pass them to $componentController.
-         */
-        const bindings = {};
-        component = $componentController('dvInstitutionenListView', {$scope: scope}, bindings);
-        expect(component).toBeDefined();
+    beforeEach(() => {
+        fixture = TestBed.createComponent(InstitutionListComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
     });
 });

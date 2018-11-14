@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
 import {TSInstitutionStatus} from './enums/TSInstitutionStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSMandant} from './TSMandant';
@@ -29,4 +28,13 @@ export default class TSInstitution extends TSAbstractMutableEntity {
     public mandant: TSMandant;
     public mail: string;
     public status: TSInstitutionStatus;
+
+    public constructor(name?: string, tragerschaft?: TSTraegerschaft, mandant?: TSMandant, mail?: string, status?: TSInstitutionStatus) {
+        super();
+        this.name = name;
+        this.traegerschaft = tragerschaft;
+        this.mandant = mandant;
+        this.mail = mail;
+        this.status = status;
+    }
 }
