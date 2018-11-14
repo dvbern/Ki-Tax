@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -125,6 +126,6 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	dem Benutzer soll es auf 2 Stellen gerunden angezeigt werden
 	 */
 	public BigDecimal getPensumRounded(){
-		return this.pensum.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		return this.pensum.setScale(2, RoundingMode.HALF_EVEN).stripTrailingZeros();
 	}
 }
