@@ -59,10 +59,16 @@ public interface ILoginConnectorResource {
 	JaxExternalBenutzer updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer);
 
 	/**
-	 * Service to update a Benutzer from an external login module
+	 * Service to update a Benutzer from an external login module. The main purpose is to handle users that have
+	 * created a login in the external login system after being invited via email. The benutzerId was passed along
+	 * in the email. Once the user has registered the connector calls this method and the state of the user is
+	 * updated (from Eingeladen to Aktiv). The user must have used the same email, if not the system returens
+	 * an errormessage in the responsewrapper
 	 *
+	 *
+	 * @param benutzerId  The UserID serves as a unique identfier
 	 * @param externalBenutzer User to update/store
-	 * @return stored object
+	 * @return wrapper containing either the stored object or a translated error Message
 	 */
 	@PUT
 	@Path("/benutzer/{benutzerId}")
