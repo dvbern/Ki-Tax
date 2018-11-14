@@ -11,6 +11,7 @@ pipeline {
 		buildDiscarder(logRotator(numToKeepStr: "1"))
 		// If the build (including waiting time for user input) takes longer, it will be aborted.
 		timeout(time: 2, unit: 'HOURS')
+		disableConcurrentBuilds()
 	}
 	stages {
 		stage("Test") {
@@ -22,12 +23,14 @@ pipeline {
 			}
 
 			steps {
-				withMaven(options: [
-						junitPublisher(healthScaleFactor: 1.0),
-						findbugsPublisher(),
-						artifactsPublisher(disabled: true)
-				]) {
-					sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci clean install'
+				lock('ebegu-tests') {
+					withMaven(options: [
+							junitPublisher(healthScaleFactor: 1.0),
+							findbugsPublisher(),
+							artifactsPublisher(disabled: true)
+					]) {
+						sh 'export PATH=$MVN_CMD_DIR:$PATH && mvn -B -U -T 1C -P dvbern.oss -P test-wildfly-managed -P ci clean install'
+					}
 				}
 			}
 
