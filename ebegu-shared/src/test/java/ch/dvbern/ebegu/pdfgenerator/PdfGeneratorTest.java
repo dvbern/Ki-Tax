@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,18 +28,10 @@ public class PdfGeneratorTest {
 
 
 	@Test
-	public void freigabequittungTest() throws InvoiceGeneratorException, IOException {
-		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
-		final FreigabequittungPdfGenerator freigabequittungPdfGenerator = new FreigabequittungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		freigabequittungPdfGenerator.generate(new FileOutputStream("target/Freigabequittung.pdf"));
-		Assert.assertTrue(true);
-	}
-
-	@Test
 	public void begleitschreibenTest() throws InvoiceGeneratorException, IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("StadtBern.jpg"));
 		final BegleitschreibenPdfGenerator begleitschreibenPdfGenerator = new BegleitschreibenPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		begleitschreibenPdfGenerator.generate(new FileOutputStream("target/Begleitschreiben.pdf"));
+		begleitschreibenPdfGenerator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Begleitschreiben.pdf"));
 		Assert.assertTrue(true);
 	}
 
@@ -47,7 +40,7 @@ public class PdfGeneratorTest {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
 		final VerfuegungPdfGenerator
 			verfuegungPdfGenerator = new VerfuegungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		verfuegungPdfGenerator.generate(new FileOutputStream("target/Verfügung.pdf"), VerfuegungPdfGenerator.Art.NORMAL);
+		verfuegungPdfGenerator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung.pdf"), VerfuegungPdfGenerator.Art.NORMAL);
 		Assert.assertTrue(true);
 	}
 
@@ -56,7 +49,7 @@ public class PdfGeneratorTest {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
 		final VerfuegungPdfGenerator
 			verfuegungPdfGenerator = new VerfuegungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		verfuegungPdfGenerator.generate(new FileOutputStream("target/KeinAnspruchVerfügung.pdf"), VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
+		verfuegungPdfGenerator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/KeinAnspruchVerfügung.pdf"), VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
 		Assert.assertTrue(true);
 	}
 
@@ -65,7 +58,7 @@ public class PdfGeneratorTest {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
 		final VerfuegungPdfGenerator
 			verfuegungPdfGenerator = new VerfuegungPdfGenerator(gemeindeLogo, gemeindeHeader, true);
-		verfuegungPdfGenerator.generate(new FileOutputStream("target/NichtEintretenVerfügung.pdf"), VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
+		verfuegungPdfGenerator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/NichtEintretenVerfügung.pdf"), VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
 		Assert.assertTrue(true);
 	}
 
@@ -73,7 +66,7 @@ public class PdfGeneratorTest {
 	public void finanzielleSituationTest() throws InvoiceGeneratorException, IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
 		final FinanzielleSituationPdfGenerator finanzielleSituationPdfGenerator = new FinanzielleSituationPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		finanzielleSituationPdfGenerator.generate(new FileOutputStream("target/FinanzielleSituation.pdf"));
+		finanzielleSituationPdfGenerator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation.pdf"));
 		Assert.assertTrue(true);
 	}
 
@@ -81,7 +74,7 @@ public class PdfGeneratorTest {
 	public void mahnung1Test() throws InvoiceGeneratorException, IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
 		final MahnungPdfGenerator mahnungPdfGenerator = new MahnungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		mahnungPdfGenerator.generate(new FileOutputStream("target/Mahnung1.pdf"), false);
+		mahnungPdfGenerator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung1.pdf"), false);
 		Assert.assertTrue(true);
 	}
 
@@ -89,7 +82,7 @@ public class PdfGeneratorTest {
 	public void mahnung2Test() throws InvoiceGeneratorException, IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(PdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
 		final MahnungPdfGenerator mahnungPdfGenerator = new MahnungPdfGenerator(gemeindeLogo, gemeindeHeader, false);
-		mahnungPdfGenerator.generate(new FileOutputStream("target/Mahnung2.pdf"), true);
+		mahnungPdfGenerator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2.pdf"), true);
 		Assert.assertTrue(true);
 	}
 

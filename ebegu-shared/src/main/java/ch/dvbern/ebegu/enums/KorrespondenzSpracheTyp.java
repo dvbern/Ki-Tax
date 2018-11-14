@@ -22,5 +22,17 @@ package ch.dvbern.ebegu.enums;
 public enum KorrespondenzSpracheTyp {
 	DE,
 	FR,
-	DE_FR,
+	DE_FR;
+
+	public Sprache[] getSprache() {
+		switch (this) {
+		case DE_FR:
+			return new Sprache[] { Sprache.DEUTSCH, Sprache.FRANZOESISCH };
+		case FR:
+			return new Sprache[] { Sprache.FRANZOESISCH };
+		default:
+			return new Sprache[] { Sprache.DEUTSCH };
+
+		}
+	}
 }

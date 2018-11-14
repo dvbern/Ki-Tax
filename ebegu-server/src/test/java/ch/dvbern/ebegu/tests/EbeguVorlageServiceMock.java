@@ -48,9 +48,6 @@ public class EbeguVorlageServiceMock extends EbeguVorlageServiceBean {
 		case VORLAGE_INFOSCHREIBEN_MAXIMALTARIF:
 			vorlage.setFilepfad("vorlagen/Infoschreiben_Maxtarif.docx");
 			break;
-		case VORLAGE_FREIGABEQUITTUNG:
-			vorlage.setFilepfad("vorlagen/Freigabequittung.docx");
-			break;
 		case VORLAGE_BEGLEITSCHREIBEN:
 			vorlage.setFilepfad("vorlagen/Begleitschreiben.docx");
 			break;

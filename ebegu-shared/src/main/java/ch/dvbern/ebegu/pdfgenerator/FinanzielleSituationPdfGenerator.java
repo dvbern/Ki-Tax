@@ -21,6 +21,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
+@SuppressWarnings("PMD.AvoidDuplicateLiterals") //TODO (team) Entfernen, wenn Dummydaten ersetzt!
 public class FinanzielleSituationPdfGenerator {
 
 	@Nonnull

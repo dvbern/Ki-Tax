@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -33,13 +34,17 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EbeguVorlageKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.DokumenteUtil;
@@ -49,14 +54,13 @@ import ch.dvbern.ebegu.vorlagen.begleitschreiben.BegleitschreibenPrintImpl;
 import ch.dvbern.ebegu.vorlagen.begleitschreiben.BegleitschreibenPrintMergeSource;
 import ch.dvbern.ebegu.vorlagen.finanziellesituation.BerechnungsgrundlagenInformationPrintImpl;
 import ch.dvbern.ebegu.vorlagen.finanziellesituation.FinanzielleSituationEinkommensverschlechterungPrintMergeSource;
-import ch.dvbern.ebegu.vorlagen.freigabequittung.FreigabequittungPrintImpl;
-import ch.dvbern.ebegu.vorlagen.freigabequittung.FreigabequittungPrintMergeSource;
 import ch.dvbern.ebegu.vorlagen.mahnung.MahnungPrintImpl;
 import ch.dvbern.ebegu.vorlagen.mahnung.MahnungPrintMergeSource;
 import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintImpl;
 import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintMergeSource;
 import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintImpl;
 import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintMergeSource;
+import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import com.google.common.io.ByteStreams;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -84,6 +88,9 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 
 	@Inject
 	private DokumentenverzeichnisEvaluator dokumentenverzeichnisEvaluator;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private Authorizer authorizer;
@@ -165,23 +172,20 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateFreigabequittung(Gesuch gesuch, boolean writeProtected) throws MergeDocException {
+	public byte[] generateFreigabequittung(@Nonnull Gesuch gesuch, boolean writeProtected) throws MergeDocException {
+		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
 
-		EbeguVorlageKey vorlageKey = EbeguVorlageKey.VORLAGE_FREIGABEQUITTUNG;
+		String gemeindeId = gesuch.extractGemeinde().getId();
+		GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"generateFreigabequittung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		final List<DokumentGrund> benoetigteUnterlagen = calculateListOfDokumentGrunds(gesuch);
+		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten, !writeProtected, benoetigteUnterlagen);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
-			final DateRange gueltigkeit = gesuch.getGesuchsperiode().getGueltigkeit();
-			InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(), gueltigkeit.getGueltigBis(), vorlageKey);
-			Objects.requireNonNull(is, "Vorlage '" + vorlageKey.name() + "' nicht gefunden");
-
-			final List<DokumentGrund> dokumentGrundsMerged = calculateListOfDokumentGrunds(gesuch);
-
-			byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-				ByteStreams.toByteArray(is), new FreigabequittungPrintMergeSource(new FreigabequittungPrintImpl(gesuch, dokumentGrundsMerged)),
-				writeProtected);
-			is.close();
-			return bytes;
-		} catch (IOException e) {
+			pdfGenerator.generate(baos);
+			return baos.toByteArray();
+		} catch (InvoiceGeneratorException e) {
 			throw new MergeDocException("generateFreigabequittung()",
 				"Bei der Generierung der Freigabequittung ist ein Fehler aufgetreten", e, OBJECTARRAY);
 		}

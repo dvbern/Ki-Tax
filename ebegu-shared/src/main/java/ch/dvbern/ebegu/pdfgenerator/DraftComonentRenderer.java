@@ -1,10 +1,13 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.component.ComponentRenderer;
 import ch.dvbern.lib.invoicegenerator.dto.component.TextComponent;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.PdfContentByte;
 import org.apache.commons.io.IOUtils;
@@ -30,7 +33,7 @@ public class DraftComonentRenderer extends ComponentRenderer<TextComponent, Stri
 			image.scalePercent(percent);
 			image.setAbsolutePosition(0,50);
 			directContent.addImage(image);
-		} catch (Exception e){
+		} catch (IOException | DocumentException e){
 			LOG.error("Failed to read the Logo: {}", e.getMessage());
 		}
 	}

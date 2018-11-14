@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
 import org.apache.commons.lang.StringUtils;
 
+@Deprecated //TODO (team) dieses Util kann dann geloescht werden, wenn alle Dokument umgestellt sind. Was noch benötigt wird, wurde ins KibonPrintUtil kopiert.
 public final class PrintUtil {
 
 	private PrintUtil() {

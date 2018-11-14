@@ -165,6 +165,11 @@
             <groupId>ch.dvbern.lib.invoice-generator</groupId>
             <artifactId>dvbern-lib-invoice</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.sf.barcode4j</groupId>
+            <artifactId>barcode4j</artifactId>
+            <version>2.1</version>
+        </dependency>
 
     </dependencies>
 

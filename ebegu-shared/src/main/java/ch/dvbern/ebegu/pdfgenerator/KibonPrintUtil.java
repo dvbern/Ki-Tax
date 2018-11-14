@@ -1,0 +1,166 @@
+/*
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.dvbern.ebegu.pdfgenerator;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
+import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+import org.apache.commons.lang.StringUtils;
+
+public final class KibonPrintUtil {
+
+	public static final Character LINE_BREAK = '\n';
+
+	private KibonPrintUtil() {
+	}
+
+
+	@Nonnull
+	public static String getAddressAsString(@Nonnull Adresse adresse) {
+		StringBuilder sb = new StringBuilder();
+		if (StringUtils.isNotEmpty(adresse.getOrganisation())) {
+			sb.append(adresse.getOrganisation());
+			sb.append(LINE_BREAK);
+		}
+		sb.append(adresse.getStrasse()).append(' ').append(adresse.getHausnummer());
+		sb.append(LINE_BREAK);
+		sb.append(adresse.getPlz()).append(' ').append(adresse.getOrt());
+		return sb.toString();
+	}
+
+	@Nonnull
+	public static String getGesuchstellerNameAsString(@Nullable GesuchstellerContainer gesuchstellerContainer) {
+		if (gesuchstellerContainer == null) {
+			return "";
+		}
+		// Name Vorname
+		return gesuchstellerContainer.extractFullName();
+	}
+
+	@Nonnull
+	public static String getGesuchstellerAddressAsString(@Nullable GesuchstellerContainer gesuchstellerContainer) {
+		if (gesuchstellerContainer == null) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder();
+		Optional<GesuchstellerAdresseContainer> adresseOptional =
+			KibonPrintUtil.getGesuchstellerAdresse(gesuchstellerContainer);
+		if (adresseOptional.isPresent()) {
+			sb.append(LINE_BREAK);
+			GesuchstellerAdresse adresse = adresseOptional.get().getGesuchstellerAdresseJA();
+			Objects.requireNonNull(adresse);
+			sb.append(getAddressAsString(adresse));
+		}
+		return sb.toString();
+	}
+
+	@Nonnull
+	public static String getGesuchstellerWithAddressAsString(@Nullable GesuchstellerContainer gesuchstellerContainer) {
+		if (gesuchstellerContainer == null) {
+			return "";
+		}
+		//noinspection StringConcatenationMissingWhitespace Es gibt ein NewLine
+		return getGesuchstellerNameAsString(gesuchstellerContainer)
+			+ getGesuchstellerAddressAsString(gesuchstellerContainer);
+	}
+
+	/**
+	 * Gibt die Korrespondenzadresse zurueck wenn vorhanden, ansonsten die aktuelle Wohnadresse wenn vorhanden, wenn
+	 * keine
+	 * vorhanden dann empty
+	 */
+	@Nonnull
+	public static Optional<GesuchstellerAdresseContainer> getGesuchstellerAdresse(
+		@Nullable GesuchstellerContainer gesuchsteller) {
+
+		if (gesuchsteller != null) {
+			List<GesuchstellerAdresseContainer> adressen = gesuchsteller.getAdressen();
+
+			// Zuerst suchen wir die Korrespondenzadresse wenn vorhanden
+			final Optional<GesuchstellerAdresseContainer> korrespondenzadresse = adressen.stream()
+				.filter(GesuchstellerAdresseContainer::extractIsKorrespondenzAdresse)
+				.reduce(throwExceptionIfMoreThanOneAdresse(gesuchsteller));
+			if (korrespondenzadresse.isPresent() && korrespondenzadresse.get().getGesuchstellerAdresseJA() != null) {
+				return korrespondenzadresse;
+			}
+
+			// Sonst suchen wir die aktuelle Wohnadresse. Die ist keine KORRESPONDENZADRESSE und das aktuelle Datum
+			// liegt innerhalb ihrer Gueltigkeit
+			final LocalDate now = LocalDate.now();
+			for (GesuchstellerAdresseContainer gesuchstellerAdresse : adressen) {
+				DateRange gueltigkeit = gesuchstellerAdresse.extractGueltigkeit();
+				if (!gesuchstellerAdresse.extractIsKorrespondenzAdresse()
+					// Adressen aus dem GS-Container interessieren uns nicht
+					&& gesuchstellerAdresse.getGesuchstellerAdresseJA() != null
+					&& gueltigkeit != null
+					&& !gueltigkeit.getGueltigAb().isAfter(now)
+					&& !gueltigkeit.getGueltigBis().isBefore(now)) {
+					return Optional.of(gesuchstellerAdresse);
+				}
+			}
+		}
+		return Optional.empty();
+	}
+
+	@Nonnull
+	private static BinaryOperator<GesuchstellerAdresseContainer> throwExceptionIfMoreThanOneAdresse(
+		@Nonnull GesuchstellerContainer gesuchsteller) {
+
+		return (element, otherElement) -> {
+			throw new EbeguRuntimeException("getGesuchstellerAdresse_Korrespondenzadresse",
+				ErrorCodeEnum.ERROR_TOO_MANY_RESULTS,
+				gesuchsteller.getId());
+		};
+	}
+
+	@Nonnull
+	public static List<String> getBenoetigteDokumenteAsList(List<DokumentGrund> benoetigteUnterlagen) {
+		List<String> dokumenteList = new ArrayList<>();
+		for (DokumentGrund dokumentGrund : benoetigteUnterlagen) {
+			String text = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund);
+			if (text != null) {
+				dokumenteList.add(text);
+			}
+		}
+		return dokumenteList;
+	}
+
+	@Nullable
+	public static String getDokumentAsTextIfNeeded(@Nonnull DokumentGrund dokumentGrund) {
+		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
+			return ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp());
+		}
+		return null;
+	}
+}
