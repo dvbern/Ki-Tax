@@ -352,13 +352,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	public Collection<Benutzer> getInstitutionAdministratoren(Institution institution) {
-		return getBenutzersOfRoles(UserRole.getAllGemeindeAdminRoles(), institution);
+		return getBenutzersOfRoles(UserRole.getAllInstitutionAdminRoles(), institution);
 	}
 
 	@Nonnull
 	@Override
 	public Collection<Benutzer> getInstitutionSachbearbeiter(Institution institution) {
-		return getBenutzersOfRoles(UserRole.getAllGemeindeSachbearbeiterRoles(), institution);
+		return getBenutzersOfRoles(UserRole.getAllInstitutionSachbearbeiterRoles(), institution);
 	}
 
 	@Nonnull

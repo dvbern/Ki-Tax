@@ -1402,13 +1402,12 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
 
+		Adresse convertedAdresse = null;
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
-			Adresse adresse = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber())
-				.orElseGet(Adresse::new);
-
-			Adresse convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), adresse);
-			institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
+			Adresse a = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber()).orElseGet(Adresse::new);
+			convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
 		}
+		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
 
 		adresseToEntity(institutionStammdatenJAXP.getAdresse(), institutionStammdaten.getAdresse());
 

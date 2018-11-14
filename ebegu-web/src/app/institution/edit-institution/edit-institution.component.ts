@@ -19,15 +19,17 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import * as moment from 'moment';
+import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSAdresse from '../../../models/TSAdresse';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
-import * as moment from 'moment';
 
 @Component({
   selector: 'dv-edit-institution',
@@ -39,15 +41,17 @@ export class EditInstitutionComponent implements OnInit {
 
     public institution: TSInstitution;
     public stammdaten: TSInstitutionStammdaten;
-    public abweichendeZahlungsAdresse: boolean;
     public beguStartStr: string;
     public beguEndeStr: string;
+    public abweichendeZahlungsAdresse: boolean;
+    public editMode: boolean;
     private navigationSource: StateDeclaration;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
+        private readonly translate: TranslateService,
         private readonly institutionRS: InstitutionRS,
         private readonly institutionStammdatenRS: InstitutionStammdatenRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
@@ -64,7 +68,8 @@ export class EditInstitutionComponent implements OnInit {
         this.institutionRS.findInstitution(institutionId).then(institution => {
             this.institution = institution;
 
-            this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institution.id).then(stammdaten => {
+            this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institution.id)
+                .then(stammdaten => {
                 if (stammdaten) {
                     this.stammdaten = stammdaten;
                 } else {
@@ -72,6 +77,7 @@ export class EditInstitutionComponent implements OnInit {
                 }
                 this.setBeguVonBisStr();
                 this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
+                this.editMode = this.institution.status === TSInstitutionStatus.EINGELADEN;
                 this.changeDetectorRef.markForCheck();
             });
         });
@@ -95,20 +101,45 @@ export class EditInstitutionComponent implements OnInit {
         return `${this.institution.name} (${this.institution.traegerschaft.name})`;
     }
 
-    public persistStammdaten(): void {
+    public onSubmit(): void {
+        if (this.editMode) {
+            this.persistStammdaten();
+        } else {
+            this.editMode = true;
+        }
+    }
+
+    private persistStammdaten(): void {
         if (!this.form.valid) {
             return;
         }
         this.errorService.clearAll();
-        // Reset Adresse Kontoinhaber if not used
-        if (!this.abweichendeZahlungsAdresse) {
+        if (!this.abweichendeZahlungsAdresse) { // Reset Adresse Kontoinhaber if not used
             this.stammdaten.adresseKontoinhaber = undefined;
         }
-        // Prevent phone regex error in case of empty string
-        if (this.stammdaten.telefon === '') {
+        if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
         }
-        this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten).then(() => this.navigateBack());
+        this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
+            .then(() => {
+                this.editMode = false;
+                this.changeDetectorRef.markForCheck();
+            });
+    }
+
+    public submitButtonLabel(): string {
+        if (this.editMode) {
+            return this.translate.instant('INSTITUTION_SPEICHERN');
+        }
+        return this.translate.instant('INSTITUTION_EDIT');
+    }
+
+    public cancel(): void {
+        if (this.editMode) {
+            this.editMode = false;
+        } else {
+            this.navigateBack();
+        }
     }
 
     public onAbweichendeZahlungsAdresseClick(): void {
@@ -125,13 +156,6 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     private navigateBack(): void {
-        if (!this.navigationSource.name) {
-            this.$state.go('gemeinde.list');
-            return;
-        }
-        const redirectTo = this.navigationSource.name === 'einladung.abschliessen'
-            ? 'gemeinde.view'
-            : this.navigationSource;
-        this.$state.go(redirectTo, {institutionId: this.institution.id});
+         this.$state.go('institution.list');
     }
 }

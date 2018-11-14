@@ -48,6 +48,8 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
@@ -91,6 +93,12 @@ public class InstitutionStammdatenResource {
 			stammdaten = converter.updateJaxModuleTagesschule(institutionStammdatenJAXP);
 		}
 		InstitutionStammdaten convertedInstData = converter.institutionStammdatenToEntity(stammdaten, instDaten);
+
+		// Statuswechsel eingeladen -> aktiv
+		if (convertedInstData.getInstitution().getStatus() == InstitutionStatus.EINGELADEN) {
+			convertedInstData.getInstitution().setStatus(InstitutionStatus.AKTIV);
+		}
+
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(convertedInstData);
 

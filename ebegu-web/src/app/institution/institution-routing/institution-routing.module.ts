@@ -38,7 +38,7 @@ const states: Ng2StateDeclaration[] = [
         url: '/list',
         component: InstitutionListComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
+            roles: TSRoleUtil.getInstitutionProfilRoles(),
         },
     },
 /*    {
@@ -54,7 +54,7 @@ const states: Ng2StateDeclaration[] = [
         url: '/edit/:institutionId',
         component: EditInstitutionComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole(),
+            roles: TSRoleUtil.getInstitutionProfilRoles(),
         },
     },
 /*    {
