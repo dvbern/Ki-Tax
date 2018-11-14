@@ -1,3 +1,16 @@
+CREATE TABLE unbezahlter_urlaub (
+	id                 VARCHAR(36)  NOT NULL,
+	timestamp_erstellt DATETIME     NOT NULL,
+	timestamp_mutiert  DATETIME     NOT NULL,
+	user_erstellt      VARCHAR(255) NOT NULL,
+	user_mutiert       VARCHAR(255) NOT NULL,
+	version            BIGINT       NOT NULL,
+	vorgaenger_id      VARCHAR(36),
+	gueltig_ab         DATE         NOT NULL,
+	gueltig_bis        DATE         NOT NULL,
+	PRIMARY KEY (id)
+);
+
 CREATE TABLE unbezahlter_urlaub_aud (
 	id                 VARCHAR(36) NOT NULL,
 	rev                INTEGER     NOT NULL,
@@ -10,19 +23,6 @@ CREATE TABLE unbezahlter_urlaub_aud (
 	gueltig_ab         DATE,
 	gueltig_bis        DATE,
 	PRIMARY KEY (id, rev)
-);
-
-CREATE TABLE unbezahlter_urlaub (
-	id                 VARCHAR(36)  NOT NULL,
-	timestamp_erstellt DATETIME     NOT NULL,
-	timestamp_mutiert  DATETIME     NOT NULL,
-	user_erstellt      VARCHAR(255) NOT NULL,
-	user_mutiert       VARCHAR(255) NOT NULL,
-	version            BIGINT       NOT NULL,
-	vorgaenger_id      VARCHAR(36),
-	gueltig_ab         DATE         NOT NULL,
-	gueltig_bis        DATE         NOT NULL,
-	PRIMARY KEY (id)
 );
 
 ALTER TABLE erwerbspensum ADD unbezahlter_urlaub_id VARCHAR(36);
