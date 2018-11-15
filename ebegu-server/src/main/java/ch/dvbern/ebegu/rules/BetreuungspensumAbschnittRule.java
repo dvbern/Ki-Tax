@@ -56,7 +56,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Betreuungspensum betreuungspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
-		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensum());
+		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensumRounded());
 		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		return zeitabschnitt;
 	}
