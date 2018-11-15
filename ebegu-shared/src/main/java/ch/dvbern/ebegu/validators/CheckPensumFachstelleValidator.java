@@ -1,20 +1,18 @@
 /*
+ * Copyright (C) 2018 DV Bern AG, Switzerland
  *
- *  * Copyright (C) 2018 DV Bern AG, Switzerland
- *  *
- *  * This program is free software: you can redistribute it and/or modify
- *  * it under the terms of the GNU Affero General Public License as
- *  * published by the Free Software Foundation, either version 3 of the
- *  * License, or (at your option) any later version.
- *  *
- *  * This program is distributed in the hope that it will be useful,
- *  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  * GNU Affero General Public License for more details.
- *  *
- *  * You should have received a copy of the GNU Affero General Public License
- *  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.validators;
@@ -114,6 +112,7 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		return true;
 	}
 
+	@Nonnull
 	private EinstellungKey getMinValueParamFromIntegrationTyp(@Nonnull IntegrationTyp integrationTyp) {
 		switch (integrationTyp) {
 		case SOZIALE_INTEGRATION:
@@ -121,9 +120,10 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		case SPRACHLICHE_INTEGRATION:
 			return EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
 		}
-		return null;
+		throw new IllegalArgumentException("Unbekannter Integrationstyp: " + integrationTyp);
 	}
 
+	@Nonnull
 	private EinstellungKey getMaxValueParamFromIntegrationTyp(@Nonnull IntegrationTyp integrationTyp) {
 		switch (integrationTyp) {
 		case SOZIALE_INTEGRATION:
@@ -131,17 +131,17 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		case SPRACHLICHE_INTEGRATION:
 			return EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
 		}
-		return null;
+		throw new IllegalArgumentException("Unbekannter Integrationstyp: " + integrationTyp);
 	}
 
 	private Integer getValueAsInteger(
-		EinstellungKey key,
-		Gemeinde gemeinde,
-		Gesuchsperiode gesuchsperiode,
-		EntityManager em
+		@Nonnull EinstellungKey key,
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nullable EntityManager em
 	) {
 		Einstellung value = einstellungService
-			.findEinstellung(key, gemeinde, gesuchsperiode, em);
+			.findEinstellung(key, gemeinde, gesuchsperiode, em); //TODO nullable oder eben nicht? widersprüchlich
 		return value.getValueAsInteger();
 	}
 
