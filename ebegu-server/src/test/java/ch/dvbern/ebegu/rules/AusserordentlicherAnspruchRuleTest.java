@@ -62,7 +62,7 @@ public class AusserordentlicherAnspruchRuleTest {
 		Assert.assertEquals(60, zeitabschnitt.getAusserordentlicherAnspruch());
 		Assert.assertEquals(MathUtil.DEFAULT.from(30), zeitabschnitt.getBetreuungspensum());
 		Assert.assertEquals(60, zeitabschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(MathUtil.GANZZAHL.from(30), zeitabschnitt.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(30), zeitabschnitt.getBgPensum());
 	}
 
 	@Test
