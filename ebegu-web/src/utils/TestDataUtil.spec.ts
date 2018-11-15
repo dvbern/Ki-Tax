@@ -21,7 +21,6 @@ import {TSRole} from '../models/enums/TSRole';
 import {TSTaetigkeit} from '../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../models/enums/TSWizardStepStatus';
-import {TSZuschlagsgrund} from '../models/enums/TSZuschlagsgrund';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import TSAbstractEntity from '../models/TSAbstractEntity';
 import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
@@ -70,9 +69,6 @@ export default class TestDataUtil {
         dummyErwerbspensum.taetigkeit = TSTaetigkeit.ANGESTELLT;
         dummyErwerbspensum.pensum = 80;
         dummyErwerbspensum.gueltigkeit = new TSDateRange(DateUtil.today(), DateUtil.today().add(7, 'months'));
-        dummyErwerbspensum.zuschlagZuErwerbspensum = true;
-        dummyErwerbspensum.zuschlagsprozent = 20;
-        dummyErwerbspensum.zuschlagsgrund = TSZuschlagsgrund.FIXE_ARBEITSZEITEN;
         dummyErwerbspensum.bezeichnung = undefined;
         this.setAbstractMutableFieldsUndefined(dummyErwerbspensum);
         return dummyErwerbspensum;

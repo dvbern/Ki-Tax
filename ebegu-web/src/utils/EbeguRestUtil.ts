@@ -481,9 +481,6 @@ export default class EbeguRestUtil {
         if (erwerbspensumFromServer) {
             this.parseAbstractPensumEntity(erwerbspensum, erwerbspensumFromServer);
             erwerbspensum.taetigkeit = erwerbspensumFromServer.taetigkeit;
-            erwerbspensum.zuschlagsgrund = erwerbspensumFromServer.zuschlagsgrund;
-            erwerbspensum.zuschlagsprozent = erwerbspensumFromServer.zuschlagsprozent;
-            erwerbspensum.zuschlagZuErwerbspensum = erwerbspensumFromServer.zuschlagZuErwerbspensum;
             erwerbspensum.bezeichnung = erwerbspensumFromServer.bezeichnung;
             return erwerbspensum;
         }
@@ -494,9 +491,6 @@ export default class EbeguRestUtil {
         if (erwerbspensum) {
             this.abstractPensumEntityToRestObject(restErwerbspensum, erwerbspensum);
             restErwerbspensum.taetigkeit = erwerbspensum.taetigkeit;
-            restErwerbspensum.zuschlagsgrund = erwerbspensum.zuschlagsgrund;
-            restErwerbspensum.zuschlagsprozent = erwerbspensum.zuschlagsprozent;
-            restErwerbspensum.zuschlagZuErwerbspensum = erwerbspensum.zuschlagZuErwerbspensum;
             restErwerbspensum.bezeichnung = erwerbspensum.bezeichnung;
             return restErwerbspensum;
         }
@@ -2250,7 +2244,6 @@ export default class EbeguRestUtil {
             verfuegungTS.kategorieMaxEinkommen = verfuegungFromServer.kategorieMaxEinkommen;
             verfuegungTS.kategorieNichtEintreten = verfuegungFromServer.kategorieNichtEintreten;
             verfuegungTS.kategorieNormal = verfuegungFromServer.kategorieNormal;
-            verfuegungTS.kategorieZuschlagZumErwerbspensum = verfuegungFromServer.kategorieZuschlagZumErwerbspensum;
             return verfuegungTS;
         }
         return undefined;
@@ -2266,7 +2259,6 @@ export default class EbeguRestUtil {
             verfuegung.kategorieMaxEinkommen = verfuegungTS.kategorieMaxEinkommen;
             verfuegung.kategorieNichtEintreten = verfuegungTS.kategorieNichtEintreten;
             verfuegung.kategorieNormal = verfuegungTS.kategorieNormal;
-            verfuegung.kategorieZuschlagZumErwerbspensum = verfuegungTS.kategorieZuschlagZumErwerbspensum;
             return verfuegung;
         }
         return undefined;
@@ -2306,7 +2298,6 @@ export default class EbeguRestUtil {
             zeitabschnitt.zahlungsstatus = zeitabschnittTS.zahlungsstatus;
             zeitabschnitt.vollkosten = zeitabschnittTS.vollkosten;
             zeitabschnitt.einkommensjahr = zeitabschnittTS.einkommensjahr;
-            zeitabschnitt.kategorieZuschlagZumErwerbspensum = zeitabschnittTS.kategorieZuschlagZumErwerbspensum;
             zeitabschnitt.kategorieMaxEinkommen = zeitabschnittTS.kategorieMaxEinkommen;
             zeitabschnitt.kategorieKeinPensum = zeitabschnittTS.kategorieKeinPensum;
             zeitabschnitt.zuSpaetEingereicht = zeitabschnittTS.zuSpaetEingereicht;
@@ -2339,8 +2330,6 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
             verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
             verfuegungZeitabschnittTS.einkommensjahr = zeitabschnittFromServer.einkommensjahr;
-            verfuegungZeitabschnittTS.kategorieZuschlagZumErwerbspensum =
-                zeitabschnittFromServer.kategorieZuschlagZumErwerbspensum;
             verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
             verfuegungZeitabschnittTS.kategorieKeinPensum = zeitabschnittFromServer.kategorieKeinPensum;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;

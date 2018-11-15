@@ -53,8 +53,6 @@ public class JaxVerfuegung extends JaxAbstractDTO {
 
 	private boolean kategorieKeinPensum = false;
 
-	private boolean kategorieZuschlagZumErwerbspensum = false;
-
 	private boolean kategorieNichtEintreten = false;
 
 	@Nullable
@@ -106,14 +104,6 @@ public class JaxVerfuegung extends JaxAbstractDTO {
 
 	public void setKategorieKeinPensum(boolean kategorieKeinPensum) {
 		this.kategorieKeinPensum = kategorieKeinPensum;
-	}
-
-	public boolean isKategorieZuschlagZumErwerbspensum() {
-		return kategorieZuschlagZumErwerbspensum;
-	}
-
-	public void setKategorieZuschlagZumErwerbspensum(boolean kategorieZuschlagZumErwerbspensum) {
-		this.kategorieZuschlagZumErwerbspensum = kategorieZuschlagZumErwerbspensum;
 	}
 
 	public boolean isKategorieNichtEintreten() {

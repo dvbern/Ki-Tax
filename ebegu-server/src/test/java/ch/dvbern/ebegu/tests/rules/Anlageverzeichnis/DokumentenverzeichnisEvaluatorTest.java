@@ -45,7 +45,6 @@ import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.ErwerbspensumDokumente;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.KindDokumente;
@@ -68,7 +67,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Before
 	public void setUpCalculator() {
-
 		testgesuch = new Gesuch();
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		testgesuch.getGesuchsperiode().getGueltigkeit().setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
@@ -99,8 +97,9 @@ public class DokumentenverzeichnisEvaluatorTest {
 		gesuch.getKindContainers().clear();
 	}
 
-	private Erwerbspensum createErwerbspensum(Gesuch gesuch, String vorname, Taetigkeit taetigkeit,
-		boolean gesundheitlicheEinschraenkungen, boolean zuschlagZuErwerbspensum, @Nullable Zuschlagsgrund zuschlagsgrund) {
+	private Erwerbspensum createErwerbspensum(
+		Gesuch gesuch, String vorname, Taetigkeit taetigkeit,
+		boolean gesundheitlicheEinschraenkungen) {
 		final ErwerbspensumContainer erwerbspensumContainer = TestDataUtil.createErwerbspensumContainer();
 
 		final Erwerbspensum erwerbspensumJA = erwerbspensumContainer.getErwerbspensumJA();
@@ -109,10 +108,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 			erwerbspensumJA.setTaetigkeit(Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN);
 		} else {
 			erwerbspensumJA.setTaetigkeit(taetigkeit);
-		}
-		erwerbspensumJA.setZuschlagZuErwerbspensum(zuschlagZuErwerbspensum);
-		if (zuschlagsgrund != null) {
-			erwerbspensumJA.setZuschlagsgrund(zuschlagsgrund);
 		}
 		erwerbspensumJA.getGueltigkeit().setGueltigAb(LocalDate.of(1980, 1, 1));
 
@@ -126,7 +121,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		return erwerbspensumJA;
 	}
 
-	private FinanzielleSituation createFinanzielleSituationGS(int GS, Gesuch gesuch, String vorname, boolean steuerveranlagungErhalten) {
+	private void createFinanzielleSituationGS(int GS, Gesuch gesuch, String vorname, boolean steuerveranlagungErhalten) {
 		final FinanzielleSituationContainer finanzielleSituationContainer = TestDataUtil.createFinanzielleSituationContainer();
 		final FinanzielleSituation finanzielleSituation = TestDataUtil.createDefaultFinanzielleSituation();
 
@@ -143,8 +138,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 		} else {
 			gesuch.setGesuchsteller1(gesuchsteller);
 		}
-
-		return finanzielleSituation;
 	}
 
 	private void createEinkommensverschlechterungGS(int GS, Gesuch gesuch, String vorname, boolean steuerveranlagungErhalten) {
@@ -247,7 +240,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentNeueintrittAfterTest() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, false, null);
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false);
 
 		// Nachweis EP ist neu immer zwingend
 		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
@@ -263,7 +256,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentNeueintrittBeforeTest() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, false, null);
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false);
 
 		erwerbspensum.getGueltigkeit().setGueltigAb(LocalDate.of(2000, 7, 1));
 		// Nachweis Erwerbspensum wird neu immer benötigt
@@ -273,7 +266,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentSelbstaendigTest() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.SELBSTAENDIG, false, false, null);
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.SELBSTAENDIG, false);
 
 		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
@@ -288,7 +281,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentAusbildung() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.AUSBILDUNG, false, false, null);
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.AUSBILDUNG, false);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
 		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
@@ -302,7 +295,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentRAV() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.RAV, false, false, null);
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.RAV, false);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
@@ -316,7 +309,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 	@Test
 	public void erwpDokumentArzt() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, true, false, null);
+		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, true);
 
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_AUSBILDUNG, erwerbspensum));
@@ -326,146 +319,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum);
 
 		Assert.assertEquals(DokumentTyp.BESTAETIGUNG_ARZT, dokumentGrund.getDokumentTyp());
-	}
-
-	@Test
-	public void erwpzUnregelm() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, true,
-			Zuschlagsgrund.UNREGELMAESSIGE_ARBEITSZEITEN);
-
-		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_UNREG_ARBEITSZ, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN, erwerbspensum));
-
-		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch);
-		Assert.assertEquals(2, dokumentList.size());
-
-		final DokumentGrund nachweisUnregelmaessige = extractDocumentFromList(
-			dokumentList,
-			DokumentTyp.NACHWEIS_UNREG_ARBEITSZ);
-		assertDokumentGrundCorrect(nachweisUnregelmaessige,
-			erwerbspensum.getName(),
-			DokumentTyp.NACHWEIS_UNREG_ARBEITSZ);
-
-		final DokumentGrund nachweisErwerb = extractDocumentFromList(
-			dokumentList,
-			DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-		assertDokumentGrundCorrect(nachweisErwerb,
-			erwerbspensum.getName(),
-			DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-	}
-
-	@Test
-	public void erwpzLangArbz() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, true,
-			Zuschlagsgrund.LANGER_ARBWEITSWEG);
-
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_UNREG_ARBEITSZ, erwerbspensum));
-		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN, erwerbspensum));
-
-		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch);
-		Assert.assertEquals(2, dokumentList.size());
-
-		final DokumentGrund nachweisUnregelmaessige = extractDocumentFromList(
-			dokumentList,
-			DokumentTyp.NACHWEIS_LANG_ARBEITSWEG);
-		assertDokumentGrundCorrect(nachweisUnregelmaessige,
-			erwerbspensum.getName(),
-			DokumentTyp.NACHWEIS_LANG_ARBEITSWEG);
-
-		final DokumentGrund nachweisErwerb = extractDocumentFromList(
-			dokumentList,
-			DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-		assertDokumentGrundCorrect(nachweisErwerb,
-			erwerbspensum.getName(),
-			DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-	}
-
-	@Test
-	public void erwpzAndere() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, true,
-			Zuschlagsgrund.ANDERE);
-
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_UNREG_ARBEITSZ, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, erwerbspensum));
-		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN, erwerbspensum));
-		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
-
-		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch);
-		Assert.assertEquals(2, dokumentList.size());
-
-		final DokumentGrund nachweisErwerbspensum = extractDocumentFromList(dokumentList, DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-		assertDokumentGrundCorrect(nachweisErwerbspensum, erwerbspensum.getName(), DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-
-		final DokumentGrund nachweisSonstige = extractDocumentFromList(dokumentList, DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG);
-		assertDokumentGrundCorrect(nachweisSonstige, erwerbspensum.getName(), DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG);
-	}
-
-	@Test
-	public void erwpzUEBERLAPPENDE_ARBEITSZEITEN() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, true,
-			Zuschlagsgrund.UEBERLAPPENDE_ARBEITSZEITEN);
-
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_UNREG_ARBEITSZ, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG, erwerbspensum));
-		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN, erwerbspensum));
-		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
-
-		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch);
-		Assert.assertEquals(2, dokumentList.size());
-
-		final DokumentGrund nachweisGleicheArbeitszeit = extractDocumentFromList(
-			dokumentList,
-			DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT);
-		assertDokumentGrundCorrect(nachweisGleicheArbeitszeit,
-			erwerbspensum.getName(),
-			DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT);
-
-		final DokumentGrund nachweisErwerb = extractDocumentFromList(
-			dokumentList,
-			DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-		assertDokumentGrundCorrect(nachweisErwerb,
-			erwerbspensum.getName(),
-			DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-	}
-
-	@Test
-	public void erwpzFIXE_ARBEITSZEITEN() {
-		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false, true,
-			Zuschlagsgrund.FIXE_ARBEITSZEITEN);
-
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_UNREG_ARBEITSZ, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG, erwerbspensum));
-		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT, erwerbspensum));
-		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN, erwerbspensum));
-		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum));
-
-		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch);
-		Assert.assertEquals(2, dokumentList.size());
-
-		final DokumentGrund nachweisFixeArbeitszeiten = extractDocumentFromList(
-			dokumentList,
-			DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN);
-		assertDokumentGrundCorrect(nachweisFixeArbeitszeiten,
-			erwerbspensum.getName(),
-			DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN);
-
-		final DokumentGrund nachweisErwerb = extractDocumentFromList(
-			dokumentList,
-			DokumentTyp.NACHWEIS_ERWERBSPENSUM);
-		assertDokumentGrundCorrect(nachweisErwerb,
-			erwerbspensum.getName(),
-			DokumentTyp.NACHWEIS_ERWERBSPENSUM);
 	}
 
 	private Set<DokumentGrund> getDokumentGrundsForGS(int gesuchstellerNumber, Set<DokumentGrund> dokumentGrunds) {

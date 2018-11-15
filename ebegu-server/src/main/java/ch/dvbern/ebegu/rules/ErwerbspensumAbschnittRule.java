@@ -98,39 +98,29 @@ public class ErwerbspensumAbschnittRule extends AbstractAbschnittRule {
 				// 2GS to 1GS
 				gueltigkeit.setGueltigBis(gesuch.extractFamiliensituation().getAenderungPer().minusDays(1));
 			}
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
-			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);  //fuer statistik
+			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
 			return zeitabschnitt;
 		}
 		if (gs2 && !gesuch.isMutation()) {
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
-			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);
+			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
 			return zeitabschnitt;
 		}
 		if (!gs2) {
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 			zeitabschnitt.setErwerbspensumGS1(erwerbspensum.getPensum());
-			zeitabschnitt.setZuschlagErwerbspensumGS1(erwerbspensum.getZuschlagsprozent());
-			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);
 			return zeitabschnitt;
 		}
 
 		return null;
 	}
 
-	private void setKategorieZuschlagZumErwerbspensum(@Nonnull Erwerbspensum erwerbspensum, VerfuegungZeitabschnitt zeitabschnitt) {
-		if (erwerbspensum.getZuschlagsprozent() != null && erwerbspensum.getZuschlagsprozent() > 0) {
-			zeitabschnitt.setKategorieZuschlagZumErwerbspensum(true);
-		}
-	}
-
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, Integer erwerbspensumValue, Integer zuschlag) {
+	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(
+		DateRange gueltigkeit,
+		Integer erwerbspensumValue) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS1(null);
-		zeitabschnitt.setZuschlagErwerbspensumGS1(null);
 		zeitabschnitt.setErwerbspensumGS2(erwerbspensumValue);
-		zeitabschnitt.setZuschlagErwerbspensumGS2(zuschlag);
 		return zeitabschnitt;
 	}
 }

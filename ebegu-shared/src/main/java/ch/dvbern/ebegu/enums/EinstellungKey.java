@@ -94,7 +94,4 @@ public enum EinstellungKey {
 
 	// Eine Einkommensverschlechterung wird nur berücksichtigt, wenn diese höher als 20% des Ausgangswertes ist.
 	PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
-
-	// Maximaler Zuschlag zum Erwerbspensum
-	PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
 }

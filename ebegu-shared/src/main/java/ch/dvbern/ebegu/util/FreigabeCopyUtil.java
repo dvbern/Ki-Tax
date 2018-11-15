@@ -382,9 +382,6 @@ public final class FreigabeCopyUtil {
 		erwerbspensumGS.setGueltigkeit(new DateRange(erwerbspensumJA.getGueltigkeit()));
 		erwerbspensumGS.setPensum(erwerbspensumJA.getPensum());
 		erwerbspensumGS.setTaetigkeit(erwerbspensumJA.getTaetigkeit());
-		erwerbspensumGS.setZuschlagZuErwerbspensum(erwerbspensumJA.getZuschlagZuErwerbspensum());
-		erwerbspensumGS.setZuschlagsgrund(erwerbspensumJA.getZuschlagsgrund());
-		erwerbspensumGS.setZuschlagsprozent(erwerbspensumJA.getZuschlagsprozent());
 		erwerbspensumGS.setBezeichnung(erwerbspensumJA.getBezeichnung());
 	}
 }

@@ -14,7 +14,6 @@
  */
 
 import {TSTaetigkeit} from './enums/TSTaetigkeit';
-import {TSZuschlagsgrund} from './enums/TSZuschlagsgrund';
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import {TSDateRange} from './types/TSDateRange';
 
@@ -25,27 +24,15 @@ export default class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _taetigkeit: TSTaetigkeit;
 
-    private _zuschlagZuErwerbspensum: boolean;
-
-    private _zuschlagsgrund: TSZuschlagsgrund;
-
-    private _zuschlagsprozent: number;
-
     private _bezeichnung: string;
 
     public constructor(
         pensum?: number,
         gueltigkeit?: TSDateRange,
         taetigkeit?: TSTaetigkeit,
-        zuschlagZuErwerbspensum?: boolean,
-        zuschlagsgrund?: TSZuschlagsgrund,
-        zuschlagsprozent?: number,
     ) {
         super(pensum, gueltigkeit);
         this._taetigkeit = taetigkeit;
-        this._zuschlagZuErwerbspensum = zuschlagZuErwerbspensum;
-        this._zuschlagsgrund = zuschlagsgrund;
-        this._zuschlagsprozent = zuschlagsprozent;
     }
 
     public get taetigkeit(): TSTaetigkeit {
@@ -54,30 +41,6 @@ export default class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     public set taetigkeit(value: TSTaetigkeit) {
         this._taetigkeit = value;
-    }
-
-    public get zuschlagZuErwerbspensum(): boolean {
-        return this._zuschlagZuErwerbspensum;
-    }
-
-    public set zuschlagZuErwerbspensum(value: boolean) {
-        this._zuschlagZuErwerbspensum = value;
-    }
-
-    public get zuschlagsgrund(): TSZuschlagsgrund {
-        return this._zuschlagsgrund;
-    }
-
-    public set zuschlagsgrund(value: TSZuschlagsgrund) {
-        this._zuschlagsgrund = value;
-    }
-
-    public get zuschlagsprozent(): number {
-        return this._zuschlagsprozent;
-    }
-
-    public set zuschlagsprozent(value: number) {
-        this._zuschlagsprozent = value;
     }
 
     public get bezeichnung(): string {
