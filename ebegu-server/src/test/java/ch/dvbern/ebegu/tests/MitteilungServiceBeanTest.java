@@ -106,9 +106,9 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		mandant = getDummySuperadmin().getMandant();
-		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, persistence);
+		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerJA);
-		empfaengerSCH = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TS, "scju", null, null, mandant, persistence);
+		empfaengerSCH = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TS, "scju", null, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerSCH);
 
 		dossier = TestDataUtil.createDefaultDossier();
@@ -120,7 +120,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		fall = persistence.persist(fall);
 
 		traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
-		empfaengerINST = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti", traegerschaft, null, mandant, persistence);
+		empfaengerINST = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti", traegerschaft, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerINST);
 
 		// Default-Verantwortliche setzen, damit beim Senden der Message automatisch der Empfaenger ermittelt werden kann
@@ -495,7 +495,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	// HELP METHODS
 
 	private void prepareDependentObjects(String gesuchstellerUserName) {
-		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.GESUCHSTELLER, gesuchstellerUserName, null, null, mandant, persistence);
+		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.GESUCHSTELLER, gesuchstellerUserName, null, null, mandant, persistence, null, null);
 		persistence.persist(sender);
 		dossier = dossierService.saveDossier(dossier);
 	}

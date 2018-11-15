@@ -139,7 +139,6 @@ describe('EbeguRestUtil', () => {
                 expect(restFachstelle).toBeDefined();
                 expect(restFachstelle.name).toEqual(myFachstelle.name);
                 expect(restFachstelle.beschreibung).toEqual(myFachstelle.beschreibung);
-                expect(restFachstelle.behinderungsbestaetigung).toEqual(myFachstelle.behinderungsbestaetigung);
 
                 const transformedFachstelle = ebeguRestUtil.parseFachstelle(new TSFachstelle(), restFachstelle);
                 expect(transformedFachstelle).toBeDefined();

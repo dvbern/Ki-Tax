@@ -48,9 +48,6 @@ public class Fachstelle extends AbstractMutableEntity {
 	private String beschreibung;
 
 	@Column(nullable = false)
-	private boolean behinderungsbestaetigung;
-
-	@Column(nullable = false)
 	private boolean fachstelleAnspruch;
 
 	@Column(nullable = false)
@@ -75,14 +72,6 @@ public class Fachstelle extends AbstractMutableEntity {
 
 	public void setBeschreibung(@Nullable String beschreibung) {
 		this.beschreibung = beschreibung;
-	}
-
-	public boolean isBehinderungsbestaetigung() {
-		return behinderungsbestaetigung;
-	}
-
-	public void setBehinderungsbestaetigung(boolean behinderungsbestaetigung) {
-		this.behinderungsbestaetigung = behinderungsbestaetigung;
 	}
 
 	public boolean isFachstelleAnspruch() {
@@ -115,7 +104,6 @@ public class Fachstelle extends AbstractMutableEntity {
 		}
 		final Fachstelle otherGesuchsteller = (Fachstelle) other;
 		return Objects.equals(getName(), otherGesuchsteller.getName()) &&
-			Objects.equals(getBeschreibung(), otherGesuchsteller.getBeschreibung()) &&
-			Objects.equals(isBehinderungsbestaetigung(), otherGesuchsteller.isBehinderungsbestaetigung());
+			Objects.equals(getBeschreibung(), otherGesuchsteller.getBeschreibung());
 	}
 }

@@ -94,4 +94,12 @@ public enum EinstellungKey {
 
 	// Eine Einkommensverschlechterung wird nur berücksichtigt, wenn diese höher als 20% des Ausgangswertes ist.
 	PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
+
+	//Pensum Fachstelle soziale Integration
+	FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
+	FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION,
+
+	//Pensum Fachstelle soziale Integration
+	FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
+	FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
 }

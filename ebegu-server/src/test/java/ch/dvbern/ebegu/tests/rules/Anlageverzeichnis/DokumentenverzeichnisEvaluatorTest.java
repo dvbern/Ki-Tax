@@ -74,7 +74,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		testgesuch.setKindContainers(new HashSet<>());
 	}
 
-	private Kind createKind(Gesuch gesuch, String vorname, Kinderabzug ganzerAbzug, String fachstellename, boolean behinderungsbest) {
+	private Kind createKind(Gesuch gesuch, String vorname, Kinderabzug ganzerAbzug, String fachstellename) {
 		final KindContainer kindContainer = TestDataUtil.createDefaultKindContainer();
 		kindContainer.getKindJA().setNachname("Chavez");
 		kindContainer.getKindJA().setVorname(vorname);
@@ -83,7 +83,6 @@ public class DokumentenverzeichnisEvaluatorTest {
 		if (fachstellename != null) {
 			final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
 			defaultPensumFachstelle.getFachstelle().setName(fachstellename);
-			defaultPensumFachstelle.getFachstelle().setBehinderungsbestaetigung(behinderungsbest);
 			kindContainer.getKindJA().setPensumFachstelle(defaultPensumFachstelle);
 		} else {
 			kindContainer.getKindJA().setPensumFachstelle(null);
@@ -170,32 +169,16 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	@Test
-	public void kindDokumentFachstelleSozTest() {
+	public void kindDokumentFachstelleTest() {
 
 		clearKinder(testgesuch);
 		final String kindName = "Jan";
-		Kind kind = createKind(testgesuch, kindName, Kinderabzug.GANZER_ABZUG, "soz", false);
+		Kind kind = createKind(testgesuch, kindName, Kinderabzug.GANZER_ABZUG, "soz");
 
-		Assert.assertFalse(kindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBEST_BEH, kind));
-		Assert.assertTrue(kindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBEST_SOZ, kind));
-
-		final DokumentGrund dokumentGrund = getDokumentGrund();
-		Assert.assertEquals(DokumentTyp.FACHSTELLENBEST_SOZ, dokumentGrund.getDokumentTyp());
-	}
-
-	@Test
-	public void kindDokumentFachstelleBehTest() {
-
-		clearKinder(testgesuch);
-		final String kindName = "Jan";
-		Kind kind = createKind(testgesuch, kindName, Kinderabzug.GANZER_ABZUG, "beh", true);
-
-		Assert.assertTrue(kindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBEST_BEH, kind));
-		Assert.assertFalse(kindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBEST_SOZ, kind));
+		Assert.assertTrue(kindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBESTAETIGUNG, kind));
 
 		final DokumentGrund dokumentGrund = getDokumentGrund();
-
-		Assert.assertEquals(DokumentTyp.FACHSTELLENBEST_BEH, dokumentGrund.getDokumentTyp());
+		Assert.assertEquals(DokumentTyp.FACHSTELLENBESTAETIGUNG, dokumentGrund.getDokumentTyp());
 	}
 
 	private DokumentGrund getDokumentGrund() {
