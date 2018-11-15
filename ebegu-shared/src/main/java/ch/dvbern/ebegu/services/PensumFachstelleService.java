@@ -27,15 +27,6 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 public interface PensumFachstelleService {
 
 	/**
-	 * Aktualisiert die PensumFachstelle in der DB
-	 *
-	 * @param pensumFachstelle die PensumFachstelle als DTO
-	 * @return Die aktualisierte PensumFachstelle
-	 */
-	@Nonnull
-	PensumFachstelle savePensumFachstelle(@Nonnull PensumFachstelle pensumFachstelle);
-
-	/**
 	 * @param pensumFachstelleId PK (id) der PensumFachstelle
 	 * @return PensumFachstelle mit dem gegebenen key oder null falls nicht vorhanden
 	 */

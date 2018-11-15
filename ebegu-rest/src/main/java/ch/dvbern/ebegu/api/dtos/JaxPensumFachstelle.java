@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.IntegrationTyp;
+
 /**
  * DTO fuer Stammdaten der PensumFachstelle. Definiert ein bestimmtes Pensum und eine bestimmte Fachstelle und wird einem
  * Kind zugewiesen
@@ -31,11 +33,21 @@ public class JaxPensumFachstelle extends JaxAbstractIntegerPensumDTO {
 
 	private JaxFachstelle fachstelle;
 
+	private IntegrationTyp integrationTyp;
+
 	public JaxFachstelle getFachstelle() {
 		return fachstelle;
 	}
 
 	public void setFachstelle(JaxFachstelle fachstelle) {
 		this.fachstelle = fachstelle;
+	}
+
+	public IntegrationTyp getIntegrationTyp() {
+		return integrationTyp;
+	}
+
+	public void setIntegrationTyp(IntegrationTyp integrationTyp) {
+		this.integrationTyp = integrationTyp;
 	}
 }

@@ -80,7 +80,7 @@ public class CheckBerechtigungGemeindeValidatorTest {
 	}
 
 	private Benutzer createBenutzer(UserRole role, boolean addGemeinde) {
-		Benutzer benutzer = TestDataUtil.createBenutzer(role, Constants.ANONYMOUS_USER_USERNAME, null, null, mandant);
+		Benutzer benutzer = TestDataUtil.createBenutzer(role, Constants.ANONYMOUS_USER_USERNAME, null, null, mandant, null, null);
 		if (addGemeinde) {
 			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(gemeinde);
 		}

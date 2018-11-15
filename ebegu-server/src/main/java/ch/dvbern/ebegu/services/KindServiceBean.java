@@ -33,6 +33,10 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
@@ -83,6 +87,9 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	@Inject
 	private GesuchService gesuchService;
 
+	@Inject
+	private ValidatorFactory validatorFactory;
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
@@ -96,7 +103,17 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 
 		final KindContainer mergedKind = persistence.merge(kind);
 		mergedKind.getGesuch().addKindContainer(mergedKind);
+
+		// validate explicitly: If KindContainer didn't change but a PensumFachstelle did, the validation won't
+		// be automatically triggered
+		Validator validator = validatorFactory.getValidator();
+		Set<ConstraintViolation<KindContainer>> constraintViolations = validator.validate(mergedKind);
+		if (!constraintViolations.isEmpty()) {
+			throw new ConstraintViolationException(constraintViolations);
+		}
+
 		wizardStepService.updateSteps(kind.getGesuch().getId(), null, mergedKind.getKindJA(), WizardStepName.KINDER);
+
 		return mergedKind;
 	}
 

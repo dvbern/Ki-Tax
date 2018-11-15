@@ -31,16 +31,10 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 /**
  * Dokumente für Kinder:
  * <p>
- * Fachstellenbestätigung (soziale Indikation):
- * Notwendig, wenn Frage nach Kind Fachstelle involviert mit Ja beantwortet, und es wird nicht die „Fachstelle für
- * Behinderung“ ausgewählt (Eine bestimmte Fachstelle ist für die Bestätigung von Behinderungen zuständig)
- * Es ist entweder dieses Dokument oder die Fachstellenbestätigung Behinderung gefordert, aber nie beide
- * <p>
- * Fachstellenbestätigung (Behinderung):
- * Notwendig, wenn Frage nach Kind Fachstelle involviert mit Ja beantwortet, und es wird die „Fachstelle für
- * Behinderung“
- * ausgewählt (Eine bestimmte Fachstelle ist für die Bestätigung von Behinderungen zuständig)
- * Es ist entweder dieses Dokument oder die Fachstellenbestätigung Soziale Indikation gefordert, aber nie beide
+ * Fachstellenbestätigung:
+ * Notwendig, wenn Frage nach Kind Fachstelle involviert mit Ja beantwortet
+ * Es gibt nur ein Dokument, egal ob es soziale Integration oder sprachliche Integration ist.
+ * </p>
  **/
 public class KindDokumente extends AbstractDokumente<Kind, Object> {
 
@@ -55,15 +49,14 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 		for (KindContainer kindContainer : kindContainers) {
 			final Kind kindJA = kindContainer.getKindJA();
 
-			add(getDokument(kindContainer, kindJA, DokumentTyp.FACHSTELLENBEST_SOZ), anlageVerzeichnis);
-			add(getDokument(kindContainer, kindJA, DokumentTyp.FACHSTELLENBEST_BEH), anlageVerzeichnis);
+			add(getDokument(kindContainer, kindJA), anlageVerzeichnis);
 		}
 	}
 
 	@Nullable
-	private DokumentGrund getDokument(KindContainer kindContainer, @Nonnull Kind kindJA, DokumentTyp dokumentTyp) {
+	private DokumentGrund getDokument(KindContainer kindContainer, @Nonnull Kind kindJA) {
 		return getDokument(
-			dokumentTyp,
+			DokumentTyp.FACHSTELLENBESTAETIGUNG,
 			kindJA,
 			kindJA.getFullName(),
 			null,
@@ -75,19 +68,7 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")
 	@Override
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind kind) {
-		if (kind != null) {
-			switch (dokumentTyp) {
-			case FACHSTELLENBEST_SOZ:
-				return kind.getPensumFachstelle() != null && kind.getPensumFachstelle().getFachstelle() != null
-					&& !kind.getPensumFachstelle().getFachstelle().isBehinderungsbestaetigung();
-			case FACHSTELLENBEST_BEH:
-				return kind.getPensumFachstelle() != null && kind.getPensumFachstelle().getFachstelle() != null
-					&& kind.getPensumFachstelle().getFachstelle().isBehinderungsbestaetigung();
-			default:
-				return false;
-			}
-		}
-		return false;
+		return kind != null && kind.getPensumFachstelle() != null && kind.getPensumFachstelle().getFachstelle() != null;
 	}
 
 }

@@ -934,7 +934,6 @@ export default class EbeguRestUtil {
         this.abstractMutableEntityToRestObject(restFachstelle, fachstelle);
         restFachstelle.name = fachstelle.name;
         restFachstelle.beschreibung = fachstelle.beschreibung;
-        restFachstelle.behinderungsbestaetigung = fachstelle.behinderungsbestaetigung;
         restFachstelle.fachstelleAnspruch = fachstelle.fachstelleAnspruch;
         restFachstelle.fachstelleErweiterteBetreuung = fachstelle.fachstelleErweiterteBetreuung;
         return restFachstelle;
@@ -953,7 +952,6 @@ export default class EbeguRestUtil {
         this.parseAbstractMutableEntity(parsedFachstelle, receivedFachstelle);
         parsedFachstelle.name = receivedFachstelle.name;
         parsedFachstelle.beschreibung = receivedFachstelle.beschreibung;
-        parsedFachstelle.behinderungsbestaetigung = receivedFachstelle.behinderungsbestaetigung;
         parsedFachstelle.fachstelleAnspruch = receivedFachstelle.fachstelleAnspruch;
         parsedFachstelle.fachstelleErweiterteBetreuung = receivedFachstelle.fachstelleErweiterteBetreuung;
         return parsedFachstelle;
@@ -1511,6 +1509,7 @@ export default class EbeguRestUtil {
     private pensumFachstelleToRestObject(restPensumFachstelle: any, pensumFachstelle: TSPensumFachstelle): any {
         this.abstractDateRangeEntityToRestObject(restPensumFachstelle, pensumFachstelle);
         restPensumFachstelle.pensum = pensumFachstelle.pensum;
+        restPensumFachstelle.integrationTyp = pensumFachstelle.integrationTyp;
         if (pensumFachstelle.fachstelle) {
             restPensumFachstelle.fachstelle = this.fachstelleToRestObject({}, pensumFachstelle.fachstelle);
         }
@@ -1523,6 +1522,7 @@ export default class EbeguRestUtil {
         if (pensumFachstelleFromServer) {
             this.parseDateRangeEntity(pensumFachstelleTS, pensumFachstelleFromServer);
             pensumFachstelleTS.pensum = pensumFachstelleFromServer.pensum;
+            pensumFachstelleTS.integrationTyp = pensumFachstelleFromServer.integrationTyp;
             if (pensumFachstelleFromServer.fachstelle) {
                 pensumFachstelleTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), pensumFachstelleFromServer.fachstelle);

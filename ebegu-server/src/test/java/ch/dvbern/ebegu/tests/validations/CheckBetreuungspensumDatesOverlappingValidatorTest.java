@@ -46,7 +46,7 @@ public class CheckBetreuungspensumDatesOverlappingValidatorTest {
 		// see https://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/chapter-bootstrapping.html#_constraintvalidatorfactory
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		//wir verwenden dummy service daher geben wir hier null als em mit
-		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory(null));
+		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory());
 		this.customFactory = config.buildValidatorFactory();
 	}
 

@@ -16,13 +16,17 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -40,21 +44,20 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_pensum_fachstelle_fachstelle_id"))
 	private Fachstelle fachstelle;
 
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private IntegrationTyp integrationTyp;
+
+
 	public PensumFachstelle() {
-	}
-
-	public Fachstelle getFachstelle() {
-		return fachstelle;
-	}
-
-	public void setFachstelle(Fachstelle fachstelle) {
-		this.fachstelle = fachstelle;
 	}
 
 	@Nonnull
 	public PensumFachstelle copyPensumFachstelle(@Nonnull PensumFachstelle target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractPensumEntity(target, copyType);
 		target.setFachstelle(this.getFachstelle());
+		target.setIntegrationTyp(this.getIntegrationTyp());
 		return target;
 	}
 
@@ -75,6 +78,24 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 			return false;
 		}
 		final PensumFachstelle otherPensumFachstelle = (PensumFachstelle) other;
-		return EbeguUtil.isSameObject(getFachstelle(), otherPensumFachstelle.getFachstelle());
+		return EbeguUtil.isSameObject(getFachstelle(), otherPensumFachstelle.getFachstelle())
+			&& getIntegrationTyp() == otherPensumFachstelle.getIntegrationTyp();
+	}
+
+	public Fachstelle getFachstelle() {
+		return fachstelle;
+	}
+
+	public void setFachstelle(Fachstelle fachstelle) {
+		this.fachstelle = fachstelle;
+	}
+
+	@Nonnull
+	public IntegrationTyp getIntegrationTyp() {
+		return integrationTyp;
+	}
+
+	public void setIntegrationTyp(IntegrationTyp integrationTyp) {
+		this.integrationTyp = integrationTyp;
 	}
 }
