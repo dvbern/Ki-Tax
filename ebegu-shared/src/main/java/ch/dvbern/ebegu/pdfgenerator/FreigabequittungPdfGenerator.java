@@ -52,7 +52,7 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
-public class FreigabequittungPdfGenerator extends KibonPdfGenerator {
+public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 	private static final String FREIGABEQUITTUNG_TITLE = "PdfGeneration_Freigabequittung_Title";
 	private static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";

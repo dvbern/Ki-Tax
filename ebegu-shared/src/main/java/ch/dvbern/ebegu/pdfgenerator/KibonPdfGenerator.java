@@ -47,11 +47,15 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	private final Gesuch gesuch;
 
+	@Nonnull
+	private final GemeindeStammdaten gemeindeStammdaten;
+
 	private Locale sprache;
 
 
 	protected KibonPdfGenerator(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten stammdaten, final boolean draft) {
 		this.gesuch = gesuch;
+		this.gemeindeStammdaten = stammdaten;
 		initLocale(stammdaten);
 		initGenerator(stammdaten, draft);
 	}
@@ -60,11 +64,17 @@ public abstract class KibonPdfGenerator {
 	protected abstract String getDocumentTitle();
 
 	@Nonnull
+	protected abstract List<String> getEmpfaengerAdresse();
+
+	@Nonnull
+	protected abstract List<String> getAbsenderAdresse();
+
+	@Nonnull
 	protected abstract CustomGenerator getCustomGenerator();
 
 
 	public void generate(@Nonnull final OutputStream outputStream) throws InvoiceGeneratorException {
-		getPdfGenerator().generate(outputStream, getDocumentTitle(), getEmpfaengerHeader(), getCustomGenerator());
+		getPdfGenerator().generate(outputStream, getDocumentTitle(), getEmpfaengerAdresse(), getCustomGenerator());
 	}
 
 	@Nonnull
@@ -75,6 +85,11 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected Gesuch getGesuch() {
 		return gesuch;
+	}
+
+	@Nonnull
+	protected GemeindeStammdaten getGemeindeStammdaten() {
+		return gemeindeStammdaten;
 	}
 
 	private void initLocale(@Nonnull GemeindeStammdaten stammdaten) {
@@ -90,11 +105,11 @@ public abstract class KibonPdfGenerator {
 	}
 
 	private void initGenerator(@Nonnull GemeindeStammdaten stammdaten, final boolean draft) {
-		this.pdfGenerator = PdfGenerator.create(stammdaten.getLogoContent(), getAbsenderHeader(stammdaten), draft);
+		this.pdfGenerator = PdfGenerator.create(stammdaten.getLogoContent(), getAbsenderAdresse(), draft);
 	}
 
 	@Nonnull
-	protected List<String> getAbsenderHeader(@Nonnull GemeindeStammdaten stammdaten) {
+	protected List<String> getGemeindeAdresse(@Nonnull GemeindeStammdaten stammdaten) {
 		Adresse adresse = stammdaten.getAdresse();
 		List<String> gemeindeHeader = Arrays.asList(
 			KibonPrintUtil.getAddressAsString(adresse),
@@ -109,7 +124,7 @@ public abstract class KibonPdfGenerator {
 	}
 
 	@Nonnull
-	protected List<String> getEmpfaengerHeader() {
+	protected List<String> getFamilieAdresse() {
 		final List<String> empfaengerAdresse = new ArrayList<>();
 		empfaengerAdresse.add(translate(FAMILIE));
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()));

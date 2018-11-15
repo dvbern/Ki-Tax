@@ -29,7 +29,7 @@ import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 
-public class MahnungPdfGenerator extends KibonPdfGenerator {
+public class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private boolean zweiteMahnung;
 

@@ -65,7 +65,7 @@ public class KibonPdfGeneratorTest {
 
 		final FreigabequittungPdfGenerator quittungAlleinstehend = new FreigabequittungPdfGenerator(gesuch_alleinstehend, stammdaten, false,
 			benoetigteUnterlagen);
-		List<String> strings = quittungAlleinstehend.getAbsenderHeader(stammdaten);
+		List<String> strings = quittungAlleinstehend.getGemeindeAdresse(stammdaten);
 		Assert.assertNotNull(strings);
 		Assert.assertEquals(8, strings.size());
 	}

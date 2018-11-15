@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import com.lowagie.text.Document;
 
-public class BegleitschreibenPdfGenerator extends KibonPdfGenerator {
+public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
 	public BegleitschreibenPdfGenerator(
 		@Nonnull Gesuch gesuch,

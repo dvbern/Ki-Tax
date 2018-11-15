@@ -46,7 +46,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfLayoutConfiguration.class);
 
-	public PdfLayoutConfiguration(final byte[] gemeindeLogo, final List<String> gemeindeHeader) {
+	public PdfLayoutConfiguration(final byte[] gemeindeLogo, final List<String> absenderHeader) {
 		super(new AddressComponent(
 			null,
 			RECEIVER_LEFT_IN_MM,
@@ -55,8 +55,8 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 			ADRESSE_HEIGHT,
 			OnPage.FIRST));
 		applyLogo(gemeindeLogo);
-		if (gemeindeHeader != null && !gemeindeHeader.isEmpty()) {
-			setHeader(new PhraseRenderer(gemeindeHeader, LEFT_PAGE_DEFAULT_MARGIN_MM, RECEIVER_TOP_IN_MM, ADRESSE_WIDTH, ADRESSE_HEIGHT));
+		if (absenderHeader != null && !absenderHeader.isEmpty()) {
+			setHeader(new PhraseRenderer(absenderHeader, LEFT_PAGE_DEFAULT_MARGIN_MM, RECEIVER_TOP_IN_MM, ADRESSE_WIDTH, ADRESSE_HEIGHT));
 		}
 	}
 

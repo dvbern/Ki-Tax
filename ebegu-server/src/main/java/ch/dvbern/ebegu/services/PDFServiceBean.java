@@ -219,7 +219,7 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, GESUCHSTELLER,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, Verfuegung famGroessenVerfuegung,
+	public byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, @Nullable Verfuegung famGroessenVerfuegung,
 		boolean writeProtected) throws MergeDocException {
 
 		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");

@@ -41,7 +41,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals") //TODO (team) Entfernen, wenn Dummydaten ersetzt!
-public class VerfuegungPdfGenerator extends KibonPdfGenerator {
+public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	public enum Art {
 		NORMAL,

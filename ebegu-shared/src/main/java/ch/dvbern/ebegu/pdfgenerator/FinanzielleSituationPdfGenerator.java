@@ -37,7 +37,7 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals") //TODO (team) Entfernen, wenn Dummydaten ersetzt!
-public class FinanzielleSituationPdfGenerator extends KibonPdfGenerator {
+public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator {
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
