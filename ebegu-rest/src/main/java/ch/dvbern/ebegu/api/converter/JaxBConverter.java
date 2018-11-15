@@ -95,6 +95,7 @@ import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
@@ -198,6 +199,7 @@ import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -229,7 +231,7 @@ public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
 	public static final String DOSSIER_TO_ENTITY = "dossierToEntity";
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
 	@Inject
 	private GesuchstellerService gesuchstellerService;
 	@Inject
@@ -275,11 +277,9 @@ public class JaxBConverter extends AbstractConverter {
 	@Inject
 	private GemeindeJaxBConverter gemeindeConverter;
 	@Inject
-	private PensumFachstelleJaxBConverter pensumFachstelleConverter;
-	@Inject
 	private Persistence persistence;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
+	@Inject
+	private PensumFachstelleService pensumFachstelleService;
 
 	public JaxBConverter() {
 		//nop
@@ -1573,7 +1573,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
-		jaxKind.setPensumFachstelle(pensumFachstelleConverter.pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		return jaxKind;
 	}
 
@@ -1603,7 +1603,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		PensumFachstelle updtPensumFachstelle = null;
 		if (kindJAXP.getPensumFachstelle() != null) {
-			updtPensumFachstelle = pensumFachstelleConverter.toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
+			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
 		}
 		kind.setPensumFachstelle(updtPensumFachstelle);
 
@@ -3745,6 +3745,62 @@ public class JaxBConverter extends AbstractConverter {
 			stammdatenTagesschule.setModuleTagesschule(moduleTagesschuleComplete);
 		}
 		return jaxInstDaten;
+	}
+
+	@Nullable
+	public JaxPensumFachstelle pensumFachstelleToJax(@Nullable final PensumFachstelle persistedPensumFachstelle) {
+		if (persistedPensumFachstelle == null) {
+			return null;
+		}
+		final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
+		convertAbstractPensumFieldsToJAX(persistedPensumFachstelle, jaxPensumFachstelle);
+		jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
+		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
+		return jaxPensumFachstelle;
+	}
+
+	public PensumFachstelle pensumFachstelleToEntity(
+		final JaxPensumFachstelle pensumFachstelleJAXP,
+		final PensumFachstelle pensumFachstelle
+	) {
+		requireNonNull(pensumFachstelleJAXP.getFachstelle(), "Fachstelle muss existieren");
+		requireNonNull(
+			pensumFachstelleJAXP.getFachstelle().getId(),
+			"Fachstelle muss bereits gespeichert sein");
+		convertAbstractPensumFieldsToEntity(pensumFachstelleJAXP, pensumFachstelle);
+
+		final Optional<Fachstelle> fachstelleFromDB =
+			fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
+		if (fachstelleFromDB.isPresent()) {
+			// Fachstelle darf nicht vom Client ueberschrieben werden
+			pensumFachstelle.setFachstelle(fachstelleFromDB.get());
+		} else {
+			throw new EbeguEntityNotFoundException(
+				"pensumFachstelleToEntity",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				pensumFachstelleJAXP.getFachstelle()
+					.getId());
+		}
+		pensumFachstelle.setIntegrationTyp(pensumFachstelleJAXP.getIntegrationTyp());
+
+		return pensumFachstelle;
+	}
+
+	public PensumFachstelle toStorablePensumFachstelle(@Nonnull final JaxPensumFachstelle pensumFsToSave) {
+		PensumFachstelle pensumToMergeWith = new PensumFachstelle();
+		if (pensumFsToSave.getId() != null) {
+			final Optional<PensumFachstelle> pensumFachstelleOpt =
+				pensumFachstelleService.findPensumFachstelle(pensumFsToSave.getId());
+			if (pensumFachstelleOpt.isPresent()) {
+				pensumToMergeWith = pensumFachstelleOpt.get();
+			} else {
+				throw new EbeguEntityNotFoundException(
+					"toStorablePensumFachstelle",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					pensumFsToSave.getId());
+			}
+		}
+		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
 	}
 
 }

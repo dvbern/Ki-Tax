@@ -1098,6 +1098,7 @@ public final class TestDataUtil {
 		gesuch.setKindContainers(kindContainers);
 
 		saveInstitutionStammdatenIfNecessary(persistence, betreuung.getInstitutionStammdaten());
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		persistence.persist(gesuch);
 	}
 
@@ -1248,7 +1249,8 @@ public final class TestDataUtil {
 		EinstellungKey key,
 		String value,
 		Gesuchsperiode gesuchsperiode,
-		Persistence persistence) {
+		Persistence persistence
+	) {
 		Einstellung einstellung = new Einstellung(key, value, gesuchsperiode);
 		persistence.persist(einstellung);
 	}
@@ -1271,9 +1273,14 @@ public final class TestDataUtil {
 	}
 
 	public static Benutzer createBenutzerWithDefaultGemeinde(
-		UserRole role, String userName, @Nullable Traegerschaft traegerschaft,
-		@Nullable Institution institution, @Nonnull Mandant mandant, @Nonnull Persistence persistence) {
-		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant);
+		UserRole role, String userName,
+		@Nullable Traegerschaft traegerschaft,
+		@Nullable Institution institution,
+		@Nonnull Mandant mandant,
+		@Nonnull Persistence persistence,
+		@Nullable String name,
+		@Nullable String vorname) {
+		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant, name, vorname);
 		if (role.isRoleGemeindeabhaengig()) {
 			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getTestGemeinde(persistence));
 		}
@@ -1285,11 +1292,14 @@ public final class TestDataUtil {
 		String userName,
 		@Nullable Traegerschaft traegerschaft,
 		@Nullable Institution institution,
-		@Nonnull Mandant mandant) {
+		@Nonnull Mandant mandant,
+		@Nullable String nachname,
+		@Nullable String vorname
+	) {
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setUsername(userName);
-		benutzer.setNachname(Constants.ANONYMOUS_USER_USERNAME);
-		benutzer.setVorname(Constants.ANONYMOUS_USER_USERNAME);
+		benutzer.setNachname(nachname != null ? nachname : Constants.ANONYMOUS_USER_USERNAME);
+		benutzer.setVorname(vorname != null ? vorname : Constants.ANONYMOUS_USER_USERNAME);
 		benutzer.setEmail("e@e");
 		Berechtigung berechtigung = new Berechtigung();
 		berechtigung.setTraegerschaft(traegerschaft);
@@ -1306,7 +1316,7 @@ public final class TestDataUtil {
 		persistence.persist(mandant);
 		final Benutzer benutzer =
 			TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, UUID.randomUUID().toString(),
-				null, null, mandant, persistence);
+				null, null, mandant, persistence, null, null);
 		persistence.persist(benutzer);
 		return benutzer;
 	}
@@ -1322,7 +1332,7 @@ public final class TestDataUtil {
 			traegerschaft,
 			null,
 			mandant,
-			persistence);
+			persistence, null, null);
 		persistence.persist(benutzer);
 		return benutzer;
 	}
@@ -1337,14 +1347,19 @@ public final class TestDataUtil {
 		return dokument;
 	}
 
-	public static Benutzer createDummySuperAdmin(Persistence persistence, @Nullable Mandant mandant) {
+	public static Benutzer createDummySuperAdmin(
+		Persistence persistence,
+		@Nullable Mandant mandant,
+		@Nullable String name,
+		@Nullable String vorname
+	) {
 		//machmal brauchen wir einen dummy admin in der DB
 		if (mandant == null) {
 			mandant = TestDataUtil.createDefaultMandant();
 			persistence.persist(mandant);
 		}
 		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SUPER_ADMIN, "superadmin",
-			null, null, mandant, persistence);
+			null, null, mandant, persistence, name, vorname);
 		persistence.merge(benutzer);
 		return benutzer;
 	}

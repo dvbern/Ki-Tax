@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +40,8 @@ import static ch.dvbern.ebegu.test.util.JBossLoginContextFactory.createLoginCont
 public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEbeguRestLoginTest.class);
-	private LoginContext loginContext;
+	public static final String SUPERADMIN_NAME = "superadmin";
+	public LoginContext loginContext;
 
 	@Inject
 	private Persistence persistence;
@@ -47,10 +49,10 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 
 	@Before
 	public void performLogin() {
-		Mandant mandant = persistence.find(Mandant.class, "e3736eb8-6eef-40ef-9e52-96ab48d8f220");
-		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant);
+		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
+		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, SUPERADMIN_NAME);
 		try {
-			loginContext = JBossLoginContextFactory.createLoginContext("superadmin", "superadmin");
+			loginContext = JBossLoginContextFactory.createLoginContext(SUPERADMIN_NAME, SUPERADMIN_NAME);
 			loginContext.login();
 		} catch (LoginException ex) {
 			LOG.error("Konnte dummy login nicht vornehmen fuer ArquillianTests ", ex);
@@ -76,7 +78,7 @@ public abstract class AbstractEbeguRestLoginTest extends AbstractEbeguRestTest {
 		}
 
 		Mandant mandant = persistence.find(Mandant.class, "e3736eb8-6eef-40ef-9e52-96ab48d8f220");
-		Benutzer saja = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, persistence);
+		Benutzer saja = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja", null, null, mandant, persistence, null, null);
 		persistence.persist(saja);
 		return saja;
 	}

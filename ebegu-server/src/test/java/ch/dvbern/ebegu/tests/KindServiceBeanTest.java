@@ -24,6 +24,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -47,6 +48,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -84,35 +86,36 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 	}
 
-//	@Test
-//	public void createAndUpdatekindTest() {
-//		assertNotNull(kindService);
-//		Gesuch erstgesuch = createTestGesuch();
-//		KindContainer persitedKind = persistKind(erstgesuch);
-//
-//		Optional<KindContainer> kind = kindService.findKind(persitedKind.getId());
-//		assertTrue(kind.isPresent());
-//		KindContainer savedKind = kind.get();
-//		assertNotNull(persitedKind.getKindGS());
-//		assertNotNull(savedKind.getKindGS());
-//		assertEquals(persitedKind.getKindGS().getNachname(), savedKind.getKindGS().getNachname());
-//		assertEquals(persitedKind.getKindJA().getNachname(), savedKind.getKindJA().getNachname());
-//
-//		assertNotEquals("Neuer Name", persitedKind.getKindGS().getNachname());
-//		persitedKind.getKindGS().setNachname("Neuer Name");
-//		kindService.saveKind(persitedKind);
-//
-//		Optional<KindContainer> updatedKind = kindService.findKind(persitedKind.getId());
-//		assertTrue(updatedKind.isPresent());
-//		KindContainer kindContainer = updatedKind.get();
-//		assertNotNull(kindContainer.getKindGS());
-//		assertEquals("Neuer Name", kindContainer.getKindGS().getNachname());
-//		assertEquals(new Integer(1), kindContainer.getNextNumberBetreuung());
-//		assertEquals(new Integer(1), kindContainer.getKindNummer());
-//		Optional<Fall> fallOptional = fallService.findFall(erstgesuch.getFall().getId());
-//		assertTrue(fallOptional.isPresent());
-//		assertEquals(new Integer(2), fallOptional.get().getNextNumberKind());
-//	}
+	@Test
+	public void createAndUpdatekindTest() {
+		assertNotNull(kindService);
+		Gesuch erstgesuch = createTestGesuch();
+		final KindContainer persistedKind = erstgesuch.getKindContainers().iterator().next();
+
+		Optional<KindContainer> optKind = kindService.findKind(persistedKind.getId());
+		assertTrue(optKind.isPresent());
+		KindContainer foundKind = optKind.get();
+
+		assertNotNull(persistedKind.getKindJA());
+		assertNotNull(foundKind.getKindJA());
+		assertEquals(persistedKind.getKindJA().getNachname(), foundKind.getKindJA().getNachname());
+		assertNotEquals("Neuer Name", foundKind.getKindJA().getNachname());
+
+		foundKind.getKindJA().setNachname("Neuer Name");
+		persistence.merge(foundKind);
+
+		Optional<KindContainer> optUpdatedKind = kindService.findKind(foundKind.getId());
+		assertTrue(optUpdatedKind.isPresent());
+		KindContainer kindContainer = optUpdatedKind.get();
+		assertNotNull(kindContainer.getKindJA());
+		assertEquals("Neuer Name", kindContainer.getKindJA().getNachname());
+		assertEquals(new Integer(3), kindContainer.getNextNumberBetreuung());
+		assertEquals(new Integer(1), kindContainer.getKindNummer());
+
+		Optional<Fall> fallOptional = fallService.findFall(erstgesuch.getFall().getId());
+		assertTrue(fallOptional.isPresent());
+		assertEquals(new Integer(2), fallOptional.get().getNextNumberKind());
+	}
 
 	@Test
 	public void addKindInMutationTest() {

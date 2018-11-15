@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.converter.PensumFachstelleJaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
@@ -33,6 +32,7 @@ import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
 import ch.dvbern.ebegu.api.resource.KindResource;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
@@ -74,15 +74,17 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private JaxBConverter converter;
 	@Inject
-	private PensumFachstelleJaxBConverter pensumFachstelleConverter;
-	@Inject
 	private GemeindeJaxBConverter gemeindeConverter;
 	@Inject
 	private Persistence persistence;
 
 	@Test
 	public void createKindTest() {
-		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
+		final Gesuchsperiode gesuchsperiode1718 = persistence.merge(TestDataUtil.createGesuchsperiode1718());
+		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(converter.gesuchsperiodeToJAX(gesuchsperiode1718), null);
+
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
+
 		JaxGemeinde persistedGemeinde = gemeindeConverter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
 		Mandant persistedMandant = persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
 		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));
@@ -105,8 +107,8 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 		Assert.assertNotNull(jaxPensumFachstelle);
 		jaxPensumFachstelle.setFachstelle(fachstelleResource.saveFachstelle(jaxPensumFachstelle.getFachstelle(), DUMMY_URIINFO, DUMMY_RESPONSE));
 		PensumFachstelle returnedPensumFachstelle = pensumFachstelleService.savePensumFachstelle(
-			pensumFachstelleConverter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
-		JaxPensumFachstelle convertedPensumFachstelle = pensumFachstelleConverter.pensumFachstelleToJax(returnedPensumFachstelle);
+			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
+		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);
 		testJaxKindContainer.getKindGS().setPensumFachstelle(convertedPensumFachstelle);
 		testJaxKindContainer.getKindJA().setPensumFachstelle(convertedPensumFachstelle);
 
