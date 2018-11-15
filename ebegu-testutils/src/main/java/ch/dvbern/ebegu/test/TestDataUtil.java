@@ -113,6 +113,7 @@ import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
@@ -137,6 +138,10 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
@@ -414,7 +419,6 @@ public final class TestDataUtil {
 		Fachstelle fachstelle = new Fachstelle();
 		fachstelle.setName("Fachstelle1");
 		fachstelle.setBeschreibung("Kinder Fachstelle");
-		fachstelle.setBehinderungsbestaetigung(true);
 		fachstelle.setFachstelleAnspruch(true);
 		fachstelle.setFachstelleErweiterteBetreuung(false);
 		return fachstelle;
@@ -615,6 +619,7 @@ public final class TestDataUtil {
 		pensumFachstelle.setPensum(50);
 		pensumFachstelle.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
 		pensumFachstelle.setFachstelle(createDefaultFachstelle());
+		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
 		return pensumFachstelle;
 	}
 
@@ -1105,6 +1110,7 @@ public final class TestDataUtil {
 		gesuch.setKindContainers(kindContainers);
 
 		saveInstitutionStammdatenIfNecessary(persistence, betreuung.getInstitutionStammdaten());
+		TestDataUtil.prepareParameters(gesuch.getGesuchsperiode(), persistence);
 		persistence.persist(gesuch);
 	}
 
@@ -1247,13 +1253,18 @@ public final class TestDataUtil {
 		saveEinstellung(MIN_VERGUENSTIGUNG_PRO_STD, "0.70", gesuchsperiode, persistence);
 		saveEinstellung(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode, persistence);
 		saveEinstellung(MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode, persistence);
+		saveEinstellung(FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION, "20", gesuchsperiode, persistence);
+		saveEinstellung(FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION, "60", gesuchsperiode, persistence);
+		saveEinstellung(FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
+		saveEinstellung(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
 		EinstellungKey key,
 		String value,
 		Gesuchsperiode gesuchsperiode,
-		Persistence persistence) {
+		Persistence persistence
+	) {
 		Einstellung einstellung = new Einstellung(key, value, gesuchsperiode);
 		persistence.persist(einstellung);
 	}
@@ -1276,9 +1287,14 @@ public final class TestDataUtil {
 	}
 
 	public static Benutzer createBenutzerWithDefaultGemeinde(
-		UserRole role, String userName, @Nullable Traegerschaft traegerschaft,
-		@Nullable Institution institution, @Nonnull Mandant mandant, @Nonnull Persistence persistence) {
-		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant);
+		UserRole role, String userName,
+		@Nullable Traegerschaft traegerschaft,
+		@Nullable Institution institution,
+		@Nonnull Mandant mandant,
+		@Nonnull Persistence persistence,
+		@Nullable String name,
+		@Nullable String vorname) {
+		Benutzer benutzer = createBenutzer(role, userName, traegerschaft, institution, mandant, name, vorname);
 		if (role.isRoleGemeindeabhaengig()) {
 			benutzer.getBerechtigungen().iterator().next().getGemeindeList().add(getTestGemeinde(persistence));
 		}
@@ -1290,11 +1306,14 @@ public final class TestDataUtil {
 		String userName,
 		@Nullable Traegerschaft traegerschaft,
 		@Nullable Institution institution,
-		@Nonnull Mandant mandant) {
+		@Nonnull Mandant mandant,
+		@Nullable String nachname,
+		@Nullable String vorname
+	) {
 		final Benutzer benutzer = new Benutzer();
 		benutzer.setUsername(userName);
-		benutzer.setNachname(Constants.ANONYMOUS_USER_USERNAME);
-		benutzer.setVorname(Constants.ANONYMOUS_USER_USERNAME);
+		benutzer.setNachname(nachname != null ? nachname : Constants.ANONYMOUS_USER_USERNAME);
+		benutzer.setVorname(vorname != null ? vorname : Constants.ANONYMOUS_USER_USERNAME);
 		benutzer.setEmail("e@e");
 		Berechtigung berechtigung = new Berechtigung();
 		berechtigung.setTraegerschaft(traegerschaft);
@@ -1311,7 +1330,7 @@ public final class TestDataUtil {
 		persistence.persist(mandant);
 		final Benutzer benutzer =
 			TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, UUID.randomUUID().toString(),
-				null, null, mandant, persistence);
+				null, null, mandant, persistence, null, null);
 		persistence.persist(benutzer);
 		return benutzer;
 	}
@@ -1327,7 +1346,7 @@ public final class TestDataUtil {
 			traegerschaft,
 			null,
 			mandant,
-			persistence);
+			persistence, null, null);
 		persistence.persist(benutzer);
 		return benutzer;
 	}
@@ -1342,14 +1361,19 @@ public final class TestDataUtil {
 		return dokument;
 	}
 
-	public static Benutzer createDummySuperAdmin(Persistence persistence, @Nullable Mandant mandant) {
+	public static Benutzer createDummySuperAdmin(
+		Persistence persistence,
+		@Nullable Mandant mandant,
+		@Nullable String name,
+		@Nullable String vorname
+	) {
 		//machmal brauchen wir einen dummy admin in der DB
 		if (mandant == null) {
 			mandant = TestDataUtil.createDefaultMandant();
 			persistence.persist(mandant);
 		}
 		final Benutzer benutzer = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SUPER_ADMIN, "superadmin",
-			null, null, mandant, persistence);
+			null, null, mandant, persistence, name, vorname);
 		persistence.merge(benutzer);
 		return benutzer;
 	}

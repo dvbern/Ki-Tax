@@ -15,13 +15,18 @@
 
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
+import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
 import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import TSEinstellung from '../../../models/TSEinstellung';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
@@ -33,6 +38,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IKindStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
+import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import IPromise = angular.IPromise;
@@ -60,8 +66,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         '$q',
         '$translate',
         '$timeout',
+        'EinstellungRS',
+        'GlobalCacheService',
         'AuthServiceRS',
     ];
+    public integrationTypes: Array<string>;
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;
     public einschulungTypValues: Array<TSEinschulungTyp>;
@@ -71,6 +80,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     public fachstelleId: string;
     public allowedRoles: Array<TSRole>;
+    public minValueAllowed: number = 0;
+    public maxValueAllowed: number = 100;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -82,6 +93,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
         $timeout: ITimeoutService,
+        private readonly einstellungRS: EinstellungRS,
+        private readonly globalCacheService: GlobalCacheService,
         private readonly authServiceRS: AuthServiceRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
@@ -105,9 +118,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private initViewModel(): void {
+        this.integrationTypes = EnumEx.getNames(TSIntegrationTyp);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
         this.einschulungTypValues = getTSEinschulungTypValues();
+        this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
     }
@@ -121,6 +136,46 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (!this.gesuchModelManager.getFachstellenAnspruchList()
             || this.gesuchModelManager.getFachstellenAnspruchList().length <= 0) {
             this.gesuchModelManager.updateFachstellenAnspruchList();
+        }
+    }
+
+    private getEinstellungenFachstelle(
+        minValueEinstellungKey: TSEinstellungKey,
+        maxValueEinstellungKey: TSEinstellungKey
+    ): void {
+        this.einstellungRS.getAllEinstellungenBySystemCached(
+            this.gesuchModelManager.getGesuchsperiode().id,
+            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)
+        ).then((response: TSEinstellung[]) => {
+            response.filter(r => r.key === minValueEinstellungKey)
+                .forEach(value => { this.minValueAllowed = Number(value.value); });
+            response.filter(r => r.key === maxValueEinstellungKey)
+                .forEach(value => { this.maxValueAllowed = Number(value.value); });
+
+            if (this.isOnlyOneValueAllowed()) {
+                this.getModel().pensumFachstelle.pensum = this.minValueAllowed;
+            }
+        });
+    }
+
+    private isOnlyOneValueAllowed(): boolean {
+        return this.minValueAllowed === this.maxValueAllowed;
+    }
+
+    public loadEinstellungenForIntegration(): void {
+        if (!this.model.extractPensumFachstelle()) {
+            return;
+        }
+        if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SOZIALE_INTEGRATION) {
+            this.getEinstellungenFachstelle(
+                TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
+                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION,
+            );
+        } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION) {
+            this.getEinstellungenFachstelle(
+                TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
+                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
+            );
         }
     }
 
@@ -255,8 +310,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             const bisText = fachstelle.gueltigkeit.gueltigBis ?
                 DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
                 '31.12.9999';
+            const integrationTyp = this.$translate.instant(fachstelle.integrationTyp);
             return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
                 name: fachstelle.fachstelle.name,
+                integration: integrationTyp,
                 pensum: fachstelle.pensum,
                 von: vonText,
                 bis: bisText,

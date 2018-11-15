@@ -44,9 +44,8 @@ import org.hibernate.envers.Audited;
 @Audited
 @Entity
 @Table(
-	indexes = {
-		@Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
-	})
+	indexes = @Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
+)
 public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;

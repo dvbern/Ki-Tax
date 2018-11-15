@@ -67,4 +67,5 @@ public interface KindService {
 	 */
 	@Nonnull
 	Set<KindDubletteDTO> getKindDubletten(@Nonnull String gesuchId);
+
 }
