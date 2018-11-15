@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 
 import static ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator.createInitialenRestanspruch;
 
@@ -132,7 +133,7 @@ public class EbeguRuleTestsHelper {
 		betreuungspensumContainer.setBetreuung(betreuung);
 		DateRange gueltigkeit = new DateRange(von, bis);
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
+		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(pensum));
 		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheBetreuungskosten(monatlicheBetreuungskosten);
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 
