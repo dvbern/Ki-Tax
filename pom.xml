@@ -668,6 +668,11 @@
                 <artifactId>dvbern-lib-invoice</artifactId>
                 <version>4.3.0</version>
             </dependency>
+            <dependency>
+                <artifactId>openpdf</artifactId>
+                <groupId>com.github.librepdf</groupId>
+                <version>1.2.5</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>

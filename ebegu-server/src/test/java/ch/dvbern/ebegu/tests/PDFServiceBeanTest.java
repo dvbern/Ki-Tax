@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.tests;
 
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -41,16 +42,17 @@ import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.EbeguVorlageService;
 import ch.dvbern.ebegu.services.PDFServiceBean;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
-import ch.dvbern.ebegu.test.TestDataUtil;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
 import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -246,11 +248,13 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
 		assertTrue("Absenderadresse ist nicht Jugendamt",
 			pdfTextExtractor.getTextFromPage(1).startsWith("Jugendamt"));
+		// Es gibt einen Bug im PdfTextExtractor: Die Wörter werden mit zwei Spaces getrennt. Im "richtigen" PDF
+		// ist dies aber nicht der Fall!
 		assertTrue("Second page should begin with this text.",
-			pdfTextExtractor.getTextFromPage(2).startsWith("Erst nach Eingang dieser"));
+			pdfTextExtractor.getTextFromPage(2).startsWith("Erst  nach  Eingang  dieser"));
 
 		pdfRreader.close();
 	}
