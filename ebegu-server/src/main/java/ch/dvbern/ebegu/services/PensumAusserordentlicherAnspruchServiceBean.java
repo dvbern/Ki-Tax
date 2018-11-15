@@ -105,7 +105,6 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 			Objects.requireNonNull(betreuung.getVerfuegung());
 			// Ermitteln, ob die Minimales-Erwerbspensum-Regel zugeschlagen hat: Kommt die entsprechende
 			// Bemerkung vor?
-			//TODO Reviewer: Bessere Idee?
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
 				String message = ServerMessageUtil.translateEnumValue(MsgKey.ERWERBSPENSUM_MINIMUM_MSG);
 				message = StringUtils.substringBefore(message, "{");
