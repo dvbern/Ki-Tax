@@ -1640,6 +1640,47 @@ public class JaxBConverter extends AbstractConverter {
 		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
 	}
 
+	@Nullable
+	public JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchToJax(
+		@Nullable final PensumAusserordentlicherAnspruch persistedPensumAusserordentlicherAnspruch) {
+
+		if (persistedPensumAusserordentlicherAnspruch == null) {
+			return null;
+		}
+		final JaxPensumAusserordentlicherAnspruch jaxPensumAusserordentlicherAnspruch =
+			new JaxPensumAusserordentlicherAnspruch();
+		convertAbstractPensumFieldsToJAX(persistedPensumAusserordentlicherAnspruch, jaxPensumAusserordentlicherAnspruch);
+		jaxPensumAusserordentlicherAnspruch.setBegruendung(persistedPensumAusserordentlicherAnspruch.getBegruendung());
+		return jaxPensumAusserordentlicherAnspruch;
+	}
+
+	public PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchToEntity(
+		@Nonnull final JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchJAXP,
+		@Nonnull final PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch) {
+
+		convertAbstractPensumFieldsToEntity(pensumAusserordentlicherAnspruchJAXP, pensumAusserordentlicherAnspruch);
+		pensumAusserordentlicherAnspruch.setBegruendung(pensumAusserordentlicherAnspruchJAXP.getBegruendung());
+		return pensumAusserordentlicherAnspruch;
+	}
+
+	@Nonnull
+	private PensumAusserordentlicherAnspruch toStorablePensumAusserordentlicherAnspruch(
+		@Nonnull final JaxPensumAusserordentlicherAnspruch pensumFsToSave) {
+
+		PensumAusserordentlicherAnspruch pensumToMergeWith = new PensumAusserordentlicherAnspruch();
+		if (pensumFsToSave.getId() != null) {
+			final Optional<PensumAusserordentlicherAnspruch> pensumAusserordentlicherAnspruchOpt =
+				pensumAusserordentlicherAnspruchService.findPensumAusserordentlicherAnspruch(pensumFsToSave.getId());
+			if (pensumAusserordentlicherAnspruchOpt.isPresent()) {
+				pensumToMergeWith = pensumAusserordentlicherAnspruchOpt.get();
+			} else {
+				throw new EbeguEntityNotFoundException("toStorablePensumAusserordentlicherAnspruch",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, pensumFsToSave.getId());
+			}
+		}
+		return pensumAusserordentlicherAnspruchToEntity(pensumFsToSave, pensumToMergeWith);
+	}
+
 	public JaxKindContainer kindContainerToJAX(final KindContainer persistedKind) {
 		final JaxKindContainer jaxKindContainer = new JaxKindContainer();
 		convertAbstractVorgaengerFieldsToJAX(persistedKind, jaxKindContainer);
@@ -1669,6 +1710,13 @@ public class JaxBConverter extends AbstractConverter {
 			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
 		}
 		kind.setPensumFachstelle(updtPensumFachstelle);
+
+		PensumAusserordentlicherAnspruch updtPensumAusserordentlicherAnspruch = null;
+		if (kindJAXP.getPensumAusserordentlicherAnspruch() != null) {
+			updtPensumAusserordentlicherAnspruch = toStorablePensumAusserordentlicherAnspruch(
+				kindJAXP.getPensumAusserordentlicherAnspruch());
+		}
+		kind.setPensumAusserordentlicherAnspruch(updtPensumAusserordentlicherAnspruch);
 
 		return kind;
 	}
