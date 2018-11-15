@@ -244,7 +244,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 			jaxPensumFachstelle.getFachstelle(),
 			DUMMY_URIINFO,
 			DUMMY_RESPONSE));
-		PensumFachstelle returnedPensumFachstelle = pensumFachstelleService.savePensumFachstelle(
+		PensumFachstelle returnedPensumFachstelle = persistence.merge(
 			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);
 		jaxKind.getKindGS().setPensumFachstelle(convertedPensumFachstelle);

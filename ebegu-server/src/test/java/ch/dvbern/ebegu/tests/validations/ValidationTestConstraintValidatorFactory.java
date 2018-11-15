@@ -15,14 +15,11 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
-import javax.annotation.Nullable;
-import javax.persistence.EntityManagerFactory;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorFactory;
 import javax.validation.Validation;
 
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean;
 import ch.dvbern.ebegu.validators.CheckBetreuungspensumValidator;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
@@ -34,10 +31,8 @@ import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
  */
 public class ValidationTestConstraintValidatorFactory implements ConstraintValidatorFactory {
 
-	private final EntityManagerFactory entityManagerFactory;
 
-	public ValidationTestConstraintValidatorFactory(@Nullable EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
+	public ValidationTestConstraintValidatorFactory() {
 	}
 
 	@Override
@@ -45,14 +40,14 @@ public class ValidationTestConstraintValidatorFactory implements ConstraintValid
 		if (key.equals(CheckBetreuungspensumValidator.class)) {
 			//Mock Service for Parameters
 			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
-			//noinspection unchecked
-			return (T) new CheckBetreuungspensumValidator(dummyEinstellungenService, entityManagerFactory);
+			//noinspection unchecked,ConstantConditions Der DummyService laesst null zu, in den Tests ist es immer null
+			return (T) new CheckBetreuungspensumValidator(dummyEinstellungenService, null);
 		}
 		if (key.equals(CheckPensumFachstelleValidator.class)) {
 			//Mock Service for Parameters
 			EinstellungService dummyEinstellungenService = new EinstellungDummyServiceBean();
-			//noinspection unchecked,ConstantConditions
-			return (T) new CheckPensumFachstelleValidator(dummyEinstellungenService, entityManagerFactory);
+			//noinspection unchecked,ConstantConditions Der DummyService laesst null zu, in den Tests ist es immer null
+			return (T) new CheckPensumFachstelleValidator(dummyEinstellungenService, null);
 		}
 		ConstraintValidatorFactory delegate = Validation.byDefaultProvider().configure().getDefaultConstraintValidatorFactory();
 		return delegate.getInstance(key);

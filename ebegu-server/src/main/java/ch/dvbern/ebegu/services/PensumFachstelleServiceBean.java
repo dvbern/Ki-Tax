@@ -20,22 +20,12 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer pensumFachstelle
@@ -46,16 +36,6 @@ public class PensumFachstelleServiceBean extends AbstractBaseService implements 
 
 	@Inject
 	private Persistence persistence;
-
-	@Override
-	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
-	public PensumFachstelle savePensumFachstelle(@Nonnull PensumFachstelle pensumFachstelle) {
-		// WARNING! This service should be used only for tests. The PensumFachstelle will only be validated with
-		// CheckPensumFachstelleValidator when saving the KindContainer
-		Objects.requireNonNull(pensumFachstelle);
-		return persistence.merge(pensumFachstelle);
-	}
 
 	@Override
 	@Nonnull

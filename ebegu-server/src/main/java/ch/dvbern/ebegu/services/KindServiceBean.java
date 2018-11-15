@@ -22,14 +22,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -51,7 +48,6 @@ import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
-import ch.dvbern.ebegu.entities.Kind_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -199,33 +195,6 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 			throw new EbeguEntityNotFoundException("getKindDubletten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId);
 		}
 		return dublettenOfAllKinder;
-	}
-
-	@Nonnull
-	@Override
-	public Optional<KindContainer> findKindFromPensumFachstelle(@Nonnull String pensumFachstelleId, @Nullable EntityManager em) {
-		if (em == null) {
-			em = persistence.getEntityManager();
-		}
-
-		final CriteriaBuilder cb = em.getCriteriaBuilder();
-		final CriteriaQuery<KindContainer> query = cb.createQuery(KindContainer.class);
-
-		Root<KindContainer> root = query.from(KindContainer.class);
-		Join<KindContainer, Kind> joinKind = root.join(KindContainer_.kindJA, JoinType.LEFT);
-
-		Predicate predicatePensumFachstelle = cb
-			.equal(joinKind.get(Kind_.pensumFachstelle).get(AbstractEntity_.id), pensumFachstelleId);
-
-		query.where(predicatePensumFachstelle);
-
-
-		try {
-			final Optional<KindContainer> singleResult = Optional.ofNullable(em.createQuery(query).getSingleResult());
-			return singleResult;
-		} catch (NoResultException e) {
-			return Optional.empty();
-		}
 	}
 
 	@Nonnull

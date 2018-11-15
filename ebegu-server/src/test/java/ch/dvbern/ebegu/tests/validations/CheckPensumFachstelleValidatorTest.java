@@ -47,7 +47,7 @@ public class CheckPensumFachstelleValidatorTest {
 	public void setUp() {
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		final ValidationTestConstraintValidatorFactory constraintValidatorFactory =
-			new ValidationTestConstraintValidatorFactory(null);
+			new ValidationTestConstraintValidatorFactory();
 		config.constraintValidatorFactory(constraintValidatorFactory);
 		this.customFactory = config.buildValidatorFactory();
 	}

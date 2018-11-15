@@ -94,6 +94,7 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		final Gesuchsperiode gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
 		final PensumFachstelle pensumFachstelle = kindContainer.getKindJA().getPensumFachstelle();
 
+		@SuppressWarnings("ConstantConditions") // Im DummyService kann es null sein und ist auch null in den Tests!
 		Integer minValueAllowed = getValueAsInteger(
 			getMinValueParamFromIntegrationTyp(pensumFachstelle.getIntegrationTyp()),
 			gemeinde, gesuchsperiode, em);
@@ -138,10 +139,10 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		@Nonnull EinstellungKey key,
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nullable EntityManager em
+		@Nonnull EntityManager em
 	) {
 		Einstellung value = einstellungService
-			.findEinstellung(key, gemeinde, gesuchsperiode, em); //TODO nullable oder eben nicht? widersprüchlich
+			.findEinstellung(key, gemeinde, gesuchsperiode, em);
 		return value.getValueAsInteger();
 	}
 

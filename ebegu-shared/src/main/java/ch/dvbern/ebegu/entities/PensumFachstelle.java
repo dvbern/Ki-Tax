@@ -90,6 +90,7 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 		this.fachstelle = fachstelle;
 	}
 
+	@Nonnull
 	public IntegrationTyp getIntegrationTyp() {
 		return integrationTyp;
 	}
