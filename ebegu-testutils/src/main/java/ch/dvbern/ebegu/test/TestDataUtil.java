@@ -145,6 +145,8 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG;
@@ -833,6 +835,7 @@ public final class TestDataUtil {
 		Betreuung betreuung = new Betreuung();
 		betreuung.setKind(new KindContainer());
 		betreuung.getKind().setKindJA(new Kind());
+		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
@@ -1233,6 +1236,8 @@ public final class TestDataUtil {
 		saveEinstellung(ZUSCHLAG_BEHINDERUNG_PRO_STD, "4.25", gesuchsperiode, persistence);
 		saveEinstellung(MIN_VERGUENSTIGUNG_PRO_TG, "7", gesuchsperiode, persistence);
 		saveEinstellung(MIN_VERGUENSTIGUNG_PRO_STD, "0.70", gesuchsperiode, persistence);
+		saveEinstellung(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode, persistence);
+		saveEinstellung(MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

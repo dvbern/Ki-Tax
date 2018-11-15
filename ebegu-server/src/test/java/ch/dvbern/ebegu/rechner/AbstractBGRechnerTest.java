@@ -122,6 +122,14 @@ public class AbstractBGRechnerTest {
 			gesuchsperiode);
 		einstellungen.put(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, bgBisUndMitSchulstufe);
 
+		Einstellung minErwerbspensumNichtEingeschult = new Einstellung(
+			EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode);
+		einstellungen.put(EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, minErwerbspensumNichtEingeschult);
+
+		Einstellung minErwerbspensumEingeschult = new Einstellung(
+			EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
+		einstellungen.put(EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT, minErwerbspensumEingeschult);
+
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen);
 		return new BetreuungsgutscheinEvaluator(rules);

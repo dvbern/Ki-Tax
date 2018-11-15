@@ -411,6 +411,23 @@ public class ErwerbspensumRuleTest {
 		assertTrue(bemerkungen.contains("Der Zuschlag zum Beschäftigungspensum beträgt max."));
 	}
 
+	@Test
+	public void testMinimaleErwerbspensen() {
+		Betreuung betreuung = createGesuch(false);
+		Gesuch gesuch = betreuung.extractGesuch();
+
+		assertNotNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 15, 0));
+
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(15, result.get(0).getErwerbspensumGS1().intValue());
+		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
+		assertFalse(result.get(0).isBezahltVollkosten());
+		assertFalse(result.get(0).getBemerkungen().isEmpty());
+	}
+
 	private Betreuung createGesuch(final boolean gs2) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
 		final Gesuch gesuch = betreuung.extractGesuch();
