@@ -68,6 +68,14 @@ public enum MathUtil {
 		if (src == null) {
 			return null;
 		}
+		return fromNullSafe(src);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
+	@Nonnull
+	public BigDecimal fromNullSafe(@Nonnull BigDecimal src) {
 		BigDecimal val = BigDecimal.ZERO
 			.setScale(scale, roundingMode)
 			.add(src)

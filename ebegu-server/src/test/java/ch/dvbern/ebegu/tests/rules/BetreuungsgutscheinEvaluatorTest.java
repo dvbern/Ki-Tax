@@ -96,6 +96,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		evaluator.evaluate(testgesuch, getParameter());
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
+				assertNotNull(betreuung);
 				LOG.info("{}", betreuung.getVerfuegung());
 			}
 		}
@@ -198,7 +199,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuungspensumContainer.setBetreuung(betreuung);
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum());
 		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(gueltigkeit);
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(60);
+		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(60));
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
 
 		betreuung.setKeineKesbPlatzierung(true);
