@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -45,6 +44,7 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	@Min(0)
 	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private BigDecimal pensum = BigDecimal.ZERO;
 
@@ -118,10 +118,11 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
 	}
 
-	/*
-	In der Datenbank wird das Pensum mit 10 Nachkomastellen gespeichert,
-	dem Benutzer soll es auf 2 Stellen gerunden angezeigt werden
+	/**
+	 * In der Datenbank wird das Pensum mit 10 Nachkomastellen gespeichert,
+	 * dem Benutzer soll es auf 2 Stellen gerunden angezeigt werden
 	 */
+	@Nonnull
 	public BigDecimal getPensumRounded(){
 		return MathUtil.DEFAULT.from(pensum);
 	}

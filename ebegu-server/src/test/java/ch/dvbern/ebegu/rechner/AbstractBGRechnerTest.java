@@ -272,8 +272,7 @@ public class AbstractBGRechnerTest {
 					Assert.assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
 					assertEquals(
-						MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(53872.35)),
-						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+						MathUtil.GANZZAHL.from(53872.35), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 					assertZeitabschnitt(august, new BigDecimal(80.00), 80, new BigDecimal(80.00), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
@@ -288,8 +287,7 @@ public class AbstractBGRechnerTest {
 					Assert.assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
 					assertEquals(
-						MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(53872.35)),
-						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+						MathUtil.GANZZAHL.from(53872.35), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 					// Noch kein Anspruch im Januar 2017, Kind geht erst ab Feb 2017 in Kita, Anspruch muss ausserdem
 					// 0 sein im Januar weil das Kind in die andere Kita geht
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
@@ -319,8 +317,7 @@ public class AbstractBGRechnerTest {
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(113346)),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(113346), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, new BigDecimal(40.00), 40, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
@@ -337,8 +334,7 @@ public class AbstractBGRechnerTest {
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(113346)),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(113346), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, new BigDecimal(60.00), 40, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
@@ -363,8 +359,7 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(68678.00),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(68678.00), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, new BigDecimal(50.00), 50, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
@@ -389,8 +384,7 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.DEFAULT.from(162245.90),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.DEFAULT.from(162245.90), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, new BigDecimal(50.00), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
@@ -415,8 +409,7 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(98830.00)),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(98830.00), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat 50%
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 				assertZeitabschnitt(august, new BigDecimal(50.00), 70, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
@@ -453,8 +446,7 @@ public class AbstractBGRechnerTest {
 			Assert.assertNotNull(verfuegung);
 			assertEquals(12, verfuegung.getZeitabschnitte().size());
 			assertEquals(
-				MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7600)),
-				verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				MathUtil.GANZZAHL.from(-7600), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 			// Erster Monat
 			VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
 			assertZeitabschnitt(august, new BigDecimal(100.00), 60, new BigDecimal(60.00), VOLLKOSTEN_DEFAULT, 1200.00, 800.00);
