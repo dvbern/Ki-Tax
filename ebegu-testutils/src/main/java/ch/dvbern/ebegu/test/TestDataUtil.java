@@ -1460,7 +1460,7 @@ public final class TestDataUtil {
 		BetreuungsmitteilungPensum pensum = new BetreuungsmitteilungPensum();
 		pensum.setBetreuungsmitteilung(mitteilung);
 		pensum.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
-		pensum.setPensum(30);
+		pensum.setPensum(MathUtil.DEFAULT.from(30));
 
 		betPensen.add(pensum);
 		mitteilung.setBetreuungspensen(betPensen);

@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
 /**
@@ -43,6 +44,7 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	@Min(0)
 	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private BigDecimal pensum = BigDecimal.ZERO;
 
@@ -107,10 +109,6 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		this.pensum = pensum;
 	}
 
-	public void setPensum(@Nonnull Integer pensum) {
-		this.pensum = BigDecimal.valueOf(pensum);
-	}
-
 	@Nonnull
 	public BigDecimal getMonatlicheBetreuungskosten() {
 		return monatlicheBetreuungskosten;
@@ -118,5 +116,14 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	public void setMonatlicheBetreuungskosten(@Nonnull BigDecimal monatlicheBetreuungskosten) {
 		this.monatlicheBetreuungskosten = monatlicheBetreuungskosten;
+	}
+
+	/**
+	 * In der Datenbank wird das Pensum mit 10 Nachkomastellen gespeichert,
+	 * dem Benutzer soll es auf 2 Stellen gerunden angezeigt werden
+	 */
+	@Nonnull
+	public BigDecimal getPensumRounded(){
+		return MathUtil.DEFAULT.from(pensum);
 	}
 }

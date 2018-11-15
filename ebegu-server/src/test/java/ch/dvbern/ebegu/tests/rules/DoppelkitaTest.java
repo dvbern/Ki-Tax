@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.tests.rules;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,18 +67,18 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// August
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, 40, 10, 10);
+					assertZeitabschnitt(august, new BigDecimal(40), 10, new BigDecimal(10));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, 50, 20, 20);
+					assertZeitabschnitt(januar, new BigDecimal(50), 20, new BigDecimal(20));
 				} else {     //KITA Bruennen
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// August
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, 50, 60, 50);
+					assertZeitabschnitt(august, new BigDecimal(50), 60, new BigDecimal(50));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, 40, 60, 40);
+					assertZeitabschnitt(januar, new BigDecimal(40), 60, new BigDecimal(40));
 				}
 			}
 		}
@@ -108,18 +109,18 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, 40, 60, 40);
+					assertZeitabschnitt(august, new BigDecimal(40), 60, new BigDecimal(40));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, 50, 60, 50);
+					assertZeitabschnitt(januar, new BigDecimal(50), 60, new BigDecimal(50));
 				} else {     //KITA Bruennen
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt okbober = verfuegung.getZeitabschnitte().get(2); // Oktober
-					assertZeitabschnitt(okbober, 50, 20, 20);
+					assertZeitabschnitt(okbober, new BigDecimal(50), 20, new BigDecimal(20));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, 40, 10, 10);
+					assertZeitabschnitt(januar, new BigDecimal(40), 10, new BigDecimal(10));
 				}
 			}
 		}
@@ -150,18 +151,18 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, 40, 60, 40);
+					assertZeitabschnitt(august, new BigDecimal(40), 60, new BigDecimal(40));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, 30, 60, 30);
+					assertZeitabschnitt(januar, new BigDecimal(30), 60, new BigDecimal(30));
 				} else {     //KITA Bruennen
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, 40, 20, 20);
+					assertZeitabschnitt(august, new BigDecimal(40), 20, new BigDecimal(20));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, 50, 30, 30);
+					assertZeitabschnitt(januar, new BigDecimal(50), 30, new BigDecimal(30));
 				}
 			}
 		}

@@ -310,8 +310,15 @@
                                                                 betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
                                                                 is-disabled="!vm.isPensumEditable()">
                                             </dv-betreuung-input>
-                                            <dv-error-messages input-id="betreuungspensum-{{$index}}"
-                                                               for="vm.form['betreuungspensum-' + $index].$error"></dv-error-messages>
+                                            <!-- funktioniert hier mit dv-error-messages nicht,
+                                                 da component ausgelagert ist -->
+                                            <div class="dv-error-messages"
+                                                 ng-if="!vm.getBetreuungspensum($index).betreuungspensumJA.pensum
+                                                 && vm.form.$submitted">
+                                                <div class="error">
+                                                    {{ 'ERROR_REQUIRED' | translate }}
+                                                </div>
+                                            </div>
                                         </dv-input-container>
                                     </div>
                                 </div>
