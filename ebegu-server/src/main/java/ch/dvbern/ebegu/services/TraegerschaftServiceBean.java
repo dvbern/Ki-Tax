@@ -74,16 +74,19 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminMail) {
+	public Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminEmail) {
 		Objects.requireNonNull(traegerschaft);
-		Objects.requireNonNull(adminMail);
+		Objects.requireNonNull(adminEmail);
+
 		Traegerschaft persistedTraegerschaft = persistence.persist(traegerschaft);
-		Optional<Benutzer> userByMail = benutzerService.findBenutzerByEmail(adminMail);
-		if (userByMail.isPresent()) {
-			throw new EbeguRuntimeException("createTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, adminMail);
-		}
-		Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(adminMail, persistedTraegerschaft);
+
+		benutzerService.findBenutzerByEmail(adminEmail).ifPresent(benutzer -> {
+			throw new EbeguRuntimeException("createTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, adminEmail);
+		});
+
+		Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(adminEmail, persistedTraegerschaft);
 		benutzerService.einladen(Einladung.forTraegerschaft(benutzer, persistedTraegerschaft));
+
 		return traegerschaft;
 	}
 

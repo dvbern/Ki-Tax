@@ -28,7 +28,7 @@ export function getEntityTargetState(transition: Transition, principal: TSBenutz
         case TSEinladungTyp.GEMEINDE:
             return stateService.target('gemeinde.edit', {gemeindeId: entityId});
         case TSEinladungTyp.TRAEGERSCHAFT:
-            return stateService.target('pendenzen', {traegerschaftId: entityId});
+            return stateService.target('pendenzenBetreuungen.list-view', {traegerschaftId: entityId});
         case TSEinladungTyp.INSTITUTION:
             return stateService.target('admin.institution', {institutionId: entityId});
         default:

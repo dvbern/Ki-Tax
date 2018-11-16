@@ -44,7 +44,7 @@
                 <ng-container matColumnDef="remove">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let traegerschaft">
-                        <dv-loading-button [buttonDisabled]="isReadonly()"
+                        <dv-loading-button *ngIf="!isReadonly()"
                                            buttonClass="dv-btn-sm"
                                            (buttonClick)="removeTraegerschaft(traegerschaft)">
                             <i class="fa fa-minus"></i>

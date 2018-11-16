@@ -207,7 +207,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			traegerschaft,
 			b -> b.setTraegerschaft(traegerschaft));
 
-		admin.getCurrentBerechtigung().setTraegerschaft(traegerschaft);
 		return admin;
 	}
 
