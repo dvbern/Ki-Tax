@@ -50,7 +50,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs1EwpAusbildung;
 	private Integer gs1EwpSelbstaendig;
 	private Integer gs1EwpRav;
-	private Integer gs1EwpZuschlag;
 	private Integer gs1EwpGesundhtl;
 
 	@Nullable private String gs2Name;
@@ -66,7 +65,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs2EwpAusbildung;
 	private Integer gs2EwpSelbstaendig;
 	private Integer gs2EwpRav;
-	private Integer gs2EwpZuschlag;
 	private Integer gs2EwpGesundhtl;
 
 	@Nullable private EnumFamilienstatus familiensituation;
@@ -288,14 +286,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 		this.gs1EwpRav = gs1EwpRav;
 	}
 
-	public Integer getGs1EwpZuschlag() {
-		return gs1EwpZuschlag;
-	}
-
-	public void setGs1EwpZuschlag(@Nullable Integer gs1EwpZuschlag) {
-		this.gs1EwpZuschlag = gs1EwpZuschlag;
-	}
-
 	public Integer getGs1EwpGesundhtl() {
 		return gs1EwpGesundhtl;
 	}
@@ -415,14 +405,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setGs2EwpRav(@Nullable Integer gs2EwpRav) {
 		this.gs2EwpRav = gs2EwpRav;
-	}
-
-	public Integer getGs2EwpZuschlag() {
-		return gs2EwpZuschlag;
-	}
-
-	public void setGs2EwpZuschlag(@Nullable Integer gs2EwpZuschlag) {
-		this.gs2EwpZuschlag = gs2EwpZuschlag;
 	}
 
 	public Integer getGs2EwpGesundhtl() {

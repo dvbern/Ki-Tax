@@ -112,7 +112,6 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpAusbildung, MathUtil.GANZZAHL.from(dataRow.getGs1EwpAusbildung()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpSelbstaendig, MathUtil.GANZZAHL.from(dataRow.getGs1EwpSelbstaendig()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpRav, MathUtil.GANZZAHL.from(dataRow.getGs1EwpRav()));
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpZuschlag, MathUtil.GANZZAHL.from(dataRow.getGs1EwpZuschlag()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1EwpGesundhtl, MathUtil.GANZZAHL.from(dataRow.getGs1EwpGesundhtl()));
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2Name, dataRow.getGs2Name());
@@ -128,7 +127,6 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpAusbildung, MathUtil.GANZZAHL.from(dataRow.getGs2EwpAusbildung()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpSelbstaendig, MathUtil.GANZZAHL.from(dataRow.getGs2EwpSelbstaendig()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpRav, MathUtil.GANZZAHL.from(dataRow.getGs2EwpRav()));
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpZuschlag, MathUtil.GANZZAHL.from(dataRow.getGs2EwpZuschlag()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpGesundhtl, MathUtil.GANZZAHL.from(dataRow.getGs2EwpGesundhtl()));
 
 			String familiensituation = dataRow.getFamiliensituation() != null ? dataRow.getFamiliensituation().name() : "";
@@ -162,7 +160,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungsPensum, dataRow.getBetreuungspensum());
 			BigDecimal anspruchsPensum = dataRow.getAnspruchsPensum();
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensum, anspruchsPensum);
-			if (anspruchsPensum.compareTo(BigDecimal.ZERO) > 0) {
+			if (anspruchsPensum != null && anspruchsPensum.compareTo(BigDecimal.ZERO) > 0) {
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensum, dataRow.getBgPensum());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, dataRow.getBgStunden());
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, dataRow.getVollkosten());

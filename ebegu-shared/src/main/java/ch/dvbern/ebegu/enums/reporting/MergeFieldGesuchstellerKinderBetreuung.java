@@ -60,7 +60,6 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	gs1EwpAusbildung(new SimpleMergeField<>("gs1EwpAusbildung", PERCENT_CONVERTER)),
 	gs1EwpSelbstaendig(new SimpleMergeField<>("gs1EwpSelbstaendig", PERCENT_CONVERTER)),
 	gs1EwpRav(new SimpleMergeField<>("gs1EwpRav", PERCENT_CONVERTER)),
-	gs1EwpZuschlag(new SimpleMergeField<>("gs1EwpZuschlag", PERCENT_CONVERTER)),
 	gs1EwpGesundhtl(new SimpleMergeField<>("gs1EwpGesundhtl", PERCENT_CONVERTER)),
 
 	gs2Name(new SimpleMergeField<>("gs2Name", STRING_CONVERTER)),
@@ -76,7 +75,6 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	gs2EwpAusbildung(new SimpleMergeField<>("gs2EwpAusbildung", PERCENT_CONVERTER)),
 	gs2EwpSelbstaendig(new SimpleMergeField<>("gs2EwpSelbstaendig", PERCENT_CONVERTER)),
 	gs2EwpRav(new SimpleMergeField<>("gs2EwpRav", PERCENT_CONVERTER)),
-	gs2EwpZuschlag(new SimpleMergeField<>("gs2EwpZuschlag", PERCENT_CONVERTER)),
 	gs2EwpGesundhtl(new SimpleMergeField<>("gs2EwpGesundhtl", PERCENT_CONVERTER)),
 
 	familiensituation(new SimpleMergeField<>("familiensituation", STRING_CONVERTER)),
