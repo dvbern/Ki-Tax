@@ -498,6 +498,7 @@ public class PDFServiceBeanTest {
 		throws IOException {
 		// Es gibt einen Bug im PdfTextExtractor: Die Wörter werden mit zwei Spaces getrennt. Im "richtigen" PDF
 		// ist dies aber nicht der Fall!
+		// Siehe https://github.com/LibrePDF/OpenPDF/issues/119
 		String actualText = pdfTextExtractor.getTextFromPage(pageNumber);
 		actualText = COMPILE.matcher(actualText).replaceAll(" ");
 		assertTrue(message, actualText.contains(expectedText));
