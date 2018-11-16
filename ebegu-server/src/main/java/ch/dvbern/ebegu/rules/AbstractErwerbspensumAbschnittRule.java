@@ -64,7 +64,6 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 		@Nonnull Familiensituation familiensituationErstgesuch,
 		@Nonnull Familiensituation familiensituation
 	) {
-		Objects.requireNonNull(familiensituation.getAenderungPer());
 		if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
 			// 1GS to 2GS
 			if (gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())
