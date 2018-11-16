@@ -93,6 +93,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             errorService.addMesageAsError('Unerwarteter Zustand: Gesuchsteller unbekannt');
             console.log('kein gesuchsteller gefunden');
         }
+        this.initUnbezahlterUrlaub();
     }
 
     public getTaetigkeitenList(): Array<TSTaetigkeit> {
