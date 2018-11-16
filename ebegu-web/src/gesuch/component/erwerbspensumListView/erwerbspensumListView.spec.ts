@@ -16,6 +16,7 @@
 import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
+import GesuchModelManager from '../../service/gesuchModelManager';
 import {ErwerbspensumListViewComponentConfig} from './erwerbspensumListView';
 import IInjectorService = angular.auto.IInjectorService;
 
@@ -28,10 +29,15 @@ describe('erwerbspensumListView', () => {
     let component: ErwerbspensumListViewComponentConfig;
     let scope: IScope;
     let $componentController: IComponentControllerService;
+    let gesuchModelManager: GesuchModelManager;
+    let $q: angular.IQService;
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
+        gesuchModelManager = $injector.get('GesuchModelManager');
         $componentController = $injector.get('$componentController');
+        $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
+        spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
     }));
 
     it('should be defined', () => {

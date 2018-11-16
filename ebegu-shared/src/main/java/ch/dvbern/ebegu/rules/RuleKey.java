@@ -27,6 +27,7 @@ public enum RuleKey {
 	ERWERBSPENSUM,
 	BETREUUNGSPENSUM,
 	FACHSTELLE,
+	AUSSERORDENTLICHER_ANSPRUCH,
 	/**
 	 * Regel 4.2 definiert dass kein Anspruch besteht wenn das massgebende Einkommen zu hoch ist
 	 */
@@ -45,5 +46,6 @@ public enum RuleKey {
 	ZIVILSTANDSAENDERUNG,
 	SCHULSTUFE,
 	BEGU_STARTDATUM,
-	KESB_PLATZIERUNG
+	KESB_PLATZIERUNG,
+	UNBEZAHLTER_URLAUB
 }

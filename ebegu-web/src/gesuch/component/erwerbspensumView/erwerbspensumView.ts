@@ -31,6 +31,8 @@ import TSEinstellung from '../../../models/TSEinstellung';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import TSUnbezahlterUrlaub from '../../../models/TSUnbezahlterUrlaub';
+import DateUtil from '../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IErwerbspensumStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -68,6 +70,8 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public gesuchsteller: TSGesuchstellerContainer;
     public patternPercentage: string;
     public maxZuschlagsprozent: number = 100;
+    public hasUnbezahlterUrlaub: boolean;
+    public hasUnbezahlterUrlaubGS: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -106,13 +110,15 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         }
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)).then((response: TSEinstellung[]) => {
+            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)
+        ).then((response: TSEinstellung[]) => {
             const found = response.find(r => r.key === TSEinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
             if (found) {
                 // max Wert für Zuschlag Erwerbspensum
                 this.maxZuschlagsprozent = Number(found.value);
             }
         });
+        this.initUnbezahlterUrlaub();
     }
 
     public getTaetigkeitenList(): Array<TSTaetigkeit> {
@@ -169,10 +175,13 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     public taetigkeitChanged(): void {
+        if (!this.isUnbezahlterUrlaubVisible()) {
+            this.model.erwerbspensumJA.unbezahlterUrlaub = undefined;
+            this.hasUnbezahlterUrlaub = false;
+        }
         if (this.viewZuschlag()) {
             return;
         }
-
         this.model.erwerbspensumJA.zuschlagZuErwerbspensum = false;
         this.model.erwerbspensumJA.zuschlagsprozent = undefined;
         this.model.erwerbspensumJA.zuschlagsgrund = undefined;
@@ -206,5 +215,38 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public isZuschlagErwerbspensumConfigured(): boolean {
         // Wird aktuell ausgeblendet. Koennte aber spaeter von spezifischen Gemeinden einschaltet werden
         return false;
+    }
+
+    public isUnbezahlterUrlaubVisible(): boolean {
+        return this.model && this.model.erwerbspensumJA
+            && (this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
+                || this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG);
+    }
+
+    private initUnbezahlterUrlaub(): void {
+        this.hasUnbezahlterUrlaub = !!(this.model && this.model.erwerbspensumJA
+            && this.model.erwerbspensumJA.unbezahlterUrlaub);
+        this.hasUnbezahlterUrlaubGS = !!(this.model && this.model.erwerbspensumGS
+            && this.model.erwerbspensumGS.unbezahlterUrlaub);
+    }
+
+    public unbezahlterUrlaubClicked(): void {
+        this.model.erwerbspensumJA.unbezahlterUrlaub =
+            this.hasUnbezahlterUrlaub ? new TSUnbezahlterUrlaub() : undefined;
+    }
+
+    public getTextUnbezahlterUrlaubKorrekturJA(): string {
+        if (this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub) {
+            const urlaub = this.model.erwerbspensumGS.unbezahlterUrlaub;
+            const vonText = DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+            const bisText = urlaub.gueltigkeit.gueltigBis ?
+                DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
+                '31.12.9999';
+            return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
+                von: vonText,
+                bis: bisText,
+            });
+        }
+        return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 }

@@ -58,7 +58,6 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 		Fachstelle nextFamsit = allFachstellen.iterator().next();
 		Assert.assertEquals("Fachstelle1", nextFamsit.getName());
 		Assert.assertEquals("Kinder Fachstelle", nextFamsit.getBeschreibung());
-		Assert.assertTrue(nextFamsit.isBehinderungsbestaetigung());
 	}
 
 	@Test
@@ -66,12 +65,15 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(fachstelleService);
 		Fachstelle insertedFachstelle = insertNewEntity();
 		Optional<Fachstelle> fachstelle = fachstelleService.findFachstelle(insertedFachstelle.getId());
+		Assert.assertTrue(fachstelle.isPresent());
 		Assert.assertEquals("Fachstelle1", fachstelle.get().getName());
 
 		fachstelle.get().setName("Fachstelle2");
 		Fachstelle updatedFachstelle = fachstelleService.saveFachstelle(fachstelle.get());
 		Assert.assertEquals("Fachstelle2", updatedFachstelle.getName());
-		Assert.assertEquals("Fachstelle2", fachstelleService.findFachstelle(updatedFachstelle.getId()).get().getName());
+		Optional<Fachstelle> fachstelleReRead = fachstelleService.findFachstelle(updatedFachstelle.getId());
+		Assert.assertTrue(fachstelleReRead.isPresent());
+		Assert.assertEquals("Fachstelle2", fachstelleReRead.get().getName());
 	}
 
 	@Test
@@ -92,5 +94,4 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 		persistence.persist(fachstelle);
 		return fachstelle;
 	}
-
 }

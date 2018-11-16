@@ -16,6 +16,7 @@
 import {TSTaetigkeit} from './enums/TSTaetigkeit';
 import {TSZuschlagsgrund} from './enums/TSZuschlagsgrund';
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
+import TSUnbezahlterUrlaub from './TSUnbezahlterUrlaub';
 import {TSDateRange} from './types/TSDateRange';
 
 /**
@@ -33,6 +34,8 @@ export default class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _bezeichnung: string;
 
+    private _unbezahlterUrlaub: TSUnbezahlterUrlaub;
+
     public constructor(
         pensum?: number,
         gueltigkeit?: TSDateRange,
@@ -40,12 +43,14 @@ export default class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
         zuschlagZuErwerbspensum?: boolean,
         zuschlagsgrund?: TSZuschlagsgrund,
         zuschlagsprozent?: number,
+        unbezahlterUrlaub?: TSUnbezahlterUrlaub
     ) {
         super(pensum, gueltigkeit);
         this._taetigkeit = taetigkeit;
         this._zuschlagZuErwerbspensum = zuschlagZuErwerbspensum;
         this._zuschlagsgrund = zuschlagsgrund;
         this._zuschlagsprozent = zuschlagsprozent;
+        this._unbezahlterUrlaub = unbezahlterUrlaub;
     }
 
     public get taetigkeit(): TSTaetigkeit {
@@ -86,5 +91,13 @@ export default class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     public set bezeichnung(value: string) {
         this._bezeichnung = value;
+    }
+
+    public get unbezahlterUrlaub(): TSUnbezahlterUrlaub {
+        return this._unbezahlterUrlaub;
+    }
+
+    public set unbezahlterUrlaub(value: TSUnbezahlterUrlaub) {
+        this._unbezahlterUrlaub = value;
     }
 }

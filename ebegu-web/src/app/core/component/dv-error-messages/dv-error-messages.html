@@ -25,8 +25,8 @@
         <div ng-message="pattern" id="{{vm.inputid + '-error'}}" data-translate="ERROR_FORMAT"></div>
         <div ng-message="date" id="{{vm.inputid + '-error'}}" data-translate="ERROR_DATE"></div>
         <div ng-message="moment" id="{{vm.inputid + '-error'}}" data-translate="ERROR_FORMAT"></div>
-        <div ng-message="min" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MIN"></div>
-        <div ng-message="max" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MAX"></div>
+        <div ng-message="min" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MIN" data-translate-value-value="{{vm.minValue}}"></div>
+        <div ng-message="max" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MAX" data-translate-value-value="{{vm.maxValue}}"></div>
         <div ng-message="valueinput" id="{{vm.inputid + '-error'}}" data-translate="ERROR_VALUE"></div>
         <div ng-message="dvMinDate" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MIN_DATE"></div>
         <div ng-message="dvMaxDate" id="{{vm.inputid + '-error'}}" data-translate="ERROR_MAX_DATE"></div>

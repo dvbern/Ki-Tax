@@ -1,0 +1,85 @@
+/*
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package ch.dvbern.ebegu.rules;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.types.DateRange;
+
+/**
+ * Abstract class for AbschnittRules that are related to the Erwerbspensum and share some common methods
+ */
+public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschnittRule {
+
+	public AbstractErwerbspensumAbschnittRule(@Nonnull RuleKey ruleKey, @Nonnull RuleType ruleType, @Nonnull DateRange validityPeriod) {
+		super(ruleKey, ruleType, validityPeriod);
+	}
+
+	@Nonnull
+	@Override
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
+		List<VerfuegungZeitabschnitt> erwerbspensumAbschnitte = new ArrayList<>();
+		Gesuch gesuch = betreuung.extractGesuch();
+		if (gesuch.getGesuchsteller1() != null) {
+			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch, gesuch.getGesuchsteller1(), false));
+		}
+		if (gesuch.getGesuchsteller2() != null) {
+			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch, gesuch.getGesuchsteller2(), true));
+		}
+		return erwerbspensumAbschnitte;
+	}
+
+	protected abstract List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
+		@Nonnull Gesuch gesuch,
+		@Nonnull GesuchstellerContainer gesuchsteller,
+		boolean gs2
+	);
+
+	protected void getGueltigkeitFromFamiliensituation(
+		@Nonnull DateRange gueltigkeit,
+		@Nonnull Familiensituation familiensituationErstgesuch,
+		@Nonnull Familiensituation familiensituation
+	) {
+		Objects.requireNonNull(familiensituation.getAenderungPer());
+		if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
+			// 1GS to 2GS
+			if (gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())
+				&& gueltigkeit.getGueltigAb().isBefore(familiensituation.getAenderungPer())) {
+
+				gueltigkeit.setGueltigAb(familiensituation.getAenderungPer());
+			}
+		} else if (familiensituationErstgesuch.hasSecondGesuchsteller()
+			&& !familiensituation.hasSecondGesuchsteller()
+			&& gueltigkeit.getGueltigAb().isBefore(familiensituation.getAenderungPer())
+			&& gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())) {
+
+			// 2GS to 1GS
+			gueltigkeit.setGueltigBis(familiensituation.getAenderungPer().minusDays(1));
+		}
+	}
+
+}
