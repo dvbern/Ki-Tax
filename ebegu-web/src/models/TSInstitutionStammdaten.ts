@@ -44,20 +44,28 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
         betreuungsangebotTyp?: TSBetreuungsangebotTyp,
         institution?: TSInstitution,
         adresse?: TSAdresse,
+        mail?: string,
+        telefon?: string,
         gueltigkeit?: TSDateRange,
         kontoinhaber?: string,
         adresseKontoinhaber?: TSAdresse,
         institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
         institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
+        administratoren?: string,
+        sachbearbeiter?: string,
     ) {
         super(gueltigkeit);
         this.iban = iban;
         this.betreuungsangebotTyp = betreuungsangebotTyp;
         this.institution = institution;
         this.adresse = adresse;
+        this.mail = mail;
+        this.telefon = telefon;
         this.kontoinhaber = kontoinhaber;
         this.adresseKontoinhaber = adresseKontoinhaber;
         this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
         this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
+        this.administratoren = administratoren;
+        this.sachbearbeiter = sachbearbeiter;
     }
 }

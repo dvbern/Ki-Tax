@@ -19,14 +19,11 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {TranslateService} from '@ngx-translate/core';
-import {StateService, Transition} from '@uirouter/core';
-import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {Permission} from '../../../authorisation/Permission';
 import {PERMISSIONS} from '../../../authorisation/Permissions';
-import ErrorService from '../../../core/errors/service/ErrorService';
 
 @Component({
     selector: 'dv-stammdaten-header',
@@ -34,21 +31,18 @@ import ErrorService from '../../../core/errors/service/ErrorService';
     styleUrls: ['./stammdaten-header.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class StammdatenHeaderComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
     @Input() public titel: string;
     @Input() public administratoren: string;
     @Input() public sachbearbeiter: string;
     @Input() public logoImageUrl: string;
-    @Input() public editMitarbeiterAllowed: boolean;
+    @Input() public editMode: boolean;
 
     private fileToUpload: File;
-    private navigationDest: StateDeclaration;
 
     public constructor(
-        private readonly $transition$: Transition,
-        private readonly translate: TranslateService,
-        private readonly errorService: ErrorService,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
@@ -56,7 +50,6 @@ export class StammdatenHeaderComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.navigationDest = this.$transition$.to();
     }
 
     public mitarbeiterBearbeiten(): void {
@@ -83,7 +76,5 @@ export class StammdatenHeaderComponent implements OnInit {
             this.changeDetectorRef.markForCheck();
             // TODO upload upon save
         };
-
     }
-
 }

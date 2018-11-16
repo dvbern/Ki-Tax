@@ -21,7 +21,6 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
-import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -38,6 +37,7 @@ import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenR
   templateUrl: './edit-institution.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class EditInstitutionComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
 
@@ -47,7 +47,6 @@ export class EditInstitutionComponent implements OnInit {
     public beguEndeStr: string;
     public abweichendeZahlungsAdresse: boolean;
     public editMode: boolean;
-    private navigationSource: StateDeclaration;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -66,7 +65,6 @@ export class EditInstitutionComponent implements OnInit {
         if (!institutionId) {
             return;
         }
-        this.navigationSource = this.$transition$.from();
 
         this.institutionRS.findInstitution(institutionId).then(institution => {
             this.institution = institution;

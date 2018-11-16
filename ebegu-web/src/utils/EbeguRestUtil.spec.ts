@@ -82,20 +82,7 @@ describe('EbeguRestUtil', () => {
     describe('API Usage', () => {
         describe('parseAdresse()', () => {
             it('should transfrom Adresse Rest Objects', () => {
-                const adresse = new TSAdresse();
-                adresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
-                TestDataUtil.setAbstractMutableFieldsUndefined(adresse);
-                adresse.gemeinde = 'Testingen';
-                adresse.land = 'CH';
-                adresse.ort = 'Testort';
-                adresse.strasse = 'Teststrasse';
-                adresse.hausnummer = '1';
-                adresse.zusatzzeile = 'co test';
-                adresse.plz = '3014';
-                adresse.id = '1234567';
-                adresse.organisation = 'Test AG';
-                adresse.gueltigkeit = new TSDateRange(today, today);
-
+                const adresse = createAdresse();
                 const restAdresse: any = ebeguRestUtil.adresseToRestObject({}, adresse);
                 expect(restAdresse).toBeDefined();
                 const adr = ebeguRestUtil.parseAdresse(new TSAdresse(), restAdresse);
@@ -244,10 +231,13 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseBetreuung()', () => {
             it('should transform TSBetreuung to REST object and back', () => {
-                const instStam = new TSInstitutionStammdaten('iban',
+                const instStam = new TSInstitutionStammdaten(
+                    'iban',
                     TSBetreuungsangebotTyp.KITA,
                     createInstitution(),
-                    undefined,
+                    createAdresse(),
+                    'mail@mail.ch',
+                    'telefon',
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(instStam);
 
@@ -340,16 +330,20 @@ describe('EbeguRestUtil', () => {
         describe('parseInstitutionStammdaten()', () => {
             it('should transform TSInstitutionStammdaten to REST object and back', () => {
                 const myInstitution = createInstitution();
+                const myAdress = createAdresse();
                 const tsInstStammdatenTagesschule = new TSInstitutionStammdatenTagesschule();
                 const tsModul = new TSModulTagesschule();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsModul);
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
                 tsInstStammdatenTagesschule.gueltigkeit = new TSDateRange();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
-                const myInstitutionStammdaten = new TSInstitutionStammdaten('iban',
+                const myInstitutionStammdaten = new TSInstitutionStammdaten(
+                    'my-iban',
                     TSBetreuungsangebotTyp.KITA,
                     myInstitution,
-                    undefined,
+                    myAdress,
+                    'my-mail',
+                    'my-phone',
                     new TSDateRange(DateUtil.today(), DateUtil.today()),
                     '',
                     undefined,
@@ -358,8 +352,11 @@ describe('EbeguRestUtil', () => {
 
                 const restInstitutionStammdaten = ebeguRestUtil.institutionStammdatenToRestObject({},
                     myInstitutionStammdaten);
+
                 expect(restInstitutionStammdaten).toBeDefined();
                 expect(restInstitutionStammdaten.iban).toEqual(myInstitutionStammdaten.iban);
+                expect(restInstitutionStammdaten.mail).toEqual(myInstitutionStammdaten.mail);
+                expect(restInstitutionStammdaten.telefon).toEqual(myInstitutionStammdaten.telefon);
                 expect(restInstitutionStammdaten.gueltigAb).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
                 expect(restInstitutionStammdaten.gueltigBis).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
                 expect(restInstitutionStammdaten.betreuungsangebotTyp).toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
@@ -367,13 +364,16 @@ describe('EbeguRestUtil', () => {
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule.length).toBe(1);
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag)
-                    .toBeUndefined();
+                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag).toBeUndefined();
 
                 const transformedInstitutionStammdaten = ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                     restInstitutionStammdaten);
 
                 TestDataUtil.checkGueltigkeitAndSetIfSame(transformedInstitutionStammdaten, myInstitutionStammdaten);
+                restInstitutionStammdaten.administratoren = undefined;
+                restInstitutionStammdaten.sachbearbeiter = undefined;
+                transformedInstitutionStammdaten.administratoren = undefined;
+                transformedInstitutionStammdaten.sachbearbeiter = undefined;
                 expect(transformedInstitutionStammdaten).toEqual(myInstitutionStammdaten);
             });
         });
@@ -503,6 +503,23 @@ describe('EbeguRestUtil', () => {
         const myInstitution = new TSInstitution('myInstitution', traegerschaft, mandant);
         TestDataUtil.setAbstractMutableFieldsUndefined(myInstitution);
         return myInstitution;
+    }
+
+    function createAdresse(): TSAdresse {
+        const adresse = new TSAdresse();
+        adresse.adresseTyp = TSAdressetyp.WOHNADRESSE;
+        TestDataUtil.setAbstractMutableFieldsUndefined(adresse);
+        adresse.gemeinde = 'Testingen';
+        adresse.land = 'CH';
+        adresse.ort = 'Testort';
+        adresse.strasse = 'Teststrasse';
+        adresse.hausnummer = '1';
+        adresse.zusatzzeile = 'co test';
+        adresse.plz = '3014';
+        adresse.id = '1234567';
+        adresse.organisation = 'Test AG';
+        adresse.gueltigkeit = new TSDateRange(today, today);
+        return adresse;
     }
 
     function createGesuchsteller(): TSGesuchstellerContainer {
