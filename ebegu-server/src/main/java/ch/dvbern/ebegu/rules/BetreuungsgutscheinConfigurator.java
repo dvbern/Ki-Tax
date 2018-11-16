@@ -162,7 +162,6 @@ public class BetreuungsgutscheinConfigurator {
 		Einstellung minEWP_eingeschult = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
 		ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(
 			defaultGueltigkeit,
-			0, // TODO Reviewer ich lasse das hier, weil dann direkt der neue Parameter kommt
 			minEWP_nichtEingeschult.getValueAsInteger(),
 			minEWP_eingeschult.getValueAsInteger());
 		rules.add(erwerbspensumCalcRule);

@@ -39,14 +39,12 @@ import static java.util.Objects.requireNonNull;
  */
 public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
-	@SuppressWarnings("FieldCanBeLocal") //TODO @Review: Ich lasse das Feld, weil ich es danach wieder brauche für den neuen Parameter
-	private final int maxZuschlagValue;
 	private final int minErwerbspensumNichtEingeschult;
 	private final int minErwerbspensumEingeschult;
 
-	public ErwerbspensumCalcRule(DateRange validityPeriod, int maxZuschlagValue, int minErwerbspensumNichtEingeschult, int minErwerbspensumEingeschult) {
+	public ErwerbspensumCalcRule(DateRange validityPeriod, int minErwerbspensumNichtEingeschult, int minErwerbspensumEingeschult) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, validityPeriod);
-		this.maxZuschlagValue = maxZuschlagValue;
+
 		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
 		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;
 	}

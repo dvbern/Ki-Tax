@@ -142,7 +142,6 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
   IFNULL(Verfuegungen.kategorie_normal, 0)                                   AnzahlVerfuegungenNormal,
   IFNULL(Verfuegungen.kategorie_max_einkommen, 0)                            AnzahlVerfuegungenMaxEinkommen,
   IFNULL(Verfuegungen.kategorie_kein_pensum, 0)                              AnzahlVerfuegungenKeinPensum,
-  IFNULL(Verfuegungen.kategorie_zuschlag_zum_erwerbspensum, 0)               AnzahlVerfuegungenZuschlagZumPensum,
   IFNULL(Verfuegungen.kategorie_nicht_eintreten, 0)                          AnzahlVerfuegungenNichtEintreten
 
 FROM kind_container
@@ -252,7 +251,6 @@ FROM kind_container
                       kategorie_normal,
                       kategorie_max_einkommen,
                       kategorie_kein_pensum,
-                      kategorie_zuschlag_zum_erwerbspensum,
                       kategorie_nicht_eintreten
                     FROM verfuegung
                     WHERE timestamp_erstellt BETWEEN :fromDateTime AND :toDateTime
@@ -284,7 +282,6 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
         OR IFNULL(Verfuegungen.kategorie_normal, 0) = 1
         OR IFNULL(Verfuegungen.kategorie_max_einkommen, 0) = 1
         OR IFNULL(Verfuegungen.kategorie_kein_pensum, 0) = 1
-        OR IFNULL(Verfuegungen.kategorie_zuschlag_zum_erwerbspensum, 0) = 1
         OR IFNULL(Verfuegungen.kategorie_nicht_eintreten, 0) = 1
       )
 		]]></query>
