@@ -463,6 +463,7 @@ public final class TestDataUtil {
 	public static InstitutionStammdaten createDefaultInstitutionStammdaten() {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail("mail@mail.ch");
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -474,6 +475,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail("mail@mail.ch");
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -486,6 +488,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail("mail@mail.ch");
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -498,6 +501,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail("mail@mail.ch");
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -510,6 +514,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail("mail@mail.ch");
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -522,6 +527,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail("mail@mail.ch");
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
 		instStammdaten.setInstitution(createDefaultInstitution());
