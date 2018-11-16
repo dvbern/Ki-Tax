@@ -125,7 +125,7 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate(message)
-				.addPropertyNode("betreuungsmitteilung[" + Integer.toString(index) + "].pensum")
+				.addPropertyNode("betreuungsmitteilung[" + index + "].pensum")
 				.addConstraintViolation();
 
 			return false;

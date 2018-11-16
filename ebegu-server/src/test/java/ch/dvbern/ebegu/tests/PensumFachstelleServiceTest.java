@@ -51,7 +51,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 		PensumFachstelle insertedPensumFachstelle = insertInstitutionStammdaten();
 
 		Optional<PensumFachstelle> returnedPensumFachstelle = pensumFachstelleService.findPensumFachstelle(insertedPensumFachstelle.getId());
-		Assert.assertNotNull(returnedPensumFachstelle.get());
+		Assert.assertTrue(returnedPensumFachstelle.isPresent());
 		Assert.assertNotNull(returnedPensumFachstelle.get().getId());
 		Assert.assertNotNull(returnedPensumFachstelle.get().getTimestampErstellt());
 		Assert.assertEquals(insertedPensumFachstelle.getFachstelle(), returnedPensumFachstelle.get().getFachstelle());
@@ -70,7 +70,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(insertedPensumFachstelle.getPensum(), persistedPensFachstelle.getPensum());
 
 		insertedPensumFachstelle.setPensum(10);
-		PensumFachstelle updatedPensumFachstelle = pensumFachstelleService.savePensumFachstelle(insertedPensumFachstelle);
+		PensumFachstelle updatedPensumFachstelle = persistence.merge(insertedPensumFachstelle);
 		Assert.assertNotEquals(insertedPensumFachstelle.getPensum(), persistedPensFachstelle.getPensum());
 		Assert.assertEquals(insertedPensumFachstelle.getId(), persistedPensFachstelle.getId());
 		Assert.assertEquals(insertedPensumFachstelle.getPensum(), updatedPensumFachstelle.getPensum());
@@ -81,7 +81,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 	private PensumFachstelle insertInstitutionStammdaten() {
 		PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
 		persistence.persist(pensumFachstelle.getFachstelle());
-		return pensumFachstelleService.savePensumFachstelle(pensumFachstelle);
+		return persistence.merge(pensumFachstelle);
 	}
 
 }

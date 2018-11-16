@@ -44,9 +44,8 @@ import org.hibernate.envers.Audited;
 @Audited
 @Entity
 @Table(
-	indexes = {
-		@Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
-	})
+	indexes = @Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
+)
 public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
@@ -74,6 +73,13 @@ public class Kind extends AbstractPersonEntity {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_pensum_fachstelle_id"), nullable = true)
 	private PensumFachstelle pensumFachstelle;
+
+	@Valid
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_pensum_ausserordentlicheranspruch_id"), nullable = true)
+	private PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch;
+
 
 	public Kind() {
 	}
@@ -121,6 +127,17 @@ public class Kind extends AbstractPersonEntity {
 		this.pensumFachstelle = pensumFachstelle;
 	}
 
+	@Nullable
+	public PensumAusserordentlicherAnspruch getPensumAusserordentlicherAnspruch() {
+		return pensumAusserordentlicherAnspruch;
+	}
+
+	public void setPensumAusserordentlicherAnspruch(
+		@Nullable PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch) {
+
+		this.pensumAusserordentlicherAnspruch = pensumAusserordentlicherAnspruch;
+	}
+
 	@Nonnull
 	public Kind copyKind(
 		@Nonnull Kind target,
@@ -135,14 +152,17 @@ public class Kind extends AbstractPersonEntity {
 		case MUTATION:
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			copyFachstelle(target, copyType);
+			copyAusserordentlicherAnspruch(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setEinschulungTyp(this.getEinschulungTyp());
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
+			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
+			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
 			break;
 		}
 		return target;
@@ -168,6 +188,26 @@ public class Kind extends AbstractPersonEntity {
 		}
 	}
 
+	private void copyAusserordentlicherAnspruch(@Nonnull Kind target, @Nonnull AntragCopyType copyType) {
+		if (this.getPensumAusserordentlicherAnspruch() != null) {
+			target.setPensumAusserordentlicherAnspruch(this.getPensumAusserordentlicherAnspruch()
+				.copyPensumAusserordentlicherAnspruch(new PensumAusserordentlicherAnspruch(), copyType));
+		}
+	}
+
+	private void copyAusserordentlicherAnspruchIfStillValid(
+		@Nonnull Kind target,
+		@Nonnull AntragCopyType copyType,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		// Anspruch nur kopieren, wenn er noch gueltig ist
+		if (this.getPensumAusserordentlicherAnspruch() != null && !this.getPensumAusserordentlicherAnspruch()
+			.getGueltigkeit()
+			.endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
+			target.setPensumAusserordentlicherAnspruch(this.getPensumAusserordentlicherAnspruch()
+				.copyPensumAusserordentlicherAnspruch(new PensumAusserordentlicherAnspruch(), copyType));
+		}
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -188,6 +228,8 @@ public class Kind extends AbstractPersonEntity {
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getMutterspracheDeutsch(), otherKind.getMutterspracheDeutsch()) &&
 			Objects.equals(getEinschulungTyp(), otherKind.getEinschulungTyp()) &&
-			EbeguUtil.isSameObject(getPensumFachstelle(), otherKind.getPensumFachstelle());
+			EbeguUtil.isSameObject(getPensumFachstelle(), otherKind.getPensumFachstelle()) &&
+			EbeguUtil.isSameObject(getPensumAusserordentlicherAnspruch(),
+				otherKind.getPensumAusserordentlicherAnspruch());
 	}
 }

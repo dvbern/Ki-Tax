@@ -134,7 +134,6 @@ describe('fachstelleRS', () => {
         expect(fachstelle1.name).toEqual(fachstelle2.name);
         expect(fachstelle1.id).toEqual(fachstelle2.id);
         expect(fachstelle1.beschreibung).toEqual(fachstelle2.beschreibung);
-        expect(fachstelle1.behinderungsbestaetigung).toEqual(fachstelle2.behinderungsbestaetigung);
     }
 
 });

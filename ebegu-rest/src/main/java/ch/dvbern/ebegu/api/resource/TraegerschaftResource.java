@@ -31,10 +31,12 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,13 +45,10 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
-import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import io.swagger.annotations.Api;
@@ -70,12 +69,24 @@ public class TraegerschaftResource {
 	private InstitutionService institutionService;
 
 	@Inject
-	private BenutzerService benutzerService;
-
-	@Inject
 	private JaxBConverter converter;
 
-	@ApiOperation(value = "Speichert eine Traegerschaft in der Datenbank", response = JaxTraegerschaft.class)
+	@ApiOperation(value = "Erstellt eine neue Traegerschaft in der Datenbank", response = JaxTraegerschaft.class)
+	@Nullable
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxTraegerschaft createTraegerschaft(
+		@Nonnull @NotNull @Valid JaxTraegerschaft jaxTraegerschaft,
+		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Traegerschaft traegerschaft = converter.traegerschaftToEntity(jaxTraegerschaft, new Traegerschaft());
+		return converter.traegerschaftToJAX(traegerschaftService.createTraegerschaft(traegerschaft, adminMail));
+	}
+
+	@ApiOperation(value = "Speichert eine bestehende Traegerschaft in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -85,26 +96,17 @@ public class TraegerschaftResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Traegerschaft traegerschaft = Optional.ofNullable(traegerschaftJAXP.getId())
-			.flatMap(id -> traegerschaftService.findTraegerschaft(id))
-			.orElseGet(Traegerschaft::new);
+		Objects.requireNonNull(traegerschaftJAXP);
+		Objects.requireNonNull(traegerschaftJAXP.getId());
 
+		// Diese Methode darf nur fuer eine existierende Traegerschaft verwendet werden. Zum neu Erstellen muss eine
+		// Einladung über #createTraegerschaft() erfolgen
+		Traegerschaft traegerschaft = traegerschaftService.findTraegerschaft(traegerschaftJAXP.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				traegerschaftJAXP.getId()));
 		Traegerschaft convertedTraegerschaft = converter.traegerschaftToEntity(traegerschaftJAXP, traegerschaft);
 		Traegerschaft persistedTraegerschaft = this.traegerschaftService.saveTraegerschaft(convertedTraegerschaft);
-
-		if (convertedTraegerschaft.isNew()) {
-			String mail = traegerschaftJAXP.getMail();
-			if (benutzerService.findBenutzerByEmail(mail).isPresent()) {
-				// an existing user cannot be used to create a new Traegerschaft
-				throw new EbeguRuntimeException("saveTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, mail);
-			}
-			Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(mail, persistedTraegerschaft);
-
-			benutzerService.einladen(Einladung.forTraegerschaft(benutzer, traegerschaft));
-		}
-
-		JaxTraegerschaft jaxTraegerschaft = converter.traegerschaftToJAX(persistedTraegerschaft);
-		return jaxTraegerschaft;
+		return converter.traegerschaftToJAX(persistedTraegerschaft);
 	}
 
 	@ApiOperation(value = "Gibt die Traegerschaft mit der uebergebenen id zurueck.", response = JaxTraegerschaft.class)

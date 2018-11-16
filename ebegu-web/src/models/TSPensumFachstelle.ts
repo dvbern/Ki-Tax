@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSIntegrationTyp} from './enums/TSIntegrationTyp';
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import {TSFachstelle} from './TSFachstelle';
 import {TSDateRange} from './types/TSDateRange';
@@ -20,10 +21,17 @@ import {TSDateRange} from './types/TSDateRange';
 export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     private _fachstelle: TSFachstelle;
+    private _integrationTyp: TSIntegrationTyp;
 
-    public constructor(fachstelle?: TSFachstelle, pensum?: number, gueltigkeit?: TSDateRange) {
+    public constructor(
+        fachstelle?: TSFachstelle,
+        integrationTyp?: TSIntegrationTyp,
+        pensum?: number,
+        gueltigkeit?: TSDateRange
+    ) {
         super(pensum, gueltigkeit);
         this._fachstelle = fachstelle;
+        this._integrationTyp = integrationTyp;
     }
 
     public get fachstelle(): TSFachstelle {
@@ -32,5 +40,13 @@ export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     public set fachstelle(value: TSFachstelle) {
         this._fachstelle = value;
+    }
+
+    public get integrationTyp(): TSIntegrationTyp {
+        return this._integrationTyp;
+    }
+
+    public set integrationTyp(value: TSIntegrationTyp) {
+        this._integrationTyp = value;
     }
 }

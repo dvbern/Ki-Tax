@@ -95,8 +95,10 @@ import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.api.dtos.JaxVorlage;
@@ -163,8 +165,10 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Vorlage;
@@ -199,6 +203,7 @@ import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
@@ -231,13 +236,13 @@ public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
 	public static final String DOSSIER_TO_ENTITY = "dossierToEntity";
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
 	@Inject
 	private GesuchstellerService gesuchstellerService;
 	@Inject
 	private GesuchstellerAdresseService gesuchstellerAdresseService;
 	@Inject
-	private PensumFachstelleService pensumFachstelleService;
+	private PensumAusserordentlicherAnspruchService pensumAusserordentlicherAnspruchService;
 	@Inject
 	private FachstelleService fachstelleService;
 	@Inject
@@ -280,8 +285,8 @@ public class JaxBConverter extends AbstractConverter {
 	private GemeindeJaxBConverter gemeindeConverter;
 	@Inject
 	private Persistence persistence;
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(JaxBConverter.class);
+	@Inject
+	private PensumFachstelleService pensumFachstelleService;
 
 	public JaxBConverter() {
 		//nop
@@ -423,7 +428,7 @@ public class JaxBConverter extends AbstractConverter {
 			throw new NotImplementedException("Diese Funktion ist erst fuer ApplicationProperties umgesetzt!");
 		}
 		jaxEnversRevision.setRev(revisionEntity.getId());
-		jaxEnversRevision.setRevTimeStamp(DateConvertUtils.asLocalDateTime(revisionEntity.getRevisionDate()));
+		jaxEnversRevision.setRevTimeStamp(requireNonNull(DateConvertUtils.asLocalDateTime(revisionEntity.getRevisionDate())));
 		jaxEnversRevision.setAccessType(accessType);
 
 		return jaxEnversRevision;
@@ -476,15 +481,14 @@ public class JaxBConverter extends AbstractConverter {
 		List<GesuchstellerAdresseContainer> wohnadressen = gesuchstellerCont.getAdressen().stream()
 			.filter(gesuchstellerAdresse -> !gesuchstellerAdresse.extractIsKorrespondenzAdresse()
 				&& !gesuchstellerAdresse.extractIsRechnungsAdresse())
-			.sorted(Comparator.comparing(o -> o.extractGueltigkeit().getGueltigAb()))
+			.sorted(Comparator.comparing(o -> requireNonNull(o.extractGueltigkeit()).getGueltigAb()))
 			.collect(Collectors.toList());
 		for (int i = 0; i < wohnadressen.size(); i++) {
 			if ((i < wohnadressen.size() - 1)) {
-				wohnadressen.get(i).extractGueltigkeit().setGueltigBis(wohnadressen.get(i + 1)
-					.extractGueltigkeit().getGueltigAb().minusDays(1));
+				requireNonNull(wohnadressen.get(i).extractGueltigkeit()).setGueltigBis(
+					requireNonNull(wohnadressen.get(i + 1).extractGueltigkeit()).getGueltigAb().minusDays(1));
 			} else {
-				wohnadressen.get(i)
-					.extractGueltigkeit()
+				requireNonNull(wohnadressen.get(i).extractGueltigkeit())
 					.setGueltigBis(Constants.END_OF_TIME); // by default das letzte Datum hat BIS=END_OF_TIME
 			}
 		}
@@ -544,7 +548,8 @@ public class JaxBConverter extends AbstractConverter {
 					if (o2.extractGueltigkeit() == null) {
 						return -1;
 					}
-					return o1.extractGueltigkeit().getGueltigAb().compareTo(o2.extractGueltigkeit().getGueltigAb());
+					return requireNonNull(o1.extractGueltigkeit()).getGueltigAb().compareTo(
+						requireNonNull(o2.extractGueltigkeit()).getGueltigAb());
 				}).collect(Collectors.toList())
 			));
 		}
@@ -715,7 +720,7 @@ public class JaxBConverter extends AbstractConverter {
 				evkInfoToMergeWith));
 		}
 		if (containerJAX.getEinkommensverschlechterungInfoJA() != null) {
-			evkInfoToMergeWith = Optional.ofNullable(container.getEinkommensverschlechterungInfoJA())
+			evkInfoToMergeWith = Optional.of(container.getEinkommensverschlechterungInfoJA())
 				.orElseGet(EinkommensverschlechterungInfo::new);
 			container.setEinkommensverschlechterungInfoJA(einkommensverschlechterungInfoToEntity(
 				containerJAX.getEinkommensverschlechterungInfoJA(),
@@ -1201,7 +1206,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
 		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
 		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
-		jaxTraegerschaft.setMail(persistedTraegerschaft.getMail());
 		return jaxTraegerschaft;
 	}
 
@@ -1222,7 +1226,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(traegerschaftJAXP, traegerschaft);
 		traegerschaft.setName(traegerschaftJAXP.getName());
 		traegerschaft.setActive(traegerschaftJAXP.getActive());
-		traegerschaft.setMail(traegerschaftJAXP.getMail());
 
 		return traegerschaft;
 	}
@@ -1233,7 +1236,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(fachstelleJAXP, fachstelle);
 		fachstelle.setName(fachstelleJAXP.getName());
 		fachstelle.setBeschreibung(fachstelleJAXP.getBeschreibung());
-		fachstelle.setBehinderungsbestaetigung(fachstelleJAXP.isBehinderungsbestaetigung());
 		fachstelle.setFachstelleAnspruch(fachstelleJAXP.isFachstelleAnspruch());
 		fachstelle.setFachstelleErweiterteBetreuung(fachstelleJAXP.isFachstelleErweiterteBetreuung());
 		return fachstelle;
@@ -1244,7 +1246,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedFachstelle, jaxFachstelle);
 		jaxFachstelle.setName(persistedFachstelle.getName());
 		jaxFachstelle.setBeschreibung(persistedFachstelle.getBeschreibung());
-		jaxFachstelle.setBehinderungsbestaetigung(persistedFachstelle.isBehinderungsbestaetigung());
 		jaxFachstelle.setFachstelleAnspruch(persistedFachstelle.isFachstelleAnspruch());
 		jaxFachstelle.setFachstelleErweiterteBetreuung(persistedFachstelle.isFachstelleErweiterteBetreuung());
 		return jaxFachstelle;
@@ -1578,6 +1579,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
+			persistedKind.getPensumAusserordentlicherAnspruch()));
 		return jaxKind;
 	}
 
@@ -1589,12 +1592,14 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
 		convertAbstractPensumFieldsToJAX(persistedPensumFachstelle, jaxPensumFachstelle);
 		jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
+		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
 		return jaxPensumFachstelle;
 	}
 
 	public PensumFachstelle pensumFachstelleToEntity(
 		final JaxPensumFachstelle pensumFachstelleJAXP,
-		final PensumFachstelle pensumFachstelle) {
+		final PensumFachstelle pensumFachstelle
+	) {
 		requireNonNull(pensumFachstelleJAXP.getFachstelle(), "Fachstelle muss existieren");
 		requireNonNull(
 			pensumFachstelleJAXP.getFachstelle().getId(),
@@ -1613,11 +1618,12 @@ public class JaxBConverter extends AbstractConverter {
 				pensumFachstelleJAXP.getFachstelle()
 					.getId());
 		}
+		pensumFachstelle.setIntegrationTyp(pensumFachstelleJAXP.getIntegrationTyp());
 
 		return pensumFachstelle;
 	}
 
-	private PensumFachstelle toStorablePensumFachstelle(@Nonnull final JaxPensumFachstelle pensumFsToSave) {
+	public PensumFachstelle toStorablePensumFachstelle(@Nonnull final JaxPensumFachstelle pensumFsToSave) {
 		PensumFachstelle pensumToMergeWith = new PensumFachstelle();
 		if (pensumFsToSave.getId() != null) {
 			final Optional<PensumFachstelle> pensumFachstelleOpt =
@@ -1632,6 +1638,47 @@ public class JaxBConverter extends AbstractConverter {
 			}
 		}
 		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
+	}
+
+	@Nullable
+	public JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchToJax(
+		@Nullable final PensumAusserordentlicherAnspruch persistedPensumAusserordentlicherAnspruch) {
+
+		if (persistedPensumAusserordentlicherAnspruch == null) {
+			return null;
+		}
+		final JaxPensumAusserordentlicherAnspruch jaxPensumAusserordentlicherAnspruch =
+			new JaxPensumAusserordentlicherAnspruch();
+		convertAbstractPensumFieldsToJAX(persistedPensumAusserordentlicherAnspruch, jaxPensumAusserordentlicherAnspruch);
+		jaxPensumAusserordentlicherAnspruch.setBegruendung(persistedPensumAusserordentlicherAnspruch.getBegruendung());
+		return jaxPensumAusserordentlicherAnspruch;
+	}
+
+	public PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchToEntity(
+		@Nonnull final JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchJAXP,
+		@Nonnull final PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch) {
+
+		convertAbstractPensumFieldsToEntity(pensumAusserordentlicherAnspruchJAXP, pensumAusserordentlicherAnspruch);
+		pensumAusserordentlicherAnspruch.setBegruendung(pensumAusserordentlicherAnspruchJAXP.getBegruendung());
+		return pensumAusserordentlicherAnspruch;
+	}
+
+	@Nonnull
+	private PensumAusserordentlicherAnspruch toStorablePensumAusserordentlicherAnspruch(
+		@Nonnull final JaxPensumAusserordentlicherAnspruch pensumFsToSave) {
+
+		PensumAusserordentlicherAnspruch pensumToMergeWith = new PensumAusserordentlicherAnspruch();
+		if (pensumFsToSave.getId() != null) {
+			final Optional<PensumAusserordentlicherAnspruch> pensumAusserordentlicherAnspruchOpt =
+				pensumAusserordentlicherAnspruchService.findPensumAusserordentlicherAnspruch(pensumFsToSave.getId());
+			if (pensumAusserordentlicherAnspruchOpt.isPresent()) {
+				pensumToMergeWith = pensumAusserordentlicherAnspruchOpt.get();
+			} else {
+				throw new EbeguEntityNotFoundException("toStorablePensumAusserordentlicherAnspruch",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, pensumFsToSave.getId());
+			}
+		}
+		return pensumAusserordentlicherAnspruchToEntity(pensumFsToSave, pensumToMergeWith);
 	}
 
 	public JaxKindContainer kindContainerToJAX(final KindContainer persistedKind) {
@@ -1663,6 +1710,13 @@ public class JaxBConverter extends AbstractConverter {
 			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
 		}
 		kind.setPensumFachstelle(updtPensumFachstelle);
+
+		PensumAusserordentlicherAnspruch updtPensumAusserordentlicherAnspruch = null;
+		if (kindJAXP.getPensumAusserordentlicherAnspruch() != null) {
+			updtPensumAusserordentlicherAnspruch = toStorablePensumAusserordentlicherAnspruch(
+				kindJAXP.getPensumAusserordentlicherAnspruch());
+		}
+		kind.setPensumAusserordentlicherAnspruch(updtPensumAusserordentlicherAnspruch);
 
 		return kind;
 	}
@@ -1965,13 +2019,13 @@ public class JaxBConverter extends AbstractConverter {
 		if (jaxEwpCont.getErwerbspensumGS() != null) {
 			Erwerbspensum pensumToMergeWith = Optional.ofNullable(erwerbspensumCont.getErwerbspensumGS())
 				.orElseGet(Erwerbspensum::new);
-			Erwerbspensum erwerbspensumGS = erbwerbspensumToEntity(jaxEwpCont.getErwerbspensumGS(), pensumToMergeWith);
+			Erwerbspensum erwerbspensumGS = erwerbspensumToEntity(jaxEwpCont.getErwerbspensumGS(), pensumToMergeWith);
 			erwerbspensumCont.setErwerbspensumGS(erwerbspensumGS);
 		}
 		if (jaxEwpCont.getErwerbspensumJA() != null) {
 			Erwerbspensum pensumToMergeWith = Optional.ofNullable(erwerbspensumCont.getErwerbspensumJA())
 				.orElseGet(Erwerbspensum::new);
-			Erwerbspensum erwerbspensumJA = erbwerbspensumToEntity(jaxEwpCont.getErwerbspensumJA(), pensumToMergeWith);
+			Erwerbspensum erwerbspensumJA = erwerbspensumToEntity(jaxEwpCont.getErwerbspensumJA(), pensumToMergeWith);
 			erwerbspensumCont.setErwerbspensumJA(erwerbspensumJA);
 		}
 
@@ -1992,7 +2046,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxEwpCont;
 	}
 
-	private Erwerbspensum erbwerbspensumToEntity(
+	private Erwerbspensum erwerbspensumToEntity(
 		@Nonnull final JaxErwerbspensum jaxErwerbspensum,
 		@Nonnull final Erwerbspensum erwerbspensum) {
 
@@ -2006,6 +2060,18 @@ public class JaxBConverter extends AbstractConverter {
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
 
+		if (jaxErwerbspensum.getUnbezahlterUrlaub() != null) {
+			UnbezahlterUrlaub existingUrlaub = new UnbezahlterUrlaub();
+			if (jaxErwerbspensum.getUnbezahlterUrlaub().getId() != null) {
+				existingUrlaub = erwerbspensumService.
+					findUnbezahlterUrlaub(jaxErwerbspensum.getUnbezahlterUrlaub().getId())
+					.orElse(new UnbezahlterUrlaub());
+			}
+			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(jaxErwerbspensum.getUnbezahlterUrlaub(), existingUrlaub));
+		} else {
+			erwerbspensum.setUnbezahlterUrlaub(null);
+		}
+
 		return erwerbspensum;
 	}
 
@@ -2014,7 +2080,6 @@ public class JaxBConverter extends AbstractConverter {
 		if (pensum == null) {
 			return null;
 		}
-
 		JaxErwerbspensum jaxErwerbspensum = new JaxErwerbspensum();
 		convertAbstractPensumFieldsToJAX(pensum, jaxErwerbspensum);
 		jaxErwerbspensum.setZuschlagZuErwerbspensum(pensum.getZuschlagZuErwerbspensum());
@@ -2022,8 +2087,28 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErwerbspensum.setZuschlagsprozent(pensum.getZuschlagsprozent());
 		jaxErwerbspensum.setTaetigkeit(pensum.getTaetigkeit());
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
-
+		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
 		return jaxErwerbspensum;
+	}
+
+	private UnbezahlterUrlaub unbezahlterUrlaubToEntity(
+		@Nonnull final JaxUnbezahlterUrlaub jaxUrlaub,
+		@Nonnull final UnbezahlterUrlaub urlaub) {
+
+		requireNonNull(jaxUrlaub);
+		requireNonNull(urlaub);
+		convertAbstractDateRangedFieldsToEntity(jaxUrlaub, urlaub);
+		return urlaub;
+	}
+
+	@Nullable
+	private JaxUnbezahlterUrlaub unbezahlterUrlaubToJax(@Nullable final UnbezahlterUrlaub urlaub) {
+		if (urlaub == null) {
+			return null;
+		}
+		JaxUnbezahlterUrlaub jaxUrlaub = new JaxUnbezahlterUrlaub();
+		convertAbstractDateRangedFieldsToJAX(urlaub, jaxUrlaub);
+		return jaxUrlaub;
 	}
 
 	public Betreuung betreuungToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final Betreuung betreuung) {
@@ -3803,5 +3888,4 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		return jaxInstDaten;
 	}
-
 }

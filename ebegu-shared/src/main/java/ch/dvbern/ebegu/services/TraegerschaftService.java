@@ -30,6 +30,12 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 public interface TraegerschaftService {
 
 	/**
+	 * Erstellt die Traegerschaft in der DB und erstellt einen Administrator mit der angegebenen E-Mail Adresse
+	 */
+	@Nonnull
+	Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminEmail);
+
+	/**
 	 * Speichert die Traegerschaft neu in der DB falls der Key noch nicht existiert.
 	 *
 	 * @param traegerschaft Die Traegerschaft als DTO
