@@ -39,14 +39,13 @@ import static java.util.Objects.requireNonNull;
  */
 public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
-	@SuppressWarnings("FieldCanBeLocal") //TODO @Review: Ich lasse das Feld, weil ich es danach wieder brauche für den neuen Parameter
-	private final int maxZuschlagValue;
+	private final int zuschlagErwerbspensum;
 	private final int minErwerbspensumNichtEingeschult;
 	private final int minErwerbspensumEingeschult;
 
-	public ErwerbspensumCalcRule(DateRange validityPeriod, int maxZuschlagValue, int minErwerbspensumNichtEingeschult, int minErwerbspensumEingeschult) {
+	public ErwerbspensumCalcRule(DateRange validityPeriod, int zuschlagErwerbspensum, int minErwerbspensumNichtEingeschult, int minErwerbspensumEingeschult) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, validityPeriod);
-		this.maxZuschlagValue = maxZuschlagValue;
+		this.zuschlagErwerbspensum = zuschlagErwerbspensum;
 		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
 		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;
 	}
@@ -90,13 +89,17 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			anspruch = 0;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
 			verfuegungZeitabschnitt.setKategorieKeinPensum(true);
-		} else if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
-			anspruch = 100;
 		}
 		// Minimum pruefen
 		if (anspruch < minimum) {
 			anspruch = 0;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MINIMUM_MSG, minimum);
+		} else {
+			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
+			anspruch += zuschlagErwerbspensum;
+		}
+		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
+			anspruch = 100;
 		}
 		// Der Anspruch wird immer auf 5-er Schritten gerundet.
 		return MathUtil.roundIntToFives(anspruch);

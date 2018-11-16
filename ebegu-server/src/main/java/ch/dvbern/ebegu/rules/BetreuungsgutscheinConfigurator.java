@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.util.Constants;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
@@ -71,7 +72,8 @@ public class BetreuungsgutscheinConfigurator {
 			PARAM_MAX_TAGE_ABWESENHEIT,
 			GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
 			MIN_ERWERBSPENSUM_EINGESCHULT,
-			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+			ERWERBSPENSUM_ZUSCHLAG);
 	}
 
 	private void useBernerRules(Map<EinstellungKey, Einstellung> einstellungen) {
@@ -158,11 +160,15 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(storniertCalcRule);
 
 		// - Erwerbspensum
+		Einstellung zuschlagEWP = einstellungMap.get(ERWERBSPENSUM_ZUSCHLAG);
 		Einstellung minEWP_nichtEingeschult = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschult = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
+		Objects.requireNonNull(zuschlagEWP, "Parameter ERWERBSPENSUM_ZUSCHLAG muss gesetzt sein");
+		Objects.requireNonNull(minEWP_nichtEingeschult, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
+		Objects.requireNonNull(minEWP_eingeschult, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
 		ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(
 			defaultGueltigkeit,
-			0, // TODO Reviewer ich lasse das hier, weil dann direkt der neue Parameter kommt
+			zuschlagEWP.getValueAsInteger(),
 			minEWP_nichtEingeschult.getValueAsInteger(),
 			minEWP_eingeschult.getValueAsInteger());
 		rules.add(erwerbspensumCalcRule);

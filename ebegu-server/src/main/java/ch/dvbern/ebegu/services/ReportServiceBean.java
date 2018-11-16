@@ -1250,7 +1250,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs1EwpSelbstaendig(0);
 		row.setGs1EwpRav(0);
 		row.setGs1EwpGesundhtl(0);
-		row.setGs1EwpZuschlag(0);
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
 		if (gs1Container != null) {
 			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container);
@@ -1261,7 +1260,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs2EwpSelbstaendig(0);
 		row.setGs2EwpRav(0);
 		row.setGs2EwpGesundhtl(0);
-		row.setGs2EwpZuschlag(0);
 		if (gueltigeGesuch.getGesuchsteller2() != null) {
 			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2());
 		}

@@ -126,6 +126,10 @@ public class AbstractBGRechnerTest {
 			EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
 		einstellungen.put(EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT, minErwerbspensumEingeschult);
 
+		Einstellung erwerbspensumZuschlag = new Einstellung(
+			EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, "20", gesuchsperiode);
+		einstellungen.put(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, erwerbspensumZuschlag);
+
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen);
 		return new BetreuungsgutscheinEvaluator(rules);
