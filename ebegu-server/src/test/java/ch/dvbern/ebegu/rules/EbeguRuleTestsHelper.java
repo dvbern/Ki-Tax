@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 
 import static ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator.createInitialenRestanspruch;
 import static ch.dvbern.ebegu.util.Constants.DEFAULT_GUELTIGKEIT;
@@ -45,7 +46,8 @@ public final class EbeguRuleTestsHelper {
 	private static final BigDecimal MAX_EINKOMMEN = new BigDecimal("159000");
 
 	private static final ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(DEFAULT_GUELTIGKEIT);
-	private static final ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40);
+	private static final ErwerbspensumCalcRule erwerbspensumCalcRule =
+		new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40);
 	private static final FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(DEFAULT_GUELTIGKEIT);
 	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(DEFAULT_GUELTIGKEIT);
@@ -57,7 +59,8 @@ public final class EbeguRuleTestsHelper {
 	private static final EinreichungsfristCalcRule einreichungsfristCalcRule = new EinreichungsfristCalcRule(DEFAULT_GUELTIGKEIT);
 	private static final WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(DEFAULT_GUELTIGKEIT);
-	private static final AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(DEFAULT_GUELTIGKEIT, TestDataUtil.ABWESENHEIT_DAYS_LIMIT);
+	private static final AbwesenheitAbschnittRule abwesenheitAbschnittRule =
+		new AbwesenheitAbschnittRule(DEFAULT_GUELTIGKEIT, TestDataUtil.ABWESENHEIT_DAYS_LIMIT);
 	private static final AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(DEFAULT_GUELTIGKEIT);
 	private static final UnbezahlterUrlaubAbschnittRule urlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(DEFAULT_GUELTIGKEIT);

@@ -43,9 +43,8 @@ public class CheckUnbezahlterUrlaubValidator implements ConstraintValidator<Chec
 				return false;
 			}
 			// Muss mind. 3 Monate umfassen
-			if (unbezahlterUrlaub.getGueltigkeit().getGueltigBis().minusMonths(3).plusDays(1).isBefore(unbezahlterUrlaub.getGueltigkeit().getGueltigAb())) {
-				return false;
-			}
+			return !unbezahlterUrlaub.getGueltigkeit().getGueltigBis().minusMonths(3).plusDays(1)
+				.isBefore(unbezahlterUrlaub.getGueltigkeit().getGueltigAb());
 		}
 		return true;
 	}

@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,6 +30,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public class UnbezahlterUrlaubRuleTest {
 
 	@Test
 	public void testNormalesErwerbspensum() {
-		addErwerbspensum(betreuung, GP_START, GP_END, null, null);
+		addErwerbspensum(GP_START, GP_END, null, null);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -76,7 +76,7 @@ public class UnbezahlterUrlaubRuleTest {
 
 	@Test
 	public void testUrlaubZuKurz() {
-		addErwerbspensum(betreuung, GP_START, GP_END, GP_START, GP_START.plusMonths(2));
+		addErwerbspensum(GP_START, GP_END, GP_START, GP_START.plusMonths(2));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -86,7 +86,7 @@ public class UnbezahlterUrlaubRuleTest {
 
 	@Test
 	public void testUrlaubAmAnfangDesEwp() {
-		addErwerbspensum(betreuung, GP_START, GP_END, GP_START.minusMonths(4), GP_START.plusMonths(1));
+		addErwerbspensum(GP_START, GP_END, GP_START.minusMonths(4), GP_START.plusMonths(1));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -97,7 +97,7 @@ public class UnbezahlterUrlaubRuleTest {
 
 	@Test
 	public void testUrlaubMittendrinn() {
-		addErwerbspensum(betreuung, GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
+		addErwerbspensum(GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -109,8 +109,8 @@ public class UnbezahlterUrlaubRuleTest {
 
 	@Test
 	public void testMehrereErwerbspensenOhneUrlaub() {
-		addErwerbspensum(betreuung, GP_START, GP_END, null, null);
-		addErwerbspensum(betreuung, GP_START, GP_END, null, null);
+		addErwerbspensum(GP_START, GP_END, null, null);
+		addErwerbspensum(GP_START, GP_END, null, null);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -120,8 +120,8 @@ public class UnbezahlterUrlaubRuleTest {
 
 	@Test
 	public void testMehrereErwerbspensenEinesUrlaub() {
-		addErwerbspensum(betreuung, GP_START, GP_END, null, null);
-		addErwerbspensum(betreuung, GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
+		addErwerbspensum(GP_START, GP_END, null, null);
+		addErwerbspensum(GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -132,19 +132,18 @@ public class UnbezahlterUrlaubRuleTest {
 	}
 
 	private Betreuung createGesuchWithBetreuung() {
-		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
-		final Gesuch gesuch = betreuung.extractGesuch();
-		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);
+		final Betreuung betreuungToCreate = TestDataUtil.createGesuchWithBetreuungspensum(false);
+		final Gesuch gesuch = betreuungToCreate.extractGesuch();
+		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuungToCreate);
 		betPensContainer.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(Constants.START_OF_TIME);
-		betreuung.getBetreuungspensumContainers().add(betPensContainer);
+		betreuungToCreate.getBetreuungspensumContainers().add(betPensContainer);
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.setDossier(TestDataUtil.createDefaultDossier());
 		gesuch.getGesuchsteller1().getErwerbspensenContainers().clear();
-		return betreuung;
+		return betreuungToCreate;
 	}
 
 	private void addErwerbspensum(
-		@Nonnull Betreuung betreuung,
 		@Nonnull LocalDate ewpStart,
 		@Nonnull LocalDate ewpEnd,
 		@Nullable LocalDate urlaubStart,
@@ -167,6 +166,7 @@ public class UnbezahlterUrlaubRuleTest {
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void assertZeitabschnitt(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		int expectedBetreuungspensum,
@@ -174,9 +174,10 @@ public class UnbezahlterUrlaubRuleTest {
 		int expectedBgPensum,
 		@Nullable RuleKey expectedBemerkungIfAny) {
 
-		assertEquals(BigDecimal.valueOf(expectedBetreuungspensum), zeitabschnitt.getBetreuungspensum());
+		assertEquals(MathUtil.DEFAULT.from(expectedBetreuungspensum), zeitabschnitt.getBetreuungspensum());
 		assertEquals(expectedAnspruchsPensum, zeitabschnitt.getAnspruchberechtigtesPensum());
-		assertEquals(BigDecimal.valueOf(expectedBgPensum), zeitabschnitt.getBgPensum());
+		assertEquals(MathUtil.DEFAULT.from(expectedBgPensum), zeitabschnitt.getBgPensum());
+
 		final String bemerkungen = zeitabschnitt.getBemerkungen();
 		if (expectedBemerkungIfAny != null) {
 			assertNotNull(bemerkungen);

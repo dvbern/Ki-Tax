@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Regel für unbezahlten Urlaub. In dem Teil des Urlaubs, welcher 3 Monate übersteigt, verfällt der Anspruch (für dieses Erwerbspensum!)
  */
-public class UnbezahlterUrlaubAbschnittRule extends AbstractAbschnittRule {
+public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
 
 	public UnbezahlterUrlaubAbschnittRule(@Nonnull DateRange validityPeriod) {
@@ -58,19 +58,11 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
-		List<VerfuegungZeitabschnitt> resultlist = new ArrayList<>();
-		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
-			List<VerfuegungZeitabschnitt> erwerbspensumAbschnitte = new ArrayList<>();
-			Gesuch gesuch = betreuung.extractGesuch();
-			if (gesuch.getGesuchsteller1() != null) {
-				erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch, gesuch.getGesuchsteller1(), false));
-			}
-			if (gesuch.getGesuchsteller2() != null) {
-				erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch, gesuch.getGesuchsteller2(), true));
-			}
-			return erwerbspensumAbschnitte;
+		if (!requireNonNull(betreuung.getBetreuungsangebotTyp()).isAngebotJugendamtKleinkind()) {
+			return new ArrayList<>();
 		}
-		return resultlist;
+
+		return super.createVerfuegungsZeitabschnitte(betreuung);
 	}
 
 	/**
@@ -80,26 +72,28 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractAbschnittRule {
 	 * @param gs2 handelt es sich um gesuchsteller1 -> false oder gesuchsteller2 -> true
 	 */
 	@Nonnull
-	private List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(@Nonnull Gesuch gesuch, @Nonnull GesuchstellerContainer gesuchsteller, boolean gs2) {
+	protected List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
+		@Nonnull Gesuch gesuch,
+		@Nonnull GesuchstellerContainer gesuchsteller,
+		boolean gs2
+	) {
 		List<VerfuegungZeitabschnitt> ewpAbschnitte = new ArrayList<>();
 		Set<ErwerbspensumContainer> ewpContainers = gesuchsteller.getErwerbspensenContainersNotEmpty();
-		for (ErwerbspensumContainer erwerbspensumContainer : ewpContainers) {
-			Erwerbspensum erwerbspensumJA = erwerbspensumContainer.getErwerbspensumJA();
-			Objects.requireNonNull(erwerbspensumJA);
-			if (erwerbspensumJA.getUnbezahlterUrlaub() != null) {
-				final VerfuegungZeitabschnitt zeitabschnitt = toVerfuegungZeitabschnitt(gesuch, erwerbspensumJA, gs2);
-				if (zeitabschnitt != null) {
-					ewpAbschnitte.add(zeitabschnitt);
-				}
-			}
 
-		}
+		ewpContainers.stream()
+			.map(ErwerbspensumContainer::getErwerbspensumJA)
+			.filter(Objects::nonNull)
+			.filter(erwerbspensumJA -> erwerbspensumJA.getUnbezahlterUrlaub() != null)
+			.map(erwerbspensumJA -> toVerfuegungZeitabschnitt(gesuch, erwerbspensumJA, gs2))
+			.filter(Objects::nonNull)
+			.forEach(ewpAbschnitte::add);
+
 		return ewpAbschnitte;
 	}
 
 	/**
-	 * Konvertiert ein Erwerbspensum in einen Zeitabschnitt von entsprechender dauer und erwerbspensumGS1 (falls gs2=false)
-	 * oder erwerpspensuGS2 (falls gs2=true)
+	 * Fuer Zeitabschnitten bei denen einen langen Urlaub eingegeben wurde, setzen wir das Pensum auf -XX sodass das Pensum aus
+	 * ErwerbspensumAbschnittRule kompensiert wird.
 	 */
 	@Nullable
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Gesuch gesuch, @Nonnull Erwerbspensum erwerbspensumJA, boolean gs2) {
@@ -119,33 +113,23 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractAbschnittRule {
 		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
-			Objects.requireNonNull(familiensituation.getAenderungPer());
-			if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
-				// 1GS to 2GS
-				if (gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())
-					&& gueltigkeit.getGueltigAb().isBefore(familiensituation.getAenderungPer())) {
-					gueltigkeit.setGueltigAb(familiensituation.getAenderungPer());
-				}
-			} else if (familiensituationErstgesuch.hasSecondGesuchsteller() && !familiensituation.hasSecondGesuchsteller()
-				&& gueltigkeit.getGueltigAb().isBefore(familiensituation.getAenderungPer())
-				&& gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())) {
-				// 2GS to 1GS
-				gueltigkeit.setGueltigBis(familiensituation.getAenderungPer().minusDays(1));
-			}
+
+			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
+
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS2(0-erwerbspensumJA.getPensumInklZuschlag());
+			zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensumInklZuschlag());
 			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 			return zeitabschnitt;
 		}
 		if (gs2 && !gesuch.isMutation()) {
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS2(0-erwerbspensumJA.getPensumInklZuschlag());
+			zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensumInklZuschlag());
 			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 			return zeitabschnitt;
 		}
 		if (!gs2) {
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS1(0-erwerbspensumJA.getPensumInklZuschlag());
+			zeitabschnitt.setErwerbspensumGS1(0 - erwerbspensumJA.getPensumInklZuschlag());
 			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 			return zeitabschnitt;
 		}

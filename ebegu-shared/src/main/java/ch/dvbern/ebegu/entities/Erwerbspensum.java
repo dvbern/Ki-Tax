@@ -142,10 +142,10 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		}
 		final Erwerbspensum otherErwerbspensum = (Erwerbspensum) other;
 		boolean pensumIsSame = super.isSame(otherErwerbspensum);
-		boolean taetigkeitSame = Objects.equals(taetigkeit, otherErwerbspensum.getTaetigkeit());
+		boolean taetigkeitSame = taetigkeit == otherErwerbspensum.getTaetigkeit();
 		boolean zuschlagSame = Objects.equals(zuschlagZuErwerbspensum, otherErwerbspensum.getZuschlagZuErwerbspensum());
 		boolean bezeichnungSame = EbeguUtil.isSameOrNullStrings(bezeichnung, otherErwerbspensum.getBezeichnung());
-		boolean zuschlagsgrundSame = Objects.equals(zuschlagsgrund, otherErwerbspensum.getZuschlagsgrund());
+		boolean zuschlagsgrundSame = zuschlagsgrund == otherErwerbspensum.getZuschlagsgrund();
 		boolean zuschlagsprozentSame = Objects.equals(zuschlagsprozent, otherErwerbspensum.getZuschlagsprozent());
 		boolean urlaubSame = Objects.equals(unbezahlterUrlaub, otherErwerbspensum.getUnbezahlterUrlaub());
 		return pensumIsSame && taetigkeitSame && zuschlagSame && bezeichnungSame && zuschlagsgrundSame && zuschlagsprozentSame && urlaubSame;
@@ -178,13 +178,19 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 			target.setZuschlagsgrund(this.getZuschlagsgrund());
 			target.setZuschlagsprozent(this.getZuschlagsprozent());
 			target.setBezeichnung(this.getBezeichnung());
-			target.setUnbezahlterUrlaub(this.getUnbezahlterUrlaub());
+			copyUnbezahlterUrlaub(target, copyType);
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
+	}
+
+	private void copyUnbezahlterUrlaub(@Nonnull Erwerbspensum target, @Nonnull AntragCopyType copyType) {
+		if (this.getUnbezahlterUrlaub() != null) {
+			target.setUnbezahlterUrlaub(this.getUnbezahlterUrlaub().copyUnbezahlterUrlaub(new UnbezahlterUrlaub(), copyType));
+		}
 	}
 
 	@Override

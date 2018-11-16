@@ -1967,13 +1967,13 @@ public class JaxBConverter extends AbstractConverter {
 		if (jaxEwpCont.getErwerbspensumGS() != null) {
 			Erwerbspensum pensumToMergeWith = Optional.ofNullable(erwerbspensumCont.getErwerbspensumGS())
 				.orElseGet(Erwerbspensum::new);
-			Erwerbspensum erwerbspensumGS = erbwerbspensumToEntity(jaxEwpCont.getErwerbspensumGS(), pensumToMergeWith);
+			Erwerbspensum erwerbspensumGS = erwerbspensumToEntity(jaxEwpCont.getErwerbspensumGS(), pensumToMergeWith);
 			erwerbspensumCont.setErwerbspensumGS(erwerbspensumGS);
 		}
 		if (jaxEwpCont.getErwerbspensumJA() != null) {
 			Erwerbspensum pensumToMergeWith = Optional.ofNullable(erwerbspensumCont.getErwerbspensumJA())
 				.orElseGet(Erwerbspensum::new);
-			Erwerbspensum erwerbspensumJA = erbwerbspensumToEntity(jaxEwpCont.getErwerbspensumJA(), pensumToMergeWith);
+			Erwerbspensum erwerbspensumJA = erwerbspensumToEntity(jaxEwpCont.getErwerbspensumJA(), pensumToMergeWith);
 			erwerbspensumCont.setErwerbspensumJA(erwerbspensumJA);
 		}
 
@@ -1994,7 +1994,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxEwpCont;
 	}
 
-	private Erwerbspensum erbwerbspensumToEntity(
+	private Erwerbspensum erwerbspensumToEntity(
 		@Nonnull final JaxErwerbspensum jaxErwerbspensum,
 		@Nonnull final Erwerbspensum erwerbspensum) {
 
@@ -2007,15 +2007,19 @@ public class JaxBConverter extends AbstractConverter {
 		erwerbspensum.setZuschlagsprozent(jaxErwerbspensum.getZuschlagsprozent());
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
+
 		if (jaxErwerbspensum.getUnbezahlterUrlaub() != null) {
-			UnbezahlterUrlaub existingUrlaub =
-				persistence.find(UnbezahlterUrlaub.class, jaxErwerbspensum.getUnbezahlterUrlaub().getId());
-			if (existingUrlaub == null) {
-				existingUrlaub = new UnbezahlterUrlaub();
+			UnbezahlterUrlaub existingUrlaub = new UnbezahlterUrlaub();
+			if (jaxErwerbspensum.getUnbezahlterUrlaub().getId() != null) {
+				existingUrlaub = erwerbspensumService.
+					findUnbezahlterUrlaub(jaxErwerbspensum.getUnbezahlterUrlaub().getId())
+					.orElse(new UnbezahlterUrlaub());
 			}
-			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(
-				jaxErwerbspensum.getUnbezahlterUrlaub(), existingUrlaub));
+			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(jaxErwerbspensum.getUnbezahlterUrlaub(), existingUrlaub));
+		} else {
+			erwerbspensum.setUnbezahlterUrlaub(null);
 		}
+
 		return erwerbspensum;
 	}
 

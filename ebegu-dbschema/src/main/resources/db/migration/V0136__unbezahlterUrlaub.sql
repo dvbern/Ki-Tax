@@ -34,6 +34,6 @@ FOREIGN KEY (unbezahlter_urlaub_id)
 REFERENCES unbezahlter_urlaub (id);
 
 ALTER TABLE unbezahlter_urlaub_aud
-	ADD CONSTRAINT FK10yopvhxm14yekil7pcuckq9k
+	ADD CONSTRAINT FK_unbezahlter_urlaub_aud_rev
 FOREIGN KEY (rev)
 REFERENCES revinfo (rev);

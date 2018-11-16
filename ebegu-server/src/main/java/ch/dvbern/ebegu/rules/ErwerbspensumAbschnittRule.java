@@ -38,7 +38,7 @@ import ch.dvbern.ebegu.types.DateRange;
  * Die weiteren Rules müssen diesen Wert gegebenenfalls korrigieren.
  * Verweis 16.9.2
  */
-public class ErwerbspensumAbschnittRule extends AbstractAbschnittRule {
+public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
 	public ErwerbspensumAbschnittRule(DateRange validityPeriod) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod);
@@ -47,15 +47,7 @@ public class ErwerbspensumAbschnittRule extends AbstractAbschnittRule {
 	@Override
 	@Nonnull
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung) {
-		List<VerfuegungZeitabschnitt> erwerbspensumAbschnitte = new ArrayList<>();
-		Gesuch gesuch = betreuung.extractGesuch();
-		if (gesuch.getGesuchsteller1() != null) {
-			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch, gesuch.getGesuchsteller1(), false));
-		}
-		if (gesuch.getGesuchsteller2() != null) {
-			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch, gesuch.getGesuchsteller2(), true));
-		}
-		return erwerbspensumAbschnitte;
+		return super.createVerfuegungsZeitabschnitte(betreuung);
 	}
 
 	/**
@@ -65,17 +57,21 @@ public class ErwerbspensumAbschnittRule extends AbstractAbschnittRule {
 	 * @param gs2 handelt es sich um gesuchsteller1 -> false oder gesuchsteller2 -> true
 	 */
 	@Nonnull
-	private List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(@Nonnull Gesuch gesuch, @Nonnull GesuchstellerContainer gesuchsteller, boolean gs2) {
+	protected List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
+		@Nonnull Gesuch gesuch,
+		@Nonnull GesuchstellerContainer gesuchsteller,
+		boolean gs2
+	) {
 		List<VerfuegungZeitabschnitt> ewpAbschnitte = new ArrayList<>();
 		Set<ErwerbspensumContainer> ewpContainers = gesuchsteller.getErwerbspensenContainersNotEmpty();
-		for (ErwerbspensumContainer erwerbspensumContainer : ewpContainers) {
-			Erwerbspensum erwerbspensumJA = erwerbspensumContainer.getErwerbspensumJA();
-			Objects.requireNonNull(erwerbspensumJA);
-			final VerfuegungZeitabschnitt zeitabschnitt = toVerfuegungZeitabschnitt(gesuch, erwerbspensumJA, gs2);
-			if (zeitabschnitt != null) {
-				ewpAbschnitte.add(zeitabschnitt);
-			}
-		}
+
+		ewpContainers.stream()
+			.map(ErwerbspensumContainer::getErwerbspensumJA)
+			.filter(Objects::nonNull)
+			.map(erwerbspensumJA -> toVerfuegungZeitabschnitt(gesuch, erwerbspensumJA, gs2))
+			.filter(Objects::nonNull)
+			.forEach(ewpAbschnitte::add);
+
 		return ewpAbschnitte;
 	}
 
@@ -90,19 +86,11 @@ public class ErwerbspensumAbschnittRule extends AbstractAbschnittRule {
 		// Wir merken uns hier den eingegebenen Wert, auch wenn dieser (mit Zuschlag) über 100% liegt
 		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+
 		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
-			if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
-				// 1GS to 2GS
-				if (gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())
-					&& gueltigkeit.getGueltigAb().isBefore(familiensituation.getAenderungPer())) {
-					gueltigkeit.setGueltigAb(familiensituation.getAenderungPer());
-				}
-			} else if (familiensituationErstgesuch.hasSecondGesuchsteller() && !familiensituation.hasSecondGesuchsteller()
-				&& gueltigkeit.getGueltigAb().isBefore(familiensituation.getAenderungPer())
-				&& gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())) {
-				// 2GS to 1GS
-				gueltigkeit.setGueltigBis(familiensituation.getAenderungPer().minusDays(1));
-			}
+
+			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
+
 			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
 			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);  //fuer statistik
 			return zeitabschnitt;
