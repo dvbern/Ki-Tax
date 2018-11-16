@@ -727,7 +727,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@Transient
 	public BigDecimal getBgPensum() {
-		return getBetreuungspensum().min(BigDecimal.valueOf(getAnspruchberechtigtesPensum()));
+		return getBetreuungspensum().min(MathUtil.DEFAULT.from(getAnspruchberechtigtesPensum()));
 	}
 
 	@Override

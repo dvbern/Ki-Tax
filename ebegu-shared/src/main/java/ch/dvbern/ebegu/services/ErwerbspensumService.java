@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 
 /**
  * Service zum Verwalten von Erwerbspensen
@@ -74,4 +75,7 @@ public interface ErwerbspensumService {
 	 * kein Angebot des Types Tagesschule, TAGI oder Tageseltern für Schulkind gibt
 	 */
 	boolean isErwerbspensumRequired(@Nonnull Gesuch gesuch);
+
+	@Nonnull
+	Optional<UnbezahlterUrlaub> findUnbezahlterUrlaub(@Nonnull String unbezahlterUrlaubId);
 }

@@ -19,10 +19,14 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -33,6 +37,7 @@ import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.validators.CheckUnbezahlterUrlaub;
 import ch.dvbern.ebegu.validators.CheckZuschlagErwerbspensumZuschlagUndGrund;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
@@ -43,6 +48,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @CheckZuschlagErwerbspensumZuschlagUndGrund
+@CheckUnbezahlterUrlaub
 public class Erwerbspensum extends AbstractIntegerPensum {
 
 	private static final long serialVersionUID = 4649639217797690323L;
@@ -68,6 +74,11 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 	@Column(nullable = true)
 	@Nullable
 	private String bezeichnung;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erwerbspensum_urlaub_id"), nullable = true)
+	private UnbezahlterUrlaub unbezahlterUrlaub;
 
 	public Erwerbspensum() {
 	}
@@ -106,6 +117,15 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		this.zuschlagsgrund = zuschlagsgrund;
 	}
 
+	@Nullable
+	public UnbezahlterUrlaub getUnbezahlterUrlaub() {
+		return unbezahlterUrlaub;
+	}
+
+	public void setUnbezahlterUrlaub(@Nullable UnbezahlterUrlaub unbezahlterUrlaub) {
+		this.unbezahlterUrlaub = unbezahlterUrlaub;
+	}
+
 	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
 	@Override
 	public boolean isSame(AbstractEntity other) {
@@ -124,12 +144,13 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		}
 		final Erwerbspensum otherErwerbspensum = (Erwerbspensum) other;
 		boolean pensumIsSame = super.isSame(otherErwerbspensum);
-		boolean taetigkeitSame = Objects.equals(taetigkeit, otherErwerbspensum.getTaetigkeit());
+		boolean taetigkeitSame = taetigkeit == otherErwerbspensum.getTaetigkeit();
 		boolean zuschlagSame = Objects.equals(zuschlagZuErwerbspensum, otherErwerbspensum.getZuschlagZuErwerbspensum());
 		boolean bezeichnungSame = EbeguUtil.isSameOrNullStrings(bezeichnung, otherErwerbspensum.getBezeichnung());
-		boolean zuschlagsgrundSame = Objects.equals(zuschlagsgrund, otherErwerbspensum.getZuschlagsgrund());
+		boolean zuschlagsgrundSame = zuschlagsgrund == otherErwerbspensum.getZuschlagsgrund();
 		boolean zuschlagsprozentSame = Objects.equals(zuschlagsprozent, otherErwerbspensum.getZuschlagsprozent());
-		return pensumIsSame && taetigkeitSame && zuschlagSame && bezeichnungSame && zuschlagsgrundSame && zuschlagsprozentSame;
+		boolean urlaubSame = Objects.equals(unbezahlterUrlaub, otherErwerbspensum.getUnbezahlterUrlaub());
+		return pensumIsSame && taetigkeitSame && zuschlagSame && bezeichnungSame && zuschlagsgrundSame && zuschlagsprozentSame && urlaubSame;
 	}
 
 	public String getName() {
@@ -159,12 +180,19 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 			target.setZuschlagsgrund(this.getZuschlagsgrund());
 			target.setZuschlagsprozent(this.getZuschlagsprozent());
 			target.setBezeichnung(this.getBezeichnung());
+			copyUnbezahlterUrlaub(target, copyType);
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
 		return target;
+	}
+
+	private void copyUnbezahlterUrlaub(@Nonnull Erwerbspensum target, @Nonnull AntragCopyType copyType) {
+		if (this.getUnbezahlterUrlaub() != null) {
+			target.setUnbezahlterUrlaub(this.getUnbezahlterUrlaub().copyUnbezahlterUrlaub(new UnbezahlterUrlaub(), copyType));
+		}
 	}
 
 	@Override
@@ -175,6 +203,15 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 			.append("zuschlagZuErwerbspensum", zuschlagZuErwerbspensum)
 			.append("zuschlagsgrund", zuschlagsgrund)
 			.append("zuschlagsprozent", zuschlagsprozent)
+			.append("unbezahlterUrlaub", unbezahlterUrlaub)
 			.toString();
+	}
+
+	public int getPensumInklZuschlag() {
+		int total = getPensum();
+		if (getZuschlagsprozent() != null) {
+			total += getZuschlagsprozent();
+		}
+		return total;
 	}
 }

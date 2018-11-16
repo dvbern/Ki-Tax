@@ -98,6 +98,7 @@ import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
+import TSUnbezahlterUrlaub from '../models/TSUnbezahlterUrlaub';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
 import TSVorlage from '../models/TSVorlage';
@@ -486,6 +487,8 @@ export default class EbeguRestUtil {
             erwerbspensum.zuschlagsprozent = erwerbspensumFromServer.zuschlagsprozent;
             erwerbspensum.zuschlagZuErwerbspensum = erwerbspensumFromServer.zuschlagZuErwerbspensum;
             erwerbspensum.bezeichnung = erwerbspensumFromServer.bezeichnung;
+            erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
+                new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
             return erwerbspensum;
         }
         return undefined;
@@ -499,7 +502,25 @@ export default class EbeguRestUtil {
             restErwerbspensum.zuschlagsprozent = erwerbspensum.zuschlagsprozent;
             restErwerbspensum.zuschlagZuErwerbspensum = erwerbspensum.zuschlagZuErwerbspensum;
             restErwerbspensum.bezeichnung = erwerbspensum.bezeichnung;
+            restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
+                {}, erwerbspensum.unbezahlterUrlaub);
             return restErwerbspensum;
+        }
+        return undefined;
+    }
+
+    public parseUnbezahlterUrlaub(tsUrlaub: TSUnbezahlterUrlaub, urlaubFromServer: any): TSUnbezahlterUrlaub {
+        if (urlaubFromServer) {
+            this.parseDateRangeEntity(tsUrlaub, urlaubFromServer);
+            return tsUrlaub;
+        }
+        return undefined;
+    }
+
+    public unbezahlterUrlaubToRestObject(restUrlaub: any, tsUrlaub: TSUnbezahlterUrlaub): any {
+        if (tsUrlaub) {
+            this.abstractDateRangeEntityToRestObject(restUrlaub, tsUrlaub);
+            return restUrlaub;
         }
         return undefined;
     }

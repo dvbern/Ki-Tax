@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -110,6 +111,7 @@ public final class FreigabeCopyUtil {
 			if (container.getKindGS() == null) {
 				container.setKindGS(new Kind());
 			}
+			//noinspection ConstantConditions
 			copyKind(container.getKindGS(), container.getKindJA());
 		} else {
 			container.setKindGS(null);
@@ -135,6 +137,7 @@ public final class FreigabeCopyUtil {
 			if (container.getErweiterteBetreuungGS() == null) {
 				container.setErweiterteBetreuungGS(new ErweiterteBetreuung());
 			}
+			//noinspection ConstantConditions
 			copyErweiterteBetreuung(container.getErweiterteBetreuungGS(), container.getErweiterteBetreuungJA());
 		} else {
 			container.setErweiterteBetreuungGS(null);
@@ -174,6 +177,7 @@ public final class FreigabeCopyUtil {
 				if (container.getBetreuungspensumGS() == null) {
 					container.setBetreuungspensumGS(new Betreuungspensum());
 				}
+				//noinspection ConstantConditions
 				copyBetreuungspensum(container.getBetreuungspensumGS(), container.getBetreuungspensumJA());
 			} else {
 				container.setBetreuungspensumGS(null);
@@ -193,6 +197,7 @@ public final class FreigabeCopyUtil {
 				if (container.getAbwesenheitGS() == null) {
 					container.setAbwesenheitGS(new Abwesenheit());
 				}
+				//noinspection ConstantConditions
 				copyAbwesenheit(container.getAbwesenheitGS(), container.getAbwesenheitJA());
 			} else {
 				container.setAbwesenheitGS(null);
@@ -211,6 +216,7 @@ public final class FreigabeCopyUtil {
 				if (container.getGesuchstellerGS() == null) {
 					container.setGesuchstellerGS(new Gesuchsteller());
 				}
+				//noinspection ConstantConditions
 				copyGesuchsteller(container.getGesuchstellerGS(), container.getGesuchstellerJA());
 			} else {
 				container.setGesuchstellerGS(null);
@@ -251,6 +257,7 @@ public final class FreigabeCopyUtil {
 				if (container.getGesuchstellerAdresseGS() == null) {
 					container.setGesuchstellerAdresseGS(new GesuchstellerAdresse());
 				}
+				//noinspection ConstantConditions
 				copyGesuchstellerAdresse(container.getGesuchstellerAdresseGS(), container.getGesuchstellerAdresseJA());
 			} else {
 				container.setGesuchstellerAdresseGS(null);
@@ -289,6 +296,7 @@ public final class FreigabeCopyUtil {
 			if (container.getEinkommensverschlechterungInfoGS() == null) {
 				container.setEinkommensverschlechterungInfoGS(new EinkommensverschlechterungInfo());
 			}
+			//noinspection ConstantConditions
 			copyEinkommensverschlechterungInfo(container.getEinkommensverschlechterungInfoGS(), container.getEinkommensverschlechterungInfoJA());
 		}
 	}
@@ -311,6 +319,7 @@ public final class FreigabeCopyUtil {
 				if (container.getEkvGSBasisJahrPlus1() == null) {
 					container.setEkvGSBasisJahrPlus1(new Einkommensverschlechterung());
 				}
+				//noinspection ConstantConditions
 				copyEinkommensverschlechterung(container.getEkvGSBasisJahrPlus1(), container.getEkvJABasisJahrPlus1());
 			} else {
 				container.setEkvGSBasisJahrPlus1(null);
@@ -319,6 +328,7 @@ public final class FreigabeCopyUtil {
 				if (container.getEkvGSBasisJahrPlus2() == null) {
 					container.setEkvGSBasisJahrPlus2(new Einkommensverschlechterung());
 				}
+				//noinspection ConstantConditions
 				copyEinkommensverschlechterung(container.getEkvGSBasisJahrPlus2(), container.getEkvJABasisJahrPlus2());
 			} else {
 				container.setEkvGSBasisJahrPlus2(null);
@@ -375,6 +385,7 @@ public final class FreigabeCopyUtil {
 			if (container.getErwerbspensumGS() == null) {
 				container.setErwerbspensumGS(new Erwerbspensum());
 			}
+			//noinspection ConstantConditions
 			copyErwerbspensum(container.getErwerbspensumGS(), container.getErwerbspensumJA());
 		}
 	}
@@ -387,5 +398,20 @@ public final class FreigabeCopyUtil {
 		erwerbspensumGS.setZuschlagsgrund(erwerbspensumJA.getZuschlagsgrund());
 		erwerbspensumGS.setZuschlagsprozent(erwerbspensumJA.getZuschlagsprozent());
 		erwerbspensumGS.setBezeichnung(erwerbspensumJA.getBezeichnung());
+
+		if (erwerbspensumJA.getUnbezahlterUrlaub() == null) {
+			//noinspection ConstantConditions
+			erwerbspensumGS.setUnbezahlterUrlaub(null);
+		} else {
+			if (erwerbspensumGS.getUnbezahlterUrlaub() == null) {
+				erwerbspensumGS.setUnbezahlterUrlaub(new UnbezahlterUrlaub());
+			}
+			//noinspection ConstantConditions
+			copyUnbezahlterUrlaub(erwerbspensumGS.getUnbezahlterUrlaub(), erwerbspensumJA.getUnbezahlterUrlaub());
+		}
+	}
+
+	private static void copyUnbezahlterUrlaub(@Nonnull UnbezahlterUrlaub urlaubGS, @Nonnull UnbezahlterUrlaub urlaubJA) {
+		urlaubGS.setGueltigkeit(new DateRange(urlaubJA.getGueltigkeit()));
 	}
 }
