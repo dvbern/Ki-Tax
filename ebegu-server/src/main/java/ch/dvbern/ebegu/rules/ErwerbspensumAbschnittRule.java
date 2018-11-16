@@ -56,6 +56,7 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 	 * @param gesuchsteller Der Gesuchsteller dessen Erwerbspensumcontainers zu Abschnitte konvertiert werden
 	 * @param gs2 handelt es sich um gesuchsteller1 -> false oder gesuchsteller2 -> true
 	 */
+	@Override
 	@Nonnull
 	protected List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
 		@Nonnull Gesuch gesuch,
@@ -99,7 +100,7 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 			return zeitabschnitt;
 		}
 		if (!gs2) {
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS1(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
+			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS1(gueltigkeit, erwerbspensum.getPensum());
 			return zeitabschnitt;
 		}
 
@@ -107,16 +108,14 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, Integer erwerbspensumValue, Integer zuschlag) {
+	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, Integer erwerbspensumValue) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS1(erwerbspensumValue);
 		return zeitabschnitt;
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(
-		DateRange gueltigkeit,
-		Integer erwerbspensumValue) {
+	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, Integer erwerbspensumValue) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS2(erwerbspensumValue);
 		return zeitabschnitt;

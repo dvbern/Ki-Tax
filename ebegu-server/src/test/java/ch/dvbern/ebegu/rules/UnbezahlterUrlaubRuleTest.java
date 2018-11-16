@@ -149,7 +149,7 @@ public class UnbezahlterUrlaubRuleTest {
 		@Nullable LocalDate urlaubStart,
 		@Nullable LocalDate urlaubEnd) {
 
-		ErwerbspensumContainer erwerbspensum = TestDataUtil.createErwerbspensum(ewpStart, ewpEnd, 50, 0);
+		ErwerbspensumContainer erwerbspensum = TestDataUtil.createErwerbspensum(ewpStart, ewpEnd, 50);
 		assertNotNull(erwerbspensum.getErwerbspensumJA());
 		if (urlaubStart != null) {
 			if (urlaubEnd == null) {

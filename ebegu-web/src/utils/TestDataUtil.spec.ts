@@ -67,7 +67,7 @@ export default class TestDataUtil {
     public static createErwerbspensum(): TSErwerbspensum {
         const dummyErwerbspensum = new TSErwerbspensum();
         dummyErwerbspensum.taetigkeit = TSTaetigkeit.ANGESTELLT;
-        dummyErwerbspensum.pensum = 80;
+        dummyErwerbspensum.pensum = 100;
         dummyErwerbspensum.gueltigkeit = new TSDateRange(DateUtil.today(), DateUtil.today().add(7, 'months'));
         dummyErwerbspensum.bezeichnung = undefined;
         this.setAbstractMutableFieldsUndefined(dummyErwerbspensum);

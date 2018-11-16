@@ -71,6 +71,7 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 	 * @param gesuchsteller Der Gesuchsteller dessen Erwerbspensumcontainers zu Abschnitte konvertiert werden
 	 * @param gs2 handelt es sich um gesuchsteller1 -> false oder gesuchsteller2 -> true
 	 */
+	@Override
 	@Nonnull
 	protected List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
 		@Nonnull Gesuch gesuch,
@@ -117,19 +118,19 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
 
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensumInklZuschlag());
+			zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensum());
 			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 			return zeitabschnitt;
 		}
 		if (gs2 && !gesuch.isMutation()) {
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensumInklZuschlag());
+			zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensum());
 			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 			return zeitabschnitt;
 		}
 		if (!gs2) {
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS1(0 - erwerbspensumJA.getPensumInklZuschlag());
+			zeitabschnitt.setErwerbspensumGS1(0 - erwerbspensumJA.getPensum());
 			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 			return zeitabschnitt;
 		}

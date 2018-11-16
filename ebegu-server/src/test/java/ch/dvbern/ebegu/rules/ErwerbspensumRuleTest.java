@@ -85,7 +85,6 @@ public class ErwerbspensumRuleTest {
 		assertNotNull(gesuch.getGesuchsteller2());
 		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
 
-
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -135,7 +134,6 @@ public class ErwerbspensumRuleTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 120));
 
-
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
@@ -154,7 +152,6 @@ public class ErwerbspensumRuleTest {
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 110));
 		assertNotNull(gesuch.getGesuchsteller2());
 		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 110));
-
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -234,7 +231,6 @@ public class ErwerbspensumRuleTest {
 
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 90));
-
 		assertNotNull(gesuch.getGesuchsteller2());
 		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 70));
 
@@ -285,7 +281,6 @@ public class ErwerbspensumRuleTest {
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 0));
-
 		List<VerfuegungZeitabschnitt> result2 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(0, result2.get(0).getAnspruchberechtigtesPensum());
 
@@ -301,7 +296,6 @@ public class ErwerbspensumRuleTest {
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 51));
-
 		List<VerfuegungZeitabschnitt> result5 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(50, result5.get(0).getAnspruchberechtigtesPensum());
 
@@ -318,7 +312,6 @@ public class ErwerbspensumRuleTest {
 		//mit zuschlag
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 55));
-
 		List<VerfuegungZeitabschnitt> result8 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(55, result8.get(0).getAnspruchberechtigtesPensum());
 
@@ -334,7 +327,6 @@ public class ErwerbspensumRuleTest {
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
-
 		List<VerfuegungZeitabschnitt> result11 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(100, result11.get(0).getAnspruchberechtigtesPensum());
 

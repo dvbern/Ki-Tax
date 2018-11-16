@@ -24,6 +24,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -31,14 +34,9 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import ch.dvbern.ebegu.validators.CheckUnbezahlterUrlaub;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
-import ch.dvbern.ebegu.validators.CheckUnbezahlterUrlaub;
 
 /**
  * Erwerbspensum eines Gesuchstellers
