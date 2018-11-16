@@ -450,4 +450,10 @@ public interface GesuchService {
 	 * Schliesst die Pruefung STV ab und setzt den Status auf den Status, den das Gesuch vor der Pruefung hatte
 	 */
 	Gesuch stvPruefungAbschliessen(@Nonnull Gesuch gesuch);
+
+	/**
+	 * Hack, welcher das Gesuch detached, damit es auf keinen Fall gespeichert wird. Vorher muessen die Lazy geloadeten
+	 * BetreuungspensumContainers geladen werden, da danach keine Session mehr zur Verfuegung steht!
+	 */
+	void loadRelationsAndDetach(Gesuch gesuchWithCalcVerfuegung);
 }

@@ -22,6 +22,8 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import TSUnbezahlterUrlaub from '../../../models/TSUnbezahlterUrlaub';
+import DateUtil from '../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IErwerbspensumStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -55,6 +57,8 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
 
     public gesuchsteller: TSGesuchstellerContainer;
     public patternPercentage: string;
+    public hasUnbezahlterUrlaub: boolean;
+    public hasUnbezahlterUrlaubGS: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -122,13 +126,48 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     public taetigkeitChanged(): void {
-        // TODO Reviewer: Brauchts nach dem Mergen wieder...
-        return;
+        if (!this.isUnbezahlterUrlaubVisible()) {
+            this.model.erwerbspensumJA.unbezahlterUrlaub = undefined;
+            this.hasUnbezahlterUrlaub = false;
+        }
     }
 
     public erwerbspensumDisabled(): boolean {
         // Disabled wenn Mutation, ausser bei Bearbeiter Jugendamt oder Schulamt
         return this.model.erwerbspensumJA.vorgaengerId
             && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+    }
+
+    public isUnbezahlterUrlaubVisible(): boolean {
+        return this.model && this.model.erwerbspensumJA
+            && (this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
+                || this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG);
+    }
+
+    private initUnbezahlterUrlaub(): void {
+        this.hasUnbezahlterUrlaub = !!(this.model && this.model.erwerbspensumJA
+            && this.model.erwerbspensumJA.unbezahlterUrlaub);
+        this.hasUnbezahlterUrlaubGS = !!(this.model && this.model.erwerbspensumGS
+            && this.model.erwerbspensumGS.unbezahlterUrlaub);
+    }
+
+    public unbezahlterUrlaubClicked(): void {
+        this.model.erwerbspensumJA.unbezahlterUrlaub =
+            this.hasUnbezahlterUrlaub ? new TSUnbezahlterUrlaub() : undefined;
+    }
+
+    public getTextUnbezahlterUrlaubKorrekturJA(): string {
+        if (this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub) {
+            const urlaub = this.model.erwerbspensumGS.unbezahlterUrlaub;
+            const vonText = DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+            const bisText = urlaub.gueltigkeit.gueltigBis ?
+                DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
+                '31.12.9999';
+            return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
+                von: vonText,
+                bis: bisText,
+            });
+        }
+        return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 }

@@ -39,6 +39,9 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 	@Nullable
 	private String bezeichnung;
 
+	@Nullable
+	private JaxUnbezahlterUrlaub unbezahlterUrlaub;
+
 
 	public Taetigkeit getTaetigkeit() {
 		return taetigkeit;
@@ -55,5 +58,14 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 
 	public void setBezeichnung(@Nullable String bezeichnung) {
 		this.bezeichnung = bezeichnung;
+	}
+
+	@Nullable
+	public JaxUnbezahlterUrlaub getUnbezahlterUrlaub() {
+		return unbezahlterUrlaub;
+	}
+
+	public void setUnbezahlterUrlaub(@Nullable JaxUnbezahlterUrlaub unbezahlterUrlaub) {
+		this.unbezahlterUrlaub = unbezahlterUrlaub;
 	}
 }

@@ -1504,4 +1504,11 @@ export default class GesuchModelManager {
 
         return true;
     }
+
+    /**
+     * Ermittelt, ob fuer das Gesuch ein ausserordentlicher Anspruch in Frage kommt
+     */
+    public showInfoAusserordentlichenAnspruch(): IPromise<boolean> {
+        return this.gesuchRS.isAusserordentlicherAnspruchPossible(this.gesuch.id);
+    }
 }

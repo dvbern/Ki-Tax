@@ -95,8 +95,10 @@ import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.api.dtos.JaxVorlage;
@@ -163,8 +165,10 @@ import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Vorlage;
@@ -199,6 +203,7 @@ import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
@@ -236,6 +241,8 @@ public class JaxBConverter extends AbstractConverter {
 	private GesuchstellerService gesuchstellerService;
 	@Inject
 	private GesuchstellerAdresseService gesuchstellerAdresseService;
+	@Inject
+	private PensumAusserordentlicherAnspruchService pensumAusserordentlicherAnspruchService;
 	@Inject
 	private FachstelleService fachstelleService;
 	@Inject
@@ -1574,6 +1581,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
+			persistedKind.getPensumAusserordentlicherAnspruch()));
 		return jaxKind;
 	}
 
@@ -1633,6 +1642,47 @@ public class JaxBConverter extends AbstractConverter {
 		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
 	}
 
+	@Nullable
+	public JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchToJax(
+		@Nullable final PensumAusserordentlicherAnspruch persistedPensumAusserordentlicherAnspruch) {
+
+		if (persistedPensumAusserordentlicherAnspruch == null) {
+			return null;
+		}
+		final JaxPensumAusserordentlicherAnspruch jaxPensumAusserordentlicherAnspruch =
+			new JaxPensumAusserordentlicherAnspruch();
+		convertAbstractPensumFieldsToJAX(persistedPensumAusserordentlicherAnspruch, jaxPensumAusserordentlicherAnspruch);
+		jaxPensumAusserordentlicherAnspruch.setBegruendung(persistedPensumAusserordentlicherAnspruch.getBegruendung());
+		return jaxPensumAusserordentlicherAnspruch;
+	}
+
+	public PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchToEntity(
+		@Nonnull final JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruchJAXP,
+		@Nonnull final PensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch) {
+
+		convertAbstractPensumFieldsToEntity(pensumAusserordentlicherAnspruchJAXP, pensumAusserordentlicherAnspruch);
+		pensumAusserordentlicherAnspruch.setBegruendung(pensumAusserordentlicherAnspruchJAXP.getBegruendung());
+		return pensumAusserordentlicherAnspruch;
+	}
+
+	@Nonnull
+	private PensumAusserordentlicherAnspruch toStorablePensumAusserordentlicherAnspruch(
+		@Nonnull final JaxPensumAusserordentlicherAnspruch pensumFsToSave) {
+
+		PensumAusserordentlicherAnspruch pensumToMergeWith = new PensumAusserordentlicherAnspruch();
+		if (pensumFsToSave.getId() != null) {
+			final Optional<PensumAusserordentlicherAnspruch> pensumAusserordentlicherAnspruchOpt =
+				pensumAusserordentlicherAnspruchService.findPensumAusserordentlicherAnspruch(pensumFsToSave.getId());
+			if (pensumAusserordentlicherAnspruchOpt.isPresent()) {
+				pensumToMergeWith = pensumAusserordentlicherAnspruchOpt.get();
+			} else {
+				throw new EbeguEntityNotFoundException("toStorablePensumAusserordentlicherAnspruch",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, pensumFsToSave.getId());
+			}
+		}
+		return pensumAusserordentlicherAnspruchToEntity(pensumFsToSave, pensumToMergeWith);
+	}
+
 	public JaxKindContainer kindContainerToJAX(final KindContainer persistedKind) {
 		final JaxKindContainer jaxKindContainer = new JaxKindContainer();
 		convertAbstractVorgaengerFieldsToJAX(persistedKind, jaxKindContainer);
@@ -1662,6 +1712,13 @@ public class JaxBConverter extends AbstractConverter {
 			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
 		}
 		kind.setPensumFachstelle(updtPensumFachstelle);
+
+		PensumAusserordentlicherAnspruch updtPensumAusserordentlicherAnspruch = null;
+		if (kindJAXP.getPensumAusserordentlicherAnspruch() != null) {
+			updtPensumAusserordentlicherAnspruch = toStorablePensumAusserordentlicherAnspruch(
+				kindJAXP.getPensumAusserordentlicherAnspruch());
+		}
+		kind.setPensumAusserordentlicherAnspruch(updtPensumAusserordentlicherAnspruch);
 
 		return kind;
 	}
@@ -1964,13 +2021,13 @@ public class JaxBConverter extends AbstractConverter {
 		if (jaxEwpCont.getErwerbspensumGS() != null) {
 			Erwerbspensum pensumToMergeWith = Optional.ofNullable(erwerbspensumCont.getErwerbspensumGS())
 				.orElseGet(Erwerbspensum::new);
-			Erwerbspensum erwerbspensumGS = erbwerbspensumToEntity(jaxEwpCont.getErwerbspensumGS(), pensumToMergeWith);
+			Erwerbspensum erwerbspensumGS = erwerbspensumToEntity(jaxEwpCont.getErwerbspensumGS(), pensumToMergeWith);
 			erwerbspensumCont.setErwerbspensumGS(erwerbspensumGS);
 		}
 		if (jaxEwpCont.getErwerbspensumJA() != null) {
 			Erwerbspensum pensumToMergeWith = Optional.ofNullable(erwerbspensumCont.getErwerbspensumJA())
 				.orElseGet(Erwerbspensum::new);
-			Erwerbspensum erwerbspensumJA = erbwerbspensumToEntity(jaxEwpCont.getErwerbspensumJA(), pensumToMergeWith);
+			Erwerbspensum erwerbspensumJA = erwerbspensumToEntity(jaxEwpCont.getErwerbspensumJA(), pensumToMergeWith);
 			erwerbspensumCont.setErwerbspensumJA(erwerbspensumJA);
 		}
 
@@ -1991,7 +2048,7 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxEwpCont;
 	}
 
-	private Erwerbspensum erbwerbspensumToEntity(
+	private Erwerbspensum erwerbspensumToEntity(
 		@Nonnull final JaxErwerbspensum jaxErwerbspensum,
 		@Nonnull final Erwerbspensum erwerbspensum) {
 
@@ -2002,6 +2059,18 @@ public class JaxBConverter extends AbstractConverter {
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
 
+		if (jaxErwerbspensum.getUnbezahlterUrlaub() != null) {
+			UnbezahlterUrlaub existingUrlaub = new UnbezahlterUrlaub();
+			if (jaxErwerbspensum.getUnbezahlterUrlaub().getId() != null) {
+				existingUrlaub = erwerbspensumService.
+					findUnbezahlterUrlaub(jaxErwerbspensum.getUnbezahlterUrlaub().getId())
+					.orElse(new UnbezahlterUrlaub());
+			}
+			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(jaxErwerbspensum.getUnbezahlterUrlaub(), existingUrlaub));
+		} else {
+			erwerbspensum.setUnbezahlterUrlaub(null);
+		}
+
 		return erwerbspensum;
 	}
 
@@ -2010,13 +2079,32 @@ public class JaxBConverter extends AbstractConverter {
 		if (pensum == null) {
 			return null;
 		}
-
 		JaxErwerbspensum jaxErwerbspensum = new JaxErwerbspensum();
 		convertAbstractPensumFieldsToJAX(pensum, jaxErwerbspensum);
 		jaxErwerbspensum.setTaetigkeit(pensum.getTaetigkeit());
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
-
+		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
 		return jaxErwerbspensum;
+	}
+
+	private UnbezahlterUrlaub unbezahlterUrlaubToEntity(
+		@Nonnull final JaxUnbezahlterUrlaub jaxUrlaub,
+		@Nonnull final UnbezahlterUrlaub urlaub) {
+
+		requireNonNull(jaxUrlaub);
+		requireNonNull(urlaub);
+		convertAbstractDateRangedFieldsToEntity(jaxUrlaub, urlaub);
+		return urlaub;
+	}
+
+	@Nullable
+	private JaxUnbezahlterUrlaub unbezahlterUrlaubToJax(@Nullable final UnbezahlterUrlaub urlaub) {
+		if (urlaub == null) {
+			return null;
+		}
+		JaxUnbezahlterUrlaub jaxUrlaub = new JaxUnbezahlterUrlaub();
+		convertAbstractDateRangedFieldsToJAX(urlaub, jaxUrlaub);
+		return jaxUrlaub;
 	}
 
 	public Betreuung betreuungToEntity(@Nonnull final JaxBetreuung betreuungJAXP, @Nonnull final Betreuung betreuung) {

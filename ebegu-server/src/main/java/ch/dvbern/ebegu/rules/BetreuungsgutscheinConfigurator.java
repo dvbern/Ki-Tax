@@ -90,6 +90,10 @@ public class BetreuungsgutscheinConfigurator {
 		ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit);
 		rules.add(erwerbspensumAbschnittRule);
 
+		// - Unbezahlter Urlaub
+		UnbezahlterUrlaubAbschnittRule unbezahlterUrlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit);
+		rules.add(unbezahlterUrlaubAbschnittRule);
+
 		//Familenabzug: Berechnet den Familienabzug aufgrund der Familiengroesse
 		Einstellung param_pauschalabzug_pro_person_familiengroesse_3 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
 		Objects.requireNonNull(param_pauschalabzug_pro_person_familiengroesse_3, "Parameter PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3 muss gesetzt sein");
@@ -118,6 +122,10 @@ public class BetreuungsgutscheinConfigurator {
 		// - Fachstelle
 		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit);
 		rules.add(fachstelleAbschnittRule);
+
+		// - Ausserordentlicher Anspruch
+		AusserordentlicherAnspruchAbschnittRule ausserordntl = new AusserordentlicherAnspruchAbschnittRule(defaultGueltigkeit);
+		rules.add(ausserordntl);
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
 		EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(defaultGueltigkeit);
@@ -162,6 +170,10 @@ public class BetreuungsgutscheinConfigurator {
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
 		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit);
 		rules.add(fachstelleCalcRule);
+
+		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann
+		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit);
+		rules.add(ausserordntl);
 	}
 
 	private void reduktionsRegeln(Map<EinstellungKey, Einstellung> einstellungMap) {

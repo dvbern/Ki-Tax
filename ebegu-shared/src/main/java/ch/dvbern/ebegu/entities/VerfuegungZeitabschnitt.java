@@ -84,6 +84,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private int fachstellenpensum;
 
 	@Transient
+	private int ausserordentlicherAnspruch;
+
+	@Transient
 	private Boolean wohnsitzNichtInGemeindeGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
 	@Transient
@@ -199,6 +202,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
 		this.fachstellenpensum = toCopy.fachstellenpensum;
+		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
 		this.wohnsitzNichtInGemeindeGS2 = toCopy.wohnsitzNichtInGemeindeGS2;
@@ -280,6 +284,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setFachstellenpensum(int fachstellenpensum) {
 		this.fachstellenpensum = fachstellenpensum;
+	}
+
+	public int getAusserordentlicherAnspruch() {
+		return ausserordentlicherAnspruch;
+	}
+
+	public void setAusserordentlicherAnspruch(int ausserordentlicherAnspruch) {
+		this.ausserordentlicherAnspruch = ausserordentlicherAnspruch;
 	}
 
 	public int getAnspruchspensumRest() {
@@ -528,6 +540,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void add(VerfuegungZeitabschnitt other) {
 		this.setBetreuungspensum(this.getBetreuungspensum().add(other.getBetreuungspensum()));
 		this.setFachstellenpensum(this.getFachstellenpensum() + other.getFachstellenpensum());
+		this.setAusserordentlicherAnspruch(this.getAusserordentlicherAnspruch() + other.getAusserordentlicherAnspruch());
 		this.setAnspruchspensumRest(this.getAnspruchspensumRest() + other.getAnspruchspensumRest());
 		this.setAnspruchberechtigtesPensum(this.getAnspruchberechtigtesPensum() + other.getAnspruchberechtigtesPensum());
 
@@ -672,7 +685,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 */
 	@Transient
 	public BigDecimal getBgPensum() {
-		return getBetreuungspensum().min(BigDecimal.valueOf(getAnspruchberechtigtesPensum()));
+		return getBetreuungspensum().min(MathUtil.DEFAULT.from(getAnspruchberechtigtesPensum()));
 	}
 
 	@Override
@@ -726,6 +739,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			isSameErwerbspensum(erwerbspensumGS2, otherVerfuegungZeitabschnitt.erwerbspensumGS2) &&
 			betreuungspensum == otherVerfuegungZeitabschnitt.betreuungspensum &&
 			fachstellenpensum == otherVerfuegungZeitabschnitt.fachstellenpensum &&
+			ausserordentlicherAnspruch == otherVerfuegungZeitabschnitt.ausserordentlicherAnspruch &&
 			anspruchspensumRest == otherVerfuegungZeitabschnitt.anspruchspensumRest &&
 			anspruchberechtigtesPensum == otherVerfuegungZeitabschnitt.anspruchberechtigtesPensum &&
 			hasSecondGesuchstellerForFinanzielleSituation == otherVerfuegungZeitabschnitt.hasSecondGesuchstellerForFinanzielleSituation &&
