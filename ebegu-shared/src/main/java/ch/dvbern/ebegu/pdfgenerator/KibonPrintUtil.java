@@ -29,9 +29,12 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
@@ -145,10 +148,13 @@ public final class KibonPrintUtil {
 	}
 
 	@Nonnull
-	public static List<String> getBenoetigteDokumenteAsList(List<DokumentGrund> benoetigteUnterlagen) {
+	public static List<String> getBenoetigteDokumenteAsList(
+		@Nonnull List<DokumentGrund> benoetigteUnterlagen,
+		@Nonnull Gesuch gesuch
+	) {
 		List<String> dokumenteList = new ArrayList<>();
 		for (DokumentGrund dokumentGrund : benoetigteUnterlagen) {
-			String text = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund);
+			String text = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch);
 			if (text != null) {
 				dokumenteList.add(text);
 			}
@@ -157,10 +163,40 @@ public final class KibonPrintUtil {
 	}
 
 	@Nullable
-	public static String getDokumentAsTextIfNeeded(@Nonnull DokumentGrund dokumentGrund) {
+	public static String getDokumentAsTextIfNeeded(@Nonnull DokumentGrund dokumentGrund, @Nonnull Gesuch gesuch) {
 		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
-			return ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp());
+			final String additionalInformation = extractAdditionalInformation(dokumentGrund, gesuch);
+			return ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp())
+				+ additionalInformation;
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the Tag or the LinkedPerson and returns it between parenthesis
+	 */
+	private static String extractAdditionalInformation(@Nonnull DokumentGrund dokumentGrund, @Nonnull Gesuch gesuch) {
+		List<String> additionalText = new ArrayList<>();
+
+		if (dokumentGrund.getTag() != null) {
+			additionalText.add(dokumentGrund.getTag());
+		}
+
+		if (dokumentGrund.getPersonType() != null && dokumentGrund.getPersonNumber() != null) {
+			if (dokumentGrund.getPersonType() == DokumentGrundPersonType.GESUCHSTELLER) {
+				if (dokumentGrund.getPersonNumber() == 2 && gesuch.getGesuchsteller2() != null) {
+					additionalText.add(gesuch.getGesuchsteller2().extractFullName());
+				}
+				if (dokumentGrund.getPersonNumber() == 1 && gesuch.getGesuchsteller1() != null) {
+					additionalText.add(gesuch.getGesuchsteller1().extractFullName());
+				}
+			} else if (dokumentGrund.getPersonType() == DokumentGrundPersonType.KIND) {
+				final KindContainer kindContainer = gesuch.extractKindFromKindNumber(dokumentGrund.getPersonNumber());
+				if (kindContainer != null && kindContainer.getKindJA() != null) {
+					additionalText.add(kindContainer.getKindJA().getFullName());
+				}
+			}
+		}
+		return additionalText.isEmpty() ? "" : " (" + StringUtils.join(additionalText, ", ") + ')';
 	}
 }

@@ -45,7 +45,7 @@ public abstract class KibonPdfGenerator {
 	private PdfGenerator pdfGenerator;
 
 	@Nonnull
-	private final Gesuch gesuch;
+	protected final Gesuch gesuch;
 
 	@Nonnull
 	private final GemeindeStammdaten gemeindeStammdaten;

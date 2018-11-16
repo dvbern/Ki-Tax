@@ -95,7 +95,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	@Override
 	@Nonnull
 	protected CustomGenerator getCustomGenerator() {
-		final List<String> dokumente = KibonPrintUtil.getBenoetigteDokumenteAsList(benoetigteUnterlagen);
+		final List<String> dokumente = KibonPrintUtil.getBenoetigteDokumenteAsList(benoetigteUnterlagen, gesuch);
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			addBarcode(document);
