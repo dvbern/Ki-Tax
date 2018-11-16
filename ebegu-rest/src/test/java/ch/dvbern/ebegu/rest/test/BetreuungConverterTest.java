@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
@@ -34,6 +35,7 @@ import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,9 +49,15 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 
 	@Inject
 	private Persistence persistence;
-
 	@Inject
 	private JaxBConverter converter;
+	private Gesuchsperiode gesuchsperiode;
+
+	@Before
+	public void setUp() {
+		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
+		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+	}
 
 	/**
 	 * transformiert einen gespeichertes Betreuungen nach jax und wieder zurueck. wir erwarten das Daten gleich bleiben
@@ -58,16 +66,15 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void convertPersistedTestEntityToJax() {
 		loginAsSachbearbeiterJA();
-		Betreuung betreuung = insertNewEntity();
+		Betreuung betreuung = insertNewEntity(false);
 		JaxBetreuung jaxBetr = this.converter.betreuungToJAX(betreuung);
 		Betreuung betrToEntity = this.converter.betreuungToEntity(jaxBetr, new Betreuung());
 		Assert.assertTrue(betreuung.isSame(betrToEntity, true, true));
-
 	}
 
 	@Test
 	public void convertFachstelleTest() {
-		Betreuung betreuung = insertNewEntity();
+		Betreuung betreuung = insertNewEntity(true);
 		KindContainer kind = betreuung.getKind();
 		Assert.assertNotNull(kind.getKindJA().getPensumFachstelle());
 		Assert.assertEquals(Constants.END_OF_TIME, kind.getKindJA().getPensumFachstelle().getGueltigkeit().getGueltigBis());
@@ -80,17 +87,12 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		Assert.assertEquals(Constants.END_OF_TIME, reconvertedPensum.getGueltigkeit().getGueltigBis());
 	}
 
-	private Betreuung insertNewEntity() {
+	private Betreuung insertNewEntity(boolean createFachstelle) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		KindContainer kind = TestDataUtil.createDefaultKindContainer();
-		Fachstelle fachstelle = persistence.persist(TestDataUtil.createDefaultFachstelle());
-
-		PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
-		pensumFachstelle.setFachstelle(fachstelle);
-
-		PensumFachstelle pensumFachstelle2 = TestDataUtil.createDefaultPensumFachstelle();
-		pensumFachstelle2.setPensum(5);
-		pensumFachstelle2.setFachstelle(fachstelle);
+		kind.getKindJA().setPensumFachstelle(null);
+		assert kind.getKindGS() != null;
+		kind.getKindGS().setPensumFachstelle(null);
 
 		InstitutionStammdaten instStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		persistence.persist(instStammdaten.getInstitution().getMandant());
@@ -98,9 +100,25 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		persistence.persist(instStammdaten.getInstitution());
 		persistence.persist(instStammdaten);
 
-		kind.getKindGS().setPensumFachstelle(pensumFachstelle);
-		kind.getKindJA().setPensumFachstelle(pensumFachstelle2);
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		if (createFachstelle) {
+			Fachstelle fachstelle = persistence.persist(TestDataUtil.createDefaultFachstelle());
+
+			PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+			pensumFachstelle.setFachstelle(fachstelle);
+
+			PensumFachstelle pensumFachstelle2 = TestDataUtil.createDefaultPensumFachstelle();
+			pensumFachstelle2.setPensum(50);
+			pensumFachstelle2.setFachstelle(fachstelle);
+
+			kind.getKindGS().setPensumFachstelle(pensumFachstelle);
+			kind.getKindJA().setPensumFachstelle(pensumFachstelle2);
+		}
+
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(
+			persistence,
+			TestDataUtil.getGemeindeBern(persistence),
+			null,
+			gesuchsperiode);
 		kind.setGesuch(gesuch);
 		betreuung.setKind(persistence.persist(kind));
 		betreuung.setInstitutionStammdaten(instStammdaten);

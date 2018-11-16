@@ -60,6 +60,7 @@ export class ErwerbspensumListViewController
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
     public erwerbspensenGS2: Array<TSErwerbspensumContainer>;
     public erwerbspensumRequired: boolean;
+    public showInfoAusserordentlichenAnspruch: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -89,6 +90,9 @@ export class ErwerbspensumListViewController
             } else {
                 this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
             }
+        });
+        this.gesuchModelManager.showInfoAusserordentlichenAnspruch().then((resp: any) => {
+            this.showInfoAusserordentlichenAnspruch = JSON.parse(resp);
         });
     }
 

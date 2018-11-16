@@ -50,6 +50,8 @@ public final class EbeguRuleTestsHelper {
 		new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40);
 	private static final FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(DEFAULT_GUELTIGKEIT);
+	private static final AusserordentlicherAnspruchAbschnittRule ausserordentlicherAnspruchAbschnittRule = new AusserordentlicherAnspruchAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
+	private static final AusserordentlicherAnspruchCalcRule ausserordentlicherAnspruchCalcRule = new AusserordentlicherAnspruchCalcRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(DEFAULT_GUELTIGKEIT);
 	private static final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(DEFAULT_GUELTIGKEIT);
@@ -99,6 +101,7 @@ public final class EbeguRuleTestsHelper {
 		result = urlaubAbschnittRule.calculate(betreuung, result);
 		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
 		result = fachstelleAbschnittRule.calculate(betreuung, result);
+		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);
 		result = zivilstandsaenderungAbschnittRule.calculate(betreuung, result);
 		result = einkommenAbschnittRule.calculate(betreuung, result);
 		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
@@ -107,6 +110,7 @@ public final class EbeguRuleTestsHelper {
 		// Anspruch
 		result = erwerbspensumCalcRule.calculate(betreuung, result);
 		result = fachstelleCalcRule.calculate(betreuung, result);
+		result = ausserordentlicherAnspruchCalcRule.calculate(betreuung, result);
 		// Restanspruch
 		// Reduktionen
 		result = maximalesEinkommenCalcRule.calculate(betreuung, result);

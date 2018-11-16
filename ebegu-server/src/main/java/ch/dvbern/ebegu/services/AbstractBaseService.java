@@ -24,8 +24,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
@@ -64,5 +66,34 @@ public abstract class AbstractBaseService {
 		Map<EinstellungKey, Einstellung> paramMap = einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
 		return parameterDTO;
+	}
+
+	/**
+	 * Hack, welcher das Gesuch detached, damit es auf keinen Fall gespeichert wird. Vorher muessen die Lazy geloadeten
+	 * BetreuungspensumContainers geladen werden, da danach keine Session mehr zur Verfuegung steht!
+	 */
+	@PermitAll // Gibt nichts zurueck
+	public void loadRelationsAndDetach(Gesuch gesuch) {
+		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
+			betreuung.getBetreuungspensumContainers().size();
+			betreuung.getAbwesenheitContainers().size();
+		}
+		if (gesuch.getGesuchsteller1() != null) {
+			gesuch.getGesuchsteller1().getAdressen().size();
+			gesuch.getGesuchsteller1().getErwerbspensenContainers().size();
+		}
+		if (gesuch.getGesuchsteller2() != null) {
+			gesuch.getGesuchsteller2().getAdressen().size();
+			gesuch.getGesuchsteller2().getErwerbspensenContainers().size();
+		}
+		gesuch.extractAllBetreuungen().forEach(betreuung -> {
+			if (betreuung.getBelegungTagesschule() != null && betreuung.getBelegungTagesschule().getModuleTagesschule() != null) {
+				betreuung.getBelegungTagesschule().getModuleTagesschule().size();
+			}
+			if (betreuung.getBelegungFerieninsel() != null) {
+				betreuung.getBelegungFerieninsel().getTage().size();
+			}
+		});
+		persistence.getEntityManager().detach(gesuch);
 	}
 }

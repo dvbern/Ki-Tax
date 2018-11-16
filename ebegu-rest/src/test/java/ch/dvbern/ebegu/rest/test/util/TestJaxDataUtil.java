@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -193,10 +194,13 @@ public final class TestJaxDataUtil {
 		return jaxFall;
 	}
 
-	public static JaxDossier createTestJaxDossier() {
+	public static JaxDossier createTestJaxDossier(@Nullable JaxGemeinde gemeinde) {
 		JaxDossier jaxDossier = new JaxDossier();
 		jaxDossier.setVerantwortlicherBG(createTestJaxBenutzer());
 		jaxDossier.setFall(createTestJaxFall());
+		if (gemeinde != null) {
+			jaxDossier.setGemeinde(gemeinde);
+		}
 		return jaxDossier;
 	}
 
@@ -221,11 +225,14 @@ public final class TestJaxDataUtil {
 		return berechtigung;
 	}
 
-	public static JaxGesuch createTestJaxGesuch() {
+	public static JaxGesuch createTestJaxGesuch(
+		@Nullable JaxGesuchsperiode jaxGesuchsperiode,
+		@Nullable JaxGemeinde gemeinde
+	) {
 		JaxGesuch jaxGesuch = new JaxGesuch();
 		jaxGesuch.setEingangsart(Eingangsart.PAPIER);
-		jaxGesuch.setDossier(createTestJaxDossier());
-		jaxGesuch.setGesuchsperiode(createTestJaxGesuchsperiode());
+		jaxGesuch.setDossier(createTestJaxDossier(gemeinde));
+		jaxGesuch.setGesuchsperiode(jaxGesuchsperiode != null ? jaxGesuchsperiode : createTestJaxGesuchsperiode());
 		jaxGesuch.setGesuchsteller1(createTestJaxGesuchsteller());
 		jaxGesuch.setEingangsdatum(LocalDate.now());
 		jaxGesuch.setStatus(AntragStatusDTO.IN_BEARBEITUNG_JA);
@@ -238,7 +245,6 @@ public final class TestJaxDataUtil {
 	public static JaxFachstelle createTestJaxFachstelle() {
 		JaxFachstelle jaxFachstelle = new JaxFachstelle();
 		jaxFachstelle.setName("Fachstelle_Test");
-		jaxFachstelle.setBehinderungsbestaetigung(false);
 		jaxFachstelle.setBeschreibung("Notizen der Fachstelle");
 		return jaxFachstelle;
 	}
@@ -262,6 +268,7 @@ public final class TestJaxDataUtil {
 		jaxPensumFachstelle.setGueltigBis(LocalDate.now().plusMonths(1));
 		jaxPensumFachstelle.setGueltigAb(LocalDate.now());
 		jaxPensumFachstelle.setPensum(50);
+		jaxPensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
 		jaxPensumFachstelle.setFachstelle(createTestJaxFachstelle());
 		return jaxPensumFachstelle;
 	}

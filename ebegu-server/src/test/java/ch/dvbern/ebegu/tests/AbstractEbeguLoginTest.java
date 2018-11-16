@@ -46,6 +46,7 @@ import static ch.dvbern.ebegu.test.util.JBossLoginContextFactory.createLoginCont
 public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEbeguLoginTest.class);
+	public static final String SUPERADMIN_NAME = "superadmin";
 	private LoginContext loginContext;
 
 	@Inject
@@ -58,7 +59,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 	@Before
 	public void performLogin() {
 		Mandant mandant = persistence.find(Mandant.class, Constants.DEFAULT_MANDANT_ID);
-		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant);
+		dummyAdmin = TestDataUtil.createDummySuperAdmin(persistence, mandant, SUPERADMIN_NAME, SUPERADMIN_NAME);
 		try {
 			loginAsSuperadmin();
 		} catch (LoginException ex) {
@@ -67,7 +68,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 	}
 
 	protected void loginAsSuperadmin() throws LoginException {
-		loginContext = JBossLoginContextFactory.createLoginContext("superadmin", "superadmin");
+		loginContext = JBossLoginContextFactory.createLoginContext(SUPERADMIN_NAME, SUPERADMIN_NAME);
 		loginContext.login();
 	}
 
@@ -202,7 +203,7 @@ public abstract class AbstractEbeguLoginTest extends AbstractEbeguTest {
 		Optional<Benutzer> benutzer = benutzerService.findBenutzer(userName);
 		return benutzer.orElseGet(() -> {
 			assert mandant != null;
-			return TestDataUtil.createBenutzerWithDefaultGemeinde(role, userName, traegerschaft, institution, mandant, persistence);
+			return TestDataUtil.createBenutzerWithDefaultGemeinde(role, userName, traegerschaft, institution, mandant, persistence, null, null);
 		});
 	}
 }

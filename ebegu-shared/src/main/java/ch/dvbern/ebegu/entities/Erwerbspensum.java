@@ -99,19 +99,21 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		this.zuschlagZuErwerbspensum = zuschlagZuErwerbspensum;
 	}
 
+	@Nullable
 	public Integer getZuschlagsprozent() {
 		return zuschlagsprozent;
 	}
 
-	public void setZuschlagsprozent(Integer zuschlagsprozent) {
+	public void setZuschlagsprozent(@Nullable Integer zuschlagsprozent) {
 		this.zuschlagsprozent = zuschlagsprozent;
 	}
 
+	@Nullable
 	public Zuschlagsgrund getZuschlagsgrund() {
 		return zuschlagsgrund;
 	}
 
-	public void setZuschlagsgrund(Zuschlagsgrund zuschlagsgrund) {
+	public void setZuschlagsgrund(@Nullable Zuschlagsgrund zuschlagsgrund) {
 		this.zuschlagsgrund = zuschlagsgrund;
 	}
 

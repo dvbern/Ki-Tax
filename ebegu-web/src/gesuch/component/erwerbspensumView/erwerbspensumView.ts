@@ -110,7 +110,8 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         }
         this.einstellungRS.getAllEinstellungenBySystemCached(
             this.gesuchModelManager.getGesuchsperiode().id,
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)).then((response: TSEinstellung[]) => {
+            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)
+        ).then((response: TSEinstellung[]) => {
             const found = response.find(r => r.key === TSEinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
             if (found) {
                 // max Wert für Zuschlag Erwerbspensum

@@ -239,7 +239,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 		Traegerschaft traegerschaft = institutionToSet.getTraegerschaft();
 		Assert.assertNotNull("Unser testaufbau sieht vor, dass die institution zu einer traegerschaft gehoert", traegerschaft);
 		Benutzer verantwortlicherUser = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT,
-			Constants.ANONYMOUS_USER_USERNAME, traegerschaft, null, TestDataUtil.createDefaultMandant(), persistence);
+			Constants.ANONYMOUS_USER_USERNAME, traegerschaft, null, TestDataUtil.createDefaultMandant(), persistence, null, null);
 		gesDagmar.getDossier().setVerantwortlicherBG(verantwortlicherUser);
 		persistence.merge(gesDagmar);
 		//es muessen immer noch beide gefunden werden da die betreuungen immer noch zu inst des users gehoeren

@@ -260,4 +260,11 @@ export default class GesuchRS implements IEntityRS {
                 return response.data;
             });
     }
+
+    public isAusserordentlicherAnspruchPossible(antragId: string): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/ausserordentlicheranspruchpossible/${encodeURIComponent(antragId)}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
 }

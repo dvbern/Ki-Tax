@@ -41,7 +41,9 @@ import ch.dvbern.ebegu.api.resource.KindResource;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -125,7 +127,6 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void updateBetreuungTest() {
 		Betreuung initialBetr = this.storeInitialBetreung();
-		TestDataUtil.prepareParameters(initialBetr.extractGesuchsperiode(), persistence);
 
 		//im moment haben wir kein find fuer einen einzelnen Container
 		Set<JaxBetreuung> betreuungenBeforeUpdate =
@@ -154,7 +155,6 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void updateShouldRemoveBetreuungspensumContainerTest() {
 		Betreuung initialBetr = this.storeInitialBetreung();
-		TestDataUtil.prepareParameters(initialBetr.extractGesuchsperiode(), persistence);
 
 		//im moment haben wir kein find fuer einen einzelnen Container
 		JaxKindContainer jaxKindContainer = kindResource.findKind(converter.toJaxId(initialBetr.getKind()));
@@ -202,7 +202,14 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	// HELP
 
 	private KindContainer persistKindAndDependingObjects() {
-		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
+		final Gesuchsperiode gesuchsperiode1718 = persistence.merge(TestDataUtil.createGesuchsperiode1718());
+		final Gemeinde gemeindeBern = TestDataUtil.getGemeindeBern(persistence);
+		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(
+			converter.gesuchsperiodeToJAX(gesuchsperiode1718),
+			gemeindeConverter.gemeindeToJAX(gemeindeBern)
+		);
+		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
+
 		JaxGemeinde persistedGemeinde = gemeindeConverter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
 		Mandant persistedMandant =
 			persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
@@ -237,7 +244,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 			jaxPensumFachstelle.getFachstelle(),
 			DUMMY_URIINFO,
 			DUMMY_RESPONSE));
-		PensumFachstelle returnedPensumFachstelle = pensumFachstelleService.savePensumFachstelle(
+		PensumFachstelle returnedPensumFachstelle = persistence.merge(
 			converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 		JaxPensumFachstelle convertedPensumFachstelle = converter.pensumFachstelleToJax(returnedPensumFachstelle);
 		jaxKind.getKindGS().setPensumFachstelle(convertedPensumFachstelle);
