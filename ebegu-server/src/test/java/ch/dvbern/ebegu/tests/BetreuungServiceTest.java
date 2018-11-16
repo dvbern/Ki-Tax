@@ -233,15 +233,15 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		mandant = TestDataUtil.createDefaultMandant();
 		persistence.persist(mandant);
 		empfaengerJA = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_BG, "saja",
-			null, null, mandant, persistence);
+			null, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerJA);
 
 		final Traegerschaft traegerschaft = persistence.persist(TestDataUtil.createDefaultTraegerschaft());
 		Benutzer empfaengerINST = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, "insti",
-			traegerschaft, null, mandant, persistence);
+			traegerschaft, null, mandant, persistence, null, null);
 		persistence.persist(empfaengerINST);
 
-		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.GESUCHSTELLER, "gsst", null, null, mandant, persistence);
+		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.GESUCHSTELLER, "gsst", null, null, mandant, persistence, null, null);
 		persistence.persist(sender);
 	}
 

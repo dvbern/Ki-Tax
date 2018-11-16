@@ -62,6 +62,12 @@ public enum EinstellungKey {
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 
+	// Minimales Erwerbspensum, wenn das Kind nicht eingeschult ist
+	MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+	// Minimales Erwerbspensum, wenn das Kind eingeschult ist
+	MIN_ERWERBSPENSUM_EINGESCHULT,
+
+
 	// Min Pensum Kitas
 	PARAM_PENSUM_KITA_MIN,
 
@@ -91,4 +97,12 @@ public enum EinstellungKey {
 
 	// Maximaler Zuschlag zum Erwerbspensum
 	PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
+
+	//Pensum Fachstelle soziale Integration
+	FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
+	FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION,
+
+	//Pensum Fachstelle soziale Integration
+	FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
+	FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
 }

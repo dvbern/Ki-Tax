@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.TestdataCreationService;
@@ -129,7 +130,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
 
 		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
-		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch();
+		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(null, null);
 		jaxGesuch.setDossier(converter.dossierToJAX(gesuch.getDossier()));
 		jaxGesuch.setGesuchsperiode(converter.gesuchsperiodeToJAX(gesuchsperiode));
 		jaxGesuch.getGesuchsperiode().setStatus(GesuchsperiodeStatus.INAKTIV);
@@ -212,6 +213,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		PensumFachstelle pensumFachstelle = new PensumFachstelle();
 		pensumFachstelle.setFachstelle(fachstelle);
 		pensumFachstelle.setPensum(50);
+		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
 		kindContainer.getKindJA().setPensumFachstelle(pensumFachstelle);
 		kindContainer = persistence.merge(kindContainer);
 		JaxKindContainer jaxKindContainer = converter.kindContainerToJAX(kindContainer);

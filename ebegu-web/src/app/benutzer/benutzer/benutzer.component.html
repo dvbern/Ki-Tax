@@ -116,7 +116,7 @@
             <!-- Aktive Rolle -->
 			<dv-berechtigung displayClass="col-sm-6 dv-input-container-medium"
 							 [berechtigung]="currentBerechtigung"
-							 [disabled]="isDisabled">
+							 [disabled]="isDisabled || isDefaultVerantwortlicher">
 			</dv-berechtigung>
 
             <div class="marginTop50" *ngIf="futureBerechtigung || !isDisabled">
@@ -128,7 +128,7 @@
             <fieldset *ngIf="futureBerechtigung">
 				<dv-berechtigung displayClass="col-sm-6 dv-input-container-medium"
 								 [berechtigung]="futureBerechtigung"
-								 [disabled]="isDisabled">
+								 [disabled]="isDisabled || isDefaultVerantwortlicher">
 				</dv-berechtigung>
                 <div class="row">
                     <div class="col-sm-12 dv-input-container-small">

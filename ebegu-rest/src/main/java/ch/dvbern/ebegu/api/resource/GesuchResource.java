@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
@@ -92,6 +93,9 @@ public class GesuchResource {
 
 	@Inject
 	private DossierService dossierService;
+
+	@Inject
+	private PensumAusserordentlicherAnspruchService ausserordentlicherAnspruchService;
 
 	@Inject
 	private PrincipalBean principalBean;
@@ -864,5 +868,23 @@ public class GesuchResource {
 			return Response.ok(idOfNeuestesGesuch.get()).build();
 		}
 		return Response.ok().build();
+	}
+
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	@ApiOperation(value = "Ermittelt ob fuer das uebergebene Gesuch ein ausserordentlicher Anspruch moeglich ist",
+		response = Boolean.class)
+	@Nullable
+	@GET
+	@Path("/ausserordentlicheranspruchpossible/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response isAusserordentlicherAnspruchPossible(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
+		Objects.requireNonNull(gesuchJAXPId.getId());
+		Gesuch gesuch = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId))
+			.orElseThrow(() -> new EbeguEntityNotFoundException("isAusserordentlicherAnspruchPossible",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchJAXPId.getId()));
+
+		Boolean possible = ausserordentlicherAnspruchService.isAusserordentlicherAnspruchPossible(gesuch);
+		return Response.ok(possible).build();
 	}
 }

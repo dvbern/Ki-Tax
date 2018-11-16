@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -23,12 +24,14 @@ import javax.validation.constraints.NotNull;
 public class JaxId {
 
 	@NotNull
+	@Nonnull
 	private final String id;
 
-	public JaxId(String id) {
+	public JaxId(@Nonnull String id) {
 		this.id = id;
 	}
 
+	@Nonnull
 	public String getId() {
 		return id;
 	}

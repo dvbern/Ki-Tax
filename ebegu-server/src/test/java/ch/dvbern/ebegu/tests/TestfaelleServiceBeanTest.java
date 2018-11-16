@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.data.VerfuegungZeitabschnittData;
 import ch.dvbern.ebegu.test.data.VerfuegungszeitabschnitteData;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -257,7 +258,8 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(fehlerString + "Elternbeitrag", expected.getElternbeitrag(), calculated.getElternbeitrag());
 		Assert.assertEquals(fehlerString + "Anspruchberechtigtes Pensum", expected.getAnspruchberechtigtesPensum(), calculated.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(fehlerString + "Bemerkungen", expected.getBemerkungen(), calculated.getBemerkungen());
-		Assert.assertEquals(fehlerString + "Betreuungspensum", expected.getBetreuungspensum(), calculated.getBetreuungspensum());
+		Assert.assertEquals(fehlerString + "Betreuungspensum",
+			MathUtil.DEFAULT.from(expected.getBetreuungspensum()), MathUtil.DEFAULT.from(calculated.getBetreuungspensum()));
 		Assert.assertEquals(fehlerString + "Vollkosten", expected.getVollkosten(), calculated.getVollkosten());
 	}
 

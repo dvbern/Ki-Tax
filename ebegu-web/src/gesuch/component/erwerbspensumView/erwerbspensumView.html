@@ -226,6 +226,64 @@
                         </div>
                     </div>
 
+                    <!-- Unbezahlter Urlaub? -->
+                    <div class="row" ng-if="vm.isUnbezahlterUrlaubVisible()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.hasUnbezahlterUrlaub"
+                                             name="showUnbezahlterUrlaub" id="showUnbezahlterUrlaub"
+                                             aria-label="{{'UNBEZAHLTER_URLAUB'|translate}}"
+                                             ng-disabled="vm.erwerbspensumDisabled()"
+                                             ng-change="vm.unbezahlterUrlaubClicked()">
+                                    <span data-translate="UNBEZAHLTER_URLAUB"></span>
+                                </md-checkbox>
+                                <dv-bisher gs="vm.hasUnbezahlterUrlaubGS"
+                                           ja="vm.hasUnbezahlterUrlaub"
+                                           specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"></dv-bisher>
+                                <dv-error-messages for="vm.form.showUnbezahlterUrlaub.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- gueltig ab / gueltig bis -->
+                    <div class="row" ng-if="vm.hasUnbezahlterUrlaub">
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="VON" for="urlaubDatumAb"></label>
+                                <dv-datepicker input-id="urlaubDatumAb" name="urlaubDatumAb"
+                                               class="input-element"
+                                               ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
+                                               ng-required="vm.hasUnbezahlterUrlaub"
+                                               ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                               ng-disabled="vm.erwerbspensumDisabled()">
+                                </dv-datepicker>
+                                <dv-bisher gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigAb"
+                                           ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
+                                           show-if-bisher-none="false"
+                                           block-existed="vm.hasUnbezahlterUrlaubGS === true"></dv-bisher>
+                                <dv-error-messages input-id="urlaubDatumAb" class="error"
+                                                   for="vm.form.urlaubDatumAb.$error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="BIS" for="urlaubDatumBis"></label>
+                                <dv-datepicker input-id="urlaubDatumBis" name="urlaubDatumBis"
+                                               class="input-element"
+                                               ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                               ng-required="false"
+                                               ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                               ng-disabled="vm.erwerbspensumDisabled()">
+                                </dv-datepicker>
+                                <dv-bisher gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                           ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                           show-if-bisher-none="false"
+                                           block-existed="vm.hasUnbezahlterUrlaubGS === true"></dv-bisher>
+                                <dv-error-messages input-id="urlaubDatumBis" class="error"
+                                                   for="vm.form.urlaubDatumBis.$error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
 
                 </fieldset>
 

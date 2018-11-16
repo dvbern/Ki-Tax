@@ -40,6 +40,10 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
+import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
@@ -60,11 +64,24 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 		this.dummyObjects = new EnumMap<>(EinstellungKey.class);
 		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
 
-		dummyObjects.put(PARAM_PENSUM_KITA_MIN, new Einstellung(PARAM_PENSUM_KITA_MIN, "10", gesuchsperiode1718));
-		dummyObjects.put(PARAM_PENSUM_TAGESELTERN_MIN, new Einstellung(PARAM_PENSUM_TAGESELTERN_MIN, "20", gesuchsperiode1718));
-		dummyObjects.put(PARAM_PENSUM_TAGESSCHULE_MIN, new Einstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode1718));
-		dummyObjects.put(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, new Einstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode1718));
-		dummyObjects.put(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, new Einstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, "KINDERGARTEN2", gesuchsperiode1718));
+		dummyObjects.put(PARAM_PENSUM_KITA_MIN,
+			new Einstellung(PARAM_PENSUM_KITA_MIN, "10", gesuchsperiode1718));
+		dummyObjects.put(PARAM_PENSUM_TAGESELTERN_MIN,
+			new Einstellung(PARAM_PENSUM_TAGESELTERN_MIN, "20", gesuchsperiode1718));
+		dummyObjects.put(PARAM_PENSUM_TAGESSCHULE_MIN,
+			new Einstellung(PARAM_PENSUM_TAGESSCHULE_MIN, "0", gesuchsperiode1718));
+		dummyObjects.put(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
+			new Einstellung(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode1718));
+		dummyObjects.put(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+			new Einstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, "KINDERGARTEN2", gesuchsperiode1718));
+		dummyObjects.put(FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
+			new Einstellung(FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION, "20", gesuchsperiode1718));
+		dummyObjects.put(FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION,
+			new Einstellung(FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION, "60", gesuchsperiode1718));
+		dummyObjects.put(FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
+			new Einstellung(FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode1718));
+		dummyObjects.put(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
+			new Einstellung(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode1718));
 	}
 
 	@Nonnull

@@ -46,6 +46,10 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Nullable
 	private JaxPensumFachstelle pensumFachstelle;
 
+	@Nullable
+	private JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch;
+
+
 	@NotNull
 	public Kinderabzug getKinderabzug() {
 		return kinderabzug;
@@ -90,4 +94,13 @@ public class JaxKind extends JaxAbstractPersonDTO {
 		this.einschulungTyp = einschulungTyp;
 	}
 
+	@Nullable
+	public JaxPensumAusserordentlicherAnspruch getPensumAusserordentlicherAnspruch() {
+		return pensumAusserordentlicherAnspruch;
+	}
+
+	public void setPensumAusserordentlicherAnspruch(
+		@Nullable JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch) {
+		this.pensumAusserordentlicherAnspruch = pensumAusserordentlicherAnspruch;
+	}
 }

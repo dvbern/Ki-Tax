@@ -66,6 +66,8 @@ import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Institution_;
@@ -1065,5 +1067,24 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		TypedQuery<BerechtigungHistory> q = persistence.getEntityManager().createQuery(query);
 		q.setParameter(benutzerParam, benutzer.getUsername());
 		return q.getResultList();
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		ADMIN_MANDANT })
+	public boolean isBenutzerDefaultBenutzerOfAnyGemeinde(@Nonnull String username) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<GemeindeStammdaten> query = cb.createQuery(GemeindeStammdaten.class);
+		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);
+
+		ParameterExpression<String> benutzerParam = cb.parameter(String.class, "username");
+		Predicate predicateDefaultBG = cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerBG).get(Benutzer_.username), benutzerParam);
+		Predicate predicateDefaultTS = cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerTS).get(Benutzer_.username), benutzerParam);
+		Predicate anyDefault = cb.or(predicateDefaultBG, predicateDefaultTS);
+		query.where(anyDefault);
+
+		TypedQuery<GemeindeStammdaten> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(benutzerParam, username);
+		return !q.getResultList().isEmpty();
 	}
 }
