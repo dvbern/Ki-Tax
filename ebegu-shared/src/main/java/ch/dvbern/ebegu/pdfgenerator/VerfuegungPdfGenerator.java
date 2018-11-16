@@ -68,7 +68,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		super(gesuch, stammdaten, draft);
 		this.art = art;
 		footer = new PhraseRenderer(footerLines, PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM, 280,
-						165, 20, OnPage.FIRST, 8, Alignment.LEFT);
+						165, 20, OnPage.FIRST, 8, Alignment.LEFT, 1.2F);
 	}
 
 	@Nonnull

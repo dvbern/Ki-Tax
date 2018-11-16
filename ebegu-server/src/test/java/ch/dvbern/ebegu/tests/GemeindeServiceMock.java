@@ -30,7 +30,8 @@ public class GemeindeServiceMock extends GemeindeServiceBean {
 	@Nonnull
 	@Override
 	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(
-		@Nonnull String gemeindeId) {
+		@Nonnull String gemeindeId
+	) {
 		GemeindeStammdaten gemeindeWithStammdaten = TestDataUtil.createGemeindeWithStammdaten();
 		// Aktuell wird als Adresse immer Jugendamt verwendet
 		gemeindeWithStammdaten.getAdresse().setOrganisation("Jugendamt");

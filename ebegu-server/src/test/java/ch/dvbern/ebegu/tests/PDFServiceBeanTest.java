@@ -162,7 +162,7 @@ public class PDFServiceBeanTest {
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Zustelladresse ist nicht Jugendamt");
 	}
 
-	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schualmt-Adresse dazu
+	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
 	@Test
 	public void testGenerateFreigabequittungSchulamt() throws Exception {
 

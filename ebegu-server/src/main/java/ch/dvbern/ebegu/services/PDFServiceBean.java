@@ -179,9 +179,12 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 		GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"generateFreigabequittung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
 		final List<DokumentGrund> benoetigteUnterlagen = calculateListOfDokumentGrunds(gesuch);
+
 		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten, !writeProtected, benoetigteUnterlagen);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
 		try {
 			pdfGenerator.generate(baos);
 			return baos.toByteArray();

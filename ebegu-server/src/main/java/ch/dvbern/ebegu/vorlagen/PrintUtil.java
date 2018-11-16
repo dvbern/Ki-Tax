@@ -197,38 +197,6 @@ public final class PrintUtil {
 	}
 
 	@Nonnull
-	public static String getNameAdresseFormatiert(
-		@Nullable Gesuch gesuch,
-		@Nullable GesuchstellerContainer gesuchsteller) {
-
-		if (gesuch == null || gesuchsteller == null) {
-			return StringUtils.EMPTY;
-		}
-
-		String newlineMSWord = "\n";
-
-		String adresse = gesuchsteller.extractFullName();
-
-		adresse += getGesuchstellerAdresse(gesuchsteller)
-			.map(gsa -> {
-				if (StringUtils.isNotEmpty(gsa.extractHausnummer())) {
-					return newlineMSWord + gsa.extractStrasse() + ' ' + gsa.extractHausnummer();
-				}
-				return newlineMSWord + gsa.extractStrasse();
-			})
-			.orElse(StringUtils.EMPTY);
-
-		String adrZusatz = getAdresszusatz(gesuch);
-		if (StringUtils.isNotEmpty(adrZusatz)) {
-			adresse += newlineMSWord + adrZusatz;
-		}
-
-		adresse += newlineMSWord + getGesuchstellerPLZStadt(gesuch);
-
-		return adresse;
-	}
-
-	@Nonnull
 	public static StringBuilder parseDokumentGrundDataToString(@Nonnull DokumentGrund dokumentGrund) {
 		StringBuilder bemerkungenBuilder = new StringBuilder();
 		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {

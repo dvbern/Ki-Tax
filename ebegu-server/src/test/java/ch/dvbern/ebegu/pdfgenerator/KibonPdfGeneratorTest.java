@@ -39,6 +39,7 @@ import org.junit.Test;
  * Erstellt pro Brief ein Exemplar für Einzelpersonen und Paare. Jeweils das Beispiel für Alleinstehende wird als Draft
  * generiert.
  */
+@SuppressWarnings("JUnitTestMethodWithNoAssertions") // some tests will check that the file is created. no assertion is needed
 public class KibonPdfGeneratorTest {
 
 	private GemeindeStammdaten stammdaten;
@@ -79,7 +80,6 @@ public class KibonPdfGeneratorTest {
 		final FreigabequittungPdfGenerator verheiratet = new FreigabequittungPdfGenerator(gesuch_verheiratet, stammdaten, false,
 			benoetigteUnterlagen);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Freigabequittung_verheiratet.pdf"));
-		Assert.assertTrue(true);
 	}
 
 	@Test
@@ -91,7 +91,6 @@ public class KibonPdfGeneratorTest {
 		final BegleitschreibenPdfGenerator verheiratet =
 			new BegleitschreibenPdfGenerator(gesuch_verheiratet, stammdaten, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Begleitschreiben_verheiratet.pdf"));
-		Assert.assertTrue(true);
 	}
 
 	@Test
@@ -103,7 +102,6 @@ public class KibonPdfGeneratorTest {
 		final VerfuegungPdfGenerator verheiratet =
 			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.NORMAL);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_verheiratet.pdf"));
-		Assert.assertTrue(true);
 	}
 
 	@Test
@@ -115,7 +113,6 @@ public class KibonPdfGeneratorTest {
 		final VerfuegungPdfGenerator verheiratet =
 			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/KeinAnspruchVerfügung_verheiratet.pdf"));
-		Assert.assertTrue(true);
 	}
 
 	@Test
@@ -127,7 +124,6 @@ public class KibonPdfGeneratorTest {
 		final VerfuegungPdfGenerator verheiratet =
 			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/NichtEintretenVerfügung_verheiratet.pdf"));
-		Assert.assertTrue(true);
 	}
 
 	@Test
@@ -139,7 +135,6 @@ public class KibonPdfGeneratorTest {
 		final FinanzielleSituationPdfGenerator verheiratet =
 			new FinanzielleSituationPdfGenerator(gesuch_verheiratet, stammdaten, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_verheiratet.pdf"));
-		Assert.assertTrue(true);
 	}
 
 	@Test
@@ -151,7 +146,6 @@ public class KibonPdfGeneratorTest {
 		final MahnungPdfGenerator verheiratet =
 			new MahnungPdfGenerator(gesuch_verheiratet, stammdaten, false, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung1_verheiratet.pdf"));
-		Assert.assertTrue(true);
 	}
 
 	@Test
@@ -163,6 +157,5 @@ public class KibonPdfGeneratorTest {
 		final MahnungPdfGenerator verheiratet =
 			new MahnungPdfGenerator(gesuch_verheiratet, stammdaten, false, true);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2_verheiratet.pdf"));
-		Assert.assertTrue(true);
 	}
 }
