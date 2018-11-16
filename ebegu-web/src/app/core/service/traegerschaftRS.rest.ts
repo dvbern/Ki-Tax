@@ -39,15 +39,25 @@ export class TraegerschaftRS {
             });
     }
 
-    public createTraegerschaft(traegerschaft: TSTraegerschaft): IPromise<TSTraegerschaft> {
-        return this.saveTraegerschaft(traegerschaft);
+    /**
+     * It sends all required parameters (new Traegerschaft and User) to the server so the server can create
+     * all required objects within a single transaction.
+     */
+    public createTraegerschaft(traegerschaft: TSTraegerschaft, email: string): IPromise<TSTraegerschaft> {
+        let restTraegerschaft = {};
+        restTraegerschaft = this.ebeguRestUtil.traegerschaftToRestObject(restTraegerschaft, traegerschaft);
+        return this.http.post(this.serviceURL, restTraegerschaft,
+            {
+                params: {
+                    adminMail: email,
+                },
+            })
+            .then(response => {
+                return this.ebeguRestUtil.parseTraegerschaft(new TSTraegerschaft(), response.data);
+            });
     }
 
-    public updateTraegerschaft(traegerschaft: TSTraegerschaft): IPromise<TSTraegerschaft> {
-        return this.saveTraegerschaft(traegerschaft);
-    }
-
-    private saveTraegerschaft(traegerschaft: TSTraegerschaft): IPromise<TSTraegerschaft> {
+    public saveTraegerschaft(traegerschaft: TSTraegerschaft): IPromise<TSTraegerschaft> {
         let restTraegerschaft = {};
         restTraegerschaft = this.ebeguRestUtil.traegerschaftToRestObject(restTraegerschaft, traegerschaft);
         return this.http.put(this.serviceURL, restTraegerschaft).then(response => {

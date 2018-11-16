@@ -36,8 +36,6 @@ public class JaxTraegerschaft extends JaxAbstractDTO {
 	@NotNull
 	private Boolean active = true;
 
-	@NotNull
-	private String mail;
 
 	public String getName() {
 		return name;
@@ -53,13 +51,5 @@ public class JaxTraegerschaft extends JaxAbstractDTO {
 
 	public void setActive(Boolean active) {
 		this.active = active;
-	}
-
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
 	}
 }
