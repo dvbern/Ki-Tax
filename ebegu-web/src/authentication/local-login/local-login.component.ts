@@ -144,7 +144,6 @@ export class LocalLoginComponent {
     private static getTraegerschaftStadtBern(): TSTraegerschaft {
         const traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'Kitas Stadt Bern';
-        traegerschaft.mail = 'kitasbaern@example.com';
         traegerschaft.id = 'f9ddee82-81a1-4cda-b273-fb24e9299308';
         return traegerschaft;
     }
@@ -155,7 +154,6 @@ export class LocalLoginComponent {
     private static getTraegerschaftLeoLea(): TSTraegerschaft {
         const traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'LeoLea';
-        traegerschaft.mail = 'leolea@example.com';
         traegerschaft.id = 'd667e2d0-3702-4933-8fb7-be7a39755232';
         return traegerschaft;
     }
@@ -166,7 +164,6 @@ export class LocalLoginComponent {
     private static getTraegerschaftSGF(): TSTraegerschaft {
         const traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'SGF';
-        traegerschaft.mail = 'sgf@example.com';
         traegerschaft.id = 'bb5d4bd8-84c9-4cb6-8134-a97312dead67';
         return traegerschaft;
     }

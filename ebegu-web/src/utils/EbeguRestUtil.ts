@@ -1002,7 +1002,6 @@ export default class EbeguRestUtil {
             this.abstractMutableEntityToRestObject(restTragerschaft, traegerschaft);
             restTragerschaft.name = traegerschaft.name;
             restTragerschaft.active = traegerschaft.active;
-            restTragerschaft.mail = traegerschaft.mail;
             return restTragerschaft;
         }
         return undefined;
@@ -1022,7 +1021,6 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(traegerschaftTS, traegerschaftFromServer);
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
-            traegerschaftTS.mail = traegerschaftFromServer.mail;
             return traegerschaftTS;
         }
         return undefined;
