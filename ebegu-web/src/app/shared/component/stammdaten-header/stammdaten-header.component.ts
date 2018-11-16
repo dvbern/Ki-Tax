@@ -40,7 +40,7 @@ export class StammdatenHeaderComponent implements OnInit {
     @Input() public administratoren: string;
     @Input() public sachbearbeiter: string;
     @Input() public logoImageUrl: string;
-    @Input() public editMitarbeiterAllowed: boolean;
+    @Input() public editMode: boolean;
 
     private fileToUpload: File;
     private navigationDest: StateDeclaration;

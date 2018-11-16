@@ -1,3 +1,4 @@
+import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
@@ -34,6 +35,7 @@ describe('EditInstitutionComponent', () => {
                 MaterialModule,
                 GemeindeModule,
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},

@@ -30,8 +30,9 @@
             [administratoren]="stammdaten.administratoren"
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="undefined"
-            [editMitarbeiterAllowed]="true">
+            [editMode]="isStammdatenEditable()">
         </dv-stammdaten-header>
+
         <div class="dv-content">
             <fieldset *ngIf="editMode">
                 <div class="viewSubTitle">

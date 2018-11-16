@@ -367,8 +367,11 @@ describe('EbeguRestUtil', () => {
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule.length).toBe(1);
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag)
-                    .toBeUndefined();
+                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag).toBeUndefined();
+                expect(restInstitutionStammdaten.administratoren).toBeDefined();
+                expect(restInstitutionStammdaten.sachbearbeiter).toBeDefined();
+                expect(restInstitutionStammdaten.mail).toBeDefined();
+                expect(restInstitutionStammdaten.telefon).toBeDefined();
 
                 const transformedInstitutionStammdaten = ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                     restInstitutionStammdaten);
