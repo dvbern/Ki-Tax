@@ -1206,7 +1206,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
 		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
 		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
-		jaxTraegerschaft.setMail(persistedTraegerschaft.getMail());
 		return jaxTraegerschaft;
 	}
 
@@ -1227,7 +1226,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(traegerschaftJAXP, traegerschaft);
 		traegerschaft.setName(traegerschaftJAXP.getName());
 		traegerschaft.setActive(traegerschaftJAXP.getActive());
-		traegerschaft.setMail(traegerschaftJAXP.getMail());
 
 		return traegerschaft;
 	}

@@ -115,6 +115,7 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
 
+			Objects.requireNonNull(familiensituation.getAenderungPer());
 			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
 
 			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);

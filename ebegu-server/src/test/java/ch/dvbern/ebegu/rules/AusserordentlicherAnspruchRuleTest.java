@@ -47,7 +47,7 @@ public class AusserordentlicherAnspruchRuleTest {
 		Assert.assertEquals(30, zeitabschnitt.getAusserordentlicherAnspruch());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), zeitabschnitt.getBetreuungspensum());
 		Assert.assertEquals(30, zeitabschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(MathUtil.GANZZAHL.from(30), zeitabschnitt.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(30), zeitabschnitt.getBgPensum());
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public class AusserordentlicherAnspruchRuleTest {
 		Assert.assertEquals(30, zeitabschnitt.getAusserordentlicherAnspruch());
 		Assert.assertEquals(MathUtil.DEFAULT.from(80), zeitabschnitt.getBetreuungspensum());
 		Assert.assertEquals(60, zeitabschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(MathUtil.GANZZAHL.from(60), zeitabschnitt.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60), zeitabschnitt.getBgPensum());
 	}
 
 	private Betreuung createBetreuung(int betreuungspensum, int erwerbspensum, int ausserordentlicherAnspruch) {

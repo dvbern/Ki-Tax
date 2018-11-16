@@ -83,7 +83,7 @@ public class EinreichungsfristRuleTest {
 		Assert.assertEquals(Integer.valueOf(60), abschnitt1.getErwerbspensumGS1());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), abschnitt1.getBetreuungspensum());
 		Assert.assertEquals(0, abschnitt1.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.ZERO, abschnitt1.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnitt1.getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		Assert.assertEquals(0, nextRestanspruch.get(0).getAnspruchspensumRest());
 		Assert.assertTrue(abschnitt1.isZuSpaetEingereicht());
@@ -289,7 +289,7 @@ public class EinreichungsfristRuleTest {
 		Assert.assertNull(abschnitt2.getErwerbspensumGS2());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), abschnitt2.getBetreuungspensum());
 		Assert.assertEquals(0, abschnitt2.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.ZERO, abschnitt2.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnitt2.getBgPensum());
 		Assert.assertEquals(-1, abschnitt2.getAnspruchspensumRest());
 		Assert.assertEquals(0, nextRestanspruch.get(2).getAnspruchspensumRest());
 		Assert.assertTrue(abschnitt2.isZuSpaetEingereicht());

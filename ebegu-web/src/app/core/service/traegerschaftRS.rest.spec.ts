@@ -20,7 +20,7 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {TraegerschaftRS} from './traegerschaftRS.rest';
 
-describe('institutionStammdatenRS', () => {
+describe('traegerschaftRS', () => {
 
     let traegerschaftRS: TraegerschaftRS;
     let $httpBackend: IHttpBackendService;
@@ -64,18 +64,17 @@ describe('institutionStammdatenRS', () => {
             it('should create a traegerschaft', () => {
                 let createdTraegerschaft: TSTraegerschaft;
                 const url = traegerschaftRS.serviceURL;
-                $httpBackend.expectPUT(url, mockTraegerschaftRest).respond(mockTraegerschaftRest);
+                $httpBackend.expectPOST(url, mockTraegerschaftRest).respond(mockTraegerschaftRest);
 
-                traegerschaftRS.createTraegerschaft(mockTraegerschaft)
+                traegerschaftRS.createTraegerschaft(mockTraegerschaft, 'myAdminMail')
                     .then(result => {
                         createdTraegerschaft = result;
+                        checkFieldValues(createdTraegerschaft, mockTraegerschaft);
                     });
-                $httpBackend.flush();
-                checkFieldValues(createdTraegerschaft, mockTraegerschaft);
             });
         });
 
-        describe('updateTraegerschaft', () => {
+        describe('saveTraegerschaft', () => {
             it('should update a traegerschaft', () => {
                 mockTraegerschaft.name = 'changedname';
                 mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
@@ -83,7 +82,7 @@ describe('institutionStammdatenRS', () => {
                 $httpBackend.expectPUT(traegerschaftRS.serviceURL,
                     mockTraegerschaftRest).respond(mockTraegerschaftRest);
 
-                traegerschaftRS.updateTraegerschaft(mockTraegerschaft)
+                traegerschaftRS.saveTraegerschaft(mockTraegerschaft)
                     .then(result => {
                         updatedTraegerschaft = result;
                     });

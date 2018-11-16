@@ -28,6 +28,8 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Institution;
@@ -36,6 +38,7 @@ import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -65,6 +68,27 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Inject
 	private InstitutionService institutionService;
 
+	@Inject
+	private BenutzerService benutzerService;
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminEmail) {
+		Objects.requireNonNull(traegerschaft);
+		Objects.requireNonNull(adminEmail);
+
+		Traegerschaft persistedTraegerschaft = persistence.persist(traegerschaft);
+
+		benutzerService.findBenutzerByEmail(adminEmail).ifPresent(benutzer -> {
+			throw new EbeguRuntimeException("createTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, adminEmail);
+		});
+
+		Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(adminEmail, persistedTraegerschaft);
+		benutzerService.einladen(Einladung.forTraegerschaft(benutzer, persistedTraegerschaft));
+
+		return traegerschaft;
+	}
 
 	@Nonnull
 	@Override
