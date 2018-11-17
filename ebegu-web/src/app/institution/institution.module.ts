@@ -18,14 +18,13 @@
  */
 
 import {NgModule} from '@angular/core';
-import {MatPaginator} from '@angular/material';
 import {StammdatenHeaderComponent} from '../shared/component/stammdaten-header/stammdaten-header.component';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {InstitutionRoutingModule} from './institution-routing/institution-routing.module';
-import {InstitutionListComponent} from './institutionenListView/institution-list.component';
+import {InstitutionListComponent} from './list-institution/institution-list.component';
 
 @NgModule({
     imports: [

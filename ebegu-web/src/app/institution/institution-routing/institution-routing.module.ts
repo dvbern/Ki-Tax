@@ -24,7 +24,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddInstitutionComponent} from '../add-institution/add-institution.component';
 import {EditInstitutionComponent} from '../edit-institution/edit-institution.component';
-import {InstitutionListComponent} from '../institutionenListView/institution-list.component';
+import {InstitutionListComponent} from '../list-institution/institution-list.component';
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -58,14 +58,6 @@ const states: Ng2StateDeclaration[] = [
             roles: TSRoleUtil.getInstitutionProfilRoles(),
         },
     },
-/*    {
-        name: 'institution.view',
-        url: '/view/:institutionId',
-        component: InstitutionStammdatenViewController,
-        data: {
-            roles: TSRoleUtil.getAdministratorMandantRevisorRole(),
-        },
-    }, */
 ];
 
 @NgModule({

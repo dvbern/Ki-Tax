@@ -27,6 +27,7 @@ import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSAdresse from '../../../models/TSAdresse';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import {TSDateRange} from '../../../models/types/TSDateRange';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -157,6 +158,7 @@ export class EditInstitutionComponent implements OnInit {
         this.stammdaten = new TSInstitutionStammdaten();
         this.stammdaten.adresse = new TSAdresse();
         this.stammdaten.institution = this.institution;
+        this.stammdaten.gueltigkeit = new TSDateRange();
         this.stammdaten.gueltigkeit.gueltigAb = moment();
     }
 

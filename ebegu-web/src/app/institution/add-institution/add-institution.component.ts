@@ -65,7 +65,6 @@ export class AddInstitutionComponent implements OnInit {
         this.traegerschaftRS.getAllActiveTraegerschaften().then(result => {
             this.traegerschaften = result;
         });
-        this.adminMail = '';
         const currentDate = moment();
         const futureMonth = moment(currentDate).add(1, 'M');
         const futureMonthBegin = moment(futureMonth).startOf('month');

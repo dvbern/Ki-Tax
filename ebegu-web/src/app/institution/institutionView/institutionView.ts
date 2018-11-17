@@ -138,7 +138,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
 
         this.errorService.clearAll();
         if (this.isCreateInstitutionsMode()) {
-            this.institutionRS.createInstitution(this.selectedInstitution, moment(), 'mail@mail.ch')
+            this.institutionRS.createInstitution(this.selectedInstitution, moment())
                 .then(institution => this.setSelectedInstitution(institution));
         } else {
             this.institutionRS.updateInstitution(this.selectedInstitution);
