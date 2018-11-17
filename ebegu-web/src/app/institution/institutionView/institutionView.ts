@@ -16,6 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
+import * as moment from 'moment';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import {IInstitutionStateParams} from '../../../admin/admin.route';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
@@ -36,6 +37,8 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import IFormController = angular.IFormController;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+
+// TODO View löschen, wenn das Einladen fertig ist!
 
 export class InstitutionViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -135,7 +138,7 @@ export class InstitutionViewController extends AbstractAdminViewController {
 
         this.errorService.clearAll();
         if (this.isCreateInstitutionsMode()) {
-            this.institutionRS.createInstitution(this.selectedInstitution)
+            this.institutionRS.createInstitution(this.selectedInstitution, moment(), 'mail@mail.ch')
                 .then(institution => this.setSelectedInstitution(institution));
         } else {
             this.institutionRS.updateInstitution(this.selectedInstitution);

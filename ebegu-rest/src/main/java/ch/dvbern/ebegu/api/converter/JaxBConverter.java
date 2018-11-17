@@ -1290,10 +1290,6 @@ public class JaxBConverter extends AbstractConverter {
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					institutionJAXP.getMandant().getId());
 			}
-		} else {
-			throw new EbeguEntityNotFoundException(
-				"institutionToEntity -> mandant",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
 
 		// Traegerschaft ist nicht required!

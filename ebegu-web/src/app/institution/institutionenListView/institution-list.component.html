@@ -67,6 +67,7 @@
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
+            <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
 
             <div class="mat-row" *ngIf="showNoContentMessage()"
                  [textContent]="'INSTITUTIONEN_NOCH_KEINE' | translate">

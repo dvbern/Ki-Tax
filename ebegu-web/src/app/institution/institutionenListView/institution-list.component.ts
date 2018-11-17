@@ -27,7 +27,7 @@ import {
     ViewChild
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig, MatSort, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatDialogConfig, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import {Subject} from 'rxjs';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
@@ -54,6 +54,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     @ViewChild(NgForm) public form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
+    @ViewChild(MatPaginator) public paginator: MatPaginator;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -75,6 +76,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
             return;
         }
         this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
     }
 
     public ngOnDestroy(): void {
@@ -86,6 +88,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         this.institutionRS.getInstitutionenForCurrentBenutzer()
             .then(insti => {
                 this.dataSource = new MatTableDataSource(insti);
+                this.dataSource.paginator = this.paginator;
                 this.changeDetectorRef.markForCheck();
             });
     }
@@ -124,7 +127,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public createInstitution(): void {
-        this.$state.go('admin.institution', {
+        this.$state.go('institution.add', {
             institutionId: undefined,
         });
     }

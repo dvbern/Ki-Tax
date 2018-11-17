@@ -154,7 +154,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxInstitution jaxInstitution = converter.institutionToJAX(institution);
 		jaxInstitution.getTraegerschaft().setName("ChangedTraegerschaft");
 		jaxInstitution.getMandant().setName("ChangedMandant");
-		institutionResource.createInstitution(jaxInstitution, DUMMY_URIINFO, DUMMY_RESPONSE);
+		institutionResource.createInstitution(jaxInstitution, "2020-01-01",  DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft loadedTraegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();

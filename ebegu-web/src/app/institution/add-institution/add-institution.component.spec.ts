@@ -29,12 +29,12 @@ import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../shared/shared.module';
-import {AddGemeindeComponent} from './add-gemeinde.component';
+import {AddInstitutionComponent} from './add-institution.component';
 
 describe('AddInstitutionComponent', () => {
 
-    let component: AddGemeindeComponent;
-    let fixture: ComponentFixture<AddGemeindeComponent>;
+    let component: AddInstitutionComponent;
+    let fixture: ComponentFixture<AddInstitutionComponent>;
 
     const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
         ['getGemeindenForPrincipal$', 'findGemeinde']);
@@ -63,7 +63,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
             ],
             declarations: [
-                AddGemeindeComponent,
+                AddInstitutionComponent,
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
@@ -76,7 +76,7 @@ describe('AddInstitutionComponent', () => {
     }));
 
     beforeEach(async(() => {
-        fixture = TestBed.createComponent(AddGemeindeComponent);
+        fixture = TestBed.createComponent(AddInstitutionComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));

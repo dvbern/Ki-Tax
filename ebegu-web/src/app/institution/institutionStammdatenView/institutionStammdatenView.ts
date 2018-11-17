@@ -34,6 +34,8 @@ import TSLand from '../../../models/types/TSLand';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import IFormController = angular.IFormController;
 
+// TODO View löschen, wenn das Einladen fertig ist!
+
 export class InstitutionStammdatenViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public template = require('./institutionStammdatenView.html');

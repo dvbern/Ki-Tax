@@ -22,6 +22,7 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
+import {AddInstitutionComponent} from '../add-institution/add-institution.component';
 import {EditInstitutionComponent} from '../edit-institution/edit-institution.component';
 import {InstitutionListComponent} from '../institutionenListView/institution-list.component';
 
@@ -41,14 +42,14 @@ const states: Ng2StateDeclaration[] = [
             roles: TSRoleUtil.getInstitutionProfilRoles(),
         },
     },
-/*    {
+    {
         name: 'institution.add',
         url: '/add',
-        component: InstitutionViewComponentConfig,
+        component: AddInstitutionComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
+            roles: TSRoleUtil.getInstitutionProfilEditRoles(),
         },
-    }, */
+    },
     {
         name: 'institution.edit',
         url: '/edit/:institutionId',

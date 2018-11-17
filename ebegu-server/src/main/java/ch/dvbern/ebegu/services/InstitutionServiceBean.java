@@ -37,6 +37,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
@@ -62,6 +63,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Institution
@@ -73,10 +75,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Inject
 	private Persistence persistence;
-
+	@Inject
+	private PrincipalBean principalBean;
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
 	@Inject
 	private BenutzerService benutzerService;
 
@@ -93,6 +95,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
 	public Institution createInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
+		if (institution.getMandant() == null) {
+			institution.setMandant(requireNonNull(principalBean.getMandant()));
+		}
+
 		return persistence.persist(institution);
 	}
 
