@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,22 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.pdfgenerator;
 
-public enum KorrespondenzSpracheTyp {
-	DE,
-	FR,
-	DE_FR;
+public class PdfGeneratorContext {
 
-	public Sprache[] getSprache() {
-		switch (this) {
-		case DE_FR:
-			return new Sprache[] { Sprache.DEUTSCH, Sprache.FRANZOESISCH };
-		case FR:
-			return new Sprache[] { Sprache.FRANZOESISCH };
-		default:
-			return new Sprache[] { Sprache.DEUTSCH };
-
-		}
+	public PdfGeneratorContext() {
 	}
+
 }
