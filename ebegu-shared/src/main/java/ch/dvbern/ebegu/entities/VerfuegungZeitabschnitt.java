@@ -737,15 +737,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return isSameErwerbspensum(erwerbspensumGS1, otherVerfuegungZeitabschnitt.erwerbspensumGS1) &&
 			isSameErwerbspensum(erwerbspensumGS2, otherVerfuegungZeitabschnitt.erwerbspensumGS2) &&
-			betreuungspensum == otherVerfuegungZeitabschnitt.betreuungspensum &&
+			betreuungspensum.compareTo(otherVerfuegungZeitabschnitt.betreuungspensum) == 0 &&
 			fachstellenpensum == otherVerfuegungZeitabschnitt.fachstellenpensum &&
 			ausserordentlicherAnspruch == otherVerfuegungZeitabschnitt.ausserordentlicherAnspruch &&
 			anspruchspensumRest == otherVerfuegungZeitabschnitt.anspruchspensumRest &&
 			anspruchberechtigtesPensum == otherVerfuegungZeitabschnitt.anspruchberechtigtesPensum &&
 			hasSecondGesuchstellerForFinanzielleSituation == otherVerfuegungZeitabschnitt.hasSecondGesuchstellerForFinanzielleSituation &&
-			Objects.equals(abzugFamGroesse, otherVerfuegungZeitabschnitt.abzugFamGroesse) &&
-			Objects.equals(famGroesse, otherVerfuegungZeitabschnitt.famGroesse) &&
-			Objects.equals(massgebendesEinkommenVorAbzugFamgr, otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) &&
+			abzugFamGroesse != null && abzugFamGroesse.compareTo(otherVerfuegungZeitabschnitt.abzugFamGroesse) == 0 &&
+			famGroesse != null && famGroesse.compareTo(otherVerfuegungZeitabschnitt.famGroesse) == 0 &&
+			massgebendesEinkommenVorAbzugFamgr.compareTo(otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) == 0 &&
 			(isWohnsitzNichtInGemeindeGS1() && isWohnsitzNichtInGemeindeGS2()) == (otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1() && otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS2()) &&
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
 			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
@@ -757,7 +757,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			ekv2ZuZweit == otherVerfuegungZeitabschnitt.ekv2ZuZweit &&
 			ekv1NotExisting == otherVerfuegungZeitabschnitt.ekv1NotExisting &&
 			abschnittLiegtNachBEGUStartdatum == otherVerfuegungZeitabschnitt.abschnittLiegtNachBEGUStartdatum &&
-			Objects.equals(zahlungsstatus, otherVerfuegungZeitabschnitt.zahlungsstatus);
+			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus;
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
@@ -765,10 +765,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		if (this == that) {
 			return true;
 		}
-		return betreuungspensum == that.betreuungspensum &&
+		return betreuungspensum.compareTo(that.betreuungspensum) == 0 &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			Objects.equals(abzugFamGroesse, that.abzugFamGroesse) &&
-			Objects.equals(famGroesse, that.famGroesse) &&
+			abzugFamGroesse != null && abzugFamGroesse.compareTo(that.abzugFamGroesse) == 0 &&
+			famGroesse != null && famGroesse.compareTo(that.famGroesse) == 0 &&
 			Objects.equals(bemerkungen, that.bemerkungen);
 	}
 
@@ -785,7 +785,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public boolean isSamePersistedValues(VerfuegungZeitabschnitt that) {
 		// zuSpaetEingereicht und zahlungsstatus sind hier nicht aufgefuehrt, weil;
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat gelangt sind
-		return betreuungspensum == that.betreuungspensum &&
+		return betreuungspensum.compareTo(that.betreuungspensum) == 0 &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
 			(betreuungsstunden.compareTo(that.betreuungsstunden) == 0) &&
 			(vollkosten.compareTo(that.vollkosten) == 0) &&
