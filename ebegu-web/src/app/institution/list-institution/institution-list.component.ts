@@ -93,6 +93,10 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
             });
     }
 
+    public canEdit(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+    }
+
     private sortTable(): void {
         this.sort.sort({
                 id: 'name',
@@ -139,12 +143,11 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public isCreateAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorRoles())
-            || this.authServiceRS.isRole(TSRole.SACHBEARBEITER_MANDANT);
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
 
     public isDeleteAllowed(): boolean {
-        return true;
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     public showNoContentMessage(): boolean {

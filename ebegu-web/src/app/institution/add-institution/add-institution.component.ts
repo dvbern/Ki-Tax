@@ -22,9 +22,11 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
+import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -38,6 +40,8 @@ export class AddInstitutionComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
+    public betreuungsangebote: TSBetreuungsangebotTyp[];
+    public betreuungsangebot: TSBetreuungsangebotTyp;
     public traegerschaften: TSTraegerschaft[];
     public institution: TSInstitution = undefined;
     public beguStart: moment.Moment;
@@ -70,6 +74,7 @@ export class AddInstitutionComponent implements OnInit {
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.beguStart = futureMonthBegin;
         this.beguStartDatumMin = futureMonthBegin;
+        this.betreuungsangebote = getTSBetreuungsangebotTypValues();
     }
 
     public cancel(): void {

@@ -15,6 +15,7 @@
 
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import * as moment from 'moment';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
@@ -48,15 +49,17 @@ export class InstitutionRS {
     }
 
     /**
-     * It sends all required parameters (new Institution, beguStartDatum and User) to the server so the server can
+     * It sends all required parameters (new Institution, beguStartDatum, Betreuungsangebot and User) to the server so the server can
      * create all required objects within a single transaction.
      */
-    public createInstitution(institution: TSInstitution, beguStartDatum: moment.Moment): IPromise<TSInstitution> {
+    public createInstitution(institution: TSInstitution, beguStartDatum: moment.Moment,
+                             betreuungsangebot: TSBetreuungsangebotTyp): IPromise<TSInstitution> {
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
             {
                 params: {
                     date: DateUtil.momentToLocalDate(beguStartDatum),
+                    betreuung: betreuungsangebot.toString(),
                 },
             })
             .then(response => {

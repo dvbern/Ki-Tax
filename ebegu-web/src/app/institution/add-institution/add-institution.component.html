@@ -33,6 +33,27 @@
             </div>
 
             <fieldset>
+                <!-- Administrator - E-Mail Adresse | Trägerschaft -->
+                <div class="row">
+                    <div class="col-sm-6 dv-input-container-medium">
+                        <div class="form-group">
+                            <label class="required" translate for="betreuungsangebot_id">BETREUUNGSANGEBOT</label>
+                            <mat-select [(ngModel)]="betreuungsangebot" id="betreuungsangebot_id"
+                                        name="betreuungsangebot_id" class="form-control" required>
+                                <mat-option *ngFor="let ba of betreuungsangebote" [value]="ba">{{ba | translate}}
+                                </mat-option>
+                            </mat-select>
+                            <dv-error-messages [errorObject]="form.controls.betreuungsangebot_id?.errors"
+                                               inputid="betreuungsangebot_id">
+                            </dv-error-messages>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 dv-input-container-medium">
+                        <div class="form-group">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Institutionname | Betreuungsgutscheine akzeptieren ab -->
                 <div class="row">
                     <div class="col-sm-6 dv-input-container-medium">
