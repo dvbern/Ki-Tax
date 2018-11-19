@@ -89,21 +89,15 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 
 		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
-
 			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
-
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
-			return zeitabschnitt;
+			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
 		}
 		if (gs2 && !gesuch.isMutation()) {
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
-			return zeitabschnitt;
+			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
 		}
 		if (!gs2) {
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS1(gueltigkeit, erwerbspensum.getPensum());
-			return zeitabschnitt;
+			return createZeitAbschnittForGS1(gueltigkeit, erwerbspensum.getPensum());
 		}
-
 		return null;
 	}
 
