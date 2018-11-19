@@ -26,7 +26,6 @@ import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';

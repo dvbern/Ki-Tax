@@ -28,6 +28,8 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution.component';
 
@@ -36,15 +38,13 @@ describe('AddInstitutionComponent', () => {
     let component: AddInstitutionComponent;
     let fixture: ComponentFixture<AddInstitutionComponent>;
 
-    const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-        ['getGemeindenForPrincipal$', 'findGemeinde']);
+    const insitutionServiceSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
+        ['getInstitutionenForCurrentBenutzer']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['findBenutzerByEmail']);
-    const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
-    const gesuchsperiodeServiceSpy = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name,
-        ['getAllGesuchsperioden']);
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+    const transitionServiceSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
 
     beforeEach(async(() => {
 
@@ -54,13 +54,12 @@ describe('AddInstitutionComponent', () => {
                 NoopAnimationsModule,
             ],
             providers: [
-                {provide: GemeindeRS, useValue: gemeindeServiceSpy},
-                {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: BenutzerRS, useValue: benutzerServiceSpy},
-                {provide: EinstellungRS, useValue: einstellungServiceSpy},
-                {provide: GesuchsperiodeRS, useValue: gesuchsperiodeServiceSpy},
-                {provide: Transition, useValue: transitionSpy},
+                {provide: Transition, useValue: transitionServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
+                {provide: InstitutionRS, useValue: insitutionServiceSpy},
+                {provide: TraegerschaftRS, useValue: transitionServiceSpy},
+                {provide: BenutzerRS, useValue: benutzerServiceSpy},
             ],
             declarations: [
                 AddInstitutionComponent,
@@ -69,10 +68,8 @@ describe('AddInstitutionComponent', () => {
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();
 
-        gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
-            [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
-        transitionSpy.params.and.returnValue({});
-        gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
+        traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
+        transitionServiceSpy.params.and.returnValue({institutionId: undefined});
     }));
 
     beforeEach(async(() => {

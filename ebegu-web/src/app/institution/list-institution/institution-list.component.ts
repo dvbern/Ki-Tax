@@ -147,7 +147,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public isDeleteAllowed(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
 
     public showNoContentMessage(): boolean {

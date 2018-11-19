@@ -14,7 +14,9 @@
  */
 
 import {IHttpBackendService} from 'angular';
+import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -77,7 +79,7 @@ describe('institutionRS', () => {
                 let createdInstitution: TSInstitution;
                 $httpBackend.expectPOST(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
 
-                institutionRS.createInstitution(mockInstitution)
+                institutionRS.createInstitution(mockInstitution, moment(), TSBetreuungsangebotTyp.KITA)
                     .then(result => {
                         createdInstitution = result;
                     });
