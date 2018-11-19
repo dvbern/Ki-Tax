@@ -96,14 +96,14 @@ export class ErwerbspensumListViewController
                 this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
             }
         });
-        this.setShowInfoAusserordentlichenAnspruch();
+        this.setShowInfoAusserordentlichenAnspruchIfPossible();
         this.gemeindeRS.getGemeindeStammdaten(this.gesuchModelManager.getDossier().gemeinde.id).then(gemeindeDaten => {
             this.gemeindeTelefon = gemeindeDaten.telefon;
             this.gemeindeEmail = gemeindeDaten.mail;
         });
     }
 
-    private setShowInfoAusserordentlichenAnspruch(): void {
+    private setShowInfoAusserordentlichenAnspruchIfPossible(): void {
         this.gesuchModelManager.showInfoAusserordentlichenAnspruch().then((resp: any) => {
             this.showInfoAusserordentlichenAnspruch = JSON.parse(resp);
             this.showInfoAusserordentlichenAnspruch = this.showInfoAusserordentlichenAnspruch && !this.isSaveDisabled();
@@ -163,7 +163,7 @@ export class ErwerbspensumListViewController
             .then(() => {   // User confirmed removal
                 this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
                 this.gesuchModelManager.removeErwerbspensum(pensum).then(() => {
-                    this.setShowInfoAusserordentlichenAnspruch();
+                    this.setShowInfoAusserordentlichenAnspruchIfPossible();
                 });
             });
 
