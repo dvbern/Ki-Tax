@@ -48,7 +48,7 @@ public final class EbeguRuleTestsHelper {
 
 	private static final ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final ErwerbspensumCalcRule erwerbspensumCalcRule =
-		new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 40);
+		new ErwerbspensumCalcRule(DEFAULT_GUELTIGKEIT, 20, 20, 40);
 	private static final FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(DEFAULT_GUELTIGKEIT);
 	private static final AusserordentlicherAnspruchAbschnittRule ausserordentlicherAnspruchAbschnittRule =
