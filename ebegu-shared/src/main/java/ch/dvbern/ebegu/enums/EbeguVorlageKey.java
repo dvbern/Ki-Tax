@@ -40,9 +40,6 @@ public enum EbeguVorlageKey {
 	// Verfügung des Angebots Tagesfamilien
 	VORLAGE_VERFUEGUNG_TAGESFAMILIEN("/vorlagen/Verfuegungsmuster_tagesfamilien.docx"),
 
-	// Die Freigabequittung die der Gesuchsteller ausdruckt
-	VORLAGE_FREIGABEQUITTUNG("/vorlagen/Freigabequittung.docx"),
-
 	// Ein Anhang der mit den Verfügungen mitgeschickt wird und aufzeigt, wie die
 	// finanzielle Situation gerechnet wurde
 	VORLAGE_FINANZIELLE_SITUATION("/vorlagen/Berechnungsgrundlagen.docx"),
@@ -144,7 +141,6 @@ public enum EbeguVorlageKey {
 			VORLAGE_NICHT_EINTRETENSVERFUEGUNG,
 			VORLAGE_INFOSCHREIBEN_MAXIMALTARIF,
 			VORLAGE_VERFUEGUNG_TAGESFAMILIEN,
-			VORLAGE_FREIGABEQUITTUNG,
 			VORLAGE_FINANZIELLE_SITUATION,
 			VORLAGE_BEGLEITSCHREIBEN };
 	}

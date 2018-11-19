@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,22 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.tests;
 
-public enum KorrespondenzSpracheTyp {
-	DE,
-	FR,
-	DE_FR;
+import java.util.Optional;
 
-	public Sprache[] getSprache() {
-		switch (this) {
-		case DE_FR:
-			return new Sprache[] { Sprache.DEUTSCH, Sprache.FRANZOESISCH };
-		case FR:
-			return new Sprache[] { Sprache.FRANZOESISCH };
-		default:
-			return new Sprache[] { Sprache.DEUTSCH };
+import javax.annotation.Nonnull;
 
-		}
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.services.GemeindeServiceBean;
+import ch.dvbern.ebegu.test.TestDataUtil;
+
+public class GemeindeServiceMock extends GemeindeServiceBean {
+
+	@Nonnull
+	@Override
+	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(
+		@Nonnull String gemeindeId
+	) {
+		GemeindeStammdaten gemeindeWithStammdaten = TestDataUtil.createGemeindeWithStammdaten();
+		// Aktuell wird als Adresse immer Jugendamt verwendet
+		gemeindeWithStammdaten.getAdresse().setOrganisation("Jugendamt");
+		return Optional.of(gemeindeWithStammdaten);
 	}
 }

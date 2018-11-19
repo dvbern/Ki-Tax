@@ -620,4 +620,10 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			}
 		}
 	}
+
+	@Nonnull
+	public String getInstitutionAndBetreuungsangebottyp() {
+		String angebot = ServerMessageUtil.translateEnumValue(getInstitutionStammdaten().getBetreuungsangebotTyp());
+		return getInstitutionStammdaten().getInstitution().getName() + " (" + angebot + ')';
+	}
 }

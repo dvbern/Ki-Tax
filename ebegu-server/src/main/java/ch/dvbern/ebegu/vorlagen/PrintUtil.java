@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
 import org.apache.commons.lang.StringUtils;
 
+@Deprecated //TODO (team) dieses Util kann dann geloescht werden, wenn alle Dokument umgestellt sind. Was noch benötigt wird, wurde ins KibonPrintUtil kopiert.
 public final class PrintUtil {
 
 	private PrintUtil() {
@@ -193,38 +194,6 @@ public final class PrintUtil {
 			.flatMap(PrintUtil::getGesuchstellerAdresse)
 			.map(GesuchstellerAdresseContainer::extractZusatzzeile)
 			.orElse(null);
-	}
-
-	@Nonnull
-	public static String getNameAdresseFormatiert(
-		@Nullable Gesuch gesuch,
-		@Nullable GesuchstellerContainer gesuchsteller) {
-
-		if (gesuch == null || gesuchsteller == null) {
-			return StringUtils.EMPTY;
-		}
-
-		String newlineMSWord = "\n";
-
-		String adresse = gesuchsteller.extractFullName();
-
-		adresse += getGesuchstellerAdresse(gesuchsteller)
-			.map(gsa -> {
-				if (StringUtils.isNotEmpty(gsa.extractHausnummer())) {
-					return newlineMSWord + gsa.extractStrasse() + ' ' + gsa.extractHausnummer();
-				}
-				return newlineMSWord + gsa.extractStrasse();
-			})
-			.orElse(StringUtils.EMPTY);
-
-		String adrZusatz = getAdresszusatz(gesuch);
-		if (StringUtils.isNotEmpty(adrZusatz)) {
-			adresse += newlineMSWord + adrZusatz;
-		}
-
-		adresse += newlineMSWord + getGesuchstellerPLZStadt(gesuch);
-
-		return adresse;
 	}
 
 	@Nonnull
