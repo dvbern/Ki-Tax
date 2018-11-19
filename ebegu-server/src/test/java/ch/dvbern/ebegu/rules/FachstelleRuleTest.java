@@ -29,6 +29,8 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
+
 /**
  * Tests für Fachstellen-Regel
  */
@@ -52,11 +54,11 @@ public class FachstelleRuleTest {
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(Integer.valueOf(80), result.get(0).getErwerbspensumGS1());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBetreuungspensum());
-		Assert.assertEquals(80, result.get(0).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		List<VerfuegungZeitabschnitt> nextZeitabschn = EbeguRuleTestsHelper.initializeRestanspruchForNextBetreuung(betreuung, result);
-		Assert.assertEquals(20, nextZeitabschn.get(0).getAnspruchspensumRest());
+		Assert.assertEquals(20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, nextZeitabschn.get(0).getAnspruchspensumRest());
 	}
 
 	@Test

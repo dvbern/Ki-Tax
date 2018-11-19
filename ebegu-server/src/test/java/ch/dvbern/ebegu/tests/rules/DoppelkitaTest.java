@@ -31,10 +31,12 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel1;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel2;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel3;
+import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
+import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
 
 /**
  * Test der die vom JA gemeldeten Testfaelle für Doppelkitas ueberprueft.
@@ -67,18 +69,18 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// August
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, new BigDecimal(40), 10, new BigDecimal(10));
+					assertZeitabschnitt(august, new BigDecimal(40), 10 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(10 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, new BigDecimal(50), 20, new BigDecimal(20));
+					assertZeitabschnitt(januar, new BigDecimal(50), 20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS));
 				} else {     //KITA Bruennen
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// August
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, new BigDecimal(50), 60, new BigDecimal(50));
+					assertZeitabschnitt(august, new BigDecimal(50), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, new BigDecimal(40), 60, new BigDecimal(40));
+					assertZeitabschnitt(januar, new BigDecimal(40), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40));
 				}
 			}
 		}
@@ -109,18 +111,18 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, new BigDecimal(40), 60, new BigDecimal(40));
+					assertZeitabschnitt(august, new BigDecimal(40), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, new BigDecimal(50), 60, new BigDecimal(50));
+					assertZeitabschnitt(januar, new BigDecimal(50), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50));
 				} else {     //KITA Bruennen
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt okbober = verfuegung.getZeitabschnitte().get(2); // Oktober
-					assertZeitabschnitt(okbober, new BigDecimal(50), 20, new BigDecimal(20));
+					assertZeitabschnitt(okbober, new BigDecimal(50), 20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, new BigDecimal(40), 10, new BigDecimal(10));
+					assertZeitabschnitt(januar, new BigDecimal(40), 10 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(10 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS));
 				}
 			}
 		}
@@ -151,18 +153,18 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, new BigDecimal(40), 60, new BigDecimal(40));
+					assertZeitabschnitt(august, new BigDecimal(40), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, new BigDecimal(30), 60, new BigDecimal(30));
+					assertZeitabschnitt(januar, new BigDecimal(30), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(30));
 				} else {     //KITA Bruennen
 					Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, new BigDecimal(40), 20, new BigDecimal(20));
+					assertZeitabschnitt(august, new BigDecimal(40), 20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS));
 					// Januar
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, new BigDecimal(50), 30, new BigDecimal(30));
+					assertZeitabschnitt(januar, new BigDecimal(50), 30 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(30 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS));
 				}
 			}
 		}

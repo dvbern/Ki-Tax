@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -41,8 +42,6 @@ import static org.junit.Assert.assertNotNull;
  * Tests für den (fixen) Zuschlag zum Erwerbspensum
  */
 public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
-
-	private static final int ZUSCHLAG = 20;
 
 	private Betreuung betreuung;
 	private LocalDate GP_START;
@@ -71,7 +70,7 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 100, pensum + ZUSCHLAG, pensum + ZUSCHLAG, null);
+		assertZeitabschnitt(result.get(0), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 
 	}
 
@@ -106,9 +105,9 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(3, result.size());
-		assertZeitabschnitt(result.get(0), 100, pensum + ZUSCHLAG, 50, null);
+		assertZeitabschnitt(result.get(0), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50, null);
 		assertZeitabschnitt(result.get(1), 100, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(2), 100, pensum + ZUSCHLAG, 50, null);
+		assertZeitabschnitt(result.get(2), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50, null);
 	}
 
 	@Test
@@ -121,9 +120,9 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(3, result.size());
-		assertZeitabschnitt(result.get(0), 100, pensum1 + pensum2 + ZUSCHLAG, pensum1 + pensum2 + ZUSCHLAG, null);
-		assertZeitabschnitt(result.get(1), 100, pensum1 + ZUSCHLAG, pensum1 + ZUSCHLAG, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(2), 100, pensum1 + pensum2 + ZUSCHLAG, pensum1 + pensum2 + ZUSCHLAG, null);
+		assertZeitabschnitt(result.get(0), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(1), 100, pensum1 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(2), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 
 	}
 
@@ -137,9 +136,9 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(3, result.size());
-		assertZeitabschnitt(result.get(0), 100, pensum1 + pensum2 + ZUSCHLAG, pensum1 + pensum2 + ZUSCHLAG, null);
+		assertZeitabschnitt(result.get(0), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 		assertZeitabschnitt(result.get(1), 100, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(2), 100, pensum1 + pensum2 + ZUSCHLAG, pensum1 + pensum2 + ZUSCHLAG, null);
+		assertZeitabschnitt(result.get(2), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 
 	}
 

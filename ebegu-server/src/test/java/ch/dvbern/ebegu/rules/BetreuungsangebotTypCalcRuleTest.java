@@ -29,6 +29,8 @@ import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
+
 /**
  * Testet die BetreuungsangebotTyp Regel
  */
@@ -40,7 +42,7 @@ public class BetreuungsangebotTypCalcRuleTest {
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(60, result.get(0).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
 	}
 
@@ -50,7 +52,7 @@ public class BetreuungsangebotTypCalcRuleTest {
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(60, result.get(0).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
 	}
 

@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.util.Constants;
 import org.junit.Before;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -68,7 +69,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -78,7 +79,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertZeitabschnitt(result.get(0), 80, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(1), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -99,9 +100,9 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(3, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 		assertZeitabschnitt(result.get(1), 80, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(2), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(2), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -124,7 +125,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		assertNotNull(result);
 		assertEquals(3, result.size());
 		assertZeitabschnitt(result.get(0), 80, 100, 80, null);
-		assertZeitabschnitt(result.get(1), 80, 50, 50, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, RuleKey.UNBEZAHLTER_URLAUB);
 		assertZeitabschnitt(result.get(2), 80, 100, 80, null);
 	}
 
