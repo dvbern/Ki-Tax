@@ -268,8 +268,6 @@
                 <groupId>net.bull.javamelody</groupId>
                 <artifactId>javamelody-core</artifactId>
                 <version>1.74.0</version>
-                <!--<version>1.59.0-jpa21-SNAPSHOT</version>-->
-                <!--<scope>provided</scope>-->
             </dependency>
 
             <dependency>
