@@ -136,12 +136,17 @@ public class InstitutionResource {
 
 	private void initInstitutionStammdaten(String stringDateBeguStart, String betreuungsangebot, Institution persistedInstitution) {
 		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
-		institutionStammdaten.setAdresse(new Adresse());
+		Adresse adresse = new Adresse();
+		adresse.setStrasse("");
+		adresse.setPlz("");
+		adresse.setOrt("");
+		institutionStammdaten.setAdresse(adresse);
 		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.valueOf(betreuungsangebot));
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(persistedInstitution.getMail());
-		DateRange dataRange = new DateRange(LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT),
-			Constants.END_OF_TIME);
+		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
+		DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
+		institutionStammdaten.setGueltigkeit(gueltigkeit);
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
 	}
 

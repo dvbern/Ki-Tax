@@ -106,7 +106,7 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     private persistInstitution(): void {
-        this.institutionRS.createInstitution(this.institution, this.beguStart)
+        this.institutionRS.createInstitution(this.institution, this.beguStart, this.betreuungsangebot)
             .then(neueinstitution => {
                 this.institution = neueinstitution;
                 this.navigateBack();
