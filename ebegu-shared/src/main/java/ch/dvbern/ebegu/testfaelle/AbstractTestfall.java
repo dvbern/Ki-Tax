@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -234,6 +235,7 @@ public abstract class AbstractTestfall {
 		gesuchsteller.setDiplomatenstatus(false);
 		gesuchsteller.setMail("test@example.com");
 		gesuchsteller.setMobile("079 000 00 00");
+		gesuchsteller.setKorrespondenzSprache(Sprache.DEUTSCH);
 		return gesuchsteller;
 	}
 

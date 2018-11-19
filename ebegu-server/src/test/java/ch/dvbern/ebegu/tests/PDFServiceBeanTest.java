@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.tests;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -40,12 +42,13 @@ import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.EbeguVorlageService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.PDFServiceBean;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
-import ch.dvbern.ebegu.test.TestDataUtil;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
@@ -53,6 +56,7 @@ import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -63,6 +67,7 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unused")
 public class PDFServiceBeanTest {
 
+	private static final Pattern COMPILE = Pattern.compile(" {2}");
 	@Rule
 	public final UnitTestTempFolder unitTestTempfolder = new UnitTestTempFolder();
 
@@ -77,6 +82,9 @@ public class PDFServiceBeanTest {
 
 	@InjectIntoMany
 	DokumentGrundService dokumentGrundService = new DokumentGrundServiceMock();
+
+	@InjectIntoMany
+	GemeindeService gemeindeService = new GemeindeServiceMock();
 
 	@InjectIntoMany
 	DokumentenverzeichnisEvaluator dokumentenverzeichnisEvaluator = new DokumentenverzeichnisEvaluator();
@@ -150,12 +158,11 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Jugendamt(" + gesuch_2GS.getJahrFallAndGemeindenummer() + ").pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Zustelladresse ist nicht Jugendamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Jugendamt"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Zustelladresse ist nicht Jugendamt");
 	}
 
+	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
 	@Test
 	public void testGenerateFreigabequittungSchulamt() throws Exception {
 
@@ -164,10 +171,8 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Schulamt(" + gesuch_Schulamt.getJahrFallAndGemeindenummer() + ").pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Zustelladresse ist nicht Schulamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Schulamt"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Schulamt", "Zustelladresse ist nicht Schulamt");
 	}
 
 	@Test
@@ -192,7 +197,7 @@ public class PDFServiceBeanTest {
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_Schulamt, LocalDate.now().plusWeeks(2), 3);
 
-		byte[] bytes = pdfService.generateMahnung(mahnung, null, writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF);
 
 		assertNotNull(bytes);
 
@@ -202,9 +207,8 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be one page long.", 1, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Absenderadresse ist nicht Schulamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Schulamt"));
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Schulamt", "Absenderadresse ist nicht Schulamt");
 
 		pdfRreader.close();
 	}
@@ -214,7 +218,7 @@ public class PDFServiceBeanTest {
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 3);
 
-		byte[] bytes = pdfService.generateMahnung(mahnung, null, writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF);
 
 		assertNotNull(bytes);
 
@@ -224,10 +228,8 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be one page long.", 1, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Absenderadresse ist nicht Jugendamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Jugendamt"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
 		pdfRreader.close();
 	}
 
@@ -236,7 +238,7 @@ public class PDFServiceBeanTest {
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
 
-		byte[] bytes = pdfService.generateMahnung(mahnung, null, writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF);
 
 		assertNotNull(bytes);
 
@@ -246,12 +248,9 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Absenderadresse ist nicht Jugendamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Jugendamt"));
-		assertTrue("Second page should begin with this text.",
-			pdfTextExtractor.getTextFromPage(2).startsWith("Erst nach Eingang dieser"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
+		assertTextInPdf(pdfTextExtractor, 2, "Erst nach Eingang dieser", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 
@@ -261,7 +260,7 @@ public class PDFServiceBeanTest {
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks
 			(2), 50);
 
-		byte[] bytes = pdfService.generateMahnung(mahnung, null, writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF);
 
 		assertNotNull(bytes);
 
@@ -271,12 +270,9 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Absenderadresse ist nicht Jugendamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Jugendamt"));
-		assertTrue("Second page should begin with this text.",
-			pdfTextExtractor.getTextFromPage(2).startsWith("-    Test Dokument 22"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
+		assertTextInPdf(pdfTextExtractor, 2, "-    Test Dokument 22", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 
@@ -297,10 +293,8 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals(1, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Absenderadresse ist nicht Schulamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Schulamt"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Schulamt", "Absenderadresse ist nicht Schulamt");
 		pdfRreader.close();
 	}
 
@@ -320,10 +314,8 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals(1, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Absenderadresse ist nicht Jugendamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Jugendamt"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
 		pdfRreader.close();
 	}
 
@@ -343,12 +335,9 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Absenderadresse ist nicht Jugendamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Jugendamt"));
-		assertTrue("Second page should begin with this text.",
-			pdfTextExtractor.getTextFromPage(2).startsWith("Wenn Sie die geforderten Unterlagen"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
+		assertTextInPdf(pdfTextExtractor, 2, "Wenn Sie die geforderten Unterlagen", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 
@@ -370,12 +359,9 @@ public class PDFServiceBeanTest {
 		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
 
-		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader);
-		assertTrue("Absenderadresse ist nicht Jugendamt",
-			pdfTextExtractor.getTextFromPage(1).startsWith("Jugendamt"));
-		assertTrue("Second page should begin with this text.",
-			pdfTextExtractor.getTextFromPage(2).startsWith("-    Test Dokument 23"));
-
+		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
+		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
+		assertTextInPdf(pdfTextExtractor, 2, "-    Test Dokument 23", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 
@@ -390,6 +376,7 @@ public class PDFServiceBeanTest {
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("80000"), true);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
@@ -412,6 +399,8 @@ public class PDFServiceBeanTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		// Hack damit Dokument mit zwei Gesuchsteller dargestellt wird
 
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(gesuch.getGesuchsteller2());
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("80000"), true);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller2(), new BigDecimal("40000"), true);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("50000"), false);
@@ -436,6 +425,7 @@ public class PDFServiceBeanTest {
 		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
 		Gesuch gesuch = testfall.fillInGesuch();
 
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("80000"), true);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("50000"), false);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
@@ -460,7 +450,11 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testPrintBegleitschreibenTwoGesuchsteller() throws Exception {
 
-		gesuch_2GS.getGesuchsteller1().getAdressen().stream().forEach(gesuchstellerAdresse -> gesuchstellerAdresse.getGesuchstellerAdresseJA().setZusatzzeile("Test zusatztzeile"));
+		Assert.assertNotNull(gesuch_2GS.getGesuchsteller1());
+		gesuch_2GS.getGesuchsteller1().getAdressen().stream().forEach(gesuchstellerAdresse -> {
+			Assert.assertNotNull(gesuchstellerAdresse.getGesuchstellerAdresseJA());
+			gesuchstellerAdresse.getGesuchstellerAdresseJA().setZusatzzeile("Test zusatztzeile");
+		});
 		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
 		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_2GS, writeProtectPDF);
 		Assert.assertNotNull(bytes);
@@ -475,6 +469,7 @@ public class PDFServiceBeanTest {
 		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+		Assert.assertNotNull(testBetreuung.getVerfuegung());
 		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
 
 		byte[] verfuegungsPDF = pdfService.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF);
@@ -490,10 +485,22 @@ public class PDFServiceBeanTest {
 		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+		Assert.assertNotNull(testBetreuung.getVerfuegung());
 		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
 
 		byte[] verfuegungsPDF = pdfService.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF);
 		Assert.assertNotNull(verfuegungsPDF);
 		unitTestTempfolder.writeToTempDir(verfuegungsPDF, "Verfuegung_TageselternKleinkinder.pdf");
+	}
+
+
+	private void assertTextInPdf(PdfTextExtractor pdfTextExtractor, int pageNumber, String expectedText, String message)
+		throws IOException {
+		// Es gibt einen Bug im PdfTextExtractor: Die Wörter werden mit zwei Spaces getrennt. Im "richtigen" PDF
+		// ist dies aber nicht der Fall!
+		// Siehe https://github.com/LibrePDF/OpenPDF/issues/119
+		String actualText = pdfTextExtractor.getTextFromPage(pageNumber);
+		actualText = COMPILE.matcher(actualText).replaceAll(" ");
+		assertTrue(message, actualText.contains(expectedText));
 	}
 }
