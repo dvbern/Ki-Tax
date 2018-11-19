@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,16 +58,6 @@ public class KibonPdfGeneratorTest {
 		benoetigteUnterlagen.add(new DokumentGrund(DokumentGrundTyp.FINANZIELLESITUATION, DokumentTyp.STEUERERKLAERUNG));
 		benoetigteUnterlagen.add(new DokumentGrund(DokumentGrundTyp.ERWERBSPENSUM, DokumentTyp.NACHWEIS_ERWERBSPENSUM));
 		benoetigteUnterlagen.add(new DokumentGrund(DokumentGrundTyp.ERWEITERTE_BETREUUNG, DokumentTyp.BESTAETIGUNG_ARZT));
-	}
-
-	@Test
-	public void gemeindeStammdatenToHeader() {
-
-		final FreigabequittungPdfGenerator quittungAlleinstehend = new FreigabequittungPdfGenerator(gesuch_alleinstehend, stammdaten, false,
-			benoetigteUnterlagen);
-		List<String> strings = quittungAlleinstehend.getGemeindeAdresse(stammdaten);
-		Assert.assertNotNull(strings);
-		Assert.assertEquals(8, strings.size());
 	}
 
 	@Test

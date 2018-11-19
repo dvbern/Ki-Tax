@@ -28,7 +28,8 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
 	protected DokumentAnFamilieGenerator(
 		@Nonnull Gesuch gesuch,
-		@Nonnull GemeindeStammdaten stammdaten, boolean draft) {
+		@Nonnull GemeindeStammdaten stammdaten, boolean draft
+	) {
 		super(gesuch, stammdaten, draft);
 	}
 
@@ -36,11 +37,5 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 	@Override
 	protected List<String> getEmpfaengerAdresse() {
 		return getFamilieAdresse();
-	}
-
-	@Nonnull
-	@Override
-	protected List<String> getAbsenderAdresse() {
-		return getGemeindeAdresse(getGemeindeStammdaten());
 	}
 }

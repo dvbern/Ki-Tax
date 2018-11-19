@@ -67,9 +67,6 @@ public abstract class KibonPdfGenerator {
 	protected abstract List<String> getEmpfaengerAdresse();
 
 	@Nonnull
-	protected abstract List<String> getAbsenderAdresse();
-
-	@Nonnull
 	protected abstract CustomGenerator getCustomGenerator();
 
 
@@ -109,18 +106,34 @@ public abstract class KibonPdfGenerator {
 	}
 
 	@Nonnull
-	protected List<String> getGemeindeAdresse(@Nonnull GemeindeStammdaten stammdaten) {
-		Adresse adresse = stammdaten.getAdresse();
+	private List<String> getAbsenderAdresse() {
+		List<String> absender = new ArrayList<>();
+		absender.addAll(getGemeindeAdresse());
+		absender.addAll(getGemeindeKontaktdaten());
+		return absender;
+	}
+
+	@Nonnull
+	protected List<String> getGemeindeAdresse() {
+		Adresse adresse = gemeindeStammdaten.getAdresse();
 		List<String> gemeindeHeader = Arrays.asList(
 			KibonPrintUtil.getAddressAsString(adresse),
-			"",
-			translate(ABSENDER_TELEFON, stammdaten.getTelefon()),
-			stammdaten.getMail(),
-			stammdaten.getWebseite(),
-			"",
-			"",
-			stammdaten.getGemeinde().getName() + ", " + Constants.DATE_FORMATTER.format(LocalDate.now()));
+			""
+		);
 		return gemeindeHeader;
+	}
+
+	@Nonnull
+	private List<String> getGemeindeKontaktdaten() {
+		List<String> gemeindeKontaktdaten = Arrays.asList(
+			translate(ABSENDER_TELEFON, gemeindeStammdaten.getTelefon()),
+			gemeindeStammdaten.getMail(),
+			gemeindeStammdaten.getWebseite(),
+			"",
+			"",
+			gemeindeStammdaten.getGemeinde().getName() + ", " + Constants.DATE_FORMATTER.format(LocalDate.now())
+		);
+		return gemeindeKontaktdaten;
 	}
 
 	@Nonnull
