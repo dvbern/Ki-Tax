@@ -13,10 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpBackendService, IRequestShortcutConfig} from 'angular';
-import * as moment from 'moment';
+import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';

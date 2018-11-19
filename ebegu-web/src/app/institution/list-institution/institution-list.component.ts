@@ -33,7 +33,6 @@ import {Subject} from 'rxjs';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSRole} from '../../../models/enums/TSRole';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
