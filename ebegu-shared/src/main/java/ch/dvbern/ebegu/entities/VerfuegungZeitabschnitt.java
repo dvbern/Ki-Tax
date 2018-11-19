@@ -743,9 +743,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			anspruchspensumRest == otherVerfuegungZeitabschnitt.anspruchspensumRest &&
 			anspruchberechtigtesPensum == otherVerfuegungZeitabschnitt.anspruchberechtigtesPensum &&
 			hasSecondGesuchstellerForFinanzielleSituation == otherVerfuegungZeitabschnitt.hasSecondGesuchstellerForFinanzielleSituation &&
-			abzugFamGroesse != null && abzugFamGroesse.compareTo(otherVerfuegungZeitabschnitt.abzugFamGroesse) == 0 &&
-			famGroesse != null && famGroesse.compareTo(otherVerfuegungZeitabschnitt.famGroesse) == 0 &&
-			massgebendesEinkommenVorAbzugFamgr.compareTo(otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) == 0 &&
+			Objects.equals(abzugFamGroesse, otherVerfuegungZeitabschnitt.abzugFamGroesse) &&
+			Objects.equals(famGroesse, otherVerfuegungZeitabschnitt.famGroesse) &&
+			Objects.equals(massgebendesEinkommenVorAbzugFamgr, otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) &&
 			(isWohnsitzNichtInGemeindeGS1() && isWohnsitzNichtInGemeindeGS2()) == (otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1() && otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS2()) &&
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
 			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
@@ -757,7 +757,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			ekv2ZuZweit == otherVerfuegungZeitabschnitt.ekv2ZuZweit &&
 			ekv1NotExisting == otherVerfuegungZeitabschnitt.ekv1NotExisting &&
 			abschnittLiegtNachBEGUStartdatum == otherVerfuegungZeitabschnitt.abschnittLiegtNachBEGUStartdatum &&
-			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus;
+			Objects.equals(zahlungsstatus, otherVerfuegungZeitabschnitt.zahlungsstatus);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
