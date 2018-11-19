@@ -64,7 +64,9 @@
     <!-- Information zu Ausserordentlichem Anspruch -->
     <div class="well well-status-warten ausserordentlicher-anspruch"
          ng-if="vm.showInfoAusserordentlichenAnspruch">
-        <span data-translate="HINWEIS_AUSSERORDENTLICHER_ANSPRUCH"></span>
+        <span data-translate="HINWEIS_AUSSERORDENTLICHER_ANSPRUCH"
+              data-translate-value-telefon="{{vm.gemeindeTelefon}}"
+              data-translate-value-email="{{vm.gemeindeEmail}}"></span>
     </div>
 
     <div class="row">
