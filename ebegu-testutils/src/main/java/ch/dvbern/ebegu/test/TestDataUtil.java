@@ -235,6 +235,7 @@ public final class TestDataUtil {
 
 	public static Adresse createDefaultAdresse() {
 		Adresse adresse = new Adresse();
+		adresse.setOrganisation("Jugendamt");
 		adresse.setStrasse("Nussbaumstrasse");
 		adresse.setHausnummer("21");
 		adresse.setZusatzzeile("c/o Uwe Untermieter");
@@ -884,6 +885,19 @@ public final class TestDataUtil {
 		return gesuch;
 	}
 
+	public static Gesuch createTestgesuchYvonneFeuz() {
+		List<InstitutionStammdaten> insttStammdaten = new ArrayList<>();
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
+		insttStammdaten.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		Testfall02_FeutzYvonne testfall =
+			new Testfall02_FeutzYvonne(TestDataUtil.createGesuchsperiode1718(), insttStammdaten);
+		testfall.createGesuch(LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch gesuch = testfall.fillInGesuch();
+		TestDataUtil.calculateFinanzDaten(gesuch);
+		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		return gesuch;
+	}
+
 	public static void setFinanzielleSituation(Gesuch gesuch, BigDecimal einkommen) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
@@ -1291,6 +1305,17 @@ public final class TestDataUtil {
 		stammdaten.setLogoContent(new byte[0]);
 
 		persistence.merge(stammdaten);
+	}
+
+	public static GemeindeStammdaten createGemeindeWithStammdaten() {
+		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
+		stammdaten.setAdresse(createDefaultAdresse());
+		stammdaten.setGemeinde(createGemeindeBern());
+		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
+		stammdaten.setMail("info@bern.ch");
+		stammdaten.setTelefon("031 123 12 12");
+		stammdaten.setWebseite("www.bern.ch");
+		return stammdaten;
 	}
 
 	public static Benutzer createBenutzerWithDefaultGemeinde(
