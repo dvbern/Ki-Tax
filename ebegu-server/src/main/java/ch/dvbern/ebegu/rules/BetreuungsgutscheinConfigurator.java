@@ -33,9 +33,9 @@ import ch.dvbern.ebegu.util.Constants;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
@@ -69,11 +69,11 @@ public class BetreuungsgutscheinConfigurator {
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
 			PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
-			PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM,
 			PARAM_MAX_TAGE_ABWESENHEIT,
 			GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
 			MIN_ERWERBSPENSUM_EINGESCHULT,
-			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+			ERWERBSPENSUM_ZUSCHLAG);
 	}
 
 	private void useBernerRules(Map<EinstellungKey, Einstellung> einstellungen) {
@@ -160,13 +160,15 @@ public class BetreuungsgutscheinConfigurator {
 		rules.add(storniertCalcRule);
 
 		// - Erwerbspensum
-		Einstellung maxZuschlagValue = einstellungMap.get(PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
+		Einstellung zuschlagEWP = einstellungMap.get(ERWERBSPENSUM_ZUSCHLAG);
 		Einstellung minEWP_nichtEingeschult = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		Einstellung minEWP_eingeschult = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
-		Objects.requireNonNull(maxZuschlagValue, "Parameter PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM muss gesetzt sein");
+		Objects.requireNonNull(zuschlagEWP, "Parameter ERWERBSPENSUM_ZUSCHLAG muss gesetzt sein");
+		Objects.requireNonNull(minEWP_nichtEingeschult, "Parameter MIN_ERWERBSPENSUM_NICHT_EINGESCHULT muss gesetzt sein");
+		Objects.requireNonNull(minEWP_eingeschult, "Parameter MIN_ERWERBSPENSUM_EINGESCHULT muss gesetzt sein");
 		ErwerbspensumCalcRule erwerbspensumCalcRule = new ErwerbspensumCalcRule(
 			defaultGueltigkeit,
-			maxZuschlagValue.getValueAsInteger(),
+			zuschlagEWP.getValueAsInteger(),
 			minEWP_nichtEingeschult.getValueAsInteger(),
 			minEWP_eingeschult.getValueAsInteger());
 		rules.add(erwerbspensumCalcRule);

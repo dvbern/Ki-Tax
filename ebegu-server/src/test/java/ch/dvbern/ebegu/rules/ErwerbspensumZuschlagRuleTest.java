@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,10 +39,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests fuer UnbezahlterUrlaubRule
+ * Tests für den (fixen) Zuschlag zum Erwerbspensum
  */
-@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
+public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 
 	private Betreuung betreuung;
 	private LocalDate GP_START;
@@ -55,85 +55,100 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 	}
 
 	@Test
-	public void testKeinErwerbspensum() {
+	public void keinEwerbspensum() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 0, 0, RuleKey.ERWERBSPENSUM);
+		assertZeitabschnitt(result.get(0), 100, 0, 0, RuleKey.ERWERBSPENSUM);
 	}
 
 	@Test
-	public void testNormalesErwerbspensum() {
-		addErwerbspensum(GP_START, GP_END, null, null);
-
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
-	}
-
-	@Test
-	public void testUrlaubZuKurz() {
-		addErwerbspensum(GP_START, GP_END, GP_START, GP_START.plusMonths(2));
+	public void zuschlagGewaehrt() {
+		int pensum = 20;
+		addErwerbspensum(pensum, GP_START, GP_END, null, null);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(0), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+
 	}
 
 	@Test
-	public void testUrlaubAmAnfangDesEwp() {
-		addErwerbspensum(GP_START, GP_END, GP_START.minusMonths(4), GP_START.plusMonths(1));
+	public void zuschlagGewaehrtMaximal100() {
+		int pensum = 100;
+		addErwerbspensum(pensum, GP_START, GP_END, null, null);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
-		assertEquals(2, result.size());
-		assertZeitabschnitt(result.get(0), 80, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertEquals(1, result.size());
+		assertZeitabschnitt(result.get(0), 100, pensum, pensum, null);
+
 	}
 
 	@Test
-	public void testUrlaubMittendrinn() {
-		addErwerbspensum(GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
+	public void minimumNichtErreichtKeinZuschlag() {
+		int pensum = 15;
+		addErwerbspensum(pensum, GP_START, GP_END, null, null);
+
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertZeitabschnitt(result.get(0), 100, 0, 0, RuleKey.ERWERBSPENSUM);
+	}
+
+	@Test
+	public void einGesuchstellerZuschlagNichtGewaehrtWegenUrlaub() {
+		int pensum = 30;
+		addErwerbspensum(pensum, GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(3, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
-		assertZeitabschnitt(result.get(1), 80, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(2), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(0), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50, null);
+		assertZeitabschnitt(result.get(1), 100, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(2), 100, pensum + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50, null);
 	}
 
 	@Test
-	public void testMehrereErwerbspensenOhneUrlaub() {
-		addErwerbspensum(GP_START, GP_END, null, null);
-		addErwerbspensum(GP_START, GP_END, null, null);
-
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
-		assertNotNull(result);
-		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 100, 80, null);
-	}
-
-	@Test
-	public void testMehrereErwerbspensenEinesUrlaub() {
-		addErwerbspensum(GP_START, GP_END, null, null);
-		addErwerbspensum(GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
+	public void mehrerePensenEinUrlaubZuschlagGewaehrt() {
+		int pensum1 = 20;
+		int pensum2 = 50;
+		addErwerbspensum(pensum1, GP_START, GP_END, null, null);
+		addErwerbspensum(pensum2, GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(3, result.size());
-		assertZeitabschnitt(result.get(0), 80, 100, 80, null);
-		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(2), 80, 100, 80, null);
+		assertZeitabschnitt(result.get(0), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(1), 100, pensum1 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(2), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+
 	}
+
+	@Test
+	public void mehrerePensenEinUrlaubZuschlagNichtGewaehrt() {
+		int pensum1 = 15;
+		int pensum2 = 10;
+		addErwerbspensum(pensum1, GP_START, GP_END, null, null);
+		addErwerbspensum(pensum2, GP_START, GP_END, GP_START.plusMonths(1), GP_START.plusMonths(5));
+
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		assertNotNull(result);
+		assertEquals(3, result.size());
+		assertZeitabschnitt(result.get(0), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+		assertZeitabschnitt(result.get(1), 100, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(2), 100, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, pensum1 + pensum2 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
+
+	}
+
 
 	private Betreuung createGesuchWithBetreuung() {
 		final Betreuung betreuungToCreate = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		final Gesuch gesuch = betreuungToCreate.extractGesuch();
 		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuungToCreate);
 		betPensContainer.getBetreuungspensumJA().getGueltigkeit().setGueltigAb(Constants.START_OF_TIME);
+		betPensContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(100));
 		betreuungToCreate.getBetreuungspensumContainers().add(betPensContainer);
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.setDossier(TestDataUtil.createDefaultDossier());
@@ -142,12 +157,13 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 	}
 
 	private void addErwerbspensum(
+		int pensum,
 		@Nonnull LocalDate ewpStart,
 		@Nonnull LocalDate ewpEnd,
 		@Nullable LocalDate urlaubStart,
 		@Nullable LocalDate urlaubEnd) {
 
-		ErwerbspensumContainer erwerbspensum = TestDataUtil.createErwerbspensum(ewpStart, ewpEnd, 50);
+		ErwerbspensumContainer erwerbspensum = TestDataUtil.createErwerbspensum(ewpStart, ewpEnd, pensum);
 		assertNotNull(erwerbspensum.getErwerbspensumJA());
 		if (urlaubStart != null) {
 			if (urlaubEnd == null) {

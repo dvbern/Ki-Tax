@@ -77,7 +77,7 @@ public class SchulstufeCalcRuleTest {
 		betreuung.getKind().getKindJA().setEinschulungTyp(schulstufe);
 		GesuchstellerContainer gesuchsteller1 = betreuung.extractGesuch().getGesuchsteller1();
 		Assert.assertNotNull(gesuchsteller1);
-		gesuchsteller1.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, pensum, 0));
+		gesuchsteller1.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, pensum));
 		return betreuung;
 	}
 }

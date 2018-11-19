@@ -30,6 +30,8 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
+
 /**
  * Tests für AusserordentlichenAnspruch-Regel
  */
@@ -76,15 +78,15 @@ public class AusserordentlicherAnspruchRuleTest {
 		Assert.assertEquals(Integer.valueOf(60), zeitabschnitt.getErwerbspensumGS1());
 		Assert.assertEquals(30, zeitabschnitt.getAusserordentlicherAnspruch());
 		Assert.assertEquals(MathUtil.DEFAULT.from(80), zeitabschnitt.getBetreuungspensum());
-		Assert.assertEquals(60, zeitabschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(MathUtil.DEFAULT.from(60), zeitabschnitt.getBgPensum());
+		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, zeitabschnitt.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), zeitabschnitt.getBgPensum());
 	}
 
 	private Betreuung createBetreuung(int betreuungspensum, int erwerbspensum, int ausserordentlicherAnspruch) {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 			BetreuungsangebotTyp.KITA, betreuungspensum, new BigDecimal(2000));
 		ErwerbspensumContainer erwerbspensumContainer =
-			TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, erwerbspensum, 0);
+			TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, erwerbspensum);
 		GesuchstellerContainer gesuchsteller1 = betreuung.extractGesuch().getGesuchsteller1();
 		Assert.assertNotNull(gesuchsteller1);
 		gesuchsteller1.addErwerbspensumContainer(erwerbspensumContainer);

@@ -96,6 +96,8 @@ public final class Constants {
 	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS = "7000";
 	public static final String PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS = "7700";
 
+	public static final int ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS = 20;
+
 	private Constants() {
 		//this prevents even the native class from
 		//calling this ctor as well :

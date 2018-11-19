@@ -73,7 +73,6 @@ public class GeuschZeitraumExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.anzahlVerfuegungenNormal, dataRow.getAnzahlVerfuegungenNormal());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.anzahlVerfuegungenMaxEinkommen, dataRow.getAnzahlVerfuegungenMaxEinkommen());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.anzahlVerfuegungenKeinPensum, dataRow.getAnzahlVerfuegungenKeinPensum());
-			excelRowGroup.addValue(MergeFieldGesuchZeitraum.anzahlVerfuegungenZuschlagZumPensum, dataRow.getAnzahlVerfuegungenZuschlagZumPensum());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.anzahlVerfuegungenNichtEintreten, dataRow.getAnzahlVerfuegungenNichtEintreten());
 		});
 

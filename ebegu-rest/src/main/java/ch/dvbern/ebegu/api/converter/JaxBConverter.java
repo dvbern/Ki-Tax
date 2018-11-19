@@ -2054,9 +2054,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(erwerbspensum);
 
 		convertAbstractPensumFieldsToEntity(jaxErwerbspensum, erwerbspensum);
-		erwerbspensum.setZuschlagZuErwerbspensum(jaxErwerbspensum.getZuschlagZuErwerbspensum());
-		erwerbspensum.setZuschlagsgrund(jaxErwerbspensum.getZuschlagsgrund());
-		erwerbspensum.setZuschlagsprozent(jaxErwerbspensum.getZuschlagsprozent());
 		erwerbspensum.setTaetigkeit(jaxErwerbspensum.getTaetigkeit());
 		erwerbspensum.setBezeichnung(jaxErwerbspensum.getBezeichnung());
 
@@ -2082,9 +2079,6 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		JaxErwerbspensum jaxErwerbspensum = new JaxErwerbspensum();
 		convertAbstractPensumFieldsToJAX(pensum, jaxErwerbspensum);
-		jaxErwerbspensum.setZuschlagZuErwerbspensum(pensum.getZuschlagZuErwerbspensum());
-		jaxErwerbspensum.setZuschlagsgrund(pensum.getZuschlagsgrund());
-		jaxErwerbspensum.setZuschlagsprozent(pensum.getZuschlagsprozent());
 		jaxErwerbspensum.setTaetigkeit(pensum.getTaetigkeit());
 		jaxErwerbspensum.setBezeichnung(pensum.getBezeichnung());
 		jaxErwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToJax(pensum.getUnbezahlterUrlaub()));
@@ -2560,7 +2554,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(verfuegung, jaxVerfuegung);
 		jaxVerfuegung.setGeneratedBemerkungen(verfuegung.getGeneratedBemerkungen());
 		jaxVerfuegung.setManuelleBemerkungen(verfuegung.getManuelleBemerkungen());
-		jaxVerfuegung.setKategorieZuschlagZumErwerbspensum(verfuegung.isKategorieZuschlagZumErwerbspensum());
 		jaxVerfuegung.setKategorieKeinPensum(verfuegung.isKategorieKeinPensum());
 		jaxVerfuegung.setKategorieMaxEinkommen(verfuegung.isKategorieMaxEinkommen());
 		jaxVerfuegung.setKategorieNichtEintreten(verfuegung.isKategorieNichtEintreten());
@@ -2586,7 +2579,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(jaxVerfuegung, verfuegung);
 		verfuegung.setGeneratedBemerkungen(jaxVerfuegung.getGeneratedBemerkungen());
 		verfuegung.setManuelleBemerkungen(jaxVerfuegung.getManuelleBemerkungen());
-		verfuegung.setKategorieZuschlagZumErwerbspensum(jaxVerfuegung.isKategorieZuschlagZumErwerbspensum());
 		verfuegung.setKategorieKeinPensum(jaxVerfuegung.isKategorieKeinPensum());
 		verfuegung.setKategorieMaxEinkommen(jaxVerfuegung.isKategorieMaxEinkommen());
 		verfuegung.setKategorieNichtEintreten(jaxVerfuegung.isKategorieNichtEintreten());
@@ -2646,7 +2638,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setEinkommensjahr(zeitabschnitt.getEinkommensjahr());
 		jaxZeitabschn.setKategorieKeinPensum(zeitabschnitt.isKategorieKeinPensum());
 		jaxZeitabschn.setKategorieMaxEinkommen(zeitabschnitt.isKategorieMaxEinkommen());
-		jaxZeitabschn.setKategorieZuschlagZumErwerbspensum(zeitabschnitt.isKategorieZuschlagZumErwerbspensum());
 		jaxZeitabschn.setZuSpaetEingereicht(zeitabschnitt.isZuSpaetEingereicht());
 		jaxZeitabschn.setZahlungsstatus(zeitabschnitt.getZahlungsstatus());
 		jaxZeitabschn.setSameVerfuegungsdaten(zeitabschnitt.isSameVerfuegungsdaten());
@@ -2681,8 +2672,6 @@ public class JaxBConverter extends AbstractConverter {
 		verfuegungZeitabschnitt.setEinkommensjahr(jaxVerfuegungZeitabschnitt.getEinkommensjahr());
 		verfuegungZeitabschnitt.setKategorieMaxEinkommen(jaxVerfuegungZeitabschnitt.isKategorieMaxEinkommen());
 		verfuegungZeitabschnitt.setKategorieKeinPensum(jaxVerfuegungZeitabschnitt.isKategorieKeinPensum());
-		boolean kategorieZuschlag = jaxVerfuegungZeitabschnitt.isKategorieZuschlagZumErwerbspensum();
-		verfuegungZeitabschnitt.setKategorieZuschlagZumErwerbspensum(kategorieZuschlag);
 		verfuegungZeitabschnitt.setZuSpaetEingereicht(jaxVerfuegungZeitabschnitt.isZuSpaetEingereicht());
 		verfuegungZeitabschnitt.setZahlungsstatus(jaxVerfuegungZeitabschnitt.getZahlungsstatus());
 		verfuegungZeitabschnitt.setSameVerfuegungsdaten(jaxVerfuegungZeitabschnitt.isSameVerfuegungsdaten());

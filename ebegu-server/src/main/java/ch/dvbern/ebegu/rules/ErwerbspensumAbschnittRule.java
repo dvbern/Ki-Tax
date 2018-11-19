@@ -56,6 +56,7 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 	 * @param gesuchsteller Der Gesuchsteller dessen Erwerbspensumcontainers zu Abschnitte konvertiert werden
 	 * @param gs2 handelt es sich um gesuchsteller1 -> false oder gesuchsteller2 -> true
 	 */
+	@Override
 	@Nonnull
 	protected List<VerfuegungZeitabschnitt> getErwerbspensumAbschnittForGesuchsteller(
 		@Nonnull Gesuch gesuch,
@@ -88,46 +89,29 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 
 		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
-
 			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
-
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
-			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);  //fuer statistik
-			return zeitabschnitt;
+			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
 		}
 		if (gs2 && !gesuch.isMutation()) {
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
-			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);
-			return zeitabschnitt;
+			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
 		}
 		if (!gs2) {
-			VerfuegungZeitabschnitt zeitabschnitt = createZeitAbschnittForGS1(gueltigkeit, erwerbspensum.getPensum(), erwerbspensum.getZuschlagsprozent());
-			setKategorieZuschlagZumErwerbspensum(erwerbspensum, zeitabschnitt);
-			return zeitabschnitt;
+			return createZeitAbschnittForGS1(gueltigkeit, erwerbspensum.getPensum());
 		}
-
 		return null;
 	}
 
-	private void setKategorieZuschlagZumErwerbspensum(@Nonnull Erwerbspensum erwerbspensum, VerfuegungZeitabschnitt zeitabschnitt) {
-		if (erwerbspensum.getZuschlagsprozent() != null && erwerbspensum.getZuschlagsprozent() > 0) {
-			zeitabschnitt.setKategorieZuschlagZumErwerbspensum(true);
-		}
-	}
-
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, Integer erwerbspensumValue, Integer zuschlag) {
+	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, Integer erwerbspensumValue) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS1(erwerbspensumValue);
-		zeitabschnitt.setZuschlagErwerbspensumGS1(zuschlag);
 		return zeitabschnitt;
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, Integer erwerbspensumValue, Integer zuschlag) {
+	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, Integer erwerbspensumValue) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS2(erwerbspensumValue);
-		zeitabschnitt.setZuschlagErwerbspensumGS2(zuschlag);
 		return zeitabschnitt;
 	}
 }

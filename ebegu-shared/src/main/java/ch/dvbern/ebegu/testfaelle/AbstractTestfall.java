@@ -268,7 +268,6 @@ public abstract class AbstractTestfall {
 		erwerbspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
 		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
 		erwerbspensum.setPensum(prozent);
-		erwerbspensum.setZuschlagZuErwerbspensum(false);
 		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
 		return erwerbspensumContainer;
 	}
