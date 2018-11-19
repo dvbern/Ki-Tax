@@ -26,6 +26,7 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import BerechnungsManager from '../../service/berechnungsManager';
+import GemeindeRS from '../../service/gemeindeRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
@@ -55,12 +56,15 @@ export class ErwerbspensumListViewController
         '$scope',
         'AuthServiceRS',
         '$timeout',
+        'GemeindeRS'
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
     public erwerbspensenGS2: Array<TSErwerbspensumContainer>;
     public erwerbspensumRequired: boolean;
     public showInfoAusserordentlichenAnspruch: boolean;
+    public gemeindeTelefon: string = '';
+    public gemeindeEmail: string = '';
 
     public constructor(
         private readonly $state: StateService,
@@ -72,6 +76,7 @@ export class ErwerbspensumListViewController
         $scope: IScope,
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -91,8 +96,17 @@ export class ErwerbspensumListViewController
                 this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
             }
         });
+        this.setShowInfoAusserordentlichenAnspruch();
+        this.gemeindeRS.getGemeindeStammdaten(this.gesuchModelManager.getDossier().gemeinde.id).then(gemeindeDaten => {
+            this.gemeindeTelefon = gemeindeDaten.telefon;
+            this.gemeindeEmail = gemeindeDaten.mail;
+        });
+    }
+
+    private setShowInfoAusserordentlichenAnspruch(): void {
         this.gesuchModelManager.showInfoAusserordentlichenAnspruch().then((resp: any) => {
             this.showInfoAusserordentlichenAnspruch = JSON.parse(resp);
+            this.showInfoAusserordentlichenAnspruch = this.showInfoAusserordentlichenAnspruch && !this.isSaveDisabled();
         });
     }
 
@@ -148,8 +162,9 @@ export class ErwerbspensumListViewController
         })
             .then(() => {   // User confirmed removal
                 this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
-                this.gesuchModelManager.removeErwerbspensum(pensum);
-
+                this.gesuchModelManager.removeErwerbspensum(pensum).then(() => {
+                    this.setShowInfoAusserordentlichenAnspruch();
+                });
             });
 
     }
@@ -180,9 +195,8 @@ export class ErwerbspensumListViewController
             return true;
         }
 
-        const pensen = this.getErwerbspensenListGS2();
-
-        return this.gesuchModelManager.isGesuchsteller2Required() && pensen && pensen.length <= 0;
+        return this.gesuchModelManager.isGesuchsteller2Required()
+            && this.getErwerbspensenListGS2() && this.getErwerbspensenListGS2().length <= 0;
     }
 
     public setFocusBack(elementID: string): void {

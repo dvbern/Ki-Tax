@@ -974,28 +974,32 @@ export default class GesuchModelManager {
         });
     }
 
-    public removeErwerbspensum(pensum: TSErwerbspensumContainer): void {
+    public removeErwerbspensum(pensum: TSErwerbspensumContainer): IPromise<any> {
         let erwerbspensenOfCurrentGS: Array<TSErwerbspensumContainer>;
         erwerbspensenOfCurrentGS = this.getStammdatenToWorkWith().erwerbspensenContainer;
         const index = erwerbspensenOfCurrentGS.indexOf(pensum);
         if (index < 0) {
-            console.log('can not remove Erwerbspensum since it  could not be found in list');
-
-            return;
+            this.log.error('can not remove Erwerbspensum since it could not be found in list');
+            return this.createDeferPromise<any>();
         }
 
         const pensumToRemove = this.getStammdatenToWorkWith().erwerbspensenContainer[index];
         if (pensumToRemove.id) { // wenn id vorhanden dann aus der DB loeschen
-            this.erwerbspensumRS.removeErwerbspensum(pensumToRemove.id, this.getGesuch().id)
+            return this.erwerbspensumRS.removeErwerbspensum(pensumToRemove.id, this.getGesuch().id)
                 .then(() => {
                     erwerbspensenOfCurrentGS.splice(index, 1);
                 });
-
-            return;
         }
 
         // sonst nur vom gui wegnehmen
         erwerbspensenOfCurrentGS.splice(index, 1);
+        return this.createDeferPromise<any>();
+    }
+
+    private createDeferPromise<T>(): IPromise<T> {
+        const defer = this.$q.defer<T>();
+        defer.resolve();
+        return defer.promise;
     }
 
     public findIndexOfErwerbspensum(gesuchstellerNumber: number, pensum: any): number {
@@ -1440,10 +1444,7 @@ export default class GesuchModelManager {
             });
         }
 
-        const defer = this.$q.defer<Array<TSBetreuung>>();
-        defer.resolve();
-
-        return defer.promise;
+        return this.createDeferPromise<Array<TSBetreuung>>();
     }
 
     private wasBetreuungUpdated(betreuung: TSBetreuung, updatedBetreuungen: Array<TSBetreuung>): number {

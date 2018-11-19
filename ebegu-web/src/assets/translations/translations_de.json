@@ -1402,7 +1402,7 @@
     "SPRACHLICHE_INTEGRATION": "Sprachliche Integration",
     "FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION": "Minimales Pensum für Fachstelle soziale Integration",
     "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "Minimales Pensum für Fachstelle sprachliche Integration",
-    "HINWEIS_AUSSERORDENTLICHER_ANSPRUCH": "Auf Grund Ihres Erwerbspensums besteht keinen Anspruch auf einen Betreuungsgutschein. Falls Sie trotzdem dringendst auf eine familienergänzende Betreuung angewiesen sind, kann die Gemeinde in begründeten Fällen einen ausserordentlichen Anspruch definieren. Melden Sie sich dazu an Ihre Wohngemeinde (031 321 51 15 oder <a href=\"mailto:kinderbetreuung@bern.ch\">kinderbetreuung@bern.ch</a>).",
+    "HINWEIS_AUSSERORDENTLICHER_ANSPRUCH": "Auf Grund Ihres Erwerbspensums besteht keinen Anspruch auf einen Betreuungsgutschein. Falls Sie trotzdem dringendst auf eine familienergänzende Betreuung angewiesen sind, kann die Gemeinde in begründeten Fällen einen ausserordentlichen Anspruch definieren. Melden Sie sich dazu an Ihre Wohngemeinde ({{telefon}} oder <a href=\"mailto:{{email}}\">{{email}}</a>).",
     "AUSSERORDENTLICHER_ANSPRUCH": "Ausserordentlicher Anspruch",
     "AUSSERORDENTLICHER_ANSPRUCH_BEGRUENDUNG": "Beschrieb",
     "AUSSERORDENTLICHER_ANSPRUCH_BETREUUNGSPENSUM": "Anspruch",
