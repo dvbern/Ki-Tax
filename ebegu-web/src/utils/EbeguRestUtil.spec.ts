@@ -369,10 +369,12 @@ describe('EbeguRestUtil', () => {
                     restInstitutionStammdaten);
 
                 TestDataUtil.checkGueltigkeitAndSetIfSame(transformedInstitutionStammdaten, myInstitutionStammdaten);
+                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedInstitutionStammdaten.adresse, myInstitutionStammdaten.adresse);
                 restInstitutionStammdaten.administratoren = undefined;
                 restInstitutionStammdaten.sachbearbeiter = undefined;
                 transformedInstitutionStammdaten.administratoren = undefined;
                 transformedInstitutionStammdaten.sachbearbeiter = undefined;
+
                 expect(transformedInstitutionStammdaten).toEqual(myInstitutionStammdaten);
             });
         });

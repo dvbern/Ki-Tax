@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpBackendService} from 'angular';
+import {IHttpBackendService, IRequestShortcutConfig} from 'angular';
 import * as moment from 'moment';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -72,20 +72,6 @@ describe('institutionRS', () => {
                 checkFieldValues(foundInstitution, mockInstitution);
             });
 
-        });
-
-        describe('createInstitution', () => {
-            it('should create an institution', () => {
-                let createdInstitution: TSInstitution;
-                $httpBackend.expectPOST(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
-
-                institutionRS.createInstitution(mockInstitution, moment(), TSBetreuungsangebotTyp.KITA)
-                    .then(result => {
-                        createdInstitution = result;
-                    });
-                $httpBackend.flush();
-                checkFieldValues(createdInstitution, mockInstitution);
-            });
         });
 
         describe('updateInstitution', () => {

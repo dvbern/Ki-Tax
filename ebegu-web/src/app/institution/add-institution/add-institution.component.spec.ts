@@ -20,14 +20,9 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
-import {of} from 'rxjs';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
-import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
-import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {SharedModule} from '../../shared/shared.module';
@@ -44,7 +39,8 @@ describe('AddInstitutionComponent', () => {
     const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['findBenutzerByEmail']);
     const transitionServiceSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
+    const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
+        ['getAllTraegerschaften', 'getAllActiveTraegerschaften']);
 
     beforeEach(async(() => {
 
@@ -58,7 +54,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
-                {provide: TraegerschaftRS, useValue: transitionServiceSpy},
+                {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: BenutzerRS, useValue: benutzerServiceSpy},
             ],
             declarations: [
@@ -69,6 +65,7 @@ describe('AddInstitutionComponent', () => {
             .compileComponents();
 
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
+        traegerschaftSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionServiceSpy.params.and.returnValue({institutionId: undefined});
     }));
 
