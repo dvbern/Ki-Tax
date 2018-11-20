@@ -60,7 +60,10 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 	 *
 	 * @param service service zum testen
 	 */
-	public CheckBetreuungspensumValidator(EinstellungService service, EntityManagerFactory entityManagerFactory) {
+	public CheckBetreuungspensumValidator(
+		@Nonnull EinstellungService service,
+		@Nonnull EntityManagerFactory entityManagerFactory
+	) {
 		this.einstellungService = service;
 		this.entityManagerFactory = entityManagerFactory;
 	}

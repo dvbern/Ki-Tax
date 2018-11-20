@@ -25,7 +25,6 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
     private _kategorieNormal: boolean;
     private _kategorieMaxEinkommen: boolean;
     private _kategorieKeinPensum: boolean;
-    private _kategorieZuschlagZumErwerbspensum: boolean;
     private _kategorieNichtEintreten: boolean;
 
     public constructor(
@@ -35,7 +34,6 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
         kategorieNormal?: boolean,
         kategorieMaxEinkommen?: boolean,
         kategorieKeinPensum?: boolean,
-        kategorieZuschlagZumErwerbspensum?: boolean,
         kategorieNichtEintreten?: boolean,
     ) {
         super();
@@ -45,7 +43,6 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
         this._kategorieNormal = kategorieNormal;
         this._kategorieMaxEinkommen = kategorieMaxEinkommen;
         this._kategorieKeinPensum = kategorieKeinPensum;
-        this._kategorieZuschlagZumErwerbspensum = kategorieZuschlagZumErwerbspensum;
         this._kategorieNichtEintreten = kategorieNichtEintreten;
     }
 
@@ -95,14 +92,6 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
 
     public set kategorieKeinPensum(value: boolean) {
         this._kategorieKeinPensum = value;
-    }
-
-    public get kategorieZuschlagZumErwerbspensum(): boolean {
-        return this._kategorieZuschlagZumErwerbspensum;
-    }
-
-    public set kategorieZuschlagZumErwerbspensum(value: boolean) {
-        this._kategorieZuschlagZumErwerbspensum = value;
     }
 
     public get kategorieNichtEintreten(): boolean {

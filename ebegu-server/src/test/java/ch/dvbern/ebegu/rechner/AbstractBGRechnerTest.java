@@ -54,11 +54,12 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
 
+import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS;
 import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS;
-import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
+import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -109,10 +110,6 @@ public class AbstractBGRechnerTest {
 			gesuchsperiode);
 		einstellungen.put(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6, pmab6);
 
-		Einstellung paramZuschlag =
-			new Einstellung(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, "20", gesuchsperiode);
-		einstellungen.put(EinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM, paramZuschlag);
-
 		Einstellung paramAbwesenheit = new Einstellung(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT, "30",
 			gesuchsperiode);
 		einstellungen.put(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT, paramAbwesenheit);
@@ -122,6 +119,18 @@ public class AbstractBGRechnerTest {
 			gesuchsperiode);
 		einstellungen.put(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, bgBisUndMitSchulstufe);
 
+		Einstellung minErwerbspensumNichtEingeschult = new Einstellung(
+			EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, "20", gesuchsperiode);
+		einstellungen.put(EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, minErwerbspensumNichtEingeschult);
+
+		Einstellung minErwerbspensumEingeschult = new Einstellung(
+			EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT, "40", gesuchsperiode);
+		einstellungen.put(EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT, minErwerbspensumEingeschult);
+
+		Einstellung erwerbspensumZuschlag = new Einstellung(
+			EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, "20", gesuchsperiode);
+		einstellungen.put(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, erwerbspensumZuschlag);
+
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen);
 		return new BetreuungsgutscheinEvaluator(rules);
@@ -129,28 +138,28 @@ public class AbstractBGRechnerTest {
 
 	public static void assertZeitabschnitt(
 		VerfuegungZeitabschnitt abschnitt,
-		int betreuungspensum,
+		BigDecimal betreuungspensum,
 		int anspruchsberechtigtesPensum,
-		int bgPensum) {
+		BigDecimal bgPensum) {
 		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
-			BigDecimal.valueOf(betreuungspensum), abschnitt.getBetreuungspensum());
+			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensum()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
-		assertEquals(BigDecimal.valueOf(bgPensum), abschnitt.getBgPensum());
+		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 	}
 
 	public static void assertZeitabschnitt(
 		VerfuegungZeitabschnitt abschnitt,
-		int betreuungspensum,
+		BigDecimal betreuungspensum,
 		int anspruchsberechtigtesPensum,
-		int bgPensum,
+		BigDecimal bgPensum,
 		double vollkosten,
 		double verguenstigung,
 		double elternbeitrag) {
 
 		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
-			BigDecimal.valueOf(betreuungspensum), abschnitt.getBetreuungspensum());
+			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensum()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
-		assertEquals(BigDecimal.valueOf(bgPensum), abschnitt.getBgPensum());
+		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 		assertEquals(MATH.from(vollkosten), abschnitt.getVollkosten());
 		assertEquals(MATH.from(verguenstigung), abschnitt.getVerguenstigung());
 		assertEquals(MATH.from(elternbeitrag), abschnitt.getElternbeitrag());
@@ -264,34 +273,32 @@ public class AbstractBGRechnerTest {
 					Assert.assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
 					assertEquals(
-						MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(53872.35)),
-						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+						MathUtil.GANZZAHL.from(53872.35), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, 80, 80, 80, VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
+					assertZeitabschnitt(august, new BigDecimal(80.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(80.00), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
 					// Letzter Monat
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, 80, 80, 80, VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
+					assertZeitabschnitt(januar, new BigDecimal(80.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(80.00), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
 					// Kein Anspruch mehr ab Februar
 					VerfuegungZeitabschnitt februar = verfuegung.getZeitabschnitte().get(6);
-					assertZeitabschnitt(februar, 0, 80, 0, VOLLKOSTEN_NULL, 0, 0);
+					assertZeitabschnitt(februar, MathUtil.DEFAULT.from(0.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_NULL, 0, 0);
 				} else {     //KITA Bruennen
 					Verfuegung verfuegung = betreuung.getVerfuegung();
 					Assert.assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
 					assertEquals(
-						MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(53872.35)),
-						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+						MathUtil.GANZZAHL.from(53872.35), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 					// Noch kein Anspruch im Januar 2017, Kind geht erst ab Feb 2017 in Kita, Anspruch muss ausserdem
 					// 0 sein im Januar weil das Kind in die andere Kita geht
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, 0, 0, 0, VOLLKOSTEN_NULL, 0, 0);
+					assertZeitabschnitt(januar, MathUtil.DEFAULT.from(0.00), 20, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_NULL, 0, 0);
 					// Erster Monat
 					VerfuegungZeitabschnitt februar = verfuegung.getZeitabschnitte().get(6);
-					assertZeitabschnitt(februar, 40, 80, 40, VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
+					assertZeitabschnitt(februar, new BigDecimal(40.00), 100, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
 					// Letzter Monat
 					VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-					assertZeitabschnitt(juli, 40, 80, 40, VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
+					assertZeitabschnitt(juli, new BigDecimal(40.00), 100, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
 				}
 			}
 		}
@@ -311,15 +318,14 @@ public class AbstractBGRechnerTest {
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(113346)),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(113346), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 40, 40, 40, VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
+				assertZeitabschnitt(august, new BigDecimal(40.00), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
 
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 40, 40, 40, VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
+				assertZeitabschnitt(juli, new BigDecimal(40.00), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
 			}
 			if ("Tamara".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
@@ -329,14 +335,13 @@ public class AbstractBGRechnerTest {
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(113346)),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(113346), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 60, 40, 40, VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
+				assertZeitabschnitt(august, new BigDecimal(60.00), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 478.50, 1521.50);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 60, 40, 40, VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
+				assertZeitabschnitt(juli, new BigDecimal(60.00), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 478.50, 1521.50);
 			}
 		}
 	}
@@ -355,14 +360,13 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(68678.00),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(68678.00), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 50, 50, 50, VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
+				assertZeitabschnitt(august, new BigDecimal(50.00), 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 50, 50, 50, VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
+				assertZeitabschnitt(juli, new BigDecimal(50.00), 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
 			}
 		}
 	}
@@ -381,14 +385,13 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.DEFAULT.from(162245.90),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(162245.90), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 50, 0, 0, VOLLKOSTEN_DEFAULT, 0, 1141.90);
+				assertZeitabschnitt(august, new BigDecimal(50.00), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 50, 0, 0, VOLLKOSTEN_DEFAULT, 0, 1141.90);
+				assertZeitabschnitt(juli, new BigDecimal(50.00), 0, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_DEFAULT, 0, 1141.90);
 			}
 		}
 	}
@@ -407,20 +410,19 @@ public class AbstractBGRechnerTest {
 				Assert.assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
 				assertEquals(
-					MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(98830.00)),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+					MathUtil.GANZZAHL.from(98830.00), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Erster Monat 50%
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, 50, 70, 50, VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
+				assertZeitabschnitt(august, new BigDecimal(50.00), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
 				// Letzter Monat 50%
 				VerfuegungZeitabschnitt dezember = verfuegung.getZeitabschnitte().get(4);
-				assertZeitabschnitt(dezember, 50, 70, 50, VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
+				assertZeitabschnitt(dezember, new BigDecimal(50.00), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(50.00), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
 				// Erster Monat 60 %
 				VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-				assertZeitabschnitt(januar, 60, 70, 60, VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
+				assertZeitabschnitt(januar, new BigDecimal(60.00), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00), VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
 				// Letzter Monat 60 %
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, 60, 70, 60, VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
+				assertZeitabschnitt(juli, new BigDecimal(60.00), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00), VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
 			}
 		}
 	}
@@ -445,11 +447,10 @@ public class AbstractBGRechnerTest {
 			Assert.assertNotNull(verfuegung);
 			assertEquals(12, verfuegung.getZeitabschnitte().size());
 			assertEquals(
-				MathUtil.GANZZAHL.from(MathUtil.DEFAULT.from(-7600)),
-				verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				MathUtil.GANZZAHL.from(-7600), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 			// Erster Monat
 			VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-			assertZeitabschnitt(august, 100, 60, 60, VOLLKOSTEN_DEFAULT, 1200.00, 800.00);
+			assertZeitabschnitt(august, new BigDecimal(100.00), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 1600.00, 400.00);
 		}
 	}
 

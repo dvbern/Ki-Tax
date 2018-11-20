@@ -35,7 +35,6 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.util.AbstractEntityListener;
@@ -90,7 +89,6 @@ import org.hibernate.envers.Audited;
 			@ColumnResult(name = "anzahlVerfuegungenNormal", type = Integer.class),
 			@ColumnResult(name = "anzahlVerfuegungenMaxEinkommen", type = Integer.class),
 			@ColumnResult(name = "anzahlVerfuegungenKeinPensum", type = Integer.class),
-			@ColumnResult(name = "anzahlVerfuegungenZuschlagZumPensum", type = Integer.class),
 			@ColumnResult(name = "anzahlVerfuegungenNichtEintreten", type = Integer.class) }
 	))
 })

@@ -18,6 +18,7 @@ import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
 import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSKinderabzug} from './enums/TSKinderabzug';
 import TSAbstractPersonEntity from './TSAbstractPersonEntity';
+import {TSPensumAusserordentlicherAnspruch} from './TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export default class TSKind extends TSAbstractPersonEntity {
@@ -27,6 +28,7 @@ export default class TSKind extends TSAbstractPersonEntity {
     private _mutterspracheDeutsch: boolean;
     private _einschulungTyp: TSEinschulungTyp;
     private _pensumFachstelle: TSPensumFachstelle;
+    private _pensumAusserordentlicherAnspruch: TSPensumAusserordentlicherAnspruch;
 
     public constructor(
         vorname?: string,
@@ -37,6 +39,7 @@ export default class TSKind extends TSAbstractPersonEntity {
         familienErgaenzendeBetreuung?: boolean,
         mutterspracheDeutsch?: boolean,
         pensumFachstelle?: TSPensumFachstelle,
+        pensumAusserordentlicherAnspruch?: TSPensumAusserordentlicherAnspruch,
         einschulungTyp?: TSEinschulungTyp,
     ) {
 
@@ -46,6 +49,7 @@ export default class TSKind extends TSAbstractPersonEntity {
         this._mutterspracheDeutsch = mutterspracheDeutsch;
         this._einschulungTyp = einschulungTyp;
         this._pensumFachstelle = pensumFachstelle;
+        this._pensumAusserordentlicherAnspruch = pensumAusserordentlicherAnspruch;
     }
 
     public get kinderabzug(): TSKinderabzug {
@@ -86,5 +90,13 @@ export default class TSKind extends TSAbstractPersonEntity {
 
     public set einschulungTyp(value: TSEinschulungTyp) {
         this._einschulungTyp = value;
+    }
+
+    public get pensumAusserordentlicherAnspruch(): TSPensumAusserordentlicherAnspruch {
+        return this._pensumAusserordentlicherAnspruch;
+    }
+
+    public set pensumAusserordentlicherAnspruch(value: TSPensumAusserordentlicherAnspruch) {
+        this._pensumAusserordentlicherAnspruch = value;
     }
 }

@@ -91,9 +91,8 @@ describe('ErwerbspensumRS', () => {
     describe('updateErwerbspensumContainer', () => {
         it('should update an ErwerbspensumContainer', () => {
             const changedEwp = TestDataUtil.createErwerbspensum();
-            const pensum = 40;
+            const pensum = 50;
             changedEwp.pensum = pensum;
-            changedEwp.zuschlagsprozent = 10;
             mockErwerbspensum.erwerbspensumJA = changedEwp;
             mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject({}, mockErwerbspensum);
             let updatedErwerbspensumContainerContainer: TSErwerbspensumContainer;

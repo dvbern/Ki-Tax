@@ -95,8 +95,6 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private boolean kategorieKeinPensum = false;
 
-	private boolean kategorieZuschlagZumErwerbspensum = false;
-
 	private boolean sameVerfuegungsdaten;
 
 	private boolean sameVerguenstigung;
@@ -236,14 +234,6 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setKategorieKeinPensum(boolean kategorieKeinPensum) {
 		this.kategorieKeinPensum = kategorieKeinPensum;
-	}
-
-	public boolean isKategorieZuschlagZumErwerbspensum() {
-		return kategorieZuschlagZumErwerbspensum;
-	}
-
-	public void setKategorieZuschlagZumErwerbspensum(boolean kategorieZuschlagZumErwerbspensum) {
-		this.kategorieZuschlagZumErwerbspensum = kategorieZuschlagZumErwerbspensum;
 	}
 
 	public boolean isZuSpaetEingereicht() {

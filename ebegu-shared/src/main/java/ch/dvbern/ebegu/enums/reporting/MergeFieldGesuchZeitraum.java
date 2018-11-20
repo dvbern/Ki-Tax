@@ -54,7 +54,6 @@ public enum MergeFieldGesuchZeitraum implements MergeFieldProvider {
 	anzahlVerfuegungenNormal(new SimpleMergeField<>("anzahlVerfuegungenNormal", INTEGER_CONVERTER)),
 	anzahlVerfuegungenMaxEinkommen(new SimpleMergeField<>("anzahlVerfuegungenMaxEinkommen", INTEGER_CONVERTER)),
 	anzahlVerfuegungenKeinPensum(new SimpleMergeField<>("anzahlVerfuegungenKeinPensum", INTEGER_CONVERTER)),
-	anzahlVerfuegungenZuschlagZumPensum(new SimpleMergeField<>("anzahlVerfuegungenZuschlagZumPensum", INTEGER_CONVERTER)),
 	anzahlVerfuegungenNichtEintreten(new SimpleMergeField<>("anzahlVerfuegungenNichtEintreten", INTEGER_CONVERTER));
 
 	@Nonnull

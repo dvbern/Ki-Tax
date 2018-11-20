@@ -42,7 +42,7 @@ public class BerechnungsgrundlagenInformationPrintImpl extends BriefPrintImpl im
 	/**
 	 * Konstruktor
 	 */
-	public BerechnungsgrundlagenInformationPrintImpl(Gesuch gesuch, Verfuegung famGroessenVerfuegung) {
+	public BerechnungsgrundlagenInformationPrintImpl(Gesuch gesuch, @Nullable Verfuegung famGroessenVerfuegung) {
 
 		super(gesuch);
 

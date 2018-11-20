@@ -594,6 +594,18 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	@Transient
+	@Nonnull
+	public List<Kind> extractAllKinderWithAngebot() {
+		final List<Kind> list = new ArrayList<>();
+		for (final KindContainer kind : getKindContainers()) {
+			if (kind.getKindJA().getFamilienErgaenzendeBetreuung()) {
+				list.add(kind.getKindJA());
+			}
+		}
+		return list;
+	}
+
+	@Transient
 	public List<AbwesenheitContainer> extractAllAbwesenheiten() {
 		final List<AbwesenheitContainer> list = new ArrayList<>();
 		for (final KindContainer kind : getKindContainers()) {

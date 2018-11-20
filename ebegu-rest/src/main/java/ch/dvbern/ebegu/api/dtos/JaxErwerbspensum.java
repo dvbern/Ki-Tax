@@ -18,13 +18,11 @@ package ch.dvbern.ebegu.api.dtos;
 import javax.annotation.Nullable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 
 /**
  * DTO fuer Erwerbspensum
@@ -38,17 +36,12 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 	@Enumerated(EnumType.STRING)
 	private Taetigkeit taetigkeit;
 
-	@NotNull
-	private boolean zuschlagZuErwerbspensum;
-
-	@Enumerated(EnumType.STRING)
-	private Zuschlagsgrund zuschlagsgrund;
-
-	@Min(0)
-	private Integer zuschlagsprozent;
-
 	@Nullable
 	private String bezeichnung;
+
+	@Nullable
+	private JaxUnbezahlterUrlaub unbezahlterUrlaub;
+
 
 	public Taetigkeit getTaetigkeit() {
 		return taetigkeit;
@@ -58,30 +51,6 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 		this.taetigkeit = taetigkeit;
 	}
 
-	public boolean getZuschlagZuErwerbspensum() {
-		return zuschlagZuErwerbspensum;
-	}
-
-	public void setZuschlagZuErwerbspensum(boolean zuschlagZuErwerbspensum) {
-		this.zuschlagZuErwerbspensum = zuschlagZuErwerbspensum;
-	}
-
-	public Zuschlagsgrund getZuschlagsgrund() {
-		return zuschlagsgrund;
-	}
-
-	public void setZuschlagsgrund(Zuschlagsgrund zuschlagsgrund) {
-		this.zuschlagsgrund = zuschlagsgrund;
-	}
-
-	public Integer getZuschlagsprozent() {
-		return zuschlagsprozent;
-	}
-
-	public void setZuschlagsprozent(Integer zuschlagsprozent) {
-		this.zuschlagsprozent = zuschlagsprozent;
-	}
-
 	@Nullable
 	public String getBezeichnung() {
 		return bezeichnung;
@@ -89,5 +58,14 @@ public class JaxErwerbspensum extends JaxAbstractIntegerPensumDTO {
 
 	public void setBezeichnung(@Nullable String bezeichnung) {
 		this.bezeichnung = bezeichnung;
+	}
+
+	@Nullable
+	public JaxUnbezahlterUrlaub getUnbezahlterUrlaub() {
+		return unbezahlterUrlaub;
+	}
+
+	public void setUnbezahlterUrlaub(@Nullable JaxUnbezahlterUrlaub unbezahlterUrlaub) {
+		this.unbezahlterUrlaub = unbezahlterUrlaub;
 	}
 }

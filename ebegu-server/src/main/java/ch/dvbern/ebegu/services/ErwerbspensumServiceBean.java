@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -166,6 +167,13 @@ public class ErwerbspensumServiceBean extends AbstractBaseService implements Erw
 	public boolean isErwerbspensumRequired(@Nonnull Gesuch gesuch) {
 		return gesuch.extractAllBetreuungen().stream()
 			.anyMatch(this::isErwerbspensumRequired);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<UnbezahlterUrlaub> findUnbezahlterUrlaub(@Nonnull String unbezahlterUrlaubId) {
+		final UnbezahlterUrlaub unbezahlterUrlaub = persistence.find(UnbezahlterUrlaub.class, unbezahlterUrlaubId);
+		return Optional.ofNullable(unbezahlterUrlaub);
 	}
 
 	private boolean isErwerbspensumRequired(@Nonnull Betreuung betreuung) {

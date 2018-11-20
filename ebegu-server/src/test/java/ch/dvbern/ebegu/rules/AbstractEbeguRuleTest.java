@@ -21,14 +21,23 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests für die Hilfsmethoden auf AbstractEbeguRule
@@ -329,5 +338,28 @@ public class AbstractEbeguRuleTest {
 		VerfuegungZeitabschnitt zeitabschnitt1 = new VerfuegungZeitabschnitt(new DateRange(von, bis));
 		zeitabschnitt1.setBetreuungspensum(pensum);
 		return zeitabschnitt1;
+	}
+
+	@SuppressWarnings("SameParameterValue")
+	protected void assertZeitabschnitt(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		int expectedBetreuungspensum,
+		int expectedAnspruchsPensum,
+		int expectedBgPensum,
+		@Nullable RuleKey expectedBemerkungIfAny) {
+
+		assertEquals(MathUtil.DEFAULT.from(expectedBetreuungspensum), zeitabschnitt.getBetreuungspensum());
+		assertEquals(expectedAnspruchsPensum, zeitabschnitt.getAnspruchberechtigtesPensum());
+		assertEquals(MathUtil.DEFAULT.from(expectedBgPensum), zeitabschnitt.getBgPensum());
+
+		final String bemerkungen = zeitabschnitt.getBemerkungen();
+		if (expectedBemerkungIfAny != null) {
+			assertNotNull(bemerkungen);
+			assertFalse(bemerkungen.isEmpty());
+			assertTrue(bemerkungen.contains(expectedBemerkungIfAny.name()));
+		} else {
+			assertNotNull(bemerkungen);
+			assertTrue(bemerkungen.isEmpty());
+		}
 	}
 }

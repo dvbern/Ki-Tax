@@ -131,101 +131,64 @@
                         </div>
                     </div>
 
-                    <!--Zuschlag zu Erwerbspensum-->
-                    <div class="row" ng-if="vm.isZuschlagErwerbspensumConfigured()">
+                    <!-- Unbezahlter Urlaub? -->
+                    <div class="row" ng-if="vm.isUnbezahlterUrlaubVisible()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
-                                <md-checkbox ng-model="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum"
-                                             name="zuschlag" id="zuschlag"
-                                             ng-disabled="vm.isGesuchReadonly() || vm.erwerbspensumDisabled() || !vm.viewZuschlag()"
-                                             aria-label="{{'ZUSCHLAG_ZU_ERWERBSPENSUM' | translate}}">
-                                    <span data-translate="ZUSCHLAG_ZU_ERWERBSPENSUM"></span>
+                                <md-checkbox ng-model="vm.hasUnbezahlterUrlaub"
+                                             name="showUnbezahlterUrlaub" id="showUnbezahlterUrlaub"
+                                             aria-label="{{'UNBEZAHLTER_URLAUB'|translate}}"
+                                             ng-disabled="vm.erwerbspensumDisabled()"
+                                             ng-change="vm.unbezahlterUrlaubClicked()">
+                                    <span data-translate="UNBEZAHLTER_URLAUB"></span>
                                 </md-checkbox>
-                                <dv-tooltip input-id="zuschlag" text="vm.getZuschlagHelpText()"></dv-tooltip>
-                                <dv-bisher gs="vm.model.erwerbspensumGS.zuschlagZuErwerbspensum"
-                                           ja="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum"
-                                           specific-bisher-text="vm.getTextZuschlagErwerbspensumKorrekturJA()"></dv-bisher>
-                                <dv-error-messages for="vm.form.zuschlag.$error"
+                                <dv-bisher gs="vm.hasUnbezahlterUrlaubGS"
+                                           ja="vm.hasUnbezahlterUrlaub"
+                                           specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"></dv-bisher>
+                                <dv-error-messages for="vm.form.showUnbezahlterUrlaub.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
                     </div>
-
-                    <!--Zuschlagsgrund-->
-                    <div class="row"
-                         ng-if="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum && vm.isZuschlagErwerbspensumConfigured()">
-                        <div class="col-sm-12 dv-input-container-medium">
-                            <div class="form-group">
-                                <label class="md-no-float required"
-                                       data-translate="ZUSCHLAGSGRUND_WAEHLEN"
-                                       for="zuschlagsgrund">
-                                </label>
-                                <!--im readonly modus wird das select durch ein div ersetzt weil werte gesetzt sein koennen die nicht in der selectbox sind-->
-                                <div class="dv-select-style" ng-if="!vm.isGesuchReadonly()">
-                                    <select name="zuschlagsgrund" id="zuschlagsgrund"
-                                            ng-model="vm.model.erwerbspensumJA.zuschlagsgrund"
-                                            class="form-control"
-                                            ng-options="zuschlagsgrund | translate for zuschlagsgrund in vm.getZuschlagsgrundList() "
-                                            ng-required="true"
-                                            ng-disabled="vm.erwerbspensumDisabled()">
-                                    </select>
-                                    <dv-bisher gs="vm.model.erwerbspensumGS.zuschlagsgrund"
-                                               ja="vm.model.erwerbspensumJA.zuschlagsgrund"
-                                               show-if-bisher-none="false"
-                                               block-existed="vm.model.erwerbspensumGS.zuschlagZuErwerbspensum === true"></dv-bisher>
-                                    <dv-error-messages input-id="zuschlagsgrund_dvi" for="vm.form.zuschlagsgrund.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-                                <div class="dv-select-style" ng-if="vm.isGesuchReadonly()">
-                                    <input aria-describedby="zuschlagsgrund_dvi-error" id="zuschlagsgrund_dvi"
-                                           type="text"
-                                           value="{{vm.model.erwerbspensumJA.zuschlagsgrund | translate}}"
-                                           class="form-control"
-                                           ng-disabled="true"
-                                           ng-if="vm.isGesuchReadonly()">
-                                    <dv-bisher gs="vm.model.erwerbspensumGS.zuschlagsgrund"
-                                               ja="vm.model.erwerbspensumJA.zuschlagsgrund"
-                                               show-if-bisher-none="false"
-                                               block-existed="vm.model.erwerbspensumGS.zuschlagZuErwerbspensum === true"></dv-bisher>
-                                    <dv-error-messages input-id="zuschlagsgrund_dvi" for="vm.form.zuschlagsgrund.$error"
-                                                       class="error"></dv-error-messages>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Zuschlagsprozent-->
-                    <div class="row"
-                         ng-if="vm.model.erwerbspensumJA.zuschlagZuErwerbspensum && vm.isZuschlagErwerbspensumConfigured()">
+                    <!-- gueltig ab / gueltig bis -->
+                    <div class="row" ng-if="vm.hasUnbezahlterUrlaub">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float"
-                                       data-translate="ZUSCHLAGSPROZENT"
-                                       data-translate-value-max="{{vm.maxZuschlagsprozent}}"
-                                       for="zuschlagsprozent"></label>
-                                <input aria-describedby="zuschlagsprozent-error"
-                                       type="number"
-                                       id="zuschlagsprozent"
-                                       name="zuschlagsprozent"
-                                       ng-model="vm.model.erwerbspensumJA.zuschlagsprozent"
-                                       dv-max-length
-                                       class="form-control"
-                                       max="{{vm.maxZuschlagsprozent}}"
-                                       ng-required="true"
-                                       ng-pattern="vm.patternPercentage"
-                                       ng-disabled="vm.erwerbspensumDisabled()"
-                                       ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
-                                <dv-bisher gs="vm.model.erwerbspensumGS.zuschlagsprozent"
-                                           ja="vm.model.erwerbspensumJA.zuschlagsprozent"
+                                <label class="md-no-float" data-translate="VON" for="urlaubDatumAb"></label>
+                                <dv-datepicker input-id="urlaubDatumAb" name="urlaubDatumAb"
+                                               class="input-element"
+                                               ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
+                                               ng-required="vm.hasUnbezahlterUrlaub"
+                                               ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                               ng-disabled="vm.erwerbspensumDisabled()">
+                                </dv-datepicker>
+                                <dv-bisher gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigAb"
+                                           ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigAb"
                                            show-if-bisher-none="false"
-                                           block-existed="vm.model.erwerbspensumGS.zuschlagZuErwerbspensum === true"></dv-bisher>
-                                <dv-error-messages input-id="zuschlagsprozent" for="vm.form.zuschlagsprozent.$error"
-                                                   class="error"></dv-error-messages>
+                                           block-existed="vm.hasUnbezahlterUrlaubGS === true"></dv-bisher>
+                                <dv-error-messages input-id="urlaubDatumAb" class="error"
+                                                   for="vm.form.urlaubDatumAb.$error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float" data-translate="BIS" for="urlaubDatumBis"></label>
+                                <dv-datepicker input-id="urlaubDatumBis" name="urlaubDatumBis"
+                                               class="input-element"
+                                               ng-model="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                               ng-required="false"
+                                               ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}"
+                                               ng-disabled="vm.erwerbspensumDisabled()">
+                                </dv-datepicker>
+                                <dv-bisher gs="vm.model.erwerbspensumGS.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                           ja="vm.model.erwerbspensumJA.unbezahlterUrlaub.gueltigkeit.gueltigBis"
+                                           show-if-bisher-none="false"
+                                           block-existed="vm.hasUnbezahlterUrlaubGS === true"></dv-bisher>
+                                <dv-error-messages input-id="urlaubDatumBis" class="error"
+                                                   for="vm.form.urlaubDatumBis.$error"></dv-error-messages>
                             </dv-input-container>
                         </div>
                     </div>
-
 
                 </fieldset>
 

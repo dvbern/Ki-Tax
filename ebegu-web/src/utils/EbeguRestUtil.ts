@@ -95,8 +95,10 @@ import {TSMandant} from '../models/TSMandant';
 import TSMitteilung from '../models/TSMitteilung';
 import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
+import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
+import TSUnbezahlterUrlaub from '../models/TSUnbezahlterUrlaub';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
 import TSVorlage from '../models/TSVorlage';
@@ -481,10 +483,9 @@ export default class EbeguRestUtil {
         if (erwerbspensumFromServer) {
             this.parseAbstractPensumEntity(erwerbspensum, erwerbspensumFromServer);
             erwerbspensum.taetigkeit = erwerbspensumFromServer.taetigkeit;
-            erwerbspensum.zuschlagsgrund = erwerbspensumFromServer.zuschlagsgrund;
-            erwerbspensum.zuschlagsprozent = erwerbspensumFromServer.zuschlagsprozent;
-            erwerbspensum.zuschlagZuErwerbspensum = erwerbspensumFromServer.zuschlagZuErwerbspensum;
             erwerbspensum.bezeichnung = erwerbspensumFromServer.bezeichnung;
+            erwerbspensum.unbezahlterUrlaub = this.parseUnbezahlterUrlaub(
+                new TSUnbezahlterUrlaub(), erwerbspensumFromServer.unbezahlterUrlaub);
             return erwerbspensum;
         }
         return undefined;
@@ -494,11 +495,26 @@ export default class EbeguRestUtil {
         if (erwerbspensum) {
             this.abstractPensumEntityToRestObject(restErwerbspensum, erwerbspensum);
             restErwerbspensum.taetigkeit = erwerbspensum.taetigkeit;
-            restErwerbspensum.zuschlagsgrund = erwerbspensum.zuschlagsgrund;
-            restErwerbspensum.zuschlagsprozent = erwerbspensum.zuschlagsprozent;
-            restErwerbspensum.zuschlagZuErwerbspensum = erwerbspensum.zuschlagZuErwerbspensum;
             restErwerbspensum.bezeichnung = erwerbspensum.bezeichnung;
+            restErwerbspensum.unbezahlterUrlaub = this.unbezahlterUrlaubToRestObject(
+                {}, erwerbspensum.unbezahlterUrlaub);
             return restErwerbspensum;
+        }
+        return undefined;
+    }
+
+    public parseUnbezahlterUrlaub(tsUrlaub: TSUnbezahlterUrlaub, urlaubFromServer: any): TSUnbezahlterUrlaub {
+        if (urlaubFromServer) {
+            this.parseDateRangeEntity(tsUrlaub, urlaubFromServer);
+            return tsUrlaub;
+        }
+        return undefined;
+    }
+
+    public unbezahlterUrlaubToRestObject(restUrlaub: any, tsUrlaub: TSUnbezahlterUrlaub): any {
+        if (tsUrlaub) {
+            this.abstractDateRangeEntityToRestObject(restUrlaub, tsUrlaub);
+            return restUrlaub;
         }
         return undefined;
     }
@@ -934,7 +950,6 @@ export default class EbeguRestUtil {
         this.abstractMutableEntityToRestObject(restFachstelle, fachstelle);
         restFachstelle.name = fachstelle.name;
         restFachstelle.beschreibung = fachstelle.beschreibung;
-        restFachstelle.behinderungsbestaetigung = fachstelle.behinderungsbestaetigung;
         restFachstelle.fachstelleAnspruch = fachstelle.fachstelleAnspruch;
         restFachstelle.fachstelleErweiterteBetreuung = fachstelle.fachstelleErweiterteBetreuung;
         return restFachstelle;
@@ -953,7 +968,6 @@ export default class EbeguRestUtil {
         this.parseAbstractMutableEntity(parsedFachstelle, receivedFachstelle);
         parsedFachstelle.name = receivedFachstelle.name;
         parsedFachstelle.beschreibung = receivedFachstelle.beschreibung;
-        parsedFachstelle.behinderungsbestaetigung = receivedFachstelle.behinderungsbestaetigung;
         parsedFachstelle.fachstelleAnspruch = receivedFachstelle.fachstelleAnspruch;
         parsedFachstelle.fachstelleErweiterteBetreuung = receivedFachstelle.fachstelleErweiterteBetreuung;
         return parsedFachstelle;
@@ -982,7 +996,6 @@ export default class EbeguRestUtil {
             this.abstractMutableEntityToRestObject(restTragerschaft, traegerschaft);
             restTragerschaft.name = traegerschaft.name;
             restTragerschaft.active = traegerschaft.active;
-            restTragerschaft.mail = traegerschaft.mail;
             return restTragerschaft;
         }
         return undefined;
@@ -1002,7 +1015,6 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(traegerschaftTS, traegerschaftFromServer);
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
-            traegerschaftTS.mail = traegerschaftFromServer.mail;
             return traegerschaftTS;
         }
         return undefined;
@@ -1446,6 +1458,10 @@ export default class EbeguRestUtil {
         if (kind.pensumFachstelle) {
             restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
         }
+        if (kind.pensumAusserordentlicherAnspruch) {
+            restKind.pensumAusserordentlicherAnspruch = this.pensumAusserordentlicherAnspruchToRestObject(
+                {}, kind.pensumAusserordentlicherAnspruch);
+        }
         return restKind;
     }
 
@@ -1503,6 +1519,11 @@ export default class EbeguRestUtil {
                 kindTS.pensumFachstelle =
                     this.parsePensumFachstelle(new TSPensumFachstelle(), kindFromServer.pensumFachstelle);
             }
+            if (kindFromServer.pensumAusserordentlicherAnspruch) {
+                kindTS.pensumAusserordentlicherAnspruch =
+                    this.parsePensumAusserordentlicherAnspruch(
+                        new TSPensumAusserordentlicherAnspruch(), kindFromServer.pensumAusserordentlicherAnspruch);
+            }
             return kindTS;
         }
         return undefined;
@@ -1511,6 +1532,7 @@ export default class EbeguRestUtil {
     private pensumFachstelleToRestObject(restPensumFachstelle: any, pensumFachstelle: TSPensumFachstelle): any {
         this.abstractDateRangeEntityToRestObject(restPensumFachstelle, pensumFachstelle);
         restPensumFachstelle.pensum = pensumFachstelle.pensum;
+        restPensumFachstelle.integrationTyp = pensumFachstelle.integrationTyp;
         if (pensumFachstelle.fachstelle) {
             restPensumFachstelle.fachstelle = this.fachstelleToRestObject({}, pensumFachstelle.fachstelle);
         }
@@ -1523,11 +1545,36 @@ export default class EbeguRestUtil {
         if (pensumFachstelleFromServer) {
             this.parseDateRangeEntity(pensumFachstelleTS, pensumFachstelleFromServer);
             pensumFachstelleTS.pensum = pensumFachstelleFromServer.pensum;
+            pensumFachstelleTS.integrationTyp = pensumFachstelleFromServer.integrationTyp;
             if (pensumFachstelleFromServer.fachstelle) {
                 pensumFachstelleTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), pensumFachstelleFromServer.fachstelle);
             }
             return pensumFachstelleTS;
+        }
+        return undefined;
+    }
+
+    private pensumAusserordentlicherAnspruchToRestObject(
+        restPensumAusserordentlicherAnspruch: any,
+        pensumAusserordentlicherAnspruch: TSPensumAusserordentlicherAnspruch): any {
+
+        this.abstractDateRangeEntityToRestObject(restPensumAusserordentlicherAnspruch,
+            pensumAusserordentlicherAnspruch);
+        restPensumAusserordentlicherAnspruch.pensum = pensumAusserordentlicherAnspruch.pensum;
+        restPensumAusserordentlicherAnspruch.begruendung = pensumAusserordentlicherAnspruch.begruendung;
+        return restPensumAusserordentlicherAnspruch;
+    }
+
+    private parsePensumAusserordentlicherAnspruch(
+        pensumAusserordentlicherAnspruchTS: TSPensumAusserordentlicherAnspruch,
+        pensumAusserordentlicherAnspruchFromServer: any): TSPensumAusserordentlicherAnspruch {
+
+        if (pensumAusserordentlicherAnspruchFromServer) {
+            this.parseDateRangeEntity(pensumAusserordentlicherAnspruchTS, pensumAusserordentlicherAnspruchFromServer);
+            pensumAusserordentlicherAnspruchTS.pensum = pensumAusserordentlicherAnspruchFromServer.pensum;
+            pensumAusserordentlicherAnspruchTS.begruendung = pensumAusserordentlicherAnspruchFromServer.begruendung;
+            return pensumAusserordentlicherAnspruchTS;
         }
         return undefined;
     }
@@ -2250,7 +2297,6 @@ export default class EbeguRestUtil {
             verfuegungTS.kategorieMaxEinkommen = verfuegungFromServer.kategorieMaxEinkommen;
             verfuegungTS.kategorieNichtEintreten = verfuegungFromServer.kategorieNichtEintreten;
             verfuegungTS.kategorieNormal = verfuegungFromServer.kategorieNormal;
-            verfuegungTS.kategorieZuschlagZumErwerbspensum = verfuegungFromServer.kategorieZuschlagZumErwerbspensum;
             return verfuegungTS;
         }
         return undefined;
@@ -2266,7 +2312,6 @@ export default class EbeguRestUtil {
             verfuegung.kategorieMaxEinkommen = verfuegungTS.kategorieMaxEinkommen;
             verfuegung.kategorieNichtEintreten = verfuegungTS.kategorieNichtEintreten;
             verfuegung.kategorieNormal = verfuegungTS.kategorieNormal;
-            verfuegung.kategorieZuschlagZumErwerbspensum = verfuegungTS.kategorieZuschlagZumErwerbspensum;
             return verfuegung;
         }
         return undefined;
@@ -2306,7 +2351,6 @@ export default class EbeguRestUtil {
             zeitabschnitt.zahlungsstatus = zeitabschnittTS.zahlungsstatus;
             zeitabschnitt.vollkosten = zeitabschnittTS.vollkosten;
             zeitabschnitt.einkommensjahr = zeitabschnittTS.einkommensjahr;
-            zeitabschnitt.kategorieZuschlagZumErwerbspensum = zeitabschnittTS.kategorieZuschlagZumErwerbspensum;
             zeitabschnitt.kategorieMaxEinkommen = zeitabschnittTS.kategorieMaxEinkommen;
             zeitabschnitt.kategorieKeinPensum = zeitabschnittTS.kategorieKeinPensum;
             zeitabschnitt.zuSpaetEingereicht = zeitabschnittTS.zuSpaetEingereicht;
@@ -2339,8 +2383,6 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
             verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
             verfuegungZeitabschnittTS.einkommensjahr = zeitabschnittFromServer.einkommensjahr;
-            verfuegungZeitabschnittTS.kategorieZuschlagZumErwerbspensum =
-                zeitabschnittFromServer.kategorieZuschlagZumErwerbspensum;
             verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
             verfuegungZeitabschnittTS.kategorieKeinPensum = zeitabschnittFromServer.kategorieKeinPensum;
             verfuegungZeitabschnittTS.zuSpaetEingereicht = zeitabschnittFromServer.zuSpaetEingereicht;

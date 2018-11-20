@@ -97,7 +97,7 @@ public class RestanspruchLimitRuleTest {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.
-			createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, arbeitspensum, 0));
+			createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, arbeitspensum));
 		List<VerfuegungZeitabschnitt> calculatedAbschnitte;
 		if (remainingRestanspruch != -1) {
 			//simulates the already existing another betreuung and we have just remainingRestanspruch left for this calculation,

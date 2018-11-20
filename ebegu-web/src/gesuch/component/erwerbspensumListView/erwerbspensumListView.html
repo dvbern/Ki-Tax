@@ -61,6 +61,14 @@
                                on-remove="vm.removePensum(pensum, 2, 'removeEWPButton2_')"></dv-erwerbspensum-list>
     </div>
 
+    <!-- Information zu Ausserordentlichem Anspruch -->
+    <div class="well well-status-warten ausserordentlicher-anspruch"
+         ng-if="vm.showInfoAusserordentlichenAnspruch">
+        <span data-translate="HINWEIS_AUSSERORDENTLICHER_ANSPRUCH"
+              data-translate-value-telefon="{{vm.gemeindeTelefon}}"
+              data-translate-value-email="{{vm.gemeindeEmail}}"></span>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <!--Buttons-->

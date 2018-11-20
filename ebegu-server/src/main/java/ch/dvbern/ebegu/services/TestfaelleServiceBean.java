@@ -61,7 +61,6 @@ import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
-import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
@@ -94,7 +93,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.*;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service fuer erstellen und mutieren von Testfällen
@@ -808,10 +807,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private Erwerbspensum createErwerbspensumData() {
 		Erwerbspensum ep = new Erwerbspensum();
 		ep.setTaetigkeit(Taetigkeit.ANGESTELLT);
-		ep.setPensum(80);
-		ep.setZuschlagZuErwerbspensum(true);
-		ep.setZuschlagsgrund(Zuschlagsgrund.LANGER_ARBWEITSWEG);
-		ep.setZuschlagsprozent(10);
+		ep.setPensum(90);
 		ep.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
 		return ep;
 	}

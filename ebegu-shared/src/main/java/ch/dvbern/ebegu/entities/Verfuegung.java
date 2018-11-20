@@ -77,10 +77,6 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	@NotNull
 	@Column(nullable = false)
-	private boolean kategorieZuschlagZumErwerbspensum = false;
-
-	@NotNull
-	@Column(nullable = false)
 	private boolean kategorieNichtEintreten = false;
 
 	@Nullable
@@ -145,14 +141,6 @@ public class Verfuegung extends AbstractMutableEntity {
 		this.kategorieKeinPensum = kategorieKeinPensum;
 	}
 
-	public boolean isKategorieZuschlagZumErwerbspensum() {
-		return kategorieZuschlagZumErwerbspensum;
-	}
-
-	public void setKategorieZuschlagZumErwerbspensum(boolean kategorieZuschlagZumErwerbspensum) {
-		this.kategorieZuschlagZumErwerbspensum = kategorieZuschlagZumErwerbspensum;
-	}
-
 	public boolean isKategorieNichtEintreten() {
 		return kategorieNichtEintreten;
 	}
@@ -202,7 +190,6 @@ public class Verfuegung extends AbstractMutableEntity {
 			Objects.equals(isKategorieNormal(), otherVerfuegung.isKategorieNormal()) &&
 			Objects.equals(isKategorieMaxEinkommen(), otherVerfuegung.isKategorieMaxEinkommen()) &&
 			Objects.equals(isKategorieKeinPensum(), otherVerfuegung.isKategorieKeinPensum()) &&
-			Objects.equals(isKategorieZuschlagZumErwerbspensum(), otherVerfuegung.isKategorieZuschlagZumErwerbspensum()) &&
 			Objects.equals(isKategorieNichtEintreten(), otherVerfuegung.isKategorieNichtEintreten());
 	}
 

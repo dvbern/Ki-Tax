@@ -15,32 +15,69 @@
 
 import {IComponentControllerService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import TSDossier from '../../../models/TSDossier';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
-import {ErwerbspensumListViewComponentConfig} from './erwerbspensumListView';
+import GemeindeRS from '../../service/gemeindeRS.rest';
+import GesuchModelManager from '../../service/gesuchModelManager';
+import {ErwerbspensumListViewController} from './erwerbspensumListView';
 import IInjectorService = angular.auto.IInjectorService;
 
 describe('erwerbspensumListView', () => {
+
+    const gemeindeTelefon = '915445152';
+    const gemeindeMail = 'mail@mail.com';
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    let component: ErwerbspensumListViewComponentConfig;
+    let component: ErwerbspensumListViewController;
     let scope: IScope;
     let $componentController: IComponentControllerService;
+    let gesuchModelManager: GesuchModelManager;
+    let gemeindeRS: GemeindeRS;
+    let $q: angular.IQService;
+    let dossier: TSDossier;
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
+        prepareDossier();
+
+        gesuchModelManager = $injector.get('GesuchModelManager');
+        gemeindeRS = $injector.get('GemeindeRS');
         $componentController = $injector.get('$componentController');
+        $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
+
+        spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
+        spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
+        spyOn(gemeindeRS, 'getGemeindeStammdaten').and.returnValue($q.when({
+            telefon: gemeindeTelefon,
+            mail: gemeindeMail
+        }));
     }));
 
-    it('should be defined', () => {
+    beforeEach(() => {
         /*
          To initialise your component controller you have to setup your (mock) bindings and
          pass them to $componentController.
          */
         const bindings = {};
         component = $componentController('erwerbspensumListView', {$scope: scope}, bindings);
+        scope.$apply();
+    });
+
+    it('should be defined', () => {
         expect(component).toBeDefined();
     });
+
+    it('should set email and telefon from Gemeinde', () => {
+        expect(component.gemeindeTelefon).toBe(gemeindeTelefon);
+        expect(component.gemeindeEmail).toBe(gemeindeMail);
+    });
+
+    function prepareDossier(): void {
+        dossier = new TSDossier();
+        dossier.gemeinde = TestDataUtil.createGemeindeBern();
+    }
 });

@@ -14,28 +14,20 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'angular';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSTaetigkeit, TSTaetigkeit} from '../../../models/enums/TSTaetigkeit';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {
-    getTSZuschlagsgruendeForGS,
-    getTSZuschlagsgrunde,
-    TSZuschlagsgrund,
-} from '../../../models/enums/TSZuschlagsgrund';
-import TSEinstellung from '../../../models/TSEinstellung';
 import TSErwerbspensum from '../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../models/TSErwerbspensumContainer';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
+import TSUnbezahlterUrlaub from '../../../models/TSUnbezahlterUrlaub';
+import DateUtil from '../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IErwerbspensumStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
-import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import ITranslateService = angular.translate.ITranslateService;
@@ -60,14 +52,13 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         'WizardStepManager',
         '$q',
         '$translate',
-        'EinstellungRS',
-        'GlobalCacheService',
         '$timeout',
     ];
 
     public gesuchsteller: TSGesuchstellerContainer;
     public patternPercentage: string;
-    public maxZuschlagsprozent: number = 100;
+    public hasUnbezahlterUrlaub: boolean;
+    public hasUnbezahlterUrlaubGS: boolean;
 
     public constructor(
         $stateParams: IErwerbspensumStateParams,
@@ -79,8 +70,6 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         wizardStepManager: WizardStepManager,
         private readonly $q: IQService,
         private readonly $translate: ITranslateService,
-        private readonly einstellungRS: EinstellungRS,
-        private readonly globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
     ) {
         super(gesuchModelManager,
@@ -104,35 +93,11 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             errorService.addMesageAsError('Unerwarteter Zustand: Gesuchsteller unbekannt');
             console.log('kein gesuchsteller gefunden');
         }
-        this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN)).then((response: TSEinstellung[]) => {
-            const found = response.find(r => r.key === TSEinstellungKey.PARAM_MAXIMALER_ZUSCHLAG_ERWERBSPENSUM);
-            if (found) {
-                // max Wert für Zuschlag Erwerbspensum
-                this.maxZuschlagsprozent = Number(found.value);
-            }
-        });
+        this.initUnbezahlterUrlaub();
     }
 
     public getTaetigkeitenList(): Array<TSTaetigkeit> {
         return getTSTaetigkeit();
-    }
-
-    public getZuschlagsgrundList(): Array<TSZuschlagsgrund> {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) ?
-            getTSZuschlagsgruendeForGS() :
-            getTSZuschlagsgrunde();
-    }
-
-    /**
-     * Beim speichern wird geschaut ob Zuschlagsgrund noetig ist, wenn nicht zuruecksetzten
-     */
-    private maybeResetZuschlagsgrund(erwerbspensum: TSErwerbspensumContainer): void {
-        if (erwerbspensum && !erwerbspensum.erwerbspensumJA.zuschlagZuErwerbspensum) {
-            erwerbspensum.erwerbspensumJA.zuschlagsprozent = undefined;
-            erwerbspensum.erwerbspensumJA.zuschlagsgrund = undefined;
-        }
     }
 
     public save(): IPromise<any> {
@@ -143,7 +108,6 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
                 // promise immediately
                 return this.$q.when(this.model);
             }
-            this.maybeResetZuschlagsgrund(this.model);
             this.errorService.clearAll();
             return this.gesuchModelManager.saveErwerbspensum(this.gesuchsteller, this.model);
         }
@@ -162,20 +126,11 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
 
     }
 
-    public viewZuschlag(): boolean {
-        return this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT ||
-            this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.AUSBILDUNG ||
-            this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG;
-    }
-
     public taetigkeitChanged(): void {
-        if (this.viewZuschlag()) {
-            return;
+        if (!this.isUnbezahlterUrlaubVisible()) {
+            this.model.erwerbspensumJA.unbezahlterUrlaub = undefined;
+            this.hasUnbezahlterUrlaub = false;
         }
-
-        this.model.erwerbspensumJA.zuschlagZuErwerbspensum = false;
-        this.model.erwerbspensumJA.zuschlagsprozent = undefined;
-        this.model.erwerbspensumJA.zuschlagsgrund = undefined;
     }
 
     public erwerbspensumDisabled(): boolean {
@@ -184,27 +139,36 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 
-    public getTextZuschlagErwerbspensumKorrekturJA(): string {
-        if (!this.model.erwerbspensumGS || !this.model.erwerbspensumGS.zuschlagZuErwerbspensum) {
-            return this.$translate.instant('LABEL_KEINE_ANGABE');
+    public isUnbezahlterUrlaubVisible(): boolean {
+        return this.model && this.model.erwerbspensumJA
+            && (this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.ANGESTELLT
+                || this.model.erwerbspensumJA.taetigkeit === TSTaetigkeit.SELBSTAENDIG);
+    }
+
+    private initUnbezahlterUrlaub(): void {
+        this.hasUnbezahlterUrlaub = !!(this.model && this.model.erwerbspensumJA
+            && this.model.erwerbspensumJA.unbezahlterUrlaub);
+        this.hasUnbezahlterUrlaubGS = !!(this.model && this.model.erwerbspensumGS
+            && this.model.erwerbspensumGS.unbezahlterUrlaub);
+    }
+
+    public unbezahlterUrlaubClicked(): void {
+        this.model.erwerbspensumJA.unbezahlterUrlaub =
+            this.hasUnbezahlterUrlaub ? new TSUnbezahlterUrlaub() : undefined;
+    }
+
+    public getTextUnbezahlterUrlaubKorrekturJA(): string {
+        if (this.model.erwerbspensumGS && this.model.erwerbspensumGS.unbezahlterUrlaub) {
+            const urlaub = this.model.erwerbspensumGS.unbezahlterUrlaub;
+            const vonText = DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+            const bisText = urlaub.gueltigkeit.gueltigBis ?
+                DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
+                '31.12.9999';
+            return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
+                von: vonText,
+                bis: bisText,
+            });
         }
-
-        const ewp = this.model.erwerbspensumGS;
-        const grundText = this.$translate.instant(ewp.zuschlagsgrund.toString());
-        return this.$translate.instant('JA_KORREKTUR_ZUSCHLAG_ERWERBSPENSUM', {
-            zuschlagsgrund: grundText,
-            zuschlagsprozent: ewp.zuschlagsprozent,
-        });
-    }
-
-    public getZuschlagHelpText(): string {
-        return this.$translate.instant('ZUSCHLAGSGRUND_HELP', {
-            maxzuschlag: this.maxZuschlagsprozent,
-        });
-    }
-
-    public isZuschlagErwerbspensumConfigured(): boolean {
-        // Wird aktuell ausgeblendet. Koennte aber spaeter von spezifischen Gemeinden einschaltet werden
-        return false;
+        return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 }

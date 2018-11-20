@@ -15,12 +15,15 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -36,11 +39,15 @@ import static java.util.Objects.requireNonNull;
  */
 public class ErwerbspensumCalcRule extends AbstractCalcRule {
 
-	private final int maxZuschlagValue;
+	private final int zuschlagErwerbspensum;
+	private final int minErwerbspensumNichtEingeschult;
+	private final int minErwerbspensumEingeschult;
 
-	public ErwerbspensumCalcRule(DateRange validityPeriod, int maxZuschlagValue) {
+	public ErwerbspensumCalcRule(DateRange validityPeriod, int zuschlagErwerbspensum, int minErwerbspensumNichtEingeschult, int minErwerbspensumEingeschult) {
 		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_CALC, validityPeriod);
-		this.maxZuschlagValue = maxZuschlagValue;
+		this.zuschlagErwerbspensum = zuschlagErwerbspensum;
+		this.minErwerbspensumNichtEingeschult = minErwerbspensumNichtEingeschult;
+		this.minErwerbspensumEingeschult = minErwerbspensumEingeschult;
 	}
 
 	@Override
@@ -53,57 +60,22 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Erwerbspensum ist immer die erste Rule, d.h. es wird das Erwerbspensum mal als Anspruch angenommen
 			// Das Erwerbspensum muss PRO GESUCHSTELLER auf 100% limitiert werden
 			Integer erwerbspensum1 = calculateErwerbspensumGS1(verfuegungZeitabschnitt);
-			Integer zuschlag1 = calculateZuschlagGS1(erwerbspensum1, verfuegungZeitabschnitt);
 			Integer erwerbspensum2 = 0;
-			Integer zuschlag2 = 0;
 			if (hasSecondGesuchsteller) {
 				erwerbspensum2 = calculateErwerbspensumGS2(verfuegungZeitabschnitt);
-				zuschlag2 = calculateZuschlagGS2(erwerbspensum2, zuschlag1, verfuegungZeitabschnitt);
 			}
-			int totalZuschlag = zuschlag1 + zuschlag2;
-
-			int anspruch = erwerbspensum1 + erwerbspensum2 + totalZuschlag - erwerbspensumOffset;
-			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch);
-
+			int anspruch = erwerbspensum1 + erwerbspensum2 - erwerbspensumOffset;
+			int minimum = getMinimumErwerbspensum(betreuung);
+			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch, minimum);
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedAnspruch);
 		}
 	}
 
-	private Integer calculateZuschlagGS1(int erwerbspensum, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		int zuschlag = verfuegungZeitabschnitt.getZuschlagErwerbspensumGS1() != null ? verfuegungZeitabschnitt.getZuschlagErwerbspensumGS1() : 0;
-		if ((erwerbspensum + zuschlag) > 100) {
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ZUSCHLAG_GS1_MSG);
-			zuschlag = 100 - erwerbspensum;    //zuschlag ist maximal die differenz zu 100%
-		}
-		if (zuschlag > maxZuschlagValue) {
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MAX_ZUSCHLAG, maxZuschlagValue);
-			zuschlag = maxZuschlagValue;
-		}
-		return zuschlag;
-	}
-
-	/**
-	 * pfueft dass Erwerbspensum + Zuschlag fuer den GS2  100% nicht uebschreitet. Zudem darf der Zuschlag
-	 * von Gesuchsteller2 plus der Zuschlag von Gesuchsteler1 den maximale zugelassenen Wert nicht ueberschreiten.
-	 *
-	 * @param erwerbspensum2 erwerbspensum von GS2
-	 * @param zuschlagGS1 bereits verbrauchter zuschlag von GS1 (ist immer kleiner gleich 'maxvalue')
-	 * @param verfuegungZeitabschnitt verfuegungsabschnitt aus dem der zuschlag vom GS2 extrahiert wird
-	 * @return maximaler Zuschlag der GS2 angerechnet werden kann
-	 */
-	private Integer calculateZuschlagGS2(Integer erwerbspensum2, Integer zuschlagGS1, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		Integer zuschlag2 = verfuegungZeitabschnitt.getZuschlagErwerbspensumGS2() != null ? verfuegungZeitabschnitt.getZuschlagErwerbspensumGS2() : 0;
-		int maximalerZuschlagGS2 = zuschlag2;
-		if ((erwerbspensum2 + zuschlag2) > 100) {
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ZUSCHLAG_GS2_MSG);
-			maximalerZuschlagGS2 = 100 - erwerbspensum2;
-		}
-		//wenn gs1 schon einen Uuschlag beansprucht, darf hier nur noch der Rest vergeben werden
-		if (zuschlagGS1 + maximalerZuschlagGS2 > maxZuschlagValue) {
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MAX_ZUSCHLAG, maxZuschlagValue);
-			maximalerZuschlagGS2 = maxZuschlagValue - zuschlagGS1;
-		}
-		return maximalerZuschlagGS2;
+	private int getMinimumErwerbspensum(@Nonnull Betreuung betreuung) {
+		EinschulungTyp einschulungTyp = betreuung.getKind().getKindJA().getEinschulungTyp();
+		Objects.requireNonNull(einschulungTyp);
+		int mininum = einschulungTyp.isEingeschult() ? minErwerbspensumEingeschult : minErwerbspensumNichtEingeschult;
+		return mininum;
 	}
 
 	/**
@@ -112,12 +84,21 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	 * wurde bereits in calculateErwerbspensum eingefuegt.
 	 * Am Ende wird der Wert gerundet und zurueckgegeben
 	 */
-	private int checkAndRoundAnspruch(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, int anspruch) {
+	private int checkAndRoundAnspruch(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, int anspruch, int minimum) {
 		if (anspruch <= 0) {
 			anspruch = 0;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
 			verfuegungZeitabschnitt.setKategorieKeinPensum(true);
-		} else if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
+		}
+		// Minimum pruefen
+		if (anspruch < minimum) {
+			anspruch = 0;
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MINIMUM_MSG, minimum);
+		} else {
+			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
+			anspruch += zuschlagErwerbspensum;
+		}
+		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
 		}
 		// Der Anspruch wird immer auf 5-er Schritten gerundet.

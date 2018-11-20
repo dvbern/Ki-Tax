@@ -37,7 +37,6 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     private _einkommensjahr: number;
     private _kategorieMaxEinkommen: boolean;
     private _kategorieKeinPensum: boolean;
-    private _kategorieZuschlagZumErwerbspensum: boolean;
     private _zuSpaetEingereicht: boolean;
     private _sameVerfuegungsdaten: boolean;
     private _sameVerguenstigung: boolean;
@@ -62,7 +61,6 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
         einkommensjahr?: number,
         kategorieMaxEinkommen?: boolean,
         kategorieKeinPensum?: boolean,
-        kategorieZuschlagZumErwerbspensum?: boolean,
         sameVerfuegungsdaten?: boolean,
         sameVerguenstigung?: boolean,
     ) {
@@ -85,7 +83,6 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
         this._einkommensjahr = einkommensjahr;
         this._kategorieMaxEinkommen = kategorieMaxEinkommen;
         this._kategorieKeinPensum = kategorieKeinPensum;
-        this._kategorieZuschlagZumErwerbspensum = kategorieZuschlagZumErwerbspensum;
         this._sameVerfuegungsdaten = sameVerfuegungsdaten;
         this._sameVerguenstigung = sameVerguenstigung;
     }
@@ -232,14 +229,6 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
 
     public set kategorieKeinPensum(value: boolean) {
         this._kategorieKeinPensum = value;
-    }
-
-    public get kategorieZuschlagZumErwerbspensum(): boolean {
-        return this._kategorieZuschlagZumErwerbspensum;
-    }
-
-    public set kategorieZuschlagZumErwerbspensum(value: boolean) {
-        this._kategorieZuschlagZumErwerbspensum = value;
     }
 
     public get zuSpaetEingereicht(): boolean {
