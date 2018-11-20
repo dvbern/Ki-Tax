@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,7 +29,6 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -88,31 +86,33 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 	}
 
 	private boolean hasAtLeastOneKindWithoutFachstelle(@Nonnull Gesuch gesuch) {
-		List<Kind> kinds = gesuch.extractAllKinderWithAngebot();
-		for (Kind kind : kinds) {
-			if (kind.getPensumFachstelle() == null) {
-				return true;
-			}
-		}
-		return false;
+		return gesuch.extractAllKinderWithAngebot().stream()
+			.anyMatch(kind -> kind.getPensumFachstelle() == null);
 	}
 
 	private boolean isMinimalesErwerbspensumUnterschritten(@Nonnull Gesuch gesuch) {
 		Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
 		// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum das Gesuch detachen
 		loadRelationsAndDetach(gesuchWithCalcVerfuegung);
+
+		if (gesuchWithCalcVerfuegung.extractAllBetreuungen().isEmpty()) {
+			return false;
+		}
+
 		for (Betreuung betreuung : gesuchWithCalcVerfuegung.extractAllBetreuungen()) {
 			Objects.requireNonNull(betreuung.getVerfuegung());
 			// Ermitteln, ob die Minimales-Erwerbspensum-Regel zugeschlagen hat: Kommt die entsprechende
 			// Bemerkung vor?
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
 				String message = ServerMessageUtil.translateEnumValue(MsgKey.ERWERBSPENSUM_MINIMUM_MSG);
+				// Die Bemerkung hat einen Parameter, diesen wollen wir nicht aus den Einstellungen lesen. Darum
+				// vergleichen wir nur bis zu diesem Parameter
 				message = StringUtils.substringBefore(message, "{");
-				if (StringUtils.contains(verfuegungZeitabschnitt.getBemerkungen(), message)) {
-					return true;
+				if (!StringUtils.contains(verfuegungZeitabschnitt.getBemerkungen(), message)) {
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 }

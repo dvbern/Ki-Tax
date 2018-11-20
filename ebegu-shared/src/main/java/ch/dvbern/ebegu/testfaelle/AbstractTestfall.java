@@ -63,8 +63,8 @@ import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -235,6 +235,7 @@ public abstract class AbstractTestfall {
 		gesuchsteller.setDiplomatenstatus(false);
 		gesuchsteller.setMail("test@example.com");
 		gesuchsteller.setMobile("079 000 00 00");
+		gesuchsteller.setKorrespondenzSprache(Sprache.DEUTSCH);
 		return gesuchsteller;
 	}
 
@@ -267,7 +268,6 @@ public abstract class AbstractTestfall {
 		erwerbspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
 		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
 		erwerbspensum.setPensum(prozent);
-		erwerbspensum.setZuschlagZuErwerbspensum(false);
 		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
 		return erwerbspensumContainer;
 	}

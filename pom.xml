@@ -267,9 +267,7 @@
             <dependency>
                 <groupId>net.bull.javamelody</groupId>
                 <artifactId>javamelody-core</artifactId>
-                <version>1.70.0</version>
-                <!--<version>1.59.0-jpa21-SNAPSHOT</version>-->
-                <!--<scope>provided</scope>-->
+                <version>1.74.0</version>
             </dependency>
 
             <dependency>
@@ -662,6 +660,16 @@
                 <groupId>org.jboss.remoting</groupId>
                 <artifactId>jboss-remoting</artifactId>
                 <version>5.0.7.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.dvbern.lib.invoice-generator</groupId>
+                <artifactId>dvbern-lib-invoice</artifactId>
+                <version>4.4.3</version>
+            </dependency>
+            <dependency>
+                <artifactId>openpdf</artifactId>
+                <groupId>com.github.librepdf</groupId>
+                <version>1.2.5</version>
             </dependency>
         </dependencies>
 

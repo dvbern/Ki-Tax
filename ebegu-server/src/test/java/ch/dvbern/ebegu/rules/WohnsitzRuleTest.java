@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
@@ -89,7 +88,7 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnitt = zeitabschnittList.get(0);
 		Assert.assertTrue(abschnitt.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertEquals(0, abschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.ZERO, abschnitt.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnitt.getBgPensum());
 	}
 
 	@Test
@@ -174,7 +173,7 @@ public class WohnsitzRuleTest {
 		Assert.assertTrue(abschnittNichtInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertTrue(abschnittNichtInBern.isWohnsitzNichtInGemeindeGS2());
 		Assert.assertEquals(0, abschnittNichtInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.ZERO, abschnittNichtInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnittNichtInBern.getBgPensum());
 		Assert.assertEquals(TestDataUtil.START_PERIODE, abschnittNichtInBern.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 15),
 			abschnittNichtInBern.getGueltigkeit().getGueltigBis());
@@ -221,7 +220,7 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnittNichtInBern = zeitabschnittList.get(0);
 		Assert.assertTrue(abschnittNichtInBern.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertEquals(0, abschnittNichtInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.ZERO, abschnittNichtInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnittNichtInBern.getBgPensum());
 		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(1);
 		Assert.assertEquals(zuzugsDatum, abschnittInBern.getGueltigkeit().getGueltigAb());
 		Assert.assertFalse(abschnittInBern.isWohnsitzNichtInGemeindeGS1());
@@ -268,7 +267,7 @@ public class WohnsitzRuleTest {
 		//Anspruch noch 2 Monate nach wegzug auf Ende Monat
 		Assert.assertEquals(wegzugsDatum.plusMonths(2).with(TemporalAdjusters.lastDayOfMonth()), abschnittInBern.getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(0, abschnittNichtInBern.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.ZERO, abschnittNichtInBern.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnittNichtInBern.getBgPensum());
 	}
 
 	@Test
@@ -302,7 +301,7 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnittInBern1 = zeitabschnittList.get(0);
 		Assert.assertTrue(abschnittInBern1.isWohnsitzNichtInGemeindeGS1());
 		Assert.assertEquals(0, abschnittInBern1.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(BigDecimal.ZERO, abschnittInBern1.getBgPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnittInBern1.getBgPensum());
 
 		VerfuegungZeitabschnitt abschnittInBern2 = zeitabschnittList.get(1);
 		Assert.assertFalse(abschnittInBern2.isWohnsitzNichtInGemeindeGS2());
@@ -325,9 +324,9 @@ public class WohnsitzRuleTest {
 		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
 		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(100));
 		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
-		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100, 0));
+		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		if (zweigesuchsteller) {
-			betreuung.getKind().getGesuch().getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100, 0));
+			betreuung.getKind().getGesuch().getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		}
 		return betreuung;
 	}

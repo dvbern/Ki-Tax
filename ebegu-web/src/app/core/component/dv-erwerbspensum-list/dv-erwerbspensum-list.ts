@@ -90,9 +90,4 @@ export class DVErwerbspensumListController implements IOnInit {
         // Siehe auch EBEGU-1146 und EBEGU-580
         return this.addButtonVisible;
     }
-
-    public isZuschlagErwerbspensumConfigured(): boolean {
-        // Wird aktuell ausgeblendet. Koennte aber spaeter von spezifischen Gemeinden einschaltet werden
-        return false;
-    }
 }

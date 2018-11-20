@@ -19,13 +19,11 @@ export class TSTraegerschaft extends TSAbstractMutableEntity {
 
     private _name: string;
     private _active: boolean;
-    private _mail: string;
 
-    public constructor(name?: string, active?: boolean, mail?: string) {
+    public constructor(name?: string, active?: boolean) {
         super();
         this._name = name;
         this._active = active;
-        this._mail = mail;
     }
 
     public get name(): string {
@@ -42,13 +40,5 @@ export class TSTraegerschaft extends TSAbstractMutableEntity {
 
     public set active(value: boolean) {
         this._active = value;
-    }
-
-    public get mail(): string {
-        return this._mail;
-    }
-
-    public set mail(value: string) {
-        this._mail = value;
     }
 }

@@ -447,7 +447,6 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 	public void updateWizardStepDokumente() {
 		updateStatus(dokStep, WizardStepStatus.IN_BEARBEITUNG);
 
-		createAndPersistDokumentGrundWithDokument(DokumentGrundTyp.ERWERBSPENSUM, DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, "Angestellt 60%");
 		createAndPersistDokumentGrundWithDokument(DokumentGrundTyp.FINANZIELLESITUATION, DokumentTyp.STEUERVERANLAGUNG, "2016");
 		createAndPersistDokumentGrundWithDokument(DokumentGrundTyp.ERWERBSPENSUM, DokumentTyp.NACHWEIS_ERWERBSPENSUM, "Angestellt 60%");
 
@@ -462,11 +461,8 @@ public class WizardStepServiceBeanTest extends AbstractEbeguLoginTest {
 		updateStatus(dokStep, WizardStepStatus.IN_BEARBEITUNG);
 
 		//nicht alle notwendige dokumente
-		createAndPersistDokumentGrundWithDokument(DokumentGrundTyp.ERWERBSPENSUM, DokumentTyp.NACHWEIS_LANG_ARBEITSWEG, "Angestellt 60%");
-
 		final List<WizardStep> wizardSteps = wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.DOKUMENTE);
 		Assert.assertEquals(11, wizardSteps.size());
-
 		Assert.assertEquals(WizardStepStatus.IN_BEARBEITUNG, findStepByName(wizardSteps, WizardStepName.DOKUMENTE).getWizardStepStatus());
 	}
 

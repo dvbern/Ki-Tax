@@ -108,7 +108,6 @@ export class SchulungViewController implements IController {
     private getTraegerschaftFisch(): TSTraegerschaft {
         const traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'Fisch';
-        traegerschaft.mail = 'fisch@example.com';
         traegerschaft.id = '11111111-1111-1111-1111-111111111111';
         return traegerschaft;
     }

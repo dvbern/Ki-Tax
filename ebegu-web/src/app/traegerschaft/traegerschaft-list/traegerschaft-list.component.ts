@@ -1,41 +1,41 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatSort, MatTableDataSource} from '@angular/material';
-import * as angular from 'angular';
-import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import ErrorService from '../../../app/core/errors/service/ErrorService';
-import {TraegerschaftRS} from '../../../app/core/service/traegerschaftRS.rest';
+import {StateService} from '@uirouter/core';
+import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../utils/EbeguUtil';
-import AbstractAdminViewController from '../../abstractAdminView';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({
-    selector: 'dv-traegerschaft-view',
-    templateUrl: './traegerschaftView.html',
-    styleUrls: ['./traegerschaftView.less'],
+  selector: 'dv-traegerschaft-list',
+  templateUrl: './traegerschaft-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TraegerschaftViewComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
+export class TraegerschaftListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
     @Input() public traegerschaften: TSTraegerschaft[];
 
     public displayedColumns: string[] = ['name', 'remove'];
-    public traegerschaft: TSTraegerschaft = undefined;
     public dataSource: MatTableDataSource<TSTraegerschaft>;
 
     @ViewChild(NgForm) public form: NgForm;
@@ -43,9 +43,9 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
 
     public constructor(
         private readonly traegerschaftRS: TraegerschaftRS,
-        private readonly errorService: ErrorService,
         private readonly dialog: MatDialog,
         authServiceRS: AuthServiceRS,
+        private readonly $state: StateService,
     ) {
 
         super(authServiceRS);
@@ -68,6 +68,12 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
         );
     }
 
+    public openTraegerschaft(selected: TSTraegerschaft): void {
+        if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getAdministratorBgTsGemeindeRole())) {
+            this.$state.go('traegerschaft.edit', {traegerschaftId: selected.id});
+        }
+    }
+
     public ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
     }
@@ -83,8 +89,6 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
                 if (!userAccepted) {
                     return;
                 }
-
-                this.traegerschaft = undefined;
                 this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
                     const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
                     if (index > -1) {
@@ -95,31 +99,8 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
             });
     }
 
-    public createTraegerschaft(): void {
-        this.traegerschaft = new TSTraegerschaft();
-        this.traegerschaft.active = true;
-    }
-
-    public saveTraegerschaft(): void {
-        if (!this.form.valid) {
-            return;
-        }
-
-        this.errorService.clearAll();
-        const newTraegerschaft = this.traegerschaft.isNew();
-        this.traegerschaftRS.createTraegerschaft(this.traegerschaft).then((traegerschaft: TSTraegerschaft) => {
-            if (newTraegerschaft) {
-                this.traegerschaften.push(traegerschaft);
-            } else {
-                const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
-                if (index > -1) {
-                    this.traegerschaften[index] = traegerschaft;
-                    EbeguUtil.handleSmarttablesUpdateBug(this.traegerschaften);
-                }
-            }
-            this.refreshTraegerschaftenList();
-            this.traegerschaft = undefined;
-        });
+    public addTraegerschaft(): void {
+        this.$state.go('traegerschaft.add');
     }
 
     /**
@@ -128,14 +109,6 @@ export class TraegerschaftViewComponent extends AbstractAdminViewController impl
      */
     private refreshTraegerschaftenList(): void {
         this.dataSource.data = this.traegerschaften;
-    }
-
-    public cancelTraegerschaft(): void {
-        this.traegerschaft = undefined;
-    }
-
-    public setSelectedTraegerschaft(selected: TSTraegerschaft): void {
-        this.traegerschaft = angular.copy(selected);
     }
 
     public showNoContentMessage(): boolean {

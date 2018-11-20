@@ -66,7 +66,6 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.commons.lang3.StringUtils;
 
@@ -153,11 +152,8 @@ public final class TestJaxDataUtil {
 	public static JaxErwerbspensum createTestJaxErwerbspensum() {
 		JaxErwerbspensum jaxErwerbspensum = new JaxErwerbspensum();
 		jaxErwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
-		jaxErwerbspensum.setZuschlagsgrund(Zuschlagsgrund.LANGER_ARBWEITSWEG);
-		jaxErwerbspensum.setZuschlagZuErwerbspensum(true);
-		jaxErwerbspensum.setZuschlagsprozent(15);
 		jaxErwerbspensum.setGueltigAb(LocalDate.now().minusYears(1));
-		jaxErwerbspensum.setPensum(70);
+		jaxErwerbspensum.setPensum(85);
 		return jaxErwerbspensum;
 
 	}

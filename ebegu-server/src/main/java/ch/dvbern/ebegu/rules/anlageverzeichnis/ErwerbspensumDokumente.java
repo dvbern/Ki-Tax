@@ -32,19 +32,13 @@ import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.enums.Zuschlagsgrund;
 
 import static ch.dvbern.ebegu.enums.DokumentTyp.BESTAETIGUNG_ARZT;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_AUSBILDUNG;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_ERWERBSPENSUM;
-import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_FIXE_ARBEITSZEITEN;
-import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
-import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_LANG_ARBEITSWEG;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_RAV;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT;
-import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SONSTIGEN_ZUSCHLAG;
-import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_UNREG_ARBEITSZ;
 
 /**
  * Dokumente für Erwerbspensum:
@@ -64,24 +58,7 @@ import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_UNREG_ARBEITSZ;
  * <p>
  * Bestätigung (ärztliche Indikation):
  * Notwendig, wenn Frage nach GS Gesundheitliche Einschränkung mit Ja beantwortet wird (gesundheitliche Einschränkung)
- * <p>
- * Dokumente für Erwerbspensumzuschlag:
- * <p>
- * Nachweis über die unregelmässige Arbeitszeit (z.B. ArbG-Bestätigung):
- * Wenn Zuschlag zum Erwerbspensum mit Ja beantwortet und als Grund „Unregelmässige Arbeitszeit“ ausgewählt
- * <p>
- * Nachweis über langen Arbeitsweg:
- * Wenn Zuschlag zum Erwerbspensum mit Ja beantwortet und als Grund „Langer Arbeitsweg“ ausgewählt
- * <p>
- * Grund für sonstigen Zuschlag (z.B. Tod) …. Bessere Formulierung folg:
- * Wenn Zuschlag zum Erwerbspensum mit Ja beantwortet und als Grund „Andere“ ausgewählt
- * Wird nur von JA hochgeladen
- * <p>
- * Gleiche Arbeitstage bei Teilzeit:
- * Wenn Zuschlag zum Erwerbspensum mit Ja beantwortet und als Grund „Überlappende Arbeitszeiten“ ausgewählt
- * <p>
- * Fixe Arbeitszeiten:
- * Wenn Zuschlag zum Erwerbspensum mit Ja beantwortet und als Grund „Fixe Arbeitszeiten“ ausgewählt
+ *
  **/
 public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, LocalDate> {
 
@@ -127,11 +104,6 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_RAV));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, BESTAETIGUNG_ARZT));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_UNREG_ARBEITSZ));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_LANG_ARBEITSWEG));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_SONSTIGEN_ZUSCHLAG));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT));
-				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_FIXE_ARBEITSZEITEN));
 			});
 	}
 
@@ -180,21 +152,6 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN;
 		case NACHWEIS_INTEGRATION_BESCHAEFTIGUNSPROGRAMM:
 			return erwerbspensum.getTaetigkeit() == Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM;
-		case NACHWEIS_UNREG_ARBEITSZ:
-			return erwerbspensum.getZuschlagZuErwerbspensum()
-				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.UNREGELMAESSIGE_ARBEITSZEITEN;
-		case NACHWEIS_LANG_ARBEITSWEG:
-			return erwerbspensum.getZuschlagZuErwerbspensum()
-				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.LANGER_ARBWEITSWEG;
-		case NACHWEIS_SONSTIGEN_ZUSCHLAG:
-			return erwerbspensum.getZuschlagZuErwerbspensum()
-				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.ANDERE;
-		case NACHWEIS_GLEICHE_ARBEITSTAGE_BEI_TEILZEIT:
-			return erwerbspensum.getZuschlagZuErwerbspensum()
-				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.UEBERLAPPENDE_ARBEITSZEITEN;
-		case NACHWEIS_FIXE_ARBEITSZEITEN:
-			return erwerbspensum.getZuschlagZuErwerbspensum()
-				&& erwerbspensum.getZuschlagsgrund() == Zuschlagsgrund.FIXE_ARBEITSZEITEN;
 		default:
 			return false;
 		}

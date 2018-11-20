@@ -201,11 +201,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft) {
 		requireNonNull(traegerschaft);
 
-		return createBenutzerFromEmail(
+		Benutzer admin = createBenutzerFromEmail(
 			adminMail,
 			UserRole.ADMIN_TRAEGERSCHAFT,
 			traegerschaft,
 			b -> b.setTraegerschaft(traegerschaft));
+
+		return admin;
 	}
 
 	@Nonnull

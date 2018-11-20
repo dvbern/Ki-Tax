@@ -155,8 +155,8 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(20000));
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(erwerbspensumGS1_1.getGueltigAb(), erwerbspensumGS1_1.getGueltigBis(), 50, 0));
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(erwerbspensumGS1_2.getGueltigAb(), erwerbspensumGS1_2.getGueltigBis(), 30, 0));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(erwerbspensumGS1_1.getGueltigAb(), erwerbspensumGS1_1.getGueltigBis(), 50));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(erwerbspensumGS1_2.getGueltigAb(), erwerbspensumGS1_2.getGueltigBis(), 30));
 		// GS 2
 		GesuchstellerContainer gsContainer2 = new GesuchstellerContainer();
 		gsContainer2.setGesuchstellerJA(new Gesuchsteller());
@@ -165,7 +165,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		gesuch.getGesuchsteller2().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 		assertNotNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
-		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(gesuchsperiode.getGueltigAb(), gesuchsperiode.getGueltigBis(), 90, 10));
+		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(gesuchsperiode.getGueltigAb(), gesuchsperiode.getGueltigBis(), 100));
 		// Adressen
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		// Kind 1

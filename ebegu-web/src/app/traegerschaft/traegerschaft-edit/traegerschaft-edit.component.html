@@ -1,0 +1,73 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<dv-full-height-inner-padding-container>
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          *ngIf="traegerschaft$ | async as traegerschaft"
+          (ngSubmit)="save(traegerschaft)"
+          novalidate>
+
+        <div class="row marginTop20">
+            <div class="col-md-12 ">
+                <h1 class="access-for-all-title" translate>AFA_TRAEGERSCHAFTVERWALTUNG</h1>
+                <div class="viewTitle">
+                    <h2>{{traegerschaft.name}}</h2>
+                    <hr class="header">
+                </div>
+            </div>
+        </div>
+
+        <div class="dv-content">
+            <fieldset>
+
+                <div class="viewTitle">
+                    <h3 translate>TRAEGERSCHAFT_STAMMDATEN</h3>
+                    <hr class="header">
+                </div>
+
+                <div class="row">
+                    <!-- Name -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="name_id">NAME</label>
+                            <input id="name_id" type="text" name="name_id" #name="ngModel"
+                                   [(ngModel)]="traegerschaft.name"
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.name_id?.errors"
+                                               inputId="name_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+
+        <!-- Buttons -->
+        <div class="dv-footer">
+            <dv-loading-button [type]="'submit'">
+                <span translate>TRAEGERSCHAFT_SPEICHERN</span>
+            </dv-loading-button>
+
+            <button type="button" class="dv-btn cancel-button" (click)="cancel()"
+                    [textContent]="'CANCEL' | translate">
+            </button>
+        </div>
+
+    </form>
+</dv-full-height-inner-padding-container>

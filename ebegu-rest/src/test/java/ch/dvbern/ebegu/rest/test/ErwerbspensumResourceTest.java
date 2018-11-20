@@ -87,13 +87,5 @@ public class ErwerbspensumResourceTest extends AbstractEbeguRestLoginTest {
 		JaxErwerbspensumContainer jaxErwerbspensum = (JaxErwerbspensumContainer) response.getEntity();
 		JaxErwerbspensumContainer loadedEwp = erwerbspensumResource.findErwerbspensum(converter.toJaxId(jaxErwerbspensum));
 		Assert.assertNotNull(loadedEwp);
-		Assert.assertNotEquals(Integer.valueOf(20), loadedEwp.getErwerbspensumGS().getZuschlagsprozent());
-
-		jaxErwerbspensum.getErwerbspensumGS().setZuschlagsprozent(18);
-		Response result = erwerbspensumResource.saveErwerbspensum(gesuchJAXPId, converter.toJaxId(storedGS), jaxErwerbspensum, null, null);
-		JaxErwerbspensumContainer updatedContainer = (JaxErwerbspensumContainer) result.getEntity();
-		Assert.assertEquals(Integer.valueOf(18), updatedContainer.getErwerbspensumGS().getZuschlagsprozent());
-
 	}
-
 }

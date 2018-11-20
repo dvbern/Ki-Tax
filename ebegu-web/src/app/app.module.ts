@@ -30,6 +30,7 @@ import {InstitutionModule} from './institution/institution.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
 import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
+import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
 
 @NgModule({
     imports: [
@@ -51,6 +52,7 @@ import {SharedModule} from './shared/shared.module';
         OnboardingModule,
         BenutzerModule,
         EinladungModule,
+        TraegerschaftModule
     ],
 })
 

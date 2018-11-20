@@ -43,7 +43,6 @@ public class GesuchZeitraumDataRow {
 	private Integer anzahlVerfuegungenNormal;
 	private Integer anzahlVerfuegungenMaxEinkommen;
 	private Integer anzahlVerfuegungenKeinPensum;
-	private Integer anzahlVerfuegungenZuschlagZumPensum;
 	private Integer anzahlVerfuegungenNichtEintreten;
 	private Integer anzahlSteueramtAusgeloest;
 	private Integer anzahlSteueramtGeprueft;
@@ -56,7 +55,7 @@ public class GesuchZeitraumDataRow {
 		Integer anzahlMutationUmzug, Integer anzahlMahnungen, Integer anzahlSteueramtAusgeloest,
 		Integer anzahlSteueramtGeprueft, Integer anzahlBeschwerde, Integer anzahlVerfuegungen,
 		Integer anzahlVerfuegungenNormal, Integer anzahlVerfuegungenMaxEinkommen, Integer anzahlVerfuegungenKeinPensum,
-		Integer anzahlVerfuegungenZuschlagZumPensum, Integer anzahlVerfuegungenNichtEintreten) {
+		Integer anzahlVerfuegungenNichtEintreten) {
 		this.bgNummer = bgNummer;
 		this.gesuchLaufNr = gesuchLaufNr;
 		this.institution = institution;
@@ -81,7 +80,6 @@ public class GesuchZeitraumDataRow {
 		this.anzahlVerfuegungenNormal = anzahlVerfuegungenNormal;
 		this.anzahlVerfuegungenMaxEinkommen = anzahlVerfuegungenMaxEinkommen;
 		this.anzahlVerfuegungenKeinPensum = anzahlVerfuegungenKeinPensum;
-		this.anzahlVerfuegungenZuschlagZumPensum = anzahlVerfuegungenZuschlagZumPensum;
 		this.anzahlVerfuegungenNichtEintreten = anzahlVerfuegungenNichtEintreten;
 		this.anzahlSteueramtAusgeloest = anzahlSteueramtAusgeloest;
 		this.anzahlSteueramtGeprueft = anzahlSteueramtGeprueft;
@@ -278,14 +276,6 @@ public class GesuchZeitraumDataRow {
 
 	public void setAnzahlVerfuegungenKeinPensum(Integer anzahlVerfuegungenKeinPensum) {
 		this.anzahlVerfuegungenKeinPensum = anzahlVerfuegungenKeinPensum;
-	}
-
-	public Integer getAnzahlVerfuegungenZuschlagZumPensum() {
-		return anzahlVerfuegungenZuschlagZumPensum;
-	}
-
-	public void setAnzahlVerfuegungenZuschlagZumPensum(Integer anzahlVerfuegungenZuschlagZumPensum) {
-		this.anzahlVerfuegungenZuschlagZumPensum = anzahlVerfuegungenZuschlagZumPensum;
 	}
 
 	public Integer getAnzahlVerfuegungenNichtEintreten() {

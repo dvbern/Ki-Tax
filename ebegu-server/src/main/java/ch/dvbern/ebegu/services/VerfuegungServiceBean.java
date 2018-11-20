@@ -196,14 +196,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 				if (zeitabschnitt.isKategorieMaxEinkommen()) {
 					verfuegung.setKategorieMaxEinkommen(true);
 				}
-				if (zeitabschnitt.isKategorieZuschlagZumErwerbspensum()) {
-					verfuegung.setKategorieZuschlagZumErwerbspensum(true);
-				}
 			}
 			// Wenn es keines der anderen ist, ist es "normal"
 			if (!verfuegung.isKategorieKeinPensum() &&
 				!verfuegung.isKategorieMaxEinkommen() &&
-				!verfuegung.isKategorieZuschlagZumErwerbspensum() &&
 				!verfuegung.isKategorieNichtEintreten()) {
 				verfuegung.setKategorieNormal(true);
 			}

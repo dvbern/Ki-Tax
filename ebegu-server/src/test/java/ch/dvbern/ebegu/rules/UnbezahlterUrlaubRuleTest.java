@@ -30,20 +30,18 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Before;
 import org.junit.Test;
 
+import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests fuer UnbezahlterUrlaubRule
  */
 @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-public class UnbezahlterUrlaubRuleTest {
+public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 
 	private Betreuung betreuung;
 	private LocalDate GP_START;
@@ -71,7 +69,7 @@ public class UnbezahlterUrlaubRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -81,7 +79,7 @@ public class UnbezahlterUrlaubRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -92,7 +90,7 @@ public class UnbezahlterUrlaubRuleTest {
 		assertNotNull(result);
 		assertEquals(2, result.size());
 		assertZeitabschnitt(result.get(0), 80, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(1), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -102,9 +100,9 @@ public class UnbezahlterUrlaubRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(3, result.size());
-		assertZeitabschnitt(result.get(0), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 		assertZeitabschnitt(result.get(1), 80, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
-		assertZeitabschnitt(result.get(2), 80, 50, 50, null);
+		assertZeitabschnitt(result.get(2), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
 	@Test
@@ -127,7 +125,7 @@ public class UnbezahlterUrlaubRuleTest {
 		assertNotNull(result);
 		assertEquals(3, result.size());
 		assertZeitabschnitt(result.get(0), 80, 100, 80, null);
-		assertZeitabschnitt(result.get(1), 80, 50, 50, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, RuleKey.UNBEZAHLTER_URLAUB);
 		assertZeitabschnitt(result.get(2), 80, 100, 80, null);
 	}
 
@@ -149,7 +147,7 @@ public class UnbezahlterUrlaubRuleTest {
 		@Nullable LocalDate urlaubStart,
 		@Nullable LocalDate urlaubEnd) {
 
-		ErwerbspensumContainer erwerbspensum = TestDataUtil.createErwerbspensum(ewpStart, ewpEnd, 50, 0);
+		ErwerbspensumContainer erwerbspensum = TestDataUtil.createErwerbspensum(ewpStart, ewpEnd, 50);
 		assertNotNull(erwerbspensum.getErwerbspensumJA());
 		if (urlaubStart != null) {
 			if (urlaubEnd == null) {
@@ -164,28 +162,5 @@ public class UnbezahlterUrlaubRuleTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(erwerbspensum);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-	}
-
-	@SuppressWarnings("SameParameterValue")
-	private void assertZeitabschnitt(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-		int expectedBetreuungspensum,
-		int expectedAnspruchsPensum,
-		int expectedBgPensum,
-		@Nullable RuleKey expectedBemerkungIfAny) {
-
-		assertEquals(MathUtil.DEFAULT.from(expectedBetreuungspensum), zeitabschnitt.getBetreuungspensum());
-		assertEquals(expectedAnspruchsPensum, zeitabschnitt.getAnspruchberechtigtesPensum());
-		assertEquals(MathUtil.DEFAULT.from(expectedBgPensum), zeitabschnitt.getBgPensum());
-
-		final String bemerkungen = zeitabschnitt.getBemerkungen();
-		if (expectedBemerkungIfAny != null) {
-			assertNotNull(bemerkungen);
-			assertFalse(bemerkungen.isEmpty());
-			assertTrue(bemerkungen.contains(expectedBemerkungIfAny.name()));
-		} else {
-			assertNotNull(bemerkungen);
-			assertTrue(bemerkungen.isEmpty());
-		}
 	}
 }
