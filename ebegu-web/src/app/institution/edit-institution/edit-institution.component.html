@@ -34,7 +34,7 @@
         </dv-stammdaten-header>
 
         <div class="dv-content">
-            <fieldset *ngIf="editMode">
+            <fieldset *ngIf="editMode; else showEditMode">
                 <div class="viewSubTitle">
                     <h3 translate>INSTITUTION_STAMMDATEN</h3>
                     <hr class="header">
@@ -121,7 +121,7 @@
                     <!-- Betreuungsgutscheine akzeptieren ab/bis -->
                     <div class="form-group">
                         <div class="col-sm-6">
-                            <label translate>BEGU_START_END</label>
+                            <label translate>INSTITUTION_BEGU_START_END</label>
                         </div>
                         <div class="col-sm-3">
                             <input id="begu_start_id" type="text" name="begu_start_id"
@@ -133,8 +133,7 @@
                         </div>
                     </div>
                 </div>
-            </fieldset>
-            <fieldset *ngIf="editMode">
+
                 <div class="title">
                     <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
                 </div>
@@ -227,49 +226,58 @@
                 </div>
             </fieldset>
 
-            <fieldset *ngIf="!editMode">
-                <div class="viewSubTitle">
-                    <h3 translate>INSTITUTION_STAMMDATEN</h3>
-                    <hr class="header">
-                </div>
-                <div class="row">
-                    <!-- Kontaktadresse -->
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <h3 translate>KONTAKTADRESSE</h3>
-                            <p>{{stammdaten.adresse.organisation}}</p>
-                            <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
-                            <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
+            <ng-template #showEditMode>
+                <fieldset>
+                    <div class="viewSubTitle">
+                        <h3 translate>INSTITUTION_STAMMDATEN</h3>
+                        <hr class="header">
+                    </div>
+                    <div class="row">
+                        <!-- Kontaktadresse -->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <h3 translate>KONTAKTADRESSE</h3>
+                                <p>{{stammdaten.adresse.organisation}}</p>
+                                <p>{{stammdaten.adresse.strasse}} {{stammdaten.adresse.hausnummer}}</p>
+                                <p>{{stammdaten.adresse.plz}} {{stammdaten.adresse.ort}}</p>
+                            </div>
+                        </div>
+                        <!-- E-Mail, Telefon -->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <h3>&nbsp;</h3>
+                                <p><a href="mailto:{{stammdaten.mail}}">{{stammdaten.mail}}</a></p>
+                                <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
+                            </div>
                         </div>
                     </div>
-                    <!-- E-Mail, Telefon -->
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <h3>&nbsp;</h3>
-                            <p><a href="mailto:{{stammdaten.mail}}">{{stammdaten.mail}}</a></p>
-                            <p><a href="tel:{{stammdaten.telefon}}">{{stammdaten.telefon}}</a></p>
+                    <div class="row">
+                        <!-- Zahlungsangaben -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
+                                <p>{{stammdaten.iban}}</p>
+                                <p>{{stammdaten.kontoinhaber}}</p>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Zahlungsangaben -->
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
-                            <p>{{stammdaten.iban}}</p>
-                            <p>{{stammdaten.kontoinhaber}}</p>
-                            <p *ngIf="!abweichendeZahlungsAdresse" translate>INSTITUTION_IDENTISCHE_ZAHLUNGSADRESSE</p>
+                        <!-- Abweichende Zahlungsadresse -->
+                        <div *ngIf="abweichendeZahlungsAdresse; else showSameZahlugnsadresse" class="col-sm-3">
+                            <div class="form-group">
+                                <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
+                                <p>{{stammdaten.adresseKontoinhaber.organisation}}</p>
+                                <p>{{stammdaten.adresseKontoinhaber.strasse}} {{stammdaten.adresse.hausnummer}}</p>
+                                <p>{{stammdaten.adresseKontoinhaber.plz}} {{stammdaten.adresseKontoinhaber.ort}}</p>
+                            </div>
                         </div>
+                        <ng-template #showSameZahlugnsadresse>
+                            <div class="form-group">
+                                <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
+                                <p translate>INSTITUTION_IDENTISCHE_ZAHLUNGSADRESSE</p>
+                            </div>
+                        </ng-template>
                     </div>
-                    <!-- Abweichende Zahlungsadresse -->
-                    <div *ngIf="abweichendeZahlungsAdresse" class="col-sm-3">
-                        <div class="form-group">
-                            <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
-                            <p>{{stammdaten.adresseKontoinhaber.organisation}}</p>
-                            <p>{{stammdaten.adresseKontoinhaber.strasse}} {{stammdaten.adresse.hausnummer}}</p>
-                            <p>{{stammdaten.adresseKontoinhaber.plz}} {{stammdaten.adresseKontoinhaber.ort}}</p>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
+                </fieldset>
+            </ng-template>
         </div>
 
         <!-- Buttons -->

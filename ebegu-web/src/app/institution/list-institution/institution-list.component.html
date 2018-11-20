@@ -36,7 +36,7 @@
                         {{'INSTITUTION' | translate}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let institution"
-                              (click)="editInstitution(institution)">
+                              (click)="openInstitution(institution)">
                         {{institution.name}}
                     </mat-cell>
                 </ng-container>
@@ -47,7 +47,7 @@
                         {{'STATUS' | translate}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let institution"
-                              (click)="editInstitution(institution)">
+                              (click)="openInstitution(institution)">
                         {{'GEMEINDE_STATUS_' + institution.status | translate}}
                     </mat-cell>
                 </ng-container>

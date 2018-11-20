@@ -50,7 +50,7 @@ public interface InstitutionService {
 	 * @return Institution mit dem gegebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull
-	Optional<Institution> findInstitution(@Nonnull String key);
+	Optional<Institution> findInstitution(@Nonnull String id);
 
 	/**
 	 * marks an Institution as inactive on the Database.

@@ -56,7 +56,7 @@ describe('institutionStammdatenRS', () => {
             TSBetreuungsangebotTyp.KITA,
             mockInstitution,
             mockAdresse,
-            'mail@mail.ch',
+            'mail@example.com',
             'telefon',
             new TSDateRange(today, today));
         mockInstitutionStammdaten.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';

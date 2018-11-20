@@ -235,7 +235,7 @@ describe('EbeguRestUtil', () => {
                     TSBetreuungsangebotTyp.KITA,
                     createInstitution(),
                     createAdresse(),
-                    'mail@mail.ch',
+                    'mail@example.com',
                     'telefon',
                     new TSDateRange(DateUtil.today(), DateUtil.today()));
                 TestDataUtil.setAbstractMutableFieldsUndefined(instStam);

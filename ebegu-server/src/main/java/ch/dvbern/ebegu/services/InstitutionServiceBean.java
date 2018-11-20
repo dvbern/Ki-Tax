@@ -84,7 +84,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public Institution updateInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
 		return persistence.merge(institution);

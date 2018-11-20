@@ -40,6 +40,7 @@ import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenR
 })
 
 export class EditInstitutionComponent implements OnInit {
+
     @ViewChild(NgForm) public form: NgForm;
 
     public institution: TSInstitution;
@@ -72,16 +73,16 @@ export class EditInstitutionComponent implements OnInit {
 
             this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institution.id)
                 .then(stammdaten => {
-                if (stammdaten) {
-                    this.stammdaten = stammdaten;
-                } else {
-                    this.createInstitutionStammdaten();
-                }
-                this.setBeguVonBisStr();
-                this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
-                this.editMode = this.institution.status === TSInstitutionStatus.EINGELADEN;
-                this.changeDetectorRef.markForCheck();
-            });
+                    if (stammdaten) {
+                        this.stammdaten = stammdaten;
+                    } else {
+                        this.createInstitutionStammdaten();
+                    }
+                    this.setBeguVonBisStr();
+                    this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
+                    this.editMode = this.institution.status === TSInstitutionStatus.EINGELADEN;
+                    this.changeDetectorRef.markForCheck();
+                });
         });
     }
 

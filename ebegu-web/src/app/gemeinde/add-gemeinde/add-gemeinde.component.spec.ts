@@ -29,7 +29,7 @@ import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde.component';
 
-describe('AddInstitutionComponent', () => {
+describe('AddGemeindeComponent', () => {
 
     let component: AddGemeindeComponent;
     let fixture: ComponentFixture<AddGemeindeComponent>;

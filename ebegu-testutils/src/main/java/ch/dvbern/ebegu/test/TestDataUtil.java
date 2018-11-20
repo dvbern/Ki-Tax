@@ -183,7 +183,7 @@ import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGR
 public final class TestDataUtil {
 
 	private static final String iban = "CH39 0900 0000 3066 3817 2";
-	public static final String TESTMAIL = "mail@mail.ch";
+	public static final String TESTMAIL = "mail@example.com";
 
 	public static final int ABWESENHEIT_DAYS_LIMIT = 30;
 	public static final int PERIODE_JAHR_0 = 2016;

@@ -57,14 +57,7 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        const institutionId = this.$transition$.params().institutionId;
-        if (institutionId) { // edit
-            this.institutionRS.findInstitution(institutionId).then(result => {
-                this.institution = result;
-            });
-        } else { // add
-            this.initInstitution();
-        }
+        this.initInstitution();
         this.traegerschaftRS.getAllActiveTraegerschaften().then(result => {
             this.traegerschaften = result;
         });

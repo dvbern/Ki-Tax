@@ -47,7 +47,7 @@ const states: Ng2StateDeclaration[] = [
         url: '/add',
         component: AddInstitutionComponent,
         data: {
-            roles: TSRoleUtil.getInstitutionProfilEditRoles(),
+            roles: TSRoleUtil.getMandantRoles(),
         },
     },
     {

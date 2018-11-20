@@ -60,8 +60,6 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 		@Index(name = "IX_institution_stammdaten_gueltig_bis", columnList = "gueltigBis")
 	}
 )
-//@Cacheable
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -8403411439882700618L;
@@ -71,7 +69,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Valid
 	private IBAN iban;
 
-	@Enumerated(value = EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	@NotNull
 	@Column(nullable = false)
 	private BetreuungsangebotTyp betreuungsangebotTyp;
@@ -97,10 +95,12 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
 	private Adresse adresse;
 
+	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = true)
 	private String kontoinhaber;
 
+	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adressekontoinhaber_id"), nullable = true)
 	private Adresse adresseKontoinhaber;
@@ -160,11 +160,12 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.kontoinhaber = kontoinhaber;
 	}
 
+	@Nullable
 	public Adresse getAdresseKontoinhaber() {
 		return adresseKontoinhaber;
 	}
 
-	public void setAdresseKontoinhaber(Adresse adresseKontoinhaber) {
+	public void setAdresseKontoinhaber(@Nullable Adresse adresseKontoinhaber) {
 		this.adresseKontoinhaber = adresseKontoinhaber;
 	}
 

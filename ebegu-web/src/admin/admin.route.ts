@@ -92,46 +92,6 @@ const ng1States: Ng1StateDeclaration[] = [
         },
     },
     {
-        name: 'admin.institutionen',
-        template: '<dv-institutionen-list-view flex="auto" class="overflow-scroll"'
-            + ' institutionen="$resolve.institutionen"></dv-institutionen-list-view>',
-        url: '/institutionen',
-        resolve: {
-            institutionen: institutionenResolver,
-        },
-        data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
-    },
-    {
-        name: 'admin.institution',
-        template: '<dv-institution-view flex="auto" class="overflow-scroll"'
-            + ' traegerschaften="$resolve.traegerschaften"'
-            + ' mandant="$resolve.mandant"></dv-institution-view>',
-        url: '/institutionen/institution/:institutionId',
-        params: {
-            institutionId: '',
-        },
-        resolve: {
-            traegerschaften: traegerschaftenResolver,
-            mandant: mandantResolver,
-        },
-        data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
-    },
-    {
-        name: 'admin.institutionstammdaten',
-        template: '<dv-institution-stammdaten-view flex="auto" class="overflow-scroll"/>',
-        url: '/institutionen/institution/:institutionId/:institutionStammdatenId',
-        params: {
-            institutionStammdatenId: '',
-        },
-        data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
-    },
-    {
         name: 'admin.parameter',
         template: '<dv-parameter-view flex="auto" class="overflow-scroll"></dv-parameter-view>',
         url: '/parameter',

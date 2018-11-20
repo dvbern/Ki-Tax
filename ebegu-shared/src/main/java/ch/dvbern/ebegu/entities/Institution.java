@@ -19,7 +19,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -151,7 +150,7 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		}
 		final Institution otherInstitution = (Institution) other;
 		return Objects.equals(getMail(), otherInstitution.getMail()) &&
-			Objects.equals(getStatus(), otherInstitution.getStatus()) &&
+			getStatus() == otherInstitution.getStatus() &&
 			Objects.equals(getName(), otherInstitution.getName());
 	}
 

@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -58,6 +59,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -85,7 +87,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
 		return persistence.merge(institutionStammdaten);
@@ -165,11 +167,13 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			("getInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
 	}
 
+	@Nullable
 	@Override
 	@PermitAll
 	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId) {
 		Institution institution = institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
 			("fetchInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 			InstitutionStammdaten.class,
 			institution,

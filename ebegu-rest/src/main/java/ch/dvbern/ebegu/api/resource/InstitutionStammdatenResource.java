@@ -246,7 +246,7 @@ public class InstitutionStammdatenResource {
 		String institutionID = converter.toEntityId(institutionJAXPId);
 		InstitutionStammdaten stammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionID);
-		return null==stammdaten ? null : converter.institutionStammdatenToJAX(stammdaten);
+		return null == stammdaten ? null : converter.institutionStammdatenToJAX(stammdaten);
 	}
 
 	/**

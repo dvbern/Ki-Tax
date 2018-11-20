@@ -30,7 +30,7 @@ export function getEntityTargetState(transition: Transition, principal: TSBenutz
         case TSEinladungTyp.TRAEGERSCHAFT:
             return stateService.target('pendenzenBetreuungen.list-view', {traegerschaftId: entityId});
         case TSEinladungTyp.INSTITUTION:
-            return stateService.target('admin.institution', {institutionId: entityId});
+            return stateService.target('institution.edit', {institutionId: entityId});
         default:
             throw new Error(`unrecognised EinladungTyp ${typ}`);
     }

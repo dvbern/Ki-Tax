@@ -17,39 +17,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    OnDestroy,
-    OnInit,
-    ViewChild
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {StateService} from '@uirouter/core';
-import {Subject} from 'rxjs';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
-import {InstitutionRS} from '../../../app/core/service/institutionRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 
 @Component({
     selector: 'dv-institution-list',
     templateUrl: './institution-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstitutionListComponent extends AbstractAdminViewController implements OnInit, OnDestroy, AfterViewInit {
+export class InstitutionListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
     public displayedColumns: string[] = ['name', 'status', 'remove'];
     public institutionen: TSInstitution[];
     public selectedInstitution: TSInstitution = undefined;
     public dataSource: MatTableDataSource<TSInstitution>;
-    private readonly unsubscribe$ = new Subject<void>();
 
     @ViewChild(NgForm) public form: NgForm;
     @ViewChild(MatSort) public sort: MatSort;
@@ -78,11 +69,6 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         this.dataSource.paginator = this.paginator;
     }
 
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
-    }
-
     public updateInstitutionenList(): void {
         this.institutionRS.getInstitutionenForCurrentBenutzer()
             .then(insti => {
@@ -92,10 +78,6 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
             });
     }
 
-    public canEdit(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
-    }
-
     private sortTable(): void {
         this.sort.sort({
                 id: 'name',
@@ -103,10 +85,6 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                 disableClear: false,
             },
         );
-    }
-
-    public getInstitutionenList(): TSInstitution[] {
-        return this.institutionen;
     }
 
     public removeInstitution(institution: any): void {
@@ -130,19 +108,23 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public createInstitution(): void {
-        this.$state.go('institution.add', {
-            institutionId: undefined,
-        });
+        this.$state.go('institution.add');
     }
 
-    public editInstitution(institution: TSInstitution): void {
-        this.$state.go('institution.edit', {
-            institutionId: institution.id,
-        });
+    /**
+     * Institutions in status EINGELADEN cannot be opened from the list
+     */
+    public openInstitution(institution: TSInstitution): void {
+        if (institution.status !== TSInstitutionStatus.EINGELADEN) {
+            this.$state.go('institution.edit', {
+                institutionId: institution.id,
+            });
+        }
+        return;
     }
 
     public isCreateAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
     public isDeleteAllowed(): boolean {
