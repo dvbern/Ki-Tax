@@ -53,11 +53,10 @@
                 </ng-container>
 
                 <!-- Column remove -->
-                <ng-container matColumnDef="remove">
+                <ng-container matColumnDef="remove" *ngIf="isDeleteAllowed()">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let institution">
-                        <dv-loading-button [buttonDisabled]="!isDeleteAllowed()"
-                                           buttonClass="dv-btn-sm"
+                        <dv-loading-button buttonClass="dv-btn-sm"
                                            (buttonClick)="removeInstitution(institution)">
                             <i class="fa fa-minus"></i>
                         </dv-loading-button>

@@ -24,6 +24,7 @@ import {StateService} from '@uirouter/core';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -37,7 +38,7 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
 })
 export class InstitutionListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
-    public displayedColumns: string[] = ['name', 'status', 'remove'];
+    public displayedColumns: string[] = [];
     public institutionen: TSInstitution[];
     public selectedInstitution: TSInstitution = undefined;
     public dataSource: MatTableDataSource<TSInstitution>;
@@ -59,6 +60,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     public ngOnInit(): void {
         this.updateInstitutionenList();
         this.sortTable();
+        this.setDisplayedColumns();
     }
 
     public ngAfterViewInit(): void {
@@ -128,10 +130,16 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public isDeleteAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     public showNoContentMessage(): boolean {
         return !this.dataSource || this.dataSource.data.length === 0;
+    }
+
+    private setDisplayedColumns(): void {
+        this.displayedColumns = this.isDeleteAllowed()
+            ? ['name', 'status', 'remove']
+            : ['name', 'status'];
     }
 }
