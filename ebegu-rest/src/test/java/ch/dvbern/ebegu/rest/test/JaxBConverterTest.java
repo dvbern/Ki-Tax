@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
@@ -107,7 +106,9 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private Persistence persistence;
 
-	private final JaxBConverter converter = new JaxBConverter(new GemeindeJaxBConverter());
+	@Inject
+	private JaxBConverter converter;
+
 	private Gesuchsperiode gesuchsperiode;
 
 	@Before
@@ -176,7 +177,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxInstitutionStammdaten jaxStammdaten = TestJaxDataUtil.createTestJaxInstitutionsStammdaten();
 		jaxStammdaten.setInstitution(converter.institutionToJAX(institution));
 		jaxStammdaten.getInstitution().setName("ChangedInstitution");
-		final JaxInstitutionStammdaten updatedInstitution = institutionStammdatenResource.saveInstitutionStammdaten(jaxStammdaten, DUMMY_URIINFO, DUMMY_RESPONSE);
+		final JaxInstitutionStammdaten updatedInstitution = institutionStammdatenResource
+			.saveInstitutionStammdaten(jaxStammdaten, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(updatedInstitution);
 		Assert.assertEquals("Institution1", updatedInstitution.getInstitution().getName());

@@ -1346,6 +1346,7 @@
     "BEGU_START": "Betreuungsgutscheine anbieten ab",
     "INSTITUTION_BEGU_START": "Betreuungsgutscheine akzeptieren ab",
     "INSTITUTION_BEGU_START_END": "Betreuungsgutscheine akzeptieren ab / bis",
+    "INSTITUTION_BEGU_AKZEPTIEREN": "Betreuungsgutscheine akzeptieren",
     "ADMIN_MAIL": "Administrator - E-Mail Adresse",
     "EINLADUNG_SENDEN": "Einladung senden",
     "EINLADUNG_ABSCHLIESSEN": "Registrierung abschliessen",

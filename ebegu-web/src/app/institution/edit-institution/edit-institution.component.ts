@@ -174,7 +174,7 @@ export class EditInstitutionComponent implements OnInit {
         if (this.stammdaten.gueltigkeit.gueltigBis
             && DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT) !== CONSTANTS.END_OF_TIME_STRING
         ) {
-            return `(${this.translate.instant('BIS')} ${DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT)})`;
+            return ` ${this.translate.instant('BIS')} ${DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT)}`;
         }
         return '';
     }
