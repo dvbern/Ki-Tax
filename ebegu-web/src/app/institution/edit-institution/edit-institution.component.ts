@@ -24,11 +24,14 @@ import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSDateRange} from '../../../models/types/TSDateRange';
+import DateUtil from '../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
@@ -42,11 +45,10 @@ import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenR
 export class EditInstitutionComponent implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
+    public readonly tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
 
     public institution: TSInstitution;
     public stammdaten: TSInstitutionStammdaten;
-    public beguStartStr: string;
-    public beguEndeStr: string;
     public abweichendeZahlungsAdresse: boolean;
     public editMode: boolean;
 
@@ -78,7 +80,6 @@ export class EditInstitutionComponent implements OnInit {
                     } else {
                         this.createInstitutionStammdaten();
                     }
-                    this.setBeguVonBisStr();
                     this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
                     this.editMode = this.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
@@ -92,6 +93,10 @@ export class EditInstitutionComponent implements OnInit {
 
     public isStammdatenEditable(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
+    }
+
+    public isBetreuungsgutscheineAkzeptierenDisabled(): boolean {
+        return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     public getHeaderTitle(): string {
@@ -130,13 +135,6 @@ export class EditInstitutionComponent implements OnInit {
         }
     }
 
-    private setBeguVonBisStr(): void {
-        this.beguStartStr = this.stammdaten.gueltigkeit.gueltigAb ?
-            this.stammdaten.gueltigkeit.gueltigAb.format('DD.MM.YYYY') : undefined;
-        this.beguEndeStr = this.stammdaten.gueltigkeit.gueltigBis ?
-            this.stammdaten.gueltigkeit.gueltigBis.format('DD.MM.YYYY') : undefined;
-    }
-
     private persistStammdaten(): void {
         if (!this.form.valid) {
             return;
@@ -165,5 +163,19 @@ export class EditInstitutionComponent implements OnInit {
 
     private navigateBack(): void {
          this.$state.go('institution.list');
+    }
+
+    public getGueltigkeitTodisplay(): string {
+        return `${this.translate.instant('AB')} ${DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigAb, CONSTANTS.DATE_FORMAT)}
+             ${this.getBisDateIfSet()}`;
+    }
+
+    private getBisDateIfSet(): string {
+        if (this.stammdaten.gueltigkeit.gueltigBis
+            && DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT) !== CONSTANTS.END_OF_TIME_STRING
+        ) {
+            return `(${this.translate.instant('BIS')} ${DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT)})`;
+        }
+        return '';
     }
 }
