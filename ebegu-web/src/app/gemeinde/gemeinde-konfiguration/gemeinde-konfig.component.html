@@ -49,14 +49,14 @@
                         </div>
                         <!-- editable -->
                         <div *ngIf="isKonfigurationEditable(konfigurationsListe[i])" class="col-sm-6">
-                                <div class="col-sm-6">
+                                <div class="col-sm-12">
                                     <div class="form-group">
                                         <h3 translate>GEMEINDE_REGELN</h3>
                                         <label translate>BEGU_KITAS_BIS_UND_MIT</label>
                                         <mat-select [(ngModel)]="konfigurationsListe[i].konfigBeguBisUndMitSchulstufe"
                                                     (selectionChange)="changeKonfigBeguBisUndMitSchulstufe(konfigurationsListe[i])"
                                                     id="begu_kitas_bis_und_mit_id" name="begu_kitas_bis_und_mit_id" class="form-control">
-                                            <mat-option *ngFor="let etv of einschulungTypValues" [value]="etv">{{etv | translate}}
+                                            <mat-option *ngFor="let etv of einschulungTypGemeindeValues" [value]="etv">{{etv | translate}}
                                             </mat-option>
                                         </mat-select>
                                     </div>
