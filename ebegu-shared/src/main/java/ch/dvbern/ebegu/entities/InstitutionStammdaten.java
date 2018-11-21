@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -202,6 +203,23 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setTelefon(@Nullable String telefon) {
 		this.telefon = telefon;
+	}
+
+	/**
+	 * Returns true when today is contained in the Gueltigkeit range
+	 */
+	public boolean isActive() {
+		return getGueltigkeit().contains(LocalDate.now());
+	}
+
+	/**
+	 * If the Institutionstammdaten isActive() it sets the Institutionstammdaten.gueltigkeit.bis to the day of yesterday.
+	 * If it is already inactive there is no need to set it inactive again.
+	 */
+	public void setInactive() {
+		if (isActive()) {
+			getGueltigkeit().setGueltigBis(LocalDate.now().minusDays(1));
+		}
 	}
 
 	@Override

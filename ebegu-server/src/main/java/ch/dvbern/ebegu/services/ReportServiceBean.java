@@ -1697,7 +1697,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return null;
 	}
 
-	public void setBetreuungsangebote(@Nonnull BenutzerDataRow row, @Nonnull Benutzer benutzer, Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap) {
+	public void setBetreuungsangebote(
+		@Nonnull BenutzerDataRow row,
+		@Nonnull Benutzer benutzer,
+		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap
+	) {
 		// we go through all Traegerschaft/Inst/InstStammdaten and check which kind of Angebot they offer.
 		// We don't get this information directly from the sql-query because it would be quite difficult and the
 		// result very long
@@ -1716,9 +1720,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		} else if (benutzer.getInstitution() != null) {
 			if (!betreuungsangebotMap.containsKey(benutzer.getInstitution().getId())) {
-				EnumSet<BetreuungsangebotTyp> allAngeboteInstitution = institutionService
-					.getAllAngeboteFromInstitution(benutzer.getInstitution().getId());
-				betreuungsangebotMap.put(benutzer.getInstitution().getId(), allAngeboteInstitution);
+				BetreuungsangebotTyp angebotInstitution = institutionService
+					.getAngebotFromInstitution(benutzer.getInstitution().getId());
+				betreuungsangebotMap.put(benutzer.getInstitution().getId(), EnumSet.of(angebotInstitution));
 			}
 			setBetreuungsangebotValues(row, betreuungsangebotMap.get(benutzer.getInstitution().getId()));
 		}

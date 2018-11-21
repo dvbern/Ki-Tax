@@ -45,9 +45,6 @@ public class JaxInstitution extends JaxAbstractDTO {
 	private JaxMandant mandant;
 
 	@NotNull
-	private String mail;
-
-	@NotNull
 	private InstitutionStatus status = InstitutionStatus.EINGELADEN;
 
 
@@ -73,14 +70,6 @@ public class JaxInstitution extends JaxAbstractDTO {
 
 	public void setMandant(JaxMandant mandant) {
 		this.mandant = mandant;
-	}
-
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
 	}
 
 	public InstitutionStatus getStatus() {

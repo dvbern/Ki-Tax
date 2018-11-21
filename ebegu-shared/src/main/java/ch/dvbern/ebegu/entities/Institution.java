@@ -64,16 +64,6 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_mandant_id"))
 	private Mandant mandant;
 
-	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
-	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	@NotNull
-	@Column(nullable = false)
-	private String mail;
-
-	@NotNull
-	@Column(nullable = false)
-	private Boolean active = true;
-
 	@NotNull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -112,22 +102,6 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 		this.mandant = mandant;
 	}
 
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
 	public InstitutionStatus getStatus() {
 		return status;
 	}
@@ -149,8 +123,7 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 			return false;
 		}
 		final Institution otherInstitution = (Institution) other;
-		return Objects.equals(getMail(), otherInstitution.getMail()) &&
-			getStatus() == otherInstitution.getStatus() &&
+		return getStatus() == otherInstitution.getStatus() &&
 			Objects.equals(getName(), otherInstitution.getName());
 	}
 

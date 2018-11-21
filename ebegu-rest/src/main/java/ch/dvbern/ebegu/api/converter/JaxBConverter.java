@@ -1265,7 +1265,6 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedInstitution.getTraegerschaft() != null) {
 			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
 		}
-		jaxInstitution.setMail(persistedInstitution.getMail());
 		return jaxInstitution;
 	}
 
@@ -1274,7 +1273,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institution);
 		convertAbstractVorgaengerFieldsToEntity(institutionJAXP, institution);
 		institution.setName(institutionJAXP.getName());
-		institution.setMail(institutionJAXP.getMail());
 		institution.setStatus(institutionJAXP.getStatus());
 
 		if (institutionJAXP.getMandant() != null && institutionJAXP.getMandant().getId() != null) {

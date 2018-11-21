@@ -52,14 +52,18 @@ export class InstitutionRS {
      * It sends all required parameters (new Institution, beguStartDatum, Betreuungsangebot and User) to the server so the server can
      * create all required objects within a single transaction.
      */
-    public createInstitution(institution: TSInstitution, beguStartDatum: moment.Moment,
-                             betreuungsangebot: TSBetreuungsangebotTyp): IPromise<TSInstitution> {
+    public createInstitution(institution: TSInstitution,
+                             beguStartDatum: moment.Moment,
+                             betreuungsangebot: TSBetreuungsangebotTyp,
+                             adminMail: string
+    ): IPromise<TSInstitution> {
         const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
         return this.$http.post(this.serviceURL, restInstitution,
             {
                 params: {
                     date: DateUtil.momentToLocalDate(beguStartDatum),
                     betreuung: betreuungsangebot.toString(),
+                    adminMail,
                 },
             })
             .then(response => {

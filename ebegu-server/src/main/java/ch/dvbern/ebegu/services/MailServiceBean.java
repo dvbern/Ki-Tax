@@ -254,7 +254,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		for (Betreuung betreuung : betreuungen) {
 
 			Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
-			String mailaddress = institution.getMail();
+			String mailaddress = betreuung.getInstitutionStammdaten().getMail();
 			Gesuch gesuch = betreuung.extractGesuch();
 			Fall fall = gesuch.getFall();
 			Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()
@@ -318,7 +318,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	public void sendInfoBetreuungVerfuegt(@Nonnull Betreuung betreuung) {
 
 		Institution institution = betreuung.getInstitutionStammdaten().getInstitution();
-		String mailaddress = institution.getMail();
+		String mailaddress = betreuung.getInstitutionStammdaten().getMail();
 		Gesuch gesuch = betreuung.extractGesuch();
 		Fall fall = gesuch.getFall();
 		Gesuchsteller gesuchsteller1 = gesuch.extractGesuchsteller1()

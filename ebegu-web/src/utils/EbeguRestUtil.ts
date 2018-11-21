@@ -1026,7 +1026,6 @@ export default class EbeguRestUtil {
             restInstitution.name = institution.name;
             restInstitution.mandant = this.mandantToRestObject({}, institution.mandant);
             restInstitution.traegerschaft = this.traegerschaftToRestObject({}, institution.traegerschaft);
-            restInstitution.mail = institution.mail;
             restInstitution.status = institution.status;
             return restInstitution;
         }
@@ -1040,7 +1039,6 @@ export default class EbeguRestUtil {
             institutionTS.mandant = this.parseMandant(new TSMandant(), institutionFromServer.mandant);
             institutionTS.traegerschaft =
                 this.parseTraegerschaft(new TSTraegerschaft(), institutionFromServer.traegerschaft);
-            institutionTS.mail = institutionFromServer.mail;
             institutionTS.status = institutionFromServer.status;
             return institutionTS;
         }
@@ -1600,7 +1598,7 @@ export default class EbeguRestUtil {
         restBetreuung.vertrag = betreuung.vertrag;
         restBetreuung.keineKesbPlatzierung = betreuung.keineKesbPlatzierung;
         if (betreuung.institutionStammdaten) {
-            restBetreuung.stammdaten =
+            restBetreuung.institutionStammdaten =
                 this.institutionStammdatenToRestObject({}, betreuung.institutionStammdaten);
         }
         if (betreuung.betreuungspensumContainers) {
@@ -1709,7 +1707,7 @@ export default class EbeguRestUtil {
             betreuungTS.keineKesbPlatzierung = betreuungFromServer.keineKesbPlatzierung;
             betreuungTS.betreuungsstatus = betreuungFromServer.betreuungsstatus;
             betreuungTS.institutionStammdaten = this.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
-                betreuungFromServer.stammdaten);
+                betreuungFromServer.institutionStammdaten);
             betreuungTS.betreuungspensumContainers =
                 this.parseBetreuungspensumContainers(betreuungFromServer.betreuungspensumContainers);
             betreuungTS.abwesenheitContainers =

@@ -134,8 +134,10 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root);
-		Join<InstitutionStammdaten, Institution> institution = root.join(InstitutionStammdaten_.institution, JoinType.INNER);
-		Predicate isActivePredicate = cb.equal(institution.get(Institution_.active), Boolean.TRUE);
+		Predicate isActivePredicate = cb.greaterThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
+			LocalDate.now()
+		);
 
 		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
 		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);

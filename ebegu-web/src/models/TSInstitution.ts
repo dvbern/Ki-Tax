@@ -26,15 +26,13 @@ export default class TSInstitution extends TSAbstractMutableEntity {
     public name: string;
     public traegerschaft: TSTraegerschaft;
     public mandant: TSMandant;
-    public mail: string;
     public status: TSInstitutionStatus;
 
-    public constructor(name?: string, tragerschaft?: TSTraegerschaft, mandant?: TSMandant, mail?: string, status?: TSInstitutionStatus) {
+    public constructor(name?: string, tragerschaft?: TSTraegerschaft, mandant?: TSMandant, status?: TSInstitutionStatus) {
         super();
         this.name = name;
         this.traegerschaft = tragerschaft;
         this.mandant = mandant;
-        this.mail = mail;
         this.status = status;
     }
 }

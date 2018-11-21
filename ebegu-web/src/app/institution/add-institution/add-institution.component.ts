@@ -20,7 +20,7 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {StateService, Transition} from '@uirouter/core';
+import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
 import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -45,9 +45,9 @@ export class AddInstitutionComponent implements OnInit {
     public institution: TSInstitution = undefined;
     public beguStart: moment.Moment;
     public beguStartDatumMin: moment.Moment;
+    public adminMail: string;
 
     public constructor(
-        private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly institutionRS: InstitutionRS,
@@ -98,11 +98,15 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     private persistInstitution(): void {
-        this.institutionRS.createInstitution(this.institution, this.beguStart, this.betreuungsangebot)
-            .then(neueinstitution => {
-                this.institution = neueinstitution;
-                this.navigateBack();
-            });
+        this.institutionRS.createInstitution(
+            this.institution,
+            this.beguStart,
+            this.betreuungsangebot,
+            this.adminMail,
+        ).then(neueinstitution => {
+            this.institution = neueinstitution;
+            this.navigateBack();
+        });
     }
 
     private initInstitution(): void {

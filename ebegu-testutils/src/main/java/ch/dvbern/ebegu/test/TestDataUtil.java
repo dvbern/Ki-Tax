@@ -456,7 +456,6 @@ public final class TestDataUtil {
 		institution.setName("Institution1");
 		institution.setMandant(createDefaultMandant());
 		institution.setTraegerschaft(createDefaultTraegerschaft());
-		institution.setMail("institution@example.com");
 		return institution;
 	}
 

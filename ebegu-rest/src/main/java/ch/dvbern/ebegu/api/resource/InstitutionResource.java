@@ -97,17 +97,17 @@ public class InstitutionResource {
 		@Nonnull @NotNull JaxInstitution institutionJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguStart,
 		@Nonnull @NotNull @Valid @QueryParam("betreuung") String betreuungsangebot,
+		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		String mail = institutionJAXP.getMail();
-		requireNonNull(mail);
+		requireNonNull(adminMail);
 		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
-		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution);
+		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail);
 
-		Benutzer benutzer = benutzerService.findBenutzerByEmail(mail)
+		Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
 			.map(b -> {
 				if (b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT ||
 					!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
@@ -115,12 +115,12 @@ public class InstitutionResource {
 					throw new EbeguRuntimeException(
 						"createInstitution",
 						ErrorCodeEnum.EXISTING_USER_MAIL,
-						mail);
+						adminMail);
 				}
 
 				return b;
 			})
-			.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(mail, persistedInstitution));
+			.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
 
 		benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
 
@@ -133,7 +133,12 @@ public class InstitutionResource {
 		return Response.created(uri).entity(jaxInstitution).build();
 	}
 
-	private void initInstitutionStammdaten(String stringDateBeguStart, String betreuungsangebot, Institution persistedInstitution) {
+	private void initInstitutionStammdaten(
+		@Nonnull String stringDateBeguStart,
+		@Nonnull String betreuungsangebot,
+		@Nonnull Institution persistedInstitution,
+		@Nonnull String adminMail
+	) {
 		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
 		Adresse adresse = new Adresse();
 		adresse.setStrasse("");
@@ -142,7 +147,7 @@ public class InstitutionResource {
 		institutionStammdaten.setAdresse(adresse);
 		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.valueOf(betreuungsangebot));
 		institutionStammdaten.setInstitution(persistedInstitution);
-		institutionStammdaten.setMail(persistedInstitution.getMail());
+		institutionStammdaten.setMail(adminMail);
 		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
 		DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
 		institutionStammdaten.setGueltigkeit(gueltigkeit);

@@ -33,7 +33,7 @@
             </div>
 
             <fieldset>
-                <!-- Administrator - E-Mail Adresse | Trägerschaft -->
+                <!-- Betreuungsangebot -->
                 <div class="row">
                     <div class="col-sm-6 dv-input-container-medium">
                         <div class="form-group">
@@ -92,7 +92,7 @@
                         <div class="form-group">
                             <label class="required" translate for="admin_mail_ID">ADMIN_MAIL</label>
                             <input id="admin_mail_ID" type="email" name="admin_mail"
-                                   [(ngModel)]="institution.mail"
+                                   [(ngModel)]="adminMail"
                                    [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
                                                inputid="admin_mail_ID">

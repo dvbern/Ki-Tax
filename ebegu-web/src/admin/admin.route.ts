@@ -15,9 +15,6 @@
 
 import {Ng1StateDeclaration} from '@uirouter/angularjs';
 import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
-import {InstitutionRS} from '../app/core/service/institutionRS.rest';
-import {MandantRS} from '../app/core/service/mandantRS.rest';
-import {TraegerschaftRS} from '../app/core/service/traegerschaftRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
 
@@ -25,40 +22,9 @@ export class IGesuchsperiodeStateParams {
     public gesuchsperiodeId: string;
 }
 
-export class IInstitutionStateParams {
-    public institutionId: string;
-}
-
-export class IInstitutionStammdatenStateParams {
-    public institutionStammdatenId: string;
-    public institutionId: string;
-}
-
-export class IBenutzerStateParams {
-    public benutzerId: string;
-}
-
 const applicationPropertiesResolver = [
     'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => {
         return applicationPropertyRS.getAllApplicationProperties();
-    },
-];
-
-const institutionenResolver = [
-    'InstitutionRS', (institutionRS: InstitutionRS) => {
-        return institutionRS.getAllActiveInstitutionen();
-    },
-];
-
-const traegerschaftenResolver = [
-    'TraegerschaftRS', (traegerschaftRS: TraegerschaftRS) => {
-        return traegerschaftRS.getAllActiveTraegerschaften();
-    },
-];
-
-const mandantResolver = [
-    'MandantRS', (mandantRS: MandantRS) => {
-        return mandantRS.getFirst();
     },
 ];
 

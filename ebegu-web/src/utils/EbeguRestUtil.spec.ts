@@ -279,7 +279,7 @@ describe('EbeguRestUtil', () => {
 
                 expect(restBetreuung).toBeDefined();
                 expect(restBetreuung.betreuungsstatus).toEqual(TSBetreuungsstatus.AUSSTEHEND);
-                expect(restBetreuung.stammdaten.iban).toEqual(betreuung.institutionStammdaten.iban);
+                expect(restBetreuung.institutionStammdaten.iban).toEqual(betreuung.institutionStammdaten.iban);
                 expect(restBetreuung.betreuungspensumContainers).toBeDefined();
                 expect(restBetreuung.betreuungspensumContainers.length)
                     .toEqual(betreuung.betreuungspensumContainers.length);
