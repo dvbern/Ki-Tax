@@ -134,10 +134,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root);
-		Predicate isActivePredicate = cb.greaterThanOrEqualTo(
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
-			LocalDate.now()
-		);
 
 		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
 		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
@@ -147,7 +143,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		Predicate startPredicate = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), startParam);
 		Predicate endPredicate = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam);
 
-		query.where(startPredicate, endPredicate, isActivePredicate);
+		query.where(startPredicate, endPredicate);
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
