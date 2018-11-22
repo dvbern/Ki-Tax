@@ -27,6 +27,7 @@
                ng-change="vm.refreshContent()"
                ng-model="vm.pensumValue"
                ng-disabled="vm.isDisabled"
+               ng-attr-placeholder="{{vm.getPlaceholder()}}"
         >
     </div>
     <dv-switch class="betreuung-input-switch"
