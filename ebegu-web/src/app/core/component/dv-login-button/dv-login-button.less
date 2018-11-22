@@ -13,21 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
-
-export class DvErrorMessagesComponentConfig implements IComponentOptions {
-    public transclude = false;
-    public bindings = {
-        errorObject: '<for',
-        inputid: '@inputId',
-        minValue: '<',
-        maxValue: '<',
-        step: '<',
-    };
-    public template = require('./dv-error-messages.html');
-    public controller = DvErrorMessages;
-    public controllerAs = 'vm';
-}
-
-export class DvErrorMessages {
+.dv-login-button{
+    padding-top: 0.5rem;
+    padding-right: 0.5rem;
 }

@@ -36,7 +36,7 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
 
 export class BetreuungInputComponent implements IController {
 
-    public static $inject = ['$translate'];
+    public static $inject = ['$translate', 'CONSTANTS'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
 
@@ -49,6 +49,7 @@ export class BetreuungInputComponent implements IController {
     public isDisabled: boolean = false;
     public id: string;
     public betreuungsangebotTyp: TSBetreuungsangebotTyp;
+    public step: number = 0.25;
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];

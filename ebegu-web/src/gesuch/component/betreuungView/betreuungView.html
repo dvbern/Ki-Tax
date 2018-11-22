@@ -281,34 +281,11 @@
                             <!--Betreuungspensen-->
                             <div ng-repeat="betpen in vm.getBetreuungspensen()">
                                 <!--Betreuungspensum-->
-                                <div class="row">
-                                    <div class="col-sm-12 dv-input-betreuung-container">
-                                        <dv-input-container class="form-group">
-                                            <label class="md-no-float"
-                                                   for="betreuungspensum-{{$index}}"
-                                                   data-translate-value-betreuungspensumnumber="{{$index + 1}}">
-                                                <span data-translate="BETREUUNGSPENSUM"></span>
-                                                <dv-tooltip input-id="betreuungspensum-{{$index}}"
-                                                            text="'BETREUUNGSPENSUM_HELP' | translate"></dv-tooltip>
-                                            </label>
-                                            <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
-                                                                input-id="betreuungspensum-{{$index}}"
-                                                                betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
-                                                                is-disabled="!vm.isPensumEditable()">
-                                            </dv-betreuung-input>
-                                            <!-- funktioniert hier mit dv-error-messages nicht,
-                                                 da component ausgelagert ist -->
-                                            <div class="dv-error-messages"
-                                                 ng-if="!vm.getBetreuungspensum($index).betreuungspensumJA.pensum
-                                                 && vm.form.$submitted">
-                                                <div class="error">
-                                                    {{ 'ERROR_REQUIRED' | translate }}
-                                                </div>
-                                            </div>
-                                        </dv-input-container>
-                                    </div>
-                                </div>
-
+                                <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
+                                                    input-id="betreuungspensum-{{$index}}"
+                                                    betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
+                                                    is-disabled="!vm.isPensumEditable()">
+                                </dv-betreuung-input>
                                 <!--Monatliche Betreuungskosten-->
                                 <div class="row">
                                     <div class="col-sm-12 dv-input-container-medium">
@@ -325,7 +302,7 @@
                                                        name="monatlicheBetreuungskosten-{{$index}}"
                                                        ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
                                                        dv-max-length class="form-control"
-                                                       ng-pattern="vm.CONSTANTS.PATTERN_BETRAG_RAPPEN"
+                                                       ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                                        ng-required="true"
                                                        ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
                                                 <dv-error-messages input-id="monatlicheBetreuungskosten-{{$index}}"
