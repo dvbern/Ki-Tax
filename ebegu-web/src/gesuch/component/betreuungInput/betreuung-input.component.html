@@ -40,7 +40,8 @@
                        ng-attr-placeholder="{{vm.getPlaceholder()}}"
                 >
                 <dv-error-messages input-id="{{vm.id}}" class="error"
-                                   for="pensumForm[vm.id].$error"></dv-error-messages>
+                                   for="pensumForm[vm.id].$error"
+                                   step="vm.step"></dv-error-messages>
             </div>
             <div class="betreuung-input-switch">
                 <dv-switch
