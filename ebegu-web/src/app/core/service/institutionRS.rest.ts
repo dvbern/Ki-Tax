@@ -14,7 +14,10 @@
  */
 
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
+import * as moment from 'moment';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
+import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class InstitutionRS {
@@ -45,13 +48,27 @@ export class InstitutionRS {
         });
     }
 
-    public createInstitution(institution: TSInstitution): IPromise<TSInstitution> {
-        let restInstitution = {};
-        restInstitution = this.ebeguRestUtil.institutionToRestObject(restInstitution, institution);
-        return this.$http.post(this.serviceURL, restInstitution).then((response: any) => {
-            return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
-        });
-
+    /**
+     * It sends all required parameters (new Institution, beguStartDatum, Betreuungsangebot and User) to the server so the server can
+     * create all required objects within a single transaction.
+     */
+    public createInstitution(institution: TSInstitution,
+                             beguStartDatum: moment.Moment,
+                             betreuungsangebot: TSBetreuungsangebotTyp,
+                             adminMail: string
+    ): IPromise<TSInstitution> {
+        const restInstitution = this.ebeguRestUtil.institutionToRestObject({}, institution);
+        return this.$http.post(this.serviceURL, restInstitution,
+            {
+                params: {
+                    date: DateUtil.momentToLocalDate(beguStartDatum),
+                    betreuung: betreuungsangebot.toString(),
+                    adminMail,
+                },
+            })
+            .then(response => {
+                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
+            });
     }
 
     public removeInstitution(institutionID: string): IHttpPromise<any> {

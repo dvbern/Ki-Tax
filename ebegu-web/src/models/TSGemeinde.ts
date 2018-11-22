@@ -1,4 +1,6 @@
 /*
+ * AGPL File-Header
+ *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,63 +22,9 @@ import {TSGemeindeStatus} from './enums/TSGemeindeStatus';
 import TSAbstractEntity from './TSAbstractEntity';
 
 export default class TSGemeinde extends TSAbstractEntity {
-
-    private _name: string;
-    private _gemeindeNummer: number;
-    private _bfsNummer: number;
-    private _status: TSGemeindeStatus;
-    private _betreuungsgutscheineStartdatum: moment.Moment;
-
-    public constructor(
-        name?: string,
-        gemeindeNummer?: number,
-        bfsNummer?: number,
-        status?: TSGemeindeStatus
-    ) {
-        super();
-        this._name = name;
-        this._gemeindeNummer = gemeindeNummer;
-        this._bfsNummer = bfsNummer;
-        this._status = status;
-    }
-
-    public get name(): string {
-        return this._name;
-    }
-
-    public set name(value: string) {
-        this._name = value;
-    }
-
-    public get gemeindeNummer(): number {
-        return this._gemeindeNummer;
-    }
-
-    public set gemeindeNummer(value: number) {
-        this._gemeindeNummer = value;
-    }
-
-    public get status(): TSGemeindeStatus {
-        return this._status;
-    }
-
-    public set status(value: TSGemeindeStatus) {
-        this._status = value;
-    }
-
-    public get bfsNummer(): number {
-        return this._bfsNummer;
-    }
-
-    public set bfsNummer(value: number) {
-        this._bfsNummer = value;
-    }
-
-    public get betreuungsgutscheineStartdatum(): moment.Moment {
-        return this._betreuungsgutscheineStartdatum;
-    }
-
-    public set betreuungsgutscheineStartdatum(value: moment.Moment) {
-        this._betreuungsgutscheineStartdatum = value;
-    }
+    public name: string;
+    public gemeindeNummer: number;
+    public bfsNummer: number;
+    public status: TSGemeindeStatus;
+    public betreuungsgutscheineStartdatum: moment.Moment;
 }

@@ -1,4 +1,6 @@
 /*
+ * AGPL File-Header
+ *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,7 +16,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/core';

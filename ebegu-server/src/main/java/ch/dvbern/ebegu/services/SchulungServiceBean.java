@@ -288,14 +288,16 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		institution.setName(name);
 		institution.setMandant(mandant);
 		institution.setTraegerschaft(traegerschaft);
-		institution.setMail(name + EXAMPLE_COM);
 		return institutionService.createInstitution(institution);
 	}
 
 	@SuppressWarnings("MagicNumber")
 	@Nonnull
-	private InstitutionStammdaten createInstitutionStammdaten(@Nonnull String id, @Nonnull Institution institution,
-		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
+	private InstitutionStammdaten createInstitutionStammdaten(
+		@Nonnull String id,
+		@Nonnull Institution institution,
+		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp
+	) {
 
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(id);
@@ -304,6 +306,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		instStammdaten.setBetreuungsangebotTyp(betreuungsangebotTyp);
 		instStammdaten.setAdresse(createAdresse(id));
 		instStammdaten.setInstitution(institution);
+		instStammdaten.setMail(institution.getName() + EXAMPLE_COM);
 		return institutionStammdatenService.saveInstitutionStammdaten(instStammdaten);
 	}
 

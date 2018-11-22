@@ -16,6 +16,7 @@
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
@@ -309,7 +310,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             const vonText = DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
             const bisText = fachstelle.gueltigkeit.gueltigBis ?
                 DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
-                '31.12.9999';
+                CONSTANTS.END_OF_TIME_STRING;
             const integrationTyp = this.$translate.instant(fachstelle.integrationTyp);
             return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
                 name: fachstelle.fachstelle.name,

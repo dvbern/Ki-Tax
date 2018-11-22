@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -54,7 +55,11 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -82,7 +87,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
 		return persistence.merge(institutionStammdaten);
@@ -129,8 +134,6 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root);
-		Join<InstitutionStammdaten, Institution> institution = root.join(InstitutionStammdaten_.institution, JoinType.INNER);
-		Predicate isActivePredicate = cb.equal(institution.get(Institution_.active), Boolean.TRUE);
 
 		ParameterExpression<LocalDate> startParam = cb.parameter(LocalDate.class, GP_START);
 		ParameterExpression<LocalDate> endParam = cb.parameter(LocalDate.class, GP_END);
@@ -140,7 +143,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		Predicate startPredicate = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), startParam);
 		Predicate endPredicate = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam);
 
-		query.where(startPredicate, endPredicate, isActivePredicate);
+		query.where(startPredicate, endPredicate);
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
@@ -160,6 +163,20 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 			InstitutionStammdaten_.institution
 		).orElseThrow(() -> new EbeguEntityNotFoundException
 			("getInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+	}
+
+	@Nullable
+	@Override
+	@PermitAll
+	public InstitutionStammdaten fetchInstitutionStammdatenByInstitution(String institutionId) {
+		Institution institution = institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
+			("fetchInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+
+		return criteriaQueryHelper.getEntityByUniqueAttribute(
+			InstitutionStammdaten.class,
+			institution,
+			InstitutionStammdaten_.institution
+		).orElse(null);
 	}
 
 	@Override

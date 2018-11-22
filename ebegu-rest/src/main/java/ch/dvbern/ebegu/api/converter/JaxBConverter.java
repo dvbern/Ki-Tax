@@ -1,16 +1,20 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * AGPL File-Header
+ *
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.converter;
@@ -27,6 +31,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -81,6 +86,8 @@ import ch.dvbern.ebegu.api.dtos.JaxFile;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
@@ -149,6 +156,7 @@ import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -179,7 +187,10 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -282,18 +293,12 @@ public class JaxBConverter extends AbstractConverter {
 	@Inject
 	private EinstellungService einstellungService;
 	@Inject
-	private GemeindeJaxBConverter gemeindeConverter;
-	@Inject
 	private Persistence persistence;
 	@Inject
 	private PensumFachstelleService pensumFachstelleService;
 
 	public JaxBConverter() {
 		//nop
-	}
-
-	public JaxBConverter(@Nonnull GemeindeJaxBConverter gemeindeConverter) {
-		this.gemeindeConverter = gemeindeConverter;
 	}
 
 	@Nonnull
@@ -882,7 +887,7 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxDossier jaxDossier = new JaxDossier();
 		convertAbstractVorgaengerFieldsToJAX(persistedDossier, jaxDossier);
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
-		jaxDossier.setGemeinde(gemeindeConverter.gemeindeToJAX(persistedDossier.getGemeinde()));
+		jaxDossier.setGemeinde(gemeindeToJAX(persistedDossier.getGemeinde()));
 		if (persistedDossier.getVerantwortlicherBG() != null) {
 			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzer(persistedDossier.getVerantwortlicherBG()));
 		}
@@ -1255,12 +1260,12 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxInstitution jaxInstitution = new JaxInstitution();
 		convertAbstractVorgaengerFieldsToJAX(persistedInstitution, jaxInstitution);
 		jaxInstitution.setName(persistedInstitution.getName());
+		assert persistedInstitution.getMandant() != null;
 		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
 		jaxInstitution.setStatus(persistedInstitution.getStatus());
 		if (persistedInstitution.getTraegerschaft() != null) {
 			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
 		}
-		jaxInstitution.setMail(persistedInstitution.getMail());
 		return jaxInstitution;
 	}
 
@@ -1269,7 +1274,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(institution);
 		convertAbstractVorgaengerFieldsToEntity(institutionJAXP, institution);
 		institution.setName(institutionJAXP.getName());
-		institution.setMail(institutionJAXP.getMail());
 		institution.setStatus(institutionJAXP.getStatus());
 
 		if (institutionJAXP.getMandant() != null && institutionJAXP.getMandant().getId() != null) {
@@ -1283,10 +1287,6 @@ public class JaxBConverter extends AbstractConverter {
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					institutionJAXP.getMandant().getId());
 			}
-		} else {
-			throw new EbeguEntityNotFoundException(
-				"institutionToEntity -> mandant",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 		}
 
 		// Traegerschaft ist nicht required!
@@ -1319,10 +1319,24 @@ public class JaxBConverter extends AbstractConverter {
 		@Nonnull final InstitutionStammdaten persistedInstStammdaten) {
 		final JaxInstitutionStammdaten jaxInstStammdaten = new JaxInstitutionStammdaten();
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
+
+		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
+			persistedInstStammdaten.getInstitution());
+		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
+			persistedInstStammdaten.getInstitution());
+		jaxInstStammdaten.setAdministratoren(administratoren.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+
 		if (persistedInstStammdaten.getIban() != null) {
 			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
 		}
 		jaxInstStammdaten.setBetreuungsangebotTyp(persistedInstStammdaten.getBetreuungsangebotTyp());
+		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
+		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
 		if (persistedInstStammdaten.getInstitutionStammdatenTagesschule() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschuleToJAX(
 				persistedInstStammdaten
@@ -1355,6 +1369,8 @@ public class JaxBConverter extends AbstractConverter {
 		if (institutionStammdatenJAXP.getIban() != null) {
 			institutionStammdaten.setIban(new IBAN(institutionStammdatenJAXP.getIban()));
 		}
+		institutionStammdaten.setMail(institutionStammdatenJAXP.getMail());
+		institutionStammdaten.setTelefon(institutionStammdatenJAXP.getTelefon());
 		institutionStammdaten.setBetreuungsangebotTyp(institutionStammdatenJAXP.getBetreuungsangebotTyp());
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
 			// wenn InstitutionStammdatenTagesschule vorhanden ist es eine Tagesschule und Objekt muss, wenn noch
@@ -1382,13 +1398,12 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
 
+		Adresse convertedAdresse = null;
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
-			Adresse adresse = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber())
-				.orElseGet(Adresse::new);
-
-			Adresse convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), adresse);
-			institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
+			Adresse a = Optional.ofNullable(institutionStammdaten.getAdresseKontoinhaber()).orElseGet(Adresse::new);
+			convertedAdresse = adresseToEntity(institutionStammdatenJAXP.getAdresseKontoinhaber(), a);
 		}
+		institutionStammdaten.setAdresseKontoinhaber(convertedAdresse);
 
 		adresseToEntity(institutionStammdatenJAXP.getAdresse(), institutionStammdaten.getAdresse());
 
@@ -3021,7 +3036,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		// Gemeinden
 		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
-			.map(gemeindeConverter::gemeindeToJAX)
+			.map(this::gemeindeToJAX)
 			.collect(Collectors.toCollection(TreeSet::new));
 		jaxBerechtigung.setGemeindeList(jaxGemeinden);
 
@@ -3876,5 +3891,178 @@ public class JaxBConverter extends AbstractConverter {
 			stammdatenTagesschule.setModuleTagesschule(moduleTagesschuleComplete);
 		}
 		return jaxInstDaten;
+	}
+
+	@Nonnull
+	public Gemeinde gemeindeToEntity(@Nonnull final JaxGemeinde jaxGemeinde, @Nonnull final Gemeinde gemeinde) {
+		requireNonNull(gemeinde);
+		requireNonNull(jaxGemeinde);
+		requireNonNull(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		convertAbstractFieldsToEntity(jaxGemeinde, gemeinde);
+		gemeinde.setName(jaxGemeinde.getName());
+		gemeinde.setStatus(jaxGemeinde.getStatus());
+		gemeinde.setGemeindeNummer(jaxGemeinde.getGemeindeNummer());
+		gemeinde.setBfsNummer(jaxGemeinde.getBfsNummer());
+		if (jaxGemeinde.getBetreuungsgutscheineStartdatum() != null) {
+			gemeinde.setBetreuungsgutscheineStartdatum(jaxGemeinde.getBetreuungsgutscheineStartdatum());
+		}
+
+		return gemeinde;
+	}
+
+	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
+		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
+		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
+		jaxGemeinde.setName(persistedGemeinde.getName());
+		jaxGemeinde.setStatus(persistedGemeinde.getStatus());
+		jaxGemeinde.setGemeindeNummer(persistedGemeinde.getGemeindeNummer());
+		jaxGemeinde.setBfsNummer(persistedGemeinde.getBfsNummer());
+		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
+
+		return jaxGemeinde;
+	}
+
+	@Nonnull
+	public GemeindeStammdaten gemeindeStammdatenToEntity(
+		@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull final GemeindeStammdaten stammdaten
+	) {
+		requireNonNull(stammdaten);
+		requireNonNull(stammdaten.getAdresse());
+		requireNonNull(jaxStammdaten);
+		requireNonNull(jaxStammdaten.getGemeinde());
+		requireNonNull(jaxStammdaten.getGemeinde().getId());
+		requireNonNull(jaxStammdaten.getAdresse());
+
+		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
+
+		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername())
+				.ifPresent(stammdaten::setDefaultBenutzerBG);
+		}
+		if (jaxStammdaten.getDefaultBenutzerTS() != null) {
+			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername())
+				.ifPresent(stammdaten::setDefaultBenutzerTS);
+		}
+
+		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
+		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
+			.ifPresent(stammdaten::setGemeinde);
+
+		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
+
+		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
+			if (stammdaten.getBeschwerdeAdresse() == null) {
+				stammdaten.setBeschwerdeAdresse(new Adresse());
+			}
+			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
+		} else {
+			stammdaten.setBeschwerdeAdresse(null);
+		}
+		stammdaten.setMail(jaxStammdaten.getMail());
+		stammdaten.setTelefon(jaxStammdaten.getTelefon());
+		stammdaten.setWebseite(jaxStammdaten.getWebseite());
+
+		if (jaxStammdaten.isKorrespondenzspracheDe() && jaxStammdaten.isKorrespondenzspracheFr()) {
+			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
+		} else if (jaxStammdaten.isKorrespondenzspracheDe()) {
+			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
+		} else if (jaxStammdaten.isKorrespondenzspracheFr()) {
+			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.FR);
+		} else {
+			throw new IllegalArgumentException("Die Korrespondenzsprache muss gesetzt sein");
+		}
+
+		return stammdaten;
+	}
+
+	public JaxGemeindeStammdaten gemeindeStammdatenToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
+		requireNonNull(stammdaten);
+		requireNonNull(stammdaten.getGemeinde());
+		requireNonNull(stammdaten.getAdresse());
+		final JaxGemeindeStammdaten jaxStammdaten = new JaxGemeindeStammdaten();
+		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
+		Collection<Benutzer> administratoren = benutzerService.getGemeindeAdministratoren(stammdaten.getGemeinde());
+		Collection<Benutzer> sachbearbeiter = benutzerService.getGemeindeSachbearbeiter(stammdaten.getGemeinde());
+		jaxStammdaten.setAdministratoren(administratoren.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
+		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
+		jaxStammdaten.setMail(stammdaten.getMail());
+		jaxStammdaten.setTelefon(stammdaten.getTelefon());
+		jaxStammdaten.setWebseite(stammdaten.getWebseite());
+		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(false);
+		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(false);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		}
+		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
+			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
+		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
+			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
+		if (!stammdaten.isNew()) {
+			if (stammdaten.getDefaultBenutzerBG() != null) {
+				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
+			}
+			if (stammdaten.getDefaultBenutzerTS() != null) {
+				jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
+			}
+			if (stammdaten.getBeschwerdeAdresse() != null) {
+				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+			}
+		}
+		// Konfiguration
+		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
+			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
+			if (gesuchsperiode != null) {
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
+					gesuchsperiode));
+			}
+		} else {
+			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
+			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
+					gesuchsperiode));
+			}
+		}
+
+		return jaxStammdaten;
+	}
+
+	/**
+	 * Ist die Gemeinde noch im Status EINGELADEN, laden wir nur die Konfiguration der richtigen Gesuchsperiode
+	 * Die Gesuchsperiode wo das BEGU Startdatum drin liegt, falls diese bereits existert,
+	 * falls diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
+	 */
+	@Nullable
+	private Gesuchsperiode findRelevantGesuchsperiode(@Nonnull GemeindeStammdaten stammdaten) {
+		Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
+			.getBetreuungsgutscheineStartdatum());
+		Optional<Gesuchsperiode> gpNewest = gesuchsperiodeService.findNewestGesuchsperiode();
+
+		return gpBeguStart.orElseGet(() -> gpNewest.orElse(null));
+	}
+
+	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
+		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName());
+		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());
+		konfiguration.setGesuchsperiodeStatus(gesuchsperiode.getStatus());
+		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
+			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
+		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
+			.filter(map -> map.getKey().name().startsWith("GEMEINDE_"))
+			.map(x -> einstellungToJAX(x.getValue()))
+			.collect(Collectors.toList()));
+		return konfiguration;
 	}
 }
