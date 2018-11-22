@@ -33,7 +33,7 @@ const LOG = LogFactory.createLog('DvLoginButtonController');
 
 export class DVLoginButtonController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS'];
+    public static $inject: ReadonlyArray<string> = ['AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
