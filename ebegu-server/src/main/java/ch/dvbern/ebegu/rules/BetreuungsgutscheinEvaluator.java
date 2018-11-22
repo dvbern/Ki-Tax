@@ -189,7 +189,7 @@ public class BetreuungsgutscheinEvaluator {
 					AbstractBGRechner rechner = BGRechnerFactory.getRechner(betreuung);
 					if (rechner != null) {
 						for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-							rechner.calculate(verfuegungZeitabschnitt, betreuung.getVerfuegung(), bgRechnerParameterDTO);
+							rechner.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
 						}
 					}
 					// Und die Resultate in die Verfügung schreiben
