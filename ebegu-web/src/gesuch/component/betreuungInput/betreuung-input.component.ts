@@ -70,26 +70,22 @@ export class BetreuungInputComponent implements IController {
 
     public getPlaceholder(): string {
         if (this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
-            switch (this.betreuungsangebotTyp) {
-                case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                    return this.translate.instant('STUNDEN_PLACEHOLDER');
-                default:
-                    return this.translate.instant('TAGE_PLACEHOLDER');
+            if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+                return this.translate.instant('STUNDEN_PLACEHOLDER');
+            } else {
+                return this.translate.instant('TAGE_PLACEHOLDER');
             }
         }
         return this.translate.instant('PERCENTAGE_PLACEHOLDER');
     }
 
     public setAngebotDependingVariables(): void {
-        switch (this.betreuungsangebotTyp) {
-            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
-                this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
-                return;
-            default:
-                this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
-                this.multiplier = this.MULTIPLIER_KITA;
-                return;
+        if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
+            this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
+        } else {
+            this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
+            this.multiplier = this.MULTIPLIER_KITA;
         }
     }
 
