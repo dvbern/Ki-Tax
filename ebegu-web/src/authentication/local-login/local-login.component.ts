@@ -563,7 +563,6 @@ export class LocalLoginComponent {
         const institution = new TSInstitution();
         institution.name = 'Kita Brünnen';
         institution.id = '1b6f476f-e0f5-4380-9ef6-836d688853a3';
-        institution.mail = 'kita.bruennen@example.com';
         institution.traegerschaft = this.traegerschaftStadtBern;
         institution.mandant = this.mandant;
         return institution;

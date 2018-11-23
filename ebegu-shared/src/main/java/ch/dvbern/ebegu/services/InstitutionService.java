@@ -50,10 +50,11 @@ public interface InstitutionService {
 	 * @return Institution mit dem gegebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull
-	Optional<Institution> findInstitution(@Nonnull String key);
+	Optional<Institution> findInstitution(@Nonnull String id);
 
 	/**
-	 * marks an Institution as inactive on the Database.
+	 * marks an Institution as inactive on the Database. It does it by setting Institutionstammdaten.gueltigkeit.bis
+	 * to the date of today.
 	 */
 	Institution setInstitutionInactive(@Nonnull String institutionId);
 
@@ -96,6 +97,6 @@ public interface InstitutionService {
 	/**
 	 * returns all types of Angebot that are offered by this Institution
 	 */
-	EnumSet<BetreuungsangebotTyp> getAllAngeboteFromInstitution(@Nonnull String institutionId);
+	BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId);
 
 }

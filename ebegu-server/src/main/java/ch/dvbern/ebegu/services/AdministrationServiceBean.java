@@ -428,7 +428,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 				Traegerschaft traegerschaft = institution.getTraegerschaft();
 				Adresse adresse = stammdaten.getAdresse();
 
-				if (institution.getActive()) {
+				if (stammdaten.isActive()) {
 
 					StringBuilder sb = new StringBuilder();
 
@@ -447,7 +447,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 					append(sb, adresse.getPlz());
 					append(sb, adresse.getOrt());
 					append(sb, adresse.getZusatzzeile());
-					append(sb, institution.getMail());
+					append(sb, stammdaten.getMail());
 
 					append(sb, stammdaten.getId());
 					append(sb, stammdaten.getBetreuungsangebotTyp().name());
