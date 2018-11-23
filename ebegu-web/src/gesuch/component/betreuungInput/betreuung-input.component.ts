@@ -72,9 +72,8 @@ export class BetreuungInputComponent implements IController {
         if (this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
             if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
                 return this.translate.instant('STUNDEN_PLACEHOLDER');
-            } else {
-                return this.translate.instant('TAGE_PLACEHOLDER');
             }
+            return this.translate.instant('TAGE_PLACEHOLDER');
         }
         return this.translate.instant('PERCENTAGE_PLACEHOLDER');
     }
