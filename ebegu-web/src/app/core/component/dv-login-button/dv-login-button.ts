@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -40,7 +39,6 @@ export class DVLoginButtonController implements IController {
     public principal?: TSBenutzer = undefined;
 
     public constructor(
-        private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
     ) {
     }
