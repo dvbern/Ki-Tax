@@ -99,7 +99,7 @@ export class AddGemeindeComponent implements OnInit {
         }
     }
 
-    public bfsGemeindeSelected(filterVal: any): void {
+    public bfsGemeindeSelected(): void {
         if (this.selectedUnregisteredGemeinde) {
             this.gemeinde.name = this.selectedUnregisteredGemeinde.name;
             this.gemeinde.bfsNummer = this.selectedUnregisteredGemeinde.bfsNummer;

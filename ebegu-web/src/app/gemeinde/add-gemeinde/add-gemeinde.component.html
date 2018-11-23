@@ -41,7 +41,7 @@
                                     class="form-control"
                                     id="bfsGemeinde"
                                     [required]="true"
-                                    (change)="bfsGemeindeSelected($event.target.value)">
+                                    (change)="bfsGemeindeSelected()">
                                 <option value=""></option>
                                 <option *ngFor="let bfsGemeinde of (unregisteredGemeinden$ | async)"
                                         [ngValue]="bfsGemeinde">
