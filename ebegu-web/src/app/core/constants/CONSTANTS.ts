@@ -27,6 +27,8 @@ export const CONSTANTS = {
     PATTERN_EMAIL: '[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}',
     INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE: '199ac4a1-448f-4d4c-b3a6-5aee21f89613',
     PARTS_OF_BETREUUNGSNUMMER: 5,
+    END_OF_TIME_STRING: '31.12.9999',
+    DATE_FORMAT: 'DD.MM.YYYY',
 };
 
 export const DEFAULT_LOCALE = 'de-CH';

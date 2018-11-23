@@ -142,6 +142,14 @@ public enum UserRole {
 		return Arrays.asList(SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS);
 	}
 
+	public static List<UserRole> getAllInstitutionAdminRoles() {
+		return Arrays.asList(ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT);
+	}
+
+	public static List<UserRole> getAllInstitutionSachbearbeiterRoles() {
+		return Arrays.asList(SACHBEARBEITER_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT);
+	}
+
 	public static List<UserRole> getRolesByAbhaengigkeit(RollenAbhaengigkeit abhaengigkeit) {
 		return Arrays.stream(UserRole.values())
 			.filter(userRole -> userRole.getRollenAbhaengigkeit() == abhaengigkeit)

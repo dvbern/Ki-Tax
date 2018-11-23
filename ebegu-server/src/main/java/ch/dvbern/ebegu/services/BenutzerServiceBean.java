@@ -353,6 +353,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
+	public Collection<Benutzer> getInstitutionAdministratoren(Institution institution) {
+		return getBenutzersOfRoles(UserRole.getAllInstitutionAdminRoles(), institution);
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Benutzer> getInstitutionSachbearbeiter(Institution institution) {
+		return getBenutzersOfRoles(UserRole.getAllInstitutionSachbearbeiterRoles(), institution);
+	}
+
+	@Nonnull
+	@Override
 	@PermitAll
 	public Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(getBgAndGemeindeRoles(), gemeinde);
@@ -446,6 +458,40 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
 		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(roles));
 		predicates.add(cb.equal(joinBerechtigungenGemeinde.get(AbstractEntity_.id), gemeinde.getId()));
+
+		query.where(predicates.toArray(NEW));
+		query.distinct(true);
+
+		return persistence.getCriteriaResults(query);
+	}
+
+	/**
+	 * Gibt alle existierenden Benutzer einer Institution mit den gewünschten Rollen zurueck.
+	 *
+	 * @param roles Das Rollen Filter
+	 * @param institution zum Filtern nach der Institution
+	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
+	 */
+	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Institution institution) {
+		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getBenutzersOfRole", "Non logged in user should never reach this"));
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+
+		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
+
+		query.select(root);
+
+		predicates.add(cb.between(
+			cb.literal(LocalDate.now()),
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
+		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(roles));
+		predicates.add(cb.equal(joinBerechtigungen.get(Berechtigung_.institution), institution));
 
 		query.where(predicates.toArray(NEW));
 		query.distinct(true);

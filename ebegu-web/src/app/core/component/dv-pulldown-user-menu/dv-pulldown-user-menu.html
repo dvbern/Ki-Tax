@@ -75,16 +75,16 @@
                 </md-button>
             </md-menu-item>
 
-            <!-- institutionen -->
-            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getMandantRoles()">
+            <!-- Institutionen -->
+            <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getInstitutionProfilRoles()">
                 <md-button ui-sref-active="active"
-                           ui-sref="admin.institutionen"
+                           ui-sref="institution.list"
                            aria-label="{{'INSTITUTIONEN' | translate}}">
                     <a href="#" ng-click="$event.preventDefault();" data-translate="INSTITUTIONEN" aria-hidden></a>
                 </md-button>
             </md-menu-item>
 
-            <!--traegerschaften-->
+            <!--Traegerschaften-->
             <md-menu-item dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getMandantRoles()">
                 <md-button ui-sref-active="active"
                            ui-sref="traegerschaft.list"
