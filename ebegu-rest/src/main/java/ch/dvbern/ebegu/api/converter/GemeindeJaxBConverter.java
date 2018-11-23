@@ -26,11 +26,13 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -76,6 +78,7 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		return gemeinde;
 	}
 
+	@Nonnull
 	public JaxGemeinde gemeindeToJAX(@Nonnull final Gemeinde persistedGemeinde) {
 		final JaxGemeinde jaxGemeinde = new JaxGemeinde();
 		convertAbstractFieldsToJAX(persistedGemeinde, jaxGemeinde);
@@ -86,6 +89,15 @@ public class GemeindeJaxBConverter extends AbstractConverter {
 		jaxGemeinde.setBetreuungsgutscheineStartdatum(persistedGemeinde.getBetreuungsgutscheineStartdatum());
 
 		return jaxGemeinde;
+	}
+
+	@Nonnull
+	public JaxBfsGemeinde gemeindeBfsToJax(@Nonnull final BfsGemeinde bfsGemeinde) {
+		// Aktuell brauchen wir nur den Namen und die BFS-Nummer
+		JaxBfsGemeinde jaxBfsGemeinde = new JaxBfsGemeinde();
+		jaxBfsGemeinde.setName(bfsGemeinde.getName());
+		jaxBfsGemeinde.setBfsNummer(bfsGemeinde.getBfsNummer());
+		return jaxBfsGemeinde;
 	}
 
 	@Nonnull
