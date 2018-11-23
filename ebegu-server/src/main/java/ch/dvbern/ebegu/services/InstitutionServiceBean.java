@@ -15,14 +15,13 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.security.PermitAll;
@@ -37,6 +36,9 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
@@ -44,12 +46,12 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
-import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -62,6 +64,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Institution
@@ -73,16 +76,18 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Inject
 	private Persistence persistence;
-
+	@Inject
+	private PrincipalBean principalBean;
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-
 	@Inject
 	private BenutzerService benutzerService;
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public Institution updateInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
 		return persistence.merge(institution);
@@ -93,6 +98,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
 	public Institution createInstitution(@Nonnull Institution institution) {
 		Objects.requireNonNull(institution);
+		if (institution.getMandant() == null) {
+			institution.setMandant(requireNonNull(principalBean.getMandant()));
+		}
+
 		return persistence.persist(institution);
 	}
 
@@ -109,11 +118,13 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
 	public Institution setInstitutionInactive(@Nonnull String institutionId) {
 		Objects.requireNonNull(institutionId);
-		Optional<Institution> institutionToRemove = findInstitution(institutionId);
 
-		Institution institution = institutionToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
-		institution.setActive(false);
-		return persistence.merge(institution);
+		final InstitutionStammdaten institutionStammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
+
+		institutionStammdaten.setInactive();
+		final InstitutionStammdaten mergedInstitutionstammdaten = persistence.merge(institutionStammdaten);
+		return mergedInstitutionstammdaten.getInstitution();
 	}
 
 	@Override
@@ -142,9 +153,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
 		Root<Institution> root = query.from(Institution.class);
 		//Traegerschaft
-		Predicate predTraegerschaft = cb.equal(root.get(Institution_.traegerschaft).get(Traegerschaft_.id), traegerschaftId);
+		Predicate predTraegerschaft = cb.equal(root.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
 
 		query.where(predTraegerschaft);
+
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -154,11 +166,21 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	public Collection<Institution> getAllActiveInstitutionenFromTraegerschaft(String traegerschaftId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
-		Root<Institution> root = query.from(Institution.class);
+
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+
+		query.select(root.get(InstitutionStammdaten_.institution));
+
+		Join<InstitutionStammdaten, Institution> institutionJoin = root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		//Traegerschaft
-		Predicate predTraegerschaft = cb.equal(root.get(Institution_.traegerschaft).get(Traegerschaft_.id), traegerschaftId);
-		Predicate predActive = cb.equal(root.get(Institution_.active), Boolean.TRUE);
+		Predicate predTraegerschaft = cb.equal(institutionJoin.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
+		Predicate predActive = cb.greaterThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
+			LocalDate.now()
+		);
+
 		query.where(predTraegerschaft, predActive);
+
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -169,13 +191,16 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root.get(InstitutionStammdaten_.institution));
-		Join<InstitutionStammdaten, Institution> institutionJoin = root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		query.distinct(true);
 
 		Predicate predSchulamt = root.get(InstitutionStammdaten_.betreuungsangebotTyp).in(BetreuungsangebotTyp.getSchulamtTypes());
-		Predicate predActive = cb.equal(institutionJoin.get(Institution_.active), Boolean.TRUE);
+		Predicate predActive = cb.greaterThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
+			LocalDate.now()
+		);
 
 		query.where(predSchulamt, predActive);
+
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -183,7 +208,19 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Nonnull
 	@PermitAll
 	public Collection<Institution> getAllActiveInstitutionen() {
-		return criteriaQueryHelper.getEntitiesByAttribute(Institution.class, true, Institution_.active);
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.select(root.get(InstitutionStammdaten_.institution));
+		query.distinct(true);
+
+		Predicate predActive = cb.greaterThanOrEqualTo(
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
+			LocalDate.now()
+		);
+
+		query.where(predActive);
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Override
@@ -220,19 +257,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Override
 	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
-	public EnumSet<BetreuungsangebotTyp> getAllAngeboteFromInstitution(@Nonnull String institutionId) {
-		List<InstitutionStammdaten> allInstStammdaten = getAllInstStammdaten(institutionId);
-		return allInstStammdaten.stream().map(InstitutionStammdaten::getBetreuungsangebotTyp)
-			.collect(Collectors.toCollection(() -> EnumSet.noneOf(BetreuungsangebotTyp.class))); // EnumSet.noneOf creates a new empty set of the given type
-	}
-
-	private List<InstitutionStammdaten> getAllInstStammdaten(String institutionId) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-		//InstitutionsID
-		Predicate predicate = cb.equal(root.get(InstitutionStammdaten_.institution).get(Institution_.id), institutionId);
-		query.where(predicate);
-		return persistence.getCriteriaResults(query);
+	public BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId) {
+		InstitutionStammdaten allInstStammdaten = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
+		return allInstStammdaten.getBetreuungsangebotTyp();
 	}
 }

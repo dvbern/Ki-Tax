@@ -54,7 +54,7 @@ export class BenutzerComponent implements OnInit {
     public readonly TSRoleUtil = TSRoleUtil;
     public readonly TSBenutzerStatus = TSBenutzerStatus;
 
-    public tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
+    public readonly tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
 
     public selectedUser: TSBenutzer;
 

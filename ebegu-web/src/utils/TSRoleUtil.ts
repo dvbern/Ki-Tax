@@ -109,6 +109,24 @@ export class TSRoleUtil {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE];
     }
 
+    public static getInstitutionProfilRoles(): Array<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+        ];
+    }
+
+    public static getInstitutionProfilEditRoles(): Array<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+        ];
+    }
+
     public static getTraegerschaftInstitutionRoles(): Array<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
