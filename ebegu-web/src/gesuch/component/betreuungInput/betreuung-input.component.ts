@@ -76,7 +76,8 @@ export class BetreuungInputComponent implements IController {
                 case TSBetreuungsangebotTyp.TAGESFAMILIEN:
                     return this.translate.instant('STUNDEN_PLACEHOLDER');
                 default:
-                    return this.translate.instant('PERCENTAGE_PLACEHOLDER');
+                    // FIXME das wird aufgerufen mit Typ TAGI (Timon Becker)
+                    throw new Error(`Not implemented for Angebot ${this.betreuungsangebotTyp}`);
             }
         }
         return this.translate.instant('PERCENTAGE_PLACEHOLDER');

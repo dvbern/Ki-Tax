@@ -50,7 +50,7 @@
     "TAETIGKEIT": "Tätigkeit",
     "ERROR_MIN": "Minimalwer Wert {{value}} unterschritten",
     "ERROR_MAX": "Maximaler Wert {{value}} überschritten",
-    "ERROR_STEP": "Wert muss in {{value}} Schritten angegeben werden",
+    "ERROR_STEP": "Nur {{value}} Schritte erlaubt",
     "ERROR_NUMBER": "Falsches Zahlenformat",
     "ERROR_VALUE": "Wert zu gross oder falsch formatiert",
     "ERROR_UNEXPECTED": "Es ist ein unerwarteter Fehler aufgetreten",
