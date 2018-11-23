@@ -35,7 +35,7 @@ describe('AddGemeindeComponent', () => {
     let fixture: ComponentFixture<AddGemeindeComponent>;
 
     const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
-        ['getGemeindenForPrincipal$', 'findGemeinde']);
+        ['getGemeindenForPrincipal$', 'findGemeinde', 'getUnregisteredBfsGemeinden']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
     const benutzerServiceSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['findBenutzerByEmail']);
     const einstellungServiceSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['saveEinstellung']);
@@ -69,6 +69,7 @@ describe('AddGemeindeComponent', () => {
 
         gemeindeServiceSpy.getGemeindenForPrincipal$.and.returnValue(of(
             [TestDataUtil.createGemeindeBern(), TestDataUtil.createGemeindeOstermundigen()]));
+        gemeindeServiceSpy.getUnregisteredBfsGemeinden.and.returnValue([]);
         transitionSpy.params.and.returnValue({});
         gesuchsperiodeServiceSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
     }));
