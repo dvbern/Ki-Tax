@@ -71,13 +71,10 @@ export class BetreuungInputComponent implements IController {
     public getPlaceholder(): string {
         if (this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
             switch (this.betreuungsangebotTyp) {
-                case TSBetreuungsangebotTyp.KITA:
-                    return this.translate.instant('TAGE_PLACEHOLDER');
                 case TSBetreuungsangebotTyp.TAGESFAMILIEN:
                     return this.translate.instant('STUNDEN_PLACEHOLDER');
                 default:
-                    // FIXME das wird aufgerufen mit Typ TAGI (Timon Becker)
-                    throw new Error(`Not implemented for Angebot ${this.betreuungsangebotTyp}`);
+                    return this.translate.instant('TAGE_PLACEHOLDER');
             }
         }
         return this.translate.instant('PERCENTAGE_PLACEHOLDER');
@@ -85,17 +82,14 @@ export class BetreuungInputComponent implements IController {
 
     public setAngebotDependingVariables(): void {
         switch (this.betreuungsangebotTyp) {
-            case TSBetreuungsangebotTyp.KITA:
-                this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
-                this.multiplier = this.MULTIPLIER_KITA;
-                return;
             case TSBetreuungsangebotTyp.TAGESFAMILIEN:
                 this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
                 this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
                 return;
             default:
-                // FIXME das wird aufgerufen mit Typ TAGI (Timon Becker)
-                throw new Error(`Not implemented for Angebot ${this.betreuungsangebotTyp}`);
+                this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
+                this.multiplier = this.MULTIPLIER_KITA;
+                return;
         }
     }
 
