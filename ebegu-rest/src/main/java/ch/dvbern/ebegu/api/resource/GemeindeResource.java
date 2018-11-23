@@ -357,7 +357,7 @@ public class GemeindeResource {
 	public List<JaxBfsGemeinde> getUnregisteredBfsGemeinden() {
 		Mandant bern = mandantService.getFirst(); //TODO (later) Change to real mandant!
 		return gemeindeService.getUnregisteredBfsGemeinden(bern).stream()
-			.map(gemeinde -> gemeindeConverter.gemeindeBfsToJax(gemeinde))
+			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
 			.collect(Collectors.toList());
 	}
 }
