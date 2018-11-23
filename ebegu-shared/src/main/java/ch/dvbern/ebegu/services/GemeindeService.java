@@ -22,8 +22,10 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.BfsGemeinde;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Mandant;
 
 /**
  * Service zum Verwalten von Gemeinden
@@ -97,4 +99,10 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	GemeindeStammdaten uploadLogo(@Nonnull String gemeindeId, @Nonnull byte[] content);
+
+	/**
+	 * Gibt eine Liste aller BFS Gemeinden dieses Mandanten zurueck, welche noch nicht fuer KiBon registriert sind.
+	 */
+	@Nonnull
+	Collection<BfsGemeinde> getUnregisteredBfsGemeinden(@Nonnull Mandant mandant);
 }

@@ -45,6 +45,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
@@ -61,12 +62,14 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.MandantService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
@@ -91,6 +94,9 @@ public class GemeindeResource {
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
+	private MandantService mandantService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -342,5 +348,19 @@ public class GemeindeResource {
 		}
 
 		return Response.status(Status.NO_CONTENT).build();
+	}
+
+	@ApiOperation(value = "Returns all unregistered Gemeinden from BFS", responseContainer = "Collection",
+		response = JaxBfsGemeinde.class)
+	@Nullable
+	@GET
+	@Path("/unregistered")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxBfsGemeinde> getUnregisteredBfsGemeinden() {
+		Mandant bern = mandantService.getFirst(); //TODO (later) Change to real mandant!
+		return gemeindeService.getUnregisteredBfsGemeinden(bern).stream()
+			.map(gemeinde -> gemeindeConverter.gemeindeBfsToJax(gemeinde))
+			.collect(Collectors.toList());
 	}
 }
