@@ -163,7 +163,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
             const vonText = DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
             const bisText = urlaub.gueltigkeit.gueltigBis ?
                 DateUtil.momentToLocalDateFormat(urlaub.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
-                '31.12.9999';
+                CONSTANTS.END_OF_TIME_STRING;
             return this.$translate.instant('JA_KORREKTUR_UNBEZAHLTER_URLAUB', {
                 von: vonText,
                 bis: bisText,

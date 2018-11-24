@@ -16,6 +16,9 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,6 +39,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -45,14 +49,20 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -70,6 +80,9 @@ public class InstitutionResource {
 	private InstitutionService institutionService;
 
 	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
 	private BenutzerService benutzerService;
 
 	@Inject
@@ -82,15 +95,19 @@ public class InstitutionResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createInstitution(
 		@Nonnull @NotNull JaxInstitution institutionJAXP,
+		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguStart,
+		@Nonnull @NotNull @Valid @QueryParam("betreuung") String betreuungsangebot,
+		@Nonnull @NotNull @Valid @QueryParam("adminMail") String adminMail,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		String mail = institutionJAXP.getMail();
-		requireNonNull(mail);
+		requireNonNull(adminMail);
 		Institution convertedInstitution = converter.institutionToEntity(institutionJAXP, new Institution());
 		Institution persistedInstitution = this.institutionService.createInstitution(convertedInstitution);
 
-		Benutzer benutzer = benutzerService.findBenutzerByEmail(mail)
+		initInstitutionStammdaten(stringDateBeguStart, betreuungsangebot, persistedInstitution, adminMail);
+
+		Benutzer benutzer = benutzerService.findBenutzerByEmail(adminMail)
 			.map(b -> {
 				if (b.getRole() != UserRole.ADMIN_TRAEGERSCHAFT ||
 					!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
@@ -98,12 +115,12 @@ public class InstitutionResource {
 					throw new EbeguRuntimeException(
 						"createInstitution",
 						ErrorCodeEnum.EXISTING_USER_MAIL,
-						mail);
+						adminMail);
 				}
 
 				return b;
 			})
-			.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(mail, persistedInstitution));
+			.orElseGet(() -> benutzerService.createAdminInstitutionByEmail(adminMail, persistedInstitution));
 
 		benutzerService.einladen(Einladung.forInstitution(benutzer, persistedInstitution));
 
@@ -114,6 +131,27 @@ public class InstitutionResource {
 
 		JaxInstitution jaxInstitution = converter.institutionToJAX(persistedInstitution);
 		return Response.created(uri).entity(jaxInstitution).build();
+	}
+
+	private void initInstitutionStammdaten(
+		@Nonnull String stringDateBeguStart,
+		@Nonnull String betreuungsangebot,
+		@Nonnull Institution persistedInstitution,
+		@Nonnull String adminMail
+	) {
+		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
+		Adresse adresse = new Adresse();
+		adresse.setStrasse("");
+		adresse.setPlz("");
+		adresse.setOrt("");
+		institutionStammdaten.setAdresse(adresse);
+		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.valueOf(betreuungsangebot));
+		institutionStammdaten.setInstitution(persistedInstitution);
+		institutionStammdaten.setMail(adminMail);
+		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
+		DateRange gueltigkeit = new DateRange(beguStart, Constants.END_OF_TIME);
+		institutionStammdaten.setGueltigkeit(gueltigkeit);
+		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
 	}
 
 	@ApiOperation(value = "Update a Institution in the database.", response = JaxInstitution.class)

@@ -130,6 +130,22 @@ public interface BenutzerService {
 	Collection<Benutzer> getGemeindeSachbearbeiter(Gemeinde gemeinde);
 
 	/**
+	 * Gibt alle Administratoren einer Institution zurueck.
+	 * @param institution Die Institution (Kita)
+	 * @return Liste aller Benutzern aus der DB
+	 */
+	@Nonnull
+	Collection<Benutzer> getInstitutionAdministratoren(Institution institution);
+
+	/**
+	 * Gibt alle Sachbearbeiter einer Institution zurueck.
+	 * @param institution Die Institution (Kita)
+	 * @return Liste aller Benutzern aus der DB
+	 */
+	@Nonnull
+	Collection<Benutzer> getInstitutionSachbearbeiter(Institution institution);
+
+	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
 	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
 	 * @param gemeinde Die Gemeinde

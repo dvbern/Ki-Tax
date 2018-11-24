@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
@@ -42,6 +41,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -106,7 +106,9 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private Persistence persistence;
 
-	private final JaxBConverter converter = new JaxBConverter(new GemeindeJaxBConverter());
+	@Inject
+	private JaxBConverter converter;
+
 	private Gesuchsperiode gesuchsperiode;
 
 	@Before
@@ -154,7 +156,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxInstitution jaxInstitution = converter.institutionToJAX(institution);
 		jaxInstitution.getTraegerschaft().setName("ChangedTraegerschaft");
 		jaxInstitution.getMandant().setName("ChangedMandant");
-		institutionResource.createInstitution(jaxInstitution, DUMMY_URIINFO, DUMMY_RESPONSE);
+		institutionResource.createInstitution(jaxInstitution, "2020-01-01",
+			BetreuungsangebotTyp.KITA.toString(), "mail@example.com", DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft loadedTraegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
@@ -174,7 +177,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		JaxInstitutionStammdaten jaxStammdaten = TestJaxDataUtil.createTestJaxInstitutionsStammdaten();
 		jaxStammdaten.setInstitution(converter.institutionToJAX(institution));
 		jaxStammdaten.getInstitution().setName("ChangedInstitution");
-		final JaxInstitutionStammdaten updatedInstitution = institutionStammdatenResource.saveInstitutionStammdaten(jaxStammdaten, DUMMY_URIINFO, DUMMY_RESPONSE);
+		final JaxInstitutionStammdaten updatedInstitution = institutionStammdatenResource
+			.saveInstitutionStammdaten(jaxStammdaten, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(updatedInstitution);
 		Assert.assertEquals("Institution1", updatedInstitution.getInstitution().getName());
