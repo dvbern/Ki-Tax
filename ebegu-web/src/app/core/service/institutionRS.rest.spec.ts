@@ -72,20 +72,6 @@ describe('institutionRS', () => {
 
         });
 
-        describe('createInstitution', () => {
-            it('should create an institution', () => {
-                let createdInstitution: TSInstitution;
-                $httpBackend.expectPOST(institutionRS.serviceURL, mockInstitutionRest).respond(mockInstitutionRest);
-
-                institutionRS.createInstitution(mockInstitution)
-                    .then(result => {
-                        createdInstitution = result;
-                    });
-                $httpBackend.flush();
-                checkFieldValues(createdInstitution, mockInstitution);
-            });
-        });
-
         describe('updateInstitution', () => {
             it('should update an institution', () => {
                 mockInstitution.name = 'changedname';

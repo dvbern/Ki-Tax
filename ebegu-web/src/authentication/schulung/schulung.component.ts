@@ -119,7 +119,6 @@ export class SchulungViewController implements IController {
         const institution = new TSInstitution();
         institution.name = 'Forelle';
         institution.id = '22222222-1111-1111-1111-111111111111';
-        institution.mail = 'forelle@example.com';
         institution.traegerschaft = this.traegerschaftFisch;
         institution.mandant = this.mandant;
         return institution;
