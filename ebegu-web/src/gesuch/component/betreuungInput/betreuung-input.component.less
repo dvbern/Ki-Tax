@@ -23,23 +23,37 @@ md-input-container:not(.md-input-has-value) input:not(:focus),
     width: 100%;
 }
 
+.dv-switch-background-label{
+    padding: 0 2rem;
+    width: auto;
+}
 .betreuung-input-container {
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
     background: @contrast-lightest;
 }
 
-.betreuung-input-switch {
-    width: 60%;
-}
 .dv-betreuung-input-info-label {
-    margin-left: 2px;
-    width: 95%;
-    background: @contrast-light;
     line-height: 4rem;
-    padding-left: 0.5rem;
+    padding-left: 1rem;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.pensum-input{
+    .dv-input-container-medium-label {
+        width: 30rem !important;
+        float:left;
+    }
+    .betreuung-input-switch{
+        width: auto;
+        float:left;
+        margin-left: -32px;
+    }
+    .dv-betreuung-input-info-label{
+         float:left;
+    }
+    .col-md-12{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
 }

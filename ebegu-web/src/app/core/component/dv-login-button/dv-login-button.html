@@ -15,15 +15,8 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="onboarding-container">
-    <div class="container">
-        <div class="onboarding-title">
-            <div class="kibon-logo-white"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <ui-view></ui-view>
-            </div>
-        </div>
-    </div>
+<div ng-if="!vm.principal" class="dv-login-button">
+    <button class="dv-btn" href="" ui-sref-active="active"
+            ui-sref="authentication.login"
+            translate>LOGIN</button>
 </div>
