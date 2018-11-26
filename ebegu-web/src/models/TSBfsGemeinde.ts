@@ -15,25 +15,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.onboarding-container {
-    overflow-y: auto;
-    background: linear-gradient(rgba(40, 40, 40, 0.85), rgba(40, 40, 40, 0.85)),
-    url('../../../assets/images/kitax_bg.jpg') no-repeat center center fixed;
-    background-size: cover;
-    height: 100%;
-    width: 100vw;
+import TSAbstractEntity from './TSAbstractEntity';
 
-    .onboarding-title{
+export default class TSBfsGemeinde extends TSAbstractEntity {
 
-        .kibon-logo-white {
-            margin: 0 auto;
-            width: 180px;
-            height: 100px;
-            background-image: url("../../../assets/images/logo-kibon-white.svg");
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-        }
+    private _name: string;
+    private _bfsNummer: number;
+
+    public constructor(
+        gemeinde?: string,
+        bfsNummer?: number,
+    ) {
+        super();
+        this._name = gemeinde;
+        this._bfsNummer = bfsNummer;
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public set name(value: string) {
+        this._name = value;
+    }
+
+    public get bfsNummer(): number {
+        return this._bfsNummer;
+    }
+
+    public set bfsNummer(value: number) {
+        this._bfsNummer = value;
     }
 }
-

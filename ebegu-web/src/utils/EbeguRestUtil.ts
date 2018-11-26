@@ -46,6 +46,7 @@ import TSBetreuungsmitteilung from '../models/TSBetreuungsmitteilung';
 import TSBetreuungsmitteilungPensum from '../models/TSBetreuungsmitteilungPensum';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
+import TSBfsGemeinde from '../models/TSBfsGemeinde';
 import TSDokument from '../models/TSDokument';
 import TSDokumentGrund from '../models/TSDokumentGrund';
 import TSDossier from '../models/TSDossier';
@@ -760,6 +761,24 @@ export default class EbeguRestUtil {
             gemeindeTS.bfsNummer = gemeindeFromServer.bfsNummer;
             gemeindeTS.betreuungsgutscheineStartdatum = DateUtil
                 .localDateToMoment(gemeindeFromServer.betreuungsgutscheineStartdatum);
+            return gemeindeTS;
+        }
+        return undefined;
+    }
+
+    public parseBfsGemeindeList(data: any): TSBfsGemeinde[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBfsGemeinde(new TSBfsGemeinde(), item))
+            : [this.parseBfsGemeinde(new TSBfsGemeinde(), data)];
+    }
+
+    public parseBfsGemeinde(gemeindeTS: TSBfsGemeinde, gemeindeFromServer: any): TSBfsGemeinde {
+        if (gemeindeFromServer) {
+            gemeindeTS.name = gemeindeFromServer.name;
+            gemeindeTS.bfsNummer = gemeindeFromServer.bfsNummer;
             return gemeindeTS;
         }
         return undefined;

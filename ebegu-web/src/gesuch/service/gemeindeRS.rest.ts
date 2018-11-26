@@ -23,6 +23,7 @@ import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import TSBenutzer from '../../models/TSBenutzer';
+import TSBfsGemeinde from '../../models/TSBfsGemeinde';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
 import DateUtil from '../../utils/DateUtil';
@@ -167,4 +168,8 @@ export default class GemeindeRS implements IEntityRS {
         return result;
     }
 
+    public getUnregisteredBfsGemeinden(): IPromise<TSBfsGemeinde[]> {
+        return this.$http.get(`${this.serviceURL}/unregistered`)
+            .then(response => this.ebeguRestUtil.parseBfsGemeindeList(response.data));
+    }
 }
