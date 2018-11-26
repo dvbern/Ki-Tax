@@ -20,10 +20,14 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
+import {from, Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
+import TSBfsGemeinde from '../../../models/TSBfsGemeinde';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import ErrorService from '../../core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
 
@@ -41,6 +45,9 @@ export class AddGemeindeComponent implements OnInit {
     public beguStartDatumMin: moment.Moment;
     public gesuchsperiodeList: Array<TSGesuchsperiode>;
     public maxBFSNummer: number = 6806;
+
+    public unregisteredGemeinden$: Observable<TSBfsGemeinde[]>;
+    public selectedUnregisteredGemeinde: TSBfsGemeinde;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -60,6 +67,11 @@ export class AddGemeindeComponent implements OnInit {
             });
         } else { // add
             this.initGemeinde();
+            this.unregisteredGemeinden$ = from(this.gemeindeRS.getUnregisteredBfsGemeinden())
+                .pipe(map(bfsGemeinden => {
+                    bfsGemeinden.sort(EbeguUtil.compareByName);
+                    return bfsGemeinden;
+                }));
         }
         this.adminMail = '';
         const currentDate = moment();
@@ -84,6 +96,16 @@ export class AddGemeindeComponent implements OnInit {
         this.errorService.clearAll();
         if (this.isStartDateValid()) {
             this.persistGemeinde();
+        }
+    }
+
+    public bfsGemeindeSelected(): void {
+        if (this.selectedUnregisteredGemeinde) {
+            this.gemeinde.name = this.selectedUnregisteredGemeinde.name;
+            this.gemeinde.bfsNummer = this.selectedUnregisteredGemeinde.bfsNummer;
+        } else {
+            this.gemeinde.name = undefined;
+            this.gemeinde.bfsNummer = undefined;
         }
     }
 

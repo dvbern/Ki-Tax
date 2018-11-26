@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -37,6 +36,8 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.BfsGemeinde;
+import ch.dvbern.ebegu.entities.BfsGemeinde_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
@@ -57,7 +58,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
@@ -256,4 +256,30 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		return saveGemeindeStammdaten(stammdaten);
 	}
 
+	@Nonnull
+	@Override
+	public Collection<BfsGemeinde> getUnregisteredBfsGemeinden(@Nonnull Mandant mandant) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<BfsGemeinde> query = cb.createQuery(BfsGemeinde.class);
+		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+
+		Predicate predicate = root.get(BfsGemeinde_.bfsNummer).in(getRegisteredBfsNummern(mandant)).not();
+		Predicate predicateMandant = cb.equal(root.get(BfsGemeinde_.mandant), mandant);
+		query.where(predicate, predicateMandant);
+		List<BfsGemeinde> unregisteredBfsGemeinden = persistence.getCriteriaResults(query);
+		return unregisteredBfsGemeinden;
+	}
+
+	@Nonnull
+	private List<Long> getRegisteredBfsNummern(@Nonnull Mandant mandant) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
+		Root<Gemeinde> root = query.from(Gemeinde.class);
+
+		Predicate predicateMandant = cb.equal(root.get(Gemeinde_.mandant), mandant);
+		query.where(predicateMandant);
+		query.select(root.get(Gemeinde_.bfsNummer));
+		List<Long> registeredBfsNummern = persistence.getCriteriaResults(query);
+		return registeredBfsNummern;
+	}
 }

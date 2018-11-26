@@ -43,3 +43,4 @@ ebegu-web/src/impressum/
 ebegu-ws/src/test/
 logstash/input/.gitkeep
 logstash/input/id-int/server.2018-02-08.log
+/insertBfsGemeinden.sql
