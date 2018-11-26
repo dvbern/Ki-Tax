@@ -36,7 +36,7 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
 
 export class BetreuungInputComponent implements IController {
 
-    public static $inject = ['$translate'];
+    public static $inject = ['$translate', 'CONSTANTS'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
 
@@ -49,6 +49,7 @@ export class BetreuungInputComponent implements IController {
     public isDisabled: boolean = false;
     public id: string;
     public betreuungsangebotTyp: TSBetreuungsangebotTyp;
+    public step: number = 0.25;
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
@@ -67,19 +68,23 @@ export class BetreuungInputComponent implements IController {
         this.toggle();
     }
 
+    public getPlaceholder(): string {
+        if (this.pensumContainer.betreuungspensumJA.unitForDisplay === this.switchOptions[1]) {
+            if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+                return this.translate.instant('STUNDEN_PLACEHOLDER');
+            }
+            return this.translate.instant('TAGE_PLACEHOLDER');
+        }
+        return this.translate.instant('PERCENTAGE_PLACEHOLDER');
+    }
+
     public setAngebotDependingVariables(): void {
-        switch (this.betreuungsangebotTyp) {
-            case TSBetreuungsangebotTyp.KITA:
-                this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
-                this.multiplier = this.MULTIPLIER_KITA;
-                return;
-            case TSBetreuungsangebotTyp.TAGESFAMILIEN:
-                this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
-                this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
-                return;
-            default:
-                // FIXME das wird aufgerufen mit Typ TAGI (Timon Becker)
-                throw new Error(`Not implemented for Angebot ${this.betreuungsangebotTyp}`);
+        if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.HOURS];
+            this.multiplier = this.MULTIPLIER_TAGESFAMILIEN;
+        } else {
+            this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
+            this.multiplier = this.MULTIPLIER_KITA;
         }
     }
 

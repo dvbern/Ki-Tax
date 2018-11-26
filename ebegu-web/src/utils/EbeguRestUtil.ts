@@ -46,6 +46,7 @@ import TSBetreuungsmitteilung from '../models/TSBetreuungsmitteilung';
 import TSBetreuungsmitteilungPensum from '../models/TSBetreuungsmitteilungPensum';
 import TSBetreuungspensum from '../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../models/TSBetreuungspensumContainer';
+import TSBfsGemeinde from '../models/TSBfsGemeinde';
 import TSDokument from '../models/TSDokument';
 import TSDokumentGrund from '../models/TSDokumentGrund';
 import TSDossier from '../models/TSDossier';
@@ -765,6 +766,24 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
+    public parseBfsGemeindeList(data: any): TSBfsGemeinde[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseBfsGemeinde(new TSBfsGemeinde(), item))
+            : [this.parseBfsGemeinde(new TSBfsGemeinde(), data)];
+    }
+
+    public parseBfsGemeinde(gemeindeTS: TSBfsGemeinde, gemeindeFromServer: any): TSBfsGemeinde {
+        if (gemeindeFromServer) {
+            gemeindeTS.name = gemeindeFromServer.name;
+            gemeindeTS.bfsNummer = gemeindeFromServer.bfsNummer;
+            return gemeindeTS;
+        }
+        return undefined;
+    }
+
     public gemeindeStammdatenToRestObject(restStammdaten: any, stammdaten: TSGemeindeStammdaten): TSGemeindeStammdaten {
         if (stammdaten) {
             this.abstractEntityToRestObject(restStammdaten, stammdaten);
@@ -1026,7 +1045,6 @@ export default class EbeguRestUtil {
             restInstitution.name = institution.name;
             restInstitution.mandant = this.mandantToRestObject({}, institution.mandant);
             restInstitution.traegerschaft = this.traegerschaftToRestObject({}, institution.traegerschaft);
-            restInstitution.mail = institution.mail;
             restInstitution.status = institution.status;
             return restInstitution;
         }
@@ -1040,7 +1058,6 @@ export default class EbeguRestUtil {
             institutionTS.mandant = this.parseMandant(new TSMandant(), institutionFromServer.mandant);
             institutionTS.traegerschaft =
                 this.parseTraegerschaft(new TSTraegerschaft(), institutionFromServer.traegerschaft);
-            institutionTS.mail = institutionFromServer.mail;
             institutionTS.status = institutionFromServer.status;
             return institutionTS;
         }
@@ -1061,10 +1078,12 @@ export default class EbeguRestUtil {
     ): any {
         if (institutionStammdaten) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdaten, institutionStammdaten);
-            restInstitutionStammdaten.iban = institutionStammdaten.iban;
             restInstitutionStammdaten.betreuungsangebotTyp = institutionStammdaten.betreuungsangebotTyp;
             restInstitutionStammdaten.institution = this.institutionToRestObject({}, institutionStammdaten.institution);
             restInstitutionStammdaten.adresse = this.adresseToRestObject({}, institutionStammdaten.adresse);
+            restInstitutionStammdaten.mail = institutionStammdaten.mail;
+            restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
+            restInstitutionStammdaten.iban = institutionStammdaten.iban;
             restInstitutionStammdaten.kontoinhaber = institutionStammdaten.kontoinhaber;
             restInstitutionStammdaten.adresseKontoinhaber =
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
@@ -1084,12 +1103,16 @@ export default class EbeguRestUtil {
     ): TSInstitutionStammdaten {
         if (institutionStammdatenFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTS, institutionStammdatenFromServer);
-            institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
+            institutionStammdatenTS.administratoren = institutionStammdatenFromServer.administratoren;
+            institutionStammdatenTS.sachbearbeiter = institutionStammdatenFromServer.sachbearbeiter;
             institutionStammdatenTS.betreuungsangebotTyp = institutionStammdatenFromServer.betreuungsangebotTyp;
             institutionStammdatenTS.institution =
                 this.parseInstitution(new TSInstitution(), institutionStammdatenFromServer.institution);
             institutionStammdatenTS.adresse =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresse);
+            institutionStammdatenTS.mail = institutionStammdatenFromServer.mail;
+            institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
+            institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
             institutionStammdatenTS.adresseKontoinhaber =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);

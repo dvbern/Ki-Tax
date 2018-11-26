@@ -67,6 +67,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     public ngOnInit(): void {
         this.updateGemeindenList();
         this.sortTable();
+
     }
 
     public ngAfterViewInit(): void {

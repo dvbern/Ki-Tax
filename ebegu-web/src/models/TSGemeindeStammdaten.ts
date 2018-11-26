@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,8 +22,8 @@ import TSGemeinde from './TSGemeinde';
 import TSGemeindeKonfiguration from './TSGemeindeKonfiguration';
 
 export default class TSGemeindeStammdaten extends TSAbstractEntity {
-    public administratoren: string;
-    public sachbearbeiter: string;
+    public administratoren: string; // read only
+    public sachbearbeiter: string; // read only
     public defaultBenutzerBG: TSBenutzer;
     public defaultBenutzerTS: TSBenutzer;
     public gemeinde: TSGemeinde;
@@ -36,8 +34,8 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public webseite: string;
     public korrespondenzspracheDe: boolean;
     public korrespondenzspracheFr: boolean;
-    public benutzerListeBG: TSBenutzer[];
-    public benutzerListeTS: TSBenutzer[];
+    public benutzerListeBG: TSBenutzer[]; // read only
+    public benutzerListeTS: TSBenutzer[]; // read only
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
 }

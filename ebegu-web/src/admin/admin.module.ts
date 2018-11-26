@@ -22,9 +22,6 @@ import {AdminViewComponentConfig} from './component/adminView/adminView';
 import {BenutzerListViewComponentConfig} from './component/benutzerListView/benutzerListView';
 import {FerieninselViewComponentConfig} from './component/ferieninselView/ferieninselView';
 import {GesuchsperiodeViewComponentConfig} from './component/gesuchsperiodeView/gesuchsperiodeView';
-import {InstitutionenListViewComponentConfig} from './component/institutionenListView/institutionenListView';
-import {InstitutionStammdatenViewComponentConfig} from './component/institutionStammdatenView/institutionStammdatenView';
-import {InstitutionViewComponentConfig} from './component/institutionView/institutionView';
 import {ParameterViewComponentConfig} from './component/parameterView/parameterView';
 import {DailyBatchRS} from './service/dailyBatchRS.rest';
 import {EbeguVorlageRS} from './service/ebeguVorlageRS.rest';
@@ -42,9 +39,6 @@ export const ADMIN_JS_MODULE = angular.module('ebeguWeb.admin', [CORE_JS_MODULE.
     .service('DailyBatchRS', DailyBatchRS)
     .service('FerieninselStammdatenRS', FerieninselStammdatenRS)
     .component('dvAdminView', new AdminViewComponentConfig())
-    .component('dvInstitutionenListView', new InstitutionenListViewComponentConfig())
-    .component('dvInstitutionView', new InstitutionViewComponentConfig())
-    .component('dvInstitutionStammdatenView', new InstitutionStammdatenViewComponentConfig())
     .component('dvParameterView', new ParameterViewComponentConfig())
     .component('dvGesuchsperiodeView', new GesuchsperiodeViewComponentConfig())
     .component('dvFerieninselView', new FerieninselViewComponentConfig())

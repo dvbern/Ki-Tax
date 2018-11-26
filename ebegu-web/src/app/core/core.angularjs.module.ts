@@ -72,6 +72,7 @@ import {DVErwerbspensumListConfig} from './component/dv-erwerbspensum-list/dv-er
 import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
 import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
+import {DVLoginButtonConfig} from './component/dv-login-button/dv-login-button';
 import {DVMitteilungListConfig} from './component/dv-mitteilung-list/dv-mitteilung-list';
 import {DvMobileNavigationToggleComponentConfig} from './component/dv-mobile-navigation-toggle/dv-mobile-navigation-toggle';
 import {DvPulldownUserMenuComponentConfig} from './component/dv-pulldown-user-menu/dv-pulldown-user-menu';
@@ -256,6 +257,7 @@ export const CORE_JS_MODULE = angular
     .component('dvAccordionTab', new DvAccordionTabComponentConfig())
     .component('dvVersion', new DVVersionComponentConfig())
     .component('dvBenutzerList', new DVBenutzerListConfig())
+    .component('dvLoginButton', new DVLoginButtonConfig())
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))

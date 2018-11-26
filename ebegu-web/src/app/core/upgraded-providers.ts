@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {Provider} from '@angular/core';
@@ -31,6 +33,7 @@ import BenutzerRS from './service/benutzerRS.rest';
 import {DownloadRS} from './service/downloadRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from './service/institutionRS.rest';
+import {InstitutionStammdatenRS} from './service/institutionStammdatenRS.rest';
 import MitteilungRS from './service/mitteilungRS.rest';
 import {TraegerschaftRS} from './service/traegerschaftRS.rest';
 import ZahlungRS from './service/zahlungRS.rest';
@@ -247,6 +250,17 @@ export const institutionRSProvider = {
     deps: ['$injector'],
 };
 
+// InstitutionStammdatenRS
+export function institutionStammdatenRSFactory(i: IInjectorService): InstitutionStammdatenRS {
+    return i.get('InstitutionStammdatenRS');
+}
+
+export const institutionStammdatenRSProvider = {
+    provide: InstitutionStammdatenRS,
+    useFactory: institutionStammdatenRSFactory,
+    deps: ['$injector'],
+};
+
 // EinstellungRS
 export function einstellungRSServiceFactory(i: IInjectorService): EinstellungRS {
     return i.get('EinstellungRS');
@@ -278,5 +292,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     wizardStepManagerProvider,
     fallRSProvider,
     institutionRSProvider,
+    institutionStammdatenRSProvider,
     einstellungRSProvider,
 ];

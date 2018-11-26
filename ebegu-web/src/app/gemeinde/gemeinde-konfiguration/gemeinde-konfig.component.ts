@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,7 +21,10 @@ import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import * as moment from 'moment';
-import {getTSEinschulungTypValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {
+    getTSEinschulungTypGemeindeValues,
+    TSEinschulungTyp,
+} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -42,7 +43,7 @@ export class GemeindeKonfigComponent implements OnInit {
     @Input() public beguStartDate: moment.Moment;
 
     public beguStartStr: string;
-    public einschulungTypValues: Array<TSEinschulungTyp>;
+    public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
     private navigationDest: StateDeclaration;
 
     public constructor(
@@ -53,7 +54,7 @@ export class GemeindeKonfigComponent implements OnInit {
 
     public ngOnInit(): void {
         this.navigationDest = this.$transition$.to();
-        this.einschulungTypValues = getTSEinschulungTypValues();
+        this.einschulungTypGemeindeValues = getTSEinschulungTypGemeindeValues();
         this.beguStartStr = this.beguStartDate.format('DD.MM.YYYY');
         this.initProperties();
     }
