@@ -44,3 +44,11 @@ export function getTSEinschulungTypValues(): Array<TSEinschulungTyp> {
         TSEinschulungTyp.KLASSE9,
     ];
 }
+
+export function getTSEinschulungTypGemeindeValues(): Array<TSEinschulungTyp> {
+    return [
+        TSEinschulungTyp.VORSCHULALTER,
+        TSEinschulungTyp.KINDERGARTEN1,
+        TSEinschulungTyp.KINDERGARTEN2,
+    ];
+}
