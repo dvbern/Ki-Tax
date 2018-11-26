@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -87,10 +85,6 @@ export class EditGemeindeComponent implements OnInit {
     private validateData(stammdaten: TSGemeindeStammdaten): boolean {
         return (stammdaten.korrespondenzspracheDe || stammdaten.korrespondenzspracheFr)
             && this.form.valid;
-    }
-
-    public mitarbeiterBearbeiten(): void {
-        // TODO: Implement Mitarbeiter Bearbeiten Button Action
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
