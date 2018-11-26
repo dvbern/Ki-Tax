@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -69,6 +67,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
     public ngOnInit(): void {
         this.updateGemeindenList();
         this.sortTable();
+
     }
 
     public ngAfterViewInit(): void {
