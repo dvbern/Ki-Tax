@@ -116,18 +116,26 @@ export default class AuthServiceRS {
         try {
             const authData = angular.fromJson(atob(decodeURIComponent(authIdbase64)));
             // we take the complete user from Server and store it in principal
-            return this.benutzerRS.findBenutzer(authData.authId).then(user => {
-                this.principalSubject$.next(user);
-                this.principal = user;
-                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
-
-                return user;
-            });
+            return this.reloadUser(authData.authId);
         } catch (e) {
             LOG.error('cookie decoding failed', e);
             this.clearPrincipal();
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }
+    }
+
+    public reloadCurrentUser(): IPromise<TSBenutzer> {
+        return this.reloadUser(this.getPrincipal().username);
+    }
+
+    private reloadUser(username: string): IPromise<TSBenutzer> {
+        return this.benutzerRS.findBenutzer(username).then(user => {
+            this.principalSubject$.next(user);
+            this.principal = user;
+            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
+
+            return user;
+        });
     }
 
     public logoutRequest(): any {

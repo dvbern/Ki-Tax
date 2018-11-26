@@ -59,7 +59,7 @@ export default class GemeindeRS implements IEntityRS {
     }
 
     public getAktiveGemeinden(): IPromise<TSGemeinde[]> {
-        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN);
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE);
         return this.$http.get(`${this.serviceURL}/active`, {cache})
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
@@ -124,6 +124,10 @@ export default class GemeindeRS implements IEntityRS {
 
     private resetGemeindeCache(): void {
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN).removeAll();
+        this.globalCacheService.getCache(TSCacheTyp.EBEGU_GEMEINDEN_ACTIVE).removeAll();
+        // Nur beim SuperAdmin und Mandant-User werden die Gemeinden aus dem Service gelesen,
+        // bei allen Gemeinde-Benutzern aus dem User! Dieser ist aber u.U. nicht mehr aktuell
+        this.authServiceRS.reloadCurrentUser();
         this.initGemeindenForPrincipal();
     }
 
