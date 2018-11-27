@@ -855,13 +855,12 @@ public final class TestDataUtil {
 				.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
 		Betreuung betreuung = new Betreuung();
-		betreuung.setKind(new KindContainer());
-		betreuung.getKind().setKindJA(new Kind());
+		betreuung.setKind(createDefaultKindContainer());
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
-
+		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
 		return betreuung;
 	}
 

@@ -110,10 +110,15 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 			besondereBeduerfnisse,
 			MathUtil.DEFAULT.fromNullSafe(einkommen),
 			MathUtil.DEFAULT.fromNullSafe(2000));
-		verfuegung.getZeitabschnitte().get(0).setAnspruchberechtigtesPensum(anspruch);
-		verfuegung.getZeitabschnitte().get(0).setBetreuungspensum(MathUtil.DEFAULT.from(anspruch));
 
-		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
+		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
+		verfuegungZeitabschnitt.setBetreuungspensum(MathUtil.DEFAULT.from(anspruch));
+		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
+		verfuegungZeitabschnitt.setEingeschult(eingeschult);
+		verfuegungZeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
+
+		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
 	}
 }

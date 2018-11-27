@@ -18,14 +18,11 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -42,19 +39,12 @@ public abstract class AbstractBGRechner {
 	@Nonnull
 	public VerfuegungZeitabschnitt calculate(
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		@Nonnull Verfuegung verfuegung,
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 
-		Objects.requireNonNull(verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp());
-
 		// Benoetigte Daten
-		LocalDate geburtsdatum = verfuegung.getBetreuung().getKind().getKindJA().getGeburtsdatum();
-		boolean eingeschult = verfuegung.getBetreuung().getKind().getKindJA().getEinschulungTyp().isEingeschult();
-		boolean besonderebeduerfnisse = false;
-		if(verfuegung.getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
-			besonderebeduerfnisse = verfuegung.getBetreuung().getErweiterteBetreuungContainer()
-			.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
-		}
+		boolean unter12Monate = verfuegungZeitabschnitt.isBabyTarif();
+		boolean eingeschult = verfuegungZeitabschnitt.isEingeschult();
+		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisse();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
@@ -62,10 +52,8 @@ public abstract class AbstractBGRechner {
 
 		// Inputdaten validieren
 		checkArguments(von, bis, verfuegungZeitabschnitt.getBgPensum(), massgebendesEinkommen);
-		Objects.requireNonNull(geburtsdatum, "geburtsdatum darf nicht null sein");
 
 		// Zwischenresultate
-		boolean unter12Monate = !von.isAfter(geburtsdatum.plusMonths(12).with(TemporalAdjusters.lastDayOfMonth()));
 		BigDecimal verguenstigungProTag = getVerguenstigungProZeiteinheit(parameterDTO,
 			unter12Monate,
 			eingeschult,

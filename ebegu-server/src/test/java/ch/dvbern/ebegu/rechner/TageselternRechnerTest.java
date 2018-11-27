@@ -125,7 +125,12 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		Verfuegung verfuegung = prepareVerfuegungKita(geburtstag, von, bis, eingeschult, besondereBeduerfnisse,
 			MathUtil.DEFAULT.fromNullSafe(einkommen), MathUtil.DEFAULT.fromNullSafe(2000));
 
-		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegung.getZeitabschnitte().get(0), verfuegung, parameterDTO);
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
+		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
+		verfuegungZeitabschnitt.setEingeschult(eingeschult);
+		verfuegungZeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
+
+		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
 	}
 }

@@ -190,6 +190,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@OneToMany(mappedBy = "verfuegungZeitabschnitt")
 	private List<Zahlungsposition> zahlungsposition = new ArrayList<>();
 
+	@Transient
+	private boolean babyTarif;
+
+	@Transient
+	private boolean eingeschult;
+
+	@Transient
+	private boolean besondereBeduerfnisse;
+
+
 	public VerfuegungZeitabschnitt() {
 	}
 
@@ -231,6 +241,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
 		this.zahlungsstatus = toCopy.zahlungsstatus;
 		this.abschnittLiegtNachBEGUStartdatum = toCopy.abschnittLiegtNachBEGUStartdatum;
+		this.babyTarif = toCopy.babyTarif;
+		this.eingeschult = toCopy.eingeschult;
+		this.besondereBeduerfnisse = toCopy.besondereBeduerfnisse;
 	}
 
 	/**
@@ -533,6 +546,30 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.abschnittLiegtNachBEGUStartdatum = abschnittLiegtNachBEGUStartdatum;
 	}
 
+	public boolean isBabyTarif() {
+		return babyTarif;
+	}
+
+	public void setBabyTarif(boolean babyTarif) {
+		this.babyTarif = babyTarif;
+	}
+
+	public boolean isEingeschult() {
+		return eingeschult;
+	}
+
+	public void setEingeschult(boolean eingeschult) {
+		this.eingeschult = eingeschult;
+	}
+
+	public boolean isBesondereBeduerfnisse() {
+		return besondereBeduerfnisse;
+	}
+
+	public void setBesondereBeduerfnisse(boolean besondereBeduerfnisse) {
+		this.besondereBeduerfnisse = besondereBeduerfnisse;
+	}
+
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
@@ -613,6 +650,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setKategorieKeinPensum(this.kategorieKeinPensum || other.kategorieKeinPensum);
 		this.setKategorieMaxEinkommen(this.kategorieMaxEinkommen || other.kategorieMaxEinkommen);
 		this.setAbschnittLiegtNachBEGUStartdatum(this.abschnittLiegtNachBEGUStartdatum && other.abschnittLiegtNachBEGUStartdatum);
+
+		this.setBabyTarif(this.babyTarif || other.babyTarif);
+		this.setEingeschult(this.eingeschult || other.eingeschult);
+		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
 	}
 
 	public void addBemerkung(VerfuegungsBemerkung bemerkungContainer) {
@@ -757,6 +798,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			ekv2ZuZweit == otherVerfuegungZeitabschnitt.ekv2ZuZweit &&
 			ekv1NotExisting == otherVerfuegungZeitabschnitt.ekv1NotExisting &&
 			abschnittLiegtNachBEGUStartdatum == otherVerfuegungZeitabschnitt.abschnittLiegtNachBEGUStartdatum &&
+			babyTarif == otherVerfuegungZeitabschnitt.babyTarif &&
+			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
+			besondereBeduerfnisse == otherVerfuegungZeitabschnitt.besondereBeduerfnisse &&
 			Objects.equals(zahlungsstatus, otherVerfuegungZeitabschnitt.zahlungsstatus);
 	}
 
