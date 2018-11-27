@@ -30,6 +30,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 
 export class StammdatenHeaderComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
+    @Input() public preTitel: string;
     @Input() public titel: string;
     @Input() public administratoren: string;
     @Input() public sachbearbeiter: string;

@@ -24,7 +24,8 @@
           novalidate>
 
         <dv-stammdaten-header
-            [titel]="getHeaderTitle()"
+            [preTitel]="getHeaderPreTitle()"
+            [titel]="institution.name"
             [administratoren]="stammdaten.administratoren"
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="undefined"
