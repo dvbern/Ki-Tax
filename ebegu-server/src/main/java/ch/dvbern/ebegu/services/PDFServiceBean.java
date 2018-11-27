@@ -45,8 +45,11 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.DokumenteUtil;
@@ -54,8 +57,6 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.vorlagen.GeneratePDFDocumentHelper;
 import ch.dvbern.ebegu.vorlagen.finanziellesituation.BerechnungsgrundlagenInformationPrintImpl;
 import ch.dvbern.ebegu.vorlagen.finanziellesituation.FinanzielleSituationEinkommensverschlechterungPrintMergeSource;
-import ch.dvbern.ebegu.vorlagen.mahnung.MahnungPrintImpl;
-import ch.dvbern.ebegu.vorlagen.mahnung.MahnungPrintMergeSource;
 import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintImpl;
 import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintMergeSource;
 import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintImpl;
@@ -135,37 +136,24 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateMahnung(Mahnung mahnung, Optional<Mahnung> vorgaengerMahnung,
-		boolean writeProtected) throws MergeDocException {
+	public byte[] generateMahnung(Mahnung mahnung, Optional<Mahnung> vorgaengerMahnungOptional, boolean writeProtected) throws MergeDocException {
+		Objects.requireNonNull(mahnung, "Das Argument 'mahnung' darf nicht leer sein");
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(mahnung.getGesuch());
 
-		EbeguVorlageKey vorlageKey;
-
+		MahnungPdfGenerator pdfGenerator;
 		switch (mahnung.getMahnungTyp()) {
 		case ERSTE_MAHNUNG:
-			vorlageKey = EbeguVorlageKey.VORLAGE_MAHNUNG_1;
+			pdfGenerator = new ErsteMahnungPdfGenerator(mahnung, stammdaten, !writeProtected);
 			break;
 		case ZWEITE_MAHNUNG:
-			vorlageKey = EbeguVorlageKey.VORLAGE_MAHNUNG_2;
+			Mahnung vorgaengerMahnung = vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mahnung.getId()));
+			pdfGenerator = new ZweiteMahnungPdfGenerator(mahnung, vorgaengerMahnung, stammdaten, !writeProtected);
 			break;
 		default:
-			throw new MergeDocException("generateMahnung()",
-				"Unexpected Mahnung Type", null, OBJECTARRAY);
+			throw new MergeDocException("generateMahnung()", "Unexpected Mahnung Type", null, OBJECTARRAY);
 		}
-
-		try {
-			Objects.requireNonNull(mahnung, "Das Argument 'mahnung' darf nicht leer sein");
-			final DateRange gueltigkeit = mahnung.getGesuch().getGesuchsperiode().getGueltigkeit();
-			InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(), gueltigkeit.getGueltigBis(), vorlageKey);
-			Objects.requireNonNull(is, "Vorlage '" + vorlageKey.name() + "' nicht gefunden");
-			byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-				ByteStreams.toByteArray(is), new MahnungPrintMergeSource(new MahnungPrintImpl(mahnung, vorgaengerMahnung)),
-				writeProtected);
-			is.close();
-			return bytes;
-		} catch (IOException e) {
-			throw new MergeDocException("generateMahnung()",
-				"Bei der Generierung der Mahnung ist ein Fehler aufgetreten", e, OBJECTARRAY);
-		}
+		return generateDokument(pdfGenerator);
 	}
 
 	@Override

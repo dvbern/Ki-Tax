@@ -36,12 +36,6 @@ public class EbeguVorlageServiceMock extends EbeguVorlageServiceBean {
 		Vorlage vorlage = new Vorlage();
 
 		switch (ebeguVorlageKey) {
-		case VORLAGE_MAHNUNG_1:
-			vorlage.setFilepfad("vorlagen/1_Mahnung.docx");
-			break;
-		case VORLAGE_MAHNUNG_2:
-			vorlage.setFilepfad("vorlagen/2_Mahnung.docx");
-			break;
 		case VORLAGE_NICHT_EINTRETENSVERFUEGUNG:
 			vorlage.setFilepfad("vorlagen/Nichteintretensverfuegung.docx");
 			break;
