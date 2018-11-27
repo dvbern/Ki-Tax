@@ -20,8 +20,6 @@ import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
-import {Permission} from '../../../authorisation/Permission';
-import {PERMISSIONS} from '../../../authorisation/Permissions';
 
 @Component({
     selector: 'dv-stammdaten-header',
@@ -37,6 +35,7 @@ export class StammdatenHeaderComponent implements OnInit {
     @Input() public sachbearbeiter: string;
     @Input() public logoImageUrl: string;
     @Input() public editMode: boolean;
+    @Input() public allowedRoles: TSRole[] = [TSRole.SUPER_ADMIN];
 
     private fileToUpload: File;
 
@@ -55,9 +54,7 @@ export class StammdatenHeaderComponent implements OnInit {
     }
 
     public areMitarbeiterVisible(): boolean {
-        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE];
-        allowedRoles.push(TSRole.SUPER_ADMIN);
-        return this.authServiceRS.isOneOfRoles(allowedRoles);
+        return this.authServiceRS.isOneOfRoles(this.allowedRoles);
     }
 
     public srcChange(files: FileList): void {

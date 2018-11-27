@@ -28,7 +28,8 @@
             [administratoren]="stammdaten.administratoren"
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="undefined"
-            [editMode]="isStammdatenEditable()">
+            [editMode]="isStammdatenEditable()"
+            [allowedRoles]="['ADMIN_INSTITUTION', 'SUPER_ADMIN']">
         </dv-stammdaten-header>
 
         <div class="dv-content">
