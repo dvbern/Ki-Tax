@@ -149,22 +149,22 @@ public class KibonPdfGeneratorTest {
 	@Test
 	public void mahnung1Test() throws InvoiceGeneratorException, IOException {
 		final MahnungPdfGenerator alleinstehend =
-			new MahnungPdfGenerator(mahnung_1_Alleinstehend, null, stammdaten, true, false);
+			new ErsteMahnungPdfGenerator(mahnung_1_Alleinstehend, stammdaten, true);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung1_alleinstehend.pdf"));
 
 		final MahnungPdfGenerator verheiratet =
-			new MahnungPdfGenerator(mahnung_1_Verheiratet, null, stammdaten, false, false);
+			new ErsteMahnungPdfGenerator(mahnung_1_Verheiratet, stammdaten, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung1_verheiratet.pdf"));
 	}
 
 	@Test
 	public void mahnung2Test() throws InvoiceGeneratorException, IOException {
 		final MahnungPdfGenerator alleinstehend =
-			new MahnungPdfGenerator(mahnung_2_Alleinstehend, mahnung_1_Alleinstehend, stammdaten, true, true);
+			new ZweiteMahnungPdfGenerator(mahnung_2_Alleinstehend, mahnung_1_Alleinstehend, stammdaten, true);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2_alleinstehend.pdf"));
 
 		final MahnungPdfGenerator verheiratet =
-			new MahnungPdfGenerator(mahnung_2_Verheiratet, mahnung_1_Verheiratet, stammdaten, false, true);
+			new ZweiteMahnungPdfGenerator(mahnung_2_Verheiratet, mahnung_1_Verheiratet, stammdaten, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2_verheiratet.pdf"));
 	}
 }
