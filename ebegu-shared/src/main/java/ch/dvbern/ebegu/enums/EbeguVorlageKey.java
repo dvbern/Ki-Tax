@@ -44,9 +44,6 @@ public enum EbeguVorlageKey {
 	// finanzielle Situation gerechnet wurde
 	VORLAGE_FINANZIELLE_SITUATION("/vorlagen/Berechnungsgrundlagen.docx"),
 
-	// Ein angebotsübergreifenden neutralen Begleitbrief zu den Verfügungen
-	VORLAGE_BEGLEITSCHREIBEN("/vorlagen/Begleitschreiben.docx"),
-
 	// Benutzerhandbuecher
 	VORLAGE_BENUTZERHANDBUCH_ADMIN("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Administrator.pdf"),
 	VORLAGE_BENUTZERHANDBUCH_INSTITUTION("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Institution.pdf"),
@@ -141,7 +138,6 @@ public enum EbeguVorlageKey {
 			VORLAGE_NICHT_EINTRETENSVERFUEGUNG,
 			VORLAGE_INFOSCHREIBEN_MAXIMALTARIF,
 			VORLAGE_VERFUEGUNG_TAGESFAMILIEN,
-			VORLAGE_FINANZIELLE_SITUATION,
-			VORLAGE_BEGLEITSCHREIBEN };
+			VORLAGE_FINANZIELLE_SITUATION };
 	}
 }
