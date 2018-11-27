@@ -97,11 +97,13 @@ export class EditInstitutionComponent implements OnInit {
         return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
-    public getHeaderTitle(): string {
-        if (!this.institution.traegerschaft) {
-            return this.institution.name;
+    public getHeaderPreTitle(): string {
+        let result = '';
+        if (this.institution.traegerschaft) {
+            result += this.institution.traegerschaft.name + ' - ';
         }
-        return `${this.institution.name} (${this.institution.traegerschaft.name})`;
+        result += this.stammdaten.betreuungsangebotTyp;
+        return result;
     }
 
     public onSubmit(): void {
