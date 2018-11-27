@@ -17,12 +17,14 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import ErrorService from '../../core/errors/service/ErrorService';
 
@@ -44,6 +46,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -64,6 +67,17 @@ export class EditGemeindeComponent implements OnInit {
                 }
                 return stammdaten;
             }));
+    }
+
+    public getHeaderTitle(gemeinde: TSGemeinde): string {
+        if (!gemeinde) {
+            return '';
+        }
+        return `${this.translate.instant('GEMEINDE')} ${gemeinde.name} (${gemeinde.bfsNummer})`;
+    }
+
+    public getLogoImageUrl(gemeinde: TSGemeinde): string {
+        return this.gemeindeRS.getLogoUrl(gemeinde.id);
     }
 
     public cancel(): void {

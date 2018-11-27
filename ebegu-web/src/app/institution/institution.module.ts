@@ -34,13 +34,11 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         InstitutionListComponent,
         EditInstitutionComponent,
         AddInstitutionComponent,
-        StammdatenHeaderComponent,
     ],
     entryComponents: [
         InstitutionListComponent,
         EditInstitutionComponent,
         AddInstitutionComponent,
-        StammdatenHeaderComponent,
     ],
     providers: [],
 })

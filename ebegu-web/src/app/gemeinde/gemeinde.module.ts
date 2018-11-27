@@ -16,6 +16,7 @@
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
+import {StammdatenHeaderComponent} from '../shared/component/stammdaten-header/stammdaten-header.component';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';

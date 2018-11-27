@@ -22,6 +22,7 @@ import {StateService, Transition} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 
@@ -58,6 +59,17 @@ export class ViewGemeindeComponent implements OnInit {
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
                 return stammdaten;
             }));
+    }
+
+    public getHeaderTitle(gemeinde: TSGemeinde): string {
+        if (!gemeinde) {
+            return '';
+        }
+        return `${this.translate.instant('GEMEINDE')} ${gemeinde.name} (${gemeinde.bfsNummer})`;
+    }
+
+    public getLogoImageUrl(gemeinde: TSGemeinde): string {
+        return this.gemeindeRS.getLogoUrl(gemeinde.id);
     }
 
     public editGemeindeStammdaten(): void {
