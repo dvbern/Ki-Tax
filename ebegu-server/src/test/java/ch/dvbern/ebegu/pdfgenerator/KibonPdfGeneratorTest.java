@@ -19,14 +19,18 @@ package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
@@ -46,18 +50,34 @@ public class KibonPdfGeneratorTest {
 	private Gesuch gesuch_alleinstehend;
 	private Gesuch gesuch_verheiratet;
 
+	private Mahnung mahnung_1_Alleinstehend;
+	private Mahnung mahnung_1_Verheiratet;
+	private Mahnung mahnung_2_Alleinstehend;
+	private Mahnung mahnung_2_Verheiratet;
 
 	@Before
 	public void init() throws IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(KibonPdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));
 		stammdaten = TestDataUtil.createGemeindeWithStammdaten();
 		stammdaten.setLogoContent(gemeindeLogo);
+		Benutzer defaultBenutzer = TestDataUtil.createDefaultBenutzer();
 		gesuch_alleinstehend = TestDataUtil.createTestgesuchDagmar();
 		gesuch_verheiratet = TestDataUtil.createTestgesuchYvonneFeuz();
+		gesuch_alleinstehend.getDossier().setVerantwortlicherBG(defaultBenutzer);
+		gesuch_verheiratet.getDossier().setVerantwortlicherBG(defaultBenutzer);
 		benoetigteUnterlagen = new ArrayList<>();
 		benoetigteUnterlagen.add(new DokumentGrund(DokumentGrundTyp.FINANZIELLESITUATION, DokumentTyp.STEUERERKLAERUNG));
 		benoetigteUnterlagen.add(new DokumentGrund(DokumentGrundTyp.ERWERBSPENSUM, DokumentTyp.NACHWEIS_ERWERBSPENSUM));
 		benoetigteUnterlagen.add(new DokumentGrund(DokumentGrundTyp.ERWEITERTE_BETREUUNG, DokumentTyp.BESTAETIGUNG_ARZT));
+
+		mahnung_1_Alleinstehend =
+			TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_alleinstehend, LocalDate.now().plusDays(10), 5);
+		mahnung_1_Verheiratet =
+			TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_verheiratet, LocalDate.now().plusDays(10), 5);
+		mahnung_2_Alleinstehend =
+			TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_alleinstehend, LocalDate.now().plusDays(20), 4);
+		mahnung_2_Verheiratet =
+			TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_verheiratet, LocalDate.now().plusDays(20), 4);
 	}
 
 	@Test
@@ -129,22 +149,22 @@ public class KibonPdfGeneratorTest {
 	@Test
 	public void mahnung1Test() throws InvoiceGeneratorException, IOException {
 		final MahnungPdfGenerator alleinstehend =
-			new MahnungPdfGenerator(gesuch_alleinstehend, stammdaten, true, false);
+			new MahnungPdfGenerator(mahnung_1_Alleinstehend, null, stammdaten, true, false);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung1_alleinstehend.pdf"));
 
 		final MahnungPdfGenerator verheiratet =
-			new MahnungPdfGenerator(gesuch_verheiratet, stammdaten, false, false);
+			new MahnungPdfGenerator(mahnung_1_Verheiratet, null, stammdaten, false, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung1_verheiratet.pdf"));
 	}
 
 	@Test
 	public void mahnung2Test() throws InvoiceGeneratorException, IOException {
 		final MahnungPdfGenerator alleinstehend =
-			new MahnungPdfGenerator(gesuch_alleinstehend, stammdaten, true, true);
+			new MahnungPdfGenerator(mahnung_2_Alleinstehend, mahnung_1_Alleinstehend, stammdaten, true, true);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2_alleinstehend.pdf"));
 
 		final MahnungPdfGenerator verheiratet =
-			new MahnungPdfGenerator(gesuch_verheiratet, stammdaten, false, true);
+			new MahnungPdfGenerator(mahnung_2_Verheiratet, mahnung_1_Verheiratet, stammdaten, false, true);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2_verheiratet.pdf"));
 	}
 }

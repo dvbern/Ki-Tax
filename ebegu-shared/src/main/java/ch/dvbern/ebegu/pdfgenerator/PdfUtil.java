@@ -144,10 +144,22 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static com.lowagie.text.List createList(java.util.List<String> list) {
+	public static Paragraph createList(java.util.List<String> list) {
+		Paragraph paragraph = new Paragraph();
 		final com.lowagie.text.List itextList = new com.lowagie.text.List(com.lowagie.text.List.UNORDERED);
 		list.forEach(item->itextList.add(createListItem(item)));
-		return itextList;
+		paragraph.add(itextList);
+		return paragraph;
+	}
+
+	@Nonnull
+	public static Paragraph createList(java.util.List<String> list, final int emptyLinesAfter) {
+		Paragraph paragraph = new Paragraph();
+		final com.lowagie.text.List itextList = new com.lowagie.text.List(com.lowagie.text.List.UNORDERED);
+		list.forEach(item->itextList.add(createListItem(item)));
+		paragraph.setSpacingAfter(emptyLinesAfter * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		paragraph.add(itextList);
+		return paragraph;
 	}
 
 	@Nonnull

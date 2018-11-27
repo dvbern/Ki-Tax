@@ -48,7 +48,7 @@ public abstract class KibonPdfGenerator {
 	protected final Gesuch gesuch;
 
 	@Nonnull
-	private final GemeindeStammdaten gemeindeStammdaten;
+	protected final GemeindeStammdaten gemeindeStammdaten;
 
 	private Locale sprache;
 

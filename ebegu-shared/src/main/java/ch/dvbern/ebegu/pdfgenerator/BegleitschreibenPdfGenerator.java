@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -37,9 +35,6 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String BEGLEITSCHREIBEN_TITLE = "PdfGeneration_Begleitschreiben_Title";
 	private static final String ANREDE_FAMILIE = "PdfGeneration_AnredeFamilie";
 	private static final String BEGLEITSCHREIBEN_CONTENT = "PdfGeneration_Begleitschreiben_Content";
-	private static final String GRUSS = "PdfGeneration_Gruss";
-	private static final String SIGNIERT = "PdfGeneration_Signiert";
-	private static final String SACHBEARBEITUNG = "PdfGeneration_Sachbearbeitung";
 	private static final String BEILAGEN = "PdfGeneration_Beilagen";
 	private static final String BEILAGE_VERFUEGUNG = "PdfGeneration_BeilageVerfuegung";
 	private static final String BEILAGE_FINANZIELLESITUATION = "PdfGeneration_BeilageFinanzielleSituation";
@@ -67,21 +62,11 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 			Document document = generator.getDocument();
 			document.add(PdfUtil.createParagraph(translate(ANREDE_FAMILIE)));
 			document.add(PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT), 2));
-			document.add(PdfUtil.createParagraph(translate(GRUSS), 2));
-			String signiert = getSachbearbeiterSigniert();
-			if (signiert != null) {
-				document.add(PdfUtil.createParagraph(signiert, 0));
-			}
-			document.add(PdfUtil.createParagraph(translate(SACHBEARBEITUNG), 2));
+			document.add(createParagraphGruss());
+			document.add(createParagraphSignatur());
 			document.add(PdfUtil.createParagraph(translate(BEILAGEN), 0));
 			document.add(PdfUtil.createList(getBeilagen()));
 		};
-	}
-
-	@Nullable
-	private String getSachbearbeiterSigniert() {
-		Benutzer hauptVerantwortlicher = getGesuch().getDossier().getHauptVerantwortlicher();
-		return hauptVerantwortlicher != null ? translate(SIGNIERT, hauptVerantwortlicher.getFullName()) : null;
 	}
 
 	@Nonnull
