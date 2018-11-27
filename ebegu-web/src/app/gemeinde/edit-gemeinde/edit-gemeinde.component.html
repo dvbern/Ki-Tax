@@ -24,10 +24,12 @@
           novalidate>
 
         <dv-stammdaten-header
+            [preTitel]="stammdaten.gemeinde.bfsNummer"
             [titel]="getHeaderTitle(stammdaten.gemeinde)"
             [administratoren]="stammdaten.administratoren"
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="getLogoImageUrl(stammdaten.gemeinde)"
+            [allowedRoles]="getMitarbeiterRoles()"
             [editMode]="true"> <!-- this is the edit view -->
         </dv-stammdaten-header>
 

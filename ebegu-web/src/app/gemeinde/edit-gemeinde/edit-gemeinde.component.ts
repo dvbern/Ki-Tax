@@ -22,10 +22,13 @@ import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import {Permission} from '../../authorisation/Permission';
+import {PERMISSIONS} from '../../authorisation/Permissions';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
@@ -73,11 +76,17 @@ export class EditGemeindeComponent implements OnInit {
         if (!gemeinde) {
             return '';
         }
-        return `${this.translate.instant('GEMEINDE')} ${gemeinde.name} (${gemeinde.bfsNummer})`;
+        return `${this.translate.instant('GEMEINDE')} ${gemeinde.name}`;
     }
 
     public getLogoImageUrl(gemeinde: TSGemeinde): string {
         return this.gemeindeRS.getLogoUrl(gemeinde.id);
+    }
+
+    public getMitarbeiterRoles(): TSRole[] {
+        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE];
+        allowedRoles.push(TSRole.SUPER_ADMIN);
+        return allowedRoles;
     }
 
     public cancel(): void {
