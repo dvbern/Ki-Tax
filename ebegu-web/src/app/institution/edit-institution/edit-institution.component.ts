@@ -29,6 +29,8 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {Permission} from '../../authorisation/Permission';
+import {PERMISSIONS} from '../../authorisation/Permissions';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -89,6 +91,12 @@ export class EditInstitutionComponent implements OnInit {
         // TODO: Implement Mitarbeiter Bearbeiten Button Action
     }
 
+    public getMitarbeiterVisibleRoles(): TSRole[] {
+        const allowedRoles = PERMISSIONS[Permission.ROLE_INSTITUTION];
+        allowedRoles.push(TSRole.SUPER_ADMIN);
+        return allowedRoles;
+    }
+
     public isStammdatenEditable(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles());
     }
@@ -102,7 +110,7 @@ export class EditInstitutionComponent implements OnInit {
         if (this.institution.traegerschaft) {
             result += this.institution.traegerschaft.name + ' - ';
         }
-        result += this.stammdaten.betreuungsangebotTyp;
+        result += this.translate.instant(this.stammdaten.betreuungsangebotTyp);
         return result;
     }
 

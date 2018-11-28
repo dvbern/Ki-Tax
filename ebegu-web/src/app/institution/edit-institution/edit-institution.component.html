@@ -30,7 +30,7 @@
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="undefined"
             [editMode]="isStammdatenEditable()"
-            [allowedRoles]="['ADMIN_INSTITUTION', 'SUPER_ADMIN']">
+            [allowedRoles]="getMitarbeiterVisibleRoles()">
         </dv-stammdaten-header>
 
         <div class="dv-content">

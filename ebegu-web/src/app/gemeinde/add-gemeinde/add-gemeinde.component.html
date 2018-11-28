@@ -33,7 +33,7 @@
             <fieldset>
                 <!-- Gemeindename | BFS-Nummer der Gemeinde -->
                 <div class="row">
-                    <div class="col-sm-6 dv-input-container-medium">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label translate for="gemeinde_ID">GEMEINDE_AUSWAEHLEN</label>
                             <select [(ngModel)]="selectedUnregisteredGemeinde"
@@ -54,7 +54,7 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6 dv-input-container-medium">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label translate for="gemeinde_ID">GEMEINDE_BFS_NR</label>
                             <input id="bfs_nummer_ID" type="number" name="bfs_nummer" #name="ngModel"
@@ -69,7 +69,7 @@
 
                 <!-- Betreuungsgutscheine anbieten ab | Administrator - E-Mail Adresse -->
                 <div class="row">
-                    <div class="col-sm-6 dv-input-container-medium">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label class="md-no-float" translate for="begu_start_ID">INSTITUTION_BEGU_START</label>
                             <input class="dv-mat-datepicker" type="text"
@@ -86,7 +86,7 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6 dv-input-container-medium">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label translate for="admin_mail_ID">ADMIN_MAIL</label>
                             <input id="admin_mail_ID" type="email" name="admin_mail"
