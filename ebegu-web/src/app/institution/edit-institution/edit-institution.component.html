@@ -24,11 +24,13 @@
           novalidate>
 
         <dv-stammdaten-header
-            [titel]="getHeaderTitle()"
+            [preTitel]="getHeaderPreTitle()"
+            [titel]="institution.name"
             [administratoren]="stammdaten.administratoren"
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="undefined"
-            [editMode]="isStammdatenEditable()">
+            [editMode]="isStammdatenEditable()"
+            [allowedRoles]="getMitarbeiterVisibleRoles()">
         </dv-stammdaten-header>
 
         <div class="dv-content">
