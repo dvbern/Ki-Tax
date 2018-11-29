@@ -43,6 +43,7 @@ export class EditGemeindeComponent implements OnInit {
     public keineBeschwerdeAdresse: boolean;
     private navigationSource: StateDeclaration;
     private gemeindeId: string;
+    private fileToUpload: File;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -83,7 +84,7 @@ export class EditGemeindeComponent implements OnInit {
         return this.gemeindeRS.getLogoUrl(gemeinde.id);
     }
 
-    public getMitarbeiterRoles(): TSRole[] {
+    public getMitarbeiterVisibleRoles(): TSRole[] {
         const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE];
         allowedRoles.push(TSRole.SUPER_ADMIN);
         return allowedRoles;
@@ -102,7 +103,37 @@ export class EditGemeindeComponent implements OnInit {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
         }
-        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => this.navigateBack());
+        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
+            if (!this.fileToUpload) {
+                this.navigateBack();
+            } else {
+                this.persistLogo(this.fileToUpload, true);
+            }
+        });
+    }
+
+    private persistLogo(file: File, navigateBack: boolean): void {
+        this.gemeindeRS.uploadLogoImage(this.gemeindeId, file).then(() => {
+            if (navigateBack) {
+                this.navigateBack();
+            }
+        }, () => {
+            this.errorService.clearAll();
+            this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
+        });
+    }
+
+    public collectLogoChange(file: File): void {
+        if (!file) {
+            return;
+        }
+        if (!this.form.valid) {
+            // upload later if the form is invalid
+            this.fileToUpload = file;
+            return;
+        }
+        this.persistLogo(file, false);
+        this.fileToUpload = undefined;
     }
 
     private validateData(stammdaten: TSGemeindeStammdaten): boolean {

@@ -75,7 +75,7 @@ export class ViewGemeindeComponent implements OnInit {
         return this.gemeindeRS.getLogoUrl(gemeinde.id);
     }
 
-    public getMitarbeiterRoles(): TSRole[] {
+    public getMitarbeiterVisibleRoles(): TSRole[] {
         const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE];
         allowedRoles.push(TSRole.SUPER_ADMIN);
         return allowedRoles;

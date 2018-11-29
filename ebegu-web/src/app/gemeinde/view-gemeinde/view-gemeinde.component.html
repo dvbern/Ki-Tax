@@ -29,7 +29,7 @@
             [administratoren]="stammdaten.administratoren"
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="getLogoImageUrl(stammdaten.gemeinde)"
-            [allowedRoles]="getMitarbeiterRoles()"
+            [allowedRoles]="getMitarbeiterVisibleRoles()"
             [editMode]="false"> <!-- this is the read only view -->
         </dv-stammdaten-header>
 
