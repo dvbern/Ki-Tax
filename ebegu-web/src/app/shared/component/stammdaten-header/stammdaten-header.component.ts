@@ -80,7 +80,6 @@ export class StammdatenHeaderComponent implements OnInit {
     public $postLink(): void {
     }
 
-
     private emitLogoChange(): void {
         if (this.logoImageChange) {
             this.logoImageChange.emit(this.fileToUpload);

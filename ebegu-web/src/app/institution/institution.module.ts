@@ -16,7 +16,6 @@
  */
 
 import {NgModule} from '@angular/core';
-import {StammdatenHeaderComponent} from '../shared/component/stammdaten-header/stammdaten-header.component';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
