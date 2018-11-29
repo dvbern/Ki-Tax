@@ -355,13 +355,13 @@ public class FinanzielleSituationRechner {
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
 
-		final BigDecimal totalBruttovermoegen = MathUtil.DEFAULT.add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getBruttovermoegen() : BigDecimal.ZERO,
+		final BigDecimal totalBruttovermoegen = add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getBruttovermoegen() : BigDecimal.ZERO,
 			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getBruttovermoegen() : BigDecimal.ZERO);
 
-		final BigDecimal totalSchulden = MathUtil.DEFAULT.add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getSchulden() : BigDecimal.ZERO,
+		final BigDecimal totalSchulden = add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getSchulden() : BigDecimal.ZERO,
 			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getSchulden() : BigDecimal.ZERO);
 
-		BigDecimal total = MathUtil.DEFAULT.subtract(totalBruttovermoegen, totalSchulden);
+		BigDecimal total = subtract(totalBruttovermoegen, totalSchulden);
 		if (total.compareTo(BigDecimal.ZERO) < 0) {
 			total = BigDecimal.ZERO;
 		} //total vermoegen + schulden muss gruesser null sein, individuell pro gs kann es aber negativ sein
