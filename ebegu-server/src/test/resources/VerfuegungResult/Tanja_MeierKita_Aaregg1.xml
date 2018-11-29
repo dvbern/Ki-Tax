@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU Affero General Public License as
-  ~ published by the Free Software Foundation, either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU Affero General Public License for more details.
-  ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
-  -->
-
 <verfuegungszeitAbschnitte>
     <nummer>1</nummer>
     <nameKind>Tanja Meier</nameKind>
@@ -78,76 +63,76 @@
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
-        <elternbeitrag>1477.20</elternbeitrag>
+        <elternbeitrag>1143.85</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.01.2018</gueltigAb>
         <gueltigBis>31.01.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>1666.65</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
-        <elternbeitrag>1477.20</elternbeitrag>
+        <elternbeitrag>1143.85</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.02.2018</gueltigAb>
         <gueltigBis>28.02.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>1666.65</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
-        <elternbeitrag>1477.20</elternbeitrag>
+        <elternbeitrag>1143.85</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.03.2018</gueltigAb>
         <gueltigBis>31.03.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>1666.65</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
-        <elternbeitrag>1477.20</elternbeitrag>
+        <elternbeitrag>1143.85</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.04.2018</gueltigAb>
         <gueltigBis>30.04.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>1666.65</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
-        <elternbeitrag>1477.20</elternbeitrag>
+        <elternbeitrag>1143.85</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.05.2018</gueltigAb>
         <gueltigBis>31.05.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>1666.65</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
-        <elternbeitrag>1477.20</elternbeitrag>
+        <elternbeitrag>1143.85</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.06.2018</gueltigAb>
         <gueltigBis>30.06.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>1666.65</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
-        <elternbeitrag>1477.20</elternbeitrag>
+        <elternbeitrag>1143.85</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.07.2018</gueltigAb>
         <gueltigBis>31.07.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>1666.65</vollkosten>
     </verfuegungszeitabschnitte>
 </verfuegungszeitAbschnitte>

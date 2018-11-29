@@ -49,6 +49,7 @@ public abstract class AbstractBGRechner {
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
 		BigDecimal vollkostenProMonat = verfuegungZeitabschnitt.getMonatlicheBetreuungskosten();
+		BigDecimal betreuungspensum = verfuegungZeitabschnitt.getBetreuungspensum();
 
 		// Inputdaten validieren
 		checkArguments(von, bis, verfuegungZeitabschnitt.getBgPensum(), massgebendesEinkommen);
@@ -68,7 +69,13 @@ public abstract class AbstractBGRechner {
 		BigDecimal minBetrag = MATH.multiply(stundenGemaessPensumUndAnteilMonat, getMinimalBeitragProZeiteinheit(parameterDTO));
 		BigDecimal verguenstigungVorVollkostenUndMinimalbetrag =
 			MATH.multiplyNullSafe(stundenGemaessPensumUndAnteilMonat, verguenstigungProTag);
-		BigDecimal vollkosten = MATH.multiply(anteilMonat, vollkostenProMonat);
+
+		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
+		if (betreuungspensum != null && betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
+			anteilVerguenstigesPensumAmBetreuungspensum = MATH.divide(verfuegungZeitabschnitt.getBgPensum(), betreuungspensum);
+		}
+		BigDecimal vollkostenFuerVerguenstigtesPensum = MathUtil.DEFAULT.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
+		BigDecimal vollkosten = MATH.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
 		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
 
 		// Resultat
