@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
@@ -55,8 +56,6 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.vorlagen.GeneratePDFDocumentHelper;
-import ch.dvbern.ebegu.vorlagen.finanziellesituation.BerechnungsgrundlagenInformationPrintImpl;
-import ch.dvbern.ebegu.vorlagen.finanziellesituation.FinanzielleSituationEinkommensverschlechterungPrintMergeSource;
 import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintImpl;
 import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintMergeSource;
 import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintImpl;
@@ -200,21 +199,10 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 				// Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.		authorizer.checkReadAuthorizationFinSit(gesuch);
 				authorizer.checkReadAuthorizationFinSit(gesuch);
 			}
-			try {
-				final DateRange gueltigkeit = gesuch.getGesuchsperiode().getGueltigkeit();
-				InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(),
-					gueltigkeit.getGueltigBis(), EbeguVorlageKey.VORLAGE_FINANZIELLE_SITUATION);
-				Objects.requireNonNull(is, "Vorlage fuer Berechnungsgrundlagen nicht gefunden");
-				byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-					ByteStreams.toByteArray(is), new FinanzielleSituationEinkommensverschlechterungPrintMergeSource(
-						new BerechnungsgrundlagenInformationPrintImpl(gesuch, famGroessenVerfuegung)), writeProtected);
 
-				is.close();
-				return bytes;
-			} catch (IOException e) {
-				throw new MergeDocException("generateFinanzielleSituation()",
-					"Bei der Generierung der Berechnungsgrundlagen ist ein Fehler aufgetreten", e, OBJECTARRAY);
-			}
+			GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
+			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(gesuch, stammdaten, !writeProtected);
+			return generateDokument(pdfGenerator);
 		}
 		return BYTES;
 	}

@@ -55,7 +55,6 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 	private static final String FREIGABEQUITTUNG_TITLE = "PdfGeneration_Freigabequittung_Title";
-	private static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
 	private static final String GESUCHSTELLER = "PdfGeneration_Gesuchsteller";
 	private static final String BETREUUNGSANGEBOTE = "PdfGeneration_Betreuungsangebote";
 	private static final String BETREUUNG_KIND = "PdfGeneration_Kind";

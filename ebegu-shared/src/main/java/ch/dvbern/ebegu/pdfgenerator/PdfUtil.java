@@ -19,12 +19,17 @@ package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.text.Format;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -185,15 +190,39 @@ public final class PdfUtil {
 		return table;
 	}
 
+	@Nonnull
+	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<LabelValuePair> entries) {
+		PdfPTable table = new PdfPTable(2);
+		try {
+			float[] columnWidths = {1, 4};
+			table.setWidths(columnWidths);
+		} catch (DocumentException e) {
+			LOG.error("Failed to read the Logo: {}", e.getMessage());
+		}
+		table.setSpacingBefore(0);
+		table.setWidthPercentage(FULL_WIDTH);
+		table.setKeepTogether(true);
+		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+		table.getDefaultCell().setPadding(0);
+		table.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+
+		for (LabelValuePair entry : entries) {
+			table.addCell(new Phrase(entry.getLabel(), DEFAULT_FONT));
+			table.addCell(new Phrase(entry.getValue(), DEFAULT_FONT));
+		}
+		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
+		return table;
+	}
+
 	public static ListItem createListItem(@Nonnull final String string) {
 		ListItem listItem = new ListItem(string, PdfUtilities.DEFAULT_FONT);
 		return listItem;
 	}
 
 	@Nonnull
-	public static PdfPTable createTable(final String[][]values, final float[] columnWidths, final int[] alignement, final int emptyLinesAfter) { {
+	public static PdfPTable createTable(final String[][]values, final float[] columnWidths, final int[] alignement, final int emptyLinesAfter) {
 		return createTable(values, columnWidths, alignement,emptyLinesAfter, false);
-	}}
+	}
 
 
 	@Nonnull
@@ -223,4 +252,29 @@ public final class PdfUtil {
 		return table;
 	}
 
+	@Nonnull
+	public static String printString(@Nullable String stringOrNull) {
+		if (stringOrNull != null) {
+			return stringOrNull;
+		}
+		return "";
+	}
+
+	@Nonnull
+	public static String printBigDecimal(@Nullable BigDecimal valueAsBigDecimal) {
+		if (valueAsBigDecimal != null) {
+			Format format = NumberFormat.getNumberInstance(Locale.GERMAN);
+			String formattedAmount = format.format(valueAsBigDecimal);
+			return formattedAmount;
+		}
+		return "";
+	}
+
+	@Nonnull
+	public static String printLocalDate(@Nullable LocalDate dateValue) {
+		if (dateValue != null) {
+			return Constants.DATE_FORMATTER.format(dateValue);
+		}
+		return "";
+	}
 }
