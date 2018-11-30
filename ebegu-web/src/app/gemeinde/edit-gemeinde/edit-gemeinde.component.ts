@@ -104,10 +104,10 @@ export class EditGemeindeComponent implements OnInit {
             stammdaten.beschwerdeAdresse = undefined;
         }
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
-            if (!this.fileToUpload) {
-                this.navigateBack();
-            } else {
+            if (this.fileToUpload) {
                 this.persistLogo(this.fileToUpload, true);
+            } else {
+                this.navigateBack();
             }
         });
     }
@@ -123,12 +123,12 @@ export class EditGemeindeComponent implements OnInit {
         });
     }
 
-    public collectLogoChange(file: File): void {
+    public collectLogoChange(file: File, stammdaten: TSGemeindeStammdaten): void {
         if (!file) {
             return;
         }
-        if (!this.form.valid) {
-            // upload later if the form is invalid
+        if (!stammdaten || stammdaten.isNew()) {
+            // upload later if the stammdaten are new, because if the object doesn't exist yet we will get an error
             this.fileToUpload = file;
             return;
         }

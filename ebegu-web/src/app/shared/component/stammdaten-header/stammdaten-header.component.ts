@@ -72,7 +72,7 @@ export class StammdatenHeaderComponent implements OnInit {
             const result: string = event.target.result;
             this.logoImageUrl$ = of(result);
 
-            // emit logo change to upload image by parrent view
+            // emit logo change to upload image by parent view
             this.emitLogoChange();
         };
     }
