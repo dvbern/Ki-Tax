@@ -89,7 +89,7 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
                 const errorService = transition.injector().get('ErrorService');
                 errorService.addMesageAsError('ERROR_UNAUTHORIZED');
 
-                LOG.debug('unauthorised');
+                LOG.info('unauthorised navigation to', transition.to());
 
                 return false;
             }),

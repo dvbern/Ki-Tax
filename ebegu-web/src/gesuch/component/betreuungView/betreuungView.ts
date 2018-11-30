@@ -421,13 +421,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableBetreuungsangebotsTyp(): boolean {
-        return this.model.isNew()
+        return this.model
+            && this.model.isNew()
             && !this.gesuchModelManager.isGesuchReadonly()
             && !this.gesuchModelManager.isKorrekturModusJugendamt();
     }
 
     public showInstitutionenList(): boolean {
-        return (
+        return this.getBetreuungModel()
+            && (
                 this.isTageschulenAnmeldungAktiv() &&
                 (this.isEnabled() || this.isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                 || !this.isTageschulenAnmeldungAktiv() && (this.isEnabled() && !this.isTagesschule())
@@ -699,10 +701,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Returns true when the Gesuch must be readonly
      */
     public isGesuchReadonly(): boolean {
-        if (!this.getBetreuungModel().isAngebotSchulamt()) {
+        if (!this.getBetreuungModel() || !this.getBetreuungModel().isAngebotSchulamt()) {
             return super.isGesuchReadonly();
         }
-
         return !this.getBetreuungModel().isEnabled();
     }
 
