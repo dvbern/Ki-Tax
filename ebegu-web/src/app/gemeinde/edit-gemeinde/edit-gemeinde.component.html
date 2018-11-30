@@ -24,7 +24,7 @@
           novalidate>
 
         <dv-stammdaten-header
-            (logoImageChange)="collectLogoChange($event, stammdaten)"
+            (logoImageChange)="collectLogoChange($event)"
             [preTitel]="stammdaten.gemeinde.bfsNummer"
             [titel]="getHeaderTitle(stammdaten.gemeinde)"
             [administratoren]="stammdaten.administratoren"

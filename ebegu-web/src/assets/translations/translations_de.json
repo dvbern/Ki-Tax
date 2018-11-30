@@ -1403,6 +1403,7 @@
     "AUSSERORDENTLICHER_ANSPRUCH_BEGRUENDUNG": "Beschrieb",
     "AUSSERORDENTLICHER_ANSPRUCH_BETREUUNGSPENSUM": "Anspruch",
     "UNBEZAHLTER_URLAUB": "Unbezahlter Urlaub ab drei Monaten",
-    "JA_KORREKTUR_UNBEZAHLTER_URLAUB": "Unbezahlter Urlaub, {{von}} – {{bis}}"
-
+    "JA_KORREKTUR_UNBEZAHLTER_URLAUB": "Unbezahlter Urlaub, {{von}} – {{bis}}",
+    "WELCOME": "Willkommen",
+    "LETS_START": "los geht's"
 }

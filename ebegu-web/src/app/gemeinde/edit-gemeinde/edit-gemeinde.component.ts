@@ -44,6 +44,8 @@ export class EditGemeindeComponent implements OnInit {
     private navigationSource: StateDeclaration;
     private gemeindeId: string;
     private fileToUpload: File;
+    // this field will be true when the gemeinde_stammdaten don't yet exist i.e. when the gemeinde is being registered
+    private isRegisteringGemeinde: boolean = false;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -62,6 +64,7 @@ export class EditGemeindeComponent implements OnInit {
         }
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
+                this.isRegisteringGemeinde = stammdaten.isNew();
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
                 if (stammdaten.adresse === undefined) {
                     stammdaten.adresse = new TSAdresse();
@@ -123,11 +126,11 @@ export class EditGemeindeComponent implements OnInit {
         });
     }
 
-    public collectLogoChange(file: File, stammdaten: TSGemeindeStammdaten): void {
+    public collectLogoChange(file: File): void {
         if (!file) {
             return;
         }
-        if (!stammdaten || stammdaten.isNew()) {
+        if (this.isRegisteringGemeinde) {
             // upload later if the stammdaten are new, because if the object doesn't exist yet we will get an error
             this.fileToUpload = file;
             return;
@@ -146,6 +149,11 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     private navigateBack(): void {
+        if (this.isRegisteringGemeinde) {
+            this.$state.go('welcome.gemeinde');
+            return;
+        }
+
         if (!this.navigationSource.name) {
             this.$state.go('gemeinde.list');
             return;
