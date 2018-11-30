@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
@@ -303,6 +304,19 @@ public final class PdfUtil {
 	public static String printLocalDate(@Nullable LocalDate dateValue) {
 		if (dateValue != null) {
 			return Constants.DATE_FORMATTER.format(dateValue);
+		}
+		return "";
+	}
+
+	@Nonnull
+	public static String printPercent(int percent) {
+		return MathUtil.DEFAULT.from(percent) + " %";
+	}
+
+	@Nonnull
+	public static String printPercent(@Nullable BigDecimal percent) {
+		if (percent != null) {
+			return String.valueOf(percent) + " %";
 		}
 		return "";
 	}

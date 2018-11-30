@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -29,6 +30,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -52,6 +54,14 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String VERFUEGUNG_CONTENT = "PdfGeneration_Verfuegung_Content";
+	private static final String VON = "PdfGeneration_Verfuegung_Von";
+	private static final String BIS = "PdfGeneration_Verfuegung_Bis";
+	private static final String PENSUM_BETREUUNG = "PdfGeneration_Verfuegung_Betreuungspensum";
+	private static final String PENSUM_ANSPRUCH = "PdfGeneration_Verfuegung_Anspruchspensum";
+	private static final String PENSUM_BG = "PdfGeneration_Verfuegung_BgPensum";
+	private static final String VOLLKOSTEN = "PdfGeneration_Verfuegung_Vollkosten";
+	private static final String GUTSCHEIN = "PdfGeneration_Verfuegung_Gutschein";
+	private static final String ELTERNBEITRAG = "PdfGeneration_Verfuegung_Elternbeitrag";
 	private static final String KEIN_ANSPRUCH_CONTENT = "PdfGeneration_KeinAnspruch_Content";
 	private static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
 	private static final String NICHT_EINTRETEN_CONTENT_2 = "PdfGeneration_NichtEintreten_Content_2";
@@ -180,25 +190,35 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private PdfPTable createVerfuegungTable() {
-		//TODO (hefr) Die richtige Verfuegungstabelle erstellen!
-		final String[][] daten = {
-			{"von", "bis", "effektive Betreuung", "Anspruch", "vergünstigt", "Vollkosten in CHF", "Vergünstigung in CHF", "Elternbeitrag in CHF"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"},
-			{"01.08.2019", "31.08.2019", "100.00%", "80%", "80.00%", "2'000", "725.65", "1'274.35"}
+		Objects.requireNonNull(betreuung.getVerfuegung());
+		List<String[]> values = new ArrayList<>();
+		String[] titles = {
+			ServerMessageUtil.getMessage(VON),
+			ServerMessageUtil.getMessage(BIS),
+			ServerMessageUtil.getMessage(PENSUM_BETREUUNG),
+			ServerMessageUtil.getMessage(PENSUM_ANSPRUCH),
+			ServerMessageUtil.getMessage(PENSUM_BG),
+			ServerMessageUtil.getMessage(VOLLKOSTEN),
+			ServerMessageUtil.getMessage(GUTSCHEIN),
+			ServerMessageUtil.getMessage(ELTERNBEITRAG)
 		};
+		values.add(titles);
+		for (VerfuegungZeitabschnitt abschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
+			String[] data = {
+				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()),
+				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
+				PdfUtil.printPercent(abschnitt.getBetreuungspensum()),
+				PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum()),
+				PdfUtil.printPercent(abschnitt.getBgPensum()),
+				PdfUtil.printBigDecimal(abschnitt.getVollkosten()),
+				PdfUtil.printBigDecimal(abschnitt.getVerguenstigung()),
+				PdfUtil.printBigDecimal(abschnitt.getElternbeitrag()),
+			};
+			values.add(data);
+		}
 		float[] columnWidths = {10, 10, 10, 10, 10, 10, 12, 12};
 		int[] alignement = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT };
-		return PdfUtil.createTable(daten, columnWidths, alignement, 2);
+		return PdfUtil.createTable(values, columnWidths, alignement, 2);
 	}
 
 	@Nonnull
