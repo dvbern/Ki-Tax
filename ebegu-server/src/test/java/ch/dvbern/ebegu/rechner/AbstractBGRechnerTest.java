@@ -450,7 +450,7 @@ public class AbstractBGRechnerTest {
 				MathUtil.GANZZAHL.from(-7600), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 			// Erster Monat
 			VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-			assertZeitabschnitt(august, new BigDecimal(100.00), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), 1600, 1600.00, 400.00);
+			assertZeitabschnitt(august, new BigDecimal(100.00), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), 1600, 1488, 112);
 		}
 	}
 
