@@ -21,7 +21,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.api.converter.GemeindeJaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
@@ -95,8 +94,6 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	private PensumFachstelleService pensumFachstelleService;
 	@Inject
 	private JaxBConverter converter;
-	@Inject
-	private GemeindeJaxBConverter gemeindeConverter;
 	@Inject
 	private Persistence persistence;
 
@@ -206,11 +203,11 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		final Gemeinde gemeindeBern = TestDataUtil.getGemeindeBern(persistence);
 		JaxGesuch jaxGesuch = TestJaxDataUtil.createTestJaxGesuch(
 			converter.gesuchsperiodeToJAX(gesuchsperiode1718),
-			gemeindeConverter.gemeindeToJAX(gemeindeBern)
+			converter.gemeindeToJAX(gemeindeBern)
 		);
 		TestDataUtil.prepareParameters(gesuchsperiode1718, persistence);
 
-		JaxGemeinde persistedGemeinde = gemeindeConverter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
+		JaxGemeinde persistedGemeinde = converter.gemeindeToJAX(TestDataUtil.getGemeindeBern(persistence));
 		Mandant persistedMandant =
 			persistence.persist(converter.mandantToEntity(TestJaxDataUtil.createTestMandant(), new Mandant()));
 		jaxGesuch.getDossier().getVerantwortlicherBG().setMandant(converter.mandantToJAX(persistedMandant));

@@ -117,6 +117,10 @@ public class BetreuungsgutscheinConfigurator {
 		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule = new GutscheineStartdatumAbschnittRule(defaultGueltigkeit);
 		rules.add(gutscheineStartdatumAbschnittRule);
 
+		// - KindTarif
+		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit);
+		rules.add(kindTarifAbschnittRule);
+
 		// - Betreuungspensum
 		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit);
 		rules.add(betreuungspensumAbschnittRule);

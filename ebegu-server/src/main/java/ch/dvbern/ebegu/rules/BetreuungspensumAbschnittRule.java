@@ -44,7 +44,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
 			Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
-			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(betreuungspensum));
+			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(betreuungspensum, betreuung));
 		}
 		return betreuungspensumAbschnitte;
 	}
@@ -54,10 +54,18 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	 * @return VerfuegungZeitabschnitt mit gleicher gueltigkeit und uebernommenem betreuungspensum
 	 */
 	@Nonnull
-	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Betreuungspensum betreuungspensum) {
+	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Betreuungspensum betreuungspensum, @Nonnull Betreuung betreuung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
+		// Eigentliches Betreuungspensum
 		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensumRounded());
 		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
+		// ErweiterteBetreuung-Flag gesetzt?
+		boolean besondereBeduerfnisse = false;
+		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
+			besondereBeduerfnisse = betreuung.getErweiterteBetreuungContainer()
+				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
+		}
+		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		return zeitabschnitt;
 	}
 }

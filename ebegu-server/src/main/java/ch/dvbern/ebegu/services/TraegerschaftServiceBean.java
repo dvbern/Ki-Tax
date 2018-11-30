@@ -160,8 +160,8 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 
 		Collection<Institution> allInstitutionen = institutionService.getAllInstitutionenFromTraegerschaft(traegerschaft.getId());
 		allInstitutionen.forEach(institution -> {
-			EnumSet<BetreuungsangebotTyp> allAngeboteInstitution = institutionService.getAllAngeboteFromInstitution(institution.getId());
-			result.addAll(allAngeboteInstitution);
+			BetreuungsangebotTyp angebotInstitution = institutionService.getAngebotFromInstitution(institution.getId());
+			result.add(angebotInstitution);
 		});
 
 		return result;

@@ -15,7 +15,6 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-
 <dv-full-height-inner-padding-container>
     <form role="form"
           #form="ngForm"
@@ -246,17 +245,15 @@
         </div>
 
         <!-- Buttons -->
-        <div class="row">
-            <div class="dv-footer">
-                <dv-loading-button [type]="'submit'">
-                    <span translate>GEMEINDE_SPEICHERN</span>
-                </dv-loading-button>
+        <div class="dv-footer">
+            <dv-loading-button [type]="'submit'">
+                <span translate>GEMEINDE_SPEICHERN</span>
+            </dv-loading-button>
 
-                <button type="button" class="dv-btn cancel-button"
-                        (click)="cancel()"
-                        [textContent]="'CANCEL' | translate">
-                </button>
-            </div>
+            <button type="button" class="dv-btn cancel-button"
+                    (click)="cancel()"
+                    [textContent]="'CANCEL' | translate">
+            </button>
         </div>
     </form>
 </dv-full-height-inner-padding-container>

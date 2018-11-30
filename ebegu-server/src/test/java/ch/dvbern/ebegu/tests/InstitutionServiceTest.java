@@ -21,9 +21,9 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -33,6 +33,11 @@ import org.jboss.arquillian.transaction.api.annotation.Transactional;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests fuer die Klasse InstitutionService
@@ -45,44 +50,60 @@ public class InstitutionServiceTest extends AbstractEbeguLoginTest {
 	@Inject
 	private InstitutionService institutionService;
 	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
+	@Inject
 	private Persistence persistence;
 
 	@Test
 	public void createInstitution() {
 		Assert.assertNotNull(institutionService);
-		Institution institution = insertInstitution();
+		Institution institution = insertInstitution().getInstitution();
 
 		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId());
-		Assert.assertTrue(institutionOpt.isPresent());
-		Assert.assertEquals("Institution1", institutionOpt.get().getName());
-		Assert.assertEquals(institutionOpt.get().getMandant().getId(), institution.getMandant().getId());
-		Assert.assertEquals(institutionOpt.get().getTraegerschaft().getId(), institution.getTraegerschaft().getId());
+		assertTrue(institutionOpt.isPresent());
+		final Institution foundInstitution = institutionOpt.get();
+
+		assertEquals("Institution1", foundInstitution.getName());
+		assertNotNull(institution.getMandant());
+		assertNotNull(foundInstitution.getMandant());
+		assertEquals(foundInstitution.getMandant().getId(), institution.getMandant().getId());
+
+		assertNotNull(institution.getTraegerschaft());
+		assertNotNull(foundInstitution.getTraegerschaft());
+		assertEquals(foundInstitution.getTraegerschaft().getId(), institution.getTraegerschaft().getId());
 	}
 
 	@Test
 	public void deleteInstitution() {
 		Assert.assertNotNull(institutionService);
-		Institution institution = insertInstitution();
+		Institution institution = insertInstitution().getInstitution();
 
 		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId());
-		Assert.assertTrue(institutionOpt.isPresent());
+		assertTrue(institutionOpt.isPresent());
+
+		final InstitutionStammdaten institutionStammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId());
+
+		institutionStammdatenService.removeInstitutionStammdaten(institutionStammdaten.getId());
 		institutionService.deleteInstitution(institutionOpt.get().getId());
+
 		Optional<Institution> institutionOpt2 = institutionService.findInstitution(institution.getId());
-		Assert.assertFalse(institutionOpt2.isPresent());
+		assertFalse(institutionOpt2.isPresent());
 	}
 
-	// This test gives a really strange Error java.lang.NoSuchMethodError: ch.dvbern.ebegu.entities.Institution.setActive(Ljava/lang/Boolean;)V
-	// but the method in the entity is definitely there!
 	@Test
 	public void inactiveInstitution() {
 		Assert.assertNotNull(institutionService);
-		Institution institution = insertInstitution();
+		Institution institution = insertInstitution().getInstitution();
 
 		Optional<Institution> institutionOpt = institutionService.findInstitution(institution.getId());
-		Assert.assertTrue(institutionOpt.isPresent());
-		Institution inavtiveInst = institutionService.setInstitutionInactive(institutionOpt.get().getId());
-		institutionService.findInstitution(institution.getId());
-		Assert.assertFalse(inavtiveInst.getActive());
+		assertTrue(institutionOpt.isPresent());
+		institutionService.setInstitutionInactive(institutionOpt.get().getId());
+
+		final InstitutionStammdaten institutionStammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institution.getId());
+
+		assertFalse(institutionStammdaten.isActive());
 	}
 
 	@Test
@@ -91,25 +112,25 @@ public class InstitutionServiceTest extends AbstractEbeguLoginTest {
 		insertInstitution();
 
 		Collection<Institution> allInstitutionen = institutionService.getAllInstitutionen();
-		Assert.assertFalse(allInstitutionen.isEmpty());
+		assertFalse(allInstitutionen.isEmpty());
 
 	}
 
 	// HELP METHODS
 
-	private Institution insertInstitution() {
-		Institution institution = TestDataUtil.createDefaultInstitution();
+	private InstitutionStammdaten insertInstitution() {
+		InstitutionStammdaten institutionStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
+		final Institution institution = institutionStammdaten.getInstitution();
 
-		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
-		persistence.persist(traegerschaft);
-		institution.setTraegerschaft(traegerschaft);
+		persistence.persist(institution.getTraegerschaft());
+		persistence.persist(institution.getMandant());
 
-		Mandant mandant = TestDataUtil.createDefaultMandant();
-		persistence.persist(mandant);
-		institution.setMandant(mandant);
+		final Institution persistedInstitution = institutionService.createInstitution(institution);
+		institutionStammdaten.setInstitution(persistedInstitution);
 
-		institutionService.createInstitution(institution);
-		return institution;
+		final InstitutionStammdaten persisted = persistence.persist(institutionStammdaten);
+
+		return persisted;
 	}
 
 }

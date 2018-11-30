@@ -55,6 +55,7 @@ public final class EbeguRuleTestsHelper {
 		new AusserordentlicherAnspruchAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
 	private static final AusserordentlicherAnspruchCalcRule ausserordentlicherAnspruchCalcRule =
 		new AusserordentlicherAnspruchCalcRule(Constants.DEFAULT_GUELTIGKEIT);
+	private static final KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(DEFAULT_GUELTIGKEIT);
 	private static final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(DEFAULT_GUELTIGKEIT);
@@ -102,6 +103,7 @@ public final class EbeguRuleTestsHelper {
 		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
 		result = erwerbspensumAbschnittRule.calculate(betreuung, result);
 		result = urlaubAbschnittRule.calculate(betreuung, result);
+		result = kindTarifAbschnittRule.calculate(betreuung, result);
 		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
 		result = fachstelleAbschnittRule.calculate(betreuung, result);
 		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);

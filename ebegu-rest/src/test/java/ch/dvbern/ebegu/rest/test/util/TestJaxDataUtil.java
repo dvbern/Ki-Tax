@@ -310,6 +310,7 @@ public final class TestJaxDataUtil {
 		JaxInstitutionStammdaten institutionStammdaten = new JaxInstitutionStammdaten();
 		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		institutionStammdaten.setGueltigAb(Constants.DEFAULT_GUELTIGKEIT.getGueltigAb());
+		institutionStammdaten.setMail("mail@example.com");
 		institutionStammdaten.setAdresse(createTestJaxAdr("JA").getAdresseJA());
 		return institutionStammdaten;
 	}

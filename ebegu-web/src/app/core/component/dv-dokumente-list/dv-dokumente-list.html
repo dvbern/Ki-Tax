@@ -49,7 +49,7 @@
                 <tr ng-repeat-start="row in table" class="dokument-grund-row">
 
                     <!--with and without tag-->
-                    <td headers="{{vm.tableId +'-dok'}}" ng-bind="row.dokumentTyp | translate"
+                    <td  style="white-space: normal !important;" headers="{{vm.tableId +'-dok'}}" ng-bind="row.dokumentTyp | translate"
                         ngf-drop="vm.uploadAnhaenge($files, row)"
                         ngf-drag-over-class="'dragover'" ngf-multiple="true"
                         ng-class="{'documents-vailable': vm.hasDokuments(row),'no-documents': !vm.hasDokuments(row),'no-color':vm.sonstige}"></td>
