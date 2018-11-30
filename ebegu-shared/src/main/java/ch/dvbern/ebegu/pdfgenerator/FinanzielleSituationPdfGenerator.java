@@ -32,8 +32,10 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.pdfgenerator.FinSitTable.FinSitRow;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -52,46 +54,63 @@ import com.lowagie.text.pdf.PdfPTable;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals") //TODO (team) Entfernen, wenn Dummydaten ersetzt!
 public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator {
 
+	private static final String TITLE = "PdfGeneration_FinSit_Title";
 	private static final String BASISJAHR = "PdfGeneration_FinSit_BasisJahr";
 	private static final String NAME = "PdfGeneration_FinSit_Name";
 	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String NETTOLOHN = "PdfGeneration_FinSit_Nettolohn";
 	private static final String FAMILIENZULAGEN = "PdfGeneration_FinSit_Familienzulagen";
 	private static final String ERSATZEINKOMMEN = "PdfGeneration_FinSit_Ersatzeinkommen";
-	private static final String UNTERHALTSBEITRAEGE = "PdfGeneration_FinSit_Unterhaltsbeitraege";
+	private static final String ERH_UNTERHALTSBEITRAEGE = "PdfGeneration_FinSit_ErhalteneUnterhaltsbeitraege";
 	private static final String GESCHAEFTSGEWINN = "PdfGeneration_FinSit_Geschaeftsgewinn";
 	private static final String EINKOMMEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_EinkommenZwischentotal";
 	private static final String EINKOMMEN_TOTAL = "PdfGeneration_FinSit_EinkommenTotal";
+	private static final String NETTOVERMOEGEN = "PdfGeneration_FinSit_Nettovermoegen";
+	private static final String BRUTTOVERMOEGEN = "PdfGeneration_FinSit_Bruttovermoegen";
+	private static final String SCHULDEN = "PdfGeneration_FinSit_Schulden";
+	private static final String NETTOVERMOEGEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_Nettovermoegen_Zwischentotal";
+	private static final String NETTOVERMOEGEN_TOTAL = "PdfGeneration_FinSit_Nettovermoegen_Total";
+	private static final String NETTOVERMOEGEN_5_PROZENT = "PdfGeneration_FinSit_Nettovermoegen_5_Prozent";
+	private static final String ABZUEGE = "PdfGeneration_FinSit_Abzuege";
+	private static final String UNTERHALTSBEITRAEGE_BEZAHLT = "PdfGeneration_FinSit_UnterhaltsbeitraegeBezahlt";
+	private static final String ABZUEGE_TOTAL = "PdfGeneration_FinSit_Abzuege_Total";
+	private static final String ZUSAMMENZUG = "PdfGeneration_FinSit_Zusammenzug";
+	private static final String MASSG_EINKOMMEN_VOR_FAMILIENGROESSE = "PdfGeneration_FinSit_MassgebendesEinkommenVorFamiliengroesse";
+	private static final String VON = "PdfGeneration_MassgEinkommen_Von";
+	private static final String BIS = "PdfGeneration_MassgEinkommen_Bis";
+	private static final String JAHR = "PdfGeneration_MassgEinkommen_Jahr";
+	private static final String MASSG_EINK_VOR_ABZUG = "PdfGeneration_MassgEinkommen_MassgEinkVorAbzugFamGroesse";
+	private static final String FAM_GROESSE = "PdfGeneration_MassgEinkommen_FamGroesse";
+	private static final String ABZUG_FAM_GROESSE = "PdfGeneration_MassgEinkommen_AbzugFamGroesse";
+	private static final String MASSG_EINK = "PdfGeneration_MassgEinkommen_MassgEink";
 	private static final String FUSSZEILE_1 = "PdfGeneration_FinSit_Fusszeile1";
 	private static final String FUSSZEILE_2 = "PdfGeneration_FinSit_Fusszeile2";
-
 	private static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
 	private static final String EKV_DATUM = "PdfGeneration_FinSit_Ekv_Datum";
 	private static final String EKV_GRUND = "PdfGeneration_FinSit_Ekv_Grund";
-
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 
-	// TODO (hefr) Massgebendes Einkommen wird noch nicht berechnet
-	// TODO (hefr) Tabelle Massgebendes Einkommen fehlt noch ganz
-	// TODO (hefr) Diverse Texte noch nicht übersetzt
 	// TODO (hefr) Darstellung/Abstände überprüfen
+
+	private Verfuegung verfuegungFuerMassgEinkommen;
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
+		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
 		@Nonnull GemeindeStammdaten stammdaten,
 		final boolean draft
 	) {
 		super(gesuch, stammdaten, draft);
+		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
 	}
 
 	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
-		return "Berechnung der finanziellen Situation";
+		return ServerMessageUtil.getMessage(TITLE);
 	}
 
 	@Nonnull
@@ -112,7 +131,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 				createPageEkv2(generator, document, ekvInfo);
 			}
 			// Massgebendes Einkommen
-			createPageMassgebendesEinkommen(generator, document);
+			createPageMassgebendesEinkommen(document);
 		};
 	}
 
@@ -196,79 +215,96 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		document.add(createTableZusammenzug(ekv2GS1, ekv2GS2));
 	}
 
-	private void createPageMassgebendesEinkommen(@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator, @Nonnull Document document) {
-		final String[][] valuesMassgebendesEinkommen = {
-			{"von", "bis", "Einkommensjahr", "massgebendes Einkommen vor Abzug der Familiengrösse", "Familiengrösse", "Abzug der Familiengrösse", "massgebendes Einkommen nach Abzug der Familiengrösse"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"},
-			{"01.08.2018", "31.08.2018", "2018", "119.00", "2", "0.00", "119.00"}
-		};
+	private void createPageMassgebendesEinkommen(@Nonnull Document document) {
+		List<String[]> values = new ArrayList<>();
+		String[] titles = {
+			ServerMessageUtil.getMessage(VON),
+			ServerMessageUtil.getMessage(BIS),
+			ServerMessageUtil.getMessage(JAHR),
+			ServerMessageUtil.getMessage(MASSG_EINK_VOR_ABZUG),
+			ServerMessageUtil.getMessage(FAM_GROESSE),
+			ServerMessageUtil.getMessage(ABZUG_FAM_GROESSE),
+			ServerMessageUtil.getMessage(MASSG_EINK)};
+		values.add(titles);
+		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
+			String[] data = {
+				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()),
+				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
+				String.valueOf(abschnitt.getEinkommensjahr()),
+				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommenVorAbzFamgr()),
+				String.valueOf(abschnitt.getFamGroesse()),
+				PdfUtil.printBigDecimal(abschnitt.getAbzugFamGroesse()),
+				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommen())
+			};
+			values.add(data);
+		}
 		final float[] widthMassgebendesEinkommen = {5,5,6,10,5,10,10};
 		final int[] alignementMassgebendesEinkommen = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT};
-
 		document.setPageSize(PageSize.A4.rotate());
 		document.newPage();
 		document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(MASSG_EINK_TITLE), 2));
 		document.add(createIntroMassgebendesEinkommen());
-		document.add(PdfUtil.createTable(valuesMassgebendesEinkommen, widthMassgebendesEinkommen, alignementMassgebendesEinkommen, 0));
+		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignementMassgebendesEinkommen, 0));
 	}
 
 	@Nonnull
 	private PdfPTable createIntroBasisjahr() {
-		List<LabelValuePair> introBasisjahr = new ArrayList<>();
-		introBasisjahr.add(new LabelValuePair(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introBasisjahr.add(new LabelValuePair(BASISJAHR, String.valueOf(gesuch.getGesuchsperiode().getBasisJahr())));
+		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
+		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
+		introBasisjahr.add(new TableRowLabelValue(BASISJAHR, String.valueOf(gesuch.getGesuchsperiode().getBasisJahr())));
 		return PdfUtil.creatreIntroTable(introBasisjahr);
 	}
 
 	@Nonnull
 	private PdfPTable createIntroEkv1(@Nonnull EinkommensverschlechterungInfo ekvInfo) {
-		List<LabelValuePair> introEkv1 = new ArrayList<>();
-		introEkv1.add(new LabelValuePair(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introEkv1.add(new LabelValuePair(EKV_DATUM, PdfUtil.printLocalDate(ekvInfo.getStichtagFuerBasisJahrPlus1())));
-		introEkv1.add(new LabelValuePair(EKV_GRUND, PdfUtil.printString(ekvInfo.getGrundFuerBasisJahrPlus1())));
+		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
+		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
+		introEkv1.add(new TableRowLabelValue(EKV_DATUM, PdfUtil.printLocalDate(ekvInfo.getStichtagFuerBasisJahrPlus1())));
+		introEkv1.add(new TableRowLabelValue(EKV_GRUND, PdfUtil.printString(ekvInfo.getGrundFuerBasisJahrPlus1())));
 		return PdfUtil.creatreIntroTable(introEkv1);
 	}
 
 	@Nonnull
 	private PdfPTable createIntroEkv2(@Nonnull EinkommensverschlechterungInfo ekvInfo) {
-		List<LabelValuePair> introEkv2 = new ArrayList<>();
-		introEkv2.add(new LabelValuePair(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introEkv2.add(new LabelValuePair(EKV_DATUM, PdfUtil.printLocalDate(ekvInfo.getStichtagFuerBasisJahrPlus2())));
-		introEkv2.add(new LabelValuePair(EKV_GRUND, PdfUtil.printString(ekvInfo.getGrundFuerBasisJahrPlus2())));
+		List<TableRowLabelValue> introEkv2 = new ArrayList<>();
+		introEkv2.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
+		introEkv2.add(new TableRowLabelValue(EKV_DATUM, PdfUtil.printLocalDate(ekvInfo.getStichtagFuerBasisJahrPlus2())));
+		introEkv2.add(new TableRowLabelValue(EKV_GRUND, PdfUtil.printString(ekvInfo.getGrundFuerBasisJahrPlus2())));
 		return PdfUtil.creatreIntroTable(introEkv2);
 	}
 
 	@Nonnull
 	private PdfPTable createIntroMassgebendesEinkommen() {
-		List<LabelValuePair> introMassgEinkommen = new ArrayList<>();
-		introMassgEinkommen.add(new LabelValuePair(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introMassgEinkommen.add(new LabelValuePair(NAME, String.valueOf(gesuch.extractFullnamesString())));
+		List<TableRowLabelValue> introMassgEinkommen = new ArrayList<>();
+		introMassgEinkommen.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
+		introMassgEinkommen.add(new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString())));
 		return PdfUtil.creatreIntroTable(introMassgEinkommen);
 	}
 
 	@Nonnull
-	private PdfPTable createTableEinkommen(@Nonnull AbstractFinanzielleSituation gs1, @Nullable AbstractFinanzielleSituation gs2) {
+	private PdfPTable createTableEinkommen(
+		@Nonnull AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2
+	) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalEinkommenBeiderGS = FinanzielleSituationRechner.calcTotalEinkommen(gs1, gs2);
 
-		FinSitRow einkommenTitle = new FinSitRow(ServerMessageUtil.getMessage(EIKOMMEN_TITLE), gesuch.getGesuchsteller1().extractFullName());
-		FinSitRow nettolohn = new FinSitRow(ServerMessageUtil.getMessage(NETTOLOHN), gs1.getNettolohn());
-		FinSitRow familienzulagen = new FinSitRow(ServerMessageUtil.getMessage(FAMILIENZULAGEN), gs1.getFamilienzulage());
-		FinSitRow ersatzeinkommen = new FinSitRow(ServerMessageUtil.getMessage(ERSATZEINKOMMEN), gs1.getErsatzeinkommen());
-		FinSitRow unterhaltsbeitraege = new FinSitRow(ServerMessageUtil.getMessage(UNTERHALTSBEITRAEGE), gs1.getErhalteneAlimente());
-		FinSitRow geschaftsgewinn = new FinSitRow(ServerMessageUtil.getMessage(GESCHAEFTSGEWINN), gs1.getGeschaeftsgewinnBasisjahr());
-		FinSitRow zwischentotal = new FinSitRow(ServerMessageUtil.getMessage(EINKOMMEN_ZWISCHENTOTAL), gs1.getZwischentotalEinkommen());
-		FinSitRow total = new FinSitRow(ServerMessageUtil.getMessage(EINKOMMEN_TOTAL), "");
+		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(EIKOMMEN_TITLE), gesuch.getGesuchsteller1().extractFullName());
+		FinanzielleSituationRow nettolohn = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(NETTOLOHN), gs1.getNettolohn());
+		FinanzielleSituationRow familienzulagen = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(FAMILIENZULAGEN), gs1.getFamilienzulage());
+		FinanzielleSituationRow ersatzeinkommen = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(ERSATZEINKOMMEN), gs1.getErsatzeinkommen());
+		FinanzielleSituationRow unterhaltsbeitraege = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(ERH_UNTERHALTSBEITRAEGE), gs1.getErhalteneAlimente());
+		FinanzielleSituationRow geschaftsgewinn = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(GESCHAEFTSGEWINN), gs1.getGeschaeftsgewinnBasisjahr());
+		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(EINKOMMEN_ZWISCHENTOTAL), gs1.getZwischentotalEinkommen());
+		FinanzielleSituationRow total = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(EINKOMMEN_TOTAL), "");
 
 		if (gs2 != null) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2());
@@ -287,7 +323,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			total.setGs1(totalEinkommenBeiderGS);
 		}
 
-		FinSitTable tableEinkommen = new FinSitTable(hasSecondGesuchsteller());
+		FinanzielleSituationTable tableEinkommen = new FinanzielleSituationTable(hasSecondGesuchsteller());
 		tableEinkommen.addRow(einkommenTitle);
 		tableEinkommen.addRow(nettolohn);
 		tableEinkommen.addRow(familienzulagen);
@@ -300,17 +336,26 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	@Nonnull
-	private PdfPTable createTableVermoegen(@Nonnull AbstractFinanzielleSituation gs1, @Nullable AbstractFinanzielleSituation gs2) {
+	private PdfPTable createTableVermoegen(
+		@Nonnull AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2
+	) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalVermoegenBeiderGS = FinanzielleSituationRechner.calcTotalVermoegen(gs1, gs2);
 		BigDecimal vermoegen5Prozent = FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2);
 
-		FinSitRow vermoegenTitle = new FinSitRow("Nettovermögen", gesuch.getGesuchsteller1().extractFullName());
-		FinSitRow bruttovermoegen = new FinSitRow("Bruttovermögen", gs1.getBruttovermoegen());
-		FinSitRow schulden = new FinSitRow("Schulden", gs1.getSchulden());
-		FinSitRow zwischentotal = new FinSitRow("Zwischentotal Nettovermögen", gs1.getZwischentotalVermoegen());
-		FinSitRow total = new FinSitRow("Zwischentotal Nettovermögen insgesamt ²", "");
-		FinSitRow vermoegen5Percent = new FinSitRow("5% Nettovermögen","");
+		FinanzielleSituationRow vermoegenTitle = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(NETTOVERMOEGEN), gesuch.getGesuchsteller1().extractFullName());
+		FinanzielleSituationRow bruttovermoegen = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(BRUTTOVERMOEGEN), gs1.getBruttovermoegen());
+		FinanzielleSituationRow schulden = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(SCHULDEN), gs1.getSchulden());
+		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(NETTOVERMOEGEN_ZWISCHENTOTAL), gs1.getZwischentotalVermoegen());
+		FinanzielleSituationRow total = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(NETTOVERMOEGEN_TOTAL), "");
+		FinanzielleSituationRow 			vermoegen5Percent = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(NETTOVERMOEGEN_5_PROZENT),"");
 
 		if (gs2 != null) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2());
@@ -327,7 +372,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			total.setGs1(totalVermoegenBeiderGS);
 			vermoegen5Percent.setGs1(vermoegen5Prozent);
 		}
-		FinSitTable table = new FinSitTable(hasSecondGesuchsteller());
+		FinanzielleSituationTable table = new FinanzielleSituationTable(hasSecondGesuchsteller());
 		table.addRow(vermoegenTitle);
 		table.addRow(bruttovermoegen);
 		table.addRow(schulden);
@@ -338,13 +383,20 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	@Nonnull
-	private PdfPTable createTableAbzuege(@Nonnull AbstractFinanzielleSituation gs1, @Nullable AbstractFinanzielleSituation gs2) {
+	private PdfPTable createTableAbzuege(
+		@Nonnull AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2
+	) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalAbzuegeBeiderGS = FinanzielleSituationRechner.calcTotalAbzuege(gs1, gs2);
 
-		FinSitRow abzuegeTitle = new FinSitRow("Abzüge", gesuch.getGesuchsteller1().extractFullName());
-		FinSitRow unterhaltsbeitraege = new FinSitRow("Bezahlte Unterhaltsbeiträge", gs1.getGeleisteteAlimente());
-		FinSitRow total = new FinSitRow("Total Abzüge", "");
+		FinanzielleSituationRow abzuegeTitle = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(ABZUEGE), gesuch.getGesuchsteller1().extractFullName());
+		FinanzielleSituationRow unterhaltsbeitraege = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(UNTERHALTSBEITRAEGE_BEZAHLT), gs1.getGeleisteteAlimente());
+		FinanzielleSituationRow total = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(ABZUEGE_TOTAL), "");
+
 		if (gs2 != null) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2());
 			abzuegeTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
@@ -356,7 +408,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			// Total wird bei 1 GS beim 1. GS eingetragen
 			total.setGs1(totalAbzuegeBeiderGS);
 		}
-		FinSitTable table = new FinSitTable(hasSecondGesuchsteller());
+		FinanzielleSituationTable table = new FinanzielleSituationTable(hasSecondGesuchsteller());
 		table.addRow(abzuegeTitle);
 		table.addRow(unterhaltsbeitraege);
 		table.addRow(total);
@@ -364,21 +416,31 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	@Nonnull
-	private PdfPTable createTableZusammenzug(@Nonnull AbstractFinanzielleSituation gs1, @Nullable AbstractFinanzielleSituation gs2) {
+	private PdfPTable createTableZusammenzug(
+		@Nonnull AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2
+	) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		BigDecimal massgebendesEinkommenVorAbzugFamiliengroesse =
+			FinanzielleSituationRechner.calcMassgebendesEinkommenVorAbzugFamiliengroesse(gs1, gs2);
 
-		FinSitRow zusammenzugTitle = new FinSitRow("Zusammenzug", "");
-		FinSitRow einkommen = new FinSitRow("Total Einkünfte", gs1.getZwischentotalEinkommen());
-		FinSitRow vermoegen = new FinSitRow("5% Nettovermögen", FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2));
-		FinSitRow abzuege = new FinSitRow("Total Abzüge", gs1.getZwischetotalAbzuege());
-		FinSitRow total = new FinSitRow("Massgebendes Einkommen (vor Abzug für Familiengrösse", "TODO");
+		FinanzielleSituationRow zusammenzugTitle = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(ZUSAMMENZUG), "");
+		FinanzielleSituationRow einkommen = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(EINKOMMEN_TOTAL), gs1.getZwischentotalEinkommen());
+		FinanzielleSituationRow vermoegen = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(NETTOVERMOEGEN_5_PROZENT), FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2));
+		FinanzielleSituationRow abzuege = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(ABZUEGE_TOTAL), gs1.getZwischetotalAbzuege());
+		FinanzielleSituationRow total = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(MASSG_EINKOMMEN_VOR_FAMILIENGROESSE), massgebendesEinkommenVorAbzugFamiliengroesse);
 
 		if (gs2 != null) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2());
 			einkommen.setGs1(MathUtil.DEFAULT.add(gs1.getZwischentotalEinkommen(), gs2.getZwischentotalEinkommen()));
 			abzuege.setGs1(MathUtil.DEFAULT.add(gs1.getZwischetotalAbzuege(), gs2.getZwischetotalAbzuege()));
 		}
-		FinSitTable table = new FinSitTable(false);
+		FinanzielleSituationTable table = new FinanzielleSituationTable(false);
 		table.addRow(zusammenzugTitle);
 		table.addRow(einkommen);
 		table.addRow(vermoegen);

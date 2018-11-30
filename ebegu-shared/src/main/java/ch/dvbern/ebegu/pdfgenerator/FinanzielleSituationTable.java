@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,21 +40,21 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
-public class FinSitTable {
+public class FinanzielleSituationTable {
 
-	private static final Logger LOG = LoggerFactory.getLogger(FinSitTable.class);
+	private static final Logger LOG = LoggerFactory.getLogger(FinanzielleSituationTable.class);
 
 	private float[] columnWidths;
 	private int[] alignement;
 	private int numberOfTitleRows = 1;
 	private boolean lastLineBold = false;
 	private int emptyLinesAfter = 1;
-	private List<FinSitRow> rows = new ArrayList<>();
+	private List<FinanzielleSituationRow> rows = new ArrayList<>();
 
 	private boolean hasSecondGesuchsteller;
 
 
-	public FinSitTable(boolean hasSecondGesuchsteller) {
+	public FinanzielleSituationTable(boolean hasSecondGesuchsteller) {
 		this.hasSecondGesuchsteller = hasSecondGesuchsteller;
 		final float[] width1Gs = {12,2};
 		final float[] width2Gs = {10,2,2};
@@ -71,7 +70,7 @@ public class FinSitTable {
 	}
 
 
-	public void addRow(@Nonnull FinSitRow row) {
+	public void addRow(@Nonnull FinanzielleSituationRow row) {
 		this.rows.add(row);
 	}
 
@@ -92,14 +91,14 @@ public class FinSitTable {
 			Color bgColor = isHeader ? Color.LIGHT_GRAY : Color.WHITE;
 			Font font = isFooter ? DEFAULT_FONT_BOLD : DEFAULT_FONT;
 
-			FinSitRow row = rows.get(i);
+			FinanzielleSituationRow row = rows.get(i);
 			addRow(table, row, font, bgColor);
 		}
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * emptyLinesAfter);
 		return table;
 	}
 
-	private void addRow(@Nonnull PdfPTable table, @Nonnull FinSitRow row, @Nonnull Font font, @Nonnull Color bgColor) {
+	private void addRow(@Nonnull PdfPTable table, @Nonnull FinanzielleSituationRow row, @Nonnull Font font, @Nonnull Color bgColor) {
 		addCell(table, row.getLabel(), font, bgColor, alignement[0]);
 		addCell(table, row.getGs1(), font, bgColor, alignement[1]);
 		if (hasSecondGesuchsteller) {
@@ -113,55 +112,5 @@ public class FinSitTable {
 		cell.setHorizontalAlignment(alignment);
 		cell.setLeading(0.0F, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		table.addCell(cell);
-	}
-
-	static class FinSitRow {
-
-		@Nonnull
-		private String label;
-
-		@Nonnull
-		private String gs1;
-
-		@Nullable
-		private String gs2;
-
-
-		public FinSitRow(@Nonnull String label, @Nonnull String gs1) {
-			this.label = label;
-			this.gs1 = gs1;
-		}
-
-		public FinSitRow(@Nonnull String label, @Nullable BigDecimal gs1) {
-			this.label = label;
-			this.gs1 = PdfUtil.printBigDecimal(gs1);
-		}
-
-		@Nonnull
-		public String getLabel() {
-			return label;
-		}
-
-		@Nonnull
-		public String getGs1() {
-			return gs1;
-		}
-
-		@Nullable
-		public String getGs2() {
-			return gs2;
-		}
-
-		public void setGs2(@Nullable String gs2) {
-			this.gs2 = gs2;
-		}
-
-		public void setGs1(@Nullable BigDecimal gs1) {
-			this.gs1 = PdfUtil.printBigDecimal(gs1);
-		}
-
-		public void setGs2(@Nullable BigDecimal gs2) {
-			this.gs2 = PdfUtil.printBigDecimal(gs2);
-		}
 	}
 }

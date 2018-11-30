@@ -396,6 +396,19 @@ public class FinanzielleSituationRechner {
 			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getZwischetotalAbzuege() : BigDecimal.ZERO);
 	}
 
+	public static BigDecimal calcMassgebendesEinkommenVorAbzugFamiliengroesse(
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
+
+		BigDecimal totalEinkommen = MathUtil.DEFAULT.add(
+			calcTotalEinkommen(abstractFinanzielleSituation1, abstractFinanzielleSituation2),
+			calcTotalVermoegen(abstractFinanzielleSituation1, abstractFinanzielleSituation2));
+
+		return MathUtil.DEFAULT.subtract(
+			totalEinkommen,
+			calcTotalAbzuege(abstractFinanzielleSituation1, abstractFinanzielleSituation2));
+	}
+
 	@Deprecated // Use MathUtil instead
 	protected static BigDecimal add(BigDecimal value1, BigDecimal value2) {
 		value1 = value1 != null ? value1 : BigDecimal.ZERO;

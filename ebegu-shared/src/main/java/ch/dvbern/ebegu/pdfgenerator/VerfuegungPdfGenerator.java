@@ -170,11 +170,11 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private PdfPTable createIntro() {
-		List<LabelValuePair> introBasisjahr = new ArrayList<>();
-		introBasisjahr.add(new LabelValuePair(REFERENZNUMMER, betreuung.getBGNummer()));
-		introBasisjahr.add(new LabelValuePair(NAME, betreuung.getKind().getKindJA().getFullName()));
-		introBasisjahr.add(new LabelValuePair(ANGEBOT, ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsangebotTyp())));
-		introBasisjahr.add(new LabelValuePair(BETREUUNG_INSTITUTION, betreuung.getInstitutionStammdaten().getInstitution().getName()));
+		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
+		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
+		introBasisjahr.add(new TableRowLabelValue(NAME, betreuung.getKind().getKindJA().getFullName()));
+		introBasisjahr.add(new TableRowLabelValue(ANGEBOT, ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsangebotTyp())));
+		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, betreuung.getInstitutionStammdaten().getInstitution().getName()));
 		return PdfUtil.creatreIntroTable(introBasisjahr);
 	}
 

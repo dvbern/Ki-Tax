@@ -191,7 +191,7 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<LabelValuePair> entries) {
+	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries) {
 		PdfPTable table = new PdfPTable(2);
 		try {
 			float[] columnWidths = {1, 4};
@@ -206,7 +206,7 @@ public final class PdfUtil {
 		table.getDefaultCell().setPadding(0);
 		table.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 
-		for (LabelValuePair entry : entries) {
+		for (TableRowLabelValue entry : entries) {
 			table.addCell(new Phrase(entry.getLabel(), DEFAULT_FONT));
 			table.addCell(new Phrase(entry.getValue(), DEFAULT_FONT));
 		}
@@ -224,6 +224,35 @@ public final class PdfUtil {
 		return createTable(values, columnWidths, alignement,emptyLinesAfter, false);
 	}
 
+	@Nonnull
+	public static PdfPTable createTable(java.util.List<String[]> values, final float[] columnWidths, final int[] alignement, final int emptyLinesAfter) {
+		PdfPTable table = new PdfPTable(values.size());
+		try {
+			table.setWidths(columnWidths);
+		} catch (DocumentException e) {
+			LOG.error("Failed to set the width: {}", e.getMessage());
+		}
+		table.setWidthPercentage(FULL_WIDTH);
+		table.setHeaderRows(1);
+		boolean first = true;
+		for (String[] value : values) {
+			for (int j = 0; j < value.length; j++) {
+				PdfPCell cell;
+				if (first) {
+					cell = PdfUtil.createTitleCell(value[j]);
+
+				} else {
+					cell = new PdfPCell(new Phrase(value[j], DEFAULT_FONT));
+				}
+				cell.setHorizontalAlignment(alignement[j]);
+				cell.setLeading(0.0F, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+				table.addCell(cell);
+				first = false;
+			}
+		}
+		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * emptyLinesAfter);
+		return table;
+	}
 
 	@Nonnull
 	public static PdfPTable createTable(final String[][]values, final float[] columnWidths, final int[] alignement, final int emptyLinesAfter , boolean lastLineBold) {
