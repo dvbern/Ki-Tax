@@ -46,7 +46,7 @@ export function getRoleBasedTargetState(currentRole: TSRole, $state: StateServic
         [TSRole.SACHBEARBEITER_TS]: pendenzen,
         [TSRole.ADMIN_MANDANT]: faelle,
         [TSRole.SACHBEARBEITER_MANDANT]: faelle,
-        [TSRole.ANONYMOUS]: 'onboarding.start',
+        [TSRole.ANONYMOUS]: 'onboarding.anmeldung',
     };
 
     return $state.target(stateByRole[currentRole]);

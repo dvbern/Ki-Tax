@@ -58,6 +58,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         this.$scope.$on(TSMessageEvent[TSMessageEvent.INFO_UPDATE], this.displayMessages);
         this.$scope.$on(TSMessageEvent[TSMessageEvent.CLEAR], () => {
             this.errors = [];
+            this.hide();
         });
     }
 
@@ -107,6 +108,10 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
 
     public show(): void {
         angular.element('dvb-error-messages-panel').show();     // besser als $element injection fuer tests
+    }
+
+    public hide(): void {
+        angular.element('dvb-error-messages-panel').hide();
     }
 
     public clear(): void {

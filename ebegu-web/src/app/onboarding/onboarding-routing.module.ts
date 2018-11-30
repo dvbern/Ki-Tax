@@ -16,12 +16,16 @@
 import {NgModule} from '@angular/core';
 import {HookResult, Ng2StateDeclaration, Transition} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {map, take} from 'rxjs/operators';
+import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
+import {getRoleBasedTargetState} from '../../utils/AuthenticationUtil';
+import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {UiViewComponent} from '../shared/ui-view/ui-view.component';
-import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
-import {OnboardingComponent} from './onboarding/onboarding.component';
 import {OnboardingBeLoginComponent} from './onboarding-be-login/onboarding-be-login.component';
+import {OnboardingGsAbschliessenComponent} from './onboarding-gs-abschliessen/onboarding-gs-abschliessen.component';
 import {OnboardingMainComponent} from './onboarding-main/onboarding-main.component';
+import {OnboardingComponent} from './onboarding/onboarding.component';
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -33,6 +37,14 @@ const states: Ng2StateDeclaration[] = [
     {
         name: 'onboarding.start',
         url: '/',
+        data: {
+            roles: TSRoleUtil.getAllRoles(),
+        },
+        onEnter: redirectToLandingPage,
+    },
+    {
+        name: 'onboarding.anmeldung',
+        url: '/anmeldung',
         component: OnboardingComponent,
         data: {
             roles: [TSRole.ANONYMOUS],
@@ -70,6 +82,25 @@ const states: Ng2StateDeclaration[] = [
         },
     },
 ];
+
+redirectToLandingPage.$inject = ['$transition$'];
+
+function redirectToLandingPage(transition: Transition): HookResult {
+    const authService: AuthServiceRS = transition.injector().get('AuthServiceRS');
+
+    return authService.principal$
+        .pipe(
+            take(1),
+            map(principal => {
+                if (!principal) {
+                    return getRoleBasedTargetState(TSRole.ANONYMOUS, transition.router.stateService);
+                }
+
+                // no principal and not allowed to access the target state: redirect to default ANONYMOUS state
+                return getRoleBasedTargetState(principal.currentBerechtigung.role, transition.router.stateService);
+            })
+        ).toPromise();
+}
 
 disableWhenDossierExists.$inject = ['$transition$'];
 

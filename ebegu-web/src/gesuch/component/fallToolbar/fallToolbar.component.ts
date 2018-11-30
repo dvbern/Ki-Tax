@@ -315,7 +315,8 @@ export class FallToolbarComponent implements OnChanges {
         this.dossierRS.findDossiersByFall(fallId).then(dossiers => {
             this.dossierList = dossiers;
             this.setSelectedDossier();
-            this.dossierListWithoutSelected = dossiers.filter(dossier => dossier.id !== this.selectedDossier.id);
+            this.dossierListWithoutSelected = dossiers.filter(dossier =>
+                dossier && this.selectedDossier && dossier.id !== this.selectedDossier.id);
             this.addNewDossierToCreateToDossiersList();
             this.retrieveListOfAvailableGemeinden();
         });
