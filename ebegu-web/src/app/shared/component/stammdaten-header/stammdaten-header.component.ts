@@ -15,9 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
+import {Observable, of} from 'rxjs';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 
@@ -37,17 +38,19 @@ export class StammdatenHeaderComponent implements OnInit {
     @Input() public logoImageUrl: string;
     @Input() public editMode: boolean;
     @Input() public allowedRoles: TSRole[] = [TSRole.SUPER_ADMIN];
+    @Output() public readonly logoImageChange: EventEmitter<File> = new EventEmitter();
 
+    public logoImageUrl$: Observable<string>;
     private fileToUpload: File;
 
     public constructor(
-        private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
     public ngOnInit(): void {
+        this.logoImageUrl$ = of(this.logoImageUrl);
     }
 
     public mitarbeiterBearbeiten(): void {
@@ -67,10 +70,19 @@ export class StammdatenHeaderComponent implements OnInit {
                 return; // upload only images
             }
             const result: string = event.target.result;
-            this.logoImageUrl = result;
-            // markForCheck needed for the image to refresh
-            this.changeDetectorRef.markForCheck();
-            // TODO upload upon save
+            this.logoImageUrl$ = of(result);
+
+            // emit logo change to upload image by parent view
+            this.emitLogoChange();
         };
+    }
+
+    public $postLink(): void {
+    }
+
+    private emitLogoChange(): void {
+        if (this.logoImageChange) {
+            this.logoImageChange.emit(this.fileToUpload);
+        }
     }
 }

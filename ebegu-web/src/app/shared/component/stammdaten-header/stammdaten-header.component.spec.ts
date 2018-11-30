@@ -17,21 +17,16 @@
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {StateService, Transition} from '@uirouter/core';
-import {StateDeclaration} from '@uirouter/core/lib-esm';
+import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
-import {SharedModule} from '../../shared.module';
 import {StammdatenHeaderComponent} from './stammdaten-header.component';
 
 describe('StammdatenHeaderComponent', () => {
 
     const url = 'http://logo.png';
-    const transitionTo: StateDeclaration = {name: 'gemeinde.edit'};
     let component: StammdatenHeaderComponent;
     let fixture: ComponentFixture<StammdatenHeaderComponent>;
 
-    const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['to']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
 
@@ -39,21 +34,16 @@ describe('StammdatenHeaderComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [
-                SharedModule,
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
             providers: [
-                {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
             ],
             declarations: [
                 StammdatenHeaderComponent,
             ],
-        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
-            .compileComponents();
-
-        transitionSpy.to.and.returnValue(transitionTo);
+        }).compileComponents();
     }));
 
     beforeEach(async(() => {
