@@ -17,13 +17,18 @@
 
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import {Permission} from '../../authorisation/Permission';
+import {PERMISSIONS} from '../../authorisation/Permissions';
 import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
@@ -38,12 +43,14 @@ export class EditGemeindeComponent implements OnInit {
     public keineBeschwerdeAdresse: boolean;
     private navigationSource: StateDeclaration;
     private gemeindeId: string;
+    private fileToUpload: File;
 
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
         private readonly errorService: ErrorService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -66,6 +73,23 @@ export class EditGemeindeComponent implements OnInit {
             }));
     }
 
+    public getHeaderTitle(gemeinde: TSGemeinde): string {
+        if (!gemeinde) {
+            return '';
+        }
+        return `${this.translate.instant('GEMEINDE')} ${gemeinde.name}`;
+    }
+
+    public getLogoImageUrl(gemeinde: TSGemeinde): string {
+        return this.gemeindeRS.getLogoUrl(gemeinde.id);
+    }
+
+    public getMitarbeiterVisibleRoles(): TSRole[] {
+        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE];
+        allowedRoles.push(TSRole.SUPER_ADMIN);
+        return allowedRoles;
+    }
+
     public cancel(): void {
         this.navigateBack();
     }
@@ -79,7 +103,37 @@ export class EditGemeindeComponent implements OnInit {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
         }
-        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => this.navigateBack());
+        this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
+            if (this.fileToUpload) {
+                this.persistLogo(this.fileToUpload, true);
+            } else {
+                this.navigateBack();
+            }
+        });
+    }
+
+    private persistLogo(file: File, navigateBack: boolean): void {
+        this.gemeindeRS.uploadLogoImage(this.gemeindeId, file).then(() => {
+            if (navigateBack) {
+                this.navigateBack();
+            }
+        }, () => {
+            this.errorService.clearAll();
+            this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
+        });
+    }
+
+    public collectLogoChange(file: File, stammdaten: TSGemeindeStammdaten): void {
+        if (!file) {
+            return;
+        }
+        if (!stammdaten || stammdaten.isNew()) {
+            // upload later if the stammdaten are new, because if the object doesn't exist yet we will get an error
+            this.fileToUpload = file;
+            return;
+        }
+        this.persistLogo(file, false);
+        this.fileToUpload = undefined;
     }
 
     private validateData(stammdaten: TSGemeindeStammdaten): boolean {

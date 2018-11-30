@@ -66,7 +66,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			}
 			int anspruch = erwerbspensum1 + erwerbspensum2 - erwerbspensumOffset;
 			int minimum = getMinimumErwerbspensum(betreuung);
-			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch, minimum);
+			int roundedAnspruch = checkAndRoundAnspruch(verfuegungZeitabschnitt, anspruch, minimum, erwerbspensumOffset);
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedAnspruch);
 		}
 	}
@@ -84,7 +84,8 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	 * wurde bereits in calculateErwerbspensum eingefuegt.
 	 * Am Ende wird der Wert gerundet und zurueckgegeben
 	 */
-	private int checkAndRoundAnspruch(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, int anspruch, int minimum) {
+	private int checkAndRoundAnspruch(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+			int anspruch, int minimum, int erwerbspensumOffset) {
 		if (anspruch <= 0) {
 			anspruch = 0;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
@@ -93,7 +94,8 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		// Minimum pruefen
 		if (anspruch < minimum) {
 			anspruch = 0;
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MINIMUM_MSG, minimum);
+			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MINIMUM_MSG, minimum + erwerbspensumOffset);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
