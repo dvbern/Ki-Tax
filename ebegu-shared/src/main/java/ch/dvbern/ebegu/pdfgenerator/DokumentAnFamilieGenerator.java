@@ -29,6 +29,7 @@ import com.lowagie.text.Paragraph;
 
 public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
+	protected static final String ANREDE_FAMILIE = "PdfGeneration_AnredeFamilie";
 	private static final String GRUSS = "PdfGeneration_Gruss";
 	private static final String SIGNIERT = "PdfGeneration_Signiert";
 	private static final String SACHBEARBEITUNG = "PdfGeneration_Sachbearbeitung";

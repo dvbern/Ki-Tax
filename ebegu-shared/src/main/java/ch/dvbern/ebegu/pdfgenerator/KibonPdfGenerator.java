@@ -39,8 +39,11 @@ import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 public abstract class KibonPdfGenerator {
 
 	protected static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
-	private static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
-	private static final String FAMILIE = "PdfGeneration_Familie";
+	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
+	protected static final String FAMILIE = "PdfGeneration_Familie";
+	protected static final String NAME = "PdfGeneration_Name";
+	protected static final String BETREUUNG_INSTITUTION = "PdfGeneration_Institution";
+
 
 	@Nonnull
 	private PdfGenerator pdfGenerator;

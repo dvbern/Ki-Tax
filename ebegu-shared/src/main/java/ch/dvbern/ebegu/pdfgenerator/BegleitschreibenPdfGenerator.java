@@ -33,7 +33,6 @@ import com.lowagie.text.Document;
 public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private static final String BEGLEITSCHREIBEN_TITLE = "PdfGeneration_Begleitschreiben_Title";
-	private static final String ANREDE_FAMILIE = "PdfGeneration_AnredeFamilie";
 	private static final String BEGLEITSCHREIBEN_CONTENT = "PdfGeneration_Begleitschreiben_Content";
 	private static final String BEILAGEN = "PdfGeneration_Beilagen";
 	private static final String BEILAGE_VERFUEGUNG = "PdfGeneration_BeilageVerfuegung";

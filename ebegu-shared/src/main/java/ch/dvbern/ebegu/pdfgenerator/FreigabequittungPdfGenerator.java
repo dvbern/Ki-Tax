@@ -58,7 +58,6 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	private static final String GESUCHSTELLER = "PdfGeneration_Gesuchsteller";
 	private static final String BETREUUNGSANGEBOTE = "PdfGeneration_Betreuungsangebote";
 	private static final String BETREUUNG_KIND = "PdfGeneration_Kind";
-	private static final String BETREUUNG_INSTITUTION = "PdfGeneration_Institution";
 	private static final String BETREUUNG_BGNUMMER = "PdfGeneration_BgNummer";
 	private static final String BENOETIGTE_UNTERLAGEN = "PdfGeneration_BenoetigteUnterlagen";
 	private static final String EINWILLIGUNG_STEUERDATEN_TITLE = "PdfGeneration_EinwilligungSteuerdaten_Title";

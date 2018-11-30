@@ -23,7 +23,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -54,6 +57,9 @@ public class KibonPdfGeneratorTest {
 	private Mahnung mahnung_1_Verheiratet;
 	private Mahnung mahnung_2_Alleinstehend;
 	private Mahnung mahnung_2_Verheiratet;
+
+
+	// TODO (hefr) Es braucht hier ein verfügtes Gesuch!!!
 
 	@Before
 	public void init() throws IOException {
@@ -105,33 +111,33 @@ public class KibonPdfGeneratorTest {
 	@Test
 	public void normaleVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		final VerfuegungPdfGenerator alleinstehend =
-			new VerfuegungPdfGenerator(gesuch_alleinstehend, stammdaten, true, VerfuegungPdfGenerator.Art.NORMAL);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten, true, VerfuegungPdfGenerator.Art.NORMAL);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_alleinstehend.pdf"));
 
 		final VerfuegungPdfGenerator verheiratet =
-			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.NORMAL);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten, false, VerfuegungPdfGenerator.Art.NORMAL);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_verheiratet.pdf"));
 	}
 
 	@Test
 	public void keinAnspruchVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		final VerfuegungPdfGenerator alleinstehend =
-			new VerfuegungPdfGenerator(gesuch_alleinstehend, stammdaten, true, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten, true, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/KeinAnspruchVerfügung_alleinstehend.pdf"));
 
 		final VerfuegungPdfGenerator verheiratet =
-			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten, false, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/KeinAnspruchVerfügung_verheiratet.pdf"));
 	}
 
 	@Test
 	public void nichtEintretenVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		final VerfuegungPdfGenerator alleinstehend =
-			new VerfuegungPdfGenerator(gesuch_alleinstehend, stammdaten, true, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten, true, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/NichtEintretenVerfügung_alleinstehend.pdf"));
 
 		final VerfuegungPdfGenerator verheiratet =
-			new VerfuegungPdfGenerator(gesuch_verheiratet, stammdaten, false, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten, false, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/NichtEintretenVerfügung_verheiratet.pdf"));
 	}
 
@@ -166,5 +172,9 @@ public class KibonPdfGeneratorTest {
 		final MahnungPdfGenerator verheiratet =
 			new ZweiteMahnungPdfGenerator(mahnung_2_Verheiratet, mahnung_1_Verheiratet, stammdaten, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Mahnung2_verheiratet.pdf"));
+	}
+
+	private Betreuung getFirstBetreuung(@Nonnull Gesuch gesuch) {
+		return gesuch.extractAllBetreuungen().get(0);
 	}
 }
