@@ -123,12 +123,13 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			createPageBasisJahr(generator, document);
 			// Eventuelle Einkommenverschlechterung
 			EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
-			Objects.requireNonNull(ekvInfo);
-			if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
-				createPageEkv1(generator, document, ekvInfo);
-			}
-			if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
-				createPageEkv2(generator, document, ekvInfo);
+			if (ekvInfo != null) {
+				if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
+					createPageEkv1(generator, document, ekvInfo);
+				}
+				if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
+					createPageEkv2(generator, document, ekvInfo);
+				}
 			}
 			// Massgebendes Einkommen
 			createPageMassgebendesEinkommen(document);
