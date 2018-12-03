@@ -49,19 +49,19 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void test() {
-		testWithParams(geburtstagBaby, false, false, intervall, 20, 100000, 120.90);
-		testWithParams(geburtstagKind, true, false, intervall, 20, 100000, 60.45);
-		testWithParams(geburtstagKind, false, false, intervall, 20, 50000, 147.75);
+		testWithParams(geburtstagBaby, false, false, intervall, 20, 20, 100000, 120.90);
+		testWithParams(geburtstagKind, true, false, intervall, 20, 20, 100000, 60.45);
+		testWithParams(geburtstagKind, false, false, intervall, 20, 20, 50000, 147.75);
 
-		testWithParams(geburtstagKind, false, false, intervallTag, 20, 100000, 7.35);
-		testWithParams(geburtstagKind, true, false, intervallTag, 20, 100000, 5.50);
-		testWithParams(geburtstagKind, false, true, intervallTag, 20, 100000, 14.45);
-		testWithParams(geburtstagKind, true, true, intervallTag, 20, 100000, 12.65);
+		testWithParams(geburtstagKind, false, false, intervallTag, 20, 20, 100000, 7.35);
+		testWithParams(geburtstagKind, true, false, intervallTag, 20, 20, 100000, 5.50);
+		testWithParams(geburtstagKind, false, true, intervallTag, 20, 20, 100000, 14.45);
+		testWithParams(geburtstagKind, true, true, intervallTag, 20, 20, 100000, 12.65);
 
-		testWithParams(geburtstagKind, false, false, intervall, 20, 150000, 13.45);
-		testWithParams(geburtstagKind, true, false, intervall, 20, 150000, 10.05);
-		testWithParams(geburtstagKind, false, true, intervall, 20, 150000, 92.00);
-		testWithParams(geburtstagKind, true, true, intervall, 20, 150000, 88.65);
+		testWithParams(geburtstagKind, false, false, intervall, 20, 20, 150000, 13.45);
+		testWithParams(geburtstagKind, true, false, intervall, 20, 20, 150000, 10.05);
+		testWithParams(geburtstagKind, false, true, intervall, 20, 20, 150000, 92.00);
+		testWithParams(geburtstagKind, true, true, intervall, 20, 20, 150000, 88.65);
 	}
 
 	@Test
@@ -76,29 +76,42 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 			LocalDate.of(2018, Month.SEPTEMBER, 30));
 
 		// Normalfall Kind
-		testWithParams(kind, false, false, halberAugust, 50, 68712, 352.35);
-		testWithParams(kind, false, false, ganzerSeptember, 50, 68712, 780.25);
-		testWithParams(baby, false, false, halberAugust, 50, 68712, 528.55); // 528.55
-		testWithParams(baby, false, false, ganzerSeptember, 50, 68712, 1170.35); // 1170.35
+		testWithParams(kind, false, false, halberAugust, 50, 50, 68712, 352.35);
+		testWithParams(kind, false, false, ganzerSeptember, 50, 50, 68712, 780.25);
+		testWithParams(baby, false, false, halberAugust, 50, 50, 68712, 528.55); // 528.55
+		testWithParams(baby, false, false, ganzerSeptember, 50, 50, 68712, 1170.35); // 1170.35
 		// Normalfall Baby
-		testWithParams(baby, false, false, halberAugust, 50, 185447, 0.00);
-		testWithParams(baby, false, false, ganzerSeptember, 50, 185447, 0.00);
-		testWithParams(baby, false, true, halberAugust, 50, 185447, 225.80);
-		testWithParams(baby, false, true, ganzerSeptember, 50, 185447, 500.00);
+		testWithParams(baby, false, false, halberAugust, 50, 50, 185447, 0.00);
+		testWithParams(baby, false, false, ganzerSeptember, 50, 50, 185447, 0.00);
+		testWithParams(baby, false, true, halberAugust, 50, 50, 185447, 225.80);
+		testWithParams(baby, false, true, ganzerSeptember, 50, 50, 185447, 500.00);
 		// Besondere Beduerfnisse
-		testWithParams(baby, false, true, halberAugust, 50, 35447, 871.60); // 871.60
-		testWithParams(baby, false, true, ganzerSeptember, 50, 35447, 1930.00); // 1930.00
+		testWithParams(baby, false, true, halberAugust, 50, 50, 35447, 871.60); // 871.60
+		testWithParams(baby, false, true, ganzerSeptember, 50, 50, 35447, 1930.00); // 1930.00
 		// Eingeschult
-		testWithParams(kind, true, false, halberAugust, 50, 68712, 264.30);
-		testWithParams(kind, true, false, ganzerSeptember, 50, 68712, 585.20);
+		testWithParams(kind, true, false, halberAugust, 50, 50, 68712, 264.30);
+		testWithParams(kind, true, false, ganzerSeptember, 50, 50, 68712, 585.20);
 	}
 
-	private void testWithParams(
+	@Test
+	public void vollkostenMuessenAufVerguenstigtesPensumBezogenSein() {
+		DateRange ganzerSeptember = new DateRange(
+			LocalDate.of(2018, Month.SEPTEMBER, 1),
+			LocalDate.of(2018, Month.SEPTEMBER, 30));
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt =
+			testWithParams(geburtstagKind, false, false, ganzerSeptember, 100, 50, 180607, 0.00);
+
+		Assert.assertEquals(100, verfuegungZeitabschnitt.getBetreuungspensum().intValue());
+		Assert.assertEquals(50, verfuegungZeitabschnitt.getBgPensum().intValue());
+		Assert.assertEquals(1000, verfuegungZeitabschnitt.getVollkosten().intValue());
+	}
+
+	private VerfuegungZeitabschnitt testWithParams(
 		@Nonnull LocalDate geburtstag,
 		boolean eingeschult,
 		boolean besondereBeduerfnisse,
 		@Nonnull DateRange intervall,
-		int anspruch,
+		int betreuungspensum, int anspruch,
 		int einkommen,
 		double expected
 	) {
@@ -113,12 +126,13 @@ public class KitaRechnerTest extends AbstractBGRechnerTest {
 
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = verfuegung.getZeitabschnitte().get(0);
 		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruch);
-		verfuegungZeitabschnitt.setBetreuungspensum(MathUtil.DEFAULT.from(anspruch));
+		verfuegungZeitabschnitt.setBetreuungspensum(MathUtil.DEFAULT.from(betreuungspensum));
 		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		verfuegungZeitabschnitt.setEingeschult(eingeschult);
 		verfuegungZeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 
 		VerfuegungZeitabschnitt calculate = kitaRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());
+		return calculate;
 	}
 }
