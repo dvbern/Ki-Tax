@@ -185,7 +185,7 @@ public class AbstractBGRechnerTest {
 		parameterDTO.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
 		parameterDTO.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
 		parameterDTO.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
-		parameterDTO.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(11.90));
+		parameterDTO.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
 		parameterDTO.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
 		parameterDTO.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
 		parameterDTO.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
@@ -450,7 +450,7 @@ public class AbstractBGRechnerTest {
 				MathUtil.GANZZAHL.from(-7600), verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 			// Erster Monat
 			VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-			assertZeitabschnitt(august, new BigDecimal(100.00), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 1600.00, 400.00);
+			assertZeitabschnitt(august, new BigDecimal(100.00), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), 1600, 1488, 112);
 		}
 	}
 
