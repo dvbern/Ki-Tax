@@ -50,10 +50,17 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'institution.edit',
-        url: '/edit/:institutionId',
+        url: '/edit/:institutionId/:isRegistering',
         component: EditInstitutionComponent,
         data: {
             roles: TSRoleUtil.getInstitutionProfilRoles(),
+        },
+        params: {
+            isRegistering: {
+                type: 'bool',
+                // this parameter is optional: specify a default value
+                value: false,
+            },
         },
     },
 ];

@@ -457,6 +457,10 @@ export class TSRoleUtil {
         return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]);
     }
 
+    public static getInstitutionRoles(): TSRole[] {
+        return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
+    }
+
     public static isGemeindeRole(role: TSRole): boolean {
         return PERMISSIONS[Permission.ROLE_GEMEINDE].includes(role);
     }

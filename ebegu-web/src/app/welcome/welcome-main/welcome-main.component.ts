@@ -16,15 +16,26 @@
  */
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {StateService} from '@uirouter/core';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 
 @Component({
-    selector: 'dv-welcome-gemeinde',
-    templateUrl: './welcome-gemeinde.component.html',
+    selector: 'dv-welcome-main',
+    templateUrl: './welcome-main.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WelcomeGemeindeComponent {
+export class WelcomeMainComponent {
 
-    public constructor() {
+    public constructor(
+        private readonly authServiceRs: AuthServiceRS,
+        private readonly $state: StateService,
+    ) {
+
+    }
+
+    public navigateToStartPage(): void {
+        navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
     }
 
 }

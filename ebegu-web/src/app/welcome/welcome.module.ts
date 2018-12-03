@@ -18,6 +18,8 @@
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../shared/shared.module';
 import {WelcomeGemeindeComponent} from './welcome-gemeinde/welcome-gemeinde.component';
+import {WelcomeInstitutionComponent} from './welcome-institution/welcome-institution.component';
+import {WelcomeMainComponent} from './welcome-main/welcome-main.component';
 import {WelcomeRoutingModule} from './welcome-routing/welcome-routing.module';
 
 @NgModule({
@@ -27,9 +29,13 @@ import {WelcomeRoutingModule} from './welcome-routing/welcome-routing.module';
     ],
     declarations: [
         WelcomeGemeindeComponent,
+        WelcomeInstitutionComponent,
+        WelcomeMainComponent,
     ],
     entryComponents: [
         WelcomeGemeindeComponent,
+        WelcomeInstitutionComponent,
+        WelcomeMainComponent,
     ],
     providers: [],
 })

@@ -21,6 +21,7 @@ import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {WelcomeGemeindeComponent} from '../welcome-gemeinde/welcome-gemeinde.component';
+import {WelcomeInstitutionComponent} from '../welcome-institution/welcome-institution.component';
 
 const states: Ng2StateDeclaration[] = [
     {
@@ -36,6 +37,14 @@ const states: Ng2StateDeclaration[] = [
         component: WelcomeGemeindeComponent,
         data: {
             roles: TSRoleUtil.getAdministratorBgTsGemeindeRole(),
+        },
+    },
+    {
+        name: 'welcome.institution',
+        url: '/institution',
+        component: WelcomeInstitutionComponent,
+        data: {
+            roles: TSRoleUtil.getInstitutionRoles(),
         },
     },
 ];

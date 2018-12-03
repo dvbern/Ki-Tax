@@ -57,14 +57,15 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.navigationSource = this.$transition$.from();
         this.gemeindeId = this.$transition$.params().gemeindeId;
         if (!this.gemeindeId) {
             return;
         }
+        this.navigationSource = this.$transition$.from();
+        this.isRegisteringGemeinde = this.$transition$.params().isRegistering;
+
         this.stammdaten$ = from(
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
-                this.isRegisteringGemeinde = stammdaten.isNew();
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
                 if (stammdaten.adresse === undefined) {
                     stammdaten.adresse = new TSAdresse();
@@ -164,5 +165,9 @@ export class EditGemeindeComponent implements OnInit {
             : this.navigationSource;
 
         this.$state.go(redirectTo, {gemeindeId: this.gemeindeId});
+    }
+
+    public isRegistering(): boolean {
+        return this.isRegisteringGemeinde;
     }
 }

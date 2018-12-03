@@ -51,10 +51,17 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'gemeinde.edit',
-        url: '/edit/:gemeindeId',
+        url: '/edit/:gemeindeId/:isRegistering',
         component: EditGemeindeComponent,
         data: {
             roles: TSRoleUtil.getAdministratorBgTsGemeindeRole(),
+        },
+        params: {
+            isRegistering: {
+                type: 'bool',
+                // this parameter is optional: specify a default value
+                value: false,
+            },
         },
     },
     {

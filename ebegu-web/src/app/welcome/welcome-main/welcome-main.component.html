@@ -15,15 +15,30 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<dv-welcome-main>
+<dv-full-height-inner-padding-container>
 
-    <div class="row">
-        <div class="col-sm-12" style="text-align: center;">
-            <img src="../../../assets/images/willkommen.jpg"
-                 height="240"
-                 width="721"
-            />
+    <form role="form"
+          #form="ngForm"
+          [ngClass]="{'ng-submitted': form.submitted}"
+          (ngSubmit)="navigateToStartPage()"
+          novalidate>
+
+        <div class="dv-content">
+            <div class="viewTitle">
+                <h2 translate>WELCOME</h2>
+                <hr class="header">
+            </div>
+
+            <ng-content></ng-content>
+
         </div>
-    </div>
 
-</dv-welcome-main>
+        <div class="dv-footer">
+            <dv-loading-button [type]="'submit'">
+                <span translate>LETS_START</span>
+            </dv-loading-button>
+        </div>
+
+    </form>
+
+</dv-full-height-inner-padding-container>

@@ -18,11 +18,11 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 
 @Component({
-    selector: 'dv-welcome-gemeinde',
-    templateUrl: './welcome-gemeinde.component.html',
+    selector: 'dv-welcome-institution',
+    templateUrl: './welcome-institution.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WelcomeGemeindeComponent {
+export class WelcomeInstitutionComponent {
 
     public constructor() {
     }
