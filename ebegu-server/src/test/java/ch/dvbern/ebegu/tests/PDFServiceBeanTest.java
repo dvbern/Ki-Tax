@@ -431,9 +431,10 @@ public class PDFServiceBeanTest {
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 
 		TestDataUtil.calculateFinanzDaten(gesuch);
+		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch);
 		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter());
 
-		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, null, writeProtectPDF);
+		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, verfuegungFamSit, writeProtectPDF);
 
 		unitTestTempfolder.writeToTempDir(bytes, "TN_FamilienStituation1.pdf");
 	}

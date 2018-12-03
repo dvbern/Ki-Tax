@@ -1308,14 +1308,26 @@ public final class TestDataUtil {
 	}
 
 	public static GemeindeStammdaten createGemeindeWithStammdaten() {
+		return createGemeindeStammdaten(createGemeindeBern());
+	}
+
+	public static GemeindeStammdaten createGemeindeStammdaten(@Nonnull Gemeinde gemeinde) {
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
 		stammdaten.setAdresse(createDefaultAdresse());
-		stammdaten.setGemeinde(createGemeindeBern());
+		stammdaten.setGemeinde(gemeinde);
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
 		stammdaten.setMail("info@bern.ch");
 		stammdaten.setTelefon("031 123 12 12");
 		stammdaten.setWebseite("www.bern.ch");
 		return stammdaten;
+	}
+
+	public static GemeindeStammdaten createGemeindeStammdaten(@Nonnull Gemeinde gemeinde, @Nonnull Persistence persistence) {
+		GemeindeStammdaten gemeindeStammdaten = createGemeindeStammdaten(gemeinde);
+		if (gemeinde.isNew()) {
+			persistence.persist(gemeinde);
+		}
+		return persistence.merge(gemeindeStammdaten);
 	}
 
 	public static Benutzer createBenutzerWithDefaultGemeinde(
