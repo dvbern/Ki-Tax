@@ -53,6 +53,10 @@ public class FinanzielleSituationTable {
 
 	private boolean hasSecondGesuchsteller;
 
+	public FinanzielleSituationTable(boolean hasSecondGesuchsteller, boolean lastLineBold) {
+		this(hasSecondGesuchsteller);
+		this.lastLineBold = lastLineBold;
+	}
 
 	public FinanzielleSituationTable(boolean hasSecondGesuchsteller) {
 		this.hasSecondGesuchsteller = hasSecondGesuchsteller;
@@ -87,7 +91,7 @@ public class FinanzielleSituationTable {
 		table.setHeaderRows(numberOfTitleRows);
 		for (int i = 0; i < rows.size(); i++) {
 			boolean isHeader = i < numberOfTitleRows;
-			boolean isFooter = lastLineBold && i == numberOfColumns - 1;
+			boolean isFooter = lastLineBold && i == rows.size() - 1;
 			Color bgColor = isHeader ? Color.LIGHT_GRAY : Color.WHITE;
 			Font font = isFooter ? DEFAULT_FONT_BOLD : DEFAULT_FONT;
 

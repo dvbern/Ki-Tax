@@ -352,14 +352,14 @@ public class FinanzielleSituationRechner {
 	 * wenn ein einzelner Gesuchsteller ein negatives Nettovermoegen hat.
 	 */
 	public static BigDecimal calcVermoegen5Prozent(
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
+		@Nullable AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2) {
 
-		final BigDecimal totalBruttovermoegen = add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getBruttovermoegen() : BigDecimal.ZERO,
-			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getBruttovermoegen() : BigDecimal.ZERO);
+		final BigDecimal totalBruttovermoegen = add(gs1 != null ? gs1.getBruttovermoegen() : BigDecimal.ZERO,
+			gs2 != null ? gs2.getBruttovermoegen() : BigDecimal.ZERO);
 
-		final BigDecimal totalSchulden = add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getSchulden() : BigDecimal.ZERO,
-			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getSchulden() : BigDecimal.ZERO);
+		final BigDecimal totalSchulden = add(gs1 != null ? gs1.getSchulden() : BigDecimal.ZERO,
+			gs2 != null ? gs2.getSchulden() : BigDecimal.ZERO);
 
 		BigDecimal total = subtract(totalBruttovermoegen, totalSchulden);
 		if (total.compareTo(BigDecimal.ZERO) < 0) {
@@ -369,44 +369,48 @@ public class FinanzielleSituationRechner {
 		return MathUtil.GANZZAHL.from(total);
 	}
 
-	@Nullable
+	@Nonnull
 	public static BigDecimal calcTotalEinkommen(
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
+		@Nullable AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2) {
 
-		return MathUtil.DEFAULT.add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getZwischentotalEinkommen() : BigDecimal.ZERO,
-			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getZwischentotalEinkommen() : BigDecimal.ZERO);
+		return MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO,
+			gs1 != null ? gs1.getZwischentotalEinkommen() : BigDecimal.ZERO,
+			gs2 != null ? gs2.getZwischentotalEinkommen() : BigDecimal.ZERO);
 	}
 
-	@Nullable
+	@Nonnull
 	public static BigDecimal calcTotalVermoegen(
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
+		@Nullable AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2) {
 
-		return MathUtil.DEFAULT.add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getZwischentotalVermoegen() : BigDecimal.ZERO,
-			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getZwischentotalVermoegen() : BigDecimal.ZERO);
+		return MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO,
+			gs1 != null ? gs1.getZwischentotalVermoegen() : BigDecimal.ZERO,
+			gs2 != null ? gs2.getZwischentotalVermoegen() : BigDecimal.ZERO);
 	}
 
-	@Nullable
+	@Nonnull
 	public static BigDecimal calcTotalAbzuege(
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
+		@Nullable AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2) {
 
-		return MathUtil.DEFAULT.add(abstractFinanzielleSituation1 != null ? abstractFinanzielleSituation1.getZwischetotalAbzuege() : BigDecimal.ZERO,
-			abstractFinanzielleSituation2 != null ? abstractFinanzielleSituation2.getZwischetotalAbzuege() : BigDecimal.ZERO);
+		return MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO,
+			gs1 != null ? gs1.getZwischetotalAbzuege() : BigDecimal.ZERO,
+			gs2 != null ? gs2.getZwischetotalAbzuege() : BigDecimal.ZERO);
 	}
 
 	public static BigDecimal calcMassgebendesEinkommenVorAbzugFamiliengroesse(
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2) {
+		@Nullable AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2) {
 
-		BigDecimal totalEinkommen = MathUtil.DEFAULT.add(
-			calcTotalEinkommen(abstractFinanzielleSituation1, abstractFinanzielleSituation2),
-			calcTotalVermoegen(abstractFinanzielleSituation1, abstractFinanzielleSituation2));
+		BigDecimal totalEinkommen = MathUtil.DEFAULT.addNullSafe(
+			BigDecimal.ZERO,
+			calcTotalEinkommen(gs1, gs2),
+			calcVermoegen5Prozent(gs1, gs2));
 
 		return MathUtil.DEFAULT.subtract(
 			totalEinkommen,
-			calcTotalAbzuege(abstractFinanzielleSituation1, abstractFinanzielleSituation2));
+			calcTotalAbzuege(gs1, gs2));
 	}
 
 	@Deprecated // Use MathUtil instead

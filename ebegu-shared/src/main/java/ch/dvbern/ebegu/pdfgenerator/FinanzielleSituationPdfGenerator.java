@@ -441,7 +441,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			einkommen.setGs1(MathUtil.DEFAULT.add(gs1.getZwischentotalEinkommen(), gs2.getZwischentotalEinkommen()));
 			abzuege.setGs1(MathUtil.DEFAULT.add(gs1.getZwischetotalAbzuege(), gs2.getZwischetotalAbzuege()));
 		}
-		FinanzielleSituationTable table = new FinanzielleSituationTable(false);
+		FinanzielleSituationTable table = new FinanzielleSituationTable(false, true);
 		table.addRow(zusammenzugTitle);
 		table.addRow(einkommen);
 		table.addRow(vermoegen);

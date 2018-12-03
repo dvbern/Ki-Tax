@@ -19,10 +19,7 @@ package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.Locale;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -227,7 +224,7 @@ public final class PdfUtil {
 
 	@Nonnull
 	public static PdfPTable createTable(java.util.List<String[]> values, final float[] columnWidths, final int[] alignement, final int emptyLinesAfter) {
-		PdfPTable table = new PdfPTable(values.size());
+		PdfPTable table = new PdfPTable(columnWidths.length);
 		try {
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
@@ -241,15 +238,14 @@ public final class PdfUtil {
 				PdfPCell cell;
 				if (first) {
 					cell = PdfUtil.createTitleCell(value[j]);
-
 				} else {
 					cell = new PdfPCell(new Phrase(value[j], DEFAULT_FONT));
 				}
 				cell.setHorizontalAlignment(alignement[j]);
 				cell.setLeading(0.0F, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 				table.addCell(cell);
-				first = false;
 			}
+			first = false;
 		}
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * emptyLinesAfter);
 		return table;
@@ -293,9 +289,7 @@ public final class PdfUtil {
 	@Nonnull
 	public static String printBigDecimal(@Nullable BigDecimal valueAsBigDecimal) {
 		if (valueAsBigDecimal != null) {
-			Format format = NumberFormat.getNumberInstance(Locale.GERMAN);
-			String formattedAmount = format.format(valueAsBigDecimal);
-			return formattedAmount;
+			return Constants.CURRENCY_FORMAT.format(valueAsBigDecimal);
 		}
 		return "";
 	}
@@ -316,7 +310,7 @@ public final class PdfUtil {
 	@Nonnull
 	public static String printPercent(@Nullable BigDecimal percent) {
 		if (percent != null) {
-			return percent + " %";
+			return percent + "%";
 		}
 		return "";
 	}
