@@ -20,47 +20,31 @@ import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
-import {AddInstitutionComponent} from '../add-institution/add-institution.component';
-import {EditInstitutionComponent} from '../edit-institution/edit-institution.component';
-import {InstitutionListComponent} from '../list-institution/institution-list.component';
+import {WelcomeGemeindeComponent} from '../welcome-gemeinde/welcome-gemeinde.component';
+import {WelcomeInstitutionComponent} from '../welcome-institution/welcome-institution.component';
 
 const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
-        name: 'institution',
+        name: 'welcome',
         abstract: true,
-        url: '/institution',
+        url: '/welcome',
         component: UiViewComponent,
     },
     {
-        name: 'institution.list',
-        url: '/list',
-        component: InstitutionListComponent,
+        name: 'welcome.gemeinde',
+        url: '/gemeinde',
+        component: WelcomeGemeindeComponent,
         data: {
-            roles: TSRoleUtil.getInstitutionProfilRoles(),
+            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole(),
         },
     },
     {
-        name: 'institution.add',
-        url: '/add',
-        component: AddInstitutionComponent,
+        name: 'welcome.institution',
+        url: '/institution',
+        component: WelcomeInstitutionComponent,
         data: {
-            roles: TSRoleUtil.getMandantRoles(),
-        },
-    },
-    {
-        name: 'institution.edit',
-        url: '/edit/:institutionId/:isRegistering',
-        component: EditInstitutionComponent,
-        data: {
-            roles: TSRoleUtil.getInstitutionProfilRoles(),
-        },
-        params: {
-            isRegistering: {
-                type: 'bool',
-                // this parameter is optional: specify a default value
-                value: false,
-            },
+            roles: TSRoleUtil.getInstitutionRoles(),
         },
     },
 ];
@@ -73,5 +57,5 @@ const states: Ng2StateDeclaration[] = [
         UIRouterUpgradeModule,
     ],
 })
-export class InstitutionRoutingModule {
+export class WelcomeRoutingModule {
 }
