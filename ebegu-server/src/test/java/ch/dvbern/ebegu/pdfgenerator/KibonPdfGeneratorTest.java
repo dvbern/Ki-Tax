@@ -112,10 +112,12 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void normaleVerfuegungTest() throws InvoiceGeneratorException, IOException {
+		evaluator.evaluate(gesuch_alleinstehend, getParameter());
 		final VerfuegungPdfGenerator alleinstehend =
 			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten, true, VerfuegungPdfGenerator.Art.NORMAL);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_alleinstehend.pdf"));
 
+		evaluator.evaluate(gesuch_verheiratet, getParameter());
 		final VerfuegungPdfGenerator verheiratet =
 			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten, false, VerfuegungPdfGenerator.Art.NORMAL);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_verheiratet.pdf"));
