@@ -18,6 +18,9 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.function.Function;
@@ -29,6 +32,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
+import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
@@ -37,8 +41,12 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -313,5 +321,40 @@ public final class PdfUtil {
 			return percent + "%";
 		}
 		return "";
+	}
+
+	/**
+	 * Merge multiple pdf into one pdf
+	 * @param pdfToMergeList  of pdf input stream
+	 * @param outputStream output file output stream
+	 * @param addOddPages when true it creates a blank page after each single document if this has an odd number of pages. This is useful
+	 * when the resulting pdf is printed as thoguh each single document was printed separately
+	 */
+	public static void doMerge(java.util.List<InputStream> pdfToMergeList, OutputStream outputStream, boolean addOddPages
+	) throws DocumentException, IOException {
+
+		Document document = new Document();
+		PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+		document.open();
+		PdfContentByte cb = writer.getDirectContent();
+
+		for (InputStream in : pdfToMergeList) {
+			PdfReader reader = new PdfReader(in);
+			for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+				//import the page from source pdf
+				PdfImportedPage page = writer.getImportedPage(reader, i);
+				//add the page to the destination pdf
+				document.setPageSize(page.getBoundingBox());
+				document.newPage();
+				cb.addTemplate(page, 0, 0);
+			}
+			if (addOddPages && !MathUtil.isEven(writer.getPageNumber())) {
+				document.newPage();
+				writer.setPageEmpty(false); // Use this method to make sure a page is added, even if it's empty.
+			}
+		}
+		outputStream.flush();
+		document.close();
+		outputStream.close();
 	}
 }

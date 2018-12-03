@@ -20,11 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -238,8 +236,6 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 		// Die Vorlagen des letzten Jahres suchen (datumAb -1 Tag)
 		Collection<EbeguVorlage> ebeguVorlageByDate = getALLEbeguVorlageByDate(
 			gesuchsperiodeToCopyTo.getGueltigkeit().getGueltigAb().minusDays(1), true);
-		ebeguVorlageByDate.addAll(getEmptyVorlagen(ebeguVorlageByDate));
-
 		ebeguVorlageByDate.stream().filter(lastYearVoralge -> lastYearVoralge.getName().isProGesuchsperiode()).forEach(lastYearVorlage -> {
 			EbeguVorlage newVorlage = lastYearVorlage.copy(gesuchsperiodeToCopyTo.getGueltigkeit());
 			if (lastYearVorlage.getVorlage() != null) {
@@ -288,27 +284,5 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 		} catch (IOException | MimeTypeParseException e) {
 			throw new EbeguRuntimeException("getBenutzerhandbuch", "Could not create Benutzerhandbuch", e);
 		}
-	}
-
-	/**
-	 * Adds all empty Vorlagen to the list. It will only take into account those
-	 * Vorlage that are set to proGesuchsperiode=true
-	 */
-	private Set<EbeguVorlage> getEmptyVorlagen(Collection<EbeguVorlage> persistedEbeguVorlagen) {
-		Set<EbeguVorlage> emptyEbeguVorlagen = new HashSet<>();
-		final EbeguVorlageKey[] ebeguVorlageKeys = EbeguVorlageKey.getAllKeysProGesuchsperiode();
-		for (EbeguVorlageKey ebeguVorlageKey : ebeguVorlageKeys) {
-			boolean exist = false;
-			for (EbeguVorlage ebeguVorlage : persistedEbeguVorlagen) {
-				if (ebeguVorlage.getName() == ebeguVorlageKey) {
-					exist = true;
-					break;
-				}
-			}
-			if (!exist) {
-				emptyEbeguVorlagen.add(new EbeguVorlage(ebeguVorlageKey));
-			}
-		}
-		return emptyEbeguVorlagen;
 	}
 }

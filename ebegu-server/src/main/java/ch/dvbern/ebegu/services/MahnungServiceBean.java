@@ -50,7 +50,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
-import ch.dvbern.ebegu.vorlagen.PrintUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -185,7 +185,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 		StringBuilder bemerkungenBuilder = new StringBuilder();
 		for (DokumentGrund dokumentGrund : dokumentGrundsMerged) {
-			StringBuilder dokumentData = PrintUtil.parseDokumentGrundDataToString(dokumentGrund);
+			StringBuilder dokumentData = parseDokumentGrundDataToString(dokumentGrund);
 			if (dokumentData.length() > 0) {
 				bemerkungenBuilder.append(dokumentData);
 				bemerkungenBuilder.append('\n');
@@ -266,5 +266,14 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 		if (!criteriaResults.isEmpty()) {
 			throw new EbeguRuntimeException("assertNoOpenMahnungOfType", ErrorCodeEnum.ERROR_EXISTING_MAHNUNG);
 		}
+	}
+
+	@Nonnull
+	private StringBuilder parseDokumentGrundDataToString(@Nonnull DokumentGrund dokumentGrund) {
+		StringBuilder bemerkungenBuilder = new StringBuilder();
+		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
+			bemerkungenBuilder.append(ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp()));
+		}
+		return bemerkungenBuilder;
 	}
 }

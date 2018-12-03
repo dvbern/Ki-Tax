@@ -16,8 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,9 +37,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EbeguVorlageKey;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
@@ -50,18 +47,14 @@ import ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.vorlagen.GeneratePDFDocumentHelper;
-import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintImpl;
-import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintMergeSource;
-import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintImpl;
-import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintMergeSource;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-import com.google.common.io.ByteStreams;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -78,7 +71,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @SuppressWarnings("UnstableApiUsage")
 @Stateless
 @Local(PDFService.class)
-public class PDFServiceBean extends AbstractPrintService implements PDFService {
+public class PDFServiceBean implements PDFService {
 
 	private static final Objects[] OBJECTARRAY = {};
 	public static final byte[] BYTES = new byte[0];
@@ -99,36 +92,16 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateNichteintreten(Betreuung betreuung, boolean writeProtected) throws
-		MergeDocException {
+	public byte[] generateNichteintreten(Betreuung betreuung, boolean writeProtected) throws MergeDocException {
+		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
-		EbeguVorlageKey vorlageKey;
-
-		BetreuungsangebotTyp angebotTyp = betreuung.getBetreuungsangebotTyp();
-
-		if (angebotTyp == BetreuungsangebotTyp.KITA || angebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
-			vorlageKey = EbeguVorlageKey.VORLAGE_NICHT_EINTRETENSVERFUEGUNG;
-		} else if (angebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
-			vorlageKey = EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
-		} else {
-			throw new MergeDocException("generateNichteintreten()",
-				"Unexpected Betreuung Type", null, OBJECTARRAY);
-		}
-
-		try {
-			Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
-			final DateRange gueltigkeit = betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit();
-			InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(), gueltigkeit.getGueltigBis(), vorlageKey);
-			Objects.requireNonNull(is, "Vorlage '" + vorlageKey.name() + "' nicht gefunden");
-			byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-				ByteStreams.toByteArray(is), new NichteintretenPrintMergeSource(new NichteintretenPrintImpl(betreuung)),
-				writeProtected);
-			is.close();
-			return bytes;
-		} catch (IOException e) {
-			throw new MergeDocException("generateNichteintreten()",
-				"Bei der Generierung der Nichteintreten ist ein Fehler aufgetreten", e, OBJECTARRAY);
-		}
+		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
+			betreuung,
+			stammdaten,
+			!writeProtected,
+			Art.NICHT_EINTRETTEN);
+		return generateDokument(pdfGenerator);
 	}
 
 	@Nonnull
@@ -212,42 +185,29 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public byte[] generateVerfuegungForBetreuung(Betreuung betreuung,
-		@Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected) throws MergeDocException {
+		@Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected
+	) throws MergeDocException {
+		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
-		final DateRange gueltigkeit = betreuung.extractGesuchsperiode().getGueltigkeit();
-		EbeguVorlageKey vorlageFromBetreuungsangebottyp = getVorlageFromBetreuungsangebottyp(betreuung);
-		InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(), gueltigkeit.getGueltigBis(), vorlageFromBetreuungsangebottyp);
-		Objects.requireNonNull(is, "Vorlage fuer die Verfuegung nicht gefunden");
-		authorizer.checkReadAuthorization(betreuung);
-		try {
-			byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-				ByteStreams.toByteArray(is), new VerfuegungPrintMergeSource(new VerfuegungPrintImpl(betreuung, letzteVerfuegungDatum)),
-				writeProtected);
-			is.close();
-			return bytes;
-		} catch (IOException e) {
-			throw new MergeDocException("printVerfuegungen()",
-				"Bei der Generierung der Verfuegungsmustervorlage ist ein Fehler aufgetreten", e, OBJECTARRAY);
-		}
+		Art art = hasAnspruch(betreuung) ? Art.NORMAL : Art.KEIN_ANSPRUCH;
+		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
+			betreuung,
+			stammdaten,
+			!writeProtected,
+			art);
+		return generateDokument(pdfGenerator);
 	}
 
-	@Nonnull
-	private EbeguVorlageKey getVorlageFromBetreuungsangebottyp(final Betreuung betreuung) {
-		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
-		Objects.requireNonNull(betreuungsangebotTyp);
-		if (Betreuungsstatus.NICHT_EINGETRETEN == betreuung.getBetreuungsstatus()) {
-			if (betreuungsangebotTyp.isAngebotJugendamtKleinkind()) {
-				return EbeguVorlageKey.VORLAGE_NICHT_EINTRETENSVERFUEGUNG;
-			}
-			return EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
+	private boolean hasAnspruch(@Nonnull Betreuung betreuung) {
+		if (betreuung.getVerfuegung() != null) {
+			List<VerfuegungZeitabschnitt> vzList = betreuung.getVerfuegung().getZeitabschnitte();
+			BigDecimal value = vzList.stream()
+				.map(VerfuegungZeitabschnitt::getBgPensum)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+			return MathUtil.isPositive(value);
 		}
-		switch (betreuungsangebotTyp) {
-		case TAGESFAMILIEN:
-			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_TAGESFAMILIEN;
-		case KITA:
-		default:
-			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_KITA;
-		}
+		return false;
 	}
 
 	/**

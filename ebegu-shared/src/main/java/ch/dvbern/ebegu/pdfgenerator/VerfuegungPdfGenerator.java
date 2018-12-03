@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -34,6 +36,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.Gueltigkeit;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.dto.Alignment;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
@@ -203,7 +207,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			ServerMessageUtil.getMessage(ELTERNBEITRAG)
 		};
 		values.add(titles);
-		for (VerfuegungZeitabschnitt abschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
+		for (VerfuegungZeitabschnitt abschnitt : getVerfuegungZeitabschnitt()) {
 			String[] data = {
 				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()),
 				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
@@ -219,6 +223,41 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		float[] columnWidths = {10, 10, 10, 10, 10, 10, 12, 12};
 		int[] alignement = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT };
 		return PdfUtil.createTable(values, columnWidths, alignement, 2);
+	}
+
+	@Nonnull
+	private List<VerfuegungZeitabschnitt> getVerfuegungZeitabschnitt() {
+		Verfuegung verfuegung = betreuung.getVerfuegung();
+		if (verfuegung == null) {
+			return Collections.emptyList();
+		}
+		// first of all we get all Zeitabschnitte and create a List of VerfuegungZeitabschnittPrintImpl, then we remove
+		// all Zeitabschnitte with Pensum == 0 that we find at the beginning and at the end of the list. All Zeitabschnitte
+		// between two valid values will remain: 0, 0, 30, 40, 0, 30, 0, 0 ==> 30, 40, 0, 30
+		List<VerfuegungZeitabschnitt> result = verfuegung.getZeitabschnitte().stream()
+				.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR.reversed())
+				.collect(Collectors.toList());
+
+		ListIterator<VerfuegungZeitabschnitt> listIteratorBeginning = result.listIterator();
+		while (listIteratorBeginning.hasNext()) {
+			VerfuegungZeitabschnitt zeitabschnitt = listIteratorBeginning.next();
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensum())) {
+				listIteratorBeginning.remove();
+			} else {
+				break;
+			}
+		}
+		Collections.reverse(result);
+		ListIterator<VerfuegungZeitabschnitt> listIteratorEnd = result.listIterator();
+		while (listIteratorEnd.hasNext()) {
+			VerfuegungZeitabschnitt zeitabschnitt = listIteratorEnd.next();
+			if (!MathUtil.isPositive(zeitabschnitt.getBetreuungspensum())) {
+				listIteratorEnd.remove();
+			} else {
+				break;
+			}
+		}
+		return result;
 	}
 
 	@Nonnull
