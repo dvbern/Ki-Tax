@@ -70,7 +70,7 @@ export class FallToolbarComponent implements OnChanges {
     }
 
     private loadObjects(): void {
-        if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId) {
+        if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId && this.dossierId) {
             this.dossierRS.findDossier(this.dossierId).then(dossier => {
                 this.fallId = dossier.fall.id ? dossier.fall.id : '';
                 this.doLoading(this.fallId);
