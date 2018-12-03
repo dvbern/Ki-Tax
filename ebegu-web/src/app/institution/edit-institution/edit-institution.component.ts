@@ -51,6 +51,7 @@ export class EditInstitutionComponent implements OnInit {
     public stammdaten: TSInstitutionStammdaten;
     public abweichendeZahlungsAdresse: boolean;
     public editMode: boolean;
+    private isRegisteringInstitution: boolean = false;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -69,6 +70,7 @@ export class EditInstitutionComponent implements OnInit {
         if (!institutionId) {
             return;
         }
+        this.isRegisteringInstitution = this.$transition$.params().isRegistering;
 
         this.institutionRS.findInstitution(institutionId).then(institution => {
             this.institution = institution;
@@ -103,6 +105,10 @@ export class EditInstitutionComponent implements OnInit {
 
     public isBetreuungsgutscheineAkzeptierenDisabled(): boolean {
         return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public isRegistering(): boolean {
+        return this.isRegisteringInstitution;
     }
 
     public getHeaderPreTitle(): string {
@@ -158,6 +164,7 @@ export class EditInstitutionComponent implements OnInit {
             .then(() => {
                 this.editMode = false;
                 this.changeDetectorRef.markForCheck();
+                this.navigateToWelcomesite();
             });
     }
 
@@ -171,6 +178,13 @@ export class EditInstitutionComponent implements OnInit {
 
     private navigateBack(): void {
          this.$state.go('institution.list');
+    }
+
+    private navigateToWelcomesite(): void {
+        if (this.isRegisteringInstitution) {
+            this.$state.go('welcome.institution');
+            return;
+        }
     }
 
     public getGueltigkeitTodisplay(): string {
