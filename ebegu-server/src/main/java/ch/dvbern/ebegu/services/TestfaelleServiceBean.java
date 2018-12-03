@@ -603,9 +603,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		}
 
 		if (verfuegen) {
-			Optional<GemeindeStammdaten> gemeindeStammdatenByGemeindeId =
+			Optional<GemeindeStammdaten> stammdaten =
 				gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.extractGemeinde().getId());
-			if (!gemeindeStammdatenByGemeindeId.isPresent()) {
+			if (!stammdaten.isPresent()) {
 				createStammdatenForGemeinde(gesuch.extractGemeinde());
 			}
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
