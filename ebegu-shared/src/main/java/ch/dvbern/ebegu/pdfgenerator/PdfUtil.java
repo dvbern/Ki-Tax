@@ -316,7 +316,7 @@ public final class PdfUtil {
 	@Nonnull
 	public static String printPercent(@Nullable BigDecimal percent) {
 		if (percent != null) {
-			return String.valueOf(percent) + " %";
+			return percent + " %";
 		}
 		return "";
 	}

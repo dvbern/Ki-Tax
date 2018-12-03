@@ -31,9 +31,11 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
@@ -46,7 +48,7 @@ import org.junit.Test;
  * generiert.
  */
 @SuppressWarnings("JUnitTestMethodWithNoAssertions") // some tests will check that the file is created. no assertion is needed
-public class KibonPdfGeneratorTest {
+public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	private GemeindeStammdaten stammdaten;
 	private List<DokumentGrund> benoetigteUnterlagen;
@@ -144,11 +146,11 @@ public class KibonPdfGeneratorTest {
 	@Test
 	public void finanzielleSituationTest() throws InvoiceGeneratorException, IOException {
 		final FinanzielleSituationPdfGenerator alleinstehend =
-			new FinanzielleSituationPdfGenerator(gesuch_alleinstehend, stammdaten, true);
+			new FinanzielleSituationPdfGenerator(gesuch_alleinstehend, getFamiliensituationsVerfuegung(gesuch_alleinstehend), stammdaten, true);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_alleinstehend.pdf"));
 
 		final FinanzielleSituationPdfGenerator verheiratet =
-			new FinanzielleSituationPdfGenerator(gesuch_verheiratet, stammdaten, false);
+			new FinanzielleSituationPdfGenerator(gesuch_verheiratet, getFamiliensituationsVerfuegung(gesuch_verheiratet), stammdaten, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_verheiratet.pdf"));
 	}
 
@@ -176,5 +178,9 @@ public class KibonPdfGeneratorTest {
 
 	private Betreuung getFirstBetreuung(@Nonnull Gesuch gesuch) {
 		return gesuch.extractAllBetreuungen().get(0);
+	}
+
+	private Verfuegung getFamiliensituationsVerfuegung(@Nonnull Gesuch gesuch) {
+		return evaluator.evaluateFamiliensituation(gesuch);
 	}
 }
