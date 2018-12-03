@@ -176,8 +176,8 @@ export class FallToolbarComponent implements OnChanges {
         const newDossier = new TSDossier();
         newDossier.fall = this.selectedDossier.fall;
         newDossier.gemeinde = this.availableGemeindeList.find(gemeinde => gemeinde.id === chosenGemeindeId);
-        return this.dossierRS.createDossier(newDossier).then(() => {
-            this.selectedDossier = newDossier;
+        return this.dossierRS.createDossier(newDossier).then(response => {
+            this.selectedDossier = response;
             return this.selectedDossier;
         });
     }
