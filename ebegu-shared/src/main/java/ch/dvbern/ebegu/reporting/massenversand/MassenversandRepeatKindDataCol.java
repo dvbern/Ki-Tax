@@ -31,9 +31,7 @@ public class MassenversandRepeatKindDataCol {
 	private LocalDate kindGeburtsdatum;
 	private String kindDubletten;
 	private String kindInstitutionKita;
-	private String kindInstitutionTagi;
-	private String kindInstitutionTeKleinkind;
-	private String kindInstitutionTeSchulkind;
+	private String kindInstitutionTagesfamilie;
 	private String kindInstitutionTagesschule;
 	private String kindInstitutionFerieninsel;
 	private String kindInstitutionenWeitere;
@@ -78,28 +76,12 @@ public class MassenversandRepeatKindDataCol {
 		this.kindInstitutionKita = kindInstitutionKita;
 	}
 
-	public String getKindInstitutionTagi() {
-		return kindInstitutionTagi;
+	public String getKindInstitutionTagesfamilie() {
+		return kindInstitutionTagesfamilie;
 	}
 
-	public void setKindInstitutionTagi(String kindInstitutionTagi) {
-		this.kindInstitutionTagi = kindInstitutionTagi;
-	}
-
-	public String getKindInstitutionTeKleinkind() {
-		return kindInstitutionTeKleinkind;
-	}
-
-	public void setKindInstitutionTeKleinkind(String kindInstitutionTeKleinkind) {
-		this.kindInstitutionTeKleinkind = kindInstitutionTeKleinkind;
-	}
-
-	public String getKindInstitutionTeSchulkind() {
-		return kindInstitutionTeSchulkind;
-	}
-
-	public void setKindInstitutionTeSchulkind(String kindInstitutionTeSchulkind) {
-		this.kindInstitutionTeSchulkind = kindInstitutionTeSchulkind;
+	public void setKindInstitutionTagesfamilie(String kindInstitutionTagesfamilie) {
+		this.kindInstitutionTagesfamilie = kindInstitutionTagesfamilie;
 	}
 
 	public String getKindInstitutionTagesschule() {
@@ -150,25 +132,9 @@ public class MassenversandRepeatKindDataCol {
 		}
 	}
 
-	public void setKindInstitutionTagiOrWeitere(@Nonnull String instName) {
-		if (Strings.isNullOrEmpty(getKindInstitutionTagi())) {
-			setKindInstitutionTagi(instName);
-		} else {
-			addKindInstitutionenWeitere(instName);
-		}
-	}
-
-	public void setKindInstitutionTeKleinkindOrWeitere(@Nonnull String instName) {
-		if (Strings.isNullOrEmpty(getKindInstitutionTeKleinkind())) {
-			setKindInstitutionTeKleinkind(instName);
-		} else {
-			addKindInstitutionenWeitere(instName);
-		}
-	}
-
-	public void setKindInstitutionTeSchulkindOrWeitere(@Nonnull String instName) {
-		if (Strings.isNullOrEmpty(getKindInstitutionTeSchulkind())) {
-			setKindInstitutionTeSchulkind(instName);
+	public void setKindInstitutionTagesfamilieOrWeitere(@Nonnull String instName) {
+		if (Strings.isNullOrEmpty(getKindInstitutionTagesfamilie())) {
+			setKindInstitutionTagesfamilie(instName);
 		} else {
 			addKindInstitutionenWeitere(instName);
 		}

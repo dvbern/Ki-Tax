@@ -965,7 +965,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		AtomicBoolean hasSCHAngebote = new AtomicBoolean(false);
 		AtomicBoolean hasBGAngebote = new AtomicBoolean(false);
 		kindContainers.stream()
-			.filter(kindContainer -> kindContainer.getBetreuungen() != null && !kindContainer.getBetreuungen().isEmpty())
+			.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.collect(Collectors.toList())
 			.forEach(betreuung -> {

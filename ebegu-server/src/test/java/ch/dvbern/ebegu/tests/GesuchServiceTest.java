@@ -91,11 +91,11 @@ import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
 import ch.dvbern.ebegu.util.testdata.MutationConfig;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtilsBean;
@@ -805,8 +805,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	 */
 	@Test
 	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiode() {
-		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(institutionService, persistence,
-			LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence,
+			LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
 		final Gesuch verfuegtesGesuch = TestDataUtil.gesuchVerfuegen(gesuchFeutz, gesuchService);
 
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
@@ -825,8 +825,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	 */
 	@Test
 	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeNotGeprueft() {
-		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(institutionService, persistence,
-			LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence,
+			LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
 
 		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
 			Constants.START_OF_TIME,
@@ -843,8 +843,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	 */
 	@Test
 	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeOtherGesuchsperiode() {
-		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(institutionService, persistence,
-			LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence,
+			LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
 		TestDataUtil.gesuchVerfuegen(gesuchFeutz, gesuchService);
 
 		final Gesuchsperiode otherGesuchsperiode = TestDataUtil.createGesuchsperiode1617();
@@ -865,7 +865,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	 */
 	@Test
 	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeNotFreigegeben() {
-		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(institutionService, persistence, null);
+		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence, null, gesuchsperiode);
 
 		// the status is not really important in this test because we only check the transition to FREIGEGEBEN which doesn't exist
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_GS, gesuchFeutz.getStatus());
@@ -888,7 +888,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	 */
 	@Test
 	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeFreigegeben() {
-		Gesuch onlineGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(institutionService, persistence, null);
+		Gesuch onlineGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence, null, gesuchsperiode);
 		onlineGesuch.setEingangsart(Eingangsart.ONLINE);
 		final Gesuch mergedOnlineGesuch = persistence.merge(onlineGesuch);
 		final WizardStep wizardStepObject = TestDataUtil
@@ -913,7 +913,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	 */
 	@Test
 	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeFreigegebenOutOfDates() {
-		Gesuch onlineGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(institutionService, persistence, null);
+		Gesuch onlineGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence, null, gesuchsperiode);
 		onlineGesuch.setEingangsart(Eingangsart.ONLINE);
 		final Gesuch mergedOnlineGesuch = persistence.merge(onlineGesuch);
 		final WizardStep wizardStepObject = TestDataUtil

@@ -288,13 +288,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 			kindCol.setKindInstitutionKitaOrWeitere(instName);
 			break;
 		case TAGESFAMILIEN:
-			kindCol.setKindInstitutionTagiOrWeitere(instName);
-			break;
-		case TAGESELTERN_KLEINKIND:
-			kindCol.setKindInstitutionTeKleinkindOrWeitere(instName);
-			break;
-		case TAGESELTERN_SCHULKIND:
-			kindCol.setKindInstitutionTeSchulkindOrWeitere(instName);
+			kindCol.setKindInstitutionTagesfamilieOrWeitere(instName);
 			break;
 		case TAGESSCHULE:
 			kindCol.setKindInstitutionTagesschuleOrWeitere(instName);

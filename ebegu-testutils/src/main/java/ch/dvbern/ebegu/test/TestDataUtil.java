@@ -1609,13 +1609,13 @@ public final class TestDataUtil {
 	/**
 	 * Verfuegt das uebergebene Gesuch. Dies muss in Status IN_BEARBEITUNG_JA uebergeben werden.
 	 */
-	public static void gesuchVerfuegen(@Nonnull Gesuch gesuch, @Nonnull GesuchService gesuchService) {
+	public static Gesuch gesuchVerfuegen(@Nonnull Gesuch gesuch, @Nonnull GesuchService gesuchService) {
 		gesuch.setStatus(AntragStatus.GEPRUEFT);
 		final Gesuch gesuchToVerfuegt = gesuchService.updateGesuch(gesuch, true, null);
 		gesuchToVerfuegt.setStatus(AntragStatus.VERFUEGEN);
 		final Gesuch verfuegenGesuch = gesuchService.updateGesuch(gesuchToVerfuegt, true, null);
 		verfuegenGesuch.setStatus(AntragStatus.VERFUEGT);
-		gesuchService.updateGesuch(verfuegenGesuch, true, null);
+		return gesuchService.updateGesuch(verfuegenGesuch, true, null);
 	}
 
 	public static Gesuch persistNewGesuchInStatus(

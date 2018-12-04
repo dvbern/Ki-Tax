@@ -159,9 +159,7 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 				// no Mischgesuch and no SCHGesuch
 				Assert.assertNotNull(kind.getKindInstitutionTagesschule());
 				Assert.assertNull(kind.getKindInstitutionKita());
-				Assert.assertNull(kind.getKindInstitutionTagi());
-				Assert.assertNull(kind.getKindInstitutionTeKleinkind());
-				Assert.assertNull(kind.getKindInstitutionTeSchulkind());
+				Assert.assertNull(kind.getKindInstitutionTagesfamilie());
 			});
 		});
 	}

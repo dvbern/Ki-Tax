@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions, ILogService} from 'angular';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
@@ -22,10 +23,12 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSDokument from '../../../models/TSDokument';
 import TSDokumentGrund from '../../../models/TSDokumentGrund';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import DokumenteRS from '../../service/dokumenteRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
+import GesuchRS from '../../service/gesuchRS.rest';
 import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
@@ -67,7 +70,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public dokumenteSonst: TSDokumentGrund[] = [];
     public dokumentePapiergesuch: TSDokumentGrund[] = [];
     public dokumenteFreigabequittung: TSDokumentGrund[] = [];
-    massenversand: string[] = [];
+    public massenversand: string[] = [];
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -79,8 +82,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         private readonly globalCacheService: GlobalCacheService,
         $scope: IScope,
         $timeout: ITimeoutService,
-        private gesuchRS: GesuchRS,
-        private authServiceRS: AuthServiceRS,
+        private readonly gesuchRS: GesuchRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);

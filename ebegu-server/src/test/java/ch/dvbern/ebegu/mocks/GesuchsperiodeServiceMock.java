@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.services.GesuchsperiodeServiceBean;
-import ch.dvbern.ebegu.tets.TestDataUtil;
+import ch.dvbern.ebegu.test.TestDataUtil;
 
 public class GesuchsperiodeServiceMock extends GesuchsperiodeServiceBean {
 

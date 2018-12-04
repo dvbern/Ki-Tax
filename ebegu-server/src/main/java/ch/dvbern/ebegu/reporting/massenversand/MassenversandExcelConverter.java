@@ -92,9 +92,7 @@ public class MassenversandExcelConverter implements ExcelConverter {
 				fallRowGroup.addValue(MergeFieldMassenversand.kindGeburtsdatum, kindCol.getKindGeburtsdatum());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindDubletten, kindCol.getKindDubletten());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionKita, kindCol.getKindInstitutionKita());
-				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionTagi, kindCol.getKindInstitutionTagi());
-				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionTeKleinkind, kindCol.getKindInstitutionTeKleinkind());
-				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionTeSchulkind, kindCol.getKindInstitutionTeSchulkind());
+				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionTagesfamilie, kindCol.getKindInstitutionTagesfamilie());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionTagesschule, kindCol.getKindInstitutionTagesschule());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionFerieninsel, kindCol.getKindInstitutionFerieninsel());
 				fallRowGroup.addValue(MergeFieldMassenversand.kindInstitutionenWeitere, kindCol.getKindInstitutionenWeitere());
