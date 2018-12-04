@@ -93,17 +93,14 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 
-	// TODO (hefr) Darstellung/Abstände überprüfen
-
 	private Verfuegung verfuegungFuerMassgEinkommen;
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
-		@Nonnull GemeindeStammdaten stammdaten,
-		final boolean draft
+		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		super(gesuch, stammdaten, draft);
+		super(gesuch, stammdaten);
 		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
 	}
 

@@ -42,10 +42,9 @@ public class ZweiteMahnungPdfGenerator extends MahnungPdfGenerator {
 	public ZweiteMahnungPdfGenerator(
 		@Nonnull Mahnung mahnung,
 		@Nonnull Mahnung ersteMahnung,
-		@Nonnull GemeindeStammdaten stammdaten,
-		final boolean draft
+		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		super(mahnung, stammdaten, draft);
+		super(mahnung, stammdaten);
 		this.ersteMahnung = ersteMahnung;
 	}
 

@@ -42,10 +42,9 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
 	public BegleitschreibenPdfGenerator(
 		@Nonnull Gesuch gesuch,
-		@Nonnull GemeindeStammdaten stammdaten,
-		final boolean draft
+		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		super(gesuch, stammdaten, draft);
+		super(gesuch, stammdaten);
 	}
 
 	@Nonnull

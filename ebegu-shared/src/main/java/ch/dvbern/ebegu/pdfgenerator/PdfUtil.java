@@ -18,19 +18,20 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.awt.Color;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -46,12 +47,12 @@ import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_BOLD;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
@@ -59,32 +60,19 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.NEWLINE;
 
 public final class PdfUtil {
 
-	private static final Pattern DOUBLE_LINE_BREAK = Pattern.compile("\n\n");
 	private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
+	private static final String WATERMARK = "PdfGeneration_Watermark";
+	private static final float FONT_SIZE_WATERMARK = 40.0f;
 
 	private PdfUtil() {
 		// nop
-	}
-
-	public static <T> float getFloat(
-		@Nullable T block,
-		@Nonnull Function<T, BigDecimal> getter,
-		float defaultValue) {
-
-		if (block == null) {
-			return defaultValue;
-		}
-
-		BigDecimal value = getter.apply(block);
-
-		return value == null ? defaultValue : value.floatValue();
 	}
 
 	@Nonnull
 	public static PdfPCell createTitleCell(@Nonnull String title) {
 		PdfPCell cell = new PdfPCell(new Phrase(title, DEFAULT_FONT));
 		cell.setBackgroundColor(Color.LIGHT_GRAY);
-		return  cell;
+		return cell;
 	}
 
 	public static Paragraph createTitle(@Nonnull String title) {
@@ -105,29 +93,37 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static PdfPTable createKeepTogetherTable(@Nonnull java.util.List<Element> elements, final int emptyLinesBetween, final int emptyLinesAfter) {
+	public static PdfPTable createKeepTogetherTable(
+		@Nonnull java.util.List<Element> elements,
+		final int emptyLinesBetween,
+		final int emptyLinesAfter) {
 		PdfPTable table = new PdfPTable(1);
 		table.setWidthPercentage(FULL_WIDTH);
 		table.setKeepTogether(true);
 		table.getDefaultCell().setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		table.getDefaultCell().setPadding(0);
-		table.getDefaultCell().setPaddingBottom(emptyLinesBetween * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		elements.forEach(element->{
-			if (element instanceof  List) {
+		table.getDefaultCell()
+			.setPaddingBottom(emptyLinesBetween
+				* PdfUtilities.DEFAULT_FONT_SIZE
+				* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		elements.forEach(element -> {
+			if (element instanceof List) {
 				PdfPCell phraseCell = new PdfPCell();
 				phraseCell.setBorder(Rectangle.NO_BORDER);
 				phraseCell.addElement(element);
 				table.addCell(phraseCell);
 			}
-			if (element instanceof  PdfPTable) {
+			if (element instanceof PdfPTable) {
 				table.addCell((PdfPTable) element);
 			}
-			if (element instanceof  Paragraph) {
+			if (element instanceof Paragraph) {
 				table.addCell((Paragraph) element);
 			}
 		});
-		table.setSpacingAfter(emptyLinesAfter * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		table.setSpacingAfter(emptyLinesAfter
+			* PdfUtilities.DEFAULT_FONT_SIZE
+			* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return table;
 	}
 
@@ -145,7 +141,9 @@ public final class PdfUtil {
 	public static Paragraph createParagraph(@Nonnull String string, final int emptyLinesAfter, final Font font) {
 		Paragraph paragraph = new Paragraph(string, font);
 		paragraph.setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		paragraph.setSpacingAfter(emptyLinesAfter * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		paragraph.setSpacingAfter(emptyLinesAfter
+			* PdfUtilities.DEFAULT_FONT_SIZE
+			* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		return paragraph;
 	}
 
@@ -158,7 +156,7 @@ public final class PdfUtil {
 	public static Paragraph createList(java.util.List<String> list) {
 		Paragraph paragraph = new Paragraph();
 		final com.lowagie.text.List itextList = new com.lowagie.text.List(com.lowagie.text.List.UNORDERED);
-		list.forEach(item->itextList.add(createListItem(item)));
+		list.forEach(item -> itextList.add(createListItem(item)));
 		paragraph.add(itextList);
 		return paragraph;
 	}
@@ -167,40 +165,19 @@ public final class PdfUtil {
 	public static Paragraph createList(java.util.List<String> list, final int emptyLinesAfter) {
 		Paragraph paragraph = new Paragraph();
 		final com.lowagie.text.List itextList = new com.lowagie.text.List(com.lowagie.text.List.UNORDERED);
-		list.forEach(item->itextList.add(createListItem(item)));
-		paragraph.setSpacingAfter(emptyLinesAfter * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		list.forEach(item -> itextList.add(createListItem(item)));
+		paragraph.setSpacingAfter(emptyLinesAfter
+			* PdfUtilities.DEFAULT_FONT_SIZE
+			* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		paragraph.add(itextList);
 		return paragraph;
-	}
-
-	@Nonnull
-	public static PdfPTable creatreIntroTable(@Nonnull final String[][] intro) {
-		PdfPTable table = new PdfPTable(2);
-		try {
-			float[] columnWidths = {1, 4};
-			table.setWidths(columnWidths);
-		} catch (DocumentException e) {
-			LOG.error("Failed to read the Logo: {}", e.getMessage());
-		}
-		table.setSpacingBefore(0);
-		table.setWidthPercentage(FULL_WIDTH);
-		table.setKeepTogether(true);
-		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		table.getDefaultCell().setPadding(0);
-		table.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		for (int i = 0; i < intro.length; i++) {
-			table.addCell(new Phrase(intro[i][0], DEFAULT_FONT));
-			table.addCell(new Phrase(intro[i][1], DEFAULT_FONT));
-		}
-		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
-		return table;
 	}
 
 	@Nonnull
 	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries) {
 		PdfPTable table = new PdfPTable(2);
 		try {
-			float[] columnWidths = {1, 4};
+			float[] columnWidths = { 1, 4 };
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
 			LOG.error("Failed to read the Logo: {}", e.getMessage());
@@ -210,7 +187,7 @@ public final class PdfUtil {
 		table.setKeepTogether(true);
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		table.getDefaultCell().setPadding(0);
-		table.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		table.getDefaultCell().setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 
 		for (TableRowLabelValue entry : entries) {
 			table.addCell(new Phrase(entry.getLabel(), DEFAULT_FONT));
@@ -226,12 +203,11 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static PdfPTable createTable(final String[][]values, final float[] columnWidths, final int[] alignement, final int emptyLinesAfter) {
-		return createTable(values, columnWidths, alignement,emptyLinesAfter, false);
-	}
-
-	@Nonnull
-	public static PdfPTable createTable(java.util.List<String[]> values, final float[] columnWidths, final int[] alignement, final int emptyLinesAfter) {
+	public static PdfPTable createTable(
+		java.util.List<String[]> values,
+		final float[] columnWidths,
+		final int[] alignement,
+		final int emptyLinesAfter) {
 		PdfPTable table = new PdfPTable(columnWidths.length);
 		try {
 			table.setWidths(columnWidths);
@@ -254,33 +230,6 @@ public final class PdfUtil {
 				table.addCell(cell);
 			}
 			first = false;
-		}
-		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * emptyLinesAfter);
-		return table;
-	}
-
-	@Nonnull
-	public static PdfPTable createTable(final String[][]values, final float[] columnWidths, final int[] alignement, final int emptyLinesAfter , boolean lastLineBold) {
-		PdfPTable table = new PdfPTable(values[0].length);
-		try {
-			table.setWidths(columnWidths);
-		} catch (DocumentException e) {
-			LOG.error("Failed to set the width: {}", e.getMessage());
-		}
-		table.setWidthPercentage(FULL_WIDTH);
-		table.setHeaderRows(1);
-		for (int i = 0; i < values.length; i++) {
-			for (int j = 0; j < values[i].length; j++) {
-				PdfPCell cell;
-				if (i == 0) {
-					cell = PdfUtil.createTitleCell(values[i][j]);
-				} else {
-					cell = new PdfPCell(new Phrase(values[i][j], lastLineBold && i == values.length - 1 ? DEFAULT_FONT_BOLD : DEFAULT_FONT));
-				}
-				cell.setHorizontalAlignment(alignement[j]);
-				cell.setLeading(0.0F, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-				table.addCell(cell);
-			}
 		}
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * emptyLinesAfter);
 		return table;
@@ -325,12 +274,15 @@ public final class PdfUtil {
 
 	/**
 	 * Merge multiple pdf into one pdf
-	 * @param pdfToMergeList  of pdf input stream
+	 *
+	 * @param pdfToMergeList of pdf input stream
 	 * @param outputStream output file output stream
-	 * @param addOddPages when true it creates a blank page after each single document if this has an odd number of pages. This is useful
+	 * @param addOddPages when true it creates a blank page after each single document if this has an odd number of
+	 * pages. This is useful
 	 * when the resulting pdf is printed as thoguh each single document was printed separately
 	 */
-	public static void doMerge(java.util.List<InputStream> pdfToMergeList, OutputStream outputStream, boolean addOddPages
+	public static void doMerge(
+		java.util.List<InputStream> pdfToMergeList, OutputStream outputStream, boolean addOddPages
 	) throws DocumentException, IOException {
 
 		Document document = new Document();
@@ -356,5 +308,32 @@ public final class PdfUtil {
 		outputStream.flush();
 		document.close();
 		outputStream.close();
+	}
+
+	/**
+	 * Setzt ein Wasserzeichen auf jede Seite des PDF
+	 */
+	public static byte[] manipulatePdf(byte[] content) throws IOException, DocumentException {
+		PdfReader reader = new PdfReader(new ByteArrayInputStream(content));
+		ByteArrayOutputStream destOutputStream = new ByteArrayOutputStream();
+
+		PdfStamper stamper = new PdfStamper(reader, destOutputStream);
+		stamper.setRotateContents(true); // Im Querformat (Massg. Eink) soll der Text auch gedreht werden!
+		// Auf jeder Seite setzen
+		for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+			Rectangle pagesize = reader.getPageSizeWithRotation(i);
+			float x = (pagesize.getLeft() + pagesize.getRight()) / 2;
+			float y = (pagesize.getTop() + pagesize.getBottom()) / 2;
+			PdfContentByte over = stamper.getOverContent(i);
+			over.saveState();
+			over.setGrayFill(0.5f);
+			over.setFontAndSize(PdfUtilities.DEFAULT_FONT_BOLD.getBaseFont(), FONT_SIZE_WATERMARK);
+			over.showTextAligned(1, ServerMessageUtil.getMessage(WATERMARK),
+				pagesize.getWidth() / 2.0F, pagesize.getHeight() / 2.0F, 45.0F);
+			over.restoreState();
+		}
+		stamper.close();
+		reader.close();
+		return destOutputStream.toByteArray();
 	}
 }

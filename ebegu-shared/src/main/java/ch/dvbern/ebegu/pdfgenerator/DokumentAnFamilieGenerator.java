@@ -36,9 +36,9 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
 	protected DokumentAnFamilieGenerator(
 		@Nonnull Gesuch gesuch,
-		@Nonnull GemeindeStammdaten stammdaten, boolean draft
+		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		super(gesuch, stammdaten, draft);
+		super(gesuch, stammdaten);
 	}
 
 	@Nonnull

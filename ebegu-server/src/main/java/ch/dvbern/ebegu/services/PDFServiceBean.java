@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ import ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
@@ -99,9 +101,8 @@ public class PDFServiceBean implements PDFService {
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
-			!writeProtected,
 			Art.NICHT_EINTRETTEN);
-		return generateDokument(pdfGenerator);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	@Nonnull
@@ -115,17 +116,17 @@ public class PDFServiceBean implements PDFService {
 		MahnungPdfGenerator pdfGenerator;
 		switch (mahnung.getMahnungTyp()) {
 		case ERSTE_MAHNUNG:
-			pdfGenerator = new ErsteMahnungPdfGenerator(mahnung, stammdaten, !writeProtected);
+			pdfGenerator = new ErsteMahnungPdfGenerator(mahnung, stammdaten);
 			break;
 		case ZWEITE_MAHNUNG:
 			Mahnung vorgaengerMahnung = vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mahnung.getId()));
-			pdfGenerator = new ZweiteMahnungPdfGenerator(mahnung, vorgaengerMahnung, stammdaten, !writeProtected);
+			pdfGenerator = new ZweiteMahnungPdfGenerator(mahnung, vorgaengerMahnung, stammdaten);
 			break;
 		default:
 			throw new MergeDocException("generateMahnung()", "Unexpected Mahnung Type", null, OBJECTARRAY);
 		}
-		return generateDokument(pdfGenerator);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	@Override
@@ -138,8 +139,9 @@ public class PDFServiceBean implements PDFService {
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 		final List<DokumentGrund> benoetigteUnterlagen = calculateListOfDokumentGrunds(gesuch);
 
-		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten, !writeProtected, benoetigteUnterlagen);
-		return generateDokument(pdfGenerator);
+		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten,
+			benoetigteUnterlagen);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	@Override
@@ -152,8 +154,8 @@ public class PDFServiceBean implements PDFService {
 
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 
-		BegleitschreibenPdfGenerator pdfGenerator = new BegleitschreibenPdfGenerator(gesuch, stammdaten, !writeProtected);
-		return generateDokument(pdfGenerator);
+		BegleitschreibenPdfGenerator pdfGenerator = new BegleitschreibenPdfGenerator(gesuch, stammdaten);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	@Nonnull
@@ -174,8 +176,8 @@ public class PDFServiceBean implements PDFService {
 			}
 
 			GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
-			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(gesuch, famGroessenVerfuegung, stammdaten, !writeProtected);
-			return generateDokument(pdfGenerator);
+			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(gesuch, famGroessenVerfuegung, stammdaten);
+			return generateDokument(pdfGenerator, !writeProtected);
 		}
 		return BYTES;
 	}
@@ -194,9 +196,8 @@ public class PDFServiceBean implements PDFService {
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
-			!writeProtected,
 			art);
-		return generateDokument(pdfGenerator);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	private boolean hasAnspruch(@Nonnull Betreuung betreuung) {
@@ -233,12 +234,16 @@ public class PDFServiceBean implements PDFService {
 	}
 
 	@Nonnull
-	private byte[] generateDokument(@Nonnull KibonPdfGenerator pdfGenerator) throws MergeDocException {
+	private byte[] generateDokument(@Nonnull KibonPdfGenerator pdfGenerator, boolean entwurf) throws MergeDocException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			pdfGenerator.generate(baos);
-			return baos.toByteArray();
-		} catch (InvoiceGeneratorException e) {
+			byte[] content = baos.toByteArray();
+			if (entwurf) {
+				return PdfUtil.manipulatePdf(content);
+			}
+			return content;
+		} catch (InvoiceGeneratorException | IOException e) {
 			throw new MergeDocException("generateDokument()",
 				"Bei der Generierung des Dokuments ist ein Fehler aufgetreten", e, OBJECTARRAY);
 		}

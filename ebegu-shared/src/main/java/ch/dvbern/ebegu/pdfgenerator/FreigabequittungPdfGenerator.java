@@ -75,11 +75,10 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 
 	public FreigabequittungPdfGenerator(
-			@Nonnull Gesuch gesuch,
-			@Nonnull GemeindeStammdaten stammdaten,
-			final boolean draft,
-			@Nonnull List<DokumentGrund> benoetigteUnterlagen) {
-		super(gesuch, stammdaten, draft);
+		@Nonnull Gesuch gesuch,
+		@Nonnull GemeindeStammdaten stammdaten,
+		@Nonnull List<DokumentGrund> benoetigteUnterlagen) {
+		super(gesuch, stammdaten);
 		this.benoetigteUnterlagen = benoetigteUnterlagen;
 	}
 

@@ -43,10 +43,9 @@ public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	protected MahnungPdfGenerator(
 		@Nonnull Mahnung mahnung,
-		@Nonnull GemeindeStammdaten stammdaten,
-		final boolean draft
+		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		super(mahnung.getGesuch(), stammdaten, draft);
+		super(mahnung.getGesuch(), stammdaten);
 		this.mahnung = mahnung;
 	}
 

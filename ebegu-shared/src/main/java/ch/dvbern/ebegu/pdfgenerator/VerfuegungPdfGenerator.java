@@ -100,9 +100,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	public VerfuegungPdfGenerator(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
-		final boolean draft,
 		@Nonnull Art art) {
-		super(betreuung.extractGesuch(), stammdaten, draft);
+		super(betreuung.extractGesuch(), stammdaten);
 
 		this.betreuung = betreuung;
 		this.art = art;
