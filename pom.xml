@@ -181,18 +181,6 @@
                 <artifactId>beanvalidation</artifactId>
                 <version>1.0.9</version>
             </dependency>
-            <dependency>
-                <groupId>ch.dvbern.oss.doctemplate</groupId>
-                <artifactId>docx-engine</artifactId>
-                <version>2.4.1</version>
-            </dependency>
-            <!-- Achtung: diese Dependeny nutzt ooxml-schemas Version 1.3, welche diverse CPEs hat -->
-            <!-- Siehe auch dependency-check-suppressions.xml -->
-            <dependency>
-                <groupId>fr.opensagres.xdocreport</groupId>
-                <artifactId>fr.opensagres.xdocreport.converter.docx.xwpf</artifactId>
-                <version>2.0.1</version>
-            </dependency>
 
             <!-- Submodule-dependencies should be on the project version -->
             <dependency>

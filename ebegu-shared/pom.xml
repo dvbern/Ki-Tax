@@ -50,10 +50,6 @@
             <version>${version.hibernate}</version>
         </dependency>
         <dependency>
-            <groupId>ch.dvbern.oss.doctemplate</groupId>
-            <artifactId>docx-engine</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ch.dvbern.oss.excelmerger</groupId>
             <artifactId>excelmerger-impl</artifactId>
         </dependency>

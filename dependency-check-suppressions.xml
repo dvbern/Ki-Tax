@@ -20,10 +20,4 @@
 		<gav regex="true">ch.dvbern.oss.datehelper:date-helper:.*</gav>
 		<cpe>cpe:/a:date_project:date:1.0.4</cpe>
 	</suppress>
-	<!-- https://bz.apache.org/bugzilla/show_bug.cgi?id=56205 -->
-	<suppress>
-		<notes><![CDATA[https://bz.apache.org/bugzilla/show_bug.cgi?id=5620]]></notes>
-		<gav>org.apache.poi:ooxml-schemas:1.3</gav>
-		<cpe>cpe:/a:apache:poi:1.3</cpe>
-	</suppress>
 </suppressions>
