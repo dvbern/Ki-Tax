@@ -313,7 +313,7 @@ public final class PdfUtil {
 	/**
 	 * Setzt ein Wasserzeichen auf jede Seite des PDF
 	 */
-	public static byte[] manipulatePdf(byte[] content) throws IOException, DocumentException {
+	public static byte[] addEntwurfWatermark(byte[] content) throws IOException, DocumentException {
 		PdfReader reader = new PdfReader(new ByteArrayInputStream(content));
 		ByteArrayOutputStream destOutputStream = new ByteArrayOutputStream();
 
@@ -322,8 +322,6 @@ public final class PdfUtil {
 		// Auf jeder Seite setzen
 		for (int i = 1; i <= reader.getNumberOfPages(); i++) {
 			Rectangle pagesize = reader.getPageSizeWithRotation(i);
-			float x = (pagesize.getLeft() + pagesize.getRight()) / 2;
-			float y = (pagesize.getTop() + pagesize.getBottom()) / 2;
 			PdfContentByte over = stamper.getOverContent(i);
 			over.saveState();
 			over.setGrayFill(0.5f);

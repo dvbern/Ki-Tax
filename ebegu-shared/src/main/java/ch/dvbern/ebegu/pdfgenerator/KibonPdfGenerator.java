@@ -56,6 +56,7 @@ public abstract class KibonPdfGenerator {
 	private Locale sprache;
 
 
+	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod") // Stimmt nicht, die Methode ist final
 	protected KibonPdfGenerator(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten stammdaten) {
 		this.gesuch = gesuch;
 		this.gemeindeStammdaten = stammdaten;
@@ -109,7 +110,7 @@ public abstract class KibonPdfGenerator {
 	}
 
 	@Nonnull
-	private List<String> getAbsenderAdresse() {
+	protected final List<String> getAbsenderAdresse() {
 		List<String> absender = new ArrayList<>();
 		absender.addAll(getGemeindeAdresse());
 		absender.addAll(getGemeindeKontaktdaten());

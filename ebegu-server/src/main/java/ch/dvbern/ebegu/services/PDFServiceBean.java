@@ -240,7 +240,7 @@ public class PDFServiceBean implements PDFService {
 			pdfGenerator.generate(baos);
 			byte[] content = baos.toByteArray();
 			if (entwurf) {
-				return PdfUtil.manipulatePdf(content);
+				return PdfUtil.addEntwurfWatermark(content);
 			}
 			return content;
 		} catch (InvoiceGeneratorException | IOException e) {
