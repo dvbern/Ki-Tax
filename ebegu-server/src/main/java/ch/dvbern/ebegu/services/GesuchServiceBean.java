@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
+import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -1682,11 +1683,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		query.where(predicateGesuchsperiode, predicateStatusTransition, predicateErstgesuch);
 
 		query.groupBy(
-			root.get(Gesuch_.fall).get(AbstractEntity_.id),
+			root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id),
 			root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id)
 		);
 		query.multiselect(
-			root.get(Gesuch_.fall).get(AbstractEntity_.id),
+			root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id),
 			root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id),
 			cb.max(root.get(Gesuch_.laufnummer))
 		);
@@ -1729,7 +1730,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		ParameterExpression<Collection> freigegebenParam = cb.parameter(Collection.class, "freigegeben");
 
 		Predicate predicateStatus = getStatusFromEingangsartPredicate(cb, root, papierParam, onlineParam, geprueftParam, freigegebenParam);
-		Predicate predicateFall = cb.equal(root.get(Gesuch_.fall).get(AbstractEntity_.id), fallParam);
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id), fallParam);
 		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id), gesuchsperiodeParam);
 
 		query.where(predicateStatus, predicateGesuchsperiode, predicateFall);
@@ -1832,7 +1833,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		ParameterExpression<String> fallIdParam = cb.parameter(String.class, "fallId");
 		ParameterExpression<LocalDate> gesuchsperiodeGueltigAbParam = cb.parameter(LocalDate.class, "gueltigAb");
 
-		Predicate fallPredicate = cb.equal(root.get(Gesuch_.fall).get(AbstractEntity_.id), fallIdParam);
+		Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id), fallIdParam);
 		Predicate gesuchsperiodePredicate = cb.greaterThan(
 			root.get(Gesuch_.gesuchsperiode).get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
 			gesuchsperiodeGueltigAbParam);

@@ -370,11 +370,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return kantonDataRowList;
 	}
 
-	private void validateDateParams(Object datumVon, Object datumBis) {
-		Objects.requireNonNull(datumVon, "Das Argument 'datumVon' darf nicht leer sein");
-		Objects.requireNonNull(datumBis, "Das Argument 'datumBis' darf nicht leer sein");
-	}
-
 	@Nonnull
 	private List<KantonDataRow> convertToKantonDataRow(List<VerfuegungZeitabschnitt> zeitabschnittList) {
 		List<KantonDataRow> kantonDataRowList = new ArrayList<>();
