@@ -53,9 +53,9 @@ import ch.dvbern.ebegu.reporting.massenversand.MassenversandDataRow;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandExcelConverter;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandRepeatKindDataCol;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
-import ch.dvbern.ebegu.vorlagen.PrintUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
@@ -274,7 +274,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		kindDubletten.stream()
 			.filter(kindDubletteDTO -> kindDubletteDTO.getKindNummerOriginal().equals(kindContainer.getKindNummer()))
 			.forEach(kindDubletteDTO ->
-				kindCol.addKindDubletten(PrintUtil.getPaddedFallnummer(kindDubletteDTO.getFallNummer())
+				kindCol.addKindDubletten(EbeguUtil.getPaddedFallnummer(kindDubletteDTO.getFallNummer())
 			));
 	}
 
