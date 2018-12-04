@@ -15,7 +15,6 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-
 <dv-full-height-inner-padding-container>
     <form role="form"
           #form="ngForm"
@@ -24,11 +23,17 @@
           (ngSubmit)="persistGemeindeStammdaten(stammdaten)"
           novalidate>
 
-        <dv-gemeinde-header
-            [gemeinde]="stammdaten.gemeinde"
+        <dv-stammdaten-header
+            (logoImageChange)="collectLogoChange($event)"
+            [preTitel]="stammdaten.gemeinde.bfsNummer"
+            [titel]="getHeaderTitle(stammdaten.gemeinde)"
             [administratoren]="stammdaten.administratoren"
-            [sachbearbeiter]="stammdaten.sachbearbeiter">
-        </dv-gemeinde-header>
+            [sachbearbeiter]="stammdaten.sachbearbeiter"
+            [logoImageUrl]="getLogoImageUrl(stammdaten.gemeinde)"
+            [allowedRoles]="getMitarbeiterVisibleRoles()"
+            [editMode]="true"> <!-- this is the edit view -->
+        </dv-stammdaten-header>
+
         <div class="dv-content">
             <fieldset>
                 <div class="viewTitle">
@@ -246,17 +251,16 @@
         </div>
 
         <!-- Buttons -->
-        <div class="row">
-            <div class="dv-footer">
-                <dv-loading-button [type]="'submit'">
-                    <span translate>GEMEINDE_SPEICHERN</span>
-                </dv-loading-button>
+        <div class="dv-footer">
+            <dv-loading-button [type]="'submit'">
+                <span translate>GEMEINDE_SPEICHERN</span>
+            </dv-loading-button>
 
-                <button type="button" class="dv-btn cancel-button"
-                        (click)="cancel()"
-                        [textContent]="'CANCEL' | translate">
-                </button>
-            </div>
+            <button type="button" class="dv-btn cancel-button"
+                    *ngIf="!isRegistering()"
+                    (click)="cancel()"
+                    [textContent]="'CANCEL' | translate">
+            </button>
         </div>
     </form>
 </dv-full-height-inner-padding-container>

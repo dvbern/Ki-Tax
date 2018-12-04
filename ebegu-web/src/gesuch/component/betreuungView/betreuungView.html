@@ -22,7 +22,8 @@
                 <!--eventuell nummer noch anders lesen per methode-->
                 <span data-translate="BETREUUNGSANGEBOT_NUMBER"
                       data-translate-value-kindname="{{vm.getKindModel().kindJA.getFullName()}}"
-                      data-translate-value-betreuungnumber="{{vm.model.betreuungNummer}}"></span>
+                      data-translate-value-geschlecht="{{vm.getKindModel().kindJA.geschlecht | translate}}"
+                      data-translate-value-geburtsdatum="{{vm.getKindModel().kindJA.geburtsdatum | amDateFormat : 'DD.MM.YYYY'}}"></span>
             </h2>
         </div>
         <div class="col-md-4 text-right">
@@ -45,25 +46,6 @@
 
                 <!-- Nur fuer Institutionen/Traegerschaften eingeblendet-->
                 <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()">
-                    <!--Geschlecht-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small form-group">
-                            <label class="md-no-float" data-translate="GESCHLECHT"></label>
-                            <input id="geschlecht_ID" type="text" name="geschlecht" ng-disabled="true"
-                                   ng-value="vm.getKindModel().kindJA.geschlecht | translate" class="form-control">
-                            <div class="dv-error-messages"></div>
-                        </div>
-                    </div>
-                    <!--Geburtsdatum-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small form-group">
-                            <label class="md-no-float" data-translate="GEBURTSDATUM"></label>
-                            <input id="geburtsdatum_ID" type="text" name="geburtsdatum" ng-disabled="true"
-                                   ng-value="vm.getKindModel().kindJA.geburtsdatum | amDateFormat : 'DD.MM.YYYY'"
-                                   class="form-control">
-                            <div class="dv-error-messages"></div>
-                        </div>
-                    </div>
                     <!--Fachstelle-->
                     <div ng-if="vm.getKindModel().hasPensumFachstelle()">
                         <div class="row">
@@ -108,7 +90,7 @@
                 <fieldset>
 
                     <!--Betreuungsangebot (Mit diesem Wert filtern wir die Institutionen)-->
-                    <div class="row marginTop20" ng-disabled="!vm.enableBetreuungsangebotsTyp()">
+                    <div class="row" ng-disabled="!vm.enableBetreuungsangebotsTyp()">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
                                 <label class="md-no-float"
@@ -211,7 +193,7 @@
                     </div>
 
                     <!--Kesb Platzierung-->
-                    <div class="row marginTop20"
+                    <div class="row"
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="!vm.isSchulamt()">
@@ -228,7 +210,7 @@
                     </div>
 
                     <!--erweiterte Beduerfnisse-->
-                    <div class="row marginTop20" ng-if="vm.showErweiterteBeduerfnisse()">
+                    <div class="row" ng-if="vm.showErweiterteBeduerfnisse()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
@@ -248,7 +230,7 @@
 
                     <!--Fachstelle erweiterte Beduerfnisse-->
                     <div ng-if="vm.isFachstelleRequired()">
-                        <div class="row marginBottom20">
+                        <div class="row">
                             <div class="col-sm-12 dv-input-container-medium form-group">
                                 <label class="md-no-float required" data-translate="FACHSTELLE" for="fachstelle">
                                 </label>
@@ -276,7 +258,7 @@
                 <fieldset ng-disabled="vm.isGesuchReadonly() && !vm.isMutationsmeldungStatus">
                     <!--Diese Felder werden fuer Betreuungsangebottyp TAGESSCHULE ausgeblendet. Fuer alle anderen eingeblendet-->
                     <!--Nur Institutionen duerfen neue Pensen eintragen. Bei anderen Rollen werden nur die existierenden Pensen angezeigt-->
-                    <div ng-if="!vm.isSchulamt()">
+                    <div  class="marginTop20" ng-if="!vm.isSchulamt()">
 
                         <div class="row" dv-show-element
                              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
@@ -299,30 +281,11 @@
                             <!--Betreuungspensen-->
                             <div ng-repeat="betpen in vm.getBetreuungspensen()">
                                 <!--Betreuungspensum-->
-                                <div class="row">
-                                    <div class="col-sm-12 dv-input-betreuung-container">
-                                        <dv-input-container class="form-group">
-                                            <label class="md-no-float" data-translate="BETREUUNGSPENSUM"
-                                                   data-translate-value-betreuungspensumnumber="{{$index + 1}}"
-                                                   for="betreuungspensum-{{$index}}"></label>
-                                            <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
-                                                                input-id="betreuungspensum-{{$index}}"
-                                                                betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
-                                                                is-disabled="!vm.isPensumEditable()">
-                                            </dv-betreuung-input>
-                                            <!-- funktioniert hier mit dv-error-messages nicht,
-                                                 da component ausgelagert ist -->
-                                            <div class="dv-error-messages"
-                                                 ng-if="!vm.getBetreuungspensum($index).betreuungspensumJA.pensum
-                                                 && vm.form.$submitted">
-                                                <div class="error">
-                                                    {{ 'ERROR_REQUIRED' | translate }}
-                                                </div>
-                                            </div>
-                                        </dv-input-container>
-                                    </div>
-                                </div>
-
+                                <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
+                                                    input-id="betreuungspensum-{{$index}}"
+                                                    betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
+                                                    is-disabled="!vm.isPensumEditable()">
+                                </dv-betreuung-input>
                                 <!--Monatliche Betreuungskosten-->
                                 <div class="row">
                                     <div class="col-sm-12 dv-input-container-medium">
@@ -330,7 +293,7 @@
                                             <label class="md-no-float"
                                                    for="monatlicheBetreuungskosten-{{$index}}">
                                                 <span data-translate="MONATLICHE_BETREUUNGSKOSTEN"></span>
-                                                <dv-tooltip input-id="betreuungsangebot"
+                                                <dv-tooltip input-id="monatlicheBetreuungskosten-{{$index}}"
                                                             text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
                                             </label>
                                             <div class="dv-input-container-medium-label">
@@ -339,7 +302,7 @@
                                                        name="monatlicheBetreuungskosten-{{$index}}"
                                                        ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.monatlicheBetreuungskosten"
                                                        dv-max-length class="form-control"
-                                                       ng-pattern="vm.CONSTANTS.PATTERN_BETRAG_RAPPEN"
+                                                       ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                                        ng-required="true"
                                                        ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
                                                 <dv-error-messages input-id="monatlicheBetreuungskosten-{{$index}}"

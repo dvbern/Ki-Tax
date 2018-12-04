@@ -1,6 +1,4 @@
 <!--
-  ~ AGPL File-Header
-  ~
   ~ Copyright (C) 2018 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -25,11 +23,16 @@
           (ngSubmit)="editGemeindeStammdaten()"
           novalidate>
 
-        <dv-gemeinde-header
-            [gemeinde]="stammdaten.gemeinde"
+        <dv-stammdaten-header
+            [preTitel]="stammdaten.gemeinde.bfsNummer"
+            [titel]="getHeaderTitle(stammdaten.gemeinde)"
             [administratoren]="stammdaten.administratoren"
-            [sachbearbeiter]="stammdaten.sachbearbeiter">
-        </dv-gemeinde-header>
+            [sachbearbeiter]="stammdaten.sachbearbeiter"
+            [logoImageUrl]="getLogoImageUrl(stammdaten.gemeinde)"
+            [allowedRoles]="getMitarbeiterVisibleRoles()"
+            [editMode]="false"> <!-- this is the read only view -->
+        </dv-stammdaten-header>
+
         <div class="dv-content">
             <fieldset>
                 <div class="viewTitle">
@@ -100,6 +103,7 @@
             </fieldset>
 
         </div>
+        <!-- Buttons -->
         <div class="dv-footer">
             <dv-loading-button *ngIf="isStammdatenEditable()"
                                [type]="'submit'">

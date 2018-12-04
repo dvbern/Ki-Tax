@@ -109,6 +109,24 @@ export class TSRoleUtil {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE];
     }
 
+    public static getInstitutionProfilRoles(): Array<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT,
+        ];
+    }
+
+    public static getInstitutionProfilEditRoles(): Array<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+        ];
+    }
+
     public static getTraegerschaftInstitutionRoles(): Array<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
@@ -437,6 +455,10 @@ export class TSRoleUtil {
 
     public static getTraegerschaftInstitutionOnlyRoles(): TSRole[] {
         return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(PERMISSIONS[Permission.ROLE_TRAEGERSCHAFT]);
+    }
+
+    public static getInstitutionRoles(): TSRole[] {
+        return PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
     }
 
     public static isGemeindeRole(role: TSRole): boolean {

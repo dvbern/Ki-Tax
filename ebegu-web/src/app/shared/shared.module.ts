@@ -36,6 +36,7 @@ import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
+import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {AccordionTabDirective} from './directive/accordion-tab.directive';
 import {AccordionDirective} from './directive/accordion.directive';
 import {LoadingButtonDirective} from './directive/loading-button.directive';
@@ -85,6 +86,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         GemeindeMultiselectComponent,
         BerechtigungComponent,
         BenutzerRolleComponent,
+        StammdatenHeaderComponent,
     ],
     entryComponents: [
         DvNgGemeindeDialogComponent,
@@ -96,6 +98,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         NavbarComponent,
         DvPosteingangComponent,
         GemeindeMultiselectComponent,
+        StammdatenHeaderComponent,
     ],
     exports: [
         CommonModule,
@@ -123,6 +126,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         GemeindeMultiselectComponent,
         BerechtigungComponent,
         BenutzerRolleComponent,
+        StammdatenHeaderComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

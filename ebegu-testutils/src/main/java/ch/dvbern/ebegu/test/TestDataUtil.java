@@ -128,6 +128,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.testfaelle.TestFall12_Mischgesuch;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
@@ -183,6 +184,7 @@ import static ch.dvbern.ebegu.util.Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGR
 public final class TestDataUtil {
 
 	private static final String iban = "CH39 0900 0000 3066 3817 2";
+	public static final String TESTMAIL = "mail@example.com";
 
 	public static final int ABWESENHEIT_DAYS_LIMIT = 30;
 	public static final int PERIODE_JAHR_0 = 2016;
@@ -455,13 +457,13 @@ public final class TestDataUtil {
 		institution.setName("Institution1");
 		institution.setMandant(createDefaultMandant());
 		institution.setTraegerschaft(createDefaultTraegerschaft());
-		institution.setMail("institution@example.com");
 		return institution;
 	}
 
 	public static InstitutionStammdaten createDefaultInstitutionStammdaten() {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail(TESTMAIL);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -473,6 +475,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail(TESTMAIL);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -485,6 +488,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail(TESTMAIL);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -497,6 +501,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail(TESTMAIL);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -509,6 +514,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail(TESTMAIL);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -521,6 +527,7 @@ public final class TestDataUtil {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL);
 		instStammdaten.setIban(new IBAN(iban));
+		instStammdaten.setMail(TESTMAIL);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
 		instStammdaten.setInstitution(createDefaultInstitution());
@@ -849,13 +856,12 @@ public final class TestDataUtil {
 				.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
 		Betreuung betreuung = new Betreuung();
-		betreuung.setKind(new KindContainer());
-		betreuung.getKind().setKindJA(new Kind());
+		betreuung.setKind(createDefaultKindContainer());
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
-
+		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
 		return betreuung;
 	}
 
@@ -1024,8 +1030,9 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(
-		 Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
-		gesuchsperiode) {
+		Persistence persistence,
+		@Nullable LocalDate eingangsdatum,
+		Gesuchsperiode gesuchsperiode) {
 
 		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
@@ -1039,6 +1046,25 @@ public final class TestDataUtil {
 		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
 		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
+	}
+
+	public static Gesuch createAndPersistASIV12(
+		InstitutionService instService,
+		Persistence persistence,
+		@Nullable LocalDate eingangsdatum,
+		AntragStatus status
+	) {
+		instService.getAllInstitutionen();
+		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		TestFall12_Mischgesuch testfall = new TestFall12_Mischgesuch(TestDataUtil.createGesuchsperiode1718(),
+			institutionStammdatenList);
+
+		if (status != null) {
+			return persistAllEntities(persistence, eingangsdatum, testfall, status);
+		}
+		return persistAllEntities(persistence, eingangsdatum, testfall, null);
 	}
 
 	public static Institution createAndPersistDefaultInstitution(Persistence persistence) {
@@ -1251,7 +1277,7 @@ public final class TestDataUtil {
 		saveEinstellung(GEMEINDE_KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, EinschulungTyp.VORSCHULALTER.name(), gesuchsperiode, persistence);
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode, persistence);
-		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, "140", gesuchsperiode, persistence);
+		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, "150", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG, "100", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_SCHULE_PRO_TG, "75", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD, "11.90", gesuchsperiode, persistence);
@@ -1583,13 +1609,13 @@ public final class TestDataUtil {
 	/**
 	 * Verfuegt das uebergebene Gesuch. Dies muss in Status IN_BEARBEITUNG_JA uebergeben werden.
 	 */
-	public static void gesuchVerfuegen(@Nonnull Gesuch gesuch, @Nonnull GesuchService gesuchService) {
+	public static Gesuch gesuchVerfuegen(@Nonnull Gesuch gesuch, @Nonnull GesuchService gesuchService) {
 		gesuch.setStatus(AntragStatus.GEPRUEFT);
 		final Gesuch gesuchToVerfuegt = gesuchService.updateGesuch(gesuch, true, null);
 		gesuchToVerfuegt.setStatus(AntragStatus.VERFUEGEN);
 		final Gesuch verfuegenGesuch = gesuchService.updateGesuch(gesuchToVerfuegt, true, null);
 		verfuegenGesuch.setStatus(AntragStatus.VERFUEGT);
-		gesuchService.updateGesuch(verfuegenGesuch, true, null);
+		return gesuchService.updateGesuch(verfuegenGesuch, true, null);
 	}
 
 	public static Gesuch persistNewGesuchInStatus(

@@ -117,7 +117,7 @@ public abstract class KibonPdfGenerator {
 	protected List<String> getGemeindeAdresse() {
 		Adresse adresse = gemeindeStammdaten.getAdresse();
 		List<String> gemeindeHeader = Arrays.asList(
-			KibonPrintUtil.getAddressAsString(adresse),
+			adresse.getAddressAsString(),
 			""
 		);
 		return gemeindeHeader;

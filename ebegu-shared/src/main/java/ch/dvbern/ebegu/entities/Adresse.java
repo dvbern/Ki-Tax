@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
 
 /**
@@ -199,5 +200,18 @@ public class Adresse extends AbstractDateRangedEntity {
 		target.setGemeinde(this.getGemeinde());
 		target.setOrganisation(this.getOrganisation());
 		return target;
+	}
+
+	@Nonnull
+	public String getAddressAsString() {
+		StringBuilder sb = new StringBuilder();
+		if (StringUtils.isNotEmpty(getOrganisation())) {
+			sb.append(getOrganisation());
+			sb.append(Constants.LINE_BREAK);
+		}
+		sb.append(getStrasse()).append(' ').append(getHausnummer());
+		sb.append(Constants.LINE_BREAK);
+		sb.append(getPlz()).append(' ').append(getOrt());
+		return sb.toString();
 	}
 }

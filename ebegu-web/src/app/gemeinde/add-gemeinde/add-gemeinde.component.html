@@ -33,23 +33,33 @@
             <fieldset>
                 <!-- Gemeindename | BFS-Nummer der Gemeinde -->
                 <div class="row">
-                    <div class="col-sm-6 dv-input-container-medium">
+                    <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate for="gemeinde_ID">GEMEINDENAME</label>
-                            <input id="gemeinde_ID" type="text" name="gemeinde_name" #name="ngModel"
-                                   [(ngModel)]="gemeinde.name"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.gemeinde_name?.errors"
-                                               inputId="gemeinde_ID">
+                            <label translate for="gemeinde_ID">GEMEINDE_AUSWAEHLEN</label>
+                            <select [(ngModel)]="selectedUnregisteredGemeinde"
+                                    name="bfsGemeinde"
+                                    class="form-control"
+                                    id="bfsGemeinde"
+                                    [required]="true"
+                                    (change)="bfsGemeindeSelected()">
+                                <option value=""></option>
+                                <option *ngFor="let bfsGemeinde of (unregisteredGemeinden$ | async)"
+                                        [ngValue]="bfsGemeinde">
+                                    {{bfsGemeinde.name}}
+                                </option>
+                            </select>
+                            <dv-error-messages [errorObject]="form.controls.bfsGemeinde?.errors"
+                                               inputId="bfsGemeinde"
+                                               class="input-error">
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6 dv-input-container-medium">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label translate for="gemeinde_ID">GEMEINDE_BFS_NR</label>
                             <input id="bfs_nummer_ID" type="number" name="bfs_nummer" #name="ngModel"
                                    [(ngModel)]="gemeinde.bfsNummer"
-                                   [min]="1" [max]="maxBFSNummer" [maxlength]="4" class="form-control" required>
+                                   [min]="1" [max]="maxBFSNummer" [maxlength]="4" class="form-control" disabled>
                             <dv-error-messages [errorObject]="form.controls.bfs_nummer?.errors"
                                                inputId="bfs_nummer_ID">
                             </dv-error-messages>
@@ -59,9 +69,9 @@
 
                 <!-- Betreuungsgutscheine anbieten ab | Administrator - E-Mail Adresse -->
                 <div class="row">
-                    <div class="col-sm-6 dv-input-container-medium">
+                    <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
+                            <label class="md-no-float" translate for="begu_start_ID">INSTITUTION_BEGU_START</label>
                             <input class="dv-mat-datepicker" type="text"
                                    name="begu_start" id="begu_start_ID"
                                    [(ngModel)]="gemeinde.betreuungsgutscheineStartdatum"
@@ -76,7 +86,7 @@
                             </dv-error-messages>
                         </div>
                     </div>
-                    <div class="col-sm-6 dv-input-container-medium">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label translate for="admin_mail_ID">ADMIN_MAIL</label>
                             <input id="admin_mail_ID" type="email" name="admin_mail"

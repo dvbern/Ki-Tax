@@ -181,6 +181,25 @@ export class ReportAsyncRS {
             });
     }
 
+    public getMassenversandReportExcel(auswertungVon: string, auswertungBis: string, gesuchPeriodeID: string,
+                                       inklBgGesuche: boolean, inklMischGesuche: boolean, inklTsGesuche: boolean,
+                                       ohneErneuerungsgesuch: boolean, text: string): IPromise<string> {
+        const reportParams = this.httpParamSerializer({
+            auswertungVon,
+            auswertungBis,
+            gesuchPeriodeID,
+            inklBgGesuche,
+            inklMischGesuche,
+            inklTsGesuche,
+            ohneErneuerungsgesuch,
+            text
+        });
+        return this.http.get(`${this.serviceURL}/excel/massenversand?${reportParams}`, {timeout: this.reportingTimeout})
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }

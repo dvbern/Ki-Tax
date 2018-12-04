@@ -70,7 +70,7 @@ export class FallToolbarComponent implements OnChanges {
     }
 
     private loadObjects(): void {
-        if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId) {
+        if (this.mobileMode && this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && !this.fallId && this.dossierId) {
             this.dossierRS.findDossier(this.dossierId).then(dossier => {
                 this.fallId = dossier.fall.id ? dossier.fall.id : '';
                 this.doLoading(this.fallId);
@@ -176,8 +176,8 @@ export class FallToolbarComponent implements OnChanges {
         const newDossier = new TSDossier();
         newDossier.fall = this.selectedDossier.fall;
         newDossier.gemeinde = this.availableGemeindeList.find(gemeinde => gemeinde.id === chosenGemeindeId);
-        return this.dossierRS.createDossier(newDossier).then(() => {
-            this.selectedDossier = newDossier;
+        return this.dossierRS.createDossier(newDossier).then(response => {
+            this.selectedDossier = response;
             return this.selectedDossier;
         });
     }
@@ -315,7 +315,8 @@ export class FallToolbarComponent implements OnChanges {
         this.dossierRS.findDossiersByFall(fallId).then(dossiers => {
             this.dossierList = dossiers;
             this.setSelectedDossier();
-            this.dossierListWithoutSelected = dossiers.filter(dossier => dossier.id !== this.selectedDossier.id);
+            this.dossierListWithoutSelected = dossiers.filter(dossier =>
+                dossier && this.selectedDossier && dossier.id !== this.selectedDossier.id);
             this.addNewDossierToCreateToDossiersList();
             this.retrieveListOfAvailableGemeinden();
         });

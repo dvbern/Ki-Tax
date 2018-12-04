@@ -362,13 +362,6 @@ export class EinkommensverschlechterungInfoViewController
             && !this.gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer.isEmpty();
     }
 
-    public isSteueramtLetzterStep(): boolean {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())) {
-            return !this.getEinkommensverschlechterungsInfo().einkommensverschlechterung;
-        }
-        return false;
-    }
-
     public isAmt(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }

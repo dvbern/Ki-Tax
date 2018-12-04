@@ -30,8 +30,10 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.StreamsUtil;
+import com.google.common.base.Strings;
 import org.apache.commons.lang.StringUtils;
 
 @Deprecated //TODO (team) dieses Util kann dann geloescht werden, wenn alle Dokument umgestellt sind. Was noch benötigt wird, wurde ins KibonPrintUtil kopiert.
@@ -99,6 +101,10 @@ public final class PrintUtil {
 	@Nonnull
 	public static String createFallNummerString(@Nonnull Gesuch gesuch) {
 		return gesuch.getJahrFallAndGemeindenummer();
+	}
+
+	public static String getPaddedFallnummer(long fallNummer) {
+		return Strings.padStart(Long.toString(fallNummer), Constants.FALLNUMMER_LENGTH, '0');
 	}
 
 	/**

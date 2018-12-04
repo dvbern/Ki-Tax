@@ -1,6 +1,4 @@
 /*
- * AGPL File-Header
- *
  * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,7 +20,6 @@ import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
-import {GemeindeHeaderComponent} from './gemeinde-header/gemeinde-header.component';
 import {GemeindeKonfigComponent} from './gemeinde-konfiguration/gemeinde-konfig.component';
 import {GemeindeListComponent} from './gemeinde-list/gemeinde-list.component';
 import {GemeindeRoutingModule} from './gemeinde-routing/gemeinde-routing.module';
@@ -44,7 +41,6 @@ import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
         EditGemeindeComponent,
         ViewGemeindeComponent,
         GemeindeKonfigComponent,
-        GemeindeHeaderComponent,
     ],
     entryComponents: [
         GemeindeListComponent,
@@ -52,7 +48,6 @@ import {ViewGemeindeComponent} from './view-gemeinde/view-gemeinde.component';
         EditGemeindeComponent,
         ViewGemeindeComponent,
         GemeindeKonfigComponent,
-        GemeindeHeaderComponent,
     ],
     providers: [],
 })

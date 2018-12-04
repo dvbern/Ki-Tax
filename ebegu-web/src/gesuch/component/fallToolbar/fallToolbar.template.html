@@ -37,7 +37,7 @@
 
             <div class="pull-right dossier-element fall-nummer"
                  [ngClass]="{'fall-nummer-gesuchsteller': isGesuchsteller()}">
-                <span [textContent]="fallNummer"></span>
+                <span [textContent]="fallNummer" class="fall-toolbar-symbol-padding"></span>
                 <i *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()"
                    class="fa" [ngClass]="{'fa-desktop': isOnlineGesuch(), 'fa-file-text-o': !isOnlineGesuch()}"></i>
             </div>
@@ -62,7 +62,6 @@
                 </li>
                 <li *dvNgShowElement="showCreateNewDossier(); roles: TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()">
                     <button href class="fall-toolbar-mobile-dropdown-button"
-
                             (click)="createNewDossier()" [disabled]="isNavigationDisabled()">
                         <i class="fa fa-plus fall-toolbar-symbol-padding"></i> {{'GEMEINDE_HINZUFUEGEN' | translate}}
                     </button>

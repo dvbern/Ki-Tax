@@ -26,10 +26,12 @@ import {BenutzerModule} from './benutzer/benutzer.module';
 import {CoreModule} from './core/core.module';
 import {EinladungModule} from './einladung/einladung.module';
 import {GemeindeModule} from './gemeinde/gemeinde.module';
+import {InstitutionModule} from './institution/institution.module';
 import {OnboardingModule} from './onboarding/onboarding.module';
 import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
 import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
+import {WelcomeModule} from './welcome/welcome.module';
 
 @NgModule({
     imports: [
@@ -42,15 +44,17 @@ import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
         SharedModule,
 
         AppRoutingModule,
-        NgAdminModule,
+        BenutzerModule,
+        EinladungModule,
         GemeindeModule,
+        InstitutionModule,
+        NgAdminModule,
         NgAuthenticationModule,
         NgGesuchModule,
         NgPosteingangModule,
         OnboardingModule,
-        BenutzerModule,
-        EinladungModule,
-        TraegerschaftModule
+        TraegerschaftModule,
+        WelcomeModule,
     ],
 })
 

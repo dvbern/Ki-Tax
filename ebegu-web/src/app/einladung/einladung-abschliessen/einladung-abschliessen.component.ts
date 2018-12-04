@@ -16,7 +16,8 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {Transition} from '@uirouter/core';
+import {TargetState, Transition} from '@uirouter/core';
+import {TSEinladungTyp} from '../../../models/enums/TSEinladungTyp';
 import TSBenutzer from '../../../models/TSBenutzer';
 import {getEntityTargetState} from '../einladung-routing/einladung-helpers';
 
@@ -36,7 +37,23 @@ export class EinladungAbschliessenComponent {
     }
 
     public next(): void {
-        const target = getEntityTargetState(this.transition, this.principal);
+        const target = this.setParamIsRegistering(
+            getEntityTargetState(this.transition, this.principal)
+        );
         this.transition.router.stateService.go(target.state(), target.params(), target.options());
+    }
+
+    /**
+     * For the typ GEMEINDE and INSTITUTION we must set the param isRegistering to true, so we know that
+     * we are registering the institution for the first time. All other "typ" won't need this param.
+     */
+    private setParamIsRegistering(target: TargetState): TargetState {
+        const typ = this.transition.params().typ;
+        if (typ === TSEinladungTyp.GEMEINDE || typ === TSEinladungTyp.INSTITUTION) {
+            return target.withParams({
+                isRegistering: true,
+            });
+        }
+        return target;
     }
 }
