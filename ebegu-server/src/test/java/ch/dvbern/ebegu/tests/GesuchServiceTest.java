@@ -91,6 +91,7 @@ import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.JBossLoginContextFactory;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.TestfallName;
 import ch.dvbern.ebegu.util.testdata.AnmeldungConfig;
 import ch.dvbern.ebegu.util.testdata.ErstgesuchConfig;
@@ -796,6 +797,162 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		fallService.removeFall(erstgesuch.getFall(), GesuchDeletionCause.USER);
 		Assert.assertTrue("Gesuche wurden in der richtigen Reihenfolge geloscht", fallService.getAllFalle(false).isEmpty());
+	}
+
+	/**
+	 * tests a Papiergesuch that has been geprueft within the given period
+	 * The Gesuch should be returned by the function
+	 */
+	@Test
+	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiode() {
+		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence,
+			LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
+		final Gesuch verfuegtesGesuch = TestDataUtil.gesuchVerfuegen(gesuchFeutz, gesuchService);
+
+		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+			Constants.START_OF_TIME,
+			Constants.END_OF_TIME,
+			verfuegtesGesuch.getGesuchsperiode().getId()
+		);
+
+		Assert.assertEquals(1, gesuche.size());
+		Assert.assertEquals(verfuegtesGesuch, gesuche.get(0));
+	}
+
+	/**
+	 * tests a Papiergesuch that hasn't been geprueft yet
+	 * The Gesuch shouldn't be returned by the function
+	 */
+	@Test
+	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeNotGeprueft() {
+		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence,
+			LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
+
+		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+			Constants.START_OF_TIME,
+			Constants.END_OF_TIME,
+			gesuchFeutz.getGesuchsperiode().getId()
+		);
+
+		Assert.assertTrue(gesuche.isEmpty());
+	}
+
+	/**
+	 * tests a Papiergesuch that has been geprueft within the given period but belongs to a different Gesuchsperiode.
+	 * The Gesuch shouldn't be returned by the function
+	 */
+	@Test
+	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeOtherGesuchsperiode() {
+		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence,
+			LocalDate.of(1980, Month.MARCH, 25), gesuchsperiode);
+		TestDataUtil.gesuchVerfuegen(gesuchFeutz, gesuchService);
+
+		final Gesuchsperiode otherGesuchsperiode = TestDataUtil.createGesuchsperiode1617();
+		persistence.persist(otherGesuchsperiode);
+
+		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+			Constants.START_OF_TIME,
+			Constants.END_OF_TIME,
+			otherGesuchsperiode.getId()
+		);
+
+		Assert.assertTrue(gesuche.isEmpty());
+	}
+
+	/**
+	 * tests an Onlinegesuch that hasn't been freigegeben yet
+	 * The Gesuch shouldn't be returned by the function
+	 */
+	@Test
+	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeNotFreigegeben() {
+		Gesuch gesuchFeutz = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence, null, gesuchsperiode);
+
+		// the status is not really important in this test because we only check the transition to FREIGEGEBEN which doesn't exist
+		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_GS, gesuchFeutz.getStatus());
+		Assert.assertEquals(Eingangsart.PAPIER, gesuchFeutz.getEingangsart());
+		gesuchFeutz.setEingangsart(Eingangsart.ONLINE);
+		final Gesuch mergedGesuch = persistence.merge(gesuchFeutz);
+
+		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+			Constants.START_OF_TIME,
+			Constants.END_OF_TIME,
+			mergedGesuch.getGesuchsperiode().getId()
+		);
+
+		Assert.assertTrue(gesuche.isEmpty());
+	}
+
+	/**
+	 * tests an Onlinegesuch that has already been freigegeben
+	 * The Gesuch should be returned by the function
+	 */
+	@Test
+	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeFreigegeben() {
+		Gesuch onlineGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence, null, gesuchsperiode);
+		onlineGesuch.setEingangsart(Eingangsart.ONLINE);
+		final Gesuch mergedOnlineGesuch = persistence.merge(onlineGesuch);
+		final WizardStep wizardStepObject = TestDataUtil
+			.createWizardStepObject(mergedOnlineGesuch, WizardStepName.FREIGABE, WizardStepStatus.UNBESUCHT);
+		persistence.persist(wizardStepObject);
+
+		final Gesuch freigegebenesGesuch = gesuchService.antragFreigeben(mergedOnlineGesuch.getId(), null, null);
+
+		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+			Constants.START_OF_TIME,
+			Constants.END_OF_TIME,
+			freigegebenesGesuch.getGesuchsperiode().getId()
+		);
+
+		Assert.assertEquals(1, gesuche.size());
+		Assert.assertEquals(freigegebenesGesuch, gesuche.get(0));
+	}
+
+	/**
+	 * tests an Onlinegesuch that has already been freigegeben but outside the given dates
+	 * The Gesuch shouldn't be returned by the function
+	 */
+	@Test
+	public void testGetGepruefteFreigegebeneGesucheForGesuchsperiodeFreigegebenOutOfDates() {
+		Gesuch onlineGesuch = TestDataUtil.createAndPersistFeutzYvonneGesuch(persistence, null, gesuchsperiode);
+		onlineGesuch.setEingangsart(Eingangsart.ONLINE);
+		final Gesuch mergedOnlineGesuch = persistence.merge(onlineGesuch);
+		final WizardStep wizardStepObject = TestDataUtil
+			.createWizardStepObject(mergedOnlineGesuch, WizardStepName.FREIGABE, WizardStepStatus.UNBESUCHT);
+		persistence.persist(wizardStepObject);
+
+		final Gesuch freigegebenesGesuch = gesuchService.antragFreigeben(mergedOnlineGesuch.getId(), null, null);
+
+		final List<Gesuch> gesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
+			Constants.END_OF_TIME.minusMonths(2),
+			Constants.END_OF_TIME,
+			freigegebenesGesuch.getGesuchsperiode().getId()
+		);
+
+		Assert.assertTrue(gesuche.isEmpty());
+	}
+
+	@Test
+	public void testHasFolgegesuchWithoutFolgegesuch() {
+		Gesuch gesuch = TestDataUtil.createAndPersistASIV12(institutionService, persistence,
+						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT);
+
+		Assert.assertFalse(gesuchService.hasFolgegesuch(gesuch.getId()));
+	}
+
+	@Test
+	public void testHasFolgegesuchWithFolgegesuch() {
+		Gesuch gesuch = TestDataUtil.createAndPersistASIV12(institutionService, persistence,
+						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT);
+
+		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createCustomGesuchsperiode(2018, 2019);
+		final Gesuchsperiode savedGesuchsperiode1819 = persistence.persist(gesuchsperiode1819);
+
+		final Optional<Gesuch> erneurtesGesuch = gesuchService.antragErneuern(gesuch.getId(), savedGesuchsperiode1819.getId(), null);
+		Assert.assertTrue(erneurtesGesuch.isPresent());
+		Gesuch folgegesuch = gesuchService.createGesuch(erneurtesGesuch.get());
+
+		Assert.assertTrue(gesuchService.hasFolgegesuch(gesuch.getId()));
+		Assert.assertFalse(gesuchService.hasFolgegesuch(folgegesuch.getId()));
 	}
 
 

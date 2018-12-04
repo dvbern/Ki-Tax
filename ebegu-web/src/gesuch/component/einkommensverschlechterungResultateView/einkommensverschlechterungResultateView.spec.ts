@@ -82,7 +82,7 @@ describe('einkommensverschlechterungResultateView', () => {
     describe('calculateVeraenderung', () => {
         beforeEach(() => {
             ekvrvc = new EinkommensverschlechterungResultateViewController(stateParams, gesuchModelManager,
-                berechnungsManager, errorservice, wizardStepManager, null, $rootScope, null, $timeout);
+                berechnungsManager, errorservice, wizardStepManager, null, $rootScope, $timeout);
             ekvrvc.model = new TSFinanzModel(
                 gesuchModelManager.getBasisjahr(),
                 gesuchModelManager.isGesuchsteller2Required(),

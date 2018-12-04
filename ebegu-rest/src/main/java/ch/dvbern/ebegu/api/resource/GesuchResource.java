@@ -71,6 +71,7 @@ import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Resource fuer Gesuch
@@ -886,5 +887,17 @@ public class GesuchResource {
 
 		Boolean possible = ausserordentlicherAnspruchService.isAusserordentlicherAnspruchPossible(gesuch);
 		return Response.ok(possible).build();
+	}
+
+	@ApiOperation(value = "Gibt alle Antraege (Gesuche und Mutationen) eines Falls zurueck",
+		responseContainer = "List", response = JaxAntragDTO.class)
+	@Nonnull
+	@GET
+	@Path("/massenversand/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.WILDCARD)
+	public List<String> getMassenversandTexteForGesuch(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchIdJax) {
+		Validate.notNull(gesuchIdJax.getId());
+		return gesuchService.getMassenversandTexteForGesuch(converter.toEntityId(gesuchIdJax));
 	}
 }

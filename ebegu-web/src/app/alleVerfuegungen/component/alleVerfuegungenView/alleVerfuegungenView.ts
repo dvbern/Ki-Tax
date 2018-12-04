@@ -56,6 +56,7 @@ export class AlleVerfuegungenViewController implements IController {
     public alleVerfuegungen: Array<any> = [];
     public itemsByPage: number = 20;
     public readonly TSRoleUtil = TSRoleUtil;
+    public dossierId: string;
 
     public constructor(
         private readonly $state: StateService,
@@ -71,12 +72,13 @@ export class AlleVerfuegungenViewController implements IController {
     }
 
     public $onInit(): void {
-        if (!this.$stateParams.dossierId) {
+        this.dossierId = this.$stateParams.dossierId;
+        if (!this.dossierId) {
             this.cancel();
             return;
         }
 
-        this.dossierRS.findDossier(this.$stateParams.dossierId).then((response: TSDossier) => {
+        this.dossierRS.findDossier(this.dossierId).then((response: TSDossier) => {
             this.dossier = response;
             if (this.dossier === undefined) {
                 this.cancel();

@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions, ILogService} from 'angular';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSDokumenteDTO from '../../../models/dto/TSDokumenteDTO';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
@@ -22,10 +23,12 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSDokument from '../../../models/TSDokument';
 import TSDokumentGrund from '../../../models/TSDokumentGrund';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IStammdatenStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import DokumenteRS from '../../service/dokumenteRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
+import GesuchRS from '../../service/gesuchRS.rest';
 import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
@@ -54,6 +57,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         'GlobalCacheService',
         '$scope',
         '$timeout',
+        'GesuchRS',
+        'AuthServiceRS',
     ];
     public parsedNum: number;
     public dokumenteEkv: TSDokumentGrund[] = [];
@@ -65,6 +70,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public dokumenteSonst: TSDokumentGrund[] = [];
     public dokumentePapiergesuch: TSDokumentGrund[] = [];
     public dokumenteFreigabequittung: TSDokumentGrund[] = [];
+    public massenversand: string[] = [];
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -76,6 +82,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         private readonly globalCacheService: GlobalCacheService,
         $scope: IScope,
         $timeout: ITimeoutService,
+        private readonly gesuchRS: GesuchRS,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
@@ -107,6 +115,10 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                     this.dokumenteFreigabequittung,
                     TSDokumentGrundTyp.FREIGABEQUITTUNG);
             });
+
+        this.gesuchRS.getMassenversandTexteForGesuch(this.gesuchModelManager.getGesuch().id).then((response: any) => {
+            this.massenversand = response;
+        });
     }
 
     private searchDokumente(
@@ -196,5 +208,9 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public setDokumenteGeprueft(): void {
         this.gesuchModelManager.getGesuch().dokumenteHochgeladen = false;
         this.gesuchModelManager.updateGesuch();
+    }
+
+    public isSteueramt(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
     }
 }
