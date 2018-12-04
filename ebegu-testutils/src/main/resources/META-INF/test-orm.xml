@@ -347,5 +347,6 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch"/>
 	<entity class="ch.dvbern.ebegu.entities.UnbezahlterUrlaub"/>
 	<entity class="ch.dvbern.ebegu.entities.BfsGemeinde"/>
+	<entity class="ch.dvbern.ebegu.entities.Massenversand"/>
 
 </entity-mappings>

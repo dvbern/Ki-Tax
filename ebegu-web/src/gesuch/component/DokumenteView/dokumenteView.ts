@@ -54,6 +54,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         'GlobalCacheService',
         '$scope',
         '$timeout',
+        'GesuchRS',
+        'AuthServiceRS',
     ];
     public parsedNum: number;
     public dokumenteEkv: TSDokumentGrund[] = [];
@@ -65,6 +67,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public dokumenteSonst: TSDokumentGrund[] = [];
     public dokumentePapiergesuch: TSDokumentGrund[] = [];
     public dokumenteFreigabequittung: TSDokumentGrund[] = [];
+    massenversand: string[] = [];
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -76,6 +79,8 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         private readonly globalCacheService: GlobalCacheService,
         $scope: IScope,
         $timeout: ITimeoutService,
+        private gesuchRS: GesuchRS,
+        private authServiceRS: AuthServiceRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
@@ -107,6 +112,10 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
                     this.dokumenteFreigabequittung,
                     TSDokumentGrundTyp.FREIGABEQUITTUNG);
             });
+
+        this.gesuchRS.getMassenversandTexteForGesuch(this.gesuchModelManager.getGesuch().id).then((response: any) => {
+            this.massenversand = response;
+        });
     }
 
     private searchDokumente(
@@ -196,5 +205,9 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     public setDokumenteGeprueft(): void {
         this.gesuchModelManager.getGesuch().dokumenteHochgeladen = false;
         this.gesuchModelManager.updateGesuch();
+    }
+
+    public isSteueramt(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles());
     }
 }

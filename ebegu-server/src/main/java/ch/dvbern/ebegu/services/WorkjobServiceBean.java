@@ -46,6 +46,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.entities.Workjob_;
@@ -62,6 +63,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.collect.Sets;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +83,12 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_FROM_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_TO_PARAM;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_BG_GESUCHE;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_MISCH_GESUCHE;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_TS_GESUCHE;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.REPORT_VORLAGE_TYPE_PARAM;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.TEXT;
 
 /**
  * Data Acess Object Bean zum zugriff auf Workjoben in der DB
@@ -144,7 +151,17 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public Workjob createNewReporting(@Nonnull Workjob workJob, @Nonnull ReportVorlage vorlage, @Nullable LocalDate datumVon, @Nullable LocalDate datumBis, @Nullable String gesuchPeriodIdParam) {
+	public Workjob createNewReporting(
+		@Nonnull Workjob workJob,
+		@Nonnull ReportVorlage vorlage,
+		@Nullable LocalDate datumVon,
+		@Nullable LocalDate datumBis,
+		@Nullable String gesuchPeriodIdParam,
+		boolean inklBgGesuche,
+		boolean inklMischGesuche,
+		boolean inklTsGesuche,
+		boolean ohneErneuerungsgesuch,
+		@Nullable String text) {
 		checkIfJobCreationAllowed(workJob, vorlage);
 
 		JobOperator jobOperator = BatchRuntime.getJobOperator();
@@ -160,6 +177,13 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			jobParameters.setProperty(DATE_TO_PARAM, datumBisString);
 		}
 
+		jobParameters.setProperty(INKL_BG_GESUCHE, String.valueOf(inklBgGesuche));
+		jobParameters.setProperty(INKL_MISCH_GESUCHE, String.valueOf(inklMischGesuche));
+		jobParameters.setProperty(INKL_TS_GESUCHE, String.valueOf(inklTsGesuche));
+		jobParameters.setProperty(OHNE_ERNEUERUNGSGESUCHE, String.valueOf(ohneErneuerungsgesuch));
+		if (StringUtils.isNotEmpty(text)) {
+			jobParameters.setProperty(TEXT, text);
+		}
 		jobParameters.setProperty(REPORT_VORLAGE_TYPE_PARAM, vorlage.name());
 
 		setPropertyIfPresent(jobParameters, WorkJobConstants.GESUCH_PERIODE_ID_PARAM, gesuchPeriodIdParam);
@@ -173,7 +197,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		//	EBEGU-1663 Wildfly 10 hack, this can be removed later and download file can be generated when report is finsihed
 		// since there is no Security Context in WF10 in the batchlet we have to store the download file here and update it using a query in the batchlet
 		final UploadFileInfo dummyFile = new UploadFileInfo("dummyname", null);
-		dummyFile.setSize(0l);
+		dummyFile.setSize(0L);
 		dummyFile.setPath("/invalid/dummypath");
 		final DownloadFile dummyDownloadFile = downloadFileService.create(dummyFile, TokenLifespan.LONG, workJob.getTriggeringIp());
 		this.persistence.getEntityManager().refresh(workJob); //evtl hat job schon gestartet
@@ -184,7 +208,30 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		LOG.debug("Startet GesuchStichttagStatistik with executionId {}", executionId);
 
 		return workJob;
+	}
 
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN, SACHBEARBEITER_JA, SCHULAMT, ADMINISTRATOR_SCHULAMT, SACHBEARBEITER_INSTITUTION,
+		SACHBEARBEITER_TRAEGERSCHAFT, REVISOR })
+	public Workjob createNewReporting(
+		@Nonnull Workjob workJob,
+		@Nonnull ReportVorlage vorlage,
+		@Nullable LocalDate datumVon,
+		@Nullable LocalDate datumBis,
+		@Nullable String gesuchPeriodIdParam
+	) {
+		return createNewReporting(
+			workJob,
+			vorlage,
+			datumVon,
+			datumBis,
+			gesuchPeriodIdParam,
+			false,
+			false,
+			false,
+			false,
+			null);
 	}
 
 	private void setPropertyIfPresent(@Nonnull Properties jobParameters, @Nonnull String paramName, @Nullable String paramValue) {
@@ -239,7 +286,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		Predicate statusPredicate = root.get(Workjob_.status).in(statusParam);
 
 		query.where(userPredicate, statusPredicate);
-		query.orderBy(cb.desc(root.get(Workjob_.timestampMutiert)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampMutiert)));
 		TypedQuery<Workjob> q = persistence.getEntityManager().createQuery(query);
 		q.setParameter(startingUsernameParam, startingUserName);
 		q.setParameter(statusParam, statesToSearch);
@@ -293,7 +340,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 		Root<Workjob> root = updateQuery.from(Workjob.class);
 		updateQuery.set(root.get(Workjob_.resultData), resultData);
-		updateQuery.where(cb.equal(root.get(Workjob_.id), workjobID));
+		updateQuery.where(cb.equal(root.get(AbstractEntity_.id), workjobID));
 		this.persistence.getEntityManager().createQuery(updateQuery).executeUpdate();
 	}
 

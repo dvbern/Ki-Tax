@@ -39,12 +39,14 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
@@ -63,6 +65,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
+import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -88,6 +91,8 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Massenversand;
+import ch.dvbern.ebegu.entities.Massenversand_;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -1881,6 +1886,265 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			antragStatusHistoryService.findLastStatusChangeBeforePruefungSTV(gesuch);
 		gesuch.setStatus(lastStatusChange.getStatus());
 		return updateGesuch(gesuch, true, null);
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN, SCHULAMT, ADMINISTRATOR_SCHULAMT })
+	public Massenversand createMassenversand(@Nonnull Massenversand massenversand) {
+		return persistence.persist(massenversand);
+	}
+
+	@Override
+	@PermitAll
+	public List<String> getMassenversandTexteForGesuch(@Nonnull String gesuchId) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Massenversand> query = cb.createQuery(Massenversand.class);
+
+		Root<Massenversand> root = query.from(Massenversand.class);
+		ListJoin<Massenversand, Gesuch> gesuche = root.join(Massenversand_.gesuche);
+
+		Predicate predicate = cb.equal(gesuche.get(AbstractEntity_.id), gesuchId);
+		query.where(predicate);
+		query.select(root);
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+
+		List<Massenversand> massenversaende = persistence.getCriteriaResults(query);
+		List<String> result = massenversaende.stream()
+			.map(Massenversand::getDescription)
+			.collect(Collectors.toList());
+
+		return result;
+	}
+
+	@Override
+	@Nonnull
+	public List<Gesuch> getGepruefteFreigegebeneGesucheForGesuchsperiode(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nonnull String gesuchsperiodeId
+	) {
+
+		final Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
+			.orElseThrow(() ->
+				new EbeguEntityNotFoundException("getGepruefteFreigegebeneGesucheForGesuchsperiode",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId)
+			);
+
+		// We first look for all Gesuche that belongs to the gesuchsperiode and were geprueft/nurschulamt/freigegeben between
+		// the given dates.
+		final List<Tuple> allTuples =
+			getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples(datumVon, datumBis, gesuchsperiode);
+
+		List<Gesuch> gesuche = new ArrayList<>();
+		allTuples.forEach(tuple -> {
+			final String fallIdValue = String.valueOf(tuple.get(0));
+			final String gesuchsperiodeIdValue = String.valueOf(tuple.get(1));
+
+			Optional<Gesuch> gesuch =
+				getNeustesGeprueftesFreigegebensGesuchFuerFallPeriode(gesuchsperiodeIdValue, fallIdValue);
+			gesuch.ifPresent(gesuche::add);
+		});
+
+		return gesuche;
+	}
+
+	private List<Tuple> getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nonnull Gesuchsperiode gesuchsperiode
+	) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<Tuple> query = cb.createTupleQuery();
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		Join<Gesuch, AntragStatusHistory> antragStatusHistoryJoin = root.join(Gesuch_.antragStatusHistories, JoinType.LEFT);
+
+		// Prepare TypedParameters
+		ParameterExpression<Gesuchsperiode> gesuchsperiodeIdParam = cb.parameter(Gesuchsperiode.class, "gesuchsperiode");
+		ParameterExpression<LocalDateTime> datumVonParam = cb.parameter(LocalDateTime.class, "datumVon");
+		ParameterExpression<LocalDateTime> datumBisParam = cb.parameter(LocalDateTime.class, "datumBis");
+		ParameterExpression<AntragStatus> geprueftParam = cb.parameter(AntragStatus.class, "geprueft");
+		ParameterExpression<AntragStatus> freigegebenParam = cb.parameter(AntragStatus.class, "freigegeben");
+		ParameterExpression<AntragStatus> nurSchulamtParam = cb.parameter(AntragStatus.class, "nurschulamt");
+		ParameterExpression<Eingangsart> papierParam = cb.parameter(Eingangsart.class, "papier");
+		ParameterExpression<Eingangsart> onlineParam = cb.parameter(Eingangsart.class, "online");
+		ParameterExpression<Integer> laufnummerParam = cb.parameter(Integer.class, "laufnummer");
+
+		// Predicates
+		Predicate predicateStatusTransition = getStatusTransitionPredicate(cb, root, antragStatusHistoryJoin, datumVonParam, datumBisParam,
+			geprueftParam, freigegebenParam, nurSchulamtParam, papierParam, onlineParam);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiodeIdParam);
+		// An Erstgesuch is not MUTATION (i.e. ERSTGESUCH or ERNEUERUNGSGESUCH)
+		Predicate predicateErstgesuch = cb.equal(root.get(Gesuch_.typ), AntragTyp.MUTATION).not();
+
+		query.where(predicateGesuchsperiode, predicateStatusTransition, predicateErstgesuch);
+
+		query.groupBy(
+			root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id),
+			root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id)
+		);
+		query.multiselect(
+			root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id),
+			root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id),
+			cb.max(root.get(Gesuch_.laufnummer))
+		);
+
+		TypedQuery<Tuple> typedQuery = persistence.getEntityManager().createQuery(query);
+		typedQuery.setParameter(geprueftParam, AntragStatus.GEPRUEFT);
+		typedQuery.setParameter(freigegebenParam, AntragStatus.FREIGEGEBEN);
+		typedQuery.setParameter(nurSchulamtParam, AntragStatus.NUR_SCHULAMT);
+		typedQuery.setParameter(papierParam, Eingangsart.PAPIER);
+		typedQuery.setParameter(onlineParam, Eingangsart.ONLINE);
+		typedQuery.setParameter(gesuchsperiodeIdParam, gesuchsperiode);
+		typedQuery.setParameter(datumVonParam, datumVon.atStartOfDay());
+		typedQuery.setParameter(datumBisParam, datumBis.atStartOfDay().plusDays(1));
+		typedQuery.setParameter(laufnummerParam, 0);
+
+		return typedQuery.getResultList();
+	}
+
+	/**
+	 * Returns the newest Gesuch for the given fall and period that has been at least freigegeben (for Onlinegesuche)
+	 * or at least Geprueft (for Papiergesuche)
+	 */
+	@Nonnull
+	public Optional<Gesuch> getNeustesGeprueftesFreigegebensGesuchFuerFallPeriode(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull String fallId
+	) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		ParameterExpression<String> fallParam = cb.parameter(String.class, "fallId");
+		ParameterExpression<String> gesuchsperiodeParam = cb.parameter(String.class, "gesuchsperiodeId");
+		ParameterExpression<Eingangsart> papierParam = cb.parameter(Eingangsart.class, "papier");
+		ParameterExpression<Eingangsart> onlineParam = cb.parameter(Eingangsart.class, "online");
+		//noinspection rawtypes
+		ParameterExpression<Collection> geprueftParam = cb.parameter(Collection.class, "geprueft");
+		//noinspection rawtypes
+		ParameterExpression<Collection> freigegebenParam = cb.parameter(Collection.class, "freigegeben");
+
+		Predicate predicateStatus = getStatusFromEingangsartPredicate(cb, root, papierParam, onlineParam, geprueftParam, freigegebenParam);
+		Predicate predicateFall = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id), fallParam);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode).get(AbstractEntity_.id), gesuchsperiodeParam);
+
+		query.where(predicateStatus, predicateGesuchsperiode, predicateFall);
+		query.select(root);
+
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+
+		TypedQuery<Gesuch> typedQuery = persistence.getEntityManager().createQuery(query);
+		typedQuery.setParameter(fallParam, fallId);
+		typedQuery.setParameter(gesuchsperiodeParam, gesuchsperiodeId);
+		typedQuery.setParameter(papierParam, Eingangsart.PAPIER);
+		typedQuery.setParameter(onlineParam, Eingangsart.ONLINE);
+		typedQuery.setParameter(geprueftParam, AntragStatus.getAllGepruefteStatus());
+		typedQuery.setParameter(freigegebenParam, AntragStatus.getAllFreigegebeneStatus());
+
+		final List<Gesuch> gesuche = typedQuery.getResultList();
+		if (gesuche.isEmpty()) {
+			return Optional.empty();
+		}
+		Gesuch gesuch = gesuche.get(0);
+		authorizer.checkReadAuthorization(gesuch);
+		return Optional.of(gesuch);
+	}
+
+	private Predicate getStatusFromEingangsartPredicate(
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull Root<Gesuch> root,
+		@Nonnull ParameterExpression<Eingangsart> papierParam,
+		@Nonnull ParameterExpression<Eingangsart> onlineParam,
+		@SuppressWarnings("rawtypes") @Nonnull ParameterExpression<Collection> geprueftParam,
+		@SuppressWarnings("rawtypes") @Nonnull ParameterExpression<Collection> freigegebenParam
+	) {
+		final Predicate predicateGeprueft = root.get(Gesuch_.status).in(geprueftParam);
+		final Predicate predicateFreigegeben = root.get(Gesuch_.status).in(freigegebenParam);
+
+		final Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), papierParam);
+		final Predicate predicateOnline = cb.equal(root.get(Gesuch_.eingangsart), onlineParam);
+
+		return cb.or(
+			cb.and(predicateGeprueft, predicatePapier),
+			cb.and(predicateFreigegeben, predicateOnline)
+		);
+	}
+
+	/**
+	 * Will create a Predicate to look for all Onlinegesuche that marked as FREIGEGEBEN between Von and Bis
+	 * and all Papiergesuche that were marked as GEPRUEFT between Von and Bis
+	 */
+	private Predicate getStatusTransitionPredicate(
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull Root<Gesuch> root,
+		@Nonnull Join<Gesuch, AntragStatusHistory> antragStatusHistoryJoin,
+		@Nonnull ParameterExpression<LocalDateTime> datumVonParam,
+		@Nonnull ParameterExpression<LocalDateTime> datumBisParam,
+		@Nonnull ParameterExpression<AntragStatus> geprueftParam,
+		@Nonnull ParameterExpression<AntragStatus> freigegebenParam,
+		@Nonnull ParameterExpression<AntragStatus> nurSchulamtParam,
+		@Nonnull ParameterExpression<Eingangsart> papierParam,
+		@Nonnull ParameterExpression<Eingangsart> onlineParam
+	) {
+		final Predicate predicateStatusSetBetweenVonAndBis = cb.between(
+			antragStatusHistoryJoin.get(AntragStatusHistory_.timestampVon),
+			datumVonParam,
+			datumBisParam
+		);
+		final Predicate predicateGeprueft = cb.and(
+			cb.or(
+				cb.equal(antragStatusHistoryJoin.get(AntragStatusHistory_.status), geprueftParam),
+				cb.equal(antragStatusHistoryJoin.get(AntragStatusHistory_.status), nurSchulamtParam)
+			),
+			predicateStatusSetBetweenVonAndBis
+		);
+		final Predicate predicateFreigegeben = cb.and(
+			cb.equal(antragStatusHistoryJoin.get(AntragStatusHistory_.status), freigegebenParam),
+			predicateStatusSetBetweenVonAndBis
+		);
+
+		final Predicate predicatePapier = cb.equal(root.get(Gesuch_.eingangsart), papierParam);
+		final Predicate predicateOnline = cb.equal(root.get(Gesuch_.eingangsart), onlineParam);
+
+		return cb.or(
+			cb.and(predicateGeprueft, predicatePapier),
+			cb.and(predicateFreigegeben, predicateOnline)
+		);
+	}
+
+	@Override
+	public boolean hasFolgegesuch(@Nonnull String gesuchId) {
+		final Optional<Gesuch> optGesuch = findGesuch(gesuchId);
+		final Gesuch gesuch = optGesuch.orElseThrow(()
+			-> new EbeguEntityNotFoundException("hasFolgegesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
+
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		query.select(root.get(AbstractEntity_.id));
+
+		ParameterExpression<String> fallIdParam = cb.parameter(String.class, "fallId");
+		ParameterExpression<LocalDate> gesuchsperiodeGueltigAbParam = cb.parameter(LocalDate.class, "gueltigAb");
+
+		Predicate fallPredicate = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id), fallIdParam);
+		Predicate gesuchsperiodePredicate = cb.greaterThan(
+			root.get(Gesuch_.gesuchsperiode).get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			gesuchsperiodeGueltigAbParam);
+
+		query.where(fallPredicate, gesuchsperiodePredicate);
+
+		query.orderBy(cb.desc(root.get(Gesuch_.laufnummer)));
+
+		TypedQuery<String> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(fallIdParam, gesuch.getFall().getId());
+		q.setParameter(gesuchsperiodeGueltigAbParam, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
+
+		final List<String> resultList = q.getResultList();
+		return !resultList.isEmpty();
 	}
 
 	private void createFinSitDokument(Gesuch persistedGesuch, String methodname) {

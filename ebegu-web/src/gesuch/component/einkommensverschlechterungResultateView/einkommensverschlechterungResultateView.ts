@@ -257,15 +257,4 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
         return info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 2
             || !info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 1;
     }
-
-    /**
-     * Da fuer STEUERAMT der Step EINKOMMENSVERSCHLECHTERUNG der letzte ist, muss man den Button next verstecken, wenn
-     * wir wirklich im LastEinkVersStep sind. Fuer alle andere rollen wird der Button immer eingeblendet
-     */
-    public isSteueramtLetzterStep(): boolean {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())) {
-            return this.isLastEinkVersStep();
-        }
-        return false;
-    }
 }
