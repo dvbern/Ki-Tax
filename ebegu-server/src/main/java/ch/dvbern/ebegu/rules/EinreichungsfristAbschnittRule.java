@@ -31,10 +31,10 @@ import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Regel bezüglich der Einreichungsfrist des Gesuchs:
- * - Wird ein Gesuch zu spät eingereicht, entfällt der Anspruch auf den Monaten vor dem Einreichen des Gesuchs.
- * - Beispiel: Ein Gesuch wird am 5. September 2017 eingereicht. In diesem Fall ist erst per 1. September 2017
+ * - Wird ein Gesuch zu spät eingereicht, beginnt der Anspruch am 1. des Folgemonats
+ * - Beispiel: Ein Gesuch wird am 5. September 2017 eingereicht. In diesem Fall ist erst per 1. Oktober 2017
  * ein Anspruch verfügbar.
- * D.h. für die Angebote „Kita“ und „Tageseltern – Kleinkinder“ ist im August kein Anspruch verfügbar.
+ * D.h. für die Angebote „Kita“ und „Tageseltern – Kleinkinder“ ist im August und September kein Anspruch verfügbar.
  * Falls sie einen Platz haben, wird dieser zum privaten Tarif der Kita berechnet.
  * - Für die Angebote Tageseltern–Schulkinder und Tagesstätten entspricht der Anspruch dem gewünschten Pensum.
  * Ihnen wird für den Monat August aber der Volltarif verrechnet.
@@ -54,7 +54,7 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		LocalDate startDatum = gesuch.getRegelStartDatum();
 		if (gesuch.getTyp().isGesuch() && startDatum != null) {
 			Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
-			LocalDate firstOfMonthDesEinreichungsMonats = LocalDate.of(startDatum.getYear(), startDatum.getMonth(), 1);
+			LocalDate firstOfMonthDesEinreichungsMonats = LocalDate.of(startDatum.getYear(), startDatum.getMonth(), 1).plusMonths(1);
 			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
 				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
 				if (betreuungspensum.getGueltigkeit().getGueltigAb().isBefore(firstOfMonthDesEinreichungsMonats)) {
