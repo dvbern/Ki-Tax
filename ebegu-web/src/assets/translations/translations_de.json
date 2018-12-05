@@ -630,6 +630,7 @@
     "AUSGELOEST": "Ausgelöst",
     "ZAHLUNG_ERHALTEN": "Zahlung erhalten",
     "ENTWURF": "Entwurf",
+    "AKTIV": "AKTIV",
     "BETREUUNG_WARTEN_TEXT": "warten auf Platzbestätigung.",
     "BETREUUNG_BESTAETIGT_TEXT": "Dieses Betreuungsangebot wurde am {{date}} bestätigt.",
     "BETREUUNG_STORNIERT_TEXT": "Dieses Betreuungsangebot wurde storniert",
@@ -1418,5 +1419,9 @@
     "UNBEZAHLTER_URLAUB": "Unbezahlter Urlaub ab drei Monaten",
     "JA_KORREKTUR_UNBEZAHLTER_URLAUB": "Unbezahlter Urlaub, {{von}} – {{bis}}",
     "WELCOME": "Willkommen",
-    "LETS_START": "los geht's"
+    "LETS_START": "los geht's",
+    "KEINE": "Keine",
+    "LAST_REPORTS": "Letzte Reports",
+    "CREATE_SEARCHINDEX": "Suchindex neu erstellen",
+    "VON_COLON": "Von: "
 }
