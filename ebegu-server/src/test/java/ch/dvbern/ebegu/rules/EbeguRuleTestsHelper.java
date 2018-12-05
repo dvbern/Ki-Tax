@@ -126,6 +126,8 @@ public final class EbeguRuleTestsHelper {
 		result = schulstufeCalcRule.calculate(betreuung, result);
 		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
+		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
+		result = AnspruchFristRule.execute(result);
 		return result;
 	}
 

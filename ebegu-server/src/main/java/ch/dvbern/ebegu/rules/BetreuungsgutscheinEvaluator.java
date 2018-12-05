@@ -166,6 +166,10 @@ public class BetreuungsgutscheinEvaluator {
 							}
 						}
 					}
+
+					// Innerhalb eines Monats darf der Anspruch nie sinken
+					zeitabschnitte = AnspruchFristRule.execute(zeitabschnitte);
+
 					// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
 					restanspruchZeitabschnitte = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung, zeitabschnitte);
 
