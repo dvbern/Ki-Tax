@@ -17,6 +17,7 @@
 
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
 import {TSLanguage} from '../../../models/enums/TSLanguage';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
@@ -30,11 +31,23 @@ export class I18nServiceRSRest {
 
     public constructor(
         private readonly http: HttpClient,
+        private readonly translate: TranslateService,
     ) {
         this.serviceURL =  `${CONSTANTS.REST_API}i18n`;
     }
 
-    public changeLanguage(selectedLanguage: TSLanguage): Observable<any> {
+    /**
+     * Calling this method we change the language that the server is using
+     */
+    public changeServerLanguage(selectedLanguage: TSLanguage): Observable<any> {
         return this.http.put<TSLanguage>(this.serviceURL, selectedLanguage);
+    }
+
+    /**
+     * This method will change the language that the plugin of angular5 uses.
+     * This method must exist in order to be able to change the language from within an angularjs component
+     */
+    public changeClientLanguage(selectedLanguage: TSLanguage): void {
+        this.translate.use(selectedLanguage);
     }
 }

@@ -16,7 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {take, takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import {TSLanguage} from '../../../../models/enums/TSLanguage';
@@ -93,10 +93,14 @@ export class DvPulldownUserMenuController implements IController {
                 break;
         }
 
-        this.$translate.use(selectedLanguage);
-        this.i18nServiceRS.changeLanguage(selectedLanguage)
+        this.i18nServiceRS.changeServerLanguage(selectedLanguage)
+            .pipe(take(1))
             .subscribe(
-                () => LOG.info('language changed', selectedLanguage),
+                () => {
+                    this.$translate.use(selectedLanguage); // angularjs
+                    this.i18nServiceRS.changeClientLanguage(selectedLanguage); // angular
+                    LOG.info('language changed', selectedLanguage);
+                },
             );
     }
 }
