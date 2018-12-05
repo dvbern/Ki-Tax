@@ -19,9 +19,11 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
+import {TSLanguage} from '../../../../models/enums/TSLanguage';
 import {TSSprache} from '../../../../models/enums/TSSprache';
 import TSBenutzer from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 import {LogFactory} from '../../logging/LogFactory';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -37,7 +39,12 @@ const LOG = LogFactory.createLog('DvPulldownUserMenuController');
 
 export class DvPulldownUserMenuController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', '$translate'];
+    public static $inject: ReadonlyArray<string> = [
+        '$state',
+        'AuthServiceRS',
+        '$translate',
+        'I18nServiceRSRest',
+    ];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
@@ -50,6 +57,7 @@ export class DvPulldownUserMenuController implements IController {
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly $translate: ITranslateService,
+        private readonly i18nServiceRS: I18nServiceRSRest,
     ) {
     }
 
@@ -72,16 +80,23 @@ export class DvPulldownUserMenuController implements IController {
     }
 
     public changeLanguage(language: TSSprache): void {
+        let selectedLanguage = TSLanguage.DE;
         switch (language) {
             case TSSprache.DEUTSCH:
-                this.$translate.use('de');
+                selectedLanguage = TSLanguage.DE;
                 break;
             case TSSprache.FRANZOESISCH:
-                this.$translate.use('fr');
+                selectedLanguage = TSLanguage.FR;
                 break;
             default:
-                this.$translate.use('de');
+                selectedLanguage = TSLanguage.DE;
                 break;
         }
+
+        this.$translate.use(selectedLanguage);
+        this.i18nServiceRS.changeLanguage(selectedLanguage)
+            .subscribe(
+                () => LOG.info('language changed', selectedLanguage),
+            );
     }
 }

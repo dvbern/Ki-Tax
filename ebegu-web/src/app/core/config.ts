@@ -58,6 +58,8 @@ export function configure(
         .fallbackLanguage('de')
         .preferredLanguage('de');
 
+    $httpProvider.defaults.headers.common['Accept-Language'] = 'de-CH;q=0.9, fr-CH;q=0.8';
+
     // Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {
         const unsavedWarningsConfigProvider = $injector.get<any>('unsavedWarningsConfigProvider');
