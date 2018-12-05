@@ -19,9 +19,11 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
+import {TSSprache} from '../../../../models/enums/TSSprache';
 import TSBenutzer from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
+import ITranslateService = angular.translate.ITranslateService;
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -35,7 +37,7 @@ const LOG = LogFactory.createLog('DvPulldownUserMenuController');
 
 export class DvPulldownUserMenuController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS'];
+    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS', '$translate'];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
@@ -47,16 +49,17 @@ export class DvPulldownUserMenuController implements IController {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly $translate: ITranslateService,
     ) {
     }
 
     public $onInit(): void {
         this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(principal => {
-                    this.principal = principal;
-                },
-                err => LOG.error(err));
+            .subscribe(
+                principal => this.principal = principal,
+                err => LOG.error(err)
+            );
     }
 
     public $onDestroy(): void {
@@ -66,5 +69,19 @@ export class DvPulldownUserMenuController implements IController {
 
     public logout(): void {
         this.$state.go('authentication.login', {type: 'logout'});
+    }
+
+    public changeLanguage(language: TSSprache): void {
+        switch (language) {
+            case TSSprache.DEUTSCH:
+                this.$translate.use('de');
+                break;
+            case TSSprache.FRANZOESISCH:
+                this.$translate.use('fr');
+                break;
+            default:
+                this.$translate.use('de');
+                break;
+        }
     }
 }

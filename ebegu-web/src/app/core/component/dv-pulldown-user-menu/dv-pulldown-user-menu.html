@@ -111,6 +111,18 @@
                 <a href="https://github.com/StadtBern/Ki-Tax" target="_blank">Vers: {{vm.VERSION}}:
                     {{vm.BUILDTSTAMP}}</a>
             </md-menu-item>
+
+            <md-menu-item>
+                <md-button ng-click="vm.changeLanguage('DEUTSCH')" aria-label="{{'DEUTSCH' | translate}}">
+                    <a href="#" data-translate="DEUTSCH" aria-hidden></a>
+                </md-button>
+            </md-menu-item>
+            <md-menu-item>
+                <md-button ng-click="vm.changeLanguage('FRANZOESISCH')" aria-label="{{'FRANZOESISCH' | translate}}">
+                    <a href="#" data-translate="FRANZOESISCH" aria-hidden></a>
+                </md-button>
+            </md-menu-item>
+
         </md-menu-content>
     </md-menu>
 </md-menu-bar>

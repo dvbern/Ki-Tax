@@ -45,14 +45,16 @@ export function configure(
     $qProvider: IQProvider,
 ): void {
     // Translation Provider configuration
-    const translProp = require('../../assets/translations/translations_de.json');
+    const translPropDE = require('../../assets/translations/translations_de.json');
+    const translPropFR = require('../../assets/translations/translations_fr.json');
 
     // In case you have issues with double-escaped parameters, check out this issue:
     // https://github.com/angular-translate/angular-translate/issues/1101
     $translateProvider.useSanitizeValueStrategy('escapeParameters');
 
     $translateProvider
-        .translations('de', translProp)
+        .translations('de', translPropDE)
+        .translations('fr', translPropFR)
         .fallbackLanguage('de')
         .preferredLanguage('de');
 
