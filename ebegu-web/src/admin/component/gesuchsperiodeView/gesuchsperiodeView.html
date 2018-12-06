@@ -82,7 +82,7 @@
                                                 ng-model="vm.gesuchsperiode.status"
                                                 class="form-control"
                                                 ng-disabled="vm.gesuchsperiode.isNew()"
-                                                ng-options="gpstatus | translate as gpstatus for gpstatus in vm.getTSGesuchsperiodeStatusValues()"
+                                                ng-options="gpstatus as gpstatus | translate  for gpstatus in vm.getTSGesuchsperiodeStatusValues()"
                                                 ng-required="true">
                                         </select>
                                     </div>
