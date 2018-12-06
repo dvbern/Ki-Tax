@@ -33,9 +33,9 @@
                             <th st-sort="timestampErstellt" class="sortable" data-translate="TIMEERSTELLT"></th>
                         </tr>
                         <tr>
-                            <th><input st-search="name" class="form-control" placeholder="Suche nach Name"
+                            <th><input st-search="name" class="form-control" placeholder="{{ 'SEARCH_FOR_NAME' | translate }}"
                                        type="text"/></th>
-                            <th><input st-search="value" class="form-control" placeholder="Suche Nach Text"
+                            <th><input st-search="value" class="form-control" placeholder="{{ 'SEARCH_FOR_VALUE' | translate }}"
                                        type="text"/></th>
                             <th></th>
                         </tr>
@@ -43,7 +43,7 @@
                         <tbody>
                         <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"
                             ng-click="vm.editRow(row)">
-                            <td ng-bind="row.name"></td>
+                            <td ng-bind="row.name | translate"></td>
                             <td ng-bind="row.value" class="valCol" title="{{row.value}}"></td>
                             <td ng-bind="row.timestampErstellt | amDateFormat : 'DD.MM.YYYY'"></td>
                         </tr>
