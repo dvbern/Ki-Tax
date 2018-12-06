@@ -1423,5 +1423,12 @@
     "KEINE": "Keine",
     "LAST_REPORTS": "Letzte Reports",
     "CREATE_SEARCHINDEX": "Suchindex neu erstellen",
-    "VON_COLON": "Von: "
+    "VON_COLON": "Von: ",
+    "ITEMS_PER_PAGE_LABEL": "Objekte pro Seite",
+    "NEXT_PAGE_LABEL": "nächste Seite",
+    "PREVIOUS_PAGE_LABEL": "vorherige Seite",
+    "FIRST_PAGE_LABEL": "erste Seite",
+    "LAST_PAGE_LABEL": "letzte Seite",
+    "RANGE_PAGE_LABEL_1": "0 von {{length}}",
+    "RANGE_PAGE_LABEL_2": "{{startIndex}} - {{endIndex}} von {{maxLength}}"
 }

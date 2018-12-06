@@ -1423,5 +1423,12 @@
     "KEINE": "fr_Keine",
     "LAST_REPORTS": "fr_Letzte Reports",
     "CREATE_SEARCHINDEX": "fr_Suchindex neu erstellen",
-    "VON_COLON": "fr_Von: "
+    "VON_COLON": "fr_Von: ",
+    "ITEMS_PER_PAGE_LABEL": "fr_Objekte pro Seite",
+    "NEXT_PAGE_LABEL": "fr_nächste Seite",
+    "PREVIOUS_PAGE_LABEL": "fr_vorherige Seite",
+    "FIRST_PAGE_LABEL": "fr_erste Seite",
+    "LAST_PAGE_LABEL": "fr_letzte Seite",
+    "RANGE_PAGE_LABEL_1": "fr_0 von {{length}}",
+    "RANGE_PAGE_LABEL_2": "fr_{{startIndex}} - {{endIndex}} von {{maxLength}}"
 }
