@@ -50,16 +50,19 @@ import org.slf4j.LoggerFactory;
  * Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
  * Reduktionen des Anspruchs sind auch rückwirkend erlaubt
  */
-public class MutationsMerger {
+public final class MutationsMerger {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MutationsMerger.class.getSimpleName());
+
+	private MutationsMerger() {
+	}
 
 	/**
 	 * Um code lesbar zu halten wird die Regel PMD.CollapsibleIfStatements ausgeschaltet
 	 */
 	@Nonnull
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public static List<VerfuegungZeitabschnitt> execute(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
 		if (betreuung.extractGesuch().getTyp().isGesuch()) {
 			return zeitabschnitte;
@@ -117,7 +120,7 @@ public class MutationsMerger {
 		return monatsSchritte;
 	}
 
-	private boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {
+	private static boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {
 		return verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
 	}
 
@@ -125,7 +128,7 @@ public class MutationsMerger {
 	 * Hilfsmethode welche in der Vorgaengerferfuegung den gueltigen Zeitabschnitt fuer einen bestimmten Stichtag sucht
 	 */
 	@Nullable
-	private VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(LocalDate stichtag, Verfuegung vorgaengerVerf) {
+	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(LocalDate stichtag, Verfuegung vorgaengerVerf) {
 		Objects.requireNonNull(vorgaengerVerf, "Vorgaengerverfuegung darf nicht null sein");
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : vorgaengerVerf.getZeitabschnitte()) {
 			final DateRange gueltigkeit = verfuegungZeitabschnitt.getGueltigkeit();
@@ -141,7 +144,7 @@ public class MutationsMerger {
 	/**
 	 * Findet das anspruchberechtigtes Pensum zum Zeitpunkt des neuen Zeitabschnitt-Start
 	 */
-	private int findAnspruchberechtigtesPensumAt(LocalDate zeitabschnittStart, @Nullable Verfuegung verfuegungGSM) {
+	private static int findAnspruchberechtigtesPensumAt(LocalDate zeitabschnittStart, @Nullable Verfuegung verfuegungGSM) {
 
 		if (verfuegungGSM != null) {
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : verfuegungGSM.getZeitabschnitte()) {
@@ -156,7 +159,7 @@ public class MutationsMerger {
 		return 0;
 	}
 
-	private VerfuegungZeitabschnitt copy(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	private static VerfuegungZeitabschnitt copy(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(verfuegungZeitabschnitt);
 		return zeitabschnitt;
 	}

@@ -72,7 +72,6 @@ public final class EbeguRuleTestsHelper {
 	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(DEFAULT_GUELTIGKEIT, EinschulungTyp.KINDERGARTEN2);
 	private static final KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(DEFAULT_GUELTIGKEIT);
-	private static final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
 
 	private EbeguRuleTestsHelper() {
 	}
@@ -132,7 +131,7 @@ public final class EbeguRuleTestsHelper {
 	}
 
 	public static List<VerfuegungZeitabschnitt> initializeRestanspruchForNextBetreuung(Betreuung currentBetreuung, List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		return restanspruchInitializer.createVerfuegungsZeitabschnitte(currentBetreuung, zeitabschnitte);
+		return RestanspruchInitializer.execute(currentBetreuung, zeitabschnitte);
 	}
 
 	public static Betreuung createBetreuungWithPensum(

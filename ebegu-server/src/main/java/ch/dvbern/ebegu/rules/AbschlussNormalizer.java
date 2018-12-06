@@ -26,10 +26,13 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
  * Abschlussmerger, welcher nach allen Regeln die vorhandenen Abschnitte überprüft und solche mit gleichen *sichtbaren*
  * Daten zusammenmergt.
  */
-public class AbschlussNormalizer {
+public final class AbschlussNormalizer {
+
+	private AbschlussNormalizer() {
+	}
 
 	@Nonnull
-	protected List<VerfuegungZeitabschnitt> mergeGleicheSichtbareDaten(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public static List<VerfuegungZeitabschnitt> execute(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> result = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			normalizeZeitabschnitte(result, zeitabschnitt);
@@ -41,7 +44,7 @@ public class AbschlussNormalizer {
 	 * Stellt sicher, dass zwei aufeinander folgende Zeitabschnitte nie dieselben Daten haben. Falls
 	 * dies der Fall wäre, werden sie zu einem neuen Schnitz gemergt.
 	 */
-	private void normalizeZeitabschnitte(@Nonnull List<VerfuegungZeitabschnitt> validZeitabschnitte, @Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+	private static void normalizeZeitabschnitte(@Nonnull List<VerfuegungZeitabschnitt> validZeitabschnitte, @Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
 		// Zuerst vergleichen, ob sich der neue Zeitabschnitt vom letzt hinzugefügten (und angrenzenden) unterscheidet
 		int indexOfLast = validZeitabschnitte.size() - 1;
 		if (indexOfLast >= 0) {
@@ -50,7 +53,9 @@ public class AbschlussNormalizer {
 				// Gleiche Berechnungsgrundlagen: Den alten um den neuen verlängern
 				lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 				// Die Bemerkungen zusammenfügen mit Vermeidung von Duplikaten
-				lastZeitabschnitt.mergeBemerkungen(zeitabschnitt.getBemerkungen());
+				if (zeitabschnitt.getBemerkungen() != null) {
+					lastZeitabschnitt.mergeBemerkungen(zeitabschnitt.getBemerkungen());
+				}
 				validZeitabschnitte.remove(indexOfLast);
 				validZeitabschnitte.add(lastZeitabschnitt);
 			} else {
