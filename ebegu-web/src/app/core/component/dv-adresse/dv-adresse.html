@@ -155,7 +155,7 @@
                     <div class="dv-select-style">
                         <select aria-describedby="{{vm.prefix}}-land-error" name="adresseLand" id="{{vm.prefix}}-land"
                                 ng-model="vm.getModel().adresseJA.land"
-                                ng-options="land.code as land.name for land in vm.laenderList | orderBy: 'name'"
+                                ng-options="land.code as land.translationKey | translate for land in vm.laenderList | orderBy: 'name'"
                                 class="form-control"
                                 autocomplete="country-name"
                                 required>

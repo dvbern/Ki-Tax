@@ -406,7 +406,7 @@ export default class EbeguRestUtil {
     public landCodeToTSLand(landCode: string): TSLand {
         if (landCode) {
             const translationKey = this.landCodeToTSLandCode(landCode);
-            return new TSLand(landCode, this.ebeguUtil.translateString(translationKey));
+            return new TSLand(landCode, translationKey);
         }
         return undefined;
     }
