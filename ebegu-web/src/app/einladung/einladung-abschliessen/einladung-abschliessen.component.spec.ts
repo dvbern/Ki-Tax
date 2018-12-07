@@ -25,6 +25,7 @@ import TSBenutzer from '../../../models/TSBenutzer';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
 import {EinladungAbschliessenComponent} from './einladung-abschliessen.component';
@@ -43,6 +44,8 @@ describe('EinladungAbschliessenComponent', () => {
             ['getVisibleRolesForPrincipal']);
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
             ['uploadLogoImage', 'getLogoUrl', 'getGemeindenForPrincipal$']);
+        const i18nServiceSpy = jasmine
+            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
         superadmin = TestDataUtil.createSuperadmin();
         authServiceSpy.principal$ = of(superadmin) as any;
@@ -65,6 +68,7 @@ describe('EinladungAbschliessenComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

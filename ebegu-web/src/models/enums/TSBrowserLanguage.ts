@@ -18,7 +18,21 @@
 /**
  * Language supported by the application.
  */
-export enum TSLanguage {
+export enum TSBrowserLanguage {
     DE = 'de',
     FR = 'fr',
+}
+
+/**
+ * In order to support languages independently of the country, we return just the language
+ * fr-CH --> fr
+ * de-CH --> de
+ * de    --> de
+ * *     --> de
+ */
+export function tsBrowserLanguageFromString(stringLanguage: string): TSBrowserLanguage {
+    if (stringLanguage && stringLanguage.startsWith('fr')) {
+        return TSBrowserLanguage.FR;
+    }
+    return TSBrowserLanguage.DE;
 }

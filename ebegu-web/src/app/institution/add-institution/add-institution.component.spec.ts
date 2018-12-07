@@ -23,6 +23,7 @@ import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution.component';
 
@@ -39,6 +40,7 @@ describe('AddInstitutionComponent', () => {
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
         ['getAllTraegerschaften', 'getAllActiveTraegerschaften']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
     beforeEach(async(() => {
 
@@ -54,6 +56,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: BenutzerRS, useValue: benutzerServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [
                 AddInstitutionComponent,

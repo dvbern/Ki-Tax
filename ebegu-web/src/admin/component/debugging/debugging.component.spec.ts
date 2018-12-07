@@ -18,6 +18,7 @@
 import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {UIRouterModule} from '@uirouter/angular';
+import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 
 import {DebuggingComponent} from './debugging.component';
@@ -25,6 +26,9 @@ import {DebuggingComponent} from './debugging.component';
 describe('DebuggingComponent', () => {
     let component: DebuggingComponent;
     let fixture: ComponentFixture<DebuggingComponent>;
+
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -35,6 +39,7 @@ describe('DebuggingComponent', () => {
             declarations: [DebuggingComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
             .compileComponents();

@@ -15,7 +15,7 @@
 
 import * as angular from 'angular';
 import {environment} from '../../environments/environment';
-import {TSLanguage} from '../../models/enums/TSLanguage';
+import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {getPreferredLanguage} from '../i18n/services/i18nServiceRS.rest';
 import {getWindowObject} from './service/windowRef.service';
 import IInjectorService = angular.auto.IInjectorService;
@@ -58,9 +58,9 @@ export function configure(
     const preferredLanguage = getPreferredLanguage(getWindowObject());
 
     $translateProvider
-        .translations(TSLanguage.DE, translPropDE)
-        .translations(TSLanguage.FR, translPropFR)
-        .fallbackLanguage(TSLanguage.DE)
+        .translations(TSBrowserLanguage.DE, translPropDE)
+        .translations(TSBrowserLanguage.FR, translPropFR)
+        .fallbackLanguage(TSBrowserLanguage.DE)
         .preferredLanguage(preferredLanguage);
 
     // Dirty Check configuration (nur wenn plugin vorhanden)

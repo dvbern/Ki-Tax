@@ -57,10 +57,11 @@ public class I18nResource {
 
 	@ApiOperation("Changes the language to the given one")
 	@Nonnull
+	@Path("/change")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response update(
+	public Response changeLanguage(
 		@Nonnull String language,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response

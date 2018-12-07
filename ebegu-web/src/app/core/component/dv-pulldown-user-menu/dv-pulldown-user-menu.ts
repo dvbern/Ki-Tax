@@ -16,16 +16,12 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
-import {take, takeUntil} from 'rxjs/operators';
+import {takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
-import {TSLanguage} from '../../../../models/enums/TSLanguage';
-import {TSSprache} from '../../../../models/enums/TSSprache';
 import TSBenutzer from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 import {LogFactory} from '../../logging/LogFactory';
-import ITranslateService = angular.translate.ITranslateService;
 
 export class DvPulldownUserMenuComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -39,12 +35,7 @@ const LOG = LogFactory.createLog('DvPulldownUserMenuController');
 
 export class DvPulldownUserMenuController implements IController {
 
-    public static $inject: ReadonlyArray<string> = [
-        '$state',
-        'AuthServiceRS',
-        '$translate',
-        'I18nServiceRSRest',
-    ];
+    public static $inject: ReadonlyArray<string> = ['$state', 'AuthServiceRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
@@ -56,8 +47,6 @@ export class DvPulldownUserMenuController implements IController {
     public constructor(
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly $translate: ITranslateService,
-        private readonly i18nServiceRS: I18nServiceRSRest,
     ) {
     }
 
@@ -77,30 +66,5 @@ export class DvPulldownUserMenuController implements IController {
 
     public logout(): void {
         this.$state.go('authentication.login', {type: 'logout'});
-    }
-
-    public changeLanguage(language: TSSprache): void {
-        let selectedLanguage = TSLanguage.DE;
-        switch (language) {
-            case TSSprache.DEUTSCH:
-                selectedLanguage = TSLanguage.DE;
-                break;
-            case TSSprache.FRANZOESISCH:
-                selectedLanguage = TSLanguage.FR;
-                break;
-            default:
-                selectedLanguage = TSLanguage.DE;
-                break;
-        }
-
-        this.i18nServiceRS.changeServerLanguage(selectedLanguage)
-            .pipe(take(1))
-            .subscribe(
-                () => {
-                    this.i18nServiceRS.changeClientLanguage(selectedLanguage); // angular and localStorage
-                    this.$translate.use(selectedLanguage); // angularjs
-                    LOG.info('language changed', selectedLanguage);
-                },
-            );
     }
 }

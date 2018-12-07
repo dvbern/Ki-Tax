@@ -16,16 +16,21 @@
  */
 
 import {TranslateService} from '@ngx-translate/core';
-import {TSLanguage} from '../../models/enums/TSLanguage';
+import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
+import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from './shared.module';
 
 describe('SharedModule', () => {
     let sharedModule: SharedModule;
     const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name,
         ['setDefaultLang', 'use']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name,
+        ['getPreferredLanguage']);
 
     beforeEach(() => {
-        sharedModule = new SharedModule(translateServiceSpy);
+        i18nServiceSpy.getPreferredLanguage.and.returnValue(TSBrowserLanguage.DE);
+
+        sharedModule = new SharedModule(translateServiceSpy, i18nServiceSpy);
     });
 
     it('should create an instance', () => {
@@ -33,7 +38,7 @@ describe('SharedModule', () => {
     });
 
     it('should initialise the TranslateService', () => {
-        const defaultLanguage = TSLanguage.DE;
+        const defaultLanguage = TSBrowserLanguage.DE;
         expect(translateServiceSpy.setDefaultLang).toHaveBeenCalledWith(defaultLanguage);
         expect(translateServiceSpy.use).toHaveBeenCalledWith(defaultLanguage);
     });

@@ -23,7 +23,7 @@ import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
-import {TSLanguage} from '../../models/enums/TSLanguage';
+import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
@@ -68,38 +68,38 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         }),
     ],
     declarations: [
-        DvHelpmenuComponent,
-        DvNgDebounceClickDirective,
-        ErrorMessagesComponent,
-        DvNgGemeindeDialogComponent,
-        DvNgHelpDialogComponent,
-        DvNgLinkDialogComponent,
-        DvNgOkDialogComponent,
-        DvNgRemoveDialogComponent,
-        NavbarComponent,
-        DvNgShowElementDirective,
-        DvPosteingangComponent,
-        UiViewComponent,
-        FullHeightContainerComponent,
-        FullHeightInnerPaddingContainerComponent,
-        LoadingButtonDirective,
         AccordionDirective,
         AccordionTabDirective,
-        GemeindeMultiselectComponent,
-        BerechtigungComponent,
         BenutzerRolleComponent,
-        StammdatenHeaderComponent,
-    ],
-    entryComponents: [
+        BerechtigungComponent,
+        DvHelpmenuComponent,
+        DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
-        DvHelpmenuComponent,
+        DvNgShowElementDirective,
+        DvPosteingangComponent,
+        ErrorMessagesComponent,
+        FullHeightContainerComponent,
+        FullHeightInnerPaddingContainerComponent,
+        GemeindeMultiselectComponent,
+        LoadingButtonDirective,
         NavbarComponent,
+        StammdatenHeaderComponent,
+        UiViewComponent,
+    ],
+    entryComponents: [
+        DvHelpmenuComponent,
+        DvNgGemeindeDialogComponent,
+        DvNgHelpDialogComponent,
+        DvNgLinkDialogComponent,
+        DvNgOkDialogComponent,
+        DvNgRemoveDialogComponent,
         DvPosteingangComponent,
         GemeindeMultiselectComponent,
+        NavbarComponent,
         StammdatenHeaderComponent,
     ],
     exports: [
@@ -110,25 +110,25 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         MaterialModule,
         TranslateModule,
 
+        AccordionDirective,
+        AccordionTabDirective,
+        BenutzerRolleComponent,
+        BerechtigungComponent,
         DvHelpmenuComponent,
         DvNgDebounceClickDirective,
-        ErrorMessagesComponent,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgShowElementDirective,
-        UiViewComponent,
+        ErrorMessagesComponent,
         FullHeightContainerComponent,
         FullHeightInnerPaddingContainerComponent,
-        LoadingButtonDirective,
-        AccordionDirective,
-        AccordionTabDirective,
         GemeindeMultiselectComponent,
-        BerechtigungComponent,
-        BenutzerRolleComponent,
+        LoadingButtonDirective,
         StammdatenHeaderComponent,
+        UiViewComponent,
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)
@@ -145,7 +145,7 @@ export class SharedModule {
 
     private static initTranslateService(translate: TranslateService, i18nServiceRS: I18nServiceRSRest): void {
         // this language will be used as a fallback when a translation isn't found in the current language
-        translate.setDefaultLang(TSLanguage.DE);
+        translate.setDefaultLang(TSBrowserLanguage.DE);
         // the lang to use, if the lang isn't available, it will use the current loader to get them
         translate.use(i18nServiceRS.getPreferredLanguage());
     }

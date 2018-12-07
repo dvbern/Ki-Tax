@@ -17,6 +17,9 @@
 
 import { MatPaginatorIntl } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
+import {LogFactory} from '../core/logging/LogFactory';
+
+const LOG = LogFactory.createLog('PaginatorI18n');
 
 /**
  * This class is used to translate the pagination items of a mattable. It extends MatPaginatorIntl what allows
@@ -31,9 +34,10 @@ export class PaginatorI18n extends MatPaginatorIntl {
 
     public constructor(private readonly translate: TranslateService) {
         super();
-        this.translate.onLangChange.subscribe(() => {
-            this.translateLabels();
-        });
+        this.translate.onLangChange.subscribe(
+            () => this.translateLabels(),
+            (err: any) => LOG.error(err),
+        );
 
         this.translateLabels();
     }

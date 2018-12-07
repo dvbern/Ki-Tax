@@ -23,6 +23,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
 import {BenutzerComponent} from './benutzer.component';
@@ -43,6 +44,8 @@ describe('BenutzerComponent', () => {
         const applicationPropertySpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getByName']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isRole']);
         const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+        const i18nServiceSpy = jasmine
+            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
         TestBed.configureTestingModule({
             imports: [SharedModule, UIRouterModule.forRoot()],
@@ -67,6 +70,7 @@ describe('BenutzerComponent', () => {
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: Transition, useValue: transitionSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
             .compileComponents();

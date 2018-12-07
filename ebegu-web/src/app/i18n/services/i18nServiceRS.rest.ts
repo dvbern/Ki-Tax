@@ -19,9 +19,10 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Observable} from 'rxjs';
-import {TSLanguage} from '../../../models/enums/TSLanguage';
+import {TSBrowserLanguage, tsBrowserLanguageFromString} from '../../../models/enums/TSBrowserLanguage';
 import {CONSTANTS, LOCALSTORAGE_LANGUAGE_KEY} from '../../core/constants/CONSTANTS';
 import {WindowRef} from '../../core/service/windowRef.service';
+import ITranslateService = angular.translate.ITranslateService;
 
 @Injectable({
     providedIn: 'root',
@@ -41,17 +42,21 @@ export class I18nServiceRSRest {
     /**
      * Calling this method we change the language that the server is using
      */
-    public changeServerLanguage(selectedLanguage: TSLanguage): Observable<any> {
-        return this.http.put<TSLanguage>(this.serviceURL, selectedLanguage);
+    public changeServerLanguage$(selectedLanguage: TSBrowserLanguage): Observable<TSBrowserLanguage> {
+        return this.http.put<TSBrowserLanguage>(`${this.serviceURL}/change`, selectedLanguage);
     }
 
     /**
-     * This method will change the language that the plugin of angular5 uses.
-     * This method must exist in order to be able to change the language from within an angularjs component
+     * This method will change the language that the plugin of angular5 uses. It will also use the given
+     * angularJsTranslateService to set the language in the corresponding plugin of angularjs
      */
-    public changeClientLanguage(selectedLanguage: TSLanguage): void {
+    public changeClientLanguage(
+        selectedLanguage: TSBrowserLanguage,
+        angularJsTranslateService: ITranslateService
+    ): void {
         this.$window.nativeLocalStorage.setItem(LOCALSTORAGE_LANGUAGE_KEY, selectedLanguage);
-        this.translate.use(selectedLanguage);
+        this.translate.use(selectedLanguage); // angular
+        angularJsTranslateService.use(selectedLanguage); // angularjs
     }
 
     /**
@@ -63,6 +68,9 @@ export class I18nServiceRSRest {
         return getPreferredLanguage(this.$window.nativeWindow);
     }
 
+    public currentLanguage(): TSBrowserLanguage {
+        return tsBrowserLanguageFromString(this.translate.currentLang);
+    }
 }
 
 /**
@@ -71,7 +79,7 @@ export class I18nServiceRSRest {
  */
 export function getPreferredLanguage($window: Window): string {
     const myStorage = $window.localStorage;
-    const kibonLanguage = myStorage.getItem('kibonLanguage');
+    const kibonLanguage = myStorage.getItem(LOCALSTORAGE_LANGUAGE_KEY);
     if (kibonLanguage) {
         return kibonLanguage;
     }
@@ -84,16 +92,16 @@ export function getPreferredLanguage($window: Window): string {
 /**
  * This function gets the preferred language of the browser
  */
-function getFirstBrowserLanguage($window: Window): TSLanguage {
-    const navigator: Navigator = $window.navigator;
+function getFirstBrowserLanguage($window: Window): TSBrowserLanguage {
+    const navigator = $window.navigator;
     const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
-    let foundLanguages: TSLanguage[];
+    let foundLanguages: TSBrowserLanguage[];
 
     // support for HTML 5.1 "navigator.languages"
     if (Array.isArray(navigator.languages)) {
         foundLanguages = navigator.languages
             .filter(lang => lang && lang.length)
-            .map(extractLanguage);
+            .map(tsBrowserLanguageFromString);
         if (foundLanguages && foundLanguages.length > 0) {
             return foundLanguages[0];
         }
@@ -103,20 +111,7 @@ function getFirstBrowserLanguage($window: Window): TSLanguage {
     foundLanguages = browserLanguagePropertyKeys
         .map(key => (navigator as any)[key])
         .filter(lang => lang && lang.length)
-        .map(extractLanguage);
+        .map(tsBrowserLanguageFromString);
 
-    return foundLanguages && foundLanguages.length > 0 ? foundLanguages[0] : TSLanguage.DE;
-}
-
-/**
- * In order to support languages independently of the country, we return just the language
- * fr-CH --> fr
- * de-CH --> de
- * de    --> de
- */
-function extractLanguage(lang: string): TSLanguage {
-    if (lang && lang.startsWith('fr')) {
-        return TSLanguage.FR;
-    }
-    return TSLanguage.DE;
+    return foundLanguages && foundLanguages.length > 0 ? foundLanguages[0] : TSBrowserLanguage.DE;
 }
