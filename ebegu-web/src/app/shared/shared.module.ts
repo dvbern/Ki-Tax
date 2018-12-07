@@ -23,6 +23,7 @@ import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
+import {TSLanguage} from '../../models/enums/TSLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
@@ -31,6 +32,7 @@ import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {getFirstBrowserLanguage} from '../core/config';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
@@ -140,8 +142,8 @@ export class SharedModule {
 
     private static initTranslateService(translate: TranslateService): void {
         // this language will be used as a fallback when a translation isn't found in the current language
-        translate.setDefaultLang('de');
+        translate.setDefaultLang(TSLanguage.DE);
         // the lang to use, if the lang isn't available, it will use the current loader to get them
-        translate.use('de');
+        translate.use(getFirstBrowserLanguage());
     }
 }

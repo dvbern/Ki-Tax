@@ -16,6 +16,7 @@
  */
 
 import {TranslateService} from '@ngx-translate/core';
+import {TSLanguage} from '../../models/enums/TSLanguage';
 import {SharedModule} from './shared.module';
 
 describe('SharedModule', () => {
@@ -32,7 +33,7 @@ describe('SharedModule', () => {
     });
 
     it('should initialise the TranslateService', () => {
-        const defaultLanguage = 'de';
+        const defaultLanguage = TSLanguage.DE;
         expect(translateServiceSpy.setDefaultLang).toHaveBeenCalledWith(defaultLanguage);
         expect(translateServiceSpy.use).toHaveBeenCalledWith(defaultLanguage);
     });

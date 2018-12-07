@@ -15,6 +15,8 @@
 
 import * as angular from 'angular';
 import {environment} from '../../environments/environment';
+import {TSLanguage} from '../../models/enums/TSLanguage';
+import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import IInjectorService = angular.auto.IInjectorService;
 import IHttpProvider = angular.IHttpProvider;
 import ILocationProvider = angular.ILocationProvider;
@@ -52,13 +54,13 @@ export function configure(
     // https://github.com/angular-translate/angular-translate/issues/1101
     $translateProvider.useSanitizeValueStrategy('escapeParameters');
 
-    $translateProvider
-        .translations('de', translPropDE)
-        .translations('fr', translPropFR)
-        .fallbackLanguage('de')
-        .preferredLanguage('de');
+    const preferredLanguage = getFirstBrowserLanguage();
 
-    $httpProvider.defaults.headers.common['Accept-Language'] = 'de-CH;q=0.9, fr-CH;q=0.8';
+    $translateProvider
+        .translations(TSLanguage.DE, translPropDE)
+        .translations(TSLanguage.FR, translPropFR)
+        .fallbackLanguage(TSLanguage.DE)
+        .preferredLanguage(preferredLanguage);
 
     // Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {
@@ -92,4 +94,41 @@ export function configure(
 
     // Disable "Possibly unhandled rejection:" from angular
     $qProvider.errorOnUnhandledRejections(false);
+}
+
+/**
+ * This function gets the preferred language of the browser
+ */
+export function getFirstBrowserLanguage(): string {
+    const navigator: Navigator = window.navigator;
+    const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
+    let foundLanguages: string[];
+
+    // support for HTML 5.1 "navigator.languages"
+    if (Array.isArray(navigator.languages)) {
+        foundLanguages = navigator.languages
+            .filter(lang => lang && lang.length)
+            .map(extractLanguage);
+        if (foundLanguages && foundLanguages.length > 0) {
+            return foundLanguages[0];
+        }
+    }
+
+    // support for other well known properties in browsers
+    foundLanguages = browserLanguagePropertyKeys
+        .map(key => (navigator as any)[key])
+        .filter(lang => lang && lang.length)
+        .map(extractLanguage);
+
+    return foundLanguages && foundLanguages.length > 0 ? foundLanguages[0] : DEFAULT_LOCALE;
+}
+
+/**
+ * In order to support languages independently of the country, we return just the language
+ * fr-CH --> fr
+ * de-CH --> de
+ * de    --> de
+ */
+export function extractLanguage(lang: string): string {
+    return lang ? lang.substr(0, lang.indexOf('-')) : '';
 }
