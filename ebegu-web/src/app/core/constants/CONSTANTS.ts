@@ -32,7 +32,7 @@ export const CONSTANTS = {
 };
 
 export const DEFAULT_LOCALE = 'de-CH';
-export const FRENCH_LOCALE = 'fr-CH';
+export const LOCALSTORAGE_LANGUAGE_KEY = 'kibonLanguage';
 
 // Maximale (upload) Filegrösse ist 10MB
 export const MAX_FILE_SIZE = 10000000;

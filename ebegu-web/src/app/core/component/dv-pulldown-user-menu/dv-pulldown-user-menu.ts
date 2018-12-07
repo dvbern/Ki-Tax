@@ -97,8 +97,8 @@ export class DvPulldownUserMenuController implements IController {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    this.i18nServiceRS.changeClientLanguage(selectedLanguage); // angular and localStorage
                     this.$translate.use(selectedLanguage); // angularjs
-                    this.i18nServiceRS.changeClientLanguage(selectedLanguage); // angular
                     LOG.info('language changed', selectedLanguage);
                 },
             );

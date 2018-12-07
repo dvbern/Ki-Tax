@@ -32,9 +32,9 @@ import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
-import {getFirstBrowserLanguage} from '../core/config';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
+import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
@@ -136,14 +136,17 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
 })
 export class SharedModule {
 
-    public constructor(translate: TranslateService) {
-        SharedModule.initTranslateService(translate);
+    public constructor(
+        translate: TranslateService,
+        i18nServiceRS: I18nServiceRSRest,
+    ) {
+        SharedModule.initTranslateService(translate, i18nServiceRS);
     }
 
-    private static initTranslateService(translate: TranslateService): void {
+    private static initTranslateService(translate: TranslateService, i18nServiceRS: I18nServiceRSRest): void {
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang(TSLanguage.DE);
         // the lang to use, if the lang isn't available, it will use the current loader to get them
-        translate.use(getFirstBrowserLanguage());
+        translate.use(i18nServiceRS.getPreferredLanguage());
     }
 }
