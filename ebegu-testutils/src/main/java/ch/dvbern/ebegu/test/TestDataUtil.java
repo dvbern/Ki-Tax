@@ -1052,13 +1052,14 @@ public final class TestDataUtil {
 		InstitutionService instService,
 		Persistence persistence,
 		@Nullable LocalDate eingangsdatum,
-		AntragStatus status
+		AntragStatus status,
+		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		TestFall12_Mischgesuch testfall = new TestFall12_Mischgesuch(TestDataUtil.createGesuchsperiode1718(),
+		TestFall12_Mischgesuch testfall = new TestFall12_Mischgesuch(gesuchsperiode,
 			institutionStammdatenList);
 
 		if (status != null) {
