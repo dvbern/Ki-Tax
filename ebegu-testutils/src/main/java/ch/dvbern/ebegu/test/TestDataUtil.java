@@ -128,6 +128,7 @@ import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.testfaelle.TestFall12_Mischgesuch;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
@@ -1029,8 +1030,9 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch createAndPersistFeutzYvonneGesuch(
-		 Persistence persistence, LocalDate eingangsdatum, Gesuchsperiode
-		gesuchsperiode) {
+		Persistence persistence,
+		@Nullable LocalDate eingangsdatum,
+		Gesuchsperiode gesuchsperiode) {
 
 		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
 		Testfall02_FeutzYvonne testfall = new Testfall02_FeutzYvonne(gesuchsperiode, institutionStammdatenList);
@@ -1044,6 +1046,25 @@ public final class TestDataUtil {
 		Collection<InstitutionStammdaten> institutionStammdatenList = saveInstitutionsstammdatenForTestfaelle(persistence);
 		Testfall06_BeckerNora testfall = new Testfall06_BeckerNora(gesuchsperiode, institutionStammdatenList);
 		return persistAllEntities(persistence, eingangsdatum, testfall, status);
+	}
+
+	public static Gesuch createAndPersistASIV12(
+		InstitutionService instService,
+		Persistence persistence,
+		@Nullable LocalDate eingangsdatum,
+		AntragStatus status
+	) {
+		instService.getAllInstitutionen();
+		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern());
+		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
+		TestFall12_Mischgesuch testfall = new TestFall12_Mischgesuch(TestDataUtil.createGesuchsperiode1718(),
+			institutionStammdatenList);
+
+		if (status != null) {
+			return persistAllEntities(persistence, eingangsdatum, testfall, status);
+		}
+		return persistAllEntities(persistence, eingangsdatum, testfall, null);
 	}
 
 	public static Institution createAndPersistDefaultInstitution(Persistence persistence) {
@@ -1588,13 +1609,13 @@ public final class TestDataUtil {
 	/**
 	 * Verfuegt das uebergebene Gesuch. Dies muss in Status IN_BEARBEITUNG_JA uebergeben werden.
 	 */
-	public static void gesuchVerfuegen(@Nonnull Gesuch gesuch, @Nonnull GesuchService gesuchService) {
+	public static Gesuch gesuchVerfuegen(@Nonnull Gesuch gesuch, @Nonnull GesuchService gesuchService) {
 		gesuch.setStatus(AntragStatus.GEPRUEFT);
 		final Gesuch gesuchToVerfuegt = gesuchService.updateGesuch(gesuch, true, null);
 		gesuchToVerfuegt.setStatus(AntragStatus.VERFUEGEN);
 		final Gesuch verfuegenGesuch = gesuchService.updateGesuch(gesuchToVerfuegt, true, null);
 		verfuegenGesuch.setStatus(AntragStatus.VERFUEGT);
-		gesuchService.updateGesuch(verfuegenGesuch, true, null);
+		return gesuchService.updateGesuch(verfuegenGesuch, true, null);
 	}
 
 	public static Gesuch persistNewGesuchInStatus(

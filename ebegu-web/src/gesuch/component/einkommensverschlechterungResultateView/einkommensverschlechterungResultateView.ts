@@ -15,14 +15,12 @@
 
 import {IComponentOptions, IPromise} from 'angular';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSFinanzielleSituationResultateDTO from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSEinkommensverschlechterung from '../../../models/TSEinkommensverschlechterung';
 import TSEinkommensverschlechterungContainer from '../../../models/TSEinkommensverschlechterungContainer';
 import TSFinanzModel from '../../../models/TSFinanzModel';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IEinkommensverschlechterungResultateStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -52,7 +50,6 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
         'WizardStepManager',
         '$q',
         '$scope',
-        'AuthServiceRS',
         '$timeout',
     ];
 
@@ -67,7 +64,6 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
         wizardStepManager: WizardStepManager,
         private readonly $q: IQService,
         $scope: IScope,
-        private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
     ) {
         super(gesuchModelManager,
@@ -256,16 +252,5 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
 
         return info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 2
             || !info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 1;
-    }
-
-    /**
-     * Da fuer STEUERAMT der Step EINKOMMENSVERSCHLECHTERUNG der letzte ist, muss man den Button next verstecken, wenn
-     * wir wirklich im LastEinkVersStep sind. Fuer alle andere rollen wird der Button immer eingeblendet
-     */
-    public isSteueramtLetzterStep(): boolean {
-        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSteueramtOnlyRoles())) {
-            return this.isLastEinkVersStep();
-        }
-        return false;
     }
 }

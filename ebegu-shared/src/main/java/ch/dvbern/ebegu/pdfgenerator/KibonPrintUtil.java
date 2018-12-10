@@ -50,19 +50,6 @@ public final class KibonPrintUtil {
 
 
 	@Nonnull
-	public static String getAddressAsString(@Nonnull Adresse adresse) {
-		StringBuilder sb = new StringBuilder();
-		if (StringUtils.isNotEmpty(adresse.getOrganisation())) {
-			sb.append(adresse.getOrganisation());
-			sb.append(LINE_BREAK);
-		}
-		sb.append(adresse.getStrasse()).append(' ').append(adresse.getHausnummer());
-		sb.append(LINE_BREAK);
-		sb.append(adresse.getPlz()).append(' ').append(adresse.getOrt());
-		return sb.toString();
-	}
-
-	@Nonnull
 	public static String getGesuchstellerNameAsString(@Nullable GesuchstellerContainer gesuchstellerContainer) {
 		if (gesuchstellerContainer == null) {
 			return "";
@@ -82,7 +69,7 @@ public final class KibonPrintUtil {
 		if (adresseOptional.isPresent()) {
 			GesuchstellerAdresse adresse = adresseOptional.get().getGesuchstellerAdresseJA();
 			Objects.requireNonNull(adresse);
-			sb.append(getAddressAsString(adresse));
+			sb.append(adresse.getAddressAsString());
 		}
 		return sb.toString();
 	}

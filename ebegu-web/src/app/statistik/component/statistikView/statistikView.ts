@@ -15,6 +15,7 @@
 
 import {IComponentOptions, IController, IPromise} from 'angular';
 import * as moment from 'moment';
+import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSStatistikParameterType} from '../../../../models/enums/TSStatistikParameterType';
 import TSBatchJobInformation from '../../../../models/TSBatchJobInformation';
@@ -24,6 +25,7 @@ import TSWorkJob from '../../../../models/TSWorkJob';
 import DateUtil from '../../../../utils/DateUtil';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {DvDialog} from '../../../core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../core/errors/service/ErrorService';
 import BatchJobRS from '../../../core/service/batchRS.rest';
 import {DownloadRS} from '../../../core/service/downloadRS.rest';
@@ -32,6 +34,8 @@ import {ReportAsyncRS} from '../../../core/service/reportAsyncRS.rest';
 import IFormController = angular.IFormController;
 import ILogService = angular.ILogService;
 import ITranslateService = angular.translate.ITranslateService;
+
+const removeDialogTemplate = require('../../../../gesuch/dialog/removeDialogTemplate.html');
 
 export class StatistikViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -59,6 +63,7 @@ export class StatistikViewController implements IController {
         'ErrorService',
         '$translate',
         '$interval',
+        'DvDialog',
     ];
 
     public readonly TSStatistikParameterType = TSStatistikParameterType;
@@ -84,6 +89,7 @@ export class StatistikViewController implements IController {
         private readonly errorService: ErrorService,
         private readonly $translate: ITranslateService,
         private readonly $interval: angular.IIntervalService,
+        private readonly dvDialog: DvDialog,
     ) {
     }
 
@@ -121,6 +127,7 @@ export class StatistikViewController implements IController {
         });
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public generateStatistik(form: IFormController, type?: TSStatistikParameterType): void {
         if (!form.$valid) {
             return;
@@ -213,9 +220,42 @@ export class StatistikViewController implements IController {
                     this.$log.warn('gesuchsperiode muss gewählt sein');
                 }
                 return;
+            case TSStatistikParameterType.MASSENVERSAND:
+                if (this.statistikParameter.text) {
+                    this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                        title: this.$translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_TITLE'),
+                        deleteText: this.$translate.instant('MASSENVERSAND_ERSTELLEN_CONFIRM_INFO'),
+                        parentController: undefined,
+                        elementID: undefined
+                    }).then(() => { // User confirmed removal
+                        this.createMassenversand();
+                    });
+                } else {
+                    this.createMassenversand();
+                }
+                return;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }
+    }
+
+    private createMassenversand(): void {
+        this.$log.info('Erstelle Massenversand');
+        this.reportAsyncRS.getMassenversandReportExcel(
+            this._statistikParameter.von ? this._statistikParameter.von.format(this.DATE_PARAM_FORMAT) : null,
+            this._statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
+            this._statistikParameter.gesuchsperiode.toString(),
+            this._statistikParameter.bgGesuche,
+            this._statistikParameter.mischGesuche,
+            this._statistikParameter.tsGesuche,
+            this._statistikParameter.ohneFolgegesuche,
+            this._statistikParameter.text)
+            .then((batchExecutionId: string) => {
+                this.informReportGenerationStarted(batchExecutionId);
+            })
+            .catch(() => {
+                this.$log.error('An error occurred downloading the document, closing download window.');
+            });
     }
 
     private informReportGenerationStarted(batchExecutionId: string): void {

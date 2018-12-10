@@ -35,8 +35,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
@@ -163,11 +161,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ReportServiceBean.class);
 
-	public static final String NICHT_GEFUNDEN = "' nicht gefunden";
-	public static final String VORLAGE = "Vorlage '";
-	private static final String VALIDIERUNG_STICHTAG = "Das Argument 'stichtag' darf nicht leer sein";
-	private static final String VALIDIERUNG_DATUM_VON = "Das Argument 'datumVon' darf nicht leer sein";
-	private static final String VALIDIERUNG_DATUM_BIS = "Das Argument 'datumBis' darf nicht leer sein";
 	// Excel kann nicht mit Datum vor 1800 umgehen. Wir setzen auf 1900, wie Minimum im datepicker
 	private static final LocalDate MIN_DATE = LocalDate.of(1900, Month.JANUARY, 1);
 
@@ -225,7 +218,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Inject
 	private GesuchService gesuchService;
 
-	private static final String MIME_TYPE_EXCEL = "application/vnd.ms-excel";
 
 	@Nonnull
 	@Override
@@ -421,11 +413,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		kantonDataRowList.sort(Comparator.comparing(KantonDataRow::getBgNummer)
 			.thenComparing(KantonDataRow::getZeitabschnittVon));
 		return kantonDataRowList;
-	}
-
-	private void validateDateParams(Object datumVon, Object datumBis) {
-		Objects.requireNonNull(datumVon, "Das Argument 'datumVon' darf nicht leer sein");
-		Objects.requireNonNull(datumBis, "Das Argument 'datumBis' darf nicht leer sein");
 	}
 
 	@Nonnull
@@ -686,16 +673,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			reportVorlage.getDefaultExportFilename(),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
-	}
-
-	@Nonnull
-	private MimeType getContentTypeForExport() {
-		try {
-			return new MimeType(MIME_TYPE_EXCEL);
-		} catch (MimeTypeParseException e) {
-			throw new EbeguRuntimeException("getContentTypeForExport", "could not parse mime type", e,
-				MIME_TYPE_EXCEL);
-		}
 	}
 
 	@Override
@@ -967,7 +944,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
 	private List<VerfuegungZeitabschnitt> getReportDataBetreuungen(@Nonnull LocalDate stichtag) {
-		Objects.requireNonNull(stichtag, VALIDIERUNG_STICHTAG);
+		validateStichtagParam(stichtag);
 
 		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
 		// verfuegte.
@@ -1037,7 +1014,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(
 		GesuchstellerKinderBetreuungDataRow row,
-		GesuchstellerContainer containerGS1) {
+		@Nullable GesuchstellerContainer containerGS1
+	) {
+		if (containerGS1 == null) {
+			return;
+		}
 
 		Gesuchsteller gs1 = containerGS1.getGesuchstellerJA();
 		row.setGs1Name(gs1.getNachname());
@@ -1167,8 +1148,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable String gesuchPeriodeId) throws ExcelMergeException {
-		Objects.requireNonNull(datumVon, VALIDIERUNG_DATUM_VON);
-		Objects.requireNonNull(datumBis, VALIDIERUNG_DATUM_BIS);
+
+		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG;
 
@@ -1313,8 +1294,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable String gesuchPeriodeId) throws ExcelMergeException {
-		Objects.requireNonNull(datumVon, VALIDIERUNG_DATUM_VON);
-		Objects.requireNonNull(datumBis, VALIDIERUNG_DATUM_BIS);
+
+		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_KINDER;
 
@@ -1450,7 +1431,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag) throws ExcelMergeException {
-		Objects.requireNonNull(stichtag, VALIDIERUNG_STICHTAG);
+		validateStichtagParam(stichtag);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER;
 
