@@ -33,4 +33,10 @@
 		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.xdocreport\.core:.*$</gav>
 		<cpe>cpe:/a:openoffice:openoffice</cpe>
 	</suppress>
+
+	<suppress>
+		<notes><![CDATA[file name: wildfly-openssl-java-1.0.6.Final.jar]]></notes>
+		<gav regex="true">^org\.wildfly\.openssl:wildfly-openssl-java:.*$</gav>
+		<cpe>cpe:/a:wildfly:wildfly</cpe>
+	</suppress>
 </suppressions>
