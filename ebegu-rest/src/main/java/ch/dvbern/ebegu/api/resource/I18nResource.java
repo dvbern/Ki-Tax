@@ -46,7 +46,7 @@ import static java.util.Objects.requireNonNull;
  */
 @Path("i18n")
 @Stateless
-@Api(description = "Resource für Anträge (Erstgesuch oder Mutation)")
+@Api(description = "Resource für den Sprachwechsel")
 public class I18nResource {
 
 
