@@ -49,7 +49,7 @@
                                                         ng-model="vm.statistikParameter.gesuchsperiode"
                                                         ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"
                                                         class="form-control">
-                                                    <option value="">Keine</option>
+                                                    <option value="">{{'KEINE' | translate}}</option>
                                                 </select>
                                                 <dv-error-messages for="gesuch_stichtag.periode_gesuch_stichtag.$error"
                                                                    class="error"></dv-error-messages>
@@ -109,7 +109,7 @@
                                                         ng-model="vm.statistikParameter.gesuchsperiode"
                                                         ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"
                                                         class="form-control">
-                                                    <option value="">Keine</option>
+                                                    <option value="">{{'KEINE' | translate}}</option>
                                                 </select>
                                                 <dv-error-messages for="gesuch_zeitraum.periode_gesuch_zeitraum.$error"
                                                                    class="error"></dv-error-messages>
@@ -210,7 +210,7 @@
                                                         ng-model="vm.statistikParameter.gesuchsperiode"
                                                         ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"
                                                         class="form-control">
-                                                    <option value="">Keine</option>
+                                                    <option value="">{{'KEINE' | translate}}</option>
                                                 </select>
                                                 <dv-error-messages for="kinder.periode_kinder.$error"
                                                                    class="error"></dv-error-messages>
@@ -418,7 +418,7 @@
                                                         ng-model="vm.statistikParameter.gesuchsperiode"
                                                         ng-options="gesuchsperiode.id as gesuchsperiode.gesuchsperiodeString for gesuchsperiode in vm.gesuchsperioden | orderBy: 'name'"
                                                         class="form-control">
-                                                    <option value="">Keine</option>
+                                                    <option value="">{{'KEINE' | translate}}</option>
                                                 </select>
                                                 <dv-error-messages for="betreuung.periode_betreuung.$error"
                                                                    class="error"></dv-error-messages>
@@ -563,7 +563,7 @@
 
         <div class="col-md-10 col-md-offset-1">
             <h2>
-                <span data-translate="Letzte Reports"></span>
+                <span data-translate="LAST_REPORTS"></span>
                 {{vm.titleValue}}
             </h2>
 

@@ -39,7 +39,7 @@
                             ng-click="vm.gesuchsperiodeClicked(row)">
                             <td ng-bind="row.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                             <td ng-bind="row.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
-                            <td ng-bind="row.status"></td>
+                            <td ng-bind="row.status | translate"></td>
                         </tr>
                         </tbody>
                     </table>

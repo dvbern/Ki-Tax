@@ -54,7 +54,6 @@ import static java.util.Objects.requireNonNull;
 @Dependent
 public class MailTemplateConfiguration {
 
-	private static final Locale DEFAULT_LOCALE = new Locale("de", "CH");
 	public static final String EMPFAENGER_MAIL = "empfaengerMail";
 	public static final String ANZAHL_TAGE = "anzahlTage";
 	public static final String DATUM_LOESCHUNG = "datumLoeschung";
@@ -398,7 +397,7 @@ public class MailTemplateConfiguration {
 	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {
 
 		try {
-			final Template template = freeMarkerConfiguration.getTemplate(name, DEFAULT_LOCALE);
+			final Template template = freeMarkerConfiguration.getTemplate(name, Constants.DEFAULT_LOCALE);
 			final StringWriter out = new StringWriter(50);
 			template.process(rootMap, out);
 

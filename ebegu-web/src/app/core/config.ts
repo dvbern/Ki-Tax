@@ -15,6 +15,9 @@
 
 import * as angular from 'angular';
 import {environment} from '../../environments/environment';
+import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
+import {getPreferredLanguage} from '../i18n/services/i18nServiceRS.rest';
+import {getWindowObject} from './service/windowRef.service';
 import IInjectorService = angular.auto.IInjectorService;
 import IHttpProvider = angular.IHttpProvider;
 import ILocationProvider = angular.ILocationProvider;
@@ -45,16 +48,20 @@ export function configure(
     $qProvider: IQProvider,
 ): void {
     // Translation Provider configuration
-    const translProp = require('../../assets/translations/translations_de.json');
+    const translPropDE = require('../../assets/translations/translations_de.json');
+    const translPropFR = require('../../assets/translations/translations_fr.json');
 
     // In case you have issues with double-escaped parameters, check out this issue:
     // https://github.com/angular-translate/angular-translate/issues/1101
     $translateProvider.useSanitizeValueStrategy('escapeParameters');
 
+    const preferredLanguage = getPreferredLanguage(getWindowObject());
+
     $translateProvider
-        .translations('de', translProp)
-        .fallbackLanguage('de')
-        .preferredLanguage('de');
+        .translations(TSBrowserLanguage.DE, translPropDE)
+        .translations(TSBrowserLanguage.FR, translPropFR)
+        .fallbackLanguage(TSBrowserLanguage.DE)
+        .preferredLanguage(preferredLanguage);
 
     // Dirty Check configuration (nur wenn plugin vorhanden)
     if ($injector.has('unsavedWarningsConfigProvider')) {

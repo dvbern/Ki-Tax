@@ -33,9 +33,9 @@
                             <th st-sort="timestampErstellt" class="sortable" data-translate="TIMEERSTELLT"></th>
                         </tr>
                         <tr>
-                            <th><input st-search="name" class="form-control" placeholder="Suche nach Name"
+                            <th><input st-search="name" class="form-control" placeholder="{{ 'SEARCH_FOR_NAME' | translate }}"
                                        type="text"/></th>
-                            <th><input st-search="value" class="form-control" placeholder="Suche Nach Text"
+                            <th><input st-search="value" class="form-control" placeholder="{{ 'SEARCH_FOR_VALUE' | translate }}"
                                        type="text"/></th>
                             <th></th>
                         </tr>
@@ -43,7 +43,7 @@
                         <tbody>
                         <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"
                             ng-click="vm.editRow(row)">
-                            <td ng-bind="row.name"></td>
+                            <td ng-bind="row.name | translate"></td>
                             <td ng-bind="row.value" class="valCol" title="{{row.value}}"></td>
                             <td ng-bind="row.timestampErstellt | amDateFormat : 'DD.MM.YYYY'"></td>
                         </tr>
@@ -111,12 +111,12 @@
             <!-- Suchindex -->
             <div ng-if="!vm.isReadonly() && vm.authServiceRS.isOneOfRoles(vm.TSRoleUtil.getSuperAdminRoles())">
                 <div class="viewTitle marginTop10">
-                    <h1>Suchindex neu erstellen</h1>
+                    <h1 data-translate="CREATE_SEARCHINDEX"></h1>
                 </div>
                 <div class="row marginTop10">
                     <div class="col-md-12 form-group">
-                        <dv-loading-button force-wait-service="true" button-click="vm.startReindex()">Suchindex neu
-                            erstellen
+                        <dv-loading-button force-wait-service="true" button-click="vm.startReindex()">
+                            <span data-translate="CREATE_SEARCHINDEX"></span>
                         </dv-loading-button>
                     </div>
                 </div>

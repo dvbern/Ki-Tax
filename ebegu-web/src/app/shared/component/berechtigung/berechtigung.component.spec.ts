@@ -26,6 +26,7 @@ import TSBerechtigung from '../../../../models/TSBerechtigung';
 import TestDataUtil from '../../../../utils/TestDataUtil.spec';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
+import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared.module';
 
 import {BerechtigungComponent} from './berechtigung.component';
@@ -40,6 +41,7 @@ describe('BerechtigungComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['isRole', 'getVisibleRolesForPrincipal', 'principal$']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
     const inputSelector = '.dv-input-container-medium';
 
@@ -61,6 +63,7 @@ describe('BerechtigungComponent', () => {
                 {provide: GemeindeRS, useValue: gemeindeSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
                 {provide: NgForm, useValue: new NgForm([], [])},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
             .compileComponents();
