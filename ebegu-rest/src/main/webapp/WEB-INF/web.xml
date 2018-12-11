@@ -53,6 +53,7 @@
 			<url-pattern>/api/v1/application-properties/public/*</url-pattern>
 			<url-pattern>/api/v1/testfaelle/schulung/public/*</url-pattern>
 			<url-pattern>/api/v1/gemeinde/active</url-pattern>
+			<url-pattern>/api/v1/i18n/change</url-pattern>
 		</web-resource-collection>
 	</security-constraint>
 

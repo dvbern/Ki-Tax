@@ -21,6 +21,7 @@ import {ApplicationPropertyRS} from '../../../app/core/rest-services/application
 import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import ZahlungRS from '../../../app/core/service/zahlungRS.rest';
+import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
@@ -53,6 +54,8 @@ describe('testdatenView', () => {
         const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['gesuchVerfuegen']);
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.returnValue(Promise.resolve(true));
+        const i18nServiceSpy = jasmine
+            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -69,6 +72,7 @@ describe('testdatenView', () => {
                 {provide: GesuchRS, useValue: gesuchRSSpy},
                 {provide: GemeindeRS, useValue: gemeindeRSSpy},
                 {provide: MAT_DATE_LOCALE, useValue: 'de-CH'},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [TestdatenViewComponent],
         })

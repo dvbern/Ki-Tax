@@ -19,12 +19,12 @@ import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
-import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
+import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
 import TSAbstractEntity from '../models/TSAbstractEntity';
 import TSAbstractFinanzielleSituation from '../models/TSAbstractFinanzielleSituation';
-import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
 import {TSAbstractIntegerPensumEntity} from '../models/TSAbstractIntegerPensumEntity';
+import {TSAbstractMutableEntity} from '../models/TSAbstractMutableEntity';
 import TSAbstractPersonEntity from '../models/TSAbstractPersonEntity';
 import TSAbwesenheit from '../models/TSAbwesenheit';
 import TSAbwesenheitContainer from '../models/TSAbwesenheitContainer';
@@ -110,12 +110,10 @@ import TSZahlungsauftrag from '../models/TSZahlungsauftrag';
 import {TSDateRange} from '../models/types/TSDateRange';
 import TSLand from '../models/types/TSLand';
 import DateUtil from './DateUtil';
-import EbeguUtil from './EbeguUtil';
 
 export default class EbeguRestUtil {
-    public static $inject = ['EbeguUtil'];
 
-    public constructor(private readonly ebeguUtil: EbeguUtil) {
+    public constructor() {
     }
 
     /**
@@ -406,7 +404,7 @@ export default class EbeguRestUtil {
     public landCodeToTSLand(landCode: string): TSLand {
         if (landCode) {
             const translationKey = this.landCodeToTSLandCode(landCode);
-            return new TSLand(landCode, this.ebeguUtil.translateString(translationKey));
+            return new TSLand(landCode, translationKey);
         }
         return undefined;
     }

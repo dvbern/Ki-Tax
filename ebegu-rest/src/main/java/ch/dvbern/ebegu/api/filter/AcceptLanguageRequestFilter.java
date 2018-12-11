@@ -15,8 +15,6 @@
 
 package ch.dvbern.ebegu.api.filter;
 
-import java.io.IOException;
-
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
@@ -34,7 +32,7 @@ public class AcceptLanguageRequestFilter implements ContainerRequestFilter {
 	private HttpHeaders headers;
 
 	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
+	public void filter(ContainerRequestContext requestContext) {
 		if (!headers.getAcceptableLanguages().isEmpty()) {
 			LocaleThreadLocal.set(headers.getAcceptableLanguages().get(0));
 		}
