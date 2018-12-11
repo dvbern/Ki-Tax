@@ -26,4 +26,95 @@
 		<gav>org.apache.poi:ooxml-schemas:1.3</gav>
 		<cpe>cpe:/a:apache:poi:1.3</cpe>
 	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.xdocreport.core-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.xdocreport\.core:.*$</gav>
+		<cpe>cpe:/a:openoffice:openoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.xdocreport.core-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.xdocreport\.core:.*$</gav>
+		<cpe>cpe:/a:libreoffice:libreoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.xdocreport.converter-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.xdocreport\.converter:.*$</gav>
+		<cpe>cpe:/a:openoffice:openoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.xdocreport.converter-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.xdocreport\.converter:.*$</gav>
+		<cpe>cpe:/a:libreoffice:libreoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.poi.xwpf.converter.core-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.poi\.xwpf\.converter\.core:.*$</gav>
+		<cpe>cpe:/a:libreoffice:libreoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.poi.xwpf.converter.pdf-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.poi\.xwpf\.converter\.pdf:.*$</gav>
+		<cpe>cpe:/a:openoffice:openoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.poi.xwpf.converter.xhtml-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.poi\.xwpf\.converter\.xhtml:.*$</gav>
+		<cpe>cpe:/a:openoffice:openoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.poi.xwpf.converter.xhtml-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.poi\.xwpf\.converter\.xhtml:.*$</gav>
+		<cpe>cpe:/a:libreoffice:libreoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.poi.xwpf.converter.pdf-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:.*$</gav>
+		<cpe>cpe:/a:libreoffice:libreoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.poi.xwpf.converter.core-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.poi\.xwpf\.converter\.core:.*$</gav>
+		<cpe>cpe:/a:openoffice:openoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.xdocreport.itext.extension-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.xdocreport\.itext\.extension:.*$</gav>
+		<cpe>cpe:/a:openoffice:openoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: fr.opensagres.xdocreport.converter.docx.xwpf-2.0.1.jar]]></notes>
+		<gav regex="true">^fr\.opensagres\.xdocreport:fr\.opensagres\.xdocreport\.converter\.docx\.xwpf:.*$</gav>
+		<cpe>cpe:/a:openoffice:openoffice</cpe>
+	</suppress>
+
+	<!-- FIXME KIBON-295-->
+	<suppress>
+		<notes><![CDATA[file name: wildfly-openssl-java-1.0.6.Final.jar]]></notes>
+		<gav regex="true">^org\.wildfly\.openssl:wildfly-openssl-java:.*$</gav>
+		<cpe>cpe:/a:openssl:openssl</cpe>
+	</suppress>
 </suppressions>
