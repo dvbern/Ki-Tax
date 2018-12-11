@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -88,9 +89,10 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			}
 		}
 
-		if (gesuch.extractFamiliensituation() != null && gesuch.extractFamiliensituation().getAenderungPer() != null) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		if (familiensituation != null && familiensituation.getAenderungPer() != null) {
 			// die familiensituation aendert sich jetzt erst ab dem naechsten Monat, deswegen .plusMonths(1).withDayOfMonth(1)
-			final LocalDate aenderungPerBeginningNextMonth = gesuch.extractFamiliensituation().getAenderungPer().plusMonths(1).withDayOfMonth(1);
+			final LocalDate aenderungPerBeginningNextMonth = familiensituation.getAenderungPer().plusMonths(1).withDayOfMonth(1);
 			famGrMap.put(aenderungPerBeginningNextMonth, calculateFamiliengroesse(gesuch, aenderungPerBeginningNextMonth));
 		}
 

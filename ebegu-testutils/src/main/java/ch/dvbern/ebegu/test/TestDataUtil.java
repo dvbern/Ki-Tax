@@ -856,9 +856,12 @@ public final class TestDataUtil {
 				.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
 		Betreuung betreuung = new Betreuung();
-		betreuung.setKind(createDefaultKindContainer());
+		KindContainer kindContainer = createDefaultKindContainer();
+		kindContainer.getBetreuungen().add(betreuung);
+		betreuung.setKind(kindContainer);
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
+		gesuch.getKindContainers().add(betreuung.getKind());
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());

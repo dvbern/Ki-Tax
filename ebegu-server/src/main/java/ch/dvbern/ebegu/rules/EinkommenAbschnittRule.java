@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +24,12 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
- * Setzt das massgebende Einkommen in die benoetigten Zeitabschnitte
- * ACHTUNG: Die Regel fuer Einkommensverschlechterung besagt (aktuell), dass die Veraenderung ab dem Folgemonat gilt
- * Dies wird nicht hier in der Regel bestimmt, sondern bereits im FinanzielleSituationRechner entsprechend abgelegt.
- * Siehe auch {@link EinkommensverschlechterungInfo#getStichtagGueltigFuerBasisJahrPlus1()}
+ * Setzt das massgebende Einkommen in die benoetigten Zeitabschnitte.
+ * Das Massgebende Einkommen wird fruehestens auf den Beginn des Folgemonats nach dem Ereignis angepasst.
  */
 public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 
@@ -61,7 +59,8 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			// Einkommensverschlechterung 1: In mind. 1 Kombination eingegeben
 			if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() != null || finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus1() != null) {
 				LocalDate startEKV1 = finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() != null ? finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() : finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus1();
-				DateRange rangeEKV1 = new DateRange(startEKV1, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
+				LocalDate stichtagEKV1 = startEKV1.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+				DateRange rangeEKV1 = new DateRange(stichtagEKV1, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
 
 				if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() != null) {
@@ -82,7 +81,8 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			// Einkommensverschlechterung 2: In mind. 1 Kombination akzeptiert
 			if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() != null || finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus2() != null) {
 				LocalDate startEKV2 = finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() != null ? finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() : finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus2();
-				DateRange rangeEKV2 = new DateRange(startEKV2, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
+				LocalDate stichtagEKV2 = startEKV2.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+				DateRange rangeEKV2 = new DateRange(stichtagEKV2, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
 				abschnittEinkommensverschlechterung2.setEkv1NotExisting(!hasEKV1);
 

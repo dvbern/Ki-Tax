@@ -75,49 +75,72 @@ public final class MutationsMerger {
 		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();
 
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
+
 			final LocalDate zeitabschnittStart = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
-			final int anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-
-			final int anspruchAufVorgaengerVerfuegung = findAnspruchberechtigtesPensumAt(zeitabschnittStart, vorgaengerVerfuegung);
 			VerfuegungZeitabschnitt zeitabschnitt = copy(verfuegungZeitabschnitt);
+			VerfuegungZeitabschnitt vorangehenderAbschnitt =
+				findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegung);
 
-			if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
-				//Anspruch wird erhöht
-				//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
-				if (!isMeldungRechzeitig(verfuegungZeitabschnitt, mutationsEingansdatum)) {
-					//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
-					zeitabschnitt.setAnspruchberechtigtesPensum(anspruchAufVorgaengerVerfuegung);
-					zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG);
-				}
-			} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
-				// Anspruch wird kleiner
-				//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
-				if (!isMeldungRechzeitig(verfuegungZeitabschnitt, mutationsEingansdatum)) {
-					//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
-					zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG);
-				}
+			if (vorangehenderAbschnitt != null) {
+				handleVerminderungEinkommen(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum);
+				handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum);
 			}
-
-			//SCHULKINDER: Sonderregel bei zu Mutation von zu spaet eingereichten Schulkindangeboten
-			//fuer Abschnitte ab dem Folgemonat des Mutationseingangs rechnen wir bisher, fuer alle vorherigen folgende Sonderregel
-			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)
-				&& vorgaengerVerfuegung != null) {
-
-				VerfuegungZeitabschnitt zeitabschnittInVorgaenger = findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegung);
-				// Wenn der Benutzer vorher keine Verfuenstigung bekam weil er zu spaet eingereicht hat DANN bezahlt er auch in Mutation vollkosten
-				if (zeitabschnittInVorgaenger != null
-					&& zeitabschnittInVorgaenger.getVerguenstigung().compareTo(BigDecimal.ZERO) == 0
-					&& zeitabschnittInVorgaenger.isZuSpaetEingereicht()) {
-					zeitabschnitt.setBezahltVollkosten(true);
-					zeitabschnitt.setZuSpaetEingereicht(true);
-					zeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_VOLLKOSTEN_MSG);
-				}
-			}
-
 			monatsSchritte.add(zeitabschnitt);
 		}
 
 		return monatsSchritte;
+	}
+
+	private static void handleVerminderungEinkommen(VerfuegungZeitabschnitt zeitabschnitt, VerfuegungZeitabschnitt vorangehenderAbschnitt, LocalDate mutationsEingansdatum) {
+		// Massgebendes Einkommen
+		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
+
+		if (vorangehenderAbschnitt != null && massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
+			// Massgebendes Einkommen wird kleiner
+			if (zeitabschnitt.getGueltigkeit().getGueltigAb().isBefore(mutationsEingansdatum)) {
+				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
+				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
+				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
+				zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
+				zeitabschnitt.setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
+				zeitabschnitt.setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
+			}
+		}
+	}
+
+	private static void handleAnpassungAnspruch(VerfuegungZeitabschnitt zeitabschnitt, VerfuegungZeitabschnitt vorangehenderAbschnitt, LocalDate mutationsEingansdatum) {
+		final int anspruchberechtigtesPensum = zeitabschnitt.getAnspruchberechtigtesPensum();
+		final int anspruchAufVorgaengerVerfuegung = vorangehenderAbschnitt.getAnspruchberechtigtesPensum();
+
+		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
+			//Anspruch wird erhöht
+			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
+			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
+				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
+				zeitabschnitt.setAnspruchberechtigtesPensum(anspruchAufVorgaengerVerfuegung);
+				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG);
+			}
+		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
+			// Anspruch wird kleiner
+			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
+			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
+				//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
+				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG);
+			}
+		}
+
+		//SCHULKINDER: Sonderregel bei zu Mutation von zu spaet eingereichten Schulkindangeboten
+		//fuer Abschnitte ab dem Folgemonat des Mutationseingangs rechnen wir bisher, fuer alle vorherigen folgende Sonderregel
+		if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
+
+			// Wenn der Benutzer vorher keine Verfuenstigung bekam weil er zu spaet eingereicht hat DANN bezahlt er auch in Mutation vollkosten
+			if (vorangehenderAbschnitt.getVerguenstigung().compareTo(BigDecimal.ZERO) == 0
+				&& vorangehenderAbschnitt.isZuSpaetEingereicht()) {
+				zeitabschnitt.setBezahltVollkosten(true);
+				zeitabschnitt.setZuSpaetEingereicht(true);
+				zeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_VOLLKOSTEN_MSG);
+			}
+		}
 	}
 
 	private static boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {
@@ -128,8 +151,10 @@ public final class MutationsMerger {
 	 * Hilfsmethode welche in der Vorgaengerferfuegung den gueltigen Zeitabschnitt fuer einen bestimmten Stichtag sucht
 	 */
 	@Nullable
-	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(LocalDate stichtag, Verfuegung vorgaengerVerf) {
-		Objects.requireNonNull(vorgaengerVerf, "Vorgaengerverfuegung darf nicht null sein");
+	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(@Nonnull LocalDate stichtag, @Nullable Verfuegung vorgaengerVerf) {
+		if (vorgaengerVerf == null) {
+			return null;
+		}
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : vorgaengerVerf.getZeitabschnitte()) {
 			final DateRange gueltigkeit = verfuegungZeitabschnitt.getGueltigkeit();
 			if (gueltigkeit.contains(stichtag) || gueltigkeit.startsSameDay(stichtag)) {
@@ -139,24 +164,6 @@ public final class MutationsMerger {
 
 		LOG.error("Vorgaengerzeitabschnitt fuer Mutation konnte nicht gefunden werden {}", stichtag);
 		return null;
-	}
-
-	/**
-	 * Findet das anspruchberechtigtes Pensum zum Zeitpunkt des neuen Zeitabschnitt-Start
-	 */
-	private static int findAnspruchberechtigtesPensumAt(LocalDate zeitabschnittStart, @Nullable Verfuegung verfuegungGSM) {
-
-		if (verfuegungGSM != null) {
-			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : verfuegungGSM.getZeitabschnitte()) {
-				final DateRange gueltigkeit = verfuegungZeitabschnitt.getGueltigkeit();
-				if (gueltigkeit.contains(zeitabschnittStart) || gueltigkeit.startsSameDay(zeitabschnittStart)) {
-					return verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
-				}
-			}
-			LOG.error("Anspruch berechtigtes Pensum beim Gesuch für Mutation konnte nicht gefunden werden");
-		}
-
-		return 0;
 	}
 
 	private static VerfuegungZeitabschnitt copy(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {

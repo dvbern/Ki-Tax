@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.annotation.Nullable;
+
 /**
  * DTO für die Resultate der Berechnungen der Finanziellen Situation und eventueller Einkommensverschlechterungen.
  *
@@ -54,19 +56,21 @@ public class FinanzDatenDTO implements Serializable {
 		this.datumVonBasisjahr = datumVonBasisjahr;
 	}
 
+	@Nullable
 	public LocalDate getDatumVonBasisjahrPlus1() {
 		return datumVonBasisjahrPlus1;
 	}
 
-	public void setDatumVonBasisjahrPlus1(LocalDate datumVonBasisjahrPlus1) {
+	public void setDatumVonBasisjahrPlus1(@Nullable LocalDate datumVonBasisjahrPlus1) {
 		this.datumVonBasisjahrPlus1 = datumVonBasisjahrPlus1;
 	}
 
+	@Nullable
 	public LocalDate getDatumVonBasisjahrPlus2() {
 		return datumVonBasisjahrPlus2;
 	}
 
-	public void setDatumVonBasisjahrPlus2(LocalDate datumVonBasisjahrPlus2) {
+	public void setDatumVonBasisjahrPlus2(@Nullable LocalDate datumVonBasisjahrPlus2) {
 		this.datumVonBasisjahrPlus2 = datumVonBasisjahrPlus2;
 	}
 
