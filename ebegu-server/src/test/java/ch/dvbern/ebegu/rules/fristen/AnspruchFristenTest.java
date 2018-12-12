@@ -30,13 +30,13 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -63,7 +63,6 @@ public class AnspruchFristenTest {
 
 	private static final LocalDate EINREICHUNG_RECHTZEITIG = TestDataUtil.START_PERIODE.minusMonths(3);
 	private static final LocalDate EINREICHUNG_ZU_SPAET = TestDataUtil.ENDE_PERIODE.minusMonths(3);
-	private static final FinanzielleSituationRechner RECHNER = new FinanzielleSituationRechner();
 
 	/**
 	 * Erstgesuch
@@ -125,7 +124,6 @@ public class AnspruchFristenTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 75, 0, 0);
-		 //TODO anschauen mit der anderen Regel!!! sollte erst ab mai sein
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 75, 0, 0);
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 75, 100, 75);
@@ -192,7 +190,6 @@ public class AnspruchFristenTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 75, 0, 0);
-		//TODO anschauen mit der anderen Regel!!! sollte erst ab mai sein
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 75, 0, 0);
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 75, 60, 60);
@@ -249,18 +246,18 @@ public class AnspruchFristenTest {
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 75, 80, 75);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 75, 80, 75);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 75, 80, 75);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 75, 80, 75);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 75, 80, 75); // Zwei Abschnitte, weil Bemerkung wegen zu später Einreichung!
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 75, 80, 75);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 75, 80, 75);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 75, 80, 75);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 75, 80, 75);
-		//TODO anschauen mit der anderen Regel!!! sollte erst ab mai sein
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 75, 80, 75);
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 75, 100, 75);
@@ -357,8 +354,11 @@ public class AnspruchFristenTest {
 
 	private Betreuung createMutation(@Nonnull LocalDate eingangsdatum) {
 		Gesuch erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG).extractGesuch();
+		List<VerfuegungZeitabschnitt> calculate = calculateInklAllgemeineRegeln(erstgesuch.extractAllBetreuungen().get(0));
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
+		verfuegungErstgesuch.setZeitabschnitte(calculate);
 		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
-		addBetreuung(mutation.getKindContainers().iterator().next());
+		mutation.extractAllBetreuungen().get(0).setVorgaengerVerfuegung(verfuegungErstgesuch);
 		mutation.setRegelnGueltigAb(eingangsdatum);
 		return mutation.extractAllBetreuungen().get(0);
 	}
