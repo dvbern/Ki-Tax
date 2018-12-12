@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -46,7 +47,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static ch.dvbern.ebegu.rules.EbeguRuleTestsHelper.calculate;
+import static ch.dvbern.ebegu.rules.EbeguRuleTestsHelper.calculateInklAllgemeineRegeln;
 
 /**
  * Folgende Tatbestände beeinflussen das MassgebendeEinkommen oder die Familiengrösse
@@ -76,7 +77,7 @@ public class MassgebendesEinkommenFristenTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		addKind(gesuch, LocalDate.of(2017, Month.NOVEMBER, 16));
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -108,7 +109,7 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung mutationBetreuung = createMutation(EINREICHUNG_RECHTZEITIG);
 		addKind(mutationBetreuung.extractGesuch(), LocalDate.of(2017, Month.NOVEMBER, 16));
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -138,7 +139,7 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung mutationBetreuung = createMutation(EINREICHUNG_ZU_SPAET);
 		addKind(mutationBetreuung.extractGesuch(), LocalDate.of(2017, Month.NOVEMBER, 16));
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -167,7 +168,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationHeiratMitZweiteinkommenRechtzeitig() {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_RECHTZEITIG, LocalDate.of(2017, Month.NOVEMBER, 16), 20000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -196,7 +197,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationHeiratOhneZweiteinkommenRechtzeitig() {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_RECHTZEITIG, LocalDate.of(2017, Month.NOVEMBER, 16), 0);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -225,7 +226,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationHeiratMitZweiteinkommenZuSpaet() {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_ZU_SPAET, LocalDate.of(2017, Month.NOVEMBER, 16), 20000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -254,7 +255,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationHeiratOhneZweiteinkommenZuSpaet() {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_ZU_SPAET, LocalDate.of(2017, Month.NOVEMBER, 16), 0);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -282,7 +283,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationErhoehungFinanzelleSituationRechtzeitig() {
 		Betreuung mutationBetreuung = createMutationFinanzielleSituation(EINREICHUNG_RECHTZEITIG, 70000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -309,7 +310,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationErhoehungFinanzielleSituationZuSpaet() {
 		Betreuung mutationBetreuung = createMutationFinanzielleSituation(EINREICHUNG_ZU_SPAET, 70000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -336,7 +337,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationVerringerungFinanzielleSituationRechtzeitig() {
 		Betreuung mutationBetreuung = createMutationFinanzielleSituation(EINREICHUNG_RECHTZEITIG, 30000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -363,7 +364,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationVerringerungFinanzielleSituationZuSpaet() {
 		Betreuung mutationBetreuung = createMutationFinanzielleSituation(EINREICHUNG_ZU_SPAET, 30000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -393,7 +394,7 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG);
 		createEinkommensverschlechterung(erstgesuch.extractGesuch(), LocalDate.of(2017, Month.NOVEMBER, 15), 20000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(erstgesuch);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(erstgesuch);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -423,7 +424,7 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung erstgesuch = createErstgesuch(EINREICHUNG_ZU_SPAET);
 		createEinkommensverschlechterung(erstgesuch.extractGesuch(), LocalDate.of(2017, Month.NOVEMBER, 15), 20000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(erstgesuch);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(erstgesuch);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -452,7 +453,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationEinkommensverschlechterungRechtzeitig() {
 		Betreuung mutation = createMutationEinkommensverschlechterung(EINREICHUNG_RECHTZEITIG, LocalDate.of(2017, Month.NOVEMBER, 15), 20000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutation);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutation);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -481,7 +482,7 @@ public class MassgebendesEinkommenFristenTest {
 	public void mutationEinkommensverschlechterungZuSpaet() {
 		Betreuung mutation = createMutationEinkommensverschlechterung(EINREICHUNG_ZU_SPAET, LocalDate.of(2017, Month.NOVEMBER, 15), 20000);
 
-		List<VerfuegungZeitabschnitt> result = calculate(mutation);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutation);
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
@@ -523,12 +524,12 @@ public class MassgebendesEinkommenFristenTest {
 
 	private Betreuung createMutation(@Nonnull LocalDate eingangsdatum) {
 		Gesuch erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG).extractGesuch();
-//		List<VerfuegungZeitabschnitt> calculate = calculate(erstgesuch.extractAllBetreuungen().get(0));
-//		Verfuegung verfuegungErstgesuch = new Verfuegung();
-//		verfuegungErstgesuch.setZeitabschnitte(calculate);
+		List<VerfuegungZeitabschnitt> calculate = calculateInklAllgemeineRegeln(erstgesuch.extractAllBetreuungen().get(0));
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
+		verfuegungErstgesuch.setZeitabschnitte(calculate);
 		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
 		addBetreuung(mutation.getKindContainers().iterator().next());
-//		mutation.extractAllBetreuungen().get(0).setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutation.extractAllBetreuungen().get(0).setVorgaengerVerfuegung(verfuegungErstgesuch);
 		mutation.setRegelnGueltigAb(eingangsdatum);
 		return mutation.extractAllBetreuungen().get(0);
 	}

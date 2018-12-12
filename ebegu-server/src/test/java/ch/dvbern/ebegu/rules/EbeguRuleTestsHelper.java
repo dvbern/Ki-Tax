@@ -144,9 +144,6 @@ public final class EbeguRuleTestsHelper {
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
 		result = AnspruchFristRule.execute(result);
-		result = AbschlussNormalizer.execute(result);
-		result = MonatsRule.execute(result);
-		result = MutationsMerger.execute(betreuung, result);
 		return result;
 	}
 
