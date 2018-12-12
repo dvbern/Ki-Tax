@@ -33,6 +33,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -85,6 +86,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
 
+	// ID der statischen, unbekannten Institution. Wird verwendet um eine provisorische Berechnung zu generieren
+	// und darf dem Benutzer <b>nie>/b> angezeigt werden
+	private static final String ID_UNKNOWN_INSTITUTION = "00000000-0000-0000-0000-000000000000";
+
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
@@ -132,12 +137,14 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	public void deleteInstitution(@Nonnull String institutionId) {
 		Objects.requireNonNull(institutionId);
 		Optional<Institution> institutionToRemove = findInstitution(institutionId);
-		Institution institution = institutionToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeInstitution",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+		Institution institution =
+			institutionToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeInstitution",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
 
 		// Es müssen auch alle Berechtigungen für diese Institution gelöscht werden
-		Collection<BerechtigungHistory> berechtigungenToDelete = criteriaQueryHelper.getEntitiesByAttribute(BerechtigungHistory.class, institution,
-			BerechtigungHistory_.institution);
+		Collection<BerechtigungHistory> berechtigungenToDelete =
+			criteriaQueryHelper.getEntitiesByAttribute(BerechtigungHistory.class, institution,
+				BerechtigungHistory_.institution);
 		for (BerechtigungHistory berechtigungHistory : berechtigungenToDelete) {
 			persistence.remove(berechtigungHistory);
 		}
@@ -153,9 +160,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
 		Root<Institution> root = query.from(Institution.class);
 		//Traegerschaft
-		Predicate predTraegerschaft = cb.equal(root.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
+		Predicate predTraegerschaft =
+			cb.equal(root.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
 
-		query.where(predTraegerschaft);
+		query.where(predTraegerschaft, getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -171,15 +179,17 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 		query.select(root.get(InstitutionStammdaten_.institution));
 
-		Join<InstitutionStammdaten, Institution> institutionJoin = root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
+		Join<InstitutionStammdaten, Institution> institutionJoin =
+			root.join(InstitutionStammdaten_.institution, JoinType.LEFT);
 		//Traegerschaft
-		Predicate predTraegerschaft = cb.equal(institutionJoin.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
+		Predicate predTraegerschaft =
+			cb.equal(institutionJoin.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
 		Predicate predActive = cb.greaterThanOrEqualTo(
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			LocalDate.now()
 		);
 
-		query.where(predTraegerschaft, predActive);
+		query.where(predTraegerschaft, predActive, getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -193,13 +203,14 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		query.select(root.get(InstitutionStammdaten_.institution));
 		query.distinct(true);
 
-		Predicate predSchulamt = root.get(InstitutionStammdaten_.betreuungsangebotTyp).in(BetreuungsangebotTyp.getSchulamtTypes());
+		Predicate predSchulamt =
+			root.get(InstitutionStammdaten_.betreuungsangebotTyp).in(BetreuungsangebotTyp.getSchulamtTypes());
 		Predicate predActive = cb.greaterThanOrEqualTo(
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			LocalDate.now()
 		);
 
-		query.where(predSchulamt, predActive);
+		query.where(predSchulamt, predActive, getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -213,13 +224,12 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
 		query.select(root.get(InstitutionStammdaten_.institution));
 		query.distinct(true);
-
 		Predicate predActive = cb.greaterThanOrEqualTo(
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			LocalDate.now()
 		);
 
-		query.where(predActive);
+		query.where(predActive, getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -227,7 +237,14 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Nonnull
 	@PermitAll
 	public Collection<Institution> getAllInstitutionen() {
-		return new ArrayList<>(criteriaQueryHelper.getAllOrdered(Institution.class, Institution_.name));
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Institution> query = cb.createQuery(Institution.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.select(root.get(InstitutionStammdaten_.institution));
+		query.distinct(true);
+
+		query.where(getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Override
@@ -237,10 +254,14 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
-			if (EnumUtil.isOneOf(benutzer.getRole(), UserRole.ADMIN_TRAEGERSCHAFT, UserRole.SACHBEARBEITER_TRAEGERSCHAFT) && benutzer.getTraegerschaft() != null) {
+			if (EnumUtil.isOneOf(
+				benutzer.getRole(),
+				UserRole.ADMIN_TRAEGERSCHAFT,
+				UserRole.SACHBEARBEITER_TRAEGERSCHAFT) && benutzer.getTraegerschaft() != null) {
 				return getAllInstitutionenFromTraegerschaft(benutzer.getTraegerschaft().getId());
 			}
-			if (EnumUtil.isOneOf(benutzer.getRole(), UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION) && benutzer.getInstitution() != null) {
+			if (EnumUtil.isOneOf(benutzer.getRole(), UserRole.ADMIN_INSTITUTION, UserRole.SACHBEARBEITER_INSTITUTION)
+				&& benutzer.getInstitution() != null) {
 				List<Institution> institutionList = new ArrayList<>();
 				if (benutzer.getInstitution() != null) {
 					institutionList.add(benutzer.getInstitution());
@@ -256,9 +277,15 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT,
+		ADMIN_INSTITUTION })
 	public BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId) {
-		InstitutionStammdaten allInstStammdaten = institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
+		InstitutionStammdaten allInstStammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
 		return allInstStammdaten.getBetreuungsangebotTyp();
+	}
+
+	private Predicate getUnknownInstitutionPredicate(CriteriaBuilder cb, Path path) {
+		return cb.notEqual(path, ID_UNKNOWN_INSTITUTION);
 	}
 }
