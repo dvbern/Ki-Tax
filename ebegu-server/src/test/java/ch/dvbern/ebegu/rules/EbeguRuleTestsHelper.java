@@ -72,6 +72,13 @@ public final class EbeguRuleTestsHelper {
 	private static final ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(DEFAULT_GUELTIGKEIT);
 	private static final SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(DEFAULT_GUELTIGKEIT, EinschulungTyp.KINDERGARTEN2);
 	private static final KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(DEFAULT_GUELTIGKEIT);
+	private static final FamilienabzugAbschnittRule familienabzugAbschnittRule =
+		new FamilienabzugAbschnittRule(DEFAULT_GUELTIGKEIT,
+			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS),
+			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS),
+			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS),
+			new BigDecimal(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS));
+	private static final StorniertCalcRule storniertCalcRule = new StorniertCalcRule(DEFAULT_GUELTIGKEIT);
 
 	private EbeguRuleTestsHelper() {
 	}
@@ -81,6 +88,13 @@ public final class EbeguRuleTestsHelper {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
 		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
 		return calculate(betreuung, initialenRestanspruchAbschnitte);
+	}
+
+	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
+		// Abschnitte
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		return calculateInklAllgemeineRegeln(betreuung, initialenRestanspruchAbschnitte);
 	}
 
 	/**
@@ -127,6 +141,46 @@ public final class EbeguRuleTestsHelper {
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
 		result = AnspruchFristRule.execute(result);
+		return result;
+	}
+
+	@Nonnull
+	private static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte) {
+		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
+		result = erwerbspensumAbschnittRule.calculate(betreuung, result);
+		result = urlaubAbschnittRule.calculate(betreuung, result);
+		result = familienabzugAbschnittRule.calculate(betreuung, result);
+		result = kindTarifAbschnittRule.calculate(betreuung, result);
+		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
+		result = fachstelleAbschnittRule.calculate(betreuung, result);
+		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);
+		result = einkommenAbschnittRule.calculate(betreuung, result);
+		result = wohnsitzAbschnittRule.calculate(betreuung, result);
+		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
+		result = abwesenheitAbschnittRule.calculate(betreuung, result);
+		result = zivilstandsaenderungAbschnittRule.calculate(betreuung, result);
+		// Anspruch
+		result = storniertCalcRule.calculate(betreuung, result);
+		result = erwerbspensumCalcRule.calculate(betreuung, result);
+		result = fachstelleCalcRule.calculate(betreuung, result);
+		result = ausserordentlicherAnspruchCalcRule.calculate(betreuung, result);
+		// Restanspruch
+		// Reduktionen
+		result = maximalesEinkommenCalcRule.calculate(betreuung, result);
+		result = betreuungsangebotTypCalcRule.calculate(betreuung, result);
+		result = wohnsitzCalcRule.calculate(betreuung, result);
+		result = einreichungsfristCalcRule.calculate(betreuung, result);
+		result = abwesenheitCalcRule.calculate(betreuung, result);
+		result = schulstufeCalcRule.calculate(betreuung, result);
+		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
+
+		result = restanspruchLimitCalcRule.calculate(betreuung, result);
+		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
+		result = AnspruchFristRule.execute(result);
+		result = AbschlussNormalizer.execute(result, false);
+		result = MonatsRule.execute(result);
+		result = MutationsMerger.execute(betreuung, result);
+		result = AbschlussNormalizer.execute(result, true);
 		return result;
 	}
 

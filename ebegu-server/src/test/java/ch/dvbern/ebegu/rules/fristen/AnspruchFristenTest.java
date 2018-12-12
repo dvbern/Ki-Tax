@@ -41,7 +41,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static ch.dvbern.ebegu.rules.EbeguRuleTestsHelper.calculate;
+import static ch.dvbern.ebegu.rules.EbeguRuleTestsHelper.calculateInklAllgemeineRegeln;
 
 /**
  * Folgende Tatbestände beeinflussen den Anspruch
@@ -77,7 +77,7 @@ public class AnspruchFristenTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		changeErwerbspensum(gesuch, LocalDate.of(2017,  Month.NOVEMBER, 16), 80);
 
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(13, result.size());
@@ -111,7 +111,7 @@ public class AnspruchFristenTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		changeErwerbspensum(gesuch, LocalDate.of(2017,  Month.NOVEMBER, 16), 80);
 
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -145,7 +145,7 @@ public class AnspruchFristenTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		changeErwerbspensum(gesuch, LocalDate.of(2017,  Month.NOVEMBER, 16), 40);
 
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -178,7 +178,7 @@ public class AnspruchFristenTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		changeErwerbspensum(gesuch, LocalDate.of(2017,  Month.NOVEMBER, 16), 40);
 
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -212,7 +212,7 @@ public class AnspruchFristenTest {
 		Gesuch mutation = betreuung.extractGesuch();
 		changeErwerbspensum(mutation, LocalDate.of(2017,  Month.NOVEMBER, 16), 80);
 
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(13, result.size());
@@ -246,7 +246,7 @@ public class AnspruchFristenTest {
 		Gesuch mutation = betreuung.extractGesuch();
 		changeErwerbspensum(mutation, LocalDate.of(2017,  Month.NOVEMBER, 16), 80);
 
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -280,7 +280,7 @@ public class AnspruchFristenTest {
 		Gesuch mutation = betreuung.extractGesuch();
 		changeErwerbspensum(mutation, LocalDate.of(2017,  Month.NOVEMBER, 16), 40);
 
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
@@ -313,7 +313,7 @@ public class AnspruchFristenTest {
 		Gesuch mutation = betreuung.extractGesuch();
 		changeErwerbspensum(mutation, LocalDate.of(2017,  Month.NOVEMBER, 16), 40);
 
-		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
