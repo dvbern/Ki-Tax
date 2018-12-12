@@ -2,10 +2,7 @@
 
 pipeline {
 	// It is important to use agent none, so stages that do not need an agent are not hogging a heavyweight executor.
-//	agent none
-	  agent {
-  	    label 'master'
-      }
+	agent none
 //	triggers {
 //		pollSCM('H/5 * * * *')
 //	}
