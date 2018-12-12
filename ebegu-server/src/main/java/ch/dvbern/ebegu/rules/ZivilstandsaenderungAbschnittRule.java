@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -51,8 +52,9 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 		// Ueberpruefen, ob die Gesuchsteller-Kardinalität geändert hat. Nur dann muss evt. anders berechnet werden!
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation);
 		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
-		if (familiensituation != null && familiensituation.getAenderungPer() != null &&
+		if (familiensituation.getAenderungPer() != null && familiensituationErstgesuch != null &&
 			familiensituation.hasSecondGesuchsteller() != familiensituationErstgesuch.hasSecondGesuchsteller()) {
 
 			// Die Zivilstandsaenderung gilt ab anfang nächstem Monat, die Bemerkung muss aber "per Heirat/Trennung" erfolgen

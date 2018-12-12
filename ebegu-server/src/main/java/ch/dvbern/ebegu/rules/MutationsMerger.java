@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
  * Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
  * Reduktionen des Anspruchs sind auch rückwirkend erlaubt
  */
+@SuppressWarnings("PMD.CollapsibleIfStatements") // wegen besserer Lesbarkeit
 public final class MutationsMerger {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MutationsMerger.class.getSimpleName());
