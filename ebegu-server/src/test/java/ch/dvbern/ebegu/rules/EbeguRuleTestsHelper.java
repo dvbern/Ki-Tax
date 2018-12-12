@@ -90,6 +90,13 @@ public final class EbeguRuleTestsHelper {
 		return calculate(betreuung, initialenRestanspruchAbschnitte);
 	}
 
+	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
+		// Abschnitte
+		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte = createInitialenRestanspruch(betreuung.extractGesuchsperiode());
+		TestDataUtil.calculateFinanzDaten(betreuung.extractGesuch());
+		return calculateInklAllgemeineRegeln(betreuung, initialenRestanspruchAbschnitte);
+	}
+
 	/**
 	 * Testhilfsmethode die eine Betreuung so berechnet als haette es vorher schon eine Betreuung gegeben welche einen Teil des anspruchs
 	 * aufgebraucht hat, es wird  als bestehnder Restnanspruch der Wert von existingRestanspruch genommen
@@ -140,6 +147,46 @@ public final class EbeguRuleTestsHelper {
 		result = AbschlussNormalizer.execute(result);
 		result = MonatsRule.execute(result);
 		result = MutationsMerger.execute(betreuung, result);
+		return result;
+	}
+
+	@Nonnull
+	private static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung, List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte) {
+		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
+		result = erwerbspensumAbschnittRule.calculate(betreuung, result);
+		result = urlaubAbschnittRule.calculate(betreuung, result);
+		result = familienabzugAbschnittRule.calculate(betreuung, result);
+		result = kindTarifAbschnittRule.calculate(betreuung, result);
+		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
+		result = fachstelleAbschnittRule.calculate(betreuung, result);
+		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);
+		result = einkommenAbschnittRule.calculate(betreuung, result);
+		result = wohnsitzAbschnittRule.calculate(betreuung, result);
+		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
+		result = abwesenheitAbschnittRule.calculate(betreuung, result);
+		result = zivilstandsaenderungAbschnittRule.calculate(betreuung, result);
+		// Anspruch
+		result = storniertCalcRule.calculate(betreuung, result);
+		result = erwerbspensumCalcRule.calculate(betreuung, result);
+		result = fachstelleCalcRule.calculate(betreuung, result);
+		result = ausserordentlicherAnspruchCalcRule.calculate(betreuung, result);
+		// Restanspruch
+		// Reduktionen
+		result = maximalesEinkommenCalcRule.calculate(betreuung, result);
+		result = betreuungsangebotTypCalcRule.calculate(betreuung, result);
+		result = wohnsitzCalcRule.calculate(betreuung, result);
+		result = einreichungsfristCalcRule.calculate(betreuung, result);
+		result = abwesenheitCalcRule.calculate(betreuung, result);
+		result = schulstufeCalcRule.calculate(betreuung, result);
+		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
+
+		result = restanspruchLimitCalcRule.calculate(betreuung, result);
+		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
+		result = AnspruchFristRule.execute(result);
+		result = AbschlussNormalizer.execute(result, false);
+		result = MonatsRule.execute(result);
+		result = MutationsMerger.execute(betreuung, result);
+		result = AbschlussNormalizer.execute(result, true);
 		return result;
 	}
 

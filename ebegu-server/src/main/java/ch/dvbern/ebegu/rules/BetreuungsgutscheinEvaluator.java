@@ -169,13 +169,16 @@ public class BetreuungsgutscheinEvaluator {
 					restanspruchZeitabschnitte = RestanspruchInitializer.execute(betreuung, zeitabschnitte);
 
 					// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
-					zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte);
+					zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, false);
 
 					// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
 					zeitabschnitte = MonatsRule.execute(zeitabschnitte);
 
 					// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
 					zeitabschnitte = MutationsMerger.execute(betreuung, zeitabschnitte);
+
+					// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
+					zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
 
 					// Die Verfügung erstellen
 					if (betreuung.getVerfuegung() == null) {
