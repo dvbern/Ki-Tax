@@ -15,11 +15,14 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -62,15 +65,20 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	private boolean areNotInBern(Betreuung betreuung, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		boolean hasSecondGesuchsteller = false;
 		final Gesuch gesuch = betreuung.extractGesuch();
-		if (!gesuch.isMutation() || (gesuch.extractFamiliensituation() != null
-			&& gesuch.extractFamiliensituation().getAenderungPer() != null
-			&& !gesuch.extractFamiliensituation()
-			.getAenderungPer()
-			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb()))) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation);
+		LocalDate familiensituationAenderungPer = familiensituation.getAenderungPer();
+		// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
+		if (!gesuch.isMutation()
+			|| (familiensituationAenderungPer != null
+			&& !familiensituationAenderungPer.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth()).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb()))) {
 
-			hasSecondGesuchsteller = gesuch.extractFamiliensituation().hasSecondGesuchsteller();
-		} else if (gesuch.extractFamiliensituationErstgesuch() != null) {
-			hasSecondGesuchsteller = gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller();
+			hasSecondGesuchsteller = familiensituation.hasSecondGesuchsteller();
+		} else {
+			Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+			if (familiensituationErstgesuch != null) {
+				hasSecondGesuchsteller = familiensituationErstgesuch.hasSecondGesuchsteller();
+			}
 		}
 		return (hasSecondGesuchsteller
 			&& verfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1()

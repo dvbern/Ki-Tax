@@ -19,10 +19,12 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -123,22 +125,33 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 					adressenZeitabschnitte.add(zeitabschnitt);
 				} else { // gs2
 					final DateRange gueltigkeit = new DateRange(gesuchstellerAdresse.extractGueltigkeit());
-					if (gesuch.extractFamiliensituation().getAenderungPer() != null) {
+					Familiensituation familiensituation = gesuch.extractFamiliensituation();
+					Objects.requireNonNull(familiensituation);
+					LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
+					if (familiensituationGueltigAb != null) {
+
+						// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
+						LocalDate familiensituationStichtag =
+							familiensituationGueltigAb.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+
 						// from 1GS to 2GS
-						if (!gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller() && gesuch.extractFamiliensituation().hasSecondGesuchsteller()) {
-							if (gueltigkeit.getGueltigBis().isAfter(gesuch.extractFamiliensituation().getAenderungPer())) {
-								if (gueltigkeit.getGueltigAb().isBefore(gesuch.extractFamiliensituation().getAenderungPer())) {
-									gueltigkeit.setGueltigAb(gesuch.extractFamiliensituation().getAenderungPer());
+						Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+						Objects.requireNonNull(familiensituationErstgesuch);
+						if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
+							if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)) {
+								if (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)) {
+									gueltigkeit.setGueltigAb(familiensituationStichtag);
 								}
 								createZeitabschnittForGS2(adressenZeitabschnitte, gesuchstellerAdresse.extractIsNichtInGemeinde(), gueltigkeit);
 							}
 						}
 						// from 2GS to 1GS
-						else if (gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller() && !gesuch.extractFamiliensituation().hasSecondGesuchsteller()
-							&& (gueltigkeit.getGueltigAb().isBefore(gesuch.extractFamiliensituation().getAenderungPer()))) {
+						else if (familiensituationErstgesuch.hasSecondGesuchsteller() && !familiensituation
+							.hasSecondGesuchsteller()
+							&& (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag))) {
 
-							if (gueltigkeit.getGueltigBis().isAfter(gesuch.extractFamiliensituation().getAenderungPer())) {
-								gueltigkeit.setGueltigBis(gesuch.extractFamiliensituation().getAenderungPer());
+							if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)) {
+								gueltigkeit.setGueltigBis(familiensituationStichtag);
 							}
 							createZeitabschnittForGS2(adressenZeitabschnitte, gesuchstellerAdresse.extractIsNichtInGemeinde(), gueltigkeit);
 						}

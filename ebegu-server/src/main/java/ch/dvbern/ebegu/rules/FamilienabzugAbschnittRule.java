@@ -168,14 +168,18 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		Integer famGrAnzahlPersonen = 0;
 		if (gesuch != null) {
 
-			if (gesuch.extractFamiliensituation() != null) { // wenn die Familiensituation nicht vorhanden ist, kann man nichts machen (die Daten wurden falsch eingegeben)
-				if (gesuch.extractFamiliensituationErstgesuch() != null && date != null && (
-					gesuch.extractFamiliensituation().getAenderungPer() == null //wenn aenderung per nicht gesetzt ist nehmen wir wert aus erstgesuch
-						|| date.isBefore(gesuch.extractFamiliensituation().getAenderungPer().plusMonths(1).withDayOfMonth(1)))) {
+			Familiensituation familiensituation = gesuch.extractFamiliensituation();
+			if (familiensituation != null) { // wenn die Familiensituation nicht vorhanden ist, kann man nichts machen (die Daten wurden falsch eingegeben)
+				Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+				LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
+				if (familiensituationErstgesuch != null && date != null && (
+					familiensituationGueltigAb == null //wenn aenderung per nicht gesetzt ist nehmen wir wert aus erstgesuch
+						|| date.isBefore(familiensituationGueltigAb.plusMonths(1).withDayOfMonth(1)))) {
 
-					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller() ? 2 : 1);
+					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (familiensituationErstgesuch
+						.hasSecondGesuchsteller() ? 2 : 1);
 				} else {
-					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (gesuch.extractFamiliensituation().hasSecondGesuchsteller() ? 2 : 1);
+					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (familiensituation.hasSecondGesuchsteller() ? 2 : 1);
 				}
 			} else {
 				LOG.warn("Die Familiengroesse kann noch nicht richtig berechnet werden weil die Familiensituation nicht richtig ausgefuellt ist. Antragnummer: {}", gesuch.getJahrFallAndGemeindenummer());

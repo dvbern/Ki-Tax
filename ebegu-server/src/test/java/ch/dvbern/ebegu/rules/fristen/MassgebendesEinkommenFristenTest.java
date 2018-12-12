@@ -34,7 +34,6 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -169,7 +168,7 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_RECHTZEITIG, LocalDate.of(2017, Month.NOVEMBER, 16), 20000);
 
 		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
@@ -177,7 +176,6 @@ public class MassgebendesEinkommenFristenTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
 
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 70000, 58600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 70000, 58600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 3, 70000, 58600);
@@ -228,14 +226,13 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_ZU_SPAET, LocalDate.of(2017, Month.NOVEMBER, 16), 20000);
 
 		List<VerfuegungZeitabschnitt> result = calculate(mutationBetreuung);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 2, 50000, 50000);
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 70000, 58600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 70000, 58600);
@@ -430,7 +427,7 @@ public class MassgebendesEinkommenFristenTest {
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000); // Anspruch 0 bis Mai!
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
@@ -525,13 +522,13 @@ public class MassgebendesEinkommenFristenTest {
 	}
 
 	private Betreuung createMutation(@Nonnull LocalDate eingangsdatum) {
-		Gesuch erstgesuch = createErstgesuch(eingangsdatum).extractGesuch();
-		List<VerfuegungZeitabschnitt> calculate = calculate(erstgesuch.extractAllBetreuungen().get(0));
-		Verfuegung verfuegungErstgesuch = new Verfuegung();
-		verfuegungErstgesuch.setZeitabschnitte(calculate);
+		Gesuch erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG).extractGesuch();
+//		List<VerfuegungZeitabschnitt> calculate = calculate(erstgesuch.extractAllBetreuungen().get(0));
+//		Verfuegung verfuegungErstgesuch = new Verfuegung();
+//		verfuegungErstgesuch.setZeitabschnitte(calculate);
 		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
 		addBetreuung(mutation.getKindContainers().iterator().next());
-		mutation.extractAllBetreuungen().get(0).setVorgaengerVerfuegung(verfuegungErstgesuch);
+//		mutation.extractAllBetreuungen().get(0).setVorgaengerVerfuegung(verfuegungErstgesuch);
 		mutation.setRegelnGueltigAb(eingangsdatum);
 		return mutation.extractAllBetreuungen().get(0);
 	}

@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -49,15 +50,17 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		final List<VerfuegungZeitabschnitt> zivilstandsaenderungAbschnitte = new ArrayList<>();
 
 		// Ueberpruefen, ob die Gesuchsteller-Kardinalität geändert hat. Nur dann muss evt. anders berechnet werden!
-		if (gesuch.extractFamiliensituation() != null && gesuch.extractFamiliensituation().getAenderungPer() != null &&
-			gesuch.extractFamiliensituation().hasSecondGesuchsteller() != gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller()) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+		if (familiensituation != null && familiensituation.getAenderungPer() != null &&
+			familiensituation.hasSecondGesuchsteller() != familiensituationErstgesuch.hasSecondGesuchsteller()) {
 
 			// Die Zivilstandsaenderung gilt ab anfang nächstem Monat, die Bemerkung muss aber "per Heirat/Trennung" erfolgen
-			final LocalDate ereignistag = gesuch.extractFamiliensituation().getAenderungPer();
+			final LocalDate ereignistag = familiensituation.getAenderungPer();
 			final LocalDate stichtag = ereignistag.plusMonths(1).withDayOfMonth(1);
 			// Bemerkung erstellen
 			VerfuegungsBemerkung bemerkungContainer;
-			if (gesuch.extractFamiliensituation().hasSecondGesuchsteller()) {
+			if (familiensituation.hasSecondGesuchsteller()) {
 				// Heirat
 				bemerkungContainer = new VerfuegungsBemerkung(RuleKey.ZIVILSTANDSAENDERUNG, MsgKey.FAMILIENSITUATION_HEIRAT_MSG);
 			} else {
@@ -66,21 +69,23 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 			}
 
 			VerfuegungZeitabschnitt abschnittVorMutation = new VerfuegungZeitabschnitt(new DateRange(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), ereignistag.minusDays(1)));
-			abschnittVorMutation.setHasSecondGesuchstellerForFinanzielleSituation(gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller());
+			abschnittVorMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch
+				.hasSecondGesuchsteller());
 			zivilstandsaenderungAbschnitte.add(abschnittVorMutation);
 
 			VerfuegungZeitabschnitt abschnittVorStichtag = new VerfuegungZeitabschnitt(new DateRange(ereignistag, stichtag.minusDays(1)));
-			abschnittVorStichtag.setHasSecondGesuchstellerForFinanzielleSituation(gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller());
+			abschnittVorStichtag.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch
+				.hasSecondGesuchsteller());
 			abschnittVorStichtag.addBemerkung(bemerkungContainer);
 			zivilstandsaenderungAbschnitte.add(abschnittVorStichtag);
 
 			VerfuegungZeitabschnitt abschnittNachMutation = new VerfuegungZeitabschnitt(new DateRange(stichtag, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
-			abschnittNachMutation.setHasSecondGesuchstellerForFinanzielleSituation(gesuch.extractFamiliensituation().hasSecondGesuchsteller());
+			abschnittNachMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituation.hasSecondGesuchsteller());
 			abschnittNachMutation.addBemerkung(bemerkungContainer);
 			zivilstandsaenderungAbschnitte.add(abschnittNachMutation);
 		} else {
 			VerfuegungZeitabschnitt abschnittOhneMutation = new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
-			abschnittOhneMutation.setHasSecondGesuchstellerForFinanzielleSituation(gesuch.extractFamiliensituation().hasSecondGesuchsteller());
+			abschnittOhneMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituation.hasSecondGesuchsteller());
 			zivilstandsaenderungAbschnitte.add(abschnittOhneMutation);
 		}
 		return zivilstandsaenderungAbschnitte;

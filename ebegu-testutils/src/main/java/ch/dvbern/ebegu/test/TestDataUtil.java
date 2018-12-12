@@ -836,6 +836,7 @@ public final class TestDataUtil {
 	public static Betreuung createGesuchWithBetreuungspensum(boolean zweiGesuchsteller) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setDossier(createDefaultDossier());
 		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
 		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		if (zweiGesuchsteller) {
