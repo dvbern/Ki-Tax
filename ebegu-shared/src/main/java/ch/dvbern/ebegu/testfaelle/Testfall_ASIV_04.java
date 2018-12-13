@@ -89,7 +89,7 @@ public class Testfall_ASIV_04 extends AbstractASIVTestfall {
 	@Override
 	public Gesuch createMutation(Gesuch erstgesuch) {
 		// Einkommensverschlechterug
-		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 1), null);
+		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 15), null);
 		ekvContainer.getEkvJABasisJahrPlus1().setNettolohnJan(MathUtil.DEFAULT.from(49000));
 		erstgesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(ekvContainer);
 		// Einkommensverschlechterug

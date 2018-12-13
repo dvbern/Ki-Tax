@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -59,7 +60,7 @@ import static ch.dvbern.ebegu.rules.EbeguRuleTestsHelper.calculateInklAllgemeine
  * - Erwerbspensum 60%
  */
 @SuppressWarnings({ "Duplicates", "UnusedAssignment" })
-public class AnspruchFristenTest {
+public class AnspruchFristenTest extends AbstractBGRechnerTest {
 
 	private static final LocalDate EINREICHUNG_RECHTZEITIG = TestDataUtil.START_PERIODE.minusMonths(3);
 	private static final LocalDate EINREICHUNG_ZU_SPAET = TestDataUtil.ENDE_PERIODE.minusMonths(3);
@@ -329,13 +330,6 @@ public class AnspruchFristenTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 75, 60, 60);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 75, 60, 60);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 75, 60, 60);
-	}
-
-	private void assertZeitabschnitt(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull LocalDate gueltigAb, int betreuungspensum, int anspruch, int bgPensum) {
-		Assert.assertEquals(gueltigAb, abschnitt.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(betreuungspensum, abschnitt.getBetreuungspensum().intValue());
-		Assert.assertEquals(anspruch, abschnitt.getAnspruchberechtigtesPensum());
-		Assert.assertEquals(bgPensum, abschnitt.getBgPensum().intValue());
 	}
 
 	private Betreuung createErstgesuch(@Nonnull LocalDate eingangsdatum) {

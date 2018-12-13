@@ -84,7 +84,7 @@ public class Testfall_ASIV_08 extends AbstractASIVTestfall {
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationGS2);
 
 		// Einkommensverschlechterug
-		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 1), null);
+		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 15), null);
 		ekvContainer.getEkvJABasisJahrPlus1().setNettolohnJan(MathUtil.DEFAULT.from(57000));
 		gesuchsteller1.setEinkommensverschlechterungContainer(ekvContainer);
 
