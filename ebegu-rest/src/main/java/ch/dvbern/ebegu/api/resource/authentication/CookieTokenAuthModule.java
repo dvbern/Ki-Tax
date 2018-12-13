@@ -123,6 +123,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 		if (path.startsWith(apiBasePath + "/auth/login")
 			|| path.startsWith(apiBasePath + "/connector/heartbeat")
 			|| path.startsWith(apiBasePath + "/schulamt/heartbeat")
+			|| path.startsWith(apiBasePath + "/auth/portalAccountPage")
 			|| path.startsWith(apiBasePath + "/auth/singleSignOn")
 			|| path.startsWith(apiBasePath + "/auth/singleLogout")
 			|| path.startsWith(apiBasePath + "/swagger.json")

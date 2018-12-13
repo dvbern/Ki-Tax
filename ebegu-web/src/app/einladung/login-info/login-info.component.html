@@ -26,16 +26,18 @@
 
         <p class="marginBottom50" translate>ONBOARDING_BE_LOGIN_DESCRIPTION</p>
 
+        <!--todo make a normal <a> link-->
         <div class="row be-login-actions">
-                <!-- Note: we navigate to the desired target state. The authentication hooks will automatically redirect to the login page -->
-                <button class="dv-btn" (click)="goToLoginWithReturnToState()">
-                    {{'ONBOARDING_BE_LOGIN_ANMELDEN' | translate}}
-                    <i class="fa fa-external-link"></i>
-                </button>
-                <button class="dv-btn" (click)="goToLoginWithReturnToState()">
-                    {{'ONBOARDING_BE_LOGIN_REGISTRIEREN' | translate}}
-                    <i class="fa fa-external-link"></i>
-                </button>
+            <!-- Note: we navigate to the desired target state. The authentication hooks will automatically redirect to the login page -->
+            <button class="dv-btn" (click)="goToLoginWithReturnToState()">
+                {{'ONBOARDING_BE_LOGIN_ANMELDEN' | translate}}
+                <i class="fa fa-external-link"></i>
+            </button>
+
+            <a class="dv-btn" [href]="portalAccountCreationLink"
+               target="_blank"> {{'ONBOARDING_BE_LOGIN_REGISTRIEREN' | translate}}
+                <i class="fa fa-external-link"></i>
+            </a>
         </div>
     </div>
 </dv-full-height-container>
