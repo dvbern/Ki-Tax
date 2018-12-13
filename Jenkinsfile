@@ -18,7 +18,7 @@ pipeline {
 			agent {
 				docker {
 					image "docker.dvbern.ch:5000/dvbern/build-environment:latest"
-					args "--user=jenkins --privileged"
+					args "--privileged"
 				}
 			}
 
