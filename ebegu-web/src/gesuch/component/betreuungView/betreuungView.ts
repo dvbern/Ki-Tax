@@ -202,7 +202,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public initEmptyBetreuung(): TSBetreuung {
         const tsBetreuung = new TSBetreuung();
-        tsBetreuung.vertrag = true;
         tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
