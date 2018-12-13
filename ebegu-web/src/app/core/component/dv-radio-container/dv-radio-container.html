@@ -16,14 +16,14 @@
 <div class="dv-radio-container">
     <md-radio-group class="radio" ng-model="vm.modelToPassOn" ng-blur="vm.onBlur()" ng-change="vm.onChange()"
                     dv-suppress-form-submit-on-enter aria-label="{{vm.ariaLabel}}" ng-required="vm.ngRequired">
-        <md-radio-button ng-if="vm.items" ng-repeat="current in vm.items" ng-value="current"
-                         aria-label="{{current | translate}}" class="element-{{$index}}"
+        <md-radio-button ng-if="vm.items" ng-repeat="current in vm.items" ng-value="{{current.value}}"
+                         aria-label="{{current.label | translate}}" class="element-{{$index}}"
                          ng-attr-dv-enable-element="{{vm.dvEnableAllowedRoles ? '' : undefined}}"
                          ng-attr-dv-enable-allowed-roles="{{vm.dvEnableAllowedRoles ? vm.dvEnableAllowedRoles : vm.allRoles}}"
                          ng-attr-dv-enable-expression="vm.dvEnableExpression === false ? false : true"
                          aria-describedby="{{vm.ariaDescribedBy}}"
                          ng-required="vm.ngRequired">
-            <span data-translate="{{current}}"></span>
+            <span data-translate="{{current.label}}"></span>
         </md-radio-button>
         <md-radio-button ng-if="!vm.items" ng-value="true" aria-label="{{'LABEL_JA' | translate}}" class="element-ja"
                          ng-attr-dv-enable-element="{{vm.dvEnableAllowedRoles ? '' : undefined}}"
