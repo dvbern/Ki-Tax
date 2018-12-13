@@ -58,6 +58,8 @@ import WizardStepRS from '../../gesuch/service/WizardStepRS.rest';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
+import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-selector/dv-language-selector.component';
+import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
@@ -209,6 +211,7 @@ export const CORE_JS_MODULE = angular
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)
+    .factory('I18nServiceRSRest', downgradeInjectable(I18nServiceRSRest) as any)
     .directive('dvMaxLength', DVMaxLength.factory())
     .directive('dvDatepicker', DVDatepicker.factory())
     .directive('dvTimepicker', DVTimepicker.factory())
@@ -236,6 +239,7 @@ export const CORE_JS_MODULE = angular
     .controller('DVElementController', DVRoleElementController)
     .component('dvLoadingButton', new DVLoadingButton())
     .component('dvAdresse', new AdresseComponentConfig())
+    .component('dvLanguageSelector', new DvLanguageSelectorComponentConfig())
     .component('dvErrorMessages', new DvErrorMessagesComponentConfig())
     .component('dvErwerbspensumList', new DVErwerbspensumListConfig())
     .component('dvInputContainer', new DvInputContainerComponentConfig())

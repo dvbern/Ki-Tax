@@ -22,6 +22,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeListComponent} from './gemeinde-list.component';
 
@@ -36,6 +37,8 @@ describe('GemeindeListComponent', () => {
         const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
             ['isRole', 'isOneOfRoles']);
+        const i18nServiceSpy = jasmine
+            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -47,6 +50,7 @@ describe('GemeindeListComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [GemeindeListComponent],
         }).compileComponents();
