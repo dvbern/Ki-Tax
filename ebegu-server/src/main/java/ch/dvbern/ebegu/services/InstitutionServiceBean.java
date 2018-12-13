@@ -163,7 +163,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Predicate predTraegerschaft =
 			cb.equal(root.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
 
-		query.where(predTraegerschaft, getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(predTraegerschaft, excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -189,7 +189,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			LocalDate.now()
 		);
 
-		query.where(predTraegerschaft, predActive, getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(predTraegerschaft, predActive, excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -210,7 +210,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			LocalDate.now()
 		);
 
-		query.where(predSchulamt, predActive, getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(predSchulamt, predActive, excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -229,7 +229,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			LocalDate.now()
 		);
 
-		query.where(predActive, getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(predActive, excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -243,7 +243,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		query.select(root.get(InstitutionStammdaten_.institution));
 		query.distinct(true);
 
-		query.where(getUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -285,7 +285,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		return allInstStammdaten.getBetreuungsangebotTyp();
 	}
 
-	private Predicate getUnknownInstitutionPredicate(CriteriaBuilder cb, Path path) {
+	private Predicate excludeUnknownInstitutionPredicate(CriteriaBuilder cb, Path path) {
 		return cb.notEqual(path, ID_UNKNOWN_INSTITUTION);
 	}
 }
