@@ -811,9 +811,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		}
 		return betreuungspensum.compareTo(that.betreuungspensum) == 0 &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			abzugFamGroesse != null && abzugFamGroesse.compareTo(that.abzugFamGroesse) == 0 &&
-			famGroesse != null && famGroesse.compareTo(that.famGroesse) == 0 &&
-			Objects.equals(bemerkungen, that.bemerkungen);
+			(betreuungsstunden.compareTo(that.betreuungsstunden) == 0) &&
+			(vollkosten.compareTo(that.vollkosten) == 0) &&
+			(elternbeitrag.compareTo(that.elternbeitrag) == 0) &&
+			(abzugFamGroesse.compareTo(that.abzugFamGroesse) == 0) &&
+			(famGroesse.compareTo(that.famGroesse) == 0) &&
+			(massgebendesEinkommenVorAbzugFamgr.compareTo(that.massgebendesEinkommenVorAbzugFamgr) == 0) &&
+			babyTarif == that.babyTarif &&
+			eingeschult == that.eingeschult &&
+			besondereBeduerfnisse == that.besondereBeduerfnisse &&
+			Objects.equals(this.einkommensjahr, that.einkommensjahr);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

@@ -150,8 +150,8 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 							.hasSecondGesuchsteller()
 							&& (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag))) {
 
-							if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)) {
-								gueltigkeit.setGueltigBis(familiensituationStichtag);
+							if (!gueltigkeit.getGueltigBis().isBefore(familiensituationStichtag)) {
+								gueltigkeit.setGueltigBis(familiensituationStichtag.minusDays(1));
 							}
 							createZeitabschnittForGS2(adressenZeitabschnitte, gesuchstellerAdresse.extractIsNichtInGemeinde(), gueltigkeit);
 						}
