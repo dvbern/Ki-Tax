@@ -15,6 +15,8 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService} from 'angular';
+import {Permission} from '../../../app/authorisation/Permission';
+import {PERMISSIONS} from '../../../app/authorisation/Permissions';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
@@ -33,8 +35,10 @@ import {TSMitteilungEvent} from '../../../models/enums/TSMitteilungEvent';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAntragDTO from '../../../models/TSAntragDTO';
 import TSDossier from '../../../models/TSDossier';
+import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
+import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {NavigationUtil} from '../../../utils/NavigationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -120,6 +124,7 @@ export class DossierToolbarController implements IDVFocusableController {
     // Namen der Antraege
     public antragTypList: { [key: string]: TSAntragDTO } = {};
     public gemeindeId: string;
+    public gemeindeInstitutionKontakteHtml: string;
     public mutierenPossibleForCurrentAntrag: boolean = false;
     public erneuernPossibleForCurrentAntrag: boolean = false;
     public neuesteGesuchsperiode: TSGesuchsperiode;
@@ -262,6 +267,13 @@ export class DossierToolbarController implements IDVFocusableController {
                 }
                 this.dossier = response;
                 this.gemeindeId = this.dossier.gemeinde.id;
+
+                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+                    this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((stammdaten => {
+                        this.gemeindeInstitutionKontakteHtml = this.gemeindeStammdatenToHtml(stammdaten);
+                    }));
+                }
+
                 if (!this.forceLoadingFromFall && this.getGesuch() && this.getGesuch().id) {
                     this.gesuchRS.getAllAntragDTOForDossier(this.getGesuch().dossier.id).then(antraege => {
                         this.antragList = angular.copy(antraege);
@@ -300,6 +312,10 @@ export class DossierToolbarController implements IDVFocusableController {
                     this.updateAmountNewMitteilungenGS();
                 } else {
                     this.resetNavigationParameters();
+                }
+
+                if (this.authServiceRS.isOneOfRoles(PERMISSIONS[Permission.ROLE_GEMEINDE]) && this.getGesuch()) {
+                    this.gemeindeInstitutionKontakteHtml = this.institutionenStammdatenToHtml();
                 }
             });
         }
@@ -643,19 +659,56 @@ export class DossierToolbarController implements IDVFocusableController {
 
     public showKontakt(): void {
         const text = this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
-            return `<span>${gemeindeDaten.adresse.organisation ? gemeindeDaten.adresse.organisation : ''}
-                          ${gemeindeDaten.gemeinde.name}
-                    </span><br>
-                    <span>${gemeindeDaten.adresse.strasse} ${gemeindeDaten.adresse.hausnummer}</span><br>
-                    <span>${gemeindeDaten.adresse.plz} ${gemeindeDaten.adresse.ort}</span><br>
-                    <a href="tel:${gemeindeDaten.telefon}">${gemeindeDaten.telefon}</a><br>
-                    <a href="mailto:${gemeindeDaten.mail}">${gemeindeDaten.mail}</a>`;
+            return this.gemeindeStammdatenToHtml(gemeindeDaten);
         }));
         this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
             title: '',
             text,
             parentController: this,
         });
+    }
+
+    private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdaten): string {
+        let html = `<span class="margintop">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+                          ${stammdaten.gemeinde.name}</span><br>
+                    <span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
+                    <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
+                    <a href="mailto:${stammdaten.mail}">${stammdaten.mail}</a><br>`;
+        html += stammdaten.telefon ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>` : '';
+        return html;
+    }
+
+    private institutionStammdatenToHtml(stammdaten: TSInstitutionStammdaten): string {
+        let html = '';
+        if (stammdaten.adresse.organisation === stammdaten.institution.name) {
+            html += `<span class="margintop">${stammdaten.institution.name}</span><br>`;
+        } else {
+            html += `<span class="margintop">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+                          ${stammdaten.institution.name}</span><br>`;
+        }
+        html +=    `<span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
+                    <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
+                    <a href="mailto:${stammdaten.mail}">${stammdaten.mail}</a><br>`;
+        html += stammdaten.telefon ? `<a href="tel:${stammdaten.telefon}">${stammdaten.telefon}</a><br>` : '';
+        return html;
+    }
+
+    private institutionenStammdatenToHtml(): string {
+        let html = '';
+        let limit = 5;
+        const institutionIds: Array<string> = new Array();
+        for (const kc of this.getGesuch().kindContainers) {
+            for (const be of kc.betreuungen) {
+                if (limit-- === 0) {
+                    return html;
+                }
+                if (!(institutionIds.includes(be.institutionStammdaten.institution.id))) {
+                    institutionIds.push(be.institutionStammdaten.institution.id);
+                    html += this.institutionStammdatenToHtml(be.institutionStammdaten);
+                }
+            }
+        }
+        return html;
     }
 
     /**
