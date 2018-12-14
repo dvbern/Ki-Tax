@@ -584,8 +584,8 @@ public class AbstractBGRechnerTest {
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 70000, BASISJAHR, 0, 70000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 70000, BASISJAHR, 0, 70000, 2);
 		// EKV: 01.10.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
@@ -612,8 +612,8 @@ public class AbstractBGRechnerTest {
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 70000, BASISJAHR, 0, 70000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 70000, BASISJAHR, 0, 70000, 2);
 		// EKV: 01.10.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);

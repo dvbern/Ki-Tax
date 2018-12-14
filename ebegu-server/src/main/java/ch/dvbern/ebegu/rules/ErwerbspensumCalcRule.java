@@ -135,14 +135,10 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		final Familiensituation familiensituationErstGesuch = gesuch.extractFamiliensituationErstgesuch();
 
 		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
-		if (familiensituationGueltigAb != null) {
-			// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
-			LocalDate familiensituationStichtag =
-				getStichtagForEreignis(familiensituationGueltigAb);
-
-			if (familiensituationErstGesuch != null && gueltigkeit.getGueltigBis().isBefore(familiensituationStichtag)) {
+		if (familiensituationGueltigAb != null
+			&& familiensituationErstGesuch != null
+			&& gueltigkeit.getGueltigBis().isBefore(familiensituationGueltigAb)) {
 				return familiensituationErstGesuch.hasSecondGesuchsteller();
-			}
 		}
 		return familiensituation.hasSecondGesuchsteller();
 	}

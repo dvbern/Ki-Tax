@@ -71,13 +71,11 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 			}
 
 			VerfuegungZeitabschnitt abschnittVorMutation = new VerfuegungZeitabschnitt(new DateRange(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), ereignistag.minusDays(1)));
-			abschnittVorMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch
-				.hasSecondGesuchsteller());
+			abschnittVorMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch.hasSecondGesuchsteller());
 			zivilstandsaenderungAbschnitte.add(abschnittVorMutation);
 
 			VerfuegungZeitabschnitt abschnittVorStichtag = new VerfuegungZeitabschnitt(new DateRange(ereignistag, stichtag.minusDays(1)));
-			abschnittVorStichtag.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch
-				.hasSecondGesuchsteller());
+			abschnittVorStichtag.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch.hasSecondGesuchsteller());
 			abschnittVorStichtag.addBemerkung(bemerkungContainer);
 			zivilstandsaenderungAbschnitte.add(abschnittVorStichtag);
 

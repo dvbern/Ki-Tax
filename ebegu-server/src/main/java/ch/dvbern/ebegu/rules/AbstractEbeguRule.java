@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,6 +32,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.RuleUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -282,13 +282,12 @@ public abstract class AbstractEbeguRule implements Rule {
 
 	/**
 	 * Berechnet das Datum, ab wann eine Regel aufgrund es übergebenen Datums angewendet werden soll.
-	 * Aktuell ist dies der erste Tag des Folgemonats. Fällt das Ereignis auf den ersten Tag eines Monats,
-	 * so ist der Stichtag = Ereignistag.
+	 * Aktuell ist dies der erste Tag des Folgemonats. Auch bei Ereignis am 1. wird der 1. des Folgemonats genommen.
 	 * Achtung, dieser Stichtag kommt nicht zwingend schlussendlich zum Einsatz, z.B. bei verspäteter Einreichung
 	 * des Gesuchs.
 	 */
 	@Nonnull
 	public LocalDate getStichtagForEreignis(@Nonnull LocalDate ereignisdatum) {
-		return ereignisdatum.minusDays(1).plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+		return RuleUtil.getStichtagForEreignis(ereignisdatum);
 	}
 }
