@@ -29,6 +29,8 @@ export class DvRadioContainerComponentConfig implements IComponentOptions {
         dvEnableExpression: '<',
         ariaDescribedBy: '@',
         ariaLabel: '@',
+        jaLabel: '<',
+        neinLabel: '<'
     };
     public template = require('./dv-radio-container.html');
     public controller = DvRadioContainerController;

@@ -15,8 +15,8 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import * as moment from 'moment';
 import * as $ from 'jquery';
+import * as moment from 'moment';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
@@ -202,6 +202,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public initEmptyBetreuung(): TSBetreuung {
         const tsBetreuung = new TSBetreuung();
+
+        // radio group für vertrag soll zu beginn leer sein
+        tsBetreuung.vertrag = null;
         tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
@@ -345,6 +348,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public saveBetreuung(): void {
         if (this.isGesuchValid()) {
             this.save(null, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        }
+    }
+
+    /**
+     * This method saves a provisorische Betreuung and
+     * creates a Betreuungspensum for the whole period
+     */
+    public saveProvisorischeBetreuung(): void {
+        if (this.isGesuchValid()) {
+            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
         }
     }
 
