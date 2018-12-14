@@ -18,6 +18,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UIRouterModule} from '@uirouter/angular';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
 import {OnboardingMainComponent} from './onboarding-main.component';
@@ -25,6 +26,8 @@ import {OnboardingMainComponent} from './onboarding-main.component';
 describe('OnboardingMainComponent', () => {
     let component: OnboardingMainComponent;
     let fixture: ComponentFixture<OnboardingMainComponent>;
+
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -34,6 +37,9 @@ describe('OnboardingMainComponent', () => {
                 UIRouterModule.forRoot({useHash: true}),
             ],
             declarations: [OnboardingMainComponent],
+            providers: [
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+            ],
         })
             .compileComponents();
     }));

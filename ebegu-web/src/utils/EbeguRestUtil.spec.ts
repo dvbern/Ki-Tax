@@ -52,7 +52,6 @@ import TSVerfuegungZeitabschnitt from '../models/TSVerfuegungZeitabschnitt';
 import {TSDateRange} from '../models/types/TSDateRange';
 import DateUtil from './DateUtil';
 import EbeguRestUtil from './EbeguRestUtil';
-import EbeguUtil from './EbeguUtil';
 import TestDataUtil from './TestDataUtil.spec';
 import IProvideService = angular.auto.IProvideService;
 
@@ -71,11 +70,10 @@ describe('EbeguRestUtil', () => {
 
     beforeEach(angular.mock.module(($provide: IProvideService) => {
         $provide.value('CONSTANTS', CONSTANTS);
-        $provide.service('EbeguUtil', EbeguUtil);
     }));
 
-    beforeEach(angular.mock.inject($injector => {
-        ebeguRestUtil = new EbeguRestUtil($injector.get('EbeguUtil'));
+    beforeEach(angular.mock.inject(() => {
+        ebeguRestUtil = new EbeguRestUtil();
         today = DateUtil.today();
     }));
 

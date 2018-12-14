@@ -45,7 +45,7 @@
         <hibernate-search.version>5.5.8.Final</hibernate-search.version>
 
         <version.flyway>3.2.1</version.flyway>
-        <version.slf4j>1.7.10</version.slf4j>
+        <version.slf4j>1.7.25</version.slf4j>
         <version.wildfly-arquillian-containers>2.1.1.Final</version.wildfly-arquillian-containers>
         <version.wildfly.container>13.0.0.Final</version.wildfly.container>
 
@@ -192,6 +192,12 @@
                 <groupId>fr.opensagres.xdocreport</groupId>
                 <artifactId>fr.opensagres.xdocreport.converter.docx.xwpf</artifactId>
                 <version>2.0.1</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.wildfly.openssl/wildfly-openssl-java -->
+            <dependency>
+                <groupId>org.wildfly.openssl</groupId>
+                <artifactId>wildfly-openssl-java</artifactId>
+                <version>1.0.6.Final</version>
             </dependency>
 
             <!-- Submodule-dependencies should be on the project version -->

@@ -7,6 +7,7 @@ import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {GemeindeModule} from '../../gemeinde/gemeinde.module';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 
@@ -25,6 +26,7 @@ describe('EditInstitutionComponent', () => {
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
     beforeEach(async(() => {
 
@@ -43,6 +45,7 @@ describe('EditInstitutionComponent', () => {
                 {provide: InstitutionRS, useValue: insitutionServiceSpy},
                 {provide: InstitutionStammdatenRS, useValue: stammdatenServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [EditInstitutionComponent],
         }).compileComponents();
