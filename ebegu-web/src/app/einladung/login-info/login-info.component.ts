@@ -15,8 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Transition} from '@uirouter/core';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 
 @Component({
     selector: 'dv-login-info',
@@ -24,9 +25,18 @@ import {Transition} from '@uirouter/core';
     styleUrls: ['./login-info.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginInfoComponent {
+export class LoginInfoComponent implements OnInit {
 
-    public constructor(public transition: Transition) {
+    public portalAccountCreationLink: string;
+
+    public constructor(public transition: Transition,
+                       private readonly authService: AuthServiceRS,
+                       private readonly cdRef: ChangeDetectorRef,
+                       ) {
+    }
+
+    public ngOnInit(): void {
+        this.loadPortalAccountCreationLink();
     }
 
     public goToLoginWithReturnToState(): void {
@@ -35,4 +45,11 @@ export class LoginInfoComponent {
 
         this.transition.router.stateService.go('einladung.abschliessen', params, options);
     }
+
+    public loadPortalAccountCreationLink(): void {
+         this.authService.portalAccountCreationPageLink().then(result => {
+             this.portalAccountCreationLink = result;
+             this.cdRef.markForCheck();
+         });
+     }
 }
