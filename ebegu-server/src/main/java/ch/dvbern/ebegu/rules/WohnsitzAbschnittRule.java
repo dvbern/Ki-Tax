@@ -131,8 +131,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 					if (familiensituationGueltigAb != null) {
 
 						// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
-						LocalDate familiensituationStichtag =
-							familiensituationGueltigAb.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+						LocalDate familiensituationStichtag = getStichtagForEreignis(familiensituationGueltigAb);
 
 						// from 1GS to 2GS
 						Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();

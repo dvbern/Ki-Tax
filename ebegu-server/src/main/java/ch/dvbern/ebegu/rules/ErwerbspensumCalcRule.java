@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -139,7 +138,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		if (familiensituationGueltigAb != null) {
 			// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
 			LocalDate familiensituationStichtag =
-				familiensituationGueltigAb.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+				getStichtagForEreignis(familiensituationGueltigAb);
 
 			if (familiensituationErstGesuch != null && gueltigkeit.getGueltigBis().isBefore(familiensituationStichtag)) {
 				return familiensituationErstGesuch.hasSecondGesuchsteller();

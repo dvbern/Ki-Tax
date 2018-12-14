@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -71,7 +70,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
 		if (!gesuch.isMutation()
 			|| (familiensituationAenderungPer != null
-			&& !familiensituationAenderungPer.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth()).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb()))) {
+			&& !getStichtagForEreignis(familiensituationAenderungPer).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb()))) {
 
 			hasSecondGesuchsteller = familiensituation.hasSecondGesuchsteller();
 		} else {

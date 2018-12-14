@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +58,7 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			// Einkommensverschlechterung 1: In mind. 1 Kombination eingegeben
 			if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() != null || finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus1() != null) {
 				LocalDate startEKV1 = finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() != null ? finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() : finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus1();
-				LocalDate stichtagEKV1 = startEKV1.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+				LocalDate stichtagEKV1 = getStichtagForEreignis(startEKV1);
 				DateRange rangeEKV1 = new DateRange(stichtagEKV1, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
 
@@ -81,7 +80,7 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			// Einkommensverschlechterung 2: In mind. 1 Kombination akzeptiert
 			if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() != null || finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus2() != null) {
 				LocalDate startEKV2 = finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() != null ? finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() : finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus2();
-				LocalDate stichtagEKV2 = startEKV2.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+				LocalDate stichtagEKV2 = getStichtagForEreignis(startEKV2);
 				DateRange rangeEKV2 = new DateRange(stichtagEKV2, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
 				abschnittEinkommensverschlechterung2.setEkv1NotExisting(!hasEKV1);

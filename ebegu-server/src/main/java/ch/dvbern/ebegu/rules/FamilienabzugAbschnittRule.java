@@ -84,7 +84,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			final LocalDate geburtsdatum = kindContainer.getKindJA().getGeburtsdatum();
 			if (gesuch.getGesuchsperiode().getGueltigkeit().contains(geburtsdatum)) {
-				final LocalDate beginMonatNachGeb = geburtsdatum.plusMonths(1).withDayOfMonth(1);
+				final LocalDate beginMonatNachGeb = getStichtagForEreignis(geburtsdatum);
 				famGrMap.put(beginMonatNachGeb, calculateFamiliengroesse(gesuch, beginMonatNachGeb));
 			}
 		}
@@ -92,7 +92,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (familiensituation != null && familiensituation.getAenderungPer() != null) {
 			// die familiensituation aendert sich jetzt erst ab dem naechsten Monat, deswegen .plusMonths(1).withDayOfMonth(1)
-			final LocalDate aenderungPerBeginningNextMonth = familiensituation.getAenderungPer().plusMonths(1).withDayOfMonth(1);
+			final LocalDate aenderungPerBeginningNextMonth = getStichtagForEreignis(familiensituation.getAenderungPer());
 			famGrMap.put(aenderungPerBeginningNextMonth, calculateFamiliengroesse(gesuch, aenderungPerBeginningNextMonth));
 		}
 
@@ -174,7 +174,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 				LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
 				if (familiensituationErstgesuch != null && date != null && (
 					familiensituationGueltigAb == null //wenn aenderung per nicht gesetzt ist nehmen wir wert aus erstgesuch
-						|| date.isBefore(familiensituationGueltigAb.plusMonths(1).withDayOfMonth(1)))) {
+						|| date.isBefore(getStichtagForEreignis(familiensituationGueltigAb)))) {
 
 					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (familiensituationErstgesuch
 						.hasSecondGesuchsteller() ? 2 : 1);

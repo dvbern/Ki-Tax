@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +67,7 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
 		if (familiensituationGueltigAb != null) {
 			// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
-			LocalDate familiensituationStichtag = familiensituationGueltigAb.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+			LocalDate familiensituationStichtag = getStichtagForEreignis(familiensituationGueltigAb);
 			if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
 				// 1GS to 2GS
 				if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)
@@ -86,5 +85,4 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 			}
 		}
 	}
-
 }

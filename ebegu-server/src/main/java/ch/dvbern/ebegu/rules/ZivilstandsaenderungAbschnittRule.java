@@ -59,7 +59,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 			// Die Zivilstandsaenderung gilt ab anfang nächstem Monat, die Bemerkung muss aber "per Heirat/Trennung" erfolgen
 			final LocalDate ereignistag = familiensituation.getAenderungPer();
-			final LocalDate stichtag = ereignistag.plusMonths(1).withDayOfMonth(1);
+			final LocalDate stichtag = getStichtagForEreignis(ereignistag);
 			// Bemerkung erstellen
 			VerfuegungsBemerkung bemerkungContainer;
 			if (familiensituation.hasSecondGesuchsteller()) {
