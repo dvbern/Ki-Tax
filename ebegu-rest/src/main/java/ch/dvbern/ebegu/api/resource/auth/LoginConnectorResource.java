@@ -22,7 +22,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
@@ -59,7 +58,6 @@ import static java.util.Objects.requireNonNull;
  */
 @SuppressWarnings({ "EjbInterceptorInspection", "EjbClassBasicInspection" })
 @Stateless
-@Path("/connector")
 public class LoginConnectorResource implements ILoginConnectorResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginConnectorResource.class.getSimpleName());

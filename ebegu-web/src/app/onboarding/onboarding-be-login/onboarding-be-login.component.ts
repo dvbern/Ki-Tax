@@ -25,7 +25,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
     styleUrls: ['./onboarding-be-login.component.less', '../onboarding.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OnboardingBeLoginComponent implements OnInit{
+export class OnboardingBeLoginComponent implements OnInit {
 
     public readonly gemeindeId: string;
     public portalAccountCreationLink: string = undefined;
@@ -35,21 +35,17 @@ export class OnboardingBeLoginComponent implements OnInit{
                        private readonly cdRef: ChangeDetectorRef,
     ) {
         this.gemeindeId = this.transition.params().gemeindeId;
-
-
     }
 
     public ngOnInit(): void {
         this.loadPortalAccountCreationLink();
     }
 
-
     public loadPortalAccountCreationLink(): void {
-        this.authService.portalAccountCreationPageLink().then((result) => {
+        this.authService.portalAccountCreationPageLink().then(result => {
             this.portalAccountCreationLink = result;
             this.cdRef.markForCheck();
-        })
+        });
     }
-
 
 }

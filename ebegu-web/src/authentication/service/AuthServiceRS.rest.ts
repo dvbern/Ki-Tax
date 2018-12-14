@@ -124,7 +124,6 @@ export default class AuthServiceRS {
         }
     }
 
-
     public portalAccountCreationPageLink(): IPromise<string> {
         return this.$http.get(CONSTANTS.REST_API + 'auth/portalAccountPage').then((res: any) => {
             return res.data;

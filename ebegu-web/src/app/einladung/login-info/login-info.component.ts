@@ -25,17 +25,15 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
     styleUrls: ['./login-info.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginInfoComponent implements OnInit{
+export class LoginInfoComponent implements OnInit {
 
-    private portalAccountCreationLink: string;
+    public portalAccountCreationLink: string;
 
     public constructor(public transition: Transition,
                        private readonly authService: AuthServiceRS,
                        private readonly cdRef: ChangeDetectorRef,
                        ) {
     }
-
-
 
     public ngOnInit(): void {
         this.loadPortalAccountCreationLink();
@@ -49,9 +47,9 @@ export class LoginInfoComponent implements OnInit{
     }
 
     public loadPortalAccountCreationLink(): void {
-         this.authService.portalAccountCreationPageLink().then((result) => {
+         this.authService.portalAccountCreationPageLink().then(result => {
              this.portalAccountCreationLink = result;
              this.cdRef.markForCheck();
-         })
+         });
      }
 }

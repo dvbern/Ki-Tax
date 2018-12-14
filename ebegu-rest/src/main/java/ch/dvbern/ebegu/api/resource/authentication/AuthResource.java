@@ -95,7 +95,7 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	@GET
 	@PermitAll
-	public Response portalAccountCreationPageLink(@Nullable @QueryParam("relayPath") String relayPath) {
+	public Response portalAccountCreationPageLink() {
 		String url = configuration.getPortalAccountCreationPageLink();
 		return Response.ok(url).build();
 	}
