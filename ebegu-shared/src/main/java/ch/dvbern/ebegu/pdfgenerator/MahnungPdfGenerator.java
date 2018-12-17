@@ -91,7 +91,8 @@ public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 	private List<String> getFehlendeUnterlagen() {
 		List<String> fehlendeUnterlagen = new ArrayList<>();
 		if (mahnung.getBemerkungen() != null) {
-			String[] splitFehlendeUnterlagen = mahnung.getBemerkungen().split('[' + System.getProperty("line.separator") + "]+");
+			String[] splitFehlendeUnterlagen = mahnung.getBemerkungen()
+				.split('[' + System.getProperty("line.separator") + "]+");
 			fehlendeUnterlagen.addAll(Arrays.asList(splitFehlendeUnterlagen));
 		}
 		return fehlendeUnterlagen;

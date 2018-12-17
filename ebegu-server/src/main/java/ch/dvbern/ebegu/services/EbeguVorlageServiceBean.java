@@ -236,14 +236,16 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 		// Die Vorlagen des letzten Jahres suchen (datumAb -1 Tag)
 		Collection<EbeguVorlage> ebeguVorlageByDate = getALLEbeguVorlageByDate(
 			gesuchsperiodeToCopyTo.getGueltigkeit().getGueltigAb().minusDays(1), true);
-		ebeguVorlageByDate.stream().filter(lastYearVoralge -> lastYearVoralge.getName().isProGesuchsperiode()).forEach(lastYearVorlage -> {
-			EbeguVorlage newVorlage = lastYearVorlage.copy(gesuchsperiodeToCopyTo.getGueltigkeit());
-			if (lastYearVorlage.getVorlage() != null) {
-				fileSaverService.copy(lastYearVorlage.getVorlage(), "vorlagen");
-				newVorlage.setVorlage(lastYearVorlage.getVorlage().copy());
-			}
-			saveEbeguVorlage(newVorlage);
-		});
+		ebeguVorlageByDate.stream()
+			.filter(lastYearVoralge -> lastYearVoralge.getName().isProGesuchsperiode())
+			.forEach(lastYearVorlage -> {
+				EbeguVorlage newVorlage = lastYearVorlage.copy(gesuchsperiodeToCopyTo.getGueltigkeit());
+				if (lastYearVorlage.getVorlage() != null) {
+					fileSaverService.copy(lastYearVorlage.getVorlage(), "vorlagen");
+					newVorlage.setVorlage(lastYearVorlage.getVorlage().copy());
+				}
+				saveEbeguVorlage(newVorlage);
+			});
 	}
 
 	@Override

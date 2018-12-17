@@ -121,12 +121,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	public PdfPTable createGesuchstellerTable() {
 		PdfPTable table = new PdfPTable(3);
 		// Init
-		table.setSpacingBefore(0);
-		table.setWidthPercentage(FULL_WIDTH);
-		table.setKeepTogether(true);
-		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		table.getDefaultCell().setPadding(0);
-		table.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		PdfUtil.setTableDefaultStyles(table);
 		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		// Row: Referenznummer
 		table.addCell(new Phrase(translate(REFERENZNUMMER), DEFAULT_FONT));
@@ -180,11 +175,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	@Nonnull
 	public PdfPTable createUnterschriftenTable() {
 		PdfPTable table = new PdfPTable(2);
-		table.setSpacingBefore(0);
-		table.setWidthPercentage(FULL_WIDTH);
-		table.setKeepTogether(true);
-		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		table.getDefaultCell().setPadding(0);
+		PdfUtil.setTableDefaultStyles(table);
 		table.getDefaultCell().setPaddingTop(4 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 
 		GesuchstellerContainer gesuchsteller1 = getGesuch().getGesuchsteller1();

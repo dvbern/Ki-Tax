@@ -70,7 +70,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
-@SuppressWarnings("UnstableApiUsage")
 @Stateless
 @Local(PDFService.class)
 public class PDFServiceBean implements PDFService {
@@ -119,7 +118,7 @@ public class PDFServiceBean implements PDFService {
 			pdfGenerator = new ErsteMahnungPdfGenerator(mahnung, stammdaten);
 			break;
 		case ZWEITE_MAHNUNG:
-			Mahnung vorgaengerMahnung = vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("",
+			Mahnung vorgaengerMahnung = vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("generateMahnung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mahnung.getId()));
 			pdfGenerator = new ZweiteMahnungPdfGenerator(mahnung, vorgaengerMahnung, stammdaten);
 			break;

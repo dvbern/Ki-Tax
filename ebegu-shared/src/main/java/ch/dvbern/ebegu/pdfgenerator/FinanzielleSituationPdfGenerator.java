@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.pdfgenerator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,6 +52,7 @@ import com.lowagie.text.pdf.PdfPTable;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
+import static java.util.Objects.requireNonNull;
 
 public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator {
 
@@ -93,7 +93,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 
-	private Verfuegung verfuegungFuerMassgEinkommen;
+	private final Verfuegung verfuegungFuerMassgEinkommen;
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
@@ -140,19 +140,26 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 	private void createPageBasisJahr(@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator, @Nonnull Document document) {
 		createFusszeile(generator.getDirectContent());
-		AbstractFinanzielleSituation basisJahrGS1;
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		basisJahrGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+		requireNonNull(gesuch.getGesuchsteller1());
+		requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		AbstractFinanzielleSituation basisJahrGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 
 		AbstractFinanzielleSituation basisJahrGS2 = null;
 		if (hasSecondGesuchsteller()) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+			requireNonNull(gesuch.getGesuchsteller2());
+			requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 			basisJahrGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 		}
 
 		document.add(createIntroBasisjahr());
+		addTablesToDocument(document, basisJahrGS1, basisJahrGS2);
+	}
+
+	private void addTablesToDocument(
+		@Nonnull Document document,
+		AbstractFinanzielleSituation basisJahrGS1,
+		@Nullable AbstractFinanzielleSituation basisJahrGS2
+	) {
 		document.add(createTableEinkommen(basisJahrGS1, basisJahrGS2));
 		document.add(createTableVermoegen(basisJahrGS1, basisJahrGS2));
 		document.add(createTableAbzuege(basisJahrGS1, basisJahrGS2));
@@ -160,9 +167,9 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	private void createPageEkv1(@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator, @Nonnull Document document, @Nonnull EinkommensverschlechterungInfo ekvInfo) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		requireNonNull(gesuch.getGesuchsteller1());
 		EinkommensverschlechterungContainer ekvContainerGS1 = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
-		Objects.requireNonNull(ekvContainerGS1);
+		requireNonNull(ekvContainerGS1);
 
 
 		document.newPage();
@@ -175,21 +182,18 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 		Einkommensverschlechterung ekv1GS2 = null;
 		if (hasSecondGesuchsteller()) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			Objects.requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
+			requireNonNull(gesuch.getGesuchsteller2());
+			requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
 			ekv1GS2 = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
 		}
 
-		document.add(createTableEinkommen(ekv1GS1, ekv1GS2));
-		document.add(createTableVermoegen(ekv1GS1, ekv1GS2));
-		document.add(createTableAbzuege(ekv1GS1, ekv1GS2));
-		document.add(createTableZusammenzug(ekv1GS1, ekv1GS2));
+		addTablesToDocument(document, ekv1GS1, ekv1GS2);
 	}
 
 	private void createPageEkv2(@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator, @Nonnull Document document, @Nonnull EinkommensverschlechterungInfo ekvInfo) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		requireNonNull(gesuch.getGesuchsteller1());
 		EinkommensverschlechterungContainer ekvContainerGS1 = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
-		Objects.requireNonNull(ekvContainerGS1);
+		requireNonNull(ekvContainerGS1);
 
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
@@ -202,15 +206,12 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 		Einkommensverschlechterung ekv2GS2 = null;
 		if (hasSecondGesuchsteller()) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			Objects.requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
+			requireNonNull(gesuch.getGesuchsteller2());
+			requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
 			ekv2GS2 = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2();
 		}
 
-		document.add(createTableEinkommen(ekv2GS1, ekv2GS2));
-		document.add(createTableVermoegen(ekv2GS1, ekv2GS2));
-		document.add(createTableAbzuege(ekv2GS1, ekv2GS2));
-		document.add(createTableZusammenzug(ekv2GS1, ekv2GS2));
+		addTablesToDocument(document, ekv2GS1, ekv2GS2);
 	}
 
 	private void createPageMassgebendesEinkommen(@Nonnull Document document) {
@@ -237,12 +238,12 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			values.add(data);
 		}
 		final float[] widthMassgebendesEinkommen = {5,5,6,10,5,10,10};
-		final int[] alignementMassgebendesEinkommen = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT};
+		final int[] alignmentMassgebendesEinkommen = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT};
 		document.setPageSize(PageSize.A4.rotate());
 		document.newPage();
 		document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(MASSG_EINK_TITLE), 2));
 		document.add(createIntroMassgebendesEinkommen());
-		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignementMassgebendesEinkommen, 0));
+		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignmentMassgebendesEinkommen, 0));
 	}
 
 	@Nonnull
@@ -284,7 +285,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		@Nonnull AbstractFinanzielleSituation gs1,
 		@Nullable AbstractFinanzielleSituation gs2
 	) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalEinkommenBeiderGS = FinanzielleSituationRechner.calcTotalEinkommen(gs1, gs2);
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
@@ -305,7 +306,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(EINKOMMEN_TOTAL), "");
 
 		if (gs2 != null) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			requireNonNull(gesuch.getGesuchsteller2());
 
 			einkommenTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
 			nettolohn.setGs2(gs2.getNettolohn());
@@ -338,7 +339,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		@Nonnull AbstractFinanzielleSituation gs1,
 		@Nullable AbstractFinanzielleSituation gs2
 	) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalVermoegenBeiderGS = FinanzielleSituationRechner.calcTotalVermoegen(gs1, gs2);
 		BigDecimal vermoegen5Prozent = FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2);
 
@@ -356,7 +357,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(NETTOVERMOEGEN_5_PROZENT),"");
 
 		if (gs2 != null) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			requireNonNull(gesuch.getGesuchsteller2());
 
 			vermoegenTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
 			bruttovermoegen.setGs2(gs2.getBruttovermoegen());
@@ -385,7 +386,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		@Nonnull AbstractFinanzielleSituation gs1,
 		@Nullable AbstractFinanzielleSituation gs2
 	) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalAbzuegeBeiderGS = FinanzielleSituationRechner.calcTotalAbzuege(gs1, gs2);
 
 		FinanzielleSituationRow abzuegeTitle = new FinanzielleSituationRow(
@@ -396,7 +397,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(ABZUEGE_TOTAL), "");
 
 		if (gs2 != null) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			requireNonNull(gesuch.getGesuchsteller2());
 			abzuegeTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
 			unterhaltsbeitraege.setGs2(gs2.getGeleisteteAlimente());
 			total.setGs1(MathUtil.DEFAULT.add(gs1.getZwischetotalAbzuege(), gs2.getZwischetotalAbzuege()));
@@ -418,7 +419,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		@Nonnull AbstractFinanzielleSituation gs1,
 		@Nullable AbstractFinanzielleSituation gs2
 	) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal massgebendesEinkommenVorAbzugFamiliengroesse =
 			FinanzielleSituationRechner.calcMassgebendesEinkommenVorAbzugFamiliengroesse(gs1, gs2);
 
@@ -434,7 +435,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(MASSG_EINKOMMEN_VOR_FAMILIENGROESSE), massgebendesEinkommenVorAbzugFamiliengroesse);
 
 		if (gs2 != null) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			requireNonNull(gesuch.getGesuchsteller2());
 			einkommen.setGs1(MathUtil.DEFAULT.add(gs1.getZwischentotalEinkommen(), gs2.getZwischentotalEinkommen()));
 			abzuege.setGs1(MathUtil.DEFAULT.add(gs1.getZwischetotalAbzuege(), gs2.getZwischetotalAbzuege()));
 		}

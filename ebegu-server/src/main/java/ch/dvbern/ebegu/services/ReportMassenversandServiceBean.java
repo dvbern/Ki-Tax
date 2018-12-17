@@ -69,7 +69,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
-@SuppressWarnings("unchecked")
 @Stateless
 @Local(ReportMassenversandService.class)
 @PermitAll
@@ -331,7 +330,6 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 	) {
 		Massenversand massenversand = new Massenversand();
 		massenversand.setText(text);
-		@SuppressWarnings("StringConcatenationMissingWhitespace")
 		String einstellungen = Constants.DATE_FORMATTER.format(datumVon) + SEPARATOR
 			+ Constants.DATE_FORMATTER.format(datumBis) + SEPARATOR
 			+ gesuchPeriodeID + SEPARATOR

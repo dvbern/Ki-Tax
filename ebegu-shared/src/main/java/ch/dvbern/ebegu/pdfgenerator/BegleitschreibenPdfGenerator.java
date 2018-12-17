@@ -81,6 +81,7 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	}
 
 	private boolean hasVerfuegung(@Nonnull Betreuung betreuung) {
+        // todo KIBON-55 reicht das für hasVerfügung?? sollte nicht nach Betreuungsstatus.VERFUEGT geschaut werden??
 		return betreuung.getBetreuungsangebotTyp() != null
 			&& betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()
 			&& betreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG;

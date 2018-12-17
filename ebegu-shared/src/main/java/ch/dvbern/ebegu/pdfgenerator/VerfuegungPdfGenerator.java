@@ -237,6 +237,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 				.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR.reversed())
 				.collect(Collectors.toList());
 
+		@SuppressWarnings("Duplicates")
 		ListIterator<VerfuegungZeitabschnitt> listIteratorBeginning = result.listIterator();
 		while (listIteratorBeginning.hasNext()) {
 			VerfuegungZeitabschnitt zeitabschnitt = listIteratorBeginning.next();

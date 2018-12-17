@@ -199,7 +199,13 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	@Nonnull
 	public final BigDecimal getZwischentotalEinkommen() {
-		return MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, getNettolohn(), getFamilienzulage(), getErsatzeinkommen(), getErhalteneAlimente(), getGeschaeftsgewinnBasisjahr());
+		return MathUtil.DEFAULT.addNullSafe(
+			BigDecimal.ZERO,
+			getNettolohn(),
+			getFamilienzulage(),
+			getErsatzeinkommen(),
+			getErhalteneAlimente(),
+			getGeschaeftsgewinnBasisjahr());
 	}
 
 	@Nonnull

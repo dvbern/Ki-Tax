@@ -155,7 +155,7 @@ public final class PdfUtil {
 	@Nonnull
 	public static Paragraph createList(java.util.List<String> list) {
 		Paragraph paragraph = new Paragraph();
-		final com.lowagie.text.List itextList = new com.lowagie.text.List(com.lowagie.text.List.UNORDERED);
+		final List itextList = new List(List.UNORDERED);
 		list.forEach(item -> itextList.add(createListItem(item)));
 		paragraph.add(itextList);
 		return paragraph;
@@ -164,7 +164,7 @@ public final class PdfUtil {
 	@Nonnull
 	public static Paragraph createList(java.util.List<String> list, final int emptyLinesAfter) {
 		Paragraph paragraph = new Paragraph();
-		final com.lowagie.text.List itextList = new com.lowagie.text.List(com.lowagie.text.List.UNORDERED);
+		final List itextList = new List(List.UNORDERED);
 		list.forEach(item -> itextList.add(createListItem(item)));
 		paragraph.setSpacingAfter(emptyLinesAfter
 			* PdfUtilities.DEFAULT_FONT_SIZE
@@ -182,12 +182,7 @@ public final class PdfUtil {
 		} catch (DocumentException e) {
 			LOG.error("Failed to read the Logo: {}", e.getMessage());
 		}
-		table.setSpacingBefore(0);
-		table.setWidthPercentage(FULL_WIDTH);
-		table.setKeepTogether(true);
-		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		table.getDefaultCell().setPadding(0);
-		table.getDefaultCell().setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		setTableDefaultStyles(table);
 
 		for (TableRowLabelValue entry : entries) {
 			table.addCell(new Phrase(entry.getLabel(), DEFAULT_FONT));
@@ -195,6 +190,15 @@ public final class PdfUtil {
 		}
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
 		return table;
+	}
+
+	public static void setTableDefaultStyles(PdfPTable table) {
+		table.setSpacingBefore(0);
+		table.setWidthPercentage(FULL_WIDTH);
+		table.setKeepTogether(true);
+		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+		table.getDefaultCell().setPadding(0);
+		table.getDefaultCell().setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 	}
 
 	public static ListItem createListItem(@Nonnull final String string) {

@@ -159,6 +159,14 @@ public final class KibonPrintUtil {
 		return null;
 	}
 
+	@Nonnull
+	public static String parseDokumentGrundDataToString(@Nonnull DokumentGrund dokumentGrund) {
+		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
+			return ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp());
+		}
+		return "";
+	}
+
 	/**
 	 * Gets the Tag or the LinkedPerson and returns it between parenthesis
 	 */

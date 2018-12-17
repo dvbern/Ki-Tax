@@ -62,6 +62,7 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 		seite2Paragraphs.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_2, gemeindeStammdaten.getTelefon(), gemeindeStammdaten.getMail())));
 	}
 
+	// todo KIBON-55 refactor
 	@Nonnull
 	private String getKinderUndAngebote() {
 		List<String> listAngebot = new ArrayList<>();
@@ -74,7 +75,7 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 		StringBuilder angebot = new StringBuilder();
 		for (int i = 0; i < listAngebot.size(); i++) {
 			angebot.append(listAngebot.get(i));
-			if (i + 2 == listAngebot.size() && listAngebot.size() > 1) {
+			if (i + 2 == listAngebot.size()) {
 				angebot.append(' ').append(ServerMessageUtil.getMessage(UND)).append(' ');
 			} else if (i + 1 < listAngebot.size()) {
 				angebot.append(", ");
