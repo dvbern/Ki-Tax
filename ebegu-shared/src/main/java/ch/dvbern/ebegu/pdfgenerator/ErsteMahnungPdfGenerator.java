@@ -52,7 +52,7 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 
 	@Override
 	protected void createSeite1(@Nonnull Document document) {
-		document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_1_PARAGRAPH_1, getKinderUndAngebote(), getEingangsdatum()), 1));
+		document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_1_PARAGRAPH_1, getKinderAndAngebote(), getEingangsdatum()), 1));
 		document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_1_PARAGRAPH_2), 1));
 	}
 
@@ -62,9 +62,8 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 		seite2Paragraphs.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_2, gemeindeStammdaten.getTelefon(), gemeindeStammdaten.getMail())));
 	}
 
-	// todo KIBON-55 refactor
 	@Nonnull
-	private String getKinderUndAngebote() {
+	private String getKinderAndAngebote() {
 		List<String> listAngebot = new ArrayList<>();
 		for (KindContainer kindContainer : getGesuch().getKindContainers()) {
 			listAngebot.addAll(
@@ -72,6 +71,7 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 					.map(betreuung -> betreuung.getKind().getKindJA().getFullName() + " (" + betreuung.getInstitutionStammdaten().getInstitution().getName() + ')')
 					.collect(Collectors.toList()));
 		}
+		// we need to separate elements by COMMA and the last one by AND
 		StringBuilder angebot = new StringBuilder();
 		for (int i = 0; i < listAngebot.size(); i++) {
 			angebot.append(listAngebot.get(i));

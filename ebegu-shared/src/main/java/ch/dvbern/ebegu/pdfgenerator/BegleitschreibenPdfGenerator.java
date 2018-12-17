@@ -71,7 +71,7 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	private List<String> getBeilagen() {
 		// Verfügungen
 		List<String> beilagen = getGesuch().extractAllBetreuungen().stream()
-			.filter(this::hasVerfuegung)
+			.filter(this::isOrCanBeVerfuegt)
 			.map(this::getBeilagenText).collect(Collectors.toList());
 		// Finanzielle Situation
 		if (getGesuch().isHasFSDokument()) {
@@ -80,8 +80,11 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 		return beilagen;
 	}
 
-	private boolean hasVerfuegung(@Nonnull Betreuung betreuung) {
-        // todo KIBON-55 reicht das für hasVerfügung?? sollte nicht nach Betreuungsstatus.VERFUEGT geschaut werden??
+	/**
+	 * Will return true when the given Betreuung is verfügbar, that means when it is kleinkind and hasn't been
+	 * marked yet as GESCHLOSSEN_OHNE_VERFUEGUNG
+	 */
+	private boolean isOrCanBeVerfuegt(@Nonnull Betreuung betreuung) {
 		return betreuung.getBetreuungsangebotTyp() != null
 			&& betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()
 			&& betreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG;

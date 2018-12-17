@@ -40,7 +40,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 @Dependent
 public class FinanzielleSituationRechner {
 
-	//TODO KIBON-55 (hefr) Überprüfen, was es davon überhaupt noch braucht
+	//TODO (hefr) Überprüfen, was es davon überhaupt noch braucht
 
 	/**
 	 * Konstruktor, welcher einen Rechner erstellt, der die Paramter aus der DB liest
