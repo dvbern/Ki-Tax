@@ -37,8 +37,6 @@ public class JaxEbeguVorlage extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private EbeguVorlageKey name = null;
 
-	private boolean proGesuchsperiode;
-
 	public JaxVorlage getVorlage() {
 		return vorlage;
 	}
@@ -53,13 +51,5 @@ public class JaxEbeguVorlage extends JaxAbstractDateRangedDTO {
 
 	public void setName(EbeguVorlageKey name) {
 		this.name = name;
-	}
-
-	public boolean isProGesuchsperiode() {
-		return proGesuchsperiode;
-	}
-
-	public void setProGesuchsperiode(boolean proGesuchsperiode) {
-		this.proGesuchsperiode = proGesuchsperiode;
 	}
 }

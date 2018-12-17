@@ -63,6 +63,7 @@ public final class PdfUtil {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 	private static final String WATERMARK = "PdfGeneration_Watermark";
 	private static final float FONT_SIZE_WATERMARK = 40.0f;
+	private static final float DEFAULT_TABLE_LEADING = 1.0f;
 
 	private PdfUtil() {
 		// nop
@@ -100,7 +101,7 @@ public final class PdfUtil {
 		PdfPTable table = new PdfPTable(1);
 		table.setWidthPercentage(FULL_WIDTH);
 		table.setKeepTogether(true);
-		table.getDefaultCell().setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		table.getDefaultCell().setLeading(0, DEFAULT_TABLE_LEADING);
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		table.getDefaultCell().setPadding(0);
 		table.getDefaultCell()

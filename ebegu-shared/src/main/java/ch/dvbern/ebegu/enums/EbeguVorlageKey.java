@@ -33,23 +33,11 @@ public enum EbeguVorlageKey {
 	VORLAGE_BENUTZERHANDBUCH_STV("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Steuerverwaltung.pdf"),
 	VORLAGE_BENUTZERHANDBUCH_TRAEGERSCHAFT("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Trägerschaft.pdf");
 
-	private boolean proGesuchsperiode;
-
 	private String defaultVorlagePath;
 
 
 	EbeguVorlageKey(String defaultVorlagePath) {
-		this.proGesuchsperiode = true;
 		this.defaultVorlagePath = defaultVorlagePath;
-	}
-
-
-	public boolean isProGesuchsperiode() {
-		return proGesuchsperiode;
-	}
-
-	public void setProGesuchsperiode(boolean proGesuchsperiode) {
-		this.proGesuchsperiode = proGesuchsperiode;
 	}
 
 	public String getDefaultVorlagePath() {
