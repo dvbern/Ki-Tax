@@ -15,20 +15,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Transition} from '@uirouter/core';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 
 @Component({
     selector: 'dv-onboarding-be-login',
     templateUrl: './onboarding-be-login.component.html',
-    styleUrls: [ './onboarding-be-login.component.less', '../onboarding.less'],
+    styleUrls: ['./onboarding-be-login.component.less', '../onboarding.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OnboardingBeLoginComponent {
+export class OnboardingBeLoginComponent implements OnInit {
 
     public readonly gemeindeId: string;
+    public portalAccountCreationLink: string = undefined;
 
     public constructor(private readonly transition: Transition,
+                       private readonly authService: AuthServiceRS,
+                       private readonly cdRef: ChangeDetectorRef,
     ) {
         this.gemeindeId = this.transition.params().gemeindeId;
     }
+
+    public ngOnInit(): void {
+        this.loadPortalAccountCreationLink();
+    }
+
+    public loadPortalAccountCreationLink(): void {
+        this.authService.portalAccountCreationPageLink().then(result => {
+            this.portalAccountCreationLink = result;
+            this.cdRef.markForCheck();
+        });
+    }
+
 }

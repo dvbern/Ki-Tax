@@ -14,24 +14,24 @@
  */
 
 export default class TSLand {
-    private _name: string;
+    private _translationKey: string;
     private _code: string;
 
-    public constructor(code: string, name: string) {
-        this._name = name;
+    public constructor(code: string, translationKey: string) {
+        this._translationKey = translationKey;
         this._code = code;
     }
 
-    public set name(name: string) {
-        this._name = name;
+    public set translationKey(translationKey: string) {
+        this._translationKey = translationKey;
     }
 
     public set code(code: string) {
         this._code = code;
     }
 
-    public get name(): string {
-        return this._name;
+    public get translationKey(): string {
+        return this._translationKey;
     }
 
     public get code(): string {

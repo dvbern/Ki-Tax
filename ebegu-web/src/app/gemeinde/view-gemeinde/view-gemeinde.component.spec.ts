@@ -25,6 +25,7 @@ import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeModule} from '../gemeinde.module';
 import {ViewGemeindeComponent} from './view-gemeinde.component';
@@ -41,6 +42,7 @@ describe('ViewGemeindeComponent', () => {
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
 
     beforeEach(async(() => {
 
@@ -56,6 +58,7 @@ describe('ViewGemeindeComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [
             ],

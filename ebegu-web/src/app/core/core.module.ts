@@ -16,9 +16,10 @@
  */
 
 import {LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSelf} from '@angular/core';
-import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material';
-import {TranslateModule, TranslatePipe} from '@ngx-translate/core';
+import {MAT_DIALOG_DEFAULT_OPTIONS, MatPaginatorIntl} from '@angular/material';
+import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
+import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
 
@@ -57,6 +58,13 @@ export class CoreModule {
                 // Insert configurable providers here (will be appended to providers defined in metadata above)
                 {provide: LOCALE_ID, useValue: DEFAULT_LOCALE},
                 {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {disableClose: false, autoFocus: true}},
+                {
+                    provide: MatPaginatorIntl,
+                    deps: [TranslateService],
+                    useFactory: (translateService: TranslateService) => {
+                        return new PaginatorI18n(translateService);
+                    },
+                },
             ],
         };
     }

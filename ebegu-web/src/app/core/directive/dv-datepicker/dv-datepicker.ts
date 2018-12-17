@@ -19,6 +19,7 @@ import DateUtil from '../../../../utils/DateUtil';
 import IAttributes = angular.IAttributes;
 import ILogService = angular.ILogService;
 import INgModelController = angular.INgModelController;
+import ITranslateService = angular.translate.ITranslateService;
 
 export class DVDatepicker implements IDirective {
     public restrict = 'E';
@@ -48,7 +49,7 @@ export class DVDatepicker implements IDirective {
 }
 
 export class DatepickerController implements IController {
-    public static $inject: string[] = ['$log', '$attrs'];
+    public static $inject: string[] = ['$log', '$attrs', '$translate'];
     public static allowedFormats: string[] = ['D.M.YYYY', 'DD.MM.YYYY'];
     public static defaultFormat: string = 'DD.MM.YYYY';
     public date: Date;
@@ -63,6 +64,7 @@ export class DatepickerController implements IController {
     public constructor(
         private readonly $log: ILogService,
         private readonly $attrs: IAttributes,
+        private readonly $translate: ITranslateService,
     ) {
     }
 
@@ -102,7 +104,7 @@ export class DatepickerController implements IController {
         // wenn kein Placeholder gesetzt wird wird der standardplaceholder verwendet. kann mit placeholder=""
         // ueberscrieben werden
         if (this.placeholder === undefined) {
-            this.placeholder = 'tt.mm.jjjj';
+            this.placeholder = this.$translate.instant('DATE_PLACEHOLDER');
         } else if (this.placeholder === '') {
             this.placeholder = undefined;
         }

@@ -18,6 +18,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {Transition, UIRouterModule} from '@uirouter/angular';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
 import {OnboardingBeLoginComponent} from './onboarding-be-login.component';
@@ -28,6 +30,8 @@ describe('OnboardingBeLoginComponent', () => {
     let fixture: ComponentFixture<OnboardingBeLoginComponent>;
 
     const transitionSpy = createSpyObj<Transition>(Transition.name, ['params']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['portalAccountCreationPageLink']);
     const gemeindeId = '1';
 
     beforeEach(async(() => {
@@ -42,10 +46,14 @@ describe('OnboardingBeLoginComponent', () => {
             declarations: [OnboardingBeLoginComponent],
             providers: [
                 {provide: Transition, useValue: transitionSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
 
             ],
         })
             .compileComponents();
+
+        authServiceSpy.portalAccountCreationPageLink.and.returnValue(Promise.resolve('login-url'));
     }));
 
     beforeEach(() => {

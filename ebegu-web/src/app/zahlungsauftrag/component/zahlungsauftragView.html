@@ -159,8 +159,8 @@
                 </td>
                 <!-- edit / save button -->
                 <td class="symbol text-center" ng-click="$event.stopPropagation()" dv-show-element
-                    dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN']">
-                    <dv-loading-button ng-if="vm.isKonfigurationEditable(row.status) && !vm.isEditMode(row.id)"
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
+                    <dv-loading-button ng-if="vm.isEditable(row.status) && !vm.isEditMode(row.id)"
                                        type="button" button-click="vm.edit(row)"
                                        button-class="dv-btn-operation">
                         <i class="fa fa-lg fa-pencil-square-o"></i>
@@ -173,8 +173,8 @@
                 </td>
                 <!-- ausloesen button -->
                 <td class="symbol text-center" ng-click="$event.stopPropagation()" dv-show-element
-                    dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN']">
-                    <dv-loading-button ng-if="vm.isKonfigurationEditable(row.status) && !vm.isEditMode(row.id)"
+                    dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_GEMEINDE', 'SUPER_ADMIN']">
+                    <dv-loading-button ng-if="vm.isEditable(row.status) && !vm.isEditMode(row.id)"
                                        type="button" button-click="vm.ausloesen(row.id)"
                                        button-class="dv-btn-operation">
                         <i class="fa fa-lg fa-arrow-right" style="color: green"></i>

@@ -89,6 +89,13 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <!-- mit dom4j kann orm.xml nicht geparst werden -->
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <!-- Fuer IntelliJ -->

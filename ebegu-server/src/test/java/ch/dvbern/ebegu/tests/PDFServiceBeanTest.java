@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
 import ch.dvbern.ebegu.testfaelle.Testfall11_SchulamtOnly;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
+import ch.dvbern.ebegu.util.Constants;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.parser.PdfTextExtractor;
 import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
@@ -98,7 +99,7 @@ public class PDFServiceBeanTest {
 	@Before
 	public void setupTestData() {
 
-		Locale.setDefault(new Locale("de", "CH"));
+		Locale.setDefault(Constants.DEFAULT_LOCALE);
 		Gesuchsperiode gesuchsperiode1718 = TestDataUtil.createGesuchsperiode1718();
 		Gemeinde bern = TestDataUtil.createGemeindeBern();
 		evaluator = AbstractBGRechnerTest.createEvaluator(gesuchsperiode1718, bern);

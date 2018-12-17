@@ -66,11 +66,9 @@ public class Testfall02_FeutzYvonne extends AbstractTestfall {
 		// Kinder
 		KindContainer kind1 = createKind(Geschlecht.WEIBLICH, FAMILIENNAME, "Tamara", LocalDate.of(2009, Month.JULY, 11), Kinderabzug.GANZER_ABZUG, true);
 		kind1.setGesuch(gesuch);
-		kind1.setKindNummer(1);
 		gesuch.getKindContainers().add(kind1);
 		KindContainer kind2 = createKind(Geschlecht.MAENNLICH, FAMILIENNAME, "Leonard", LocalDate.of(2012, Month.NOVEMBER, 19), Kinderabzug.GANZER_ABZUG, true);
 		kind2.setGesuch(gesuch);
-		kind2.setKindNummer(2);
 		gesuch.getKindContainers().add(kind2);
 
 		// Betreuungen

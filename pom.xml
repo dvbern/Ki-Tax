@@ -45,7 +45,7 @@
         <hibernate-search.version>5.5.8.Final</hibernate-search.version>
 
         <version.flyway>3.2.1</version.flyway>
-        <version.slf4j>1.7.10</version.slf4j>
+        <version.slf4j>1.7.25</version.slf4j>
         <version.wildfly-arquillian-containers>2.1.1.Final</version.wildfly-arquillian-containers>
         <version.wildfly.container>13.0.0.Final</version.wildfly.container>
 
