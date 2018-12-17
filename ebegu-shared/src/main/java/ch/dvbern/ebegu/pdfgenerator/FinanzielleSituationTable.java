@@ -114,7 +114,7 @@ public class FinanzielleSituationTable {
 		PdfPCell cell = new PdfPCell(new Phrase(value, font));
 		cell.setBackgroundColor(bgColor);
 		cell.setHorizontalAlignment(alignment);
-		cell.setLeading(0.0F, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		cell.setLeading(0.0F, PdfUtil.DEFAULT_CELL_LEADING);
 		table.addCell(cell);
 	}
 }
