@@ -142,27 +142,19 @@ public final class KibonPrintUtil {
 		List<String> dokumenteList = new ArrayList<>();
 		for (DokumentGrund dokumentGrund : benoetigteUnterlagen) {
 			String text = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch);
-			if (text != null) {
+			if (StringUtils.isNotEmpty(text)) {
 				dokumenteList.add(text);
 			}
 		}
 		return dokumenteList;
 	}
 
-	@Nullable
+	@Nonnull
 	public static String getDokumentAsTextIfNeeded(@Nonnull DokumentGrund dokumentGrund, @Nonnull Gesuch gesuch) {
 		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
 			final String additionalInformation = extractAdditionalInformation(dokumentGrund, gesuch);
 			return ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp())
 				+ additionalInformation;
-		}
-		return null;
-	}
-
-	@Nonnull
-	public static String parseDokumentGrundDataToString(@Nonnull DokumentGrund dokumentGrund) {
-		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
-			return ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp());
 		}
 		return "";
 	}

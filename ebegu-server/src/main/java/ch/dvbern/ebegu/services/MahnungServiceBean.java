@@ -187,7 +187,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 		StringBuilder bemerkungenBuilder = new StringBuilder();
 		for (DokumentGrund dokumentGrund : dokumentGrundsMerged) {
-			String dokumentData = KibonPrintUtil.parseDokumentGrundDataToString(dokumentGrund);
+			String dokumentData = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch);
 			if (StringUtils.isNotEmpty(dokumentData)) {
 				bemerkungenBuilder.append(dokumentData);
 				bemerkungenBuilder.append('\n');
