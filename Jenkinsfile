@@ -17,7 +17,7 @@ pipeline {
 		stage("Test") {
 			agent {
 				docker {
-					image "docker.dvbern.ch:5000/dvbern/build-environment:latest"
+					image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:latest"
 					args "--privileged"
 				}
 			}
