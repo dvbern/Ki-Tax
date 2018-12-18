@@ -50,23 +50,26 @@ import org.slf4j.LoggerFactory;
  * Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
  * Reduktionen des Anspruchs sind auch rückwirkend erlaubt
  */
-public class MutationsMerger {
+public final class MutationsMerger {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MutationsMerger.class.getSimpleName());
+
+	private MutationsMerger() {
+	}
 
 	/**
 	 * Um code lesbar zu halten wird die Regel PMD.CollapsibleIfStatements ausgeschaltet
 	 */
 	@Nonnull
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public static List<VerfuegungZeitabschnitt> execute(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
 		if (betreuung.extractGesuch().getTyp().isGesuch()) {
 			return zeitabschnitte;
 		}
-		final Verfuegung verfuegungOnGesuchForMutation = betreuung.getVorgaengerVerfuegung();
+		final Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
 
-		final LocalDate mutationsEingansdatum = betreuung.extractGesuch().getEingangsdatum();
+		final LocalDate mutationsEingansdatum = betreuung.extractGesuch().getRegelStartDatum();
 		Objects.requireNonNull(mutationsEingansdatum);
 
 		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();
@@ -75,19 +78,19 @@ public class MutationsMerger {
 			final LocalDate zeitabschnittStart = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 			final int anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 
-			final int anspruchberechtigtesPensumGSM = findAnspruchberechtigtesPensumAt(zeitabschnittStart, verfuegungOnGesuchForMutation);
+			final int anspruchAufVorgaengerVerfuegung = findAnspruchberechtigtesPensumAt(zeitabschnittStart, vorgaengerVerfuegung);
 			VerfuegungZeitabschnitt zeitabschnitt = copy(verfuegungZeitabschnitt);
 
-			if (anspruchberechtigtesPensum > anspruchberechtigtesPensumGSM) {
+			if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
 				//Anspruch wird erhöht
 				//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
 				if (!isMeldungRechzeitig(verfuegungZeitabschnitt, mutationsEingansdatum)) {
 					//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
-					zeitabschnitt.setAnspruchberechtigtesPensum(anspruchberechtigtesPensumGSM);
+					zeitabschnitt.setAnspruchberechtigtesPensum(anspruchAufVorgaengerVerfuegung);
 					zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG);
 				}
-			} else if (anspruchberechtigtesPensum < anspruchberechtigtesPensumGSM) {
-				//Anspruch wird kleiner
+			} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
+				// Anspruch wird kleiner
 				//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
 				if (!isMeldungRechzeitig(verfuegungZeitabschnitt, mutationsEingansdatum)) {
 					//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
@@ -98,9 +101,9 @@ public class MutationsMerger {
 			//SCHULKINDER: Sonderregel bei zu Mutation von zu spaet eingereichten Schulkindangeboten
 			//fuer Abschnitte ab dem Folgemonat des Mutationseingangs rechnen wir bisher, fuer alle vorherigen folgende Sonderregel
 			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)
-				&& verfuegungOnGesuchForMutation != null) {
+				&& vorgaengerVerfuegung != null) {
 
-				VerfuegungZeitabschnitt zeitabschnittInVorgaenger = findZeitabschnittInVorgaenger(zeitabschnittStart, verfuegungOnGesuchForMutation);
+				VerfuegungZeitabschnitt zeitabschnittInVorgaenger = findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegung);
 				// Wenn der Benutzer vorher keine Verfuenstigung bekam weil er zu spaet eingereicht hat DANN bezahlt er auch in Mutation vollkosten
 				if (zeitabschnittInVorgaenger != null
 					&& zeitabschnittInVorgaenger.getVerguenstigung().compareTo(BigDecimal.ZERO) == 0
@@ -117,7 +120,7 @@ public class MutationsMerger {
 		return monatsSchritte;
 	}
 
-	private boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {
+	private static boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {
 		return verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
 	}
 
@@ -125,7 +128,7 @@ public class MutationsMerger {
 	 * Hilfsmethode welche in der Vorgaengerferfuegung den gueltigen Zeitabschnitt fuer einen bestimmten Stichtag sucht
 	 */
 	@Nullable
-	private VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(LocalDate stichtag, Verfuegung vorgaengerVerf) {
+	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(LocalDate stichtag, Verfuegung vorgaengerVerf) {
 		Objects.requireNonNull(vorgaengerVerf, "Vorgaengerverfuegung darf nicht null sein");
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : vorgaengerVerf.getZeitabschnitte()) {
 			final DateRange gueltigkeit = verfuegungZeitabschnitt.getGueltigkeit();
@@ -141,7 +144,7 @@ public class MutationsMerger {
 	/**
 	 * Findet das anspruchberechtigtes Pensum zum Zeitpunkt des neuen Zeitabschnitt-Start
 	 */
-	private int findAnspruchberechtigtesPensumAt(LocalDate zeitabschnittStart, @Nullable Verfuegung verfuegungGSM) {
+	private static int findAnspruchberechtigtesPensumAt(LocalDate zeitabschnittStart, @Nullable Verfuegung verfuegungGSM) {
 
 		if (verfuegungGSM != null) {
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : verfuegungGSM.getZeitabschnitte()) {
@@ -156,7 +159,7 @@ public class MutationsMerger {
 		return 0;
 	}
 
-	private VerfuegungZeitabschnitt copy(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	private static VerfuegungZeitabschnitt copy(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(verfuegungZeitabschnitt);
 		return zeitabschnitt;
 	}

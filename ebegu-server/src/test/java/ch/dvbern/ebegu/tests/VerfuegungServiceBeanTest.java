@@ -95,6 +95,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void saveVerfuegung() {
 		Assert.assertNotNull(verfuegungService); //init funktioniert
 		Betreuung betreuung = insertBetreuung();
+		TestDataUtil.createGemeindeStammdaten(betreuung.extractGesuch().extractGemeinde(), persistence);
 		Assert.assertNull(betreuung.getVerfuegung());
 		Verfuegung verfuegung = new Verfuegung();
 		verfuegung.setBetreuung(betreuung);

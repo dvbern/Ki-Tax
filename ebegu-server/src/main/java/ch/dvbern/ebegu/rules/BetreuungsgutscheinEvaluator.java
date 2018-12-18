@@ -52,12 +52,7 @@ public class BetreuungsgutscheinEvaluator {
 
 	private boolean isDebug = true;
 
-	private List<Rule> rules = new LinkedList<>();
-
-	private final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
-	private final MonatsRule monatsRule = new MonatsRule();
-	private final MutationsMerger mutationsMerger = new MutationsMerger();
-	private final AbschlussNormalizer abschlussNormalizer = new AbschlussNormalizer();
+	private final List<Rule> rules;
 
 	public BetreuungsgutscheinEvaluator(List<Rule> rules) {
 		this.rules = rules;
@@ -72,6 +67,7 @@ public class BetreuungsgutscheinEvaluator {
 	/**
 	 * Berechnet nur die Familiengroesse und Abzuege fuer den Print der Familiensituation, es muss min eine Betreuung existieren
 	 */
+	@Nonnull
 	public Verfuegung evaluateFamiliensituation(Gesuch gesuch) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
@@ -95,7 +91,7 @@ public class BetreuungsgutscheinEvaluator {
 				}
 			}
 			// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-			zeitabschnitte = monatsRule.createMonate(zeitabschnitte);
+			zeitabschnitte = MonatsRule.execute(zeitabschnitte);
 		} else {
 			LOG.warn("Keine Betreuung vorhanden kann Familiengroesse und Abzuege nicht berechnen");
 		}
@@ -166,17 +162,24 @@ public class BetreuungsgutscheinEvaluator {
 							}
 						}
 					}
+
+					// Innerhalb eines Monats darf der Anspruch nie sinken
+					zeitabschnitte = AnspruchFristRule.execute(zeitabschnitte);
+
 					// Nach der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
-					restanspruchZeitabschnitte = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung, zeitabschnitte);
+					restanspruchZeitabschnitte = RestanspruchInitializer.execute(betreuung, zeitabschnitte);
 
 					// Falls jetzt noch Abschnitte "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
-					zeitabschnitte = abschlussNormalizer.mergeGleicheSichtbareDaten(zeitabschnitte);
+					zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, false);
 
 					// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
-					zeitabschnitte = monatsRule.createMonate(zeitabschnitte);
+					zeitabschnitte = MonatsRule.execute(zeitabschnitte);
 
 					// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-					zeitabschnitte = mutationsMerger.createVerfuegungsZeitabschnitte(betreuung, zeitabschnitte);
+					zeitabschnitte = MutationsMerger.execute(betreuung, zeitabschnitte);
+
+					// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
+					zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
 
 					// Die Verfügung erstellen
 					if (betreuung.getVerfuegung() == null) {
@@ -219,7 +222,7 @@ public class BetreuungsgutscheinEvaluator {
 			String message = "Ungueltiger Zustand, geschlossene  Betreuung ohne Verfuegung oder Vorgaengerverfuegung (" + betreuung.getId() + ')';
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
-		restanspruchZeitabschnitte = restanspruchInitializer.createVerfuegungsZeitabschnitte(
+		restanspruchZeitabschnitte = RestanspruchInitializer.execute(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 
 		return restanspruchZeitabschnitte;

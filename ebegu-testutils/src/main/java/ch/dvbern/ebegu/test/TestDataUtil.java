@@ -836,6 +836,7 @@ public final class TestDataUtil {
 	public static Betreuung createGesuchWithBetreuungspensum(boolean zweiGesuchsteller) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setDossier(createDefaultDossier());
 		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
 		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		if (zweiGesuchsteller) {
@@ -856,9 +857,12 @@ public final class TestDataUtil {
 				.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
 		Betreuung betreuung = new Betreuung();
-		betreuung.setKind(createDefaultKindContainer());
+		KindContainer kindContainer = createDefaultKindContainer();
+		kindContainer.getBetreuungen().add(betreuung);
+		betreuung.setKind(kindContainer);
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
+		gesuch.getKindContainers().add(betreuung.getKind());
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
@@ -1330,14 +1334,26 @@ public final class TestDataUtil {
 	}
 
 	public static GemeindeStammdaten createGemeindeWithStammdaten() {
+		return createGemeindeStammdaten(createGemeindeBern());
+	}
+
+	public static GemeindeStammdaten createGemeindeStammdaten(@Nonnull Gemeinde gemeinde) {
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
 		stammdaten.setAdresse(createDefaultAdresse());
-		stammdaten.setGemeinde(createGemeindeBern());
+		stammdaten.setGemeinde(gemeinde);
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
 		stammdaten.setMail("info@bern.ch");
 		stammdaten.setTelefon("031 123 12 12");
 		stammdaten.setWebseite("www.bern.ch");
 		return stammdaten;
+	}
+
+	public static GemeindeStammdaten createGemeindeStammdaten(@Nonnull Gemeinde gemeinde, @Nonnull Persistence persistence) {
+		GemeindeStammdaten gemeindeStammdaten = createGemeindeStammdaten(gemeinde);
+		if (gemeinde.isNew()) {
+			persistence.persist(gemeinde);
+		}
+		return persistence.merge(gemeindeStammdaten);
 	}
 
 	public static Benutzer createBenutzerWithDefaultGemeinde(

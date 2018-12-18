@@ -32,6 +32,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -42,6 +43,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -601,6 +603,11 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		}
 
 		if (verfuegen) {
+			Optional<GemeindeStammdaten> stammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.extractGemeinde().getId());
+			if (!stammdaten.isPresent()) {
+				createStammdatenForGemeinde(gesuch.extractGemeinde());
+			}
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
 
 			verfuegungService.calculateVerfuegung(gesuch);
@@ -619,6 +626,17 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			gesuchService.postGesuchVerfuegen(gesuch);
 		}
 		wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.VERFUEGEN);
+	}
+
+	private void createStammdatenForGemeinde(@Nonnull Gemeinde gemeinde) {
+		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
+		stammdaten.setGemeinde(gemeinde);
+		stammdaten.setMail("testgemeinde@mailbucket.dvbern.ch");
+		stammdaten.setAdresse(new Adresse());
+		stammdaten.getAdresse().setOrt("Bern");
+		stammdaten.getAdresse().setPlz("3000");
+		stammdaten.getAdresse().setStrasse("Nussbaumstrasse");
+		gemeindeService.saveGemeindeStammdaten(stammdaten);
 	}
 
 	/**

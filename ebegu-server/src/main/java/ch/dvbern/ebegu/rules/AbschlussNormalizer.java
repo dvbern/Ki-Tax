@@ -26,13 +26,16 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
  * Abschlussmerger, welcher nach allen Regeln die vorhandenen Abschnitte überprüft und solche mit gleichen *sichtbaren*
  * Daten zusammenmergt.
  */
-public class AbschlussNormalizer {
+public final class AbschlussNormalizer {
+
+	private AbschlussNormalizer() {
+	}
 
 	@Nonnull
-	protected List<VerfuegungZeitabschnitt> mergeGleicheSichtbareDaten(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public static List<VerfuegungZeitabschnitt> execute(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte, boolean keepMonate) {
 		List<VerfuegungZeitabschnitt> result = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
-			normalizeZeitabschnitte(result, zeitabschnitt);
+			normalizeZeitabschnitte(result, zeitabschnitt, keepMonate);
 		}
 		return result;
 	}
@@ -41,18 +44,31 @@ public class AbschlussNormalizer {
 	 * Stellt sicher, dass zwei aufeinander folgende Zeitabschnitte nie dieselben Daten haben. Falls
 	 * dies der Fall wäre, werden sie zu einem neuen Schnitz gemergt.
 	 */
-	private void normalizeZeitabschnitte(@Nonnull List<VerfuegungZeitabschnitt> validZeitabschnitte, @Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
+	private static void normalizeZeitabschnitte(
+		@Nonnull List<VerfuegungZeitabschnitt> validZeitabschnitte,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		boolean keepMonate
+	) {
 		// Zuerst vergleichen, ob sich der neue Zeitabschnitt vom letzt hinzugefügten (und angrenzenden) unterscheidet
 		int indexOfLast = validZeitabschnitte.size() - 1;
 		if (indexOfLast >= 0) {
 			VerfuegungZeitabschnitt lastZeitabschnitt = validZeitabschnitte.get(indexOfLast);
 			if (lastZeitabschnitt.isSameSichtbareDaten(zeitabschnitt) && zeitabschnitt.getGueltigkeit().startsDayAfter(lastZeitabschnitt.getGueltigkeit())) {
-				// Gleiche Berechnungsgrundlagen: Den alten um den neuen verlängern
-				lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-				// Die Bemerkungen zusammenfügen mit Vermeidung von Duplikaten
-				lastZeitabschnitt.mergeBemerkungen(zeitabschnitt.getBemerkungen());
-				validZeitabschnitte.remove(indexOfLast);
-				validZeitabschnitte.add(lastZeitabschnitt);
+				// Gleiche Berechnungsgrundlagen:
+				// Zusammenfuegen, falls sie im gleichen Monat liegen, oder keepMonate = false
+				if (!keepMonate || isSameMonth(zeitabschnitt, lastZeitabschnitt)) {
+					lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
+					// Die Bemerkungen zusammenfügen mit Vermeidung von Duplikaten
+					if (zeitabschnitt.getBemerkungen() != null) {
+						lastZeitabschnitt.mergeBemerkungen(zeitabschnitt.getBemerkungen());
+					}
+					validZeitabschnitte.remove(indexOfLast);
+					validZeitabschnitte.add(lastZeitabschnitt);
+				} else {
+					// Gleiche Daten, aber nicht zusammenfuegen
+					validZeitabschnitte.add(zeitabschnitt);
+				}
+
 			} else {
 				// Unterschiedliche Daten -> hinzufügen
 				validZeitabschnitte.add(zeitabschnitt);
@@ -61,5 +77,10 @@ public class AbschlussNormalizer {
 			// Erster Eintrag -> hinzufügen
 			validZeitabschnitte.add(zeitabschnitt);
 		}
+	}
+
+	private static boolean isSameMonth(@Nonnull VerfuegungZeitabschnitt abschnittA, @Nonnull VerfuegungZeitabschnitt abschnittB) {
+		return abschnittA.getGueltigkeit().getGueltigAb().getMonth() == abschnittB.getGueltigkeit().getGueltigAb().getMonth()
+			&& abschnittA.getGueltigkeit().getGueltigBis().getMonth() == abschnittB.getGueltigkeit().getGueltigBis().getMonth();
 	}
 }

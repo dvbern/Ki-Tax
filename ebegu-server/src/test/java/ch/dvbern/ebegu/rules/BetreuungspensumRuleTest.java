@@ -36,8 +36,6 @@ import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
  */
 public class BetreuungspensumRuleTest {
 
-	private final RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer();
-
 	@Test
 	public void testKitaNormalfall() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 60,  BigDecimal.valueOf(500.50));
@@ -52,7 +50,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(BigDecimal.valueOf(500.50), result.get(0).getMonatlicheBetreuungskosten());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
-		result = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung, result);
+		result = RestanspruchInitializer.execute(betreuung, result);
 		Assert.assertEquals(0 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchspensumRest());
 	}
 
@@ -70,7 +68,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(BigDecimal.valueOf(200), result.get(0).getMonatlicheBetreuungskosten());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
-		result = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung, result);
+		result = RestanspruchInitializer.execute(betreuung, result);
 		Assert.assertEquals(0, result.get(0).getAnspruchspensumRest());
 	}
 
@@ -89,7 +87,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(60), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		Assert.assertEquals(BigDecimal.valueOf(500), result.get(0).getMonatlicheBetreuungskosten());
-		result = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung, result);
+		result = RestanspruchInitializer.execute(betreuung, result);
 		Assert.assertEquals(20 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchspensumRest());
 	}
 
@@ -112,7 +110,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());  //restanspruch wurde noch nie berechnet
 		// Anspruchsrest fuer naechste Betreuung setzten
 		List<VerfuegungZeitabschnitt> abschnForNxtBetr =
-			restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung1, result);
+			RestanspruchInitializer.execute(betreuung1, result);
 		//Nach dem Berechnen des Rests ist der Rest im  im Feld AnspruchspensumRest gesetzt, Anspruchsberechtigtes
 		// Pensum ist noch 0 da noch nciht berechnet
 		// fuer 2.Betr.
@@ -138,7 +136,7 @@ public class BetreuungspensumRuleTest {
 			20,
 			resultBetr2.get(0)
 				.getAnspruchspensumRest()); //Restanspruch wurde noch nicht neu berechnet fuer naechste betreuung
-		resultBetr2 = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung2, resultBetr2);
+		resultBetr2 = RestanspruchInitializer.execute(betreuung2, resultBetr2);
 		Assert.assertEquals(
 			0,
 			resultBetr2.get(0)
@@ -160,7 +158,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(0), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		Assert.assertEquals(BigDecimal.valueOf(800), result.get(0).getMonatlicheBetreuungskosten());
-		result = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung, result);
+		result = RestanspruchInitializer.execute(betreuung, result);
 		Assert.assertEquals(0, result.get(0).getAnspruchspensumRest());
 	}
 
@@ -180,7 +178,7 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), result.get(0).getBgPensum());
 		Assert.assertEquals(-1, result.get(0).getAnspruchspensumRest());
 		Assert.assertEquals(BigDecimal.valueOf(800), result.get(0).getMonatlicheBetreuungskosten());
-		result = restanspruchInitializer.createVerfuegungsZeitabschnitte(betreuung, result);
+		result = RestanspruchInitializer.execute(betreuung, result);
 		Assert.assertEquals(0, result.get(0).getAnspruchspensumRest());
 	}
 }

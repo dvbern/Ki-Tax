@@ -3205,7 +3205,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractDateRangedFieldsToJAX(ebeguVorlage, jaxEbeguVorlage);
 
 		jaxEbeguVorlage.setName(ebeguVorlage.getName());
-		jaxEbeguVorlage.setProGesuchsperiode(ebeguVorlage.isProGesuchsperiode());
 		if (ebeguVorlage.getVorlage() != null) {
 			jaxEbeguVorlage.setVorlage(vorlageToJax(ebeguVorlage.getVorlage()));
 		}
@@ -3234,7 +3233,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractDateRangedFieldsToEntity(ebeguVorlageJAXP, ebeguVorlage);
 
 		ebeguVorlage.setName(ebeguVorlageJAXP.getName());
-		ebeguVorlage.setProGesuchsperiode(ebeguVorlageJAXP.isProGesuchsperiode());
 		if (ebeguVorlageJAXP.getVorlage() != null) {
 			if (ebeguVorlage.getVorlage() == null) {
 				ebeguVorlage.setVorlage(new Vorlage());
