@@ -669,7 +669,7 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     private gemeindeStammdatenToHtml(stammdaten: TSGemeindeStammdaten): string {
-        let html = `<span class="margintop">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+        let html = `<span class="marginTop20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
                           ${stammdaten.gemeinde.name}</span><br>
                     <span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
                     <span>${stammdaten.adresse.plz} ${stammdaten.adresse.ort}</span><br>
@@ -681,9 +681,9 @@ export class DossierToolbarController implements IDVFocusableController {
     private institutionStammdatenToHtml(stammdaten: TSInstitutionStammdaten): string {
         let html = '';
         if (stammdaten.adresse.organisation === stammdaten.institution.name) {
-            html += `<span class="margintop">${stammdaten.institution.name}</span><br>`;
+            html += `<span class="marginTop20">${stammdaten.institution.name}</span><br>`;
         } else {
-            html += `<span class="margintop">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
+            html += `<span class="marginTop20">${stammdaten.adresse.organisation ? stammdaten.adresse.organisation : ''}
                           ${stammdaten.institution.name}</span><br>`;
         }
         html +=    `<span>${stammdaten.adresse.strasse} ${stammdaten.adresse.hausnummer}</span><br>
@@ -695,13 +695,9 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private institutionenStammdatenToHtml(): string {
         let html = '';
-        let limit = 5;
         const institutionIds: Array<string> = new Array();
         for (const kc of this.getGesuch().kindContainers) {
             for (const be of kc.betreuungen) {
-                if (limit-- === 0) {
-                    return html;
-                }
                 if (!(institutionIds.includes(be.institutionStammdaten.institution.id))) {
                     institutionIds.push(be.institutionStammdaten.institution.id);
                     html += this.institutionStammdatenToHtml(be.institutionStammdaten);
