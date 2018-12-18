@@ -34,36 +34,6 @@ public class EbeguVorlageServiceMock extends EbeguVorlageServiceBean {
 	public Optional<EbeguVorlage> getEbeguVorlageByDatesAndKey(@Nonnull LocalDate abDate, @Nonnull LocalDate bisDate, @Nonnull EbeguVorlageKey ebeguVorlageKey, EntityManager em) {
 		EbeguVorlage ebeguVorlage = new EbeguVorlage(ebeguVorlageKey, new DateRange(abDate, bisDate));
 		Vorlage vorlage = new Vorlage();
-
-		switch (ebeguVorlageKey) {
-		case VORLAGE_MAHNUNG_1:
-			vorlage.setFilepfad("vorlagen/1_Mahnung.docx");
-			break;
-		case VORLAGE_MAHNUNG_2:
-			vorlage.setFilepfad("vorlagen/2_Mahnung.docx");
-			break;
-		case VORLAGE_NICHT_EINTRETENSVERFUEGUNG:
-			vorlage.setFilepfad("vorlagen/Nichteintretensverfuegung.docx");
-			break;
-		case VORLAGE_INFOSCHREIBEN_MAXIMALTARIF:
-			vorlage.setFilepfad("vorlagen/Infoschreiben_Maxtarif.docx");
-			break;
-		case VORLAGE_BEGLEITSCHREIBEN:
-			vorlage.setFilepfad("vorlagen/Begleitschreiben.docx");
-			break;
-		case VORLAGE_FINANZIELLE_SITUATION:
-			vorlage.setFilepfad("vorlagen/Berechnungsgrundlagen.docx");
-			break;
-		case VORLAGE_VERFUEGUNG_KITA:
-			vorlage.setFilepfad("vorlagen/Verfuegungsmuster_kita.docx");
-			break;
-		case VORLAGE_VERFUEGUNG_TAGESFAMILIEN:
-			vorlage.setFilepfad("vorlagen/Verfuegungsmuster_tageseltern_kleinkinder.docx");
-			break;
-		default:
-			break;
-		}
-
 		ebeguVorlage.setVorlage(vorlage);
 		return Optional.of(ebeguVorlage);
 	}

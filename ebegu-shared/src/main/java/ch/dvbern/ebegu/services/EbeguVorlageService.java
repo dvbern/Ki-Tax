@@ -55,12 +55,6 @@ public interface EbeguVorlageService {
 	Optional<EbeguVorlage> getEbeguVorlageByDatesAndKey(LocalDate abDate, LocalDate bisDate, EbeguVorlageKey ebeguVorlageKey, EntityManager em);
 
 	/**
-	 * Gibt alle Vorlagen einer Gesuchsperiode zurueck.
-	 */
-	@Nonnull
-	List<EbeguVorlage> getALLEbeguVorlageByGesuchsperiode(Gesuchsperiode gesuchsperiode);
-
-	/**
 	 * Aktualisiert die EbeguVorlage in der DB
 	 *
 	 * @param ebeguVorlage Die EbeguVorlage als DTO
@@ -81,18 +75,9 @@ public interface EbeguVorlageService {
 
 	/**
 	 * Gibt alle Vorlagen zurueck, welche am Stichtag gueltig sind.
-	 *
-	 * @param proGesuchsperiode true, wenn nur Gesuchsperioden-abhaengige Vorlagen gesucht werden sollen
 	 */
 	@Nonnull
-	Collection<EbeguVorlage> getALLEbeguVorlageByDate(@Nonnull LocalDate date, boolean proGesuchsperiode);
-
-	/**
-	 * Kopiert alle Vorlagen einer Gesuchsperiode zur naechsten (uebergebenen) Gesuchsperiode
-	 *
-	 * @param gesuchsperiodeToCopyTo Die neue Gesuchsperiode
-	 */
-	void copyEbeguVorlageListToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCopyTo);
+	Collection<EbeguVorlage> getALLEbeguVorlageByDate(@Nonnull LocalDate date);
 
 	/**
 	 * Gibt fuer den eingeloggten Benutzer das richtige Benutzerhandbuch zurueck.

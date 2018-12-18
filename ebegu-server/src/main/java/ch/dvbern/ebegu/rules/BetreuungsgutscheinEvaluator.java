@@ -67,6 +67,7 @@ public class BetreuungsgutscheinEvaluator {
 	/**
 	 * Berechnet nur die Familiengroesse und Abzuege fuer den Print der Familiensituation, es muss min eine Betreuung existieren
 	 */
+	@Nonnull
 	public Verfuegung evaluateFamiliensituation(Gesuch gesuch) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
