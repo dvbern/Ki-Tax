@@ -13,7 +13,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="dossier-toolbar" flex="100">
+<span class="dossier-toolbar" flex="100">
     <md-toolbar flex="100">
         <md-menu-bar flex="100" layout="row" layout-align="start center">
             <md-menu ng-if="vmx.showGesuchPeriodeNavigationMenu()">
@@ -138,21 +138,23 @@
                 </button>
                 <md-menu-content class="no-padding menu-item-container kontakt">
 
-                    <span class="kontaktTop" ng-bind="vmx.getGesuch().gesuchsteller1.extractFullName()"></span>
-                    <span ng-bind="vmx.getGesuch().gesuchsteller1.extractMail()"></span>
-                    <span class="kontaktBottom" ng-bind="vmx.getGesuch().gesuchsteller1.extractPhone()"></span>
+                    <span ng-bind="vmx.getGesuch().gesuchsteller1.extractFullName()"></span>
+                    <a href="mailto:{{vmx.getGesuch().gesuchsteller1.extractMail()}}">
+                        {{vmx.getGesuch().gesuchsteller1.extractMail()}}</a>
+                    <a href="tel:{{vmx.getGesuch().gesuchsteller1.extractPhone()}}">
+                        {{vmx.getGesuch().gesuchsteller1.extractPhone()}}</a>
 
+                    <span ng-if="vmx.getGesuch().gesuchsteller2" class="margintop"
+                          ng-bind="vmx.getGesuch().gesuchsteller2.extractFullName()"></span>
+                    <a ng-if="vmx.getGesuch().gesuchsteller2"
+                       href="mailto:{{vmx.getGesuch().gesuchsteller2.extractMail()}}"
+                       ng-bind="vmx.getGesuch().gesuchsteller2.extractMail()"></a>
+                    <a ng-if="vmx.getGesuch().gesuchsteller2"
+                       href="tel:{{vmx.getGesuch().gesuchsteller2.extractPhone()}}"
+                       ng-bind="vmx.getGesuch().gesuchsteller2.extractPhone()"></a>
 
-                    <span ng-if="vmx.getGesuch().gesuchsteller2"
-                          ng-bind="vmx.getGesuch().gesuchsteller2.extractFullName()">
-                    </span>
-                    <span ng-if="vmx.getGesuch().gesuchsteller2"
-                          ng-bind="vmx.getGesuch().gesuchsteller2.extractMail()">
-                    </span>
-                    <span class="kontaktBottom" ng-if="vmx.getGesuch().gesuchsteller2"
-                          ng-bind="vmx.getGesuch().gesuchsteller2.extractPhone()">
-                    </span>
-
+                    <div ng-if="vmx.gemeindeInstitutionKontakteHtml" class="marginbottom"
+                         ng-bind-html="vmx.gemeindeInstitutionKontakteHtml"></div>
                 </md-menu-content>
             </md-menu>
 
