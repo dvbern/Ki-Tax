@@ -17,7 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,30 +38,25 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EbeguVorlageKey;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.FinanzielleSituationPdfGenerator;
 import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
-import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.vorlagen.GeneratePDFDocumentHelper;
-import ch.dvbern.ebegu.vorlagen.begleitschreiben.BegleitschreibenPrintImpl;
-import ch.dvbern.ebegu.vorlagen.begleitschreiben.BegleitschreibenPrintMergeSource;
-import ch.dvbern.ebegu.vorlagen.finanziellesituation.BerechnungsgrundlagenInformationPrintImpl;
-import ch.dvbern.ebegu.vorlagen.finanziellesituation.FinanzielleSituationEinkommensverschlechterungPrintMergeSource;
-import ch.dvbern.ebegu.vorlagen.mahnung.MahnungPrintImpl;
-import ch.dvbern.ebegu.vorlagen.mahnung.MahnungPrintMergeSource;
-import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintImpl;
-import ch.dvbern.ebegu.vorlagen.nichteintreten.NichteintretenPrintMergeSource;
-import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintImpl;
-import ch.dvbern.ebegu.vorlagen.verfuegung.VerfuegungPrintMergeSource;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
-import com.google.common.io.ByteStreams;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -75,10 +70,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
-@SuppressWarnings("UnstableApiUsage")
 @Stateless
 @Local(PDFService.class)
-public class PDFServiceBean extends AbstractPrintService implements PDFService {
+public class PDFServiceBean implements PDFService {
 
 	private static final Objects[] OBJECTARRAY = {};
 	public static final byte[] BYTES = new byte[0];
@@ -99,73 +93,39 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateNichteintreten(Betreuung betreuung, boolean writeProtected) throws
-		MergeDocException {
+	public byte[] generateNichteintreten(Betreuung betreuung, boolean writeProtected) throws MergeDocException {
+		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
-		EbeguVorlageKey vorlageKey;
-
-		BetreuungsangebotTyp angebotTyp = betreuung.getBetreuungsangebotTyp();
-
-		if (angebotTyp == BetreuungsangebotTyp.KITA || angebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
-			vorlageKey = EbeguVorlageKey.VORLAGE_NICHT_EINTRETENSVERFUEGUNG;
-		} else if (angebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
-			vorlageKey = EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
-		} else {
-			throw new MergeDocException("generateNichteintreten()",
-				"Unexpected Betreuung Type", null, OBJECTARRAY);
-		}
-
-		try {
-			Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
-			final DateRange gueltigkeit = betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit();
-			InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(), gueltigkeit.getGueltigBis(), vorlageKey);
-			Objects.requireNonNull(is, "Vorlage '" + vorlageKey.name() + "' nicht gefunden");
-			byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-				ByteStreams.toByteArray(is), new NichteintretenPrintMergeSource(new NichteintretenPrintImpl(betreuung)),
-				writeProtected);
-			is.close();
-			return bytes;
-		} catch (IOException e) {
-			throw new MergeDocException("generateNichteintreten()",
-				"Bei der Generierung der Nichteintreten ist ein Fehler aufgetreten", e, OBJECTARRAY);
-		}
+		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
+			betreuung,
+			stammdaten,
+			Art.NICHT_EINTRETTEN);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateMahnung(Mahnung mahnung, Optional<Mahnung> vorgaengerMahnung,
-		boolean writeProtected) throws MergeDocException {
+	public byte[] generateMahnung(Mahnung mahnung, Optional<Mahnung> vorgaengerMahnungOptional, boolean writeProtected) throws MergeDocException {
+		Objects.requireNonNull(mahnung, "Das Argument 'mahnung' darf nicht leer sein");
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(mahnung.getGesuch());
 
-		EbeguVorlageKey vorlageKey;
-
+		MahnungPdfGenerator pdfGenerator;
 		switch (mahnung.getMahnungTyp()) {
 		case ERSTE_MAHNUNG:
-			vorlageKey = EbeguVorlageKey.VORLAGE_MAHNUNG_1;
+			pdfGenerator = new ErsteMahnungPdfGenerator(mahnung, stammdaten);
 			break;
 		case ZWEITE_MAHNUNG:
-			vorlageKey = EbeguVorlageKey.VORLAGE_MAHNUNG_2;
+			Mahnung vorgaengerMahnung = vorgaengerMahnungOptional.orElseThrow(() -> new EbeguEntityNotFoundException("generateMahnung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, mahnung.getId()));
+			pdfGenerator = new ZweiteMahnungPdfGenerator(mahnung, vorgaengerMahnung, stammdaten);
 			break;
 		default:
-			throw new MergeDocException("generateMahnung()",
-				"Unexpected Mahnung Type", null, OBJECTARRAY);
+			throw new MergeDocException("generateMahnung()", "Unexpected Mahnung Type", null, OBJECTARRAY);
 		}
-
-		try {
-			Objects.requireNonNull(mahnung, "Das Argument 'mahnung' darf nicht leer sein");
-			final DateRange gueltigkeit = mahnung.getGesuch().getGesuchsperiode().getGueltigkeit();
-			InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(), gueltigkeit.getGueltigBis(), vorlageKey);
-			Objects.requireNonNull(is, "Vorlage '" + vorlageKey.name() + "' nicht gefunden");
-			byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-				ByteStreams.toByteArray(is), new MahnungPrintMergeSource(new MahnungPrintImpl(mahnung, vorgaengerMahnung)),
-				writeProtected);
-			is.close();
-			return bytes;
-		} catch (IOException e) {
-			throw new MergeDocException("generateMahnung()",
-				"Bei der Generierung der Mahnung ist ein Fehler aufgetreten", e, OBJECTARRAY);
-		}
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	@Override
@@ -175,23 +135,12 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	public byte[] generateFreigabequittung(@Nonnull Gesuch gesuch, boolean writeProtected) throws MergeDocException {
 		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
 
-		String gemeindeId = gesuch.extractGemeinde().getId();
-		GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"generateFreigabequittung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
-
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 		final List<DokumentGrund> benoetigteUnterlagen = calculateListOfDokumentGrunds(gesuch);
 
-		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten, !writeProtected, benoetigteUnterlagen);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-		try {
-			pdfGenerator.generate(baos);
-			return baos.toByteArray();
-		} catch (InvoiceGeneratorException e) {
-			throw new MergeDocException("generateFreigabequittung()",
-				"Bei der Generierung der Freigabequittung ist ein Fehler aufgetreten", e, OBJECTARRAY);
-		}
+		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten,
+			benoetigteUnterlagen);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	@Override
@@ -202,27 +151,17 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
 		authorizer.checkReadAuthorization(gesuch);
 
-		try {
-			final DateRange gueltigkeit = gesuch.getGesuchsperiode().getGueltigkeit();
-			InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(),
-				gueltigkeit.getGueltigBis(), EbeguVorlageKey.VORLAGE_BEGLEITSCHREIBEN);
-			Objects.requireNonNull(is, "Vorlage fuer Begleitschreiben nicht gefunden");
-			byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-				ByteStreams.toByteArray(is), new BegleitschreibenPrintMergeSource(new BegleitschreibenPrintImpl(gesuch)),
-				writeProtected);
-			is.close();
-			return bytes;
-		} catch (IOException e) {
-			throw new MergeDocException("printBegleitschreiben()",
-				"Bei der Generierung der Begleitschreibenvorlage ist ein Fehler aufgetreten", e, OBJECTARRAY);
-		}
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
+
+		BegleitschreibenPdfGenerator pdfGenerator = new BegleitschreibenPdfGenerator(gesuch, stammdaten);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, GESUCHSTELLER,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, @Nullable Verfuegung famGroessenVerfuegung,
+	public byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull Verfuegung famGroessenVerfuegung,
 		boolean writeProtected) throws MergeDocException {
 
 		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
@@ -234,21 +173,10 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 				// Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.		authorizer.checkReadAuthorizationFinSit(gesuch);
 				authorizer.checkReadAuthorizationFinSit(gesuch);
 			}
-			try {
-				final DateRange gueltigkeit = gesuch.getGesuchsperiode().getGueltigkeit();
-				InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(),
-					gueltigkeit.getGueltigBis(), EbeguVorlageKey.VORLAGE_FINANZIELLE_SITUATION);
-				Objects.requireNonNull(is, "Vorlage fuer Berechnungsgrundlagen nicht gefunden");
-				byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-					ByteStreams.toByteArray(is), new FinanzielleSituationEinkommensverschlechterungPrintMergeSource(
-						new BerechnungsgrundlagenInformationPrintImpl(gesuch, famGroessenVerfuegung)), writeProtected);
 
-				is.close();
-				return bytes;
-			} catch (IOException e) {
-				throw new MergeDocException("generateFinanzielleSituation()",
-					"Bei der Generierung der Berechnungsgrundlagen ist ein Fehler aufgetreten", e, OBJECTARRAY);
-			}
+			GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
+			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(gesuch, famGroessenVerfuegung, stammdaten);
+			return generateDokument(pdfGenerator, !writeProtected);
 		}
 		return BYTES;
 	}
@@ -258,53 +186,65 @@ public class PDFServiceBean extends AbstractPrintService implements PDFService {
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public byte[] generateVerfuegungForBetreuung(Betreuung betreuung,
-		@Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected) throws MergeDocException {
+		@Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected
+	) throws MergeDocException {
+		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
-		final DateRange gueltigkeit = betreuung.extractGesuchsperiode().getGueltigkeit();
-		EbeguVorlageKey vorlageFromBetreuungsangebottyp = getVorlageFromBetreuungsangebottyp(betreuung);
-		InputStream is = getVorlageStream(gueltigkeit.getGueltigAb(), gueltigkeit.getGueltigBis(), vorlageFromBetreuungsangebottyp);
-		Objects.requireNonNull(is, "Vorlage fuer die Verfuegung nicht gefunden");
-		authorizer.checkReadAuthorization(betreuung);
-		try {
-			byte[] bytes = new GeneratePDFDocumentHelper().generatePDFDocument(
-				ByteStreams.toByteArray(is), new VerfuegungPrintMergeSource(new VerfuegungPrintImpl(betreuung, letzteVerfuegungDatum)),
-				writeProtected);
-			is.close();
-			return bytes;
-		} catch (IOException e) {
-			throw new MergeDocException("printVerfuegungen()",
-				"Bei der Generierung der Verfuegungsmustervorlage ist ein Fehler aufgetreten", e, OBJECTARRAY);
-		}
+		Art art = hasAnspruch(betreuung) ? Art.NORMAL : Art.KEIN_ANSPRUCH;
+		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
+			betreuung,
+			stammdaten,
+			art);
+		return generateDokument(pdfGenerator, !writeProtected);
 	}
 
-	@Nonnull
-	private EbeguVorlageKey getVorlageFromBetreuungsangebottyp(final Betreuung betreuung) {
-		BetreuungsangebotTyp betreuungsangebotTyp = betreuung.getBetreuungsangebotTyp();
-		Objects.requireNonNull(betreuungsangebotTyp);
-		if (Betreuungsstatus.NICHT_EINGETRETEN == betreuung.getBetreuungsstatus()) {
-			if (betreuungsangebotTyp.isAngebotJugendamtKleinkind()) {
-				return EbeguVorlageKey.VORLAGE_NICHT_EINTRETENSVERFUEGUNG;
-			}
-			return EbeguVorlageKey.VORLAGE_INFOSCHREIBEN_MAXIMALTARIF;
+	private boolean hasAnspruch(@Nonnull Betreuung betreuung) {
+		if (betreuung.getVerfuegung() != null) {
+			List<VerfuegungZeitabschnitt> vzList = betreuung.getVerfuegung().getZeitabschnitte();
+			BigDecimal value = vzList.stream()
+				.map(VerfuegungZeitabschnitt::getBgPensum)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+			return MathUtil.isPositive(value);
 		}
-		switch (betreuungsangebotTyp) {
-		case TAGESFAMILIEN:
-			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_TAGESFAMILIEN;
-		case KITA:
-		default:
-			return EbeguVorlageKey.VORLAGE_VERFUEGUNG_KITA;
-		}
+		return false;
 	}
 
 	/**
 	 * In dieser Methode werden alle DokumentGrunds vom Gesuch einer Liste hinzugefuegt. Die die bereits existieren und die
 	 * die noch nicht hochgeladen wurden
 	 */
-	private List<DokumentGrund> calculateListOfDokumentGrunds(Gesuch gesuch) {
+	@Nonnull
+	private List<DokumentGrund> calculateListOfDokumentGrunds(@Nonnull Gesuch gesuch) {
 		List<DokumentGrund> dokumentGrundsMerged = new ArrayList<>(DokumenteUtil
 			.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(gesuch),
 				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch)));
 		Collections.sort(dokumentGrundsMerged);
 		return dokumentGrundsMerged;
+	}
+
+	@Nonnull
+	private GemeindeStammdaten getGemeindeStammdaten(@Nonnull Gesuch gesuch) {
+		String gemeindeId = gesuch.extractGemeinde().getId();
+		GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getGemeindeStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		return stammdaten;
+	}
+
+	@Nonnull
+	private byte[] generateDokument(@Nonnull KibonPdfGenerator pdfGenerator, boolean entwurf) throws MergeDocException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			pdfGenerator.generate(baos);
+			byte[] content = baos.toByteArray();
+			if (entwurf) {
+				return PdfUtil.addEntwurfWatermark(content);
+			}
+			return content;
+		} catch (InvoiceGeneratorException | IOException e) {
+			throw new MergeDocException("generateDokument()",
+				"Bei der Generierung des Dokuments ist ein Fehler aufgetreten", e, OBJECTARRAY);
+		}
 	}
 }

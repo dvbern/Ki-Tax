@@ -30,6 +30,7 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.DownloadResource;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -81,12 +82,15 @@ public class DownloadResourceTest extends AbstractEbeguRestLoginTest {
 	public void setUp() {
 		gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
+		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
+		TestDataUtil.createGemeindeStammdaten(bern, persistence);
 	}
 
 	@Test
 	public void getVerfuegungDokumentAccessTokenGeneratedDokumentTest() throws MergeDocException, IOException, MimeTypeParseException {
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence,
 			LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+
 
 		Assert.assertNotNull(gesuch.getKindContainers().iterator().next().getBetreuungen());
 		@SuppressWarnings("ConstantConditions") // Wird oben geprueft

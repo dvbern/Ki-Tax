@@ -42,9 +42,8 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group" *ngIf="logoImageUrl">
-                        <div class="marginTop10 marginBottom10">
+                        <div>
                             <img [src]="logoImageUrl$ | async"
-                                 [height]="180"
                                  class="gemeinde-profil-image">
                         </div>
                         <div *ngIf="editMode">

@@ -22,31 +22,6 @@ import javax.annotation.Nullable;
  */
 public enum EbeguVorlageKey {
 
-	// Die erste Mahnung, falls das Gesuch unvollständig eingereicht wurde
-	VORLAGE_MAHNUNG_1("/vorlagen/1_Mahnung.docx"),
-
-	// Die zweite Mahnung, falls das Gesuch unvollständig eingereicht wurde
-	VORLAGE_MAHNUNG_2("/vorlagen/2_Mahnung.docx"),
-
-	// Verfügung des Angebots KITA
-	VORLAGE_VERFUEGUNG_KITA("/vorlagen/Verfuegungsmuster_kita.docx"),
-
-	// Eine Angebotsübergreifende Verfügung Verfügung Kita Verfügung des Angebots Kita
-	VORLAGE_NICHT_EINTRETENSVERFUEGUNG("/vorlagen/Nichteintretensverfuegung.docx"),
-
-	// Vorlage fuer Nicht-Eintreten bei Schulkindern
-	VORLAGE_INFOSCHREIBEN_MAXIMALTARIF("/vorlagen/Infoschreiben_Maxtarif.docx"),
-
-	// Verfügung des Angebots Tagesfamilien
-	VORLAGE_VERFUEGUNG_TAGESFAMILIEN("/vorlagen/Verfuegungsmuster_tagesfamilien.docx"),
-
-	// Ein Anhang der mit den Verfügungen mitgeschickt wird und aufzeigt, wie die
-	// finanzielle Situation gerechnet wurde
-	VORLAGE_FINANZIELLE_SITUATION("/vorlagen/Berechnungsgrundlagen.docx"),
-
-	// Ein angebotsübergreifenden neutralen Begleitbrief zu den Verfügungen
-	VORLAGE_BEGLEITSCHREIBEN("/vorlagen/Begleitschreiben.docx"),
-
 	// Benutzerhandbuecher
 	VORLAGE_BENUTZERHANDBUCH_ADMIN("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Administrator.pdf"),
 	VORLAGE_BENUTZERHANDBUCH_INSTITUTION("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Institution.pdf"),
@@ -58,34 +33,11 @@ public enum EbeguVorlageKey {
 	VORLAGE_BENUTZERHANDBUCH_STV("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Steuerverwaltung.pdf"),
 	VORLAGE_BENUTZERHANDBUCH_TRAEGERSCHAFT("/benutzerhandbuch/Ki-Tax Benutzerhandbuch - Rolle Trägerschaft.pdf");
 
-	private boolean proGesuchsperiode;
-
 	private String defaultVorlagePath;
 
-	EbeguVorlageKey() {
-		this.proGesuchsperiode = true;
-	}
-
-	EbeguVorlageKey(boolean proGesuchsperiode) {
-		this.proGesuchsperiode = proGesuchsperiode;
-	}
 
 	EbeguVorlageKey(String defaultVorlagePath) {
-		this.proGesuchsperiode = true;
 		this.defaultVorlagePath = defaultVorlagePath;
-	}
-
-	EbeguVorlageKey(boolean proGesuchsperiode, String defaultVorlagePath) {
-		this.proGesuchsperiode = proGesuchsperiode;
-		this.defaultVorlagePath = defaultVorlagePath;
-	}
-
-	public boolean isProGesuchsperiode() {
-		return proGesuchsperiode;
-	}
-
-	public void setProGesuchsperiode(boolean proGesuchsperiode) {
-		this.proGesuchsperiode = proGesuchsperiode;
 	}
 
 	public String getDefaultVorlagePath() {
@@ -131,17 +83,5 @@ public enum EbeguVorlageKey {
 			}
 		}
 		return null;
-	}
-
-	public static EbeguVorlageKey[] getAllKeysProGesuchsperiode() {
-		return new EbeguVorlageKey[] {
-			VORLAGE_MAHNUNG_1,
-			VORLAGE_MAHNUNG_2,
-			VORLAGE_VERFUEGUNG_KITA,
-			VORLAGE_NICHT_EINTRETENSVERFUEGUNG,
-			VORLAGE_INFOSCHREIBEN_MAXIMALTARIF,
-			VORLAGE_VERFUEGUNG_TAGESFAMILIEN,
-			VORLAGE_FINANZIELLE_SITUATION,
-			VORLAGE_BEGLEITSCHREIBEN };
 	}
 }

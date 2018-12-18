@@ -20,22 +20,50 @@ package ch.dvbern.ebegu.pdfgenerator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import com.lowagie.text.Paragraph;
 
 public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
+	protected static final String ANREDE_FAMILIE = "PdfGeneration_AnredeFamilie";
+	private static final String GRUSS = "PdfGeneration_Gruss";
+	private static final String SIGNIERT = "PdfGeneration_Signiert";
+	private static final String SACHBEARBEITUNG = "PdfGeneration_Sachbearbeitung";
+
 	protected DokumentAnFamilieGenerator(
 		@Nonnull Gesuch gesuch,
-		@Nonnull GemeindeStammdaten stammdaten, boolean draft
+		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		super(gesuch, stammdaten, draft);
+		super(gesuch, stammdaten);
 	}
 
 	@Nonnull
 	@Override
 	protected List<String> getEmpfaengerAdresse() {
 		return getFamilieAdresse();
+	}
+
+	@Nonnull
+	protected Paragraph createParagraphGruss() {
+		return PdfUtil.createParagraph(translate(GRUSS), 2);
+	}
+
+	@Nonnull
+	protected Paragraph createParagraphSignatur() {
+		String signiert = getSachbearbeiterSigniert();
+		if (signiert != null) {
+			return PdfUtil.createParagraph('\n' + signiert + '\n' + translate(SACHBEARBEITUNG), 2);
+		}
+		return PdfUtil.createParagraph(translate(SACHBEARBEITUNG), 2);
+	}
+
+	@Nullable
+	private String getSachbearbeiterSigniert() {
+		Benutzer hauptVerantwortlicher = getGesuch().getDossier().getHauptVerantwortlicher();
+		return hauptVerantwortlicher != null ? translate(SIGNIERT, hauptVerantwortlicher.getFullName()) : null;
 	}
 }

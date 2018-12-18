@@ -90,6 +90,17 @@ public class AuthResource {
 	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
 
+	@Path("/portalAccountPage")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@GET
+	@PermitAll
+	public Response portalAccountCreationPageLink() {
+		String url = configuration.getPortalAccountCreationPageLink();
+		return Response.ok(url).build();
+	}
+
+
 	@Path("/singleSignOn")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)

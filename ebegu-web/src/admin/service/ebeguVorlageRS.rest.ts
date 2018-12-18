@@ -35,18 +35,9 @@ export class EbeguVorlageRS {
         this.serviceURL = `${REST_API}ebeguVorlage`;
     }
 
-    public getEbeguVorlagenByGesuchsperiode(gesuchsperiodeId: string): IPromise<TSEbeguVorlage[]> {
-        return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
-            .then((response: any) => {
-                return this.ebeguRestUtil.parseEbeguVorlages(response.data);
-            });
-    }
-
     public uploadVorlage(
         file: any,
         ebeguVorlage: TSEbeguVorlage,
-        gesuchsperiodeID: string,
-        proGesuchsperiode: boolean,
     ): IPromise<TSEbeguVorlage> {
 
         let restEbeguVorlage = {};
@@ -59,8 +50,6 @@ export class EbeguVorlageRS {
             headers: {
                 'x-filename': encodedFilename,
                 'x-vorlagekey': ebeguVorlage.name,
-                'x-gesuchsperiode': gesuchsperiodeID,
-                'x-progesuchsperiode': proGesuchsperiode,
             },
             data: {
                 file,

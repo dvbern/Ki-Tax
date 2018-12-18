@@ -193,6 +193,7 @@ public class PDFServiceBeanTest {
 
 	}
 
+	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
 	@Test
 	public void testPrintErsteMahnungSinglePageSchulamt() throws Exception {
 
@@ -205,7 +206,6 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "1_Mahnung_Single_Page_Schulamt.pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be one page long.", 1, pdfRreader.getNumberOfPages());
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
@@ -226,7 +226,6 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "1_Mahnung_Single_Page_Jugendamt.pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be one page long.", 1, pdfRreader.getNumberOfPages());
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
@@ -235,7 +234,7 @@ public class PDFServiceBeanTest {
 	}
 
 	@Test
-	public void testPrintErsteMahnungTwoPages() throws Exception {
+	public void testPrintErsteMahnungOnePage() throws Exception {
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
 
@@ -246,12 +245,10 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "1_Mahnung_Two_Pages.pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		pdfRreader.getNumberOfPages();
-		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
+		assertEquals("PDF should be one page long.", 1, pdfRreader.getNumberOfPages());
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
-		assertTextInPdf(pdfTextExtractor, 2, "Erst nach Eingang dieser", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 
@@ -268,15 +265,15 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "1_Mahnung_50_Dokumente.pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
-		assertTextInPdf(pdfTextExtractor, 2, "-    Test Dokument 22", "Second page should begin with this text");
+		assertTextInPdf(pdfTextExtractor, 2, "Test Dokument 22", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 
+	@Ignore // Aktuell haben wir nur eine Adresse auf der Gemeinde, die immer "Jugendamt" ist. Spaeter kommt dann auch eine Schulamt-Adresse dazu
 	@Test
 	public void testPrintZweiteMahnungSinglePageSchulamt() throws Exception {
 
@@ -291,7 +288,6 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_Single_Page_Schulamt.pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		pdfRreader.getNumberOfPages();
 		assertEquals(1, pdfRreader.getNumberOfPages());
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
@@ -312,7 +308,6 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_Single_Page_Jungendamt.pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		pdfRreader.getNumberOfPages();
 		assertEquals(1, pdfRreader.getNumberOfPages());
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
@@ -321,7 +316,7 @@ public class PDFServiceBeanTest {
 	}
 
 	@Test
-	public void testPrintZweiteMahnungTwoPages() throws Exception {
+	public void testPrintZweiteMahnungOnePage() throws Exception {
 
 		Mahnung ersteMahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
 		Mahnung zweiteMahnung = TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
@@ -333,12 +328,10 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_Two_Pages.pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		pdfRreader.getNumberOfPages();
-		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
+		assertEquals("PDF should be one page long.", 1, pdfRreader.getNumberOfPages());
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
-		assertTextInPdf(pdfTextExtractor, 2, "Wenn Sie die geforderten Unterlagen", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 
@@ -357,12 +350,11 @@ public class PDFServiceBeanTest {
 		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_50_Dokumente.pdf");
 
 		PdfReader pdfRreader = new PdfReader(bytes);
-		pdfRreader.getNumberOfPages();
 		assertEquals("PDF should be two pages long.", 2, pdfRreader.getNumberOfPages());
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
-		assertTextInPdf(pdfTextExtractor, 2, "-    Test Dokument 23", "Second page should begin with this text");
+		assertTextInPdf(pdfTextExtractor, 2, "Test Dokument 23", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 
@@ -409,8 +401,9 @@ public class PDFServiceBeanTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter());
+		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch);
 
-		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, null, writeProtectPDF);
+		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, familiensituation, writeProtectPDF);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "finanzielleSituation1G2G.pdf");
 	}
@@ -432,9 +425,10 @@ public class PDFServiceBeanTest {
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 
 		TestDataUtil.calculateFinanzDaten(gesuch);
+		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch);
 		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter());
 
-		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, null, writeProtectPDF);
+		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, verfuegungFamSit, writeProtectPDF);
 
 		unitTestTempfolder.writeToTempDir(bytes, "TN_FamilienStituation1.pdf");
 	}

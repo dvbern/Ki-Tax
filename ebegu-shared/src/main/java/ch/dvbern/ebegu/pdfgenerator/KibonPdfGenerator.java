@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -38,8 +37,12 @@ import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 
 public abstract class KibonPdfGenerator {
 
-	private static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
-	private static final String FAMILIE = "PdfGeneration_Familie";
+	protected static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
+	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
+	protected static final String FAMILIE = "PdfGeneration_Familie";
+	protected static final String NAME = "PdfGeneration_Name";
+	protected static final String BETREUUNG_INSTITUTION = "PdfGeneration_Institution";
+
 
 	@Nonnull
 	private PdfGenerator pdfGenerator;
@@ -48,16 +51,17 @@ public abstract class KibonPdfGenerator {
 	protected final Gesuch gesuch;
 
 	@Nonnull
-	private final GemeindeStammdaten gemeindeStammdaten;
+	protected final GemeindeStammdaten gemeindeStammdaten;
 
 	private Locale sprache;
 
 
-	protected KibonPdfGenerator(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten stammdaten, final boolean draft) {
+	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod") // Stimmt nicht, die Methode ist final
+	protected KibonPdfGenerator(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten stammdaten) {
 		this.gesuch = gesuch;
 		this.gemeindeStammdaten = stammdaten;
 		initLocale(stammdaten);
-		initGenerator(stammdaten, draft);
+		initGenerator(stammdaten);
 	}
 
 	@Nonnull
@@ -95,18 +99,18 @@ public abstract class KibonPdfGenerator {
 		if (korrespondenzsprachen.length == 1) {
 			sprache = korrespondenzsprachen[0].getLocale();
 		} else {
-			sprache = Objects.requireNonNull(Objects.requireNonNull(gesuch.getGesuchsteller1())
-				.getGesuchstellerJA()
-				.getKorrespondenzSprache()).getLocale();
+			if (gesuch.getGesuchsteller1() != null && gesuch.getGesuchsteller1().getGesuchstellerJA().getKorrespondenzSprache() != null) {
+				sprache = gesuch.getGesuchsteller1().getGesuchstellerJA().getKorrespondenzSprache().getLocale();
+			}
 		}
 	}
 
-	private void initGenerator(@Nonnull GemeindeStammdaten stammdaten, final boolean draft) {
-		this.pdfGenerator = PdfGenerator.create(stammdaten.getLogoContent(), getAbsenderAdresse(), draft);
+	private void initGenerator(@Nonnull GemeindeStammdaten stammdaten) {
+		this.pdfGenerator = PdfGenerator.create(stammdaten.getLogoContent(), getAbsenderAdresse());
 	}
 
 	@Nonnull
-	private List<String> getAbsenderAdresse() {
+	protected final List<String> getAbsenderAdresse() {
 		List<String> absender = new ArrayList<>();
 		absender.addAll(getGemeindeAdresse());
 		absender.addAll(getGemeindeKontaktdaten());

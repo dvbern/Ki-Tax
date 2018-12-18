@@ -54,23 +54,15 @@ public class EbeguVorlage extends AbstractDateRangedEntity implements Comparable
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ebeguvorlage_vorlage_id"), nullable = true)
 	private Vorlage vorlage;
 
-	@Column(nullable = false)
-	private boolean proGesuchsperiode = true;
-
 	public EbeguVorlage() {
 	}
 
 	public EbeguVorlage(EbeguVorlageKey name) {
-		this(name, Constants.DEFAULT_GUELTIGKEIT, true);
+		this(name, Constants.DEFAULT_GUELTIGKEIT);
 	}
 
 	public EbeguVorlage(EbeguVorlageKey name, DateRange gueltigkeit) {
-		this(name, gueltigkeit, true);
-	}
-
-	public EbeguVorlage(EbeguVorlageKey name, DateRange gueltigkeit, boolean proGesuchsperiode) {
 		this.name = name;
-		this.proGesuchsperiode = proGesuchsperiode;
 		this.setGueltigkeit(gueltigkeit);
 	}
 
@@ -92,14 +84,6 @@ public class EbeguVorlage extends AbstractDateRangedEntity implements Comparable
 		this.vorlage = vorlage;
 	}
 
-	public boolean isProGesuchsperiode() {
-		return proGesuchsperiode;
-	}
-
-	public void setProGesuchsperiode(boolean proGesuchsperiode) {
-		this.proGesuchsperiode = proGesuchsperiode;
-	}
-
 	/**
 	 * @return a copy of the current Param with the gueltigkeit set to the passed DateRange
 	 */
@@ -107,7 +91,6 @@ public class EbeguVorlage extends AbstractDateRangedEntity implements Comparable
 		EbeguVorlage copiedParam = new EbeguVorlage();
 		copiedParam.setGueltigkeit(new DateRange(gueltigkeit.getGueltigAb(), gueltigkeit.getGueltigBis()));
 		copiedParam.setName(this.getName());
-		copiedParam.setProGesuchsperiode(this.isProGesuchsperiode());
 		return copiedParam;
 	}
 
@@ -133,7 +116,6 @@ public class EbeguVorlage extends AbstractDateRangedEntity implements Comparable
 		}
 		final EbeguVorlage otherEbeguVorlage = (EbeguVorlage) other;
 		return Objects.equals(getName(), otherEbeguVorlage.getName()) &&
-			EbeguUtil.isSameObject(getVorlage(), otherEbeguVorlage.getVorlage()) &&
-			isProGesuchsperiode() == otherEbeguVorlage.isProGesuchsperiode();
+			EbeguUtil.isSameObject(getVorlage(), otherEbeguVorlage.getVorlage());
 	}
 }
