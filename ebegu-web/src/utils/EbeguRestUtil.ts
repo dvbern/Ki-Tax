@@ -195,7 +195,6 @@ export default class EbeguRestUtil {
             this.parseDateRangeEntity(ebeguVorlageTS, receivedEbeguVorlage);
             ebeguVorlageTS.name = receivedEbeguVorlage.name;
             ebeguVorlageTS.vorlage = this.parseVorlage(new TSVorlage(), receivedEbeguVorlage.vorlage);
-            ebeguVorlageTS.proGesuchsperiode = receivedEbeguVorlage.proGesuchsperiode;
             return ebeguVorlageTS;
         }
         return undefined;

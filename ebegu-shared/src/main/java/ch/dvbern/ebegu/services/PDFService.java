@@ -42,7 +42,7 @@ public interface PDFService {
 	byte[] generateBegleitschreiben(@Nonnull Gesuch gesuch, boolean writeProtected) throws MergeDocException;
 
 	@Nonnull
-	byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, Verfuegung famGroessenVerfuegung, boolean writeProtected) throws MergeDocException;
+	byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull Verfuegung famGroessenVerfuegung, boolean writeProtected) throws MergeDocException;
 
 	@Nonnull
 	byte[] generateVerfuegungForBetreuung(Betreuung betreuung, @Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected) throws MergeDocException;

@@ -38,22 +38,21 @@ import com.lowagie.text.Utilities;
 public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 	@Nonnull
-	public static PdfGenerator create(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> absenderHeader, @Nullable final PhraseRenderer footer, final boolean draft) {
+	public static PdfGenerator create(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> absenderHeader, @Nullable final PhraseRenderer footer) {
 		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(gemeindeLogo, absenderHeader);
 		layoutConfiguration.setFooter(footer);
 		layoutConfiguration.getStaticComponents().stream()
 			.map(ComponentRenderer::getComponentConfiguration)
 			.forEach(componenConfiguratoin -> componenConfiguratoin.setOnPage(OnPage.FIRST));
 		layoutConfiguration.getEmpfaengerAdresse().setOnPage(OnPage.FIRST);
-		if (draft) {
-			layoutConfiguration.getStaticComponents().add(new DraftComonentRenderer(new DraftComponent(), "DRAFT"));
-		}
 		return new PdfGenerator(layoutConfiguration);
 	}
 
 	@Nonnull
-	public static PdfGenerator create(@Nonnull final byte[] gemeindeLogo, @Nonnull final List<String> absenderHeader, boolean draft) {
-		return create(gemeindeLogo, absenderHeader, null, draft);
+	public static PdfGenerator create(
+		@Nonnull final byte[] gemeindeLogo,
+		@Nonnull final List<String> absenderHeader) {
+		return create(gemeindeLogo, absenderHeader, null);
 	}
 
 	public PdfGenerator(@Nonnull PdfLayoutConfiguration configuration) {

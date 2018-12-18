@@ -17,12 +17,35 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.lib.invoicegenerator.dto.OnPage;
-import ch.dvbern.lib.invoicegenerator.dto.component.TextComponent;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 
-public class DraftComponent extends TextComponent {
+public class TableRowLabelValue {
 
-	public DraftComponent() {
-		super(0, 0, 0, 0, OnPage.ALL);
+	private String msgKey;
+	private String value;
+
+	public TableRowLabelValue(String msgKey, String value) {
+		this.msgKey = msgKey;
+		this.value = value;
+	}
+
+	public String getMsgKey() {
+		return msgKey;
+	}
+
+	public void setMsgKey(String msgKey) {
+		this.msgKey = msgKey;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String getLabel() {
+		return ServerMessageUtil.getMessage(msgKey);
 	}
 }
