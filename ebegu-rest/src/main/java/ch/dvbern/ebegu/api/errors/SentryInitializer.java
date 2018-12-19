@@ -20,6 +20,8 @@ import ch.dvbern.ebegu.api.util.version.VersionInfo;
 import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
 import io.sentry.Sentry;
 import io.sentry.SentryClient;
+import io.sentry.event.Event.Level;
+import io.sentry.event.EventBuilder;
 
 /**
  * Sentry is used to report errors to our Sentry instance
@@ -39,12 +41,22 @@ public class SentryInitializer implements ServletContextListener {
 				.map(VersionInfo::getVersion)
 				.orElse("unknown vers.");
 		client.setRelease(version);
-		Sentry.capture("Serverstart: Application Context for KI Bon initialized");
+
+		EventBuilder eventBuilder = new EventBuilder()
+			.withMessage("Serverstart: Application Context for KI Bon initialized. "
+				+ "This probably means Deployment was successfull")
+			.withLevel(Level.DEBUG)
+			.withLogger(SentryInitializer.class.getName());
+		Sentry.capture(eventBuilder);
 	}
 
 	@Override
 	public void contextDestroyed(@Nonnull ServletContextEvent sce) {
-		Sentry.capture("Serverstop: Application Context for KI Bon destroyed");
+		EventBuilder eventBuilder = new EventBuilder()
+					.withMessage("Serverstop: Application Context for KI Bon destroyed")
+					.withLevel(Level.DEBUG)
+					.withLogger(SentryInitializer.class.getName());
+		Sentry.capture(eventBuilder);
 
 	}
 }
