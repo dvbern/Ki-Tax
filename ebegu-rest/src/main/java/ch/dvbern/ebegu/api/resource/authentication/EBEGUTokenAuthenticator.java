@@ -32,11 +32,14 @@ import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.sentry.Sentry;
+import io.sentry.event.UserBuilder;
 import org.apache.commons.lang.NotImplementedException;
 import org.infinispan.Cache;
 import org.omnifaces.security.jaspic.user.TokenAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import static java.util.Collections.emptyList;
 
@@ -121,6 +124,22 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 					LOG.debug("Token {} is still valid in Database (and was probably renewed), cache was refreshed", effectiveToken);
 				}
 			}
+
+			MDC.put(Constants.LOG_MDC_AUTHUSERID, effectiveToken); //todo revieer fragen: vorher wurde das token mit suffix verwendet
+//			todo discuss with revieer: should we load / cache benutzer and his institution? or maybe just add important stuff to auth_benutzer
+//			String institutionDispName = user.getBenutzer().getInstitution() != null ? user.getBenutzer().getInstitution().getName() : null;
+//			String traegerschaftDispName = user.getBenutzer().getTraegerschaft() != null ? user.getBenutzer().getTraegerschaft().getName() : null;
+
+			Sentry.getContext().setUser(
+				new UserBuilder()
+					.setUsername(user.getUsername())
+					.setId(effectiveToken)
+//					.setEmail(user.getBenutzer().getEmail())
+//					.withData("benutzerId", user.getBenutzer().getId())
+					.withData("role", user.getRole())
+//					.withData("institution", institutionDispName)
+//					.withData("traegerschaft", traegerschaftDispName)
+					.build()); //add user name to sentry context
 
 			return true;
 		});
