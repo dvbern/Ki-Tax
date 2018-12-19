@@ -17,39 +17,25 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
-import ch.dvbern.lib.invoicegenerator.dto.Alignment;
-import ch.dvbern.lib.invoicegenerator.dto.OnPage;
-import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
-import ch.dvbern.lib.invoicegenerator.dto.component.PhraseRenderer;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Rectangle;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
+
+import javax.annotation.Nonnull;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
@@ -75,6 +61,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
 	private static final String NICHT_EINTRETEN_CONTENT_7 = "PdfGeneration_NichtEintreten_Content_7";
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
+	private static final String NICHT_EINTRETEN_CONTENT_9 = "PdfGeneration_NichtEintreten_Content_9";
+	private static final String NICHT_EINTRETEN_CONTENT_10 = "PdfGeneration_NichtEintreten_Content_10";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
 	private static final String RECHTSMITTELBELEHRUNG_TITLE = "PdfGeneration_Rechtsmittelbelehrung_Title";
 	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
@@ -92,11 +80,6 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	@Nonnull
 	private final Art art;
 
-	@Nonnull
-	private final PhraseRenderer footer;
-
-
-
 	public VerfuegungPdfGenerator(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
@@ -105,8 +88,6 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 		this.betreuung = betreuung;
 		this.art = art;
-		footer = new PhraseRenderer(getFooterLines(), PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM, 280,
-						165, 20, OnPage.FIRST, 8, Alignment.LEFT, 1.2F);
 	}
 
 	@Nonnull
@@ -122,40 +103,32 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			Document document = generator.getDocument();
 			document.add(createIntro());
 			document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ANREDE_FAMILIE)));
-			createContent(document);
+			createContent(document, generator);
 		};
 	}
 
-	public void createContent(@Nonnull final Document document) throws DocumentException {
-		List<Element> bemerkungenElements = Lists.newArrayList();
+	public void createContent(@Nonnull final Document document, @Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator) throws DocumentException {
 		List<Element> gruesseElements = Lists.newArrayList();
 		Kind kind = betreuung.getKind().getKindJA();
 		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
 		switch (art) {
 			case NORMAL:
-				footer.setPayload(Collections.emptyList());
 				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(VERFUEGUNG_CONTENT,
 					kind.getFullName(),
 					Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2));
 				document.add(createVerfuegungTable());
-				bemerkungenElements.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(BEMERKUNGEN)));
-				bemerkungenElements.add(PdfUtil.createList(getBemerkungen()));
-				document.add(PdfUtil.createKeepTogetherTable(bemerkungenElements, 0, 2));
+				addBemerkungenIfaAvailable(document);
 				break;
 			case KEIN_ANSPRUCH:
-				footer.setPayload(Collections.emptyList());
-
 				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(KEIN_ANSPRUCH_CONTENT,
 					kind.getFullName(),
 					Constants.DATE_FORMATTER.format(kind.getGeburtsdatum()),
 					Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
 					Constants.DATE_FORMATTER.format(gp.getGueltigBis())), 2));
-				bemerkungenElements.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(BEMERKUNGEN)));
-				bemerkungenElements.add(PdfUtil.createList(getBemerkungen()));
-				document.add(PdfUtil.createKeepTogetherTable(bemerkungenElements, 0, 2));
+				addBemerkungenIfaAvailable(document);
 				break;
 			case NICHT_EINTRETTEN:
-				footer.setPayload(getFooterLines());
+				createFusszeile(generator.getDirectContent());
 				LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_1,
 					Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
@@ -166,12 +139,18 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_2,
 					Constants.DATE_FORMATTER.format(eingangsdatum))));
 				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_3)));
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_4)));
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_5)));
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_6), 2));
-				document.newPage();
+
+				Paragraph paragraphWithSupertext = PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_4));
+				paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+				paragraphWithSupertext.add(new Chunk(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_5), PdfUtilities.DEFAULT_FONT));
+				paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
+				paragraphWithSupertext.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_6)));
+				document.add(paragraphWithSupertext);
 				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_7)));
-				document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_8,
+				document.newPage();
+				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_8)));
+				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_9)));
+				document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_10,
 					Constants.DATE_FORMATTER.format(eingangsdatum)), 2));
 				break;
 		}
@@ -179,6 +158,16 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		gruesseElements.add(createParagraphSignatur());
 		document.add(PdfUtil.createKeepTogetherTable(gruesseElements, 2, 0));
 		document.add(createRechtsmittelBelehrung());
+	}
+
+	private void addBemerkungenIfaAvailable(Document document) {
+		List<Element> bemerkungenElements = Lists.newArrayList();
+		final List<String> bemerkungen = getBemerkungen();
+		if (!bemerkungen.isEmpty()) {
+			bemerkungenElements.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(BEMERKUNGEN)));
+			bemerkungenElements.add(PdfUtil.createList(getBemerkungen()));
+			document.add(PdfUtil.createKeepTogetherTable(bemerkungenElements, 0, 2));
+		}
 	}
 
 	@Nonnull
@@ -277,8 +266,13 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private List<String> splitBemerkungen(@Nonnull String bemerkungen) {
+		if (Strings.isNullOrEmpty(bemerkungen)) {
+			return Collections.emptyList();
+		}
 		String[] splitBemerkungenNewLine = bemerkungen.split('[' + System.getProperty("line.separator") + "]+");
-		return new ArrayList<>(Arrays.asList(splitBemerkungenNewLine));
+		return Arrays.stream(splitBemerkungenNewLine)
+			.filter(s -> !Strings.isNullOrEmpty(s))
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -296,10 +290,10 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		return table;
 	}
 
-	@Nonnull
-	private List<String> getFooterLines() {
-		return Arrays.asList(
-			ServerMessageUtil.getMessage(FUSSZEILE_1),
-			ServerMessageUtil.getMessage(FUSSZEILE_2));
+	private void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+		createFusszeile(
+			dirPdfContentByte,
+			Lists.newArrayList(ServerMessageUtil.getMessage(FUSSZEILE_1), ServerMessageUtil.getMessage(FUSSZEILE_2))
+		);
 	}
 }
