@@ -37,7 +37,6 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.Utilities;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -102,7 +101,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			document.add(PdfUtil.createSubTitle(translate(BENOETIGTE_UNTERLAGEN)));
 			Paragraph dokumenteParagraph = new Paragraph();
 			dokumenteParagraph.setSpacingAfter(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-			dokumenteParagraph.add(PdfUtil.createList(dokumente));
+			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
 			document.add(dokumenteParagraph);
 			List<Element> seite2Paragraphs = Lists.newArrayList();
 			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(EINWILLIGUNG_STEUERDATEN_TITLE)));
