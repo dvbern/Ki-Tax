@@ -152,6 +152,40 @@
                         </div>
                     </div>
 
+                    <!--provisorische Betreuung-->
+                    <div ng-if="vm.getBetreuungModel().vertrag === false">
+                        <!-- provisorisches Betreuungspensum-->
+                        <dv-betreuung-input pensum-container="vm.provPensum"
+                                            input-id="provPensum"
+                                            betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()">
+                        </dv-betreuung-input>
+                        <!--provisorische monatliche Betreuungskosten-->
+                        <div class="row">
+                            <div class="col-sm-12 dv-input-container-medium">
+                                <dv-input-container class="form-group">
+                                    <label class="md-no-float"
+                                           for="provMonatlicheBetreuungskosten">
+                                        <span data-translate="MONATLICHE_BETREUUNGSKOSTEN"></span>
+                                        <dv-tooltip input-id="provMonatlicheBetreuungskosten"
+                                                    text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
+                                    </label>
+                                    <div class="dv-input-container-medium-label">
+                                        <input aria-describedby="provMonatlicheBetreuungskosten-error"
+                                               id="provMonatlicheBetreuungskosten" type="number"
+                                               name="provMonatlicheBetreuungskosten"
+                                               ng-model="vm.provMonatlicheBetreuungskosten"
+                                               dv-max-length class="form-control"
+                                               ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                               ng-required="true"
+                                               ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
+                                        <dv-error-messages input-id="provMonatlicheBetreuungskosten"
+                                                           for="vm.form['provMonatlicheBetreuungskosten'].$error"></dv-error-messages>
+                                    </div>
+
+                                </dv-input-container>
+                            </div>
+                        </div>
+                    </div>
 
                     <!--Institutionen-->
                     <div ng-if="vm.getBetreuungModel().vertrag">

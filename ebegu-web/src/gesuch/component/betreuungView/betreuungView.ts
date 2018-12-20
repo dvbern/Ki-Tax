@@ -92,8 +92,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
-    public instStammId: string; // der ausgewaehlte instStammId wird hier gespeichert und dann in die entsprechende
+    // der ausgewaehlte instStammId wird hier gespeichert und dann in die entsprechende
     // InstitutionStammdaten umgewandert
+    public instStammId: string;
     public isSavingData: boolean; // Semaphore
     public initialBetreuung: TSBetreuung;
     public flagErrorVertrag: boolean;
@@ -110,6 +111,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isDuplicated: boolean = false;
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     public fachstelleId: string;
+
+    // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
+    public provMonatlicheBetreuungskosten: number = 1000;
+    public provPensum: number = 50;
 
     public constructor(
         private readonly $state: StateService,
@@ -357,6 +362,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public saveProvisorischeBetreuung(): void {
         if (this.isGesuchValid()) {
+            this.createProvisorischesBetreuungspensum(false);
             this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
         }
     }
@@ -1027,5 +1033,28 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return this.getErweiterteBetreuungGS().fachstelle.name;
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
+    }
+
+    private createProvisorischesBetreuungspensum(vertrag: boolean): any {
+
+        // always clear existing Betreuungspensum
+        this.getBetreuungModel().betreuungspensumContainers = [];
+
+        if (vertrag === true) {
+            return;
+        }
+        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+           this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
+        }
+        this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
+
+        this.setSelectedInstitutionStammdaten();
+
+        this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
+            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE,
+                false,
+                this.provMonatlicheBetreuungskosten,
+                this.provPensum,
+                this.gesuchModelManager.getGesuchsperiode().gueltigkeit)));
     }
 }

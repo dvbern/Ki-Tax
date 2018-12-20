@@ -25,24 +25,24 @@
                          ng-required="vm.ngRequired">
             <span data-translate="{{current}}"></span>
         </md-radio-button>
-        <md-radio-button ng-if="!vm.items" ng-value="true" aria-label="{{(vm.jaLabel | translate) || ('LABEL_JA' | translate)}}" class="element-ja"
+        <md-radio-button ng-if="!vm.items" ng-value="true" aria-label="{{'VERTRAG'| translate}}" class="element-ja"
                          ng-attr-dv-enable-element="{{vm.dvEnableAllowedRoles ? '' : undefined}}"
                          ng-attr-dv-enable-allowed-roles="{{vm.dvEnableAllowedRoles ? vm.dvEnableAllowedRoles : vm.allRoles}}"
                          ng-attr-dv-enable-expression="vm.dvEnableExpression === false ? false : true"
                          aria-describedby="{{vm.ariaDescribedBy}}"
                          ng-required="vm.ngRequired">
-            <span>{{vm.jaLabel | translate}}</span>
+            <span data-translate="VERTRAG"></span>
         </md-radio-button>
         <md-radio-button ng-if="!vm.items"
                          ng-value="false"
-                         aria-label="{{'LABEL_NEIN'| translate}}"
+                         aria-label="{{'KEIN_VERTRAG'| translate}}"
                          class="element-nein"
                          ng-attr-dv-enable-element="{{vm.dvEnableAllowedRoles ? '' : undefined}}"
                          ng-attr-dv-enable-allowed-roles="{{vm.dvEnableAllowedRoles ? vm.dvEnableAllowedRoles : vm.allRoles}}"
                          ng-attr-dv-enable-expression="vm.dvEnableExpression === false ? false : true"
                          aria-describedby="{{vm.ariaDescribedBy}}"
                          ng-required="vm.ngRequired">
-            <span data-translate="LABEL_NEIN"></span>
+            <span data-translate="KEIN_VERTRAG"></span>
         </md-radio-button>
     </md-radio-group>
 </div>

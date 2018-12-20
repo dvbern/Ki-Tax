@@ -2148,6 +2148,11 @@ public class JaxBConverter extends AbstractConverter {
 		betreuung.setVertrag(betreuungJAXP.getVertrag());
 		betreuung.setKeineKesbPlatzierung(betreuungJAXP.getKeineKesbPlatzierung());
 
+		// Falls es keinen Vertrag gibt wird die Institution auf Unbekannt gesetzt
+		if (betreuungJAXP.getVertrag() == false) {
+
+		}
+
 		// InstitutionStammdaten muessen bereits existieren
 		if (betreuungJAXP.getInstitutionStammdaten() != null) {
 			final String instStammdatenID = betreuungJAXP.getInstitutionStammdaten().getId();
