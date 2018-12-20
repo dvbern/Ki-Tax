@@ -165,7 +165,7 @@
                     </div>
 
                     <!--provisorische Betreuung-->
-                    <div ng-if="vm.getBetreuungModel().vertrag === false">
+                    <div ng-if="vm.isProvisorischeBetreuung()">
 
                         <div class="dv-input-container-medium-label">
                             <input type="number"
@@ -215,7 +215,7 @@
                     </div>
 
                     <!--Institutionen-->
-                    <div ng-if="vm.getBetreuungModel().vertrag">
+                    <div ng-if="vm.isProvisorischeBetreuung()">
                         <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
                         <div class="row"
                              ng-if="vm.showInstitutionenList()"
@@ -337,7 +337,7 @@
                             </div>
                         </div>
 
-                        <div ng-if="vm.getBetreuungModel().vertrag === true">
+                        <div ng-if="vm.isProvisorischeBetreuung()">
                         <fieldset dv-enable-element
                                   dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                   dv-enable-expression="vm.isPensumEditable()">
@@ -522,14 +522,14 @@
 
 
                         <!--Hint-->
-                        <div ng-if="vm.getBetreuungModel().vertrag === true">
+                        <div ng-if="vm.isProvisorischeBetreuung()">
                             <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT1"
                                dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
                                dv-show-expression="!vm.isSchulamt()"></p>
                         </div>
 
                         <!--Hint-->
-                        <div ng-if="vm.getBetreuungModel().vertrag === false">
+                        <div ng-if="!vm.isProvisorischeBetreuung()">
                         <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT2"
                            dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
                            dv-show-expression="!vm.isSchulamt()"></p>
@@ -630,7 +630,7 @@
                     <div class="dv-navigation-item"
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
-                         dv-show-expression="vm.isBetreuungsstatusAusstehend() && vm.getBetreuungModel().vertrag">
+                         dv-show-expression="vm.isBetreuungsstatusAusstehend() && vm.isProvisorischeBetreuung()">
                         <dv-loading-button button-click="vm.platzAnfordern()" type="submit">
                             <span data-translate="PLATZBESTAETIGUNG_ANFORDERN"></span>
                         </dv-loading-button>
@@ -649,8 +649,8 @@
                     <!-- Save provisorische Berechnung-->
                     <div class="dv-navigation-item"
                          dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
-                         dv-show-expression="vm.getBetreuungModel().vertrag == false">
+                         dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
+                         dv-show-expression="!vm.isProvisorischeBetreuung()">
                         <dv-loading-button button-click="vm.saveProvisorischeBetreuung()" type="submit">
                             <span data-translate="SPEICHERN_UPPER"></span>
                         </dv-loading-button>

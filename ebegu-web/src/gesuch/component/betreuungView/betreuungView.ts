@@ -1058,6 +1058,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.gesuchModelManager.getGesuchsperiode().gueltigkeit)));
     }
 
+    public isProvisorischeBetreuung(): boolean {
+        return this.getBetreuungModel().vertrag;
+    }
+
     public onChangeVertrag(): void {
         this.getBetreuungModel().betreuungspensumContainers = [];
     }
