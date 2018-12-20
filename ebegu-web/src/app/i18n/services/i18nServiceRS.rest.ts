@@ -15,10 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {Observable} from 'rxjs';
 import {TSBrowserLanguage, tsBrowserLanguageFromString} from '../../../models/enums/TSBrowserLanguage';
 import {CONSTANTS, LOCALSTORAGE_LANGUAGE_KEY} from '../../core/constants/CONSTANTS';
 import {WindowRef} from '../../core/service/windowRef.service';
@@ -32,7 +30,6 @@ export class I18nServiceRSRest {
     public serviceURL: string;
 
     public constructor(
-        private readonly http: HttpClient,
         private readonly translate: TranslateService,
         private readonly $window: WindowRef,
     ) {
@@ -57,8 +54,8 @@ export class I18nServiceRSRest {
      * function will be used con configuring the language from config.ts (angular.js) because there we don't have
      * any service registered yet
      */
-    public getPreferredLanguage(): string {
-        return getPreferredLanguage(this.$window.nativeWindow);
+    public extractPreferredLanguage(): string {
+        return extractPreferredLanguage(this.$window.nativeWindow);
     }
 
     public currentLanguage(): TSBrowserLanguage {
@@ -70,7 +67,7 @@ export class I18nServiceRSRest {
  * This function will try to get the selected language out of the localStorage. If the kibonLanguage is not found
  * it will retrieve the language of the browser and stores it in the localStorage so it is stored for the next time
  */
-export function getPreferredLanguage($window: Window): string {
+export function extractPreferredLanguage($window: Window): string {
     const myStorage = $window.localStorage;
     const kibonLanguage = myStorage.getItem(LOCALSTORAGE_LANGUAGE_KEY);
     if (kibonLanguage) {

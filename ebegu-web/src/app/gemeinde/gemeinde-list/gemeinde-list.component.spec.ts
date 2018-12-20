@@ -38,7 +38,7 @@ describe('GemeindeListComponent', () => {
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
             ['isRole', 'isOneOfRoles']);
         const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
         TestBed.configureTestingModule({
             imports: [

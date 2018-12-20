@@ -15,21 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Injectable} from '@angular/core';
+import {Provider} from '@angular/core';
+import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
+import IInjectorService = angular.auto.IInjectorService;
 
-export function getWindowObject(): Window {
-    // return the global native browser window object
-    return window;
+// tslint:disable:naming-convention
+
+// HttpI18nInterceptor
+export function httpI18nInterceptorFactory(i: IInjectorService): HttpI18nInterceptor {
+    return i.get('HttpI18nInterceptor');
 }
 
-@Injectable()
-export class WindowRef {
+export const httpI18nInterceptorProvider = {
+    provide: HttpI18nInterceptor,
+    useFactory: httpI18nInterceptorFactory,
+    deps: ['$injector'],
+    multi: true,
+};
 
-    public get nativeWindow(): Window {
-        return getWindowObject();
-    }
-
-    public get nativeLocalStorage(): Storage {
-        return getWindowObject().localStorage;
-    }
-}
+export const UPGRADED_HTTP_INTERCEPTOR_PROVIDERS: Provider[] = [
+    httpI18nInterceptorProvider,
+];

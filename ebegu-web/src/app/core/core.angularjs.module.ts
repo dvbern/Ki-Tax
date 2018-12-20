@@ -59,6 +59,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
 import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-selector/dv-language-selector.component';
+import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
@@ -233,6 +234,7 @@ export const CORE_JS_MODULE = angular
     .service('BerechnungsManager', BerechnungsManager)
     .service('HttpResponseInterceptor', HttpResponseInterceptor)
     .service('HttpVersionInterceptor', HttpVersionInterceptor)
+    .service('HttpI18nInterceptor', HttpI18nInterceptor)
     .service('WizardStepManager', WizardStepManager)
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)

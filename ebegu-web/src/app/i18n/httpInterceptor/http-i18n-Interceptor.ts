@@ -15,21 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Injectable} from '@angular/core';
+import {IHttpInterceptor, IRequestConfig} from 'angular';
+import {HEADER_ACCEPT_LANGUAGE} from '../../core/constants/CONSTANTS';
+import {I18nServiceRSRest} from '../services/i18nServiceRS.rest';
 
-export function getWindowObject(): Window {
-    // return the global native browser window object
-    return window;
-}
+export class HttpI18nInterceptor implements IHttpInterceptor {
 
-@Injectable()
-export class WindowRef {
+    public static $inject = ['I18nServiceRSRest'];
 
-    public get nativeWindow(): Window {
-        return getWindowObject();
+    public constructor(
+        private readonly i18nService: I18nServiceRSRest,
+    ) {
     }
 
-    public get nativeLocalStorage(): Storage {
-        return getWindowObject().localStorage;
+    public request = (config: IRequestConfig) => {
+        config.headers[HEADER_ACCEPT_LANGUAGE] = config.headers[HEADER_ACCEPT_LANGUAGE] ?
+            `${this.i18nService.currentLanguage()} ${config.headers[HEADER_ACCEPT_LANGUAGE]}`
+            : this.i18nService.currentLanguage();
+
+        return config;
     }
 }
