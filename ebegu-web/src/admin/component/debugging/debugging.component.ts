@@ -85,7 +85,6 @@ export class DebuggingComponent implements OnInit, OnDestroy {
     public doUndefined(){
         let test = [1, 2];
         let res =  test[2].toFixed(1);
-        console.log(res);
     }
 
     public doThrowError(){

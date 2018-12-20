@@ -21,6 +21,7 @@ import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/c
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import * as Raven from 'raven-js';
 import {environment} from '../../environments/environment';
+import {BUILDTSTAMP, VERSION} from '../../environments/version';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
@@ -33,6 +34,8 @@ if (sentryDSN) {
     Raven
         .config(sentryDSN)
         .addPlugin(ravenPlugin, angular)
+        .setRelease(VERSION)
+        .setExtraContext({buildtimestamp: BUILDTSTAMP})
         .install();
 } else {
     console.log('Sentry is disabled because there is no sentryDSN');
