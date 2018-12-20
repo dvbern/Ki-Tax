@@ -35,13 +35,13 @@ public class FinanzielleSituationRow {
 
 	@Nonnull
 	// @ToDo: Dies ist nur zum Testen. Sollte mit dem richtigen Wert gesetzt werden.
-	private String gs1Old = "1'000";
+	private String gs1ValueOfGS = "1'000";
 
 	@Nullable
 	private String gs2;
 
 	@Nonnull
-	private String gs2Old;
+	private String gs2ValueOfGS;
 
 
 	public FinanzielleSituationRow(@Nonnull String label, @Nonnull String gs1) {
@@ -65,13 +65,13 @@ public class FinanzielleSituationRow {
 	}
 
 	@Nullable
-	public String getGs2Old() {
-		return gs2Old;
+	public String getGs2ValueOfGS() {
+		return gs2ValueOfGS;
 	}
 
 	@Nonnull
-	public String getGs1Old() {
-		return gs1Old;
+	public String getGs1ValueOfGS() {
+		return gs1ValueOfGS;
 	}
 
 	@Nullable
@@ -84,7 +84,7 @@ public class FinanzielleSituationRow {
 		return supertext;
 	}
 
-	public void setSupertext(@Nullable String supertext) {
+	public void setSupertext(@Nonnull String supertext) {
 		this.supertext = supertext;
 	}
 

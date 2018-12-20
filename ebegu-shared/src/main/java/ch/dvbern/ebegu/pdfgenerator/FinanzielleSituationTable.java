@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
@@ -37,11 +38,12 @@ public class FinanzielleSituationTable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FinanzielleSituationTable.class);
 
+	private static final String ORIGINAL_VALUE = "PdfGeneration_OriginalValue";
+
 	private float[] columnWidths;
 	private int[] alignement;
 	private int numberOfTitleRows = 1;
 	private boolean lastLineBold = false;
-	private int emptyLinesAfter = 1;
 	private List<FinanzielleSituationRow> rows = new ArrayList<>();
 
 	private boolean hasSecondGesuchsteller;
@@ -96,21 +98,26 @@ public class FinanzielleSituationTable {
 
 	private void addRow(@Nonnull PdfPTable table, @Nonnull FinanzielleSituationRow row, @Nonnull Font font, @Nonnull Color bgColor) {
 		addCell(table, row.getLabel(), row.getSupertext(), null, font, bgColor, alignement[0]);
-		addCell(table, row.getGs1(), null, row.getGs1Old(), font, bgColor, alignement[1]);
+		addCell(table, row.getGs1(), null, row.getGs1ValueOfGS(), font, bgColor, alignement[1]);
 		if (hasSecondGesuchsteller) {
-			addCell(table, row.getGs2(), null, row.getGs1Old(), font, bgColor, alignement[2]);
+			addCell(table, row.getGs2(), null, row.getGs2ValueOfGS(), font, bgColor, alignement[2]);
 		}
 	}
 
-	private void addCell(@Nonnull PdfPTable table, @Nullable String value, @Nullable String supertext, @Nullable String oldValue, @Nonnull Font font, @Nonnull Color bgColor, int alignment) {
+	private void addCell(@Nonnull PdfPTable table, @Nullable String value, @Nullable String supertext, @Nullable String originalValue, @Nonnull Font font, @Nonnull Color bgColor, int alignment) {
 		final Phrase phrase = new Phrase(value, font);
 		if (supertext != null) {
 			phrase.add(PdfUtil.createSuperTextInText(supertext));
 		}
-		if (oldValue != null) {
+		if (originalValue != null) {
 			Font fontWithSize = PdfUtilities.createFontWithSize(6);
 			fontWithSize.setColor(Color.GRAY);
-			phrase.add(new Chunk("\nUrsprünglich: " + oldValue, fontWithSize));
+			phrase.add(
+				new Chunk(
+					'\n' + ServerMessageUtil.getMessage(ORIGINAL_VALUE) + ' ' + originalValue,
+					fontWithSize
+				)
+			);
 		}
 		PdfPCell cell = new PdfPCell(phrase);
 		cell.setBackgroundColor(bgColor);

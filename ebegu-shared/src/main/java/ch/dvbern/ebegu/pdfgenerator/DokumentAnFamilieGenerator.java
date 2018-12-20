@@ -83,7 +83,7 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
 		Font fontWithSize = PdfUtilities.createFontWithSize(8);
 		for (int i = 0; i < content.size(); i++) {
-			Chunk chunk = new Chunk(Integer.toString(i + 1) + " ", PdfUtilities.createFontWithSize(6));
+			Chunk chunk = new Chunk((i + 1) + " ", PdfUtilities.createFontWithSize(6));
 			chunk.setTextRise(2);
 			fz.addText(chunk);
 			fz.addText(new Phrase(content.get(i) + "\n", fontWithSize));

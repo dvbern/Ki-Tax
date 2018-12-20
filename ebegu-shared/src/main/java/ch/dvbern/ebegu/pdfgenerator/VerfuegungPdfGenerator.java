@@ -117,7 +117,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 					kind.getFullName(),
 					Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2));
 				document.add(createVerfuegungTable());
-				addBemerkungenIfaAvailable(document);
+				addBemerkungenIfAvailable(document);
 				break;
 			case KEIN_ANSPRUCH:
 				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(KEIN_ANSPRUCH_CONTENT,
@@ -125,7 +125,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 					Constants.DATE_FORMATTER.format(kind.getGeburtsdatum()),
 					Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
 					Constants.DATE_FORMATTER.format(gp.getGueltigBis())), 2));
-				addBemerkungenIfaAvailable(document);
+				addBemerkungenIfAvailable(document);
 				break;
 			case NICHT_EINTRETTEN:
 				createFusszeile(generator.getDirectContent());
@@ -160,7 +160,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		document.add(createRechtsmittelBelehrung());
 	}
 
-	private void addBemerkungenIfaAvailable(Document document) {
+	private void addBemerkungenIfAvailable(Document document) {
 		List<Element> bemerkungenElements = Lists.newArrayList();
 		final List<String> bemerkungen = getBemerkungen();
 		if (!bemerkungen.isEmpty()) {
