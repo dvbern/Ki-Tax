@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -49,7 +50,7 @@ public class CheckBetreuungZeitraumInGesuchsperiodeValidator implements Constrai
 	}
 
 	private void setConstraintViolationMessage(@NotNull ConstraintValidatorContext context) {
-		ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
+		ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages", LocaleThreadLocal.get());
 		String message = rb.getString("invalid_betreuungszeitraum_for_gesuchsperiode");
 		context.disableDefaultConstraintViolation();
 		context.buildConstraintViolationWithTemplate(message)

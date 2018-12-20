@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -66,7 +67,7 @@ public class CheckBetreuungZeitraumInstitutionsStammdatenZeitraumValidator imple
 	}
 
 	private void setConstraintViolationMessage(@NotNull DateRange institutionStammdatenDateRange, @NotNull ConstraintValidatorContext context) {
-		ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
+		ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages", LocaleThreadLocal.get());
 		String message = rb.getString("invalid_betreuungszeitraum_for_institutionsstammdaten");
 		message = MessageFormat.format(message, Constants.DATE_FORMATTER.format(institutionStammdatenDateRange.getGueltigAb()),
 			Constants.DATE_FORMATTER.format(institutionStammdatenDateRange.getGueltigBis()));

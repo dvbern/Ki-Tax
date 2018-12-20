@@ -22,6 +22,8 @@ import java.util.Locale;
 import javax.validation.MessageInterpolator;
 import javax.validation.Validation;
 
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+
 /**
  * Der normale MessageInterpolator verwendet das defaultLocale der VM und ubersetzt die Texte daher nicht korrekt.
  * Wird eine Validierung von Hand angestossen soll dieser Validator verwendet werden dem mitgegeben werden kann in

@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang3.Range;
@@ -169,9 +170,9 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		@Nonnull IntegrationTyp integrationTyp,
 		ConstraintValidatorContext context
 	) {
-		ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
+		ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages", LocaleThreadLocal.get());
 		String message = rb.getString("invalid_pensumfachstelle");
-		String integrationTypTranslated = ServerMessageUtil.translateEnumValue(integrationTyp);
+		String integrationTypTranslated = ServerMessageUtil.translateEnumValue(integrationTyp, LocaleThreadLocal.get());
 		message = MessageFormat.format(message, minValueAllowed, maxValueAllowed, integrationTypTranslated);
 
 		context.disableDefaultConstraintViolation();

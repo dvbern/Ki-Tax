@@ -22,6 +22,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 
 /**
  * Prueft, dass bei allen Gemeinde-abhaengigen Rollen mindestens eine Gemeinde gesetzt ist:
@@ -67,7 +68,7 @@ public class CheckBerechtigungGemeindeValidator implements ConstraintValidator<C
 
 	private void setConstraintViolationMessage(@Nullable ConstraintValidatorContext context, boolean isGemeindeAbhaengig) {
 		if (context != null) {
-			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
+			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages", LocaleThreadLocal.get());
 			String message = rb.getString("invalid_berechtigung_gemeinde_rules"); //by default gemeinde not allowed
 			if (isGemeindeAbhaengig) {
 				message = rb.getString("invalid_berechtigung_keine_gemeinde_rules");

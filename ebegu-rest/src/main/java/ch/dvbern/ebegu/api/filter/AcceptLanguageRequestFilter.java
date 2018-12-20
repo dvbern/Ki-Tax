@@ -22,7 +22,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.validation.LocaleThreadLocal;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 
 /**
  * * Checks whether the {@code Accept-Language} HTTP header exists and creates a {@link ThreadLocal} to store the

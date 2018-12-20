@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 
@@ -119,7 +120,7 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 		ConstraintValidatorContext context
 	) {
 		if (betreuungspensum != null && betreuungspensum.getPensum().compareTo(pensumMin) < 0) {
-			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
+			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages", LocaleThreadLocal.get());
 			String message = rb.getString("invalid_betreuungspensum");
 			message = MessageFormat.format(message, betreuungspensum.getPensum(), pensumMin);
 

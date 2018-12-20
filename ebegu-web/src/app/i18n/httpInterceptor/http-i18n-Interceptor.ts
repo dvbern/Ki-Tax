@@ -30,7 +30,7 @@ export class HttpI18nInterceptor implements IHttpInterceptor {
 
     public request = (config: IRequestConfig) => {
         config.headers[HEADER_ACCEPT_LANGUAGE] = config.headers[HEADER_ACCEPT_LANGUAGE] ?
-            `${this.i18nService.currentLanguage()} ${config.headers[HEADER_ACCEPT_LANGUAGE]}`
+            `${this.i18nService.currentLanguage()}, ${config.headers[HEADER_ACCEPT_LANGUAGE]}`
             : this.i18nService.currentLanguage();
 
         return config;

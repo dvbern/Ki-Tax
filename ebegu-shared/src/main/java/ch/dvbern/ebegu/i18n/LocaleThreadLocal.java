@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validation;
+package ch.dvbern.ebegu.i18n;
 
 import java.util.Locale;
 
