@@ -1,0 +1,25 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+
+<validation-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xmlns="http://jboss.org/xml/ns/javax/validation/configuration"
+				   xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.0.xsd">
+
+	<message-interpolator>ch.dvbern.ebegu.validation.LocaleAwareMessageInterpolator</message-interpolator>
+
+</validation-config>

@@ -40,13 +40,6 @@ export class I18nServiceRSRest {
     }
 
     /**
-     * Calling this method we change the language that the server is using
-     */
-    public changeServerLanguage$(selectedLanguage: TSBrowserLanguage): Observable<TSBrowserLanguage> {
-        return this.http.put<TSBrowserLanguage>(`${this.serviceURL}/change`, selectedLanguage);
-    }
-
-    /**
      * This method will change the language that the plugin of angular5 uses. It will also use the given
      * angularJsTranslateService to set the language in the corresponding plugin of angularjs
      */

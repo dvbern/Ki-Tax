@@ -15,17 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.validation;
 
 import java.util.Locale;
 
-import javax.annotation.Nonnull;
+/**
+ * * A {@link ThreadLocal}um zu speichern was fuer eine Sprache wir verwenden fuer den aktuellen Request
+ */
+public final class LocaleThreadLocal {
 
-public interface I18nService {
+	public static final ThreadLocal<Locale> THREAD_LOCAL = new ThreadLocal<>();
 
-	/**
-	 * Will change the language to use to the given locale.
-	 * If the given locale wasn't supporte, the default language (DE) will be used isntead
-	 */
-	void changeLanguage(@Nonnull Locale locale);
+	private LocaleThreadLocal() {
+	}
+
+	public static Locale get() {
+		return (THREAD_LOCAL.get() == null) ? Locale.getDefault() : THREAD_LOCAL.get();
+	}
+
+	public static void set(Locale locale) {
+		THREAD_LOCAL.set(locale);
+	}
+
+	public static void unset() {
+		THREAD_LOCAL.remove();
+	}
 }

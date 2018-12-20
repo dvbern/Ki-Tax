@@ -21,6 +21,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
 
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validation.LocaleThreadLocal;
+
 /**
  * * Checks whether the {@code Accept-Language} HTTP header exists and creates a {@link ThreadLocal} to store the
  * * corresponding Locale.
@@ -35,6 +38,8 @@ public class AcceptLanguageRequestFilter implements ContainerRequestFilter {
 	public void filter(ContainerRequestContext requestContext) {
 		if (!headers.getAcceptableLanguages().isEmpty()) {
 			LocaleThreadLocal.set(headers.getAcceptableLanguages().get(0));
+		} else {
+			LocaleThreadLocal.set(Constants.DEFAULT_LOCALE);
 		}
 	}
 }

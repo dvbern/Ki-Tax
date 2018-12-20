@@ -30,13 +30,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class ServerMessageUtil {
 
-	private static ResourceBundle bundle = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.DEFAULT_LOCALE);
+	private static final ResourceBundle bundle = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.DEFAULT_LOCALE);
 
 	private ServerMessageUtil() {
-	}
-	
-	public static void setLocale(@Nonnull Locale locale){
-		bundle = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, locale);
 	}
 
 	public static String getMessage(String key) {
