@@ -43,7 +43,7 @@
                                    for="pensumForm[vm.id].$error"
                                    step="vm.step"></dv-error-messages>
             </div>
-            <div class="betreuung-input-switch">
+            <div ng-if="vm.useSwitch" class="betreuung-input-switch">
                 <dv-switch
                     (switch-value-change)="vm.toggle()"
                     [switch-option-left]="vm.switchOptions[0]"

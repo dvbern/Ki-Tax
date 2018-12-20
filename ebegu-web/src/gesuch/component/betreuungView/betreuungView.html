@@ -167,23 +167,11 @@
                     <!--provisorische Betreuung-->
                     <div ng-if="vm.isProvisorischeBetreuung()">
 
-                        <div class="dv-input-container-medium-label">
-                            <input type="number"
-                                   step="0.25"
-                                   id="provPensum"
-                                   name="provPensum"
-                                   required
-                                   class="form-control"
-                                   min="0"
-                                   aria-describedby="provPensum-error"
-                                   ng-model="vm.provPensum"
-                                   ng-disabled="!vm.isEnabled()"
-                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                            >
-                            <dv-error-messages input-id="{{vm.id}}" class="error"
-                                               for="pensumForm[vm.id].$error"
-                                               step="vm.step"></dv-error-messages>
-                        </div>
+                        <dv-betreuung-input pensum-container="vm.provPensum"
+                                            input-id="provPensum"
+                                            is-disabled="!vm.isEnabled()"
+                                            useSwitch="false">
+                        </dv-betreuung-input>
 
                         <!--provisorische monatliche Betreuungskosten-->
                         <div class="row">
@@ -215,7 +203,7 @@
                     </div>
 
                     <!--Institutionen-->
-                    <div ng-if="vm.isProvisorischeBetreuung()">
+                    <div ng-if="!vm.isProvisorischeBetreuung()">
                         <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
                         <div class="row"
                              ng-if="vm.showInstitutionenList()"
@@ -337,7 +325,7 @@
                             </div>
                         </div>
 
-                        <div ng-if="vm.isProvisorischeBetreuung()">
+                        <div ng-if="!vm.isProvisorischeBetreuung()">
                         <fieldset dv-enable-element
                                   dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                   dv-enable-expression="vm.isPensumEditable()">
@@ -348,7 +336,8 @@
                                 <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
                                                     input-id="betreuungspensum-{{$index}}"
                                                     betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
-                                                    is-disabled="!vm.isPensumEditable()">
+                                                    is-disabled="!vm.isPensumEditable()"
+                                                    useSwitch="true">
                                 </dv-betreuung-input>
                                 <!--Monatliche Betreuungskosten-->
                                 <div class="row">
@@ -522,14 +511,14 @@
 
 
                         <!--Hint-->
-                        <div ng-if="vm.isProvisorischeBetreuung()">
+                        <div ng-if="!vm.isProvisorischeBetreuung()">
                             <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT1"
                                dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
                                dv-show-expression="!vm.isSchulamt()"></p>
                         </div>
 
                         <!--Hint-->
-                        <div ng-if="!vm.isProvisorischeBetreuung()">
+                        <div ng-if="vm.isProvisorischeBetreuung()">
                         <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT2"
                            dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
                            dv-show-expression="!vm.isSchulamt()"></p>
@@ -630,7 +619,7 @@
                     <div class="dv-navigation-item"
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
-                         dv-show-expression="vm.isBetreuungsstatusAusstehend() && vm.isProvisorischeBetreuung()">
+                         dv-show-expression="vm.isBetreuungsstatusAusstehend() && !vm.isProvisorischeBetreuung()">
                         <dv-loading-button button-click="vm.platzAnfordern()" type="submit">
                             <span data-translate="PLATZBESTAETIGUNG_ANFORDERN"></span>
                         </dv-loading-button>
@@ -650,7 +639,7 @@
                     <div class="dv-navigation-item"
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
-                         dv-show-expression="!vm.isProvisorischeBetreuung()">
+                         dv-show-expression="vm.isProvisorischeBetreuung()">
                         <dv-loading-button button-click="vm.saveProvisorischeBetreuung()" type="submit">
                             <span data-translate="SPEICHERN_UPPER"></span>
                         </dv-loading-button>

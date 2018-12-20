@@ -29,6 +29,7 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
         isDisabled: '<',
         id: '@inputId',
         betreuungsangebotTyp: '<',
+        useSwitch: '<',
     };
     public controller = BetreuungInputComponent;
     public controllerAs = 'vm';
@@ -50,6 +51,7 @@ export class BetreuungInputComponent implements IController {
     public id: string;
     public betreuungsangebotTyp: TSBetreuungsangebotTyp;
     public step: number = 0.25;
+    public useSwitch: boolean;
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];

@@ -1059,7 +1059,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isProvisorischeBetreuung(): boolean {
-        return this.getBetreuungModel().vertrag;
+        if (this.getBetreuungModel().vertrag === null) {
+            return null;
+        }
+        return !this.getBetreuungModel().vertrag;
     }
 
     public onChangeVertrag(): void {
