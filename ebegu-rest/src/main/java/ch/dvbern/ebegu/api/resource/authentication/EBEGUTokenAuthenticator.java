@@ -126,19 +126,12 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 			}
 
 			MDC.put(Constants.LOG_MDC_AUTHUSERID, effectiveToken); //todo revieer fragen: vorher wurde das token mit suffix verwendet
-//			todo discuss with revieer: should we load / cache benutzer and his institution? or maybe just add important stuff to auth_benutzer
-//			String institutionDispName = user.getBenutzer().getInstitution() != null ? user.getBenutzer().getInstitution().getName() : null;
-//			String traegerschaftDispName = user.getBenutzer().getTraegerschaft() != null ? user.getBenutzer().getTraegerschaft().getName() : null;
-
+			// we don't load / cache benutzer and his institution.
 			Sentry.getContext().setUser(
 				new UserBuilder()
 					.setUsername(user.getUsername())
 					.setId(effectiveToken)
-//					.setEmail(user.getBenutzer().getEmail())
-//					.withData("benutzerId", user.getBenutzer().getId())
 					.withData("role", user.getRole())
-//					.withData("institution", institutionDispName)
-//					.withData("traegerschaft", traegerschaftDispName)
 					.build()); //add user name to sentry context
 
 			return true;
