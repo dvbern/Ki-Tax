@@ -95,7 +95,7 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	@GET
 	@PermitAll
-	public Response portalAccountCreationPageLink() {
+	public Response getPortalAccountCreationPageLink() {
 		String url = configuration.getPortalAccountCreationPageLink();
 		return Response.ok(url).build();
 	}

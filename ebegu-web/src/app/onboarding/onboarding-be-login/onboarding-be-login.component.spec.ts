@@ -31,7 +31,7 @@ describe('OnboardingBeLoginComponent', () => {
 
     const transitionSpy = createSpyObj<Transition>(Transition.name, ['params']);
     const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['portalAccountCreationPageLink']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPortalAccountCreationPageLink']);
     const gemeindeId = '1';
 
     beforeEach(async(() => {
@@ -53,7 +53,7 @@ describe('OnboardingBeLoginComponent', () => {
         })
             .compileComponents();
 
-        authServiceSpy.portalAccountCreationPageLink.and.returnValue(Promise.resolve('login-url'));
+        authServiceSpy.getPortalAccountCreationPageLink.and.returnValue(Promise.resolve('login-url'));
     }));
 
     beforeEach(() => {

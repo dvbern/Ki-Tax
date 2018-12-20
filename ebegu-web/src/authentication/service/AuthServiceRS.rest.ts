@@ -54,6 +54,7 @@ export default class AuthServiceRS {
     private readonly principalSubject$ = new ReplaySubject<TSBenutzer | null>(1);
 
     private _principal$: Observable<TSBenutzer | null> = this.principalSubject$.asObservable();
+    private portalAccCreationLink: string;
 
     public constructor(
         private readonly $http: IHttpService,
@@ -126,10 +127,28 @@ export default class AuthServiceRS {
         }
     }
 
-    public portalAccountCreationPageLink(): IPromise<string> {
+    public getPortalAccountCreationPageLink(): IPromise<string> {
+        if (this.portalAccCreationLink) {
+            return this.$q.when(this.portalAccCreationLink);
+        }
+
         return this.$http.get(CONSTANTS.REST_API + 'auth/portalAccountPage').then((res: any) => {
+            this.portalAccCreationLink = res.data;
             return res.data;
         });
+    }
+
+    public burnPortalTimout(): IPromise<any> {
+        return this.getPortalAccountCreationPageLink().then((linktext: string) => {
+            if (linktext) {
+                return this.$http.get(linktext).then((res: any) => {
+                    console.log('retrived portal account creation page to burn unwanted timeout warning')
+                });
+            } else {
+                return this.$q(undefined);
+            }
+
+        })
     }
 
     public reloadCurrentUser(): IPromise<TSBenutzer> {
@@ -147,7 +166,7 @@ export default class AuthServiceRS {
                 amt: this.principal.amt,
                 status: this.principal.status,
                 mandant: this.principal.mandant ? this.principal.mandant.name : null,
-                traegerschaft: this.principal.currentBerechtigung.traegerschaft ? this.principal.currentBerechtigung.traegerschaft.name: null,
+                traegerschaft: this.principal.currentBerechtigung.traegerschaft ? this.principal.currentBerechtigung.traegerschaft.name : null,
                 institution: this.principal.currentBerechtigung.institution ? this.principal.currentBerechtigung.institution.name : null
             });
 

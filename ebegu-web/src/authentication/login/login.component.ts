@@ -54,6 +54,7 @@ export class LoginComponentController implements IController {
     public $onInit(): void {
         // wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
         const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params(), {absolute: true});
+        this.authService.burnPortalTimout();
 
         this.authService.initSSOLogin(relayUrl)
             .then(url => {
@@ -136,6 +137,11 @@ export class LoginComponentController implements IController {
             this.countdown--;
             this.$timeout(this.doCountdown, 1000);
         }
+
+    }
+
+    private clearPortalTimeout(){
+        //belogin zeigt laestigerweise immer eine timout seite an wenn man sich nicht ausgelogged hat und einen neuen login prozess starten will
 
     }
 }
