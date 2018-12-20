@@ -137,28 +137,54 @@
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
-                                <dv-radio-container name="vertrag"
-                                   class="marginTop20"
-                                   ng-model="vm.getBetreuungModel().vertrag"
-                                   ng-required="true"
-                                   jaLabel="VERTRAG"
-                                   neinLabel="KEIN_VERTRAG"
-                                   class="radio"
-                                   aria-described-by="vertrag-error">
-                                </dv-radio-container>
-                                <dv-error-messages input-id="vertrag-error" for="vm.getBetreuungModel().vertrag.$error"
-                                                   class="error"></dv-error-messages>
+                                <md-radio-group class="radio"
+                                                ng-model="vm.getBetreuungModel().vertrag"
+                                                ng-change="vm.onChangeVertrag()"
+                                                dv-suppress-form-submit-on-enter
+                                                aria-label="{{vm.ariaLabel}}"
+                                                ng-disabled="!vm.isEnabled()"
+                                                ng-required="true">
+
+                                    <md-radio-button ng-value="true"
+                                                    aria-label="{{'VERTRAG'| translate}}"
+                                                    class="element-ja"
+                                                    aria-describedby="{{vm.ariaDescribedBy}}"
+                                                    ng-required="true">
+                                        <span data-translate="VERTRAG"></span>
+                                    </md-radio-button>
+                                    <md-radio-button ng-value="false"
+                                                    aria-label="{{'KEIN_VERTRAG'| translate}}"
+                                                    class="element-nein"
+                                                    aria-describedby="{{vm.ariaDescribedBy}}"
+                                                    ng-required="true">
+                                        <span data-translate="KEIN_VERTRAG"></span>
+                                    </md-radio-button>
+                                </md-radio-group>
                             </div>
                         </div>
                     </div>
 
                     <!--provisorische Betreuung-->
                     <div ng-if="vm.getBetreuungModel().vertrag === false">
-                        <!-- provisorisches Betreuungspensum-->
-                        <dv-betreuung-input pensum-container="vm.provPensum"
-                                            input-id="provPensum"
-                                            betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()">
-                        </dv-betreuung-input>
+
+                        <div class="dv-input-container-medium-label">
+                            <input type="number"
+                                   step="0.25"
+                                   id="provPensum"
+                                   name="provPensum"
+                                   required
+                                   class="form-control"
+                                   min="0"
+                                   aria-describedby="provPensum-error"
+                                   ng-model="vm.provPensum"
+                                   ng-disabled="!vm.isEnabled()"
+                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                            >
+                            <dv-error-messages input-id="{{vm.id}}" class="error"
+                                               for="pensumForm[vm.id].$error"
+                                               step="vm.step"></dv-error-messages>
+                        </div>
+
                         <!--provisorische monatliche Betreuungskosten-->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-medium">
@@ -177,6 +203,7 @@
                                                dv-max-length class="form-control"
                                                ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                                                ng-required="true"
+                                               ng-disabled="!vm.isEnabled()"
                                                ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
                                         <dv-error-messages input-id="provMonatlicheBetreuungskosten"
                                                            for="vm.form['provMonatlicheBetreuungskosten'].$error"></dv-error-messages>
@@ -214,7 +241,9 @@
                             <div class="col-sm-12 dv-input-container-medium form-group">
                                 <label class="md-no-float" data-translate="INSTITUTION" for="institution">
                                 </label>
-                                <input aria-describedby="institutioninput-error" name="institution" id="institutioninput"
+                                <input aria-describedby="institutioninput-error"
+                                       name="institution"
+                                       id="institutioninput"
                                        type="text"
                                        ng-model="vm.getInstitutionSD().institution.name"
                                        class="form-control"
@@ -225,27 +254,6 @@
                             </div>
                         </div>
                     </div>
-                    <!--vertrag //TODO löschen-->
-                    <!--<div class="row"-->
-                    <!--dv-show-element-->
-                    <!--dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"-->
-                    <!--dv-show-expression="!vm.isSchulamt()">-->
-                    <!--<div class="col-xs-12 dv-input-container-question">-->
-                    <!--<div class="checkbox">-->
-                    <!--<md-checkbox ng-model="vm.getBetreuungModel().vertrag"-->
-                    <!--name="vertrag"-->
-                    <!--required-->
-                    <!--aria-label="{{'VERTRAG'|translate}}"-->
-                    <!--ng-disabled="!vm.isEnabled()"-->
-                    <!--ng-class="{true:'checkbox-error', false:''}[vm.flagErrorVertrag]">-->
-                    <!--<span data-translate="VERTRAG"></span>-->
-                    <!--</md-checkbox>-->
-                    <!--<div class="dv-error-messages" ng-if="vm.flagErrorVertrag === true">-->
-                    <!--<span data-translate="ERROR_VERTRAG_REQUIRED"></span>-->
-                    <!--</div>-->
-                    <!--</div>-->
-                    <!--</div>-->
-                    <!--</div>-->
 
                     <!--Kesb Platzierung-->
                     <div class="row"
@@ -313,7 +321,7 @@
                 <fieldset ng-disabled="vm.isGesuchReadonly() && !vm.isMutationsmeldungStatus">
                     <!--Diese Felder werden fuer Betreuungsangebottyp TAGESSCHULE ausgeblendet. Fuer alle anderen eingeblendet-->
                     <!--Nur Institutionen duerfen neue Pensen eintragen. Bei anderen Rollen werden nur die existierenden Pensen angezeigt-->
-                    <div  class="marginTop20" ng-if="!vm.isSchulamt()">
+                    <div class="marginTop20" ng-if="!vm.isSchulamt()">
 
                         <div class="row" dv-show-element
                              dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()"
@@ -329,6 +337,7 @@
                             </div>
                         </div>
 
+                        <div ng-if="vm.getBetreuungModel().vertrag === true">
                         <fieldset dv-enable-element
                                   dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                   dv-enable-expression="vm.isPensumEditable()">
@@ -453,6 +462,7 @@
                                 </div>
                             </div>
                         </fieldset>
+                    </div>
 
 
                         <!-- Status texts -->
@@ -512,9 +522,18 @@
 
 
                         <!--Hint-->
-                        <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT1"
+                        <div ng-if="vm.getBetreuungModel().vertrag === true">
+                            <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT1"
+                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
+                               dv-show-expression="!vm.isSchulamt()"></p>
+                        </div>
+
+                        <!--Hint-->
+                        <div ng-if="vm.getBetreuungModel().vertrag === false">
+                        <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT2"
                            dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
                            dv-show-expression="!vm.isSchulamt()"></p>
+                        </div>
 
                     </div>
                 </fieldset>

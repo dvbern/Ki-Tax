@@ -1057,4 +1057,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.provPensum,
                 this.gesuchModelManager.getGesuchsperiode().gueltigkeit)));
     }
+
+    public onChangeVertrag(): void {
+        this.getBetreuungModel().betreuungspensumContainers = [];
+    }
 }

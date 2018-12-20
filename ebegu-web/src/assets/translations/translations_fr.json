@@ -460,6 +460,7 @@
     "BETREUUNGSPENSUM_ENTFERNEN": "fr_Betreuungspensum entfernen",
     "BETREUUNGSPENSUM_ENTFERNEN_INDEX": "fr_Betreuungspensum {{betreuungspensumnumber}} entfernen",
     "BETREUUNGSPENSUM_HINT1": "fr_Das Gesuch können Sie nur an das Jugendamt freigeben, wenn die Institution den Platz bestätigt.",
+    "BETREUUNGSPENSUM_HINT2": "fr_Ohne ausgewählte Institution können Sie das Gesuch vollständig ausfüllen und sich unter Provisorische Berechnung einen Entwurf des Gutscheins anzeigen lassen.<br>Die Freigabe kann erst erfolgen, wenn ein Vertrag mit einer Institution vorliegt und diese den Platz bestätigt.",
     "BETREUUNG_LOESCHEN": "fr_Wollen Sie das Betreuungsangebot \"{{betreuungsangebottyp}}\" vom Kind {{kindname}} wirklich löschen?",
     "BETREUUNG_LOESCHEN_BESCHREIBUNG": "fr_Alle verknüpfte Datenobjekte werden damit auch gelöscht",
     "PLATZBESTAETIGUNG_ANFORDERN": "fr_PLATZBESTÄTIGUNG ANFORDERN",
