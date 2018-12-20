@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '
 import {NgForm} from '@angular/forms';
 import {Category, UIRouter} from '@uirouter/core';
 import {visualizer} from '@uirouter/visualizer';
+import * as Raven from "raven-js";
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, filter, map, takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
@@ -79,5 +80,19 @@ export class DebuggingComponent implements OnInit, OnDestroy {
                 (categories: Category[]) => categories.forEach(c => this.router.trace.enable(c)),
                 err => LOG.error(err),
             );
+    }
+
+    public doUndefined(){
+        let test = [1, 2];
+        let res =  test[2].toFixed(1);
+        console.log(res);
+    }
+
+    public doThrowError(){
+        throw "This is a delibrate error thrown from an Angular controller"
+    }
+
+    public doShowDialog(){
+        Raven.showReportDialog();
     }
 }

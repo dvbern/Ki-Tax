@@ -17,8 +17,10 @@ import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
+import * as Raven from 'raven-js';
 import {NgAdminModule} from '../admin/ng-admin.module';
 import {NgAuthenticationModule} from '../authentication/ng-authentication.module';
+import {environment} from '../environments/environment';
 import {NgGesuchModule} from '../gesuch/ng-gesuch.module';
 import {AppRoutingModule} from './app-routing.module';
 import {APP_JS_MODULE} from './app.angularjs.module';
@@ -32,6 +34,22 @@ import {NgPosteingangModule} from './posteingang/ng-posteingang.module';
 import {SharedModule} from './shared/shared.module';
 import {TraegerschaftModule} from './traegerschaft/traegerschaft.module';
 import {WelcomeModule} from './welcome/welcome.module';
+
+const ravenPlugin = require('raven-js/plugins/angular');
+
+
+// sentry
+const sentryDSN = environment.sentryDSN;
+if (sentryDSN) {
+    Raven
+        .config(sentryDSN)
+        .addPlugin(ravenPlugin, angular)
+        .install();
+} else {
+    console.log('Sentry is disabled because there is no sentryDSN');
+}
+
+
 
 @NgModule({
     imports: [

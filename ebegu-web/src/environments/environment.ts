@@ -8,4 +8,5 @@ export const environment: Environment = {
     hmr: false,
     logLevel: LogLevel.INFO,
     logModules: {},
+    sentryDSN: 'https://fd0b368a6cee4b879a0ed06e66444c17@sentry.dvbern.ch/11', //todo important homa reviewer remove
 };
