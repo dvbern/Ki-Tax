@@ -936,7 +936,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch = TestDataUtil.createAndPersistASIV12(institutionService, persistence,
 						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
-		Assert.assertFalse(gesuchService.hasFolgegesuch(gesuch.getId()));
+		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(gesuch.getId()));
 	}
 
 	@Test
@@ -951,8 +951,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertTrue(erneurtesGesuch.isPresent());
 		Gesuch folgegesuch = gesuchService.createGesuch(erneurtesGesuch.get());
 
-		Assert.assertTrue(gesuchService.hasFolgegesuch(gesuch.getId()));
-		Assert.assertFalse(gesuchService.hasFolgegesuch(folgegesuch.getId()));
+		Assert.assertTrue(gesuchService.hasFolgegesuchForAmt(gesuch.getId()));
+		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(folgegesuch.getId()));
 	}
 
 
