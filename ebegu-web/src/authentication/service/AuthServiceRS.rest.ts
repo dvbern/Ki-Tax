@@ -140,9 +140,10 @@ export default class AuthServiceRS {
 
     public burnPortalTimout(): IPromise<any> {
         return this.getPortalAccountCreationPageLink().then((linktext: string) => {
+            console.log('try to burn timeout page at ' + linktext);
             if (linktext) {
-                return this.$http.get(linktext).then((res: any) => {
-                    console.log('retrived portal account creation page to burn unwanted timeout warning')
+                return this.$http.get(linktext,{withCredentials: true }).then((res: any) => {
+                    console.log('retrived portal account creation page to burn unwanted timeout warning ')
                 });
             } else {
                 return this.$q(undefined);
