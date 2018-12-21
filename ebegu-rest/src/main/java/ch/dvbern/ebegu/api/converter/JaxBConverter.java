@@ -2150,7 +2150,7 @@ public class JaxBConverter extends AbstractConverter {
 
 		// Falls es keinen Vertrag gibt wird die Institution auf Unbekannt gesetzt
 		if (betreuungJAXP.getVertrag() == false) {
-
+			// TODO validierung
 		}
 
 		// InstitutionStammdaten muessen bereits existieren
