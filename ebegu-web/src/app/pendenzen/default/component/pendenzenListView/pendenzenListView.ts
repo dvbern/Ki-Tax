@@ -17,7 +17,6 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import * as Raven from 'raven-js';
 import AuthServiceRS from '../../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
 import SearchRS from '../../../../../gesuch/service/searchRS.rest';
