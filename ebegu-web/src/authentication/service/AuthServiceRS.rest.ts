@@ -140,20 +140,28 @@ export default class AuthServiceRS {
         return this.benutzerRS.findBenutzer(username).then(user => {
             this.principalSubject$.next(user);
             this.principal = user;
-            Raven.setUserContext({
-                id: this.principal.username,
-                email: this.principal.email,
-                role: this.principal.getCurrentRole(),
-                amt: this.principal.amt,
-                status: this.principal.status,
-                mandant: this.principal.mandant ? this.principal.mandant.name : null,
-                traegerschaft: this.principal.currentBerechtigung.traegerschaft ? this.principal.currentBerechtigung.traegerschaft.name: null,
-                institution: this.principal.currentBerechtigung.institution ? this.principal.currentBerechtigung.institution.name : null
-            });
+            this.setPrincipalInRavenUserContext();
 
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
 
             return user;
+        });
+    }
+
+    private setPrincipalInRavenUserContext(): void {
+        Raven.setUserContext({
+            id: this.principal.username,
+            email: this.principal.email,
+            role: this.principal.getCurrentRole(),
+            amt: this.principal.amt,
+            status: this.principal.status,
+            mandant: this.principal.mandant ? this.principal.mandant.name : null,
+            traegerschaft: this.principal.currentBerechtigung.traegerschaft
+                ? this.principal.currentBerechtigung.traegerschaft.name
+                : null,
+            institution: this.principal.currentBerechtigung.institution
+                ? this.principal.currentBerechtigung.institution.name
+                : null
         });
     }
 

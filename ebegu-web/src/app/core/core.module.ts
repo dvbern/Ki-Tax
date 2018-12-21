@@ -19,37 +19,13 @@ import {ErrorHandler, LOCALE_ID, ModuleWithProviders, NgModule, Optional, SkipSe
 import {MatPaginatorIntl} from '@angular/material';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import * as Raven from 'raven-js';
-import {environment} from '../../environments/environment';
-import {BUILDTSTAMP, VERSION} from '../../environments/version';
 import {PaginatorI18n} from '../i18n/PaginatorI18n';
 import {DEFAULT_LOCALE} from './constants/CONSTANTS';
+import {configureRaven, RavenErrorHandler} from './sentry/sentryConfigurator';
 import {UPGRADED_PROVIDERS} from './upgraded-providers';
 
-const ravenPlugin = require('raven-js/plugins/angular');
-
 // sentry
-const sentryDSN = environment.sentryDSN;
-if (sentryDSN) {
-    Raven
-        .config(sentryDSN)
-        .addPlugin(ravenPlugin, angular)
-        .setRelease(VERSION)
-        .setExtraContext({buildtimestamp: BUILDTSTAMP})
-        .install();
-} else {
-    console.log('Sentry is disabled because there is no sentryDSN');
-}
-
-export class RavenErrorHandler extends ErrorHandler {
-    handleError(err: any): void {
-        if (environment.sentryDSN) {
-            Raven.captureException(err);
-        }
-        super.handleError(err);
-    }
-}
-
+configureRaven();
 
 @NgModule({
     imports: [
@@ -85,7 +61,7 @@ export class CoreModule {
             providers: [
                 // Insert configurable providers here (will be appended to providers defined in metadata above)
                 {provide: LOCALE_ID, useValue: DEFAULT_LOCALE},
-                { provide: ErrorHandler, useClass: RavenErrorHandler},
+                {provide: ErrorHandler, useClass: RavenErrorHandler},
                 // {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {disableClose: false, autoFocus: true}},
                 {
                     provide: MatPaginatorIntl,

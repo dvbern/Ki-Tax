@@ -1387,7 +1387,7 @@
     "DEBUGGING_UI_ROUTER": "fr_UI Router Debugging",
     "DEBUGGING_TRACE_TRANSITIONS": "fr_Transition Tracing",
     "DEBUGGING_UI_ROUTER_VISUALIZER": "fr_UI Router Visualizer aktivieren",
-    "DEBUGGING_SENTRY": "Fehler für Sentry triggern",
+    "DEBUGGING_SENTRY": "fr_Fehler für Sentry triggern",
     "ERROR_STARTDATUM_FIRST_OF_MONTH": "fr_Das Startdatum muss am 1. des jeweiligen Monats beginnen!",
     "ERROR_STARTDATUM_FUTURE": "fr_Das Startdatum muss in der Zukunft liegen!",
     "ADMINISTRATOREN": "fr_Administratoren",

@@ -165,19 +165,18 @@ const dependencies = [
     'cfp.hotkeys',
     'ngFileUpload',
     'unsavedChanges',
-    
 ];
 
-let dynamicDependencies = function (): string[] {
+const dynamicDependencies = (): string[] => {
 
-    //hier kommen plugins die wir fuer dev disablen wollen
+    // hier kommen plugins die wir fuer dev disablen wollen
     if (environment.sentryDSN) {
         return ['ngRaven'];
     }
     return [];
 };
 
-let calculatedDeps = dependencies.concat(dynamicDependencies());
+const calculatedDeps = dependencies.concat(dynamicDependencies());
 
 export const CORE_JS_MODULE = angular
     .module('ebeguWeb.core', calculatedDeps)

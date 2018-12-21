@@ -89,18 +89,4 @@ export class PendenzenListViewController {
             this.$state.go(path, navObj);
         }
     }
-    
-    public doUndefined(){
-        let test = [1, 2];
-        let res =  test[2].toFixed(1);
-        console.log(res);
-    }
-
-    public doThrowError(){
-        throw "This is a delibrate error thrown from an AngularJS controller"
-    }
-
-    public doShowDialog(){
-        Raven.showReportDialog();
-    }
 }
