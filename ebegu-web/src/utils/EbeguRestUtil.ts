@@ -1429,24 +1429,25 @@ export default class EbeguRestUtil {
         einkommensverschlechterungTS: TSEinkommensverschlechterung,
         einkommensverschlechterungFromServer: any,
     ): void {
-        if (einkommensverschlechterungFromServer) {
-            this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
-            einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
-            einkommensverschlechterungTS.nettolohnFeb = einkommensverschlechterungFromServer.nettolohnFeb;
-            einkommensverschlechterungTS.nettolohnMrz = einkommensverschlechterungFromServer.nettolohnMrz;
-            einkommensverschlechterungTS.nettolohnApr = einkommensverschlechterungFromServer.nettolohnApr;
-            einkommensverschlechterungTS.nettolohnMai = einkommensverschlechterungFromServer.nettolohnMai;
-            einkommensverschlechterungTS.nettolohnJun = einkommensverschlechterungFromServer.nettolohnJun;
-            einkommensverschlechterungTS.nettolohnJul = einkommensverschlechterungFromServer.nettolohnJul;
-            einkommensverschlechterungTS.nettolohnAug = einkommensverschlechterungFromServer.nettolohnAug;
-            einkommensverschlechterungTS.nettolohnSep = einkommensverschlechterungFromServer.nettolohnSep;
-            einkommensverschlechterungTS.nettolohnOkt = einkommensverschlechterungFromServer.nettolohnOkt;
-            einkommensverschlechterungTS.nettolohnNov = einkommensverschlechterungFromServer.nettolohnNov;
-            einkommensverschlechterungTS.nettolohnDez = einkommensverschlechterungFromServer.nettolohnDez;
-            einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
-            einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
-                einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
+        if (!einkommensverschlechterungFromServer) {
+            return;
         }
+        this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
+        einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
+        einkommensverschlechterungTS.nettolohnFeb = einkommensverschlechterungFromServer.nettolohnFeb;
+        einkommensverschlechterungTS.nettolohnMrz = einkommensverschlechterungFromServer.nettolohnMrz;
+        einkommensverschlechterungTS.nettolohnApr = einkommensverschlechterungFromServer.nettolohnApr;
+        einkommensverschlechterungTS.nettolohnMai = einkommensverschlechterungFromServer.nettolohnMai;
+        einkommensverschlechterungTS.nettolohnJun = einkommensverschlechterungFromServer.nettolohnJun;
+        einkommensverschlechterungTS.nettolohnJul = einkommensverschlechterungFromServer.nettolohnJul;
+        einkommensverschlechterungTS.nettolohnAug = einkommensverschlechterungFromServer.nettolohnAug;
+        einkommensverschlechterungTS.nettolohnSep = einkommensverschlechterungFromServer.nettolohnSep;
+        einkommensverschlechterungTS.nettolohnOkt = einkommensverschlechterungFromServer.nettolohnOkt;
+        einkommensverschlechterungTS.nettolohnNov = einkommensverschlechterungFromServer.nettolohnNov;
+        einkommensverschlechterungTS.nettolohnDez = einkommensverschlechterungFromServer.nettolohnDez;
+        einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
+        einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
+            einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
     }
 
     public kindContainerToRestObject(restKindContainer: any, kindContainer: TSKindContainer): any {
