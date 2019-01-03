@@ -29,7 +29,6 @@
             <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
 
-
                     <!--Geschlecht-->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-small">
@@ -468,9 +467,10 @@
                 </fieldset>
 
 
-
                 <!--Buttons-->
-                <dv-navigation dv-cancel="vm.cancel()" dv-next="true" dv-save="vm.save()" dv-sub-step="2"
+                <dv-navigation dv-cancel="vm.cancel()"
+                               dv-next="!vm.isGesuchReadonly()"
+                               dv-save="vm.save()" dv-sub-step="2"
                                dv-translate-next="{{'SPEICHERN_UPPER'}}">
                 </dv-navigation>
             </form>
