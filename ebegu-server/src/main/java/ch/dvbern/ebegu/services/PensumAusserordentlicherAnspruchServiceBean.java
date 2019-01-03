@@ -78,8 +78,8 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public boolean isAusserordentlicherAnspruchPossible(@Nonnull Gesuch gesuch) {
 		// Bei mind. 1 Kind ist KEINE Fachstelle definiert
 		boolean result = hasAtLeastOneKindWithoutFachstelle(gesuch);
