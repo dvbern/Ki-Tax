@@ -44,7 +44,11 @@ public final class AbschlussNormalizer {
 	 * Stellt sicher, dass zwei aufeinander folgende Zeitabschnitte nie dieselben Daten haben. Falls
 	 * dies der Fall wäre, werden sie zu einem neuen Schnitz gemergt.
 	 */
-	private static void normalizeZeitabschnitte(@Nonnull List<VerfuegungZeitabschnitt> validZeitabschnitte, @Nonnull VerfuegungZeitabschnitt zeitabschnitt, boolean keepMonate) {
+	private static void normalizeZeitabschnitte(
+		@Nonnull List<VerfuegungZeitabschnitt> validZeitabschnitte,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		boolean keepMonate
+	) {
 		// Zuerst vergleichen, ob sich der neue Zeitabschnitt vom letzt hinzugefügten (und angrenzenden) unterscheidet
 		int indexOfLast = validZeitabschnitte.size() - 1;
 		if (indexOfLast >= 0) {

@@ -157,4 +157,15 @@ public interface EbeguConfiguration {
 	 * Admin-Email: An diese Adresse wird z.B. die Zahlungskontrolle gesendet.
 	 */
 	String getAdministratorMail();
+
+	/**
+	 *
+	 * @return a full link to the page where users can create new logins for the portal
+	 */
+	String getPortalAccountCreationPageLink();
+
+	/**
+	 * read sentry env from system properties
+	 */
+	String getSentryEnv();
 }

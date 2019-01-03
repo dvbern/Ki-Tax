@@ -80,8 +80,6 @@ public class EbeguVorlageResource {
 	private static final String PART_FILE = "file";
 	private static final String FILENAME_HEADER = "x-filename";
 	private static final String VORLAGE_KEY_HEADER = "x-vorlagekey";
-	private static final String GESUCHSPERIODE_HEADER = "x-gesuchsperiode";
-	private static final String PROGESUCHSPERIODE_HEADER = "x-progesuchsperiode";
 
 	private static final Logger LOG = LoggerFactory.getLogger(EbeguVorlageResource.class);
 
@@ -95,41 +93,6 @@ public class EbeguVorlageResource {
 	@Inject
 	private FileSaverService fileSaverService;
 
-	@Inject
-	private GesuchsperiodeService gesuchsperiodeService;
-
-	@ApiOperation(value = "Gibt alle Vorlagen fuer die Gesuchsperiode mit der uebergebenen Id zurueck",
-		responseContainer = "List", response = JaxEbeguVorlage.class)
-	@Nullable
-	@GET
-	@Path("/gesuchsperiode/{id}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxEbeguVorlage> getEbeguVorlagenByGesuchsperiode(
-		@Nonnull @NotNull @PathParam("id") JaxId id) {
-
-		Objects.requireNonNull(id.getId());
-		String gesuchsperiodeId = converter.toEntityId(id);
-		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
-		if (gesuchsperiode.isPresent()) {
-
-			List<EbeguVorlage> persistedEbeguVorlagen = ebeguVorlageService.getALLEbeguVorlageByGesuchsperiode(gesuchsperiode.get());
-
-			if (persistedEbeguVorlagen.isEmpty()) {
-				ebeguVorlageService.copyEbeguVorlageListToNewGesuchsperiode(gesuchsperiode.get());
-				persistedEbeguVorlagen = ebeguVorlageService.getALLEbeguVorlageByGesuchsperiode(gesuchsperiode.get());
-			}
-
-			Collections.sort(persistedEbeguVorlagen);
-
-			return persistedEbeguVorlagen.stream()
-				.map(ebeguVorlage -> converter.ebeguVorlageToJax(ebeguVorlage))
-				.collect(Collectors.toList());
-		}
-
-		return Collections.emptyList();
-	}
-
 	@ApiOperation(value = "Gibt alle Vorlagen zurueck, welche nicht zu einer Gesuchsperiode gehoeren.",
 		responseContainer = "List", response = JaxEbeguVorlage.class)
 	@Nullable
@@ -140,7 +103,7 @@ public class EbeguVorlageResource {
 	public List<JaxEbeguVorlage> getEbeguVorlagenWithoutGesuchsperiode() {
 
 		List<EbeguVorlage> persistedEbeguVorlagen = new ArrayList<>(ebeguVorlageService
-			.getALLEbeguVorlageByDate(LocalDate.now(), false));
+			.getALLEbeguVorlageByDate(LocalDate.now()));
 
 		Collections.sort(persistedEbeguVorlagen);
 
@@ -176,28 +139,6 @@ public class EbeguVorlageResource {
 			return Response.serverError().entity(problemString).build();
 		}
 
-		String gesuchsperiodeId = request.getHeader(GESUCHSPERIODE_HEADER);
-		Boolean proGesuchsperiode = Boolean.valueOf(request.getHeader(PROGESUCHSPERIODE_HEADER));
-
-		// check if it must be linked to a Gesuchsperiode. If not the dateRange will be set by default
-		LocalDate gueltigAb = Constants.START_OF_TIME;
-		LocalDate gueltigBis = Constants.END_OF_TIME;
-		if (proGesuchsperiode) {
-			if (gesuchsperiodeId == null || gesuchsperiodeId.isEmpty()) {
-				final String problemString = "gesuchsperiodeId must be given";
-				LOG.error(problemString);
-				return Response.serverError().entity(problemString).build();
-			}
-			Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
-			if (!gesuchsperiode.isPresent()) {
-				final String problemString = "gesuchsperiode not found on server";
-				LOG.error(problemString);
-				return Response.serverError().entity(problemString).build();
-			}
-			gueltigAb = gesuchsperiode.get().getGueltigkeit().getGueltigAb();
-			gueltigBis = gesuchsperiode.get().getGueltigkeit().getGueltigBis();
-		}
-
 		List<InputPart> inputParts = input.getFormDataMap().get(PART_FILE);
 		if (inputParts == null || !inputParts.stream().findAny().isPresent()) {
 			return Response.serverError().entity("form-parameter 'file' not found").build();
@@ -218,9 +159,8 @@ public class EbeguVorlageResource {
 
 		JaxEbeguVorlage jaxEbeguVorlage = new JaxEbeguVorlage();
 		jaxEbeguVorlage.setName(ebeguVorlageKey);
-		jaxEbeguVorlage.setGueltigAb(gueltigAb);
-		jaxEbeguVorlage.setGueltigBis(gueltigBis);
-		jaxEbeguVorlage.setProGesuchsperiode(proGesuchsperiode);
+		jaxEbeguVorlage.setGueltigAb(Constants.START_OF_TIME);
+		jaxEbeguVorlage.setGueltigBis(Constants.END_OF_TIME);
 		jaxEbeguVorlage.setVorlage(new JaxVorlage());
 		jaxEbeguVorlage.getVorlage().setFilename(fileInfo.getFilename());
 		jaxEbeguVorlage.getVorlage().setFilepfad(fileInfo.getPath());

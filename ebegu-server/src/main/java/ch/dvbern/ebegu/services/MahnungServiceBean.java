@@ -39,6 +39,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
@@ -48,10 +49,11 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.pdfgenerator.KibonPrintUtil;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
-import ch.dvbern.ebegu.vorlagen.PrintUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,7 +155,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 		Predicate prediateGesuch = cb.equal(root.get(Mahnung_.gesuch), gesuch);
 		query.where(prediateGesuch);
-		query.orderBy(cb.asc(root.get(Mahnung_.timestampErstellt)));
+		query.orderBy(cb.asc(root.get(AbstractEntity_.timestampErstellt)));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -185,8 +187,8 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 		StringBuilder bemerkungenBuilder = new StringBuilder();
 		for (DokumentGrund dokumentGrund : dokumentGrundsMerged) {
-			StringBuilder dokumentData = PrintUtil.parseDokumentGrundDataToString(dokumentGrund);
-			if (dokumentData.length() > 0) {
+			String dokumentData = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch);
+			if (StringUtils.isNotEmpty(dokumentData)) {
 				bemerkungenBuilder.append(dokumentData);
 				bemerkungenBuilder.append('\n');
 			}
@@ -229,14 +231,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	@PermitAll
 	public Optional<Mahnung> findAktiveErstMahnung(Gesuch gesuch) {
 		authorizer.checkReadAuthorization(gesuch);
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Mahnung> query = cb.createQuery(Mahnung.class);
-		Root<Mahnung> root = query.from(Mahnung.class);
-		query.select(root);
-		Predicate predicateTyp = cb.equal(root.get(Mahnung_.mahnungTyp), MahnungTyp.ERSTE_MAHNUNG);
-		Predicate predicateAktiv = cb.isNull(root.get(Mahnung_.timestampAbgeschlossen));
-		Predicate predicateGesuch = cb.equal(root.get(Mahnung_.gesuch), gesuch);
-		query.where(predicateTyp, predicateAktiv, predicateGesuch);
+		final CriteriaQuery<Mahnung> query = createQueryNotAbgeschlosseneMahnung(gesuch, MahnungTyp.ERSTE_MAHNUNG);
 		// Wirft eine NonUnique-Exception, falls mehrere aktive ErstMahnungen!
 		Mahnung aktiveErstMahnung = persistence.getCriteriaSingleResult(query);
 		return Optional.ofNullable(aktiveErstMahnung);
@@ -253,6 +248,16 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	private void assertNoOpenMahnungOfType(@Nonnull Gesuch gesuch, @Nonnull MahnungTyp mahnungTyp) {
 		authorizer.checkReadAuthorization(gesuch);
+		final CriteriaQuery<Mahnung> query = createQueryNotAbgeschlosseneMahnung(gesuch, mahnungTyp);
+		// Wirft eine NonUnique-Exception, falls mehrere aktive ErstMahnungen!
+		List<Mahnung> criteriaResults = persistence.getCriteriaResults(query);
+		if (!criteriaResults.isEmpty()) {
+			throw new EbeguRuntimeException("assertNoOpenMahnungOfType", ErrorCodeEnum.ERROR_EXISTING_MAHNUNG);
+		}
+	}
+
+	@Nonnull
+	private CriteriaQuery<Mahnung> createQueryNotAbgeschlosseneMahnung(@Nonnull Gesuch gesuch, @Nonnull MahnungTyp mahnungTyp) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mahnung> query = cb.createQuery(Mahnung.class);
 		Root<Mahnung> root = query.from(Mahnung.class);
@@ -261,10 +266,6 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 		Predicate predicateAktiv = cb.isNull(root.get(Mahnung_.timestampAbgeschlossen));
 		Predicate predicateGesuch = cb.equal(root.get(Mahnung_.gesuch), gesuch);
 		query.where(predicateTyp, predicateAktiv, predicateGesuch);
-		// Wirft eine NonUnique-Exception, falls mehrere aktive ErstMahnungen!
-		List<Mahnung> criteriaResults = persistence.getCriteriaResults(query);
-		if (!criteriaResults.isEmpty()) {
-			throw new EbeguRuntimeException("assertNoOpenMahnungOfType", ErrorCodeEnum.ERROR_EXISTING_MAHNUNG);
-		}
+		return query;
 	}
 }

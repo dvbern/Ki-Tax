@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -139,5 +140,9 @@ public final class EbeguUtil {
 		return gesuch.getGesuchsteller1() == null
 			|| (gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
 			&& gesuch.getEinkommensverschlechterungInfoContainer() == null);
+	}
+
+	public static String getPaddedFallnummer(long fallNummer) {
+		return Strings.padStart(Long.toString(fallNummer), Constants.FALLNUMMER_LENGTH, '0');
 	}
 }

@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 
 /**
- * Sonderregel die nach der eigentlich Berechnung angewendet wird.
+ * Sonderregel die nach der eigentlichen Berechnung angewendet wird.
  * Erst jetzt können wir genau sagen, wann der Anspruch in welche Richtung ändert: Falls der Anspruch gemäss
  * Ereignisdatum bzw. Einreichedatum innerhalb eines Monats sinken würde, so gilt der alte Anspruch noch bis Ende
  * Monat!
@@ -45,6 +45,7 @@ public final class AnspruchFristRule {
 			result.add(zeitabschnitt);
 			// Es muessen nur Abschnitte beachtet werden, die *innerhalb* des Monats anfangen!
 			if (vorangehenderAbschnitt != null && zeitabschnitt.getGueltigkeit().getGueltigAb().getDayOfMonth() > 1) {
+				// Der Anspruch ist kleiner als der Anspruch von vorangehenderAbschnitt
 				if (zeitabschnitt.getAnspruchberechtigtesPensum() < vorangehenderAbschnitt.getAnspruchberechtigtesPensum()) {
 					// Der Anspruch darf nie innerhalb des Monats kleiner werden
 					// d.h. für diesen Abschnitt bis Ende Monat gilt weiterhin der "alte" Anspruch
@@ -71,7 +72,9 @@ public final class AnspruchFristRule {
 
 						vorangehenderAbschnitt = zeitabschnittNaechsterMonat;
 					} else {
+						// we need to set both anspruch and bemerkung so both zeitabschnite are the same
 						zeitabschnitt.setAnspruchberechtigtesPensum(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
+						zeitabschnitt.setBemerkungen(vorangehenderAbschnitt.getBemerkungen());
 						vorangehenderAbschnitt = zeitabschnitt;
 					}
 				} else {

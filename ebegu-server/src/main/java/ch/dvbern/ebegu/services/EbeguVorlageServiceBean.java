@@ -19,12 +19,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -47,13 +46,13 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.EbeguVorlage;
 import ch.dvbern.ebegu.entities.EbeguVorlage_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.enums.EbeguVorlageKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -80,6 +79,9 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 
 	@Inject
 	private PrincipalBean principalBean;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Nonnull
 	@Override
@@ -127,32 +129,6 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 			throw new NonUniqueResultException();
 		}
 		return Optional.ofNullable(paramOrNull);
-	}
-
-	@Override
-	@Nonnull
-	@PermitAll
-	public List<EbeguVorlage> getALLEbeguVorlageByGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<EbeguVorlage> query = cb.createQuery(EbeguVorlage.class);
-		Root<EbeguVorlage> root = query.from(EbeguVorlage.class);
-		query.select(root);
-
-		ParameterExpression<LocalDate> dateAbParam = cb.parameter(LocalDate.class, "dateAb");
-		Predicate dateAbPredicate = cb.equal(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), dateAbParam);
-
-		ParameterExpression<LocalDate> dateBisParam = cb.parameter(LocalDate.class, "dateBis");
-		Predicate dateBisPredicate = cb.equal(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), dateBisParam);
-
-		Predicate proGesuchsperiodePredicate = cb.isTrue(root.get(EbeguVorlage_.proGesuchsperiode));
-
-		query.where(dateAbPredicate, dateBisPredicate, proGesuchsperiodePredicate);
-		TypedQuery<EbeguVorlage> q = persistence.getEntityManager().createQuery(query);
-		q.setParameter(dateAbParam, gesuchsperiode.getGueltigkeit().getGueltigAb());
-		q.setParameter(dateBisParam, gesuchsperiode.getGueltigkeit().getGueltigBis());
-
-		List<EbeguVorlage> resultList = q.getResultList();
-		return resultList;
 	}
 
 	@Nonnull
@@ -213,41 +189,8 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 	@Nonnull
 	@Override
 	@PermitAll
-	public Collection<EbeguVorlage> getALLEbeguVorlageByDate(@Nonnull LocalDate date, boolean proGesuchsperiode) {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<EbeguVorlage> query = cb.createQuery(EbeguVorlage.class);
-		Root<EbeguVorlage> root = query.from(EbeguVorlage.class);
-		query.select(root);
-
-		ParameterExpression<LocalDate> dateParam = cb.parameter(LocalDate.class, "date");
-		Predicate intervalPredicate = cb.between(dateParam,
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-
-		Predicate proGesuchsperiodePredicate = cb.equal(root.get(EbeguVorlage_.proGesuchsperiode), proGesuchsperiode);
-
-		query.where(intervalPredicate, proGesuchsperiodePredicate);
-		TypedQuery<EbeguVorlage> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam, date);
-		List<EbeguVorlage> resultList = q.getResultList();
-		return resultList;
-	}
-
-	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
-	public void copyEbeguVorlageListToNewGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiodeToCopyTo) {
-		// Die Vorlagen des letzten Jahres suchen (datumAb -1 Tag)
-		Collection<EbeguVorlage> ebeguVorlageByDate = getALLEbeguVorlageByDate(
-			gesuchsperiodeToCopyTo.getGueltigkeit().getGueltigAb().minusDays(1), true);
-		ebeguVorlageByDate.addAll(getEmptyVorlagen(ebeguVorlageByDate));
-
-		ebeguVorlageByDate.stream().filter(lastYearVoralge -> lastYearVoralge.getName().isProGesuchsperiode()).forEach(lastYearVorlage -> {
-			EbeguVorlage newVorlage = lastYearVorlage.copy(gesuchsperiodeToCopyTo.getGueltigkeit());
-			if (lastYearVorlage.getVorlage() != null) {
-				fileSaverService.copy(lastYearVorlage.getVorlage(), "vorlagen");
-				newVorlage.setVorlage(lastYearVorlage.getVorlage().copy());
-			}
-			saveEbeguVorlage(newVorlage);
-		});
+	public Collection<EbeguVorlage> getALLEbeguVorlageByDate(@Nonnull LocalDate date) {
+		return new ArrayList<>(criteriaQueryHelper.getAllInInterval(EbeguVorlage.class, date));
 	}
 
 	@Override
@@ -288,27 +231,5 @@ public class EbeguVorlageServiceBean extends AbstractBaseService implements Ebeg
 		} catch (IOException | MimeTypeParseException e) {
 			throw new EbeguRuntimeException("getBenutzerhandbuch", "Could not create Benutzerhandbuch", e);
 		}
-	}
-
-	/**
-	 * Adds all empty Vorlagen to the list. It will only take into account those
-	 * Vorlage that are set to proGesuchsperiode=true
-	 */
-	private Set<EbeguVorlage> getEmptyVorlagen(Collection<EbeguVorlage> persistedEbeguVorlagen) {
-		Set<EbeguVorlage> emptyEbeguVorlagen = new HashSet<>();
-		final EbeguVorlageKey[] ebeguVorlageKeys = EbeguVorlageKey.getAllKeysProGesuchsperiode();
-		for (EbeguVorlageKey ebeguVorlageKey : ebeguVorlageKeys) {
-			boolean exist = false;
-			for (EbeguVorlage ebeguVorlage : persistedEbeguVorlagen) {
-				if (ebeguVorlage.getName() == ebeguVorlageKey) {
-					exist = true;
-					break;
-				}
-			}
-			if (!exist) {
-				emptyEbeguVorlagen.add(new EbeguVorlage(ebeguVorlageKey));
-			}
-		}
-		return emptyEbeguVorlagen;
 	}
 }

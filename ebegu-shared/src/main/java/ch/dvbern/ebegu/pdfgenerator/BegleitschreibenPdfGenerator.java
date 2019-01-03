@@ -17,52 +17,81 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.lowagie.text.Document;
 
 public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
+	private static final String BEGLEITSCHREIBEN_TITLE = "PdfGeneration_Begleitschreiben_Title";
+	private static final String BEGLEITSCHREIBEN_CONTENT = "PdfGeneration_Begleitschreiben_Content";
+	private static final String BEILAGEN = "PdfGeneration_Beilagen";
+	private static final String BEILAGE_VERFUEGUNG = "PdfGeneration_BeilageVerfuegung";
+	private static final String BEILAGE_FINANZIELLESITUATION = "PdfGeneration_BeilageFinanzielleSituation";
+
+
+
 	public BegleitschreibenPdfGenerator(
 		@Nonnull Gesuch gesuch,
-		@Nonnull GemeindeStammdaten stammdaten,
-		final boolean draft
+		@Nonnull GemeindeStammdaten stammdaten
 	) {
-		super(gesuch, stammdaten, draft);
+		super(gesuch, stammdaten);
 	}
 
 	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
-		return "Referenznummer: 18.000123.001 - 2018/2019";
+		return translate(BEGLEITSCHREIBEN_TITLE, getGesuch().getJahrFallAndGemeindenummer(), getGesuch().getGesuchsperiode().getGesuchsperiodeString());
 	}
 
 	@Nonnull
 	@Override
 	protected CustomGenerator getCustomGenerator() {
-		final List<String> dokumente = Arrays.asList(
-			"Verfügung zu Betreuungsangebot 18.000123.001.1.1",
-			"Verfügung zu Betreuungsangebot 18.000123.001.1.2",
-			"Verfügung zu Betreuungsangebot 18.000123.001.2.1",
-			"Berechnung der finanziellen Situation");
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
-			document.add(PdfUtil.createParagraph("Sehr geehrte Familie"));
-			document.add(PdfUtil.createParagraph("Wir haben Ihre Unterlagen, mit denen Sie Unterstützung für die Kinderbetreuung beantragen, " +
-				"geprüft. Die Ergebnisse sind in der Beilage ersichtlich. Teilen Sie uns bitte Veränderungen der " +
-				"persönlichen und wirtschaftlichen Verhältnisse (Familiengrösse, Umzug, Erwerbspensum usw.) " +
-				"unverzüglich mit.", 2));
-			document.add(PdfUtil.createParagraph("Freundliche Grüsse", 2));
-			document.add(PdfUtil.createParagraph("sig. Xaver Weibel", 0));
-			document.add(PdfUtil.createParagraph("Sachbearbeitung", 2));
-			document.add(PdfUtil.createParagraph("Beilagen:", 0));
-			document.add(PdfUtil.createList(dokumente));
+			document.add(PdfUtil.createParagraph(translate(ANREDE_FAMILIE)));
+			document.add(PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT), 2));
+			document.add(createParagraphGruss());
+			document.add(createParagraphSignatur());
+			document.add(PdfUtil.createParagraph(translate(BEILAGEN), 0));
+			document.add(PdfUtil.createListInParagraph(getBeilagen()));
 		};
+	}
+
+	@Nonnull
+	private List<String> getBeilagen() {
+		// Verfügungen
+		List<String> beilagen = getGesuch().extractAllBetreuungen().stream()
+			.filter(this::isOrCanBeVerfuegt)
+			.map(this::getBeilagenText).collect(Collectors.toList());
+		// Finanzielle Situation
+		if (getGesuch().isHasFSDokument()) {
+			beilagen.add(translate(BEILAGE_FINANZIELLESITUATION));
+		}
+		return beilagen;
+	}
+
+	/**
+	 * Will return true when the given Betreuung is verfügbar, that means when it is kleinkind and hasn't been
+	 * marked yet as GESCHLOSSEN_OHNE_VERFUEGUNG
+	 */
+	private boolean isOrCanBeVerfuegt(@Nonnull Betreuung betreuung) {
+		return betreuung.getBetreuungsangebotTyp() != null
+			&& betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()
+			&& betreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG;
+	}
+
+	@Nonnull
+	private String getBeilagenText(@Nonnull Betreuung betreuung) {
+		return ServerMessageUtil.getMessage(BEILAGE_VERFUEGUNG, betreuung.getBGNummer());
 	}
 }

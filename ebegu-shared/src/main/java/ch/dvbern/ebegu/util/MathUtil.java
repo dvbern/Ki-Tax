@@ -155,7 +155,10 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nonnull
-	public BigDecimal addNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal augment) {
+	public BigDecimal addNullSafe(@Nonnull BigDecimal value, @Nullable BigDecimal augment) {
+		if (augment == null) {
+			return value;
+		}
 		BigDecimal result = value
 			.add(augment)
 			.setScale(scale, roundingMode);
@@ -183,8 +186,20 @@ public enum MathUtil {
 		if (augment == null || augment.length == 0) {
 			return null;
 		}
+		if (value == null) {
+			return BigDecimal.ZERO;
+		}
+		return addNullSafe(value, augment);
+	}
 
-		BigDecimal result = value != null ? value : BigDecimal.ZERO;
+	/**
+	 * adds augement parameters to value, null values are treated as zero
+	 *
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
+	@Nonnull
+	public BigDecimal addNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal... augment) {
+		BigDecimal result = value;
 		for (BigDecimal valueToAdd : augment) {
 			if (valueToAdd != null) {
 				result = result
@@ -199,7 +214,10 @@ public enum MathUtil {
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
 	@Nonnull
-	public BigDecimal subtractNullSafe(@Nonnull BigDecimal value, @Nonnull BigDecimal subtrahend) {
+	public BigDecimal subtractNullSafe(@Nonnull BigDecimal value, @Nullable BigDecimal subtrahend) {
+		if (subtrahend == null) {
+			return value;
+		}
 		BigDecimal result = value
 			.subtract(subtrahend)
 			.setScale(scale, roundingMode);

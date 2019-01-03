@@ -32,11 +32,14 @@ import 'angular-translate-loader-static-files';
 import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'ng-file-upload';
+import 'raven-js';
+import 'raven-js/plugins/angular';
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
 import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.module';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import router from '../../dvbModules/router/router.module';
+import {environment} from '../../environments/environment';
 import BerechnungsManager from '../../gesuch/service/berechnungsManager';
 import DokumenteRS from '../../gesuch/service/dokumenteRS.rest';
 import DossierRS from '../../gesuch/service/dossierRS.rest';
@@ -164,8 +167,19 @@ const dependencies = [
     'unsavedChanges',
 ];
 
+const dynamicDependencies = (): string[] => {
+
+    // hier kommen plugins die wir fuer dev disablen wollen
+    if (environment.sentryDSN) {
+        return ['ngRaven'];
+    }
+    return [];
+};
+
+const calculatedDeps = dependencies.concat(dynamicDependencies());
+
 export const CORE_JS_MODULE = angular
-    .module('ebeguWeb.core', dependencies)
+    .module('ebeguWeb.core', calculatedDeps)
     .run(appRun)
     .config(configure)
     .constant('REST_API', '/ebegu/api/v1/')
