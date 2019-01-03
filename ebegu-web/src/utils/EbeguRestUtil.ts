@@ -1409,18 +1409,15 @@ export default class EbeguRestUtil {
     ): TSEinkommensverschlechterungContainer {
         if (containerFromServer) {
             this.parseAbstractMutableEntity(containerTS, containerFromServer);
-            const empty = new TSEinkommensverschlechterung();
-            containerTS.ekvGSBasisJahrPlus1 =
-                this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus1 || empty,
+            // Achtung, das Argument "new TSEinkommensverschlechterung()" muss immer neu erstellt werden, da es sonst
+            // dasselbe Instanz ist.
+            this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus1 || new TSEinkommensverschlechterung(),
                     containerFromServer.ekvGSBasisJahrPlus1);
-            containerTS.ekvGSBasisJahrPlus2 =
-                this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus2 || empty,
+            this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus2 || new TSEinkommensverschlechterung(),
                     containerFromServer.ekvGSBasisJahrPlus2);
-            containerTS.ekvJABasisJahrPlus1 =
-                this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus1 || empty,
+            this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus1 || new TSEinkommensverschlechterung(),
                     containerFromServer.ekvJABasisJahrPlus1);
-            containerTS.ekvJABasisJahrPlus2 =
-                this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus2 || empty,
+            this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus2 || new TSEinkommensverschlechterung(),
                     containerFromServer.ekvJABasisJahrPlus2);
 
             return containerTS;
@@ -1431,7 +1428,7 @@ export default class EbeguRestUtil {
     public parseEinkommensverschlechterung(
         einkommensverschlechterungTS: TSEinkommensverschlechterung,
         einkommensverschlechterungFromServer: any,
-    ): TSEinkommensverschlechterung {
+    ): void {
         if (einkommensverschlechterungFromServer) {
             this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
             einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
@@ -1449,10 +1446,7 @@ export default class EbeguRestUtil {
             einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
             einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
                 einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
-
-            return einkommensverschlechterungTS;
         }
-        return undefined;
     }
 
     public kindContainerToRestObject(restKindContainer: any, kindContainer: TSKindContainer): any {
