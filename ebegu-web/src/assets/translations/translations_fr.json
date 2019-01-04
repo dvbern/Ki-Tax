@@ -440,7 +440,7 @@
     "UMZUG_LOESCHEN": "fr_Wollen Sie die Umzugsadresse wirklich löschen?",
     "ABWESENHEIT_LOESCHEN": "fr_Wollen Sie die Abwesenheit wirklich löschen?",
     "FAM_ERGAENZENDE_BETREUUNG": "fr_Haben oder möchten Sie familienergänzende Betreuung für das Kind?",
-    "SPRICHT_AMTSSPRACHE": "fr_Wird in Ihrer Familie Deutsch gesprochen?",
+    "SPRICHT_AMTSSPRACHE": "fr_Wird in Ihrer Familie {{amtssprache}} gesprochen?",
     "EINSCHULUNG": "fr_Welche Klasse wird Ihr Kind am {{date}} besuchen?",
     "FACHSTELLE": "fr_Fachstelle",
     "INVOLVIERTE_FACHSTELLE": "fr_Involvierte Fachstelle",

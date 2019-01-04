@@ -227,7 +227,7 @@ public class Kind extends AbstractPersonEntity {
 		return getKinderabzug() == otherKind.getKinderabzug() &&
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getSprichtAmtssprache(), otherKind.getSprichtAmtssprache()) &&
-			Objects.equals(getEinschulungTyp(), otherKind.getEinschulungTyp()) &&
+			getEinschulungTyp() == otherKind.getEinschulungTyp() &&
 			EbeguUtil.isSameObject(getPensumFachstelle(), otherKind.getPensumFachstelle()) &&
 			EbeguUtil.isSameObject(getPensumAusserordentlicherAnspruch(),
 				otherKind.getPensumAusserordentlicherAnspruch());

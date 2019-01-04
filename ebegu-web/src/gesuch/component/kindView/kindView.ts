@@ -139,10 +139,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public getTextSprichtAmtssprache(): string {
-        return this.$translate.instant('SPRICHT_AMTSSPRACHE', {amtssprache: this.getAmsspracheAsString()});
+        return this.$translate.instant('SPRICHT_AMTSSPRACHE', {amtssprache: this.getAmtsspracheAsString()});
     }
 
-    private getAmsspracheAsString(): string {
+    private getAmtsspracheAsString(): string {
         if  (this.gemeindeStammdaten.korrespondenzspracheDe && this.gemeindeStammdaten.korrespondenzspracheFr) {
             return this.$translate.instant('DEUTSCH_ODER_FRANZOESISCH');
         }
