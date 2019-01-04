@@ -134,20 +134,21 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.initAusserordentlicherAnspruch();
         this.gemeindeRS.getGemeindeStammdaten(this.gesuchModelManager.getDossier().gemeinde.id)
             .then(stammdaten => {
-                this.gemeindeStammdaten =  stammdaten;
+            this.gemeindeStammdaten =  stammdaten;
         });
     }
 
-    private getAmtssprachenAsString(): string {
-        let sprache: string;
+    public getTextSprichtAmtssprache(): string {
+        return this.$translate.instant('SPRICHT_AMTSSPRACHE', {amtssprache: this.getAmsspracheAsString()});
+    }
+
+    private getAmsspracheAsString(): string {
         if  (this.gemeindeStammdaten.korrespondenzspracheDe && this.gemeindeStammdaten.korrespondenzspracheFr) {
-            sprache = this.$translate.instant('DEUTSCH_ODER_FRANZOESISCH');
+            return this.$translate.instant('DEUTSCH_ODER_FRANZOESISCH');
         } else if (this.gemeindeStammdaten.korrespondenzspracheFr) {
-            sprache = this.$translate.instant('FRANZOESISCH');
-        } else {
-            sprache = this.$translate.instant('DEUTSCH');
+            return this.$translate.instant('FRANZOESISCH');
         }
-        return this.$translate.instant('SPRICHT_AMTSSPRACHE', {amtssprache: sprache});
+        return this.$translate.instant('DEUTSCH');
     }
 
     private initFachstelle(): void {
