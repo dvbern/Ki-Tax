@@ -145,7 +145,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private getAmsspracheAsString(): string {
         if  (this.gemeindeStammdaten.korrespondenzspracheDe && this.gemeindeStammdaten.korrespondenzspracheFr) {
             return this.$translate.instant('DEUTSCH_ODER_FRANZOESISCH');
-        } else if (this.gemeindeStammdaten.korrespondenzspracheFr) {
+        }
+        if (this.gemeindeStammdaten.korrespondenzspracheFr) {
             return this.$translate.instant('FRANZOESISCH');
         }
         return this.$translate.instant('DEUTSCH');
