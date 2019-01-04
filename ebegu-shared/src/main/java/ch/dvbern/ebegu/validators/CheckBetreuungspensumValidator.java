@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.validators;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,9 +32,9 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.util.BetreuungUtil;
+import ch.dvbern.ebegu.util.ValidationMessageUtil;
 
 /**
  * Validator for Betreuungspensen, checks that the entered betreuungspensum is bigger than the minimum
@@ -156,8 +155,7 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 		// Es waere moeglich, die Messages mit der Klasse HibernateConstraintValidatorContext zu erzeugen. Das waere
 		// aber Hibernate-abhaengig. wuerde es Sinn machen??
 		if (!betreuungspensum.getNichtEingetreten() && betreuungspensum.getPensum().compareTo(pensumMin) < 0) {
-			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages", LocaleThreadLocal.get());
-			String message = rb.getString("invalid_betreuungspensum");
+			String message = ValidationMessageUtil.getMessage("invalid_betreuungspensum");
 			message = MessageFormat.format(message, betreuungspensum.getPensum(), pensumMin);
 
 			context.disableDefaultConstraintViolation();
