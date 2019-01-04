@@ -141,9 +141,9 @@ public class GesuchResource {
 		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(gesuchJAXP.getId());
-		Optional<Gesuch> optGesuch = gesuchService.findGesuch(gesuchJAXP.getId());
+		Gesuch gesuchFromDB = gesuchService.findGesuch(gesuchJAXP.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchJAXP.getId()));
 
-		Gesuch gesuchFromDB = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchJAXP.getId()));
 		//only if status has changed: Muss ermittelt werden, BEVOR wir mergen!
 		final boolean saveInStatusHistory = gesuchFromDB.getStatus() != AntragStatusConverterUtil.convertStatusToEntity(gesuchJAXP.getStatus());
 		Gesuch gesuchToMerge = converter.gesuchToEntity(gesuchJAXP, gesuchFromDB);
