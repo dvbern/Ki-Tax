@@ -389,7 +389,7 @@ public class BetreuungResource {
 			if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kind.get().getKindJA().getFamilienErgaenzendeBetreuung()) {
 				kind.get().getKindJA().setFamilienErgaenzendeBetreuung(true);
 				kind.get().getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
-				kind.get().getKindJA().setMutterspracheDeutsch(jaxAnmeldungDTO.getMutterspracheDeutsch());
+				kind.get().getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
 				kindService.saveKind(kind.get());
 			}
 

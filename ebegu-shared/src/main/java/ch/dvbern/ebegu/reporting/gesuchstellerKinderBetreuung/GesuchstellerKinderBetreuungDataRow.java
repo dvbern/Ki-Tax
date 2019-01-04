@@ -84,7 +84,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private LocalDate kindGeburtsdatum;
 	@Nullable private String kindFachstelle;
 	@Nullable private Boolean kindErwBeduerfnisse;
-	@Nullable private Boolean kindDeutsch;
+	@Nullable private Boolean kindSprichtAmtssprache;
 	@Nullable private EinschulungTyp kindEinschulungTyp;
 
 	private LocalDate zeitabschnittVon;
@@ -551,12 +551,12 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public Boolean getKindDeutsch() {
-		return kindDeutsch;
+	public Boolean getKindSprichtAmtssprache() {
+		return kindSprichtAmtssprache;
 	}
 
-	public void setKindDeutsch(@Nullable Boolean kindDeutsch) {
-		this.kindDeutsch = kindDeutsch;
+	public void setKindSprichtAmtssprache(@Nullable Boolean kindSprichtAmtssprache) {
+		this.kindSprichtAmtssprache = kindSprichtAmtssprache;
 	}
 
 	@Nullable

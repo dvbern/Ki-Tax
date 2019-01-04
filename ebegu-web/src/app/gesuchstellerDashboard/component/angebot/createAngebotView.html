@@ -65,24 +65,24 @@
                                         </div>
                                     </div>
 
-                                    <!--mutterspracheDeutsch-->
+                                    <!--sprichtAmtssprache-->
                                     <div class="row">
                                         <div class="col-xs-12 dv-input-container-question">
                                             <div class="form-group" ng-show="vm.anmeldungDTO.additionalKindQuestions">
                                                 <span class="ebeguH1 required">
                                                     <span data-translate="SPRICHT_AMTSSPRACHE"></span>
-                                                    <dv-tooltip input-id="mutterspracheDeutsch"
+                                                    <dv-tooltip input-id="sprichtAmtssprache"
                                                                 text="'SPRICHT_AMTSSPRACHE_HELP' | translate"></dv-tooltip>
                                                 </span>
 
-                                                <dv-radio-container name="mutterspracheDeutsch" class="input-element"
+                                                <dv-radio-container name="sprichtAmtssprache" class="input-element"
                                                                     ng-required="vm.anmeldungDTO.additionalKindQuestions"
-                                                                    ng-model="vm.anmeldungDTO.mutterspracheDeutsch"
+                                                                    ng-model="vm.anmeldungDTO.sprichtAmtssprache"
                                                                     aria-label="{{ 'SPRICHT_AMTSSPRACHE' |translate}}"
-                                                                    aria-described-by="mutterspracheDeutsch-error">
+                                                                    aria-described-by="sprichtAmtssprache-error">
                                                 </dv-radio-container>
-                                                <dv-error-messages input-id="mutterspracheDeutsch"
-                                                                   for="vm.form.mutterspracheDeutsch.$error"
+                                                <dv-error-messages input-id="sprichtAmtssprache"
+                                                                   for="vm.form.sprichtAmtssprache.$error"
                                                                    class="error"></dv-error-messages>
                                             </div>
                                         </div>

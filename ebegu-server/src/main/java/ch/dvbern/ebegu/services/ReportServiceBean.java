@@ -1115,7 +1115,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse());
 		}
 
-		row.setKindDeutsch(kind.getMutterspracheDeutsch());
+		row.setKindSprichtAmtssprache(kind.getSprichtAmtssprache());
 		row.setKindEinschulungTyp(kind.getEinschulungTyp());
 	}
 

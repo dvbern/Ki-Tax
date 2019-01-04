@@ -148,7 +148,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindGeburtsdatum, dataRow.getKindGeburtsdatum());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindFachstelle, dataRow.getKindFachstelle());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindErwBeduerfnisse, dataRow.getKindErwBeduerfnisse());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindDeutsch, dataRow.getKindDeutsch());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindSprichtAmtssprache, dataRow.getKindSprichtAmtssprache());
 
 			String einschulungTyp = dataRow.getKindEinschulungTyp() != null ?
 				ServerMessageUtil.translateEnumValue(dataRow.getKindEinschulungTyp()) : "";

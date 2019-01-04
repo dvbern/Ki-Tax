@@ -166,29 +166,29 @@
                         </div>
                     </div>
 
-                    <!--mutterspracheDeutsch-->
+                    <!--sprichtAmtssprache-->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group" ng-show="vm.getModel().familienErgaenzendeBetreuung">
                                 <span class="ebeguH1 required">
                                     <span>{{vm.getAmtssprachenAsString()}}</span>
-                                    <dv-tooltip input-id="mutterspracheDeutsch"
+                                    <dv-tooltip input-id="sprichtAmtssprache"
                                                 text="'SPRICHT_AMTSSPRACHE_HELP' | translate"></dv-tooltip>
                                 </span>
 
-                                <dv-radio-container name="mutterspracheDeutsch" class="input-element"
+                                <dv-radio-container name="sprichtAmtssprache" class="input-element"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="!vm.isGesuchReadonly()"
                                                     ng-required="vm.getModel().familienErgaenzendeBetreuung"
-                                                    ng-model="vm.getModel().mutterspracheDeutsch"
+                                                    ng-model="vm.getModel().sprichtAmtssprache"
                                                     aria-label="{{vm.getAmtssprachenAsString()}}"
-                                                    aria-described-by="mutterspracheDeutsch-error">
+                                                    aria-described-by="sprichtAmtssprache-error">
                                 </dv-radio-container>
-                                <dv-bisher gs="vm.getContainer().kindGS.mutterspracheDeutsch"
-                                           ja="vm.getContainer().kindJA.mutterspracheDeutsch"></dv-bisher>
-                                <dv-error-messages input-id="mutterspracheDeutsch"
-                                                   for="vm.form.mutterspracheDeutsch.$error"
+                                <dv-bisher gs="vm.getContainer().kindGS.sprichtAmtssprache"
+                                           ja="vm.getContainer().kindJA.sprichtAmtssprache"></dv-bisher>
+                                <dv-error-messages input-id="sprichtAmtssprache"
+                                                   for="vm.form.sprichtAmtssprache.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
