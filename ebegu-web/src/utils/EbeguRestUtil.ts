@@ -1411,14 +1411,26 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(containerTS, containerFromServer);
             // Achtung, das Argument "new TSEinkommensverschlechterung()" muss immer neu erstellt werden, da es sonst
             // dasselbe Instanz ist.
-            this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus1 || new TSEinkommensverschlechterung(),
-                    containerFromServer.ekvGSBasisJahrPlus1);
-            this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus2 || new TSEinkommensverschlechterung(),
-                    containerFromServer.ekvGSBasisJahrPlus2);
-            this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus1 || new TSEinkommensverschlechterung(),
-                    containerFromServer.ekvJABasisJahrPlus1);
-            this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus2 || new TSEinkommensverschlechterung(),
-                    containerFromServer.ekvJABasisJahrPlus2);
+            containerTS.ekvGSBasisJahrPlus1 =
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvGSBasisJahrPlus1 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvGSBasisJahrPlus1
+                );
+            containerTS.ekvGSBasisJahrPlus2 =
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvGSBasisJahrPlus2 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvGSBasisJahrPlus2
+                );
+            containerTS.ekvJABasisJahrPlus1 =
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvJABasisJahrPlus1 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvJABasisJahrPlus1
+                );
+            containerTS.ekvJABasisJahrPlus2 =
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvJABasisJahrPlus2 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvJABasisJahrPlus2
+                );
 
             return containerTS;
         }
@@ -1428,9 +1440,9 @@ export default class EbeguRestUtil {
     public parseEinkommensverschlechterung(
         einkommensverschlechterungTS: TSEinkommensverschlechterung,
         einkommensverschlechterungFromServer: any,
-    ): void {
+    ): TSEinkommensverschlechterung {
         if (!einkommensverschlechterungFromServer) {
-            return;
+            return undefined;
         }
         this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
         einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
@@ -1448,6 +1460,7 @@ export default class EbeguRestUtil {
         einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
         einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
             einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
+        return einkommensverschlechterungTS;
     }
 
     public kindContainerToRestObject(restKindContainer: any, kindContainer: TSKindContainer): any {
