@@ -63,7 +63,7 @@ public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 
 			document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ANREDE_FAMILIE)));
 			createSeite1(document);
-			document.add(PdfUtil.createList(getFehlendeUnterlagen(), 1));
+			document.add(PdfUtil.createListInParagraph(getFehlendeUnterlagen(), 1));
 
 			List<Element> seite2Paragraphs = Lists.newArrayList();
 			createSeite2(document, seite2Paragraphs);

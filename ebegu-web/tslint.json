@@ -278,6 +278,7 @@
             "@angular/upgrade/static",
             "angular-i18n/angular-locale_de-ch",
             "core-js",
+            "raven-js",
             "rxjs/operators",
             "webpack/lib",
             "zone.js"

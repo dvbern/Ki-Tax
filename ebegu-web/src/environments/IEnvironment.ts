@@ -22,4 +22,5 @@ export interface Environment {
     logLevel: LogLevel;
     logModules?: LogModules;
     logColorsEnabled?: boolean;
+    sentryDSN?: string;
 }

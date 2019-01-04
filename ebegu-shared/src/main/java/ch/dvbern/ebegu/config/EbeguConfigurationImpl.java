@@ -61,6 +61,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_TESTFAELLE_ENABLED = "ebegu.testfaelle.enabled";
 	private static final String EBEGU_ADMINISTRATOR_MAIL = "ebegu.admin.mail";
 	private static final String EBEGU_PORTAL_ACCOUNT_CREATION_LINK = "ebegu.portal.account.creation.link";
+	private static final String SENTRY_ENVIRONMENT = "sentry.environment"; //use same property as sentry logger
 
 
 	@Inject
@@ -215,5 +216,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getPortalAccountCreationPageLink() {
 		return getString(EBEGU_PORTAL_ACCOUNT_CREATION_LINK, "https://beloginportal-replica.fin.be.ch/emaillogin/gui/registration/createmaillogin");
+	}
+
+	@Override
+	public String getSentryEnv() {
+		return getString(SENTRY_ENVIRONMENT, "unspecified");
 	}
 }

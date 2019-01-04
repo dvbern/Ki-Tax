@@ -65,6 +65,12 @@ export class ApplicationPropertyRS {
         });
     }
 
+    public getSentryEnvName(): IPromise<TSApplicationProperty> {
+        return this.http.get(`${this.serviceURL}/public/sentryenv`).then(response => {
+            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
+        });
+    }
+
     public create(name: string, value: string): IHttpPromise<any> {
         return this.http.post(`${this.serviceURL}/${encodeURIComponent(name)}`, value, {
             headers: {

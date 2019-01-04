@@ -97,6 +97,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry</artifactId>
+        </dependency>
+
         <!--tests der validators-->
         <dependency>
             <groupId>org.hibernate</groupId>

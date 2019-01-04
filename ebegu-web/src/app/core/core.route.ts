@@ -16,6 +16,7 @@
 import {StateService} from '@uirouter/core';
 import * as angular from 'angular';
 import * as moment from 'moment';
+import * as Raven from 'raven-js';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {environment} from '../../environments/environment';
@@ -141,6 +142,16 @@ export function appRun(
                 angular.element('.user-menu').find('button').first().css('background', prop.value);
             }
         });
+
+        applicationPropertyRS.getSentryEnvName().then((sentryEnvName: TSApplicationProperty) => {
+            if (sentryEnvName && sentryEnvName.value) {
+                Raven.setEnvironment(sentryEnvName.value);
+
+            } else {
+                Raven.setEnvironment('unspecified');
+            }
+        });
+
     }
 
     // Wir meochten eigentlich ueberall mit einem hotkey das formular submitten koennen
