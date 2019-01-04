@@ -94,7 +94,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	kindGeburtsdatum(new SimpleMergeField<>("kindGeburtsdatum", DATE_CONVERTER)),
 	kindFachstelle(new SimpleMergeField<>("kindFachstelle", STRING_CONVERTER)),
 	kindErwBeduerfnisse(new SimpleMergeField<>("kindErwBeduerfnisse", BOOLEAN_X_CONVERTER)),
-	kindDeutsch(new SimpleMergeField<>("kindDeutsch", BOOLEAN_X_CONVERTER)),
+	kindSprichtAmtssprache(new SimpleMergeField<>("kindSprichtAmtssprache", BOOLEAN_X_CONVERTER)),
 	eingeschult(new SimpleMergeField<>("eingeschult", STRING_CONVERTER)),
 
 	zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),
