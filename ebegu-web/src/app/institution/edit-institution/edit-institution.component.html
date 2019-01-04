@@ -25,7 +25,7 @@
 
         <dv-stammdaten-header
             [preTitel]="getHeaderPreTitle()"
-            [titel]="institution.name"
+            [titel]="stammdaten.institution.name"
             [administratoren]="stammdaten.administratoren"
             [sachbearbeiter]="stammdaten.sachbearbeiter"
             [logoImageUrl]="undefined"
@@ -39,6 +39,26 @@
                     <h3 translate>INSTITUTION_STAMMDATEN</h3>
                     <hr class="header">
                 </div>
+
+                <div class="row" *ngIf="isSuperAdmin()">
+                    <!-- Traegerschaft -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate for="traegerschaft_id">TRAEGERSCHAFT</h3>
+                            <mat-select [(ngModel)]="stammdaten.institution.traegerschaft"
+                                        [compareWith]="compareTraegerschaft"
+                                        id="traegerschaft_id" name="traegerschaft_id"
+                                        class="form-control">
+                                <mat-option value="">{{'KEINE' | translate}}</mat-option>
+                                <mat-option *ngFor="let traegerschaft of traegerschaftenList; trackBy:traegerschaft?.id" [value]="traegerschaft">
+                                    {{traegerschaft.name}}
+                                </mat-option>
+                            </mat-select>
+                            <dv-error-messages [errorObject]="form.controls.traegerschaft_id?.errors" inputId="traegerschaft_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="title">
                     <h3 translate>KONTAKTADRESSE</h3>
                 </div>
