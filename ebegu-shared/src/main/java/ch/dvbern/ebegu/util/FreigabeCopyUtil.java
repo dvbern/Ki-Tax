@@ -154,7 +154,7 @@ public final class FreigabeCopyUtil {
 
 	private static void copyKind(@Nonnull Kind kindGS, @Nonnull Kind kindJA) {
 		kindGS.setVorname(kindJA.getVorname());
-		kindGS.setMutterspracheDeutsch(kindJA.getMutterspracheDeutsch());
+		kindGS.setSprichtAmtssprache(kindJA.getSprichtAmtssprache());
 		if (kindJA.getPensumFachstelle() != null) {
 			kindGS.setPensumFachstelle(new PensumFachstelle());
 			Objects.requireNonNull(kindGS.getPensumFachstelle());

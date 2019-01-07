@@ -221,9 +221,9 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 
 	private List<VerfuegungZeitabschnitt> getAllZeitabschnitteOrderedByGesuchAndDatum() {
 		ArrayList<VerfuegungZeitabschnitt> all = new ArrayList<>(criteriaQueryHelper.getAll(VerfuegungZeitabschnitt.class));
-		Collections.sort(all, (o1, o2) -> {
-			Integer ln1 =  o1.getVerfuegung().getBetreuung().getKind().getGesuch().getLaufnummer();
-			Integer ln2 =  o2.getVerfuegung().getBetreuung().getKind().getGesuch().getLaufnummer();
+		all.sort((o1, o2) -> {
+			Integer ln1 = o1.getVerfuegung().getBetreuung().getKind().getGesuch().getLaufnummer();
+			Integer ln2 = o2.getVerfuegung().getBetreuung().getKind().getGesuch().getLaufnummer();
 			int i = ln1.compareTo(ln2);
 			if (i == 0) {
 				i = o1.getGueltigkeit().getGueltigAb().compareTo(o2.getGueltigkeit().getGueltigAb());

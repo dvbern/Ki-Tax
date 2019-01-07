@@ -26,6 +26,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
 import TSInstitution from '../../../models/TSInstitution';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -35,6 +36,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
+import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({
   selector: 'dv-edit-institution',
@@ -47,7 +49,7 @@ export class EditInstitutionComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
     public readonly tomorrow: moment.Moment = DateUtil.today().add(1, 'days');
 
-    public institution: TSInstitution;
+    public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
     public abweichendeZahlungsAdresse: boolean;
     public editMode: boolean;
@@ -62,6 +64,7 @@ export class EditInstitutionComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly translate: TranslateService,
+        private readonly traegerschaftRS: TraegerschaftRS,
     ) {
     }
 
@@ -72,18 +75,25 @@ export class EditInstitutionComponent implements OnInit {
         }
         this.isRegisteringInstitution = this.$transition$.params().isRegistering;
 
+        this.traegerschaftRS.getAllActiveTraegerschaften().then(allTraegerschaften => {
+            this.traegerschaftenList = allTraegerschaften;
+        });
+
+        this.fetchInstitution(institutionId);
+    }
+
+    private fetchInstitution(institutionId: string): void {
         this.institutionRS.findInstitution(institutionId).then(institution => {
-            this.institution = institution;
 
             this.institutionStammdatenRS.fetchInstitutionStammdatenByInstitution(institution.id)
                 .then(stammdaten => {
                     if (stammdaten) {
                         this.stammdaten = stammdaten;
                     } else {
-                        this.createInstitutionStammdaten();
+                        this.createInstitutionStammdaten(institution);
                     }
                     this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
-                    this.editMode = this.institution.status === TSInstitutionStatus.EINGELADEN;
+                    this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
                 });
         });
@@ -104,7 +114,11 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public isBetreuungsgutscheineAkzeptierenDisabled(): boolean {
-        return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+        return !this.isSuperAdmin();
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     public isRegistering(): boolean {
@@ -113,8 +127,8 @@ export class EditInstitutionComponent implements OnInit {
 
     public getHeaderPreTitle(): string {
         let result = '';
-        if (this.institution.traegerschaft) {
-            result += this.institution.traegerschaft.name + ' - ';
+        if (this.stammdaten.institution.traegerschaft) {
+            result += this.stammdaten.institution.traegerschaft.name + ' - ';
         }
         result += this.translate.instant(this.stammdaten.betreuungsangebotTyp);
         return result;
@@ -165,13 +179,15 @@ export class EditInstitutionComponent implements OnInit {
                 this.editMode = false;
                 this.changeDetectorRef.markForCheck();
                 this.navigateToWelcomesite();
+                // if we don't navigate away we refresh all data
+                this.fetchInstitution(this.stammdaten.institution.id);
             });
     }
 
-    private createInstitutionStammdaten(): void {
+    private createInstitutionStammdaten(institution: TSInstitution): void {
         this.stammdaten = new TSInstitutionStammdaten();
         this.stammdaten.adresse = new TSAdresse();
-        this.stammdaten.institution = this.institution;
+        this.stammdaten.institution = institution;
         this.stammdaten.gueltigkeit = new TSDateRange();
         this.stammdaten.gueltigkeit.gueltigAb = moment();
     }
@@ -199,5 +215,9 @@ export class EditInstitutionComponent implements OnInit {
             return ` ${this.translate.instant('BIS')} ${DateUtil.momentToLocalDateFormat(this.stammdaten.gueltigkeit.gueltigBis, CONSTANTS.DATE_FORMAT)}`;
         }
         return '';
+    }
+
+    public compareTraegerschaft(b1: TSTraegerschaft, b2: TSTraegerschaft): boolean {
+        return b1 && b2 ? b1.id === b2.id : b1 === b2;
     }
 }
