@@ -80,6 +80,11 @@ public enum ApplicationPropertyKey {
 	 * Flag, ob das Dummy Login eingeschaltet ist. Aus Sicherheitsgruenden muss sowohl dieses wie auch das entsprechende
 	 * System-Property eingeschaltet sein, damit das Dummy Login funktioniert.
 	 */
-	DUMMY_LOGIN_ENABLED
+	DUMMY_LOGIN_ENABLED,
+
+	/**
+	 * Gibt das Sentry DNS Token zurueck
+	 */
+	SENTRY_ENV,
 
 }

@@ -471,12 +471,13 @@ public class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 70000, BASISJAHR, 0, 70000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15), 70000, BASISJAHR, 0, 70000, 2);
 		// Heirat
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
@@ -498,12 +499,13 @@ public class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 100000, BASISJAHR, 11400, 88600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15), 100000, BASISJAHR, 11400, 88600, 3);
 		// Scheidung
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
@@ -579,7 +581,7 @@ public class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 70000, BASISJAHR, 0, 70000, 2);
@@ -589,6 +591,7 @@ public class AbstractBGRechnerTest {
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		// Heirat: 15.01.
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
@@ -607,7 +610,7 @@ public class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 70000, BASISJAHR, 0, 70000, 2);
@@ -617,6 +620,7 @@ public class AbstractBGRechnerTest {
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		// Heirat: 15.01.
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 120000, BASISJAHR, 11400, 108600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 120000, BASISJAHR, 11400, 108600, 3);
@@ -635,7 +639,7 @@ public class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 100000, BASISJAHR, 11400, 88600, 3);
@@ -645,6 +649,7 @@ public class AbstractBGRechnerTest {
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
 		// Scheidung: 15.01.
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
@@ -663,7 +668,7 @@ public class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 100000, BASISJAHR, 11400, 88600, 3);
@@ -673,6 +678,7 @@ public class AbstractBGRechnerTest {
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
 		// Scheidung: 15.01.
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 70000, BASISJAHR, 0, 70000, 2);
@@ -691,7 +697,7 @@ public class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(14, result.size());
 		int i = 0;
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 70000, BASISJAHR, 0, 70000, 2);
@@ -702,6 +708,7 @@ public class AbstractBGRechnerTest {
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 15), 70000, BASISJAHR, 0, 70000, 2);
 		// Heirat: 15.01.
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 100000, BASISJAHR, 11400, 88600, 3);
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 100000, BASISJAHR, 11400, 88600, 3);
@@ -721,7 +728,7 @@ public class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegung().getZeitabschnitte();
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(14, result.size());
 		int i = 0;
 
 		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 100000, BASISJAHR, 11400, 88600, 3);

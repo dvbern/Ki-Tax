@@ -72,7 +72,9 @@ public final class AnspruchFristRule {
 
 						vorangehenderAbschnitt = zeitabschnittNaechsterMonat;
 					} else {
+						// we need to set both anspruch and bemerkung so both zeitabschnite are the same
 						zeitabschnitt.setAnspruchberechtigtesPensum(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
+						zeitabschnitt.setBemerkungen(vorangehenderAbschnitt.getBemerkungen());
 						vorangehenderAbschnitt = zeitabschnitt;
 					}
 				} else {

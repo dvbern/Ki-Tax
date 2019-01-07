@@ -48,6 +48,7 @@
         <version.slf4j>1.7.25</version.slf4j>
         <version.wildfly-arquillian-containers>2.1.1.Final</version.wildfly-arquillian-containers>
         <version.wildfly.container>13.0.0.Final</version.wildfly.container>
+        <version.sentry>1.7.16</version.sentry>
 
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
@@ -291,6 +292,18 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-java8</artifactId>
                 <version>${version.hibernate}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.sentry</groupId>
+                <artifactId>sentry</artifactId>
+                <version>${version.sentry}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!--Hibernate validator implementation fuer testing-->

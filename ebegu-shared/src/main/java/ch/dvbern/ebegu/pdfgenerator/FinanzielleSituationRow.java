@@ -28,10 +28,20 @@ public class FinanzielleSituationRow {
 	private String label;
 
 	@Nonnull
+	private String supertext;
+
+	@Nonnull
 	private String gs1;
+
+	@Nonnull
+	// @ToDo: Dies ist nur zum Testen. Sollte mit dem richtigen Wert gesetzt werden.
+	private String gs1ValueOfGS = "1'000";
 
 	@Nullable
 	private String gs2;
+
+	@Nonnull
+	private String gs2ValueOfGS;
 
 
 	public FinanzielleSituationRow(@Nonnull String label, @Nonnull String gs1) {
@@ -55,8 +65,27 @@ public class FinanzielleSituationRow {
 	}
 
 	@Nullable
+	public String getGs2ValueOfGS() {
+		return gs2ValueOfGS;
+	}
+
+	@Nonnull
+	public String getGs1ValueOfGS() {
+		return gs1ValueOfGS;
+	}
+
+	@Nullable
 	public String getGs2() {
 		return gs2;
+	}
+
+	@Nullable
+	public String getSupertext() {
+		return supertext;
+	}
+
+	public void setSupertext(@Nonnull String supertext) {
+		this.supertext = supertext;
 	}
 
 	public void setGs2(@Nullable String gs2) {

@@ -296,7 +296,7 @@ public class WohnsitzRuleTest {
 
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnittList);
-		Assert.assertEquals(2, zeitabschnittList.size());
+		Assert.assertEquals(3, zeitabschnittList.size());
 
 		VerfuegungZeitabschnitt abschnittInBern1 = zeitabschnittList.get(0);
 		Assert.assertTrue(abschnittInBern1.isWohnsitzNichtInGemeindeGS1());
@@ -304,9 +304,14 @@ public class WohnsitzRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnittInBern1.getBgPensum());
 
 		VerfuegungZeitabschnitt abschnittInBern2 = zeitabschnittList.get(1);
-		Assert.assertFalse(abschnittInBern2.isWohnsitzNichtInGemeindeGS2());
+		Assert.assertTrue(abschnittInBern2.isWohnsitzNichtInGemeindeGS2());
 		Assert.assertEquals(100, abschnittInBern2.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern2.getBgPensum());
+
+		VerfuegungZeitabschnitt abschnittInBern3 = zeitabschnittList.get(2);
+		Assert.assertFalse(abschnittInBern3.isWohnsitzNichtInGemeindeGS2());
+		Assert.assertEquals(100, abschnittInBern3.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(100), abschnittInBern3.getBgPensum());
 	}
 
 	private Betreuung createTestdata(boolean zweigesuchsteller) {

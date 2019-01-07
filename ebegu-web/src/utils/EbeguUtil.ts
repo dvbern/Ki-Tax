@@ -278,7 +278,8 @@ export default class EbeguUtil {
      */
     public getBasisJahrPlusAsString(gesuchsperiode: TSGesuchsperiode, plusJahr: number): string {
         if (gesuchsperiode && gesuchsperiode.gueltigkeit) {
-            return String(gesuchsperiode.gueltigkeit.gueltigAb.year()) + String(plusJahr);
+            // tslint:disable:restrict-plus-operands -> It doesn't seem to understand that both are numbers
+            return String(gesuchsperiode.gueltigkeit.gueltigAb.year() + plusJahr);
         }
         return undefined;
     }
