@@ -44,13 +44,17 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,6 +69,9 @@ public class InstitutionStammdatenResource {
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private TraegerschaftService traegerschaftService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -92,18 +99,36 @@ public class InstitutionStammdatenResource {
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
 			stammdaten = converter.updateJaxModuleTagesschule(institutionStammdatenJAXP);
 		}
+
 		InstitutionStammdaten convertedInstData = converter.institutionStammdatenToEntity(stammdaten, instDaten);
+
+		// converting InstitutionStammdaten from JAX to Entity will discard any change in the Institution object. It will load
+		// the institution from the DB. For this reason we need to change any field of the institution manually
 
 		// Statuswechsel eingeladen -> aktiv
 		if (convertedInstData.getInstitution().getStatus() == InstitutionStatus.EINGELADEN) {
 			convertedInstData.getInstitution().setStatus(InstitutionStatus.AKTIV);
 		}
 
+		updateTraegerschaft(institutionStammdatenJAXP.getInstitution(), convertedInstData.getInstitution());
+
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(convertedInstData);
 
 		return converter.institutionStammdatenToJAX(persistedInstData);
 
+	}
+
+	private void updateTraegerschaft(
+		@Nonnull JaxInstitution institutionJAXP,
+		@Nonnull Institution institutionStammdaten
+	) {
+		Optional<Traegerschaft> traegerschaft = Optional.empty();
+		final JaxTraegerschaft jaxTraegerschaft = institutionJAXP.getTraegerschaft();
+		if (jaxTraegerschaft != null && jaxTraegerschaft.getId() != null) {
+			traegerschaft = traegerschaftService.findTraegerschaft(jaxTraegerschaft.getId());
+		}
+		institutionStammdaten.setTraegerschaft(traegerschaft.orElse(null));
 	}
 
 	@ApiOperation(value = "Sucht die InstitutionsStammdaten mit der uebergebenen Id in der Datenbank",

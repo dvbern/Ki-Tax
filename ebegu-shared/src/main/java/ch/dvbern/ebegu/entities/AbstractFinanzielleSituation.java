@@ -196,4 +196,26 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahr(), otherFinSituation.getGeschaeftsgewinnBasisjahr()) &&
 			MathUtil.isSame(getGeleisteteAlimente(), otherFinSituation.getGeleisteteAlimente());
 	}
+
+	@Nonnull
+	public final BigDecimal getZwischentotalEinkommen() {
+		return MathUtil.DEFAULT.addNullSafe(
+			BigDecimal.ZERO,
+			getNettolohn(),
+			getFamilienzulage(),
+			getErsatzeinkommen(),
+			getErhalteneAlimente(),
+			getGeschaeftsgewinnBasisjahr());
+	}
+
+	@Nonnull
+	public final BigDecimal getZwischentotalVermoegen() {
+		BigDecimal vermoegenPlus = MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, getBruttovermoegen());
+		return MathUtil.DEFAULT.subtractNullSafe(vermoegenPlus, getSchulden());
+	}
+
+	@Nonnull
+	public final BigDecimal getZwischetotalAbzuege() {
+		return MathUtil.DEFAULT.addNullSafe(BigDecimal.ZERO, getGeleisteteAlimente());
+	}
 }

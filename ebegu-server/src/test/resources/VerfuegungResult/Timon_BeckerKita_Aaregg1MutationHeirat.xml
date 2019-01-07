@@ -74,22 +74,11 @@
         <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
         <bemerkungen></bemerkungen>
         <betreuungspensum>100.00</betreuungspensum>
-        <elternbeitrag>56.00</elternbeitrag>
+        <elternbeitrag>112.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.02.2018</gueltigAb>
-        <gueltigBis>14.02.2018</gueltigBis>
-        <vollkosten>800.00</vollkosten>
-    </verfuegungszeitabschnitte>
-    <verfuegungszeitabschnitte>
-        <abzugFamGroesse>7600</abzugFamGroesse>
-        <anspruchberechtigtesPensum>80</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 1 auf 2 Gesuchsteller</bemerkungen>
-        <betreuungspensum>100.00</betreuungspensum>
-        <elternbeitrag>56.00</elternbeitrag>
-        <famGroesse>2.0</famGroesse>
-        <gueltigAb>15.02.2018</gueltigAb>
         <gueltigBis>28.02.2018</gueltigBis>
-        <vollkosten>800.00</vollkosten>
+        <vollkosten>1600.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>18000</abzugFamGroesse>

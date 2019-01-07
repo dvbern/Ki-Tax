@@ -17,7 +17,7 @@
     "build:ci": "npm run build:prod -- --progress=false",
     "build:prod": "ng build --configuration=production",
     "preserver": "check-engine && npm run set-version",
-    "server": "ng serve",
+    "server": "ng serve --disable-host-check",
     "prelint": "check-engine",
     "lint": "concurrently 'npm:lint:ng' 'npm:lint:tsc'",
     "lint:ng": "ng lint",
@@ -149,6 +149,7 @@
     "core-js": "~2.5.5",
     "detect-browser": "~3.0.0",
     "randomcolor": "~0.5.3",
+    "raven-js": "~3.27.0",
     "rxjs": "^6.2.2",
     "rxjs-compat": "^6.0.0-rc.0",
     "zone.js": "~0.8.26"

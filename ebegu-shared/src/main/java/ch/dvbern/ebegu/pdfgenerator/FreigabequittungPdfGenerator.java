@@ -37,7 +37,6 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.Utilities;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -55,11 +54,9 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 	private static final String FREIGABEQUITTUNG_TITLE = "PdfGeneration_Freigabequittung_Title";
-	private static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
 	private static final String GESUCHSTELLER = "PdfGeneration_Gesuchsteller";
 	private static final String BETREUUNGSANGEBOTE = "PdfGeneration_Betreuungsangebote";
 	private static final String BETREUUNG_KIND = "PdfGeneration_Kind";
-	private static final String BETREUUNG_INSTITUTION = "PdfGeneration_Institution";
 	private static final String BETREUUNG_BGNUMMER = "PdfGeneration_BgNummer";
 	private static final String BENOETIGTE_UNTERLAGEN = "PdfGeneration_BenoetigteUnterlagen";
 	private static final String EINWILLIGUNG_STEUERDATEN_TITLE = "PdfGeneration_EinwilligungSteuerdaten_Title";
@@ -77,11 +74,10 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 
 	public FreigabequittungPdfGenerator(
-			@Nonnull Gesuch gesuch,
-			@Nonnull GemeindeStammdaten stammdaten,
-			final boolean draft,
-			@Nonnull List<DokumentGrund> benoetigteUnterlagen) {
-		super(gesuch, stammdaten, draft);
+		@Nonnull Gesuch gesuch,
+		@Nonnull GemeindeStammdaten stammdaten,
+		@Nonnull List<DokumentGrund> benoetigteUnterlagen) {
+		super(gesuch, stammdaten);
 		this.benoetigteUnterlagen = benoetigteUnterlagen;
 	}
 
@@ -105,7 +101,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			document.add(PdfUtil.createSubTitle(translate(BENOETIGTE_UNTERLAGEN)));
 			Paragraph dokumenteParagraph = new Paragraph();
 			dokumenteParagraph.setSpacingAfter(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-			dokumenteParagraph.add(PdfUtil.createList(dokumente));
+			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
 			document.add(dokumenteParagraph);
 			List<Element> seite2Paragraphs = Lists.newArrayList();
 			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(EINWILLIGUNG_STEUERDATEN_TITLE)));
@@ -124,12 +120,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	public PdfPTable createGesuchstellerTable() {
 		PdfPTable table = new PdfPTable(3);
 		// Init
-		table.setSpacingBefore(0);
-		table.setWidthPercentage(FULL_WIDTH);
-		table.setKeepTogether(true);
-		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		table.getDefaultCell().setPadding(0);
-		table.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		PdfUtil.setTableDefaultStyles(table);
 		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		// Row: Referenznummer
 		table.addCell(new Phrase(translate(REFERENZNUMMER), DEFAULT_FONT));
@@ -183,11 +174,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	@Nonnull
 	public PdfPTable createUnterschriftenTable() {
 		PdfPTable table = new PdfPTable(2);
-		table.setSpacingBefore(0);
-		table.setWidthPercentage(FULL_WIDTH);
-		table.setKeepTogether(true);
-		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		table.getDefaultCell().setPadding(0);
+		PdfUtil.setTableDefaultStyles(table);
 		table.getDefaultCell().setPaddingTop(4 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 
 		GesuchstellerContainer gesuchsteller1 = getGesuch().getGesuchsteller1();

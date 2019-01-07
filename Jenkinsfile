@@ -3,9 +3,9 @@
 pipeline {
 	// It is important to use agent none, so stages that do not need an agent are not hogging a heavyweight executor.
 	agent none
-//	triggers {
-//		pollSCM('H/5 * * * *')
-//	}
+	triggers {
+		pollSCM('H 22 * * *')
+	}
 	options {
 		// Only keep the most recent build
 		buildDiscarder(logRotator(numToKeepStr: "1"))
@@ -17,7 +17,7 @@ pipeline {
 		stage("Test") {
 			agent {
 				docker {
-					image "docker.dvbern.ch:5000/dvbern/build-environment:latest"
+					image "docker.dvbern.ch/build-environment/mvn-npm-gitflow-chromium:latest"
 					args "--privileged"
 				}
 			}

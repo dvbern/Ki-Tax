@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +41,9 @@ public final class Constants {
 	public static final int MAX_TIMEOUT_MINUTES = 360; // minutes
 	public static final int STATISTIK_TIMEOUT_MINUTES = 180; // minutes
 
+	public static final String LOG_MDC_EBEGUUSER = "ebeguuser";
+	public static final String LOG_MDC_AUTHUSERID = "ebeguauthuserid";
+
 	public static final Locale DEFAULT_LOCALE = new Locale("de", "CH");
 	public static final Locale DEUTSCH_LOCALE = DEFAULT_LOCALE;
 	public static final Locale FRENCH_LOCALE = new Locale("fr", "CH");
@@ -58,6 +62,9 @@ public final class Constants {
 
 	public static final String SQL_PATTERN_DATE = "yyyy-MM-dd";
 	public static final DateTimeFormatter SQL_DATE_FORMAT = DateTimeFormatter.ofPattern(SQL_PATTERN_DATE);
+
+	public static final String CURRENCY_PATTERN = "#,##0.00";
+	public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat(CURRENCY_PATTERN);
 
 	public static final String SERVER_MESSAGE_BUNDLE_NAME = "ch.dvbern.ebegu.i18n.server-messages";
 	public static final LocalDate END_OF_TIME = LocalDate.of(9999, 12, 31);

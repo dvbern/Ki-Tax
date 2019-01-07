@@ -17,87 +17,84 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 
-public class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
+public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 
-	private boolean zweiteMahnung;
+	private static final String MAHNUNG_TITLE = "PdfGeneration_Mahnung_Title";
+	private static final String ANREDE_FAMILIE = "PdfGeneration_AnredeFamilie";
+	private static final String MAHNUNG_DANK = "PdfGeneration_Mahnung_Dank";
 
-	public MahnungPdfGenerator(
-		@Nonnull Gesuch gesuch,
-		@Nonnull GemeindeStammdaten stammdaten,
-		final boolean draft,
-		final boolean zweiteMahnung) {
-		super(gesuch, stammdaten, draft);
-		this.zweiteMahnung = zweiteMahnung;
+	protected Mahnung mahnung;
+
+
+	protected MahnungPdfGenerator(
+		@Nonnull Mahnung mahnung,
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
+		super(mahnung.getGesuch(), stammdaten);
+		this.mahnung = mahnung;
 	}
 
 	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
-		final String title = "Gesuch für Simone Wälti\n" +
-			"2018/2019 Referenznummer: 18.000126.001\n" +
-			"Unvollständige Angaben/Unterlagen";
-		return title;
+		return ServerMessageUtil.getMessage(MAHNUNG_TITLE, gesuch.extractFullnamesString(), gesuch.getGesuchsperiode().getGesuchsperiodeString(), gesuch.getJahrFallAndGemeindenummer());
 	}
 
 	@Nonnull
 	@Override
 	protected CustomGenerator getCustomGenerator() {
-		final List<String> dokumente = Arrays.asList(
-			"Verfügung zu Betreuungsangebot 18.000123.001.1.1",
-			"Verfügung zu Betreuungsangebot 18.000123.001.1.2",
-			"Verfügung zu Betreuungsangebot 18.000123.001.2.1",
-			"Berechnung der finanziellen Situation");
-
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
-			document.add(PdfUtil.createParagraph("Sehr geehrte Familie"));
-			if (zweiteMahnung) {
-				document.add(PdfUtil.createParagraph("Sie haben von uns am 12.11.2018 eine Mahnung zur Vervollständigung Ihrer Anmeldung " +
-					"erhalten.\n" +
-					"Leider sind die eingereichten Angaben/Unterlagen immer noch nicht vollständig. Wir fordern Sie " +
-					"daher ein letztes Mal auf, Ihr Gesuch bis am unter Angabe Ihrer Referenznummer mit den " +
-					"nachfolgend aufgeführten Unterlagen zu ergänzen:"));
-			} else {
-				document.add(PdfUtil.createParagraph("Gerne bestätigen wir Ihnen, dass wir Ihr Gesuch für Simone Wälti (Weissenstein) und Simone " +
-					"Wälti (Brünnen) am 15.02.2016 erhalten haben.\n\n" +
-					"Leider sind die eingereichten Unterlagen gemäss einer ersten Vorprüfung unvollständig, daher " +
-					"können wir die gewünschte Berechnung nicht vornehmen. Wir bitten Sie, Ihr Gesuch mit den " +
-					"nachfolgend aufgeführten Unterlagen zu ergänzen:", 1));
-			}
-			document.add(PdfUtil.createList(dokumente));
+
+			document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ANREDE_FAMILIE)));
+			createSeite1(document);
+			document.add(PdfUtil.createListInParagraph(getFehlendeUnterlagen(), 1));
+
 			List<Element> seite2Paragraphs = Lists.newArrayList();
-			if (zweiteMahnung) {
-				seite2Paragraphs.add(PdfUtil.createParagraph("\nWenn Sie die geforderten Unterlagen nicht innerhalb der genannten Frist nachreichen, hat dies " +
-					"je nach Betreuungsangebot eine Nichteintretensverfügung oder die Anwendung des " +
-					"Maximaltarifs zur Folge.\n" +
-					"Bitte wenden Sie sich an uns, falls Sie Fragen haben oder falls es Probleme mit der " +
-					"Beschaffung der fehlenden Unterlagen gibt. Unsere Mitarbeitenden stehen Ihnen gerne " +
-					"während der Bürozeiten zur Verfügung (Telefonnummer 031 321 51 15 und per E-Mail " +
-					"kinderbetreuung@bern.ch)."));
-			} else {
-				seite2Paragraphs.add(PdfUtil.createParagraph("\nErst nach Eingang dieser zusätzlichen Unterlagen können wir Ihr Gesuch weiter bearbeiten. Wir " +
-					"bitten Sie, die oben aufgeführten Dokumente bis am unter Angabe Ihrer Referenznummer " +
-					"einzureichen.\n\n" +
-					"Wenn Sie Fragen haben oder Probleme beim Beschaffen der Unterlagen, stehen Ihnen unsere " +
-					"Mitarbeitenden gerne während der Bürozeiten zur Verfügung (Telefonnummer 031 321 51 15 " +
-					"und per E-Mail kinderbetreuung@bern.ch)."));
-			}
-			seite2Paragraphs.add(PdfUtil.createParagraph("Wir danken Ihnen für Ihre Mitwirkung.\n"));
-			seite2Paragraphs.add(PdfUtil.createParagraph("Freundliche Grüsse\n"));
-			seite2Paragraphs.add(PdfUtil.createParagraph("\nsig. Xaver Weibel\nSachbearbeitung", 0));
+			createSeite2(document, seite2Paragraphs);
+			seite2Paragraphs.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(MAHNUNG_DANK), 2));
+			seite2Paragraphs.add(createParagraphGruss());
+			seite2Paragraphs.add(createParagraphSignatur());
 			document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));
 		};
+	}
+
+	protected abstract void createSeite1(@Nonnull Document document);
+
+	protected abstract void createSeite2(@Nonnull Document document, @Nonnull List<Element> seite2Paragraphs);
+
+	@Nonnull
+	protected String getFristdatum() {
+		if (mahnung.getDatumFristablauf() != null) {
+			return Constants.DATE_FORMATTER.format(mahnung.getDatumFristablauf());
+		}
+		// Im Status ENTWURF ist noch kein Datum Fristablauf gesetzt
+		return "";
+	}
+
+	@Nonnull
+	private List<String> getFehlendeUnterlagen() {
+		List<String> fehlendeUnterlagen = new ArrayList<>();
+		if (mahnung.getBemerkungen() != null) {
+			String[] splitFehlendeUnterlagen = mahnung.getBemerkungen()
+				.split('[' + System.getProperty("line.separator") + "]+");
+			fehlendeUnterlagen.addAll(Arrays.asList(splitFehlendeUnterlagen));
+		}
+		return fehlendeUnterlagen;
 	}
 }

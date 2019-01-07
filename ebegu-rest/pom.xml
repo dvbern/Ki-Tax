@@ -40,7 +40,7 @@
                     <warSourceDirectory>src/main/webapp</warSourceDirectory>
                     <archive>
                         <manifestEntries>
-                            <Dependencies>org.infinispan export</Dependencies>
+                            <Dependencies>io.sentry optional, org.infinispan export</Dependencies>
                         </manifestEntries>
                     </archive>
                 </configuration>
