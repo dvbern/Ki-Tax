@@ -15,13 +15,12 @@
 
 package ch.dvbern.ebegu.validators;
 
-import java.util.ResourceBundle;
-
 import javax.annotation.Nullable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.util.ValidationMessageUtil;
 
 /**
  * Prueft, dass bei allen Gemeinde-abhaengigen Rollen mindestens eine Gemeinde gesetzt ist:
@@ -67,10 +66,9 @@ public class CheckBerechtigungGemeindeValidator implements ConstraintValidator<C
 
 	private void setConstraintViolationMessage(@Nullable ConstraintValidatorContext context, boolean isGemeindeAbhaengig) {
 		if (context != null) {
-			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
-			String message = rb.getString("invalid_berechtigung_gemeinde_rules"); //by default gemeinde not allowed
+			String message = ValidationMessageUtil.getMessage("invalid_berechtigung_gemeinde_rules"); //by default gemeinde not allowed
 			if (isGemeindeAbhaengig) {
-				message = rb.getString("invalid_berechtigung_keine_gemeinde_rules");
+				message = ValidationMessageUtil.getMessage("invalid_berechtigung_keine_gemeinde_rules");
 			}
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate(message)
