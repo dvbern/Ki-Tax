@@ -39,7 +39,8 @@
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller
+ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingereicht</bemerkungen>
         <betreuungspensum>50.00</betreuungspensum>
         <elternbeitrag>810.05</elternbeitrag>
         <famGroesse>3.0</famGroesse>
