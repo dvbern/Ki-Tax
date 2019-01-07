@@ -38,8 +38,6 @@ public class FinanzielleSituationTable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FinanzielleSituationTable.class);
 
-	private static final String ORIGINAL_VALUE = "PdfGeneration_OriginalValue";
-
 	private float[] columnWidths;
 	private int[] alignement;
 	private int numberOfTitleRows = 1;
@@ -98,9 +96,9 @@ public class FinanzielleSituationTable {
 
 	private void addRow(@Nonnull PdfPTable table, @Nonnull FinanzielleSituationRow row, @Nonnull Font font, @Nonnull Color bgColor) {
 		addCell(table, row.getLabel(), row.getSupertext(), null, font, bgColor, alignement[0]);
-		addCell(table, row.getGs1(), null, row.getGs1ValueOfGS(), font, bgColor, alignement[1]);
+		addCell(table, row.getGs1(), null, row.getGs1Urspruenglich(), font, bgColor, alignement[1]);
 		if (hasSecondGesuchsteller) {
-			addCell(table, row.getGs2(), null, row.getGs2ValueOfGS(), font, bgColor, alignement[2]);
+			addCell(table, row.getGs2(), null, row.getGs2Urspruenglich(), font, bgColor, alignement[2]);
 		}
 	}
 
@@ -114,7 +112,7 @@ public class FinanzielleSituationTable {
 			fontWithSize.setColor(Color.GRAY);
 			phrase.add(
 				new Chunk(
-					'\n' + ServerMessageUtil.getMessage(ORIGINAL_VALUE) + ' ' + originalValue,
+					originalValue,
 					fontWithSize
 				)
 			);

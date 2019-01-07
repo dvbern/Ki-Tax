@@ -17,12 +17,16 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+
 import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class FinanzielleSituationRow {
+
+	private static final String URSPRUENGLICH = "PdfGeneration_FinSit_Urspruenglich";
 
 	@Nonnull
 	private String label;
@@ -34,14 +38,13 @@ public class FinanzielleSituationRow {
 	private String gs1;
 
 	@Nonnull
-	// @ToDo: Dies ist nur zum Testen. Sollte mit dem richtigen Wert gesetzt werden.
-	private String gs1ValueOfGS = "1'000";
+	private String gs1Urspruenglich;
 
 	@Nullable
 	private String gs2;
 
 	@Nonnull
-	private String gs2ValueOfGS;
+	private String gs2Urspruenglich;
 
 
 	public FinanzielleSituationRow(@Nonnull String label, @Nonnull String gs1) {
@@ -65,13 +68,13 @@ public class FinanzielleSituationRow {
 	}
 
 	@Nullable
-	public String getGs2ValueOfGS() {
-		return gs2ValueOfGS;
+	public String getGs2Urspruenglich() {
+		return gs2Urspruenglich;
 	}
 
 	@Nonnull
-	public String getGs1ValueOfGS() {
-		return gs1ValueOfGS;
+	public String getGs1Urspruenglich() {
+		return gs1Urspruenglich;
 	}
 
 	@Nullable
@@ -98,5 +101,13 @@ public class FinanzielleSituationRow {
 
 	public void setGs2(@Nullable BigDecimal gs2) {
 		this.gs2 = PdfUtil.printBigDecimal(gs2);
+	}
+
+	public void setGs1Urspruenglich(@Nullable BigDecimal gs1Urspruenglich) {
+		this.gs1Urspruenglich = gs1Urspruenglich == null ? "" : "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + PdfUtil.printBigDecimal(gs1Urspruenglich);
+	}
+
+	public void setGs2Urspruenglich(@Nullable BigDecimal gs2Urspruenglich) {
+		this.gs2Urspruenglich = gs2Urspruenglich == null ? "" : "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + PdfUtil.printBigDecimal(gs2Urspruenglich);
 	}
 }
