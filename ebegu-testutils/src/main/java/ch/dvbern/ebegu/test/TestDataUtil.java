@@ -616,7 +616,7 @@ public final class TestDataUtil {
 			kind.setPensumFachstelle(createDefaultPensumFachstelle());
 		}
 		kind.setFamilienErgaenzendeBetreuung(true);
-		kind.setMutterspracheDeutsch(true);
+		kind.setSprichtAmtssprache(true);
 		kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		return kind;
 	}
