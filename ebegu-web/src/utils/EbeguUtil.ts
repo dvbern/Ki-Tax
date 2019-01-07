@@ -25,6 +25,7 @@ import TSBetreuung from '../models/TSBetreuung';
 import TSDossier from '../models/TSDossier';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
+import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
@@ -244,6 +245,23 @@ export default class EbeguUtil {
      */
     public static isFinanzielleSituationRequired(sozialhilfeBezueger: boolean, verguenstigungGewuenscht: boolean): boolean {
         return sozialhilfeBezueger === false && verguenstigungGewuenscht; // tslint:disable-line:no-boolean-literal-compare
+    }
+
+    public static getAmtsspracheAsString(
+        gemeindeStammdaten: TSGemeindeStammdaten,
+        translate: ITranslateService
+    ): string {
+
+        if (!gemeindeStammdaten || !translate) {
+            return '';
+        }
+        if  (gemeindeStammdaten.korrespondenzspracheDe && gemeindeStammdaten.korrespondenzspracheFr) {
+            return translate.instant('DEUTSCH_ODER_FRANZOESISCH');
+        }
+        if (gemeindeStammdaten.korrespondenzspracheFr) {
+            return translate.instant('FRANZOESISCH');
+        }
+        return translate.instant('DEUTSCH');
     }
 
     /**

@@ -29,17 +29,16 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSEinstellung from '../../../models/TSEinstellung';
 import {TSFachstelle} from '../../../models/TSFachstelle';
-import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSKind from '../../../models/TSKind';
 import TSKindContainer from '../../../models/TSKindContainer';
 import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
 import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IKindStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
-import GemeindeRS from '../../service/gemeindeRS.rest';
 import GesuchModelManager from '../../service/gesuchModelManager';
 import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
@@ -72,7 +71,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'EinstellungRS',
         'GlobalCacheService',
         'AuthServiceRS',
-        'GemeindeRS',
     ];
     public integrationTypes: Array<string>;
     public geschlechter: Array<string>;
@@ -87,8 +85,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public minValueAllowed: number = 0;
     public maxValueAllowed: number = 100;
 
-    public gemeindeStammdaten: TSGemeindeStammdaten;
-
     public constructor(
         $stateParams: IKindStateParams,
         gesuchModelManager: GesuchModelManager,
@@ -102,7 +98,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly einstellungRS: EinstellungRS,
         private readonly globalCacheService: GlobalCacheService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly gemeindeRS: GemeindeRS,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -132,24 +127,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
-        this.gemeindeRS.getGemeindeStammdaten(this.gesuchModelManager.getDossier().gemeinde.id)
-            .then(stammdaten => {
-            this.gemeindeStammdaten =  stammdaten;
-        });
     }
 
     public getTextSprichtAmtssprache(): string {
-        return this.$translate.instant('SPRICHT_AMTSSPRACHE', {amtssprache: this.getAmtsspracheAsString()});
-    }
-
-    private getAmtsspracheAsString(): string {
-        if  (this.gemeindeStammdaten.korrespondenzspracheDe && this.gemeindeStammdaten.korrespondenzspracheFr) {
-            return this.$translate.instant('DEUTSCH_ODER_FRANZOESISCH');
-        }
-        if (this.gemeindeStammdaten.korrespondenzspracheFr) {
-            return this.$translate.instant('FRANZOESISCH');
-        }
-        return this.$translate.instant('DEUTSCH');
+        return this.$translate.instant('SPRICHT_AMTSSPRACHE',
+            {
+                amtssprache: EbeguUtil
+                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
+            });
     }
 
     private initFachstelle(): void {
