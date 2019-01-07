@@ -169,14 +169,13 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_RECHTZEITIG, LocalDate.of(2017, Month.NOVEMBER, 16), 20000);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 2, 50000, 50000);
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 70000, 58600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 70000, 58600);
@@ -199,14 +198,13 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_RECHTZEITIG, LocalDate.of(2017, Month.NOVEMBER, 16), 0);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 2, 50000, 50000);
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 50000, 38600);
@@ -229,14 +227,13 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_ZU_SPAET, LocalDate.of(2017, Month.NOVEMBER, 16), 20000);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 2, 50000, 50000);
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 70000, 58600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 70000, 58600);
@@ -259,14 +256,13 @@ public class MassgebendesEinkommenFristenTest {
 		Betreuung mutationBetreuung = createMutationHeirat(EINREICHUNG_ZU_SPAET, LocalDate.of(2017, Month.NOVEMBER, 16), 0);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
-		Assert.assertEquals(13, result.size());
+		Assert.assertEquals(12, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 50000, 50000);
