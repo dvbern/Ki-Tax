@@ -105,13 +105,13 @@ public class FinanzielleSituationRow {
 
 	public void setGs1Urspruenglich(@Nullable BigDecimal gs1Urspruenglich) {
 		this.gs1Urspruenglich = gs1Urspruenglich == null
-			? ""
+			? "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + " -"
 			: "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + PdfUtil.printBigDecimal(gs1Urspruenglich);
 	}
 
 	public void setGs2Urspruenglich(@Nullable BigDecimal gs2Urspruenglich) {
 		this.gs2Urspruenglich = gs2Urspruenglich == null
-			? ""
+			? "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + " -"
 			: "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + PdfUtil.printBigDecimal(gs2Urspruenglich);
 	}
 }
