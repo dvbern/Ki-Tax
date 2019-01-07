@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 public class FinanzielleSituationRow {
 
 	private static final String URSPRUENGLICH = "PdfGeneration_FinSit_Urspruenglich";
+	public static final String LINE_FEED_SPACE = "\n ";
 
 	@Nonnull
 	private String label;
@@ -105,13 +106,13 @@ public class FinanzielleSituationRow {
 
 	public void setGs1Urspruenglich(@Nullable BigDecimal gs1Urspruenglich) {
 		this.gs1Urspruenglich = gs1Urspruenglich == null
-			? "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + " -"
-			: "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + PdfUtil.printBigDecimal(gs1Urspruenglich);
+			? LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH) + " -"
+			: LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH) + PdfUtil.printBigDecimal(gs1Urspruenglich);
 	}
 
 	public void setGs2Urspruenglich(@Nullable BigDecimal gs2Urspruenglich) {
 		this.gs2Urspruenglich = gs2Urspruenglich == null
-			? "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + " -"
-			: "\n " + ServerMessageUtil.getMessage(URSPRUENGLICH) + PdfUtil.printBigDecimal(gs2Urspruenglich);
+			? LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH) + " -"
+			: LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH) + PdfUtil.printBigDecimal(gs2Urspruenglich);
 	}
 }
