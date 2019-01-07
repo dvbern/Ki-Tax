@@ -29,7 +29,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungInfoService;
 import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -69,7 +68,6 @@ public class FamiliensituationServiceTest extends AbstractEbeguLoginTest {
 		FamiliensituationContainer nextFamsit = allFamiliensituation.iterator().next();
 		Assert.assertNotNull(nextFamsit.getFamiliensituationJA());
 		Assert.assertEquals(EnumFamilienstatus.ALLEINERZIEHEND, nextFamsit.getFamiliensituationJA().getFamilienstatus());
-		Assert.assertEquals(EnumGesuchstellerKardinalitaet.ALLEINE, nextFamsit.getFamiliensituationJA().getGesuchstellerKardinalitaet());
 	}
 
 	@Test
@@ -112,7 +110,6 @@ public class FamiliensituationServiceTest extends AbstractEbeguLoginTest {
 		Optional<FamiliensituationContainer> familiensituation = createFamiliensituationContainer();
 		final FamiliensituationContainer newFamiliensituation = familiensituation.get().copyFamiliensituationContainer(new FamiliensituationContainer(),
 			AntragCopyType.MUTATION, false);
-		newFamiliensituation.extractFamiliensituation().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		newFamiliensituation.extractFamiliensituation().setGemeinsameSteuererklaerung(null);
 
 		final FamiliensituationContainer persistedFamiliensituation = familiensituationService.saveFamiliensituation(gesuch,
