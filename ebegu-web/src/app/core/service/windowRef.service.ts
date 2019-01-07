@@ -15,17 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Injectable } from '@angular/core';
-import {CoreModule} from '../core.module';
+import {Injectable} from '@angular/core';
 
 export function getWindowObject(): Window {
     // return the global native browser window object
     return window;
 }
 
-@Injectable({
-    providedIn: CoreModule,
-})
+@Injectable()
 export class WindowRef {
 
     public get nativeWindow(): Window {

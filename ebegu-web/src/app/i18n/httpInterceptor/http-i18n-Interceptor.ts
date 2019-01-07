@@ -15,27 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+import {IHttpInterceptor, IRequestConfig} from 'angular';
+import {HEADER_ACCEPT_LANGUAGE} from '../../core/constants/CONSTANTS';
+import {I18nServiceRSRest} from '../services/i18nServiceRS.rest';
 
-import java.util.Locale;
+export class HttpI18nInterceptor implements IHttpInterceptor {
 
-import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
+    public static $inject = ['I18nServiceRSRest'];
 
-import ch.dvbern.ebegu.util.ServerMessageUtil;
+    public constructor(
+        private readonly i18nService: I18nServiceRSRest,
+    ) {
+    }
 
-/**
- * Service for internationalization of the server
- */
-@Stateless
-@Local(I18nService.class)
-@PermitAll
-public class I18nServiceBean implements I18nService {
+    public request = (config: IRequestConfig) => {
+        config.headers[HEADER_ACCEPT_LANGUAGE] = config.headers[HEADER_ACCEPT_LANGUAGE] ?
+            `${this.i18nService.currentLanguage()}, ${config.headers[HEADER_ACCEPT_LANGUAGE]}`
+            : this.i18nService.currentLanguage();
 
-	@Override
-	public void changeLanguage(@Nonnull Locale locale) {
-		ServerMessageUtil.setLocale(locale);
-	}
+        return config;
+    }
 }

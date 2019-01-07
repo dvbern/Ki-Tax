@@ -34,7 +34,7 @@ describe('BenutzerRolleComponent', () => {
     beforeEach(async(() => {
         authServiceSpy.getVisibleRolesForPrincipal.and.returnValue([]);
         const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
         TestBed.configureTestingModule({
             imports: [

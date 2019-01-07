@@ -44,7 +44,8 @@ describe('AddGemeindeComponent', () => {
         ['getAllGesuchsperioden']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
-    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
 
