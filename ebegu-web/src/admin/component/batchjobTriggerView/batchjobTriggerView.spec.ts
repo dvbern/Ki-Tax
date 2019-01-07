@@ -32,7 +32,7 @@ describe('batchjobTriggerView', () => {
         const databaseMigrationRSSpy = jasmine.createSpyObj('DatabaseMigrationRS', ['processScript']);
         const dailyBatchRSSpy = jasmine.createSpyObj('DailyBatchRS', ['runBatchMahnungFristablauf']);
         const i18nServiceSpy = jasmine
-            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
         TestBed.configureTestingModule({
             imports: [

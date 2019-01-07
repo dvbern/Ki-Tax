@@ -17,7 +17,23 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
@@ -30,12 +46,6 @@ import com.lowagie.text.Element;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -76,7 +86,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private static final String EKV_DATUM = "PdfGeneration_FinSit_Ekv_Datum";
 	private static final String EKV_GRUND = "PdfGeneration_FinSit_Ekv_Grund";
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
-
 
 	private final Verfuegung verfuegungFuerMassgEinkommen;
 
@@ -123,80 +132,107 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		return familiensituation != null && familiensituation.hasSecondGesuchsteller();
 	}
 
-	private void createPageBasisJahr(@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator, @Nonnull Document document) {
+	private void createPageBasisJahr(
+		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
+		@Nonnull Document document
+	) {
 		createFusszeile(generator.getDirectContent());
 		requireNonNull(gesuch.getGesuchsteller1());
 		requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		AbstractFinanzielleSituation basisJahrGS1 = gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+		AbstractFinanzielleSituation basisJahrGS1 =
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+		AbstractFinanzielleSituation basisJahrGS1Urspruenglich =
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationGS();
 
 		AbstractFinanzielleSituation basisJahrGS2 = null;
+		AbstractFinanzielleSituation basisJahrGS2Urspruenglich = null;
 		if (hasSecondGesuchsteller()) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 			basisJahrGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+			basisJahrGS2Urspruenglich =
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationGS();
 		}
 
 		document.add(createIntroBasisjahr());
-		addTablesToDocument(document, basisJahrGS1, basisJahrGS2);
+		addTablesToDocument(document, basisJahrGS1, basisJahrGS2, basisJahrGS1Urspruenglich, basisJahrGS2Urspruenglich);
 	}
 
 	private void addTablesToDocument(
 		@Nonnull Document document,
 		AbstractFinanzielleSituation basisJahrGS1,
-		@Nullable AbstractFinanzielleSituation basisJahrGS2
+		@Nullable AbstractFinanzielleSituation basisJahrGS2,
+		@Nullable AbstractFinanzielleSituation basisJahrGS1Urspruenglich,
+		@Nullable AbstractFinanzielleSituation basisJahrGS2Urspruenglich
 	) {
-		document.add(createTableEinkommen(basisJahrGS1, basisJahrGS2));
-		document.add(createTableVermoegen(basisJahrGS1, basisJahrGS2));
-		document.add(createTableAbzuege(basisJahrGS1, basisJahrGS2));
+		document.add(createTableEinkommen(basisJahrGS1, basisJahrGS2, basisJahrGS1Urspruenglich, basisJahrGS2Urspruenglich));
+		document.add(createTableVermoegen(basisJahrGS1, basisJahrGS2, basisJahrGS1Urspruenglich, basisJahrGS2Urspruenglich));
+		document.add(createTableAbzuege(basisJahrGS1, basisJahrGS2, basisJahrGS1Urspruenglich, basisJahrGS2Urspruenglich));
 		document.add(createTableZusammenzug(basisJahrGS1, basisJahrGS2));
 	}
 
-	private void createPageEkv1(@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator, @Nonnull Document document, @Nonnull EinkommensverschlechterungInfo ekvInfo) {
+	private void createPageEkv1(
+		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
+		@Nonnull Document document,
+		@Nonnull EinkommensverschlechterungInfo ekvInfo
+	) {
 		requireNonNull(gesuch.getGesuchsteller1());
 		EinkommensverschlechterungContainer ekvContainerGS1 = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
 		requireNonNull(ekvContainerGS1);
 
-
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
-		document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus1()), 2));
+		document.add(PdfUtil.createBoldParagraph(
+			ServerMessageUtil.getMessage(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus1()),
+			2)
+		);
 		document.add(createIntroEkv1(ekvInfo));
 
-		Einkommensverschlechterung ekv1GS1 = null;
-		ekv1GS1 = ekvContainerGS1.getEkvJABasisJahrPlus1();
+		Einkommensverschlechterung ekv1GS1 = ekvContainerGS1.getEkvJABasisJahrPlus1();
+		Einkommensverschlechterung ekv1GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus1();
 
 		Einkommensverschlechterung ekv1GS2 = null;
+		Einkommensverschlechterung ekv1GS2Urspruenglich = null;
 		if (hasSecondGesuchsteller()) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
 			ekv1GS2 = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
+			ekv1GS2Urspruenglich = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvGSBasisJahrPlus1();
 		}
 
-		addTablesToDocument(document, ekv1GS1, ekv1GS2);
+		addTablesToDocument(document, ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich);
 	}
 
-	private void createPageEkv2(@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator, @Nonnull Document document, @Nonnull EinkommensverschlechterungInfo ekvInfo) {
+	private void createPageEkv2(
+		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
+		@Nonnull Document document,
+		@Nonnull EinkommensverschlechterungInfo ekvInfo
+	) {
 		requireNonNull(gesuch.getGesuchsteller1());
 		EinkommensverschlechterungContainer ekvContainerGS1 = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
 		requireNonNull(ekvContainerGS1);
 
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
-		document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus2()), 2));
+		document.add(PdfUtil.createBoldParagraph(
+			ServerMessageUtil.getMessage(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus2()),
+			2)
+		);
 		document.add(createIntroEkv2(ekvInfo));
 
-		Einkommensverschlechterung ekv2GS1 = null;
-
-		ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
+		Einkommensverschlechterung ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
+		Einkommensverschlechterung ekv2GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus2();
 
 		Einkommensverschlechterung ekv2GS2 = null;
+		Einkommensverschlechterung ekv2GS2Urspruenglich = null;
 		if (hasSecondGesuchsteller()) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
 			ekv2GS2 = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2();
+			ekv2GS2Urspruenglich = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvGSBasisJahrPlus2();
 		}
 
-		addTablesToDocument(document, ekv2GS1, ekv2GS2);
+		addTablesToDocument(document, ekv2GS1, ekv2GS2, ekv2GS1Urspruenglich, ekv2GS2Urspruenglich);
 	}
 
 	private void createPageMassgebendesEinkommen(@Nonnull Document document) {
@@ -208,7 +244,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(MASSG_EINK_VOR_ABZUG),
 			ServerMessageUtil.getMessage(FAM_GROESSE),
 			ServerMessageUtil.getMessage(ABZUG_FAM_GROESSE),
-			ServerMessageUtil.getMessage(MASSG_EINK)};
+			ServerMessageUtil.getMessage(MASSG_EINK) };
 		values.add(titles);
 		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
 			String[] data = {
@@ -216,14 +252,22 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
 				String.valueOf(abschnitt.getEinkommensjahr()),
 				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommenVorAbzFamgr()),
-				String.valueOf(abschnitt.getFamGroesse()),
+				PdfUtil.printBigDecimalOneNachkomma(abschnitt.getFamGroesse()),
 				PdfUtil.printBigDecimal(abschnitt.getAbzugFamGroesse()),
 				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommen())
 			};
 			values.add(data);
 		}
-		final float[] widthMassgebendesEinkommen = {5,5,6,10,5,10,10};
-		final int[] alignmentMassgebendesEinkommen = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT,Element.ALIGN_RIGHT};
+		final float[] widthMassgebendesEinkommen = { 5, 5, 6, 10, 5, 10, 10 };
+		final int[] alignmentMassgebendesEinkommen = {
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT,
+			Element.ALIGN_RIGHT
+		};
 		document.setPageSize(PageSize.A4.rotate());
 		document.newPage();
 		document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(MASSG_EINK_TITLE), 2));
@@ -268,23 +312,31 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	@Nonnull
 	private PdfPTable createTableEinkommen(
 		@Nonnull AbstractFinanzielleSituation gs1,
-		@Nullable AbstractFinanzielleSituation gs2
+		@Nullable AbstractFinanzielleSituation gs2,
+		@Nullable AbstractFinanzielleSituation gs1Urspruenglich,
+		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalEinkommenBeiderGS = FinanzielleSituationRechner.calcTotalEinkommen(gs1, gs2);
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(EIKOMMEN_TITLE), gesuch.getGesuchsteller1().extractFullName());
-		FinanzielleSituationRow nettolohn = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(NETTOLOHN), gs1.getNettolohn());
-		FinanzielleSituationRow familienzulagen = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(FAMILIENZULAGEN), gs1.getFamilienzulage());
-		FinanzielleSituationRow ersatzeinkommen = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(ERSATZEINKOMMEN), gs1.getErsatzeinkommen());
-		FinanzielleSituationRow unterhaltsbeitraege = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(ERH_UNTERHALTSBEITRAEGE), gs1.getErhalteneAlimente());
-		FinanzielleSituationRow geschaftsgewinn = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(GESCHAEFTSGEWINN), gs1.getGeschaeftsgewinnBasisjahr());
+
+		FinanzielleSituationRow nettolohn = createRow(ServerMessageUtil.getMessage(NETTOLOHN),
+			AbstractFinanzielleSituation::getNettolohn, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+
+		FinanzielleSituationRow familienzulagen = createRow(ServerMessageUtil.getMessage(FAMILIENZULAGEN),
+			AbstractFinanzielleSituation::getFamilienzulage, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+
+		FinanzielleSituationRow ersatzeinkommen = createRow(ServerMessageUtil.getMessage(ERSATZEINKOMMEN),
+			AbstractFinanzielleSituation::getErsatzeinkommen, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+
+		FinanzielleSituationRow unterhaltsbeitraege = createRow(ServerMessageUtil.getMessage(ERH_UNTERHALTSBEITRAEGE),
+			AbstractFinanzielleSituation::getErhalteneAlimente, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+
+		FinanzielleSituationRow geschaftsgewinn = createRow(ServerMessageUtil.getMessage(GESCHAEFTSGEWINN),
+			AbstractFinanzielleSituation::getGeschaeftsgewinnBasisjahr, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+
 		geschaftsgewinn.setSupertext("1");
 		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(EINKOMMEN_ZWISCHENTOTAL), gs1.getZwischentotalEinkommen());
@@ -293,13 +345,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
-
 			einkommenTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
-			nettolohn.setGs2(gs2.getNettolohn());
-			familienzulagen.setGs2(gs2.getFamilienzulage());
-			ersatzeinkommen.setGs2(gs2.getErsatzeinkommen());
-			unterhaltsbeitraege.setGs2(gs2.getErhalteneAlimente());
-			geschaftsgewinn.setGs2(gs2.getGeschaeftsgewinnBasisjahr());
 			zwischentotal.setGs2(gs2.getZwischentotalEinkommen());
 			// Total wird bei 2 GS beim 2. GS eingetragen
 			total.setGs2(totalEinkommenBeiderGS);
@@ -307,7 +353,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			// Total wird bei 1 GS beim 1. GS eingetragen
 			total.setGs1(totalEinkommenBeiderGS);
 		}
-
 		FinanzielleSituationTable tableEinkommen = new FinanzielleSituationTable(hasSecondGesuchsteller());
 		tableEinkommen.addRow(einkommenTitle);
 		tableEinkommen.addRow(nettolohn);
@@ -320,10 +365,35 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		return tableEinkommen.createTable();
 	}
 
+	private FinanzielleSituationRow createRow(
+		String message,
+		Function<AbstractFinanzielleSituation, BigDecimal> getter,
+		@Nullable AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2,
+		@Nullable AbstractFinanzielleSituation gs1Urspruenglich,
+		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
+	) {
+		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
+		BigDecimal gs2BigDecimal = gs2 == null ? null : getter.apply(gs2);
+		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
+		BigDecimal gs2UrspruenglichBigDecimal = gs2Urspruenglich == null ? null : getter.apply(gs2Urspruenglich);
+		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
+		row.setGs2(gs2BigDecimal);
+		if (!MathUtil.isSame(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
+			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal);
+		}
+		if (!MathUtil.isSame(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
+			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal);
+		}
+		return row;
+	}
+
 	@Nonnull
 	private PdfPTable createTableVermoegen(
 		@Nonnull AbstractFinanzielleSituation gs1,
-		@Nullable AbstractFinanzielleSituation gs2
+		@Nullable AbstractFinanzielleSituation gs2,
+		@Nullable AbstractFinanzielleSituation gs1Urspruenglich,
+		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalVermoegenBeiderGS = FinanzielleSituationRechner.calcTotalVermoegen(gs1, gs2);
@@ -331,24 +401,27 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 		FinanzielleSituationRow vermoegenTitle = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(NETTOVERMOEGEN), gesuch.getGesuchsteller1().extractFullName());
-		FinanzielleSituationRow bruttovermoegen = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(BRUTTOVERMOEGEN), gs1.getBruttovermoegen());
-		FinanzielleSituationRow schulden = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(SCHULDEN), gs1.getSchulden());
+
+		FinanzielleSituationRow bruttovermoegen = createRow(ServerMessageUtil.getMessage(BRUTTOVERMOEGEN),
+			AbstractFinanzielleSituation::getBruttovermoegen, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+
+		FinanzielleSituationRow schulden = createRow(ServerMessageUtil.getMessage(SCHULDEN),
+			AbstractFinanzielleSituation::getSchulden, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+
 		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(NETTOVERMOEGEN_ZWISCHENTOTAL), gs1.getZwischentotalVermoegen());
+
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(NETTOVERMOEGEN_TOTAL), "");
 		total.setSupertext("2");
-		FinanzielleSituationRow 			vermoegen5Percent = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(NETTOVERMOEGEN_5_PROZENT),"");
+
+		FinanzielleSituationRow vermoegen5Percent = new FinanzielleSituationRow(
+			ServerMessageUtil.getMessage(NETTOVERMOEGEN_5_PROZENT), "");
 
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
 
 			vermoegenTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
-			bruttovermoegen.setGs2(gs2.getBruttovermoegen());
-			schulden.setGs2(gs2.getSchulden());
 			zwischentotal.setGs2(gs2.getZwischentotalVermoegen());
 			// Total wird bei 2 GS beim 2. GS eingetragen
 			total.setGs2(totalVermoegenBeiderGS);
@@ -358,6 +431,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			total.setGs1(totalVermoegenBeiderGS);
 			vermoegen5Percent.setGs1(vermoegen5Prozent);
 		}
+
 		FinanzielleSituationTable table = new FinanzielleSituationTable(hasSecondGesuchsteller());
 		table.addRow(vermoegenTitle);
 		table.addRow(bruttovermoegen);
@@ -371,22 +445,25 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	@Nonnull
 	private PdfPTable createTableAbzuege(
 		@Nonnull AbstractFinanzielleSituation gs1,
-		@Nullable AbstractFinanzielleSituation gs2
+		@Nullable AbstractFinanzielleSituation gs2,
+		@Nullable AbstractFinanzielleSituation gs1Urspruenglich,
+		@Nullable AbstractFinanzielleSituation gs2Urspruenglich
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
 		BigDecimal totalAbzuegeBeiderGS = FinanzielleSituationRechner.calcTotalAbzuege(gs1, gs2);
 
 		FinanzielleSituationRow abzuegeTitle = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(ABZUEGE), gesuch.getGesuchsteller1().extractFullName());
-		FinanzielleSituationRow unterhaltsbeitraege = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(UNTERHALTSBEITRAEGE_BEZAHLT), gs1.getGeleisteteAlimente());
+
+		FinanzielleSituationRow unterhaltsbeitraege = createRow(ServerMessageUtil.getMessage(UNTERHALTSBEITRAEGE_BEZAHLT),
+			AbstractFinanzielleSituation::getGeleisteteAlimente, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(ABZUEGE_TOTAL), "");
 
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			abzuegeTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
-			unterhaltsbeitraege.setGs2(gs2.getGeleisteteAlimente());
 			total.setGs1(MathUtil.DEFAULT.add(gs1.getZwischetotalAbzuege(), gs2.getZwischetotalAbzuege()));
 			// Total wird bei 2 GS beim 2. GS eingetragen
 			total.setGs2(totalAbzuegeBeiderGS);
@@ -436,6 +513,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	private void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
-		createFusszeile(dirPdfContentByte, Lists.newArrayList(ServerMessageUtil.getMessage(FUSSZEILE_1), ServerMessageUtil.getMessage(FUSSZEILE_2)));
+		createFusszeile(dirPdfContentByte, Lists.newArrayList(ServerMessageUtil.getMessage(FUSSZEILE_1),
+			ServerMessageUtil.getMessage(FUSSZEILE_2)));
 	}
 }

@@ -16,7 +16,7 @@
 import * as angular from 'angular';
 import {environment} from '../../environments/environment';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
-import {getPreferredLanguage} from '../i18n/services/i18nServiceRS.rest';
+import {extractPreferredLanguage} from '../i18n/services/i18nServiceRS.rest';
 import {getWindowObject} from './service/windowRef.service';
 import IInjectorService = angular.auto.IInjectorService;
 import IHttpProvider = angular.IHttpProvider;
@@ -55,7 +55,7 @@ export function configure(
     // https://github.com/angular-translate/angular-translate/issues/1101
     $translateProvider.useSanitizeValueStrategy('escapeParameters');
 
-    const preferredLanguage = getPreferredLanguage(getWindowObject());
+    const preferredLanguage = extractPreferredLanguage(getWindowObject());
 
     $translateProvider
         .translations(TSBrowserLanguage.DE, translPropDE)
@@ -85,6 +85,7 @@ export function configure(
     $httpProvider.interceptors.push('HttpAuthInterceptor');
     $httpProvider.interceptors.push('HttpResponseInterceptor');
     $httpProvider.interceptors.push('HttpVersionInterceptor');
+    $httpProvider.interceptors.push('HttpI18nInterceptor');
 
     $locationProvider.hashPrefix('');
 

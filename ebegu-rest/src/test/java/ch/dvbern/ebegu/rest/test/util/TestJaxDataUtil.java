@@ -252,7 +252,7 @@ public final class TestJaxDataUtil {
 		jaxKind.setGeburtsdatum(LocalDate.now().minusYears(18));
 		jaxKind.setGeschlecht(Geschlecht.WEIBLICH);
 		jaxKind.setPensumFachstelle(createTestJaxPensumFachstelle());
-		jaxKind.setMutterspracheDeutsch(false);
+		jaxKind.setSprichtAmtssprache(false);
 		jaxKind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		jaxKind.setFamilienErgaenzendeBetreuung(true);
 		jaxKind.setKinderabzug(Kinderabzug.GANZER_ABZUG);

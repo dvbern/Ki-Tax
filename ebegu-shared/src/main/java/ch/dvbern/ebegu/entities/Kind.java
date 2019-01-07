@@ -61,7 +61,7 @@ public class Kind extends AbstractPersonEntity {
 
 	@Column(nullable = true)
 	@Nullable
-	private Boolean mutterspracheDeutsch;
+	private Boolean sprichtAmtssprache;
 
 	@Column(nullable = true)
 	@Nullable
@@ -101,12 +101,12 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	@Nullable
-	public Boolean getMutterspracheDeutsch() {
-		return mutterspracheDeutsch;
+	public Boolean getSprichtAmtssprache() {
+		return sprichtAmtssprache;
 	}
 
-	public void setMutterspracheDeutsch(@Nullable Boolean mutterspracheDeutsch) {
-		this.mutterspracheDeutsch = mutterspracheDeutsch;
+	public void setSprichtAmtssprache(@Nullable Boolean sprichtAmtssprache) {
+		this.sprichtAmtssprache = sprichtAmtssprache;
 	}
 
 	@Nullable
@@ -146,7 +146,7 @@ public class Kind extends AbstractPersonEntity {
 		super.copyAbstractPersonEntity(target, copyType);
 		target.setKinderabzug(this.getKinderabzug());
 		target.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
-		target.setMutterspracheDeutsch(this.getMutterspracheDeutsch());
+		target.setSprichtAmtssprache(this.getSprichtAmtssprache());
 
 		switch (copyType) {
 		case MUTATION:
@@ -226,8 +226,8 @@ public class Kind extends AbstractPersonEntity {
 		final Kind otherKind = (Kind) other;
 		return getKinderabzug() == otherKind.getKinderabzug() &&
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
-			Objects.equals(getMutterspracheDeutsch(), otherKind.getMutterspracheDeutsch()) &&
-			Objects.equals(getEinschulungTyp(), otherKind.getEinschulungTyp()) &&
+			Objects.equals(getSprichtAmtssprache(), otherKind.getSprichtAmtssprache()) &&
+			getEinschulungTyp() == otherKind.getEinschulungTyp() &&
 			EbeguUtil.isSameObject(getPensumFachstelle(), otherKind.getPensumFachstelle()) &&
 			EbeguUtil.isSameObject(getPensumAusserordentlicherAnspruch(),
 				otherKind.getPensumAusserordentlicherAnspruch());

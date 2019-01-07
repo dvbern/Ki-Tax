@@ -269,6 +269,16 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			}
 			finanzielleSituationService.calculateFinanzDaten(gesuch);
 
+			// Die Betreuungen mit ihren Vorgängern initialisieren, damit der MutationsMerger funktioniert!
+			gesuch.getKindContainers()
+				.stream()
+				.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+				.forEach(betreuung -> {
+						Optional<Verfuegung> vorgaengerVerfuegung = verfuegungService.findVorgaengerVerfuegung(betreuung);
+						betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
+					}
+				);
+
 			final BetreuungsgutscheinEvaluator evaluator = initEvaluator(gesuch);
 			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch);
 			boolean writeProtectPDF = forceCreation;

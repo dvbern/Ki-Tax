@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.validators;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -36,6 +35,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.util.BetreuungUtil;
+import ch.dvbern.ebegu.util.ValidationMessageUtil;
 
 /**
  * Validator for Betreuungspensen, checks that the entered betreuungspensum is bigger than the minimum
@@ -119,8 +119,7 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 		ConstraintValidatorContext context
 	) {
 		if (betreuungspensum != null && betreuungspensum.getPensum().compareTo(pensumMin) < 0) {
-			ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
-			String message = rb.getString("invalid_betreuungspensum");
+			String message = ValidationMessageUtil.getMessage("invalid_betreuungspensum");
 			message = MessageFormat.format(message, betreuungspensum.getPensum(), pensumMin);
 
 			context.disableDefaultConstraintViolation();

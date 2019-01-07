@@ -41,7 +41,8 @@ describe('BerechtigungComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
         ['isRole', 'getVisibleRolesForPrincipal', 'principal$']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
-    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     const inputSelector = '.dv-input-container-medium';
 

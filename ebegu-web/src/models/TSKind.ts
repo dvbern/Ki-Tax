@@ -25,7 +25,7 @@ export default class TSKind extends TSAbstractPersonEntity {
 
     private _kinderabzug: TSKinderabzug;
     private _familienErgaenzendeBetreuung: boolean;
-    private _mutterspracheDeutsch: boolean;
+    private _sprichtAmtssprache: boolean;
     private _einschulungTyp: TSEinschulungTyp;
     private _pensumFachstelle: TSPensumFachstelle;
     private _pensumAusserordentlicherAnspruch: TSPensumAusserordentlicherAnspruch;
@@ -37,7 +37,7 @@ export default class TSKind extends TSAbstractPersonEntity {
         geschlecht?: TSGeschlecht,
         kinderabzug?: TSKinderabzug,
         familienErgaenzendeBetreuung?: boolean,
-        mutterspracheDeutsch?: boolean,
+        sprichtAmtssprache?: boolean,
         pensumFachstelle?: TSPensumFachstelle,
         pensumAusserordentlicherAnspruch?: TSPensumAusserordentlicherAnspruch,
         einschulungTyp?: TSEinschulungTyp,
@@ -46,7 +46,7 @@ export default class TSKind extends TSAbstractPersonEntity {
         super(vorname, nachname, geburtsdatum, geschlecht);
         this._kinderabzug = kinderabzug;
         this._familienErgaenzendeBetreuung = familienErgaenzendeBetreuung;
-        this._mutterspracheDeutsch = mutterspracheDeutsch;
+        this._sprichtAmtssprache = sprichtAmtssprache;
         this._einschulungTyp = einschulungTyp;
         this._pensumFachstelle = pensumFachstelle;
         this._pensumAusserordentlicherAnspruch = pensumAusserordentlicherAnspruch;
@@ -68,12 +68,12 @@ export default class TSKind extends TSAbstractPersonEntity {
         this._familienErgaenzendeBetreuung = value;
     }
 
-    public get mutterspracheDeutsch(): boolean {
-        return this._mutterspracheDeutsch;
+    public get sprichtAmtssprache(): boolean {
+        return this._sprichtAmtssprache;
     }
 
-    public set mutterspracheDeutsch(value: boolean) {
-        this._mutterspracheDeutsch = value;
+    public set sprichtAmtssprache(value: boolean) {
+        this._sprichtAmtssprache = value;
     }
 
     public get pensumFachstelle(): TSPensumFachstelle {

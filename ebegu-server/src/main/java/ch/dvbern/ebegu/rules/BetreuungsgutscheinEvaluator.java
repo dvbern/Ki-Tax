@@ -92,6 +92,12 @@ public class BetreuungsgutscheinEvaluator {
 			}
 			// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
 			zeitabschnitte = MonatsRule.execute(zeitabschnitte);
+
+			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
+			zeitabschnitte = MutationsMerger.execute(firstBetreuungOfGesuch, zeitabschnitte);
+
+			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
+			zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
 		} else {
 			LOG.warn("Keine Betreuung vorhanden kann Familiengroesse und Abzuege nicht berechnen");
 		}
