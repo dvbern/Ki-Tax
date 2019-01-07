@@ -17,7 +17,22 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
@@ -30,12 +45,6 @@ import com.lowagie.text.Element;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -216,7 +225,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
 				String.valueOf(abschnitt.getEinkommensjahr()),
 				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommenVorAbzFamgr()),
-				String.valueOf(abschnitt.getFamGroesse()),
+				PdfUtil.printBigDecimalOneNachkomma(abschnitt.getFamGroesse()),
 				PdfUtil.printBigDecimal(abschnitt.getAbzugFamGroesse()),
 				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommen())
 			};

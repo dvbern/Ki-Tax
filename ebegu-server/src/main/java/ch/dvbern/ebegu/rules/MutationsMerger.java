@@ -96,8 +96,9 @@ public final class MutationsMerger {
 		// Massgebendes Einkommen
 		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
 
-		if (vorangehenderAbschnitt != null && massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
-			// Massgebendes Einkommen wird kleiner
+		if (vorangehenderAbschnitt != null
+			&& massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
+			// Massgebendes Einkommen wird kleiner, der Anspruch also höher: Darf nicht rückwirkend sein!
 			if (zeitabschnitt.getGueltigkeit().getGueltigAb().isBefore(mutationsEingansdatum)) {
 				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
 				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
