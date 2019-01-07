@@ -34,6 +34,7 @@ import TSKindContainer from '../../../models/TSKindContainer';
 import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
 import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {EnumEx} from '../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IKindStateParams} from '../../gesuch.route';
@@ -126,6 +127,14 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
+    }
+
+    public getTextSprichtAmtssprache(): string {
+        return this.$translate.instant('SPRICHT_AMTSSPRACHE',
+            {
+                amtssprache: EbeguUtil
+                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
+            });
     }
 
     private initFachstelle(): void {

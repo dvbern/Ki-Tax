@@ -98,7 +98,7 @@
                             <label translate for="traegerschaft_id">TRAEGERSCHAFT</label>
                             <mat-select [(ngModel)]="institution.traegerschaft" id="traegerschaft_id"
                                         name="traegerschaft_id" class="form-control">
-                                <mat-option value=""></mat-option>
+                                <mat-option value="">{{'KEINE' | translate}}</mat-option>
                                 <mat-option *ngFor="let tr of traegerschaften" [value]="tr">
                                     {{tr.name}}
                                 </mat-option>

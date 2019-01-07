@@ -1128,9 +1128,8 @@ public class JaxBConverter extends AbstractConverter {
 		// Finanzielle Situation
 		if (jaxGesuchstellerCont.getFinanzielleSituationContainer() != null) {
 			gesuchstellerCont.setFinanzielleSituationContainer(finanzielleSituationContainerToStorableEntity(
-				jaxGesuchstellerCont
-					.getFinanzielleSituationContainer(),
-				null));
+				jaxGesuchstellerCont.getFinanzielleSituationContainer(),
+				gesuchstellerCont.getFinanzielleSituationContainer()));
 		}
 		//Erwerbspensum
 		requireNonNull(jaxGesuchstellerCont.getErwerbspensenContainers())
@@ -1591,7 +1590,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPersonFieldsToJAX(persistedKind, jaxKind);
 		jaxKind.setKinderabzug(persistedKind.getKinderabzug());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
-		jaxKind.setMutterspracheDeutsch(persistedKind.getMutterspracheDeutsch());
+		jaxKind.setSprichtAmtssprache(persistedKind.getSprichtAmtssprache());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
@@ -1717,7 +1716,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractPersonFieldsToEntity(kindJAXP, kind);
 		kind.setKinderabzug(kindJAXP.getKinderabzug());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
-		kind.setMutterspracheDeutsch(kindJAXP.getMutterspracheDeutsch());
+		kind.setSprichtAmtssprache(kindJAXP.getSprichtAmtssprache());
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 
 		PensumFachstelle updtPensumFachstelle = null;

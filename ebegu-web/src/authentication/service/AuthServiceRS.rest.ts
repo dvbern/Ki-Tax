@@ -14,6 +14,8 @@
  */
 
 import * as angular from 'angular';
+
+import * as Raven from 'raven-js';
 import {Observable, ReplaySubject} from 'rxjs';
 import {Permission} from '../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../app/authorisation/Permissions';
@@ -138,15 +140,35 @@ export default class AuthServiceRS {
         return this.benutzerRS.findBenutzer(username).then(user => {
             this.principalSubject$.next(user);
             this.principal = user;
+            this.setPrincipalInRavenUserContext();
+
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGIN_SUCCESS, 'logged in');
 
             return user;
         });
     }
 
+    private setPrincipalInRavenUserContext(): void {
+        Raven.setUserContext({
+            id: this.principal.username,
+            email: this.principal.email,
+            role: this.principal.getCurrentRole(),
+            amt: this.principal.amt,
+            status: this.principal.status,
+            mandant: this.principal.mandant ? this.principal.mandant.name : null,
+            traegerschaft: this.principal.currentBerechtigung.traegerschaft
+                ? this.principal.currentBerechtigung.traegerschaft.name
+                : null,
+            institution: this.principal.currentBerechtigung.institution
+                ? this.principal.currentBerechtigung.institution.name
+                : null
+        });
+    }
+
     public logoutRequest(): any {
         return this.$http.post(CONSTANTS.REST_API + 'auth/logout', null).then((res: any) => {
             this.clearPrincipal();
+            Raven.setUserContext({});
             this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out');
             return res;
         });
