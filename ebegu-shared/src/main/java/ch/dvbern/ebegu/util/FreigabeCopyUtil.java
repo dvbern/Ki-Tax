@@ -96,7 +96,6 @@ public final class FreigabeCopyUtil {
 	private static void copyFamiliensituation(@Nonnull Familiensituation familiensituationGS, @Nonnull Familiensituation familiensituationJA) {
 		familiensituationGS.setFamilienstatus(familiensituationJA.getFamilienstatus());
 		familiensituationGS.setGemeinsameSteuererklaerung(familiensituationJA.getGemeinsameSteuererklaerung());
-		familiensituationGS.setGesuchstellerKardinalitaet(familiensituationJA.getGesuchstellerKardinalitaet());
 		familiensituationGS.setAenderungPer(familiensituationJA.getAenderungPer());
 		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
 		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());

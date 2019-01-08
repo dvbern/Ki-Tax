@@ -38,7 +38,6 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -214,7 +213,6 @@ public class FamilienabzugAbschnittRuleTest {
 		Familiensituation erstFamiliensituation = new Familiensituation();
 		erstFamiliensituation.setAenderungPer(null); //im erstgesuch immer null
 		erstFamiliensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		erstFamiliensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(erstFamiliensituation);
 		double newFamGr = famabAbschnittRule.calculateFamiliengroesse(gesuch, DATE_2005).getKey();
 		Assert.assertEquals(2, newFamGr, DELTA);
@@ -422,7 +420,6 @@ public class FamilienabzugAbschnittRuleTest {
 
 		Familiensituation famSitErstgesuch = new Familiensituation();
 		famSitErstgesuch.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		famSitErstgesuch.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(famSitErstgesuch);
 
 		gesuch.setKindContainers(new HashSet<>());

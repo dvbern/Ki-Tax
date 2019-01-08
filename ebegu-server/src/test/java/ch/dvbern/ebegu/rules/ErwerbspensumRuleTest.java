@@ -27,9 +27,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.util.Constants;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
@@ -200,7 +198,6 @@ public class ErwerbspensumRuleTest {
 		final Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 		assertNotNull(familiensituationErstgesuch);
 		familiensituationErstgesuch.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		familiensituationErstgesuch.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 
 		final Familiensituation extractedFamiliensituation = gesuch.extractFamiliensituation();
 		assertNotNull(extractedFamiliensituation);
@@ -247,7 +244,6 @@ public class ErwerbspensumRuleTest {
 		final Familiensituation extractedFamiliensituation = gesuch.extractFamiliensituation();
 		assertNotNull(extractedFamiliensituation);
 		extractedFamiliensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		extractedFamiliensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		extractedFamiliensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);

@@ -131,8 +131,6 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 			String familiensituation = dataRow.getFamiliensituation() != null ? dataRow.getFamiliensituation().name() : "";
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.familiensituation, familiensituation);
-			String kardinalitaet = dataRow.getKardinalitaet() != null ? dataRow.getKardinalitaet().name() : "";
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kardinalitaet, kardinalitaet);
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.familiengroesse, dataRow.getFamiliengroesse());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.massgEinkVorFamilienabzug, dataRow.getMassgEinkVorFamilienabzug());
