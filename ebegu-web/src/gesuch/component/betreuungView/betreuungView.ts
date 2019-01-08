@@ -113,8 +113,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public fachstelleId: string;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
-    public provMonatlicheBetreuungskosten: number = 1000;
-    public provPensum: number = 50;
+    public provMonatlicheBetreuungskosten: number;
+    public provPensum: number;
 
     public constructor(
         private readonly $state: StateService,
@@ -152,6 +152,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.model = angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
                 this.initialBetreuung =
                     angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
+
                 this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
             } else {
                 // wenn betreuung-nummer nicht definiert ist heisst das, dass wir ein neues erstellen sollten
@@ -362,7 +363,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public saveProvisorischeBetreuung(): void {
         if (this.isGesuchValid()) {
-            this.createProvisorischesBetreuungspensum(false);
             this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
         }
     }
@@ -1035,16 +1035,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 
-    private createProvisorischesBetreuungspensum(vertrag: boolean): any {
+    private createProvisorischesBetreuungspensum(): any {
 
         // always clear existing Betreuungspensum
         this.getBetreuungModel().betreuungspensumContainers = [];
 
-        if (vertrag === true) {
-            return;
-        }
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-           this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
+            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
         }
         this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
 
@@ -1053,8 +1050,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             new TSBetreuungspensum(TSPensumUnits.PERCENTAGE,
                 false,
-                this.provMonatlicheBetreuungskosten,
-                this.provPensum,
+                null,
+                null,
                 this.gesuchModelManager.getGesuchsperiode().gueltigkeit)));
     }
 
@@ -1066,6 +1063,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public onChangeVertrag(): void {
+        // clear
         this.getBetreuungModel().betreuungspensumContainers = [];
+        // init prov. betreuung
+        if (this.model.vertrag === false) {
+            this.createProvisorischesBetreuungspensum();
+        }
     }
 }

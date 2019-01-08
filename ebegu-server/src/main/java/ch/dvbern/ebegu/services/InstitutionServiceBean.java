@@ -88,7 +88,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	// ID der statischen, unbekannten Institution. Wird verwendet um eine provisorische Berechnung zu generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
-	private static final String ID_UNKNOWN_INSTITUTION = "00000000-0000-0000-0000-000000000000";
+	private static final String ID_UNKNOWN_INSTITUTION_KITA = "00000000-0000-0000-0000-000000000000";
+	private static final String ID_UNKNOWN_INSTITUTION_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
 
 	@Nonnull
 	@Override
@@ -286,6 +287,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	}
 
 	private Predicate excludeUnknownInstitutionPredicate(CriteriaBuilder cb, Path path) {
-		return cb.notEqual(path, ID_UNKNOWN_INSTITUTION);
+		return cb.notEqual(path,ID_UNKNOWN_INSTITUTION_KITA);
 	}
 }
