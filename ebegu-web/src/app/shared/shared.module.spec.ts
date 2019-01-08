@@ -24,11 +24,11 @@ describe('SharedModule', () => {
     let sharedModule: SharedModule;
     const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name,
         ['setDefaultLang', 'use']);
-    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name,
-        ['getPreferredLanguage']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(() => {
-        i18nServiceSpy.getPreferredLanguage.and.returnValue(TSBrowserLanguage.DE);
+        i18nServiceSpy.extractPreferredLanguage.and.returnValue(TSBrowserLanguage.DE);
 
         sharedModule = new SharedModule(translateServiceSpy, i18nServiceSpy);
     });

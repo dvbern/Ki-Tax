@@ -27,7 +27,8 @@ describe('OnboardingMainComponent', () => {
     let component: OnboardingMainComponent;
     let fixture: ComponentFixture<OnboardingMainComponent>;
 
-    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({

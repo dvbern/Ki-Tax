@@ -15,9 +15,11 @@
 
 import * as angular from 'angular';
 import {Observable, of} from 'rxjs';
+import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {TSAuthEvent} from '../models/enums/TSAuthEvent';
+import {TSBrowserLanguage} from '../models/enums/TSBrowserLanguage';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
 import {TSEingangsart} from '../models/enums/TSEingangsart';
 import TSDossier from '../models/TSDossier';
@@ -69,7 +71,18 @@ class AuthLifeCycleServiceMock extends AuthLifeCycleService {
     }
 }
 
+class I18nServiceMock extends I18nServiceRSRest {
+    public extractPreferredLanguage(): string {
+        return TSBrowserLanguage.DE;
+    }
+
+    public currentLanguage(): TSBrowserLanguage {
+        return TSBrowserLanguage.DE;
+    }
+}
+
 export function ngServicesMock($provide: angular.auto.IProvideService): void {
+    $provide.service('I18nServiceRSRest', I18nServiceMock);
     $provide.service('AuthLifeCycleService', AuthLifeCycleServiceMock);
     $provide.service('GesuchGenerator', GesuchGeneratorMock);
     $provide.value('LOCALE_ID', 'de-CH');

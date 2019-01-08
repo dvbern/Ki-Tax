@@ -29,7 +29,8 @@ describe('EditInstitutionComponent', () => {
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
 

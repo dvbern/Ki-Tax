@@ -16,7 +16,6 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import {take} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSBrowserLanguage} from '../../../../models/enums/TSBrowserLanguage';
 import {LogFactory} from '../../../core/logging/LogFactory';
@@ -54,15 +53,8 @@ export class DvLanguageSelectorComponent implements IController {
     }
 
     public changeLanguage(selectedLanguage: TSBrowserLanguage): void {
-        this.i18nServiceRS.changeServerLanguage$(selectedLanguage)
-            .pipe(take(1))
-            .subscribe(
-                () => {
-                    this.i18nServiceRS.changeClientLanguage(selectedLanguage, this.$translate);
-                    LOG.info('language changed', selectedLanguage);
-                },
-                err => LOG.error(err)
-            );
+        this.i18nServiceRS.changeClientLanguage(selectedLanguage, this.$translate);
+        LOG.info('language changed', selectedLanguage);
     }
 
     public isLanguage(language: TSBrowserLanguage): boolean {

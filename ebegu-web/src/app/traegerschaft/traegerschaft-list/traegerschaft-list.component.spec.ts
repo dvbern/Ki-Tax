@@ -39,7 +39,8 @@ describe('TraegerschaftListComponent', () => {
       const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
       const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
       const stateServiceSpy = jasmine.createSpyObj(StateService.name, ['go']);
-      const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['getPreferredLanguage']);
+      const i18nServiceSpy = jasmine
+          .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
       TestBed.configureTestingModule({
           imports: [
