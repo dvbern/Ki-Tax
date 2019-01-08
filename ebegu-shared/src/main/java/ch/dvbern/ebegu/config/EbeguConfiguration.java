@@ -163,4 +163,9 @@ public interface EbeguConfiguration {
 	 * @return a full link to the page where users can create new logins for the portal
 	 */
 	String getPortalAccountCreationPageLink();
+
+	/**
+	 * read sentry env from system properties
+	 */
+	String getSentryEnv();
 }

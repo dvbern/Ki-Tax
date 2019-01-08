@@ -106,7 +106,7 @@ public enum ReportVorlage {
 		if (UserRole.getSchulamtRoles().contains(role)) {
 			return vorlage == VORLAGE_REPORT_GESUCH_STICHTAG || vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM
 				|| vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_GESUCHSTELLER
-				|| vorlage == VORLAGE_REPORT_BENUTZER;
+				|| vorlage == VORLAGE_REPORT_BENUTZER || vorlage == VORLAGE_REPORT_MASSENVERSAND;
 		}
 
 		return UserRole.GESUCHSTELLER != role && UserRole.STEUERAMT != role && UserRole.JURIST != role;

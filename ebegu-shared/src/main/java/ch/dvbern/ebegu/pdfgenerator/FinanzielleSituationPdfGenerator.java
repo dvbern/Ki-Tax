@@ -17,41 +17,26 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
-import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
-import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
+import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
-import com.lowagie.text.Font;
 import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
-import static com.lowagie.text.Utilities.millimetersToPoints;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator {
@@ -300,6 +285,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(ERH_UNTERHALTSBEITRAEGE), gs1.getErhalteneAlimente());
 		FinanzielleSituationRow geschaftsgewinn = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(GESCHAEFTSGEWINN), gs1.getGeschaeftsgewinnBasisjahr());
+		geschaftsgewinn.setSupertext("1");
 		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(EINKOMMEN_ZWISCHENTOTAL), gs1.getZwischentotalEinkommen());
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
@@ -353,6 +339,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(NETTOVERMOEGEN_ZWISCHENTOTAL), gs1.getZwischentotalVermoegen());
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(NETTOVERMOEGEN_TOTAL), "");
+		total.setSupertext("2");
 		FinanzielleSituationRow 			vermoegen5Percent = new FinanzielleSituationRow(
 			ServerMessageUtil.getMessage(NETTOVERMOEGEN_5_PROZENT),"");
 
@@ -449,16 +436,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	private void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
-		ColumnText fz = new ColumnText(dirPdfContentByte);
-		final float height = millimetersToPoints(20);
-		final float width = millimetersToPoints(170);
-		final float loverLeftX = millimetersToPoints(PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM);
-		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4);
-		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
-		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
-		Font fontWithSize = PdfUtilities.createFontWithSize(8);
-		fz.addText(new Phrase(ServerMessageUtil.getMessage(FUSSZEILE_1), fontWithSize));
-		fz.addText(new Phrase('\n' + ServerMessageUtil.getMessage(FUSSZEILE_2), fontWithSize));
-		fz.go();
+		createFusszeile(dirPdfContentByte, Lists.newArrayList(ServerMessageUtil.getMessage(FUSSZEILE_1), ServerMessageUtil.getMessage(FUSSZEILE_2)));
 	}
 }

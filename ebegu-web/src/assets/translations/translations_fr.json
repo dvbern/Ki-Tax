@@ -1390,6 +1390,7 @@
     "DEBUGGING_UI_ROUTER": "fr_UI Router Debugging",
     "DEBUGGING_TRACE_TRANSITIONS": "fr_Transition Tracing",
     "DEBUGGING_UI_ROUTER_VISUALIZER": "fr_UI Router Visualizer aktivieren",
+    "DEBUGGING_SENTRY": "fr_Fehler für Sentry triggern",
     "ERROR_STARTDATUM_FIRST_OF_MONTH": "fr_Das Startdatum muss am 1. des jeweiligen Monats beginnen!",
     "ERROR_STARTDATUM_FUTURE": "fr_Das Startdatum muss in der Zukunft liegen!",
     "ADMINISTRATOREN": "fr_Administratoren",
@@ -1457,5 +1458,6 @@
     "SEARCH_FOR_NAME": "fr_Suche nach Name",
     "SEARCH_FOR_VALUE": "fr_Suche Nach Text",
     "CHANGE_DEUTSCH": "auf Deutsch wechseln",
-    "CHANGE_FRANZOESISCH": "Passer en français"
+    "CHANGE_FRANZOESISCH": "Passer en français",
+    "NO_ERWERBSPENSUM_DATA": "fr_Keine Erwerbspensum Daten vorhanden"
 }

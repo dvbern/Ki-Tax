@@ -1128,9 +1128,8 @@ public class JaxBConverter extends AbstractConverter {
 		// Finanzielle Situation
 		if (jaxGesuchstellerCont.getFinanzielleSituationContainer() != null) {
 			gesuchstellerCont.setFinanzielleSituationContainer(finanzielleSituationContainerToStorableEntity(
-				jaxGesuchstellerCont
-					.getFinanzielleSituationContainer(),
-				null));
+				jaxGesuchstellerCont.getFinanzielleSituationContainer(),
+				gesuchstellerCont.getFinanzielleSituationContainer()));
 		}
 		//Erwerbspensum
 		requireNonNull(jaxGesuchstellerCont.getErwerbspensenContainers())

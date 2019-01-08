@@ -44,12 +44,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.mime.MimeTypeException;
-import org.apache.tika.mime.MimeTypes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
@@ -58,9 +52,13 @@ import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -145,6 +143,24 @@ public class ApplicationPropertyResource {
 	public Response isDummyLoginEnabled(@Context HttpServletResponse response) {
 		return Response.ok(ebeguConfiguration.isDummyLoginEnabled()).build();
 	}
+
+	@ApiOperation(value = "Returns sentry env token for usage by sentry / raven.js", response = String.class)
+	@GET
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/public/sentryenv")
+	public JaxApplicationProperties getSentryEnvName(@Context HttpServletResponse response) {
+
+		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService
+			.readApplicationProperty(ApplicationPropertyKey.SENTRY_ENV);
+
+		ApplicationProperty prop = propertyFromDB.orElseGet(() -> {
+			String sentryEnv = ebeguConfiguration.getSentryEnv();
+			return new ApplicationProperty(ApplicationPropertyKey.SENTRY_ENV, sentryEnv);
+		});
+		return converter.applicationPropertyToJAX(prop);
+	}
+
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@ApiOperation(value = "Returns background Color for the current System", response = String.class)

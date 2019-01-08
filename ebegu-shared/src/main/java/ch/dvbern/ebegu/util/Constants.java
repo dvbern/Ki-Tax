@@ -41,6 +41,9 @@ public final class Constants {
 	public static final int MAX_TIMEOUT_MINUTES = 360; // minutes
 	public static final int STATISTIK_TIMEOUT_MINUTES = 180; // minutes
 
+	public static final String LOG_MDC_EBEGUUSER = "ebeguuser";
+	public static final String LOG_MDC_AUTHUSERID = "ebeguauthuserid";
+
 	public static final Locale DEFAULT_LOCALE = new Locale("de", "CH");
 	public static final Locale DEUTSCH_LOCALE = DEFAULT_LOCALE;
 	public static final Locale FRENCH_LOCALE = new Locale("fr", "CH");

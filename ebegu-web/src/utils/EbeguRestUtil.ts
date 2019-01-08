@@ -1409,19 +1409,28 @@ export default class EbeguRestUtil {
     ): TSEinkommensverschlechterungContainer {
         if (containerFromServer) {
             this.parseAbstractMutableEntity(containerTS, containerFromServer);
-            const empty = new TSEinkommensverschlechterung();
+            // Achtung, das Argument "new TSEinkommensverschlechterung()" muss immer neu erstellt werden, da es sonst
+            // dasselbe Instanz ist.
             containerTS.ekvGSBasisJahrPlus1 =
-                this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus1 || empty,
-                    containerFromServer.ekvGSBasisJahrPlus1);
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvGSBasisJahrPlus1 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvGSBasisJahrPlus1
+                );
             containerTS.ekvGSBasisJahrPlus2 =
-                this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus2 || empty,
-                    containerFromServer.ekvGSBasisJahrPlus2);
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvGSBasisJahrPlus2 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvGSBasisJahrPlus2
+                );
             containerTS.ekvJABasisJahrPlus1 =
-                this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus1 || empty,
-                    containerFromServer.ekvJABasisJahrPlus1);
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvJABasisJahrPlus1 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvJABasisJahrPlus1
+                );
             containerTS.ekvJABasisJahrPlus2 =
-                this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus2 || empty,
-                    containerFromServer.ekvJABasisJahrPlus2);
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvJABasisJahrPlus2 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvJABasisJahrPlus2
+                );
 
             return containerTS;
         }
@@ -1432,27 +1441,26 @@ export default class EbeguRestUtil {
         einkommensverschlechterungTS: TSEinkommensverschlechterung,
         einkommensverschlechterungFromServer: any,
     ): TSEinkommensverschlechterung {
-        if (einkommensverschlechterungFromServer) {
-            this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
-            einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
-            einkommensverschlechterungTS.nettolohnFeb = einkommensverschlechterungFromServer.nettolohnFeb;
-            einkommensverschlechterungTS.nettolohnMrz = einkommensverschlechterungFromServer.nettolohnMrz;
-            einkommensverschlechterungTS.nettolohnApr = einkommensverschlechterungFromServer.nettolohnApr;
-            einkommensverschlechterungTS.nettolohnMai = einkommensverschlechterungFromServer.nettolohnMai;
-            einkommensverschlechterungTS.nettolohnJun = einkommensverschlechterungFromServer.nettolohnJun;
-            einkommensverschlechterungTS.nettolohnJul = einkommensverschlechterungFromServer.nettolohnJul;
-            einkommensverschlechterungTS.nettolohnAug = einkommensverschlechterungFromServer.nettolohnAug;
-            einkommensverschlechterungTS.nettolohnSep = einkommensverschlechterungFromServer.nettolohnSep;
-            einkommensverschlechterungTS.nettolohnOkt = einkommensverschlechterungFromServer.nettolohnOkt;
-            einkommensverschlechterungTS.nettolohnNov = einkommensverschlechterungFromServer.nettolohnNov;
-            einkommensverschlechterungTS.nettolohnDez = einkommensverschlechterungFromServer.nettolohnDez;
-            einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
-            einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
-                einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
-
-            return einkommensverschlechterungTS;
+        if (!einkommensverschlechterungFromServer) {
+            return undefined;
         }
-        return undefined;
+        this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
+        einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
+        einkommensverschlechterungTS.nettolohnFeb = einkommensverschlechterungFromServer.nettolohnFeb;
+        einkommensverschlechterungTS.nettolohnMrz = einkommensverschlechterungFromServer.nettolohnMrz;
+        einkommensverschlechterungTS.nettolohnApr = einkommensverschlechterungFromServer.nettolohnApr;
+        einkommensverschlechterungTS.nettolohnMai = einkommensverschlechterungFromServer.nettolohnMai;
+        einkommensverschlechterungTS.nettolohnJun = einkommensverschlechterungFromServer.nettolohnJun;
+        einkommensverschlechterungTS.nettolohnJul = einkommensverschlechterungFromServer.nettolohnJul;
+        einkommensverschlechterungTS.nettolohnAug = einkommensverschlechterungFromServer.nettolohnAug;
+        einkommensverschlechterungTS.nettolohnSep = einkommensverschlechterungFromServer.nettolohnSep;
+        einkommensverschlechterungTS.nettolohnOkt = einkommensverschlechterungFromServer.nettolohnOkt;
+        einkommensverschlechterungTS.nettolohnNov = einkommensverschlechterungFromServer.nettolohnNov;
+        einkommensverschlechterungTS.nettolohnDez = einkommensverschlechterungFromServer.nettolohnDez;
+        einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
+        einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
+            einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
+        return einkommensverschlechterungTS;
     }
 
     public kindContainerToRestObject(restKindContainer: any, kindContainer: TSKindContainer): any {
