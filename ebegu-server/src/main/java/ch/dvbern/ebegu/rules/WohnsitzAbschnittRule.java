@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -32,6 +31,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Regel für Wohnsitz in Bern (Zuzug und Wegzug):
@@ -119,14 +120,16 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 		gesuchstellerAdressen.stream()
 			.filter(gesuchstellerAdresse -> !gesuchstellerAdresse.extractIsKorrespondenzAdresse() && !gesuchstellerAdresse.extractIsRechnungsAdresse())
 			.forEach(gesuchstellerAdresse -> {
+				final DateRange gsAdresseGueltigkeit = gesuchstellerAdresse.extractGueltigkeit();
+				requireNonNull(gsAdresseGueltigkeit);
 				if (gs1) {
-					VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gesuchstellerAdresse.extractGueltigkeit());
+					VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gsAdresseGueltigkeit);
 					zeitabschnitt.setWohnsitzNichtInGemeindeGS1(gesuchstellerAdresse.extractIsNichtInGemeinde());
 					adressenZeitabschnitte.add(zeitabschnitt);
 				} else { // gs2
-					final DateRange gueltigkeit = new DateRange(gesuchstellerAdresse.extractGueltigkeit());
+					final DateRange gueltigkeit = new DateRange(gsAdresseGueltigkeit);
 					Familiensituation familiensituation = gesuch.extractFamiliensituation();
-					Objects.requireNonNull(familiensituation);
+					requireNonNull(familiensituation);
 					LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
 					if (familiensituationGueltigAb != null) {
 
@@ -135,7 +138,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 
 						// from 1GS to 2GS
 						Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
-						Objects.requireNonNull(familiensituationErstgesuch);
+						requireNonNull(familiensituationErstgesuch);
 						if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
 							if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)) {
 								if (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)) {

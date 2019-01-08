@@ -91,7 +91,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (familiensituation != null && familiensituation.getAenderungPer() != null) {
-			// die familiensituation aendert sich jetzt erst ab dem naechsten Monat, deswegen .plusMonths(1).withDayOfMonth(1)
+			// die familiensituation aendert sich jetzt erst ab dem naechsten Monat, deswegen getStichtagForEreignis
 			final LocalDate aenderungPerBeginningNextMonth = getStichtagForEreignis(familiensituation.getAenderungPer());
 			famGrMap.put(aenderungPerBeginningNextMonth, calculateFamiliengroesse(gesuch, aenderungPerBeginningNextMonth));
 		}
@@ -165,7 +165,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	Map.Entry<Double, Integer> calculateFamiliengroesse(Gesuch gesuch, @Nullable LocalDate date) {
 
 		Double famGrBeruecksichtigungAbzug = 0.0;
-		Integer famGrAnzahlPersonen = 0;
+		int famGrAnzahlPersonen = 0;
 		if (gesuch != null) {
 
 			Familiensituation familiensituation = gesuch.extractFamiliensituation();

@@ -209,8 +209,13 @@ public class FinanzielleSituationRechner {
 		gesuch.setFinanzDatenDTO_zuZweit(finanzDatenDTOZuZweit);
 	}
 
-	private void handleEKV1(@Nonnull FinanzDatenDTO finanzDatenDTO, @Nullable LocalDate stichtagEKV1, BigDecimal massgebendesEinkommenEKV1, BigDecimal massgebendesEinkommenBasisjahr,
-		BigDecimal minimumEKV) {
+	private void handleEKV1(
+		@Nonnull FinanzDatenDTO finanzDatenDTO,
+		@Nullable LocalDate stichtagEKV1,
+		BigDecimal massgebendesEinkommenEKV1,
+		BigDecimal massgebendesEinkommenBasisjahr,
+		BigDecimal minimumEKV
+	) {
 		// In der EKV 1 vergleichen wir immer mit dem Basisjahr
 		finanzDatenDTO.setDatumVonBasisjahrPlus1(stichtagEKV1);
 		boolean accepted = acceptEKV(massgebendesEinkommenBasisjahr, massgebendesEinkommenEKV1, minimumEKV);
@@ -222,8 +227,14 @@ public class FinanzielleSituationRechner {
 		}
 	}
 
-	private void handleEKV2(@Nonnull FinanzDatenDTO finanzDatenDTO, @Nullable LocalDate stichtagEKV2, BigDecimal massgebendesEinkommenEKV2, BigDecimal massgebendesEinkommenVorjahr,
-		BigDecimal massgebendesEinkommenBasisjahr, BigDecimal minimumEKV) {
+	private void handleEKV2(
+		@Nonnull FinanzDatenDTO finanzDatenDTO,
+		@Nullable LocalDate stichtagEKV2,
+		BigDecimal massgebendesEinkommenEKV2,
+		BigDecimal massgebendesEinkommenVorjahr,
+		BigDecimal massgebendesEinkommenBasisjahr,
+		BigDecimal minimumEKV
+	) {
 		// In der EKV 2 vergleichen wir immer mit dem EKV 1, egal ob diese akzeptiert war
 		finanzDatenDTO.setDatumVonBasisjahrPlus2(stichtagEKV2);
 		boolean ekv2AlleineAccepted = acceptEKV2(massgebendesEinkommenVorjahr, massgebendesEinkommenBasisjahr, massgebendesEinkommenEKV2, minimumEKV);

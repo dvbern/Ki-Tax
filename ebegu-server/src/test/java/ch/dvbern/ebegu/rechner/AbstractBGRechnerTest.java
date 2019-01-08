@@ -147,7 +147,13 @@ public class AbstractBGRechnerTest {
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 	}
 
-	protected void assertZeitabschnitt(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull LocalDate gueltigAb, int betreuungspensum, int anspruch, int bgPensum) {
+	protected void assertZeitabschnitt(
+		@Nonnull VerfuegungZeitabschnitt abschnitt,
+		@Nonnull LocalDate gueltigAb,
+		int betreuungspensum,
+		int anspruch,
+		int bgPensum
+	) {
 		Assert.assertEquals(gueltigAb, abschnitt.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(betreuungspensum, abschnitt.getBetreuungspensum().intValue());
 		Assert.assertEquals(anspruch, abschnitt.getAnspruchberechtigtesPensum());
