@@ -358,16 +358,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     /**
-     * This method saves a provisorische Betreuung and
-     * creates a Betreuungspensum for the whole period
-     */
-    public saveProvisorischeBetreuung(): void {
-        if (this.isGesuchValid()) {
-            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-        }
-    }
-
-    /**
      * Entfernt alle Module die nicht als angemeldet markiert sind. Nur fuer Gesuchsperiode in denen die
      * Tagesschuleanmeldung aktiv ist.
      */
@@ -646,6 +636,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
         } else if (!this.getBetreuungModel().vertrag) {
             this.flagErrorVertrag = true;
+        }
+    }
+
+    /**
+     * This method saves a provisorische Betreuung and
+     * creates a Betreuungspensum for the whole period
+     */
+    public saveProvisorischeBetreuung(): void {
+        if (this.isGesuchValid()) {
+            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
         }
     }
 
@@ -1039,6 +1039,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         // always clear existing Betreuungspensum
         this.getBetreuungModel().betreuungspensumContainers = [];
+        this.instStammId = null;
 
         if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
@@ -1056,15 +1057,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isProvisorischeBetreuung(): boolean {
-        if (this.getBetreuungModel().vertrag === null) {
-            return null;
-        }
-        return !this.getBetreuungModel().vertrag;
+        return this.getBetreuungModel().vertrag === false;
     }
 
     public onChangeVertrag(): void {
         // clear
         this.getBetreuungModel().betreuungspensumContainers = [];
+        this.instStammId = null;
         // init prov. betreuung
         if (this.model.vertrag === false) {
             this.createProvisorischesBetreuungspensum();

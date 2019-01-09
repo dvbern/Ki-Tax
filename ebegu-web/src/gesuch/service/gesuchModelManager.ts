@@ -1390,7 +1390,7 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Gibt true zurueck, wenn der Antrag ein Erstgesuchist. False bekommt man wenn der Antrag eine Mutation ist
+     * Gibt true zurueck, wenn der Antrag ein Erstgesuch ist. False bekommt man wenn der Antrag eine Mutation ist
      * By default (beim Fehler oder leerem Gesuch) wird auch true zurueckgegeben
      */
     public isGesuch(): boolean {

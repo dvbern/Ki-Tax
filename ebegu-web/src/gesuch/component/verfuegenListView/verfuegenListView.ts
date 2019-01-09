@@ -200,7 +200,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.VERFUEGT,
-            TSBetreuungsstatus.NICHT_EINGETRETEN, TSBetreuungsstatus.STORNIERT,
+            TSBetreuungsstatus.NICHT_EINGETRETEN,
+            TSBetreuungsstatus.STORNIERT,
+            TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
         ];
         // Annahme: alle ausser Gesuchsteller duerfen bestaetigte betreuungen sehen wenn sie uberhaupt auf die Seite
         // kommen
