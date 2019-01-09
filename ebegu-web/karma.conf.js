@@ -103,7 +103,7 @@ module.exports = function (config) {
                  * - metadata[3] = plataform version
                  */
                 // return metadata.concat('xml').join('.');
-                return 'sonar-report.xml'
+                return 'sonar-report.xml';
             }
         },
 
