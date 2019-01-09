@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,6 +47,8 @@ import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -251,6 +254,20 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 		// des Falls
 		validateVerantwortlicher(dossier, ChangeVerantwortlicherTSValidationGroup.class);
 		return saveDossier(dossier);
+	}
+
+	@Nonnull
+	@Override
+	public LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
+		LocalDate erstesEinreichungsdatum = LocalDate.now();
+		List<Gesuch> gesuchList =
+			gesuchService.getAllGesucheForDossierAndPeriod(dossier, gesuchsperiode);
+		for (Gesuch gesuch : gesuchList) {
+			if (gesuch.getRegelStartDatum() != null && gesuch.getRegelStartDatum().isBefore(erstesEinreichungsdatum)) {
+				erstesEinreichungsdatum = gesuch.getRegelStartDatum();
+			}
+		}
+		return erstesEinreichungsdatum;
 	}
 
 	private void validateVerantwortlicher(@Nonnull Dossier dossier, @Nonnull Class validationGroup) {
