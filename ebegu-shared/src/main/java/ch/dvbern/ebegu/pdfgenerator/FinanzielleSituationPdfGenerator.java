@@ -249,7 +249,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
 			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
 			if (gesuch.getRegelStartDatum() != null
-					&& abschnitt.getGueltigkeit().getGueltigBis().isBefore(gesuch.getRegelStartDatum())) {
+					&& abschnitt.getGueltigkeit().getGueltigAb().isBefore(gesuch.getRegelStartDatum())) {
 				continue;
 			}
 			String[] data = {
