@@ -34,7 +34,7 @@
         <sonar.coverage.exclusions>**.spec.ts</sonar.coverage.exclusions>
         <!-- disable duplication detection for spec files -->
         <sonar.cpd.exclusions>**.spec.ts</sonar.cpd.exclusions>
-        <sonar.testExecutionReportPaths>build/sonar-results.xml</sonar.testExecutionReportPaths>
+        <sonar.testExecutionReportPaths>build/sonar-report.xml</sonar.testExecutionReportPaths>
         <sonar.typescript.lcov.reportPaths>build/coverage/lcov.info</sonar.typescript.lcov.reportPaths>
         <npm.init.arg>install</npm.init.arg>
     </properties>
