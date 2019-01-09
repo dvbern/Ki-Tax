@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -78,7 +77,7 @@ public class BetreuungsgutscheinEvaluator {
 
 		// Fuer die Familiensituation ist die Betreuung nicht relevant. Wir brauchen aber eine, da die Signatur der Rules
 		// mit Betreuungen funktioniert. Wir nehmen einfach die erste von irgendeinem Kind, das heisst ohne betreuung koennen wir nicht berechnen
-		Betreuung firstBetreuungOfGesuch = getFirstBetreuungOfGesuch(gesuch);
+		Betreuung firstBetreuungOfGesuch = gesuch.getFirstBetreuung();
 
 		// Die Initialen Zeitabschnitte erstellen (1 pro Gesuchsperiode)
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createInitialenRestanspruch(gesuch.getGesuchsperiode());
@@ -253,13 +252,5 @@ public class BetreuungsgutscheinEvaluator {
 		initialerRestanspruch.setAnspruchspensumRest(-1); // Damit wir erkennen, ob schon einmal ein "Rest" durch eine Rule gesetzt wurde
 		restanspruchZeitabschnitte.add(initialerRestanspruch);
 		return restanspruchZeitabschnitte;
-	}
-
-	@Nullable
-	private Betreuung getFirstBetreuungOfGesuch(Gesuch gesuch) {
-		return gesuch.getKindContainers().stream()
-			.findFirst()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream().findFirst())
-			.orElse(null);
 	}
 }

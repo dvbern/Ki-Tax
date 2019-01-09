@@ -61,8 +61,6 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private Mahnung mahnung_2_Verheiratet;
 
 
-	// TODO (hefr) Es braucht hier ein verfügtes Gesuch!!!
-
 	@Before
 	public void init() throws IOException {
 		final byte[] gemeindeLogo = IOUtils.toByteArray(KibonPdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png"));

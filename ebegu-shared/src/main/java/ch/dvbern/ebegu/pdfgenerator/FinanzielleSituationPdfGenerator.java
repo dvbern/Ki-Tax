@@ -247,6 +247,11 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(MASSG_EINK) };
 		values.add(titles);
 		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
+			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
+			if (gesuch.getRegelStartDatum() != null
+					&& abschnitt.getGueltigkeit().getGueltigBis().isBefore(gesuch.getRegelStartDatum())) {
+				continue;
+			}
 			String[] data = {
 				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()),
 				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
