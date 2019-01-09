@@ -997,6 +997,7 @@
     "FREIGABEQUITTUNG_NOT_ALLOWED_TEXT": "fr_Um den Antrag freigeben zu können dürfen keine Schritte mehr rot markiert sein und alle Plätze bestätigt sein. Geben Sie dafür bitte alle benötigten Daten ein.",
     "FREIGABEQUITTUNG_NOT_ALLOWED_BESCHWERDE_TEXT": "fr_Der Antrag ist zurzeit wegen Beschwerde gesperrt. Sie dürfen den Antrag erst freigeben, wenn die Beschwerde abgeschlossen wird.",
     "FREIGABEQUITTUNG_NOT_ALLOWED_GESUCHSPERIODE_TEXT": "fr_Der Antrag kann nicht mehr freigegeben werden, da die Gesuchsperiode geschlossen wurde",
+    "FREIGABEQUITTUNG_NOT_ALLOWED_PROVISORISCHE_BETREUUNG_TEXT": "fr_Das Gesuch enthält noch unbekannte und nicht bestätigte Betreuungen und kann nicht freigegeben werden.",
     "JA_KORREKTUR_FACHSTELLE": "fr_Fachstelle {{name}} aufgrund {{integration}}, Pensum {{pensum}}, {{von}} – {{bis}}",
     "JA_KORREKTUR_SELBSTAENDIG": "fr_Selbständigkeit Geschäftsgewinn {{basisjahr}}: {{gewinn1}},\n Geschäftsgewinn {{basisjahr - 1}}: {{gewinn2 }},\n Geschäftsgewinn {{basisjahr - 2}}: {{gewinn3}} ",
     "JA_KORREKTUR_SELBSTAENDIG_EKV": "fr_Selbständigkeit Geschäftsgewinn {{basisjahr}}: {{gewinn1}}",

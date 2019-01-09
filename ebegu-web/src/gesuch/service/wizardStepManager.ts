@@ -313,7 +313,7 @@ export default class WizardStepManager {
         }
 
         if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
-            // verfuegen fuer admin und jugendamt  immer sichtbar
+            // verfuegen fuer admin und jugendamt immer sichtbar
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
                 if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
                     return isAtLeastFreigegeben(gesuch.status);
