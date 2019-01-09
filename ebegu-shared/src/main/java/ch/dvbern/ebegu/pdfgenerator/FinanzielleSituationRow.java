@@ -17,12 +17,12 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.util.ServerMessageUtil;
-
 import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 public class FinanzielleSituationRow {
 
@@ -73,7 +73,7 @@ public class FinanzielleSituationRow {
 		return gs2Urspruenglich;
 	}
 
-	@Nonnull
+	@Nullable
 	public String getGs1Urspruenglich() {
 		return gs1Urspruenglich;
 	}

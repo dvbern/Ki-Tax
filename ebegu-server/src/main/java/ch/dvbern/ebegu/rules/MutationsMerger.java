@@ -92,12 +92,15 @@ public final class MutationsMerger {
 		return monatsSchritte;
 	}
 
-	private static void handleVerminderungEinkommen(VerfuegungZeitabschnitt zeitabschnitt, VerfuegungZeitabschnitt vorangehenderAbschnitt, LocalDate mutationsEingansdatum) {
+	private static void handleVerminderungEinkommen(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
+		@Nonnull LocalDate mutationsEingansdatum
+	) {
 		// Massgebendes Einkommen
 		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
 
-		if (vorangehenderAbschnitt != null
-			&& massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
+		if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
 			// Massgebendes Einkommen wird kleiner, der Anspruch also höher: Darf nicht rückwirkend sein!
 			if (zeitabschnitt.getGueltigkeit().getGueltigAb().isBefore(mutationsEingansdatum)) {
 				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
