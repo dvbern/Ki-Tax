@@ -26,7 +26,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <sonar.sources>src</sonar.sources>
+        <sonar.sources>./</sonar.sources>
         <!-- exclude files from sonar analysis (must match tsconfig.json exclusions -->
         <sonar.exclusions>build/**/*,dist/**/*,node_modules/**/*,temp/**/*,target/**/*,tslint.json</sonar.exclusions>
         <sonar.test.inclusions>**.spec.ts</sonar.test.inclusions>
