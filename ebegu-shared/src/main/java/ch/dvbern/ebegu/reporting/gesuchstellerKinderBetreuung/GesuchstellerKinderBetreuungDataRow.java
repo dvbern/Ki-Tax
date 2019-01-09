@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 
 public class GesuchstellerKinderBetreuungDataRow {
 
@@ -68,7 +67,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs2EwpGesundhtl;
 
 	@Nullable private EnumFamilienstatus familiensituation;
-	@Nullable private EnumGesuchstellerKardinalitaet kardinalitaet;
 	@Nullable private BigDecimal familiengroesse;
 
 	@Nullable private BigDecimal massgEinkVorFamilienabzug;
@@ -422,15 +420,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setFamiliensituation(@Nullable EnumFamilienstatus familiensituation) {
 		this.familiensituation = familiensituation;
-	}
-
-	@Nullable
-	public EnumGesuchstellerKardinalitaet getKardinalitaet() {
-		return kardinalitaet;
-	}
-
-	public void setKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet kardinalitaet) {
-		this.kardinalitaet = kardinalitaet;
 	}
 
 	@Nullable
