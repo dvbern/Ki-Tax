@@ -205,20 +205,20 @@ public class ErwerbspensumRuleTest {
 		extractedFamiliensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+
 		assertNotNull(result);
-		assertEquals(3, result.size());
-		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		assertEquals(TestDataUtil.START_PERIODE, result.get(0).getGueltigkeit().getGueltigAb());
-		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 25), result.get(0).getGueltigkeit().getGueltigBis());
+		assertEquals(2, result.size());
 
 		// Da der Anspruch aufgrund EWP sinken würde, bleibt er noch bis Ende Monat auf dem höheren Wert.
-		assertEquals(100, result.get(1).getAnspruchberechtigtesPensum());
-		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26), result.get(1).getGueltigkeit().getGueltigAb());
-		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 31), result.get(1).getGueltigkeit().getGueltigBis());
-		// Erst ab Beginn des nächsten Monats wird der Anspuch ans neue EWP angepasst
-		assertEquals(70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(2).getAnspruchberechtigtesPensum());
-		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.APRIL, 1), result.get(2).getGueltigkeit().getGueltigAb());
-		assertEquals(TestDataUtil.ENDE_PERIODE, result.get(2).getGueltigkeit().getGueltigBis());
+		VerfuegungZeitabschnitt abschnittBisEndeMonatNachHeirat = result.get(0);
+		assertEquals(100, abschnittBisEndeMonatNachHeirat.getAnspruchberechtigtesPensum());
+		assertEquals(TestDataUtil.START_PERIODE, abschnittBisEndeMonatNachHeirat.getGueltigkeit().getGueltigAb());
+		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 31), abschnittBisEndeMonatNachHeirat.getGueltigkeit().getGueltigBis());
+
+		VerfuegungZeitabschnitt abschnittNachHeirat = result.get(1);
+		assertEquals(70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, abschnittNachHeirat.getAnspruchberechtigtesPensum());
+		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.APRIL, 1), abschnittNachHeirat.getGueltigkeit().getGueltigAb());
+		assertEquals(TestDataUtil.ENDE_PERIODE, abschnittNachHeirat.getGueltigkeit().getGueltigBis());
 	}
 
 	@Test
@@ -249,10 +249,12 @@ public class ErwerbspensumRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(3, result.size());
+
 		assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
 		assertEquals(TestDataUtil.START_PERIODE, result.get(0).getGueltigkeit().getGueltigAb());
 		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 25), result.get(0).getGueltigkeit().getGueltigBis());
 
+		// Da der Anspruch aufgrund EWP sinken würde, bleibt er noch bis Ende Monat auf dem höheren Wert.
 		assertEquals(100, result.get(1).getAnspruchberechtigtesPensum());
 		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26), result.get(1).getGueltigkeit().getGueltigAb());
 		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 31), result.get(1).getGueltigkeit().getGueltigBis());

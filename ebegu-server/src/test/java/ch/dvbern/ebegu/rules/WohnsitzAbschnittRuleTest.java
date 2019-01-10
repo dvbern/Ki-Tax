@@ -44,23 +44,29 @@ public class WohnsitzAbschnittRuleTest {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
 		final GesuchstellerAdresseContainer adresse1GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse1GS1.getGesuchstellerAdresseJA());
 		adresse1GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		adresse1GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 25)));
 		adressen1.add(adresse1GS1);
 		final GesuchstellerAdresseContainer adresse2GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse2GS1.getGesuchstellerAdresseJA());
 		adresse2GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 		adresse2GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 26), Constants.END_OF_TIME));
 		adressen1.add(adresse2GS1);
 		gesuch.getGesuchsteller1().setAdressen(adressen1);
 
+		Assert.assertNotNull(gesuch.getGesuchsteller2());
 		List<GesuchstellerAdresseContainer> adressen2 = new ArrayList<>();
 		final GesuchstellerAdresseContainer adresse1GS2 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
+		Assert.assertNotNull(adresse1GS2.getGesuchstellerAdresseJA());
 		adresse1GS2.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 		adresse1GS2.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.APRIL, 25)));
 		adressen2.add(adresse1GS2);
 		final GesuchstellerAdresseContainer adresse2GS2 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
+		Assert.assertNotNull(adresse2GS2.getGesuchstellerAdresseJA());
 		adresse2GS2.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		adresse2GS2.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.APRIL, 26), Constants.END_OF_TIME));
 		adressen2.add(adresse2GS2);
@@ -122,9 +128,13 @@ public class WohnsitzAbschnittRuleTest {
 
 		createAdressenForGS2(gesuch);
 
-		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(new Familiensituation());
-		gesuch.extractFamiliensituationErstgesuch().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		gesuch.extractFamiliensituation().setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
+		Assert.assertNotNull(gesuch.getFamiliensituationContainer());
+		Familiensituation familiensituationErstgesuch = new Familiensituation();
+		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(familiensituationErstgesuch);
+		familiensituationErstgesuch.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Assert.assertNotNull(familiensituation);
+		familiensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
 		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitte(betreuung);
 		verfuegungsZeitabschnitte = wohnsitzRule.normalizeZeitabschnitte(verfuegungsZeitabschnitte, gesuch.getGesuchsperiode());
@@ -132,39 +142,48 @@ public class WohnsitzAbschnittRuleTest {
 		Assert.assertNotNull(verfuegungsZeitabschnitte);
 		Assert.assertEquals(3, verfuegungsZeitabschnitte.size());
 
-		Assert.assertEquals(Constants.START_OF_TIME, verfuegungsZeitabschnitte.get(0).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 31), verfuegungsZeitabschnitte.get(0).getGueltigkeit().getGueltigBis());
-		Assert.assertFalse(verfuegungsZeitabschnitte.get(0).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(0).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt abschnitt1 = verfuegungsZeitabschnitte.get(0);
+		Assert.assertEquals(Constants.START_OF_TIME, abschnitt1.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 31), abschnitt1.getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(abschnitt1.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(abschnitt1.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), verfuegungsZeitabschnitte.get(1).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), verfuegungsZeitabschnitte.get(1).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(1).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(1).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt abschnitt2 = verfuegungsZeitabschnitte.get(1);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), abschnitt2.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), abschnitt2.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(abschnitt2.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(abschnitt2.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26), verfuegungsZeitabschnitte.get(2).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), verfuegungsZeitabschnitte.get(2).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(2).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertFalse(verfuegungsZeitabschnitte.get(2).isWohnsitzNichtInGemeindeGS2());
+		// Der Zivilstand wird erst ab dem Folgemonat aktiv!
+		VerfuegungZeitabschnitt abschnitt3 = verfuegungsZeitabschnitte.get(2);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.APRIL, 1), abschnitt3.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), abschnitt3.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(abschnitt3.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertFalse(abschnitt3.isWohnsitzNichtInGemeindeGS2());
 
 		final List<VerfuegungZeitabschnitt> mergedZerfuegungZeitabschnitte = wohnsitzRule.mergeZeitabschnitte(verfuegungsZeitabschnitte);
 
 		Assert.assertEquals(3, mergedZerfuegungZeitabschnitte.size());
 
-		Assert.assertEquals(Constants.START_OF_TIME, mergedZerfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 31), mergedZerfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis());
-		Assert.assertFalse(mergedZerfuegungZeitabschnitte.get(0).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(0).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt mergedAbschnitt1 = mergedZerfuegungZeitabschnitte.get(0);
+		Assert.assertEquals(Constants.START_OF_TIME, mergedAbschnitt1.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 31), mergedAbschnitt1.getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(mergedAbschnitt1.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(mergedAbschnitt1.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), mergedZerfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 25), mergedZerfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(1).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(1).isWohnsitzNichtInGemeindeGS2());
+		// Alter Zivilstand gilt noch bis Ende Monat
+		VerfuegungZeitabschnitt mergedAbschnitt2 = mergedZerfuegungZeitabschnitte.get(1);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), mergedAbschnitt2.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 31), mergedAbschnitt2.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(mergedAbschnitt2.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(mergedAbschnitt2.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26), mergedZerfuegungZeitabschnitte.get(2).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), mergedZerfuegungZeitabschnitte.get(2).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(2).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertFalse(mergedZerfuegungZeitabschnitte.get(2).isWohnsitzNichtInGemeindeGS2());
+		// Neuer Zivilstand gilt ab Folgemonat
+		VerfuegungZeitabschnitt mergedAbschnitt3 = mergedZerfuegungZeitabschnitte.get(2);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.APRIL, 1), mergedAbschnitt3.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), mergedAbschnitt3.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(mergedAbschnitt3.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertFalse(mergedAbschnitt3.isWohnsitzNichtInGemeindeGS2());
 	}
 
 	@Test
@@ -176,10 +195,15 @@ public class WohnsitzAbschnittRuleTest {
 
 		createAdressenForGS2(gesuch);
 
-		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(new Familiensituation());
-		gesuch.extractFamiliensituationErstgesuch().setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		gesuch.extractFamiliensituation().setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
+		Assert.assertNotNull(gesuch.getFamiliensituationContainer());
+		Familiensituation familiensituationErstgesuch = new Familiensituation();
+		familiensituationErstgesuch.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
+		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(familiensituationErstgesuch);
+
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Assert.assertNotNull(familiensituation);
+		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+		familiensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
 		List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = wohnsitzRule.createVerfuegungsZeitabschnitte(betreuung);
 
@@ -188,49 +212,57 @@ public class WohnsitzAbschnittRuleTest {
 		Assert.assertNotNull(verfuegungsZeitabschnitte);
 		Assert.assertEquals(4, verfuegungsZeitabschnitte.size());
 
-		Assert.assertEquals(Constants.START_OF_TIME, verfuegungsZeitabschnitte.get(0).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 31), verfuegungsZeitabschnitte.get(0).getGueltigkeit().getGueltigBis());
-		Assert.assertFalse(verfuegungsZeitabschnitte.get(0).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(0).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt abschnitt1 = verfuegungsZeitabschnitte.get(0);
+		Assert.assertEquals(Constants.START_OF_TIME, abschnitt1.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 31), abschnitt1.getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(abschnitt1.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(abschnitt1.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), verfuegungsZeitabschnitte.get(1).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), verfuegungsZeitabschnitte.get(1).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(1).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(1).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt abschnitt2 = verfuegungsZeitabschnitte.get(1);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), abschnitt2.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), abschnitt2.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(abschnitt2.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(abschnitt2.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(Constants.START_OF_TIME, verfuegungsZeitabschnitte.get(2).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 25), verfuegungsZeitabschnitte.get(2).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(2).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(2).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt abschnitt3 = verfuegungsZeitabschnitte.get(2);
+		Assert.assertEquals(Constants.START_OF_TIME, abschnitt3.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 25), abschnitt3.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(abschnitt3.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(abschnitt3.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 26), verfuegungsZeitabschnitte.get(3).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26), verfuegungsZeitabschnitte.get(3).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(verfuegungsZeitabschnitte.get(3).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertFalse(verfuegungsZeitabschnitte.get(3).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt abschnitt4 = verfuegungsZeitabschnitte.get(3);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 26), abschnitt4.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 31), abschnitt4.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(abschnitt4.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertFalse(abschnitt4.isWohnsitzNichtInGemeindeGS2());
 
 		final List<VerfuegungZeitabschnitt> mergedZerfuegungZeitabschnitte = wohnsitzRule.mergeZeitabschnitte(verfuegungsZeitabschnitte);
 
 		Assert.assertEquals(4, mergedZerfuegungZeitabschnitte.size());
 
-		Assert.assertEquals(Constants.START_OF_TIME, mergedZerfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 31), mergedZerfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis());
-		Assert.assertFalse(mergedZerfuegungZeitabschnitte.get(0).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(0).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt mergedAbschnitt1 = mergedZerfuegungZeitabschnitte.get(0);
+		Assert.assertEquals(Constants.START_OF_TIME, mergedAbschnitt1.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 31), mergedAbschnitt1.getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(mergedAbschnitt1.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(mergedAbschnitt1.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), mergedZerfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 25), mergedZerfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(1).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(1).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt mergedAbschnitt2 = mergedZerfuegungZeitabschnitte.get(1);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), mergedAbschnitt2.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 25), mergedAbschnitt2.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(mergedAbschnitt2.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(mergedAbschnitt2.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 26), mergedZerfuegungZeitabschnitte.get(2).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26), mergedZerfuegungZeitabschnitte.get(2).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(2).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertFalse(mergedZerfuegungZeitabschnitte.get(2).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt mergedAbschnitt3 = mergedZerfuegungZeitabschnitte.get(2);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 26), mergedAbschnitt3.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 31), mergedAbschnitt3.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(mergedAbschnitt3.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertFalse(mergedAbschnitt3.isWohnsitzNichtInGemeindeGS2());
 
-		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 27), mergedZerfuegungZeitabschnitte.get(3).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), mergedZerfuegungZeitabschnitte.get(3).getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(3).isWohnsitzNichtInGemeindeGS1());
-		Assert.assertTrue(mergedZerfuegungZeitabschnitte.get(3).isWohnsitzNichtInGemeindeGS2());
+		VerfuegungZeitabschnitt mergedAbschnitt4 = mergedZerfuegungZeitabschnitte.get(3);
+		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.APRIL, 1), mergedAbschnitt4.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), mergedAbschnitt4.getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(mergedAbschnitt4.isWohnsitzNichtInGemeindeGS1());
+		Assert.assertTrue(mergedAbschnitt4.isWohnsitzNichtInGemeindeGS2());
 	}
 
 	@Test
@@ -238,19 +270,23 @@ public class WohnsitzAbschnittRuleTest {
 		// der GS wohnt zuerst nicht in Bern, danach zieht er ein und dann wieder weg. Das Wegziehen sollte erst 2 Monaten danach beruecksichtigt werden
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
 		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
 		final GesuchstellerAdresseContainer adresse1GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse1GS1.getGesuchstellerAdresseJA());
 		adresse1GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 		adresse1GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 25)));
 		adressen1.add(adresse1GS1);
 
 		final GesuchstellerAdresseContainer adresse2GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse2GS1.getGesuchstellerAdresseJA());
 		adresse2GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		adresse2GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.JANUARY, 26), LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 26)));
 		adressen1.add(adresse2GS1);
 
 		final GesuchstellerAdresseContainer adresse3GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse3GS1.getGesuchstellerAdresseJA());
 		adresse3GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 		adresse3GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 27), Constants.END_OF_TIME));
 		adressen1.add(adresse3GS1);
@@ -284,14 +320,17 @@ public class WohnsitzAbschnittRuleTest {
 	public void testUmzugNachBernOneMonthBeforeGesuchsperiode() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
 		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
 		final GesuchstellerAdresseContainer adresse1GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse1GS1.getGesuchstellerAdresseJA());
 		adresse1GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 		adresse1GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.JULY, 10)));
 		adressen1.add(adresse1GS1);
 
 		final GesuchstellerAdresseContainer adresse2GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse2GS1.getGesuchstellerAdresseJA());
 		adresse2GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		adresse2GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.JULY, 11), Constants.END_OF_TIME));
 		adressen1.add(adresse2GS1);
@@ -314,14 +353,17 @@ public class WohnsitzAbschnittRuleTest {
 	public void testUmzugAusBernOneMonthBeforeGesuchsperiode() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
 		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
 		final GesuchstellerAdresseContainer adresse1GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse1GS1.getGesuchstellerAdresseJA());
 		adresse1GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		adresse1GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.JULY, 10)));
 		adressen1.add(adresse1GS1);
 
 		final GesuchstellerAdresseContainer adresse2GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse2GS1.getGesuchstellerAdresseJA());
 		adresse2GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 		adresse2GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.JULY, 11), Constants.END_OF_TIME));
 		adressen1.add(adresse2GS1);
@@ -347,12 +389,15 @@ public class WohnsitzAbschnittRuleTest {
 	// HELP METHODS
 
 	private void createAdressenForGS1(Gesuch gesuch) {
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
 		final GesuchstellerAdresseContainer adresse1GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse1GS1.getGesuchstellerAdresseJA());
 		adresse1GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		adresse1GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.NOVEMBER, 25)));
 		adressen1.add(adresse1GS1);
 		final GesuchstellerAdresseContainer adresse2GS1 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
+		Assert.assertNotNull(adresse2GS1.getGesuchstellerAdresseJA());
 		adresse2GS1.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 		adresse2GS1.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.NOVEMBER, 26), Constants.END_OF_TIME));
 		adressen1.add(adresse2GS1);
@@ -360,12 +405,15 @@ public class WohnsitzAbschnittRuleTest {
 	}
 
 	private void createAdressenForGS2(Gesuch gesuch) {
+		Assert.assertNotNull(gesuch.getGesuchsteller2());
 		List<GesuchstellerAdresseContainer> adressen2 = new ArrayList<>();
 		final GesuchstellerAdresseContainer adresse1GS2 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
+		Assert.assertNotNull(adresse1GS2.getGesuchstellerAdresseJA());
 		adresse1GS2.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 		adresse1GS2.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 25)));
 		adressen2.add(adresse1GS2);
 		final GesuchstellerAdresseContainer adresse2GS2 = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
+		Assert.assertNotNull(adresse2GS2.getGesuchstellerAdresseJA());
 		adresse2GS2.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		adresse2GS2.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 26), Constants.END_OF_TIME));
 		adressen2.add(adresse2GS2);
