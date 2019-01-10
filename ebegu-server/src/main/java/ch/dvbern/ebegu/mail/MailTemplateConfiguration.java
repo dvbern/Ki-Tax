@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -62,6 +63,7 @@ public class MailTemplateConfiguration {
 	public static final String START_DATUM = "startDatum";
 	public static final String GESUCH = "gesuch";
 	public static final String MITTEILUNG = "mitteilung";
+	public static final String TEMPLATES_FOLDER = "/mail/templates";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -70,56 +72,67 @@ public class MailTemplateConfiguration {
 
 	public MailTemplateConfiguration() {
 		this.freeMarkerConfiguration = new Configuration();
-		this.freeMarkerConfiguration.setClassForTemplateLoading(MailTemplateConfiguration.class, "/mail/templates");
+		this.freeMarkerConfiguration.setClassForTemplateLoading(MailTemplateConfiguration.class, TEMPLATES_FOLDER);
 		this.freeMarkerConfiguration.setDefaultEncoding("UTF-8");
 	}
 
 	public String getInfoBetreuungAbgelehnt(
 		@Nonnull Betreuung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
 
 		return processTemplateBetreuung(
-			"InfoBetreuungAbgelehnt.ftl",
+			"InfoBetreuungAbgelehnt",
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail));
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
 	}
 
 	public String getInfoBetreuungenBestaetigt(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
 
 		return processTemplateGesuch(
-			"InfoBetreuungenBestaetigt.ftl",
+			"InfoBetreuungenBestaetigt",
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail));
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
 	}
 
 	public String getInfoSchulamtAnmeldungUebernommen(
 		@Nonnull Betreuung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
 
 		return processTemplateBetreuung(
-			"InfoSchulamtAnmeldungUebernommen.ftl",
+			"InfoSchulamtAnmeldungUebernommen",
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail));
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
 	}
 
 	public String getInfoSchulamtAnmeldungAbgelehnt(
 		@Nonnull Betreuung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache) {
 
 		return processTemplateBetreuung(
-			"InfoSchulamtAnmeldungAbgelehnt.ftl",
+			"InfoSchulamtAnmeldungAbgelehnt",
 			betreuung,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail));
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
 	}
 
 	public String getInfoBetreuungGeloescht(
@@ -130,7 +143,8 @@ public class MailTemplateConfiguration {
 		@Nonnull Institution institution,
 		@Nonnull String empfaengerMail,
 		@Nonnull LocalDate datumErstellung,
-		@Nonnull LocalDate birthdayKind) {
+		@Nonnull LocalDate birthdayKind,
+		@Nonnull Sprache sprache) {
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung));
@@ -142,7 +156,8 @@ public class MailTemplateConfiguration {
 			kind,
 			gesuchsteller1,
 			institution,
-			paramMap);
+			paramMap,
+			sprache);
 	}
 
 	public String getInfoBetreuungVerfuegt(
@@ -152,7 +167,8 @@ public class MailTemplateConfiguration {
 		@Nonnull Kind kind,
 		@Nonnull Institution institution,
 		@Nonnull String empfaengerMail,
-		@Nonnull LocalDate birthdayKind) {
+		@Nonnull LocalDate birthdayKind,
+		@Nonnull Sprache sprache) {
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
@@ -163,62 +179,85 @@ public class MailTemplateConfiguration {
 			kind,
 			gesuchsteller1,
 			institution,
-			paramMap);
+			paramMap,
+			sprache);
 	}
 
-	public String getInfoMitteilungErhalten(@Nonnull Mitteilung mitteilung, @Nonnull String empfaengerMail) {
-		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail));
+	public String getInfoMitteilungErhalten(
+		@Nonnull Mitteilung mitteilung,
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
+		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail), sprache);
 	}
 
 	public String getInfoVerfuegtGesuch(
 		@Nonnull Gesuch gesuch,
 		Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
 
 		return processTemplateGesuch(
-			"InfoVerfuegtGesuch.ftl",
+			"InfoVerfuegtGesuch",
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail));
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
 	}
 
 	public String getInfoVerfuegtMutation(
 		@Nonnull Gesuch gesuch,
 		Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache) {
 
 		return processTemplateGesuch(
-			"InfoVerfuegtMutation.ftl",
+			"InfoVerfuegtMutation",
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail));
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
 	}
 
-	public String getInfoMahnung(@Nonnull Gesuch gesuch, Gesuchsteller gesuchsteller, @Nonnull String empfaengerMail) {
+	public String getInfoMahnung(
+		@Nonnull Gesuch gesuch,
+		Gesuchsteller gesuchsteller,
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache
+	) {
 		return processTemplateGesuch(
-			"InfoMahnung.ftl",
+			"InfoMahnung",
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail));
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
 	}
 
 	public String getWarnungGesuchNichtFreigegeben(
 		@Nonnull Gesuch gesuch,
 		Gesuchsteller gesuchsteller,
 		@Nonnull String empfaengerMail,
-		int anzahlTage) {
+		int anzahlTage,
+		@Nonnull Sprache sprache) {
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
 
-		return processTemplateGesuch("WarnungGesuchNichtFreigegeben.ftl", gesuch, gesuchsteller, paramMap);
+		return processTemplateGesuch(
+			"WarnungGesuchNichtFreigegeben",
+			gesuch,
+			gesuchsteller,
+			paramMap,
+			sprache);
 	}
 
 	public String getWarnungFreigabequittungFehlt(
 		@Nonnull Gesuch gesuch,
 		Gesuchsteller gesuchsteller,
 		@Nonnull String empfaengerMail,
-		int anzahlTage) {
+		int anzahlTage,
+		@Nonnull Sprache sprache) {
 
 		LocalDate datumLoeschung = LocalDate.now().plusDays(anzahlTage).minusDays(1);
 
@@ -226,26 +265,35 @@ public class MailTemplateConfiguration {
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
 		paramMap.put(DATUM_LOESCHUNG, Constants.DATE_FORMATTER.format(datumLoeschung));
 
-		return processTemplateGesuch("WarnungFreigabequittungFehlt.ftl", gesuch, gesuchsteller, paramMap);
+		return processTemplateGesuch(
+			"WarnungFreigabequittungFehlt",
+			gesuch,
+			gesuchsteller,
+			paramMap,
+			sprache);
 	}
 
 	public String getInfoGesuchGeloescht(
 		@Nonnull Gesuch gesuch,
 		Gesuchsteller gesuchsteller,
-		@Nonnull String empfaengerMail) {
+		@Nonnull String empfaengerMail,
+		@Nonnull Sprache sprache) {
 
 		return processTemplateGesuch(
-			"InfoGesuchGeloescht.ftl",
+			"InfoGesuchGeloescht",
 			gesuch,
 			gesuchsteller,
-			paramsWithEmpfaenger(empfaengerMail));
+			paramsWithEmpfaenger(empfaengerMail),
+			sprache);
 	}
 
 	public String getInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull String empfaengerMail,
-		@Nonnull Gesuch gesuch) {
+		@Nonnull Gesuch gesuch,
+		@Nonnull Sprache sprache
+	) {
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
@@ -254,13 +302,14 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate("InfoFreischaltungGesuchsperiode.ftl", paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName("InfoFreischaltungGesuchsperiode", sprache), paramMap);
 	}
 
 	@Nonnull
 	public String getBenutzerEinladung(
 		@Nonnull Benutzer einladender,
-		@Nonnull Einladung einladung
+		@Nonnull Einladung einladung,
+		@Nonnull Locale locale
 	) {
 
 		Benutzer eingeladener = einladung.getEingeladener();
@@ -280,7 +329,7 @@ public class MailTemplateConfiguration {
 		);
 		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER"));
 
-		return doProcessTemplate("BenutzerEinladung.ftl", paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName("BenutzerEinladung", locale), paramMap);
 	}
 
 	@Nonnull
@@ -289,7 +338,7 @@ public class MailTemplateConfiguration {
 			requireNonNull(eingeladener, "For an Einladung of the type Mitarbeiter a user must be set");
 			String abhaengigkeitAsString = eingeladener.extractRollenAbhaengigkeitAsString();
 
-			return abhaengigkeitAsString.isEmpty() ? "" : "(" + abhaengigkeitAsString + ")";
+			return abhaengigkeitAsString.isEmpty() ? "" : '(' + abhaengigkeitAsString + ')';
 		}
 
 		return einladung.getEinladungObjectName()
@@ -311,24 +360,28 @@ public class MailTemplateConfiguration {
 		@Nonnull String nameOfTemplate,
 		@Nonnull Gesuch gesuch,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull Map<Object, Object> paramMap) {
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull Sprache sprache
+	) {
 
 		paramMap.put(GESUCH, gesuch);
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 
-		return doProcessTemplate(nameOfTemplate, paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
 	}
 
 	private String processTemplateBetreuung(
 		@Nonnull String nameOfTemplate,
 		@Nonnull Betreuung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
-		@Nonnull Map<Object, Object> paramMap) {
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull Sprache sprache
+	) {
 
 		paramMap.put("betreuung", betreuung);
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 
-		return doProcessTemplate(nameOfTemplate, paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
 	}
 
 	private String processTemplateBetreuungGeloescht(
@@ -337,16 +390,19 @@ public class MailTemplateConfiguration {
 		Kind kind,
 		Gesuchsteller gesuchsteller1,
 		Institution institution,
-		@Nonnull Map<Object, Object> paramMap) {
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull Sprache sprache
+	) {
 
 		return processTemplateBetreuungStatus(
-			"InfoBetreuungGeloescht.ftl",
+			"InfoBetreuungGeloescht",
 			betreuung,
 			fall,
 			kind,
 			gesuchsteller1,
 			institution,
-			paramMap);
+			paramMap,
+			sprache);
 	}
 
 	private String processTemplateBetreuungStatus(
@@ -356,7 +412,9 @@ public class MailTemplateConfiguration {
 		Kind kind,
 		Gesuchsteller gesuchsteller1,
 		Institution institution,
-		@Nonnull Map<Object, Object> paramMap) {
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull Sprache sprache
+	) {
 
 		paramMap.put("betreuung", betreuung);
 		paramMap.put("fall", fall);
@@ -364,7 +422,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(GESUCHSTELLER, gesuchsteller1);
 		paramMap.put("institution", institution);
 
-		return doProcessTemplate(nameOfTemplate, paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName(nameOfTemplate, sprache), paramMap);
 	}
 
 	private String processTemplateBetreuungVerfuegt(
@@ -373,25 +431,42 @@ public class MailTemplateConfiguration {
 		Kind kind,
 		Gesuchsteller gesuchsteller1,
 		Institution institution,
-		@Nonnull Map<Object, Object> paramMap) {
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull Sprache sprache
+	) {
 
 		return processTemplateBetreuungStatus(
-			"InfoBetreuungVerfuegt.ftl",
+			"InfoBetreuungVerfuegt",
 			betreuung,
 			fall,
 			kind,
 			gesuchsteller1,
 			institution,
-			paramMap);
+			paramMap,
+			sprache);
 	}
 
 	private String processTemplateMitteilung(
 		@Nonnull Mitteilung mitteilung,
-		@Nonnull Map<Object, Object> paramMap) {
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull Sprache sprache
+	) {
 
 		paramMap.put(MITTEILUNG, mitteilung);
 
-		return doProcessTemplate("InfoMitteilungErhalten.ftl", paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName("InfoMitteilungErhalten", sprache), paramMap);
+	}
+
+	/**
+	 * Appends the language and the file extension to the given name. Result will look like "name_de.ftl"
+	 * WARNING! The name must be passed without an extension
+	 */
+	private String appendLanguageToTemplateName(@Nonnull final String name, @Nonnull Sprache sprache) {
+		return appendLanguageToTemplateName(name, sprache.getLocale());
+	}
+
+	private String appendLanguageToTemplateName(@Nonnull final String name, @Nonnull Locale locale) {
+		return name + '_' + locale.getLanguage().toLowerCase() + ".ftl";
 	}
 
 	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {

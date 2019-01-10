@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +32,12 @@ import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.services.GemeindeService;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import org.apache.commons.lang.BooleanUtils;
@@ -144,5 +151,54 @@ public final class EbeguUtil {
 
 	public static String getPaddedFallnummer(long fallNummer) {
 		return Strings.padStart(Long.toString(fallNummer), Constants.FALLNUMMER_LENGTH, '0');
+	}
+
+	/**
+	 * Will return the desired Korrespondenzsprache of the Gesuchsteller if this happens to be configured as allowed language for the Gemeinde
+	 * In any other case it will return the first language that is allowed by the Gemeinde.
+	 * WARNING! since allowed languages are not prioritized in the Gemeinde, the method cannot know if it should return one language or another
+	 * for this reason it will return just the first language it finds.
+	 */
+	@Nonnull
+	public static Sprache extractKorrespondezsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
+		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gesuch, gemeindeService);
+		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
+
+		if (gesuchstellerGewuenschteSprache != null && gemeindeSprachen.contains(gesuchstellerGewuenschteSprache)) {
+			return gesuchstellerGewuenschteSprache;
+		}
+
+		return gemeindeSprachen.get(0);
+	}
+
+	@Nullable
+	private static Sprache extractGesuchstellerSprache(@Nonnull Gesuch gesuch) {
+		if (gesuch.getGesuchsteller1() == null) {
+			return null;
+		}
+		return gesuch.getGesuchsteller1().getGesuchstellerJA().getKorrespondenzSprache();
+	}
+
+	/**
+	 * Will looked for the language(s) of the given Gemeinde and return them as a list.
+	 * If the Gemeinde has no Stammdaten an Exception will be thrown because this shows a real problem in the data
+	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
+	 */
+	@Nonnull
+	private static List<Sprache> extractGemeindeSprachen(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
+		final String gemeindeId = gesuch.getDossier().getGemeinde().getId();
+		final GemeindeStammdaten gemeindeStammdatenOpt = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"extractKorrespondezsprache",
+				ErrorCodeEnum.ERROR_NO_GEMEINDE_STAMMDATEN,
+				gemeindeId)
+			);
+
+		final Sprache[] gemeindeSprachen = gemeindeStammdatenOpt.getKorrespondenzsprache().getSprache();
+		if (gemeindeSprachen.length <= 0) {
+			return Collections.singletonList(Sprache.DEUTSCH);
+		}
+
+		return Arrays.asList(gemeindeSprachen);
 	}
 }
