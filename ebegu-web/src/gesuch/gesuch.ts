@@ -392,11 +392,14 @@ export class GesuchRouteController implements IController {
     }
 
     public getVerfuegenText(): string {
-        if (isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            || (this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG)) {
-            return this.$translate.instant('MENU_VERFUEGEN');
+
+        if ( this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
+            !isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status) &&
+            (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG)) {
+
+            return this.$translate.instant('MENU_PROVISORISCHE_BERECHNUNG');
         }
-        return this.$translate.instant('MENU_PROVISORISCHE_BERECHNUNG');
+        return this.$translate.instant('MENU_VERFUEGEN');
     }
 
     private setDateEWKAbfrage(n: number): void {
