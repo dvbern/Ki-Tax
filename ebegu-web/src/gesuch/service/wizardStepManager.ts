@@ -26,6 +26,7 @@ import TSGesuch from '../../models/TSGesuch';
 import TSWizardStep from '../../models/TSWizardStep';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import WizardStepRS from './WizardStepRS.rest';
+import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 
 const LOG = LogFactory.createLog('WizardStepManager');
 
@@ -312,17 +313,13 @@ export default class WizardStepManager {
         }
 
         if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
-            // TODO KIBON-313 reviewer: das kann alles weg oder?
-            // verfuegen fuer admin und jugendamt  immer sichtbar
-            // if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
-            //     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
-            //         return isAtLeastFreigegeben(gesuch.status);
-            //     }
-            //     // ... alle anderen ab VERFUEGT
-            //     if (!isAnyStatusOfVerfuegt(gesuch.status)) {
-            //         return false;
-            //     }
-            // }
+            // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
+            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
+                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
+                    !isAnyStatusOfVerfuegt(gesuch.status)) {
+
+                return false;
+            }
             return this.areAllStepsOK(gesuch);
         }
         return step.verfuegbar;  // wenn keine Sonderbedingung gehen wir davon aus dass der step nicht disabled ist
