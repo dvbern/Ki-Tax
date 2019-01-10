@@ -192,12 +192,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
     }
 
-    private isDetailAvailableForGesuchstatus(): boolean {
-        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
-        // gesuchsteller hat sicher mal nur Zugriff auf verfuegungsdetail wenn das gesuch mindestens freiggeben ist
-        return isGesuchsteller ? isAtLeastFreigegeben(this.getAntragStatus()) : true;
-    }
-
     private isDetailAvailableForBetreuungstatus(betreuungsstatus: TSBetreuungsstatus): boolean {
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.VERFUEGT,

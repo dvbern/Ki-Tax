@@ -17,7 +17,6 @@ import {IPromise, IQService} from 'angular';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';

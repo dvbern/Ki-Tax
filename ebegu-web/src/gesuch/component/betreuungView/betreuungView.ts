@@ -1057,7 +1057,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isProvisorischeBetreuung(): boolean {
-        return this.getBetreuungModel().vertrag === false;
+        return !!this.getBetreuungModel().vertrag;
     }
 
     public onChangeVertrag(): void {
@@ -1065,7 +1065,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.getBetreuungModel().betreuungspensumContainers = [];
         this.instStammId = null;
         // init prov. betreuung
-        if (this.model.vertrag === false) {
+        if (!!this.model.vertrag) {
             this.createProvisorischesBetreuungspensum();
         }
     }
