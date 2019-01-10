@@ -237,6 +237,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.betreuungsstunden = toCopy.betreuungsstunden;
 		this.vollkosten = toCopy.vollkosten;
 		this.elternbeitrag = toCopy.elternbeitrag;
+		this.verguenstigungOhneBeruecksichtigungVollkosten = toCopy.getVerguenstigungOhneBeruecksichtigungVollkosten();
+		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = toCopy.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
+		this.verguenstigung = toCopy.verguenstigung;
+		this.minimalerElternbeitrag = toCopy.minimalerElternbeitrag;
 		this.abzugFamGroesse = toCopy.abzugFamGroesse;
 		this.famGroesse = toCopy.famGroesse;
 		this.massgebendesEinkommenVorAbzugFamgr = toCopy.massgebendesEinkommenVorAbzugFamgr;
