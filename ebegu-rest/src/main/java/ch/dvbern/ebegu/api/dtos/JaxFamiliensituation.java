@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
@@ -39,9 +38,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@NotNull
 	private EnumFamilienstatus familienstatus;
-
-	@Nullable
-	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
 
 	@NotNull
 	private JaxGesuch gesuch;
@@ -69,15 +65,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setFamilienstatus(EnumFamilienstatus familienstatus) {
 		this.familienstatus = familienstatus;
-	}
-
-	@Nullable
-	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
-		return gesuchstellerKardinalitaet;
-	}
-
-	public void setGesuchstellerKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet) {
-		this.gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
 	}
 
 	public JaxGesuch getGesuch() {

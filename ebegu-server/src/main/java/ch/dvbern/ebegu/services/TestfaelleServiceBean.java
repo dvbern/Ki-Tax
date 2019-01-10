@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -427,12 +426,10 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		Familiensituation newFamsit = new Familiensituation();
 		newFamsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		newFamsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		newFamsit.setAenderungPer(aenderungPer);
 
 		Familiensituation oldFamsit = new Familiensituation();
 		oldFamsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		oldFamsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 
 		Optional<Gesuch> gesuchOptional = gesuchService.testfallMutieren(dossierId, gesuchsperiodeId, eingangsdatum);
 		if (gesuchOptional.isPresent()) {
@@ -834,7 +831,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private Familiensituation getFamiliensituationZuZweit(@Nullable LocalDate aenderungPer) {
 		Familiensituation famsit = new Familiensituation();
 		famsit.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		famsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		famsit.setGemeinsameSteuererklaerung(true);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
@@ -846,7 +842,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private Familiensituation getFamiliensituationAlleine(@Nullable LocalDate aenderungPer) {
 		Familiensituation famsit = new Familiensituation();
 		famsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		famsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
 		famsit.setVerguenstigungGewuenscht(true);

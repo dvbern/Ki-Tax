@@ -523,7 +523,6 @@ export default class EbeguRestUtil {
         if (familiensituation) {
             this.abstractMutableEntityToRestObject(restFamiliensituation, familiensituation);
             restFamiliensituation.familienstatus = familiensituation.familienstatus;
-            restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
             restFamiliensituation.gemeinsameSteuererklaerung = familiensituation.gemeinsameSteuererklaerung;
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
@@ -594,7 +593,6 @@ export default class EbeguRestUtil {
         if (familiensituationFromServer) {
             this.parseAbstractMutableEntity(familiensituation, familiensituationFromServer);
             familiensituation.familienstatus = familiensituationFromServer.familienstatus;
-            familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
             familiensituation.gemeinsameSteuererklaerung = familiensituationFromServer.gemeinsameSteuererklaerung;
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
@@ -1480,7 +1478,7 @@ export default class EbeguRestUtil {
     private kindToRestObject(restKind: any, kind: TSKind): any {
         this.abstractPersonEntitytoRestObject(restKind, kind);
         restKind.kinderabzug = kind.kinderabzug;
-        restKind.mutterspracheDeutsch = kind.mutterspracheDeutsch;
+        restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
@@ -1540,7 +1538,7 @@ export default class EbeguRestUtil {
         if (kindFromServer) {
             this.parseAbstractPersonEntity(kindTS, kindFromServer);
             kindTS.kinderabzug = kindFromServer.kinderabzug;
-            kindTS.mutterspracheDeutsch = kindFromServer.mutterspracheDeutsch;
+            kindTS.sprichtAmtssprache = kindFromServer.sprichtAmtssprache;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             if (kindFromServer.pensumFachstelle) {
@@ -1662,7 +1660,7 @@ export default class EbeguRestUtil {
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
         restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;
-        restAngebot.mutterspracheDeutsch = angebotDTO.mutterspracheDeutsch;
+        restAngebot.sprichtAmtssprache = angebotDTO.sprichtAmtssprache;
         return restAngebot;
 
     }

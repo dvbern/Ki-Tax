@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.annotation.Nullable;
+
 /**
  * DTO für die Resultate der Berechnungen der Finanziellen Situation und eventueller Einkommensverschlechterungen.
  *
@@ -34,7 +36,9 @@ public class FinanzDatenDTO implements Serializable {
 	private BigDecimal massgebendesEinkBjP2VorAbzFamGr = BigDecimal.ZERO;
 
 	private LocalDate datumVonBasisjahr = null; // Start Gesuchsperiode
+	@Nullable
 	private LocalDate datumVonBasisjahrPlus1 = null; // 1. des ausgewählten Monats. Wird auch gesetzt, wenn die EKV annulliert wurde!
+	@Nullable
 	private LocalDate datumVonBasisjahrPlus2 = null; // 1. des ausgewählten Monats. Wird auch gesetzt, wenn die EKV annulliert wurde!
 
 	// 'accepted' bedeutet, dass die EKV mehr als den Grenzwert erreicht, z.B. > 20%
@@ -54,19 +58,21 @@ public class FinanzDatenDTO implements Serializable {
 		this.datumVonBasisjahr = datumVonBasisjahr;
 	}
 
+	@Nullable
 	public LocalDate getDatumVonBasisjahrPlus1() {
 		return datumVonBasisjahrPlus1;
 	}
 
-	public void setDatumVonBasisjahrPlus1(LocalDate datumVonBasisjahrPlus1) {
+	public void setDatumVonBasisjahrPlus1(@Nullable LocalDate datumVonBasisjahrPlus1) {
 		this.datumVonBasisjahrPlus1 = datumVonBasisjahrPlus1;
 	}
 
+	@Nullable
 	public LocalDate getDatumVonBasisjahrPlus2() {
 		return datumVonBasisjahrPlus2;
 	}
 
-	public void setDatumVonBasisjahrPlus2(LocalDate datumVonBasisjahrPlus2) {
+	public void setDatumVonBasisjahrPlus2(@Nullable LocalDate datumVonBasisjahrPlus2) {
 		this.datumVonBasisjahrPlus2 = datumVonBasisjahrPlus2;
 	}
 

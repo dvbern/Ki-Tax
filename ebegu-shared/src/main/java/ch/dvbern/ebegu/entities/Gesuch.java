@@ -985,4 +985,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		// a gesuch with no Angebot will be considered a BG-Gesuch
 		return GesuchTypFromAngebotTyp.BG_GESUCH;
 	}
+
+	@Nullable
+	public Betreuung getFirstBetreuung() {
+		return getKindContainers().stream()
+			.findFirst()
+			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream().findFirst())
+			.orElse(null);
+	}
 }

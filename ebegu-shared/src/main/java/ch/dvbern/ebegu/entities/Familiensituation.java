@@ -29,7 +29,6 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -47,11 +46,7 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private EnumFamilienstatus familienstatus;
 
-	@Enumerated(EnumType.STRING)
 	@Nullable
-	@Column(nullable = true)
-	private EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet;
-
 	@Column(nullable = true)
 	private Boolean gemeinsameSteuererklaerung;
 
@@ -64,6 +59,7 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private Boolean verguenstigungGewuenscht;
 
+	@Nullable
 	@Column(nullable = true)
 	private LocalDate aenderungPer;
 
@@ -74,7 +70,6 @@ public class Familiensituation extends AbstractMutableEntity {
 		if (that != null) {
 			this.familienstatus = that.getFamilienstatus();
 			this.gemeinsameSteuererklaerung = that.getGemeinsameSteuererklaerung();
-			this.gesuchstellerKardinalitaet = that.getGesuchstellerKardinalitaet();
 			this.aenderungPer = that.getAenderungPer();
 			this.sozialhilfeBezueger = that.getSozialhilfeBezueger();
 			this.verguenstigungGewuenscht = that.getVerguenstigungGewuenscht();
@@ -88,15 +83,6 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	public void setFamilienstatus(@Nonnull EnumFamilienstatus familienstatus) {
 		this.familienstatus = familienstatus;
-	}
-
-	@Nullable
-	public EnumGesuchstellerKardinalitaet getGesuchstellerKardinalitaet() {
-		return gesuchstellerKardinalitaet;
-	}
-
-	public void setGesuchstellerKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet gesuchstellerKardinalitaet) {
-		this.gesuchstellerKardinalitaet = gesuchstellerKardinalitaet;
 	}
 
 	@Nullable
@@ -141,7 +127,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			switch (this.familienstatus) {
 			case ALLEINERZIEHEND:
 			case WENIGER_FUENF_JAHRE:
-				return EnumGesuchstellerKardinalitaet.ZU_ZWEIT == this.getGesuchstellerKardinalitaet();
+				return false;
 			case VERHEIRATET:
 			case KONKUBINAT:
 			case LAENGER_FUENF_JAHRE:
@@ -156,7 +142,6 @@ public class Familiensituation extends AbstractMutableEntity {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamilienstatus(this.getFamilienstatus());
 		target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
-		target.setGesuchstellerKardinalitaet(this.getGesuchstellerKardinalitaet());
 		target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 		target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
 		switch (copyType) {
@@ -186,7 +171,6 @@ public class Familiensituation extends AbstractMutableEntity {
 		final Familiensituation otherFamiliensituation = (Familiensituation) other;
 		return Objects.equals(getAenderungPer(), otherFamiliensituation.getAenderungPer()) &&
 			getFamilienstatus() == otherFamiliensituation.getFamilienstatus() &&
-			getGesuchstellerKardinalitaet() == otherFamiliensituation.getGesuchstellerKardinalitaet() &&
 			EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung(), otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht());
