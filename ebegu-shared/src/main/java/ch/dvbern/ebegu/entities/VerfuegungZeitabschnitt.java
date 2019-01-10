@@ -151,6 +151,18 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private BigDecimal vollkosten = ZERO;
 
 	@Column(nullable = true)
+	private BigDecimal verguenstigungOhneBeruecksichtigungVollkosten;
+
+	@Column(nullable = true)
+	private BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+
+	@Column(nullable = true)
+	private BigDecimal verguenstigung;
+
+	@Column(nullable = true)
+	private BigDecimal minimalerElternbeitrag;
+
+	@Column(nullable = true)
 	private BigDecimal elternbeitrag = ZERO;
 
 	@Column(nullable = true)
@@ -570,6 +582,40 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.besondereBeduerfnisse = besondereBeduerfnisse;
 	}
 
+	public BigDecimal getVerguenstigungOhneBeruecksichtigungVollkosten() {
+		return verguenstigungOhneBeruecksichtigungVollkosten;
+	}
+
+	public void setVerguenstigungOhneBeruecksichtigungVollkosten(BigDecimal
+		verguenstigungOhneBeruecksichtigungVollkosten) {
+		this.verguenstigungOhneBeruecksichtigungVollkosten = verguenstigungOhneBeruecksichtigungVollkosten;
+	}
+
+	public BigDecimal getVerguenstigungOhneBeruecksichtigungMinimalbeitrag() {
+		return verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+	}
+
+	public void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal
+		verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
+		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+	}
+
+	public BigDecimal getVerguenstigung() {
+		return verguenstigung;
+	}
+
+	public void setVerguenstigung(BigDecimal verguenstigung) {
+		this.verguenstigung = verguenstigung;
+	}
+
+	public BigDecimal getMinimalerElternbeitrag() {
+		return minimalerElternbeitrag;
+	}
+
+	public void setMinimalerElternbeitrag(BigDecimal minimalerElternbeitrag) {
+		this.minimalerElternbeitrag = minimalerElternbeitrag;
+	}
+
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
@@ -861,17 +907,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(vollkosten, that.vollkosten) &&
 			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
 			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0);
-	}
-
-	/**
-	 * Gibt den Betrag des Gutscheins zurück.
-	 */
-	@Nonnull
-	public BigDecimal getVerguenstigung() {
-		if (vollkosten != null && elternbeitrag != null) {
-			return vollkosten.subtract(elternbeitrag);
-		}
-		return ZERO;
 	}
 
 	@Override

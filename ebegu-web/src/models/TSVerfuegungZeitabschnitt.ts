@@ -28,6 +28,10 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     private _bgPensum: number;
     private _betreuungsstunden: number;
     private _vollkosten: number;
+    private _verguenstigungOhneBeruecksichtigungVollkosten: number;
+    private _verguenstigungOhneBeruecksichtigungMinimalbeitrag: number;
+    private _verguenstigung: number;
+    private _minimalerElternbeitrag: number;
     private _elternbeitrag: number;
     private _abzugFamGroesse: number;
     private _famGroesse: number;
@@ -41,51 +45,6 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     private _sameVerfuegungsdaten: boolean;
     private _sameVerguenstigung: boolean;
 
-    public constructor(
-        erwerbspensumGS1?: number,
-        erwerbspensumGS2?: number,
-        betreuungspensum?: number,
-        fachstellenpensum?: number,
-        anspruchspensumRest?: number,
-        anspruchberechtigtesPensum?: number,
-        bgPensum?: number,
-        betreuungsstunden?: number,
-        vollkosten?: number,
-        elternbeitrag?: number,
-        abzugFamGroesse?: number,
-        massgebendesEinkommen?: number,
-        bemerkungen?: string,
-        zahlungsstatus?: TSVerfuegungZeitabschnittZahlungsstatus,
-        gueltigkeit?: TSDateRange,
-        famGroesse?: number,
-        einkommensjahr?: number,
-        kategorieMaxEinkommen?: boolean,
-        kategorieKeinPensum?: boolean,
-        sameVerfuegungsdaten?: boolean,
-        sameVerguenstigung?: boolean,
-    ) {
-        super(gueltigkeit);
-        this._erwerbspensumGS1 = erwerbspensumGS1;
-        this._erwerbspensumGS2 = erwerbspensumGS2;
-        this._betreuungspensum = betreuungspensum;
-        this._fachstellenpensum = fachstellenpensum;
-        this._anspruchspensumRest = anspruchspensumRest;
-        this._anspruchberechtigtesPensum = anspruchberechtigtesPensum;
-        this._bgPensum = bgPensum;
-        this._betreuungsstunden = betreuungsstunden;
-        this._vollkosten = vollkosten;
-        this._elternbeitrag = elternbeitrag;
-        this._abzugFamGroesse = abzugFamGroesse;
-        this._massgebendesEinkommenVorAbzugFamgr = massgebendesEinkommen;
-        this._bemerkungen = bemerkungen;
-        this._zahlungsstatus = zahlungsstatus;
-        this._famGroesse = famGroesse;
-        this._einkommensjahr = einkommensjahr;
-        this._kategorieMaxEinkommen = kategorieMaxEinkommen;
-        this._kategorieKeinPensum = kategorieKeinPensum;
-        this._sameVerfuegungsdaten = sameVerfuegungsdaten;
-        this._sameVerguenstigung = sameVerguenstigung;
-    }
 
     public get erwerbspensumGS1(): number {
         return this._erwerbspensumGS1;
@@ -157,6 +116,38 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
 
     public set vollkosten(value: number) {
         this._vollkosten = value;
+    }
+
+    public get verguenstigungOhneBeruecksichtigungVollkosten(): number {
+        return this._verguenstigungOhneBeruecksichtigungVollkosten;
+    }
+
+    public set verguenstigungOhneBeruecksichtigungVollkosten(value: number) {
+        this._verguenstigungOhneBeruecksichtigungVollkosten = value;
+    }
+
+    public get verguenstigungOhneBeruecksichtigungMinimalbeitrag(): number {
+        return this._verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+    }
+
+    public set verguenstigungOhneBeruecksichtigungMinimalbeitrag(value: number) {
+        this._verguenstigungOhneBeruecksichtigungMinimalbeitrag = value;
+    }
+
+    public get verguenstigung(): number {
+        return this._verguenstigung;
+    }
+
+    public set verguenstigung(value: number) {
+        this._verguenstigung = value;
+    }
+
+    public get minimalerElternbeitrag(): number {
+        return this._minimalerElternbeitrag;
+    }
+
+    public set minimalerElternbeitrag(value: number) {
+        this._minimalerElternbeitrag = value;
     }
 
     public get elternbeitrag(): number {
