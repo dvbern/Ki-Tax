@@ -20,7 +20,7 @@
 
         <div class="row viewTitle">
             <div class="col-md-12">
-                <h2 data-translate="VERFUEGUNGEN"></h2>
+                <h2>{{vm.getTite()}}</h2>
                 <hr class="header"/>
             </div>
         </div>
@@ -90,6 +90,7 @@
                                                 ng-model="vm.getGesuch().finSitStatus" dv-enable-element
                                                 dv-enable-allowed-roles="vm.allowedRoles"
                                                 dv-enable-expression="!vm.isGesuchReadonly()"
+                                                ng-disabled="!vm.finSitStatusEnabled()"
                                                 ng-change="vm.changeFinSitStatus()">
                             </dv-radio-container>
                             <dv-error-messages input-id="finSitStatus" for="vm.form.finSitStatus.$error"

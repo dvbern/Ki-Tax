@@ -313,16 +313,17 @@ export default class WizardStepManager {
         }
 
         if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
-            // verfuegen fuer admin und jugendamt immer sichtbar
-            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                    return isAtLeastFreigegeben(gesuch.status);
-                }
-                // ... alle anderen ab VERFUEGT
-                if (!isAnyStatusOfVerfuegt(gesuch.status)) {
-                    return false;
-                }
-            }
+            // TODO KIBON-313 reviewer: das kann alles weg oder?
+            // verfuegen fuer admin und jugendamt  immer sichtbar
+            // if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
+            //     if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
+            //         return isAtLeastFreigegeben(gesuch.status);
+            //     }
+            //     // ... alle anderen ab VERFUEGT
+            //     if (!isAnyStatusOfVerfuegt(gesuch.status)) {
+            //         return false;
+            //     }
+            // }
             return this.areAllStepsOK(gesuch);
         }
         return step.verfuegbar;  // wenn keine Sonderbedingung gehen wir davon aus dass der step nicht disabled ist

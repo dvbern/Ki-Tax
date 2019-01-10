@@ -184,7 +184,7 @@ public class PDFServiceBean implements PDFService {
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER})
 	public byte[] generateVerfuegungForBetreuung(Betreuung betreuung,
 		@Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected
 	) throws MergeDocException {
