@@ -172,8 +172,8 @@ public class PDFServiceBean implements PDFService {
 		if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 
 			if (!gesuch.hasOnlyBetreuungenOfSchulamt()) {
-				// Bei nur Schulamt prüfen wir die Berechtigung nicht, damit das JA solche Gesuche schliessen kann. Der UseCase ist, dass zuerst ein zweites
-				// Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.		authorizer.checkReadAuthorizationFinSit(gesuch);
+				// Bei nur Schulamt prüfen wir die Berechtigung nicht, damit das JA solche Gesuche schliessen kann. Der UseCase ist,
+				// dass zuerst ein zweites Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.
 				authorizer.checkReadAuthorizationFinSit(gesuch);
 			}
 
