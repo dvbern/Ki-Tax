@@ -54,6 +54,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -103,6 +104,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -164,6 +166,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Inject
 	private PrincipalBean principalBean;
 
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
 	@Override
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
@@ -204,7 +209,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			String message = String.format(
 				"Mail InfoMitteilungErhalten konnte nicht verschickt werden fuer Mitteilung %s",
 				mitteilung.getId());
-			throw new EbeguRuntimeException("sendMitteilung", message, ErrorCodeEnum.ERROR_MAIL, e);
+			Level logLevel = ebeguConfiguration.getIsDevmode() ? Level.INFO : Level.ERROR;
+			throw new EbeguRuntimeException("sendMitteilung", message, ErrorCodeEnum.ERROR_MAIL, logLevel, e);
 		}
 
 		return persistence.merge(mitteilung);
