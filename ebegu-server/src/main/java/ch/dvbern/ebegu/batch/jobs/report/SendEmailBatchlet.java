@@ -86,7 +86,7 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 				mailService.sendDocumentCreatedEmail(receiverEmail, null, createStatistikPageLink());
 			}
 			return BatchStatus.COMPLETED.toString();
-		} catch (MailException e) {
+		} catch (MailException ignore) {
 			return BatchStatus.FAILED.toString();
 		}
 	}
@@ -94,12 +94,6 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	private String createStatistikPageLink() {
 		return configuration.getHostname() + "/statistik";
 	}
-// Do not send direct downloadlink (because of security)
-//	private String constructDownloadURI(DownloadFile downloadFile) {
-//		//file sollte wohl besser mitgesendet werden
-////		String resultData = workjob.getResultData();
-//		return "http://localhost:8080/ebegu/api/v1/blobs/temp/blobdata/" + downloadFile.getAccessToken();
-//	}
 
 	@Nullable
 	private DownloadFile createDownloadfile(@Nonnull Workjob workJob, @Nullable UploadFileInfo uploadFile) {
