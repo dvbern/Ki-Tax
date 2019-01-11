@@ -17,7 +17,10 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -43,9 +46,6 @@ import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
-import com.google.common.base.Joiner;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -178,6 +178,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@NotNull
 	@Column(nullable = false)
 	private Integer einkommensjahr;
+
+	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
+	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
+	// "bemerkungen" geschrieben
+	@Transient
+	private Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new HashMap<>();
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
@@ -405,6 +411,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setBemerkungen(@Nullable String bemerkungen) {
 		this.bemerkungen = bemerkungen;
+	}
+
+	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
+		return bemerkungenMap;
 	}
 
 	public Verfuegung getVerfuegung() {
@@ -679,7 +689,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 		this.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.addNullSafe(this.getMassgebendesEinkommenVorAbzFamgr(), other.getMassgebendesEinkommenVorAbzFamgr()));
 
-		this.addBemerkung(other.getBemerkungen());
+		this.addAllBemerkungen(other.getBemerkungenMap());
 		this.setZuSpaetEingereicht(this.isZuSpaetEingereicht() || other.isZuSpaetEingereicht());
 
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
@@ -719,49 +729,25 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
 	}
 
-	public void addBemerkung(VerfuegungsBemerkung bemerkungContainer) {
-		this.addBemerkung(bemerkungContainer.getRuleKey(), bemerkungContainer.getMsgKey());
+	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey));
 	}
 
-	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey) {
-		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey);
-		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
-
+	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Object... args) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, args));
 	}
 
-	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, Object... args) {
-		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, args);
-		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
-	}
-
-	/**
-	 * Fügt eine Bemerkung zur Liste hinzu
-	 */
-	public void addBemerkung(@Nullable String bem) {
-		this.bemerkungen = Joiner.on("\n").skipNulls().join(
-			StringUtils.defaultIfBlank(this.bemerkungen, null),
-			StringUtils.defaultIfBlank(bem, null)
-		);
-	}
-
-	/**
-	 * Fügt mehrere Bemerkungen zur Liste hinzu
-	 */
-	public void addAllBemerkungen(@Nonnull List<String> bemerkungenList) {
-		List<String> listOfStrings = new ArrayList<>();
-		listOfStrings.add(this.bemerkungen);
-		listOfStrings.addAll(bemerkungenList);
-		this.bemerkungen = String.join(";", listOfStrings);
+	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+		this.bemerkungenMap.putAll(otherBemerkungenMap);
 	}
 
 	/**
 	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
 	 */
-	public void mergeBemerkungen(String otherBemerkungen) {
-		String[] otherBemerkungenList = StringUtils.split(otherBemerkungen, "\n");
-		for (String otherBemerkung : otherBemerkungenList) {
-			if (!StringUtils.contains(getBemerkungen(), otherBemerkung)) {
-				addBemerkung(otherBemerkung);
+	public void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
+			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
+				this.bemerkungenMap.put(msgKeyVerfuegungsBemerkungEntry.getKey(), msgKeyVerfuegungsBemerkungEntry.getValue());
 			}
 		}
 	}

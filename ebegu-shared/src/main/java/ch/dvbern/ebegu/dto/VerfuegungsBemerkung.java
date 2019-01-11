@@ -15,35 +15,63 @@
 
 package ch.dvbern.ebegu.dto;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleKey;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 /**
  * DTO für eine Verfügungsbemerkung
  */
 public class VerfuegungsBemerkung {
 
+	@Nonnull
 	private RuleKey ruleKey;
+
+	@Nonnull
 	private MsgKey msgKey;
 
-	public VerfuegungsBemerkung(RuleKey ruleKey, MsgKey msgKey) {
+	@Nullable
+	private Object[] args = null;
+
+	public VerfuegungsBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey) {
 		this.ruleKey = ruleKey;
 		this.msgKey = msgKey;
 	}
 
+	public VerfuegungsBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Object... args) {
+		this.ruleKey = ruleKey;
+		this.msgKey = msgKey;
+		this.args = args;
+	}
+
+	@Nonnull
 	public RuleKey getRuleKey() {
 		return ruleKey;
 	}
 
-	public void setRuleKey(RuleKey ruleKey) {
+	public void setRuleKey(@Nonnull RuleKey ruleKey) {
 		this.ruleKey = ruleKey;
 	}
 
+	@Nonnull
 	public MsgKey getMsgKey() {
 		return msgKey;
 	}
 
-	public void setMsgKey(MsgKey msgKey) {
+	public void setMsgKey(@Nonnull MsgKey msgKey) {
 		this.msgKey = msgKey;
+	}
+
+	public String getTranslated() {
+		String bemerkungsText = null;
+		if (args != null) {
+			bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, args);
+		} else {
+			bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey);
+		}
+		return ruleKey.name() + ": " + bemerkungsText;
 	}
 }

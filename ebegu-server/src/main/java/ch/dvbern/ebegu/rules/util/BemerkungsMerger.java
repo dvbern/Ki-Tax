@@ -29,6 +29,7 @@ import java.util.TreeSet;
 
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
@@ -66,7 +67,8 @@ public final class BemerkungsMerger {
 		if (zeitabschnitte == null || zeitabschnitte.isEmpty()) {
 			return null;
 		}
-
+		// Die Bemerkungen aus der transienten BemerkungenMap ins Feld schreiben
+		prepareGeneratedBemerkungen(zeitabschnitte);
 		StringJoiner joiner = new StringJoiner("\n");
 		Map<String, Collection<DateRange>> rangesByBemerkungKey = evaluateRangesByBemerkungKey(zeitabschnitte);
 
@@ -76,6 +78,17 @@ public final class BemerkungsMerger {
 		}
 
 		return joiner.toString();
+	}
+
+	private static void prepareGeneratedBemerkungen(List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
+			StringBuilder sb = new StringBuilder();
+			for (VerfuegungsBemerkung verfuegungsBemerkung : verfuegungZeitabschnitt.getBemerkungenMap().values()) {
+				sb.append(verfuegungsBemerkung.getTranslated());
+				sb.append("\n");
+			}
+			verfuegungZeitabschnitt.setBemerkungen(sb.toString());
+		}
 	}
 
 	/**

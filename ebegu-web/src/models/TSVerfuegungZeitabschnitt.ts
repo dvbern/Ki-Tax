@@ -15,7 +15,6 @@
 
 import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import {TSDateRange} from './types/TSDateRange';
 
 export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
 
@@ -44,7 +43,6 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     private _zuSpaetEingereicht: boolean;
     private _sameVerfuegungsdaten: boolean;
     private _sameVerguenstigung: boolean;
-
 
     public get erwerbspensumGS1(): number {
         return this._erwerbspensumGS1;
