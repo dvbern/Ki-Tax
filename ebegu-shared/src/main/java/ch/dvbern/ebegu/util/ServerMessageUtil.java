@@ -23,6 +23,7 @@ import java.util.ResourceBundle;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -73,7 +74,8 @@ public final class ServerMessageUtil {
 		if (e == null) {
 			return StringUtils.EMPTY;
 		}
-		return getMessage(getKey(e));
+		Locale locale = LocaleThreadLocal.get();
+		return getMessage(getKey(e), locale);
 	}
 
 	/**
@@ -84,7 +86,8 @@ public final class ServerMessageUtil {
 		if (e == null) {
 			return StringUtils.EMPTY;
 		}
-		return getMessage(getKey(e), args);
+		Locale locale = LocaleThreadLocal.get();
+		return getMessage(getKey(e), locale, args);
 	}
 
 	/**
