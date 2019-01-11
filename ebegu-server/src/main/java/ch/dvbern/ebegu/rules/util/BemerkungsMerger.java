@@ -80,15 +80,22 @@ public final class BemerkungsMerger {
 		return joiner.toString();
 	}
 
-	private static void prepareGeneratedBemerkungen(List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public static void prepareGeneratedBemerkungen(List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-			StringBuilder sb = new StringBuilder();
-			for (VerfuegungsBemerkung verfuegungsBemerkung : verfuegungZeitabschnitt.getBemerkungenMap().values()) {
-				sb.append(verfuegungsBemerkung.getTranslated());
-				sb.append("\n");
-			}
-			verfuegungZeitabschnitt.setBemerkungen(sb.toString());
+			prepareGeneratedBemerkungen(verfuegungZeitabschnitt);
 		}
+	}
+
+	public static void prepareGeneratedBemerkungen(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		StringBuilder sb = new StringBuilder();
+		for (VerfuegungsBemerkung verfuegungsBemerkung : verfuegungZeitabschnitt.getBemerkungenMap().values()) {
+			sb.append(verfuegungsBemerkung.getTranslated());
+			sb.append("\n");
+		}
+		// Den letzten NewLine entfernen
+		String bemerkungen = sb.toString();
+		bemerkungen = StringUtils.removeEnd(bemerkungen, "\n");
+		verfuegungZeitabschnitt.setBemerkungen(bemerkungen);
 	}
 
 	/**

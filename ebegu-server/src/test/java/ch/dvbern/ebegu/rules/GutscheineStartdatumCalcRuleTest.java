@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -41,6 +42,7 @@ public class GutscheineStartdatumCalcRuleTest {
 		betreuung.getKind().setGesuch(TestDataUtil.createDefaultGesuch());
 
 		rule.executeRule(betreuung, zeitabschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitt);
 
 		assertEquals(0, zeitabschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(
@@ -56,6 +58,7 @@ public class GutscheineStartdatumCalcRuleTest {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 
 		rule.executeRule(betreuung, zeitabschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitabschnitt);
 
 		assertEquals(100, zeitabschnitt.getAnspruchberechtigtesPensum());
 		assertNotNull(zeitabschnitt.getBemerkungen());

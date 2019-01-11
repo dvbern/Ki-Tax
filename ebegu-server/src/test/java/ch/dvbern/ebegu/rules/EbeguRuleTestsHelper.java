@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
+import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -145,6 +146,7 @@ public final class EbeguRuleTestsHelper {
 		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
 		result = AnspruchFristRule.execute(result);
 		result = AbschlussNormalizer.execute(result, false);
+		BemerkungsMerger.prepareGeneratedBemerkungen(result);
 		return result;
 	}
 
@@ -185,6 +187,7 @@ public final class EbeguRuleTestsHelper {
 		result = MonatsRule.execute(result);
 		result = MutationsMerger.execute(betreuung, result);
 		result = AbschlussNormalizer.execute(result, true);
+		BemerkungsMerger.prepareGeneratedBemerkungen(result);
 		return result;
 	}
 

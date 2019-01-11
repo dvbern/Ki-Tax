@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -48,7 +49,9 @@ public class EinkommenCalcRuleTest {
 		Assert.assertEquals(0, (new BigDecimal("50000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertFalse(result.get(0).isBezahltVollkosten());
-		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -61,7 +64,10 @@ public class EinkommenCalcRuleTest {
 		Assert.assertEquals(0, (new BigDecimal("180000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertFalse(result.get(0).isBezahltVollkosten());
-		Assert.assertFalse(result.get(0).getBemerkungen().isEmpty());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_MSG));
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	/**
