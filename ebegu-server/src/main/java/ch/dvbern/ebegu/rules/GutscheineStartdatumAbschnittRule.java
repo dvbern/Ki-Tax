@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -29,8 +30,8 @@ import ch.dvbern.ebegu.types.DateRange;
 
 public class GutscheineStartdatumAbschnittRule extends AbstractAbschnittRule {
 
-	public GutscheineStartdatumAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public GutscheineStartdatumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 	}
 
 	@Nonnull

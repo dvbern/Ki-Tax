@@ -93,7 +93,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
-		return ServerMessageUtil.getMessage(VERFUEGUNG_TITLE);
+		return translate(VERFUEGUNG_TITLE);
 	}
 
 	@Nonnull
@@ -102,7 +102,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			document.add(createIntro());
-			document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ANREDE_FAMILIE)));
+			document.add(PdfUtil.createParagraph(translate(ANREDE_FAMILIE)));
 			createContent(document, generator);
 		};
 	}
@@ -113,14 +113,14 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
 		switch (art) {
 			case NORMAL:
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(VERFUEGUNG_CONTENT,
+				document.add(PdfUtil.createParagraph(translate(VERFUEGUNG_CONTENT,
 					kind.getFullName(),
 					Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2));
 				document.add(createVerfuegungTable());
 				addBemerkungenIfAvailable(document);
 				break;
 			case KEIN_ANSPRUCH:
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(KEIN_ANSPRUCH_CONTENT,
+				document.add(PdfUtil.createParagraph(translate(KEIN_ANSPRUCH_CONTENT,
 					kind.getFullName(),
 					Constants.DATE_FORMATTER.format(kind.getGeburtsdatum()),
 					Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
@@ -130,27 +130,27 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			case NICHT_EINTRETTEN:
 				createFusszeile(generator.getDirectContent());
 				LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_1,
+				document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_1,
 					Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
 					Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
 					kind.getFullName(),
 					betreuung.getInstitutionStammdaten().getInstitution().getName(),
 					betreuung.getBGNummer())));
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_2,
+				document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_2,
 					Constants.DATE_FORMATTER.format(eingangsdatum))));
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_3)));
+				document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_3)));
 
-				Paragraph paragraphWithSupertext = PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_4));
+				Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
 				paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-				paragraphWithSupertext.add(new Chunk(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_5), PdfUtilities.DEFAULT_FONT));
+				paragraphWithSupertext.add(new Chunk(translate(NICHT_EINTRETEN_CONTENT_5), PdfUtilities.DEFAULT_FONT));
 				paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
-				paragraphWithSupertext.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_6)));
+				paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
 				document.add(paragraphWithSupertext);
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_7)));
+				document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_7)));
 				document.newPage();
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_8)));
-				document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_9)));
-				document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(NICHT_EINTRETEN_CONTENT_10,
+				document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_8)));
+				document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_9)));
+				document.add(PdfUtil.createBoldParagraph(translate(NICHT_EINTRETEN_CONTENT_10,
 					Constants.DATE_FORMATTER.format(eingangsdatum)), 2));
 				break;
 		}
@@ -164,7 +164,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		List<Element> bemerkungenElements = Lists.newArrayList();
 		final List<String> bemerkungen = getBemerkungen();
 		if (!bemerkungen.isEmpty()) {
-			bemerkungenElements.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(BEMERKUNGEN)));
+			bemerkungenElements.add(PdfUtil.createParagraph(translate(BEMERKUNGEN)));
 			bemerkungenElements.add(PdfUtil.createList(getBemerkungen()));
 			document.add(PdfUtil.createKeepTogetherTable(bemerkungenElements, 0, 2));
 		}
@@ -175,9 +175,9 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
 		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
 		introBasisjahr.add(new TableRowLabelValue(NAME, betreuung.getKind().getKindJA().getFullName()));
-		introBasisjahr.add(new TableRowLabelValue(ANGEBOT, ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsangebotTyp())));
+		introBasisjahr.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, betreuung.getInstitutionStammdaten().getInstitution().getName()));
-		return PdfUtil.creatreIntroTable(introBasisjahr);
+		return PdfUtil.creatreIntroTable(introBasisjahr, sprache);
 	}
 
 	@Nonnull
@@ -185,14 +185,14 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		Objects.requireNonNull(betreuung.getVerfuegung());
 		List<String[]> values = new ArrayList<>();
 		String[] titles = {
-			ServerMessageUtil.getMessage(VON),
-			ServerMessageUtil.getMessage(BIS),
-			ServerMessageUtil.getMessage(PENSUM_BETREUUNG),
-			ServerMessageUtil.getMessage(PENSUM_ANSPRUCH),
-			ServerMessageUtil.getMessage(PENSUM_BG),
-			ServerMessageUtil.getMessage(VOLLKOSTEN),
-			ServerMessageUtil.getMessage(GUTSCHEIN),
-			ServerMessageUtil.getMessage(ELTERNBEITRAG)
+			translate(VON),
+			translate(BIS),
+			translate(PENSUM_BETREUUNG),
+			translate(PENSUM_ANSPRUCH),
+			translate(PENSUM_BG),
+			translate(VOLLKOSTEN),
+			translate(GUTSCHEIN),
+			translate(ELTERNBEITRAG)
 		};
 		values.add(titles);
 		for (VerfuegungZeitabschnitt abschnitt : getVerfuegungZeitabschnitt()) {
@@ -284,8 +284,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		innerTable.setWidthPercentage(FULL_WIDTH);
 		innerTable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		innerTable.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		innerTable.addCell(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(RECHTSMITTELBELEHRUNG_TITLE), 0));
-		innerTable.addCell(PdfUtil.createParagraph(ServerMessageUtil.getMessage(RECHTSMITTELBELEHRUNG_CONTENT)));
+		innerTable.addCell(PdfUtil.createBoldParagraph(translate(RECHTSMITTELBELEHRUNG_TITLE), 0));
+		innerTable.addCell(PdfUtil.createParagraph(translate(RECHTSMITTELBELEHRUNG_CONTENT)));
 		table.addCell(innerTable);
 		return table;
 	}
@@ -293,7 +293,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
-			Lists.newArrayList(ServerMessageUtil.getMessage(FUSSZEILE_1), ServerMessageUtil.getMessage(FUSSZEILE_2))
+			Lists.newArrayList(translate(FUSSZEILE_1), translate(FUSSZEILE_2))
 		);
 	}
 }

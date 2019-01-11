@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -178,16 +179,25 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	@Override
 	@Nonnull
 	@PermitAll
-	public String getInitialeBemerkungen(@Nonnull Gesuch gesuch) {
+	public String getInitialeBemerkungen(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Locale locale
+	) {
 		authorizer.checkReadAuthorization(gesuch);
 		List<DokumentGrund> dokumentGrundsMerged = new ArrayList<>(DokumenteUtil
-			.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(gesuch),
-				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch)));
+			.mergeNeededAndPersisted(
+				dokumentenverzeichnisEvaluator.calculate(
+					gesuch,
+					locale
+				),
+				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch)
+			)
+		);
 		Collections.sort(dokumentGrundsMerged);
 
 		StringBuilder bemerkungenBuilder = new StringBuilder();
 		for (DokumentGrund dokumentGrund : dokumentGrundsMerged) {
-			String dokumentData = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch);
+			String dokumentData = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch, locale);
 			if (StringUtils.isNotEmpty(dokumentData)) {
 				bemerkungenBuilder.append(dokumentData);
 				bemerkungenBuilder.append('\n');

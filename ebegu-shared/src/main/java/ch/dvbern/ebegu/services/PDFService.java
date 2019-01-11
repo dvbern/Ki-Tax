@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -30,21 +31,48 @@ import ch.dvbern.ebegu.errors.MergeDocException;
 public interface PDFService {
 
 	@Nonnull
-	byte[] generateNichteintreten(Betreuung betreuung, boolean writeProtected) throws MergeDocException;
+	byte[] generateNichteintreten(
+		Betreuung betreuung,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException;
 
 	@Nonnull
-	byte[] generateMahnung(Mahnung mahnung, Optional<Mahnung> vorgaengerMahnung, boolean writeProtected) throws MergeDocException;
+	byte[] generateMahnung(
+		Mahnung mahnung,
+		Optional<Mahnung> vorgaengerMahnung,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException;
 
 	@Nonnull
-	byte[] generateFreigabequittung(Gesuch gesuch, boolean writeProtected) throws MergeDocException;
+	byte[] generateFreigabequittung(
+		Gesuch gesuch,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException;
 
 	@Nonnull
-	byte[] generateBegleitschreiben(@Nonnull Gesuch gesuch, boolean writeProtected) throws MergeDocException;
+	byte[] generateBegleitschreiben(
+		@Nonnull Gesuch gesuch,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException;
 
 	@Nonnull
-	byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull Verfuegung famGroessenVerfuegung, boolean writeProtected) throws MergeDocException;
+	byte[] generateFinanzielleSituation(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Verfuegung famGroessenVerfuegung,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException;
 
 	@Nonnull
-	byte[] generateVerfuegungForBetreuung(Betreuung betreuung, @Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected) throws MergeDocException;
+	byte[] generateVerfuegungForBetreuung(
+		Betreuung betreuung,
+		@Nullable LocalDate letzteVerfuegungDatum,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException;
 
 }

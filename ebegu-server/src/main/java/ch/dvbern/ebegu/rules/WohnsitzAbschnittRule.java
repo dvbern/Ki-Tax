@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -45,8 +46,8 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WohnsitzAbschnittRule.class);
 
-	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Nonnull

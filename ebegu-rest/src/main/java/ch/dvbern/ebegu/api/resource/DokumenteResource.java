@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.FileSaverService;
@@ -93,7 +94,8 @@ public class DokumenteResource {
 
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId.getId());
 		if (gesuch.isPresent()) {
-			final Set<DokumentGrund> dokumentGrundsNeeded = dokumentenverzeichnisEvaluator.calculate(gesuch.get());
+			final Set<DokumentGrund> dokumentGrundsNeeded = dokumentenverzeichnisEvaluator
+				.calculate(gesuch.get(), LocaleThreadLocal.get());
 			dokumentenverzeichnisEvaluator.addOptionalDokumentGruende(dokumentGrundsNeeded);
 			final Collection<DokumentGrund> persistedDokumentGrund = dokumentGrundService.findAllDokumentGrundByGesuch(gesuch.get());
 			final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil.mergeNeededAndPersisted(dokumentGrundsNeeded, persistedDokumentGrund);

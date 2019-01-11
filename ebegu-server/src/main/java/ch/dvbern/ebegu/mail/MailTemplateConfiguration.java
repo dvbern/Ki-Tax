@@ -322,12 +322,13 @@ public class MailTemplateConfiguration {
 			"content",
 			ServerMessageUtil.getMessage(
 				"EinladungEmail_" + einladung.getEinladungTyp(),
+				locale,
 				einladender.getFullName(),
-				ServerMessageUtil.translateEnumValue(eingeladener.getRole()),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), locale),
 				getRollenZusatz(einladung, eingeladener)
 			)
 		);
-		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER"));
+		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", locale));
 
 		return doProcessTemplate(appendLanguageToTemplateName("BenutzerEinladung", locale), paramMap);
 	}

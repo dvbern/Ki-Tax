@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
@@ -239,8 +240,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	/**
 	 * Wenn die Seite schon besucht ist dann soll der Status auf ok/mutiert oder notOK (bei wechsel ekv von nein auf ja) gesetzt werden
 	 */
-	private void updateAllStatusForEinkommensverschlechterungInfo(List<WizardStep> wizardSteps, EinkommensverschlechterungInfoContainer oldEntity,
-		EinkommensverschlechterungInfoContainer newEntity) {
+	private void updateAllStatusForEinkommensverschlechterungInfo(
+		List<WizardStep> wizardSteps,
+		EinkommensverschlechterungInfoContainer oldEntity,
+		EinkommensverschlechterungInfoContainer newEntity
+	) {
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()
 				&& WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()) {
@@ -281,7 +285,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				&& WizardStepName.DOKUMENTE == wizardStep.getWizardStepName()) {
 
 				final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil
-					.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(wizardStep.getGesuch()),
+					.mergeNeededAndPersisted(
+						dokumentenverzeichnisEvaluator.calculate(wizardStep.getGesuch(), LocaleThreadLocal.get()),
 						dokumentGrundService.findAllDokumentGrundByGesuch(wizardStep.getGesuch()));
 
 				boolean allNeededDokumenteUploaded = true;

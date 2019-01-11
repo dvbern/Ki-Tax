@@ -37,7 +37,7 @@ import org.junit.Test;
  */
 public class WohnsitzAbschnittRuleTest {
 
-	final WohnsitzAbschnittRule wohnsitzRule = new WohnsitzAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
+	final WohnsitzAbschnittRule wohnsitzRule = new WohnsitzAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 
 	@Test
 	public void testCreateZeitAbschnitte() {

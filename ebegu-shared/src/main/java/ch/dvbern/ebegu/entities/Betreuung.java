@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -440,8 +441,8 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	}
 
 	@Transient
-	public String getBetreuungsangebotTypTranslated() {
-		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp());
+	public String getBetreuungsangebotTypTranslated(@Nonnull Locale locale) {
+		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp(), locale);
 	}
 
 	/**
@@ -622,8 +623,9 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	}
 
 	@Nonnull
-	public String getInstitutionAndBetreuungsangebottyp() {
-		String angebot = ServerMessageUtil.translateEnumValue(getInstitutionStammdaten().getBetreuungsangebotTyp());
+	public String getInstitutionAndBetreuungsangebottyp(@Nonnull Locale locale) {
+		String angebot = ServerMessageUtil
+			.translateEnumValue(getInstitutionStammdaten().getBetreuungsangebotTyp(), locale);
 		return getInstitutionStammdaten().getInstitution().getName() + " (" + angebot + ')';
 	}
 }

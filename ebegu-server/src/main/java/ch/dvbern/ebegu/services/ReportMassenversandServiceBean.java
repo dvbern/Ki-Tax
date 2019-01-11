@@ -102,7 +102,8 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable String text
+		@Nullable String text,
+		@Nonnull Locale locale
 	) {
 
 		List<Gesuch> ermittelteGesuche = gesuchService.getGepruefteFreigegebeneGesucheForGesuchsperiode(
@@ -132,7 +133,8 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 				resultGesuchList);
 		}
 
-		final List<MassenversandDataRow> reportDataMassenversand = createReportDataMassenversand(resultGesuchList);
+		final List<MassenversandDataRow> reportDataMassenversand =
+			createReportDataMassenversand(resultGesuchList, locale);
 		return reportDataMassenversand;
 	}
 
@@ -149,7 +151,8 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable String text
+		@Nullable String text,
+		@Nonnull Locale locale
 	) throws ExcelMergeException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_MASSENVERSAND;
@@ -162,7 +165,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 		List<MassenversandDataRow> reportData = getReportMassenversand(
 			datumVon, datumBis, gesuchPeriodeId, inklBgGesuche, inklMischGesuche, inklTsGesuche,
-			ohneErneuerungsgesuch, text);
+			ohneErneuerungsgesuch, text, locale);
 
 		Optional<Gesuchsperiode> gesuchsperiodeOptional = gesuchsperiodeService.findGesuchsperiode(gesuchPeriodeId);
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeOptional.orElseThrow(() ->
@@ -192,7 +195,10 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 			getContentTypeForExport());
 	}
 
-	private List<MassenversandDataRow> createReportDataMassenversand(@Nonnull List<Gesuch> resultGesuchList) {
+	private List<MassenversandDataRow> createReportDataMassenversand(
+		@Nonnull List<Gesuch> resultGesuchList,
+		@Nonnull Locale locale
+	) {
 		final List<MassenversandDataRow> rows = resultGesuchList.stream()
 			.map(gesuch -> {
 				MassenversandDataRow row = new MassenversandDataRow();
@@ -205,9 +211,9 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 				setKinderData(gesuch, row);
 
-				row.setEinreichungsart(ServerMessageUtil.translateEnumValue(gesuch.getEingangsart()));
-				row.setStatus(ServerMessageUtil.translateEnumValue(gesuch.getStatus()));
-				row.setTyp(ServerMessageUtil.translateEnumValue(gesuch.getTyp()));
+				row.setEinreichungsart(ServerMessageUtil.translateEnumValue(gesuch.getEingangsart(), locale));
+				row.setStatus(ServerMessageUtil.translateEnumValue(gesuch.getStatus(), locale));
+				row.setTyp(ServerMessageUtil.translateEnumValue(gesuch.getTyp(), locale));
 
 				return row;
 			})

@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -132,7 +133,7 @@ public class AbstractBGRechnerTest {
 		einstellungen.put(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, erwerbspensumZuschlag);
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
-		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen);
+		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, Constants.DEFAULT_LOCALE);
 		return new BetreuungsgutscheinEvaluator(rules);
 	}
 

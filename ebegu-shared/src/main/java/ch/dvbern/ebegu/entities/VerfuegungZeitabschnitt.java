@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -656,18 +657,18 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
 	}
 
-	public void addBemerkung(VerfuegungsBemerkung bemerkungContainer) {
-		this.addBemerkung(bemerkungContainer.getRuleKey(), bemerkungContainer.getMsgKey());
+	public void addBemerkung(VerfuegungsBemerkung bemerkungContainer, @Nonnull Locale locale) {
+		this.addBemerkung(bemerkungContainer.getRuleKey(), bemerkungContainer.getMsgKey(), locale);
 	}
 
-	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey) {
-		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey);
+	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, @Nonnull Locale locale) {
+		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, locale);
 		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
 
 	}
 
-	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, Object... args) {
-		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, args);
+	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, @Nonnull Locale locale, Object... args) {
+		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, locale, args);
 		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
 	}
 

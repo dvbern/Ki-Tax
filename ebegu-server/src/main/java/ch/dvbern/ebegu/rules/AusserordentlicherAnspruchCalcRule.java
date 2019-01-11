@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -31,19 +33,25 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class AusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 
-	public AusserordentlicherAnspruchCalcRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_CALC, validityPeriod);
+	public AusserordentlicherAnspruchCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
 	}
 
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(
+		@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
 		if (betreuung.getBetreuungsangebotTyp() != null && betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int ausserordentlicherAnspruch = verfuegungZeitabschnitt.getAusserordentlicherAnspruch();
 			int pensumAnspruch = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			// Es wird der grössere der beiden Werte genommen!
 			if (ausserordentlicherAnspruch > pensumAnspruch) {
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(ausserordentlicherAnspruch);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG);
+				verfuegungZeitabschnitt.addBemerkung(
+					RuleKey.AUSSERORDENTLICHER_ANSPRUCH,
+					MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG,
+					getLocale());
 			}
 		}
 	}

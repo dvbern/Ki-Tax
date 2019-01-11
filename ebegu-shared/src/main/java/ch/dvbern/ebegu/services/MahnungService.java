@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -56,7 +57,7 @@ public interface MahnungService {
 	 * Generiert den Vorschlag für die Bemerkungen aus den fehlenden Dokumenten.
 	 */
 	@Nonnull
-	String getInitialeBemerkungen(@Nonnull Gesuch gesuch);
+	String getInitialeBemerkungen(@Nonnull Gesuch gesuch, @Nonnull Locale locale);
 
 	/**
 	 * Ueberprueft fuer alle aktiven Mahnungen, ob deren Ablauffrist eingetreten ist

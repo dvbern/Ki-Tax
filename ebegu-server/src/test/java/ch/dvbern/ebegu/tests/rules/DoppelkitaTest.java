@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel1;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel2;
 import ch.dvbern.ebegu.testfaelle.Testfall_DoppelKita_Regel3;
+import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -58,7 +59,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
@@ -100,7 +101,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
@@ -142,7 +143,7 @@ public class DoppelkitaTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {

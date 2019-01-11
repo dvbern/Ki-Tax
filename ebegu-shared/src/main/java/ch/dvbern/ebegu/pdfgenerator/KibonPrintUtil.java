@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.pdfgenerator;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
@@ -27,7 +28,6 @@ import java.util.function.BinaryOperator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
@@ -137,11 +137,12 @@ public final class KibonPrintUtil {
 	@Nonnull
 	public static List<String> getBenoetigteDokumenteAsList(
 		@Nonnull List<DokumentGrund> benoetigteUnterlagen,
-		@Nonnull Gesuch gesuch
+		@Nonnull Gesuch gesuch,
+		@Nonnull Locale locale
 	) {
 		List<String> dokumenteList = new ArrayList<>();
 		for (DokumentGrund dokumentGrund : benoetigteUnterlagen) {
-			String text = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch);
+			String text = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch, locale);
 			if (StringUtils.isNotEmpty(text)) {
 				dokumenteList.add(text);
 			}
@@ -150,10 +151,14 @@ public final class KibonPrintUtil {
 	}
 
 	@Nonnull
-	public static String getDokumentAsTextIfNeeded(@Nonnull DokumentGrund dokumentGrund, @Nonnull Gesuch gesuch) {
+	public static String getDokumentAsTextIfNeeded(
+		@Nonnull DokumentGrund dokumentGrund,
+		@Nonnull Gesuch gesuch,
+		@Nonnull Locale locale
+	) {
 		if (dokumentGrund.isNeeded() && dokumentGrund.isEmpty()) {
 			final String additionalInformation = extractAdditionalInformation(dokumentGrund, gesuch);
-			return ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp())
+			return ServerMessageUtil.translateEnumValue(dokumentGrund.getDokumentTyp(), locale)
 				+ additionalInformation;
 		}
 		return "";

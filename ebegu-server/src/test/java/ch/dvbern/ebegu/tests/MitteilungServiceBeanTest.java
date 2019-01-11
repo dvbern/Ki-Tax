@@ -253,7 +253,9 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		// from now on as JA
 		loginAsSachbearbeiterJA();
 
-		List<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false).getRight();
+		List<Mitteilung> mitteilungenForCurrentRolle = mitteilungService
+			.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false, Constants.DEFAULT_LOCALE)
+			.getRight();
 
 		Assert.assertNotNull(mitteilungenForCurrentRolle);
 		Assert.assertEquals(2, mitteilungenForCurrentRolle.size()); // Wir sehen grundsätzliche alle Nachrichten, die ans JA gehen
@@ -485,7 +487,8 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	private Mitteilung readFirstAndOnlyMitteilung() {
-		List<Mitteilung> mitteilungenForCurrentRolle = mitteilungService.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false).getRight();
+		List<Mitteilung> mitteilungenForCurrentRolle = mitteilungService
+			.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false, Constants.DEFAULT_LOCALE).getRight();
 		Assert.assertNotNull(mitteilungenForCurrentRolle);
 		Assert.assertEquals(1, mitteilungenForCurrentRolle.size());
 		Mitteilung mitteilung = mitteilungenForCurrentRolle.iterator().next();
@@ -495,7 +498,10 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 	// HELP METHODS
 
 	private void prepareDependentObjects(String gesuchstellerUserName) {
-		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(UserRole.GESUCHSTELLER, gesuchstellerUserName, null, null, mandant, persistence, null, null);
+		sender = TestDataUtil.createBenutzerWithDefaultGemeinde(
+			UserRole.GESUCHSTELLER,
+			gesuchstellerUserName,
+			null, null, mandant, persistence, null, null);
 		persistence.persist(sender);
 		dossier = dossierService.saveDossier(dossier);
 	}

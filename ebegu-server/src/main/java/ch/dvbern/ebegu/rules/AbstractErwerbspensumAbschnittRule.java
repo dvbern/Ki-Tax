@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -35,8 +36,13 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschnittRule {
 
-	public AbstractErwerbspensumAbschnittRule(@Nonnull RuleKey ruleKey, @Nonnull RuleType ruleType, @Nonnull DateRange validityPeriod) {
-		super(ruleKey, ruleType, validityPeriod);
+	public AbstractErwerbspensumAbschnittRule(
+		@Nonnull RuleKey ruleKey,
+		@Nonnull RuleType ruleType,
+		@Nonnull DateRange validityPeriod,
+		@Nonnull Locale locale
+	) {
+		super(ruleKey, ruleType, validityPeriod, locale);
 	}
 
 	@Nonnull

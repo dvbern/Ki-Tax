@@ -160,7 +160,7 @@ public final class EbeguUtil {
 	 * for this reason it will return just the first language it finds.
 	 */
 	@Nonnull
-	public static Sprache extractKorrespondezsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
+	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
 		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gesuch, gemeindeService);
 		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
 
@@ -189,7 +189,7 @@ public final class EbeguUtil {
 		final String gemeindeId = gesuch.getDossier().getGemeinde().getId();
 		final GemeindeStammdaten gemeindeStammdatenOpt = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"extractKorrespondezsprache",
+				"extractGemeindeSprachen",
 				ErrorCodeEnum.ERROR_NO_GEMEINDE_STAMMDATEN,
 				gemeindeId)
 			);

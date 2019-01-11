@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -63,7 +64,11 @@ public final class MutationsMerger {
 	 */
 	@Nonnull
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	public static List<VerfuegungZeitabschnitt> execute(@Nonnull Betreuung betreuung, @Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public static List<VerfuegungZeitabschnitt> execute(
+		@Nonnull Betreuung betreuung,
+		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
+		@Nonnull Locale locale
+	) {
 
 		if (betreuung.extractGesuch().getTyp().isGesuch()) {
 			return zeitabschnitte;
@@ -84,7 +89,7 @@ public final class MutationsMerger {
 
 			if (vorangehenderAbschnitt != null) {
 				handleVerminderungEinkommen(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum);
-				handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum);
+				handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 			}
 			monatsSchritte.add(zeitabschnitt);
 		}
@@ -113,7 +118,12 @@ public final class MutationsMerger {
 		}
 	}
 
-	private static void handleAnpassungAnspruch(VerfuegungZeitabschnitt zeitabschnitt, VerfuegungZeitabschnitt vorangehenderAbschnitt, LocalDate mutationsEingansdatum) {
+	private static void handleAnpassungAnspruch(
+		VerfuegungZeitabschnitt zeitabschnitt,
+		VerfuegungZeitabschnitt vorangehenderAbschnitt,
+		LocalDate mutationsEingansdatum,
+		@Nonnull Locale locale
+	) {
 		final int anspruchberechtigtesPensum = zeitabschnitt.getAnspruchberechtigtesPensum();
 		final int anspruchAufVorgaengerVerfuegung = vorangehenderAbschnitt.getAnspruchberechtigtesPensum();
 
@@ -123,14 +133,14 @@ public final class MutationsMerger {
 			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Der Anspruch kann sich erst auf den Folgemonat des Eingangsdatum erhöhen
 				zeitabschnitt.setAnspruchberechtigtesPensum(anspruchAufVorgaengerVerfuegung);
-				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG);
+				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 			}
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
 			// Anspruch wird kleiner
 			//Meldung rechtzeitig: In diesem Fall wird der Anspruch zusammen mit dem Ereigniseintritt des Arbeitspensums angepasst. -> keine Aenderungen
 			if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
 				//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
-				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG);
+				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
 			}
 		}
 
@@ -143,7 +153,7 @@ public final class MutationsMerger {
 				&& vorangehenderAbschnitt.isZuSpaetEingereicht()) {
 				zeitabschnitt.setBezahltVollkosten(true);
 				zeitabschnitt.setZuSpaetEingereicht(true);
-				zeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_VOLLKOSTEN_MSG);
+				zeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_VOLLKOSTEN_MSG, locale);
 			}
 		}
 	}

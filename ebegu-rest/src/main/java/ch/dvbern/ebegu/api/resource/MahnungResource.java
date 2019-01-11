@@ -47,8 +47,10 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MahnungService;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -65,6 +67,9 @@ public class MahnungResource {
 
 	@Inject
 	private MahnungService mahnungService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -164,6 +169,9 @@ public class MahnungResource {
 			return "";
 		}
 		Gesuch gesuch = gesuchOptional.get();
-		return mahnungService.getInitialeBemerkungen(gesuch);
+		return mahnungService.getInitialeBemerkungen(
+			gesuch,
+			EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale()
+		);
 	}
 }

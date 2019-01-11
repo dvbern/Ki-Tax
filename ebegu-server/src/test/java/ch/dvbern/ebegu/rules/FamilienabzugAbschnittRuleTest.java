@@ -59,7 +59,8 @@ public class FamilienabzugAbschnittRuleTest {
 
 	private final FamilienabzugAbschnittRule famabAbschnittRule =
 		new FamilienabzugAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, pauschalabzugProPersonFamiliengroesse3,
-			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5, pauschalabzugProPersonFamiliengroesse6);
+			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5,
+			pauschalabzugProPersonFamiliengroesse6, Constants.DEFAULT_LOCALE);
 
 	@Test
 	public void test2PKeinAbzug() {
