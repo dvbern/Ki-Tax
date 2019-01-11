@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.RuleUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -277,5 +278,16 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Override
 	public boolean isRelevantForFamiliensituation() {
 		return false;
+	}
+
+	/**
+	 * Berechnet das Datum, ab wann eine Regel aufgrund es übergebenen Datums angewendet werden soll.
+	 * Aktuell ist dies der erste Tag des Folgemonats. Auch bei Ereignis am 1. wird der 1. des Folgemonats genommen.
+	 * Achtung, dieser Stichtag kommt nicht zwingend schlussendlich zum Einsatz, z.B. bei verspäteter Einreichung
+	 * des Gesuchs.
+	 */
+	@Nonnull
+	public LocalDate getStichtagForEreignis(@Nonnull LocalDate ereignisdatum) {
+		return RuleUtil.getStichtagForEreignis(ereignisdatum);
 	}
 }

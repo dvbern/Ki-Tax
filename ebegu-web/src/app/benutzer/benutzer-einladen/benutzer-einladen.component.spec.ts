@@ -25,6 +25,7 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {BenutzerEinladenComponent} from './benutzer-einladen.component';
 
@@ -39,6 +40,8 @@ describe('BenutzerEinladenComponent', () => {
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
     const gemeindeSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
     const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['einladen']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
         const superadmin = TestDataUtil.createSuperadmin();
@@ -61,6 +64,7 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: BenutzerRS, useValue: benutzerSpy},
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
         })
             .compileComponents();

@@ -16,6 +16,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatDialog} from '@angular/material';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';
 import {DatabaseMigrationRS} from '../../service/databaseMigrationRS.rest';
@@ -30,6 +31,8 @@ describe('batchjobTriggerView', () => {
         const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         const databaseMigrationRSSpy = jasmine.createSpyObj('DatabaseMigrationRS', ['processScript']);
         const dailyBatchRSSpy = jasmine.createSpyObj('DailyBatchRS', ['runBatchMahnungFristablauf']);
+        const i18nServiceSpy = jasmine
+            .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
         TestBed.configureTestingModule({
             imports: [
@@ -40,6 +43,7 @@ describe('batchjobTriggerView', () => {
                 {provide: MatDialog, useValue: dvDialogSpy},
                 {provide: DatabaseMigrationRS, useValue: databaseMigrationRSSpy},
                 {provide: DailyBatchRS, useValue: dailyBatchRSSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [BatchjobTriggerViewComponent],
         })

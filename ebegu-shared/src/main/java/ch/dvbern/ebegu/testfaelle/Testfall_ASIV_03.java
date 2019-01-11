@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -87,7 +86,8 @@ public class Testfall_ASIV_03 extends AbstractASIVTestfall {
 	public Gesuch createMutation(Gesuch erstgesuch) {
 		// Gesuch, Gesuchsteller
 		// Einkommensverschlechterug
-		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 1), null);
+		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(
+			erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 15), null);
 		ekvContainer.getEkvJABasisJahrPlus1().setNettolohnJan(MathUtil.DEFAULT.from(49000));
 		erstgesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(ekvContainer);
 		return erstgesuch;

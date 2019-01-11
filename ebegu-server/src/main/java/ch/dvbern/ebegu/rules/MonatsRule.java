@@ -28,10 +28,13 @@ import ch.dvbern.ebegu.types.DateRange;
 /**
  * Sonderregel die nach der eigentlich Berechnung angewendet wird und welche die Zeitabschnitte auf Monate begrenzt
  */
-public class MonatsRule {
+public final class MonatsRule {
+
+	private MonatsRule() {
+	}
 
 	@Nonnull
-	protected List<VerfuegungZeitabschnitt> createMonate(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	public static List<VerfuegungZeitabschnitt> execute(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		List<VerfuegungZeitabschnitt> monatsSchritte = new ArrayList<>();
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			LocalDate gueltigAb = zeitabschnitt.getGueltigkeit().getGueltigAb();

@@ -182,6 +182,7 @@ public class AuthServiceBean implements AuthService {
 			LOG.warn("Tried to refresh a login token without actually passing a token", t);
 			return Optional.empty();
 		}
+
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		ParameterExpression<String> authTokenParam = cb.parameter(String.class, "authToken");
 

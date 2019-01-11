@@ -90,7 +90,7 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 		TestDataUtil.getGemeindeBern(persistence);
 		schulungService.createSchulungsdaten();
 
-		Assert.assertEquals(94, adresseService.getAllAdressen().size());
+		Assert.assertEquals(95, adresseService.getAllAdressen().size());
 		Assert.assertEquals(6, institutionStammdatenService.getAllInstitutionStammdaten().size());
 		Assert.assertEquals(6, institutionService.getAllInstitutionen().size());
 		Assert.assertEquals(1, traegerschaftService.getAllTraegerschaften().size());
@@ -108,7 +108,6 @@ public class SchulungServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	private void assertEmpty() {
-		Assert.assertEquals(3, adresseService.getAllAdressen().size());
 		Assert.assertEquals(3, institutionStammdatenService.getAllInstitutionStammdaten().size());
 		Assert.assertEquals(3, institutionService.getAllInstitutionen().size());
 		Assert.assertTrue(traegerschaftService.getAllTraegerschaften().isEmpty());

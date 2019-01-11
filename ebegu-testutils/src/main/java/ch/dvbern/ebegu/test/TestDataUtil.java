@@ -108,7 +108,6 @@ import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
@@ -302,7 +301,6 @@ public final class TestDataUtil {
 	public static Familiensituation createDefaultFamiliensituation() {
 		Familiensituation familiensituation = new Familiensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		// by default verguenstigung gewuenscht
 		familiensituation.setSozialhilfeBezueger(false);
 		familiensituation.setVerguenstigungGewuenscht(true);
@@ -616,7 +614,7 @@ public final class TestDataUtil {
 			kind.setPensumFachstelle(createDefaultPensumFachstelle());
 		}
 		kind.setFamilienErgaenzendeBetreuung(true);
-		kind.setMutterspracheDeutsch(true);
+		kind.setSprichtAmtssprache(true);
 		kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		return kind;
 	}
@@ -836,12 +834,12 @@ public final class TestDataUtil {
 	public static Betreuung createGesuchWithBetreuungspensum(boolean zweiGesuchsteller) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
+		gesuch.setDossier(createDefaultDossier());
 		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
-		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		if (zweiGesuchsteller) {
-			gesuch.extractFamiliensituation().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		} else {
-			gesuch.extractFamiliensituation().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		}
 		gesuch.setGesuchsteller1(new GesuchstellerContainer());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
@@ -856,9 +854,12 @@ public final class TestDataUtil {
 				.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
 		Betreuung betreuung = new Betreuung();
-		betreuung.setKind(createDefaultKindContainer());
+		KindContainer kindContainer = createDefaultKindContainer();
+		kindContainer.getBetreuungen().add(betreuung);
+		betreuung.setKind(kindContainer);
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		betreuung.getKind().setGesuch(gesuch);
+		gesuch.getKindContainers().add(betreuung.getKind());
 		betreuung.setKeineKesbPlatzierung(true);
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
@@ -1052,13 +1053,14 @@ public final class TestDataUtil {
 		InstitutionService instService,
 		Persistence persistence,
 		@Nullable LocalDate eingangsdatum,
-		AntragStatus status
+		AntragStatus status,
+		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
 		instService.getAllInstitutionen();
 		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenTagesschuleBern());
 		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		TestFall12_Mischgesuch testfall = new TestFall12_Mischgesuch(TestDataUtil.createGesuchsperiode1718(),
+		TestFall12_Mischgesuch testfall = new TestFall12_Mischgesuch(gesuchsperiode,
 			institutionStammdatenList);
 
 		if (status != null) {
@@ -1329,14 +1331,26 @@ public final class TestDataUtil {
 	}
 
 	public static GemeindeStammdaten createGemeindeWithStammdaten() {
+		return createGemeindeStammdaten(createGemeindeBern());
+	}
+
+	public static GemeindeStammdaten createGemeindeStammdaten(@Nonnull Gemeinde gemeinde) {
 		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
 		stammdaten.setAdresse(createDefaultAdresse());
-		stammdaten.setGemeinde(createGemeindeBern());
+		stammdaten.setGemeinde(gemeinde);
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
 		stammdaten.setMail("info@bern.ch");
 		stammdaten.setTelefon("031 123 12 12");
 		stammdaten.setWebseite("www.bern.ch");
 		return stammdaten;
+	}
+
+	public static GemeindeStammdaten createGemeindeStammdaten(@Nonnull Gemeinde gemeinde, @Nonnull Persistence persistence) {
+		GemeindeStammdaten gemeindeStammdaten = createGemeindeStammdaten(gemeinde);
+		if (gemeinde.isNew()) {
+			persistence.persist(gemeinde);
+		}
+		return persistence.merge(gemeindeStammdaten);
 	}
 
 	public static Benutzer createBenutzerWithDefaultGemeinde(

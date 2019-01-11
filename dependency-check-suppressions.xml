@@ -20,10 +20,31 @@
 		<gav regex="true">ch.dvbern.oss.datehelper:date-helper:.*</gav>
 		<cpe>cpe:/a:date_project:date:1.0.4</cpe>
 	</suppress>
-	<!-- https://bz.apache.org/bugzilla/show_bug.cgi?id=56205 -->
+
+	<!-- as of 17.12.2018, 1.7.25 is the newest non-alpha version of slf4j-->
 	<suppress>
-		<notes><![CDATA[https://bz.apache.org/bugzilla/show_bug.cgi?id=5620]]></notes>
-		<gav>org.apache.poi:ooxml-schemas:1.3</gav>
-		<cpe>cpe:/a:apache:poi:1.3</cpe>
+		<notes><![CDATA[file name: slf4j-api-1.7.25.jar]]></notes>
+		<gav regex="true">^org\.slf4j:slf4j-api:.*$</gav>
+		<cve>CVE-2018-8088</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[file name: jcl-over-slf4j-1.7.25.jar]]></notes>
+		<gav regex="true">^org\.slf4j:jcl-over-slf4j:.*$</gav>
+		<cve>CVE-2018-8088</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[file name: log4j-over-slf4j-1.7.25.jar]]></notes>
+		<gav regex="true">^org\.slf4j:log4j-over-slf4j:.*$</gav>
+		<cpe>cpe:/a:slf4j:slf4j</cpe>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[file name: slf4j-ext-1.7.25.jar]]></notes>
+		<gav regex="true">^org\.slf4j:slf4j-ext:.*$</gav>
+		<cve>CVE-2018-8088</cve>
+	</suppress>
+	<suppress>
+		<notes><![CDATA[file name: slf4j-simple-1.7.10.jar]]></notes>
+		<gav regex="true">^org\.slf4j:slf4j-simple:.*$</gav>
+		<cpe>cpe:/a:slf4j:slf4j</cpe>
 	</suppress>
 </suppressions>

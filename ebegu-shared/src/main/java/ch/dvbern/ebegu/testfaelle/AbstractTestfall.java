@@ -58,7 +58,6 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -193,7 +192,6 @@ public abstract class AbstractTestfall {
 		// Familiensituation
 		Familiensituation familiensituation = new Familiensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
 		familiensituationContainer.setFamiliensituationJA(familiensituation);
 		setFinSitFieldsOfFamiliensituation(familiensituation);
@@ -205,7 +203,6 @@ public abstract class AbstractTestfall {
 		// Familiensituation
 		Familiensituation familiensituation = new Familiensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
 		familiensituationContainer.setFamiliensituationJA(familiensituation);
@@ -281,7 +278,7 @@ public abstract class AbstractTestfall {
 		kind.setKinderabzug(kinderabzug);
 		kind.setFamilienErgaenzendeBetreuung(betreuung);
 		if (betreuung) {
-			kind.setMutterspracheDeutsch(Boolean.TRUE);
+			kind.setSprichtAmtssprache(Boolean.TRUE);
 			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		}
 		KindContainer kindContainer = new KindContainer();

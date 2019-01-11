@@ -23,10 +23,12 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
+import ch.dvbern.ebegu.util.RuleUtil;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -62,7 +64,9 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(100));
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(-100));
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(300));
-		FinanzielleSituationResultateDTO finSitResultateDTO1 = finSitRechner.calculateResultateFinanzielleSituation(gesuch, gesuch.extractFamiliensituation().hasSecondGesuchsteller());
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Assert.assertNotNull(familiensituation);
+		FinanzielleSituationResultateDTO finSitResultateDTO1 = finSitRechner.calculateResultateFinanzielleSituation(gesuch, familiensituation.hasSecondGesuchsteller());
 
 		Assert.assertEquals(BigDecimal.valueOf(100), finSitResultateDTO1.getGeschaeftsgewinnDurchschnittGesuchsteller1());
 	}
@@ -79,7 +83,9 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(-100));
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(-100));
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(-300));
-		FinanzielleSituationResultateDTO finSitResultateDTO2 = finSitRechner.calculateResultateFinanzielleSituation(gesuch, gesuch.extractFamiliensituation().hasSecondGesuchsteller());
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Assert.assertNotNull(familiensituation);
+		FinanzielleSituationResultateDTO finSitResultateDTO2 = finSitRechner.calculateResultateFinanzielleSituation(gesuch, familiensituation.hasSecondGesuchsteller());
 
 		Assert.assertEquals(BigDecimal.ZERO, finSitResultateDTO2.getGeschaeftsgewinnDurchschnittGesuchsteller1());
 	}
@@ -106,6 +112,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ABGELEHNT, true);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
@@ -124,6 +131,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	public void testEinkommensverschlechterung2016Angenommen() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, true);
 		TestDataUtil.calculateFinanzDaten(gesuch);
@@ -132,7 +140,10 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1());
+		LocalDate datumEkv1 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1();
+		Assert.assertNotNull(datumEkv1);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1, datumEkv1);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv1));
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
@@ -143,6 +154,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	public void testEinkommensverschlechterung2016Abgelehnt2017Angenommen() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ABGELEHNT, true);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, false);
@@ -156,13 +168,17 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2());
+		LocalDate datumEkv2 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2();
+		Assert.assertNotNull(datumEkv2);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2, datumEkv2);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv2));
 	}
 
 	@Test
 	public void testEinkommensverschlechterung2016Angenommen2017Abgelehnt() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, true);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, false); // nicht weniger als im vorherigen Jahr
@@ -172,11 +188,17 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1());
+		LocalDate datumEkv1 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1();
+		Assert.assertNotNull(datumEkv1);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1, datumEkv1);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv1));
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2());
+		LocalDate datumEkv2 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2();
+		Assert.assertNotNull(datumEkv2);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2, datumEkv2);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv2));
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Accepted());
 	}
 
@@ -184,6 +206,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	public void testEinkommensverschlechterung2016Angenommen2017Angenommen() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, true);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN_2, false);
@@ -193,11 +216,17 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1());
+		LocalDate datumEkv1 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1();
+		Assert.assertNotNull(datumEkv1);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1, datumEkv1);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv1));
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN_2, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2());
+		LocalDate datumEkv2 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2();
+		Assert.assertNotNull(datumEkv2);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2, datumEkv2);
+		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv2));
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv2Accepted());
 	}
 
@@ -205,6 +234,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	public void testEinkommensverschlechterung2016Abgelehnt2017Abgelehnt() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ABGELEHNT, true);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ABGELEHNT, false);
@@ -226,8 +256,10 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	public void testEinkommensverschlechterungDezember2016Angenommen() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, true);
+		Assert.assertNotNull(gesuch.getEinkommensverschlechterungInfoContainer());
 		gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().setStichtagFuerBasisJahrPlus1(LocalDate.of(2016, Month.DECEMBER, 1));
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
@@ -235,7 +267,10 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		Assert.assertEquals(LocalDate.of(2017, Month.JANUARY, 1), gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1());
+		LocalDate datumEkv1 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1();
+		Assert.assertNotNull(datumEkv1);
+		Assert.assertEquals(LocalDate.of(2016, Month.DECEMBER, 1), datumEkv1);
+		Assert.assertEquals(LocalDate.of(2017, Month.JANUARY, 1), RuleUtil.getStichtagForEreignis(datumEkv1));
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());

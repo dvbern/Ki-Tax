@@ -96,7 +96,6 @@ public final class FreigabeCopyUtil {
 	private static void copyFamiliensituation(@Nonnull Familiensituation familiensituationGS, @Nonnull Familiensituation familiensituationJA) {
 		familiensituationGS.setFamilienstatus(familiensituationJA.getFamilienstatus());
 		familiensituationGS.setGemeinsameSteuererklaerung(familiensituationJA.getGemeinsameSteuererklaerung());
-		familiensituationGS.setGesuchstellerKardinalitaet(familiensituationJA.getGesuchstellerKardinalitaet());
 		familiensituationGS.setAenderungPer(familiensituationJA.getAenderungPer());
 		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
 		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
@@ -154,7 +153,7 @@ public final class FreigabeCopyUtil {
 
 	private static void copyKind(@Nonnull Kind kindGS, @Nonnull Kind kindJA) {
 		kindGS.setVorname(kindJA.getVorname());
-		kindGS.setMutterspracheDeutsch(kindJA.getMutterspracheDeutsch());
+		kindGS.setSprichtAmtssprache(kindJA.getSprichtAmtssprache());
 		if (kindJA.getPensumFachstelle() != null) {
 			kindGS.setPensumFachstelle(new PensumFachstelle());
 			Objects.requireNonNull(kindGS.getPensumFachstelle());

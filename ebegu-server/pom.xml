@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2018.13.0</version>
+        <version>2018.14.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -90,19 +90,16 @@
             <artifactId>iso20022-ch-impl</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>ch.dvbern.oss.doctemplate</groupId>
-            <artifactId>docx-engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fr.opensagres.xdocreport</groupId>
-            <artifactId>fr.opensagres.xdocreport.converter.docx.xwpf</artifactId>
-        </dependency>
         <!--infinispan aus jboss fuer cacheing-->
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-core</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry</artifactId>
         </dependency>
 
         <!--tests der validators-->

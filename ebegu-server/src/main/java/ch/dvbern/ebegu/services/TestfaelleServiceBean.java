@@ -32,6 +32,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -42,6 +43,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
@@ -54,7 +56,6 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -425,12 +426,10 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		Familiensituation newFamsit = new Familiensituation();
 		newFamsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		newFamsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		newFamsit.setAenderungPer(aenderungPer);
 
 		Familiensituation oldFamsit = new Familiensituation();
 		oldFamsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		oldFamsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 
 		Optional<Gesuch> gesuchOptional = gesuchService.testfallMutieren(dossierId, gesuchsperiodeId, eingangsdatum);
 		if (gesuchOptional.isPresent()) {
@@ -601,6 +600,11 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		}
 
 		if (verfuegen) {
+			Optional<GemeindeStammdaten> stammdaten =
+				gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.extractGemeinde().getId());
+			if (!stammdaten.isPresent()) {
+				createStammdatenForGemeinde(gesuch.extractGemeinde());
+			}
 			FreigabeCopyUtil.copyForFreigabe(gesuch);
 
 			verfuegungService.calculateVerfuegung(gesuch);
@@ -619,6 +623,17 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			gesuchService.postGesuchVerfuegen(gesuch);
 		}
 		wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.VERFUEGEN);
+	}
+
+	private void createStammdatenForGemeinde(@Nonnull Gemeinde gemeinde) {
+		GemeindeStammdaten stammdaten = new GemeindeStammdaten();
+		stammdaten.setGemeinde(gemeinde);
+		stammdaten.setMail("testgemeinde@mailbucket.dvbern.ch");
+		stammdaten.setAdresse(new Adresse());
+		stammdaten.getAdresse().setOrt("Bern");
+		stammdaten.getAdresse().setPlz("3000");
+		stammdaten.getAdresse().setStrasse("Nussbaumstrasse");
+		gemeindeService.saveGemeindeStammdaten(stammdaten);
 	}
 
 	/**
@@ -816,7 +831,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private Familiensituation getFamiliensituationZuZweit(@Nullable LocalDate aenderungPer) {
 		Familiensituation famsit = new Familiensituation();
 		famsit.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		famsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		famsit.setGemeinsameSteuererklaerung(true);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
@@ -828,7 +842,6 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private Familiensituation getFamiliensituationAlleine(@Nullable LocalDate aenderungPer) {
 		Familiensituation famsit = new Familiensituation();
 		famsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		famsit.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
 		famsit.setVerguenstigungGewuenscht(true);

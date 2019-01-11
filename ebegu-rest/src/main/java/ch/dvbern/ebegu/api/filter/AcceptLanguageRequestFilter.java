@@ -15,13 +15,14 @@
 
 package ch.dvbern.ebegu.api.filter;
 
-import java.io.IOException;
-
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.ext.Provider;
+
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 
 /**
  * * Checks whether the {@code Accept-Language} HTTP header exists and creates a {@link ThreadLocal} to store the
@@ -34,9 +35,11 @@ public class AcceptLanguageRequestFilter implements ContainerRequestFilter {
 	private HttpHeaders headers;
 
 	@Override
-	public void filter(ContainerRequestContext requestContext) throws IOException {
+	public void filter(ContainerRequestContext requestContext) {
 		if (!headers.getAcceptableLanguages().isEmpty()) {
 			LocaleThreadLocal.set(headers.getAcceptableLanguages().get(0));
+		} else {
+			LocaleThreadLocal.set(Constants.DEFAULT_LOCALE);
 		}
 	}
 }

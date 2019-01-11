@@ -32,11 +32,14 @@ import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.sentry.Sentry;
+import io.sentry.event.UserBuilder;
 import org.apache.commons.lang.NotImplementedException;
 import org.infinispan.Cache;
 import org.omnifaces.security.jaspic.user.TokenAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import static java.util.Collections.emptyList;
 
@@ -121,6 +124,15 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 					LOG.debug("Token {} is still valid in Database (and was probably renewed), cache was refreshed", effectiveToken);
 				}
 			}
+
+			MDC.put(Constants.LOG_MDC_AUTHUSERID, effectiveToken); //todo revieer fragen: vorher wurde das token mit suffix verwendet
+			// we don't load / cache benutzer and his institution.
+			Sentry.getContext().setUser(
+				new UserBuilder()
+					.setUsername(user.getUsername())
+					.setId(effectiveToken)
+					.withData("role", user.getRole())
+					.build()); //add user name to sentry context
 
 			return true;
 		});

@@ -26,6 +26,7 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../core/service/gesuchsperiodeRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde.component';
 
@@ -43,6 +44,8 @@ describe('AddGemeindeComponent', () => {
         ['getAllGesuchsperioden']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
 
@@ -59,6 +62,7 @@ describe('AddGemeindeComponent', () => {
                 {provide: GesuchsperiodeRS, useValue: gesuchsperiodeServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [
                 AddGemeindeComponent,

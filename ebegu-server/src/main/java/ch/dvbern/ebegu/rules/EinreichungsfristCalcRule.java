@@ -26,10 +26,10 @@ import static ch.dvbern.ebegu.enums.MsgKey.EINREICHUNGSFRIST_VOLLKOSTEN_MSG;
 
 /**
  * Regel bezüglich der Einreichungsfrist des Gesuchs:
- * - Wird ein Gesuch zu spät eingereicht, entfällt der Anspruch auf den Monaten vor dem Einreichen des Gesuchs.
- * - Beispiel: Ein Gesuch wird am 5. September 2017 eingereicht. In diesem Fall ist erst per 1. September 2017
+ * - Wird ein Gesuch zu spät eingereicht, beginnt der Anspruch am 1. des Folgemonats
+ * - Beispiel: Ein Gesuch wird am 5. September 2017 eingereicht. In diesem Fall ist erst per 1. Oktober 2017
  * ein Anspruch verfügbar.
- * D.h. für die Angebote „Kita“ und „Tageseltern – Kleinkinder“ ist im August kein Anspruch verfügbar.
+ * D.h. für die Angebote „Kita“ und „Tageseltern – Kleinkinder“ ist im August und September kein Anspruch verfügbar.
  * Falls sie einen Platz haben, wird dieser zum privaten Tarif der Kita berechnet.
  * - Für die Angebote Tageseltern–Schulkinder und Tagesstätten entspricht der Anspruch dem gewünschten Pensum.
  * Ihnen wird für den Monat August aber der Volltarif verrechnet.
@@ -44,7 +44,7 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (betreuung.getBetreuungsangebotTyp().isJugendamt()) {
+		if (betreuung.getBetreuungsangebotTyp() != null && betreuung.getBetreuungsangebotTyp().isJugendamt()) {
 			if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);

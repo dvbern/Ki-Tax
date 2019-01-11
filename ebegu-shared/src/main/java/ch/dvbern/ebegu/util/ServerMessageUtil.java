@@ -30,13 +30,14 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class ServerMessageUtil {
 
-	private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.DEFAULT_LOCALE);
+	// TODO Dieses Util wird später immer mit einer Sprache aufgerufen, d.h. es wird keinen Default mehr geben -> beide sprachen merken!
+	private static final ResourceBundle bundle = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.DEFAULT_LOCALE);
 
 	private ServerMessageUtil() {
 	}
 
 	public static String getMessage(String key) {
-		return readStringFromBundleOrReturnKey(BUNDLE, key);
+		return readStringFromBundleOrReturnKey(bundle, key);
 	}
 
 	public static String getMessage(String key, Locale locale) {

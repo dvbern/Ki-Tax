@@ -23,6 +23,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 
 import { TraegerschaftListComponent } from './traegerschaft-list.component';
@@ -38,6 +39,8 @@ describe('TraegerschaftListComponent', () => {
       const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
       const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
       const stateServiceSpy = jasmine.createSpyObj(StateService.name, ['go']);
+      const i18nServiceSpy = jasmine
+          .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
       TestBed.configureTestingModule({
           imports: [
@@ -49,7 +52,8 @@ describe('TraegerschaftListComponent', () => {
               {provide: ErrorService, useValue: errorServiceSpy},
               {provide: AuthServiceRS, useValue: authServiceSpy},
               {provide: MatDialog, useValue: dvDialogSpy},
-              {provide: StateService, useValue: stateServiceSpy}
+              {provide: StateService, useValue: stateServiceSpy},
+              {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
           ],
           declarations: [TraegerschaftListComponent],
       })

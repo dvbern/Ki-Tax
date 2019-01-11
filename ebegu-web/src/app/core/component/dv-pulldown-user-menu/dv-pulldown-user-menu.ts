@@ -53,10 +53,10 @@ export class DvPulldownUserMenuController implements IController {
     public $onInit(): void {
         this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(principal => {
-                    this.principal = principal;
-                },
-                err => LOG.error(err));
+            .subscribe(
+                principal => this.principal = principal,
+                err => LOG.error(err)
+            );
     }
 
     public $onDestroy(): void {

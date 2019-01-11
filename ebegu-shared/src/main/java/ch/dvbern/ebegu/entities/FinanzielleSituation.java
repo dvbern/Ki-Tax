@@ -21,10 +21,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.hibernate.envers.Audited;
 
@@ -52,18 +50,12 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	public FinanzielleSituation() {
 	}
 
-	@Transient
-	public BigDecimal calcGeschaeftsgewinnDurchschnitt() {
-		return FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(this);
-	}
-
 	@Nullable
 	@Override
 	public BigDecimal getNettolohn() {
 		return nettolohn;
 	}
 
-	@Nullable
 	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
 		this.nettolohn = nettolohn;
 	}

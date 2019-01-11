@@ -44,7 +44,7 @@ public class JaxAnmeldungDTO  implements Serializable {
 	private Boolean additionalKindQuestions;
 
 	@Nullable
-	private Boolean mutterspracheDeutsch;
+	private Boolean sprichtAmtssprache;
 
 	@Nullable
 	private EinschulungTyp einschulungTyp;
@@ -74,12 +74,12 @@ public class JaxAnmeldungDTO  implements Serializable {
 	}
 
 	@Nullable
-	public Boolean getMutterspracheDeutsch() {
-		return mutterspracheDeutsch;
+	public Boolean getSprichtAmtssprache() {
+		return sprichtAmtssprache;
 	}
 
-	public void setMutterspracheDeutsch(@Nullable Boolean mutterspracheDeutsch) {
-		this.mutterspracheDeutsch = mutterspracheDeutsch;
+	public void setSprichtAmtssprache(@Nullable Boolean sprichtAmtssprache) {
+		this.sprichtAmtssprache = sprichtAmtssprache;
 	}
 
 	@Nullable

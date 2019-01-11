@@ -934,15 +934,15 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testHasFolgegesuchWithoutFolgegesuch() {
 		Gesuch gesuch = TestDataUtil.createAndPersistASIV12(institutionService, persistence,
-						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT);
+						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
-		Assert.assertFalse(gesuchService.hasFolgegesuch(gesuch.getId()));
+		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(gesuch.getId()));
 	}
 
 	@Test
 	public void testHasFolgegesuchWithFolgegesuch() {
 		Gesuch gesuch = TestDataUtil.createAndPersistASIV12(institutionService, persistence,
-						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT);
+						LocalDate.of(1980, Month.MARCH, 25), AntragStatus.GEPRUEFT, gesuchsperiode);
 
 		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createCustomGesuchsperiode(2018, 2019);
 		final Gesuchsperiode savedGesuchsperiode1819 = persistence.persist(gesuchsperiode1819);
@@ -951,8 +951,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertTrue(erneurtesGesuch.isPresent());
 		Gesuch folgegesuch = gesuchService.createGesuch(erneurtesGesuch.get());
 
-		Assert.assertTrue(gesuchService.hasFolgegesuch(gesuch.getId()));
-		Assert.assertFalse(gesuchService.hasFolgegesuch(folgegesuch.getId()));
+		Assert.assertTrue(gesuchService.hasFolgegesuchForAmt(gesuch.getId()));
+		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(folgegesuch.getId()));
 	}
 
 

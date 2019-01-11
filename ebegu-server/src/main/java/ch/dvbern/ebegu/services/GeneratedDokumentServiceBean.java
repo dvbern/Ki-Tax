@@ -67,6 +67,7 @@ import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
@@ -74,7 +75,6 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
-import ch.dvbern.ebegu.vorlagen.GeneratePDFDocumentHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.AuszahlungDTO;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.Pain001DTO;
@@ -269,6 +269,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			}
 			finanzielleSituationService.calculateFinanzDaten(gesuch);
 
+			// Die Betreuungen mit ihren Vorgängern initialisieren, damit der MutationsMerger funktioniert!
+			initializeBetreuungenWithVorgaenger(gesuch);
+
 			final BetreuungsgutscheinEvaluator evaluator = initEvaluator(gesuch);
 			final Verfuegung famGroessenVerfuegung = evaluator.evaluateFamiliensituation(gesuch);
 			boolean writeProtectPDF = forceCreation;
@@ -279,6 +282,17 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		}
 		return persistedDokument;
+	}
+
+	private void initializeBetreuungenWithVorgaenger(@Nonnull Gesuch gesuch) {
+		gesuch.getKindContainers()
+			.stream()
+			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+			.forEach(betreuung -> {
+					Optional<Verfuegung> vorgaengerVerfuegung = verfuegungService.findVorgaengerVerfuegung(betreuung);
+					betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
+				}
+			);
 	}
 
 	@Nonnull
@@ -314,7 +328,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			GeneratePDFDocumentHelper.doMerge(docsToMerge, baos, true);
+			PdfUtil.doMerge(docsToMerge, baos, true);
 		} catch (DocumentException | IOException e) {
 			throw new MergeDocException("getKompletteKorrespondenz", "Dokumente konnten nicht gemergt werden", e);
 		}
@@ -588,6 +602,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			Optional<Mahnung> vorgaengerMahnung;
 
 			if (mahnung.hasVorgaenger()) {
+				Objects.requireNonNull(mahnung.getVorgaengerId());
 				vorgaengerMahnung = mahnungService.findMahnung(mahnung.getVorgaengerId());
 			} else {
 				vorgaengerMahnung = mahnungService.findAktiveErstMahnung(gesuch);

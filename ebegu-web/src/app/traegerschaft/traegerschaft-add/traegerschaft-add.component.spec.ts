@@ -22,6 +22,7 @@ import {StateService, Transition} from '@uirouter/core';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import ErrorService from '../../core/errors/service/ErrorService';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 import {TraegerschaftModule} from '../traegerschaft.module';
@@ -38,6 +39,8 @@ describe('TraegerschaftAddComponent', () => {
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params', 'from']);
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
+    const i18nServiceSpy = jasmine
+        .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -53,6 +56,7 @@ describe('TraegerschaftAddComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftRSSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
             ],
             declarations: [],
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES,
