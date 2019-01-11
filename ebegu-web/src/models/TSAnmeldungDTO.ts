@@ -21,7 +21,7 @@ export default class TSAnmeldungDTO {
     private _kindContainerId: string;
     private _betreuung: TSBetreuung;
     private _additionalKindQuestions: boolean;
-    private _mutterspracheDeutsch: boolean;
+    private _sprichtAmtssprache: boolean;
     private _einschulungTyp: TSEinschulungTyp;
 
     public get kindContainerId(): string {
@@ -48,12 +48,12 @@ export default class TSAnmeldungDTO {
         this._additionalKindQuestions = value;
     }
 
-    public get mutterspracheDeutsch(): boolean {
-        return this._mutterspracheDeutsch;
+    public get sprichtAmtssprache(): boolean {
+        return this._sprichtAmtssprache;
     }
 
-    public set mutterspracheDeutsch(value: boolean) {
-        this._mutterspracheDeutsch = value;
+    public set sprichtAmtssprache(value: boolean) {
+        this._sprichtAmtssprache = value;
     }
 
     public get einschulungTyp(): TSEinschulungTyp {

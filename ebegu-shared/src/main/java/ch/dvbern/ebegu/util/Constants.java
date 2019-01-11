@@ -67,6 +67,7 @@ public final class Constants {
 	public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat(CURRENCY_PATTERN);
 
 	public static final String SERVER_MESSAGE_BUNDLE_NAME = "ch.dvbern.ebegu.i18n.server-messages";
+	public static final String VALIDATION_MESSAGE_BUNDLE_NAME = "ValidationMessages";
 	public static final LocalDate END_OF_TIME = LocalDate.of(9999, 12, 31);
 	public static final LocalDate START_OF_TIME = LocalDate.of(1000, 1, 1);
 

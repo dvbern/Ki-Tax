@@ -389,7 +389,7 @@ public class BetreuungResource {
 			if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kind.get().getKindJA().getFamilienErgaenzendeBetreuung()) {
 				kind.get().getKindJA().setFamilienErgaenzendeBetreuung(true);
 				kind.get().getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
-				kind.get().getKindJA().setMutterspracheDeutsch(jaxAnmeldungDTO.getMutterspracheDeutsch());
+				kind.get().getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
 				kindService.saveKind(kind.get());
 			}
 
@@ -408,7 +408,7 @@ public class BetreuungResource {
 		if (betreuungen != null) {
 			return betreuungen.stream().anyMatch(betreuung -> {
 				if (!Objects.equals(betreuung.getId(), betreuungJAXP.getId())) {
-					if (!Objects.equals(betreuungJAXP.getInstitutionStammdaten().getBetreuungsangebotTyp(), BetreuungsangebotTyp.FERIENINSEL)) {
+					if (betreuungJAXP.getInstitutionStammdaten().getBetreuungsangebotTyp() != BetreuungsangebotTyp.FERIENINSEL) {
 						return !betreuung.getBetreuungsstatus().isStorniert() &&
 							isSameInstitution(betreuungJAXP, betreuung);
 					}
@@ -425,7 +425,7 @@ public class BetreuungResource {
 	private boolean isSameFerien(JaxBetreuung betreuungJAXP, Betreuung betreuung) {
 		Objects.requireNonNull(betreuung.getBelegungFerieninsel());
 		Objects.requireNonNull(betreuungJAXP.getBelegungFerieninsel());
-		return Objects.equals(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp(), BetreuungsangebotTyp.FERIENINSEL) &&
+		return betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp() == BetreuungsangebotTyp.FERIENINSEL &&
 			Objects.equals(betreuung.getBelegungFerieninsel().getFerienname(), betreuungJAXP.getBelegungFerieninsel().getFerienname());
 	}
 

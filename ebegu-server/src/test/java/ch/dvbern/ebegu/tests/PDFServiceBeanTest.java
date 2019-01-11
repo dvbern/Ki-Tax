@@ -79,6 +79,9 @@ public class PDFServiceBeanTest {
 	private PDFServiceBean pdfService;
 
 	@InjectIntoMany
+	DossierServiceMock dossierService = new DossierServiceMock();
+
+	@InjectIntoMany
 	EbeguVorlageService vorlageService = new EbeguVorlageServiceMock();
 
 	@InjectIntoMany

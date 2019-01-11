@@ -138,7 +138,7 @@
                                 <md-checkbox ng-model="vm.hasUnbezahlterUrlaub"
                                              name="showUnbezahlterUrlaub" id="showUnbezahlterUrlaub"
                                              aria-label="{{'UNBEZAHLTER_URLAUB'|translate}}"
-                                             ng-disabled="vm.erwerbspensumDisabled()"
+                                             ng-disabled="vm.erwerbspensumDisabled() || vm.isGesuchReadonly()"
                                              ng-change="vm.unbezahlterUrlaubClicked()">
                                     <span data-translate="UNBEZAHLTER_URLAUB"></span>
                                 </md-checkbox>
@@ -193,13 +193,16 @@
                 </fieldset>
 
                 <!--Buttons-->
-                <dv-navigation dv-cancel="vm.cancel()" dv-next="true" dv-save="vm.save()" dv-sub-step="2"
+                <dv-navigation dv-cancel="vm.cancel()"
+                               dv-save="vm.save()"
+                               dv-next="!vm.isGesuchReadonly()"
+                               dv-sub-step="2"
                                dv-translate-next="{{'SPEICHERN_UPPER'}}">
                 </dv-navigation>
 
             </form>
 
-            <p ng-if="!vm.model">Keine Erwerbspensum Daten vorhanden</p>
+            <p ng-if="!vm.model" data-translate="NO_ERWERBSPENSUM_DATA"></p>
 
         </div>
     </div>

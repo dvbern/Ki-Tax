@@ -15,27 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+import {Provider} from '@angular/core';
+import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
+import IInjectorService = angular.auto.IInjectorService;
 
-import java.util.Locale;
+// tslint:disable:naming-convention
 
-import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-
-import ch.dvbern.ebegu.util.ServerMessageUtil;
-
-/**
- * Service for internationalization of the server
- */
-@Stateless
-@Local(I18nService.class)
-@PermitAll
-public class I18nServiceBean implements I18nService {
-
-	@Override
-	public void changeLanguage(@Nonnull Locale locale) {
-		ServerMessageUtil.setLocale(locale);
-	}
+// HttpI18nInterceptor
+export function httpI18nInterceptorFactory(i: IInjectorService): HttpI18nInterceptor {
+    return i.get('HttpI18nInterceptor');
 }
+
+export const httpI18nInterceptorProvider = {
+    provide: HttpI18nInterceptor,
+    useFactory: httpI18nInterceptorFactory,
+    deps: ['$injector'],
+    multi: true,
+};
+
+export const UPGRADED_HTTP_INTERCEPTOR_PROVIDERS: Provider[] = [
+    httpI18nInterceptorProvider,
+];

@@ -180,18 +180,4 @@ export class PendenzenBetreuungenListViewController implements IController {
             this.$state.go('gesuch.betreuung', navObj);
         }
     }
-
-
-    // TODO IMANOL Remove this after review
-    public doUndefined(){
-        let test = [1, 2];
-        let res =  test[2].toFixed(1);
-        console.log(res);
-    }
-
-    public doThrowError(){
-        throw "This is a delibrate error thrown from an AngularJS controller"
-    }
-
-
 }

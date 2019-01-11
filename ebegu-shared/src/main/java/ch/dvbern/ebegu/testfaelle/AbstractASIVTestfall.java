@@ -27,7 +27,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 
 /**
  * Superklasse für ASIV-Testfaelle
@@ -50,14 +49,12 @@ public abstract class AbstractASIVTestfall extends AbstractTestfall {
 		// Familiensituation
 		Familiensituation familiensituation = new Familiensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
 		familiensituationContainer.setFamiliensituationJA(familiensituation);
 		familiensituation.setAenderungPer(ereignisdatum);
 
 		Familiensituation familiensituationErstgesuch = new Familiensituation();
 		familiensituationErstgesuch.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		familiensituationErstgesuch.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		familiensituationErstgesuch.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		familiensituationContainer.setFamiliensituationErstgesuch(familiensituationErstgesuch);
 
@@ -69,7 +66,6 @@ public abstract class AbstractASIVTestfall extends AbstractTestfall {
 		// Familiensituation
 		Familiensituation familiensituation = new Familiensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
 		familiensituationContainer.setFamiliensituationJA(familiensituation);
@@ -77,7 +73,6 @@ public abstract class AbstractASIVTestfall extends AbstractTestfall {
 
 		Familiensituation familiensituationErstgesuch = new Familiensituation();
 		familiensituationErstgesuch.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		familiensituationErstgesuch.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		familiensituationContainer.setFamiliensituationErstgesuch(familiensituationErstgesuch);
 
 		gesuch.setFamiliensituationContainer(familiensituationContainer);

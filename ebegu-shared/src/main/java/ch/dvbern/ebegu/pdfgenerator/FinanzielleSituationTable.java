@@ -17,28 +17,22 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
+import com.lowagie.text.*;
 import com.lowagie.text.Font;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_BOLD;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.*;
 
 public class FinanzielleSituationTable {
 
@@ -48,7 +42,6 @@ public class FinanzielleSituationTable {
 	private int[] alignement;
 	private int numberOfTitleRows = 1;
 	private boolean lastLineBold = false;
-	private int emptyLinesAfter = 1;
 	private List<FinanzielleSituationRow> rows = new ArrayList<>();
 
 	private boolean hasSecondGesuchsteller;
@@ -60,8 +53,8 @@ public class FinanzielleSituationTable {
 
 	public FinanzielleSituationTable(boolean hasSecondGesuchsteller) {
 		this.hasSecondGesuchsteller = hasSecondGesuchsteller;
-		final float[] width1Gs = {12,2};
-		final float[] width2Gs = {10,2,2};
+		final float[] width1Gs = {14,4};
+		final float[] width2Gs = {10,4,4};
 		final int[] alignement1Gs = { Element.ALIGN_LEFT,Element.ALIGN_RIGHT};
 		final int[] alignement2Gs = {Element.ALIGN_LEFT,Element.ALIGN_RIGHT, Element.ALIGN_RIGHT};
 		if (this.hasSecondGesuchsteller) {
@@ -98,20 +91,33 @@ public class FinanzielleSituationTable {
 			FinanzielleSituationRow row = rows.get(i);
 			addRow(table, row, font, bgColor);
 		}
-		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * emptyLinesAfter);
 		return table;
 	}
 
 	private void addRow(@Nonnull PdfPTable table, @Nonnull FinanzielleSituationRow row, @Nonnull Font font, @Nonnull Color bgColor) {
-		addCell(table, row.getLabel(), font, bgColor, alignement[0]);
-		addCell(table, row.getGs1(), font, bgColor, alignement[1]);
+		addCell(table, row.getLabel(), row.getSupertext(), null, font, bgColor, alignement[0]);
+		addCell(table, row.getGs1(), null, row.getGs1Urspruenglich(), font, bgColor, alignement[1]);
 		if (hasSecondGesuchsteller) {
-			addCell(table, row.getGs2(), font, bgColor, alignement[2]);
+			addCell(table, row.getGs2(), null, row.getGs2Urspruenglich(), font, bgColor, alignement[2]);
 		}
 	}
 
-	private void addCell(@Nonnull PdfPTable table, @Nullable String value, @Nonnull Font font, @Nonnull Color bgColor, int alignment) {
-		PdfPCell cell = new PdfPCell(new Phrase(value, font));
+	private void addCell(@Nonnull PdfPTable table, @Nullable String value, @Nullable String supertext, @Nullable String originalValue, @Nonnull Font font, @Nonnull Color bgColor, int alignment) {
+		final Phrase phrase = new Phrase(value, font);
+		if (supertext != null) {
+			phrase.add(PdfUtil.createSuperTextInText(supertext));
+		}
+		if (originalValue != null) {
+			Font fontWithSize = PdfUtilities.createFontWithSize(6);
+			fontWithSize.setColor(Color.GRAY);
+			phrase.add(
+				new Chunk(
+					originalValue,
+					fontWithSize
+				)
+			);
+		}
+		PdfPCell cell = new PdfPCell(phrase);
 		cell.setBackgroundColor(bgColor);
 		cell.setHorizontalAlignment(alignment);
 		cell.setLeading(0.0F, PdfUtil.DEFAULT_CELL_LEADING);

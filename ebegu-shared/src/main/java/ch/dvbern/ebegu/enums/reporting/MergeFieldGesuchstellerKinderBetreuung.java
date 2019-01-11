@@ -78,7 +78,6 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	gs2EwpGesundhtl(new SimpleMergeField<>("gs2EwpGesundhtl", PERCENT_CONVERTER)),
 
 	familiensituation(new SimpleMergeField<>("familiensituation", STRING_CONVERTER)),
-	kardinalitaet(new SimpleMergeField<>("kardinalitaet", STRING_CONVERTER)),
 	familiengroesse(new SimpleMergeField<>("familiengroesse", BIGDECIMAL_CONVERTER)),
 
 	massgEinkVorFamilienabzug(new SimpleMergeField<>("massgEinkVorFamilienabzug", BIGDECIMAL_CONVERTER)),
@@ -94,7 +93,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	kindGeburtsdatum(new SimpleMergeField<>("kindGeburtsdatum", DATE_CONVERTER)),
 	kindFachstelle(new SimpleMergeField<>("kindFachstelle", STRING_CONVERTER)),
 	kindErwBeduerfnisse(new SimpleMergeField<>("kindErwBeduerfnisse", BOOLEAN_X_CONVERTER)),
-	kindDeutsch(new SimpleMergeField<>("kindDeutsch", BOOLEAN_X_CONVERTER)),
+	kindSprichtAmtssprache(new SimpleMergeField<>("kindSprichtAmtssprache", BOOLEAN_X_CONVERTER)),
 	eingeschult(new SimpleMergeField<>("eingeschult", STRING_CONVERTER)),
 
 	zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),

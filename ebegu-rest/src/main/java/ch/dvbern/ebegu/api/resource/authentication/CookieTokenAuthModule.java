@@ -163,7 +163,8 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			String authId = AuthDataUtil.getAuthAccessElement(request).get().getAuthId();
 			if (!isEmpty(authToken)) {
 
-				MDC.put(Constants.LOG_MDC_EBEGUUSER, authId);     // authId ist der Loginname (z.B. Email) (todo ask imanol should this be set here)
+				// authId ist der Loginname (z.B. Email)
+				MDC.put(Constants.LOG_MDC_EBEGUUSER, authId);
 				TokenAuthenticator tokenAuthenticator = getReferenceOrNull(TokenAuthenticator.class);
 				if (tokenAuthenticator != null) {
 
@@ -271,7 +272,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	private void clearUserinfoFromLogvars() {
 		MDC.put(Constants.LOG_MDC_EBEGUUSER, "unknown");
 		MDC.put(Constants.LOG_MDC_AUTHUSERID, "unknown");
-		Sentry.setUser(null);
+		Sentry.getContext().setUser(null);
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")

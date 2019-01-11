@@ -778,7 +778,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		final VerfuegungZeitabschnitt otherVerfuegungZeitabschnitt = (VerfuegungZeitabschnitt) other;
 		return isSameErwerbspensum(erwerbspensumGS1, otherVerfuegungZeitabschnitt.erwerbspensumGS1) &&
 			isSameErwerbspensum(erwerbspensumGS2, otherVerfuegungZeitabschnitt.erwerbspensumGS2) &&
-			betreuungspensum.compareTo(otherVerfuegungZeitabschnitt.betreuungspensum) == 0 &&
+			MathUtil.isSame(betreuungspensum, otherVerfuegungZeitabschnitt.betreuungspensum) &&
 			fachstellenpensum == otherVerfuegungZeitabschnitt.fachstellenpensum &&
 			ausserordentlicherAnspruch == otherVerfuegungZeitabschnitt.ausserordentlicherAnspruch &&
 			anspruchspensumRest == otherVerfuegungZeitabschnitt.anspruchspensumRest &&
@@ -801,7 +801,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			babyTarif == otherVerfuegungZeitabschnitt.babyTarif &&
 			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
 			besondereBeduerfnisse == otherVerfuegungZeitabschnitt.besondereBeduerfnisse &&
-			Objects.equals(zahlungsstatus, otherVerfuegungZeitabschnitt.zahlungsstatus);
+			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
+			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
@@ -809,11 +810,20 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		if (this == that) {
 			return true;
 		}
-		return betreuungspensum.compareTo(that.betreuungspensum) == 0 &&
+
+		return MathUtil.isSame(betreuungspensum, that.betreuungspensum) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			abzugFamGroesse != null && abzugFamGroesse.compareTo(that.abzugFamGroesse) == 0 &&
-			famGroesse != null && famGroesse.compareTo(that.famGroesse) == 0 &&
-			Objects.equals(bemerkungen, that.bemerkungen);
+			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
+			MathUtil.isSame(vollkosten, that.vollkosten) &&
+			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
+			MathUtil.isSame(abzugFamGroesse, that.abzugFamGroesse) &&
+			MathUtil.isSame(famGroesse, that.famGroesse) &&
+			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
+			babyTarif == that.babyTarif &&
+			eingeschult == that.eingeschult &&
+			besondereBeduerfnisse == that.besondereBeduerfnisse &&
+			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
+			Objects.equals(this.bemerkungen, that.bemerkungen);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
@@ -829,14 +839,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public boolean isSamePersistedValues(VerfuegungZeitabschnitt that) {
 		// zuSpaetEingereicht und zahlungsstatus sind hier nicht aufgefuehrt, weil;
 		// Es sollen die Resultate der Verfuegung verglichen werden und nicht der Weg, wie wir zu diesem Resultat gelangt sind
-		return betreuungspensum.compareTo(that.betreuungspensum) == 0 &&
+		return MathUtil.isSame(betreuungspensum, that.betreuungspensum) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			(betreuungsstunden.compareTo(that.betreuungsstunden) == 0) &&
-			(vollkosten.compareTo(that.vollkosten) == 0) &&
-			(elternbeitrag.compareTo(that.elternbeitrag) == 0) &&
-			(abzugFamGroesse.compareTo(that.abzugFamGroesse) == 0) &&
-			(famGroesse.compareTo(that.famGroesse) == 0) &&
-			(massgebendesEinkommenVorAbzugFamgr.compareTo(that.massgebendesEinkommenVorAbzugFamgr) == 0) &&
+			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
+			MathUtil.isSame(vollkosten, that.vollkosten) &&
+			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
+			MathUtil.isSame(abzugFamGroesse, that.abzugFamGroesse) &&
+			MathUtil.isSame(famGroesse, that.famGroesse) &&
+			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0 &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr);
 	}
@@ -845,11 +855,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	 * Vergleich nur die relevanten Daten fuer die Berechnung einer Verfuegung.
 	 */
 	public boolean isSameBerechnung(VerfuegungZeitabschnitt that) {
-		return betreuungspensum.compareTo(that.betreuungspensum) == 0 &&
+		return MathUtil.isSame(betreuungspensum, that.betreuungspensum) &&
 			anspruchberechtigtesPensum == that.anspruchberechtigtesPensum &&
-			(betreuungsstunden.compareTo(that.betreuungsstunden) == 0) &&
-			(vollkosten.compareTo(that.vollkosten) == 0) &&
-			(elternbeitrag.compareTo(that.elternbeitrag) == 0) &&
+			MathUtil.isSame(betreuungsstunden, that.betreuungsstunden) &&
+			MathUtil.isSame(vollkosten, that.vollkosten) &&
+			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
 			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0);
 	}
 

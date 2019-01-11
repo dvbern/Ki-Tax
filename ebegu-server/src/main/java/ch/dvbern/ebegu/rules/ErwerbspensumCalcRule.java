@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -133,11 +134,11 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		final Familiensituation familiensituation = requireNonNull(gesuch.extractFamiliensituation());
 		final Familiensituation familiensituationErstGesuch = gesuch.extractFamiliensituationErstgesuch();
 
-		if (familiensituation.getAenderungPer() != null
+		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
+		if (familiensituationGueltigAb != null
 			&& familiensituationErstGesuch != null
-			&& gueltigkeit.getGueltigBis().isBefore(familiensituation.getAenderungPer())) {
-
-			return familiensituationErstGesuch.hasSecondGesuchsteller();
+			&& gueltigkeit.getGueltigBis().isBefore(familiensituationGueltigAb)) {
+				return familiensituationErstGesuch.hasSecondGesuchsteller();
 		}
 		return familiensituation.hasSecondGesuchsteller();
 	}

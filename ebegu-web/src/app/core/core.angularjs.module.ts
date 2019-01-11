@@ -62,6 +62,7 @@ import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {BenutzerComponent} from '../benutzer/benutzer/benutzer.component';
 import {DvLanguageSelectorComponentConfig} from '../i18n/components/dv-language-selector/dv-language-selector.component';
+import {HttpI18nInterceptor} from '../i18n/httpInterceptor/http-i18n-Interceptor';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
 import {PosteingangService} from '../posteingang/service/posteingang.service';
 import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion';
@@ -165,19 +166,18 @@ const dependencies = [
     'cfp.hotkeys',
     'ngFileUpload',
     'unsavedChanges',
-    
 ];
 
-let dynamicDependencies = function (): string[] {
+const dynamicDependencies = (): string[] => {
 
-    //hier kommen plugins die wir fuer dev disablen wollen
+    // hier kommen plugins die wir fuer dev disablen wollen
     if (environment.sentryDSN) {
         return ['ngRaven'];
     }
     return [];
 };
 
-let calculatedDeps = dependencies.concat(dynamicDependencies());
+const calculatedDeps = dependencies.concat(dynamicDependencies());
 
 export const CORE_JS_MODULE = angular
     .module('ebeguWeb.core', calculatedDeps)
@@ -248,6 +248,7 @@ export const CORE_JS_MODULE = angular
     .service('BerechnungsManager', BerechnungsManager)
     .service('HttpResponseInterceptor', HttpResponseInterceptor)
     .service('HttpVersionInterceptor', HttpVersionInterceptor)
+    .service('HttpI18nInterceptor', HttpI18nInterceptor)
     .service('WizardStepManager', WizardStepManager)
     .service('SearchIndexRS', SearchIndexRS)
     .service('DVsTPersistService', DVsTPersistService)

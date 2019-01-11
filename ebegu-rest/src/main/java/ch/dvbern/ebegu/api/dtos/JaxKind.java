@@ -38,7 +38,7 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	private Boolean familienErgaenzendeBetreuung;
 
 	@Nullable
-	private Boolean mutterspracheDeutsch;
+	private Boolean sprichtAmtssprache;
 
 	@Nullable
 	private EinschulungTyp einschulungTyp;
@@ -68,12 +68,12 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	}
 
 	@Nullable
-	public Boolean getMutterspracheDeutsch() {
-		return mutterspracheDeutsch;
+	public Boolean getSprichtAmtssprache() {
+		return sprichtAmtssprache;
 	}
 
-	public void setMutterspracheDeutsch(@Nullable Boolean mutterspracheDeutsch) {
-		this.mutterspracheDeutsch = mutterspracheDeutsch;
+	public void setSprichtAmtssprache(@Nullable Boolean sprichtAmtssprache) {
+		this.sprichtAmtssprache = sprichtAmtssprache;
 	}
 
 	@Nullable

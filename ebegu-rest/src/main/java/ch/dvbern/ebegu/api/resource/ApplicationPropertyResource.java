@@ -150,8 +150,10 @@ public class ApplicationPropertyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/sentryenv")
 	public JaxApplicationProperties getSentryEnvName(@Context HttpServletResponse response) {
-		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService.readApplicationProperty(
-				ApplicationPropertyKey.SENTRY_ENV);
+
+		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService
+			.readApplicationProperty(ApplicationPropertyKey.SENTRY_ENV);
+
 		ApplicationProperty prop = propertyFromDB.orElseGet(() -> {
 			String sentryEnv = ebeguConfiguration.getSentryEnv();
 			return new ApplicationProperty(ApplicationPropertyKey.SENTRY_ENV, sentryEnv);
