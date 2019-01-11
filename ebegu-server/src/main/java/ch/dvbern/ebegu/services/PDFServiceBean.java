@@ -87,6 +87,9 @@ public class PDFServiceBean implements PDFService {
 	private GemeindeService gemeindeService;
 
 	@Inject
+	private DossierService dossierService;
+
+	@Inject
 	private Authorizer authorizer;
 
 	@Nonnull
@@ -169,13 +172,19 @@ public class PDFServiceBean implements PDFService {
 		if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 
 			if (!gesuch.hasOnlyBetreuungenOfSchulamt()) {
-				// Bei nur Schulamt prüfen wir die Berechtigung nicht, damit das JA solche Gesuche schliessen kann. Der UseCase ist, dass zuerst ein zweites
-				// Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.		authorizer.checkReadAuthorizationFinSit(gesuch);
+				// Bei nur Schulamt prüfen wir die Berechtigung nicht, damit das JA solche Gesuche schliessen kann. Der UseCase ist,
+				// dass zuerst ein zweites Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.
 				authorizer.checkReadAuthorizationFinSit(gesuch);
 			}
 
+			// Im Dokument der Finanziellen Situation werden nur die Zeitabschnitte dargestellt, die nach dem
+			// ersten Einreichungsdatum aller Gesuche dieses Dossiers liegen
+			LocalDate erstesEinreichungsdatum =
+				dossierService.getErstesEinreichungsdatum(gesuch.getDossier(), gesuch.getGesuchsperiode());
+
 			GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
-			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(gesuch, famGroessenVerfuegung, stammdaten);
+			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(
+				gesuch, famGroessenVerfuegung, stammdaten, erstesEinreichungsdatum);
 			return generateDokument(pdfGenerator, !writeProtected);
 		}
 		return BYTES;

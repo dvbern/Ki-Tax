@@ -116,16 +116,18 @@ public final class EbeguRuleTestsHelper {
 		List<VerfuegungZeitabschnitt> result = initialenRestanspruchAbschnitte;
 		result = erwerbspensumAbschnittRule.calculate(betreuung, result);
 		result = urlaubAbschnittRule.calculate(betreuung, result);
+		result = familienabzugAbschnittRule.calculate(betreuung, result);
 		result = kindTarifAbschnittRule.calculate(betreuung, result);
 		result = betreuungspensumAbschnittRule.calculate(betreuung, result);
 		result = fachstelleAbschnittRule.calculate(betreuung, result);
 		result = ausserordentlicherAnspruchAbschnittRule.calculate(betreuung, result);
-		result = zivilstandsaenderungAbschnittRule.calculate(betreuung, result);
 		result = einkommenAbschnittRule.calculate(betreuung, result);
-		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
 		result = wohnsitzAbschnittRule.calculate(betreuung, result);
+		result = einreichungsfristAbschnittRule.calculate(betreuung, result);
 		result = abwesenheitAbschnittRule.calculate(betreuung, result);
+		result = zivilstandsaenderungAbschnittRule.calculate(betreuung, result);
 		// Anspruch
+		result = storniertCalcRule.calculate(betreuung, result);
 		result = erwerbspensumCalcRule.calculate(betreuung, result);
 		result = fachstelleCalcRule.calculate(betreuung, result);
 		result = ausserordentlicherAnspruchCalcRule.calculate(betreuung, result);
@@ -133,14 +135,16 @@ public final class EbeguRuleTestsHelper {
 		// Reduktionen
 		result = maximalesEinkommenCalcRule.calculate(betreuung, result);
 		result = betreuungsangebotTypCalcRule.calculate(betreuung, result);
-		result = einreichungsfristCalcRule.calculate(betreuung, result);
 		result = wohnsitzCalcRule.calculate(betreuung, result);
+		result = einreichungsfristCalcRule.calculate(betreuung, result);
 		result = abwesenheitCalcRule.calculate(betreuung, result);
 		result = schulstufeCalcRule.calculate(betreuung, result);
 		result = kesbPlatzierungCalcRule.calculate(betreuung, result);
+
 		result = restanspruchLimitCalcRule.calculate(betreuung, result);
 		// Sicherstellen, dass der Anspruch nie innerhalb eines Monats sinkt
 		result = AnspruchFristRule.execute(result);
+		result = AbschlussNormalizer.execute(result, false);
 		return result;
 	}
 
