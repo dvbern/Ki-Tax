@@ -15,8 +15,8 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
-import * as $ from 'jquery';
 import * as moment from 'moment';
+import * as $ from 'jquery';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
@@ -92,9 +92,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     ];
     public betreuungsangebot: any;
     public betreuungsangebotValues: Array<any>;
-    // der ausgewaehlte instStammId wird hier gespeichert und dann in die entsprechende
+    public instStammId: string; // der ausgewaehlte instStammId wird hier gespeichert und dann in die entsprechende
     // InstitutionStammdaten umgewandert
-    public instStammId: string;
     public isSavingData: boolean; // Semaphore
     public initialBetreuung: TSBetreuung;
     public flagErrorVertrag: boolean;
@@ -111,10 +110,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isDuplicated: boolean = false;
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     public fachstelleId: string;
-
-    // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
-    public provMonatlicheBetreuungskosten: number;
-    public provPensum: number;
 
     public constructor(
         private readonly $state: StateService,
@@ -152,7 +147,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.model = angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
                 this.initialBetreuung =
                     angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
-
                 this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
             } else {
                 // wenn betreuung-nummer nicht definiert ist heisst das, dass wir ein neues erstellen sollten
@@ -208,9 +202,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public initEmptyBetreuung(): TSBetreuung {
         const tsBetreuung = new TSBetreuung();
-
-        // radio group für vertrag soll zu beginn leer sein
-        tsBetreuung.vertrag = null;
         tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
@@ -639,16 +630,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    /**
-     * This method saves a provisorische Betreuung and
-     * creates a Betreuungspensum for the whole period
-     */
-    public saveProvisorischeBetreuung(): void {
-        if (this.isGesuchValid()) {
-            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-        }
-    }
-
     public platzBestaetigen(): void {
         if (this.isGesuchValid()) {
             this.getBetreuungModel().datumBestaetigung = DateUtil.today();
@@ -1033,40 +1014,5 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return this.getErweiterteBetreuungGS().fachstelle.name;
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
-    }
-
-    private createProvisorischesBetreuungspensum(): any {
-
-        // always clear existing Betreuungspensum
-        this.getBetreuungModel().betreuungspensumContainers = [];
-        this.instStammId = null;
-
-        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
-        }
-        this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
-
-        this.setSelectedInstitutionStammdaten();
-
-        this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE,
-                false,
-                null,
-                null,
-                this.gesuchModelManager.getGesuchsperiode().gueltigkeit)));
-    }
-
-    public isProvisorischeBetreuung(): boolean {
-        return this.getBetreuungModel().vertrag === false; // tslint:disable-line:no-boolean-literal-compare
-    }
-
-    public onChangeVertrag(): void {
-        // clear
-        this.getBetreuungModel().betreuungspensumContainers = [];
-        this.instStammId = null;
-        // init prov. betreuung
-        if (this.model.vertrag === false) { // tslint:disable-line:no-boolean-literal-compare
-            this.createProvisorischesBetreuungspensum();
-        }
     }
 }
