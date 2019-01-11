@@ -194,6 +194,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private boolean zuSpaetEingereicht;
 
 	@NotNull
+	@Column(nullable = false)
+	private boolean minimalesEwpUnterschritten;
+
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus = VerfuegungsZeitabschnittZahlungsstatus.NEU;
@@ -226,6 +230,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
+		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
 		this.wohnsitzNichtInGemeindeGS2 = toCopy.wohnsitzNichtInGemeindeGS2;
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
@@ -416,6 +421,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
 		this.zuSpaetEingereicht = zuSpaetEingereicht;
+	}
+
+	public boolean isMinimalesEwpUnterschritten() {
+		return minimalesEwpUnterschritten;
+	}
+
+	public void setMinimalesEwpUnterschritten(boolean minimalesEwpUnterschritten) {
+		this.minimalesEwpUnterschritten = minimalesEwpUnterschritten;
 	}
 
 	public boolean isBezahltVollkosten() {
@@ -839,6 +852,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(massgebendesEinkommenVorAbzugFamgr, otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) &&
 			(isWohnsitzNichtInGemeindeGS1() && isWohnsitzNichtInGemeindeGS2()) == (otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1() && otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS2()) &&
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
+			minimalesEwpUnterschritten == otherVerfuegungZeitabschnitt.minimalesEwpUnterschritten &&
 			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
 			longAbwesenheit == otherVerfuegungZeitabschnitt.longAbwesenheit &&
 			Objects.equals(einkommensjahr, otherVerfuegungZeitabschnitt.einkommensjahr) &&
