@@ -1,0 +1,15 @@
+UPDATE verfuegung_zeitabschnitt
+SET verfuegung_zeitabschnitt.verguenstigung = 0
+WHERE verfuegung_zeitabschnitt.verguenstigung IS NULL;
+
+UPDATE verfuegung_zeitabschnitt
+SET verfuegung_zeitabschnitt.verguenstigung_ohne_beruecksichtigung_vollkosten = 0
+WHERE verfuegung_zeitabschnitt.verguenstigung_ohne_beruecksichtigung_vollkosten IS NULL;
+
+UPDATE verfuegung_zeitabschnitt
+SET verfuegung_zeitabschnitt.verguenstigung_ohne_beruecksichtigung_minimalbeitrag = 0
+WHERE verfuegung_zeitabschnitt.verguenstigung_ohne_beruecksichtigung_minimalbeitrag IS NULL;
+
+UPDATE verfuegung_zeitabschnitt
+SET verfuegung_zeitabschnitt.minimaler_elternbeitrag = 0
+WHERE verfuegung_zeitabschnitt.minimaler_elternbeitrag IS NULL;
