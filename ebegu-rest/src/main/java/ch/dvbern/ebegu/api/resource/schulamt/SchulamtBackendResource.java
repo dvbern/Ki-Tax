@@ -333,7 +333,6 @@ public class SchulamtBackendResource {
 			verfuegungService.getEvaluateFamiliensituationVerfuegung(neustesGesuch);
 
 		// Find and return Finanzdaten on Verfügungszeitabschnitt from Stichtag
-		if (famGroessenVerfuegung != null) {
 		List<VerfuegungZeitabschnitt> zeitabschnitten = famGroessenVerfuegung.getZeitabschnitte();
 		// get finanzielleSituation only for stichtag
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitten) {
@@ -341,7 +340,6 @@ public class SchulamtBackendResource {
 				final JaxExternalFinanzielleSituation dto = convertToJaxExternalFinanzielleSituation(
 					fallNummer, stichtag, neustesGesuch, zeitabschnitt);
 				return Response.ok(dto).build();
-				}
 			}
 		}
 		// If no Finanzdaten found on Verfügungszeitabschnitt from Stichtag, return ErrorObject

@@ -82,14 +82,14 @@
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
-        <anspruchberechtigtesPensum>100</anspruchberechtigtesPensum>
-        <bemerkungen></bemerkungen>
+        <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
+        <bemerkungen>WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>40.00</betreuungspensum>
-        <elternbeitrag>1274.35</elternbeitrag>
+        <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.02.2018</gueltigAb>
         <gueltigBis>28.02.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>0.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>

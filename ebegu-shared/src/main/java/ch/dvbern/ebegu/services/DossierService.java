@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 
 /**
@@ -105,4 +107,11 @@ public interface DossierService {
 	@Nonnull
 	Dossier setVerantwortlicherTS(@Nonnull String dossierId, @Nullable Benutzer benutzer);
 
+	/**
+	 * Gibt das früheste Einreichungsdatum (oder RegelStartDatum) zurück, welches für dieses Dossier
+	 * in dieser Gesuchsperiode eingereicht wurde.
+	 * Falls noch gar kein Gesuch eingereicht wurde, wird das Tagesdatum zurückgegeben
+	 */
+	@Nonnull
+	LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 }

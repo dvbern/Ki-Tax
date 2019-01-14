@@ -254,6 +254,14 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
+	public static String printBigDecimalOneNachkomma(@Nullable BigDecimal valueAsBigDecimal) {
+		if (valueAsBigDecimal != null) {
+			return MathUtil.EINE_NACHKOMMASTELLE.from(valueAsBigDecimal).toString();
+		}
+		return "";
+	}
+
+	@Nonnull
 	public static String printLocalDate(@Nullable LocalDate dateValue) {
 		if (dateValue != null) {
 			return Constants.DATE_FORMATTER.format(dateValue);

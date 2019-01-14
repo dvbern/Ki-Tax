@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -60,8 +61,6 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private Mahnung mahnung_2_Alleinstehend;
 	private Mahnung mahnung_2_Verheiratet;
 
-
-	// TODO (hefr) Es braucht hier ein verfügtes Gesuch!!!
 
 	@Before
 	public void init() throws IOException {
@@ -148,12 +147,15 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void finanzielleSituationTest() throws InvoiceGeneratorException, IOException {
+		LocalDate erstesEinreichungsdatum = Constants.START_OF_TIME;
 		final FinanzielleSituationPdfGenerator alleinstehend =
-			new FinanzielleSituationPdfGenerator(gesuch_alleinstehend, getFamiliensituationsVerfuegung(gesuch_alleinstehend), stammdaten);
+			new FinanzielleSituationPdfGenerator(gesuch_alleinstehend, getFamiliensituationsVerfuegung(gesuch_alleinstehend), stammdaten,
+				erstesEinreichungsdatum);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_alleinstehend.pdf"));
 
 		final FinanzielleSituationPdfGenerator verheiratet =
-			new FinanzielleSituationPdfGenerator(gesuch_verheiratet, getFamiliensituationsVerfuegung(gesuch_verheiratet), stammdaten);
+			new FinanzielleSituationPdfGenerator(gesuch_verheiratet, getFamiliensituationsVerfuegung(gesuch_verheiratet), stammdaten,
+				erstesEinreichungsdatum);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_verheiratet.pdf"));
 	}
 
