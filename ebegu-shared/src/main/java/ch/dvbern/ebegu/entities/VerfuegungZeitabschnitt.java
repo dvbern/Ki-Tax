@@ -145,22 +145,22 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private int anspruchberechtigtesPensum; // = Anpsruch für diese Kita, bzw. Tageseltern Kleinkinder
 
 	@Column(nullable = true)
-	private BigDecimal betreuungsstunden;
+	private BigDecimal betreuungsstunden = BigDecimal.ZERO;
 
 	@Column(nullable = true)
 	private BigDecimal vollkosten = ZERO;
 
 	@Column(nullable = true)
-	private BigDecimal verguenstigungOhneBeruecksichtigungVollkosten;
+	private BigDecimal verguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.ZERO;
 
 	@Column(nullable = true)
-	private BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+	private BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag = BigDecimal.ZERO;
 
 	@Column(nullable = true)
-	private BigDecimal verguenstigung;
+	private BigDecimal verguenstigung = BigDecimal.ZERO;
 
 	@Column(nullable = true)
-	private BigDecimal minimalerElternbeitrag;
+	private BigDecimal minimalerElternbeitrag = BigDecimal.ZERO;
 
 	@Column(nullable = true)
 	private BigDecimal elternbeitrag = ZERO;
