@@ -138,7 +138,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
 		if (familiensituationGueltigAb != null
 			&& familiensituationErstGesuch != null
-			&& gueltigkeit.getGueltigBis().isBefore(familiensituationGueltigAb)) {
+			&& gueltigkeit.getGueltigAb().isBefore(familiensituationGueltigAb)) {
 				return familiensituationErstGesuch.hasSecondGesuchsteller();
 		}
 		return familiensituation.hasSecondGesuchsteller();

@@ -88,6 +88,10 @@ public final class BemerkungsMerger {
 
 	public static void prepareGeneratedBemerkungen(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		StringBuilder sb = new StringBuilder();
+		if (StringUtils.isNotEmpty(verfuegungZeitabschnitt.getBemerkungen())) {
+			sb.append(verfuegungZeitabschnitt.getBemerkungen());
+			sb.append("\n");
+		}
 		for (VerfuegungsBemerkung verfuegungsBemerkung : verfuegungZeitabschnitt.getBemerkungenMap().values()) {
 			sb.append(verfuegungsBemerkung.getTranslated());
 			sb.append("\n");

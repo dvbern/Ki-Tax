@@ -258,19 +258,28 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		extractedFamiliensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		extractedFamiliensituation.setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(betreuung);
 		assertNotNull(result);
-		assertEquals(2, result.size());
+		assertEquals(12, result.size());
+		int i = 0;
 
-		VerfuegungZeitabschnitt abschnittVorScheidung = result.get(0);
-		assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, abschnittVorScheidung.getAnspruchberechtigtesPensum());
-		assertEquals(TestDataUtil.START_PERIODE, abschnittVorScheidung.getGueltigkeit().getGueltigAb());
-		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 31), abschnittVorScheidung.getGueltigkeit().getGueltigBis());
+		int anspruchZuZweit = 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
+		int anspruchAlleine = 100;
 
-		VerfuegungZeitabschnitt abschnittNachScheidung = result.get(1);
-		assertEquals(100, abschnittNachScheidung.getAnspruchberechtigtesPensum());
-		assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.APRIL, 1), abschnittNachScheidung.getGueltigkeit().getGueltigAb());
-		assertEquals(TestDataUtil.ENDE_PERIODE, abschnittNachScheidung.getGueltigkeit().getGueltigBis());
+		// Vor der Scheidung haben sie zusammen 160% -> Anspruch 80%
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 0, anspruchZuZweit, 0);
+		// Scheidung am 26.03.
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 0, anspruchAlleine, 0);
 	}
 
 	/**
