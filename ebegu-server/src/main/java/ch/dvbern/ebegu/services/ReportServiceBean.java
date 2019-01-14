@@ -92,7 +92,6 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -1053,6 +1052,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs1EwpGesundhtl(row.getGs1EwpGesundhtl() + erwerbspensumJA.getPensum());
 			}
+			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs1EwpIntegration(row.getGs1EwpIntegration() + erwerbspensumJA.getPensum());
+			}
 		}
 	}
 
@@ -1091,6 +1093,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 			if (Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs2EwpGesundhtl(row.getGs2EwpGesundhtl() + erwerbspensumJA.getPensum());
+			}
+			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs2EwpIntegration(row.getGs2EwpIntegration() + erwerbspensumJA.getPensum());
 			}
 		}
 	}
@@ -1231,6 +1236,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs1EwpSelbstaendig(0);
 		row.setGs1EwpRav(0);
 		row.setGs1EwpGesundhtl(0);
+		row.setGs1EwpIntegration(0);
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
 		if (gs1Container != null) {
 			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container);
@@ -1241,6 +1247,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs2EwpSelbstaendig(0);
 		row.setGs2EwpRav(0);
 		row.setGs2EwpGesundhtl(0);
+		row.setGs2EwpIntegration(0);
 		if (gueltigeGesuch.getGesuchsteller2() != null) {
 			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2());
 		}
@@ -1250,11 +1257,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			Familiensituation familiensituation =
 				familiensituationContainer.getFamiliensituationAm(row.getZeitabschnittVon());
 			row.setFamiliensituation(familiensituation.getFamilienstatus());
-			if (familiensituation.hasSecondGesuchsteller()) {
-				row.setKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
-			} else {
-				row.setKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
-			}
 		}
 		row.setFamiliengroesse(zeitabschnitt.getFamGroesse());
 		row.setMassgEinkVorFamilienabzug(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());

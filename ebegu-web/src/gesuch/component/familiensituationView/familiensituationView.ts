@@ -17,10 +17,6 @@ import {IComponentOptions, IPromise} from 'angular';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
-import {
-    getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet,
-} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -63,7 +59,6 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         '$timeout',
     ];
     public familienstatusValues: Array<TSFamilienstatus>;
-    public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public allowedRoles: Array<TSRole>;
     public initialFamiliensituation: TSFamiliensituation;
     public savedClicked: boolean = false;
@@ -91,7 +86,6 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         this.model = angular.copy(this.gesuchModelManager.getGesuch().familiensituationContainer);
         this.initialFamiliensituation = angular.copy(this.gesuchModelManager.getFamiliensituation());
         this.familienstatusValues = getTSFamilienstatusValues();
-        this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
 
         this.initViewModel();
 
@@ -143,14 +137,6 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
                 return this.model;
             });
         });
-    }
-
-    public showGesuchstellerKardinalitaet(): boolean {
-        if (this.getFamiliensituation()) {
-            return this.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND
-                || this.getFamiliensituation().familienstatus === TSFamilienstatus.WENIGER_FUENF_JAHRE;
-        }
-        return false;
     }
 
     public getFamiliensituation(): TSFamiliensituation {

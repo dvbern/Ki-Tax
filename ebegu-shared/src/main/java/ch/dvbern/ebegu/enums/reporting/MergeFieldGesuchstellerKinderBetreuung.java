@@ -61,6 +61,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	gs1EwpSelbstaendig(new SimpleMergeField<>("gs1EwpSelbstaendig", PERCENT_CONVERTER)),
 	gs1EwpRav(new SimpleMergeField<>("gs1EwpRav", PERCENT_CONVERTER)),
 	gs1EwpGesundhtl(new SimpleMergeField<>("gs1EwpGesundhtl", PERCENT_CONVERTER)),
+	gs1EwpIntegration(new SimpleMergeField<>("gs1EwpIntegration", PERCENT_CONVERTER)),
 
 	gs2Name(new SimpleMergeField<>("gs2Name", STRING_CONVERTER)),
 	gs2Vorname(new SimpleMergeField<>("gs2Vorname", STRING_CONVERTER)),
@@ -76,9 +77,9 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	gs2EwpSelbstaendig(new SimpleMergeField<>("gs2EwpSelbstaendig", PERCENT_CONVERTER)),
 	gs2EwpRav(new SimpleMergeField<>("gs2EwpRav", PERCENT_CONVERTER)),
 	gs2EwpGesundhtl(new SimpleMergeField<>("gs2EwpGesundhtl", PERCENT_CONVERTER)),
+	gs2EwpIntegration(new SimpleMergeField<>("gs2EwpIntegration", PERCENT_CONVERTER)),
 
 	familiensituation(new SimpleMergeField<>("familiensituation", STRING_CONVERTER)),
-	kardinalitaet(new SimpleMergeField<>("kardinalitaet", STRING_CONVERTER)),
 	familiengroesse(new SimpleMergeField<>("familiengroesse", BIGDECIMAL_CONVERTER)),
 
 	massgEinkVorFamilienabzug(new SimpleMergeField<>("massgEinkVorFamilienabzug", BIGDECIMAL_CONVERTER)),

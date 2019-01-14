@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -88,14 +89,17 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 	private final Verfuegung verfuegungFuerMassgEinkommen;
+	private final LocalDate erstesEinreichungsdatum;
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
-		@Nonnull GemeindeStammdaten stammdaten
+		@Nonnull GemeindeStammdaten stammdaten,
+		@Nonnull LocalDate erstesEinreichungsdatum
 	) {
 		super(gesuch, stammdaten);
 		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
+		this.erstesEinreichungsdatum = erstesEinreichungsdatum;
 	}
 
 	@Nonnull
@@ -248,8 +252,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		values.add(titles);
 		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
 			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
-			if (gesuch.getRegelStartDatum() != null
-					&& abschnitt.getGueltigkeit().getGueltigAb().isBefore(gesuch.getRegelStartDatum())) {
+			if (abschnitt.getGueltigkeit().getGueltigAb().isBefore(erstesEinreichungsdatum)) {
 				continue;
 			}
 			String[] data = {

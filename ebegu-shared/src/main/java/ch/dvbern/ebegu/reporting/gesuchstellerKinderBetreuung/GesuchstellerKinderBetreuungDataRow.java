@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 
 public class GesuchstellerKinderBetreuungDataRow {
 
@@ -51,6 +50,8 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs1EwpSelbstaendig;
 	private Integer gs1EwpRav;
 	private Integer gs1EwpGesundhtl;
+	private Integer gs1EwpIntegration;
+
 
 	@Nullable private String gs2Name;
 	@Nullable private String gs2Vorname;
@@ -66,9 +67,9 @@ public class GesuchstellerKinderBetreuungDataRow {
 	private Integer gs2EwpSelbstaendig;
 	private Integer gs2EwpRav;
 	private Integer gs2EwpGesundhtl;
+	private Integer gs2EwpIntegration;
 
 	@Nullable private EnumFamilienstatus familiensituation;
-	@Nullable private EnumGesuchstellerKardinalitaet kardinalitaet;
 	@Nullable private BigDecimal familiengroesse;
 
 	@Nullable private BigDecimal massgEinkVorFamilienabzug;
@@ -425,15 +426,6 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public EnumGesuchstellerKardinalitaet getKardinalitaet() {
-		return kardinalitaet;
-	}
-
-	public void setKardinalitaet(@Nullable EnumGesuchstellerKardinalitaet kardinalitaet) {
-		this.kardinalitaet = kardinalitaet;
-	}
-
-	@Nullable
 	public BigDecimal getFamiliengroesse() {
 		return familiengroesse;
 	}
@@ -650,5 +642,21 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setVerguenstigt(@Nullable BigDecimal verguenstigt) {
 		this.verguenstigt = verguenstigt;
+	}
+
+	public Integer getGs1EwpIntegration() {
+		return gs1EwpIntegration;
+	}
+
+	public void setGs1EwpIntegration(Integer gs1EwpIntegration) {
+		this.gs1EwpIntegration = gs1EwpIntegration;
+	}
+
+	public Integer getGs2EwpIntegration() {
+		return gs2EwpIntegration;
+	}
+
+	public void setGs2EwpIntegration(Integer gs2EwpIntegration) {
+		this.gs2EwpIntegration = gs2EwpIntegration;
 	}
 }
