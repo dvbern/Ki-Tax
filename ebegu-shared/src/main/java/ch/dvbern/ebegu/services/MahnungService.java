@@ -57,7 +57,7 @@ public interface MahnungService {
 	 * Generiert den Vorschlag für die Bemerkungen aus den fehlenden Dokumenten.
 	 */
 	@Nonnull
-	String getInitialeBemerkungen(@Nonnull Gesuch gesuch, @Nonnull Locale locale);
+	String getInitialeBemerkungen(@Nonnull Gesuch gesuch);
 
 	/**
 	 * Ueberprueft fuer alle aktiven Mahnungen, ob deren Ablauffrist eingetreten ist

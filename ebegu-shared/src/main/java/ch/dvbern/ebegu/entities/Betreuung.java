@@ -440,11 +440,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return null;
 	}
 
-	@Transient
-	public String getBetreuungsangebotTypTranslated(@Nonnull Locale locale) {
-		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp(), locale);
-	}
-
 	/**
 	 * Erstellt die BG-Nummer als zusammengesetzten String aus Jahr, FallId, KindId und BetreuungsNummer
 	 */

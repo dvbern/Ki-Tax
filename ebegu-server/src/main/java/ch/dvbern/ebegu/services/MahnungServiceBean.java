@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.KibonPrintUtil;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -97,6 +98,9 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Inject
 	private GeneratedDokumentService generatedDokumentService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Override
 	@Nonnull
@@ -180,10 +184,11 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	@Nonnull
 	@PermitAll
 	public String getInitialeBemerkungen(
-		@Nonnull Gesuch gesuch,
-		@Nonnull Locale locale
+		@Nonnull Gesuch gesuch
 	) {
 		authorizer.checkReadAuthorization(gesuch);
+		final Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
+
 		List<DokumentGrund> dokumentGrundsMerged = new ArrayList<>(DokumenteUtil
 			.mergeNeededAndPersisted(
 				dokumentenverzeichnisEvaluator.calculate(

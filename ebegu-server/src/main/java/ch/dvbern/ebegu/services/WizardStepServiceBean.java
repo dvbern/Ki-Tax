@@ -62,7 +62,6 @@ import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
@@ -284,9 +283,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()
 				&& WizardStepName.DOKUMENTE == wizardStep.getWizardStepName()) {
 
+				// The language to use is not important since the results are only used to calculate the state and
+				// won't be displayed
 				final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil
 					.mergeNeededAndPersisted(
-						dokumentenverzeichnisEvaluator.calculate(wizardStep.getGesuch(), LocaleThreadLocal.get()),
+						dokumentenverzeichnisEvaluator.calculate(wizardStep.getGesuch(), Constants.DEFAULT_LOCALE),
 						dokumentGrundService.findAllDokumentGrundByGesuch(wizardStep.getGesuch()));
 
 				boolean allNeededDokumenteUploaded = true;

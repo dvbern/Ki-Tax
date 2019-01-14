@@ -467,7 +467,7 @@ public class MailTemplateConfiguration {
 	}
 
 	private String appendLanguageToTemplateName(@Nonnull final String name, @Nonnull Locale locale) {
-		return name + '_' + locale.getLanguage().toLowerCase() + ".ftl";
+		return name + '_' + locale.getLanguage().toLowerCase(locale) + ".ftl";
 	}
 
 	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {
