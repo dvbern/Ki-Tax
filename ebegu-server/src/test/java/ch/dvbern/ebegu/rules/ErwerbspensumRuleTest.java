@@ -217,20 +217,23 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
+		int anspruchAlleine = 100;
+		int anspruchZuZweit = 90; // Zusammen 170% Pensum -> Anspruch 90%
+
 		// Vor der Heirat ist das Erwerbspensum zu klein, als dass ein Anspruch resultieren könnte.
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 0, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 0, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 0, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 0, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 0, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 0, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 0, 0, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 0, 0, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 0, anspruchAlleine, 0);
 		// Heirat am 26.03.
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 0, 90, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 0, 90, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 0, 90, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 0, 90, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 0, anspruchZuZweit, 0);
 	}
 
 	@Test

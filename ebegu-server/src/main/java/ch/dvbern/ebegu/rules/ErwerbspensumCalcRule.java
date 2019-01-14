@@ -122,7 +122,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	}
 
 	@Nonnull
-	private Integer calculateErwerbspensum(VerfuegungZeitabschnitt verfuegungZeitabschnitt, Integer erwerbspensum, MsgKey bemerkung) {
+	private Integer calculateErwerbspensum(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull Integer erwerbspensum, @Nonnull MsgKey bemerkung) {
 		if (erwerbspensum > 100) {
 			erwerbspensum = 100;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, bemerkung);

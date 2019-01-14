@@ -17,11 +17,11 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -183,7 +183,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
 	// "bemerkungen" geschrieben
 	@Transient
-	private Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new HashMap<>();
+	private Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
