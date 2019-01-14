@@ -85,7 +85,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 					if (isWohnsitzNichtInGemeinde(zeitabschnitt)) {
 						// Es ist ein Wegzug
 						LOG.info("Wegzug");
-						LocalDate stichtagEndeAnspruch = zeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1).plusMonths(2).with(TemporalAdjusters.lastDayOfMonth());
+						LocalDate stichtagEndeAnspruch = zeitabschnitt.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.lastDayOfMonth());
 						lastZeitAbschnitt.getGueltigkeit().setGueltigBis(stichtagEndeAnspruch);
 						if (zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(stichtagEndeAnspruch.plusDays(1))) {
 							zeitabschnitt.getGueltigkeit().setGueltigAb(stichtagEndeAnspruch.plusDays(1));

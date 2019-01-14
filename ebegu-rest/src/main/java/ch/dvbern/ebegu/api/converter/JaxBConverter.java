@@ -2644,6 +2644,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setAnspruchberechtigtesPensum(zeitabschnitt.getAnspruchberechtigtesPensum());
 		jaxZeitabschn.setBetreuungsstunden(zeitabschnitt.getBetreuungsstunden());
 		jaxZeitabschn.setVollkosten(zeitabschnitt.getVollkosten());
+		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungVollkosten(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
+		jaxZeitabschn.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		jaxZeitabschn.setVerguenstigung(zeitabschnitt.getVerguenstigung());
+		jaxZeitabschn.setMinimalerElternbeitrag(zeitabschnitt.getMinimalerElternbeitrag());
 		jaxZeitabschn.setElternbeitrag(zeitabschnitt.getElternbeitrag());
 		jaxZeitabschn.setMassgebendesEinkommenVorAbzugFamgr(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
 		jaxZeitabschn.setBemerkungen(zeitabschnitt.getBemerkungen());
@@ -2676,7 +2680,11 @@ public class JaxBConverter extends AbstractConverter {
 		verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(anspruchberechtigtesPensum);
 		verfuegungZeitabschnitt.setBetreuungsstunden(jaxVerfuegungZeitabschnitt.getBetreuungsstunden());
 		verfuegungZeitabschnitt.setVollkosten(jaxVerfuegungZeitabschnitt.getVollkosten());
-		verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
+		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(jaxVerfuegungZeitabschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
+		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(jaxVerfuegungZeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		verfuegungZeitabschnitt.setVerguenstigung(jaxVerfuegungZeitabschnitt.getVerguenstigung());
+		verfuegungZeitabschnitt.setMinimalerElternbeitrag(jaxVerfuegungZeitabschnitt.getMinimalerElternbeitrag());
+			verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
 		verfuegungZeitabschnitt.setAbzugFamGroesse(jaxVerfuegungZeitabschnitt.getAbzugFamGroesse());
 		BigDecimal einkommen = jaxVerfuegungZeitabschnitt.getMassgebendesEinkommenVorAbzugFamgr();
 		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(einkommen);

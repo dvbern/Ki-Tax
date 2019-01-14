@@ -57,12 +57,20 @@
                                class="table">
                             <thead>
                             <tr>
+                                <th colspan="4"></th>
+                                <th colspan="5" data-translate="VERGUENSTIGTE_BETREUUNG"></th>
+                                <th colspan="2"></th>
+                            </tr>
+                            <tr>
                                 <th class="text-right" data-translate="VON"></th>
                                 <th class="text-right" data-translate="BIS"></th>
                                 <th class="text-right" data-translate="EFFEKTIVE_BETREUUNG"></th>
                                 <th class="text-right" data-translate="ANSPRUCH"></th>
                                 <th class="text-right" data-translate="VERGUENSTIGT"></th>
                                 <th class="text-right" data-translate="VOLLKOSTEN"></th>
+                                <th class="text-right" data-translate="GUTSCHEIN_1"></th>
+                                <th class="text-right" data-translate="GUTSCHEIN_2"></th>
+                                <th class="text-right" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th class="text-right" data-translate="VERGUENSTIGUNG"></th>
                                 <th class="text-right" data-translate="ELTERNBEITRAG"></th>
                             </tr>
@@ -84,14 +92,20 @@
                                 <td class="text-right"
                                     ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"></td>
                                 <td class="text-right"
-                                    ng-bind="(verfuegungZeitabschnitt.vollkosten - verfuegungZeitabschnitt.elternbeitrag) | currency : '' : 2"></td>
+                                    ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
+                                <td class="text-right"
+                                    ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag | currency : '' : 2"></td>
+                                <td class="text-right"
+                                    ng-bind="verfuegungZeitabschnitt.minimalerElternbeitrag | currency : '' : 2"></td>
+                                <td class="text-right"
+                                    ng-bind="verfuegungZeitabschnitt.verguenstigung | currency : '' : 2"></td>
                                 <td class="text-right"
                                     ng-bind="verfuegungZeitabschnitt.elternbeitrag | currency : '' : 2"></td>
                             </tr>
                             </tbody>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">
                             <tr>
-                                <td colspan="8" class="empty-table">Zeitabschnitte noch nicht berechnet</td>
+                                <td colspan="11" class="empty-table">Zeitabschnitte noch nicht berechnet</td>
                             </tr>
                             </tbody>
                         </table>
