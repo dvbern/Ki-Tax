@@ -85,6 +85,7 @@ public abstract class AbstractBGRechner {
 			MathUtil.DEFAULT.multiply(vollkostenProMonat, anteilVerguenstigesPensumAmBetreuungspensum);
 		BigDecimal vollkosten = MATH.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
 		BigDecimal vollkostenMinusMinimaltarif = MATH.subtract(vollkosten, minBetrag);
+		BigDecimal verguenstigungVorMinimalbetrag = vollkosten.min(verguenstigungVorVollkostenUndMinimalbetrag);
 
 		// Resultat
 		BigDecimal verguenstigung = verguenstigungVorVollkostenUndMinimalbetrag.min(vollkostenMinusMinimaltarif);
@@ -94,6 +95,10 @@ public abstract class AbstractBGRechner {
 		if (verfuegungZeitabschnitt.isBezahltVollkosten()) {
 			elternbeitrag = vollkosten;
 		}
+		verfuegungZeitabschnitt.setMinimalerElternbeitrag(minBetrag);
+		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
+		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
+		verfuegungZeitabschnitt.setVerguenstigung(verguenstigung);
 		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
 		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));
 		return verfuegungZeitabschnitt;
