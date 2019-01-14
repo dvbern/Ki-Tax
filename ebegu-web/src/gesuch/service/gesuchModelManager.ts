@@ -283,6 +283,16 @@ export default class GesuchModelManager {
     }
 
     /**
+     * Retrieves the InstitutionStammdaten of the unknown Institution
+     */
+    public getUnknownInstitutionStammdaten(unknownInstitutionStammdatenId: string): IPromise<TSInstitutionStammdaten> {
+        return this.instStamRS.findInstitutionStammdaten(unknownInstitutionStammdatenId)
+            .then((response: TSInstitutionStammdaten) => {
+                return response;
+            });
+    }
+
+    /**
      * Depending on the value of the parameter creationAction, it creates new Fall, Dossier, Gesuch, Mutation or
      * Folgegesuch
      */
