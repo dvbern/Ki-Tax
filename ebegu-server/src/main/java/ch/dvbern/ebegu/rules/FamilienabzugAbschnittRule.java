@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -79,6 +80,12 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		final List<VerfuegungZeitabschnitt> familienAbzugZeitabschnitt = createInitialenFamilienAbzug(gesuch);
 
 		Map<LocalDate, Map.Entry<Double, Integer>> famGrMap = new TreeMap<>();
+
+		// Grundsätzilch muessen wir die Familiengroesse pro Halbjahr einzeln berechnen
+		LocalDate startErstesHalbjahr = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
+		LocalDate startZweitesHalbjahr = startErstesHalbjahr.plusMonths(6);
+		famGrMap.put(startErstesHalbjahr, calculateFamiliengroesse(gesuch, startErstesHalbjahr));
+		famGrMap.put(startZweitesHalbjahr, calculateFamiliengroesse(gesuch, startZweitesHalbjahr));
 
 		//Suchen aller Geburtstage innerhalb der Gesuchsperiode und speichern in der Liste mit Familiengrösse
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
@@ -162,7 +169,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	 * key: Familienabzug unter Berücksichtigung des halben oder ganzen Familienabzug als Double
 	 * value: Familienabzug unter der Anzahl Personen in der Familie als Integer
 	 */
-	Map.Entry<Double, Integer> calculateFamiliengroesse(Gesuch gesuch, @Nullable LocalDate date) {
+	Map.Entry<Double, Integer> calculateFamiliengroesse(Gesuch gesuch, @Nonnull LocalDate date) {
 
 		Double famGrBeruecksichtigungAbzug = 0.0;
 		int famGrAnzahlPersonen = 0;
@@ -172,7 +179,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			if (familiensituation != null) { // wenn die Familiensituation nicht vorhanden ist, kann man nichts machen (die Daten wurden falsch eingegeben)
 				Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 				LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
-				if (familiensituationErstgesuch != null && date != null && (
+				if (familiensituationErstgesuch != null && (
 					familiensituationGueltigAb == null //wenn aenderung per nicht gesetzt ist nehmen wir wert aus erstgesuch
 						|| date.isBefore(getStichtagForEreignis(familiensituationGueltigAb)))) {
 
@@ -189,12 +196,16 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 
 			LocalDate dateToCompare = getRelevantDateForKinder(gesuch.getGesuchsperiode(), date);
 
+			// Ermitteln, ob der KinderabzugErstesHalbjahr oder KinderabzugZweitesHalbjahr zum Zug kommen soll
+			boolean isErstesHalbjahr = gesuch.getGesuchsperiode().getBasisJahrPlus1() == date.getYear();
 			for (KindContainer kindContainer : gesuch.getKindContainers()) {
-				if (kindContainer.getKindJA() != null && (dateToCompare == null || kindContainer.getKindJA().getGeburtsdatum().isBefore(dateToCompare))) {
-					if (kindContainer.getKindJA().getKinderabzug() == Kinderabzug.HALBER_ABZUG) {
+				Kind kind = kindContainer.getKindJA();
+				if (kind != null && (dateToCompare == null || kind.getGeburtsdatum().isBefore(dateToCompare))) {
+					Kinderabzug kinderabzug = isErstesHalbjahr ? kind.getKinderabzugErstesHalbjahr() : kind.getKinderabzugZweitesHalbjahr();
+					if (kinderabzug == Kinderabzug.HALBER_ABZUG) {
 						famGrBeruecksichtigungAbzug += 0.5;
 						famGrAnzahlPersonen++;
-					} else if (kindContainer.getKindJA().getKinderabzug() == Kinderabzug.GANZER_ABZUG) {
+					} else if (kinderabzug == Kinderabzug.GANZER_ABZUG) {
 						famGrBeruecksichtigungAbzug++;
 						famGrAnzahlPersonen++;
 					}

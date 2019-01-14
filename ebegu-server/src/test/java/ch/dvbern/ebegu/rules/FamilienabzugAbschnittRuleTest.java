@@ -488,7 +488,8 @@ public class FamilienabzugAbschnittRuleTest {
 	private KindContainer createKindContainer(Kinderabzug abzug, LocalDate kindGeburtsdatum) {
 		KindContainer kindContainer = new KindContainer();
 		Kind kindJA = new Kind();
-		kindJA.setKinderabzug(abzug);
+		kindJA.setKinderabzugErstesHalbjahr(abzug);
+		kindJA.setKinderabzugZweitesHalbjahr(abzug);
 		kindJA.setGeburtsdatum(kindGeburtsdatum);
 		kindContainer.setKindJA(kindJA);
 		return kindContainer;

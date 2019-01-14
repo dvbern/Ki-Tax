@@ -1586,7 +1586,8 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxKind kindToJAX(@Nonnull final Kind persistedKind) {
 		final JaxKind jaxKind = new JaxKind();
 		convertAbstractPersonFieldsToJAX(persistedKind, jaxKind);
-		jaxKind.setKinderabzug(persistedKind.getKinderabzug());
+		jaxKind.setKinderabzugErstesHalbjahr(persistedKind.getKinderabzugErstesHalbjahr());
+		jaxKind.setKinderabzugZweitesHalbjahr(persistedKind.getKinderabzugZweitesHalbjahr());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setSprichtAmtssprache(persistedKind.getSprichtAmtssprache());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
@@ -1712,7 +1713,8 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(kindJAXP);
 		requireNonNull(kind);
 		convertAbstractPersonFieldsToEntity(kindJAXP, kind);
-		kind.setKinderabzug(kindJAXP.getKinderabzug());
+		kind.setKinderabzugErstesHalbjahr(kindJAXP.getKinderabzugErstesHalbjahr());
+		kind.setKinderabzugZweitesHalbjahr(kindJAXP.getKinderabzugZweitesHalbjahr());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setSprichtAmtssprache(kindJAXP.getSprichtAmtssprache());
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());

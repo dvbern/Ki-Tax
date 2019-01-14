@@ -106,27 +106,52 @@
                         </div>
                     </div>
 
-                    <!-- Kinderabzug -->
+                    <!-- Kinderabzug: Erstes Halbjahr -->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
                             <dv-input-container class="form-group">
                                 <span class="ebeguH1 required">
-                                    <span data-translate="KINDERABZUG"></span>
-                                    <dv-tooltip input-id="kinderabzug"
+                                    <span data-translate="KINDERABZUG_ERSTES_HALBJAHR"></span>
+                                    <dv-tooltip input-id="kinderabzugErstesHalbjahr"
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
-                                <dv-radio-container name="kinderabzug" ng-model="vm.getModel().kinderabzug"
+                                <dv-radio-container name="kinderabzugErstesHalbjahr" ng-model="vm.getModel().kinderabzugErstesHalbjahr"
                                                     ng-required="true"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
                                                     dv-enable-expression="!vm.isGesuchReadonly()"
                                                     class="input-element" items="vm.kinderabzugValues"
-                                                    aria-label="{{ 'KINDERABZUG' |translate}}"
-                                                    aria-described-by="kinderabzug-error">
+                                                    aria-label="{{ 'KINDERABZUG_ERSTES_HALBJAHR' |translate}}"
+                                                    aria-described-by="kinderabzugErstesHalbjahr-error">
                                 </dv-radio-container>
-                                <dv-bisher gs="vm.getContainer().kindGS.kinderabzug"
-                                           ja="vm.getContainer().kindJA.kinderabzug"></dv-bisher>
-                                <dv-error-messages input-id="kinderabzug" for="vm.form.kinderabzug.$error"
+                                <dv-bisher gs="vm.getContainer().kindGS.kinderabzugErstesHalbjahr"
+                                           ja="vm.getContainer().kindJA.kinderabzugErstesHalbjahr"></dv-bisher>
+                                <dv-error-messages input-id="kinderabzugErstesHalbjahr" for="vm.form.kinderabzugErstesHalbjahr.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
+                    <!-- Kinderabzug: Zweites Halbjahr -->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <dv-input-container class="form-group">
+                                <span class="ebeguH1 required">
+                                    <span data-translate="KINDERABZUG_ZWEITES_HALBJAHR"></span>
+                                    <dv-tooltip input-id="kinderabzugZweitesHalbjahr"
+                                                text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
+                                </span>
+                                <dv-radio-container name="kinderabzugZweitesHalbjahr" ng-model="vm.getModel().kinderabzugZweitesHalbjahr"
+                                                    ng-required="true"
+                                                    dv-enable-element
+                                                    dv-enable-allowed-roles="vm.allowedRoles"
+                                                    dv-enable-expression="!vm.isGesuchReadonly()"
+                                                    class="input-element" items="vm.kinderabzugValues"
+                                                    aria-label="{{ 'KINDERABZUG_ZWEITES_HALBJAHR' |translate}}"
+                                                    aria-described-by="kinderabzugZweitesHalbjahr-error">
+                                </dv-radio-container>
+                                <dv-bisher gs="vm.getContainer().kindGS.kinderabzugZweitesHalbjahr"
+                                           ja="vm.getContainer().kindJA.kinderabzugZweitesHalbjahr"></dv-bisher>
+                                <dv-error-messages input-id="kinderabzugZweitesHalbjahr" for="vm.form.kinderabzugZweitesHalbjahr.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
