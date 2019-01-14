@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -88,14 +89,17 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 	private final Verfuegung verfuegungFuerMassgEinkommen;
+	private final LocalDate erstesEinreichungsdatum;
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
-		@Nonnull GemeindeStammdaten stammdaten
+		@Nonnull GemeindeStammdaten stammdaten,
+		@Nonnull LocalDate erstesEinreichungsdatum
 	) {
 		super(gesuch, stammdaten);
 		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
+		this.erstesEinreichungsdatum = erstesEinreichungsdatum;
 	}
 
 	@Nonnull
@@ -247,12 +251,16 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			ServerMessageUtil.getMessage(MASSG_EINK) };
 		values.add(titles);
 		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
+			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
+			if (!abschnitt.getGueltigkeit().getGueltigAb().isAfter(erstesEinreichungsdatum)) {
+				continue;
+			}
 			String[] data = {
 				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()),
 				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
 				String.valueOf(abschnitt.getEinkommensjahr()),
 				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommenVorAbzFamgr()),
-				String.valueOf(abschnitt.getFamGroesse()),
+				PdfUtil.printBigDecimalOneNachkomma(abschnitt.getFamGroesse()),
 				PdfUtil.printBigDecimal(abschnitt.getAbzugFamGroesse()),
 				PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommen())
 			};

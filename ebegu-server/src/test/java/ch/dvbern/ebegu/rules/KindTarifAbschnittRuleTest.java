@@ -64,7 +64,7 @@ public class KindTarifAbschnittRuleTest {
 
 	@Test
 	public void kindErstNachPeriodeAelterNichtEingeschult() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(changeBetreuung(GP_START, EinschulungTyp.VORSCHULALTER));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(changeBetreuung(GP_START.minusDays(1), EinschulungTyp.VORSCHULALTER));
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertZeitabschnitt(result.get(0), GP_START, GP_END, true, false);
@@ -72,7 +72,7 @@ public class KindTarifAbschnittRuleTest {
 
 	@Test
 	public void kindErstNachPeriodeAelterEingeschult() {
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(changeBetreuung(GP_START, EinschulungTyp.KINDERGARTEN1));
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(changeBetreuung(GP_START.minusDays(1), EinschulungTyp.KINDERGARTEN1));
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertZeitabschnitt(result.get(0), GP_START, GP_END, true, true);

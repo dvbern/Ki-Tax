@@ -178,7 +178,7 @@ public final class PdfUtil {
 			float[] columnWidths = { 1, 4 };
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Failed to read the Logo: {}", e.getMessage());
+			LOG.error("Error while creating intro table: {}", e.getMessage());
 		}
 		setTableDefaultStyles(table);
 
@@ -249,6 +249,14 @@ public final class PdfUtil {
 	public static String printBigDecimal(@Nullable BigDecimal valueAsBigDecimal) {
 		if (valueAsBigDecimal != null) {
 			return Constants.CURRENCY_FORMAT.format(valueAsBigDecimal);
+		}
+		return "";
+	}
+
+	@Nonnull
+	public static String printBigDecimalOneNachkomma(@Nullable BigDecimal valueAsBigDecimal) {
+		if (valueAsBigDecimal != null) {
+			return MathUtil.EINE_NACHKOMMASTELLE.from(valueAsBigDecimal).toString();
 		}
 		return "";
 	}

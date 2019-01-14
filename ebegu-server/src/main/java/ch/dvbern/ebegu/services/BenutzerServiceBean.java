@@ -53,6 +53,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
@@ -94,6 +95,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
@@ -146,6 +148,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
 
 	@Nonnull
 	@Override
@@ -269,9 +274,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		} catch (MailException e) {
 			String message =
 				String.format("Es konnte keine Email Einladung an %s geschickt werden", persistedBenutzer.getEmail());
-			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
+			Level logLevel = ebeguConfiguration.getIsDevmode() ? Level.INFO : Level.ERROR;
+			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, logLevel, e);
 		}
-
 		return persistedBenutzer;
 	}
 

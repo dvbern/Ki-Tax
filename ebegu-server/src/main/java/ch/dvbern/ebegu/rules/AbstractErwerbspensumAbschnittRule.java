@@ -17,9 +17,9 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -64,21 +64,25 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 		@Nonnull Familiensituation familiensituationErstgesuch,
 		@Nonnull Familiensituation familiensituation
 	) {
-		if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
-			// 1GS to 2GS
-			if (gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())
-				&& gueltigkeit.getGueltigAb().isBefore(familiensituation.getAenderungPer())) {
+		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
+		if (familiensituationGueltigAb != null) {
+			// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
+			LocalDate familiensituationStichtag = getStichtagForEreignis(familiensituationGueltigAb);
+			if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
+				// 1GS to 2GS
+				if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)
+					&& gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)) {
 
-				gueltigkeit.setGueltigAb(familiensituation.getAenderungPer());
+					gueltigkeit.setGueltigAb(familiensituationStichtag);
+				}
+			} else if (familiensituationErstgesuch.hasSecondGesuchsteller()
+				&& !familiensituation.hasSecondGesuchsteller()
+				&& gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)
+				&& gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)) {
+
+				// 2GS to 1GS
+				gueltigkeit.setGueltigBis(familiensituationStichtag.minusDays(1));
 			}
-		} else if (familiensituationErstgesuch.hasSecondGesuchsteller()
-			&& !familiensituation.hasSecondGesuchsteller()
-			&& gueltigkeit.getGueltigAb().isBefore(familiensituation.getAenderungPer())
-			&& gueltigkeit.getGueltigBis().isAfter(familiensituation.getAenderungPer())) {
-
-			// 2GS to 1GS
-			gueltigkeit.setGueltigBis(familiensituation.getAenderungPer().minusDays(1));
 		}
 	}
-
 }
