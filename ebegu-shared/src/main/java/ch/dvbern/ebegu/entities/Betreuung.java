@@ -441,6 +441,14 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	}
 
 	/**
+	 * Since it is used in email templates we need to pass the language as a String parameter
+	 */
+	@Transient
+	public String getBetreuungsangebotTypTranslated(@Nonnull String sprache) {
+		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp(), Locale.forLanguageTag(sprache));
+	}
+
+	/**
 	 * Erstellt die BG-Nummer als zusammengesetzten String aus Jahr, FallId, KindId und BetreuungsNummer
 	 */
 	@Transient

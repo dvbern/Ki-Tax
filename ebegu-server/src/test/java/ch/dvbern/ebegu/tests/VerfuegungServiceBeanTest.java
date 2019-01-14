@@ -118,6 +118,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void calculateVerfuegung() {
 
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde(), persistence);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertEquals(33, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
 		finanzielleSituationService.calculateFinanzDaten(gesuch);

@@ -42,7 +42,7 @@ ${templateConfiguration.mailCss}
 		</tr>
 		<tr>
 			<td>Betreuungsangebot:</td>
-			<td>${betreuung.betreuungsangebotTypTranslated}</td>
+			<td>${betreuung.getBetreuungsangebotTypTranslated("de")}</td>
 		</tr>
 		<tr>
 			<td>Institution:</td>
