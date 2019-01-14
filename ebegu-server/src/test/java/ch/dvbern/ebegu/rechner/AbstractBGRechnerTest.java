@@ -72,9 +72,9 @@ public class AbstractBGRechnerTest {
 	private static final MathUtil MATH = MathUtil.DEFAULT;
 	private static final long VOLLKOSTEN_DEFAULT = 2000;
 	private static final long VOLLKOSTEN_NULL = 0;
-	private static final int BASISJAHR = 2016;
-	private static final int BASISJAHR_PLUS_1 = 2017;
-	private static final int BASISJAHR_PLUS_2 = 2018;
+	protected static final int BASISJAHR = 2016;
+	protected static final int BASISJAHR_PLUS_1 = 2017;
+	protected static final int BASISJAHR_PLUS_2 = 2018;
 
 	@Before
 	public void setUpCalcuator() {

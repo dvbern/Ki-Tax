@@ -727,6 +727,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.setEingeschult(this.eingeschult || other.eingeschult);
 		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
+		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
 	}
 
 	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey) {
@@ -873,6 +874,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			eingeschult == that.eingeschult &&
 			besondereBeduerfnisse == that.besondereBeduerfnisse &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
+			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			Objects.equals(this.bemerkungen, that.bemerkungen);
 	}
 
@@ -898,6 +900,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(famGroesse, that.famGroesse) &&
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0 &&
+			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr);
 	}
 
