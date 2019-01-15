@@ -6,7 +6,7 @@
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
-        <bemerkungen></bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)</bemerkungen>
         <betreuungspensum>50.00</betreuungspensum>
         <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.0</famGroesse>
@@ -17,7 +17,7 @@
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
-        <bemerkungen></bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)</bemerkungen>
         <betreuungspensum>50.00</betreuungspensum>
         <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.0</famGroesse>
@@ -28,31 +28,20 @@
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
-        <bemerkungen></bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)</bemerkungen>
         <betreuungspensum>50.00</betreuungspensum>
-        <elternbeitrag>667.15</elternbeitrag>
+        <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.0</famGroesse>
         <gueltigAb>01.10.2017</gueltigAb>
-        <gueltigBis>14.10.2017</gueltigBis>
-        <vollkosten>903.25</vollkosten>
-    </verfuegungszeitabschnitte>
-    <verfuegungszeitabschnitte>
-        <abzugFamGroesse>11400</abzugFamGroesse>
-        <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller
-ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingereicht</bemerkungen>
-        <betreuungspensum>50.00</betreuungspensum>
-        <elternbeitrag>810.05</elternbeitrag>
-        <famGroesse>3.0</famGroesse>
-        <gueltigAb>15.10.2017</gueltigAb>
         <gueltigBis>31.10.2017</gueltigBis>
-        <vollkosten>1096.75</vollkosten>
+        <vollkosten>2000.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller
-ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingereicht</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingereicht
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>50.00</betreuungspensum>
         <elternbeitrag>1477.20</elternbeitrag>
         <famGroesse>3.00</famGroesse>
@@ -63,7 +52,8 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>50.00</betreuungspensum>
         <elternbeitrag>1000.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -74,7 +64,8 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
         <elternbeitrag>800.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -85,7 +76,8 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
         <elternbeitrag>800.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -96,7 +88,8 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
         <elternbeitrag>800.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -107,7 +100,8 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
         <elternbeitrag>800.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -118,7 +112,8 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
         <elternbeitrag>800.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -129,7 +124,8 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
         <elternbeitrag>800.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -140,7 +136,8 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>90</anspruchberechtigtesPensum>
-        <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller</bemerkungen>
         <betreuungspensum>60.00</betreuungspensum>
         <elternbeitrag>800.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>

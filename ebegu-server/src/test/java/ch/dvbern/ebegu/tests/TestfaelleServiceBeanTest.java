@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -48,6 +49,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Integration Test mit den Testfällen.
@@ -56,10 +59,16 @@ import org.junit.runner.RunWith;
  * <p>
  * Die gespeicherten Daten können mit writeToFile = true neu generiert werden.
  */
+@SuppressWarnings({ "CdiInjectionPointsInspection", "JUnit3StyleTestMethodInJUnit4Class" })
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)
 public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TestfaelleServiceBeanTest.class);
+	private static final int BASISJAHR_PLUS_1 = 2017;
+	private static final int BASISJAHR_PLUS_2 = 2018;
+	private static final Pattern COMPILE = Pattern.compile("[^a-zA-Z0-9.-]");
 
 	@Inject
 	private TestfaelleService testfaelleService;
@@ -70,16 +79,15 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	@Inject
 	private Persistence persistence;
 
-	private static final int BASISJAHR_PLUS_1 = 2017;
-	private static final int BASISJAHR_PLUS_2 = 2018;
+
 
 	/**
 	 * Wenn true werden die Testergebnisse neu in die Testfiles geschrieben. Muss für testen immer false sein!
 	 */
-	private static final boolean writeToFile = false;
+	private static final boolean WRITE_TO_FILE = false;
 
-	private String gemeinde;
-	private Gesuchsperiode gesuchsperiode;
+	private String gemeinde = null;
+	private Gesuchsperiode gesuchsperiode = null;
 
 	@Before
 	public void init() {
@@ -161,7 +169,8 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testVerfuegung_WaeltiDagmar_mutationHeirat() {
-		//waelti dagmar arbeitet 80%
+		//waelti dagmar arbeitet 80%, Heirat am 15.1. -> gilt ab 1.2 (Eingereicht am 15.12.)
+		// Partner arbeitet 90% -> zusammen 170 -> 90% Anspruch
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.WAELTI_DAGMAR, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
 		final Gesuch mutieren = testfaelleService.mutierenHeirat(gesuch.getDossier().getId(),
@@ -206,25 +215,23 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	private void ueberpruefeVerfuegungszeitabschnitte(@Nullable Gesuch gesuch, @Nullable String addText) {
 		Assert.assertNotNull(gesuch);
 
-		gesuch.getKindContainers().forEach(kindContainer -> {
-				kindContainer.getBetreuungen().forEach(betreuung -> {
-					Assert.assertNotNull(betreuung.getVerfuegung());
-					writeResultsToFile(
-						betreuung.getVerfuegung().getZeitabschnitte(),
-						kindContainer.getKindJA().getFullName(),
-						betreuung.getInstitutionStammdaten().getInstitution().getName(),
-						betreuung.getBetreuungNummer(),
-						addText
-					);
-					compareWithDataInFile(
-						betreuung.getVerfuegung().getZeitabschnitte(),
-						kindContainer.getKindJA().getFullName(),
-						betreuung.getInstitutionStammdaten().getInstitution().getName(),
-						betreuung.getBetreuungNummer(),
-						addText
-					);
-				});
-			}
+		gesuch.getKindContainers().forEach(kindContainer -> kindContainer.getBetreuungen().forEach(betreuung -> {
+			Assert.assertNotNull(betreuung.getVerfuegung());
+			writeResultsToFile(
+				betreuung.getVerfuegung().getZeitabschnitte(),
+				kindContainer.getKindJA().getFullName(),
+				betreuung.getInstitutionStammdaten().getInstitution().getName(),
+				betreuung.getBetreuungNummer(),
+				addText
+			);
+			compareWithDataInFile(
+				betreuung.getVerfuegung().getZeitabschnitte(),
+				kindContainer.getKindJA().getFullName(),
+				betreuung.getInstitutionStammdaten().getInstitution().getName(),
+				betreuung.getBetreuungNummer(),
+				addText
+			);
+		})
 		);
 	}
 
@@ -267,7 +274,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	 * Holt die gespeicherten Werte aus den Files
 	 */
 	@Nullable
-	public VerfuegungszeitabschnitteData getExpectedVerfuegungszeitabschnitt(String fullName, String betreuung, Integer betreuungNummer, @Nullable String addText) {
+	private VerfuegungszeitabschnitteData getExpectedVerfuegungszeitabschnitt(String fullName, String betreuung, Integer betreuungNummer, @Nullable String addText) {
 
 		final String fileNamePath = getFileNamePath(fullName, betreuung, betreuungNummer, addText);
 		final File resultFile = new File(fileNamePath);
@@ -277,7 +284,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			expectedVerfuegungszeitabschnitteData = (VerfuegungszeitabschnitteData) jaxbUnmarshaller.unmarshal(resultFile);
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			LOG.error("Es ist ein Fehler aufgetreten", e);
 		}
 		return expectedVerfuegungszeitabschnitteData;
 	}
@@ -285,10 +292,10 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	/**
 	 * Schreibt die berechneten Werte in die Files wenn writeToFile true ist
 	 */
-	public void writeResultsToFile(final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts, String fullName, String betreuung, Integer betreuungNummer,
+	private void writeResultsToFile(final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts, String fullName, String betreuung, Integer betreuungNummer,
 		@Nullable String addText) {
 
-		if (writeToFile) {
+		if (WRITE_TO_FILE) {
 			VerfuegungszeitabschnitteData eventResults = generateVzd(verfuegungZeitabschnitts, fullName, betreuung, betreuungNummer);
 
 			String pathname = getFileNamePath(fullName, betreuung, betreuungNummer, addText);
@@ -304,7 +311,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 				jaxbMarshaller.marshal(eventResults, file);
 
 			} catch (JAXBException e) {
-				e.printStackTrace();
+				LOG.error("Es ist ein Fehler aufgetreten", e);
 			}
 		}
 
@@ -320,13 +327,13 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		if (addText != null) {
 			filename += addText;
 		}
-		return storePath + filename.replaceAll("[^a-zA-Z0-9.-]", "_") + ".xml";
+		return storePath + COMPILE.matcher(filename).replaceAll("_") + ".xml";
 	}
 
 	/**
 	 * Schreibt die berechneten Daten in VerfuegungszeitabschnitteData objekt
 	 */
-	public VerfuegungszeitabschnitteData generateVzd(final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts, String fullName, String betreuung, Integer betreuungNummer) {
+	private VerfuegungszeitabschnitteData generateVzd(final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts, String fullName, String betreuung, Integer betreuungNummer) {
 		VerfuegungszeitabschnitteData verfuegungszeitabschnitteData = new VerfuegungszeitabschnitteData();
 
 		verfuegungszeitabschnitteData.setNameBetreung(betreuung);
