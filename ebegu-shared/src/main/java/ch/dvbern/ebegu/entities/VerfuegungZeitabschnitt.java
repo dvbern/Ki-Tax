@@ -856,7 +856,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
 			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
-			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
+			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
+			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
@@ -878,7 +879,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			besondereBeduerfnisse == that.besondereBeduerfnisse &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
-			Objects.equals(this.bemerkungen, that.bemerkungen);
+			Objects.equals(this.bemerkungen, that.bemerkungen) &&
+			Objects.equals(this.bemerkungenMap, that.bemerkungenMap);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {

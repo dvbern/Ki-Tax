@@ -74,6 +74,7 @@ public final class AnspruchFristRule {
 					} else {
 						// we need to set both anspruch and bemerkung so both zeitabschnite are the same
 						zeitabschnitt.setAnspruchberechtigtesPensum(vorangehenderAbschnitt.getAnspruchberechtigtesPensum());
+						zeitabschnitt.getBemerkungenMap().clear();
 						zeitabschnitt.addAllBemerkungen(vorangehenderAbschnitt.getBemerkungenMap());
 						vorangehenderAbschnitt = zeitabschnitt;
 					}
