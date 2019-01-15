@@ -1190,7 +1190,7 @@ export default class GesuchModelManager {
         const kinderList = this.getKinderList();
         for (const kind of kinderList) {
             // das kind muss schon gespeichert sein damit es zahelt
-            if (kind.kindJA.familienErgaenzendeBetreuung && !kind.kindJA.isNew()) {
+            if (kind.kindJA && !kind.kindJA.isNew() && kind.kindJA.familienErgaenzendeBetreuung) {
                 return true;
             }
         }
