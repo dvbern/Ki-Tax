@@ -47,7 +47,7 @@ export class LoginInfoComponent implements OnInit {
     }
 
     public loadPortalAccountCreationLink(): void {
-         this.authService.portalAccountCreationPageLink().then(result => {
+         this.authService.getPortalAccountCreationPageLink().then(result => {
              this.portalAccountCreationLink = result;
              this.cdRef.markForCheck();
          });
