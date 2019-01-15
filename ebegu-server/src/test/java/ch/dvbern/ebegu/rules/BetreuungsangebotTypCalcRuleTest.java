@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
@@ -43,7 +44,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -53,7 +56,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -63,7 +68,9 @@ public class BetreuungsangebotTypCalcRuleTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).getBemerkungen().isEmpty());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 	}
 
 	private Betreuung prepareData(BetreuungsangebotTyp betreuungsangebotTyp) {

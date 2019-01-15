@@ -23,12 +23,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
@@ -53,6 +56,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class BemerkungsMerger {
 
+	private static final Pattern NEW_LINE = Pattern.compile("\\n");
+
 	private BemerkungsMerger() {
 	}
 
@@ -66,16 +71,35 @@ public final class BemerkungsMerger {
 		if (zeitabschnitte == null || zeitabschnitte.isEmpty()) {
 			return null;
 		}
-
+		// Die Bemerkungen aus der transienten BemerkungenMap ins Feld schreiben
+		prepareGeneratedBemerkungen(zeitabschnitte);
 		StringJoiner joiner = new StringJoiner("\n");
 		Map<String, Collection<DateRange>> rangesByBemerkungKey = evaluateRangesByBemerkungKey(zeitabschnitte);
 
-		for (Map.Entry<String, Collection<DateRange>> stringCollectionEntry : rangesByBemerkungKey.entrySet()) {
+		for (Entry<String, Collection<DateRange>> stringCollectionEntry : rangesByBemerkungKey.entrySet()) {
 			stringCollectionEntry.getValue().stream()
 				.forEachOrdered(dateRange -> joiner.add('[' + dateRange.toRangeString() + "] " + stringCollectionEntry.getKey()));
 		}
 
 		return joiner.toString();
+	}
+
+	public static void prepareGeneratedBemerkungen(List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
+			prepareGeneratedBemerkungen(verfuegungZeitabschnitt);
+		}
+	}
+
+	public static void prepareGeneratedBemerkungen(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		StringBuilder sb = new StringBuilder();
+		for (VerfuegungsBemerkung verfuegungsBemerkung : verfuegungZeitabschnitt.getBemerkungenMap().values()) {
+			sb.append(verfuegungsBemerkung.getTranslated());
+			sb.append('\n');
+		}
+		// Den letzten NewLine entfernen
+		String bemerkungen = sb.toString();
+		bemerkungen = StringUtils.removeEnd(bemerkungen, "\n");
+		verfuegungZeitabschnitt.setBemerkungen(bemerkungen);
 	}
 
 	/**
@@ -84,7 +108,7 @@ public final class BemerkungsMerger {
 	 * @param zeitabschnitte list to analyze
 	 * @return a map with the bemerkung as key and the longest contious ranges as values
 	 */
-	public static Map<String, Collection<DateRange>> evaluateRangesByBemerkungKey(List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	private static Map<String, Collection<DateRange>> evaluateRangesByBemerkungKey(List<VerfuegungZeitabschnitt> zeitabschnitte) {
 
 		SortedSetMultimap<String, Gueltigkeit> multimap = createMultimap(zeitabschnitte);
 		Map<String, Collection<DateRange>> continousRangesPerKey = new HashMap<>();
@@ -136,7 +160,7 @@ public final class BemerkungsMerger {
 			if (StringUtils.isNotEmpty(verfuegungZeitabschnitt.getBemerkungen())) {
 				//hier bemerkungen des zeitabschnitt vorher noch splitten anhand /n
 
-				String[] split = verfuegungZeitabschnitt.getBemerkungen().split("\\n");
+				String[] split = NEW_LINE.split(verfuegungZeitabschnitt.getBemerkungen());
 				for (String currBemerkung : split) {
 					multimap.put(currBemerkung, verfuegungZeitabschnitt);
 

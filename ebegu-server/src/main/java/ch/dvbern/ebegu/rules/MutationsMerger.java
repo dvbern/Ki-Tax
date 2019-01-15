@@ -133,19 +133,6 @@ public final class MutationsMerger {
 				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG);
 			}
 		}
-
-		//SCHULKINDER: Sonderregel bei zu Mutation von zu spaet eingereichten Schulkindangeboten
-		//fuer Abschnitte ab dem Folgemonat des Mutationseingangs rechnen wir bisher, fuer alle vorherigen folgende Sonderregel
-		if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
-
-			// Wenn der Benutzer vorher keine Verfuenstigung bekam weil er zu spaet eingereicht hat DANN bezahlt er auch in Mutation vollkosten
-			if (vorangehenderAbschnitt.getVerguenstigung().compareTo(BigDecimal.ZERO) == 0
-				&& vorangehenderAbschnitt.isZuSpaetEingereicht()) {
-				zeitabschnitt.setBezahltVollkosten(true);
-				zeitabschnitt.setZuSpaetEingereicht(true);
-				zeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_VOLLKOSTEN_MSG);
-			}
-		}
 	}
 
 	private static boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {

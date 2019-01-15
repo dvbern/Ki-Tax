@@ -18,7 +18,10 @@ package ch.dvbern.ebegu.entities;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,9 +46,6 @@ import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
-import com.google.common.base.Joiner;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -179,6 +179,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Column(nullable = false)
 	private Integer einkommensjahr;
 
+	// Die Bemerkungen werden vorerst in eine Map geschrieben, damit einzelne
+	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
+	// "bemerkungen" geschrieben
+	@Transient
+	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
+
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
@@ -192,6 +198,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@NotNull
 	@Column(nullable = false)
 	private boolean zuSpaetEingereicht;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean minimalesEwpUnterschritten;
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -226,6 +236,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
+		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
 		this.wohnsitzNichtInGemeindeGS2 = toCopy.wohnsitzNichtInGemeindeGS2;
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
@@ -252,6 +263,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.ekv2ZuZweit = toCopy.ekv2ZuZweit;
 		this.ekv1NotExisting = toCopy.ekv1NotExisting;
 		this.bemerkungen = toCopy.bemerkungen;
+		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
 		this.verfuegung = null;
 		this.kategorieMaxEinkommen = toCopy.kategorieMaxEinkommen;
 		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
@@ -402,6 +414,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bemerkungen = bemerkungen;
 	}
 
+	public Map<MsgKey, VerfuegungsBemerkung> getBemerkungenMap() {
+		return bemerkungenMap;
+	}
+
 	public Verfuegung getVerfuegung() {
 		return verfuegung;
 	}
@@ -416,6 +432,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setZuSpaetEingereicht(boolean zuSpaetEingereicht) {
 		this.zuSpaetEingereicht = zuSpaetEingereicht;
+	}
+
+	public boolean isMinimalesEwpUnterschritten() {
+		return minimalesEwpUnterschritten;
+	}
+
+	public void setMinimalesEwpUnterschritten(boolean minimalesEwpUnterschritten) {
+		this.minimalesEwpUnterschritten = minimalesEwpUnterschritten;
 	}
 
 	public boolean isBezahltVollkosten() {
@@ -666,7 +690,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 		this.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.addNullSafe(this.getMassgebendesEinkommenVorAbzFamgr(), other.getMassgebendesEinkommenVorAbzFamgr()));
 
-		this.addBemerkung(other.getBemerkungen());
+		this.addAllBemerkungen(other.getBemerkungenMap());
 		this.setZuSpaetEingereicht(this.isZuSpaetEingereicht() || other.isZuSpaetEingereicht());
 
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
@@ -704,51 +728,28 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.setEingeschult(this.eingeschult || other.eingeschult);
 		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
+		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
 	}
 
-	public void addBemerkung(VerfuegungsBemerkung bemerkungContainer) {
-		this.addBemerkung(bemerkungContainer.getRuleKey(), bemerkungContainer.getMsgKey());
+	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey));
 	}
 
-	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey) {
-		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey);
-		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
-
+	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Object... args) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, args));
 	}
 
-	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, Object... args) {
-		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, args);
-		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
-	}
-
-	/**
-	 * Fügt eine Bemerkung zur Liste hinzu
-	 */
-	public void addBemerkung(@Nullable String bem) {
-		this.bemerkungen = Joiner.on("\n").skipNulls().join(
-			StringUtils.defaultIfBlank(this.bemerkungen, null),
-			StringUtils.defaultIfBlank(bem, null)
-		);
-	}
-
-	/**
-	 * Fügt mehrere Bemerkungen zur Liste hinzu
-	 */
-	public void addAllBemerkungen(@Nonnull List<String> bemerkungenList) {
-		List<String> listOfStrings = new ArrayList<>();
-		listOfStrings.add(this.bemerkungen);
-		listOfStrings.addAll(bemerkungenList);
-		this.bemerkungen = String.join(";", listOfStrings);
+	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+		this.bemerkungenMap.putAll(otherBemerkungenMap);
 	}
 
 	/**
 	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
 	 */
-	public void mergeBemerkungen(String otherBemerkungen) {
-		String[] otherBemerkungenList = StringUtils.split(otherBemerkungen, "\n");
-		for (String otherBemerkung : otherBemerkungenList) {
-			if (!StringUtils.contains(getBemerkungen(), otherBemerkung)) {
-				addBemerkung(otherBemerkung);
+	public final void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
+			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
+				this.bemerkungenMap.put(msgKeyVerfuegungsBemerkungEntry.getKey(), msgKeyVerfuegungsBemerkungEntry.getValue());
 			}
 		}
 	}
@@ -839,6 +840,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(massgebendesEinkommenVorAbzugFamgr, otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) &&
 			(isWohnsitzNichtInGemeindeGS1() && isWohnsitzNichtInGemeindeGS2()) == (otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1() && otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS2()) &&
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
+			minimalesEwpUnterschritten == otherVerfuegungZeitabschnitt.minimalesEwpUnterschritten &&
 			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
 			longAbwesenheit == otherVerfuegungZeitabschnitt.longAbwesenheit &&
 			Objects.equals(einkommensjahr, otherVerfuegungZeitabschnitt.einkommensjahr) &&
@@ -854,7 +856,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
 			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
-			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
+			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
+			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
@@ -875,7 +878,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			eingeschult == that.eingeschult &&
 			besondereBeduerfnisse == that.besondereBeduerfnisse &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
-			Objects.equals(this.bemerkungen, that.bemerkungen);
+			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
+			Objects.equals(this.bemerkungen, that.bemerkungen) &&
+			Objects.equals(this.bemerkungenMap, that.bemerkungenMap);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
@@ -900,6 +905,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(famGroesse, that.famGroesse) &&
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0 &&
+			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr);
 	}
 

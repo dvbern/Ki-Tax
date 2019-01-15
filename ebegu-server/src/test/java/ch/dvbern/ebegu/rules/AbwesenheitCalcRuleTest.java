@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import org.junit.Assert;
@@ -46,6 +47,7 @@ public class AbwesenheitCalcRuleTest {
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 
 		rule.executeRule(betreuung, zeitAbschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertFalse(zeitAbschnitt.isBezahltVollkosten());
 		Assert.assertEquals("", zeitAbschnitt.getBemerkungen());
@@ -59,6 +61,7 @@ public class AbwesenheitCalcRuleTest {
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
 		rule.executeRule(betreuung, zeitAbschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertTrue(zeitAbschnitt.isBezahltVollkosten());
 		Assert.assertEquals("ABWESENHEIT: Ab dem 31. Tag einer Abwesenheit (Krankheit oder Unfall " +
@@ -74,6 +77,7 @@ public class AbwesenheitCalcRuleTest {
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
 		rule.executeRule(betreuung, zeitAbschnitt);
+		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertFalse(zeitAbschnitt.isBezahltVollkosten());
 		Assert.assertEquals("", zeitAbschnitt.getBemerkungen());

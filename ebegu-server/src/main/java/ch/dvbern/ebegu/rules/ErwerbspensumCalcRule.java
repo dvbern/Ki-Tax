@@ -89,17 +89,18 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			int anspruch, int minimum, int erwerbspensumOffset) {
 		if (anspruch <= 0) {
 			anspruch = 0;
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
+			verfuegungZeitabschnitt.setMinimalesEwpUnterschritten(true);
 			verfuegungZeitabschnitt.setKategorieKeinPensum(true);
 		}
 		// Minimum pruefen
 		if (anspruch < minimum) {
 			anspruch = 0;
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MINIMUM_MSG, minimum + erwerbspensumOffset);
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, minimum + erwerbspensumOffset);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
@@ -121,7 +122,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	}
 
 	@Nonnull
-	private Integer calculateErwerbspensum(VerfuegungZeitabschnitt verfuegungZeitabschnitt, Integer erwerbspensum, MsgKey bemerkung) {
+	private Integer calculateErwerbspensum(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull Integer erwerbspensum, @Nonnull MsgKey bemerkung) {
 		if (erwerbspensum > 100) {
 			erwerbspensum = 100;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, bemerkung);
@@ -137,7 +138,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
 		if (familiensituationGueltigAb != null
 			&& familiensituationErstGesuch != null
-			&& gueltigkeit.getGueltigBis().isBefore(familiensituationGueltigAb)) {
+			&& gueltigkeit.getGueltigAb().isBefore(familiensituationGueltigAb)) {
 				return familiensituationErstGesuch.hasSecondGesuchsteller();
 		}
 		return familiensituation.hasSecondGesuchsteller();
