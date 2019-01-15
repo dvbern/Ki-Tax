@@ -138,18 +138,17 @@ export default class AuthServiceRS {
         });
     }
 
-    public burnPortalTimout(): IPromise<any> {
+    public burnPortalTimeout(): IPromise<any> {
         return this.getPortalAccountCreationPageLink().then((linktext: string) => {
-            console.log('try to burn timeout page at ' + linktext);
+            LOG.debug('try to burn timeout page at ' + linktext);
             if (linktext) {
-                return this.$http.get(linktext,{withCredentials: true }).then((res: any) => {
-                    console.log('retrived portal account creation page to burn unwanted timeout warning ')
-                });
-            } else {
-                return this.$q(undefined);
+                return this.$http.get(linktext, {withCredentials: true}).then(() =>
+                    LOG.debug('retrieved portal account creation page to burn unwanted timeout warning')
+                );
             }
 
-        })
+            return this.$q(undefined);
+        });
     }
 
     public reloadCurrentUser(): IPromise<TSBenutzer> {
@@ -168,15 +167,19 @@ export default class AuthServiceRS {
         });
     }
 
-    private setPrincipalInRavenUserContext(): void {Raven.setUserContext({
-                id: this.principal.username,
-                email: this.principal.email,
-                role: this.principal.getCurrentRole(),
-                amt: this.principal.amt,
-                status: this.principal.status,
-                mandant: this.principal.mandant ? this.principal.mandant.name : null,
-                traegerschaft: this.principal.currentBerechtigung.traegerschaft ? this.principal.currentBerechtigung.traegerschaft.name : null,
-                institution: this.principal.currentBerechtigung.institution ? this.principal.currentBerechtigung.institution.name
+    private setPrincipalInRavenUserContext(): void {
+        Raven.setUserContext({
+            id: this.principal.username,
+            email: this.principal.email,
+            role: this.principal.getCurrentRole(),
+            amt: this.principal.amt,
+            status: this.principal.status,
+            mandant: this.principal.mandant ? this.principal.mandant.name : null,
+            traegerschaft: this.principal.currentBerechtigung.traegerschaft
+                ? this.principal.currentBerechtigung.traegerschaft.name
+                : null,
+            institution: this.principal.currentBerechtigung.institution
+                ? this.principal.currentBerechtigung.institution.name
                 : null
         });
     }
