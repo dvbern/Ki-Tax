@@ -22,11 +22,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.connector.ILoginConnectorResource;
-import ch.dvbern.ebegu.api.dtos.JaxEinladungWrapper;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerResponseWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
@@ -52,6 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_EMAIL_MISMATCH;
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_PENDING_INVITATION;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -59,6 +61,7 @@ import static java.util.Objects.requireNonNull;
  */
 @SuppressWarnings({ "EjbInterceptorInspection", "EjbClassBasicInspection" })
 @Stateless
+@Path("/connector")
 public class LoginConnectorResource implements ILoginConnectorResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginConnectorResource.class.getSimpleName());
@@ -117,7 +120,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Override
-	public JaxExternalBenutzer updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer) {
+	public JaxBenutzerResponseWrapper updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer) {
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 		LOG.debug("Requested forwared for {} ", this.request.getHeader("X-Forwarded-For"));
 		checkLocalAccessOnly();
@@ -150,9 +153,16 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			});
 		benutzer.setMandant(mandant);
 
-		Benutzer storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
+		Benutzer storedUser;
+		try {
+			storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
+		} catch (Exception ex) {
+			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION);
+			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 
-		return convertBenutzerToJax(storedUser);
+		}
+
+		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(storedUser), null);
 	}
 
 	private void toBenutzer(@Nonnull JaxExternalBenutzer jaxExternalBenutzer, @Nonnull Benutzer benutzer) {
@@ -165,7 +175,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	@Override
-	public JaxEinladungWrapper updateBenutzer(
+	public JaxBenutzerResponseWrapper updateBenutzer(
 		@Nonnull String benutzerId,
 		@Nonnull JaxExternalBenutzer externalBenutzer) {
 
@@ -177,7 +187,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 		//if user not exists return error msg to connector
 		if(existingBenutzer == null){
-			return convertEinladungWrapperToJax(
+			return convertBenutzerResponseWrapperToJax(
 				externalBenutzer,
 				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get())
 			);
@@ -195,7 +205,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			);
 
 			//return the message to connector and stop process
-			return convertEinladungWrapperToJax(externalBenutzer, msg);
+			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
 
 		toBenutzer(externalBenutzer, existingBenutzer);
@@ -205,11 +215,11 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		}
 
 		Benutzer updatedBenutzer = benutzerService.updateOrStoreUserFromIAM(existingBenutzer);
-		return convertEinladungWrapperToJax(convertBenutzerToJax(updatedBenutzer), null);
+		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(updatedBenutzer), null);
 	}
 
-	private JaxEinladungWrapper convertEinladungWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg){
-		JaxEinladungWrapper wrapper = new JaxEinladungWrapper();
+	private JaxBenutzerResponseWrapper convertBenutzerResponseWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg){
+		JaxBenutzerResponseWrapper wrapper = new JaxBenutzerResponseWrapper();
 		wrapper.setBenutzer(benutzer);
 		wrapper.setErrorMessage(msg);
 

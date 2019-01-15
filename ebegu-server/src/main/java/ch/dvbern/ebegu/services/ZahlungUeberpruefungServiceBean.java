@@ -142,7 +142,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 					sb.toString(), administratorMail);
 			}
 		} catch (MailException e) {
-			LOGGER.error("Senden der Mail nicht erfolgreich", e);
+			logExceptionAccordingToEnvironment(e, "Senden der Mail nicht erfolgreich", "");
 		}
 		LOGGER.info("... beendet");
 	}

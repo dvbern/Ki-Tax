@@ -198,7 +198,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 						famGrBeruecksichtigungAbzug += 0.5;
 						famGrAnzahlPersonen++;
 					} else if (kindContainer.getKindJA().getKinderabzug() == Kinderabzug.GANZER_ABZUG) {
-						famGrBeruecksichtigungAbzug++;
+						famGrBeruecksichtigungAbzug += 1;
 						famGrAnzahlPersonen++;
 					}
 				}
