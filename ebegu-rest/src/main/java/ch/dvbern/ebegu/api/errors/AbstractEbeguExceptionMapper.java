@@ -43,6 +43,7 @@ import org.slf4j.event.Level;
 public abstract class AbstractEbeguExceptionMapper<E extends Throwable> implements ExceptionMapper<E> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractEbeguExceptionMapper.class.getSimpleName());
+	private static final String EXCEPTION_OCCURED = "Exception occured: ";
 
 	@Context
 	private HttpHeaders headers;
@@ -112,16 +113,16 @@ public abstract class AbstractEbeguExceptionMapper<E extends Throwable> implemen
 			EbeguRuntimeException ebeguException = (EbeguRuntimeException) exception;
 			Level logLevel = ebeguException.getLogLevel();
 			if (logLevel == Level.ERROR) {
-				LOG.error("Exception occured: ", exception);
+				LOG.error(EXCEPTION_OCCURED, exception);
 			} else if (logLevel == Level.INFO) {
-				LOG.info("Exception occured: ", exception);
+				LOG.info(EXCEPTION_OCCURED, exception);
 			} else if (logLevel == Level.DEBUG || logLevel == Level.TRACE) {
-				LOG.debug("Exception occured: ", exception);
+				LOG.debug(EXCEPTION_OCCURED, exception);
 			} else {
-				LOG.warn("Exception occured: ", exception);
+				LOG.warn(EXCEPTION_OCCURED, exception);
 			}
 		} else {
-			LOG.warn("Exception occured: ", exception);
+			LOG.warn(EXCEPTION_OCCURED, exception);
 		}
 	}
 

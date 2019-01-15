@@ -52,7 +52,6 @@
 
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
-        <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
 
     </properties>
 
@@ -912,8 +911,8 @@
 						</dependency>
                     </dependencies>
                     <configuration>
-						<includeFilterFile>rules/ebegu/findbugs/findbugs-includes.xml</includeFilterFile>
-						<excludeFilterFile>rules/ebegu/findbugs/findbugs-excludes.xml</excludeFilterFile>
+						<includeFilterFile>rules/ebegu/spotbugs/spotbugs-includes.xml</includeFilterFile>
+						<excludeFilterFile>rules/ebegu/spotbugs/spotbugs-excludes.xml</excludeFilterFile>
                     </configuration>
                 </plugin>
 

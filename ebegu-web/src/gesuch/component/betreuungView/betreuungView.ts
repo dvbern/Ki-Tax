@@ -298,8 +298,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public setErsterSchultag(): void {
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
         const ersterSchultag = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
-        if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen && DateUtil.today().isBefore(
-                ersterSchultag)) {
+        if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen
+            	&& DateUtil.today().isBefore(ersterSchultag)) {
             this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
         }
     }
@@ -904,8 +904,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * INST und TRAEG relevant ist, wird es nur fuer diese Rollen geholt
      */
     private findExistingBetreuungsmitteilung(): void {
-        if (!(!this.getBetreuungModel().isNew()
-                && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+        if (!(!this.getBetreuungModel().isNew() &&
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+
             return;
         }
 

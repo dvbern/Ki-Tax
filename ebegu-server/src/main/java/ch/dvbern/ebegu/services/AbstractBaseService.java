@@ -107,9 +107,9 @@ public abstract class AbstractBaseService {
 
 	protected void logExceptionAccordingToEnvironment(@Nonnull Exception e, @Nonnull String message, @Nonnull String arg) {
 		if (ebeguConfiguration.getIsDevmode()) {
-			LOG.info(message + " {}", arg, e);
+			LOG.info("{} {}", message, arg, e);
 		} else {
-			LOG.error(message + " {}", arg, e);
+			LOG.error("{} {}", message, arg, e);
 		}
 	}
 }

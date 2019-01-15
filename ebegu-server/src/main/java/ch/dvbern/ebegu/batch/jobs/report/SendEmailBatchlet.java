@@ -66,7 +66,6 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	@Inject
 	private EbeguConfiguration configuration;
 
-
 	@Override
 	public String process() {
 		final String receiverEmail = getParameters().getProperty(WorkJobConstants.EMAIL_OF_USER);
@@ -77,12 +76,12 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 		final DownloadFile downloadFile = createDownloadfile(workJob, fileMetadata);
 		//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs, right now we create the download file right at the start and
 		// can only change its content
-//		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken());
+		//		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken());
 		try {
 
-			if(configuration.isSendReportAsAttachement()){
+			if (configuration.isSendReportAsAttachement()) {
 				mailService.sendDocumentCreatedEmail(receiverEmail, downloadFile, createStatistikPageLink());
-			} else{
+			} else {
 				mailService.sendDocumentCreatedEmail(receiverEmail, null, createStatistikPageLink());
 			}
 			return BatchStatus.COMPLETED.toString();
@@ -101,10 +100,9 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 			//copy data into pre exsiting dowonload-file
 			//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs and download file can be generated when report is finsihed
 			return downloadFileService.insertDirectly(workJob.getResultData(), uploadFile, TokenLifespan.LONG, workJob.getTriggeringIp());
-		} else {
-			LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step");
-			return null;
 		}
+		LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step");
+		return null;
 	}
 
 	@Nonnull
