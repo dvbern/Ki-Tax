@@ -270,4 +270,9 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     public getBetreuungModel(): TSBetreuung {
         return this.betreuung;
     }
+
+    public isTageschulenAnmeldungAktiv(): boolean {
+        return this.gesuchModelManager.getGesuchsperiode()
+            && this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
+    }
 }

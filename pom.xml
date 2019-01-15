@@ -20,12 +20,12 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>ch.dvbern.oss.maven</groupId>
-        <version>1.1.0</version>
+        <version>1.2.1</version>
     </parent>
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2018.14.0-SNAPSHOT</version>
+    <version>2018.15.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -52,7 +52,6 @@
 
         <ebegu-code-conventions.version>1.0.2</ebegu-code-conventions.version>
         <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
-        <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
 
     </properties>
 
@@ -115,9 +114,14 @@
                 <version>3.0.0</version>
             </dependency>
             <dependency>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-annotations</artifactId>
+                <version>3.1.10</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>19.0.20150826</version>
+                <version>27.0.1-jre</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -170,7 +174,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>ch.dvbern.oss.datehelper</groupId>
@@ -349,7 +353,7 @@
             <dependency>
                 <groupId>ch.dvbern.oss.excelmerger</groupId>
                 <artifactId>excelmerger-impl</artifactId>
-                <version>2.1.1</version>
+                <version>2.2.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-logging</groupId>
@@ -678,8 +682,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>annotations</artifactId>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -789,7 +793,6 @@
                 </dependency>
             </dependencies>
         </profile>
-
     </profiles>
 
     <build>
@@ -864,8 +867,8 @@
                 <artifactId>maven-pmd-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
             </plugin>
         </plugins>
 
@@ -898,15 +901,14 @@
                     </dependencies>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>${findbugs-maven-plugin.version}</version>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
                     <dependencies>
-                        <dependency>
-                            <groupId>ch.dvbern.oss.maven</groupId>
-                            <artifactId>ebegu-code-conventions</artifactId>
-                            <version>${ebegu-code-conventions.version}</version>
-                        </dependency>
+						<dependency>
+							<groupId>ch.dvbern.oss.maven</groupId>
+							<artifactId>ebegu-code-conventions</artifactId>
+							<version>${ebegu-code-conventions.version}</version>
+						</dependency>
                     </dependencies>
                     <configuration>
                         <includeFilterFile>rules/ebegu/findbugs/findbugs-includes.xml</includeFilterFile>
@@ -1020,4 +1022,6 @@
         <module>ebegu-web</module>
         <module>ebegu-ws</module>
     </modules>
+
+
 </project>

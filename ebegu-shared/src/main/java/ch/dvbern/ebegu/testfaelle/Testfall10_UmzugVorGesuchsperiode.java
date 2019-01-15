@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.testfaelle;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -32,7 +31,6 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.types.DateRange;
@@ -57,18 +55,24 @@ public class Testfall10_UmzugVorGesuchsperiode extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 
-		//Wohnadresse in Bern
-		gesuchsteller1.getAdressen().get(0).getGesuchstellerAdresseJA().setNichtInGemeinde(false);
 		final int gesuchsperiodeFirstYear = gesuchsperiode.getGueltigkeit().getGueltigAb().getYear();
-		gesuchsteller1.getAdressen().get(0).getGesuchstellerAdresseJA()
+
+		//Wohnadresse in Bern
+		GesuchstellerAdresseContainer adresseVorZuegelnBern = gesuchsteller1.getAdressen().get(0);
+		Objects.requireNonNull(adresseVorZuegelnBern);
+		Objects.requireNonNull(adresseVorZuegelnBern.getGesuchstellerAdresseJA());
+		adresseVorZuegelnBern.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
+		adresseVorZuegelnBern.getGesuchstellerAdresseJA()
 			.setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(gesuchsperiodeFirstYear, 6, 14)));
 
-		// Umzugsadresse am 15.06.2016 aus Bern <- vor der Gesuchsperiode
-		GesuchstellerAdresseContainer umzugInBern = createWohnadresseContainer(gesuchsteller1);
-		umzugInBern.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
-		umzugInBern.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(gesuchsperiodeFirstYear, 6, 15),
+		// Umzugsadresse am 15.08.2016 aus Bern -> Anspruch bis Ende Monat
+		GesuchstellerAdresseContainer adresseNachZuegelnNichtBern = createWohnadresseContainer(gesuchsteller1);
+		Objects.requireNonNull(adresseNachZuegelnNichtBern);
+		Objects.requireNonNull(adresseNachZuegelnNichtBern.getGesuchstellerAdresseJA());
+		adresseNachZuegelnNichtBern.getGesuchstellerAdresseJA().setNichtInGemeinde(true);
+		adresseNachZuegelnNichtBern.getGesuchstellerAdresseJA().setGueltigkeit(new DateRange(LocalDate.of(gesuchsperiodeFirstYear, 8, 15),
 			Constants.END_OF_TIME));
-		gesuchsteller1.getAdressen().add(umzugInBern);
+		gesuchsteller1.getAdressen().add(adresseNachZuegelnNichtBern);
 
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensum = createErwerbspensum(80);

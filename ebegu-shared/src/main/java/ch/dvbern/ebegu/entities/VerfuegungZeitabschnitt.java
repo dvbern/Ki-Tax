@@ -145,10 +145,22 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private int anspruchberechtigtesPensum; // = Anpsruch für diese Kita, bzw. Tageseltern Kleinkinder
 
 	@Column(nullable = true)
-	private BigDecimal betreuungsstunden;
+	private BigDecimal betreuungsstunden = BigDecimal.ZERO;
 
 	@Column(nullable = true)
 	private BigDecimal vollkosten = ZERO;
+
+	@Column(nullable = true)
+	private BigDecimal verguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.ZERO;
+
+	@Column(nullable = true)
+	private BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag = BigDecimal.ZERO;
+
+	@Column(nullable = true)
+	private BigDecimal verguenstigung = BigDecimal.ZERO;
+
+	@Column(nullable = true)
+	private BigDecimal minimalerElternbeitrag = BigDecimal.ZERO;
 
 	@Column(nullable = true)
 	private BigDecimal elternbeitrag = ZERO;
@@ -225,6 +237,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.betreuungsstunden = toCopy.betreuungsstunden;
 		this.vollkosten = toCopy.vollkosten;
 		this.elternbeitrag = toCopy.elternbeitrag;
+		this.verguenstigungOhneBeruecksichtigungVollkosten = toCopy.getVerguenstigungOhneBeruecksichtigungVollkosten();
+		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = toCopy.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
+		this.verguenstigung = toCopy.verguenstigung;
+		this.minimalerElternbeitrag = toCopy.minimalerElternbeitrag;
 		this.abzugFamGroesse = toCopy.abzugFamGroesse;
 		this.famGroesse = toCopy.famGroesse;
 		this.massgebendesEinkommenVorAbzugFamgr = toCopy.massgebendesEinkommenVorAbzugFamgr;
@@ -570,6 +586,40 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.besondereBeduerfnisse = besondereBeduerfnisse;
 	}
 
+	public BigDecimal getVerguenstigungOhneBeruecksichtigungVollkosten() {
+		return verguenstigungOhneBeruecksichtigungVollkosten;
+	}
+
+	public void setVerguenstigungOhneBeruecksichtigungVollkosten(BigDecimal
+		verguenstigungOhneBeruecksichtigungVollkosten) {
+		this.verguenstigungOhneBeruecksichtigungVollkosten = verguenstigungOhneBeruecksichtigungVollkosten;
+	}
+
+	public BigDecimal getVerguenstigungOhneBeruecksichtigungMinimalbeitrag() {
+		return verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+	}
+
+	public void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal
+		verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
+		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+	}
+
+	public BigDecimal getVerguenstigung() {
+		return verguenstigung;
+	}
+
+	public void setVerguenstigung(BigDecimal verguenstigung) {
+		this.verguenstigung = verguenstigung;
+	}
+
+	public BigDecimal getMinimalerElternbeitrag() {
+		return minimalerElternbeitrag;
+	}
+
+	public void setMinimalerElternbeitrag(BigDecimal minimalerElternbeitrag) {
+		this.minimalerElternbeitrag = minimalerElternbeitrag;
+	}
+
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
@@ -802,6 +852,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
 			besondereBeduerfnisse == otherVerfuegungZeitabschnitt.besondereBeduerfnisse &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
+			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
+			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
 			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen);
 	}
 
@@ -861,17 +913,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(vollkosten, that.vollkosten) &&
 			MathUtil.isSame(elternbeitrag, that.elternbeitrag) &&
 			(getGueltigkeit().compareTo(that.getGueltigkeit()) == 0);
-	}
-
-	/**
-	 * Gibt den Betrag des Gutscheins zurück.
-	 */
-	@Nonnull
-	public BigDecimal getVerguenstigung() {
-		if (vollkosten != null && elternbeitrag != null) {
-			return vollkosten.subtract(elternbeitrag);
-		}
-		return ZERO;
 	}
 
 	@Override
