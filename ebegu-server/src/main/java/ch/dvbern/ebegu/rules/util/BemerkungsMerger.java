@@ -76,11 +76,18 @@ public final class BemerkungsMerger {
 		StringJoiner joiner = new StringJoiner("\n");
 		Map<String, Collection<DateRange>> rangesByBemerkungKey = evaluateRangesByBemerkungKey(zeitabschnitte);
 
-		for (Entry<String, Collection<DateRange>> stringCollectionEntry : rangesByBemerkungKey.entrySet()) {
-			stringCollectionEntry.getValue().stream()
-				.forEachOrdered(dateRange -> joiner.add('[' + dateRange.toRangeString() + "] " + stringCollectionEntry.getKey()));
-		}
 
+		// Jetzt sind die DateRanges pro Message zusammengefasst, wir wollen aber nach Datum sortieren, nicht nach Message
+		List<BemerkungItem> listOrdered = new LinkedList<>();
+		for (Entry<String, Collection<DateRange>> stringCollectionEntry : rangesByBemerkungKey.entrySet()) {
+			for (DateRange dateRanges : stringCollectionEntry.getValue()) {
+				listOrdered.add(new BemerkungItem(dateRanges, stringCollectionEntry.getKey()));
+			}
+		}
+		Collections.sort(listOrdered);
+		for (BemerkungItem poi : listOrdered) {
+			joiner.add('[' + poi.getRange().toRangeString() + "] " + poi.getMessage());
+		}
 		return joiner.toString();
 	}
 
@@ -114,6 +121,7 @@ public final class BemerkungsMerger {
 		Map<String, Collection<DateRange>> continousRangesPerKey = new HashMap<>();
 		multimap.keySet().forEach(bemKey -> {
 			Collection<DateRange> contRanges = mergeAdjacentRanges(multimap.get(bemKey));
+
 			continousRangesPerKey.put(bemKey, contRanges);
 		});
 

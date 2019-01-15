@@ -314,7 +314,6 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 				LOG.error("Es ist ein Fehler aufgetreten", e);
 			}
 		}
-
 	}
 
 	/**

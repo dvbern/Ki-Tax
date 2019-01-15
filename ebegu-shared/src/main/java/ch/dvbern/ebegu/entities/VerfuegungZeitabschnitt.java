@@ -17,10 +17,12 @@ package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
@@ -41,6 +43,7 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -79,6 +82,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	@Nullable
 	private Integer erwerbspensumGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
+
+	@Transient
+	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
 
 	@Transient
 	private int fachstellenpensum;
@@ -233,6 +239,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;
 		this.erwerbspensumGS2 = toCopy.erwerbspensumGS2;
+		this.taetigkeiten = toCopy.taetigkeiten;
 		this.fachstellenpensum = toCopy.fachstellenpensum;
 		this.ausserordentlicherAnspruch = toCopy.ausserordentlicherAnspruch;
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
@@ -309,6 +316,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setErwerbspensumGS2(@Nullable Integer erwerbspensumGS2) {
 		this.erwerbspensumGS2 = erwerbspensumGS2;
+	}
+
+	public Set<Taetigkeit> getTaetigkeiten() {
+		return taetigkeiten;
+	}
+
+	public void setTaetigkeiten(Set<Taetigkeit> taetigkeiten) {
+		this.taetigkeiten = taetigkeiten;
 	}
 
 	public BigDecimal getBetreuungspensum() {
@@ -687,6 +702,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			this.setErwerbspensumGS2((this.getErwerbspensumGS2() != null ? this.getErwerbspensumGS2() : 0) +
 				(other.getErwerbspensumGS2() != null ? other.getErwerbspensumGS2() : 0));
 		}
+
+		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 
 		this.setMassgebendesEinkommenVorAbzugFamgr(MathUtil.DEFAULT.addNullSafe(this.getMassgebendesEinkommenVorAbzFamgr(), other.getMassgebendesEinkommenVorAbzFamgr()));
 
