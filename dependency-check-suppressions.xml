@@ -20,31 +20,19 @@
 		<gav regex="true">ch.dvbern.oss.datehelper:date-helper:.*</gav>
 		<cpe>cpe:/a:date_project:date:1.0.4</cpe>
 	</suppress>
-
-	<!-- as of 17.12.2018, 1.7.25 is the newest non-alpha version of slf4j-->
 	<suppress>
-		<notes><![CDATA[file name: slf4j-api-1.7.25.jar]]></notes>
-		<gav regex="true">^org\.slf4j:slf4j-api:.*$</gav>
+		<notes>Only used in module TestDataUtil, not in productive code</notes>
+		<gav regex="true">org.wildfly.openssl:wildfly-openssl-java:.*</gav>
+		<cpe regex="true">.*</cpe>
+	</suppress>
+	<suppress>
+		<notes>
+			<![CDATA[
+              Suppress a vulnerabilty of the unused Class EventData from SLF4j
+              https://nvd.nist.gov/vuln/detail/CVE-2018-8088
+              ]]>
+		</notes>
+		<gav regex="true">^org\.slf4j:.*$</gav>
 		<cve>CVE-2018-8088</cve>
-	</suppress>
-	<suppress>
-		<notes><![CDATA[file name: jcl-over-slf4j-1.7.25.jar]]></notes>
-		<gav regex="true">^org\.slf4j:jcl-over-slf4j:.*$</gav>
-		<cve>CVE-2018-8088</cve>
-	</suppress>
-	<suppress>
-		<notes><![CDATA[file name: log4j-over-slf4j-1.7.25.jar]]></notes>
-		<gav regex="true">^org\.slf4j:log4j-over-slf4j:.*$</gav>
-		<cpe>cpe:/a:slf4j:slf4j</cpe>
-	</suppress>
-	<suppress>
-		<notes><![CDATA[file name: slf4j-ext-1.7.25.jar]]></notes>
-		<gav regex="true">^org\.slf4j:slf4j-ext:.*$</gav>
-		<cve>CVE-2018-8088</cve>
-	</suppress>
-	<suppress>
-		<notes><![CDATA[file name: slf4j-simple-1.7.10.jar]]></notes>
-		<gav regex="true">^org\.slf4j:slf4j-simple:.*$</gav>
-		<cpe>cpe:/a:slf4j:slf4j</cpe>
 	</suppress>
 </suppressions>

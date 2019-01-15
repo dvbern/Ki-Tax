@@ -96,7 +96,7 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 				);
 			}
 			return BatchStatus.COMPLETED.toString();
-		} catch (MailException e) {
+		} catch (MailException ignore) {
 			return BatchStatus.FAILED.toString();
 		}
 	}
@@ -104,12 +104,6 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	private String createStatistikPageLink() {
 		return configuration.getHostname() + "/statistik";
 	}
-	// Do not send direct downloadlink (because of security)
-	//	private String constructDownloadURI(DownloadFile downloadFile) {
-	//		//file sollte wohl besser mitgesendet werden
-	////		String resultData = workjob.getResultData();
-	//		return "http://localhost:8080/ebegu/api/v1/blobs/temp/blobdata/" + downloadFile.getAccessToken();
-	//	}
 
 	@Nullable
 	private DownloadFile createDownloadfile(@Nonnull Workjob workJob, @Nullable UploadFileInfo uploadFile) {
@@ -117,10 +111,9 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 			//copy data into pre exsiting dowonload-file
 			//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs and download file can be generated when report is finsihed
 			return downloadFileService.insertDirectly(workJob.getResultData(), uploadFile, TokenLifespan.LONG, workJob.getTriggeringIp());
-		} else {
-			LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step");
-			return null;
 		}
+		LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step");
+		return null;
 	}
 
 	@Nonnull

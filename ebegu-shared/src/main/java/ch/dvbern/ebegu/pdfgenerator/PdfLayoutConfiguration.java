@@ -61,7 +61,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 	}
 
 	private void applyLogo(final byte[] gemeindeLogo) {
-		if (gemeindeLogo == null) {
+		if (gemeindeLogo == null || gemeindeLogo.length == 0) {
 			return;
 		}
 

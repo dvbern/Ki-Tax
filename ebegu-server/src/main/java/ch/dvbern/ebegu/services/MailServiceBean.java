@@ -260,10 +260,9 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 				}
 				i++;
 			} catch (Exception e) {
-				LOG.error(
-					"Mail InfoFreischaltungGesuchsperiode konnte nicht verschickt werden fuer Gesuch {}",
-					gesuch.getId(),
-					e);
+				logExceptionAccordingToEnvironment(e,
+					"Mail InfoFreischaltungGesuchsperiode konnte nicht verschickt werden fuer Gesuch",
+					gesuch.getId());
 			}
 		}
 		return new AsyncResult<>(i);
@@ -328,10 +327,9 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 				}
 			} catch (MailException e) {
-				LOG.error(
-					"Mail InfoBetreuungGeloescht konnte nicht verschickt werden fuer Betreuung {}",
-					betreuung.getId(),
-					e);
+				logExceptionAccordingToEnvironment(e,
+					"Mail InfoBetreuungGeloescht konnte nicht verschickt werden fuer Betreuung",
+					betreuung.getId());
 			}
 		}
 	}
@@ -362,10 +360,9 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			sendMessageWithTemplate(message, mailaddress);
 			LOG.info("Email fuer InfoBetreuungVerfuegt wurde versendet an {}", mailaddress);
 		} catch (MailException e) {
-			LOG.error(
-				"Mail InfoBetreuungVerfuegt konnte nicht verschickt werden fuer Betreuung {}",
-				betreuung.getId(),
-				e);
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoBetreuungVerfuegt konnte nicht verschickt werden fuer Betreuung",
+				betreuung.getId());
 		}
 	}
 
@@ -389,8 +386,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			}
 			LOG.debug("E-Mail mit Report versendet an {}", receiverEmail);
 		} catch (MailException e) {
-			LOG.error("E-Mail mit Report versendet konnte nicht verschickt werden an {}", receiverEmail, e);
-			throw e;
+			logExceptionAccordingToEnvironment(e,
+				"E-Mail mit Report versendet konnte nicht verschickt werden an",
+				receiverEmail);
+			throw e; // Wird spaeter nicht mehr geloggt
 		}
 	}
 

@@ -251,7 +251,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		values.add(titles);
 		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
 			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
-			if (abschnitt.getGueltigkeit().getGueltigAb().isBefore(erstesEinreichungsdatum)) {
+			if (!abschnitt.getGueltigkeit().getGueltigAb().isAfter(erstesEinreichungsdatum)) {
 				continue;
 			}
 			String[] data = {
