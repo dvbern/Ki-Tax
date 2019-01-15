@@ -205,7 +205,7 @@
                     </fieldset>
 
                     <!--Institutionen-->
-                    <div ng-if="!vm.isProvisorischeBetreuung()">
+                    <div ng-if="vm.getBetreuungModel().vertrag">
                         <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
                         <div class="row"
                              ng-if="vm.showInstitutionenList()"

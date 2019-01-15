@@ -1043,7 +1043,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 
-    private createProvisorischesBetreuungspensum(): any {
+    private createProvisorischeBetreuung(): void {
 
         // always clear existing Betreuungspensum
         this.getBetreuungModel().betreuungspensumContainers = [];
@@ -1054,7 +1054,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
 
-        this.setSelectedInstitutionStammdaten();
+        this.gesuchModelManager.getUnknownInstitutionStammdaten(this.instStammId)
+            .then((stammdaten: TSInstitutionStammdaten) => {
+                this.getBetreuungModel().institutionStammdaten = stammdaten;
+            });
 
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             new TSBetreuungspensum(TSPensumUnits.PERCENTAGE,
@@ -1071,10 +1074,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public onChangeVertrag(): void {
         // clear
         this.getBetreuungModel().betreuungspensumContainers = [];
+        this.cleanInstitutionStammdaten();
         this.instStammId = null;
+
         // init prov. betreuung
         if (this.model.vertrag === false) { // tslint:disable-line:no-boolean-literal-compare
-            this.createProvisorischesBetreuungspensum();
+            this.createProvisorischeBetreuung();
         }
     }
 }
