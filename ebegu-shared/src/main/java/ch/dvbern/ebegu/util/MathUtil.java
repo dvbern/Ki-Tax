@@ -122,8 +122,29 @@ public enum MathUtil {
 	/**
 	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
 	 */
+	@Nonnull
+	public BigDecimal fromNullSafe(@Nonnull String src) {
+		BigDecimal val = new BigDecimal(src)
+			.setScale(scale, roundingMode);
+		return validatePrecision(val);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
 	@Nullable
 	public BigDecimal from(@Nullable Integer src) {
+		if (src == null) {
+			return null;
+		}
+		return fromNullSafe(src);
+	}
+
+	/**
+	 * @throws PrecisionTooLargeException if the resulting value exceeds the defined precision
+	 */
+	@Nullable
+	public BigDecimal from(@Nullable String src) {
 		if (src == null) {
 			return null;
 		}
