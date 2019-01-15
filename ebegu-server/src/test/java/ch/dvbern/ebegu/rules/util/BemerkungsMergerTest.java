@@ -77,10 +77,10 @@ public class BemerkungsMergerTest {
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(5, strings.length);
-		Assert.assertTrue(strings[0].startsWith("[01.01.2016 - 31.05.2016] ABWESENHEIT:"));
-		Assert.assertTrue(strings[1].startsWith("[01.01.2016 - 29.02.2016] EINREICHUNGSFRIST:"));
-		Assert.assertTrue(strings[2].startsWith("[01.04.2016 - 31.05.2016] EINREICHUNGSFRIST:"));
-		Assert.assertTrue(strings[3].startsWith("[01.01.2016 - 31.03.2016] BETREUUNGSANGEBOT_TYP:"));
+		Assert.assertTrue(strings[0].startsWith("[01.01.2016 - 29.02.2016] EINREICHUNGSFRIST:"));
+		Assert.assertTrue(strings[1].startsWith("[01.01.2016 - 31.03.2016] BETREUUNGSANGEBOT_TYP:"));
+		Assert.assertTrue(strings[2].startsWith("[01.01.2016 - 31.05.2016] ABWESENHEIT:"));
+		Assert.assertTrue(strings[3].startsWith("[01.04.2016 - 31.05.2016] EINREICHUNGSFRIST:"));
 		Assert.assertTrue(strings[4].startsWith("[01.05.2016 - 31.05.2016] BETREUUNGSANGEBOT_TYP:"));
 	}
 
