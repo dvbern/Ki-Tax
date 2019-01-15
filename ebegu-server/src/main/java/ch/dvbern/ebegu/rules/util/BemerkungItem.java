@@ -17,12 +17,16 @@
 
 package ch.dvbern.ebegu.rules.util;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.types.DateRange;
 
 public class BemerkungItem implements Comparable<BemerkungItem> {
 
-	private DateRange range;
-	private String message;
+	private final DateRange range;
+	private final String message;
 
 	public BemerkungItem(DateRange range, String message) {
 		this.range = range;
@@ -30,7 +34,25 @@ public class BemerkungItem implements Comparable<BemerkungItem> {
 	}
 
 	@Override
-	public int compareTo(BemerkungItem otherItem) {
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof BemerkungItem)) {
+			return false;
+		}
+		BemerkungItem that = (BemerkungItem) o;
+		return Objects.equals(range, that.range) &&
+			Objects.equals(message, that.message);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(range, message);
+	}
+
+	@Override
+	public int compareTo(@Nonnull BemerkungItem otherItem) {
 		return this.getRange().compareTo(otherItem.getRange());
 	}
 
@@ -38,15 +60,7 @@ public class BemerkungItem implements Comparable<BemerkungItem> {
 		return range;
 	}
 
-	public void setRange(DateRange range) {
-		this.range = range;
-	}
-
 	public String getMessage() {
 		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 }
