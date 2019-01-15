@@ -89,6 +89,10 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public createTestFallType(testFall: string): void {
+        if (!this.selectedGesuchsperiode ||
+            !this.selectedGemeinde) {
+            return;
+        }
         let bestaetigt = false;
         let verfuegen = false;
         switch (this.creationType) {
