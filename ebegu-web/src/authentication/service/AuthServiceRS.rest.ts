@@ -54,6 +54,7 @@ export default class AuthServiceRS {
     private readonly principalSubject$ = new ReplaySubject<TSBenutzer | null>(1);
 
     private _principal$: Observable<TSBenutzer | null> = this.principalSubject$.asObservable();
+    private portalAccCreationLink: string;
 
     public constructor(
         private readonly $http: IHttpService,
@@ -126,9 +127,27 @@ export default class AuthServiceRS {
         }
     }
 
-    public portalAccountCreationPageLink(): IPromise<string> {
+    public getPortalAccountCreationPageLink(): IPromise<string> {
+        if (this.portalAccCreationLink) {
+            return this.$q.when(this.portalAccCreationLink);
+        }
+
         return this.$http.get(CONSTANTS.REST_API + 'auth/portalAccountPage').then((res: any) => {
+            this.portalAccCreationLink = res.data;
             return res.data;
+        });
+    }
+
+    public burnPortalTimeout(): IPromise<any> {
+        return this.getPortalAccountCreationPageLink().then((linktext: string) => {
+            LOG.debug('try to burn timeout page at ' + linktext);
+            if (linktext) {
+                return this.$http.get(linktext, {withCredentials: true}).then(() =>
+                    LOG.debug('retrieved portal account creation page to burn unwanted timeout warning')
+                );
+            }
+
+            return this.$q(undefined);
         });
     }
 

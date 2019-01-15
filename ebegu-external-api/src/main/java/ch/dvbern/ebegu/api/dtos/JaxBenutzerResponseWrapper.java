@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * This Transfer Object is used to transfer the external user together with messages (error)
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxEinladungWrapper implements Serializable {
+public class JaxBenutzerResponseWrapper implements Serializable {
 
 	private static final long serialVersionUID = 3338519549993818460L;
 
