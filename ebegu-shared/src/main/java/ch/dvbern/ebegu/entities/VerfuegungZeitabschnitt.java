@@ -183,7 +183,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	// Bemerkungen spaeter wieder zugreifbar sind. Am Ende des RuleSets werden sie ins persistente Feld
 	// "bemerkungen" geschrieben
 	@Transient
-	private Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
+	private final Map<MsgKey, VerfuegungsBemerkung> bemerkungenMap = new TreeMap<>();
 
 	@Size(max = Constants.DB_TEXTAREA_LENGTH)
 	@Nullable
@@ -263,6 +263,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.ekv2ZuZweit = toCopy.ekv2ZuZweit;
 		this.ekv1NotExisting = toCopy.ekv1NotExisting;
 		this.bemerkungen = toCopy.bemerkungen;
+		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
 		this.verfuegung = null;
 		this.kategorieMaxEinkommen = toCopy.kategorieMaxEinkommen;
 		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
@@ -745,7 +746,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	/**
 	 * Fügt otherBemerkungen zur Liste hinzu, falls sie noch nicht vorhanden sind
 	 */
-	public void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
+	public final void mergeBemerkungenMap(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {
 		for (Entry<MsgKey, VerfuegungsBemerkung> msgKeyVerfuegungsBemerkungEntry : otherBemerkungenMap.entrySet()) {
 			if (!getBemerkungenMap().containsKey(msgKeyVerfuegungsBemerkungEntry.getKey())) {
 				this.bemerkungenMap.put(msgKeyVerfuegungsBemerkungEntry.getKey(), msgKeyVerfuegungsBemerkungEntry.getValue());
