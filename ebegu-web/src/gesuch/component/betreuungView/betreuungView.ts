@@ -307,8 +307,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public setErsterSchultag(): void {
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
         const ersterSchultag = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
-        if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen && DateUtil.today().isBefore(
-            ersterSchultag)) {
+        if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen
+            && DateUtil.today().isBefore(ersterSchultag)
+        ) {
             this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
         }
     }
@@ -364,7 +365,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public filterOnlyAngemeldeteModule(): void {
         const betreuungModel = this.getBetreuungModel();
         if (!(this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung() &&
-            betreuungModel.belegungTagesschule && betreuungModel.belegungTagesschule.moduleTagesschule)) {
+                betreuungModel.belegungTagesschule && betreuungModel.belegungTagesschule.moduleTagesschule)) {
             return;
         }
         if (this.moduleBackup === undefined
@@ -389,7 +390,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public copyModuleToBelegung(): void {
         const stammdaten = this.getBetreuungModel().institutionStammdaten;
         if (!(stammdaten && stammdaten.institutionStammdatenTagesschule
-            && stammdaten.institutionStammdatenTagesschule.moduleTagesschule)) {
+                && stammdaten.institutionStammdatenTagesschule.moduleTagesschule)) {
             return;
         }
 
@@ -462,7 +463,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
-        return this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
+        return this.gesuchModelManager.getGesuchsperiode()
+            && this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
     }
 
     public isFalscheInstitutionAndUserInRole(): boolean {
@@ -834,6 +836,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * verfuegt wurden bzw. ein vorgaengerId haben. Ausserdem muss es sich um das letzte bzw. neueste Gesuch handeln
      */
     public isMutationsmeldungAllowed(): boolean {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return false;
+        }
         return (
                 (
                     this.isMutation()
@@ -919,8 +924,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * INST und TRAEG relevant ist, wird es nur fuer diese Rollen geholt
      */
     private findExistingBetreuungsmitteilung(): void {
-        if (!(!this.getBetreuungModel().isNew()
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+        if (!(!this.getBetreuungModel().isNew() &&
+            this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()))) {
+
             return;
         }
 
@@ -934,7 +940,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.getBetreuungModel().isNew()) {
             const gp = this.gesuchModelManager.getGesuch().gesuchsperiode;
 
-            return (this.isTagesschule() && gp.hasTagesschulenAnmeldung() && !gp.isTageschulenAnmeldungAktiv()
+            return (gp && this.isTagesschule() && gp.hasTagesschulenAnmeldung() && !gp.isTageschulenAnmeldungAktiv()
                 || this.isFerieninsel() && !this.getBetreuungModel().isEnabled());
         }
 
@@ -977,10 +983,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableErweiterteBeduerfnisse(): boolean {
+        if (!this.gesuchModelManager.getGesuch()) {
+            return false;
+        }
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
         const gemeindeUser = this.authServiceRS
             .isOneOfRoles(TSRoleUtil.getAdministratorJugendamtSchulamtRoles());
-
         return !this.isSavingData
             && !isVerfuegtOrSTV(this.gesuchModelManager.getGesuch().status)
             && ((gesuchsteller && this.isBetreuungsstatusAusstehend())

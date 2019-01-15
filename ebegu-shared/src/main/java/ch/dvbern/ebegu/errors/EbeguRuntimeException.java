@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import javax.ejb.ApplicationException;
 
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import org.slf4j.event.Level;
 
 /**
  * Created by imanol on 02.03.16.
@@ -43,6 +44,8 @@ public class EbeguRuntimeException extends RuntimeException {
 	@Nullable
 	private final String customMessage;
 
+	private Level logLevel = Level.WARN; // Defaultmaessig loggen wir im WARN-level
+
 	public EbeguRuntimeException(
 		@Nullable String methodeName,
 		@Nonnull String message,
@@ -119,6 +122,21 @@ public class EbeguRuntimeException extends RuntimeException {
 		super(message);
 		methodName = methodeName;
 		this.errorCodeEnum = errorCodeEnum;
+		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
+		customMessage = null;
+	}
+
+	public EbeguRuntimeException(
+		@Nullable String methodeName,
+		@Nullable String message,
+		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nonnull Level logLevel,
+		@Nonnull Serializable... messageArgs) {
+
+		super(message);
+		methodName = methodeName;
+		this.errorCodeEnum = errorCodeEnum;
+		this.logLevel = logLevel;
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
 		customMessage = null;
 	}
@@ -164,5 +182,10 @@ public class EbeguRuntimeException extends RuntimeException {
 	@Nullable
 	public String getCustomMessage() {
 		return customMessage;
+	}
+
+	@Nonnull
+	public Level getLogLevel() {
+		return logLevel;
 	}
 }
