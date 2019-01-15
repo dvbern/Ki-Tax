@@ -299,7 +299,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // Default Eintrittsdatum ist erster Schultag, wenn noch in Zukunft
         const ersterSchultag = this.gesuchModelManager.getGesuchsperiode().datumErsterSchultag;
         if (ersterSchultag && !this.getBetreuungModel().keineDetailinformationen
-            	&& DateUtil.today().isBefore(ersterSchultag)) {
+            && DateUtil.today().isBefore(ersterSchultag)
+        ) {
             this.getBetreuungModel().belegungTagesschule.eintrittsdatum = ersterSchultag;
         }
     }
