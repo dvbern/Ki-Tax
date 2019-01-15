@@ -178,7 +178,7 @@ public final class PdfUtil {
 			float[] columnWidths = { 1, 4 };
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Failed to read the Logo: {}", e.getMessage());
+			LOG.error("Error while creating intro table: {}", e.getMessage());
 		}
 		setTableDefaultStyles(table);
 

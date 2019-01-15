@@ -264,7 +264,7 @@ public class WohnsitzRuleTest {
 		VerfuegungZeitabschnitt abschnittNichtInBern = zeitabschnittList.get(1);
 		Assert.assertTrue(abschnittNichtInBern.isWohnsitzNichtInGemeindeGS1());
 		//Anspruch noch 2 Monate nach wegzug auf Ende Monat
-		Assert.assertEquals(wegzugsDatum.plusMonths(2).with(TemporalAdjusters.lastDayOfMonth()), abschnittInBern.getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(wegzugsDatum.with(TemporalAdjusters.lastDayOfMonth()), abschnittInBern.getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(0, abschnittNichtInBern.getAnspruchberechtigtesPensum());
 		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnittNichtInBern.getBgPensum());
 	}

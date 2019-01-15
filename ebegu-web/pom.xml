@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2018.14.0-SNAPSHOT</version>
+        <version>2018.15.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,14 +28,13 @@
     <properties>
         <sonar.sources>src</sonar.sources>
         <!-- exclude files from sonar analysis (must match tsconfig.json exclusions -->
-        <sonar.exclusions>build/**/*,dist/**/*,node_modules/**/*,temp/**/*,target/**/*,tslint.json</sonar.exclusions>
+        <sonar.exclusions>src/test.ts</sonar.exclusions>
+        <sonar.tests>src</sonar.tests>
+        <sonar.test.inclusions>**.spec.ts</sonar.test.inclusions>
         <sonar.verbose>true</sonar.verbose>
-        <!-- disable coverage calculations for unit test files -->
-        <sonar.coverage.exclusions>**.spec.ts</sonar.coverage.exclusions>
-        <!-- disable duplication detection for spec files -->
-        <sonar.cpd.exclusions>**.spec.ts</sonar.cpd.exclusions>
-        <sonar.junit.reportPaths>build/sonar-results.xml</sonar.junit.reportPaths>
+        <sonar.testExecutionReportPaths>build/sonar-report.xml</sonar.testExecutionReportPaths>
         <sonar.typescript.lcov.reportPaths>build/coverage/lcov.info</sonar.typescript.lcov.reportPaths>
+        <sonar.typescript.tsconfigPath>src/tsconfig.app.json</sonar.typescript.tsconfigPath>
         <npm.init.arg>install</npm.init.arg>
     </properties>
 

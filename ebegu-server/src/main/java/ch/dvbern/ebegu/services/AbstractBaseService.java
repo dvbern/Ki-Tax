@@ -23,6 +23,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -35,6 +36,8 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Uebergeordneter Service. Alle Services sollten von diesem Service erben. Wird verwendet um Interceptors einzuschalten
@@ -46,6 +49,11 @@ public abstract class AbstractBaseService {
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
 	@PermitAll
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -95,5 +103,13 @@ public abstract class AbstractBaseService {
 			}
 		});
 		persistence.getEntityManager().detach(gesuch);
+	}
+
+	protected void logExceptionAccordingToEnvironment(@Nonnull Exception e, @Nonnull String message, @Nonnull String arg) {
+		if (ebeguConfiguration.getIsDevmode()) {
+			LOG.info("{} {}", message, arg, e);
+		} else {
+			LOG.error("{} {}", message, arg, e);
+		}
 	}
 }
