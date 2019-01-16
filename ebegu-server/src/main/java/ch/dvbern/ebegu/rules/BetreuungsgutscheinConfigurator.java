@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -52,8 +53,15 @@ public class BetreuungsgutscheinConfigurator {
 
 	private final List<Rule> rules = new LinkedList<>();
 
+	private Locale locale;
+
 	@Nonnull
-	public List<Rule> configureRulesForMandant(@Nonnull Gemeinde gemeinde, @Nonnull Map<EinstellungKey, Einstellung> ebeguRuleParameter) {
+	public List<Rule> configureRulesForMandant(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Map<EinstellungKey, Einstellung> ebeguRuleParameter,
+		@Nonnull Locale inputLocale
+	) {
+		this.locale = inputLocale;
 		useBernerRules(ebeguRuleParameter);
 		return rules;
 	}
@@ -89,11 +97,11 @@ public class BetreuungsgutscheinConfigurator {
 		// GRUNDREGELN_DATA: Abschnitte erstellen
 
 		// - Erwerbspensum: Erstellt die grundlegenden Zeitschnitze (keine Korrekturen, nur einfügen)
-		ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit);
+		ErwerbspensumAbschnittRule erwerbspensumAbschnittRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(erwerbspensumAbschnittRule);
 
 		// - Unbezahlter Urlaub
-		UnbezahlterUrlaubAbschnittRule unbezahlterUrlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit);
+		UnbezahlterUrlaubAbschnittRule unbezahlterUrlaubAbschnittRule = new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(unbezahlterUrlaubAbschnittRule);
 
 		//Familenabzug: Berechnet den Familienabzug aufgrund der Familiengroesse
@@ -110,49 +118,50 @@ public class BetreuungsgutscheinConfigurator {
 			param_pauschalabzug_pro_person_familiengroesse_3.getValueAsBigDecimal(),
 			param_pauschalabzug_pro_person_familiengroesse_4.getValueAsBigDecimal(),
 			param_pauschalabzug_pro_person_familiengroesse_5.getValueAsBigDecimal(),
-			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal());
+			param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal(),
+			locale);
 		rules.add(familienabzugAbschnittRule);
 
 		// Betreuungsgutscheine Gueltigkeit
-		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule = new GutscheineStartdatumAbschnittRule(defaultGueltigkeit);
+		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule = new GutscheineStartdatumAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(gutscheineStartdatumAbschnittRule);
 
 		// - KindTarif
-		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit);
+		KindTarifAbschnittRule kindTarifAbschnittRule = new KindTarifAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(kindTarifAbschnittRule);
 
 		// - Betreuungspensum
-		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit);
+		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule = new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(betreuungspensumAbschnittRule);
 
 		// - Fachstelle
-		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit);
+		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(fachstelleAbschnittRule);
 
 		// - Ausserordentlicher Anspruch
-		AusserordentlicherAnspruchAbschnittRule ausserordntl = new AusserordentlicherAnspruchAbschnittRule(defaultGueltigkeit);
+		AusserordentlicherAnspruchAbschnittRule ausserordntl = new AusserordentlicherAnspruchAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(ausserordntl);
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
-		EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(defaultGueltigkeit);
+		EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(einkommenAbschnittRule);
 
 		// Wohnsitz (Zuzug und Wegzug)
-		WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(defaultGueltigkeit);
+		WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(wohnsitzAbschnittRule);
 
 		// - Einreichungsfrist
-		EinreichungsfristAbschnittRule einreichungsfristAbschnittRule = new EinreichungsfristAbschnittRule(defaultGueltigkeit);
+		EinreichungsfristAbschnittRule einreichungsfristAbschnittRule = new EinreichungsfristAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(einreichungsfristAbschnittRule);
 
 		// Abwesenheit
 		Einstellung abwesenheitMaxDaysParam = einstellungMap.get(EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT);
 		Integer abwesenheitMaxDaysValue = abwesenheitMaxDaysParam.getValueAsInteger();
-		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit, abwesenheitMaxDaysValue);
+		AbwesenheitAbschnittRule abwesenheitAbschnittRule = new AbwesenheitAbschnittRule(defaultGueltigkeit, abwesenheitMaxDaysValue, locale);
 		rules.add(abwesenheitAbschnittRule);
 
 		// Zivilstandsaenderung
-		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(defaultGueltigkeit);
+		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(defaultGueltigkeit, locale);
 		rules.add(zivilstandsaenderungAbschnittRule);
 	}
 
@@ -160,7 +169,7 @@ public class BetreuungsgutscheinConfigurator {
 		// GRUNDREGELN_CALC: Berechnen / Ändern den Anspruch
 
 		// - Storniert
-		StorniertCalcRule storniertCalcRule = new StorniertCalcRule(defaultGueltigkeit);
+		StorniertCalcRule storniertCalcRule = new StorniertCalcRule(defaultGueltigkeit, locale);
 		rules.add(storniertCalcRule);
 
 		// - Erwerbspensum
@@ -174,15 +183,16 @@ public class BetreuungsgutscheinConfigurator {
 			defaultGueltigkeit,
 			zuschlagEWP.getValueAsInteger(),
 			minEWP_nichtEingeschult.getValueAsInteger(),
-			minEWP_eingeschult.getValueAsInteger());
+			minEWP_eingeschult.getValueAsInteger(),
+			locale);
 		rules.add(erwerbspensumCalcRule);
 
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
-		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit);
+		FachstelleCalcRule fachstelleCalcRule = new FachstelleCalcRule(defaultGueltigkeit, locale);
 		rules.add(fachstelleCalcRule);
 
 		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann
-		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit);
+		AusserordentlicherAnspruchCalcRule ausserordntl = new AusserordentlicherAnspruchCalcRule(defaultGueltigkeit, locale);
 		rules.add(ausserordntl);
 	}
 
@@ -191,43 +201,46 @@ public class BetreuungsgutscheinConfigurator {
 
 		// BETREUUNGS GUTSCHEINE START DATUM - Anspruch verfällt, wenn Gutscheine vor dem BetreuungsgutscheineStartdatum
 		// der Gemeinde liegen
-		GutscheineStartdatumCalcRule gutscheineStartdatumCalcRule = new GutscheineStartdatumCalcRule(defaultGueltigkeit);
+		GutscheineStartdatumCalcRule gutscheineStartdatumCalcRule = new GutscheineStartdatumCalcRule(defaultGueltigkeit, locale);
 		rules.add(gutscheineStartdatumCalcRule);
 
 		// - Einkommen / Einkommensverschlechterung / Maximales Einkommen
 		Einstellung paramMassgebendesEinkommenMax = einstellungMap.get(MAX_MASSGEBENDES_EINKOMMEN);
 		Objects.requireNonNull(paramMassgebendesEinkommenMax, "Parameter MAX_MASSGEBENDES_EINKOMMEN muss gesetzt sein");
-		EinkommenCalcRule maxEinkommenCalcRule = new EinkommenCalcRule(defaultGueltigkeit, paramMassgebendesEinkommenMax.getValueAsBigDecimal());
+		EinkommenCalcRule maxEinkommenCalcRule = new EinkommenCalcRule(
+			defaultGueltigkeit,
+			paramMassgebendesEinkommenMax.getValueAsBigDecimal(),
+			locale);
 		rules.add(maxEinkommenCalcRule);
 
 		// Betreuungsangebot Tagesschule nicht berechnen
-		BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(defaultGueltigkeit);
+		BetreuungsangebotTypCalcRule betreuungsangebotTypCalcRule = new BetreuungsangebotTypCalcRule(defaultGueltigkeit, locale);
 		rules.add(betreuungsangebotTypCalcRule);
 
 		// Wohnsitz (Zuzug und Wegzug)
-		WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(defaultGueltigkeit);
+		WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(defaultGueltigkeit, locale);
 		rules.add(wohnsitzCalcRule);
 
 		// Einreichungsfrist
-		EinreichungsfristCalcRule einreichungsfristRule = new EinreichungsfristCalcRule(defaultGueltigkeit);
+		EinreichungsfristCalcRule einreichungsfristRule = new EinreichungsfristCalcRule(defaultGueltigkeit, locale);
 		rules.add(einreichungsfristRule);
 
 		// Abwesenheit
-		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit);
+		AbwesenheitCalcRule abwesenheitCalcRule = new AbwesenheitCalcRule(defaultGueltigkeit, locale);
 		rules.add(abwesenheitCalcRule);
 
 		// - Schulstufe des Kindes: Je nach Gemeindeeinstellung wird bis zu einer gewissen STufe ein Gutschein ausgestellt
 		Einstellung einstellungBgAusstellenBisStufe = einstellungMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
-		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe);
+		SchulstufeCalcRule schulstufeCalcRule = new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe, locale);
 		rules.add(schulstufeCalcRule);
 
 		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
-		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit);
+		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit, locale);
 		rules.add(kesbPlatzierungCalcRule);
 
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
-		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit);
+		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit, locale);
 		rules.add(restanspruchLimitCalcRule);
 	}
 }

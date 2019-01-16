@@ -91,7 +91,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	@Override
 	@Nonnull
 	protected CustomGenerator getCustomGenerator() {
-		final List<String> dokumente = KibonPrintUtil.getBenoetigteDokumenteAsList(benoetigteUnterlagen, gesuch);
+		final List<String> dokumente = KibonPrintUtil.getBenoetigteDokumenteAsList(benoetigteUnterlagen, gesuch, sprache);
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			addBarcode(document);
@@ -164,7 +164,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 		getGesuch().extractAllBetreuungen().forEach(betreuung -> {
 			table.addCell(new Phrase(betreuung.getKind().getKindJA().getFullName(), DEFAULT_FONT));
-			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(), DEFAULT_FONT));
+			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(sprache), DEFAULT_FONT));
 			table.addCell(new Phrase(betreuung.getBGNummer(), DEFAULT_FONT));
 		});
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);

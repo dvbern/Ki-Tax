@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -35,8 +36,8 @@ import ch.dvbern.ebegu.types.DateRange;
 @SuppressWarnings("MethodParameterNamingConvention")
 public class KindTarifAbschnittRule extends AbstractAbschnittRule {
 
-	public KindTarifAbschnittRule(DateRange validityPeriod) {
-		super(RuleKey.KIND_TARIF, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public KindTarifAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.KIND_TARIF, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	private VerfuegungZeitabschnitt createZeitabschnitt(DateRange gueltigkeit, boolean baby, boolean eingeschult) {

@@ -239,8 +239,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	/**
 	 * Wenn die Seite schon besucht ist dann soll der Status auf ok/mutiert oder notOK (bei wechsel ekv von nein auf ja) gesetzt werden
 	 */
-	private void updateAllStatusForEinkommensverschlechterungInfo(List<WizardStep> wizardSteps, EinkommensverschlechterungInfoContainer oldEntity,
-		EinkommensverschlechterungInfoContainer newEntity) {
+	private void updateAllStatusForEinkommensverschlechterungInfo(
+		List<WizardStep> wizardSteps,
+		EinkommensverschlechterungInfoContainer oldEntity,
+		EinkommensverschlechterungInfoContainer newEntity
+	) {
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()
 				&& WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()) {
@@ -280,8 +283,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()
 				&& WizardStepName.DOKUMENTE == wizardStep.getWizardStepName()) {
 
+				// The language to use is not important since the results are only used to calculate the state and
+				// won't be displayed
 				final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil
-					.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(wizardStep.getGesuch()),
+					.mergeNeededAndPersisted(
+						dokumentenverzeichnisEvaluator.calculate(wizardStep.getGesuch(), Constants.DEFAULT_LOCALE),
 						dokumentGrundService.findAllDokumentGrundByGesuch(wizardStep.getGesuch()));
 
 				boolean allNeededDokumenteUploaded = true;

@@ -16,7 +16,9 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -138,13 +140,13 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 			+ gueltigkeit.getGueltigBis().getYear();
 	}
 
-	public String getGesuchsperiodeDisplayName() {
+	public String getGesuchsperiodeDisplayName(@Nonnull Locale locale) {
 		DateRange gueltigkeit = this.getGueltigkeit();
 
 		return Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigAb()) + " - "
 			+ Constants.DATE_FORMATTER.format(gueltigkeit.getGueltigBis())
-			+ " " + ServerMessageUtil.getMessage("Gesuchsperiode_KONFIGURATION")
-			+ " (" + ServerMessageUtil.translateEnumValue(status) + ")";
+			+ ' ' + ServerMessageUtil.getMessage("Gesuchsperiode_KONFIGURATION", locale)
+			+ " (" + ServerMessageUtil.translateEnumValue(status, locale) + ')';
 	}
 
 	public boolean hasTagesschulenAnmeldung() {

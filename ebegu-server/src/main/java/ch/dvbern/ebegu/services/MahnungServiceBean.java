@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -52,6 +53,7 @@ import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.KibonPrintUtil;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.DokumenteUtil;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -96,6 +98,9 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 
 	@Inject
 	private GeneratedDokumentService generatedDokumentService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Override
 	@Nonnull
@@ -178,16 +183,26 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	@Override
 	@Nonnull
 	@PermitAll
-	public String getInitialeBemerkungen(@Nonnull Gesuch gesuch) {
+	public String getInitialeBemerkungen(
+		@Nonnull Gesuch gesuch
+	) {
 		authorizer.checkReadAuthorization(gesuch);
+		final Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
+
 		List<DokumentGrund> dokumentGrundsMerged = new ArrayList<>(DokumenteUtil
-			.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(gesuch),
-				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch)));
+			.mergeNeededAndPersisted(
+				dokumentenverzeichnisEvaluator.calculate(
+					gesuch,
+					locale
+				),
+				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch)
+			)
+		);
 		Collections.sort(dokumentGrundsMerged);
 
 		StringBuilder bemerkungenBuilder = new StringBuilder();
 		for (DokumentGrund dokumentGrund : dokumentGrundsMerged) {
-			String dokumentData = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch);
+			String dokumentData = KibonPrintUtil.getDokumentAsTextIfNeeded(dokumentGrund, gesuch, locale);
 			if (StringUtils.isNotEmpty(dokumentData)) {
 				bemerkungenBuilder.append(dokumentData);
 				bemerkungenBuilder.append('\n');

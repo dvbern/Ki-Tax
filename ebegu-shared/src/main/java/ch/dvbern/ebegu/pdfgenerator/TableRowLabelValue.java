@@ -17,6 +17,10 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 public class TableRowLabelValue {
@@ -45,7 +49,7 @@ public class TableRowLabelValue {
 		this.value = value;
 	}
 
-	public String getLabel() {
-		return ServerMessageUtil.getMessage(msgKey);
+	public String getTranslatedLabel(@Nonnull Locale locale) {
+		return ServerMessageUtil.getMessage(msgKey, locale);
 	}
 }

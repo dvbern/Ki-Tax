@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.MandantService;
@@ -155,10 +156,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		Benutzer storedUser;
 		try {
 			storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
-		} catch (Exception ex) {
-			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION);
+		} catch (Exception ignore) {
+			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION, LocaleThreadLocal.get());
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
-
 		}
 
 		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(storedUser), null);
@@ -186,14 +186,22 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 		//if user not exists return error msg to connector
 		if(existingBenutzer == null){
-			return convertBenutzerResponseWrapperToJax(externalBenutzer, ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND));
+			return convertBenutzerResponseWrapperToJax(
+				externalBenutzer,
+				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get())
+			);
 		}
 
 		String persistedEmail = existingBenutzer.getEmail();
 		String externalEmail = externalBenutzer.getEmail();
 
 		if (!persistedEmail.equals(externalEmail)) {
-			String msg = ServerMessageUtil.translateEnumValue(ERROR_EMAIL_MISMATCH, persistedEmail, externalEmail);
+			String msg = ServerMessageUtil.translateEnumValue(
+				ERROR_EMAIL_MISMATCH,
+				LocaleThreadLocal.get(),
+				persistedEmail,
+				externalEmail
+			);
 
 			//return the message to connector and stop process
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);

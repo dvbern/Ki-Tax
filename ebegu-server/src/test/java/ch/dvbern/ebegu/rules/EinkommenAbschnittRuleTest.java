@@ -36,8 +36,10 @@ public class EinkommenAbschnittRuleTest {
 	private static final BigDecimal EINKOMMEN_EKV_ANGENOMMEN = new BigDecimal("79990");
 
 	private static final BigDecimal MAX_EINKOMMEN = new BigDecimal("159000");
-	private final EinkommenAbschnittRule einkommenAbschnittRule = new EinkommenAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
-	private final EinkommenCalcRule einkommenCalcRule = new EinkommenCalcRule(Constants.DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN);
+	private final EinkommenAbschnittRule einkommenAbschnittRule =
+		new EinkommenAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+	private final EinkommenCalcRule einkommenCalcRule =
+		new EinkommenCalcRule(Constants.DEFAULT_GUELTIGKEIT, MAX_EINKOMMEN, Constants.DEFAULT_LOCALE);
 
 	@Test
 	public void testKeineEinkommensverschlechterung() throws Exception {

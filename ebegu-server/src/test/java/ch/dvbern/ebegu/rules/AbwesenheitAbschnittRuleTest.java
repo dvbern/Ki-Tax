@@ -38,7 +38,8 @@ public class AbwesenheitAbschnittRuleTest {
 
 	private final AbwesenheitAbschnittRule abwesenheitRule = new AbwesenheitAbschnittRule(
 		Constants.DEFAULT_GUELTIGKEIT,
-		TestDataUtil.ABWESENHEIT_DAYS_LIMIT);
+		TestDataUtil.ABWESENHEIT_DAYS_LIMIT,
+		Constants.DEFAULT_LOCALE);
 
 	@Test
 	public void testAbschnitteWithoutAbwesenheit() {
