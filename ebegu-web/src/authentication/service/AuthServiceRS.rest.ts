@@ -169,12 +169,12 @@ export default class AuthServiceRS {
 
     private setPrincipalInRavenUserContext(): void {
         Raven.setUserContext({
-            id: this.principal.username,
-            email: this.principal.email,
-            role: this.principal.getCurrentRole(),
-            amt: this.principal.amt,
-            status: this.principal.status,
-            mandant: this.principal.mandant ? this.principal.mandant.name : null,
+                id: this.principal.username,
+                email: this.principal.email,
+                role: this.principal.getCurrentRole(),
+                amt: this.principal.amt,
+                status: this.principal.status,
+                mandant: this.principal.mandant ? this.principal.mandant.name : null,
             traegerschaft: this.principal.currentBerechtigung.traegerschaft
                 ? this.principal.currentBerechtigung.traegerschaft.name
                 : null,

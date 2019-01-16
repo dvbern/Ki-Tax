@@ -254,7 +254,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		loginAsSachbearbeiterJA();
 
 		List<Mitteilung> mitteilungenForCurrentRolle = mitteilungService
-			.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false, Constants.DEFAULT_LOCALE)
+			.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false)
 			.getRight();
 
 		Assert.assertNotNull(mitteilungenForCurrentRolle);
@@ -488,7 +488,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	private Mitteilung readFirstAndOnlyMitteilung() {
 		List<Mitteilung> mitteilungenForCurrentRolle = mitteilungService
-			.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false, Constants.DEFAULT_LOCALE).getRight();
+			.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false).getRight();
 		Assert.assertNotNull(mitteilungenForCurrentRolle);
 		Assert.assertEquals(1, mitteilungenForCurrentRolle.size());
 		Mitteilung mitteilung = mitteilungenForCurrentRolle.iterator().next();

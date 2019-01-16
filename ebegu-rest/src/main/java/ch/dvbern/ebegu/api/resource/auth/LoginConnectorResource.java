@@ -156,10 +156,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		Benutzer storedUser;
 		try {
 			storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
-		} catch (Exception ex) {
+		} catch (Exception ignore) {
 			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION, LocaleThreadLocal.get());
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
-
 		}
 
 		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(storedUser), null);
