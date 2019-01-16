@@ -58,7 +58,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.MitteilungService;
@@ -473,7 +472,7 @@ public class MitteilungResource {
 
 		return MonitoringUtil.monitor(GesuchResource.class, "searchMitteilungen", () -> {
 			Pair<Long, List<Mitteilung>> searchResultPair = mitteilungService
-				.searchMitteilungen(tableFilterDTO, Boolean.valueOf(includeClosed), LocaleThreadLocal.get());
+				.searchMitteilungen(tableFilterDTO, Boolean.valueOf(includeClosed));
 			List<Mitteilung> foundMitteilungen = searchResultPair.getRight();
 
 			List<JaxMitteilung> convertedMitteilungen = foundMitteilungen.stream().map(mitteilung ->

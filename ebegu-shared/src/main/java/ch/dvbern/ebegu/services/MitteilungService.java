@@ -203,7 +203,6 @@ public interface MitteilungService {
 	@Nonnull
 	Pair<Long, List<Mitteilung>> searchMitteilungen(
 		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
-		@Nonnull Boolean includeClosed,
-		@Nonnull Locale locale
+		@Nonnull Boolean includeClosed
 	);
 }
