@@ -84,7 +84,7 @@ public class MailTemplateConfiguration {
 	) {
 
 		return processTemplateBetreuung(
-			"InfoBetreuungAbgelehnt",
+			MailTemplate.InfoBetreuungAbgelehnt,
 			betreuung,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -99,7 +99,7 @@ public class MailTemplateConfiguration {
 	) {
 
 		return processTemplateGesuch(
-			"InfoBetreuungenBestaetigt",
+			MailTemplate.InfoBetreuungenBestaetigt,
 			gesuch,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -114,7 +114,7 @@ public class MailTemplateConfiguration {
 	) {
 
 		return processTemplateBetreuung(
-			"InfoSchulamtAnmeldungUebernommen",
+			MailTemplate.InfoSchulamtAnmeldungUebernommen,
 			betreuung,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -128,7 +128,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache) {
 
 		return processTemplateBetreuung(
-			"InfoSchulamtAnmeldungAbgelehnt",
+			MailTemplate.InfoSchulamtAnmeldungAbgelehnt,
 			betreuung,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -199,7 +199,7 @@ public class MailTemplateConfiguration {
 	) {
 
 		return processTemplateGesuch(
-			"InfoVerfuegtGesuch",
+			MailTemplate.InfoVerfuegtGesuch,
 			gesuch,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -213,7 +213,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache) {
 
 		return processTemplateGesuch(
-			"InfoVerfuegtMutation",
+			MailTemplate.InfoVerfuegtMutation,
 			gesuch,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -227,7 +227,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 		return processTemplateGesuch(
-			"InfoMahnung",
+			MailTemplate.InfoMahnung,
 			gesuch,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -245,7 +245,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
 
 		return processTemplateGesuch(
-			"WarnungGesuchNichtFreigegeben",
+			MailTemplate.WarnungGesuchNichtFreigegeben,
 			gesuch,
 			gesuchsteller,
 			paramMap,
@@ -266,7 +266,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(DATUM_LOESCHUNG, Constants.DATE_FORMATTER.format(datumLoeschung));
 
 		return processTemplateGesuch(
-			"WarnungFreigabequittungFehlt",
+			MailTemplate.WarnungFreigabequittungFehlt,
 			gesuch,
 			gesuchsteller,
 			paramMap,
@@ -280,7 +280,7 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache) {
 
 		return processTemplateGesuch(
-			"InfoGesuchGeloescht",
+			MailTemplate.InfoGesuchGeloescht,
 			gesuch,
 			gesuchsteller,
 			paramsWithEmpfaenger(empfaengerMail),
@@ -302,7 +302,7 @@ public class MailTemplateConfiguration {
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put(GESUCH, gesuch);
 
-		return doProcessTemplate(appendLanguageToTemplateName("InfoFreischaltungGesuchsperiode", sprache), paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoFreischaltungGesuchsperiode, sprache), paramMap);
 	}
 
 	@Nonnull
@@ -330,7 +330,7 @@ public class MailTemplateConfiguration {
 		);
 		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", locale));
 
-		return doProcessTemplate(appendLanguageToTemplateName("BenutzerEinladung", locale), paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.BenutzerEinladung, locale), paramMap);
 	}
 
 	@Nonnull
@@ -358,7 +358,7 @@ public class MailTemplateConfiguration {
 	}
 
 	private String processTemplateGesuch(
-		@Nonnull String nameOfTemplate,
+		@Nonnull MailTemplate nameOfTemplate,
 		@Nonnull Gesuch gesuch,
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull Map<Object, Object> paramMap,
@@ -372,7 +372,7 @@ public class MailTemplateConfiguration {
 	}
 
 	private String processTemplateBetreuung(
-		@Nonnull String nameOfTemplate,
+		@Nonnull MailTemplate nameOfTemplate,
 		@Nonnull Betreuung betreuung,
 		@Nonnull Gesuchsteller gesuchsteller,
 		@Nonnull Map<Object, Object> paramMap,
@@ -396,7 +396,7 @@ public class MailTemplateConfiguration {
 	) {
 
 		return processTemplateBetreuungStatus(
-			"InfoBetreuungGeloescht",
+			MailTemplate.InfoBetreuungGeloescht,
 			betreuung,
 			fall,
 			kind,
@@ -407,7 +407,7 @@ public class MailTemplateConfiguration {
 	}
 
 	private String processTemplateBetreuungStatus(
-		String nameOfTemplate,
+		MailTemplate nameOfTemplate,
 		Betreuung betreuung,
 		Fall fall,
 		Kind kind,
@@ -437,7 +437,7 @@ public class MailTemplateConfiguration {
 	) {
 
 		return processTemplateBetreuungStatus(
-			"InfoBetreuungVerfuegt",
+			MailTemplate.InfoBetreuungVerfuegt,
 			betreuung,
 			fall,
 			kind,
@@ -455,19 +455,18 @@ public class MailTemplateConfiguration {
 
 		paramMap.put(MITTEILUNG, mitteilung);
 
-		return doProcessTemplate(appendLanguageToTemplateName("InfoMitteilungErhalten", sprache), paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoMitteilungErhalten, sprache), paramMap);
 	}
 
 	/**
 	 * Appends the language and the file extension to the given name. Result will look like "name_de.ftl"
-	 * WARNING! The name must be passed without an extension
 	 */
-	private String appendLanguageToTemplateName(@Nonnull final String name, @Nonnull Sprache sprache) {
-		return appendLanguageToTemplateName(name, sprache.getLocale());
+	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Sprache sprache) {
+		return appendLanguageToTemplateName(mailTemplate, sprache.getLocale());
 	}
 
-	private String appendLanguageToTemplateName(@Nonnull final String name, @Nonnull Locale locale) {
-		return name + '_' + locale.getLanguage().toLowerCase(locale) + ".ftl";
+	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Locale locale) {
+		return mailTemplate.name() + '_' + locale.getLanguage().toLowerCase(locale) + ".ftl";
 	}
 
 	private String doProcessTemplate(@Nonnull final String name, final Map<Object, Object> rootMap) {
