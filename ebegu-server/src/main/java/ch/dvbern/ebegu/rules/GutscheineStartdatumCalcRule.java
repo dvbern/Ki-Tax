@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -26,21 +28,22 @@ import ch.dvbern.ebegu.types.DateRange;
 
 public class GutscheineStartdatumCalcRule extends AbstractCalcRule {
 
-	public GutscheineStartdatumCalcRule(
-		@Nonnull DateRange validityPeriod) {
-		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public GutscheineStartdatumCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.BEGU_STARTDATUM, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 	}
 
 	@Override
 	protected void executeRule(
 		@Nonnull Betreuung betreuung,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
 
 		if (!verfuegungZeitabschnitt.isAbschnittLiegtNachBEGUStartdatum()) {
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 			verfuegungZeitabschnitt.addBemerkung(
 				RuleKey.BEGU_STARTDATUM,
 				MsgKey.BETREUUNG_VOR_BEGU_START,
+				getLocale(),
 				betreuung.extractGesuch().getDossier().getGemeinde().getName());
 		}
 	}

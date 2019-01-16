@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -42,8 +44,12 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 	@Nonnull
 	private final EinschulungTyp einschulungsTypAnspruchsgrenze;
 
-	public SchulstufeCalcRule(@Nonnull DateRange validityPeriod, @Nonnull EinschulungTyp einschulungsTypAnspruchsgrenze) {
-		super(RuleKey.SCHULSTUFE, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public SchulstufeCalcRule(
+		@Nonnull DateRange validityPeriod,
+		@Nonnull EinschulungTyp einschulungsTypAnspruchsgrenze,
+		@Nonnull Locale locale
+	) {
+		super(RuleKey.SCHULSTUFE, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 		this.einschulungsTypAnspruchsgrenze = einschulungsTypAnspruchsgrenze;
 	}
 
@@ -62,7 +68,7 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 						int anspruchVorRegel = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 						verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 						verfuegungZeitabschnitt.setAnspruchspensumRest(anspruchVorRegel);
-						verfuegungZeitabschnitt.addBemerkung(RuleKey.SCHULSTUFE, getMsgKey());
+						verfuegungZeitabschnitt.addBemerkung(RuleKey.SCHULSTUFE, getMsgKey(), getLocale());
 					}
 				}
 			}

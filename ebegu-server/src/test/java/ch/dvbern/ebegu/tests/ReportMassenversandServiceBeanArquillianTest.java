@@ -59,7 +59,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			false,
 			false,
 			false,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertEquals(5, massenversandDataRows.size());
@@ -80,7 +81,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			false,
 			false,
 			false,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertEquals(1, massenversandDataRows.size());
@@ -101,7 +103,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			true,
 			false,
 			false,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertEquals(2, massenversandDataRows.size());
@@ -129,7 +132,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			true,
 			false,
 			false,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertTrue(massenversandDataRows.isEmpty());
@@ -149,7 +153,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			false,
 			true,
 			false,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertEquals(1, massenversandDataRows.size());
@@ -178,7 +183,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			false,
 			true,
 			false,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertTrue(massenversandDataRows.isEmpty());
@@ -198,7 +204,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			true,
 			true,
 			false,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertEquals(8, massenversandDataRows.size());
@@ -219,7 +226,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			true,
 			true,
 			true,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertEquals(7, massenversandDataRows.size());
@@ -239,7 +247,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			true,
 			true,
 			false,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertEquals(1, massenversandDataRows.size());
@@ -260,7 +269,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			true,
 			true,
 			true,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertTrue(massenversandDataRows.isEmpty());
@@ -281,7 +291,8 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 			true,
 			true,
 			true,
-			null
+			null,
+			Constants.DEFAULT_LOCALE
 		);
 
 		Assert.assertEquals(1, massenversandDataRows.size());

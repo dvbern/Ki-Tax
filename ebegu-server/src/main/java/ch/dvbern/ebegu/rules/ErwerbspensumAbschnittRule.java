@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -40,8 +41,8 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
-	public ErwerbspensumAbschnittRule(DateRange validityPeriod) {
-		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public ErwerbspensumAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -63,8 +64,10 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		BigDecimal pauschalabzugProPersonFamiliengroesse3,
 		BigDecimal pauschalabzugProPersonFamiliengroesse4,
 		BigDecimal pauschalabzugProPersonFamiliengroesse5,
-		BigDecimal pauschalabzugProPersonFamiliengroesse6) {
-		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, validityPeriod);
+		BigDecimal pauschalabzugProPersonFamiliengroesse6,
+		@Nonnull Locale locale
+	) {
+		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 		this.pauschalabzugProPersonFamiliengroesse3 = pauschalabzugProPersonFamiliengroesse3;
 		this.pauschalabzugProPersonFamiliengroesse4 = pauschalabzugProPersonFamiliengroesse4;
 		this.pauschalabzugProPersonFamiliengroesse5 = pauschalabzugProPersonFamiliengroesse5;

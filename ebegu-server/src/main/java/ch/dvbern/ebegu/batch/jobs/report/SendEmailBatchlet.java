@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.batch.jobs.report;
 
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -69,6 +70,7 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	@Override
 	public String process() {
 		final String receiverEmail = getParameters().getProperty(WorkJobConstants.EMAIL_OF_USER);
+		final String receiverLanguage = getParameters().getProperty(WorkJobConstants.LANGUAGE);
 		LOG.debug("Sending mail with file for user to {}", receiverEmail);
 		Objects.requireNonNull(receiverEmail, " Email muss gesetzt sein damit der Fertige Report an den Empfaenger geschickt werden kann");
 		final Workjob workJob = readWorkjobFromDatabase();
@@ -80,9 +82,18 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 		try {
 
 			if (configuration.isSendReportAsAttachement()) {
-				mailService.sendDocumentCreatedEmail(receiverEmail, downloadFile, createStatistikPageLink());
+				mailService.sendDocumentCreatedEmail(
+					receiverEmail,
+					downloadFile,
+					createStatistikPageLink(),
+					Locale.forLanguageTag(receiverLanguage));
 			} else {
-				mailService.sendDocumentCreatedEmail(receiverEmail, null, createStatistikPageLink());
+				mailService.sendDocumentCreatedEmail(
+					receiverEmail,
+					null,
+					createStatistikPageLink(),
+					Locale.forLanguageTag(receiverLanguage)
+				);
 			}
 			return BatchStatus.COMPLETED.toString();
 		} catch (MailException ignore) {

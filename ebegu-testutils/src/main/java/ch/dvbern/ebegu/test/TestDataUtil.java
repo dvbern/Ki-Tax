@@ -1163,7 +1163,8 @@ public final class TestDataUtil {
 		@Nonnull Persistence persistence,
 		@Nullable Gemeinde gemeinde,
 		@Nullable AntragStatus status,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode
+	) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		if (gesuchsperiode != null) {
 			gesuch.setGesuchsperiode(gesuchsperiode);
@@ -1595,7 +1596,8 @@ public final class TestDataUtil {
 	public static Betreuung persistBetreuung(
 		BetreuungService betreuungService,
 		Persistence persistence,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode
+	) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		for (BetreuungspensumContainer container : betreuung.getBetreuungspensumContainers()) {
 			persistence.persist(container);

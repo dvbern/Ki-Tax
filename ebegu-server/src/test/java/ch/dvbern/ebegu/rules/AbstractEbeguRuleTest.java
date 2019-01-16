@@ -44,7 +44,7 @@ import static org.junit.Assert.assertNotNull;
 public class AbstractEbeguRuleTest {
 
 	private final DateRange defaultGueltigkeit = new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME);
-	private final ErwerbspensumAbschnittRule erwerbspensumRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit);
+	private final ErwerbspensumAbschnittRule erwerbspensumRule = new ErwerbspensumAbschnittRule(defaultGueltigkeit, Constants.DEFAULT_LOCALE);
 
 	private static final LocalDate DATUM_1 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.APRIL, 1);
 	private static final LocalDate DATUM_2 = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.SEPTEMBER, 1);

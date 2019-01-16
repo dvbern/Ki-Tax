@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -38,8 +39,11 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
-	public ZivilstandsaenderungAbschnittRule(DateRange validityPeriod) {
-		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public ZivilstandsaenderungAbschnittRule(
+		DateRange validityPeriod,
+		@Nonnull Locale locale
+	) {
+		super(RuleKey.ZIVILSTANDSAENDERUNG, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Override
@@ -75,7 +79,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 			VerfuegungZeitabschnitt abschnittNachMutation = new VerfuegungZeitabschnitt(new DateRange(stichtag, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
 			abschnittNachMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituation.hasSecondGesuchsteller());
-			abschnittNachMutation.addBemerkung(ruleKey, msgKey);
+			abschnittNachMutation.addBemerkung(ruleKey, msgKey, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittNachMutation);
 		} else {
 			VerfuegungZeitabschnitt abschnittOhneMutation = new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());

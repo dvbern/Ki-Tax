@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -36,18 +38,21 @@ import static ch.dvbern.ebegu.enums.MsgKey.EINREICHUNGSFRIST_MSG;
  */
 public class EinreichungsfristCalcRule extends AbstractCalcRule {
 
-	public EinreichungsfristCalcRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.EINREICHUNGSFRIST, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public EinreichungsfristCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.EINREICHUNGSFRIST, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(
+		@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
 		if (betreuung.getBetreuungsangebotTyp() != null && betreuung.getBetreuungsangebotTyp().isJugendamt()) {
 			if (verfuegungZeitabschnitt.isZuSpaetEingereicht()) {
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG);
+					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
 				}
 			}
 		}

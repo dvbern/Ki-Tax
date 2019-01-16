@@ -38,7 +38,7 @@ public class GutscheineStartdatumAbschnittRuleTest {
 	private Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 
 	private final GutscheineStartdatumAbschnittRule rule =
-		new GutscheineStartdatumAbschnittRule(Constants.DEFAULT_GUELTIGKEIT);
+		new GutscheineStartdatumAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 
 	@Before
 	public void setUp() {

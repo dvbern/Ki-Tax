@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -43,8 +44,12 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 
 	private final Integer abwesenheitDaysLimit;
 
-	public AbwesenheitAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Integer abwesenheitDaysLimit) {
-		super(RuleKey.ABWESENHEIT, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public AbwesenheitAbschnittRule(
+		@Nonnull DateRange validityPeriod,
+		@Nonnull Integer abwesenheitDaysLimit,
+		@Nonnull Locale locale
+	) {
+		super(RuleKey.ABWESENHEIT, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 		this.abwesenheitDaysLimit = abwesenheitDaysLimit;
 	}
 

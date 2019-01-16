@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -67,7 +68,7 @@ public class BetreuungsgutscheinEvaluator {
 	 * Berechnet nur die Familiengroesse und Abzuege fuer den Print der Familiensituation, es muss min eine Betreuung existieren
 	 */
 	@Nonnull
-	public Verfuegung evaluateFamiliensituation(Gesuch gesuch) {
+	public Verfuegung evaluateFamiliensituation(Gesuch gesuch, Locale locale) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
@@ -93,7 +94,7 @@ public class BetreuungsgutscheinEvaluator {
 			zeitabschnitte = MonatsRule.execute(zeitabschnitte);
 
 			// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-			zeitabschnitte = MutationsMerger.execute(firstBetreuungOfGesuch, zeitabschnitte);
+			zeitabschnitte = MutationsMerger.execute(firstBetreuungOfGesuch, zeitabschnitte, locale);
 
 			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
 			zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
@@ -108,7 +109,7 @@ public class BetreuungsgutscheinEvaluator {
 	}
 
 	@SuppressWarnings({ "OverlyComplexMethod", "OverlyNestedMethod", "PMD.NcssMethodCount" })
-	public void evaluate(Gesuch gesuch, BGRechnerParameterDTO bgRechnerParameterDTO) {
+	public void evaluate(Gesuch gesuch, BGRechnerParameterDTO bgRechnerParameterDTO, @Nonnull Locale locale) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
@@ -181,7 +182,7 @@ public class BetreuungsgutscheinEvaluator {
 					zeitabschnitte = MonatsRule.execute(zeitabschnitte);
 
 					// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
-					zeitabschnitte = MutationsMerger.execute(betreuung, zeitabschnitte);
+					zeitabschnitte = MutationsMerger.execute(betreuung, zeitabschnitte, locale);
 
 					// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
 					zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);

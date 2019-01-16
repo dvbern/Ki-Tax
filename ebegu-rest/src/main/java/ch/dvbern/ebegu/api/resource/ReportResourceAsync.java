@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.WorkJobType;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.WorkjobService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -119,7 +120,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG,
 			datumVon,
 			null,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -162,7 +165,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM,
 			dateFrom,
 			dateTo,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -201,7 +206,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_KANTON,
 			dateAuswertungVon,
 			dateAuswertungBis,
-			null);
+			null,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -242,7 +249,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_MITARBEITERINNEN,
 			dateAuswertungVon,
 			dateAuswertungBis,
-			null);
+			null,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -263,7 +272,14 @@ public class ReportResourceAsync {
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
-		workJob = workjobService.createNewReporting(workJob, ReportVorlage.VORLAGE_REPORT_BENUTZER, null, null, null);
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_BENUTZER,
+			null,
+			null,
+			null,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -294,7 +310,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE,
 			null,
 			null,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -338,7 +356,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG,
 			dateFrom,
 			dateTo,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -376,7 +396,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_KINDER,
 			dateFrom,
 			dateTo,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -401,8 +423,14 @@ public class ReportResourceAsync {
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
-		workJob =
-			workjobService.createNewReporting(workJob, ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER, date, null, null);
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER,
+			date,
+			null,
+			null,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -462,7 +490,9 @@ public class ReportResourceAsync {
 			inklMischGesucheBoolean,
 			inklTsGesucheBoolean,
 			Boolean.valueOf(ohneErneuerungsgesuch),
-			text);
+			text,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}

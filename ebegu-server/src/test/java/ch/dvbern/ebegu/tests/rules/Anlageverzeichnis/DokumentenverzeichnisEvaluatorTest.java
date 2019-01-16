@@ -183,7 +183,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	private DokumentGrund getDokumentGrund() {
-		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch);
+		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(1, calculate.size());
 		final DokumentGrund dokumentGrund = calculate.iterator().next();
 		Assert.assertEquals(DokumentGrundTyp.KINDER, dokumentGrund.getDokumentGrundTyp());
@@ -193,13 +193,13 @@ public class DokumentenverzeichnisEvaluatorTest {
 	}
 
 	private DokumentGrund assertDokumentGrund(Erwerbspensum erwerbspensum) {
-		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch);
+		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(1, calculate.size());
 		final DokumentGrund dokumentGrund = calculate.iterator().next();
 		Assert.assertEquals(DokumentGrundTyp.ERWERBSPENSUM, dokumentGrund.getDokumentGrundTyp());
 		Assert.assertEquals(DokumentGrundPersonType.GESUCHSTELLER, dokumentGrund.getPersonType());
 		Assert.assertEquals(Integer.valueOf(1), dokumentGrund.getPersonNumber());
-		Assert.assertEquals(erwerbspensum.getName(), dokumentGrund.getTag());
+		Assert.assertEquals(erwerbspensum.getName(Constants.DEFAULT_LOCALE), dokumentGrund.getTag());
 		return dokumentGrund;
 	}
 
@@ -232,7 +232,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		erwerbspensum.getGueltigkeit().setGueltigAb(LocalDate.of(2017, 9, 1));
 		Assert.assertTrue(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_ERWERBSPENSUM, erwerbspensum, LocalDate.of(2016, 1, 1)));
 
-		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch);
+		final Set<DokumentGrund> calculate = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		final DokumentGrund dokumentGrund = calculate.iterator().next();
 
 		Assert.assertEquals(DokumentTyp.NACHWEIS_ERWERBSPENSUM, dokumentGrund.getDokumentTyp());
@@ -257,10 +257,11 @@ public class DokumentenverzeichnisEvaluatorTest {
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_RAV, erwerbspensum));
 		Assert.assertFalse(erwerbspensumDokumente.isDokumentNeeded(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensum));
 
-		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch);
+		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(1, dokumentList.size());
 		DokumentGrund nachweisSelbstaendigkeit = extractDocumentFromList(dokumentList, DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
-		assertDokumentGrundCorrect(nachweisSelbstaendigkeit, erwerbspensum.getName(), DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
+		assertDokumentGrundCorrect(nachweisSelbstaendigkeit, erwerbspensum.getName(Constants.DEFAULT_LOCALE),
+			DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
 	}
 
 	@Test
@@ -357,7 +358,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
 
 		createFamilienSituation(testgesuch, true, false);
-		final Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch);
+		final Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(1, dokumentGrunds.size());
 
 		final DokumentGrund dokumentGrund = dokumentGrunds.iterator().next();
@@ -372,7 +373,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
 
 		createFamilienSituation(testgesuch, false, false);
-		final Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch);
+		final Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(2, dokumentGrunds.size());
 
 		final Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
@@ -398,7 +399,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		createFinanzielleSituationGS(2, testgesuch, "Alex", false);
 
 		createFamilienSituation(testgesuch, false, false);
-		final Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch);
+		final Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(4, dokumentGrunds.size());
 
 		final Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
@@ -452,7 +453,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(100000));
 
 		//Test wenn Steuererklärung ausgefüllt ist
-		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch);
+		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(9, dokumentGrunds.size());
 
 		Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
@@ -479,7 +480,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 
 		//Test wenn Steuererklärung nicht ausgefüllt ist
 		finanzielleSituationJA.setSteuererklaerungAusgefuellt(false);
-		dokumentGrunds = evaluator.calculate(testgesuch);
+		dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(10, dokumentGrunds.size());
 
 		dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
@@ -531,7 +532,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 		ekvJABasisJahrPlus2.setNettolohnJan(BigDecimal.valueOf(200000));
 
 		//Test wenn Steuererklärung ausgefüllt ist
-		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch);
+		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assert.assertEquals(8, dokumentGrunds.size());
 
 		Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
@@ -567,7 +568,7 @@ public class DokumentenverzeichnisEvaluatorTest {
 	public void familiensituationDokumenteTest() {
 		createFamilienSituation(testgesuch, true, true);
 
-		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch);
+		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 
 		assertType(dokumentGrunds, DokumentTyp.UNTERSTUETZUNGSBESTAETIGUNG, null, null,
 			null, null, DokumentGrundTyp.FINANZIELLESITUATION);

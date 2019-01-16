@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.mocks;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,7 +43,8 @@ public class ReportMassenversandServiceMock extends ReportMassenversandServiceBe
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable String text
+		@Nullable String text,
+		@Nonnull Locale locale
 	) {
 
 		final List<MassenversandDataRow> reportDataMassenversand = new ArrayList<>();

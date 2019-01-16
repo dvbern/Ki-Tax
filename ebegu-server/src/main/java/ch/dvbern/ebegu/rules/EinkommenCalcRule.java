@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -38,14 +39,21 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 	private final BigDecimal maximalesEinkommen;
 
-	public EinkommenCalcRule(DateRange validityPeriod, BigDecimal maximalesEinkommen) {
-		super(RuleKey.EINKOMMEN, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public EinkommenCalcRule(
+		DateRange validityPeriod,
+		BigDecimal maximalesEinkommen,
+		@Nonnull Locale locale
+	) {
+		super(RuleKey.EINKOMMEN, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 		this.maximalesEinkommen = maximalesEinkommen;
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(
+		@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
 
 		// Es gibt zwei Faelle, in denen die Finanzielle Situation nicht bekannt ist:
 		// - Sozialhilfeempfaenger: Wir rechnen mit Einkommen = 0
@@ -57,14 +65,14 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG);
+				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
 				return;
 			}
 			if (Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht())) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG);
+				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale());
 				return;
 			}
 		}
@@ -73,10 +81,22 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		FinanzDatenDTO finanzDatenDTO;
 		if (verfuegungZeitabschnitt.isHasSecondGesuchstellerForFinanzielleSituation()) {
 			finanzDatenDTO = betreuung.extractGesuch().getFinanzDatenDTO_zuZweit();
-			setMassgebendesEinkommen(verfuegungZeitabschnitt.isEkv1ZuZweit(), verfuegungZeitabschnitt.isEkv2ZuZweit(), finanzDatenDTO, verfuegungZeitabschnitt, betreuung);
+			setMassgebendesEinkommen(
+				verfuegungZeitabschnitt.isEkv1ZuZweit(),
+				verfuegungZeitabschnitt.isEkv2ZuZweit(),
+				finanzDatenDTO,
+				verfuegungZeitabschnitt,
+				betreuung,
+				getLocale());
 		} else {
 			finanzDatenDTO = betreuung.extractGesuch().getFinanzDatenDTO_alleine();
-			setMassgebendesEinkommen(verfuegungZeitabschnitt.isEkv1Alleine(), verfuegungZeitabschnitt.isEkv2Alleine(), finanzDatenDTO, verfuegungZeitabschnitt, betreuung);
+			setMassgebendesEinkommen(
+				verfuegungZeitabschnitt.isEkv1Alleine(),
+				verfuegungZeitabschnitt.isEkv2Alleine(),
+				finanzDatenDTO,
+				verfuegungZeitabschnitt,
+				betreuung,
+				getLocale());
 		}
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
@@ -86,7 +106,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					reduceAnspruchInNormalCase(betreuung, verfuegungZeitabschnitt);
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG);
+					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale());
 				}
 			}
 		}
@@ -103,7 +123,14 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	private void setMassgebendesEinkommen(boolean isEkv1, boolean isEkv2, FinanzDatenDTO finanzDatenDTO, VerfuegungZeitabschnitt verfuegungZeitabschnitt, Betreuung betreuung) {
+	private void setMassgebendesEinkommen(
+		boolean isEkv1,
+		boolean isEkv2,
+		FinanzDatenDTO finanzDatenDTO,
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		Betreuung betreuung,
+		@Nonnull Locale locale
+	) {
 		int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();
 		int basisjahrPlus1 = betreuung.extractGesuchsperiode().getBasisJahrPlus1();
 		int basisjahrPlus2 = betreuung.extractGesuchsperiode().getBasisJahrPlus2();
@@ -112,17 +139,28 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahrPlus1);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG, String.valueOf(basisjahrPlus1));
+				verfuegungZeitabschnitt.addBemerkung(
+					RuleKey.EINKOMMEN,
+					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
+					locale,
+					String.valueOf(basisjahrPlus1)
+				);
 			} else {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
 				// Je nachdem, ob es (manuell) annulliert war oder die 20% nicht erreicht hat, kommt eine andere Meldung
 				if (finanzDatenDTO.isEkv1Annulliert()) {
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey
-						.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG, String.valueOf(basisjahrPlus1));
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus1));
 				} else {
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey
-						.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, String.valueOf(basisjahrPlus1));
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus1));
 				}
 			}
 
@@ -131,7 +169,10 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				// EKV 1 accepted -> basisjahr + 2
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP2VorAbzFamGr());
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahrPlus2);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
+				verfuegungZeitabschnitt.addBemerkung(
+					RuleKey.EINKOMMEN,
+					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
+					locale,
 					String.valueOf(basisjahrPlus2));
 			} else {
 				if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
@@ -142,11 +183,17 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
 				}
 				if (finanzDatenDTO.isEkv2Annulliert()) {
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey
-						.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG, String.valueOf(basisjahrPlus2));
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus2));
 				} else {
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey
-						.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, String.valueOf(basisjahrPlus2));
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus2));
 				}
 			}
 		} else {
@@ -154,7 +201,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
 		}
 
-		handleSpecialCases(finanzDatenDTO, verfuegungZeitabschnitt, basisjahrPlus1);
+		handleSpecialCases(finanzDatenDTO, verfuegungZeitabschnitt, basisjahrPlus1, locale);
 
 	}
 
@@ -167,17 +214,33 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	 * In diesen Fällen müssen die Kommentare für EKV1 noch angepasst werden
 	 */
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
-	private void handleSpecialCases(FinanzDatenDTO finanzDatenDTO, VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		int basisjahrPlus1) {
+	private void handleSpecialCases(
+		FinanzDatenDTO finanzDatenDTO,
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		int basisjahrPlus1,
+		@Nonnull Locale locale
+	) {
 		if (finanzDatenDTO.getDatumVonBasisjahrPlus1() != null && finanzDatenDTO.getDatumVonBasisjahrPlus2() != null) {
 			if (finanzDatenDTO.getDatumVonBasisjahrPlus1().isEqual(finanzDatenDTO.getDatumVonBasisjahrPlus2())) {
 				if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 					// Die EKV1 kommt zum Zuge, wird aber durch die EKV2 "überschrieben"
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG, String.valueOf(basisjahrPlus1));
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus1));
 				} else if (finanzDatenDTO.isEkv1Annulliert()) {
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG, String.valueOf(basisjahrPlus1));
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ANNULLIERT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus1));
 				} else {
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG, String.valueOf(basisjahrPlus1));
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
+						locale,
+						String.valueOf(basisjahrPlus1));
 				}
 			}
 		}

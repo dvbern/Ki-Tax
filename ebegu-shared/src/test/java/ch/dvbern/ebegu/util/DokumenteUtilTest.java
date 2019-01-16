@@ -65,19 +65,34 @@ public class DokumenteUtilTest {
 	@Test
 	public void testGetFileNameForGeneratedDokumentTypBEGLEITSCHREIBEN() {
 		Assert.assertEquals("Deckblatt_16.000001.pdf", DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.BEGLEITSCHREIBEN, "16.000001"));
+			.getFileNameForGeneratedDokumentTyp(
+				GeneratedDokumentTyp.BEGLEITSCHREIBEN,
+				"16.000001",
+				Constants.DEFAULT_LOCALE
+			)
+		);
 	}
 
 	@Test
 	public void testGetFileNameForGeneratedDokumentTypFINANZIELLE_SITUATION() {
 		Assert.assertEquals("Finanzielle_Situation_16.000001.pdf", DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.FINANZIELLE_SITUATION, "16.000001"));
+			.getFileNameForGeneratedDokumentTyp(
+				GeneratedDokumentTyp.FINANZIELLE_SITUATION,
+				"16.000001",
+				Constants.DEFAULT_LOCALE
+			)
+		);
 	}
 
 	@Test
 	public void testGetFileNameForGeneratedDokumentTypVERFUEGUNG_KITA() {
 		Assert.assertEquals("Verfuegung_16.000001.1.1.pdf", DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(GeneratedDokumentTyp.VERFUEGUNG, "16.000001.1.1"));
+			.getFileNameForGeneratedDokumentTyp(
+				GeneratedDokumentTyp.VERFUEGUNG,
+				"16.000001.1.1",
+				Constants.DEFAULT_LOCALE
+			)
+		);
 	}
 
 	@Test
@@ -124,7 +139,7 @@ public class DokumenteUtilTest {
 		Set<Dokument> dokumente = new HashSet<>();
 
 		for (DokumentGrund dokumentGrund : dokumentGrunds) {
-			if (dokumentGrund.getDokumentTyp() == dokumentTyp && dokumentGrund.getDokumente() != null) {
+			if (dokumentGrund.getDokumentTyp() == dokumentTyp) {
 				dokumente.addAll(dokumentGrund.getDokumente());
 			}
 		}
@@ -156,7 +171,12 @@ public class DokumenteUtilTest {
 		dokumentGrundsNeeded.add(dokumentGrund);
 	}
 
-	private void createGrundPersisted(Collection<DokumentGrund> dokumentGrunds, DokumentGrundTyp dokumentGrundTyp, DokumentTyp dokumentTyp, int number) {
+	private void createGrundPersisted(
+		Collection<DokumentGrund> dokumentGrunds,
+		DokumentGrundTyp dokumentGrundTyp,
+		DokumentTyp dokumentTyp,
+		int number
+	) {
 
 		DokumentGrund dokumentGrund = new DokumentGrund();
 		dokumentGrund.setDokumentGrundTyp(dokumentGrundTyp);
