@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -33,8 +34,8 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class AusserordentlicherAnspruchAbschnittRule extends AbstractAbschnittRule {
 
-	public AusserordentlicherAnspruchAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public AusserordentlicherAnspruchAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Nonnull

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -42,7 +43,11 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 public class FamiliensituationDokumente extends AbstractDokumente<Familiensituation, Familiensituation> {
 
 	@Override
-	public void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
+	public void getAllDokumente(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
+		@Nonnull Locale locale
+	) {
 		Familiensituation famsitErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 		if (famsitErstgesuch != null) {
 			add(getDokument(DokumentTyp.NACHWEIS_TRENNUNG, famsitErstgesuch, gesuch.extractFamiliensituation(),

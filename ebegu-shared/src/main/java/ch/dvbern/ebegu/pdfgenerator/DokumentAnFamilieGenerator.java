@@ -86,7 +86,7 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 			Chunk chunk = new Chunk((i + 1) + " ", PdfUtilities.createFontWithSize(6));
 			chunk.setTextRise(2);
 			fz.addText(chunk);
-			fz.addText(new Phrase(content.get(i) + "\n", fontWithSize));
+			fz.addText(new Phrase(content.get(i) + '\n', fontWithSize));
 		}
 		fz.go();
 	}

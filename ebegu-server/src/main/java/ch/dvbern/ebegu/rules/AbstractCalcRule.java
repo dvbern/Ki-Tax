@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -32,8 +33,13 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public abstract class AbstractCalcRule extends AbstractEbeguRule {
 
-	public AbstractCalcRule(@Nonnull RuleKey ruleKey, @Nonnull RuleType ruleType, @Nonnull DateRange validityPeriod) {
-		super(ruleKey, ruleType, validityPeriod);
+	public AbstractCalcRule(
+		@Nonnull RuleKey ruleKey,
+		@Nonnull RuleType ruleType,
+		@Nonnull DateRange validityPeriod,
+		@Nonnull Locale locale
+	) {
+		super(ruleKey, ruleType, validityPeriod, locale);
 	}
 
 	@Nonnull

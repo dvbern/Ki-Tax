@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -28,6 +29,10 @@ import ch.dvbern.ebegu.rules.Rule;
  */
 public interface RulesService {
 
-	List<Rule> getRulesForGesuchsperiode(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode);
+	List<Rule> getRulesForGesuchsperiode(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Locale locale
+	);
 
 }

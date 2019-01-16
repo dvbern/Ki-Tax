@@ -36,7 +36,7 @@ public class GutscheineStartdatumCalcRuleTest {
 	@Test
 	public void executRuleAbschnittVorStartdatum() {
 		DateRange period = Constants.DEFAULT_GUELTIGKEIT;
-		GutscheineStartdatumCalcRule rule = new GutscheineStartdatumCalcRule(period);
+		GutscheineStartdatumCalcRule rule = new GutscheineStartdatumCalcRule(period, Constants.DEFAULT_LOCALE);
 		VerfuegungZeitabschnitt zeitabschnitt = initZeitabschnitt(false);
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getKind().setGesuch(TestDataUtil.createDefaultGesuch());
@@ -53,7 +53,7 @@ public class GutscheineStartdatumCalcRuleTest {
 	@Test
 	public void executRuleAbschnittNachStartdatum() {
 		DateRange period = Constants.DEFAULT_GUELTIGKEIT;
-		GutscheineStartdatumCalcRule rule = new GutscheineStartdatumCalcRule(period);
+		GutscheineStartdatumCalcRule rule = new GutscheineStartdatumCalcRule(period, Constants.DEFAULT_LOCALE);
 		VerfuegungZeitabschnitt zeitabschnitt = initZeitabschnitt(true);
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 

@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -94,6 +95,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -858,7 +860,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	public Pair<Long, List<Mitteilung>> searchMitteilungen(
 		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
-		@Nonnull Boolean includeClosed) {
+		@Nonnull Boolean includeClosed
+	) {
 		Pair<Long, List<Mitteilung>> result;
 		Long countResult = searchMitteilungen(mitteilungTableFilterDto, includeClosed, SearchMode.COUNT).getLeft();
 		if (countResult.equals(0L)) {    // no result found
@@ -875,7 +878,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private Pair<Long, List<Mitteilung>> searchMitteilungen(
 		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
 		@Nonnull Boolean includeClosed,
-		@Nonnull SearchMode mode) {
+		@Nonnull SearchMode mode
+	) {
 
 		Benutzer user = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
@@ -1040,7 +1044,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				joinBesitzer,
 				joinSender,
 				joinEmpfaenger,
-				joinEmpfaengerBerechtigungen);
+				joinEmpfaengerBerechtigungen
+			);
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
@@ -1093,7 +1098,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Join<Fall, Benutzer> joinBesitzer,
 		Join<Mitteilung, Benutzer> joinSender,
 		Join<Mitteilung, Benutzer> joinEmpfaenger,
-		SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen) {
+		SetJoin<Benutzer, Berechtigung> joinEmpfaengerBerechtigungen
+	) {
 		Expression<?> expression = null;
 		if (tableFilterDTO.getSort() != null && tableFilterDTO.getSort().getPredicate() != null) {
 			switch (tableFilterDTO.getSort().getPredicate()) {
@@ -1123,9 +1129,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				Predicate predicateJA =
 					joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getJugendamtRoles());
 				Expression<Boolean> isActiveJA = cb.and(predicateActive, predicateJA);
+				Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
 				String sJugendamt =
-					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.JUGENDAMT.name());
-				String sSchulamt = ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.SCHULAMT.name());
+					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.JUGENDAMT.name(), browserSprache);
+				String sSchulamt =
+					ServerMessageUtil.getMessage(Amt.class.getSimpleName() + '_' + Amt.SCHULAMT.name(), browserSprache);
 				expression = cb.selectCase().when(isActiveJA, sJugendamt).otherwise(sSchulamt);
 				break;
 			case "mitteilungStatus":

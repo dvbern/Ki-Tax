@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -746,6 +747,18 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setEingeschult(this.eingeschult || other.eingeschult);
 		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
 		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
+	}
+
+	//TODO (hefr)
+	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, @Nonnull Locale locale) {
+		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, locale);
+		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
+
+	}
+
+	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, @Nonnull Locale locale, Object... args) {
+		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, locale, args);
+		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
 	}
 
 	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey) {

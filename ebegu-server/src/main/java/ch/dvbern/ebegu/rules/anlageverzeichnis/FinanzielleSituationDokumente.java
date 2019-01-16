@@ -16,12 +16,14 @@
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -69,11 +71,16 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
 
 	@Override
-	public void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
+	public void getAllDokumente(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
+		@Nonnull Locale locale
+	) {
 
-		final boolean gemeinsam = gesuch.extractFamiliensituation() != null &&
-			gesuch.extractFamiliensituation().getGemeinsameSteuererklaerung() != null &&
-			gesuch.extractFamiliensituation().getGemeinsameSteuererklaerung();
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		final boolean gemeinsam = familiensituation != null &&
+			familiensituation.getGemeinsameSteuererklaerung() != null &&
+			familiensituation.getGemeinsameSteuererklaerung();
 
 		final int basisJahr = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear();
 
