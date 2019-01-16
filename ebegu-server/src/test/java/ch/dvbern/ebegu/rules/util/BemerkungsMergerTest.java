@@ -77,10 +77,10 @@ public class BemerkungsMergerTest {
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(5, strings.length);
-		Assert.assertTrue(strings[0].startsWith("[01.01.2016 - 31.05.2016] ABWESENHEIT:"));
-		Assert.assertTrue(strings[1].startsWith("[01.01.2016 - 29.02.2016] EINREICHUNGSFRIST:"));
-		Assert.assertTrue(strings[2].startsWith("[01.04.2016 - 31.05.2016] EINREICHUNGSFRIST:"));
-		Assert.assertTrue(strings[3].startsWith("[01.01.2016 - 31.03.2016] BETREUUNGSANGEBOT_TYP:"));
+		Assert.assertTrue(strings[0].startsWith("[01.01.2016 - 29.02.2016] EINREICHUNGSFRIST:"));
+		Assert.assertTrue(strings[1].startsWith("[01.01.2016 - 31.03.2016] BETREUUNGSANGEBOT_TYP:"));
+		Assert.assertTrue(strings[2].startsWith("[01.01.2016 - 31.05.2016] ABWESENHEIT:"));
+		Assert.assertTrue(strings[3].startsWith("[01.04.2016 - 31.05.2016] EINREICHUNGSFRIST:"));
 		Assert.assertTrue(strings[4].startsWith("[01.05.2016 - 31.05.2016] BETREUUNGSANGEBOT_TYP:"));
 	}
 
@@ -100,5 +100,29 @@ public class BemerkungsMergerTest {
 		} catch (IllegalArgumentException ignore) {
 			//noop
 		}
+	}
+
+	@Test
+	public void bemerkungenVonUeberschriebenenRegelnNichtAnzeigen() {
+		// Wenn alle drei Regeln: Es wird nur der AusserordentlicheAnspruch berücksichtigt
+		VerfuegungZeitabschnitt jan = new VerfuegungZeitabschnitt(JAN);
+		jan.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
+		jan.addBemerkung(RuleKey.FACHSTELLE, MsgKey.FACHSTELLE_MSG);
+		jan.addBemerkung(RuleKey.AUSSERORDENTLICHER_ANSPRUCH, MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG);
+		// Wenn Fachstelle und Erwerbspensum -> nur Fachstelle anzeigen
+		VerfuegungZeitabschnitt feb = new VerfuegungZeitabschnitt(FEB);
+		feb.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
+		feb.addBemerkung(RuleKey.FACHSTELLE, MsgKey.FACHSTELLE_MSG);
+
+		List<VerfuegungZeitabschnitt> verfZeitabschn = new ArrayList<>();
+		Collections.addAll(verfZeitabschn, jan, feb);
+
+		//test output
+		String resultingBem = BemerkungsMerger.evaluateBemerkungenForVerfuegung(verfZeitabschn);
+		Assert.assertNotNull(resultingBem);
+		String[] strings = NEW_LINE.split(resultingBem);
+		Assert.assertEquals(2, strings.length);
+		Assert.assertTrue(strings[0].startsWith("[01.01.2016 - 31.01.2016] AUSSERORDENTLICHER_ANSPRUCH:"));
+		Assert.assertTrue(strings[1].startsWith("[01.02.2016 - 29.02.2016] FACHSTELLE:"));
 	}
 }

@@ -6,7 +6,7 @@
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>0</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -18,7 +18,7 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>0</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -30,7 +30,7 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>0</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -42,7 +42,7 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>0</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -54,7 +54,7 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>0</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -66,8 +66,8 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>20</anspruchberechtigtesPensum>
-        <bemerkungen>RESTANSPRUCH: Anspruch nach unten korrigiert von 100% auf 20% da das Kind weitere Betreuungsangebote beansprucht
-ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
+RESTANSPRUCH: Anspruch nach unten korrigiert von 100% auf 20% da das Kind weitere Betreuungsangebote beansprucht</bemerkungen>
         <betreuungspensum>0</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -78,8 +78,8 @@ ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>20</anspruchberechtigtesPensum>
-        <bemerkungen>RESTANSPRUCH: Anspruch nach unten korrigiert von 100% auf 20% da das Kind weitere Betreuungsangebote beansprucht
-ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)</bemerkungen>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
+RESTANSPRUCH: Anspruch nach unten korrigiert von 100% auf 20% da das Kind weitere Betreuungsangebote beansprucht</bemerkungen>
         <betreuungspensum>0</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
@@ -89,19 +89,20 @@ ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
-        <anspruchberechtigtesPensum>100</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)</bemerkungen>
+        <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
+WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>40.00</betreuungspensum>
-        <elternbeitrag>1274.35</elternbeitrag>
+        <elternbeitrag>0.00</elternbeitrag>
         <famGroesse>2.0</famGroesse>
         <gueltigAb>01.02.2018</gueltigAb>
         <gueltigBis>28.02.2018</gueltigBis>
-        <vollkosten>2000.00</vollkosten>
+        <vollkosten>0.00</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>40.00</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -113,7 +114,7 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>40.00</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -125,7 +126,7 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>40.00</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -137,7 +138,7 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>40.00</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>
@@ -149,7 +150,7 @@ WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemei
     <verfuegungszeitabschnitte>
         <abzugFamGroesse>0</abzugFamGroesse>
         <anspruchberechtigtesPensum>0</anspruchberechtigtesPensum>
-        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aus Erwerbstätigkeit oder aus den gesetzlich der Erwerbstätigkeit gleichgestellten Gründen (Art. 9 und 10 FEBR)
+        <bemerkungen>ERWERBSPENSUM: Für diesen Zeitraum ergibt sich ein anspruchsberechtigtes Pensum aufgrund des Beschäftigungspensums (Angestellt - Art. 9 und 10 FEBR)
 WOHNSITZ: Für diesen Zeitraum liegt kein zivilrechtlicher Wohnsitz in der Gemeinde Bern vor (Art. 9 Abs. 1 Bst. b FEBR). Daher besteht kein Anspruch auf einen Betreuungsgutschein.</bemerkungen>
         <betreuungspensum>40.00</betreuungspensum>
         <elternbeitrag>0.00</elternbeitrag>

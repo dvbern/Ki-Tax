@@ -57,8 +57,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 			familiensituation.hasSecondGesuchsteller() != familiensituationErstgesuch.hasSecondGesuchsteller()) {
 
 			// Die Zivilstandsaenderung gilt ab anfang nächstem Monat, die Bemerkung muss aber "per Heirat/Trennung" erfolgen
-			final LocalDate ereignistag = familiensituation.getAenderungPer();
-			final LocalDate stichtag = getStichtagForEreignis(ereignistag);
+			final LocalDate stichtag = getStichtagForEreignis(familiensituation.getAenderungPer());
 			// Bemerkung erstellen
 			RuleKey ruleKey = RuleKey.ZIVILSTANDSAENDERUNG;
 			MsgKey msgKey = null;
@@ -70,14 +69,9 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				msgKey = MsgKey.FAMILIENSITUATION_TRENNUNG_MSG;
 			}
 
-			VerfuegungZeitabschnitt abschnittVorMutation = new VerfuegungZeitabschnitt(new DateRange(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), ereignistag.minusDays(1)));
+			VerfuegungZeitabschnitt abschnittVorMutation = new VerfuegungZeitabschnitt(new DateRange(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), stichtag.minusDays(1)));
 			abschnittVorMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch.hasSecondGesuchsteller());
 			zivilstandsaenderungAbschnitte.add(abschnittVorMutation);
-
-			VerfuegungZeitabschnitt abschnittVorStichtag = new VerfuegungZeitabschnitt(new DateRange(ereignistag, stichtag.minusDays(1)));
-			abschnittVorStichtag.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch.hasSecondGesuchsteller());
-			abschnittVorStichtag.addBemerkung(ruleKey, msgKey);
-			zivilstandsaenderungAbschnitte.add(abschnittVorStichtag);
 
 			VerfuegungZeitabschnitt abschnittNachMutation = new VerfuegungZeitabschnitt(new DateRange(stichtag, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
 			abschnittNachMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituation.hasSecondGesuchsteller());

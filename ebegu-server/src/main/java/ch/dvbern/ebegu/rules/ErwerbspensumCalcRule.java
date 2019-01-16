@@ -26,8 +26,11 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import static java.util.Objects.requireNonNull;
 
@@ -100,7 +103,9 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH);
+			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
+			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(verfuegungZeitabschnitt);
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, vorhandeneBeschaeftigungen);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
@@ -142,5 +147,17 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 				return familiensituationErstGesuch.hasSecondGesuchsteller();
 		}
 		return familiensituation.hasSecondGesuchsteller();
+	}
+
+	private String getBeschaeftigungsTypen(@Nonnull VerfuegungZeitabschnitt abschnitt) {
+		StringBuilder sb = new StringBuilder();
+		for (Taetigkeit taetigkeit : abschnitt.getTaetigkeiten()) {
+			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit));
+			sb.append(", ");
+		}
+		// Das letzte Komma entfernen
+		String taetigkeitenAsString = sb.toString();
+		taetigkeitenAsString = StringUtils.removeEnd(taetigkeitenAsString, ", ");
+		return taetigkeitenAsString;
 	}
 }
