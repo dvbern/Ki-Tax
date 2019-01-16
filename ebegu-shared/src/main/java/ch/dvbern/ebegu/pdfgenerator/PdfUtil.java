@@ -34,13 +34,7 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.*;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -329,15 +323,27 @@ public final class PdfUtil {
 
 		PdfStamper stamper = new PdfStamper(reader, destOutputStream);
 		stamper.setRotateContents(true); // Im Querformat (Massg. Eink) soll der Text auch gedreht werden!
+
+		// text watermark
+		Phrase phrase = new Phrase(ServerMessageUtil.getMessage(WATERMARK), FontFactory.getFont(PdfUtilities.FONT_FACE_PROXIMA_NOVA_BOLD, FONT_SIZE_WATERMARK));
+
 		// Auf jeder Seite setzen
 		for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+			// get page size and position
 			Rectangle pagesize = reader.getPageSizeWithRotation(i);
+			float x = (pagesize.getLeft() + pagesize.getRight()) / 2;
+			float y = (pagesize.getTop() + pagesize.getBottom()) / 2;
 			PdfContentByte over = stamper.getOverContent(i);
 			over.saveState();
-			over.setGrayFill(0.5f);
-			over.setFontAndSize(PdfUtilities.DEFAULT_FONT_BOLD.getBaseFont(), FONT_SIZE_WATERMARK);
-			over.showTextAligned(1, ServerMessageUtil.getMessage(WATERMARK),
-				pagesize.getWidth() / 2.0F, pagesize.getHeight() / 2.0F, 45.0F);
+
+			// set transparency
+			PdfGState state = new PdfGState();
+			state.setFillOpacity(0.4f);
+			over.setGState(state);
+
+			// add text
+			ColumnText.showTextAligned(over, Element.ALIGN_CENTER, phrase, x, y, 45.0f);
+
 			over.restoreState();
 		}
 		stamper.close();
