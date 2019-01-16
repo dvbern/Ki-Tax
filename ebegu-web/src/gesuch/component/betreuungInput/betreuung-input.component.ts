@@ -44,11 +44,11 @@ export class BetreuungInputComponent implements IController {
     private readonly MULTIPLIER_KITA = 0.2;
     // 100% = 220 hours => 1% = 2.2 hours
     private readonly MULTIPLIER_TAGESFAMILIEN = 2.2;
+    private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
 
     public pensumContainer: TSBetreuungspensumContainer;
     public isDisabled: boolean = false;
     public id: string;
-    public betreuungsangebotTyp: TSBetreuungsangebotTyp;
     public step: number = 0.25;
 
     public label: string = '';
@@ -63,6 +63,17 @@ export class BetreuungInputComponent implements IController {
     public $onInit(): void {
         this.LOG.debug(this.betreuungsangebotTyp);
 
+        this.setAngebotDependingVariables();
+        this.parseToPensumUnit();
+        this.toggle();
+    }
+
+    public get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
+        return this._betreuungsangebotTyp;
+    }
+
+    public set betreuungsangebotTyp(value: TSBetreuungsangebotTyp) {
+        this._betreuungsangebotTyp = value;
         this.setAngebotDependingVariables();
         this.parseToPensumUnit();
         this.toggle();

@@ -1759,7 +1759,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setGesuchBetreuungenStatus(GesuchBetreuungenStatus.ABGEWIESEN);
 				break;
 			}
-			if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus()) {
+			if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus() ||
+				Betreuungsstatus.UNBEKANNTE_INSTITUTION == betreuung.getBetreuungsstatus()) {
 				gesuch.setGesuchBetreuungenStatus(GesuchBetreuungenStatus.WARTEN);
 			}
 		}

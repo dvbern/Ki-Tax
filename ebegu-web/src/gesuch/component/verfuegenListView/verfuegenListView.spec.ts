@@ -77,7 +77,8 @@ describe('verfuegenListViewTest', () => {
             $injector.get('AuthServiceRS'),
             $rootScope,
             $injector.get('GesuchRS'),
-            $injector.get('$timeout'));
+            $injector.get('$timeout'),
+            $injector.get('$translate'));
         $rootScope.$apply();
     }));
 

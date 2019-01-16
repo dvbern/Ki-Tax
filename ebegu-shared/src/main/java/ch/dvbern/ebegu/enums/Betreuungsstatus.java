@@ -31,6 +31,7 @@ public enum Betreuungsstatus {
 	STORNIERT,
 	BESTAETIGT,
 	VERFUEGT,
+	UNBEKANNTE_INSTITUTION,
 	GESCHLOSSEN_OHNE_VERFUEGUNG,
 
 	// Ablauf beim Schulamt
@@ -43,7 +44,7 @@ public enum Betreuungsstatus {
 	private static final Set<Betreuungsstatus> all = EnumSet.allOf(Betreuungsstatus.class);
 	private static final Set<Betreuungsstatus> none = EnumSet.noneOf(Betreuungsstatus.class);
 
-	public static final Set<Betreuungsstatus> hasVerfuegung = EnumSet.of(VERFUEGT, NICHT_EINGETRETEN);
+	public static final Set<Betreuungsstatus> hasVerfuegung = EnumSet.of(VERFUEGT, NICHT_EINGETRETEN, UNBEKANNTE_INSTITUTION);
 	public static final Set<Betreuungsstatus> forPendenzInstitution = EnumSet.of(WARTEN, SCHULAMT_ANMELDUNG_AUSGELOEST);
 	public static final Set<Betreuungsstatus> forPendenzSchulamt = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST, SCHULAMT_FALSCHE_INSTITUTION);
 	public static final Set<Betreuungsstatus> anmeldungsstatusAusgeloest = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST,
