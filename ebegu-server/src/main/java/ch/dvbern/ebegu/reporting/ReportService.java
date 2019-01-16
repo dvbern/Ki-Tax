@@ -85,13 +85,26 @@ public interface ReportService {
 
 	// Gesuchsteller / Kinder / Betreuung
 	@Nonnull
-	UploadFileInfo generateExcelReportGesuchstellerKinderBetreuung(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis, @Nullable String gesuchPeriodeId) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
+	UploadFileInfo generateExcelReportGesuchstellerKinderBetreuung(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nullable String gesuchPeriodeId,
+		@Nonnull Locale locale
+	)
+		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportKinder(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis, @Nullable String gesuchPeriodeId) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
+	UploadFileInfo generateExcelReportKinder(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nullable String gesuchPeriodeId,
+		@Nonnull Locale locale
+	)
+		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
+	UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale)
+		throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	@Nonnull
 	UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale) throws ExcelMergeException;

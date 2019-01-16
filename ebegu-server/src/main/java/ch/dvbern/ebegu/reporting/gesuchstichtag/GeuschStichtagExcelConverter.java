@@ -40,7 +40,7 @@ public class GeuschStichtagExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<GesuchStichtagDataRow> data, @Nonnull Locale lang) {
+	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<GesuchStichtagDataRow> data, @Nonnull Locale locale) {
 		checkNotNull(data);
 
 		ExcelMergerDTO sheet = new ExcelMergerDTO();

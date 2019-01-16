@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -291,7 +292,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchstellerKinderBetreuung(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2018, Month.DECEMBER, 31),
-			null);
+			null,
+			Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchstellerKinderBetreuung.xlsx");

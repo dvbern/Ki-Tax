@@ -142,15 +142,16 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService
+				.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_KINDER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchsteller(dateFrom);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_MASSENVERSAND: {

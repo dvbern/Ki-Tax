@@ -1157,7 +1157,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportGesuchstellerKinderBetreuung(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nullable String gesuchPeriodeId) throws ExcelMergeException {
+		@Nullable String gesuchPeriodeId,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		validateDateParams(datumVon, datumBis);
 
@@ -1182,14 +1184,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode);
 
 		final XSSFSheet xsslSheet =
-			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(
+			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
 				reportData,
 				sheet,
 				datumVon,
 				datumBis,
-				gesuchsperiode);
+				gesuchsperiode,
+				LocaleThreadLocal.get());
 
-		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData);
+		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
+
 		return saveExcelDokument(reportResource, rowFiller);
 	}
 
@@ -1289,6 +1293,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return row;
 	}
 
+	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
@@ -1300,7 +1305,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportKinder(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nullable String gesuchPeriodeId) throws ExcelMergeException {
+		@Nullable String gesuchPeriodeId,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		validateDateParams(datumVon, datumBis);
 
@@ -1324,14 +1331,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataKinder(datumVon, datumBis, gesuchsperiode);
 
 		final XSSFSheet xsslSheet =
-			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(
+			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
 				reportData,
 				sheet,
 				datumVon,
 				datumBis,
-				gesuchsperiode);
+				gesuchsperiode,
+				LocaleThreadLocal.get());
 
-		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData);
+		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
+
 		return saveExcelDokument(reportResource, rowFiller);
 	}
 
@@ -1437,7 +1446,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale) throws ExcelMergeException {
 		validateStichtagParam(stichtag);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER;
@@ -1451,9 +1460,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag);
 
 		final XSSFSheet xsslSheet =
-			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFields(reportData, sheet, stichtag);
+			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsStichtag(reportData, sheet, stichtag, locale);
 
-		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData);
+		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
 		return saveExcelDokument(reportResource, rowFiller);
 	}
 
@@ -1464,7 +1473,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private RowFiller fillAndMergeRows(
 		ReportVorlage reportResource,
 		XSSFSheet sheet,
-		List<GesuchstellerKinderBetreuungDataRow> reportData) {
+		List<GesuchstellerKinderBetreuungDataRow> reportData,
+		@Nonnull Locale locale
+	) {
 
 		RowFiller rowFiller = RowFiller.initRowFiller(
 			sheet,
@@ -1474,7 +1485,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		gesuchstellerKinderBetreuungExcelConverter.mergeRows(
 			rowFiller,
 			reportData,
-			LocaleThreadLocal.get()
+			locale
 		);
 		gesuchstellerKinderBetreuungExcelConverter.applyAutoSize(sheet);
 

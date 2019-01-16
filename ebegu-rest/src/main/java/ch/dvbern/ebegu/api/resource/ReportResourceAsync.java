@@ -71,7 +71,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
- * REST Resource fuer Reports
+ * REST Resource fuer asynchrone Reports
  */
 @Path("reporting/async")
 @Stateless
