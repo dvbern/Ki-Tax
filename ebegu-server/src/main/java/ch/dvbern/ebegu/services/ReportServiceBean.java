@@ -98,7 +98,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
@@ -253,8 +252,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportGesuchStichtag(@Nonnull LocalDate date, @Nullable String gesuchPeriodeID)
-		throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportGesuchStichtag(
+		@Nonnull LocalDate date,
+		@Nullable String gesuchPeriodeID,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		Objects.requireNonNull(date, "Das Argument 'date' darf nicht leer sein");
 
@@ -267,7 +269,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<GesuchStichtagDataRow> reportData = getReportDataGesuchStichtag(date, gesuchPeriodeID);
-		ExcelMergerDTO excelMergerDTO = geuschStichtagExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get());
+		ExcelMergerDTO excelMergerDTO = geuschStichtagExcelConverter.toExcelMergerDTO(reportData, locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		geuschStichtagExcelConverter.applyAutoSize(sheet);
@@ -326,7 +328,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
-		@Nullable String gesuchPeriodeID) throws ExcelMergeException {
+		@Nullable String gesuchPeriodeID,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		validateDateParams(dateVon, dateBis);
 		validateDateParams(dateVon, dateBis);
@@ -340,7 +344,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID);
-		ExcelMergerDTO excelMergerDTO = geuschZeitraumExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get());
+		ExcelMergerDTO excelMergerDTO = geuschZeitraumExcelConverter.toExcelMergerDTO(reportData, locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		geuschZeitraumExcelConverter.applyAutoSize(sheet);
@@ -361,7 +365,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ADMIN_TRAEGERSCHAFT,
 		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
-	public List<KantonDataRow> getReportDataKanton(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis) {
+	public List<KantonDataRow> getReportDataKanton(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nonnull Locale locale
+	) {
 		validateDateParams(datumVon, datumBis);
 
 		Collection<Gesuchsperiode> relevanteGesuchsperioden =
@@ -451,8 +459,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportKanton(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis)
-		throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportKanton(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
+
 		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_KANTON;
@@ -463,9 +475,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis);
+		List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis, locale);
 		ExcelMergerDTO excelMergerDTO =
-			kantonExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get(), datumVon, datumBis);
+			kantonExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		kantonExcelConverter.applyAutoSize(sheet);
@@ -647,8 +659,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportMitarbeiterinnen(@Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis)
-		throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportMitarbeiterinnen(
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
+
 		validateDateParams(datumVon, datumBis);
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_MITARBEITERINNEN;
@@ -661,7 +677,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<MitarbeiterinnenDataRow> reportData = getReportMitarbeiterinnen(datumVon, datumBis);
 		ExcelMergerDTO excelMergerDTO =
-			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get(), datumVon, datumBis);
+			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, locale, datumVon, datumBis);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		mitarbeiterinnenExcelConverter.applyAutoSize(sheet);
@@ -682,7 +698,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportZahlungAuftrag(@Nonnull String auftragId) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportZahlungAuftrag(
+		@Nonnull String auftragId,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		Zahlungsauftrag zahlungsauftrag = zahlungService.findZahlungsauftrag(auftragId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -695,7 +714,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			zahlungsauftrag.getFilename(),
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
-			zahlungsauftrag.getDatumFaellig());
+			zahlungsauftrag.getDatumFaellig(),
+			locale);
 	}
 
 	@Override
@@ -705,7 +725,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportZahlung(@Nonnull String zahlungId) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportZahlung(
+		@Nonnull String zahlungId,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		List<Zahlung> reportData = new ArrayList<>();
 
@@ -728,7 +751,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			fileName,
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
-			zahlungsauftrag.getDatumFaellig()
+			zahlungsauftrag.getDatumFaellig(),
+			locale
 		);
 	}
 
@@ -738,7 +762,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		String excelFileName,
 		String bezeichnung,
 		LocalDateTime datumGeneriert,
-		LocalDate datumFaellig) throws ExcelMergeException {
+		LocalDate datumFaellig,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_ZAHLUNG_AUFTRAG;
 
@@ -750,7 +776,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Collection<Institution> allowedInst = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 
-		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get(),
+		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(reportData, locale,
 			principalBean.discoverMostPrivilegedRole(), allowedInst, "Detailpositionen der Zahlung " + bezeichnung,
 			datumGeneriert, datumFaellig);
 
@@ -773,8 +799,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportZahlungPeriode(@Nonnull String gesuchsperiodeId)
-		throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportZahlungPeriode(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -801,7 +829,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ExcelMergerDTO excelMergerDTO = zahlungAuftragPeriodeExcelConverter.toExcelMergerDTO(
 			allZahlungen,
 			gesuchsperiode.getGesuchsperiodeString(),
-			LocaleThreadLocal.get());
+			locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		zahlungAuftragPeriodeExcelConverter.applyAutoSize(sheet);
@@ -819,11 +847,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private List<GesuchstellerKinderBetreuungDataRow> getReportDataGesuchstellerKinderBetreuung(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode,
+		@Nonnull Locale locale
+	) {
 
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode);
 		List<GesuchstellerKinderBetreuungDataRow> dataRows =
-			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList);
+			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList, locale);
 
 		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
 			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
@@ -835,10 +865,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private List<GesuchstellerKinderBetreuungDataRow> getReportDataKinder(
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode,
+		@Nonnull Locale locale
+	) {
 
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode);
-		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToKinderDataRow(zeitabschnittList);
+		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToKinderDataRow(zeitabschnittList, locale);
 
 		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
 			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
@@ -847,11 +879,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Nonnull
-	private List<GesuchstellerKinderBetreuungDataRow> getReportDataGesuchsteller(@Nonnull LocalDate stichtag) {
+	private List<GesuchstellerKinderBetreuungDataRow> getReportDataGesuchsteller(
+		@Nonnull LocalDate stichtag,
+		@Nonnull Locale locale
+	) {
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(stichtag);
 
 		List<GesuchstellerKinderBetreuungDataRow> dataRows =
-			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList);
+			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList, locale);
 
 		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
 			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
@@ -990,7 +1025,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private void addStammdaten(
 		GesuchstellerKinderBetreuungDataRow row,
 		VerfuegungZeitabschnitt zeitabschnitt,
-		Gesuch gesuch) {
+		Gesuch gesuch,
+		@Nonnull Locale locale
+	) {
 
 		row.setInstitution(zeitabschnitt.getVerfuegung()
 			.getBetreuung()
@@ -1001,7 +1038,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBetreuungsTyp(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungsangebotTyp());
 		row.setPeriode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		String messageKey = AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name();
-		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, LocaleThreadLocal.get()));
+		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, locale));
 		row.setEingangsdatum(gesuch.getEingangsdatum());
 		for (AntragStatusHistory antragStatusHistory : gesuch.getAntragStatusHistories()) {
 			if (AntragStatus.getAllVerfuegtStates().contains(antragStatusHistory.getStatus())) {
@@ -1128,7 +1165,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private void addBetreuungToGesuchstellerKinderBetreuungDataRow(
 		GesuchstellerKinderBetreuungDataRow row,
 		VerfuegungZeitabschnitt zeitabschnitt,
-		Betreuung betreuung) {
+		Betreuung betreuung,
+		@Nonnull Locale locale
+	) {
 
 		row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 		row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
@@ -1136,7 +1175,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			Betreuungsstatus.class.getSimpleName()
 				+ '_'
 				+ betreuung.getBetreuungsstatus().name(),
-			LocaleThreadLocal.get()
+			locale
 			)
 		);
 		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensum()));
@@ -1148,6 +1187,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setVerguenstigt(zeitabschnitt.getVerguenstigung());
 	}
 
+	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
@@ -1181,7 +1221,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		List<GesuchstellerKinderBetreuungDataRow> reportData =
-			getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode);
+			getReportDataGesuchstellerKinderBetreuung(datumVon, datumBis, gesuchsperiode, locale);
 
 		final XSSFSheet xsslSheet =
 			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
@@ -1190,7 +1230,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				datumVon,
 				datumBis,
 				gesuchsperiode,
-				LocaleThreadLocal.get());
+				locale);
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
 
@@ -1198,7 +1238,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToGesuchstellerKinderBetreuungDataRow(
-		List<VerfuegungZeitabschnitt> zeitabschnittList) {
+		List<VerfuegungZeitabschnitt> zeitabschnittList,
+		@Nonnull Locale locale
+	) {
 
 		List<GesuchstellerKinderBetreuungDataRow> dataRowList = new ArrayList<>();
 
@@ -1206,7 +1248,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
 			GesuchstellerKinderBetreuungDataRow row =
-				createRowForGesuchstellerKinderBetreuungReport(zeitabschnitt, neustesVerfuegtesGesuchCache);
+				createRowForGesuchstellerKinderBetreuungReport(zeitabschnitt, neustesVerfuegtesGesuchCache, locale);
 			dataRowList.add(row);
 		}
 
@@ -1216,7 +1258,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@SuppressWarnings({ "Duplicates", "PMD.NcssMethodCount" })
 	private GesuchstellerKinderBetreuungDataRow createRowForGesuchstellerKinderBetreuungReport(
 		VerfuegungZeitabschnitt zeitabschnitt,
-		Map<Long, Gesuch> neustesVerfuegtesGesuchCache) {
+		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
+		@Nonnull Locale locale
+	) {
 		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
 		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
@@ -1235,9 +1279,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		GesuchstellerKinderBetreuungDataRow row = new GesuchstellerKinderBetreuungDataRow();
 		// Betreuung
-		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung);
+		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);
 		// Stammdaten
-		addStammdaten(row, zeitabschnitt, gueltigeGesuch);
+		addStammdaten(row, zeitabschnitt, gueltigeGesuch, locale);
 
 		// Gesuchsteller 1: Prozent-Felder initialisieren, damit im Excel das Total sicher berechnet werden kann
 		row.setGs1EwpAngestellt(0);
@@ -1328,7 +1372,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 		}
 
-		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataKinder(datumVon, datumBis, gesuchsperiode);
+		List<GesuchstellerKinderBetreuungDataRow> reportData =
+			getReportDataKinder(datumVon, datumBis, gesuchsperiode, locale);
 
 		final XSSFSheet xsslSheet =
 			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsPeriode(
@@ -1337,7 +1382,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				datumVon,
 				datumBis,
 				gesuchsperiode,
-				LocaleThreadLocal.get());
+				locale);
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
 
@@ -1345,7 +1390,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToKinderDataRow(
-		List<VerfuegungZeitabschnitt> zeitabschnittList) {
+		List<VerfuegungZeitabschnitt> zeitabschnittList,
+		@Nonnull Locale locale
+	) {
 
 		List<GesuchstellerKinderBetreuungDataRow> dataRowList = new ArrayList<>();
 
@@ -1353,7 +1400,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
 			GesuchstellerKinderBetreuungDataRow row =
-				createRowForKinderReport(zeitabschnitt, neustesVerfuegtesGesuchCache);
+				createRowForKinderReport(zeitabschnitt, neustesVerfuegtesGesuchCache, locale);
 			dataRowList.add(row);
 		}
 
@@ -1363,7 +1410,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@SuppressWarnings("Duplicates")
 	private GesuchstellerKinderBetreuungDataRow createRowForKinderReport(
 		VerfuegungZeitabschnitt zeitabschnitt,
-		Map<Long, Gesuch> neustesVerfuegtesGesuchCache) {
+		Map<Long, Gesuch> neustesVerfuegtesGesuchCache,
+		@Nonnull Locale locale
+	) {
 		Gesuch gesuch = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch();
 		Gesuch gueltigeGesuch = null;
 		Betreuung gueltigeBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
@@ -1383,7 +1432,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		GesuchstellerKinderBetreuungDataRow row = new GesuchstellerKinderBetreuungDataRow();
-		addStammdaten(row, zeitabschnitt, gueltigeGesuch);
+		addStammdaten(row, zeitabschnitt, gueltigeGesuch, locale);
 
 		// Gesuchsteller 1
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
@@ -1403,7 +1452,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung);
 
 		// Betreuung
-		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung);
+		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);
 
 		return row;
 	}
@@ -1457,7 +1506,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportResource.getDataSheetName());
 
-		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag);
+		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag, locale);
 
 		final XSSFSheet xsslSheet =
 			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsStichtag(reportData, sheet, stichtag, locale);
@@ -1585,7 +1634,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<BenutzerDataRow> reportData = getReportDataBenutzer();
+		List<BenutzerDataRow> reportData = getReportDataBenutzer(locale);
 
 		ExcelMergerDTO excelMergerDTO = benutzerExcelConverter.toExcelMergerDTO(reportData, locale);
 
@@ -1606,7 +1655,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public List<BenutzerDataRow> getReportDataBenutzer() {
+	public List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale) {
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = builder.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
@@ -1643,26 +1692,33 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<Benutzer> benutzerList = persistence.getCriteriaResults(query);
 
 		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap = new HashMap<>();
-		return convertToBenutzerDataRow(benutzerList, betreuungsangebotMap);
+		return convertToBenutzerDataRow(benutzerList, betreuungsangebotMap, locale);
 	}
 
 	@Nonnull
-	private List<BenutzerDataRow> convertToBenutzerDataRow(@Nonnull List<Benutzer> benutzerList, Map<String, EnumSet<BetreuungsangebotTyp>>
-		betreuungsangebotMap) {
+	private List<BenutzerDataRow> convertToBenutzerDataRow(
+		@Nonnull List<Benutzer> benutzerList,
+		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap,
+		@Nonnull Locale locale
+	) {
 		return benutzerList.stream()
-			.map(benutzer -> benutzerToDataRow(benutzer, betreuungsangebotMap))
+			.map(benutzer -> benutzerToDataRow(benutzer, betreuungsangebotMap, locale))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
-	private BenutzerDataRow benutzerToDataRow(@Nonnull Benutzer benutzer, Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap) {
+	private BenutzerDataRow benutzerToDataRow(
+		@Nonnull Benutzer benutzer,
+		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap,
+		@Nonnull Locale locale
+	) {
 		BenutzerDataRow row = new BenutzerDataRow();
 		row.setUsername(benutzer.getUsername());
 
 		row.setNachname(benutzer.getNachname());
 		row.setVorname(benutzer.getVorname());
 		row.setEmail(benutzer.getEmail());
-		row.setRole(ServerMessageUtil.translateEnumValue(benutzer.getRole(), LocaleThreadLocal.get()));
+		row.setRole(ServerMessageUtil.translateEnumValue(benutzer.getRole(), locale));
 		LocalDate gueltigAb = benutzer.getCurrentBerechtigung().getGueltigkeit().getGueltigAb();
 		if (gueltigAb.isAfter(Constants.START_OF_TIME)) {
 			row.setRoleGueltigAb(gueltigAb);

@@ -113,19 +113,19 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		switch (workJobType) {
 
 		case VORLAGE_REPORT_GESUCH_STICHTAG: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_GESUCH_ZEITRAUM: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_KANTON: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKanton(dateFrom, dateTo);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKanton(dateFrom, dateTo, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_MITARBEITERINNEN: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_BENUTZER: {
@@ -134,11 +134,11 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
 			Objects.requireNonNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {

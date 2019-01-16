@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -84,7 +85,7 @@ public class ReportResource {
 		String ip = downloadResource.getIP(request);
 		String id = converter.toEntityId(jaxId);
 
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlungAuftrag(id);
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlungAuftrag(id, LocaleThreadLocal.get());
 
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
@@ -108,7 +109,7 @@ public class ReportResource {
 		String ip = downloadResource.getIP(request);
 		String id = converter.toEntityId(jaxId);
 
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlung(id);
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlung(id, LocaleThreadLocal.get());
 
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
