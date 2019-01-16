@@ -90,11 +90,28 @@ public final class MutationsMerger {
 			if (vorangehenderAbschnitt != null) {
 				handleVerminderungEinkommen(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum);
 				handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
+				handleAnpassungErweiterteBeduerfnisse(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 			}
 			monatsSchritte.add(zeitabschnitt);
 		}
 
 		return monatsSchritte;
+	}
+
+	private static void handleAnpassungErweiterteBeduerfnisse(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
+		@Nonnull LocalDate mutationsEingansdatum,
+		@Nonnull Locale locale
+	) {
+		// Es muss nur etwas gemacht werden, wenn im alten Abschnitt kein Zuschlag war, neu aber schon, UND
+		// zu spät eingereicht
+		if (zeitabschnitt.isBesondereBeduerfnisse() && !vorangehenderAbschnitt.isBesondereBeduerfnisse()) {
+			if (!zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
+				zeitabschnitt.setBesondereBeduerfnisse(false);
+				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+			}
+		}
 	}
 
 	private static void handleVerminderungEinkommen(
@@ -119,9 +136,9 @@ public final class MutationsMerger {
 	}
 
 	private static void handleAnpassungAnspruch(
-		VerfuegungZeitabschnitt zeitabschnitt,
-		VerfuegungZeitabschnitt vorangehenderAbschnitt,
-		LocalDate mutationsEingansdatum,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
+		@Nonnull LocalDate mutationsEingansdatum,
 		@Nonnull Locale locale
 	) {
 		final int anspruchberechtigtesPensum = zeitabschnitt.getAnspruchberechtigtesPensum();
@@ -145,7 +162,10 @@ public final class MutationsMerger {
 		}
 	}
 
-	private static boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {
+	private static boolean isMeldungRechzeitig(
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		@Nonnull LocalDate mutationsEingansdatum
+	) {
 		return verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
 	}
 
@@ -153,7 +173,10 @@ public final class MutationsMerger {
 	 * Hilfsmethode welche in der Vorgaengerferfuegung den gueltigen Zeitabschnitt fuer einen bestimmten Stichtag sucht
 	 */
 	@Nullable
-	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(@Nonnull LocalDate stichtag, @Nullable Verfuegung vorgaengerVerf) {
+	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(
+		@Nonnull LocalDate stichtag,
+		@Nullable Verfuegung vorgaengerVerf
+	) {
 		if (vorgaengerVerf == null) {
 			return null;
 		}
@@ -168,9 +191,8 @@ public final class MutationsMerger {
 		return null;
 	}
 
-	private static VerfuegungZeitabschnitt copy(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	private static VerfuegungZeitabschnitt copy(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(verfuegungZeitabschnitt);
 		return zeitabschnitt;
 	}
-
 }
