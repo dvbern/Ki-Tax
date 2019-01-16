@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.enums.reporting.MergeFieldBenutzer;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -40,10 +41,13 @@ public class BenutzerExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<BenutzerDataRow> data, @Nonnull Locale lang) {
+	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<BenutzerDataRow> data, @Nonnull Locale locale) {
 		checkNotNull(data);
 
 		ExcelMergerDTO sheet = new ExcelMergerDTO();
+
+		addHeaders(sheet, locale);
+
 		sheet.addValue(MergeFieldBenutzer.stichtag, LocalDate.now());
 
 		data.forEach(dataRow -> {
@@ -58,7 +62,7 @@ public class BenutzerExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldBenutzer.gemeinden, dataRow.getGemeinden());
 			excelRowGroup.addValue(MergeFieldBenutzer.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldBenutzer.traegerschaft, dataRow.getTraegerschaft());
-			String status = checkNotNull(dataRow.getStatus()).name().toLowerCase(lang);
+			String status = checkNotNull(dataRow.getStatus()).name().toLowerCase(locale);
 			excelRowGroup.addValue(MergeFieldBenutzer.status, status);
 
 			excelRowGroup.addValue(MergeFieldBenutzer.isKita, dataRow.isKita());
@@ -70,5 +74,26 @@ public class BenutzerExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldBenutzer.isSchulamt, dataRow.isSchulamt());
 		});
 		return sheet;
+	}
+
+	private void addHeaders(ExcelMergerDTO sheet, Locale locale) {
+		sheet.addValue(MergeFieldBenutzer.usernameTitle, ServerMessageUtil.getMessage("Reports_usernameTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.vornameTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.nachnameTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.emailTitle, ServerMessageUtil.getMessage("Reports_emailTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.roleTitle, ServerMessageUtil.getMessage("Reports_roleTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.roleGueltigBisTitel, ServerMessageUtil.getMessage("Reports_roleGueltigBisTitel", locale));
+		sheet.addValue(MergeFieldBenutzer.gemeindenTitle, ServerMessageUtil.getMessage("Reports_gemeindenTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.traegerschaftTitle, ServerMessageUtil.getMessage("Reports_traegerschaftTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.kitaTitel, ServerMessageUtil.getMessage("Reports_kitaTitel", locale));
+		sheet.addValue(MergeFieldBenutzer.tagesfamilienTitle, ServerMessageUtil.getMessage("Reports_tagesfamilienTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.tagesschulenTitel, ServerMessageUtil.getMessage("Reports_tagesschulenTitel", locale));
+		sheet.addValue(MergeFieldBenutzer.ferieninselTitle, ServerMessageUtil.getMessage("Reports_ferieninselTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.isJugendamtTitle, ServerMessageUtil.getMessage("Reports_isJugendamtTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.isSchulamtTitle, ServerMessageUtil.getMessage("Reports_isSchulamtTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.stichtagTitle, ServerMessageUtil.getMessage("Reports_stichtagTitle", locale));
+		sheet.addValue(MergeFieldBenutzer.reportBenutzerTitle, ServerMessageUtil.getMessage("Reports_reportBenutzerTitle", locale));
 	}
 }

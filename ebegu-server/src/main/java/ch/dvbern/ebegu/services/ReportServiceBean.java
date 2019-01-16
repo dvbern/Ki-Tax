@@ -267,7 +267,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<GesuchStichtagDataRow> reportData = getReportDataGesuchStichtag(date, gesuchPeriodeID);
-		ExcelMergerDTO excelMergerDTO = geuschStichtagExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault());
+		ExcelMergerDTO excelMergerDTO = geuschStichtagExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get());
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		geuschStichtagExcelConverter.applyAutoSize(sheet);
@@ -340,7 +340,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID);
-		ExcelMergerDTO excelMergerDTO = geuschZeitraumExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault());
+		ExcelMergerDTO excelMergerDTO = geuschZeitraumExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get());
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		geuschZeitraumExcelConverter.applyAutoSize(sheet);
@@ -465,7 +465,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<KantonDataRow> reportData = getReportDataKanton(datumVon, datumBis);
 		ExcelMergerDTO excelMergerDTO =
-			kantonExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault(), datumVon, datumBis);
+			kantonExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get(), datumVon, datumBis);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		kantonExcelConverter.applyAutoSize(sheet);
@@ -661,7 +661,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<MitarbeiterinnenDataRow> reportData = getReportMitarbeiterinnen(datumVon, datumBis);
 		ExcelMergerDTO excelMergerDTO =
-			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault(), datumVon, datumBis);
+			mitarbeiterinnenExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get(), datumVon, datumBis);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		mitarbeiterinnenExcelConverter.applyAutoSize(sheet);
@@ -750,7 +750,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Collection<Institution> allowedInst = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 
-		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault(),
+		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(reportData, LocaleThreadLocal.get(),
 			principalBean.discoverMostPrivilegedRole(), allowedInst, "Detailpositionen der Zahlung " + bezeichnung,
 			datumGeneriert, datumFaellig);
 
@@ -801,7 +801,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ExcelMergerDTO excelMergerDTO = zahlungAuftragPeriodeExcelConverter.toExcelMergerDTO(
 			allZahlungen,
 			gesuchsperiode.getGesuchsperiodeString(),
-			Locale.getDefault());
+			LocaleThreadLocal.get());
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		zahlungAuftragPeriodeExcelConverter.applyAutoSize(sheet);
@@ -1565,7 +1565,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
-	public UploadFileInfo generateExcelReportBenutzer() throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale) throws ExcelMergeException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_BENUTZER;
 
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
@@ -1576,7 +1576,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		List<BenutzerDataRow> reportData = getReportDataBenutzer();
 
-		ExcelMergerDTO excelMergerDTO = benutzerExcelConverter.toExcelMergerDTO(reportData, Locale.getDefault());
+		ExcelMergerDTO excelMergerDTO = benutzerExcelConverter.toExcelMergerDTO(reportData, locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		benutzerExcelConverter.applyAutoSize(sheet);

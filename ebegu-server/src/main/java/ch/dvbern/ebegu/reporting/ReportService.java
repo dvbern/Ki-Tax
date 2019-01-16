@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -93,7 +94,7 @@ public interface ReportService {
 	UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException;
 
 	@Nonnull
-	UploadFileInfo generateExcelReportBenutzer() throws ExcelMergeException;
+	UploadFileInfo generateExcelReportBenutzer(@Nonnull Locale locale) throws ExcelMergeException;
 
 	@Nonnull
 	List<BenutzerDataRow> getReportDataBenutzer();

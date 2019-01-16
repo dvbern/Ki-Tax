@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.batch.jobs.report;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -95,7 +96,8 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(datumToStichtag);
 		final String gesuchPeriodeID = getParameters().getProperty(WorkJobConstants.GESUCH_PERIODE_ID_PARAM);
 		final String zahlungsauftragId = getParameters().getProperty(WorkJobConstants.ZAHLUNGSAUFTRAG_ID_PARAM);
-		return generateReport(workJobType, dateFrom, dateTo, gesuchPeriodeID, zahlungsauftragId);
+		final String language = getParameters().getProperty(WorkJobConstants.LANGUAGE);
+		return generateReport(workJobType, dateFrom, dateTo, gesuchPeriodeID, zahlungsauftragId, Locale.forLanguageTag(language));
 	}
 
 	@Nonnull
@@ -104,7 +106,8 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		@Nonnull LocalDate dateFrom,
 		@Nonnull LocalDate dateTo,
 		@Nonnull String gesuchPeriodeID,
-		@Nullable String zahlungsauftragId
+		@Nullable String zahlungsauftragId,
+		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException {
 
 		switch (workJobType) {
@@ -126,7 +129,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_BENUTZER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportBenutzer();
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportBenutzer(locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
