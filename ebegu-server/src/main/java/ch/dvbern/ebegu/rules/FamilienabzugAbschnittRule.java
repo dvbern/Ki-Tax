@@ -205,7 +205,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 					famGrBeruecksichtigungAbzug += 0.5;
 					famGrAnzahlPersonen++;
 				} else if (kinderabzug == Kinderabzug.GANZER_ABZUG) {
-					famGrBeruecksichtigungAbzug++;
+					famGrBeruecksichtigungAbzug += 1;
 					famGrAnzahlPersonen++;
 				}
 			}

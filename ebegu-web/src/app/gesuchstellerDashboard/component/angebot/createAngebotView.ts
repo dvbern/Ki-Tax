@@ -160,7 +160,8 @@ export class CreateAngebotListViewController implements IController {
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
-        return this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
+        return this.gesuchModelManager.getGesuchsperiode()
+            && this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
     }
 
     public selectedKindChanged(): void {
