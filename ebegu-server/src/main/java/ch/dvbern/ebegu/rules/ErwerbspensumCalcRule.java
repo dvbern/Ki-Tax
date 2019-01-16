@@ -119,8 +119,8 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
 			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
-			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(verfuegungZeitabschnitt);
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, vorhandeneBeschaeftigungen);
+			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(verfuegungZeitabschnitt, locale);
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
@@ -148,7 +148,7 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	}
 
 	@Nonnull
-	private Integer calculateErwerbspensum(@NonnullVerfuegungZeitabschnitt verfuegungZeitabschnitt, @NonnullInteger erwerbspensum, @NonnullMsgKey bemerkung,
+	private Integer calculateErwerbspensum(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull Integer erwerbspensum, @Nonnull MsgKey bemerkung,
 		@Nonnull Locale locale) {
 		if (erwerbspensum > 100) {
 			erwerbspensum = 100;
@@ -171,10 +171,10 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		return familiensituation.hasSecondGesuchsteller();
 	}
 
-	private String getBeschaeftigungsTypen(@Nonnull VerfuegungZeitabschnitt abschnitt) {
+	private String getBeschaeftigungsTypen(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull Locale locale) {
 		StringBuilder sb = new StringBuilder();
 		for (Taetigkeit taetigkeit : abschnitt.getTaetigkeiten()) {
-			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit));
+			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale));
 			sb.append(", ");
 		}
 		// Das letzte Komma entfernen

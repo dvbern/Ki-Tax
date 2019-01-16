@@ -19,9 +19,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -749,24 +749,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
 	}
 
-	//TODO (hefr)
-	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, @Nonnull Locale locale) {
-		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, locale);
-		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
-
+	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale));
 	}
 
-	public void addBemerkung(RuleKey ruleKey, MsgKey msgKey, @Nonnull Locale locale, Object... args) {
-		String bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, locale, args);
-		this.addBemerkung(ruleKey.name() + ": " + bemerkungsText);
-	}
-
-	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey));
-	}
-
-	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Object... args) {
-		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, args));
+	public void addBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nonnull Object... args) {
+		bemerkungenMap.put(msgKey, new VerfuegungsBemerkung(ruleKey, msgKey, locale, args));
 	}
 
 	public void addAllBemerkungen(Map<MsgKey, VerfuegungsBemerkung> otherBemerkungenMap) {

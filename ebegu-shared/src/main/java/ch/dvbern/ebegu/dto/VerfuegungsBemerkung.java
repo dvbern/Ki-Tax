@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.dto;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -36,14 +38,23 @@ public class VerfuegungsBemerkung {
 	@Nullable
 	private Object[] args = null;
 
-	public VerfuegungsBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey) {
+	@Nonnull
+	private Locale sprache;
+
+	public VerfuegungsBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Locale sprache) {
 		this.ruleKey = ruleKey;
 		this.msgKey = msgKey;
+		this.sprache = sprache;
 	}
 
-	public VerfuegungsBemerkung(@Nonnull RuleKey ruleKey, @Nonnull MsgKey msgKey, @Nonnull Object... args) {
+	public VerfuegungsBemerkung(
+		@Nonnull RuleKey ruleKey,
+		@Nonnull MsgKey msgKey,
+		@Nonnull Locale sprache,
+		@Nonnull Object... args) {
 		this.ruleKey = ruleKey;
 		this.msgKey = msgKey;
+		this.sprache = sprache;
 		this.args = args;
 	}
 
@@ -65,12 +76,21 @@ public class VerfuegungsBemerkung {
 		this.msgKey = msgKey;
 	}
 
+	@Nonnull
+	public Locale getSprache() {
+		return sprache;
+	}
+
+	public void setSprache(@Nonnull Locale sprache) {
+		this.sprache = sprache;
+	}
+
 	public String getTranslated() {
 		String bemerkungsText = null;
 		if (args != null) {
-			bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, args);
+			bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, sprache, args);
 		} else {
-			bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey);
+			bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, sprache);
 		}
 		return ruleKey.name() + ": " + bemerkungsText;
 	}
