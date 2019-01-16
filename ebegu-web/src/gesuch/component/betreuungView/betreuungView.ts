@@ -216,8 +216,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public initEmptyBetreuung(): TSBetreuung {
         const tsBetreuung = new TSBetreuung();
 
-        // radio group für vertrag soll zu beginn leer sein
+        // radio group für vertrag soll zu beginn leer sein falls GS, ansonsten true
         tsBetreuung.vertrag = null;
+        if (!this.isGesuchsteller()) {
+            tsBetreuung.vertrag = true;
+        }
         tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
