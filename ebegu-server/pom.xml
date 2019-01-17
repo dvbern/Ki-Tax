@@ -155,6 +155,10 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-orm</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.infinispan</groupId>-->
+            <!--<artifactId>infinispan-directory-provider</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.jberet</groupId>
             <artifactId>jberet-core</artifactId>
@@ -181,6 +185,13 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-engine</artifactId>
             <!-- provided reicht nicht, hibernate-maven-plugin kann dann das schema nicht generieren -->
+            <!--<scope>compile</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-directory-provider</artifactId>
+            <!--<version>${version.infinispan}</version>-->
+            <version>${version.infinispan}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

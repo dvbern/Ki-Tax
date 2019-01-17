@@ -40,7 +40,12 @@
                     <warSourceDirectory>src/main/webapp</warSourceDirectory>
                     <archive>
                         <manifestEntries>
-                            <Dependencies>io.sentry optional, org.infinispan export</Dependencies>
+                            <!--todo homa fixme-->
+                            <!--<Dependencies>io.sentry optional, org.hibernate.search.orm services, org.infinispan export</Dependencies>-->
+                            <!--<Dependencies>io.sentry optional, org.infinispan export</Dependencies>-->
+                            <!--todo try org.infinispan:ispn-9.3 services (no core) with wf14 with loaded infinispan modules again-->
+                            <!--<Dependencies>io.sentry optional, org.infinispan:ispn-9.3 services, org.infinispan.hibernate-search.directory-provider:for-hibernatesearch-5.10 services</Dependencies>-->
+                            <!--<Dependencies>io.sentry optional</Dependencies>-->
                         </manifestEntries>
                     </archive>
                 </configuration>
