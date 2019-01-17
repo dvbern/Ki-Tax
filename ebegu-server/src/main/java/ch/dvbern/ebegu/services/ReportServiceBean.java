@@ -105,7 +105,7 @@ import ch.dvbern.ebegu.reporting.benutzer.BenutzerExcelConverter;
 import ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung.GesuchstellerKinderBetreuungDataRow;
 import ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung.GesuchstellerKinderBetreuungExcelConverter;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
-import ch.dvbern.ebegu.reporting.gesuchstichtag.GeuschStichtagExcelConverter;
+import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagExcelConverter;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GeuschZeitraumExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.KantonDataRow;
@@ -164,7 +164,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private static final LocalDate MIN_DATE = LocalDate.of(1900, Month.JANUARY, 1);
 
 	@Inject
-	private GeuschStichtagExcelConverter geuschStichtagExcelConverter;
+	private GesuchStichtagExcelConverter gesuchStichtagExcelConverter;
 
 	@Inject
 	private GeuschZeitraumExcelConverter geuschZeitraumExcelConverter;
@@ -269,10 +269,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<GesuchStichtagDataRow> reportData = getReportDataGesuchStichtag(date, gesuchPeriodeID);
-		ExcelMergerDTO excelMergerDTO = geuschStichtagExcelConverter.toExcelMergerDTO(reportData, locale);
+		ExcelMergerDTO excelMergerDTO = gesuchStichtagExcelConverter.toExcelMergerDTO(reportData, locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		geuschStichtagExcelConverter.applyAutoSize(sheet);
+		gesuchStichtagExcelConverter.applyAutoSize(sheet);
 
 		byte[] bytes = createWorkbook(workbook);
 
