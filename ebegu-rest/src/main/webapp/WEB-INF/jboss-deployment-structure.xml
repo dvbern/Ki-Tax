@@ -5,6 +5,7 @@
          <module name="io.sentry" slot="main" services="export" optional="true"/>
          <module name="org.infinispan" slot="main" services="export" />
          <module name="org.infinispan.commons" slot="main" services="export" />
+         <module name="org.infinispan.persistence.jdbc" slot="main" services="export" />
        </dependencies>
    </deployment>
 </jboss-deployment-structure>
