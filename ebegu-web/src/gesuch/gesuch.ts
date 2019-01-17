@@ -393,9 +393,10 @@ export class GesuchRouteController implements IController {
 
     public getVerfuegenText(): string {
 
-        if ( this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
-            !isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status) &&
-            (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG)) {
+        if (this.gesuchModelManager.getGesuch()
+            &&  this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())
+            && !isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
+            && (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG)) {
 
             return this.$translate.instant('MENU_PROVISORISCHE_BERECHNUNG');
         }
