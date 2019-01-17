@@ -410,6 +410,12 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.statusTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
 
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesuchstellerKinderBetreuungTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchstellerKinderBetreuungTitle, ServerMessageUtil.getMessage("Reports_gesuchstellerKinderBetreuungTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgNummerTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgNummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale));
+
 	}
 
 }
