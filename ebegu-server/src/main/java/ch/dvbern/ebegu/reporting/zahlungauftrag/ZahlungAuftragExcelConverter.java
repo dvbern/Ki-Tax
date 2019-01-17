@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftrag;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -66,11 +67,13 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 	) {
 		checkNotNull(data);
 
-		ExcelMergerDTO sheet = new ExcelMergerDTO();
+		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		sheet.addValue(MergeFieldZahlungAuftrag.beschrieb, beschrieb);
-		sheet.addValue(MergeFieldZahlungAuftrag.generiertAm, datumGeneriert);
-		sheet.addValue(MergeFieldZahlungAuftrag.faelligAm, datumFaellig);
+		addHeaders(excelMerger, locale);
+
+		excelMerger.addValue(MergeFieldZahlungAuftrag.beschrieb, beschrieb);
+		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAm, datumGeneriert);
+		excelMerger.addValue(MergeFieldZahlungAuftrag.faelligAm, datumFaellig);
 
 		data.stream()
 			.filter(zahlung -> {
@@ -85,7 +88,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 					.filter(zahlungsposition -> MathUtil.isPositive(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum()))
 					.sorted()
 					.forEach(zahlungsposition -> {
-						ExcelMergerDTO excelRowGroup = sheet.createGroup(MergeFieldZahlungAuftrag.repeatZahlungAuftragRow);
+						ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftrag.repeatZahlungAuftragRow);
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.institution, zahlung.getInstitutionStammdaten().getInstitution().getName());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.name, zahlungsposition.getKind().getNachname());
 						excelRowGroup.addValue(MergeFieldZahlungAuftrag.vorname, zahlungsposition.getKind().getVorname());
@@ -101,6 +104,22 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 					});
 			});
 
-		return sheet;
+		return excelMerger;
+	}
+
+	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
+		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAmTitle, ServerMessageUtil.getMessage("Reports_generiertAmTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.faelligAmTitle, ServerMessageUtil.getMessage("Reports_faelligAmTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.nachnameTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.vornameTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.verfuegungTitle, ServerMessageUtil.getMessage("Reports_verfuegungTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.vonTitle, ServerMessageUtil.getMessage("Reports_vonTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.bisTitle, ServerMessageUtil.getMessage("Reports_bisTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.bgPensumTitle, ServerMessageUtil.getMessage("Reports_bgPensumTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.betragCHFTitle, ServerMessageUtil.getMessage("Reports_betragCHFTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.korrekturTitle, ServerMessageUtil.getMessage("Reports_korrekturTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.zahlungIgnorierenTitle, ServerMessageUtil.getMessage("Reports_zahlungIgnorierenTitle", locale));
 	}
 }

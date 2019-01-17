@@ -776,9 +776,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Collection<Institution> allowedInst = institutionService.getAllowedInstitutionenForCurrentBenutzer(false);
 
-		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(reportData, locale,
-			principalBean.discoverMostPrivilegedRole(), allowedInst, "Detailpositionen der Zahlung " + bezeichnung,
-			datumGeneriert, datumFaellig);
+		ExcelMergerDTO excelMergerDTO = zahlungAuftragExcelConverter.toExcelMergerDTO(
+			reportData,
+			locale,
+			principalBean.discoverMostPrivilegedRole(),
+			allowedInst,
+			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale, bezeichnung),
+			datumGeneriert,
+			datumFaellig
+		);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		zahlungAuftragExcelConverter.applyAutoSize(sheet);

@@ -174,7 +174,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 		ExcelMergerDTO excelMergerDTO = massenversandExcelConverter.toExcelMergerDTO(
 			reportData,
-			Locale.getDefault(),
+			locale,
 			datumVon,
 			datumBis,
 			gesuchsperiode,
