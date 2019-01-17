@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -53,7 +54,7 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected final GemeindeStammdaten gemeindeStammdaten;
 
-	private Locale sprache;
+	protected Locale sprache;
 
 
 	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod") // Stimmt nicht, die Methode ist final
@@ -150,6 +151,10 @@ public abstract class KibonPdfGenerator {
 		}
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerAddressAsString(getGesuch().getGesuchsteller1()));
 		return empfaengerAdresse;
+	}
+
+	protected String translateEnumValue(@Nullable final Enum<?> key) {
+		return ServerMessageUtil.translateEnumValue(key, sprache);
 	}
 
 	protected String translate(String key) {

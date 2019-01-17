@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -88,7 +88,8 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	// ID der statischen, unbekannten Institution. Wird verwendet um eine provisorische Berechnung zu generieren
 	// und darf dem Benutzer <b>nie>/b> angezeigt werden
-	private static final String ID_UNKNOWN_INSTITUTION = "00000000-0000-0000-0000-000000000000";
+	private static final String ID_UNKNOWN_INSTITUTION_KITA = "00000000-0000-0000-0000-000000000000";
+	private static final String ID_UNKNOWN_INSTITUTION_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
 
 	@Nonnull
 	@Override
@@ -163,7 +164,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Predicate predTraegerschaft =
 			cb.equal(root.get(Institution_.traegerschaft).get(AbstractEntity_.id), traegerschaftId);
 
-		query.where(predTraegerschaft, excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(predTraegerschaft, excludeUnknownInstitutionPredicate(root));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -189,7 +190,10 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			LocalDate.now()
 		);
 
-		query.where(predTraegerschaft, predActive, excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(
+			predTraegerschaft,
+			predActive,
+			excludeUnknownInstitutionPredicate(root));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -210,7 +214,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			LocalDate.now()
 		);
 
-		query.where(predSchulamt, predActive, excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(predSchulamt, predActive, excludeUnknownInstitutionPredicate(root));
 
 		return persistence.getCriteriaResults(query);
 	}
@@ -229,7 +233,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			LocalDate.now()
 		);
 
-		query.where(predActive, excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(predActive, excludeUnknownInstitutionPredicate(root));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -243,7 +247,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		query.select(root.get(InstitutionStammdaten_.institution));
 		query.distinct(true);
 
-		query.where(excludeUnknownInstitutionPredicate(cb, root.get(AbstractEntity_.id)));
+		query.where(excludeUnknownInstitutionPredicate(root));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -285,7 +289,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		return allInstStammdaten.getBetreuungsangebotTyp();
 	}
 
-	private Predicate excludeUnknownInstitutionPredicate(CriteriaBuilder cb, Path path) {
-		return cb.notEqual(path, ID_UNKNOWN_INSTITUTION);
+	private Predicate excludeUnknownInstitutionPredicate(Root root) {
+		return root.get(AbstractEntity_.id)
+			.in(Arrays.asList(ID_UNKNOWN_INSTITUTION_KITA, ID_UNKNOWN_INSTITUTION_TAGESFAMILIE))
+			.not();
 	}
 }

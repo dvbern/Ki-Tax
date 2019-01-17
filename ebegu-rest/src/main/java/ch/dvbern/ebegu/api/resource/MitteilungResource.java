@@ -471,7 +471,8 @@ public class MitteilungResource {
 		@Context HttpServletResponse response) {
 
 		return MonitoringUtil.monitor(GesuchResource.class, "searchMitteilungen", () -> {
-			Pair<Long, List<Mitteilung>> searchResultPair = mitteilungService.searchMitteilungen(tableFilterDTO, Boolean.valueOf(includeClosed));
+			Pair<Long, List<Mitteilung>> searchResultPair = mitteilungService
+				.searchMitteilungen(tableFilterDTO, Boolean.valueOf(includeClosed));
 			List<Mitteilung> foundMitteilungen = searchResultPair.getRight();
 
 			List<JaxMitteilung> convertedMitteilungen = foundMitteilungen.stream().map(mitteilung ->

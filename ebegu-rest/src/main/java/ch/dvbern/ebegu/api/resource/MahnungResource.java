@@ -164,6 +164,8 @@ public class MahnungResource {
 			return "";
 		}
 		Gesuch gesuch = gesuchOptional.get();
-		return mahnungService.getInitialeBemerkungen(gesuch);
+		return mahnungService.getInitialeBemerkungen(
+			gesuch
+		);
 	}
 }

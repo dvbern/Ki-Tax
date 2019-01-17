@@ -30,6 +30,7 @@ public final class WorkJobConstants {
 	public static final String OHNE_ERNEUERUNGSGESUCHE = "OhneErneuerungsgesuche";
 	public static final String TEXT = "text";
 	public static final String EMAIL_OF_USER = "emailOfUser";
+	public static final String LANGUAGE = "language";
 
 	private WorkJobConstants() {
 	}

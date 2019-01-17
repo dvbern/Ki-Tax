@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.util;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -101,23 +102,27 @@ public final class DokumenteUtil {
 	 * Fuer den gegebenen GeneratedDokumentTyp gibt die Methode den entsprechenden Dateinamen zurueck.
 	 */
 	@Nonnull
-	public static String getFileNameForGeneratedDokumentTyp(final GeneratedDokumentTyp typ, final String identificationNumber) {
+	public static String getFileNameForGeneratedDokumentTyp(
+		final GeneratedDokumentTyp typ,
+		final String identificationNumber,
+		@Nonnull Locale locale
+	) {
 		//Liste in server-messages.properties erganzen.
 		switch (typ) {
 		case BEGLEITSCHREIBEN:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.BEGLEITSCHREIBEN, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.BEGLEITSCHREIBEN, locale, identificationNumber);
 		case FINANZIELLE_SITUATION:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FINANZIELLE_SITUATION, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FINANZIELLE_SITUATION, locale, identificationNumber);
 		case VERFUEGUNG:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.VERFUEGUNG, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.VERFUEGUNG, locale, identificationNumber);
 		case MAHNUNG:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.MAHNUNG, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.MAHNUNG, locale, identificationNumber);
 		case NICHTEINTRETEN:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.NICHTEINTRETEN, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.NICHTEINTRETEN, locale, identificationNumber);
 		case FREIGABEQUITTUNG:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FREIGABEQUITTUNG, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.FREIGABEQUITTUNG, locale, identificationNumber);
 		case PAIN001:
-			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.PAIN001, identificationNumber);
+			return ServerMessageUtil.translateEnumValue(GeneratedDokumentTyp.PAIN001, locale, identificationNumber);
 		default:
 			return "file.pdf";
 		}

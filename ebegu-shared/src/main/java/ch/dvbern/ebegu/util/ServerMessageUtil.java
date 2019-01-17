@@ -31,18 +31,21 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class ServerMessageUtil {
 
-	// TODO Dieses Util wird später immer mit einer Sprache aufgerufen, d.h. es wird keinen Default mehr geben -> beide sprachen merken!
-	private static final ResourceBundle bundle = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.DEFAULT_LOCALE);
+	private static final ResourceBundle bundle_de = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.DEFAULT_LOCALE);
+	private static final ResourceBundle bundle_fr = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, Constants.FRENCH_LOCALE);
 
 	private ServerMessageUtil() {
 	}
 
-	public static String getMessage(String key) {
-		return readStringFromBundleOrReturnKey(bundle, key);
+	private static ResourceBundle selectBundleToUse(Locale locale) {
+		if (locale.getLanguage().equalsIgnoreCase("FR")) {
+			return bundle_fr;
+		}
+		return bundle_de;
 	}
 
 	public static String getMessage(String key, Locale locale) {
-		ResourceBundle bundle = ResourceBundle.getBundle(Constants.SERVER_MESSAGE_BUNDLE_NAME, locale);
+		ResourceBundle bundle = selectBundleToUse(locale);
 		return readStringFromBundleOrReturnKey(bundle, key);
 	}
 
@@ -58,36 +61,8 @@ public final class ServerMessageUtil {
 		}
 	}
 
-	public static String getMessage(String key, Object... args) {
-		return MessageFormat.format(getMessage(key), args);
-	}
-
 	public static String getMessage(String key, Locale locale, Object... args) {
 		return MessageFormat.format(getMessage(key, locale), args);
-	}
-
-	/**
-	 * Uebersetzt einen Enum-Wert
-	 */
-	@Nonnull
-	public static String translateEnumValue(@Nullable final Enum<?> e) {
-		if (e == null) {
-			return StringUtils.EMPTY;
-		}
-		Locale locale = LocaleThreadLocal.get();
-		return getMessage(getKey(e), locale);
-	}
-
-	/**
-	 * Uebersetzt einen Enum-Wert
-	 */
-	@Nonnull
-	public static String translateEnumValue(@Nullable final Enum<?> e, Object... args) {
-		if (e == null) {
-			return StringUtils.EMPTY;
-		}
-		Locale locale = LocaleThreadLocal.get();
-		return getMessage(getKey(e), locale, args);
 	}
 
 	/**

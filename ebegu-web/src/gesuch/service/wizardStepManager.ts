@@ -17,7 +17,6 @@ import {IPromise, IQService} from 'angular';
 import {LogFactory} from '../../app/core/logging/LogFactory';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt, isAtLeastFreigegeben} from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
@@ -27,6 +26,7 @@ import TSGesuch from '../../models/TSGesuch';
 import TSWizardStep from '../../models/TSWizardStep';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import WizardStepRS from './WizardStepRS.rest';
+import {isAnyStatusOfVerfuegt} from '../../models/enums/TSAntragStatus';
 
 const LOG = LogFactory.createLog('WizardStepManager');
 
@@ -313,15 +313,12 @@ export default class WizardStepManager {
         }
 
         if (step.wizardStepName === TSWizardStepName.VERFUEGEN) {
-            // verfuegen fuer admin und jugendamt  immer sichtbar
-            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole())) {
-                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                    return isAtLeastFreigegeben(gesuch.status);
-                }
-                // ... alle anderen ab VERFUEGT
-                if (!isAnyStatusOfVerfuegt(gesuch.status)) {
-                    return false;
-                }
+            // verfuegen fuer admin, jugendamt und gesuchsteller immer sichtbar
+            if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole()) &&
+                !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles()) &&
+                    !isAnyStatusOfVerfuegt(gesuch.status)) {
+
+                return false;
             }
             return this.areAllStepsOK(gesuch);
         }
