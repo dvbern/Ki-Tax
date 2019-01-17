@@ -244,6 +244,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("Duplicates")
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
 		ADMIN_TRAEGERSCHAFT,
@@ -278,7 +279,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			reportVorlage.getDefaultExportFilename(),
+			getFileName(reportVorlage, locale),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -353,7 +354,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			reportVorlage.getDefaultExportFilename(),
+			getFileName(reportVorlage, locale),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -486,7 +487,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			reportVorlage.getDefaultExportFilename(),
+			getFileName(reportVorlage, locale),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -686,9 +687,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			reportVorlage.getDefaultExportFilename(),
+			getFileName(reportVorlage, locale),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
+	}
+
+	@Nonnull
+	private String getFileName(ReportVorlage reportVorlage, @Nonnull Locale locale) {
+		return ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx";
 	}
 
 	@Override
@@ -844,7 +850,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			reportVorlage.getDefaultExportFilename(),
+			getFileName(reportVorlage, locale),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -1240,7 +1246,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
 
-		return saveExcelDokument(reportResource, rowFiller);
+		return saveExcelDokument(reportResource, rowFiller, locale);
 	}
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToGesuchstellerKinderBetreuungDataRow(
@@ -1392,7 +1398,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
 
-		return saveExcelDokument(reportResource, rowFiller);
+		return saveExcelDokument(reportResource, rowFiller, locale);
 	}
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToKinderDataRow(
@@ -1518,7 +1524,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsStichtag(reportData, sheet, stichtag, locale);
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
-		return saveExcelDokument(reportResource, rowFiller);
+		return saveExcelDokument(reportResource, rowFiller, locale);
 	}
 
 	/**
@@ -1551,14 +1557,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	 * Erstellt das Dokument und speichert es im Filesystem
 	 */
 	@Nonnull
-	private UploadFileInfo saveExcelDokument(ReportVorlage reportResource, RowFiller rowFiller) {
+	private UploadFileInfo saveExcelDokument(
+		ReportVorlage reportVorlage,
+		RowFiller rowFiller,
+		@Nonnull Locale locale
+	) {
 		byte[] bytes = createWorkbook(rowFiller.getSheet().getWorkbook());
 
 		rowFiller.getSheet().getWorkbook().dispose();
 
 		return fileSaverService.save(
 			bytes,
-			reportResource.getDefaultExportFilename(),
+			getFileName(reportVorlage, locale),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
@@ -1651,7 +1661,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		return fileSaverService.save(
 			bytes,
-			reportVorlage.getDefaultExportFilename(),
+			getFileName(reportVorlage, locale),
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
