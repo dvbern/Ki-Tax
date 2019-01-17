@@ -734,7 +734,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Zahlung zahlung = zahlungService.findZahlung(zahlungId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"generateExcelReportZahlungAuftrag",
+				"generateExcelReportZahlung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				zahlungId));
 

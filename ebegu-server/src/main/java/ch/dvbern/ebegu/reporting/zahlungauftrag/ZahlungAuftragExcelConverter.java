@@ -56,8 +56,14 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<Zahlung> data, @Nonnull Locale lang, @Nullable UserRole userRole, Collection<Institution> allowedInst,
-		String beschrieb, LocalDateTime datumGeneriert, LocalDate datumFaellig) {
+	public ExcelMergerDTO toExcelMergerDTO(
+		@Nonnull List<Zahlung> data,
+		@Nonnull Locale locale,
+		@Nullable UserRole userRole,
+		Collection<Institution> allowedInst,
+		String beschrieb, LocalDateTime datumGeneriert,
+		LocalDate datumFaellig
+	) {
 		checkNotNull(data);
 
 		ExcelMergerDTO sheet = new ExcelMergerDTO();
