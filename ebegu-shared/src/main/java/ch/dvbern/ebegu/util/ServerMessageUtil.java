@@ -23,7 +23,6 @@ import java.util.ResourceBundle;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import org.apache.commons.lang3.StringUtils;
 
 /**
