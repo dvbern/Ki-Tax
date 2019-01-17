@@ -318,6 +318,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("Duplicates")
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
 		ADMIN_TRAEGERSCHAFT,

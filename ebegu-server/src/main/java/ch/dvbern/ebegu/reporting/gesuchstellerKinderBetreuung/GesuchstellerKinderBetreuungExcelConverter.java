@@ -202,6 +202,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		});
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	private void addHeaders(@Nonnull ExcelMergerDTO mergerDTO, @Nonnull List<MergeField<?>> mergeFields, @Nonnull Locale locale) {
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesuchstellerTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchstellerTitle.getMergeField(), ServerMessageUtil.getMessage("Reports_gesuchstellerTitleTitle", locale));
