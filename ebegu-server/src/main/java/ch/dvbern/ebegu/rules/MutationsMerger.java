@@ -88,7 +88,7 @@ public final class MutationsMerger {
 				findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegung);
 
 			if (vorangehenderAbschnitt != null) {
-				handleVerminderungEinkommen(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum);
+				handleVerminderungEinkommen(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 				handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 				handleAnpassungErweiterteBeduerfnisse(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 			}
@@ -117,7 +117,8 @@ public final class MutationsMerger {
 	private static void handleVerminderungEinkommen(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
-		@Nonnull LocalDate mutationsEingansdatum
+		@Nonnull LocalDate mutationsEingansdatum,
+		@Nonnull Locale locale
 	) {
 		// Massgebendes Einkommen
 		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
@@ -131,6 +132,7 @@ public final class MutationsMerger {
 				zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
 				zeitabschnitt.setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
 				zeitabschnitt.setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
+				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 			}
 		}
 	}
