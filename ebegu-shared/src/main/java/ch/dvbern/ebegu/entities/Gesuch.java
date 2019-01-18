@@ -681,7 +681,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		List<Betreuung> betreuungs = extractAllBetreuungen();
 		for (Betreuung betreuung : betreuungs) {
 			if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus() ||
-				Betreuungsstatus.ABGEWIESEN == betreuung.getBetreuungsstatus()) {
+				Betreuungsstatus.ABGEWIESEN == betreuung.getBetreuungsstatus() ||
+				Betreuungsstatus.UNBEKANNTE_INSTITUTION == betreuung.getBetreuungsstatus()) {
 				return false;
 			}
 		}
