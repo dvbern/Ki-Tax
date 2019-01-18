@@ -104,7 +104,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		@Nonnull ReportVorlage workJobType,
 		@Nonnull LocalDate dateFrom,
 		@Nonnull LocalDate dateTo,
-		@Nonnull String gesuchPeriodeID,
+		@Nullable String gesuchPeriodeID,
 		@Nullable String zahlungsauftragId,
 		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException {
@@ -137,6 +137,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE: {
+			Objects.requireNonNull(gesuchPeriodeID);
 			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
@@ -154,6 +155,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_MASSENVERSAND: {
+			Objects.requireNonNull(gesuchPeriodeID);
 			boolean inklBgGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
 			boolean inklMischGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
 			boolean inklTsGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
