@@ -26,6 +26,7 @@ import {
     isAtLeastFreigegeben,
     TSAntragStatus,
 } from '../../../models/enums/TSAntragStatus';
+import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -533,7 +534,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showKeinKontingent(): boolean {
-        return this.showVerfuegenStarten() && this.kontingentierungEnabled;
+        return this.getGesuch().typ !== TSAntragTyp.MUTATION
+            && this.showVerfuegenStarten()
+            && this.kontingentierungEnabled;
     }
 
     public showKontingentVorhanden(): boolean {
