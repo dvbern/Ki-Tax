@@ -114,34 +114,40 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	public void normaleVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		evaluator.evaluate(gesuch_alleinstehend, getParameter(), Constants.DEFAULT_LOCALE);
 		final VerfuegungPdfGenerator alleinstehend =
-			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten, VerfuegungPdfGenerator.Art.NORMAL);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten,
+				VerfuegungPdfGenerator.Art.NORMAL,true);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_alleinstehend.pdf"));
 
 		evaluator.evaluate(gesuch_verheiratet, getParameter(), Constants.DEFAULT_LOCALE);
 		final VerfuegungPdfGenerator verheiratet =
-			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten, VerfuegungPdfGenerator.Art.NORMAL);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten,
+				VerfuegungPdfGenerator.Art.NORMAL, true);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_verheiratet.pdf"));
 	}
 
 	@Test
 	public void keinAnspruchVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		final VerfuegungPdfGenerator alleinstehend =
-			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten,
+				VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH, true);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/KeinAnspruchVerfügung_alleinstehend.pdf"));
 
 		final VerfuegungPdfGenerator verheiratet =
-			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten, VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten,
+				VerfuegungPdfGenerator.Art.KEIN_ANSPRUCH, true);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/KeinAnspruchVerfügung_verheiratet.pdf"));
 	}
 
 	@Test
 	public void nichtEintretenVerfuegungTest() throws InvoiceGeneratorException, IOException {
 		final VerfuegungPdfGenerator alleinstehend =
-			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten,
+				VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN, true);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/NichtEintretenVerfügung_alleinstehend.pdf"));
 
 		final VerfuegungPdfGenerator verheiratet =
-			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten, VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN);
+			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten,
+				VerfuegungPdfGenerator.Art.NICHT_EINTRETTEN, true);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/NichtEintretenVerfügung_verheiratet.pdf"));
 	}
 

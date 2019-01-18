@@ -35,11 +35,13 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
@@ -91,6 +93,9 @@ public class PDFServiceBean implements PDFService {
 	private DossierService dossierService;
 
 	@Inject
+	private EinstellungService einstellungService;
+
+	@Inject
 	private Authorizer authorizer;
 
 	@Nonnull
@@ -109,7 +114,7 @@ public class PDFServiceBean implements PDFService {
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
-			Art.NICHT_EINTRETTEN);
+			Art.NICHT_EINTRETTEN, false);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
@@ -230,11 +235,23 @@ public class PDFServiceBean implements PDFService {
 		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
+		// Falls die Gemeinde Kontingentierung eingeschaltet hat *und* es sich um einen Entwurf handelt
+		// wird auf der Verfügung ein Vermerk zur Kontingentierung gedruckt
+		boolean showInfoKontingentierung = false;
+		if (!writeProtected) {
+			Einstellung einstellungKontingentierung = einstellungService.findEinstellung(
+				EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+				betreuung.extractGesuch().extractGemeinde(),
+				betreuung.extractGesuchsperiode());
+			showInfoKontingentierung = einstellungKontingentierung.getValueAsBoolean();
+		}
+
 		Art art = hasAnspruch(betreuung) ? Art.NORMAL : Art.KEIN_ANSPRUCH;
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
-			art);
+			art,
+			showInfoKontingentierung);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 

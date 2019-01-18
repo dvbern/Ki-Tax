@@ -34,7 +34,17 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.*;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.List;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfPCell;
@@ -50,6 +60,8 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.NEWLINE;
+import static com.lowagie.text.pdf.BaseFont.EMBEDDED;
+import static com.lowagie.text.pdf.BaseFont.WINANSI;
 
 public final class PdfUtil {
 
@@ -57,6 +69,8 @@ public final class PdfUtil {
 	private static final String WATERMARK = "PdfGeneration_Watermark";
 	private static final float FONT_SIZE_WATERMARK = 40.0f;
 	public static final float DEFAULT_CELL_LEADING = 1.0F;
+	public static final Font FONT_RED = FontFactory.getFont(PdfUtilities.FONT_FACE_PROXIMA_NOVA, WINANSI, EMBEDDED,
+		PdfUtilities.DEFAULT_FONT_SIZE, 0, new Color(255, 0, 0));
 
 	private PdfUtil() {
 		// nop
@@ -176,7 +190,7 @@ public final class PdfUtil {
 	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries, @Nonnull Locale locale) {
 		PdfPTable table = new PdfPTable(2);
 		try {
-			float[] columnWidths = { 1, 4 };
+			float[] columnWidths = { 1, 2 };
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
 			LOG.error("Error while creating intro table: {}", e.getMessage());
