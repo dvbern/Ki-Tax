@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,11 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  */
 abstract class AbstractDokumente<T1, T2> {
 
-	public abstract void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis);
+	public abstract void getAllDokumente(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
+		@Nonnull Locale locale
+	);
 
 	public abstract boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable T1 dataForDocument);
 

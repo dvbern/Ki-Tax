@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,6 +33,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.RuleUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
@@ -47,13 +49,22 @@ public abstract class AbstractEbeguRule implements Rule {
 
 	private final RuleType ruleType;
 
+	// language in which the Rules will be applied. Used normally for translating bemerkungen
+	private final Locale locale;
+
 	@Valid
 	private final DateRange validityPeriod;
 
-	public AbstractEbeguRule(@Nonnull RuleKey ruleKey, @Nonnull RuleType ruleType, @Nonnull DateRange validityPeriod) {
+	public AbstractEbeguRule(
+		@Nonnull RuleKey ruleKey,
+		@Nonnull RuleType ruleType,
+		@Nonnull DateRange validityPeriod,
+		@Nonnull Locale locale
+	) {
 		this.ruleKey = ruleKey;
 		this.ruleType = ruleType;
 		this.validityPeriod = validityPeriod;
+		this.locale = locale;
 	}
 
 	@Override
@@ -83,6 +94,10 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	public RuleKey getRuleKey() {
 		return ruleKey;
+	}
+
+	public Locale getLocale() {
+		return locale;
 	}
 
 	/**
@@ -145,12 +160,10 @@ public abstract class AbstractEbeguRule implements Rule {
 			boolean endsAfter = zeitabschnitt.getGueltigkeit().endsAfter(gesuchsperiode.getGueltigkeit());
 			if (startsBefore || endsAfter) {
 				boolean zeitabschnittInPeriode = false;
-				if (startsBefore && zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb())) { // die Regel WOHNSITZ darf nicht normalisiert werden, da auch wohnsitze ausserhalb der Gesuchsperiode beruecksichtigt werden muessen
+				if (startsBefore && zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
 					// Datum Von liegt vor der Periode
 					// Falls Datum Bis ebenfalls vor der Periode liegt, kann der Abschnitt gelöscht werden, ansonsten muss er verkürzt werden
-					if (RuleKey.WOHNSITZ != ruleKey) {
-						zeitabschnitt.getGueltigkeit().setGueltigAb(gesuchsperiode.getGueltigkeit().getGueltigAb());
-					}
+					zeitabschnitt.getGueltigkeit().setGueltigAb(gesuchsperiode.getGueltigkeit().getGueltigAb());
 					zeitabschnittInPeriode = true;
 				}
 				if (endsAfter && zeitabschnitt.getGueltigkeit().getGueltigAb().isBefore(gesuchsperiode.getGueltigkeit().getGueltigBis())) {
@@ -277,5 +290,16 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Override
 	public boolean isRelevantForFamiliensituation() {
 		return false;
+	}
+
+	/**
+	 * Berechnet das Datum, ab wann eine Regel aufgrund es übergebenen Datums angewendet werden soll.
+	 * Aktuell ist dies der erste Tag des Folgemonats. Auch bei Ereignis am 1. wird der 1. des Folgemonats genommen.
+	 * Achtung, dieser Stichtag kommt nicht zwingend schlussendlich zum Einsatz, z.B. bei verspäteter Einreichung
+	 * des Gesuchs.
+	 */
+	@Nonnull
+	public LocalDate getStichtagForEreignis(@Nonnull LocalDate ereignisdatum) {
+		return RuleUtil.getStichtagForEreignis(ereignisdatum);
 	}
 }

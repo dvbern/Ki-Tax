@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -60,8 +61,6 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private Mahnung mahnung_2_Alleinstehend;
 	private Mahnung mahnung_2_Verheiratet;
 
-
-	// TODO (hefr) Es braucht hier ein verfügtes Gesuch!!!
 
 	@Before
 	public void init() throws IOException {
@@ -113,12 +112,12 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void normaleVerfuegungTest() throws InvoiceGeneratorException, IOException {
-		evaluator.evaluate(gesuch_alleinstehend, getParameter());
+		evaluator.evaluate(gesuch_alleinstehend, getParameter(), Constants.DEFAULT_LOCALE);
 		final VerfuegungPdfGenerator alleinstehend =
 			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten, VerfuegungPdfGenerator.Art.NORMAL);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_alleinstehend.pdf"));
 
-		evaluator.evaluate(gesuch_verheiratet, getParameter());
+		evaluator.evaluate(gesuch_verheiratet, getParameter(), Constants.DEFAULT_LOCALE);
 		final VerfuegungPdfGenerator verheiratet =
 			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten, VerfuegungPdfGenerator.Art.NORMAL);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_verheiratet.pdf"));
@@ -148,12 +147,15 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void finanzielleSituationTest() throws InvoiceGeneratorException, IOException {
+		LocalDate erstesEinreichungsdatum = Constants.START_OF_TIME;
 		final FinanzielleSituationPdfGenerator alleinstehend =
-			new FinanzielleSituationPdfGenerator(gesuch_alleinstehend, getFamiliensituationsVerfuegung(gesuch_alleinstehend), stammdaten);
+			new FinanzielleSituationPdfGenerator(gesuch_alleinstehend, getFamiliensituationsVerfuegung(gesuch_alleinstehend), stammdaten,
+				erstesEinreichungsdatum);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_alleinstehend.pdf"));
 
 		final FinanzielleSituationPdfGenerator verheiratet =
-			new FinanzielleSituationPdfGenerator(gesuch_verheiratet, getFamiliensituationsVerfuegung(gesuch_verheiratet), stammdaten);
+			new FinanzielleSituationPdfGenerator(gesuch_verheiratet, getFamiliensituationsVerfuegung(gesuch_verheiratet), stammdaten,
+				erstesEinreichungsdatum);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/FinanzielleSituation_verheiratet.pdf"));
 	}
 
@@ -184,6 +186,6 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	}
 
 	private Verfuegung getFamiliensituationsVerfuegung(@Nonnull Gesuch gesuch) {
-		return evaluator.evaluateFamiliensituation(gesuch);
+		return evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 	}
 }

@@ -15,27 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.util;
 
-import java.util.Locale;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 
 import javax.annotation.Nonnull;
-import javax.annotation.security.PermitAll;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
 
-import ch.dvbern.ebegu.util.ServerMessageUtil;
+public final class RuleUtil {
 
-/**
- * Service for internationalization of the server
- */
-@Stateless
-@Local(I18nService.class)
-@PermitAll
-public class I18nServiceBean implements I18nService {
+	private RuleUtil() {
+	}
 
-	@Override
-	public void changeLanguage(@Nonnull Locale locale) {
-		ServerMessageUtil.setLocale(locale);
+	/**
+	 * Berechnet das Datum, ab wann eine Regel aufgrund es übergebenen Datums angewendet werden soll.
+	 * Aktuell ist dies der erste Tag des Folgemonats. Auch bei Ereignis am 1. wird der 1. des Folgemonats genommen.
+	 * Achtung, dieser Stichtag kommt nicht zwingend schlussendlich zum Einsatz, z.B. bei verspäteter Einreichung
+	 * des Gesuchs.
+	 */
+	@Nonnull
+	public static LocalDate getStichtagForEreignis(@Nonnull LocalDate ereignisdatum) {
+		return ereignisdatum.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
 	}
 }

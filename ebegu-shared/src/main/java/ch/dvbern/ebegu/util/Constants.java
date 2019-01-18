@@ -41,6 +41,9 @@ public final class Constants {
 	public static final int MAX_TIMEOUT_MINUTES = 360; // minutes
 	public static final int STATISTIK_TIMEOUT_MINUTES = 180; // minutes
 
+	public static final String LOG_MDC_EBEGUUSER = "ebeguuser";
+	public static final String LOG_MDC_AUTHUSERID = "ebeguauthuserid";
+
 	public static final Locale DEFAULT_LOCALE = new Locale("de", "CH");
 	public static final Locale DEUTSCH_LOCALE = DEFAULT_LOCALE;
 	public static final Locale FRENCH_LOCALE = new Locale("fr", "CH");
@@ -64,6 +67,7 @@ public final class Constants {
 	public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat(CURRENCY_PATTERN);
 
 	public static final String SERVER_MESSAGE_BUNDLE_NAME = "ch.dvbern.ebegu.i18n.server-messages";
+	public static final String VALIDATION_MESSAGE_BUNDLE_NAME = "ValidationMessages";
 	public static final LocalDate END_OF_TIME = LocalDate.of(9999, 12, 31);
 	public static final LocalDate START_OF_TIME = LocalDate.of(1000, 1, 1);
 

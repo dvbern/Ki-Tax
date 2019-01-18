@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.mail;
 
-import java.util.Locale;
+/**
+ * Enum für die Namen der MailTemplates (FreeMarkerTemplates). Der Name des Files muss z.B. XY_de.ftl heissen
+ */
+public enum MailTemplate {
 
-import javax.annotation.Nonnull;
-
-public interface I18nService {
-
-	/**
-	 * Will change the language to use to the given locale.
-	 * If the given locale wasn't supporte, the default language (DE) will be used isntead
-	 */
-	void changeLanguage(@Nonnull Locale locale);
+	InfoMitteilungErhalten,
+	InfoBetreuungVerfuegt,
+	InfoBetreuungGeloescht,
+	BenutzerEinladung,
+	InfoFreischaltungGesuchsperiode,
+	InfoGesuchGeloescht,
+	WarnungFreigabequittungFehlt,
+	WarnungGesuchNichtFreigegeben,
+	InfoMahnung,
+	InfoVerfuegtMutation,
+	InfoVerfuegtGesuch,
+	InfoSchulamtAnmeldungAbgelehnt,
+	InfoSchulamtAnmeldungUebernommen,
+	InfoBetreuungenBestaetigt,
+	InfoBetreuungAbgelehnt
 }

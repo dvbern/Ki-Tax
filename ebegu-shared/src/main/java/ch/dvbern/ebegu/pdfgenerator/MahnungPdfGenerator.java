@@ -52,7 +52,7 @@ public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
-		return ServerMessageUtil.getMessage(MAHNUNG_TITLE, gesuch.extractFullnamesString(), gesuch.getGesuchsperiode().getGesuchsperiodeString(), gesuch.getJahrFallAndGemeindenummer());
+		return translate(MAHNUNG_TITLE, gesuch.extractFullnamesString(), gesuch.getGesuchsperiode().getGesuchsperiodeString(), gesuch.getJahrFallAndGemeindenummer());
 	}
 
 	@Nonnull
@@ -61,13 +61,13 @@ public abstract class MahnungPdfGenerator extends DokumentAnFamilieGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 
-			document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ANREDE_FAMILIE)));
+			document.add(PdfUtil.createParagraph(translate(ANREDE_FAMILIE)));
 			createSeite1(document);
-			document.add(PdfUtil.createList(getFehlendeUnterlagen(), 1));
+			document.add(PdfUtil.createListInParagraph(getFehlendeUnterlagen(), 1));
 
 			List<Element> seite2Paragraphs = Lists.newArrayList();
 			createSeite2(document, seite2Paragraphs);
-			seite2Paragraphs.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(MAHNUNG_DANK), 2));
+			seite2Paragraphs.add(PdfUtil.createParagraph(translate(MAHNUNG_DANK), 2));
 			seite2Paragraphs.add(createParagraphGruss());
 			seite2Paragraphs.add(createParagraphSignatur());
 			document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));

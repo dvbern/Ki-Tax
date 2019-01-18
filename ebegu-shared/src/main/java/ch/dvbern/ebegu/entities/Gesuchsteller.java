@@ -181,6 +181,6 @@ public class Gesuchsteller extends AbstractPersonEntity {
 			Objects.equals(getTelefonAusland(), otherGesuchsteller.getTelefonAusland()) &&
 			EbeguUtil.isSameOrNullStrings(getEwkPersonId(), otherGesuchsteller.getEwkPersonId()) &&
 			Objects.equals(isDiplomatenstatus(), otherGesuchsteller.isDiplomatenstatus()) &&
-			Objects.equals(getKorrespondenzSprache(), otherGesuchsteller.getKorrespondenzSprache());
+			getKorrespondenzSprache() == otherGesuchsteller.getKorrespondenzSprache();
 	}
 }

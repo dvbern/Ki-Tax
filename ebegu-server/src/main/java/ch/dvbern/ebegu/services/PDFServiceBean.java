@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -87,13 +88,21 @@ public class PDFServiceBean implements PDFService {
 	private GemeindeService gemeindeService;
 
 	@Inject
+	private DossierService dossierService;
+
+	@Inject
 	private Authorizer authorizer;
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateNichteintreten(Betreuung betreuung, boolean writeProtected) throws MergeDocException {
+	public byte[] generateNichteintreten(
+		Betreuung betreuung,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
 		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
@@ -101,14 +110,20 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN);
-		return generateDokument(pdfGenerator, !writeProtected);
+		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateMahnung(Mahnung mahnung, Optional<Mahnung> vorgaengerMahnungOptional, boolean writeProtected) throws MergeDocException {
+	public byte[] generateMahnung(
+		Mahnung mahnung,
+		Optional<Mahnung> vorgaengerMahnungOptional,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
 		Objects.requireNonNull(mahnung, "Das Argument 'mahnung' darf nicht leer sein");
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(mahnung.getGesuch());
 
@@ -125,58 +140,78 @@ public class PDFServiceBean implements PDFService {
 		default:
 			throw new MergeDocException("generateMahnung()", "Unexpected Mahnung Type", null, OBJECTARRAY);
 		}
-		return generateDokument(pdfGenerator, !writeProtected);
+		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
 	@Override
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateFreigabequittung(@Nonnull Gesuch gesuch, boolean writeProtected) throws MergeDocException {
+	public byte[] generateFreigabequittung(
+		@Nonnull Gesuch gesuch,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
 		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
 
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
-		final List<DokumentGrund> benoetigteUnterlagen = calculateListOfDokumentGrunds(gesuch);
+		final List<DokumentGrund> benoetigteUnterlagen = calculateListOfDokumentGrunds(gesuch, locale);
 
 		FreigabequittungPdfGenerator pdfGenerator = new FreigabequittungPdfGenerator(gesuch, stammdaten,
 			benoetigteUnterlagen);
-		return generateDokument(pdfGenerator, !writeProtected);
+		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
 	@Override
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateBegleitschreiben(@Nonnull Gesuch gesuch, boolean writeProtected) throws MergeDocException {
+	public byte[] generateBegleitschreiben(
+		@Nonnull Gesuch gesuch,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
 		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
 		authorizer.checkReadAuthorization(gesuch);
 
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
 
 		BegleitschreibenPdfGenerator pdfGenerator = new BegleitschreibenPdfGenerator(gesuch, stammdaten);
-		return generateDokument(pdfGenerator, !writeProtected);
+		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS, GESUCHSTELLER,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull Verfuegung famGroessenVerfuegung,
-		boolean writeProtected) throws MergeDocException {
+	public byte[] generateFinanzielleSituation(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Verfuegung famGroessenVerfuegung,
+		boolean writeProtected,
+		@Nonnull Locale locale
+	) throws MergeDocException {
 
 		Objects.requireNonNull(gesuch, "Das Argument 'gesuch' darf nicht leer sein");
 
 		if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 
 			if (!gesuch.hasOnlyBetreuungenOfSchulamt()) {
-				// Bei nur Schulamt prüfen wir die Berechtigung nicht, damit das JA solche Gesuche schliessen kann. Der UseCase ist, dass zuerst ein zweites
-				// Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.		authorizer.checkReadAuthorizationFinSit(gesuch);
+				// Bei nur Schulamt prüfen wir die Berechtigung nicht, damit das JA solche Gesuche schliessen kann. Der UseCase ist,
+				// dass zuerst ein zweites Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.
 				authorizer.checkReadAuthorizationFinSit(gesuch);
 			}
 
+			// Im Dokument der Finanziellen Situation werden nur die Zeitabschnitte dargestellt, die nach dem
+			// ersten Einreichungsdatum aller Gesuche dieses Dossiers liegen
+			LocalDate erstesEinreichungsdatum =
+				dossierService.getErstesEinreichungsdatum(gesuch.getDossier(), gesuch.getGesuchsperiode());
+
 			GemeindeStammdaten stammdaten = getGemeindeStammdaten(gesuch);
-			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(gesuch, famGroessenVerfuegung, stammdaten);
-			return generateDokument(pdfGenerator, !writeProtected);
+			FinanzielleSituationPdfGenerator pdfGenerator = new FinanzielleSituationPdfGenerator(
+				gesuch, famGroessenVerfuegung, stammdaten, erstesEinreichungsdatum);
+			return generateDokument(pdfGenerator, !writeProtected, locale);
 		}
 		return BYTES;
 	}
@@ -184,10 +219,14 @@ public class PDFServiceBean implements PDFService {
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
-		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
-	public byte[] generateVerfuegungForBetreuung(Betreuung betreuung,
-		@Nullable LocalDate letzteVerfuegungDatum, boolean writeProtected
+		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER})
+	public byte[] generateVerfuegungForBetreuung(
+		Betreuung betreuung,
+		@Nullable LocalDate letzteVerfuegungDatum,
+		boolean writeProtected,
+		@Nonnull Locale locale
 	) throws MergeDocException {
+
 		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
@@ -196,7 +235,7 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			art);
-		return generateDokument(pdfGenerator, !writeProtected);
+		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
 	private boolean hasAnspruch(@Nonnull Betreuung betreuung) {
@@ -215,9 +254,10 @@ public class PDFServiceBean implements PDFService {
 	 * die noch nicht hochgeladen wurden
 	 */
 	@Nonnull
-	private List<DokumentGrund> calculateListOfDokumentGrunds(@Nonnull Gesuch gesuch) {
+	private List<DokumentGrund> calculateListOfDokumentGrunds(@Nonnull Gesuch gesuch, @Nonnull Locale locale) {
 		List<DokumentGrund> dokumentGrundsMerged = new ArrayList<>(DokumenteUtil
-			.mergeNeededAndPersisted(dokumentenverzeichnisEvaluator.calculate(gesuch),
+			.mergeNeededAndPersisted(
+				dokumentenverzeichnisEvaluator.calculate(gesuch, locale),
 				dokumentGrundService.findAllDokumentGrundByGesuch(gesuch)));
 		Collections.sort(dokumentGrundsMerged);
 		return dokumentGrundsMerged;
@@ -233,13 +273,18 @@ public class PDFServiceBean implements PDFService {
 	}
 
 	@Nonnull
-	private byte[] generateDokument(@Nonnull KibonPdfGenerator pdfGenerator, boolean entwurf) throws MergeDocException {
+	private byte[] generateDokument(
+		@Nonnull KibonPdfGenerator pdfGenerator,
+		boolean entwurf,
+		@Nonnull Locale locale
+	) throws MergeDocException {
+
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			pdfGenerator.generate(baos);
 			byte[] content = baos.toByteArray();
 			if (entwurf) {
-				return PdfUtil.addEntwurfWatermark(content);
+				return PdfUtil.addEntwurfWatermark(content, locale);
 			}
 			return content;
 		} catch (InvoiceGeneratorException | IOException e) {

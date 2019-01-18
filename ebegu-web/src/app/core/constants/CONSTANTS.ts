@@ -26,6 +26,8 @@ export const CONSTANTS = {
     PATTERN_MOBILE: '(0|\\+41|0041)\\s?(74|75|76|77|78|79)\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
     PATTERN_EMAIL: '[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}',
     INSTITUTIONSSTAMMDATENID_DUMMY_TAGESSCHULE: '199ac4a1-448f-4d4c-b3a6-5aee21f89613',
+    ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA: '00000000-0000-0000-0000-000000000000',
+    ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE: '00000000-0000-0000-0000-000000000001',
     PARTS_OF_BETREUUNGSNUMMER: 5,
     END_OF_TIME_STRING: '31.12.9999',
     DATE_FORMAT: 'DD.MM.YYYY',
@@ -33,6 +35,7 @@ export const CONSTANTS = {
 
 export const DEFAULT_LOCALE = 'de-CH';
 export const LOCALSTORAGE_LANGUAGE_KEY = 'kibonLanguage';
+export const HEADER_ACCEPT_LANGUAGE = 'Accept-Language';
 
 // Maximale (upload) Filegrösse ist 10MB
 export const MAX_FILE_SIZE = 10000000;

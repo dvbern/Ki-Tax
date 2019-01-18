@@ -77,6 +77,14 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private BigDecimal vollkosten = BigDecimal.ZERO;
 
+	private BigDecimal verguenstigungOhneBeruecksichtigungVollkosten;
+
+	private BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+
+	private BigDecimal verguenstigung;
+
+	private BigDecimal minimalerElternbeitrag;
+
 	private BigDecimal elternbeitrag = BigDecimal.ZERO;
 
 	private BigDecimal abzugFamGroesse = BigDecimal.ZERO;
@@ -161,6 +169,40 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setVollkosten(BigDecimal vollkosten) {
 		this.vollkosten = vollkosten;
+	}
+
+	public BigDecimal getVerguenstigungOhneBeruecksichtigungVollkosten() {
+		return verguenstigungOhneBeruecksichtigungVollkosten;
+	}
+
+	public void setVerguenstigungOhneBeruecksichtigungVollkosten(BigDecimal
+		verguenstigungOhneBeruecksichtigungVollkosten) {
+		this.verguenstigungOhneBeruecksichtigungVollkosten = verguenstigungOhneBeruecksichtigungVollkosten;
+	}
+
+	public BigDecimal getVerguenstigungOhneBeruecksichtigungMinimalbeitrag() {
+		return verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+	}
+
+	public void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal
+		verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
+		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+	}
+
+	public BigDecimal getVerguenstigung() {
+		return verguenstigung;
+	}
+
+	public void setVerguenstigung(BigDecimal verguenstigung) {
+		this.verguenstigung = verguenstigung;
+	}
+
+	public BigDecimal getMinimalerElternbeitrag() {
+		return minimalerElternbeitrag;
+	}
+
+	public void setMinimalerElternbeitrag(BigDecimal minimalerElternbeitrag) {
+		this.minimalerElternbeitrag = minimalerElternbeitrag;
 	}
 
 	public BigDecimal getElternbeitrag() {

@@ -54,21 +54,26 @@ export class LoginComponentController implements IController {
     public $onInit(): void {
         // wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
         const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params(), {absolute: true});
+        // wrap in burn timeout request, note that this will always produce an error
+        // because no Access-Control-Allow-Origin is set, this should not matter however because
+        // the point of the request ist to clear the timeout page
+        this.authService.burnPortalTimeout().finally(() => {
 
-        this.authService.initSSOLogin(relayUrl)
-            .then(url => {
-                this.redirectionHref = url;
-                if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
-                    this.doLogout();
-                    return;
-                }
+            this.authService.initSSOLogin(relayUrl)
+                      .then(url => {
+                          this.redirectionHref = url;
+                          if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
+                              this.doLogout();
+                              return;
+                          }
 
-                this.redirecting = true;
-                if (this.countdown > 0) {
-                    this.$timeout(this.doCountdown, 1000);
-                }
-                this.$timeout(() => this.redirect(url), this.countdown * 1000);
-            });
+                          this.redirecting = true;
+                          if (this.countdown > 0) {
+                              this.$timeout(this.doCountdown, 1000);
+                          }
+                          this.$timeout(() => this.redirect(url), this.countdown * 1000);
+                      });
+        });
     }
 
     public getBaseURL(): string {

@@ -257,6 +257,10 @@ export default class TSFinanzModel {
 
     // tslint:disable-next-line:cognitive-complexity
     public initEinkommensverschlechterungContainer(basisjahrPlus: number, gesuchstellerNumber: number): void {
+        if ((basisjahrPlus !== 2 && basisjahrPlus !== 1)
+            || (gesuchstellerNumber !== 2 && gesuchstellerNumber !== 1)) {
+            return;
+        }
         const infoJA = this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA;
 
         if (gesuchstellerNumber === 1) {
@@ -267,8 +271,8 @@ export default class TSFinanzModel {
             if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1) {
                 this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1 =
                     new TSEinkommensverschlechterung();
-            }
 
+            }
             if (basisjahrPlus === 2) {
                 if (!this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2) {
                     this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 =
@@ -281,32 +285,28 @@ export default class TSFinanzModel {
                 this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2.steuerveranlagungErhalten = false;
                 this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2.steuererklaerungAusgefuellt = false;
             }
+
+        } else {
+
+            if (!this.einkommensverschlechterungContainerGS2) {
+                this.einkommensverschlechterungContainerGS2 = new TSEinkommensverschlechterungContainer();
+            }
+            if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1) {
+                this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1 =
+                    new TSEinkommensverschlechterung();
+
+            }
+            if (basisjahrPlus === 2) {
+                if (!this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2) {
+                    this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2 =
+                        new TSEinkommensverschlechterung();
+                }
+                infoJA.gemeinsameSteuererklaerung_BjP2 = false;
+                this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuerveranlagungErhalten = false;
+                this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuererklaerungAusgefuellt = false;
+            }
         }
 
-        if (gesuchstellerNumber !== 2) {
-            return;
-        }
-
-        if (!this.einkommensverschlechterungContainerGS2) {
-            this.einkommensverschlechterungContainerGS2 = new TSEinkommensverschlechterungContainer();
-        }
-        if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1) {
-            this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1 =
-                new TSEinkommensverschlechterung();
-        }
-
-        if (basisjahrPlus !== 2) {
-            return;
-        }
-
-        if (!this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2) {
-            this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2 =
-                new TSEinkommensverschlechterung();
-        }
-        infoJA.gemeinsameSteuererklaerung_BjP2 =
-            false;
-        this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuerveranlagungErhalten = false;
-        this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuererklaerungAusgefuellt = false;
     }
 
     public getGemeinsameSteuererklaerungToWorkWith(): boolean {

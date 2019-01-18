@@ -18,20 +18,35 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+
 public class FinanzielleSituationRow {
+
+	private static final String URSPRUENGLICH = "PdfGeneration_FinSit_Urspruenglich";
+	public static final String LINE_FEED_SPACE = "\n ";
 
 	@Nonnull
 	private String label;
 
 	@Nonnull
+	private String supertext;
+
+	@Nonnull
 	private String gs1;
+
+	@Nonnull
+	private String gs1Urspruenglich;
 
 	@Nullable
 	private String gs2;
+
+	@Nonnull
+	private String gs2Urspruenglich;
 
 
 	public FinanzielleSituationRow(@Nonnull String label, @Nonnull String gs1) {
@@ -55,8 +70,27 @@ public class FinanzielleSituationRow {
 	}
 
 	@Nullable
+	public String getGs2Urspruenglich() {
+		return gs2Urspruenglich;
+	}
+
+	@Nullable
+	public String getGs1Urspruenglich() {
+		return gs1Urspruenglich;
+	}
+
+	@Nullable
 	public String getGs2() {
 		return gs2;
+	}
+
+	@Nullable
+	public String getSupertext() {
+		return supertext;
+	}
+
+	public void setSupertext(@Nonnull String supertext) {
+		this.supertext = supertext;
 	}
 
 	public void setGs2(@Nullable String gs2) {
@@ -69,5 +103,17 @@ public class FinanzielleSituationRow {
 
 	public void setGs2(@Nullable BigDecimal gs2) {
 		this.gs2 = PdfUtil.printBigDecimal(gs2);
+	}
+
+	public void setGs1Urspruenglich(@Nullable BigDecimal gs1Urspruenglich, Locale locale) {
+		this.gs1Urspruenglich = gs1Urspruenglich == null
+			? LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale) + " -"
+			: LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale) + PdfUtil.printBigDecimal(gs1Urspruenglich);
+	}
+
+	public void setGs2Urspruenglich(@Nullable BigDecimal gs2Urspruenglich, Locale locale) {
+		this.gs2Urspruenglich = gs2Urspruenglich == null
+			? LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale) + " -"
+			: LINE_FEED_SPACE + ServerMessageUtil.getMessage(URSPRUENGLICH, locale) + PdfUtil.printBigDecimal(gs2Urspruenglich);
 	}
 }

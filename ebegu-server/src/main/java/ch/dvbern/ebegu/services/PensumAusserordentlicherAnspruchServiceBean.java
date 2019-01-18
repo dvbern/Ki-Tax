@@ -32,16 +32,19 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -76,7 +79,8 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public boolean isAusserordentlicherAnspruchPossible(@Nonnull Gesuch gesuch) {
 		// Bei mind. 1 Kind ist KEINE Fachstelle definiert
 		boolean result = hasAtLeastOneKindWithoutFachstelle(gesuch);
@@ -104,7 +108,8 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 			// Ermitteln, ob die Minimales-Erwerbspensum-Regel zugeschlagen hat: Kommt die entsprechende
 			// Bemerkung vor?
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
-				String message = ServerMessageUtil.translateEnumValue(MsgKey.ERWERBSPENSUM_MINIMUM_MSG);
+				// the language is irrelevant, a translation in german will always work in this case
+				String message = ServerMessageUtil.translateEnumValue(MsgKey.ERWERBSPENSUM_MINIMUM_MSG, Constants.DEFAULT_LOCALE);
 				// Die Bemerkung hat einen Parameter, diesen wollen wir nicht aus den Einstellungen lesen. Darum
 				// vergleichen wir nur bis zu diesem Parameter
 				message = StringUtils.substringBefore(message, "{");

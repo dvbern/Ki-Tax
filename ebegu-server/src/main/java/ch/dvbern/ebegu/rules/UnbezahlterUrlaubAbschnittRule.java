@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,8 +46,8 @@ import static java.util.Objects.requireNonNull;
 public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
 
-	public UnbezahlterUrlaubAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public UnbezahlterUrlaubAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	/**
@@ -115,26 +116,38 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
 
-			Objects.requireNonNull(familiensituation.getAenderungPer());
 			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
 
-			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensum());
-			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-			return zeitabschnitt;
+			return createZeitabschnittUnbezahlterUrlaubGS2(erwerbspensumJA, gueltigkeit);
 		}
 		if (gs2 && !gesuch.isMutation()) {
-			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensum());
-			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-			return zeitabschnitt;
+			return createZeitabschnittUnbezahlterUrlaubGS2(erwerbspensumJA, gueltigkeit);
 		}
 		if (!gs2) {
-			VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-			zeitabschnitt.setErwerbspensumGS1(0 - erwerbspensumJA.getPensum());
-			zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
-			return zeitabschnitt;
+			return createZeitabschnittUnbezahlterUrlaubGS1(erwerbspensumJA, gueltigkeit);
 		}
 		return null;
+	}
+
+	@Nonnull
+	private VerfuegungZeitabschnitt createZeitabschnittUnbezahlterUrlaubGS1(
+		@Nonnull Erwerbspensum erwerbspensumJA,
+		DateRange gueltigkeit
+	) {
+		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+		zeitabschnitt.setErwerbspensumGS1(0 - erwerbspensumJA.getPensum());
+		zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG, getLocale());
+		return zeitabschnitt;
+	}
+
+	@Nonnull
+	private VerfuegungZeitabschnitt createZeitabschnittUnbezahlterUrlaubGS2(
+		@Nonnull Erwerbspensum erwerbspensumJA,
+		DateRange gueltigkeit
+	) {
+		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
+		zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensum());
+		zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG, getLocale());
+		return zeitabschnitt;
 	}
 }

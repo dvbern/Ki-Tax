@@ -65,6 +65,7 @@ import TSFall from '../../models/TSFall';
 import TSFamiliensituation from '../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../models/TSFamiliensituationContainer';
 import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
+import TSGemeindeStammdaten from '../../models/TSGemeindeStammdaten';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import TSGesuchsteller from '../../models/TSGesuchsteller';
@@ -77,6 +78,7 @@ import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import DossierRS from './dossierRS.rest';
 import EinkommensverschlechterungContainerRS from './einkommensverschlechterungContainerRS.rest';
 import FinanzielleSituationRS from './finanzielleSituationRS.rest';
+import GemeindeRS from './gemeindeRS.rest';
 import {GesuchGenerator} from './gesuchGenerator';
 import GesuchRS from './gesuchRS.rest';
 import GlobalCacheService from './globalCacheService';
@@ -89,8 +91,7 @@ export default class GesuchModelManager {
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
-        'GlobalCacheService',
-        'DossierRS', 'GesuchGenerator',
+        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS'
     ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
@@ -101,11 +102,15 @@ export default class GesuchModelManager {
     private fachstellenAnspruchList: Array<TSFachstelle>;
     private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
     private activInstitutionenList: Array<TSInstitutionStammdaten>;
+    public gemeindeStammdaten: TSGemeindeStammdaten;
 
     public ewkResultatGS1: TSEWKResultat;
     public ewkResultatGS2: TSEWKResultat;
     public ewkPersonGS1: TSEWKPerson;
     public ewkPersonGS2: TSEWKPerson;
+
+    // initialize empty KinderContainer list to avoid infinite loop in smart table
+    public emptyKinderList: Array<TSKindContainer> = [];
 
     public constructor(
         private readonly gesuchRS: GesuchRS,
@@ -130,6 +135,7 @@ export default class GesuchModelManager {
         private readonly globalCacheService: GlobalCacheService,
         private readonly dossierRS: DossierRS,
         private readonly gesuchGenerator: GesuchGenerator,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
@@ -151,14 +157,16 @@ export default class GesuchModelManager {
             this.gesuchRS.findGesuchForInstitution(gesuchId) :
             this.gesuchRS.findGesuch(gesuchId);
 
-        return gesuchPromise.then(gesuch => this.wizardStepManager.findStepsFromGesuch(gesuchId)
-            .then(() => {
-                if (gesuch) {
-                    this.setGesuch(gesuch);
-                }
+        return gesuchPromise
+            .then(gesuch => this.wizardStepManager.findStepsFromGesuch(gesuchId)
+                .then(() => {
+                    if (gesuch) {
+                        this.setGesuch(gesuch);
+                    }
 
-                return gesuch;
-            }));
+                    return gesuch;
+                })
+            );
     }
 
     /**
@@ -190,6 +198,7 @@ export default class GesuchModelManager {
         this.ewkResultatGS2 = undefined;
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.activInstitutionenList = undefined;
+        this.loadGemeindeStammdaten();
 
         return gesuch;
     }
@@ -240,6 +249,20 @@ export default class GesuchModelManager {
         return this.gesuch ? this.gesuch.extractFamiliensituationErstgesuch() : undefined;
     }
 
+    /**
+     * Loads the Stammdaten of the gemiende of the current Dossier so we can access them
+     * while filling out the Gesuch, wihtout having to load it from server again and again
+     */
+    private loadGemeindeStammdaten(): void {
+        if (!(this.getDossier() && this.getDossier().gemeinde)) {
+            return;
+        }
+        this.gemeindeRS.getGemeindeStammdaten(this.getDossier().gemeinde.id)
+            .then(stammdaten => {
+                this.gemeindeStammdaten = stammdaten;
+            });
+    }
+
     public updateFachstellenAnspruchList(): void {
         this.fachstelleRS.getAnspruchFachstellen().then((response: TSFachstelle[]) => {
             this.fachstellenAnspruchList = response;
@@ -259,6 +282,16 @@ export default class GesuchModelManager {
         this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiode(this.getGesuchsperiode().id)
             .then((response: TSInstitutionStammdaten[]) => {
                 this.activInstitutionenList = response;
+            });
+    }
+
+    /**
+     * Retrieves the InstitutionStammdaten of the unknown Institution
+     */
+    public getUnknownInstitutionStammdaten(unknownInstitutionStammdatenId: string): IPromise<TSInstitutionStammdaten> {
+        return this.instStamRS.findInstitutionStammdaten(unknownInstitutionStammdatenId)
+            .then((response: TSInstitutionStammdaten) => {
+                return response;
             });
     }
 
@@ -686,7 +719,7 @@ export default class GesuchModelManager {
         if (this.gesuch) {
             return this.gesuch.kindContainers;
         }
-        return [];
+        return this.emptyKinderList;
     }
 
     /**
@@ -1170,7 +1203,7 @@ export default class GesuchModelManager {
         const kinderList = this.getKinderList();
         for (const kind of kinderList) {
             // das kind muss schon gespeichert sein damit es zahelt
-            if (kind.kindJA.familienErgaenzendeBetreuung && !kind.kindJA.isNew()) {
+            if (kind.kindJA && !kind.kindJA.isNew() && kind.kindJA.familienErgaenzendeBetreuung) {
                 return true;
             }
         }
@@ -1390,7 +1423,7 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Gibt true zurueck, wenn der Antrag ein Erstgesuchist. False bekommt man wenn der Antrag eine Mutation ist
+     * Gibt true zurueck, wenn der Antrag ein Erstgesuch ist. False bekommt man wenn der Antrag eine Mutation ist
      * By default (beim Fehler oder leerem Gesuch) wird auch true zurueckgegeben
      */
     public isGesuch(): boolean {

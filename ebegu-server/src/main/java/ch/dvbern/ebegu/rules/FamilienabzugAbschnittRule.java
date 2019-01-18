@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -28,6 +29,7 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -61,8 +63,10 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		BigDecimal pauschalabzugProPersonFamiliengroesse3,
 		BigDecimal pauschalabzugProPersonFamiliengroesse4,
 		BigDecimal pauschalabzugProPersonFamiliengroesse5,
-		BigDecimal pauschalabzugProPersonFamiliengroesse6) {
-		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, validityPeriod);
+		BigDecimal pauschalabzugProPersonFamiliengroesse6,
+		@Nonnull Locale locale
+	) {
+		super(RuleKey.FAMILIENSITUATION, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 		this.pauschalabzugProPersonFamiliengroesse3 = pauschalabzugProPersonFamiliengroesse3;
 		this.pauschalabzugProPersonFamiliengroesse4 = pauschalabzugProPersonFamiliengroesse4;
 		this.pauschalabzugProPersonFamiliengroesse5 = pauschalabzugProPersonFamiliengroesse5;
@@ -83,14 +87,15 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			final LocalDate geburtsdatum = kindContainer.getKindJA().getGeburtsdatum();
 			if (gesuch.getGesuchsperiode().getGueltigkeit().contains(geburtsdatum)) {
-				final LocalDate beginMonatNachGeb = geburtsdatum.plusMonths(1).withDayOfMonth(1);
+				final LocalDate beginMonatNachGeb = getStichtagForEreignis(geburtsdatum);
 				famGrMap.put(beginMonatNachGeb, calculateFamiliengroesse(gesuch, beginMonatNachGeb));
 			}
 		}
 
-		if (gesuch.extractFamiliensituation() != null && gesuch.extractFamiliensituation().getAenderungPer() != null) {
-			// die familiensituation aendert sich jetzt erst ab dem naechsten Monat, deswegen .plusMonths(1).withDayOfMonth(1)
-			final LocalDate aenderungPerBeginningNextMonth = gesuch.extractFamiliensituation().getAenderungPer().plusMonths(1).withDayOfMonth(1);
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		if (familiensituation != null && familiensituation.getAenderungPer() != null) {
+			// die familiensituation aendert sich jetzt erst ab dem naechsten Monat, deswegen getStichtagForEreignis
+			final LocalDate aenderungPerBeginningNextMonth = getStichtagForEreignis(familiensituation.getAenderungPer());
 			famGrMap.put(aenderungPerBeginningNextMonth, calculateFamiliengroesse(gesuch, aenderungPerBeginningNextMonth));
 		}
 
@@ -163,17 +168,21 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	Map.Entry<Double, Integer> calculateFamiliengroesse(Gesuch gesuch, @Nullable LocalDate date) {
 
 		Double famGrBeruecksichtigungAbzug = 0.0;
-		Integer famGrAnzahlPersonen = 0;
+		int famGrAnzahlPersonen = 0;
 		if (gesuch != null) {
 
-			if (gesuch.extractFamiliensituation() != null) { // wenn die Familiensituation nicht vorhanden ist, kann man nichts machen (die Daten wurden falsch eingegeben)
-				if (gesuch.extractFamiliensituationErstgesuch() != null && date != null && (
-					gesuch.extractFamiliensituation().getAenderungPer() == null //wenn aenderung per nicht gesetzt ist nehmen wir wert aus erstgesuch
-						|| date.isBefore(gesuch.extractFamiliensituation().getAenderungPer().plusMonths(1).withDayOfMonth(1)))) {
+			Familiensituation familiensituation = gesuch.extractFamiliensituation();
+			if (familiensituation != null) { // wenn die Familiensituation nicht vorhanden ist, kann man nichts machen (die Daten wurden falsch eingegeben)
+				Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+				LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
+				if (familiensituationErstgesuch != null && date != null && (
+					familiensituationGueltigAb == null //wenn aenderung per nicht gesetzt ist nehmen wir wert aus erstgesuch
+						|| date.isBefore(getStichtagForEreignis(familiensituationGueltigAb)))) {
 
-					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller() ? 2 : 1);
+					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (familiensituationErstgesuch
+						.hasSecondGesuchsteller() ? 2 : 1);
 				} else {
-					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (gesuch.extractFamiliensituation().hasSecondGesuchsteller() ? 2 : 1);
+					famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (familiensituation.hasSecondGesuchsteller() ? 2 : 1);
 				}
 			} else {
 				LOG.warn("Die Familiengroesse kann noch nicht richtig berechnet werden weil die Familiensituation nicht richtig ausgefuellt ist. Antragnummer: {}", gesuch.getJahrFallAndGemeindenummer());
@@ -189,7 +198,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 						famGrBeruecksichtigungAbzug += 0.5;
 						famGrAnzahlPersonen++;
 					} else if (kindContainer.getKindJA().getKinderabzug() == Kinderabzug.GANZER_ABZUG) {
-						famGrBeruecksichtigungAbzug++;
+						famGrBeruecksichtigungAbzug += 1;
 						famGrAnzahlPersonen++;
 					}
 				}

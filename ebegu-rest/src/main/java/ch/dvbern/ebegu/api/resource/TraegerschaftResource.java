@@ -43,6 +43,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Institution;
@@ -159,7 +160,7 @@ public class TraegerschaftResource {
 	}
 
 	@ApiOperation(value = "Find and return a list of all active Traegerschaften. An active Traegerschaft is a " +
-		"Traegerschaft where the active flag is true",
+		"Traegerschaft where the active flag is true. Result will be ordered by name",
 		responseContainer = "List", response = JaxTraegerschaft.class)
 	@Nonnull
 	@GET
@@ -169,6 +170,7 @@ public class TraegerschaftResource {
 	public List<JaxTraegerschaft> getAllActiveTraegerschaften() {
 		return traegerschaftService.getAllActiveTraegerschaften().stream()
 			.map(traegerschaft -> converter.traegerschaftToJAX(traegerschaft))
+			.sorted((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()))
 			.collect(Collectors.toList());
 	}
 }

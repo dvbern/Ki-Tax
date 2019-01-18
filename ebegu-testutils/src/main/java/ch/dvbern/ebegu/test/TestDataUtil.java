@@ -108,7 +108,6 @@ import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
@@ -302,7 +301,6 @@ public final class TestDataUtil {
 	public static Familiensituation createDefaultFamiliensituation() {
 		Familiensituation familiensituation = new Familiensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		// by default verguenstigung gewuenscht
 		familiensituation.setSozialhilfeBezueger(false);
 		familiensituation.setVerguenstigungGewuenscht(true);
@@ -616,7 +614,7 @@ public final class TestDataUtil {
 			kind.setPensumFachstelle(createDefaultPensumFachstelle());
 		}
 		kind.setFamilienErgaenzendeBetreuung(true);
-		kind.setMutterspracheDeutsch(true);
+		kind.setSprichtAmtssprache(true);
 		kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		return kind;
 	}
@@ -838,11 +836,10 @@ public final class TestDataUtil {
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		gesuch.setDossier(createDefaultDossier());
 		gesuch.setFamiliensituationContainer(createDefaultFamiliensituationContainer());
-		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		if (zweiGesuchsteller) {
-			gesuch.extractFamiliensituation().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		} else {
-			gesuch.extractFamiliensituation().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		}
 		gesuch.setGesuchsteller1(new GesuchstellerContainer());
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
@@ -1165,7 +1162,8 @@ public final class TestDataUtil {
 		@Nonnull Persistence persistence,
 		@Nullable Gemeinde gemeinde,
 		@Nullable AntragStatus status,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode
+	) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		if (gesuchsperiode != null) {
 			gesuch.setGesuchsperiode(gesuchsperiode);
@@ -1597,7 +1595,8 @@ public final class TestDataUtil {
 	public static Betreuung persistBetreuung(
 		BetreuungService betreuungService,
 		Persistence persistence,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode
+	) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		for (BetreuungspensumContainer container : betreuung.getBetreuungspensumContainers()) {
 			persistence.persist(container);

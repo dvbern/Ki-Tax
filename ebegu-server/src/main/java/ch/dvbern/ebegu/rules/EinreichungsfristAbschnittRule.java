@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -42,8 +43,8 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 
-	public EinreichungsfristAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public EinreichungsfristAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.EINREICHUNGSFRIST, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Nonnull
@@ -54,7 +55,7 @@ public class EinreichungsfristAbschnittRule extends AbstractAbschnittRule {
 		LocalDate startDatum = gesuch.getRegelStartDatum();
 		if (gesuch.getTyp().isGesuch() && startDatum != null) {
 			Set<BetreuungspensumContainer> betreuungspensen = betreuung.getBetreuungspensumContainers();
-			LocalDate firstOfMonthDesEinreichungsMonats = LocalDate.of(startDatum.getYear(), startDatum.getMonth(), 1).plusMonths(1);
+			LocalDate firstOfMonthDesEinreichungsMonats = getStichtagForEreignis(startDatum);
 			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensen) {
 				Betreuungspensum betreuungspensum = betreuungspensumContainer.getBetreuungspensumJA();
 				if (betreuungspensum.getGueltigkeit().getGueltigAb().isBefore(firstOfMonthDesEinreichungsMonats)) {

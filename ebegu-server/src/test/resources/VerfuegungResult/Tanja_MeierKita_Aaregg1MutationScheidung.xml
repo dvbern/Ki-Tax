@@ -49,13 +49,13 @@ ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingere
         <vollkosten>1096.75</vollkosten>
     </verfuegungszeitabschnitte>
     <verfuegungszeitabschnitte>
-        <abzugFamGroesse>0</abzugFamGroesse>
+        <abzugFamGroesse>11400.00</abzugFamGroesse>
         <anspruchberechtigtesPensum>50</anspruchberechtigtesPensum>
         <bemerkungen>ZIVILSTANDSAENDERUNG: Anpassung des Zivilstandes von 2 auf 1 Gesuchsteller
 ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN: Anspruchsänderung wurde zu spät eingereicht</bemerkungen>
         <betreuungspensum>50.00</betreuungspensum>
-        <elternbeitrag>1000.00</elternbeitrag>
-        <famGroesse>2.0</famGroesse>
+        <elternbeitrag>1477.20</elternbeitrag>
+        <famGroesse>3.00</famGroesse>
         <gueltigAb>01.11.2017</gueltigAb>
         <gueltigBis>30.11.2017</gueltigBis>
         <vollkosten>2000.00</vollkosten>

@@ -15,11 +15,8 @@
 
 package ch.dvbern.ebegu.validators;
 
-import java.util.ResourceBundle;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -41,18 +38,9 @@ public class CheckBetreuungZeitraumInGesuchsperiodeValidator implements Constrai
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuung.getBetreuungspensumContainers()) {
 			final DateRange pensumDateRange = betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit();
 			if (!gueltigkeitGesuchsperiode.getOverlap(pensumDateRange).isPresent()) {
-				setConstraintViolationMessage(context);
 				return false;
 			}
 		}
 		return true;
-	}
-
-	private void setConstraintViolationMessage(@NotNull ConstraintValidatorContext context) {
-		ResourceBundle rb = ResourceBundle.getBundle("ValidationMessages");
-		String message = rb.getString("invalid_betreuungszeitraum_for_gesuchsperiode");
-		context.disableDefaultConstraintViolation();
-		context.buildConstraintViolationWithTemplate(message)
-			.addConstraintViolation();
 	}
 }

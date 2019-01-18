@@ -79,6 +79,9 @@ public class PDFServiceBeanTest {
 	private PDFServiceBean pdfService;
 
 	@InjectIntoMany
+	DossierServiceMock dossierService = new DossierServiceMock();
+
+	@InjectIntoMany
 	EbeguVorlageService vorlageService = new EbeguVorlageServiceMock();
 
 	@InjectIntoMany
@@ -154,7 +157,7 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testGenerateFreigabequittungJugendamt() throws Exception {
 
-		byte[] bytes = pdfService.generateFreigabequittung(gesuch_2GS, writeProtectPDF);
+		byte[] bytes = pdfService.generateFreigabequittung(gesuch_2GS, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Jugendamt(" + gesuch_2GS.getJahrFallAndGemeindenummer() + ").pdf");
 
@@ -167,7 +170,7 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testGenerateFreigabequittungSchulamt() throws Exception {
 
-		byte[] bytes = pdfService.generateFreigabequittung(gesuch_Schulamt, writeProtectPDF);
+		byte[] bytes = pdfService.generateFreigabequittung(gesuch_Schulamt, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "Freigabequittung_Schulamt(" + gesuch_Schulamt.getJahrFallAndGemeindenummer() + ").pdf");
 
@@ -184,7 +187,7 @@ public class PDFServiceBeanTest {
 			.findFirst();
 
 		if (betreuung.isPresent()) {
-			byte[] bytes = pdfService.generateNichteintreten(betreuung.get(), writeProtectPDF);
+			byte[] bytes = pdfService.generateNichteintreten(betreuung.get(), writeProtectPDF, Constants.DEFAULT_LOCALE);
 			Assert.assertNotNull(bytes);
 			unitTestTempfolder.writeToTempDir(bytes, "Nichteintreten(" + betreuung.get().getBGNummer() + ").pdf");
 		} else {
@@ -199,7 +202,7 @@ public class PDFServiceBeanTest {
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_Schulamt, LocalDate.now().plusWeeks(2), 3);
 
-		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(bytes);
 
@@ -219,7 +222,7 @@ public class PDFServiceBeanTest {
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 3);
 
-		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(bytes);
 
@@ -238,7 +241,7 @@ public class PDFServiceBeanTest {
 
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
 
-		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(bytes);
 
@@ -258,7 +261,7 @@ public class PDFServiceBeanTest {
 		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks
 			(2), 50);
 
-		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(bytes);
 
@@ -282,7 +285,7 @@ public class PDFServiceBeanTest {
 		Mahnung zweiteMahnung = TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_Schulamt, LocalDate.now().plusWeeks(2), 3);
 		zweiteMahnung.setVorgaengerId(ersteMahnung.getId());
 
-		byte[] bytes = pdfService.generateMahnung(zweiteMahnung, Optional.of(ersteMahnung), writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(zweiteMahnung, Optional.of(ersteMahnung), writeProtectPDF, Constants.DEFAULT_LOCALE);
 		assertNotNull(bytes);
 
 		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_Single_Page_Schulamt.pdf");
@@ -302,7 +305,7 @@ public class PDFServiceBeanTest {
 		Mahnung zweiteMahnung = TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 3);
 		zweiteMahnung.setVorgaengerId(ersteMahnung.getId());
 
-		byte[] bytes = pdfService.generateMahnung(zweiteMahnung, Optional.of(ersteMahnung), writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(zweiteMahnung, Optional.of(ersteMahnung), writeProtectPDF, Constants.DEFAULT_LOCALE);
 		assertNotNull(bytes);
 
 		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_Single_Page_Jungendamt.pdf");
@@ -322,7 +325,7 @@ public class PDFServiceBeanTest {
 		Mahnung zweiteMahnung = TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
 		zweiteMahnung.setVorgaengerId(ersteMahnung.getId());
 
-		byte[] bytes = pdfService.generateMahnung(zweiteMahnung,  Optional.of(ersteMahnung), writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(zweiteMahnung,  Optional.of(ersteMahnung), writeProtectPDF, Constants.DEFAULT_LOCALE);
 		assertNotNull(bytes);
 
 		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_Two_Pages.pdf");
@@ -344,7 +347,7 @@ public class PDFServiceBeanTest {
 			.plusWeeks(2), 50);
 		zweiteMahnung.setVorgaengerId(ersteMahnung.getId());
 
-		byte[] bytes = pdfService.generateMahnung(zweiteMahnung,  Optional.of(ersteMahnung), writeProtectPDF);
+		byte[] bytes = pdfService.generateMahnung(zweiteMahnung,  Optional.of(ersteMahnung), writeProtectPDF, Constants.DEFAULT_LOCALE);
 		assertNotNull(bytes);
 
 		unitTestTempfolder.writeToTempDir(bytes, "2_Mahnung_50_Dokumente.pdf");
@@ -373,9 +376,9 @@ public class PDFServiceBeanTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), new BigDecimal("80000"), true);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
-		final Verfuegung evaluateFamiliensituation = evaluator.evaluateFamiliensituation(gesuch);
+		final Verfuegung evaluateFamiliensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 
-		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, evaluateFamiliensituation, writeProtectPDF);
+		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, evaluateFamiliensituation, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "finanzielleSituation1G.pdf");
 	}
@@ -400,10 +403,10 @@ public class PDFServiceBeanTest {
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller2(), new BigDecimal("30000"), false);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
-		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter());
-		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch);
+		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		Verfuegung familiensituation = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
 
-		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, familiensituation, writeProtectPDF);
+		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, familiensituation, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "finanzielleSituation1G2G.pdf");
 	}
@@ -425,10 +428,10 @@ public class PDFServiceBeanTest {
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 
 		TestDataUtil.calculateFinanzDaten(gesuch);
-		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch);
-		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter());
+		Verfuegung verfuegungFamSit = evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
-		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, verfuegungFamSit, writeProtectPDF);
+		byte[] bytes = pdfService.generateFinanzielleSituation(gesuch, verfuegungFamSit, writeProtectPDF, Constants.DEFAULT_LOCALE);
 
 		unitTestTempfolder.writeToTempDir(bytes, "TN_FamilienStituation1.pdf");
 	}
@@ -436,8 +439,8 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testPrintBegleitschreiben() throws Exception {
 
-		evaluator.evaluate(gesuch_1GS, AbstractBGRechnerTest.getParameter());
-		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_1GS, writeProtectPDF);
+		evaluator.evaluate(gesuch_1GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_1GS, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "BegleitschreibenWaelti.pdf");
 	}
@@ -446,12 +449,12 @@ public class PDFServiceBeanTest {
 	public void testPrintBegleitschreibenTwoGesuchsteller() throws Exception {
 
 		Assert.assertNotNull(gesuch_2GS.getGesuchsteller1());
-		gesuch_2GS.getGesuchsteller1().getAdressen().stream().forEach(gesuchstellerAdresse -> {
+		gesuch_2GS.getGesuchsteller1().getAdressen().forEach(gesuchstellerAdresse -> {
 			Assert.assertNotNull(gesuchstellerAdresse.getGesuchstellerAdresseJA());
 			gesuchstellerAdresse.getGesuchstellerAdresseJA().setZusatzzeile("Test zusatztzeile");
 		});
-		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
-		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_2GS, writeProtectPDF);
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
+		byte[] bytes = pdfService.generateBegleitschreiben(gesuch_2GS, writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(bytes);
 		unitTestTempfolder.writeToTempDir(bytes, "BegleitschreibenFeutz.pdf");
 	}
@@ -461,13 +464,14 @@ public class PDFServiceBeanTest {
 
 		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 
-		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		Assert.assertNotNull(testBetreuung.getVerfuegung());
 		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
 
-		byte[] verfuegungsPDF = pdfService.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF);
+		byte[] verfuegungsPDF = pdfService
+			.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(verfuegungsPDF);
 		unitTestTempfolder.writeToTempDir(verfuegungsPDF, "Verfuegung_KITA.pdf");
 	}
@@ -477,13 +481,14 @@ public class PDFServiceBeanTest {
 
 		gesuch_2GS.extractAllBetreuungen().get(0).getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
 
-		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter());
+		evaluator.evaluate(gesuch_2GS, AbstractBGRechnerTest.getParameter(), Constants.DEFAULT_LOCALE);
 
 		Betreuung testBetreuung = gesuch_2GS.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		Assert.assertNotNull(testBetreuung.getVerfuegung());
 		testBetreuung.getVerfuegung().setManuelleBemerkungen("Test Bemerkung 1\nTest Bemerkung 2\nTest Bemerkung 3");
 
-		byte[] verfuegungsPDF = pdfService.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF);
+		byte[] verfuegungsPDF = pdfService
+			.generateVerfuegungForBetreuung(testBetreuung, LocalDate.now().minusDays(183), writeProtectPDF, Constants.DEFAULT_LOCALE);
 		Assert.assertNotNull(verfuegungsPDF);
 		unitTestTempfolder.writeToTempDir(verfuegungsPDF, "Verfuegung_TageselternKleinkinder.pdf");
 	}

@@ -92,13 +92,13 @@ import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
@@ -1001,7 +1001,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBetreuungsTyp(zeitabschnitt.getVerfuegung().getBetreuung().getBetreuungsangebotTyp());
 		row.setPeriode(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 		String messageKey = AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name();
-		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey));
+		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, LocaleThreadLocal.get()));
 		row.setEingangsdatum(gesuch.getEingangsdatum());
 		for (AntragStatusHistory antragStatusHistory : gesuch.getAntragStatusHistories()) {
 			if (AntragStatus.getAllVerfuegtStates().contains(antragStatusHistory.getStatus())) {
@@ -1053,6 +1053,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs1EwpGesundhtl(row.getGs1EwpGesundhtl() + erwerbspensumJA.getPensum());
 			}
+			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs1EwpIntegration(row.getGs1EwpIntegration() + erwerbspensumJA.getPensum());
+			}
 		}
 	}
 
@@ -1092,6 +1095,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			if (Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN == erwerbspensumJA.getTaetigkeit()) {
 				row.setGs2EwpGesundhtl(row.getGs2EwpGesundhtl() + erwerbspensumJA.getPensum());
 			}
+			if (Taetigkeit.INTEGRATION_BESCHAEFTIGUNSPROGRAMM == erwerbspensumJA.getTaetigkeit()) {
+				row.setGs2EwpIntegration(row.getGs2EwpIntegration() + erwerbspensumJA.getPensum());
+			}
 		}
 	}
 
@@ -1115,7 +1121,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse());
 		}
 
-		row.setKindDeutsch(kind.getMutterspracheDeutsch());
+		row.setKindSprichtAmtssprache(kind.getSprichtAmtssprache());
 		row.setKindEinschulungTyp(kind.getEinschulungTyp());
 	}
 
@@ -1126,9 +1132,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		row.setZeitabschnittVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 		row.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-		row.setBetreuungsStatus(ServerMessageUtil.getMessage(Betreuungsstatus.class.getSimpleName()
-			+ '_'
-			+ betreuung.getBetreuungsstatus().name()));
+		row.setBetreuungsStatus(ServerMessageUtil.getMessage(
+			Betreuungsstatus.class.getSimpleName()
+				+ '_'
+				+ betreuung.getBetreuungsstatus().name(),
+			LocaleThreadLocal.get()
+			)
+		);
 		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensum()));
 		row.setAnspruchsPensum(MathUtil.DEFAULT.from(zeitabschnitt.getAnspruchberechtigtesPensum()));
 		row.setBgPensum(MathUtil.DEFAULT.from(zeitabschnitt.getBgPensum()));
@@ -1231,6 +1241,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs1EwpSelbstaendig(0);
 		row.setGs1EwpRav(0);
 		row.setGs1EwpGesundhtl(0);
+		row.setGs1EwpIntegration(0);
 		GesuchstellerContainer gs1Container = gueltigeGesuch.getGesuchsteller1();
 		if (gs1Container != null) {
 			addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(row, gs1Container);
@@ -1241,6 +1252,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setGs2EwpSelbstaendig(0);
 		row.setGs2EwpRav(0);
 		row.setGs2EwpGesundhtl(0);
+		row.setGs2EwpIntegration(0);
 		if (gueltigeGesuch.getGesuchsteller2() != null) {
 			addGesuchsteller2ToGesuchstellerKinderBetreuungDataRow(row, gueltigeGesuch.getGesuchsteller2());
 		}
@@ -1250,11 +1262,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			Familiensituation familiensituation =
 				familiensituationContainer.getFamiliensituationAm(row.getZeitabschnittVon());
 			row.setFamiliensituation(familiensituation.getFamilienstatus());
-			if (familiensituation.hasSecondGesuchsteller()) {
-				row.setKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
-			} else {
-				row.setKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
-			}
 		}
 		row.setFamiliengroesse(zeitabschnitt.getFamGroesse());
 		row.setMassgEinkVorFamilienabzug(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
@@ -1464,7 +1471,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			MergeFieldProvider.toMergeFields(reportResource.getMergeFields()),
 			reportData.size());
 
-		gesuchstellerKinderBetreuungExcelConverter.mergeRows(rowFiller, reportData);
+		gesuchstellerKinderBetreuungExcelConverter.mergeRows(
+			rowFiller,
+			reportData,
+			LocaleThreadLocal.get()
+		);
 		gesuchstellerKinderBetreuungExcelConverter.applyAutoSize(sheet);
 
 		return rowFiller;
@@ -1640,7 +1651,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setNachname(benutzer.getNachname());
 		row.setVorname(benutzer.getVorname());
 		row.setEmail(benutzer.getEmail());
-		row.setRole(ServerMessageUtil.translateEnumValue(benutzer.getRole()));
+		row.setRole(ServerMessageUtil.translateEnumValue(benutzer.getRole(), LocaleThreadLocal.get()));
 		LocalDate gueltigAb = benutzer.getCurrentBerechtigung().getGueltigkeit().getGueltigAb();
 		if (gueltigAb.isAfter(Constants.START_OF_TIME)) {
 			row.setRoleGueltigAb(gueltigAb);

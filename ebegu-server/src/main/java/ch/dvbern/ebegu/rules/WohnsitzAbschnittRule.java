@@ -19,10 +19,12 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -30,6 +32,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Regel für Wohnsitz in Bern (Zuzug und Wegzug):
@@ -42,8 +46,8 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WohnsitzAbschnittRule.class);
 
-	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public WohnsitzAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.WOHNSITZ, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Nonnull
@@ -81,7 +85,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 					if (isWohnsitzNichtInGemeinde(zeitabschnitt)) {
 						// Es ist ein Wegzug
 						LOG.info("Wegzug");
-						LocalDate stichtagEndeAnspruch = zeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1).plusMonths(2).with(TemporalAdjusters.lastDayOfMonth());
+						LocalDate stichtagEndeAnspruch = zeitabschnitt.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.lastDayOfMonth());
 						lastZeitAbschnitt.getGueltigkeit().setGueltigBis(stichtagEndeAnspruch);
 						if (zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(stichtagEndeAnspruch.plusDays(1))) {
 							zeitabschnitt.getGueltigkeit().setGueltigAb(stichtagEndeAnspruch.plusDays(1));
@@ -117,28 +121,40 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 		gesuchstellerAdressen.stream()
 			.filter(gesuchstellerAdresse -> !gesuchstellerAdresse.extractIsKorrespondenzAdresse() && !gesuchstellerAdresse.extractIsRechnungsAdresse())
 			.forEach(gesuchstellerAdresse -> {
+				final DateRange gsAdresseGueltigkeit = gesuchstellerAdresse.extractGueltigkeit();
+				requireNonNull(gsAdresseGueltigkeit);
 				if (gs1) {
-					VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gesuchstellerAdresse.extractGueltigkeit());
+					VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gsAdresseGueltigkeit);
 					zeitabschnitt.setWohnsitzNichtInGemeindeGS1(gesuchstellerAdresse.extractIsNichtInGemeinde());
 					adressenZeitabschnitte.add(zeitabschnitt);
 				} else { // gs2
-					final DateRange gueltigkeit = new DateRange(gesuchstellerAdresse.extractGueltigkeit());
-					if (gesuch.extractFamiliensituation().getAenderungPer() != null) {
+					final DateRange gueltigkeit = new DateRange(gsAdresseGueltigkeit);
+					Familiensituation familiensituation = gesuch.extractFamiliensituation();
+					requireNonNull(familiensituation);
+					LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
+					if (familiensituationGueltigAb != null) {
+
+						// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
+						LocalDate familiensituationStichtag = getStichtagForEreignis(familiensituationGueltigAb);
+
 						// from 1GS to 2GS
-						if (!gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller() && gesuch.extractFamiliensituation().hasSecondGesuchsteller()) {
-							if (gueltigkeit.getGueltigBis().isAfter(gesuch.extractFamiliensituation().getAenderungPer())) {
-								if (gueltigkeit.getGueltigAb().isBefore(gesuch.extractFamiliensituation().getAenderungPer())) {
-									gueltigkeit.setGueltigAb(gesuch.extractFamiliensituation().getAenderungPer());
+						Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+						requireNonNull(familiensituationErstgesuch);
+						if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
+							if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)) {
+								if (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)) {
+									gueltigkeit.setGueltigAb(familiensituationStichtag);
 								}
 								createZeitabschnittForGS2(adressenZeitabschnitte, gesuchstellerAdresse.extractIsNichtInGemeinde(), gueltigkeit);
 							}
 						}
 						// from 2GS to 1GS
-						else if (gesuch.extractFamiliensituationErstgesuch().hasSecondGesuchsteller() && !gesuch.extractFamiliensituation().hasSecondGesuchsteller()
-							&& (gueltigkeit.getGueltigAb().isBefore(gesuch.extractFamiliensituation().getAenderungPer()))) {
+						else if (familiensituationErstgesuch.hasSecondGesuchsteller() && !familiensituation
+							.hasSecondGesuchsteller()
+							&& (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag))) {
 
-							if (gueltigkeit.getGueltigBis().isAfter(gesuch.extractFamiliensituation().getAenderungPer())) {
-								gueltigkeit.setGueltigBis(gesuch.extractFamiliensituation().getAenderungPer());
+							if (!gueltigkeit.getGueltigBis().isBefore(familiensituationStichtag)) {
+								gueltigkeit.setGueltigBis(familiensituationStichtag.minusDays(1));
 							}
 							createZeitabschnittForGS2(adressenZeitabschnitte, gesuchstellerAdresse.extractIsNichtInGemeinde(), gueltigkeit);
 						}

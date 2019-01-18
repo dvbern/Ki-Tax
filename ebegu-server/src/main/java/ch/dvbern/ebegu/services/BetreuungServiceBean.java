@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -243,10 +244,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			// Bei Ablehnung einer Betreuung muss eine E-Mail geschickt werden
 			mailService.sendInfoBetreuungAbgelehnt(persistedBetreuung);
 		} catch (MailException e) {
-			LOG.error(
-				"Mail InfoBetreuungAbgelehnt konnte nicht verschickt werden fuer Betreuung {}",
-				betreuung.getId(),
-				e);
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoBetreuungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
+				betreuung.getId());
 		}
 		return persistedBetreuung;
 	}
@@ -275,10 +275,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 				mailService.sendInfoBetreuungenBestaetigt(gesuch);
 			}
 		} catch (MailException e) {
-			LOG.error(
-				"Mail InfoBetreuungenBestaetigt konnte nicht verschickt werden fuer Betreuung {}",
-				betreuung.getId(),
-				e);
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoBetreuungenBestaetigt konnte nicht verschickt werden fuer Betreuung",
+				betreuung.getId());
 		}
 		return persistedBetreuung;
 	}
@@ -295,10 +294,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			// Bei Uebernahme einer Anmeldung muss eine E-Mail geschickt werden
 			mailService.sendInfoSchulamtAnmeldungUebernommen(persistedBetreuung);
 		} catch (MailException e) {
-			LOG.error(
-				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung {}",
-				betreuung.getId(),
-				e);
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoSchulamtAnmeldungUebernommen konnte nicht verschickt werden fuer Betreuung",
+				betreuung.getId());
 		}
 		return persistedBetreuung;
 	}
@@ -315,10 +313,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			// Bei Ablehnung einer Anmeldung muss eine E-Mail geschickt werden
 			mailService.sendInfoSchulamtAnmeldungAbgelehnt(persistedBetreuung);
 		} catch (MailException e) {
-			LOG.error(
-				"Mail InfoSchulamtAnmeldungAbgelehnt konnte nicht verschickt werden fuer Betreuung {}",
-				betreuung.getId(),
-				e);
+			logExceptionAccordingToEnvironment(e,
+				"Mail InfoSchulamtAnmeldungAbgelehnt konnte nicht verschickt werden fuer Betreuung",
+				betreuung.getId());
 		}
 		return persistedBetreuung;
 	}
@@ -579,7 +576,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		// must be set to null so that hibernate understands it must remove it
 		//noinspection ConstantConditions
-		betreuung.setErweiterteBetreuungContainer(null);
+		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
 
 		persistence.remove(betreuung);
 

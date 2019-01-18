@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.reporting;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,7 +37,9 @@ public interface ReportMassenversandService {
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable String text);
+		@Nullable String text,
+		@Nonnull Locale locale
+	);
 
 
 	@Nonnull
@@ -48,5 +51,7 @@ public interface ReportMassenversandService {
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable String text) throws ExcelMergeException;
+		@Nullable String text,
+		@Nonnull Locale locale
+	) throws ExcelMergeException;
 }

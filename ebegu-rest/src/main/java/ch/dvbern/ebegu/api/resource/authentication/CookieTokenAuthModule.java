@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
+import io.sentry.Sentry;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.util.BasicAuthHelper;
 import org.omnifaces.security.jaspic.core.AuthParameters;
@@ -63,8 +64,7 @@ import static org.omnifaces.security.jaspic.Utils.isEmpty;
 public class CookieTokenAuthModule extends HttpServerAuthModule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CookieTokenAuthModule.class);
-	private static final String LOG_MDC_EBEGUUSER = "ebeguuser";
-	private static final String LOG_MDC_AUTHUSERID = "ebeguauthuserid";
+
 	private final String internalApiUser;
 	private final String internalApiPassword;
 	private final String schulamtApiUser;
@@ -163,7 +163,8 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			String authId = AuthDataUtil.getAuthAccessElement(request).get().getAuthId();
 			if (!isEmpty(authToken)) {
 
-				MDC.put(LOG_MDC_EBEGUUSER, authId);
+				// authId ist der Loginname (z.B. Email)
+				MDC.put(Constants.LOG_MDC_EBEGUUSER, authId);
 				TokenAuthenticator tokenAuthenticator = getReferenceOrNull(TokenAuthenticator.class);
 				if (tokenAuthenticator != null) {
 
@@ -176,8 +177,6 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 					}
 					if (tokenAuthenticator.authenticate(authToken)) {
 						LOG.debug("successfully logged in user: {}", tokenAuthenticator.getUserName());
-						MDC.put(LOG_MDC_AUTHUSERID, authToken);
-						//						httpMsgContext.registerWithContainer(tokenAuthenticator.getUserName(), tokenAuthenticator.getApplicationRoles()); //weis nicht was der untschied zwischen dem und dem andern ist
 						return httpMsgContext.notifyContainerAboutLogin(tokenAuthenticator.getUserName(), tokenAuthenticator.getApplicationRoles());
 					}
 
@@ -250,6 +249,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			//note: no actual container login is performed currently
 			List<String> roles = new ArrayList<>();
 			roles.add(UserRoleName.SUPER_ADMIN);
+			MDC.put(Constants.LOG_MDC_EBEGUUSER, LOGINCONNECTOR_USER_USERNAME);
 			return httpMsgContext.notifyContainerAboutLogin(LOGINCONNECTOR_USER_USERNAME, roles);
 		}
 
@@ -258,8 +258,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	}
 
 	private void prepareLogvars(HttpMsgContext msgContext) {
-		MDC.put(LOG_MDC_EBEGUUSER, "unknown");
-		MDC.put(LOG_MDC_AUTHUSERID, "unknown");
+		clearUserinfoFromLogvars();
 
 		if (LOG.isDebugEnabled()) {
 			AuthParameters authParameters = msgContext.getAuthParameters();
@@ -268,6 +267,12 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 				LOG.debug("Password was passed in request");
 			}
 		}
+	}
+
+	private void clearUserinfoFromLogvars() {
+		MDC.put(Constants.LOG_MDC_EBEGUUSER, "unknown");
+		MDC.put(Constants.LOG_MDC_AUTHUSERID, "unknown");
+		Sentry.getContext().setUser(null);
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
@@ -288,6 +293,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 	}
 
 	private AuthStatus setResponseUnauthorised(HttpMsgContext httpMsgContext) {
+		clearUserinfoFromLogvars();
 		try {
 			httpMsgContext.getResponse().sendError(SC_UNAUTHORIZED);
 		} catch (IOException e) {

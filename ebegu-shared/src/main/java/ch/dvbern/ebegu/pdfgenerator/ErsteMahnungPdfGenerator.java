@@ -52,14 +52,14 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 
 	@Override
 	protected void createSeite1(@Nonnull Document document) {
-		document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_1_PARAGRAPH_1, getKinderAndAngebote(), getEingangsdatum()), 1));
-		document.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_1_PARAGRAPH_2), 1));
+		document.add(PdfUtil.createParagraph(translate(ERSTE_MAHNUNG_SEITE_1_PARAGRAPH_1, getKinderAndAngebote(), getEingangsdatum()), 1));
+		document.add(PdfUtil.createParagraph(translate(ERSTE_MAHNUNG_SEITE_1_PARAGRAPH_2), 1));
 	}
 
 	@Override
 	protected void createSeite2(@Nonnull Document document, @Nonnull List<Element> seite2Paragraphs) {
-		seite2Paragraphs.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_1, getFristdatum())));
-		seite2Paragraphs.add(PdfUtil.createParagraph(ServerMessageUtil.getMessage(ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_2, gemeindeStammdaten.getTelefon(), gemeindeStammdaten.getMail())));
+		seite2Paragraphs.add(PdfUtil.createParagraph(translate(ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_1, getFristdatum())));
+		seite2Paragraphs.add(PdfUtil.createParagraph(translate(ERSTE_MAHNUNG_SEITE_2_PARAGRAPH_2, gemeindeStammdaten.getTelefon(), gemeindeStammdaten.getMail())));
 	}
 
 	@Nonnull
@@ -76,7 +76,7 @@ public class ErsteMahnungPdfGenerator extends MahnungPdfGenerator {
 		for (int i = 0; i < listAngebot.size(); i++) {
 			angebot.append(listAngebot.get(i));
 			if (i + 2 == listAngebot.size()) {
-				angebot.append(' ').append(ServerMessageUtil.getMessage(UND)).append(' ');
+				angebot.append(' ').append(translate(UND)).append(' ');
 			} else if (i + 1 < listAngebot.size()) {
 				angebot.append(", ");
 			}

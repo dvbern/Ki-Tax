@@ -147,6 +147,6 @@ export class SharedModule {
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang(TSBrowserLanguage.DE);
         // the lang to use, if the lang isn't available, it will use the current loader to get them
-        translate.use(i18nServiceRS.getPreferredLanguage());
+        translate.use(i18nServiceRS.extractPreferredLanguage());
     }
 }

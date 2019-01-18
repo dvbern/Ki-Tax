@@ -26,9 +26,11 @@ import TSBetreuung from '../../../../models/TSBetreuung';
 import TSInstitutionStammdaten from '../../../../models/TSInstitutionStammdaten';
 import TSKindContainer from '../../../../models/TSKindContainer';
 import DateUtil from '../../../../utils/DateUtil';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
 import IFormController = angular.IFormController;
+import ITranslateService = angular.translate.ITranslateService;
 
 export class CreateAngebotListViewConfig implements IComponentOptions {
     public transclude = false;
@@ -39,7 +41,13 @@ export class CreateAngebotListViewConfig implements IComponentOptions {
 
 export class CreateAngebotListViewController implements IController {
 
-    public static $inject: string[] = ['$state', 'GesuchModelManager', '$stateParams', 'BetreuungRS'];
+    public static $inject: string[] = [
+        '$state',
+        'GesuchModelManager',
+        '$stateParams',
+        'BetreuungRS',
+        '$translate',
+    ];
 
     public form: IFormController;
     public einschulungTypValues: Array<TSEinschulungTyp>;
@@ -54,6 +62,7 @@ export class CreateAngebotListViewController implements IController {
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly $stateParams: IAngebotStateParams,
         private readonly betreuungRS: BetreuungRS,
+        private readonly $translate: ITranslateService,
     ) {
     }
 
@@ -87,6 +96,14 @@ export class CreateAngebotListViewController implements IController {
             }
         });
         return result;
+    }
+
+    public getTextSprichtAmtssprache(): string {
+        return this.$translate.instant('SPRICHT_AMTSSPRACHE',
+            {
+                amtssprache: EbeguUtil
+                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
+            });
     }
 
     public getKindContainerList(): Array<TSKindContainer> {
@@ -143,7 +160,8 @@ export class CreateAngebotListViewController implements IController {
     }
 
     public isTageschulenAnmeldungAktiv(): boolean {
-        return this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
+        return this.gesuchModelManager.getGesuchsperiode()
+            && this.gesuchModelManager.getGesuchsperiode().isTageschulenAnmeldungAktiv();
     }
 
     public selectedKindChanged(): void {

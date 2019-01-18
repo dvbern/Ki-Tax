@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,22 +34,8 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.List;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,19 +141,24 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static Paragraph createList(java.util.List<String> list) {
+	public static Paragraph createListInParagraph(java.util.List<String> list) {
 		Paragraph paragraph = new Paragraph();
-		final List itextList = new List(List.UNORDERED);
-		list.forEach(item -> itextList.add(createListItem(item)));
+		final List itextList = createList(list);
 		paragraph.add(itextList);
 		return paragraph;
 	}
 
 	@Nonnull
-	public static Paragraph createList(java.util.List<String> list, final int emptyLinesAfter) {
-		Paragraph paragraph = new Paragraph();
+	public static List createList(java.util.List<String> list) {
 		final List itextList = new List(List.UNORDERED);
 		list.forEach(item -> itextList.add(createListItem(item)));
+		return itextList;
+	}
+
+	@Nonnull
+	public static Paragraph createListInParagraph(java.util.List<String> list, final int emptyLinesAfter) {
+		Paragraph paragraph = new Paragraph();
+		final List itextList = createList(list);
 		paragraph.setSpacingAfter(emptyLinesAfter
 			* PdfUtilities.DEFAULT_FONT_SIZE
 			* PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
@@ -175,18 +167,18 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries) {
+	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries, @Nonnull Locale locale) {
 		PdfPTable table = new PdfPTable(2);
 		try {
 			float[] columnWidths = { 1, 4 };
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Failed to read the Logo: {}", e.getMessage());
+			LOG.error("Error while creating intro table: {}", e.getMessage());
 		}
 		setTableDefaultStyles(table);
 
 		for (TableRowLabelValue entry : entries) {
-			table.addCell(new Phrase(entry.getLabel(), DEFAULT_FONT));
+			table.addCell(new Phrase(entry.getTranslatedLabel(locale), DEFAULT_FONT));
 			table.addCell(new Phrase(entry.getValue(), DEFAULT_FONT));
 		}
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
@@ -257,6 +249,14 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
+	public static String printBigDecimalOneNachkomma(@Nullable BigDecimal valueAsBigDecimal) {
+		if (valueAsBigDecimal != null) {
+			return MathUtil.EINE_NACHKOMMASTELLE.from(valueAsBigDecimal).toString();
+		}
+		return "";
+	}
+
+	@Nonnull
 	public static String printLocalDate(@Nullable LocalDate dateValue) {
 		if (dateValue != null) {
 			return Constants.DATE_FORMATTER.format(dateValue);
@@ -318,25 +318,46 @@ public final class PdfUtil {
 	/**
 	 * Setzt ein Wasserzeichen auf jede Seite des PDF
 	 */
-	public static byte[] addEntwurfWatermark(byte[] content) throws IOException, DocumentException {
+	public static byte[] addEntwurfWatermark(byte[] content, @Nonnull Locale locale) throws IOException, DocumentException {
 		PdfReader reader = new PdfReader(new ByteArrayInputStream(content));
 		ByteArrayOutputStream destOutputStream = new ByteArrayOutputStream();
 
 		PdfStamper stamper = new PdfStamper(reader, destOutputStream);
 		stamper.setRotateContents(true); // Im Querformat (Massg. Eink) soll der Text auch gedreht werden!
+
+		// text watermark
+		Phrase watermarkPhrase = new Phrase(
+			ServerMessageUtil.getMessage(WATERMARK, locale),
+			FontFactory.getFont(PdfUtilities.FONT_FACE_PROXIMA_NOVA_BOLD, FONT_SIZE_WATERMARK)
+		);
+
 		// Auf jeder Seite setzen
 		for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+			// get page size and position
 			Rectangle pagesize = reader.getPageSizeWithRotation(i);
+			float x = (pagesize.getLeft() + pagesize.getRight()) / 2;
+			float y = (pagesize.getTop() + pagesize.getBottom()) / 2;
 			PdfContentByte over = stamper.getOverContent(i);
 			over.saveState();
-			over.setGrayFill(0.5f);
-			over.setFontAndSize(PdfUtilities.DEFAULT_FONT_BOLD.getBaseFont(), FONT_SIZE_WATERMARK);
-			over.showTextAligned(1, ServerMessageUtil.getMessage(WATERMARK),
-				pagesize.getWidth() / 2.0F, pagesize.getHeight() / 2.0F, 45.0F);
+
+			// set transparency
+			PdfGState state = new PdfGState();
+			state.setFillOpacity(0.4f);
+			over.setGState(state);
+
+			// add text
+			ColumnText.showTextAligned(over, Element.ALIGN_CENTER, watermarkPhrase, x, y, 45.0f);
+
 			over.restoreState();
 		}
 		stamper.close();
 		reader.close();
 		return destOutputStream.toByteArray();
+	}
+
+	public static Chunk createSuperTextInText(final  String supertext) {
+		final Chunk chunk = new Chunk(supertext, PdfUtilities.createFontWithSize(5));
+		chunk.setTextRise(3);
+		return chunk;
 	}
 }

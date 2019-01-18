@@ -25,6 +25,7 @@ import TSBetreuung from '../models/TSBetreuung';
 import TSDossier from '../models/TSDossier';
 import TSFall from '../models/TSFall';
 import TSGemeinde from '../models/TSGemeinde';
+import TSGemeindeStammdaten from '../models/TSGemeindeStammdaten';
 import TSGesuch from '../models/TSGesuch';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
@@ -246,6 +247,23 @@ export default class EbeguUtil {
         return sozialhilfeBezueger === false && verguenstigungGewuenscht; // tslint:disable-line:no-boolean-literal-compare
     }
 
+    public static getAmtsspracheAsString(
+        gemeindeStammdaten: TSGemeindeStammdaten,
+        translate: ITranslateService
+    ): string {
+
+        if (!gemeindeStammdaten || !translate) {
+            return '';
+        }
+        if  (gemeindeStammdaten.korrespondenzspracheDe && gemeindeStammdaten.korrespondenzspracheFr) {
+            return translate.instant('DEUTSCH_ODER_FRANZOESISCH');
+        }
+        if (gemeindeStammdaten.korrespondenzspracheFr) {
+            return translate.instant('FRANZOESISCH');
+        }
+        return translate.instant('DEUTSCH');
+    }
+
     /**
      * Returns the first day of the given Period in the format DD.MM.YYYY
      */
@@ -278,7 +296,8 @@ export default class EbeguUtil {
      */
     public getBasisJahrPlusAsString(gesuchsperiode: TSGesuchsperiode, plusJahr: number): string {
         if (gesuchsperiode && gesuchsperiode.gueltigkeit) {
-            return String(gesuchsperiode.gueltigkeit.gueltigAb.year()) + String(plusJahr);
+            // tslint:disable:restrict-plus-operands -> It doesn't seem to understand that both are numbers
+            return String(gesuchsperiode.gueltigkeit.gueltigAb.year() + plusJahr);
         }
         return undefined;
     }

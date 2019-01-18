@@ -681,7 +681,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		List<Betreuung> betreuungs = extractAllBetreuungen();
 		for (Betreuung betreuung : betreuungs) {
 			if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus() ||
-				Betreuungsstatus.ABGEWIESEN == betreuung.getBetreuungsstatus()) {
+				Betreuungsstatus.ABGEWIESEN == betreuung.getBetreuungsstatus() ||
+				Betreuungsstatus.UNBEKANNTE_INSTITUTION == betreuung.getBetreuungsstatus()) {
 				return false;
 			}
 		}
@@ -983,5 +984,13 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		}
 		// a gesuch with no Angebot will be considered a BG-Gesuch
 		return GesuchTypFromAngebotTyp.BG_GESUCH;
+	}
+
+	@Nullable
+	public Betreuung getFirstBetreuung() {
+		return getKindContainers().stream()
+			.findFirst()
+			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream().findFirst())
+			.orElse(null);
 	}
 }

@@ -16,8 +16,11 @@
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -38,17 +41,20 @@ public class DokumentenverzeichnisEvaluator {
 	/**
 	 * Gibt die *zwingenden* DokumentGruende fuer das uebergebene Gesuch zurueck.
 	 */
-	public Set<DokumentGrund> calculate(Gesuch gesuch) {
+	public Set<DokumentGrund> calculate(
+		@Nullable Gesuch gesuch,
+		@Nonnull Locale locale
+	) {
 
 		Set<DokumentGrund> anlageVerzeichnis = new HashSet<>();
 
 		if (gesuch != null) {
-			familiensituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
-			kindAnlagen.getAllDokumente(gesuch, anlageVerzeichnis);
-			erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
-			finanzielleSituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
-			einkommensverschlechterungDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
-			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis);
+			familiensituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			kindAnlagen.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			erwerbspensumDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			finanzielleSituationDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			einkommensverschlechterungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
+			betreuungDokumente.getAllDokumente(gesuch, anlageVerzeichnis, locale);
 		}
 
 		return anlageVerzeichnis;

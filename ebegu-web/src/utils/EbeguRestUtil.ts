@@ -523,7 +523,6 @@ export default class EbeguRestUtil {
         if (familiensituation) {
             this.abstractMutableEntityToRestObject(restFamiliensituation, familiensituation);
             restFamiliensituation.familienstatus = familiensituation.familienstatus;
-            restFamiliensituation.gesuchstellerKardinalitaet = familiensituation.gesuchstellerKardinalitaet;
             restFamiliensituation.gemeinsameSteuererklaerung = familiensituation.gemeinsameSteuererklaerung;
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
@@ -594,7 +593,6 @@ export default class EbeguRestUtil {
         if (familiensituationFromServer) {
             this.parseAbstractMutableEntity(familiensituation, familiensituationFromServer);
             familiensituation.familienstatus = familiensituationFromServer.familienstatus;
-            familiensituation.gesuchstellerKardinalitaet = familiensituationFromServer.gesuchstellerKardinalitaet;
             familiensituation.gemeinsameSteuererklaerung = familiensituationFromServer.gemeinsameSteuererklaerung;
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
@@ -1409,19 +1407,28 @@ export default class EbeguRestUtil {
     ): TSEinkommensverschlechterungContainer {
         if (containerFromServer) {
             this.parseAbstractMutableEntity(containerTS, containerFromServer);
-            const empty = new TSEinkommensverschlechterung();
+            // Achtung, das Argument "new TSEinkommensverschlechterung()" muss immer neu erstellt werden, da es sonst
+            // dasselbe Instanz ist.
             containerTS.ekvGSBasisJahrPlus1 =
-                this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus1 || empty,
-                    containerFromServer.ekvGSBasisJahrPlus1);
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvGSBasisJahrPlus1 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvGSBasisJahrPlus1
+                );
             containerTS.ekvGSBasisJahrPlus2 =
-                this.parseEinkommensverschlechterung(containerTS.ekvGSBasisJahrPlus2 || empty,
-                    containerFromServer.ekvGSBasisJahrPlus2);
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvGSBasisJahrPlus2 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvGSBasisJahrPlus2
+                );
             containerTS.ekvJABasisJahrPlus1 =
-                this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus1 || empty,
-                    containerFromServer.ekvJABasisJahrPlus1);
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvJABasisJahrPlus1 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvJABasisJahrPlus1
+                );
             containerTS.ekvJABasisJahrPlus2 =
-                this.parseEinkommensverschlechterung(containerTS.ekvJABasisJahrPlus2 || empty,
-                    containerFromServer.ekvJABasisJahrPlus2);
+                this.parseEinkommensverschlechterung(
+                    containerTS.ekvJABasisJahrPlus2 || new TSEinkommensverschlechterung(),
+                    containerFromServer.ekvJABasisJahrPlus2
+                );
 
             return containerTS;
         }
@@ -1432,27 +1439,26 @@ export default class EbeguRestUtil {
         einkommensverschlechterungTS: TSEinkommensverschlechterung,
         einkommensverschlechterungFromServer: any,
     ): TSEinkommensverschlechterung {
-        if (einkommensverschlechterungFromServer) {
-            this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
-            einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
-            einkommensverschlechterungTS.nettolohnFeb = einkommensverschlechterungFromServer.nettolohnFeb;
-            einkommensverschlechterungTS.nettolohnMrz = einkommensverschlechterungFromServer.nettolohnMrz;
-            einkommensverschlechterungTS.nettolohnApr = einkommensverschlechterungFromServer.nettolohnApr;
-            einkommensverschlechterungTS.nettolohnMai = einkommensverschlechterungFromServer.nettolohnMai;
-            einkommensverschlechterungTS.nettolohnJun = einkommensverschlechterungFromServer.nettolohnJun;
-            einkommensverschlechterungTS.nettolohnJul = einkommensverschlechterungFromServer.nettolohnJul;
-            einkommensverschlechterungTS.nettolohnAug = einkommensverschlechterungFromServer.nettolohnAug;
-            einkommensverschlechterungTS.nettolohnSep = einkommensverschlechterungFromServer.nettolohnSep;
-            einkommensverschlechterungTS.nettolohnOkt = einkommensverschlechterungFromServer.nettolohnOkt;
-            einkommensverschlechterungTS.nettolohnNov = einkommensverschlechterungFromServer.nettolohnNov;
-            einkommensverschlechterungTS.nettolohnDez = einkommensverschlechterungFromServer.nettolohnDez;
-            einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
-            einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
-                einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
-
-            return einkommensverschlechterungTS;
+        if (!einkommensverschlechterungFromServer) {
+            return undefined;
         }
-        return undefined;
+        this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
+        einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
+        einkommensverschlechterungTS.nettolohnFeb = einkommensverschlechterungFromServer.nettolohnFeb;
+        einkommensverschlechterungTS.nettolohnMrz = einkommensverschlechterungFromServer.nettolohnMrz;
+        einkommensverschlechterungTS.nettolohnApr = einkommensverschlechterungFromServer.nettolohnApr;
+        einkommensverschlechterungTS.nettolohnMai = einkommensverschlechterungFromServer.nettolohnMai;
+        einkommensverschlechterungTS.nettolohnJun = einkommensverschlechterungFromServer.nettolohnJun;
+        einkommensverschlechterungTS.nettolohnJul = einkommensverschlechterungFromServer.nettolohnJul;
+        einkommensverschlechterungTS.nettolohnAug = einkommensverschlechterungFromServer.nettolohnAug;
+        einkommensverschlechterungTS.nettolohnSep = einkommensverschlechterungFromServer.nettolohnSep;
+        einkommensverschlechterungTS.nettolohnOkt = einkommensverschlechterungFromServer.nettolohnOkt;
+        einkommensverschlechterungTS.nettolohnNov = einkommensverschlechterungFromServer.nettolohnNov;
+        einkommensverschlechterungTS.nettolohnDez = einkommensverschlechterungFromServer.nettolohnDez;
+        einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
+        einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
+            einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
+        return einkommensverschlechterungTS;
     }
 
     public kindContainerToRestObject(restKindContainer: any, kindContainer: TSKindContainer): any {
@@ -1472,7 +1478,7 @@ export default class EbeguRestUtil {
     private kindToRestObject(restKind: any, kind: TSKind): any {
         this.abstractPersonEntitytoRestObject(restKind, kind);
         restKind.kinderabzug = kind.kinderabzug;
-        restKind.mutterspracheDeutsch = kind.mutterspracheDeutsch;
+        restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         if (kind.pensumFachstelle) {
@@ -1532,7 +1538,7 @@ export default class EbeguRestUtil {
         if (kindFromServer) {
             this.parseAbstractPersonEntity(kindTS, kindFromServer);
             kindTS.kinderabzug = kindFromServer.kinderabzug;
-            kindTS.mutterspracheDeutsch = kindFromServer.mutterspracheDeutsch;
+            kindTS.sprichtAmtssprache = kindFromServer.sprichtAmtssprache;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             if (kindFromServer.pensumFachstelle) {
@@ -1654,7 +1660,7 @@ export default class EbeguRestUtil {
         restAngebot.additionalKindQuestions = angebotDTO.additionalKindQuestions;
         restAngebot.einschulungTyp = angebotDTO.einschulungTyp;
         restAngebot.kindContainerId = angebotDTO.kindContainerId;
-        restAngebot.mutterspracheDeutsch = angebotDTO.mutterspracheDeutsch;
+        restAngebot.sprichtAmtssprache = angebotDTO.sprichtAmtssprache;
         return restAngebot;
 
     }
@@ -2370,6 +2376,10 @@ export default class EbeguRestUtil {
             zeitabschnitt.famGroesse = zeitabschnittTS.famGroesse;
             zeitabschnitt.zahlungsstatus = zeitabschnittTS.zahlungsstatus;
             zeitabschnitt.vollkosten = zeitabschnittTS.vollkosten;
+            zeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten = zeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten;
+            zeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag = zeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+            zeitabschnitt.verguenstigung = zeitabschnittTS.verguenstigung;
+            zeitabschnitt.minimalerElternbeitrag = zeitabschnittTS.minimalerElternbeitrag;
             zeitabschnitt.einkommensjahr = zeitabschnittTS.einkommensjahr;
             zeitabschnitt.kategorieMaxEinkommen = zeitabschnittTS.kategorieMaxEinkommen;
             zeitabschnitt.kategorieKeinPensum = zeitabschnittTS.kategorieKeinPensum;
@@ -2402,6 +2412,10 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.famGroesse = zeitabschnittFromServer.famGroesse;
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
             verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
+            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
+            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+            verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
+            verfuegungZeitabschnittTS.minimalerElternbeitrag = zeitabschnittFromServer.minimalerElternbeitrag;
             verfuegungZeitabschnittTS.einkommensjahr = zeitabschnittFromServer.einkommensjahr;
             verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
             verfuegungZeitabschnittTS.kategorieKeinPensum = zeitabschnittFromServer.kategorieKeinPensum;

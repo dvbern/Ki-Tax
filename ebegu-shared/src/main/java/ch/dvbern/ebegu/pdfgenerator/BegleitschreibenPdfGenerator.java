@@ -63,7 +63,7 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 			document.add(createParagraphGruss());
 			document.add(createParagraphSignatur());
 			document.add(PdfUtil.createParagraph(translate(BEILAGEN), 0));
-			document.add(PdfUtil.createList(getBeilagen()));
+			document.add(PdfUtil.createListInParagraph(getBeilagen()));
 		};
 	}
 
@@ -92,6 +92,6 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private String getBeilagenText(@Nonnull Betreuung betreuung) {
-		return ServerMessageUtil.getMessage(BEILAGE_VERFUEGUNG, betreuung.getBGNummer());
+		return translate(BEILAGE_VERFUEGUNG, betreuung.getBGNummer());
 	}
 }

@@ -37,7 +37,6 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
 import com.lowagie.text.Utilities;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -92,7 +91,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	@Override
 	@Nonnull
 	protected CustomGenerator getCustomGenerator() {
-		final List<String> dokumente = KibonPrintUtil.getBenoetigteDokumenteAsList(benoetigteUnterlagen, gesuch);
+		final List<String> dokumente = KibonPrintUtil.getBenoetigteDokumenteAsList(benoetigteUnterlagen, gesuch, sprache);
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			addBarcode(document);
@@ -102,7 +101,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			document.add(PdfUtil.createSubTitle(translate(BENOETIGTE_UNTERLAGEN)));
 			Paragraph dokumenteParagraph = new Paragraph();
 			dokumenteParagraph.setSpacingAfter(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-			dokumenteParagraph.add(PdfUtil.createList(dokumente));
+			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
 			document.add(dokumenteParagraph);
 			List<Element> seite2Paragraphs = Lists.newArrayList();
 			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(EINWILLIGUNG_STEUERDATEN_TITLE)));
@@ -148,7 +147,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			image.setAbsolutePosition(document.leftMargin(), document.getPageSize().getHeight() - 2 * Utilities.millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM));
 			document.add(image);
 		} catch (IOException | DocumentException e) {
-			LOG.error("Failed to read the Logo: {}", e.getMessage());
+			LOG.error("Failed to read the Barcode: {}", e.getMessage());
 		}
 	}
 
@@ -165,7 +164,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
 		getGesuch().extractAllBetreuungen().forEach(betreuung -> {
 			table.addCell(new Phrase(betreuung.getKind().getKindJA().getFullName(), DEFAULT_FONT));
-			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(), DEFAULT_FONT));
+			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(sprache), DEFAULT_FONT));
 			table.addCell(new Phrase(betreuung.getBGNummer(), DEFAULT_FONT));
 		});
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
