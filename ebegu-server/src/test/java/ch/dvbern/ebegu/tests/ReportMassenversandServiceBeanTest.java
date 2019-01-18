@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.mocks.ReportMassenversandServiceMock;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
 import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
@@ -58,7 +59,8 @@ public class ReportMassenversandServiceBeanTest {
 			true,
 			true,
 			true,
-			"Erinnerungsbrief Erneuerungsgesuch");
+			"Erinnerungsbrief Erneuerungsgesuch",
+			Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
 	}

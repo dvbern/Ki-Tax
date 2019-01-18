@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class AbwesenheitCalcRuleTest {
 
 	@Test
 	public void testSchulamtBetreuungWithAbwesenheit() {
-		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE);
+		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
 		final VerfuegungZeitabschnitt zeitAbschnitt = createZeitabschnitt(true);
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
@@ -53,7 +54,7 @@ public class AbwesenheitCalcRuleTest {
 
 	@Test
 	public void testJABetreuungWithAbwesenheit() {
-		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE);
+		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
 		final VerfuegungZeitabschnitt zeitAbschnitt = createZeitabschnitt(true);
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
@@ -68,7 +69,7 @@ public class AbwesenheitCalcRuleTest {
 
 	@Test
 	public void testJABetreuungWithoutAbwesenheit() {
-		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE);
+		final AbwesenheitCalcRule rule = new AbwesenheitCalcRule(PERIODE, Constants.DEFAULT_LOCALE);
 		final VerfuegungZeitabschnitt zeitAbschnitt = createZeitabschnitt(false);
 		final Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);

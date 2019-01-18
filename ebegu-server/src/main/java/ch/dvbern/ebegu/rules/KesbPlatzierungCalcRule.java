@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -30,17 +32,18 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class KesbPlatzierungCalcRule extends AbstractCalcRule {
 
-	public KesbPlatzierungCalcRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.KESB_PLATZIERUNG, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public KesbPlatzierungCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.KESB_PLATZIERUNG, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 	}
 
 	@Override
 	protected void executeRule(
-		@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
 		if (!betreuung.isAngebotSchulamt() && !betreuung.getKeineKesbPlatzierung()) {
 			// KESB Platzierung: Kein Anspruch (Platz wird von KESB bezahlt)
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG);
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.KESB_PLATZIERUNG, MsgKey.KESB_PLATZIERUNG_MSG, getLocale());
 		}
 	}
 }

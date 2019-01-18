@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -172,18 +173,18 @@ public final class PdfUtil {
 	}
 
 	@Nonnull
-	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries) {
+	public static PdfPTable creatreIntroTable(@Nonnull java.util.List<TableRowLabelValue> entries, @Nonnull Locale locale) {
 		PdfPTable table = new PdfPTable(2);
 		try {
 			float[] columnWidths = { 1, 4 };
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Failed to read the Logo: {}", e.getMessage());
+			LOG.error("Error while creating intro table: {}", e.getMessage());
 		}
 		setTableDefaultStyles(table);
 
 		for (TableRowLabelValue entry : entries) {
-			table.addCell(new Phrase(entry.getLabel(), DEFAULT_FONT));
+			table.addCell(new Phrase(entry.getTranslatedLabel(locale), DEFAULT_FONT));
 			table.addCell(new Phrase(entry.getValue(), DEFAULT_FONT));
 		}
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
@@ -323,7 +324,7 @@ public final class PdfUtil {
 	/**
 	 * Setzt ein Wasserzeichen auf jede Seite des PDF
 	 */
-	public static byte[] addEntwurfWatermark(byte[] content) throws IOException, DocumentException {
+	public static byte[] addEntwurfWatermark(byte[] content, @Nonnull Locale locale) throws IOException, DocumentException {
 		PdfReader reader = new PdfReader(new ByteArrayInputStream(content));
 		ByteArrayOutputStream destOutputStream = new ByteArrayOutputStream();
 
@@ -336,7 +337,7 @@ public final class PdfUtil {
 			over.saveState();
 			over.setGrayFill(0.5f);
 			over.setFontAndSize(PdfUtilities.DEFAULT_FONT_BOLD.getBaseFont(), FONT_SIZE_WATERMARK);
-			over.showTextAligned(1, ServerMessageUtil.getMessage(WATERMARK),
+			over.showTextAligned(1, ServerMessageUtil.getMessage(WATERMARK, locale),
 				pagesize.getWidth() / 2.0F, pagesize.getHeight() / 2.0F, 45.0F);
 			over.restoreState();
 		}

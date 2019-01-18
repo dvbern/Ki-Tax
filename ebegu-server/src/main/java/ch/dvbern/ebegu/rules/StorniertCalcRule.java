@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -30,15 +32,15 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class StorniertCalcRule extends AbstractCalcRule {
 
-	public StorniertCalcRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.STORNIERT, RuleType.GRUNDREGEL_CALC, validityPeriod);
+	public StorniertCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.STORNIERT, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
 	}
 
 	@Override
 	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		// Bei Betreuungen mit status STORNIERT wird Bemerkung hinzugefügt
-		if (Betreuungsstatus.STORNIERT.equals(betreuung.getBetreuungsstatus())) {
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.STORNIERT, MsgKey.STORNIERT_MSG);
+		if (Betreuungsstatus.STORNIERT == betreuung.getBetreuungsstatus()) {
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.STORNIERT, MsgKey.STORNIERT_MSG, getLocale());
 		}
 	}
 }

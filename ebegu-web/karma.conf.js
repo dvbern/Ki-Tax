@@ -28,7 +28,7 @@ module.exports = function (config) {
             require('karma-mocha-reporter'),
             require('karma-coverage-istanbul-reporter'),
             require('@angular-devkit/build-angular/plugins/karma'),
-            require('karma-sonarqube-unit-reporter')
+            require('karma-sonarqube-reporter')
         ],
         // list of files / patterns to load in the browser
         // we are building the test environment in ./spec-bundle.ts
@@ -88,20 +88,23 @@ module.exports = function (config) {
             xmlVersion: 1
         },
 
-        sonarQubeUnitReporter: {
-            sonarQubeVersion: 'LATEST',
-            outputFile: 'build/sonar-report.xml',
-            // overrideTestDescription: true,
-            testPaths: ['./src'],
-            // testFilePattern: '.spec.ts',
-            useBrowserName: false,
-            // filenameFormatter: (nextPath, result) => {
-            //     const testPath = './test'
-            //     const testFilePattern = '.spec.js'
-            //     const filesForDescriptions = fileUtil.getFilesForDescriptions(testPath, testFilePattern)
-            //     const filePath = filesForDescriptions[nextPath]
-            //     return 'ebegu-web/' + filePath
-            // },
+        sonarqubeReporter: {
+            basePath: 'src',        // test files folder
+            filePattern: '**/*.spec.ts', // test files glob pattern
+            encoding: 'utf-8',          // test files encoding
+            outputFolder: 'build',      // report destination
+            legacyMode: false,          // report for Sonarqube < 6.2 (disabled)
+            reportName: function (metadata) { // report name callback
+                /**
+                 * Report metadata array:
+                 * - metadata[0] = browser name
+                 * - metadata[1] = browser version
+                 * - metadata[2] = plataform name
+                 * - metadata[3] = plataform version
+                 */
+                // return metadata.concat('xml').join('.');
+                return 'sonar-report.xml';
+            }
         },
 
         // suppress skipped tests in reporter
@@ -112,7 +115,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['mocha', 'junit', 'sonarqubeUnit', 'coverage-istanbul'],
+        reporters: ['mocha', 'junit', 'sonarqube', 'coverage-istanbul'],
 
         // web server port
         port: 9876,

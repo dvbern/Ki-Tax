@@ -1347,10 +1347,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setDatumGewarntNichtFreigegeben(LocalDate.now());
 				updateGesuch(gesuch, false, null);
 			} catch (MailException e) {
-				LOG.error(
-					"Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch {}",
-					gesuch.getId(),
-					e);
+				logExceptionAccordingToEnvironment(e,
+					"Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch",
+					gesuch.getId());
 				anzahl--;
 			}
 		}
@@ -1400,10 +1399,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setDatumGewarntFehlendeQuittung(LocalDate.now());
 				updateGesuch(gesuch, false, null);
 			} catch (MailException e) {
-				LOG.error(
-					"Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch {}",
-					gesuch.getId(),
-					e);
+				logExceptionAccordingToEnvironment(e,
+					"Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch",
+					gesuch.getId());
 				anzahl--;
 			}
 		}
@@ -1430,7 +1428,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				}
 				removeGesuch(gesuch.getId(), typ);
 			} catch (MailException e) {
-				LOG.error("Mail InfoGesuchGeloescht konnte nicht verschickt werden fuer Gesuch {}", gesuch.getId(), e);
+				logExceptionAccordingToEnvironment(e,
+					"Mail InfoGesuchGeloescht konnte nicht verschickt werden fuer Gesuch",
+					gesuch.getId());
 				anzahl--;
 			}
 		}
@@ -1759,7 +1759,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setGesuchBetreuungenStatus(GesuchBetreuungenStatus.ABGEWIESEN);
 				break;
 			}
-			if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus()) {
+			if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus() ||
+				Betreuungsstatus.UNBEKANNTE_INSTITUTION == betreuung.getBetreuungsstatus()) {
 				gesuch.setGesuchBetreuungenStatus(GesuchBetreuungenStatus.WARTEN);
 			}
 		}

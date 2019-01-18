@@ -589,11 +589,12 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	@Test
-	public void testWarnungFehlendeQuittung() throws Exception {
+	public void testWarnungFehlendeQuittung() {
 		insertApplicationProperties();
 		Gesuch gesuch1 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).minusDays(1));
 		Gesuch gesuch2 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG));
 		Gesuch gesuch3 = createGesuchFreigabequittung(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG).plusDays(1));
+		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
 		Assert.assertEquals(2, gesuchService.warnFreigabequittungFehlt());
 		final Optional<Gesuch> resultGesuch1 = gesuchService.findGesuch(gesuch1.getId());
@@ -608,11 +609,12 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	@Test
-	public void testWarnungNichtFreigegeben() throws Exception {
+	public void testWarnungNichtFreigegeben() {
 		insertApplicationProperties();
 		Gesuch gesuch1 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).minusDays(1));
 		Gesuch gesuch2 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE));
 		Gesuch gesuch3 = createGesuchInBearbeitungGS(LocalDateTime.now().minusDays(ANZAHL_TAGE_BIS_WARNUNG_FREIGABE).plusDays(1));
+		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
 		Assert.assertEquals(2, gesuchService.warnGesuchNichtFreigegeben());
 		final Optional<Gesuch> resultGesuch1 = gesuchService.findGesuch(gesuch1.getId());
@@ -627,7 +629,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	}
 
 	@Test
-	public void testDeleteGesucheOhneFreigabeOderQuittung() throws Exception {
+	public void testDeleteGesucheOhneFreigabeOderQuittung() {
 		insertApplicationProperties();
 		Gesuch gesuch1 = createGesuchInBearbeitungGS(LocalDateTime.now().minusMonths(4).minusDays(1));
 		Gesuch gesuch2 = createGesuchInBearbeitungGS(LocalDateTime.now().minusMonths(4));
@@ -635,6 +637,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Gesuch gesuch4 = createGesuchFreigabequittung(LocalDate.now().minusMonths(4).minusDays(1));
 		Gesuch gesuch5 = createGesuchFreigabequittung(LocalDate.now().minusMonths(4));
 		Gesuch gesuch6 = createGesuchFreigabequittung(LocalDate.now().minusMonths(4).plusDays(1));
+		TestDataUtil.createGemeindeStammdaten(gesuch1.extractGemeinde(), persistence);
 
 		gesuch1.setDatumGewarntNichtFreigegeben(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE).minusDays(1));
 		gesuch2.setDatumGewarntNichtFreigegeben(LocalDate.now().minusDays(ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE));
@@ -658,6 +661,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void testRemoveOnlineMutation() {
 		final Benutzer userGS = loginAsGesuchsteller("gesuchst");
 		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
+		TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde(), persistence);
 		Benutzer sachbearbeiterJA = loginAsSachbearbeiterJA();
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());

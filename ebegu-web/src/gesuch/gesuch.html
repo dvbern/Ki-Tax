@@ -230,7 +230,7 @@
                             ng-disabled="vm.isWizardStepDisabled('VERFUEGEN')"
                             aria-hidden="{{vm.isWizardStepDisabled('VERFUEGEN')}}"
                             ng-click="vm.closeSidenav('sidenav')">
-                        <span data-translate="MENU_VERFUEGEN"></span>
+                        <span>{{vm.getVerfuegenText()}}</span>
                     </button>
                     <span class="col-xs-2 fa  col-md-2 ng-class:vm.getIcon('VERFUEGEN')" aria-hidden="true"></span>
                 </li>

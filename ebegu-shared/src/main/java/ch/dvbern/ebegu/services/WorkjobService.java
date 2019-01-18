@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -53,14 +54,19 @@ public interface WorkjobService {
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable String text);
+		@Nullable String text,
+		@Nonnull Locale locale
+	);
 
 	@Nonnull
-	Workjob createNewReporting(@Nonnull Workjob workJob,
+	Workjob createNewReporting(
+		@Nonnull Workjob workJob,
 		@Nonnull ReportVorlage vorlage,
 		@Nullable LocalDate datumVon,
 		@Nullable LocalDate datumBis,
-		@Nullable String gesuchPeriodIdParam);
+		@Nullable String gesuchPeriodIdParam,
+		@Nonnull Locale locale
+	);
 
 	@Nonnull
 	List<Workjob> findWorkjobs(@Nonnull String startingUserName, @Nonnull Set<BatchJobStatus> statesToSearch);

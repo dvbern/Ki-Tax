@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
@@ -61,11 +63,16 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSituationDokumente {
 
 	@Override
-	public void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
+	public void getAllDokumente(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
+		@Nonnull Locale locale
+	) {
 
-		final boolean gemeinsam = gesuch.extractFamiliensituation() != null &&
-			gesuch.extractFamiliensituation().getGemeinsameSteuererklaerung() != null &&
-			gesuch.extractFamiliensituation().getGemeinsameSteuererklaerung();
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		final boolean gemeinsam = familiensituation != null &&
+			familiensituation.getGemeinsameSteuererklaerung() != null &&
+			familiensituation.getGemeinsameSteuererklaerung();
 
 		final EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
 

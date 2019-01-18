@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,8 +46,8 @@ import static java.util.Objects.requireNonNull;
 public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
 
-	public UnbezahlterUrlaubAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public UnbezahlterUrlaubAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.UNBEZAHLTER_URLAUB, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	/**
@@ -135,7 +136,7 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS1(0 - erwerbspensumJA.getPensum());
-		zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
+		zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG, getLocale());
 		return zeitabschnitt;
 	}
 
@@ -146,7 +147,7 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
 		zeitabschnitt.setErwerbspensumGS2(0 - erwerbspensumJA.getPensum());
-		zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG);
+		zeitabschnitt.addBemerkung(RuleKey.UNBEZAHLTER_URLAUB, MsgKey.UNBEZAHLTER_URLAUB_MSG, getLocale());
 		return zeitabschnitt;
 	}
 }

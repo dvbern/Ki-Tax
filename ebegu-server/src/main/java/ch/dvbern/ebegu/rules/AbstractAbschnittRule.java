@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -29,8 +31,13 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public abstract class AbstractAbschnittRule extends AbstractEbeguRule {
 
-	public AbstractAbschnittRule(@Nonnull RuleKey ruleKey, @Nonnull RuleType ruleType, @Nonnull DateRange validityPeriod) {
-		super(ruleKey, ruleType, validityPeriod);
+	public AbstractAbschnittRule(
+		@Nonnull RuleKey ruleKey,
+		@Nonnull RuleType ruleType,
+		@Nonnull DateRange validityPeriod,
+		@Nonnull Locale locale
+	) {
+		super(ruleKey, ruleType, validityPeriod, locale);
 	}
 
 	//Subklassen dieser Abstrakten Klasse benoetigen diese Methode nicht da sie nur Abschnitte erstellen. Daher hier NOP

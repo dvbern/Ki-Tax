@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -105,7 +104,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
-		return ServerMessageUtil.getMessage(TITLE);
+		return translate(TITLE);
 	}
 
 	@Nonnull
@@ -187,7 +186,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
 		document.add(PdfUtil.createBoldParagraph(
-			ServerMessageUtil.getMessage(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus1()),
+			translate(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus1()),
 			2)
 		);
 		document.add(createIntroEkv1(ekvInfo));
@@ -219,7 +218,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
 		document.add(PdfUtil.createBoldParagraph(
-			ServerMessageUtil.getMessage(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus2()),
+			translate(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus2()),
 			2)
 		);
 		document.add(createIntroEkv2(ekvInfo));
@@ -242,17 +241,17 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private void createPageMassgebendesEinkommen(@Nonnull Document document) {
 		List<String[]> values = new ArrayList<>();
 		String[] titles = {
-			ServerMessageUtil.getMessage(VON),
-			ServerMessageUtil.getMessage(BIS),
-			ServerMessageUtil.getMessage(JAHR),
-			ServerMessageUtil.getMessage(MASSG_EINK_VOR_ABZUG),
-			ServerMessageUtil.getMessage(FAM_GROESSE),
-			ServerMessageUtil.getMessage(ABZUG_FAM_GROESSE),
-			ServerMessageUtil.getMessage(MASSG_EINK) };
+			translate(VON),
+			translate(BIS),
+			translate(JAHR),
+			translate(MASSG_EINK_VOR_ABZUG),
+			translate(FAM_GROESSE),
+			translate(ABZUG_FAM_GROESSE),
+			translate(MASSG_EINK) };
 		values.add(titles);
 		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
 			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
-			if (abschnitt.getGueltigkeit().getGueltigAb().isBefore(erstesEinreichungsdatum)) {
+			if (!abschnitt.getGueltigkeit().getGueltigAb().isAfter(erstesEinreichungsdatum)) {
 				continue;
 			}
 			String[] data = {
@@ -278,7 +277,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		};
 		document.setPageSize(PageSize.A4.rotate());
 		document.newPage();
-		document.add(PdfUtil.createBoldParagraph(ServerMessageUtil.getMessage(MASSG_EINK_TITLE), 2));
+		document.add(PdfUtil.createBoldParagraph(translate(MASSG_EINK_TITLE), 2));
 		document.add(createIntroMassgebendesEinkommen());
 		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignmentMassgebendesEinkommen, 0));
 	}
@@ -288,7 +287,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
 		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		introBasisjahr.add(new TableRowLabelValue(BASISJAHR, String.valueOf(gesuch.getGesuchsperiode().getBasisJahr())));
-		return PdfUtil.creatreIntroTable(introBasisjahr);
+		return PdfUtil.creatreIntroTable(introBasisjahr, sprache);
 	}
 
 	@Nonnull
@@ -297,7 +296,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		introEkv1.add(new TableRowLabelValue(EKV_DATUM, PdfUtil.printLocalDate(ekvInfo.getStichtagFuerBasisJahrPlus1())));
 		introEkv1.add(new TableRowLabelValue(EKV_GRUND, PdfUtil.printString(ekvInfo.getGrundFuerBasisJahrPlus1())));
-		return PdfUtil.creatreIntroTable(introEkv1);
+		return PdfUtil.creatreIntroTable(introEkv1, sprache);
 	}
 
 	@Nonnull
@@ -306,7 +305,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		introEkv2.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		introEkv2.add(new TableRowLabelValue(EKV_DATUM, PdfUtil.printLocalDate(ekvInfo.getStichtagFuerBasisJahrPlus2())));
 		introEkv2.add(new TableRowLabelValue(EKV_GRUND, PdfUtil.printString(ekvInfo.getGrundFuerBasisJahrPlus2())));
-		return PdfUtil.creatreIntroTable(introEkv2);
+		return PdfUtil.creatreIntroTable(introEkv2, sprache);
 	}
 
 	@Nonnull
@@ -314,7 +313,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		List<TableRowLabelValue> introMassgEinkommen = new ArrayList<>();
 		introMassgEinkommen.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		introMassgEinkommen.add(new TableRowLabelValue(NAME, String.valueOf(gesuch.extractFullnamesString())));
-		return PdfUtil.creatreIntroTable(introMassgEinkommen);
+		return PdfUtil.creatreIntroTable(introMassgEinkommen, sprache);
 	}
 
 	@Nonnull
@@ -328,28 +327,28 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		BigDecimal totalEinkommenBeiderGS = FinanzielleSituationRechner.calcTotalEinkommen(gs1, gs2);
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(EIKOMMEN_TITLE), gesuch.getGesuchsteller1().extractFullName());
+			translate(EIKOMMEN_TITLE), gesuch.getGesuchsteller1().extractFullName());
 
-		FinanzielleSituationRow nettolohn = createRow(ServerMessageUtil.getMessage(NETTOLOHN),
+		FinanzielleSituationRow nettolohn = createRow(translate(NETTOLOHN),
 			AbstractFinanzielleSituation::getNettolohn, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow familienzulagen = createRow(ServerMessageUtil.getMessage(FAMILIENZULAGEN),
+		FinanzielleSituationRow familienzulagen = createRow(translate(FAMILIENZULAGEN),
 			AbstractFinanzielleSituation::getFamilienzulage, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow ersatzeinkommen = createRow(ServerMessageUtil.getMessage(ERSATZEINKOMMEN),
+		FinanzielleSituationRow ersatzeinkommen = createRow(translate(ERSATZEINKOMMEN),
 			AbstractFinanzielleSituation::getErsatzeinkommen, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow unterhaltsbeitraege = createRow(ServerMessageUtil.getMessage(ERH_UNTERHALTSBEITRAEGE),
+		FinanzielleSituationRow unterhaltsbeitraege = createRow(translate(ERH_UNTERHALTSBEITRAEGE),
 			AbstractFinanzielleSituation::getErhalteneAlimente, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow geschaftsgewinn = createRow(ServerMessageUtil.getMessage(GESCHAEFTSGEWINN),
+		FinanzielleSituationRow geschaftsgewinn = createRow(translate(GESCHAEFTSGEWINN),
 			AbstractFinanzielleSituation::getGeschaeftsgewinnBasisjahr, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
 		geschaftsgewinn.setSupertext("1");
 		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(EINKOMMEN_ZWISCHENTOTAL), gs1.getZwischentotalEinkommen());
+			translate(EINKOMMEN_ZWISCHENTOTAL), gs1.getZwischentotalEinkommen());
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(EINKOMMEN_TOTAL), "");
+			translate(EINKOMMEN_TOTAL), "");
 
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
@@ -388,10 +387,10 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
 		row.setGs2(gs2BigDecimal);
 		if (!MathUtil.isSame(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
-			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal);
+			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache);
 		}
 		if (!MathUtil.isSame(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
-			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal);
+			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache);
 		}
 		return row;
 	}
@@ -408,23 +407,23 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		BigDecimal vermoegen5Prozent = FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2);
 
 		FinanzielleSituationRow vermoegenTitle = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(NETTOVERMOEGEN), gesuch.getGesuchsteller1().extractFullName());
+			translate(NETTOVERMOEGEN), gesuch.getGesuchsteller1().extractFullName());
 
-		FinanzielleSituationRow bruttovermoegen = createRow(ServerMessageUtil.getMessage(BRUTTOVERMOEGEN),
+		FinanzielleSituationRow bruttovermoegen = createRow(translate(BRUTTOVERMOEGEN),
 			AbstractFinanzielleSituation::getBruttovermoegen, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow schulden = createRow(ServerMessageUtil.getMessage(SCHULDEN),
+		FinanzielleSituationRow schulden = createRow(translate(SCHULDEN),
 			AbstractFinanzielleSituation::getSchulden, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
 		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(NETTOVERMOEGEN_ZWISCHENTOTAL), gs1.getZwischentotalVermoegen());
+			translate(NETTOVERMOEGEN_ZWISCHENTOTAL), gs1.getZwischentotalVermoegen());
 
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(NETTOVERMOEGEN_TOTAL), "");
+			translate(NETTOVERMOEGEN_TOTAL), "");
 		total.setSupertext("2");
 
 		FinanzielleSituationRow vermoegen5Percent = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(NETTOVERMOEGEN_5_PROZENT), "");
+			translate(NETTOVERMOEGEN_5_PROZENT), "");
 
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
@@ -461,13 +460,13 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		BigDecimal totalAbzuegeBeiderGS = FinanzielleSituationRechner.calcTotalAbzuege(gs1, gs2);
 
 		FinanzielleSituationRow abzuegeTitle = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(ABZUEGE), gesuch.getGesuchsteller1().extractFullName());
+			translate(ABZUEGE), gesuch.getGesuchsteller1().extractFullName());
 
-		FinanzielleSituationRow unterhaltsbeitraege = createRow(ServerMessageUtil.getMessage(UNTERHALTSBEITRAEGE_BEZAHLT),
+		FinanzielleSituationRow unterhaltsbeitraege = createRow(translate(UNTERHALTSBEITRAEGE_BEZAHLT),
 			AbstractFinanzielleSituation::getGeleisteteAlimente, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(ABZUEGE_TOTAL), "");
+			translate(ABZUEGE_TOTAL), "");
 
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
@@ -496,15 +495,15 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			FinanzielleSituationRechner.calcMassgebendesEinkommenVorAbzugFamiliengroesse(gs1, gs2);
 
 		FinanzielleSituationRow zusammenzugTitle = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(ZUSAMMENZUG), "");
+			translate(ZUSAMMENZUG), "");
 		FinanzielleSituationRow einkommen = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(EINKOMMEN_TOTAL), gs1.getZwischentotalEinkommen());
+			translate(EINKOMMEN_TOTAL), gs1.getZwischentotalEinkommen());
 		FinanzielleSituationRow vermoegen = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(NETTOVERMOEGEN_5_PROZENT), FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2));
+			translate(NETTOVERMOEGEN_5_PROZENT), FinanzielleSituationRechner.calcVermoegen5Prozent(gs1, gs2));
 		FinanzielleSituationRow abzuege = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(ABZUEGE_TOTAL), gs1.getZwischetotalAbzuege());
+			translate(ABZUEGE_TOTAL), gs1.getZwischetotalAbzuege());
 		FinanzielleSituationRow total = new FinanzielleSituationRow(
-			ServerMessageUtil.getMessage(MASSG_EINKOMMEN_VOR_FAMILIENGROESSE), massgebendesEinkommenVorAbzugFamiliengroesse);
+			translate(MASSG_EINKOMMEN_VOR_FAMILIENGROESSE), massgebendesEinkommenVorAbzugFamiliengroesse);
 
 		if (gs2 != null) {
 			requireNonNull(gesuch.getGesuchsteller2());
@@ -521,7 +520,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	private void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
-		createFusszeile(dirPdfContentByte, Lists.newArrayList(ServerMessageUtil.getMessage(FUSSZEILE_1),
-			ServerMessageUtil.getMessage(FUSSZEILE_2)));
+		createFusszeile(dirPdfContentByte, Lists.newArrayList(translate(FUSSZEILE_1),
+			translate(FUSSZEILE_2)));
 	}
 }
