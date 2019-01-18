@@ -27,6 +27,13 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 
 public enum MergeFieldZahlungAuftragPeriode implements MergeFieldProvider {
 
+	auszahlungenPeriodeTitle(new SimpleMergeField<>("auszahlungenPeriodeTitle", STRING_CONVERTER)),
+	parameterTitle(new SimpleMergeField<>("parameterTitle", STRING_CONVERTER)),
+	periodeTitle(new SimpleMergeField<>("periodeTitle", STRING_CONVERTER)),
+	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
+	auszahlungAmTitle(new SimpleMergeField<>("auszahlungAmTitle", STRING_CONVERTER)),
+	betragCHFTitle(new SimpleMergeField<>("betragCHFTitle", STRING_CONVERTER)),
+
 	repeatZahlungAuftragRow(new RepeatRowMergeField("repeatZahlungAuftragRow")),
 
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
