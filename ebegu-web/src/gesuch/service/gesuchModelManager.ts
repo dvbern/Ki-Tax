@@ -109,6 +109,9 @@ export default class GesuchModelManager {
     public ewkPersonGS1: TSEWKPerson;
     public ewkPersonGS2: TSEWKPerson;
 
+    // initialize empty KinderContainer list to avoid infinite loop in smart table
+    public emptyKinderList: Array<TSKindContainer> = [];
+
     public constructor(
         private readonly gesuchRS: GesuchRS,
         private readonly gesuchstellerRS: GesuchstellerRS,
@@ -716,7 +719,7 @@ export default class GesuchModelManager {
         if (this.gesuch) {
             return this.gesuch.kindContainers;
         }
-        return [];
+        return this.emptyKinderList;
     }
 
     /**
