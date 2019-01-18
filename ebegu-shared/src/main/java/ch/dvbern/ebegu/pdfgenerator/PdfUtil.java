@@ -326,7 +326,10 @@ public final class PdfUtil {
 		stamper.setRotateContents(true); // Im Querformat (Massg. Eink) soll der Text auch gedreht werden!
 
 		// text watermark
-		Phrase phrase = new Phrase(ServerMessageUtil.getMessage(WATERMARK), FontFactory.getFont(PdfUtilities.FONT_FACE_PROXIMA_NOVA_BOLD, FONT_SIZE_WATERMARK));
+		Phrase watermarkPhrase = new Phrase(
+			ServerMessageUtil.getMessage(WATERMARK, locale),
+			FontFactory.getFont(PdfUtilities.FONT_FACE_PROXIMA_NOVA_BOLD, FONT_SIZE_WATERMARK)
+		);
 
 		// Auf jeder Seite setzen
 		for (int i = 1; i <= reader.getNumberOfPages(); i++) {
@@ -343,7 +346,7 @@ public final class PdfUtil {
 			over.setGState(state);
 
 			// add text
-			ColumnText.showTextAligned(over, Element.ALIGN_CENTER, phrase, x, y, 45.0f);
+			ColumnText.showTextAligned(over, Element.ALIGN_CENTER, watermarkPhrase, x, y, 45.0f);
 
 			over.restoreState();
 		}
