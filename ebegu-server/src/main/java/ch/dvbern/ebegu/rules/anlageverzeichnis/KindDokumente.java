@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -39,8 +40,11 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 public class KindDokumente extends AbstractDokumente<Kind, Object> {
 
 	@Override
-	public void getAllDokumente(@Nonnull Gesuch gesuch, @Nonnull Set<DokumentGrund> anlageVerzeichnis) {
-
+	public void getAllDokumente(
+		@Nonnull Gesuch gesuch,
+		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
+		@Nonnull Locale locale
+	) {
 		final Set<KindContainer> kindContainers = gesuch.getKindContainers();
 		if (kindContainers == null || kindContainers.isEmpty()) {
 			return;

@@ -37,6 +37,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -47,6 +48,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -100,6 +102,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private GeneratedDokumentService generatedDokumentService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@Inject
 	private MailService mailService;
@@ -301,10 +306,16 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gesuch calculateVerfuegung(@Nonnull Gesuch gesuch) {
 		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
-		final List<Rule> rules = rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+
+		final List<Rule> rules = rulesService
+			.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), sprache.getLocale());
+
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 		BGRechnerParameterDTO calculatorParameters = loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+
 		// Finde und setze die letzte Verfuegung für die Betreuung für den Merger und Vergleicher.
 		// Bei GESCHLOSSEN_OHNE_VERFUEGUNG wird solange ein Vorgänger gesucht, bis  dieser gefunden wird. (Rekursiv)
 		gesuch.getKindContainers()
@@ -316,7 +327,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 				}
 			);
 
-		bgEvaluator.evaluate(gesuch, calculatorParameters);
+
+		bgEvaluator.evaluate(gesuch, calculatorParameters, sprache.getLocale());
 		authorizer.checkReadAuthorizationForAnyBetreuungen(gesuch.extractAllBetreuungen()); // betreuungen pruefen reicht hier glaub
 		return gesuch;
 	}
@@ -326,7 +338,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	public Verfuegung getEvaluateFamiliensituationVerfuegung(@Nonnull Gesuch gesuch) {
 		this.finanzielleSituationService.calculateFinanzDaten(gesuch);
 
-		final List<Rule> rules = rulesService.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+
+		final List<Rule> rules = rulesService
+			.getRulesForGesuchsperiode(gesuch.extractGemeinde(), gesuch.getGesuchsperiode(), sprache.getLocale());
 		Boolean enableDebugOutput = applicationPropertyService.findApplicationPropertyAsBoolean(ApplicationPropertyKey.EVALUATOR_DEBUG_ENABLED, true);
 		BetreuungsgutscheinEvaluator bgEvaluator = new BetreuungsgutscheinEvaluator(rules, enableDebugOutput);
 
@@ -338,7 +353,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 					betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
 				}
 			);
-		return bgEvaluator.evaluateFamiliensituation(gesuch);
+		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
 	}
 
 	@Override

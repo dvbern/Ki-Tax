@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -32,8 +33,8 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 
-	public EinkommenAbschnittRule(DateRange validityPeriod) {
-		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public EinkommenAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.EINKOMMEN, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Nonnull

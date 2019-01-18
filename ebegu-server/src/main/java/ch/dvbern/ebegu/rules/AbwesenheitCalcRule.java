@@ -15,12 +15,16 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Regel für Abwesenheiten. Sie beachtet:
@@ -32,15 +36,19 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class AbwesenheitCalcRule extends AbstractCalcRule {
 
-	public AbwesenheitCalcRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.ABWESENHEIT, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public AbwesenheitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.ABWESENHEIT, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 	}
 
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(
+		@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
+		requireNonNull(betreuung.getBetreuungsangebotTyp());
 		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind() && verfuegungZeitabschnitt.isLongAbwesenheit()) {
 			verfuegungZeitabschnitt.setBezahltVollkosten(true);
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG);
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ABWESENHEIT, MsgKey.ABWESENHEIT_MSG, getLocale());
 		}
 	}
 }

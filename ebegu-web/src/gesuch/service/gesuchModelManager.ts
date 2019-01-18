@@ -109,6 +109,9 @@ export default class GesuchModelManager {
     public ewkPersonGS1: TSEWKPerson;
     public ewkPersonGS2: TSEWKPerson;
 
+    // initialize empty KinderContainer list to avoid infinite loop in smart table
+    public emptyKinderList: Array<TSKindContainer> = [];
+
     public constructor(
         private readonly gesuchRS: GesuchRS,
         private readonly gesuchstellerRS: GesuchstellerRS,
@@ -279,6 +282,16 @@ export default class GesuchModelManager {
         this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiode(this.getGesuchsperiode().id)
             .then((response: TSInstitutionStammdaten[]) => {
                 this.activInstitutionenList = response;
+            });
+    }
+
+    /**
+     * Retrieves the InstitutionStammdaten of the unknown Institution
+     */
+    public getUnknownInstitutionStammdaten(unknownInstitutionStammdatenId: string): IPromise<TSInstitutionStammdaten> {
+        return this.instStamRS.findInstitutionStammdaten(unknownInstitutionStammdatenId)
+            .then((response: TSInstitutionStammdaten) => {
+                return response;
             });
     }
 
@@ -706,7 +719,7 @@ export default class GesuchModelManager {
         if (this.gesuch) {
             return this.gesuch.kindContainers;
         }
-        return [];
+        return this.emptyKinderList;
     }
 
     /**
@@ -1410,7 +1423,7 @@ export default class GesuchModelManager {
     }
 
     /**
-     * Gibt true zurueck, wenn der Antrag ein Erstgesuchist. False bekommt man wenn der Antrag eine Mutation ist
+     * Gibt true zurueck, wenn der Antrag ein Erstgesuch ist. False bekommt man wenn der Antrag eine Mutation ist
      * By default (beim Fehler oder leerem Gesuch) wird auch true zurueckgegeben
      */
     public isGesuch(): boolean {

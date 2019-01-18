@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -220,6 +221,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void einladenGemeindeWrongUserWithoutGemeinde() {
+		LocaleThreadLocal.set(Constants.DEFAULT_LOCALE);
 		Benutzer benutzer = TestDataUtil.createBenutzerSCH();
 		benutzer.setStatus(BenutzerStatus.EINGELADEN);
 		benutzer.setMandant(getDummySuperadmin().getMandant());

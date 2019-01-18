@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -202,5 +203,6 @@ public interface MitteilungService {
 	@Nonnull
 	Pair<Long, List<Mitteilung>> searchMitteilungen(
 		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
-		@Nonnull Boolean includeClosed);
+		@Nonnull Boolean includeClosed
+	);
 }

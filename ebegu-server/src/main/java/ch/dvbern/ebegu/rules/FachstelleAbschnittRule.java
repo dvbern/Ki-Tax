@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
@@ -32,8 +33,8 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 
-	public FachstelleAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public FachstelleAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Nonnull

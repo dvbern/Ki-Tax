@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.TestdataCreationService;
@@ -144,6 +145,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 	@Test
 	public void institutionSpeichernDarfMandantUndTraegerschaftNichtUpdaten() {
+		LocaleThreadLocal.set(Constants.DEFAULT_LOCALE);
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
 		traegerschaft = persistence.persist(traegerschaft);

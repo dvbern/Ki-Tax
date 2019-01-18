@@ -35,6 +35,7 @@ import javax.inject.Named;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -163,7 +164,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				inklMischGesuche,
 				inklTsGesuche,
 				ohneFolgegesuche,
-				text);
+				text,
+				LocaleThreadLocal.get()
+			);
 			return uploadFileInfo;
 		}
 		}
