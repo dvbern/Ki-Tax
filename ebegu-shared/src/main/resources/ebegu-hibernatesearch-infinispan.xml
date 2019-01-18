@@ -29,14 +29,14 @@
 		In case the performance is bad, adjust the OS buffer sizes instead.
 		https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/single/configuration_guide/index#configure_jgroups_send_receive_buffers
 		-->
-		<!--<stack-file name="ebegu-jgroups-udp" path="ebegu-jgroups-udp.xml"/>-->
+		<stack-file name="ebegu-jgroups-udp" path="ebegu-jgroups-udp.xml"/>
 	</jgroups>
 
 	<cache-container name="HibernateSearch" statistics="false" shutdown-hook="DONT_REGISTER">
 
-		<transport cluster="EBEGU Hibernate Search" stack="default-jgroups-udp"/>
+		<transport cluster="EBEGU Hibernate Search" stack="ebegu-jgroups-udp"/>
 
-		<!-- Duplicate domains are allowed so that multiple deployments with default configuration
+		<!-- Duplicate domains are allowed so that multiple deployments with default fconfiguration
 			of Hibernate Search applications work - if possible it would be better to use JNDI to share
 			the CacheManager across applications -->
 		<jmx duplicate-domains="true"/>
@@ -50,12 +50,10 @@
 			<expiration max-idle="-1"/>
 			<indexing index="NONE"/>
 			<state-transfer enabled="true" timeout="480000" await-initial-transfer="true"/>
-
-
 			<persistence>
-				<jdbc:string-keyed-jdbc-store preload="true" shared="true" read-only="false" fetch-state="true">
+				<jdbc:string-keyed-jdbc-store preload="true" shared="true" read-only="false" fetch-state="true"
+				                    key-to-string-mapper="org.infinispan.lucene.LuceneKey2StringMapper">
 					<write-behind/>
-					<property name="key2StringMapper">org.infinispan.lucene.LuceneKey2StringMapper</property>
 					<jdbc:data-source jndi-url="java:/jdbc/ebegu"/>
 					<jdbc:string-keyed-table prefix="hibernatesearch">
 						<jdbc:id-column name="ID_COLUMN" type="VARCHAR(255)"/>
@@ -90,11 +88,11 @@
 
 
 			<persistence>
-				<jdbc:string-keyed-jdbc-store preload="true" shared="true" read-only="false" fetch-state="true">
+				<jdbc:string-keyed-jdbc-store preload="true" shared="true" read-only="false" fetch-state="true"
+											  key-to-string-mapper="org.infinispan.lucene.LuceneKey2StringMapper">
 					<write-behind/>
-					<property name="key2StringMapper">org.infinispan.lucene.LuceneKey2StringMapper</property>
 					<jdbc:data-source jndi-url="java:/jdbc/ebegu"/>
-					<jdbc:string-keyed-table prefix="hibernatesearch">
+					<jdbc:string-keyed-table prefix="hibernatesearch" drop-on-exit="false" create-on-start="true">
 						<jdbc:id-column name="ID_COLUMN" type="VARCHAR(255)"/>
 						<jdbc:data-column name="DATA_COLUMN" type="BLOB"/>
 						<jdbc:timestamp-column name="TIMESTAMP_COLUMN" type="BIGINT"/>
