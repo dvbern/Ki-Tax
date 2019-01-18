@@ -900,4 +900,28 @@ public class GesuchResource {
 		Validate.notNull(gesuchIdJax.getId());
 		return gesuchService.getMassenversandTexteForGesuch(converter.toEntityId(gesuchIdJax));
 	}
+
+	@ApiOperation(value = "Setzt das gegebene Gesuch in den Status KEIN_KONTINGENT", response = JaxGesuch.class)
+	@Nullable
+	@POST
+	@Path("/keinKontingent/{antragId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response keinKontingent(
+		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(antragJaxId.getId());
+		final String antragId = converter.toEntityId(antragJaxId);
+		Optional<Gesuch> gesuch = gesuchService.findGesuch(antragId);
+
+		resourceHelper.assertGesuchStatusEqual(antragId, AntragStatusDTO.GEPRUEFT);
+
+		if (gesuch.isPresent()) {
+			Gesuch persistedGesuch = gesuchService.setBeschwerdeHaengigForPeriode(gesuch.get());
+			return Response.ok(converter.gesuchToJAX(persistedGesuch)).build();
+		}
+		throw new EbeguEntityNotFoundException("keinKontingent", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragJaxId.getId());
+	}
 }
