@@ -50,6 +50,7 @@ import MahnungRS from '../../service/mahnungRS.rest';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
+import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const bemerkungDialogTempl = require('../../dialog/bemerkungenDialogTemplate.html');
@@ -79,6 +80,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         '$scope',
         'GesuchRS',
         '$timeout',
+        '$translate',
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
@@ -99,6 +101,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         $scope: angular.IScope,
         private readonly gesuchRS: GesuchRS,
         $timeout: ITimeoutService,
+        private readonly $translate: ITranslateService,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -186,27 +189,18 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public kannVerfuegungOeffnen(betreuung: TSBetreuung): boolean {
-        return this.isDetailAvailableForGesuchstatus()
-            && this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
-    }
-
-    private isDetailAvailableForGesuchstatus(): boolean {
-        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
-        // gesuchsteller hat sicher mal nur Zugriff auf verfuegungsdetail wenn das gesuch mindestens freiggeben ist
-        return isGesuchsteller ? isAtLeastFreigegeben(this.getAntragStatus()) : true;
+        return this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
     }
 
     private isDetailAvailableForBetreuungstatus(betreuungsstatus: TSBetreuungsstatus): boolean {
-        const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.VERFUEGT,
-            TSBetreuungsstatus.NICHT_EINGETRETEN, TSBetreuungsstatus.STORNIERT,
+            TSBetreuungsstatus.NICHT_EINGETRETEN,
+            TSBetreuungsstatus.STORNIERT,
+            TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
+            TSBetreuungsstatus.BESTAETIGT,
+            TSBetreuungsstatus.WARTEN,
         ];
-        // Annahme: alle ausser Gesuchsteller duerfen bestaetigte betreuungen sehen wenn sie uberhaupt auf die Seite
-        // kommen
-        if (!isGesuchsteller) {
-            allowedBetstatus.push(TSBetreuungsstatus.BESTAETIGT);
-        }
         return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
 
@@ -660,7 +654,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private setHasFSDokumentAccordingToFinSitState(): void {
-        this.getGesuch().hasFSDokument = this.gesuchModelManager.isFinanzielleSituationRequired() && !this.isFinSitAbglehnt();
+        this.getGesuch().hasFSDokument =
+            this.gesuchModelManager.isFinanzielleSituationRequired() && !this.isFinSitAbglehnt();
     }
 
     public fsDokumentChanged(): void {
@@ -679,5 +674,22 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, delay);
+    }
+
+    public getTitle(): string {
+        if (isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
+            || (this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG)) {
+            return this.$translate.instant('VERFUEGUNGEN');
+        }
+        return this.$translate.instant('PROVISORISCHE_BERECHNUNG');
+    }
+
+    public finSitStatusEnabled(): boolean {
+        if (this.authServiceRs.isRole(TSRole.GESUCHSTELLER)) {
+            return false;
+        }
+        // wie beim Wizard step wird angenommen, dass jeder Andere, welcher Zugriff auf die Maske hat, auch bearbeiten
+        // darf
+        return true;
     }
 }

@@ -709,6 +709,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus()) {
 					status = WizardStepStatus.PLATZBESTAETIGUNG;
 				}
+
+				if (Betreuungsstatus.UNBEKANNTE_INSTITUTION == betreuung.getBetreuungsstatus()) {
+					status = WizardStepStatus.WARTEN;
+				}
 			}
 		}
 		wizardStep.setWizardStepStatus(status);

@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -32,19 +33,17 @@ import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -72,6 +71,11 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 	private static final String GP_START = "gpStart";
 	private static final String GP_END = "gpEnd";
+
+	// ID der statischen, unbekannten Institution Stammdaten. Wird verwendet um eine provisorische Berechnung zu generieren
+	// und darf dem Benutzer <b>nie>/b> angezeigt werden
+	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA = "00000000-0000-0000-0000-000000000000";
+	private static final String ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE = "00000000-0000-0000-0000-000000000001";
 
 	@Inject
 	private Persistence persistence;
@@ -106,7 +110,13 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Nonnull
 	@PermitAll
 	public Collection<InstitutionStammdaten> getAllInstitutionStammdaten() {
-		return new ArrayList<>(criteriaQueryHelper.getAll(InstitutionStammdaten.class));
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+
+		query.where(excludeUnknownInstitutionStammdatenPredicate(root));
+
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Override
@@ -122,7 +132,21 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Override
 	@PermitAll
 	public Collection<InstitutionStammdaten> getAllInstitutionStammdatenByDate(@Nonnull LocalDate date) {
-		return new ArrayList<>(criteriaQueryHelper.getAllInInterval(InstitutionStammdaten.class, date));
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
+		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
+		query.select(root);
+
+		ParameterExpression<LocalDate> dateParam = cb.parameter(LocalDate.class, "date");
+		Predicate intervalPredicate = cb.between(dateParam,
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
+
+		query.where(intervalPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
+
+		TypedQuery<InstitutionStammdaten> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam, date);
+		List<InstitutionStammdaten> resultList = q.getResultList();
+		return resultList;
 	}
 
 	@Override
@@ -143,7 +167,7 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 		Predicate startPredicate = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), startParam);
 		Predicate endPredicate = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), endParam);
 
-		query.where(startPredicate, endPredicate);
+		query.where(startPredicate, endPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
 
 		TypedQuery<InstitutionStammdaten> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(GP_START, gesuchsperiode.getGueltigkeit().getGueltigAb());
@@ -204,11 +228,16 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 
 		Predicate institutionPredicate = root.get(InstitutionStammdaten_.institution).in(institutionenForCurrentBenutzer);
 
-		query.where(intervalPredicate, institutionPredicate);
+		query.where(intervalPredicate, institutionPredicate, excludeUnknownInstitutionStammdatenPredicate(root));
 		TypedQuery<BetreuungsangebotTyp> q = persistence.getEntityManager().createQuery(query).setParameter(dateParam, LocalDate.now());
 		List<BetreuungsangebotTyp> resultList = q.getResultList();
 		return resultList;
 	}
 
+	private Predicate excludeUnknownInstitutionStammdatenPredicate(Root root) {
+		return root.get(AbstractEntity_.id)
+			.in(Arrays.asList(ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA, ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE))
+			.not();
+	}
 
 }
