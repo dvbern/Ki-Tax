@@ -156,6 +156,20 @@ public class EbeguRuntimeException extends RuntimeException {
 	public EbeguRuntimeException(
 		@Nullable String methodName,
 		@Nullable ErrorCodeEnum errorCodeEnum,
+		@Nonnull Level logLevel,
+		@Nonnull Serializable... args) {
+
+		super(errorCodeEnum != null ? errorCodeEnum.name() : null);
+		this.methodName = methodName;
+		this.errorCodeEnum = errorCodeEnum;
+		this.logLevel = logLevel;
+		this.args = Collections.unmodifiableList(Arrays.asList(args));
+		customMessage = null;
+	}
+
+	public EbeguRuntimeException(
+		@Nullable String methodName,
+		@Nullable ErrorCodeEnum errorCodeEnum,
 		@Nullable Throwable cause,
 		@Nonnull Serializable... args) {
 
