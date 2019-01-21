@@ -860,7 +860,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		SACHBEARBEITER_TS, ADMIN_TS })
-	public Gesuch setBeschwerdeHaengigForPeriode(@Nonnull Gesuch gesuch) {
+	public Gesuch setKeinKontingent(@Nonnull Gesuch gesuch) {
 		gesuch.setStatus(AntragStatus.KEIN_KONTINGENT);
 		return updateGesuch(gesuch, true, null);
 	}
@@ -869,7 +869,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		SACHBEARBEITER_TS, ADMIN_TS })
-	public Gesuch setKeinKontingent(@Nonnull Gesuch gesuch) {
+	public Gesuch setBeschwerdeHaengigForPeriode(@Nonnull Gesuch gesuch) {
 		final List<Gesuch> allGesucheForDossier =
 			getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
 		allGesucheForDossier.iterator().forEachRemaining(gesuchLoop -> {

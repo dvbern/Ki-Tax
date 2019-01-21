@@ -919,7 +919,7 @@ public class GesuchResource {
 		resourceHelper.assertGesuchStatusEqual(antragId, AntragStatusDTO.GEPRUEFT);
 
 		if (gesuch.isPresent()) {
-			Gesuch persistedGesuch = gesuchService.setBeschwerdeHaengigForPeriode(gesuch.get());
+			Gesuch persistedGesuch = gesuchService.setKeinKontingent(gesuch.get());
 			return Response.ok(converter.gesuchToJAX(persistedGesuch)).build();
 		}
 		throw new EbeguEntityNotFoundException("keinKontingent", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragJaxId.getId());
