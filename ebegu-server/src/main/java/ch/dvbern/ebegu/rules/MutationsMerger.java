@@ -106,11 +106,12 @@ public final class MutationsMerger {
 	) {
 		// Es muss nur etwas gemacht werden, wenn im alten Abschnitt kein Zuschlag war, neu aber schon, UND
 		// zu spät eingereicht
-		if (zeitabschnitt.isBesondereBeduerfnisse() && !vorangehenderAbschnitt.isBesondereBeduerfnisse()) {
-			if (!zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
-				zeitabschnitt.setBesondereBeduerfnisse(false);
-				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
-			}
+		if (zeitabschnitt.isBesondereBeduerfnisse()
+			&& !vorangehenderAbschnitt.isBesondereBeduerfnisse()
+			&& !zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
+		) {
+			zeitabschnitt.setBesondereBeduerfnisse(false);
+			zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
 	}
 
