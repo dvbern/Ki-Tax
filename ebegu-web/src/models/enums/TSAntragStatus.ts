@@ -118,6 +118,7 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus
                 element !== TSAntragStatus.VERFUEGT
                 && element !== TSAntragStatus.KEIN_ANGEBOT
                 && element !== TSAntragStatus.NUR_SCHULAMT
+                && element !== TSAntragStatus.KEIN_KONTINGENT
                 && element !== TSAntragStatus.IN_BEARBEITUNG_STV
                 && element !== TSAntragStatus.PRUEFUNG_STV));
         case TSRole.SACHBEARBEITER_TS:
@@ -127,6 +128,7 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus
                 && element !== TSAntragStatus.KEIN_ANGEBOT
                 && element !== TSAntragStatus.NUR_SCHULAMT
                 && element !== TSAntragStatus.VERFUEGEN
+                && element !== TSAntragStatus.KEIN_KONTINGENT
                 && element !== TSAntragStatus.IN_BEARBEITUNG_STV
                 && element !== TSAntragStatus.PRUEFUNG_STV));
         default:
@@ -144,6 +146,7 @@ export function isAtLeastFreigegeben(status: TSAntragStatus): boolean {
         TSAntragStatus.ZWEITE_MAHNUNG,
         TSAntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN,
         TSAntragStatus.IN_BEARBEITUNG_JA,
+        TSAntragStatus.KEIN_KONTINGENT,
         TSAntragStatus.GEPRUEFT,
         TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN,
         TSAntragStatus.PLATZBESTAETIGUNG_WARTEN,

@@ -195,6 +195,7 @@ public enum AntragStatus {
 		ZWEITE_MAHNUNG,
 		ZWEITE_MAHNUNG_ABGELAUFEN,
 		GEPRUEFT,
+		KEIN_KONTINGENT,
 		VERFUEGEN);
 
 	public static final Set<AntragStatus> FOR_GESUCHSTELLER_ROLE_WRITE = EnumSet.of(
@@ -312,6 +313,7 @@ public enum AntragStatus {
 	public static Collection<AntragStatus> getAllGepruefteStatus() {
 		return Arrays.asList(
 			NUR_SCHULAMT,
+			KEIN_KONTINGENT,
 			GEPRUEFT,
 			VERFUEGEN,
 			VERFUEGT,
@@ -332,6 +334,7 @@ public enum AntragStatus {
 			ERSTE_MAHNUNG_ABGELAUFEN,
 			ZWEITE_MAHNUNG,
 			ZWEITE_MAHNUNG_ABGELAUFEN,
+			KEIN_KONTINGENT,
 			GEPRUEFT,
 			VERFUEGEN,
 			VERFUEGT,

@@ -30,9 +30,10 @@ public class EinstellungServiceMock extends EinstellungServiceBean {
 	@Nonnull
 	@Override
 	public Einstellung findEinstellung(
-		@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		@Nonnull EinstellungKey key, @Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode
+	) {
 		if (key == EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED) {
-			return new Einstellung(key, "false", gesuchsperiode);
+			return new Einstellung(EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode);
 		}
 		return new Einstellung(key, "testValue", gesuchsperiode);
 	}

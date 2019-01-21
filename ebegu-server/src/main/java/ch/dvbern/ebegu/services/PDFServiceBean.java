@@ -114,7 +114,8 @@ public class PDFServiceBean implements PDFService {
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
-			Art.NICHT_EINTRETTEN, false);
+			Art.NICHT_EINTRETTEN,
+			false);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
@@ -226,7 +227,7 @@ public class PDFServiceBean implements PDFService {
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER})
 	public byte[] generateVerfuegungForBetreuung(
-		Betreuung betreuung,
+		@Nonnull Betreuung betreuung,
 		@Nullable LocalDate letzteVerfuegungDatum,
 		boolean writeProtected,
 		@Nonnull Locale locale
@@ -246,24 +247,13 @@ public class PDFServiceBean implements PDFService {
 			showInfoKontingentierung = einstellungKontingentierung.getValueAsBoolean();
 		}
 
-		Art art = hasAnspruch(betreuung) ? Art.NORMAL : Art.KEIN_ANSPRUCH;
+		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
 			art,
 			showInfoKontingentierung);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
-	}
-
-	private boolean hasAnspruch(@Nonnull Betreuung betreuung) {
-		if (betreuung.getVerfuegung() != null) {
-			List<VerfuegungZeitabschnitt> vzList = betreuung.getVerfuegung().getZeitabschnitte();
-			BigDecimal value = vzList.stream()
-				.map(VerfuegungZeitabschnitt::getBgPensum)
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
-			return MathUtil.isPositive(value);
-		}
-		return false;
 	}
 
 	/**

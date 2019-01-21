@@ -155,8 +155,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.setHasFSDokumentAccordingToFinSitState();
 
         // Die Einstellung bezueglich Kontingentierung lesen
-        this.einstellungRS.findEinstellung(TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
-            this.gesuchModelManager.getDossier().gemeinde, this.gesuchModelManager.getGesuchsperiode())
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+            this.gesuchModelManager.getDossier().gemeinde,
+            this.gesuchModelManager.getGesuchsperiode()
+        )
             .then(response => {
                 this.kontingentierungEnabled = JSON.parse(response.value);
             });
@@ -530,7 +533,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             && this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
             && !this.gesuchModelManager.areThereOnlySchulamtAngebote()
             && !this.isGesuchReadonly();
-        // && this.gesuchModelManager.getGesuch().status !== TSAntragStatus.VERFUEGEN;
     }
 
     public showKeinKontingent(): boolean {
@@ -670,7 +672,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             parentController: undefined,
             elementID: undefined,
         }).then(() => {
-            return this.gesuchRS.keinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => {
+            return this.gesuchRS.setKeinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
                 return this.gesuchModelManager.getGesuch();
             });

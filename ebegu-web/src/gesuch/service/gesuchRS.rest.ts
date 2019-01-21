@@ -275,8 +275,8 @@ export default class GesuchRS implements IEntityRS {
             });
     }
 
-    public keinKontingent(antragId: string): IPromise<TSGesuch> {
-        return this.$http.post(`${this.serviceURL}/keinKontingent/${encodeURIComponent(antragId)}`, null).then(
+    public setKeinKontingent(antragId: string): IPromise<TSGesuch> {
+        return this.$http.post(`${this.serviceURL}/setKeinKontingent/${encodeURIComponent(antragId)}`, null).then(
             response => {
                 return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
             });

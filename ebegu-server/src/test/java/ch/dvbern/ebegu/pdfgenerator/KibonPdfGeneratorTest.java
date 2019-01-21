@@ -115,7 +115,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		evaluator.evaluate(gesuch_alleinstehend, getParameter(), Constants.DEFAULT_LOCALE);
 		final VerfuegungPdfGenerator alleinstehend =
 			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_alleinstehend), stammdaten,
-				VerfuegungPdfGenerator.Art.NORMAL,true);
+				VerfuegungPdfGenerator.Art.NORMAL, true);
 		alleinstehend.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_alleinstehend.pdf"));
 
 		evaluator.evaluate(gesuch_verheiratet, getParameter(), Constants.DEFAULT_LOCALE);
