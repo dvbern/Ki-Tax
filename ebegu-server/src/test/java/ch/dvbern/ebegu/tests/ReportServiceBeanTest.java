@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -212,7 +213,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 	public void generateExcelReportGesuchStichtag() throws Exception {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(
 			LocalDate.now(),
-			null);
+			null,
+			Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag.xlsx");
@@ -223,7 +225,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchZeitraum(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
-			null);
+			null,
+			Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum.xlsx");
@@ -231,7 +234,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void generateExcelReportZahlungAuftrag() throws Exception {
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlungAuftrag("5a1fde7d-991a-4aef-8de2-43387db4f87d");
+		UploadFileInfo uploadFileInfo = reportService
+			.generateExcelReportZahlungAuftrag("5a1fde7d-991a-4aef-8de2-43387db4f87d", Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo);
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportZahlungAuftrag.xlsx");
@@ -245,7 +249,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 				System.out.println("verfuegtes Gesuch: " + gesuch.getId());
 			}
 		}
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE);
+		UploadFileInfo uploadFileInfo = reportService
+			.generateExcelReportKanton(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportKanton.xlsx");
@@ -254,7 +259,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testGenerateExcelReportMitarbeiterinnen() throws Exception {
 		gesuchService.getAllGesuche();
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportMitarbeiterinnen(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE);
+		UploadFileInfo uploadFileInfo = reportService
+			.generateExcelReportMitarbeiterinnen(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportMitarbeiterinnen.xlsx");
@@ -291,7 +297,8 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchstellerKinderBetreuung(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2018, Month.DECEMBER, 31),
-			null);
+			null,
+			Constants.DEFAULT_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
 		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchstellerKinderBetreuung.xlsx");
@@ -299,7 +306,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void generateExcelReportBenutzer() {
-		final List<BenutzerDataRow> reportDataBenutzer = reportService.getReportDataBenutzer();
+		final List<BenutzerDataRow> reportDataBenutzer = reportService.getReportDataBenutzer(Constants.DEFAULT_LOCALE);
 
 		assertNotNull(reportDataBenutzer);
 		assertEquals(7, reportDataBenutzer.size()); // anonymous is a user too

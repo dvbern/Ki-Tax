@@ -90,7 +90,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		BenutzerService benutzerService,
 		AuthService authService,
 		MandantResource mandantResource,
-		MandantService mandantService) {
+		MandantService mandantService
+	) {
 
 		this.configuration = configuration;
 		this.versionInfoBean = versionInfoBean;
@@ -176,7 +177,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	@Override
 	public JaxBenutzerResponseWrapper updateBenutzer(
 		@Nonnull String benutzerId,
-		@Nonnull JaxExternalBenutzer externalBenutzer) {
+		@Nonnull JaxExternalBenutzer externalBenutzer
+	) {
 
 		requireNonNull(benutzerId);
 		requireNonNull(externalBenutzer);
@@ -185,7 +187,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId).orElse(null);
 
 		//if user not exists return error msg to connector
-		if(existingBenutzer == null){
+		if (existingBenutzer == null) {
 			return convertBenutzerResponseWrapperToJax(
 				externalBenutzer,
 				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get())
@@ -217,7 +219,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(updatedBenutzer), null);
 	}
 
-	private JaxBenutzerResponseWrapper convertBenutzerResponseWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg){
+	private JaxBenutzerResponseWrapper convertBenutzerResponseWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg) {
 		JaxBenutzerResponseWrapper wrapper = new JaxBenutzerResponseWrapper();
 		wrapper.setBenutzer(benutzer);
 		wrapper.setErrorMessage(msg);
@@ -274,7 +276,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	private JaxExternalAuthAccessElement convertToJaxExternalAuthAccessElement(
-		@Nonnull AuthAccessElement loginDataForCookie) {
+		@Nonnull AuthAccessElement loginDataForCookie
+	) {
 		requireNonNull(loginDataForCookie, "login data to convert may not be null");
 		return new JaxExternalAuthAccessElement(
 			loginDataForCookie.getAuthId(),
