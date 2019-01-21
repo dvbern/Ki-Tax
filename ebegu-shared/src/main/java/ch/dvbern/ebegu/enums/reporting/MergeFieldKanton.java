@@ -28,6 +28,28 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 
 public enum MergeFieldKanton implements MergeFieldProvider {
 
+	parameterTitle(new SimpleMergeField<>("parameterTitle", STRING_CONVERTER)),
+	kantonTitle(new SimpleMergeField<>("kantonTitle", STRING_CONVERTER)),
+	vonTitle(new SimpleMergeField<>("vonTitle", STRING_CONVERTER)),
+	bisTitle(new SimpleMergeField<>("bisTitle", STRING_CONVERTER)),
+	fallIdTitle(new SimpleMergeField<>("fallIdTitle", STRING_CONVERTER)),
+	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
+	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
+	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
+	betreuungVonTitle(new SimpleMergeField<>("betreuungVonTitle", STRING_CONVERTER)),
+	betreuungBisTitle(new SimpleMergeField<>("betreuungBisTitle", STRING_CONVERTER)),
+	bgPensumTitle(new SimpleMergeField<>("bgPensumTitle", STRING_CONVERTER)),
+	monatsanfangTitle(new SimpleMergeField<>("monatsanfangTitle", STRING_CONVERTER)),
+	monatsendeTitle(new SimpleMergeField<>("monatsendeTitle", STRING_CONVERTER)),
+	platzbelegungTageTitle(new SimpleMergeField<>("platzbelegungTageTitle", STRING_CONVERTER)),
+	kostenCHFTitle(new SimpleMergeField<>("kostenCHFTitle", STRING_CONVERTER)),
+	vollkostenTitle(new SimpleMergeField<>("vollkostenTitle", STRING_CONVERTER)),
+	elternbeitragTitle(new SimpleMergeField<>("elternbeitragTitle", STRING_CONVERTER)),
+	gutscheinTitle(new SimpleMergeField<>("gutscheinTitle", STRING_CONVERTER)),
+	babyFaktorTitle(new SimpleMergeField<>("babyFaktorTitle", STRING_CONVERTER)),
+	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
+	totalTitle(new SimpleMergeField<>("totalTitle", STRING_CONVERTER)),
+
 	auswertungVon(new SimpleMergeField<>("auswertungVon", DATE_CONVERTER)),
 	auswertungBis(new SimpleMergeField<>("auswertungBis", DATE_CONVERTER)),
 

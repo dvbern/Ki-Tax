@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.batch.jobs.report;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -35,7 +36,6 @@ import javax.inject.Named;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -95,7 +95,8 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(datumToStichtag);
 		final String gesuchPeriodeID = getParameters().getProperty(WorkJobConstants.GESUCH_PERIODE_ID_PARAM);
 		final String zahlungsauftragId = getParameters().getProperty(WorkJobConstants.ZAHLUNGSAUFTRAG_ID_PARAM);
-		return generateReport(workJobType, dateFrom, dateTo, gesuchPeriodeID, zahlungsauftragId);
+		final String language = getParameters().getProperty(WorkJobConstants.LANGUAGE);
+		return generateReport(workJobType, dateFrom, dateTo, gesuchPeriodeID, zahlungsauftragId, Locale.forLanguageTag(language));
 	}
 
 	@Nonnull
@@ -103,54 +104,58 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		@Nonnull ReportVorlage workJobType,
 		@Nonnull LocalDate dateFrom,
 		@Nonnull LocalDate dateTo,
-		@Nonnull String gesuchPeriodeID,
-		@Nullable String zahlungsauftragId
+		@Nullable String gesuchPeriodeID,
+		@Nullable String zahlungsauftragId,
+		@Nonnull Locale locale
 	) throws ExcelMergeException, IOException, MergeDocException, URISyntaxException {
 
 		switch (workJobType) {
 
 		case VORLAGE_REPORT_GESUCH_STICHTAG: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_GESUCH_ZEITRAUM: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_KANTON: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKanton(dateFrom, dateTo);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKanton(dateFrom, dateTo, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_MITARBEITERINNEN: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_BENUTZER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportBenutzer();
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportBenutzer(locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
 			Objects.requireNonNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeID);
+			Objects.requireNonNull(gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService
+				.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_KINDER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeID);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchsteller(dateFrom);
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_MASSENVERSAND: {
+			Objects.requireNonNull(gesuchPeriodeID);
 			boolean inklBgGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_BG_GESUCHE));
 			boolean inklMischGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_MISCH_GESUCHE));
 			boolean inklTsGesuche = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.INKL_TS_GESUCHE));
@@ -165,7 +170,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				inklTsGesuche,
 				ohneFolgegesuche,
 				text,
-				LocaleThreadLocal.get()
+				locale
 			);
 			return uploadFileInfo;
 		}

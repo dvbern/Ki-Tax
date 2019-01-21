@@ -180,7 +180,7 @@ export default class AuthServiceRS {
                 : null,
             institution: this.principal.currentBerechtigung.institution
                 ? this.principal.currentBerechtigung.institution.name
-                : null
+                : null,
         });
     }
 

@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -575,7 +576,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		// must be set to null so that hibernate understands it must remove it
 		//noinspection ConstantConditions
-		betreuung.setErweiterteBetreuungContainer(null);
+		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
 
 		persistence.remove(betreuung);
 
