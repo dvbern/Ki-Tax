@@ -29,6 +29,20 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 
 public enum MergeFieldZahlungAuftrag implements MergeFieldProvider {
 
+	generiertAmTitle(new SimpleMergeField<>("generiertAmTitle", STRING_CONVERTER)),
+	faelligAmTitle(new SimpleMergeField<>("faelligAmTitle", STRING_CONVERTER)),
+	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
+	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
+	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
+	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
+	verfuegungTitle(new SimpleMergeField<>("verfuegungTitle", STRING_CONVERTER)),
+	vonTitle(new SimpleMergeField<>("vonTitle", STRING_CONVERTER)),
+	bisTitle(new SimpleMergeField<>("bisTitle", STRING_CONVERTER)),
+	bgPensumTitle(new SimpleMergeField<>("bgPensumTitle", STRING_CONVERTER)),
+	betragCHFTitle(new SimpleMergeField<>("betragCHFTitle", STRING_CONVERTER)),
+	korrekturTitle(new SimpleMergeField<>("korrekturTitle", STRING_CONVERTER)),
+	zahlungIgnorierenTitle(new SimpleMergeField<>("zahlungIgnorierenTitle", STRING_CONVERTER)),
+
 	repeatZahlungAuftragRow(new RepeatRowMergeField("repeatZahlungAuftragRow")),
 
 	beschrieb(new SimpleMergeField<>("beschrieb", STRING_CONVERTER)),

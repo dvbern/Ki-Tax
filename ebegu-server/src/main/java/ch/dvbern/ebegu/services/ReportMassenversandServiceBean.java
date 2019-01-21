@@ -174,7 +174,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 
 		ExcelMergerDTO excelMergerDTO = massenversandExcelConverter.toExcelMergerDTO(
 			reportData,
-			Locale.getDefault(),
+			locale,
 			datumVon,
 			datumBis,
 			gesuchsperiode,
@@ -190,7 +190,7 @@ public class ReportMassenversandServiceBean extends AbstractReportServiceBean im
 		byte[] bytes = createWorkbook(workbook);
 
 		return fileSaverService.save(bytes,
-			reportVorlage.getDefaultExportFilename(),
+			ServerMessageUtil.translateEnumValue(reportVorlage.getDefaultExportFilename(), locale) + ".xlsx",
 			Constants.TEMP_REPORT_FOLDERNAME,
 			getContentTypeForExport());
 	}
