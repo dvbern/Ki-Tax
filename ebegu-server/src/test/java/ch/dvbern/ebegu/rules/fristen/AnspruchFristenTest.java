@@ -114,13 +114,14 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 75, 0, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 75, 0, 0);
@@ -180,13 +181,14 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
 
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(13, result.size());
 		int i = 0;
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 75, 0, 0);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 16), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 75, 0, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 75, 0, 0);

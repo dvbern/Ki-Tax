@@ -18,7 +18,9 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkung;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
@@ -29,6 +31,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
@@ -48,7 +51,9 @@ public class EinkommenCalcRuleTest {
 		Assert.assertEquals(0, (new BigDecimal("50000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertFalse(result.get(0).isBezahltVollkosten());
-		Assert.assertTrue(result.get(0).getBemerkungen().isEmpty());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -61,7 +66,10 @@ public class EinkommenCalcRuleTest {
 		Assert.assertEquals(0, (new BigDecimal("180000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertFalse(result.get(0).isBezahltVollkosten());
-		Assert.assertFalse(result.get(0).getBemerkungen().isEmpty());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_MSG));
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	/**
@@ -98,14 +106,31 @@ public class EinkommenCalcRuleTest {
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
-
 		Assert.assertEquals(3, result.size());
-		Assert.assertEquals("BETREUUNGSANGEBOT_TYP: Betreuungsangebot Schulamt", result.get(0).getBemerkungen());
+
 		Assert.assertEquals(new BigDecimal(50000), result.get(0).getMassgebendesEinkommen());
-		Assert.assertEquals("EINKOMMEN: Ihr massgebendes Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1 + " ist gegenüber der Vergleichsperiode um mehr als 20% gesunken. Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1 + ".\nBETREUUNGSANGEBOT_TYP: Betreuungsangebot Schulamt", result.get(1).getBemerkungen());
+		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt1 = result.get(0).getBemerkungenMap();
+		Assert.assertNotNull(bemerkungenAbschnitt1);
+		Assert.assertEquals(1, bemerkungenAbschnitt1.size());
+		Assert.assertTrue(bemerkungenAbschnitt1.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+
 		Assert.assertEquals(new BigDecimal(25000), result.get(1).getMassgebendesEinkommen());
-		Assert.assertEquals("EINKOMMEN: Ihr massgebendes Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_2 + " ist gegenüber der Vergleichsperiode um mehr als 20% gesunken. Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_2 + ".\nBETREUUNGSANGEBOT_TYP: Betreuungsangebot Schulamt", result.get(2).getBemerkungen());
+		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = result.get(1).getBemerkungenMap();
+		Assert.assertNotNull(bemerkungenAbschnitt2);
+		Assert.assertEquals(2, bemerkungenAbschnitt2.size());
+		Assert.assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		Assert.assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		String bemerkungEKV1 = "Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1;
+		Assert.assertTrue(bemerkungenAbschnitt2.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV1));
+
 		Assert.assertEquals(new BigDecimal(20000), result.get(2).getMassgebendesEinkommen());
+		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = result.get(2).getBemerkungenMap();
+		Assert.assertNotNull(bemerkungenAbschnitt3);
+		Assert.assertEquals(2, bemerkungenAbschnitt3.size());
+		Assert.assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		Assert.assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		String bemerkungEKV2 = "Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_2;
+		Assert.assertTrue(bemerkungenAbschnitt3.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV2));
 	}
 
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheVollkosten) {

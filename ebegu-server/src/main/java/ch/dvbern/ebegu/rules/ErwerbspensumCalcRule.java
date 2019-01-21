@@ -27,8 +27,11 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import static java.util.Objects.requireNonNull;
 
@@ -104,17 +107,20 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	) {
 		if (anspruch <= 0) {
 			anspruch = 0;
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, locale);
+			verfuegungZeitabschnitt.setMinimalesEwpUnterschritten(true);
 			verfuegungZeitabschnitt.setKategorieKeinPensum(true);
 		}
 		// Minimum pruefen
 		if (anspruch < minimum) {
 			anspruch = 0;
 			// Fuer die Bemerkung muss das Minimum fuer 2 GS 100 + x betragen!
-			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_MINIMUM_MSG, locale, minimum + erwerbspensumOffset);
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, locale, minimum + erwerbspensumOffset);
 		} else {
 			// Wir haben das Minimum erreicht. Der Anspruch wird daher um den Default-Zuschlag erhöht
 			anspruch += zuschlagErwerbspensum;
+			// Es wird eine Default-Bemerkung hinzugefügt, welche sagt, weswegen ein Anspruch besteht
+			String vorhandeneBeschaeftigungen = getBeschaeftigungsTypen(verfuegungZeitabschnitt, locale);
+			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, MsgKey.ERWERBSPENSUM_ANSPRUCH, locale, vorhandeneBeschaeftigungen);
 		}
 		if (anspruch > 100) { // das Ergebniss darf nie mehr als 100 sein
 			anspruch = 100;
@@ -142,12 +148,8 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 	}
 
 	@Nonnull
-	private Integer calculateErwerbspensum(
-		VerfuegungZeitabschnitt verfuegungZeitabschnitt,
-		Integer erwerbspensum,
-		MsgKey bemerkung,
-		@Nonnull Locale locale
-	) {
+	private Integer calculateErwerbspensum(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull Integer erwerbspensum, @Nonnull MsgKey bemerkung,
+		@Nonnull Locale locale) {
 		if (erwerbspensum > 100) {
 			erwerbspensum = 100;
 			verfuegungZeitabschnitt.addBemerkung(RuleKey.ERWERBSPENSUM, bemerkung, locale);
@@ -163,9 +165,21 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		LocalDate familiensituationGueltigAb = familiensituation.getAenderungPer();
 		if (familiensituationGueltigAb != null
 			&& familiensituationErstGesuch != null
-			&& gueltigkeit.getGueltigBis().isBefore(familiensituationGueltigAb)) {
+			&& gueltigkeit.getGueltigAb().isBefore(familiensituationGueltigAb)) {
 				return familiensituationErstGesuch.hasSecondGesuchsteller();
 		}
 		return familiensituation.hasSecondGesuchsteller();
+	}
+
+	private String getBeschaeftigungsTypen(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull Locale locale) {
+		StringBuilder sb = new StringBuilder();
+		for (Taetigkeit taetigkeit : abschnitt.getTaetigkeiten()) {
+			sb.append(ServerMessageUtil.translateEnumValue(taetigkeit, locale));
+			sb.append(", ");
+		}
+		// Das letzte Komma entfernen
+		String taetigkeitenAsString = sb.toString();
+		taetigkeitenAsString = StringUtils.removeEnd(taetigkeitenAsString, ", ");
+		return taetigkeitenAsString;
 	}
 }

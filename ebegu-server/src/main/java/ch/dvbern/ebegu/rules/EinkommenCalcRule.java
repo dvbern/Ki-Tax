@@ -107,9 +107,6 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					reduceAnspruchInNormalCase(betreuung, verfuegungZeitabschnitt);
 					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale());
-				} else {
-					verfuegungZeitabschnitt.setBezahltVollkosten(true);
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_VOLLKOSTEN_MSG, getLocale());
 				}
 			}
 		}
