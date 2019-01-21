@@ -17,25 +17,38 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.lowagie.text.*;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
-
-import javax.annotation.Nonnull;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
@@ -68,6 +81,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
 	private static final String FUSSZEILE_1 = "PdfGeneration_Verfuegung_Fusszeile1";
 	private static final String FUSSZEILE_2 = "PdfGeneration_Verfuegung_Fusszeile2";
+	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
 
 	public enum Art {
 		NORMAL,
@@ -75,7 +89,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		NICHT_EINTRETTEN
 	}
 
-	private Betreuung betreuung;
+	private final Betreuung betreuung;
+	private final boolean kontingentierungEnabledAndEntwurf;
 
 	@Nonnull
 	private final Art art;
@@ -83,11 +98,14 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	public VerfuegungPdfGenerator(
 		@Nonnull Betreuung betreuung,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull Art art) {
+		@Nonnull Art art,
+		boolean kontingentierungEnabledAndEntwurf
+	) {
 		super(betreuung.extractGesuch(), stammdaten);
 
 		this.betreuung = betreuung;
 		this.art = art;
+		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
 	}
 
 	@Nonnull
@@ -101,7 +119,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	protected CustomGenerator getCustomGenerator() {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
-			document.add(createIntro());
+			document.add(createIntroAndInfoKontingentierung());
 			document.add(PdfUtil.createParagraph(translate(ANREDE_FAMILIE)));
 			createContent(document, generator);
 		};
@@ -171,6 +189,18 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	}
 
 	@Nonnull
+	private PdfPTable createIntroAndInfoKontingentierung() {
+		float[] columnWidths = { 1,1 };
+		PdfPTable table = new PdfPTable(columnWidths);
+		PdfUtil.setTableDefaultStyles(table);
+		table.addCell(createIntro());
+		if (kontingentierungEnabledAndEntwurf) {
+			table.addCell(createInfoKontingentierung());
+		}
+		return table;
+	}
+
+	@Nonnull
 	private PdfPTable createIntro() {
 		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
 		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
@@ -178,6 +208,15 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		introBasisjahr.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, betreuung.getInstitutionStammdaten().getInstitution().getName()));
 		return PdfUtil.creatreIntroTable(introBasisjahr, sprache);
+	}
+
+	@Nonnull
+	private Paragraph createInfoKontingentierung() {
+		String gemeinde = getGemeindeStammdaten().getGemeinde().getName();
+		String telefon = getGemeindeStammdaten().getTelefon();
+		String mail = getGemeindeStammdaten().getMail();
+		Object[] args = {gemeinde, telefon, mail};
+		return PdfUtil.createParagraph(translate(VERWEIS_KONTINGENTIERUNG, args), 0, PdfUtil.FONT_RED);
 	}
 
 	@Nonnull
