@@ -35,11 +35,13 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MergeDocException;
@@ -91,6 +93,9 @@ public class PDFServiceBean implements PDFService {
 	private DossierService dossierService;
 
 	@Inject
+	private EinstellungService einstellungService;
+
+	@Inject
 	private Authorizer authorizer;
 
 	@Nonnull
@@ -109,7 +114,8 @@ public class PDFServiceBean implements PDFService {
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
-			Art.NICHT_EINTRETTEN);
+			Art.NICHT_EINTRETTEN,
+			false);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
 	}
 
@@ -221,7 +227,7 @@ public class PDFServiceBean implements PDFService {
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
 		REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, GESUCHSTELLER})
 	public byte[] generateVerfuegungForBetreuung(
-		Betreuung betreuung,
+		@Nonnull Betreuung betreuung,
 		@Nullable LocalDate letzteVerfuegungDatum,
 		boolean writeProtected,
 		@Nonnull Locale locale
@@ -230,23 +236,24 @@ public class PDFServiceBean implements PDFService {
 		Objects.requireNonNull(betreuung, "Das Argument 'betreuung' darf nicht leer sein");
 		GemeindeStammdaten stammdaten = getGemeindeStammdaten(betreuung.extractGesuch());
 
-		Art art = hasAnspruch(betreuung) ? Art.NORMAL : Art.KEIN_ANSPRUCH;
+		// Falls die Gemeinde Kontingentierung eingeschaltet hat *und* es sich um einen Entwurf handelt
+		// wird auf der Verfügung ein Vermerk zur Kontingentierung gedruckt
+		boolean showInfoKontingentierung = false;
+		if (!writeProtected) {
+			Einstellung einstellungKontingentierung = einstellungService.findEinstellung(
+				EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+				betreuung.extractGesuch().extractGemeinde(),
+				betreuung.extractGesuchsperiode());
+			showInfoKontingentierung = einstellungKontingentierung.getValueAsBoolean();
+		}
+
+		Art art = betreuung.hasAnspruch() ? Art.NORMAL : Art.KEIN_ANSPRUCH;
 		VerfuegungPdfGenerator pdfGenerator = new VerfuegungPdfGenerator(
 			betreuung,
 			stammdaten,
-			art);
+			art,
+			showInfoKontingentierung);
 		return generateDokument(pdfGenerator, !writeProtected, locale);
-	}
-
-	private boolean hasAnspruch(@Nonnull Betreuung betreuung) {
-		if (betreuung.getVerfuegung() != null) {
-			List<VerfuegungZeitabschnitt> vzList = betreuung.getVerfuegung().getZeitabschnitte();
-			BigDecimal value = vzList.stream()
-				.map(VerfuegungZeitabschnitt::getBgPensum)
-				.reduce(BigDecimal.ZERO, BigDecimal::add);
-			return MathUtil.isPositive(value);
-		}
-		return false;
 	}
 
 	/**

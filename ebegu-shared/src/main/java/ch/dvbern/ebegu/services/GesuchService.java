@@ -261,6 +261,12 @@ public interface GesuchService {
 	Gesuch setBeschwerdeHaengigForPeriode(@Nonnull Gesuch gesuch);
 
 	/**
+	 * Setzt das übergebene Gesuch auf den Status "KEIN_KONTINGENT"
+	 */
+	@Nonnull
+	Gesuch setKeinKontingent(@Nonnull Gesuch gesuch);
+
+	/**
 	 * Setz "Nur_Schulamt" Gesuche auf den Status NUR_SCHULAMT
 	 *
 	 * @return Gibt das aktualisierte gegebene Gesuch zurueck

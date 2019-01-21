@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -629,5 +631,16 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		String angebot = ServerMessageUtil
 			.translateEnumValue(getInstitutionStammdaten().getBetreuungsangebotTyp(), locale);
 		return getInstitutionStammdaten().getInstitution().getName() + " (" + angebot + ')';
+	}
+
+	public boolean hasAnspruch() {
+		if (getVerfuegung() != null) {
+			List<VerfuegungZeitabschnitt> vzList = getVerfuegung().getZeitabschnitte();
+			BigDecimal value = vzList.stream()
+				.map(VerfuegungZeitabschnitt::getBgPensum)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+			return MathUtil.isPositive(value);
+		}
+		return false;
 	}
 }
