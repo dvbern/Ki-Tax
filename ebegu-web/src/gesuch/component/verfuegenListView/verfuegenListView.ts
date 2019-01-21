@@ -16,6 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IPromise} from 'angular';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -25,7 +26,9 @@ import {
     isAtLeastFreigegeben,
     TSAntragStatus,
 } from '../../../models/enums/TSAntragStatus';
+import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSMahnungTyp} from '../../../models/enums/TSMahnungTyp';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -81,6 +84,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         'GesuchRS',
         '$timeout',
         '$translate',
+        'EinstellungRS',
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
@@ -88,6 +92,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
     public finSitStatus: Array<string>;
+    private kontingentierungEnabled: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -102,6 +107,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         private readonly gesuchRS: GesuchRS,
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
+        private readonly einstellungRS: EinstellungRS,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -147,6 +153,16 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.refreshKinderListe();
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
         this.setHasFSDokumentAccordingToFinSitState();
+
+        // Die Einstellung bezueglich Kontingentierung lesen
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
+            this.gesuchModelManager.getDossier().gemeinde,
+            this.gesuchModelManager.getGesuchsperiode()
+        )
+            .then(response => {
+                this.kontingentierungEnabled = JSON.parse(response.value);
+            });
     }
 
     private refreshKinderListe(): IPromise<any> {
@@ -517,7 +533,16 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             && this.gesuchModelManager.getGesuch().isThereAnyBetreuung()
             && !this.gesuchModelManager.areThereOnlySchulamtAngebote()
             && !this.isGesuchReadonly();
-        // && this.gesuchModelManager.getGesuch().status !== TSAntragStatus.VERFUEGEN;
+    }
+
+    public showKeinKontingent(): boolean {
+        return this.getGesuch().typ !== TSAntragTyp.MUTATION
+            && this.showVerfuegenStarten()
+            && this.kontingentierungEnabled;
+    }
+
+    public showKontingentVorhanden(): boolean {
+        return this.gesuchModelManager.isGesuchStatus(TSAntragStatus.KEIN_KONTINGENT);
     }
 
     /**
@@ -634,6 +659,20 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             elementID: undefined,
         }).then(() => {
             return this.gesuchRS.removeBeschwerdeHaengig(this.getGesuch().id).then((gesuch: TSGesuch) => {
+                this.gesuchModelManager.setGesuch(gesuch);
+                return this.gesuchModelManager.getGesuch();
+            });
+        });
+    }
+
+    public setGesuchStatusKeinKontingent(): IPromise<TSGesuch> {
+        return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+            title: 'CONFIRM_KEIN_KONTINGENT_TITLE',
+            deleteText: 'CONFIRM_KEIN_KONTINGENT_TEXT',
+            parentController: undefined,
+            elementID: undefined,
+        }).then(() => {
+            return this.gesuchRS.setKeinKontingent(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
                 return this.gesuchModelManager.getGesuch();
             });

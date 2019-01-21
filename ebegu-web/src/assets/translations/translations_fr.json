@@ -522,6 +522,8 @@
     "MAHNUNGEN": "fr_Mahnungen",
     "VERFUEGUNG_STARTEN_UPPER": "fr_VERFÜGUNG STARTEN",
     "BEENDEN_OHNE_ANGEBOT_UPPER": "fr_BEENDEN OHNE ANGEBOT",
+    "KEIN_KONTINGENT_UPPER": "fr_KEIN KONTINGENT",
+    "KONTINGENT_VORHANDEN_UPPER": "fr_KONTINGENT VORHANDEN",
     "VERFUEGEN_UPPER": "fr_VERFÜGEN",
     "GENERATE_FINANZIELLEN_SITUATION": "fr_Berechnung der finanziellen Situation als Beilage generieren",
     "INSTITUTION_UPPER": "fr_INSTITUTION",
@@ -891,6 +893,7 @@
     "KLASSE8": "fr_8. Klasse",
     "KLASSE9": "fr_9. Klasse",
     "GEPRUEFT": "fr_Geprüft",
+    "KEIN_KONTINGENT": "fr_Kein Kontingent",
     "PLATZBESTAETIGUNG_ABGEWIESEN": "fr_Platzbestätigung abgewiesen",
     "PLATZBESTAETIGUNG_WARTEN": "fr_Warten auf Platzbestätigung",
     "GESUCH_ID": "fr_Gescuh ID",
@@ -1464,5 +1467,7 @@
     "SEARCH_FOR_VALUE": "fr_Suche Nach Text",
     "CHANGE_DEUTSCH": "auf Deutsch wechseln",
     "CHANGE_FRANZOESISCH": "Passer en français",
-    "NO_ERWERBSPENSUM_DATA": "fr_Keine Erwerbspensum Daten vorhanden"
+    "NO_ERWERBSPENSUM_DATA": "fr_Keine Erwerbspensum Daten vorhanden",
+    "CONFIRM_KEIN_KONTINGENT_TITLE": "fr_Wollen Sie den Status auf 'Kein Kontingent' setzen?",
+    "CONFIRM_KEIN_KONTINGENT_TEXT": "fr_Für diesen Antrag besteht kein Kontingent. Sie müssen die Gesuchsteller ausserhalb kiBon über diesen Sachverhalt informieren"
 }

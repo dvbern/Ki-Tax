@@ -37,11 +37,13 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.mocks.EinstellungServiceMock;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.EbeguVorlageService;
+import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.PDFServiceBean;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -89,6 +91,9 @@ public class PDFServiceBeanTest {
 
 	@InjectIntoMany
 	GemeindeService gemeindeService = new GemeindeServiceMock();
+
+	@InjectIntoMany
+	EinstellungService einstellungService = new EinstellungServiceMock();
 
 	@InjectIntoMany
 	DokumentenverzeichnisEvaluator dokumentenverzeichnisEvaluator = new DokumentenverzeichnisEvaluator();
