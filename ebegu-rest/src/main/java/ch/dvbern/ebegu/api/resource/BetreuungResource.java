@@ -55,13 +55,13 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.event.Level;
 
 /**
  * REST Resource fuer Betreuungen. Betreuung = ein Kind in einem Betreuungsangebot bei einer Institution.
@@ -102,7 +102,7 @@ public class BetreuungResource {
 		Optional<KindContainer> kind = kindService.findKind(kindId.getId());
 		if (kind.isPresent()) {
 			if (hasDuplicate(betreuungJAXP, kind.get().getBetreuungen())) {
-				throw new EbeguRuntimeException("saveBetreuung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG, Level.DEBUG);
+				throw new EbeguRuntimeException(KibonLogLevel.NONE, "saveBetreuung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 			}
 			Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
 			resourceHelper.assertGesuchStatusForBenutzerRole(kind.get().getGesuch(), convertedBetreuung);

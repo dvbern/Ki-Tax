@@ -84,6 +84,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguPendingInvitationException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
@@ -97,7 +98,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 import static ch.dvbern.ebegu.enums.UserRole.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRole.getBgAndGemeindeRoles;
@@ -276,8 +276,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		} catch (MailException e) {
 			String message =
 				String.format("Es konnte keine Email Einladung an %s geschickt werden", persistedBenutzer.getEmail());
-			Level logLevel = ebeguConfiguration.getIsDevmode() ? Level.INFO : Level.ERROR;
-			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, logLevel, e);
+			KibonLogLevel logLevel = ebeguConfiguration.getIsDevmode() ? KibonLogLevel.INFO : KibonLogLevel.ERROR;
+			throw new EbeguRuntimeException(logLevel, "sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
 		return persistedBenutzer;
 	}

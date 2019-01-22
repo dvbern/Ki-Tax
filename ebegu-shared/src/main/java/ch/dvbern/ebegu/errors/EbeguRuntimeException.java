@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 import javax.ejb.ApplicationException;
 
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import org.slf4j.event.Level;
 
 /**
  * Created by imanol on 02.03.16.
@@ -44,7 +43,7 @@ public class EbeguRuntimeException extends RuntimeException {
 	@Nullable
 	private final String customMessage;
 
-	private Level logLevel = Level.WARN; // Defaultmaessig loggen wir im WARN-level
+	private KibonLogLevel logLevel = KibonLogLevel.WARN; // Defaultmaessig loggen wir im WARN-level
 
 	public EbeguRuntimeException(
 		@Nullable String methodeName,
@@ -69,6 +68,21 @@ public class EbeguRuntimeException extends RuntimeException {
 		this.customMessage = customMessage;
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
 		errorCodeEnum = null;
+	}
+
+	public EbeguRuntimeException(
+		@Nonnull KibonLogLevel logLevel,
+		@Nullable String methodeName,
+		@Nonnull String message,
+		@Nullable String customMessage,
+		@Nonnull Serializable... messageArgs) {
+
+		super(message);
+		this.logLevel = logLevel;
+		this.methodName = methodeName;
+		this.customMessage = customMessage;
+		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
+		this.errorCodeEnum = null;
 	}
 
 	public EbeguRuntimeException(
@@ -127,18 +141,18 @@ public class EbeguRuntimeException extends RuntimeException {
 	}
 
 	public EbeguRuntimeException(
+		@Nonnull KibonLogLevel logLevel,
 		@Nullable String methodeName,
 		@Nullable String message,
 		@Nullable ErrorCodeEnum errorCodeEnum,
-		@Nonnull Level logLevel,
 		@Nonnull Serializable... messageArgs) {
 
 		super(message);
-		methodName = methodeName;
+		this.methodName = methodeName;
 		this.errorCodeEnum = errorCodeEnum;
 		this.logLevel = logLevel;
 		this.args = Collections.unmodifiableList(Arrays.asList(messageArgs));
-		customMessage = null;
+		this.customMessage = null;
 	}
 
 	public EbeguRuntimeException(
@@ -154,9 +168,9 @@ public class EbeguRuntimeException extends RuntimeException {
 	}
 
 	public EbeguRuntimeException(
+		@Nonnull KibonLogLevel logLevel,
 		@Nullable String methodName,
 		@Nullable ErrorCodeEnum errorCodeEnum,
-		@Nonnull Level logLevel,
 		@Nonnull Serializable... args) {
 
 		super(errorCodeEnum != null ? errorCodeEnum.name() : null);
@@ -164,7 +178,7 @@ public class EbeguRuntimeException extends RuntimeException {
 		this.errorCodeEnum = errorCodeEnum;
 		this.logLevel = logLevel;
 		this.args = Collections.unmodifiableList(Arrays.asList(args));
-		customMessage = null;
+		this.customMessage = null;
 	}
 
 	public EbeguRuntimeException(
@@ -199,7 +213,7 @@ public class EbeguRuntimeException extends RuntimeException {
 	}
 
 	@Nonnull
-	public Level getLogLevel() {
+	public KibonLogLevel getLogLevel() {
 		return logLevel;
 	}
 }
