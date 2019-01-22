@@ -14,10 +14,12 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope} from 'angular';
+import * as moment from 'moment';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
+import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSGemeinde from '../../../models/TSGemeinde';
@@ -128,6 +130,13 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                     this.berechnungsManager.clear();
                     return this.gesuchModelManager.saveErneuerungsgesuch();
                 }
+                // damit die prov. Berechnung korrekt funktioniert, wird als default das heutige Datum gesetzt
+                // falls es ein Online Gesuch ist
+                if (this.gesuchModelManager.getGesuch().eingangsart === TSEingangsart.ONLINE &&
+                    this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERSTGESUCH) {
+                    this.getGesuchModel().eingangsdatum = moment(moment.now());
+                }
+
             }
             return this.gesuchModelManager.saveGesuchAndFall();
         }
