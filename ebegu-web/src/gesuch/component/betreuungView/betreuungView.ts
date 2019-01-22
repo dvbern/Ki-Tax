@@ -710,7 +710,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public isEnabled(): boolean {
         if (this.isDuplicated) {
-            return false;
+            return true;
         }
 
         if (this.isProvisorischeBetreuung() ||
