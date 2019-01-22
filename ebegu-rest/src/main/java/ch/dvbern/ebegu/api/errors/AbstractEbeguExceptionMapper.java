@@ -106,6 +106,7 @@ public abstract class AbstractEbeguExceptionMapper<E extends Throwable> implemen
 		return null;
 	}
 
+	@SuppressWarnings("PMD.EmptyIfStmt") // Wir wollen explizit NONE behandeln und WARN als default
 	protected void logException(Exception exception) {
 		// Falls es eine Exception von uns ist, und wir ein Level angegeben haben, loggen wir mit diesem
 		// ansonsten defaultmässig WARN
