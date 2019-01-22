@@ -723,12 +723,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.$translate.instant('PROVISORISCHE_BERECHNUNG');
     }
 
-    public finSitStatusEnabled(): boolean {
+    public isGesuchsteller(): boolean {
         if (this.authServiceRs.isRole(TSRole.GESUCHSTELLER)) {
-            return false;
+            return true;
         }
-        // wie beim Wizard step wird angenommen, dass jeder Andere, welcher Zugriff auf die Maske hat, auch bearbeiten
-        // darf
-        return true;
+        return false;
     }
 }
