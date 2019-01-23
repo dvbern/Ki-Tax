@@ -75,7 +75,7 @@ public class FamilienabzugAbschnittRuleTest {
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
-		Assert.assertEquals(BigDecimal.ZERO, verfuegungZeitabschnitt.getAbzugFamGroesse());
+		Assert.assertEquals(0, verfuegungZeitabschnitt.getAbzugFamGroesse().intValue());
 	}
 
 	@Test
@@ -423,13 +423,13 @@ public class FamilienabzugAbschnittRuleTest {
 		final VerfuegungZeitabschnitt zeitabschnitt0 = zeitabschnitte.get(0);
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), zeitabschnitt0.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(date.withDayOfMonth(31), zeitabschnitt0.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(BigDecimal.ZERO, zeitabschnitt0.getAbzugFamGroesse());
+		Assert.assertEquals(0, zeitabschnitt0.getAbzugFamGroesse().intValue());
 		Assert.assertEquals(BigDecimal.valueOf(2.0), zeitabschnitt0.getFamGroesse());
 
 		final VerfuegungZeitabschnitt zeitabschnitt1 = zeitabschnitte.get(1);
 		Assert.assertEquals(date.plusMonths(1).withDayOfMonth(1), zeitabschnitt1.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), zeitabschnitt1.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(BigDecimal.valueOf(11400), zeitabschnitt1.getAbzugFamGroesse());
+		Assert.assertEquals(11400, zeitabschnitt1.getAbzugFamGroesse().intValue());
 		Assert.assertEquals(BigDecimal.valueOf(3.0), zeitabschnitt1.getFamGroesse());
 	}
 
