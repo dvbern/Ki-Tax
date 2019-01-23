@@ -243,4 +243,12 @@ export default class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntit
     public set sameVerguenstigung(value: boolean) {
         this._sameVerguenstigung = value;
     }
+
+    public getMinimalerElternbeitragGekuerzt(): number {
+        const vollkostenMinusVerguenstigung: number = this.vollkosten - this.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+        if (vollkostenMinusVerguenstigung > this.minimalerElternbeitrag) {
+            return 0;
+        }
+        return this.minimalerElternbeitrag - vollkostenMinusVerguenstigung;
+    }
 }
