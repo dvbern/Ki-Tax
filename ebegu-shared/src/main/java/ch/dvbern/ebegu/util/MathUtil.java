@@ -432,4 +432,3 @@ public enum MathUtil {
 		return MathUtil.DEFAULT.from(value);
 	}
 }
-
