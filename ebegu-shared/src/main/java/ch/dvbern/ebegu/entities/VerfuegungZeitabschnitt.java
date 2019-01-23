@@ -671,6 +671,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.minimalerElternbeitrag = MathUtil.toTwoKommastelle(minimalerElternbeitrag);
 	}
 
+	@Nonnull
+	public BigDecimal getMinimalerElternbeitragGekuerzt() {
+		// Das Kleinere von Minimalbeitrag und Vollkosten - Verguenstigung
+		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT.subtract(getVollkosten(), getVerguenstigung());
+		return vollkostenMinusVerguenstigung.min(getMinimalerElternbeitrag());
+	}
+
 	/**
 	 * Addiert die Daten von "other" zu diesem VerfuegungsZeitabschnitt
 	 */
