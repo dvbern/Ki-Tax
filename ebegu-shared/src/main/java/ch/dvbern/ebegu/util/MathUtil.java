@@ -421,4 +421,15 @@ public enum MathUtil {
 	public static boolean isPositive(@Nonnull BigDecimal value) {
 		return value.compareTo(BigDecimal.ZERO) > 0;
 	}
+
+	@Nonnull
+	public static BigDecimal toOneKommastelle(@Nonnull BigDecimal value) {
+		return MathUtil.EINE_NACHKOMMASTELLE.from(value);
+	}
+
+	@Nonnull
+	public static BigDecimal toTwoKommastelle(@Nonnull BigDecimal value) {
+		return MathUtil.DEFAULT.from(value);
+	}
 }
+

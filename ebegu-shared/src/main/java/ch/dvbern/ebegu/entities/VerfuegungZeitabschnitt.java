@@ -254,15 +254,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.monatlicheBetreuungskosten = toCopy.monatlicheBetreuungskosten;
 		this.anspruchberechtigtesPensum = toCopy.anspruchberechtigtesPensum;
 		this.betreuungsstunden = toCopy.betreuungsstunden;
-		this.vollkosten = toCopy.vollkosten;
-		this.elternbeitrag = toCopy.elternbeitrag;
-		this.verguenstigungOhneBeruecksichtigungVollkosten = toCopy.getVerguenstigungOhneBeruecksichtigungVollkosten();
-		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = toCopy.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
-		this.verguenstigung = toCopy.verguenstigung;
-		this.minimalerElternbeitrag = toCopy.minimalerElternbeitrag;
-		this.abzugFamGroesse = toCopy.abzugFamGroesse;
-		this.famGroesse = toCopy.famGroesse;
-		this.massgebendesEinkommenVorAbzugFamgr = toCopy.massgebendesEinkommenVorAbzugFamgr;
+		this.setVollkosten(toCopy.getVollkosten());
+		this.setElternbeitrag(toCopy.getElternbeitrag());
+		this.setVerguenstigungOhneBeruecksichtigungVollkosten(toCopy.getVerguenstigungOhneBeruecksichtigungVollkosten());
+		this.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(toCopy.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		this.setVerguenstigung(toCopy.getVerguenstigung());
+		this.setMinimalerElternbeitrag(toCopy.getMinimalerElternbeitrag());
+		this.setAbzugFamGroesse(toCopy.getAbzugFamGroesse());
+		this.setFamGroesse(toCopy.getFamGroesse());
+		this.setMassgebendesEinkommenVorAbzugFamgr(toCopy.getMassgebendesEinkommenVorAbzFamgr());
 		this.hasSecondGesuchstellerForFinanzielleSituation = toCopy.hasSecondGesuchstellerForFinanzielleSituation;
 		this.einkommensjahr = toCopy.einkommensjahr;
 		this.ekv1Alleine = toCopy.ekv1Alleine;
@@ -376,7 +376,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setVollkosten(BigDecimal vollkosten) {
-		this.vollkosten = vollkosten;
+		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
+		this.vollkosten = MathUtil.toTwoKommastelle(vollkosten);
 	}
 
 	public BigDecimal getElternbeitrag() {
@@ -384,7 +385,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setElternbeitrag(BigDecimal elternbeitrag) {
-		this.elternbeitrag = elternbeitrag;
+		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
+		this.elternbeitrag = MathUtil.toTwoKommastelle(elternbeitrag);
 	}
 
 	public BigDecimal getAbzugFamGroesse() {
@@ -392,7 +394,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setAbzugFamGroesse(BigDecimal abzugFamGroesse) {
-		this.abzugFamGroesse = abzugFamGroesse;
+		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
+		this.abzugFamGroesse = MathUtil.toTwoKommastelle(abzugFamGroesse);
 	}
 
 	/**
@@ -401,7 +404,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Nonnull
 	public BigDecimal getMassgebendesEinkommen() {
 		BigDecimal abzugFamSize = this.abzugFamGroesse == null ? BigDecimal.ZERO : this.abzugFamGroesse;
-		return MathUtil.GANZZAHL.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
+		return MathUtil.DEFAULT.subtractNullSafe(this.massgebendesEinkommenVorAbzugFamgr, abzugFamSize);
 	}
 
 	@Nonnull
@@ -410,7 +413,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setMassgebendesEinkommenVorAbzugFamgr(@Nonnull BigDecimal massgebendesEinkommenVorAbzugFamgr) {
-		this.massgebendesEinkommenVorAbzugFamgr = massgebendesEinkommenVorAbzugFamgr;
+		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
+		this.massgebendesEinkommenVorAbzugFamgr = MathUtil.toTwoKommastelle(massgebendesEinkommenVorAbzugFamgr);
 	}
 
 	public boolean isHasSecondGesuchstellerForFinanzielleSituation() {
@@ -495,7 +499,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setFamGroesse(BigDecimal famGroesse) {
-		this.famGroesse = famGroesse;
+		// Wir stellen direkt im setter sicher, dass wir die FamGroesse mit 1 Nachkommastelle speichern
+		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 	}
 
 	public Integer getEinkommensjahr() {
@@ -631,8 +636,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setVerguenstigungOhneBeruecksichtigungVollkosten(BigDecimal
-		verguenstigungOhneBeruecksichtigungVollkosten) {
-		this.verguenstigungOhneBeruecksichtigungVollkosten = verguenstigungOhneBeruecksichtigungVollkosten;
+		verguenstigungOhneBeruecksichtigungVollkosten
+	) {
+		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
+		this.verguenstigungOhneBeruecksichtigungVollkosten = MathUtil.toTwoKommastelle(verguenstigungOhneBeruecksichtigungVollkosten);
 	}
 
 	public BigDecimal getVerguenstigungOhneBeruecksichtigungMinimalbeitrag() {
@@ -640,8 +647,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal
-		verguenstigungOhneBeruecksichtigungMinimalbeitrag) {
-		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+		verguenstigungOhneBeruecksichtigungMinimalbeitrag
+	) {
+		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
+		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = MathUtil.toTwoKommastelle(verguenstigungOhneBeruecksichtigungMinimalbeitrag);
 	}
 
 	public BigDecimal getVerguenstigung() {
@@ -649,7 +658,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setVerguenstigung(BigDecimal verguenstigung) {
-		this.verguenstigung = verguenstigung;
+		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
+		this.verguenstigung = MathUtil.toTwoKommastelle(verguenstigung);
 	}
 
 	public BigDecimal getMinimalerElternbeitrag() {
@@ -657,7 +667,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	public void setMinimalerElternbeitrag(BigDecimal minimalerElternbeitrag) {
-		this.minimalerElternbeitrag = minimalerElternbeitrag;
+		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
+		this.minimalerElternbeitrag = MathUtil.toTwoKommastelle(minimalerElternbeitrag);
 	}
 
 	/**
