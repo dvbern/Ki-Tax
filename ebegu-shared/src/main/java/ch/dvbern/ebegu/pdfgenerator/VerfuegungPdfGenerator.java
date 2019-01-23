@@ -202,11 +202,18 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private PdfPTable createIntro() {
+
+		String institutionName = betreuung.getInstitutionStammdaten().getInstitution().getName();
+		//für unbekannte Institutionen soll ein Fragezeichen auf die Verfügung aufgedruckt werden
+		if (institutionName.equals("")) {
+			institutionName = "?";
+		}
+
 		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
 		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
 		introBasisjahr.add(new TableRowLabelValue(NAME, betreuung.getKind().getKindJA().getFullName()));
 		introBasisjahr.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
-		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, betreuung.getInstitutionStammdaten().getInstitution().getName()));
+		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 		return PdfUtil.creatreIntroTable(introBasisjahr, sprache);
 	}
 
