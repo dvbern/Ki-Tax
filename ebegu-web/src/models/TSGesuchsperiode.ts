@@ -92,4 +92,16 @@ export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
     public isEntwurf(): boolean {
         return this.status === TSGesuchsperiodeStatus.ENTWURF;
     }
+
+    public getBasisJahr(): number {
+        return this.gueltigkeit.gueltigAb.year() - 1;
+    }
+
+    public getBasisJahrPlus1(): number {
+        return this.getBasisJahr() + 1;
+    }
+
+    public getBasisJahrPlus2(): number {
+        return this.getBasisJahr() + 2;
+    }
 }

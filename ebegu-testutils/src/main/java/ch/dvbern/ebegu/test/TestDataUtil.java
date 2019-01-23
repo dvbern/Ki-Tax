@@ -609,7 +609,8 @@ public final class TestDataUtil {
 		kind.setVorname("Kind_Max");
 		kind.setGeburtsdatum(LocalDate.of(2010, 12, 12));
 		kind.setGeschlecht(Geschlecht.WEIBLICH);
-		kind.setKinderabzug(Kinderabzug.GANZER_ABZUG);
+		kind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
+		kind.setKinderabzugZweitesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		if (addFachstelle) {
 			kind.setPensumFachstelle(createDefaultPensumFachstelle());
 		}
