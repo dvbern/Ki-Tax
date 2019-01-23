@@ -108,13 +108,13 @@ public class EinkommenCalcRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertEquals(3, result.size());
 
-		Assert.assertEquals(new BigDecimal(50000), result.get(0).getMassgebendesEinkommen());
+		Assert.assertEquals(50000, result.get(0).getMassgebendesEinkommen().intValue());
 		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt1 = result.get(0).getBemerkungenMap();
 		Assert.assertNotNull(bemerkungenAbschnitt1);
 		Assert.assertEquals(1, bemerkungenAbschnitt1.size());
 		Assert.assertTrue(bemerkungenAbschnitt1.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 
-		Assert.assertEquals(new BigDecimal(25000), result.get(1).getMassgebendesEinkommen());
+		Assert.assertEquals(25000, result.get(1).getMassgebendesEinkommen().intValue());
 		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = result.get(1).getBemerkungenMap();
 		Assert.assertNotNull(bemerkungenAbschnitt2);
 		Assert.assertEquals(2, bemerkungenAbschnitt2.size());
@@ -123,7 +123,7 @@ public class EinkommenCalcRuleTest {
 		String bemerkungEKV1 = "Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1;
 		Assert.assertTrue(bemerkungenAbschnitt2.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV1));
 
-		Assert.assertEquals(new BigDecimal(20000), result.get(2).getMassgebendesEinkommen());
+		Assert.assertEquals(20000, result.get(2).getMassgebendesEinkommen().intValue());
 		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = result.get(2).getBemerkungenMap();
 		Assert.assertNotNull(bemerkungenAbschnitt3);
 		Assert.assertEquals(2, bemerkungenAbschnitt3.size());

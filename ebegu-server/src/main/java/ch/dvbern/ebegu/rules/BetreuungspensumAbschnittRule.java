@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -67,6 +68,9 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
 		}
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
+		if (besondereBeduerfnisse) {
+			zeitabschnitt.addBemerkung(RuleKey.ERWEITERTE_BEDUERFNISSE, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
+		}
 		return zeitabschnitt;
 	}
 }
