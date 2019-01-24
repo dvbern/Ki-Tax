@@ -42,6 +42,12 @@ describe('dvValueinput', () => {
     }));
 
     describe('removeNotDigits', () => {
+        it('should return an empty value from an empty value', () => {
+            controller.valueinput = '';
+            controller.ngModelCtrl.$setViewValue('');
+            controller.removeNotDigits();
+            expect(controller.ngModelCtrl.$modelValue).toBe('');
+        });
         it('should return a number from a number', () => {
             controller.valueinput = '1234';
             controller.ngModelCtrl.$setViewValue('1234');
