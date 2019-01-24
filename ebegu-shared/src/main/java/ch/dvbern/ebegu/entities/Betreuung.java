@@ -15,7 +15,10 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -119,7 +122,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@NotNull
 	@Valid
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
-	private ErweiterteBetreuungContainer erweiterteBetreuungContainer;
+	private ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer();
 
 	@Valid
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
@@ -235,7 +238,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return erweiterteBetreuungContainer;
 	}
 
-	@SuppressWarnings("NullableProblems")
 	public void setErweiterteBetreuungContainer(@Nonnull ErweiterteBetreuungContainer erweiterteBetreuungContainer) {
 		this.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
 	}
@@ -439,9 +441,12 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		return null;
 	}
 
+	/**
+	 * Since it is used in email templates we need to pass the language as a String parameter
+	 */
 	@Transient
-	public String getBetreuungsangebotTypTranslated() {
-		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp());
+	public String getBetreuungsangebotTypTranslated(@Nonnull String sprache) {
+		return ServerMessageUtil.translateEnumValue(getBetreuungsangebotTyp(), Locale.forLanguageTag(sprache));
 	}
 
 	/**
@@ -622,8 +627,20 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	}
 
 	@Nonnull
-	public String getInstitutionAndBetreuungsangebottyp() {
-		String angebot = ServerMessageUtil.translateEnumValue(getInstitutionStammdaten().getBetreuungsangebotTyp());
+	public String getInstitutionAndBetreuungsangebottyp(@Nonnull Locale locale) {
+		String angebot = ServerMessageUtil
+			.translateEnumValue(getInstitutionStammdaten().getBetreuungsangebotTyp(), locale);
 		return getInstitutionStammdaten().getInstitution().getName() + " (" + angebot + ')';
+	}
+
+	public boolean hasAnspruch() {
+		if (getVerfuegung() != null) {
+			List<VerfuegungZeitabschnitt> vzList = getVerfuegung().getZeitabschnitte();
+			BigDecimal value = vzList.stream()
+				.map(VerfuegungZeitabschnitt::getBgPensum)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+			return MathUtil.isPositive(value);
+		}
+		return false;
 	}
 }

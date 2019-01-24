@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
@@ -124,7 +125,9 @@ public interface MailService {
 	void sendDocumentCreatedEmail(
 		@Nonnull String receiverEmail,
 		@Nullable DownloadFile attachement,
-		@Nonnull String downloadurl) throws MailException;
+		@Nonnull String downloadurl,
+		@Nonnull Locale locale
+	) throws MailException;
 
 	/**
 	 * Sends an Einladungsemail to the given user according to the type of the Einladung

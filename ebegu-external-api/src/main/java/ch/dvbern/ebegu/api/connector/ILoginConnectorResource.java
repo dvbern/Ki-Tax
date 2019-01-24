@@ -27,7 +27,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import ch.dvbern.ebegu.api.dtos.JaxEinladungWrapper;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerResponseWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
@@ -56,7 +56,7 @@ public interface ILoginConnectorResource {
 	@Path("/benutzer")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	JaxExternalBenutzer updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer);
+	JaxBenutzerResponseWrapper updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer);
 
 	/**
 	 * Service to update a Benutzer from an external login module. The main purpose is to handle users that have
@@ -75,7 +75,7 @@ public interface ILoginConnectorResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Nonnull
-	JaxEinladungWrapper updateBenutzer(
+	JaxBenutzerResponseWrapper updateBenutzer(
 		@Nonnull @NotNull @PathParam("benutzerId") String benutzerId,
 		@Nonnull @NotNull @Valid JaxExternalBenutzer externalBenutzer);
 

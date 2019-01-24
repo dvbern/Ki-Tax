@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldMassenversand;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import com.google.common.base.Preconditions;
@@ -44,7 +45,7 @@ public class MassenversandExcelConverter implements ExcelConverter {
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
 		@Nonnull List<MassenversandDataRow> data,
-		@Nonnull Locale lang,
+		@Nonnull Locale locale,
 		@Nonnull LocalDate datumVon,
 		@Nonnull LocalDate datumBis,
 		@Nullable Gesuchsperiode auswertungPeriode,
@@ -55,22 +56,25 @@ public class MassenversandExcelConverter implements ExcelConverter {
 		@Nullable String text) {
 		checkNotNull(data);
 
-		ExcelMergerDTO sheet = new ExcelMergerDTO();
-		sheet.addValue(MergeFieldMassenversand.auswertungVon, datumVon);
-		sheet.addValue(MergeFieldMassenversand.auswertungBis, datumBis);
-		if (auswertungPeriode != null) {
-			sheet.addValue(MergeFieldMassenversand.auswertungPeriode, auswertungPeriode.getGesuchsperiodeString());
-		}
-		sheet.addValue(MergeFieldMassenversand.auswertungInklBgGesuche, inklBgGesuche);
-		sheet.addValue(MergeFieldMassenversand.auswertungInklMischGesuche, inklMischGesuche);
-		sheet.addValue(MergeFieldMassenversand.auswertungInklTsGesuche, inklTsGesuche);
-		sheet.addValue(MergeFieldMassenversand.auswertungOhneFolgegesuch, ohneErneuerungsgesuch);
-		sheet.addValue(MergeFieldMassenversand.auswertungText, text);
+		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
-		insertRequiredColumns(data, sheet);
+		addHeaders(excelMerger, locale);
+
+		excelMerger.addValue(MergeFieldMassenversand.auswertungVon, datumVon);
+		excelMerger.addValue(MergeFieldMassenversand.auswertungBis, datumBis);
+		if (auswertungPeriode != null) {
+			excelMerger.addValue(MergeFieldMassenversand.auswertungPeriode, auswertungPeriode.getGesuchsperiodeString());
+		}
+		excelMerger.addValue(MergeFieldMassenversand.auswertungInklBgGesuche, inklBgGesuche);
+		excelMerger.addValue(MergeFieldMassenversand.auswertungInklMischGesuche, inklMischGesuche);
+		excelMerger.addValue(MergeFieldMassenversand.auswertungInklTsGesuche, inklTsGesuche);
+		excelMerger.addValue(MergeFieldMassenversand.auswertungOhneFolgegesuch, ohneErneuerungsgesuch);
+		excelMerger.addValue(MergeFieldMassenversand.auswertungText, text);
+
+		insertRequiredColumns(data, excelMerger);
 
 		data.forEach(dataRow -> {
-			ExcelMergerDTO fallRowGroup = sheet.createGroup(MergeFieldMassenversand.repeatRow);
+			ExcelMergerDTO fallRowGroup = excelMerger.createGroup(MergeFieldMassenversand.repeatRow);
 			fallRowGroup.addValue(MergeFieldMassenversand.gesuchsperiode, dataRow.getGesuchsperiode());
 			fallRowGroup.addValue(MergeFieldMassenversand.fall, dataRow.getFall());
 			fallRowGroup.addValue(MergeFieldMassenversand.gs1Name, dataRow.getGs1Name());
@@ -99,7 +103,40 @@ public class MassenversandExcelConverter implements ExcelConverter {
 			});
 		});
 
-		return sheet;
+		return excelMerger;
+	}
+
+	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
+		excelMerger.addValue(MergeFieldMassenversand.serienbriefeTitle, ServerMessageUtil.getMessage("Reports_serienbriefeTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.parameterTitle, ServerMessageUtil.getMessage("Reports_parameterTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.vonTitle, ServerMessageUtil.getMessage("Reports_vonTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.bisTitle, ServerMessageUtil.getMessage("Reports_bisTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.periodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.inklJAGesucheTitle, ServerMessageUtil.getMessage("Reports_inklJAGesucheTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.inklSCHGesucheTitle, ServerMessageUtil.getMessage("Reports_inklSCHGesucheTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.inklMischGesucheTitle, ServerMessageUtil.getMessage("Reports_inklMischGesucheTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.ohneFolgegesucheTitle, ServerMessageUtil.getMessage("Reports_ohneFolgegesucheTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.textTitle, ServerMessageUtil.getMessage("Reports_textTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.fallIdTitle, ServerMessageUtil.getMessage("Reports_fallIdTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.gesuchsteller1Title, ServerMessageUtil.getMessage("Reports_gesuchsteller1Title", locale));
+		excelMerger.addValue(MergeFieldMassenversand.gesuchsteller2Title, ServerMessageUtil.getMessage("Reports_gesuchsteller2Title", locale));
+		excelMerger.addValue(MergeFieldMassenversand.nachnameTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.vornameTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.ewkTitle, ServerMessageUtil.getMessage("Reports_ewkTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.emailTitle, ServerMessageUtil.getMessage("Reports_emailTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.postanschriftTitle, ServerMessageUtil.getMessage("Reports_postanschriftTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.dublettenTitle, ServerMessageUtil.getMessage("Reports_dublettenTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.kindTitle, ServerMessageUtil.getMessage("Reports_kindTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.betreuungsartInstitutionenTitle, ServerMessageUtil.getMessage("Reports_betreuungsartInstitutionenTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.kitaTitel, ServerMessageUtil.getMessage("Reports_kitaTitel", locale));
+		excelMerger.addValue(MergeFieldMassenversand.ferieninselTitle, ServerMessageUtil.getMessage("Reports_ferieninselTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.tagesfamilieTitle, ServerMessageUtil.getMessage("Reports_tagesfamilieTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.tagesschuleTitel, ServerMessageUtil.getMessage("Reports_tagesschuleTitel", locale));
+		excelMerger.addValue(MergeFieldMassenversand.weitereInstitutionenTitle, ServerMessageUtil.getMessage("Reports_weitereInstitutionenTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.einreichungsartTitel, ServerMessageUtil.getMessage("Reports_einreichungsartTitel", locale));
+		excelMerger.addValue(MergeFieldMassenversand.gesuchStatusTitle, ServerMessageUtil.getMessage("Reports_gesuchStatusTitle", locale));
+		excelMerger.addValue(MergeFieldMassenversand.gesuchstypTitle, ServerMessageUtil.getMessage("Reports_gesuchstypTitle", locale));
 	}
 
 	private void insertRequiredColumns(List<MassenversandDataRow> data, ExcelMergerDTO sheet) {

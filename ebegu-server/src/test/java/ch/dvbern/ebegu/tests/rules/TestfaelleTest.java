@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
 import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
 import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
 import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
+import ch.dvbern.ebegu.util.Constants;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -56,7 +57,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		checkTestfall01WaeltiDagmar(gesuch);
 	}
 
@@ -70,7 +71,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		checkTestfall02FeutzYvonne(gesuch);
 	}
 
@@ -84,7 +85,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		checkTestfall03PerreiraMarcia(gesuch);
 	}
 
@@ -98,7 +99,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		checkTestfall04WaltherLaura(gesuch);
 	}
 
@@ -112,7 +113,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		checkTestfall05LuethiMeret(gesuch);
 	}
 
@@ -126,7 +127,7 @@ public class TestfaelleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = testfall.fillInGesuch();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(gesuch, getParameter());
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		checkTestfall06BeckerNora(gesuch);
 	}
 }

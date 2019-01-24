@@ -1477,7 +1477,8 @@ export default class EbeguRestUtil {
 
     private kindToRestObject(restKind: any, kind: TSKind): any {
         this.abstractPersonEntitytoRestObject(restKind, kind);
-        restKind.kinderabzug = kind.kinderabzug;
+        restKind.kinderabzugErstesHalbjahr = kind.kinderabzugErstesHalbjahr;
+        restKind.kinderabzugZweitesHalbjahr = kind.kinderabzugZweitesHalbjahr;
         restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
@@ -1537,7 +1538,8 @@ export default class EbeguRestUtil {
     private parseKind(kindTS: TSKind, kindFromServer: any): TSKind {
         if (kindFromServer) {
             this.parseAbstractPersonEntity(kindTS, kindFromServer);
-            kindTS.kinderabzug = kindFromServer.kinderabzug;
+            kindTS.kinderabzugErstesHalbjahr = kindFromServer.kinderabzugErstesHalbjahr;
+            kindTS.kinderabzugZweitesHalbjahr = kindFromServer.kinderabzugZweitesHalbjahr;
             kindTS.sprichtAmtssprache = kindFromServer.sprichtAmtssprache;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
@@ -2376,6 +2378,10 @@ export default class EbeguRestUtil {
             zeitabschnitt.famGroesse = zeitabschnittTS.famGroesse;
             zeitabschnitt.zahlungsstatus = zeitabschnittTS.zahlungsstatus;
             zeitabschnitt.vollkosten = zeitabschnittTS.vollkosten;
+            zeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten = zeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten;
+            zeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag = zeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+            zeitabschnitt.verguenstigung = zeitabschnittTS.verguenstigung;
+            zeitabschnitt.minimalerElternbeitrag = zeitabschnittTS.minimalerElternbeitrag;
             zeitabschnitt.einkommensjahr = zeitabschnittTS.einkommensjahr;
             zeitabschnitt.kategorieMaxEinkommen = zeitabschnittTS.kategorieMaxEinkommen;
             zeitabschnitt.kategorieKeinPensum = zeitabschnittTS.kategorieKeinPensum;
@@ -2408,6 +2414,10 @@ export default class EbeguRestUtil {
             verfuegungZeitabschnittTS.famGroesse = zeitabschnittFromServer.famGroesse;
             verfuegungZeitabschnittTS.zahlungsstatus = zeitabschnittFromServer.zahlungsstatus;
             verfuegungZeitabschnittTS.vollkosten = zeitabschnittFromServer.vollkosten;
+            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungVollkosten = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungVollkosten;
+            verfuegungZeitabschnittTS.verguenstigungOhneBeruecksichtigungMinimalbeitrag = zeitabschnittFromServer.verguenstigungOhneBeruecksichtigungMinimalbeitrag;
+            verfuegungZeitabschnittTS.verguenstigung = zeitabschnittFromServer.verguenstigung;
+            verfuegungZeitabschnittTS.minimalerElternbeitrag = zeitabschnittFromServer.minimalerElternbeitrag;
             verfuegungZeitabschnittTS.einkommensjahr = zeitabschnittFromServer.einkommensjahr;
             verfuegungZeitabschnittTS.kategorieMaxEinkommen = zeitabschnittFromServer.kategorieMaxEinkommen;
             verfuegungZeitabschnittTS.kategorieKeinPensum = zeitabschnittFromServer.kategorieKeinPensum;

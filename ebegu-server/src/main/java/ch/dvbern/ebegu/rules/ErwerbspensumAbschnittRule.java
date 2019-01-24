@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -40,8 +41,8 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRule {
 
-	public ErwerbspensumAbschnittRule(DateRange validityPeriod) {
-		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public ErwerbspensumAbschnittRule(DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.ERWERBSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Override
@@ -90,28 +91,30 @@ public class ErwerbspensumAbschnittRule extends AbstractErwerbspensumAbschnittRu
 
 		if (gs2 && gesuch.isMutation() && familiensituationErstgesuch != null && familiensituation != null) {
 			getGueltigkeitFromFamiliensituation(gueltigkeit, familiensituationErstgesuch, familiensituation);
-			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
+			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum);
 		}
 		if (gs2 && !gesuch.isMutation()) {
-			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum.getPensum());
+			return createZeitAbschnittForGS2(gueltigkeit, erwerbspensum);
 		}
 		if (!gs2) {
-			return createZeitAbschnittForGS1(gueltigkeit, erwerbspensum.getPensum());
+			return createZeitAbschnittForGS1(gueltigkeit, erwerbspensum);
 		}
 		return null;
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, Integer erwerbspensumValue) {
+	private VerfuegungZeitabschnitt createZeitAbschnittForGS1(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.setErwerbspensumGS1(erwerbspensumValue);
+		zeitabschnitt.getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
+		zeitabschnitt.setErwerbspensumGS1(erwerbspensum.getPensum());
 		return zeitabschnitt;
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, Integer erwerbspensumValue) {
+	private VerfuegungZeitabschnitt createZeitAbschnittForGS2(DateRange gueltigkeit, @Nonnull Erwerbspensum erwerbspensum) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.setErwerbspensumGS2(erwerbspensumValue);
+		zeitabschnitt.getTaetigkeiten().add(erwerbspensum.getTaetigkeit());
+		zeitabschnitt.setErwerbspensumGS2(erwerbspensum.getPensum());
 		return zeitabschnitt;
 	}
 }

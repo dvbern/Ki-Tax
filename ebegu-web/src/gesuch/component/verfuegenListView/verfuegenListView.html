@@ -20,7 +20,7 @@
 
         <div class="row viewTitle">
             <div class="col-md-12">
-                <h2 data-translate="VERFUEGUNGEN"></h2>
+                <h2>{{vm.getTitle()}}</h2>
                 <hr class="header"/>
             </div>
         </div>
@@ -89,7 +89,7 @@
                                                 ng-required="vm.isFinSitStatusRequired()" items="vm.finSitStatus"
                                                 ng-model="vm.getGesuch().finSitStatus" dv-enable-element
                                                 dv-enable-allowed-roles="vm.allowedRoles"
-                                                dv-enable-expression="!vm.isGesuchReadonly()"
+                                                dv-enable-expression="!vm.isGesuchReadonly() && vm.finSitStatusEnabled()"
                                                 ng-change="vm.changeFinSitStatus()">
                             </dv-radio-container>
                             <dv-error-messages input-id="finSitStatus" for="vm.form.finSitStatus.$error"
@@ -315,6 +315,18 @@
                                    aria-label="{{'VERFUEGUNG_STARTEN_UPPER' | translate}}"
                                    ng-if="vm.showVerfuegenStarten()">
                     <span data-translate="VERFUEGUNG_STARTEN_UPPER"></span>
+                </dv-loading-button>
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.setGesuchStatusKeinKontingent()"
+                                   aria-label="{{'KEIN_KONTINGENT_UPPER' | translate}}"
+                                   ng-if="vm.showKeinKontingent()">
+                    <span data-translate="KEIN_KONTINGENT_UPPER"></span>
+                </dv-loading-button>
+                <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.setGesuchStatusGeprueft()"
+                                   aria-label="{{'KONTINGENT_VORHANDEN_UPPER' | translate}}"
+                                   ng-if="vm.showKontingentVorhanden()">
+                    <span data-translate="KONTINGENT_VORHANDEN_UPPER"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.closeWithoutAngebot()"

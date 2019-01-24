@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
@@ -86,6 +87,7 @@ import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_TO_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_BG_GESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_MISCH_GESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_TS_GESUCHE;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.LANGUAGE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.OHNE_ERNEUERUNGSGESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.REPORT_VORLAGE_TYPE_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.TEXT;
@@ -161,7 +163,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable String text) {
+		@Nullable String text,
+		@Nonnull Locale locale
+	) {
 		checkIfJobCreationAllowed(workJob, vorlage);
 
 		JobOperator jobOperator = BatchRuntime.getJobOperator();
@@ -185,6 +189,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			jobParameters.setProperty(TEXT, text);
 		}
 		jobParameters.setProperty(REPORT_VORLAGE_TYPE_PARAM, vorlage.name());
+		jobParameters.setProperty(LANGUAGE, locale.getLanguage());
 
 		setPropertyIfPresent(jobParameters, WorkJobConstants.GESUCH_PERIODE_ID_PARAM, gesuchPeriodIdParam);
 		jobParameters.setProperty(WorkJobConstants.EMAIL_OF_USER, principalBean.getBenutzer().getEmail());
@@ -219,7 +224,8 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		@Nonnull ReportVorlage vorlage,
 		@Nullable LocalDate datumVon,
 		@Nullable LocalDate datumBis,
-		@Nullable String gesuchPeriodIdParam
+		@Nullable String gesuchPeriodIdParam,
+		@Nonnull Locale locale
 	) {
 		return createNewReporting(
 			workJob,
@@ -231,7 +237,8 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
-			null);
+			null,
+			locale);
 	}
 
 	private void setPropertyIfPresent(@Nonnull Properties jobParameters, @Nonnull String paramName, @Nullable String paramValue) {

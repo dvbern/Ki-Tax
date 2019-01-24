@@ -53,7 +53,12 @@ public class Kind extends AbstractPersonEntity {
 	@NotNull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Kinderabzug kinderabzug;
+	private Kinderabzug kinderabzugErstesHalbjahr;
+
+	@NotNull
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Kinderabzug kinderabzugZweitesHalbjahr;
 
 	@Column(nullable = false)
 	@NotNull
@@ -84,12 +89,20 @@ public class Kind extends AbstractPersonEntity {
 	public Kind() {
 	}
 
-	public Kinderabzug getKinderabzug() {
-		return kinderabzug;
+	public Kinderabzug getKinderabzugErstesHalbjahr() {
+		return kinderabzugErstesHalbjahr;
 	}
 
-	public void setKinderabzug(Kinderabzug kinderabzug) {
-		this.kinderabzug = kinderabzug;
+	public void setKinderabzugErstesHalbjahr(Kinderabzug kinderabzugErstesHalbjahr) {
+		this.kinderabzugErstesHalbjahr = kinderabzugErstesHalbjahr;
+	}
+
+	public Kinderabzug getKinderabzugZweitesHalbjahr() {
+		return kinderabzugZweitesHalbjahr;
+	}
+
+	public void setKinderabzugZweitesHalbjahr(Kinderabzug kinderabzugZweitesHalbjahr) {
+		this.kinderabzugZweitesHalbjahr = kinderabzugZweitesHalbjahr;
 	}
 
 	public Boolean getFamilienErgaenzendeBetreuung() {
@@ -144,7 +157,8 @@ public class Kind extends AbstractPersonEntity {
 		@Nonnull AntragCopyType copyType,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 		super.copyAbstractPersonEntity(target, copyType);
-		target.setKinderabzug(this.getKinderabzug());
+		target.setKinderabzugErstesHalbjahr(this.getKinderabzugErstesHalbjahr());
+		target.setKinderabzugZweitesHalbjahr(this.getKinderabzugZweitesHalbjahr());
 		target.setFamilienErgaenzendeBetreuung(this.getFamilienErgaenzendeBetreuung());
 		target.setSprichtAmtssprache(this.getSprichtAmtssprache());
 
@@ -224,7 +238,8 @@ public class Kind extends AbstractPersonEntity {
 			return false;
 		}
 		final Kind otherKind = (Kind) other;
-		return getKinderabzug() == otherKind.getKinderabzug() &&
+		return getKinderabzugErstesHalbjahr() == otherKind.getKinderabzugErstesHalbjahr() &&
+			getKinderabzugZweitesHalbjahr() == otherKind.getKinderabzugZweitesHalbjahr() &&
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getSprichtAmtssprache(), otherKind.getSprichtAmtssprache()) &&
 			getEinschulungTyp() == otherKind.getEinschulungTyp() &&

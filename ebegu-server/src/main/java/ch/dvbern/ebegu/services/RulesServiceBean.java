@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,11 +48,15 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 	 * gebraucht wird
 	 */
 	@Override
-	public List<Rule> getRulesForGesuchsperiode(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	public List<Rule> getRulesForGesuchsperiode(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Locale locale
+	) {
 		BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
 		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde(gemeinde);
 		Map<EinstellungKey, Einstellung> einstellungen = loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
-		return ruleConfigurator.configureRulesForMandant(gemeinde, einstellungen);
+		return ruleConfigurator.configureRulesForMandant(gemeinde, einstellungen, locale);
 	}
 
 	private Map<EinstellungKey, Einstellung> loadRuleParameters(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode, Set<EinstellungKey> keysToLoad) {

@@ -15,12 +15,16 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Als allerletzte Reduktionsregel läuft eine Regel die das Feld "AnspruchberechtigtesPensum"
@@ -31,19 +35,29 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 
-	public RestanspruchLimitCalcRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.RESTANSPRUCH, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public RestanspruchLimitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.RESTANSPRUCH, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 	}
 
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(
+		@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
 		// Fuer Kleinkinderangebote den Restanspruch bereucksichtigen
+		requireNonNull(betreuung.getBetreuungsangebotTyp());
 		if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int anspruchberechtigtesPensum = verfuegungZeitabschnitt.getAnspruchberechtigtesPensum();
 			int verfuegbarerRestanspruch = verfuegungZeitabschnitt.getAnspruchspensumRest();
 			//wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
 			if (verfuegbarerRestanspruch != -1 && verfuegbarerRestanspruch < anspruchberechtigtesPensum) {
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.RESTANSPRUCH, MsgKey.RESTANSPRUCH_MSG, anspruchberechtigtesPensum, verfuegbarerRestanspruch);
+				verfuegungZeitabschnitt.addBemerkung(
+					RuleKey.RESTANSPRUCH,
+					MsgKey.RESTANSPRUCH_MSG,
+					getLocale(),
+					anspruchberechtigtesPensum,
+					verfuegbarerRestanspruch
+				);
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(verfuegbarerRestanspruch);
 			}
 		}

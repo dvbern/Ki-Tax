@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -93,7 +94,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		Gesuch testgesuch = createGesuch();
 		testgesuch.setEingangsdatum(LocalDate.of(2016, 7, 1));
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		evaluator.evaluate(testgesuch, getParameter());
+		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				assertNotNull(betreuung);
@@ -108,7 +109,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		testgesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(new BigDecimal("500000")); //zu hoch -> Comment wird erzeugt
 
-		evaluator.evaluate(testgesuch, getParameter());
+		evaluator.evaluate(testgesuch, getParameter(), Constants.DEFAULT_LOCALE);
 
 		for (KindContainer kindContainer : testgesuch.getKindContainers()) {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
@@ -124,7 +125,7 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 	public void doTestEvaluationForFamiliensituation() {
 		Gesuch testgesuch = createGesuch();
 		testgesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
-		Verfuegung verfuegung = evaluator.evaluateFamiliensituation(testgesuch);
+		Verfuegung verfuegung = evaluator.evaluateFamiliensituation(testgesuch, Constants.DEFAULT_LOCALE);
 
 		assertNotNull(verfuegung);
 		Assert.assertEquals(12, verfuegung.getZeitabschnitte().size());
@@ -188,7 +189,8 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		betreuung.getKind().setKindJA(new Kind());
 		betreuung.getKind().setGesuch(gesuch);
 		betreuung.getKind().getKindJA().setGeburtsdatum(LocalDate.now().minusYears(4));
-		betreuung.getKind().getKindJA().setKinderabzug(Kinderabzug.GANZER_ABZUG);
+		betreuung.getKind().getKindJA().setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
+		betreuung.getKind().getKindJA().setKinderabzugZweitesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		gesuch.getKindContainers().add(betreuung.getKind());
 
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());

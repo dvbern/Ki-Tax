@@ -166,6 +166,10 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         if (this.gesuchModelManager.isGesuchsperiodeReadonly()) {
             return 'FREIGABEQUITTUNG_NOT_ALLOWED_GESUCHSPERIODE_TEXT';
         }
+        if (this.gesuchModelManager.getGesuch().hasProvisorischeBetreuungen()) {
+            return 'FREIGABEQUITTUNG_NOT_ALLOWED_PROVISORISCHE_BETREUUNG_TEXT';
+        }
+
         return 'FREIGABEQUITTUNG_NOT_ALLOWED_TEXT';
     }
 

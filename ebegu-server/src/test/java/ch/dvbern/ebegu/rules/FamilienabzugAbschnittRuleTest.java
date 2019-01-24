@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,17 +50,18 @@ import org.junit.Test;
  */
 public class FamilienabzugAbschnittRuleTest {
 
-	private final BigDecimal pauschalabzugProPersonFamiliengroesse3 = BigDecimal.valueOf(3800);
-	private final BigDecimal pauschalabzugProPersonFamiliengroesse4 = BigDecimal.valueOf(5960);
-	private final BigDecimal pauschalabzugProPersonFamiliengroesse5 = BigDecimal.valueOf(7040);
-	private final BigDecimal pauschalabzugProPersonFamiliengroesse6 = BigDecimal.valueOf(7580);
+	private final BigDecimal pauschalabzugProPersonFamiliengroesse3 = MathUtil.DEFAULT.from(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS);
+	private final BigDecimal pauschalabzugProPersonFamiliengroesse4 = MathUtil.DEFAULT.from(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS);
+	private final BigDecimal pauschalabzugProPersonFamiliengroesse5 = MathUtil.DEFAULT.from(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS);
+	private final BigDecimal pauschalabzugProPersonFamiliengroesse6 = MathUtil.DEFAULT.from(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS);
 
 	private static final double DELTA = 1.0e-15;
 	public static final LocalDate DATE_2005 = LocalDate.of(2005, 12, 31);
 
 	private final FamilienabzugAbschnittRule famabAbschnittRule =
 		new FamilienabzugAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, pauschalabzugProPersonFamiliengroesse3,
-			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5, pauschalabzugProPersonFamiliengroesse6);
+			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5,
+			pauschalabzugProPersonFamiliengroesse6, Constants.DEFAULT_LOCALE);
 
 	@Test
 	public void test2PKeinAbzug() {
@@ -69,11 +71,11 @@ public class FamilienabzugAbschnittRuleTest {
 		final KindContainer defaultKindContainer = TestDataUtil.createDefaultKindContainer();
 		gesuch.getKindContainers().add(defaultKindContainer);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
-		Assert.assertEquals(BigDecimal.ZERO, verfuegungZeitabschnitt.getAbzugFamGroesse());
+		Assert.assertEquals(0, verfuegungZeitabschnitt.getAbzugFamGroesse().intValue());
 	}
 
 	@Test
@@ -87,7 +89,7 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer1);
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
@@ -105,7 +107,7 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer1);
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
@@ -125,9 +127,10 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer1);
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(2, zeitabschnitte.size());
+
 
 		final Iterator<VerfuegungZeitabschnitt> iterator = zeitabschnitte.iterator();
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt1 = iterator.next();
@@ -158,7 +161,7 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer2);
 		gesuch.getKindContainers().add(defaultKindContainer3);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(2, zeitabschnitte.size());
 
@@ -172,19 +175,6 @@ public class FamilienabzugAbschnittRuleTest {
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt2 = iterator.next();
 		Assert.assertEquals(0, verfuegungZeitabschnitt2.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse5.multiply(BigDecimal.valueOf(5))));
 		Assert.assertEquals(0, verfuegungZeitabschnitt2.getGueltigkeit().getGueltigAb().compareTo(withDayOfMonth));
-	}
-
-	@Test
-	public void testCalculateFamiliengroesseNullGesuch() {
-		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(null, null).getKey();
-		Assert.assertEquals(0, familiengroesse, DELTA);
-	}
-
-	@Test
-	public void testCalculateFamiliengroesseNullDate() {
-		Gesuch gesuch = new Gesuch();
-		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, null).getKey();
-		Assert.assertEquals(0, familiengroesse, DELTA);
 	}
 
 	@Test
@@ -333,9 +323,9 @@ public class FamilienabzugAbschnittRuleTest {
 		 * 1 Erwachsene Person (Alleinerziehend) mit 3 Kindern, für die Kinder ist je 50% Kinderabzug möglich. Es sind insgesamt
 		 * 4 Personen im gleichen Haushalt wohnhaft, somit wird die Pauschale einer 4-Personenhaushalt von Fr. 5'960.00 genommen.
 		 * Die anrechenbare Familiengrösse beträgt 2,5 und dieser Wert wird mit der Pauschale 4-Personenhaushalt von
-		 * Fr. 5'960.00 multipliziert; Ergebnis Fr. 14'900.00.
+		 * Fr. 6'000.00 multipliziert; Ergebnis Fr. 15'000.00.
 		*/
-		Assert.assertEquals(14900, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2.5, 4).intValue());
+		Assert.assertEquals(15000, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2.5, 4).intValue());
 
 		/*
 		 * Beispiel Nr. 4:
@@ -352,18 +342,18 @@ public class FamilienabzugAbschnittRuleTest {
 		 * Beispiel Nr. 5:
 		 * 2 Erwachsene Personen (Konkubinat) und 4 Kindern, zwei eigene Kinder sind je 100% abzugsberechtigt in der
 		 * Steuererklärung und für zwei Kindern sind zu je 50% Abzug möglich. Insgesamt leben 6 Personen im gleichen Haushalt,
-		 * es wird nun der Ansatz von 6 Personenhaushalt von Fr. 7'580.00 genommen. Die anrechenbare Familiengrösse von 4,5
-		 * wird mit der Pauschale 6-Personenhaushalt von Fr. 7'580.00 multipliziert; Ergebnis Fr. 34'110.00.
+		 * es wird nun der Ansatz von 6 Personenhaushalt von Fr. 7'700.00 genommen. Die anrechenbare Familiengrösse von 4,5
+		 * wird mit der Pauschale 6-Personenhaushalt von Fr. 7'700.00 multipliziert; Ergebnis Fr. 34'650.00.
 		 */
-		Assert.assertEquals(34110, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(4.5, 6).intValue());
+		Assert.assertEquals(34650, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(4.5, 6).intValue());
 
 		/*
 		 * Beispiel Nr. 6:
 		 * 2 Erwachsene Personen (verheiratet) und 2 Kindern mit je 100% Abzugsmöglichkeit in den Steuern. Somit beträgt
 		 * die Anzahl der Personen im gleichen Haushalt 4. Damit wird der Pauschalabzug von 4-Personenhaushalt angewendet.
-		 * Die anrechenbare Familiengrösse 4 wird mit 4-Personhaushalt von Fr. 5'960.00 multipliziert; Ergebnis Fr. 23'840.00.
+		 * Die anrechenbare Familiengrösse 4 wird mit 4-Personhaushalt von Fr. 6000.00 multipliziert; Ergebnis Fr. 24000.00.
 		 */
-		Assert.assertEquals(23840, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(4.0, 4).intValue());
+		Assert.assertEquals(24000, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(4.0, 4).intValue());
 	}
 
 	@Test
@@ -426,20 +416,20 @@ public class FamilienabzugAbschnittRuleTest {
 		final KindContainer defaultKindContainer = TestDataUtil.createDefaultKindContainer();
 		gesuch.getKindContainers().add(defaultKindContainer);
 
-		List<VerfuegungZeitabschnitt> zeitabschnitte = famabAbschnittRule.createVerfuegungsZeitabschnitte(betreuung);
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertNotNull(zeitabschnitte);
 		Assert.assertEquals(2, zeitabschnitte.size());
 
 		final VerfuegungZeitabschnitt zeitabschnitt0 = zeitabschnitte.get(0);
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), zeitabschnitt0.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(date.withDayOfMonth(31), zeitabschnitt0.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(BigDecimal.ZERO, zeitabschnitt0.getAbzugFamGroesse());
+		Assert.assertEquals(0, zeitabschnitt0.getAbzugFamGroesse().intValue());
 		Assert.assertEquals(BigDecimal.valueOf(2.0), zeitabschnitt0.getFamGroesse());
 
 		final VerfuegungZeitabschnitt zeitabschnitt1 = zeitabschnitte.get(1);
 		Assert.assertEquals(date.plusMonths(1).withDayOfMonth(1), zeitabschnitt1.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), zeitabschnitt1.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(BigDecimal.valueOf(11400), zeitabschnitt1.getAbzugFamGroesse());
+		Assert.assertEquals(11400, zeitabschnitt1.getAbzugFamGroesse().intValue());
 		Assert.assertEquals(BigDecimal.valueOf(3.0), zeitabschnitt1.getFamGroesse());
 	}
 
@@ -488,7 +478,8 @@ public class FamilienabzugAbschnittRuleTest {
 	private KindContainer createKindContainer(Kinderabzug abzug, LocalDate kindGeburtsdatum) {
 		KindContainer kindContainer = new KindContainer();
 		Kind kindJA = new Kind();
-		kindJA.setKinderabzug(abzug);
+		kindJA.setKinderabzugErstesHalbjahr(abzug);
+		kindJA.setKinderabzugZweitesHalbjahr(abzug);
 		kindJA.setGeburtsdatum(kindGeburtsdatum);
 		kindContainer.setKindJA(kindJA);
 		return kindContainer;

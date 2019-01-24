@@ -45,6 +45,8 @@ import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.WorkJobType;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.WorkjobService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -61,16 +63,16 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
- * REST Resource fuer Reports
+ * REST Resource fuer asynchrone Reports
  */
 @Path("reporting/async")
 @Stateless
@@ -119,7 +121,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG,
 			datumVon,
 			null,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -149,6 +153,7 @@ public class ReportResourceAsync {
 
 		if (!dateTo.isAfter(dateFrom)) {
 			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
 				"getGesuchZeitraumReportExcel",
 				"Fehler beim erstellen Report Gesuch Zeitraum",
 				DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
@@ -162,7 +167,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM,
 			dateFrom,
 			dateTo,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -189,6 +196,7 @@ public class ReportResourceAsync {
 
 		if (!dateAuswertungBis.isAfter(dateAuswertungVon)) {
 			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
 				"getKantonReportExcel",
 				"Fehler beim erstellen Report Kanton",
 				DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
@@ -201,7 +209,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_KANTON,
 			dateAuswertungVon,
 			dateAuswertungBis,
-			null);
+			null,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -230,6 +240,7 @@ public class ReportResourceAsync {
 
 		if (!dateAuswertungBis.isAfter(dateAuswertungVon)) {
 			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
 				"getMitarbeiterinnenReportExcel",
 				"Fehler beim erstellen Report Mitarbeiterinnen",
 				DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
@@ -242,7 +253,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_MITARBEITERINNEN,
 			dateAuswertungVon,
 			dateAuswertungBis,
-			null);
+			null,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -263,7 +276,14 @@ public class ReportResourceAsync {
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
-		workJob = workjobService.createNewReporting(workJob, ReportVorlage.VORLAGE_REPORT_BENUTZER, null, null, null);
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_BENUTZER,
+			null,
+			null,
+			null,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -294,7 +314,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE,
 			null,
 			null,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -325,6 +347,7 @@ public class ReportResourceAsync {
 
 		if (!dateTo.isAfter(dateFrom)) {
 			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
 				"getGesuchstellerKinderBetreuungReportExcel",
 				"Fehler beim erstellen Report Gesuchsteller-Kinder-Betreuung",
 				DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
@@ -338,7 +361,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG,
 			dateFrom,
 			dateTo,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -366,7 +391,10 @@ public class ReportResourceAsync {
 		String periodeId = gesuchPeriodIdParam != null ? gesuchPeriodIdParam.getId() : null;
 
 		if (!dateTo.isAfter(dateFrom)) {
-			throw new EbeguRuntimeException("getKinderReportExcel", "Fehler beim erstellen Report Kinder"
+			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
+				"getKinderReportExcel",
+				"Fehler beim erstellen Report Kinder"
 				, DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
 		}
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
@@ -376,7 +404,9 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_KINDER,
 			dateFrom,
 			dateTo,
-			periodeId);
+			periodeId,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -401,8 +431,14 @@ public class ReportResourceAsync {
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
-		workJob =
-			workjobService.createNewReporting(workJob, ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER, date, null, null);
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER,
+			date,
+			null,
+			null,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}
@@ -440,7 +476,9 @@ public class ReportResourceAsync {
 		String periodeId = gesuchPeriodIdParam.getId();
 
 		if (!dateTo.isAfter(dateFrom)) {
-			throw new EbeguRuntimeException("getMassenversandReportExcel",
+			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
+				"getMassenversandReportExcel",
 				"Fehler beim erstellen Report Massenversand",
 				DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
 		}
@@ -462,7 +500,9 @@ public class ReportResourceAsync {
 			inklMischGesucheBoolean,
 			inklTsGesucheBoolean,
 			Boolean.valueOf(ohneErneuerungsgesuch),
-			text);
+			text,
+			LocaleThreadLocal.get()
+		);
 
 		return Response.ok(workJob.getId()).build();
 	}

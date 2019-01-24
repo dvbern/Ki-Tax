@@ -858,10 +858,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
+	public Gesuch setKeinKontingent(@Nonnull Gesuch gesuch) {
+		gesuch.setStatus(AntragStatus.KEIN_KONTINGENT);
+		return updateGesuch(gesuch, true, null);
+	}
+
+	@Override
+	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public Gesuch setBeschwerdeHaengigForPeriode(@Nonnull Gesuch gesuch) {
-
 		final List<Gesuch> allGesucheForDossier =
 			getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
 		allGesucheForDossier.iterator().forEachRemaining(gesuchLoop -> {
@@ -1347,10 +1355,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setDatumGewarntNichtFreigegeben(LocalDate.now());
 				updateGesuch(gesuch, false, null);
 			} catch (MailException e) {
-				LOG.error(
-					"Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch {}",
-					gesuch.getId(),
-					e);
+				logExceptionAccordingToEnvironment(e,
+					"Mail WarnungGesuchNichtFreigegeben konnte nicht verschickt werden fuer Gesuch",
+					gesuch.getId());
 				anzahl--;
 			}
 		}
@@ -1400,10 +1407,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setDatumGewarntFehlendeQuittung(LocalDate.now());
 				updateGesuch(gesuch, false, null);
 			} catch (MailException e) {
-				LOG.error(
-					"Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch {}",
-					gesuch.getId(),
-					e);
+				logExceptionAccordingToEnvironment(e,
+					"Mail WarnungFreigabequittungFehlt konnte nicht verschickt werden fuer Gesuch",
+					gesuch.getId());
 				anzahl--;
 			}
 		}
@@ -1430,7 +1436,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				}
 				removeGesuch(gesuch.getId(), typ);
 			} catch (MailException e) {
-				LOG.error("Mail InfoGesuchGeloescht konnte nicht verschickt werden fuer Gesuch {}", gesuch.getId(), e);
+				logExceptionAccordingToEnvironment(e,
+					"Mail InfoGesuchGeloescht konnte nicht verschickt werden fuer Gesuch",
+					gesuch.getId());
 				anzahl--;
 			}
 		}
@@ -1759,7 +1767,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				gesuch.setGesuchBetreuungenStatus(GesuchBetreuungenStatus.ABGEWIESEN);
 				break;
 			}
-			if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus()) {
+			if (Betreuungsstatus.WARTEN == betreuung.getBetreuungsstatus() ||
+				Betreuungsstatus.UNBEKANNTE_INSTITUTION == betreuung.getBetreuungsstatus()) {
 				gesuch.setGesuchBetreuungenStatus(GesuchBetreuungenStatus.WARTEN);
 			}
 		}

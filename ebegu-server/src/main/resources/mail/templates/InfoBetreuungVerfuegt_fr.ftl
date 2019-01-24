@@ -25,7 +25,7 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Guten Tag
+		FR_Guten Tag
 	</p>
 	<p>
 		Die folgende familienexterne Betreuung wurde verfügt:
@@ -42,7 +42,7 @@ ${templateConfiguration.mailCss}
 		</tr>
 		<tr>
 			<td>Betreuungsangebot:</td>
-			<td>${betreuung.betreuungsangebotTypTranslated}</td>
+			<td>${betreuung.getBetreuungsangebotTypTranslated("fr")}</td>
 		</tr>
 		<tr>
 			<td>Institution:</td>

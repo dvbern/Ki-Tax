@@ -53,6 +53,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
@@ -76,11 +77,14 @@ import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguPendingInvitationException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
@@ -146,6 +150,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Inject
 	private Authorizer authorizer;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
 
 	@Nonnull
 	@Override
@@ -269,9 +276,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		} catch (MailException e) {
 			String message =
 				String.format("Es konnte keine Email Einladung an %s geschickt werden", persistedBenutzer.getEmail());
-			throw new EbeguRuntimeException("sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
+			KibonLogLevel logLevel = ebeguConfiguration.getIsDevmode() ? KibonLogLevel.INFO : KibonLogLevel.ERROR;
+			throw new EbeguRuntimeException(logLevel, "sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
-
 		return persistedBenutzer;
 	}
 
@@ -568,6 +575,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		requireNonNull(benutzer.getExternalUUID());
 		Optional<Benutzer> foundUserOptional = this.findBenutzerByExternalUUID(benutzer.getExternalUUID());
 
+		checkForPendingInvitations(benutzer);
+
 		if (foundUserOptional.isPresent()) {
 			// Wir kennen den Benutzer schon: Es werden nur die readonly-Attribute neu von IAM uebernommen
 			Benutzer foundUser = foundUserOptional.get();
@@ -597,6 +606,26 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		benutzer.getBerechtigungen().add(berechtigung);
 
 		return saveBenutzer(benutzer);
+	}
+
+	/**
+	 * If the given user is found in the DB by its email, it has a role that can be invited and it has no externalUUID yet
+	 * we can be sure that this user has been invited but he didn't accept the invitation yet.
+	 */
+	private void checkForPendingInvitations(@Nonnull Benutzer benutzer) {
+		findBenutzerByEmail(benutzer.getEmail())
+			.filter(benutzerByEmail ->
+				benutzerByEmail.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.NONE
+				&& benutzerByEmail.getExternalUUID() == null
+			)
+			.ifPresent(benutzerByEmail -> {
+				// the user
+				final String message = "Pending open invitation as a user with elevated role for user " + benutzer.getEmail() +
+					". This user must accept the invitation instead of trying to log in as Gesuchsteller";
+				LOG.debug(message);
+				throw new EbeguPendingInvitationException("updateOrStoreUserFromIAM", message);
+
+			});
 	}
 
 	@Nonnull

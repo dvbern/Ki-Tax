@@ -22,11 +22,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.connector.ILoginConnectorResource;
-import ch.dvbern.ebegu.api.dtos.JaxEinladungWrapper;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerResponseWrapper;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthAccessElement;
 import ch.dvbern.ebegu.api.dtos.JaxExternalAuthorisierterBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxExternalBenutzer;
@@ -41,6 +42,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.MandantService;
@@ -51,6 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_EMAIL_MISMATCH;
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
+import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_PENDING_INVITATION;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -58,6 +61,7 @@ import static java.util.Objects.requireNonNull;
  */
 @SuppressWarnings({ "EjbInterceptorInspection", "EjbClassBasicInspection" })
 @Stateless
+@Path("/connector")
 public class LoginConnectorResource implements ILoginConnectorResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginConnectorResource.class.getSimpleName());
@@ -86,7 +90,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		BenutzerService benutzerService,
 		AuthService authService,
 		MandantResource mandantResource,
-		MandantService mandantService) {
+		MandantService mandantService
+	) {
 
 		this.configuration = configuration;
 		this.versionInfoBean = versionInfoBean;
@@ -116,7 +121,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Override
-	public JaxExternalBenutzer updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer) {
+	public JaxBenutzerResponseWrapper updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer) {
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 		LOG.debug("Requested forwared for {} ", this.request.getHeader("X-Forwarded-For"));
 		checkLocalAccessOnly();
@@ -149,9 +154,15 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			});
 		benutzer.setMandant(mandant);
 
-		Benutzer storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
+		Benutzer storedUser;
+		try {
+			storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
+		} catch (Exception ignore) {
+			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION, LocaleThreadLocal.get());
+			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
+		}
 
-		return convertBenutzerToJax(storedUser);
+		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(storedUser), null);
 	}
 
 	private void toBenutzer(@Nonnull JaxExternalBenutzer jaxExternalBenutzer, @Nonnull Benutzer benutzer) {
@@ -164,9 +175,10 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	@Override
-	public JaxEinladungWrapper updateBenutzer(
+	public JaxBenutzerResponseWrapper updateBenutzer(
 		@Nonnull String benutzerId,
-		@Nonnull JaxExternalBenutzer externalBenutzer) {
+		@Nonnull JaxExternalBenutzer externalBenutzer
+	) {
 
 		requireNonNull(benutzerId);
 		requireNonNull(externalBenutzer);
@@ -175,18 +187,26 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId).orElse(null);
 
 		//if user not exists return error msg to connector
-		if(existingBenutzer == null){
-			return convertEinladungWrapperToJax(externalBenutzer, ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND));
+		if (existingBenutzer == null) {
+			return convertBenutzerResponseWrapperToJax(
+				externalBenutzer,
+				ServerMessageUtil.translateEnumValue(ERROR_ENTITY_NOT_FOUND, LocaleThreadLocal.get())
+			);
 		}
 
 		String persistedEmail = existingBenutzer.getEmail();
 		String externalEmail = externalBenutzer.getEmail();
 
 		if (!persistedEmail.equals(externalEmail)) {
-			String msg = ServerMessageUtil.translateEnumValue(ERROR_EMAIL_MISMATCH, persistedEmail, externalEmail);
+			String msg = ServerMessageUtil.translateEnumValue(
+				ERROR_EMAIL_MISMATCH,
+				LocaleThreadLocal.get(),
+				persistedEmail,
+				externalEmail
+			);
 
 			//return the message to connector and stop process
-			return convertEinladungWrapperToJax(externalBenutzer, msg);
+			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
 
 		toBenutzer(externalBenutzer, existingBenutzer);
@@ -196,11 +216,11 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		}
 
 		Benutzer updatedBenutzer = benutzerService.updateOrStoreUserFromIAM(existingBenutzer);
-		return convertEinladungWrapperToJax(convertBenutzerToJax(updatedBenutzer), null);
+		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(updatedBenutzer), null);
 	}
 
-	private JaxEinladungWrapper convertEinladungWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg){
-		JaxEinladungWrapper wrapper = new JaxEinladungWrapper();
+	private JaxBenutzerResponseWrapper convertBenutzerResponseWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg) {
+		JaxBenutzerResponseWrapper wrapper = new JaxBenutzerResponseWrapper();
 		wrapper.setBenutzer(benutzer);
 		wrapper.setErrorMessage(msg);
 
@@ -256,7 +276,8 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Nonnull
 	private JaxExternalAuthAccessElement convertToJaxExternalAuthAccessElement(
-		@Nonnull AuthAccessElement loginDataForCookie) {
+		@Nonnull AuthAccessElement loginDataForCookie
+	) {
 		requireNonNull(loginDataForCookie, "login data to convert may not be null");
 		return new JaxExternalAuthAccessElement(
 			loginDataForCookie.getAuthId(),

@@ -22,6 +22,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,7 +59,9 @@ public class SchulstufeCalcRuleTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		Assert.assertEquals(100, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		Assert.assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
-		Assert.assertTrue(verfuegungZeitabschnitt.getBemerkungen().isEmpty());
+		Assert.assertFalse(verfuegungZeitabschnitt.getBemerkungenMap().isEmpty());
+		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	private void assertNichtBerechtigt(List<VerfuegungZeitabschnitt> result) {
@@ -67,7 +70,10 @@ public class SchulstufeCalcRuleTest {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
 		Assert.assertEquals(0, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
 		Assert.assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
-		Assert.assertFalse(verfuegungZeitabschnitt.getBemerkungen().isEmpty());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG));
 	}
 
 	private Betreuung prepareData(final int pensum, final EinschulungTyp schulstufe) {

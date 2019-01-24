@@ -312,10 +312,18 @@ export default class TSGesuch extends TSAbstractAntragEntity {
     }
 
     public hasBetreuungInStatusWarten(): boolean {
+        return this.checkForBetreuungsstatus(TSBetreuungsstatus.WARTEN);
+    }
+
+    public hasProvisorischeBetreuungen(): boolean {
+        return this.checkForBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
+    }
+
+    public checkForBetreuungsstatus(status: TSBetreuungsstatus): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.betreuungsstatus === TSBetreuungsstatus.WARTEN) {
+                if (betreuung.betreuungsstatus === status) {
                     return true;
                 }
             }

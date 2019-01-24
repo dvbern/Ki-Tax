@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
 /**
@@ -33,8 +35,8 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
-	public BetreuungspensumAbschnittRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.BETREUUNGSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod);
+	public BetreuungspensumAbschnittRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.BETREUUNGSPENSUM, RuleType.GRUNDREGEL_DATA, validityPeriod, locale);
 	}
 
 	@Nonnull
@@ -66,6 +68,9 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
 		}
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
+		if (besondereBeduerfnisse) {
+			zeitabschnitt.addBemerkung(RuleKey.ERWEITERTE_BEDUERFNISSE, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
+		}
 		return zeitabschnitt;
 	}
 }

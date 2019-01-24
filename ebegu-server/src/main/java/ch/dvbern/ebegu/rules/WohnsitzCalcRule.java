@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -36,21 +37,25 @@ import ch.dvbern.ebegu.types.DateRange;
  */
 public class WohnsitzCalcRule extends AbstractCalcRule {
 
-	public WohnsitzCalcRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, validityPeriod);
+	public WohnsitzCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, validityPeriod, locale);
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung,
-		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(
+		@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
 		if (Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt()) {
 			if (areNotInBern(betreuung, verfuegungZeitabschnitt)) {
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 				verfuegungZeitabschnitt.addBemerkung(
 					RuleKey.WOHNSITZ,
 					MsgKey.WOHNSITZ_MSG,
-					betreuung.extractGesuch().getDossier().getGemeinde().getName());
+					getLocale(),
+					betreuung.extractGesuch().getDossier().getGemeinde().getName()
+				);
 			}
 
 		}

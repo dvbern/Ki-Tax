@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -117,9 +118,9 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		return pensumIsSame && taetigkeitSame && bezeichnungSame && urlaubSame;
 	}
 
-	public String getName() {
+	public String getName(@Nonnull Locale locale) {
 		if (bezeichnung == null || bezeichnung.isEmpty()) {
-			return ServerMessageUtil.translateEnumValue(taetigkeit) + ' ' + getPensum() + '%';
+			return ServerMessageUtil.translateEnumValue(taetigkeit, locale) + ' ' + getPensum() + '%';
 		}
 		return bezeichnung;
 	}

@@ -609,7 +609,8 @@ public final class TestDataUtil {
 		kind.setVorname("Kind_Max");
 		kind.setGeburtsdatum(LocalDate.of(2010, 12, 12));
 		kind.setGeschlecht(Geschlecht.WEIBLICH);
-		kind.setKinderabzug(Kinderabzug.GANZER_ABZUG);
+		kind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
+		kind.setKinderabzugZweitesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		if (addFachstelle) {
 			kind.setPensumFachstelle(createDefaultPensumFachstelle());
 		}
@@ -1162,7 +1163,8 @@ public final class TestDataUtil {
 		@Nonnull Persistence persistence,
 		@Nullable Gemeinde gemeinde,
 		@Nullable AntragStatus status,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode
+	) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch(status);
 		if (gesuchsperiode != null) {
 			gesuch.setGesuchsperiode(gesuchsperiode);
@@ -1594,7 +1596,8 @@ public final class TestDataUtil {
 	public static Betreuung persistBetreuung(
 		BetreuungService betreuungService,
 		Persistence persistence,
-		@Nullable Gesuchsperiode gesuchsperiode) {
+		@Nullable Gesuchsperiode gesuchsperiode
+	) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		for (BetreuungspensumContainer container : betreuung.getBetreuungspensumContainers()) {
 			persistence.persist(container);

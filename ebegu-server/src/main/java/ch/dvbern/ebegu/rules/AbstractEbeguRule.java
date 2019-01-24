@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -48,13 +49,22 @@ public abstract class AbstractEbeguRule implements Rule {
 
 	private final RuleType ruleType;
 
+	// language in which the Rules will be applied. Used normally for translating bemerkungen
+	private final Locale locale;
+
 	@Valid
 	private final DateRange validityPeriod;
 
-	public AbstractEbeguRule(@Nonnull RuleKey ruleKey, @Nonnull RuleType ruleType, @Nonnull DateRange validityPeriod) {
+	public AbstractEbeguRule(
+		@Nonnull RuleKey ruleKey,
+		@Nonnull RuleType ruleType,
+		@Nonnull DateRange validityPeriod,
+		@Nonnull Locale locale
+	) {
 		this.ruleKey = ruleKey;
 		this.ruleType = ruleType;
 		this.validityPeriod = validityPeriod;
+		this.locale = locale;
 	}
 
 	@Override
@@ -84,6 +94,10 @@ public abstract class AbstractEbeguRule implements Rule {
 	@Nonnull
 	public RuleKey getRuleKey() {
 		return ruleKey;
+	}
+
+	public Locale getLocale() {
+		return locale;
 	}
 
 	/**
@@ -181,7 +195,7 @@ public abstract class AbstractEbeguRule implements Rule {
 				// Gleiche Berechnungsgrundlagen: Den alten um den neuen verlängern
 				lastZeitabschnitt.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 				// Die Bemerkungen hinzufügen
-				lastZeitabschnitt.addBemerkung(zeitabschnitt.getBemerkungen());
+				lastZeitabschnitt.addAllBemerkungen(zeitabschnitt.getBemerkungenMap());
 				validZeitabschnitte.remove(indexOfLast);
 				validZeitabschnitte.add(lastZeitabschnitt);
 			} else {

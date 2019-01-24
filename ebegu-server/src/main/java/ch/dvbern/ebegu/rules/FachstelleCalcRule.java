@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -32,12 +34,15 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class FachstelleCalcRule extends AbstractCalcRule {
 
-	public FachstelleCalcRule(@Nonnull DateRange validityPeriod) {
-		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_CALC, validityPeriod);
+	public FachstelleCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_CALC, validityPeriod, locale);
 	}
 
 	@Override
-	protected void executeRule(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	protected void executeRule(
+		@Nonnull Betreuung betreuung,
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
+	) {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
 		if (betreuung.getBetreuungsangebotTyp() != null && betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 			int pensumFachstelle = verfuegungZeitabschnitt.getFachstellenpensum();
@@ -47,7 +52,7 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 			if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
 				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedPensumFachstelle);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.FACHSTELLE, MsgKey.FACHSTELLE_MSG);
+				verfuegungZeitabschnitt.addBemerkung(RuleKey.FACHSTELLE, MsgKey.FACHSTELLE_MSG, getLocale());
 			}
 		}
 	}
