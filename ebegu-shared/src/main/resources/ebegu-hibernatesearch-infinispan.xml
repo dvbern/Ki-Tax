@@ -55,7 +55,7 @@
 				                    key-to-string-mapper="org.infinispan.lucene.LuceneKey2StringMapper">
 					<write-behind/>
 					<jdbc:data-source jndi-url="java:/jdbc/ebegu"/>
-					<jdbc:string-keyed-table prefix="hibernatesearch" create-on-start="false">
+					<jdbc:string-keyed-table prefix="hibernatesearch" create-on-start="true">
 						<jdbc:id-column name="ID_COLUMN" type="VARCHAR(255)"/>
 						<jdbc:data-column name="DATA_COLUMN" type="BLOB"/>
 						<jdbc:timestamp-column name="TIMESTAMP_COLUMN" type="BIGINT"/>
@@ -79,7 +79,7 @@
 											  key-to-string-mapper="org.infinispan.lucene.LuceneKey2StringMapper">
 					<write-behind/>
 					<jdbc:data-source jndi-url="java:/jdbc/ebegu"/>
-					<jdbc:string-keyed-table prefix="hibernatesearch" drop-on-exit="false" create-on-start="false">
+					<jdbc:string-keyed-table prefix="hibernatesearch" drop-on-exit="false" create-on-start="true">
 						<jdbc:id-column name="ID_COLUMN" type="VARCHAR(255)"/>
 						<jdbc:data-column name="DATA_COLUMN" type="BLOB"/>
 						<jdbc:timestamp-column name="TIMESTAMP_COLUMN" type="BIGINT"/>
