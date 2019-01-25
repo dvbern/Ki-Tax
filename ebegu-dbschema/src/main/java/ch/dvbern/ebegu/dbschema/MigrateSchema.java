@@ -25,7 +25,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.MigrationVersion;
 
 /**
  * Dieses Bean sorgt dafuer, dass beim Startup des Java EE Servers migrate ausgefuehrt wird.
@@ -47,9 +46,6 @@ public class MigrateSchema {
 			flyway.setDataSource(dataSource);
 			//			flyway.setLocations("/dbscripts", "/ch/dvbern/fzl/kurstool/dbschema"); wir verwenden default
 			flyway.setEncoding("UTF-8");
-			flyway.setBaselineOnMigrate(true);
-			flyway.setBaselineDescription("ignore tables created by ejb for timers and hibernate search for index");
-			flyway.setBaselineVersion(MigrationVersion.fromVersion("-1"));
 			flyway.migrate();
 		} catch (NamingException e) {
 			final String msg = ("flyway db migration error (missing datasource '" + DATASOURCE_NAME) + "')";

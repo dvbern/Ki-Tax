@@ -54,7 +54,7 @@
 				<jdbc:string-keyed-jdbc-store preload="true" shared="true" read-only="false" fetch-state="true"
 				                    key-to-string-mapper="org.infinispan.lucene.LuceneKey2StringMapper">
 					<write-behind/>
-					<jdbc:data-source jndi-url="java:/jdbc/ebegu"/>
+					<jdbc:data-source jndi-url="java:/jdbc/ebegu-ejb-meta"/>
 					<jdbc:string-keyed-table prefix="hibernatesearch" create-on-start="true">
 						<jdbc:id-column name="ID_COLUMN" type="VARCHAR(255)"/>
 						<jdbc:data-column name="DATA_COLUMN" type="BLOB"/>
@@ -78,7 +78,7 @@
 				<jdbc:string-keyed-jdbc-store preload="true" shared="true" read-only="false" fetch-state="true"
 											  key-to-string-mapper="org.infinispan.lucene.LuceneKey2StringMapper">
 					<write-behind/>
-					<jdbc:data-source jndi-url="java:/jdbc/ebegu"/>
+					<jdbc:data-source jndi-url="java:/jdbc/ebegu-ejb-meta"/>
 					<jdbc:string-keyed-table prefix="hibernatesearch" drop-on-exit="false" create-on-start="true">
 						<jdbc:id-column name="ID_COLUMN" type="VARCHAR(255)"/>
 						<jdbc:data-column name="DATA_COLUMN" type="BLOB"/>
