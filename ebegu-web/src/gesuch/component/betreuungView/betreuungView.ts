@@ -345,6 +345,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.$log.error('there was an error saving the betreuung ', this.model, exception);
             if (exception[0].errorCodeEnum === 'ERROR_DUPLICATE_BETREUUNG') {
                 this.isDuplicated = true;
+                this.model.betreuungsstatus = oldStatus;
                 this.copyModuleToBelegung();
             } else {
                 this.isSavingData = false;
