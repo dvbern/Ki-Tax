@@ -112,6 +112,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             });
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public save(): IPromise<TSGesuch> {
         this.showError = true;
         if (this.isGesuchValid()) {

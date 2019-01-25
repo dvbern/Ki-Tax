@@ -284,6 +284,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.model;
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
             return;
@@ -309,6 +310,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
         } else {
             this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
+            if (this.isProvisorischeBetreuung()) {
+                this.createProvisorischeBetreuung();
+            }
             this.cleanInstitutionStammdaten();
         }
         this.cleanBelegungen();
@@ -1062,15 +1066,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private createProvisorischeBetreuung(): void {
-
         // always clear existing Betreuungspensum
         this.getBetreuungModel().betreuungspensumContainers = [];
-        this.instStammId = null;
+        this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
 
-        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
         }
-        this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
 
         this.gesuchModelManager.getUnknownInstitutionStammdaten(this.instStammId)
             .then((stammdaten: TSInstitutionStammdaten) => {
