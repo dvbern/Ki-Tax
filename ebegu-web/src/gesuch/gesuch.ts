@@ -169,7 +169,7 @@ export class GesuchRouteController implements IController {
             if (TSGesuchBetreuungenStatus.ABGEWIESEN === this.gesuchModelManager.getGesuch().gesuchBetreuungenStatus) {
                 return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.PLATZBESTAETIGUNG_ABGEWIESEN]);
             }
-            if (this.getGesuch().hasProvisorischeBetreuungen()) {
+            if (this.getGesuch() && this.getGesuch().hasProvisorischeBetreuungen()) {
                 return this.ebeguUtil.translateString(TSAntragStatus[TSAntragStatus.IN_BEARBEITUNG_GS]);
             }
             if (TSGesuchBetreuungenStatus.WARTEN === this.gesuchModelManager.getGesuch().gesuchBetreuungenStatus) {
