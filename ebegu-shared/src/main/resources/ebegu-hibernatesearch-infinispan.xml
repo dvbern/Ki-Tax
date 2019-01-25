@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
-  ~ Copyright © 2017 DV Bern AG, Switzerland
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
   ~
-  ~ Das vorliegende Dokument, einschliesslich aller seiner Teile, ist urheberrechtlich
-  ~ geschützt. Jede Verwertung ist ohne Zustimmung der DV Bern AG unzulässig. Dies gilt
-  ~ insbesondere für Vervielfältigungen, die Einspeicherung und Verarbeitung in
-  ~ elektronischer Form. Wird das Dokument einem Kunden im Rahmen der Projektarbeit zur
-  ~ Ansicht übergeben, ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <infinispan
@@ -24,7 +32,7 @@
 			jgroups-udp.xml is the default stack bundled in the Infinispan core jar: integration
 			and tuning are tested by Infinispan. -->
 		<stack-file name="default-jgroups-udp" path="default-configs/default-jgroups-udp.xml"/>
-		<!-- kitadmin-jgroups-upd is based on default-jgroups-udp, but with reduced send and receive buffer sizes,
+		<!-- kiBon-jgroups-upd is based on default-jgroups-udp, but with reduced send and receive buffer sizes,
 		such that the buffer sizes match the OS (docker-container) allocated memory.
 		In case the performance is bad, adjust the OS buffer sizes instead.
 		https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/single/configuration_guide/index#configure_jgroups_send_receive_buffers
@@ -45,7 +53,7 @@
 		<!--  Cache to store Lucene's file metadata  -->
 		<!-- *************************************** -->
 		<replicated-cache name="LuceneIndexesMetadata" mode="SYNC" remote-timeout="25000">
-			<locking striping="false" acquire-timeout="10000" concurrency-level="500" write-skew="false"/>
+			<locking striping="false" acquire-timeout="10000" concurrency-level="500"/>
 			<transaction mode="NONE"/>
 			<expiration max-idle="-1"/>
 			<indexing index="NONE"/>
@@ -68,7 +76,7 @@
 		<!--  Cache to store Lucene data  -->
 		<!-- **************************** -->
 		<distributed-cache name="LuceneIndexesData" mode="SYNC" remote-timeout="25000">
-			<locking striping="false" acquire-timeout="10000" concurrency-level="500" write-skew="false"/>
+			<locking striping="false" acquire-timeout="10000" concurrency-level="500"/>
 			<transaction mode="NONE"/>
 			<expiration max-idle="-1"/>
 			<indexing index="NONE"/>
@@ -92,7 +100,7 @@
 		<!--  Cache to store Lucene locks  -->
 		<!-- ***************************** -->
 		<replicated-cache name="LuceneIndexesLocking" mode="SYNC" remote-timeout="25000">
-			<locking striping="false" acquire-timeout="10000" concurrency-level="500" write-skew="false"/>
+			<locking striping="false" acquire-timeout="10000" concurrency-level="500"/>
 			<transaction mode="NONE"/>
 			<expiration max-idle="-1"/>
 			<indexing index="NONE"/>
