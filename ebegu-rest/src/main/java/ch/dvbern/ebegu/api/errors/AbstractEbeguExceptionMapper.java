@@ -28,11 +28,11 @@ import javax.ws.rs.ext.ExceptionMapper;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.util.Constants;
 import org.jboss.resteasy.api.validation.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 /**
  * Created by imanol on 02.03.16.
@@ -106,18 +106,21 @@ public abstract class AbstractEbeguExceptionMapper<E extends Throwable> implemen
 		return null;
 	}
 
+	@SuppressWarnings("PMD.EmptyIfStmt") // Wir wollen explizit NONE behandeln und WARN als default
 	protected void logException(Exception exception) {
 		// Falls es eine Exception von uns ist, und wir ein Level angegeben haben, loggen wir mit diesem
 		// ansonsten defaultmässig WARN
 		if (exception instanceof EbeguRuntimeException) {
 			EbeguRuntimeException ebeguException = (EbeguRuntimeException) exception;
-			Level logLevel = ebeguException.getLogLevel();
-			if (logLevel == Level.ERROR) {
+			KibonLogLevel logLevel = ebeguException.getLogLevel();
+			if (logLevel == KibonLogLevel.ERROR) {
 				LOG.error(EXCEPTION_OCCURED, exception);
-			} else if (logLevel == Level.INFO) {
+			} else if (logLevel == KibonLogLevel.INFO) {
 				LOG.info(EXCEPTION_OCCURED, exception);
-			} else if (logLevel == Level.DEBUG || logLevel == Level.TRACE) {
+			} else if (logLevel == KibonLogLevel.DEBUG) {
 				LOG.debug(EXCEPTION_OCCURED, exception);
+			} else if (logLevel == KibonLogLevel.NONE) {
+				// ignore: Diesen Fehler wollen wir nicht loggen
 			} else {
 				LOG.warn(EXCEPTION_OCCURED, exception);
 			}

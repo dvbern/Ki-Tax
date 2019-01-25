@@ -196,6 +196,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		table.addCell(createIntro());
 		if (kontingentierungEnabledAndEntwurf) {
 			table.addCell(createInfoKontingentierung());
+		} else {
+			table.addCell("");
 		}
 		return table;
 	}

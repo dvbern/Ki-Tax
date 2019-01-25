@@ -55,6 +55,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -101,7 +102,7 @@ public class BetreuungResource {
 		Optional<KindContainer> kind = kindService.findKind(kindId.getId());
 		if (kind.isPresent()) {
 			if (hasDuplicate(betreuungJAXP, kind.get().getBetreuungen())) {
-				throw new EbeguRuntimeException("saveBetreuung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
+				throw new EbeguRuntimeException(KibonLogLevel.NONE, "saveBetreuung", ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 			}
 			Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
 			resourceHelper.assertGesuchStatusForBenutzerRole(kind.get().getGesuch(), convertedBetreuung);
