@@ -243,7 +243,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		Objects.requireNonNull(betreuung.getVerfuegung());
 
 		// Tabelle initialisieren
-		float[] columnWidths = {90, 100, 100, 110, 110, 100, 100, 100, 100, 110};
+		float[] columnWidths = {90, 100, 88, 88, 88, 100, 100, 100, 108, 110};
 		PdfPTable table = new PdfPTable(columnWidths.length);
 		try {
 			table.setWidths(columnWidths);
