@@ -18,11 +18,13 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,8 +37,14 @@ import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import sun.misc.Unsafe;
 
 public abstract class KibonPdfGenerator {
+
+	private static final Logger LOG = Logger.getLogger(KibonPdfGenerator.class.getName());
 
 	protected static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
 	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
@@ -55,6 +63,36 @@ public abstract class KibonPdfGenerator {
 	protected final GemeindeStammdaten gemeindeStammdaten;
 
 	protected Locale sprache;
+
+	// Load all kiBon-Fonts
+	static {
+		try
+		{
+			Font font = PdfUtilities.DEFAULT_FONT; // Make sure, that PdfUtilities is already loaded...
+			FontFactory.register("/font/OpenSans-Light.ttf", "OpenSans-Light");
+			FontFactory.register("/font/OpenSans-SemiBold.ttf", "OpenSans-Bold");
+			Unsafe unsafe;
+			Field field = Unsafe.class.getDeclaredField("theUnsafe");
+			field.setAccessible(true);
+			unsafe = (Unsafe)field.get(null);
+			updateFont("DEFAULT_FONT", FontFactory.getFont("OpenSans-Light", "Cp1252", true, 9.5F), unsafe);
+			updateFont("DEFAULT_FONT_BOLD", FontFactory.getFont("OpenSans-Bold", "Cp1252", true, 9.5F), unsafe);
+			updateFont("TITLE_FONT", FontFactory.getFont("OpenSans-Bold", "Cp1252", true, 12.0F), unsafe);
+			updateFont("H1_FONT", FontFactory.getFont("OpenSans-Bold", "Cp1252", true, 12.0F),unsafe);
+			updateFont("H2_FONT", PdfUtilities.DEFAULT_FONT, unsafe);
+		}
+		catch (Exception e)
+		{
+			LOG.severe("Could not load kiBon-Fonts for document");
+		}
+	}
+
+	private static void updateFont(String constant, Font font, Unsafe unsafe) throws NoSuchFieldException {
+		final Field fieldToUpdate = PdfUtilities.class.getDeclaredField(constant);
+		final Object base = unsafe.staticFieldBase( fieldToUpdate );
+		final long offset = unsafe.staticFieldOffset( fieldToUpdate );
+		unsafe.putObject( base, offset, font);
+	}
 
 
 	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod") // Stimmt nicht, die Methode ist final
