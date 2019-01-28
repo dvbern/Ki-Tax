@@ -82,6 +82,11 @@
             display: none;
         }
 
+        #spinner {
+            margin-left: 50%;
+            margin-top: 20%;
+        }
+
         .loader,
         .loader:after {
             border-radius: 50%;
@@ -137,14 +142,8 @@
 <div class="filedownload">
     <h1>Filedownload</h1>
     <hr/>
-    <div style="vertical-align: top; margin-top: 37px">
-        <div id="spinnerCont" class="loader">
-        </div>
-        <div class="textContainer">
-            <p>Das gew&uuml;nschte Dokument wird aufbereitet und angezeigt / heruntergeladen.</p>
-            <p>Sie k&ouml;nnen dieses Fenster nach dem Herunterladen schliessen.</p>
-        </div>
-    </div>
+    <img id="spinner" src="spinner.gif" />
+
 
     <div class="btnContainer">
         <button id="closeButton" type="button" aria-label="Download Fenster schliessen">
