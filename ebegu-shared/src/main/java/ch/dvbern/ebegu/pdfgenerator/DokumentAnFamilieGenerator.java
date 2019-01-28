@@ -17,18 +17,23 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.*;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.ColumnText;
 import com.lowagie.text.pdf.PdfContentByte;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
@@ -81,9 +86,9 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4);
 		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
-		Font fontWithSize = PdfUtilities.createFontWithSize(8);
+		Font fontWithSize = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8);
 		for (int i = 0; i < content.size(); i++) {
-			Chunk chunk = new Chunk((i + 1) + " ", PdfUtilities.createFontWithSize(6));
+			Chunk chunk = new Chunk((i + 1) + " ", PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6));
 			chunk.setTextRise(2);
 			fz.addText(chunk);
 			fz.addText(new Phrase(content.get(i) + '\n', fontWithSize));

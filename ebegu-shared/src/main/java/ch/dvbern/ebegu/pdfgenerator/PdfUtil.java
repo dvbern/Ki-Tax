@@ -45,12 +45,18 @@ import com.lowagie.text.ListItem;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfGState;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+import com.lowagie.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.NEWLINE;
@@ -59,12 +65,39 @@ import static com.lowagie.text.pdf.BaseFont.WINANSI;
 
 public final class PdfUtil {
 
+
+	public static final String FONT_FACE_OPEN_SANS = "OpenSans-Light";
+	public static final String FONT_FACE_OPEN_SANS_BOLD = "OpenSans-Light";
+
+	public static final float FONT_SIZE = 10.0f;
+	public static final float FONT_SIZE_H1 = 14.0f;
+	public static final float FONT_SIZE_H2 = 12.0f;
+	public static final float FONT_SIZE_VERFUEGUNGSTABELLE = 8.0f;
+
+	public static final Font DEFAULT_FONT = FontFactory.getFont(FONT_FACE_OPEN_SANS, WINANSI, EMBEDDED,
+		FONT_SIZE, Font.NORMAL, Color.BLACK);
+	public static final Font DEFAULT_FONT_BOLD = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
+		FONT_SIZE, Font.NORMAL, Color.BLACK);
+	public static final Font FONT_TITLE = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
+		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
+	public static final Font FONT_H1 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
+		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
+	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
+		FONT_SIZE_H2, Font.NORMAL, Color.BLACK);
+
+	public static final Font FONT_RED = FontFactory.getFont(FONT_FACE_OPEN_SANS, WINANSI, EMBEDDED,
+		FONT_SIZE,  Font.NORMAL, Color.RED);
+
+	// Muss vor den FontFactory.getFont aufrufen definiert werden
+	static {
+		FontFactory.register("/font/OpenSans-Light.ttf", "OpenSans-Light");
+		FontFactory.register("/font/OpenSans-SemiBold.ttf", "OpenSans-Bold");
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 	private static final String WATERMARK = "PdfGeneration_Watermark";
 	private static final float FONT_SIZE_WATERMARK = 40.0f;
 	public static final float DEFAULT_CELL_LEADING = 1.0F;
-	public static final Font FONT_RED = FontFactory.getFont(PdfUtilities.FONT_FACE_PROXIMA_NOVA, WINANSI, EMBEDDED,
-		PdfUtilities.DEFAULT_FONT_SIZE, 0, new Color(255, 0, 0));
 
 	private PdfUtil() {
 		// nop
@@ -78,7 +111,7 @@ public final class PdfUtil {
 	}
 
 	public static Paragraph createTitle(@Nonnull String title) {
-		Paragraph paragraph = new Paragraph(title, PdfUtilities.TITLE_FONT);
+		Paragraph paragraph = new Paragraph(title, FONT_TITLE);
 		paragraph.setLeading(0.0F, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		paragraph.add(NEWLINE);
 		paragraph.setSpacingAfter(PdfUtilities.DEFAULT_FONT_SIZE * 2 * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
@@ -87,7 +120,7 @@ public final class PdfUtil {
 
 	@Nonnull
 	public static Paragraph createSubTitle(@Nonnull String string) {
-		Paragraph paragraph = new Paragraph(string, PdfUtilities.DEFAULT_FONT_BOLD);
+		Paragraph paragraph = new Paragraph(string, DEFAULT_FONT_BOLD);
 		paragraph.setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		paragraph.setSpacingBefore(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		paragraph.setSpacingAfter(1 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
@@ -131,12 +164,12 @@ public final class PdfUtil {
 
 	@Nonnull
 	public static Paragraph createParagraph(@Nonnull String string, final int emptyLinesAfter) {
-		return createParagraph(string, emptyLinesAfter, PdfUtilities.DEFAULT_FONT);
+		return createParagraph(string, emptyLinesAfter, DEFAULT_FONT);
 	}
 
 	@Nonnull
 	public static Paragraph createBoldParagraph(@Nonnull String string, final int emptyLinesAfter) {
-		return createParagraph(string, emptyLinesAfter, PdfUtilities.DEFAULT_FONT_BOLD);
+		return createParagraph(string, emptyLinesAfter, DEFAULT_FONT_BOLD);
 	}
 
 	@Nonnull
@@ -195,7 +228,7 @@ public final class PdfUtil {
 			table.addCell(new Phrase(entry.getTranslatedLabel(locale), DEFAULT_FONT));
 			table.addCell(new Phrase(entry.getValue(), DEFAULT_FONT));
 		}
-		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * 2);
+		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * FONT_SIZE * 2);
 		return table;
 	}
 
@@ -209,7 +242,7 @@ public final class PdfUtil {
 	}
 
 	public static ListItem createListItem(@Nonnull final String string) {
-		ListItem listItem = new ListItem(string, PdfUtilities.DEFAULT_FONT);
+		ListItem listItem = new ListItem(string, DEFAULT_FONT);
 		return listItem;
 	}
 
@@ -218,7 +251,8 @@ public final class PdfUtil {
 		java.util.List<String[]> values,
 		final float[] columnWidths,
 		final int[] alignement,
-		final int emptyLinesAfter) {
+		final int emptyLinesAfter
+	) {
 		PdfPTable table = new PdfPTable(columnWidths.length);
 		try {
 			table.setWidths(columnWidths);
@@ -242,7 +276,7 @@ public final class PdfUtil {
 			}
 			first = false;
 		}
-		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE * emptyLinesAfter);
+		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * FONT_SIZE * emptyLinesAfter);
 		return table;
 	}
 
@@ -370,7 +404,7 @@ public final class PdfUtil {
 	}
 
 	public static Chunk createSuperTextInText(final  String supertext) {
-		final Chunk chunk = new Chunk(supertext, PdfUtilities.createFontWithSize(5));
+		final Chunk chunk = new Chunk(supertext, PdfUtilities.createFontWithSize(DEFAULT_FONT, 5));
 		chunk.setTextRise(3);
 		return chunk;
 	}

@@ -46,7 +46,6 @@ import org.krysalis.barcode4j.output.bitmap.BitmapCanvasProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
@@ -123,15 +122,15 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		PdfUtil.setTableDefaultStyles(table);
 		table.getDefaultCell().setPaddingBottom(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		// Row: Referenznummer
-		table.addCell(new Phrase(translate(REFERENZNUMMER), DEFAULT_FONT));
-		table.addCell(new Phrase(getGesuch().getJahrFallAndGemeindenummer(), DEFAULT_FONT));
+		table.addCell(new Phrase(translate(REFERENZNUMMER), getPageConfiguration().getFont()));
+		table.addCell(new Phrase(getGesuch().getJahrFallAndGemeindenummer(), getPageConfiguration().getFont()));
 		table.addCell(new Phrase());
 		// Row: Gesuchersteller-Adressen
-		table.addCell(new Phrase(translate(GESUCHSTELLER), DEFAULT_FONT));
+		table.addCell(new Phrase(translate(GESUCHSTELLER), getPageConfiguration().getFont()));
 		String gs1 = KibonPrintUtil.getGesuchstellerWithAddressAsString(getGesuch().getGesuchsteller1());
 		String gs2 = KibonPrintUtil.getGesuchstellerWithAddressAsString(getGesuch().getGesuchsteller2());
-		table.addCell(new Phrase(gs1, DEFAULT_FONT));
-		table.addCell(new Phrase(gs2, DEFAULT_FONT));
+		table.addCell(new Phrase(gs1, getPageConfiguration().getFont()));
+		table.addCell(new Phrase(gs2, getPageConfiguration().getFont()));
 		return table;
 	}
 
@@ -163,9 +162,9 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 		table.addCell(PdfUtil.createTitleCell(translate(BETREUUNG_BGNUMMER)));
 
 		getGesuch().extractAllBetreuungen().forEach(betreuung -> {
-			table.addCell(new Phrase(betreuung.getKind().getKindJA().getFullName(), DEFAULT_FONT));
-			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(sprache), DEFAULT_FONT));
-			table.addCell(new Phrase(betreuung.getBGNummer(), DEFAULT_FONT));
+			table.addCell(new Phrase(betreuung.getKind().getKindJA().getFullName(), getPageConfiguration().getFont()));
+			table.addCell(new Phrase(betreuung.getInstitutionAndBetreuungsangebottyp(sprache), getPageConfiguration().getFont()));
+			table.addCell(new Phrase(betreuung.getBGNummer(), getPageConfiguration().getFont()));
 		});
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * DEFAULT_FONT_SIZE);
 		return table;
@@ -189,8 +188,8 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	}
 
 	private void addGesuchstellerToUnterschriften(@Nonnull PdfPTable table, @Nonnull GesuchstellerContainer gesuchsteller) {
-		table.addCell(new Phrase(translate(UNTERSCHRIFTEN_ORT_DATUM), DEFAULT_FONT));
-		table.addCell(new Phrase(gesuchsteller.extractFullName(), DEFAULT_FONT));
+		table.addCell(new Phrase(translate(UNTERSCHRIFTEN_ORT_DATUM), getPageConfiguration().getFont()));
+		table.addCell(new Phrase(gesuchsteller.extractFullName(), getPageConfiguration().getFont()));
 
 		table.addCell(new Phrase());
 		table.addCell(new Phrase());

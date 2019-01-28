@@ -360,7 +360,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			// Total wird bei 1 GS beim 1. GS eingetragen
 			total.setGs1(totalEinkommenBeiderGS);
 		}
-		FinanzielleSituationTable tableEinkommen = new FinanzielleSituationTable(hasSecondGesuchsteller());
+		FinanzielleSituationTable tableEinkommen = new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller());
 		tableEinkommen.addRow(einkommenTitle);
 		tableEinkommen.addRow(nettolohn);
 		tableEinkommen.addRow(familienzulagen);
@@ -439,7 +439,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			vermoegen5Percent.setGs1(vermoegen5Prozent);
 		}
 
-		FinanzielleSituationTable table = new FinanzielleSituationTable(hasSecondGesuchsteller());
+		FinanzielleSituationTable table = new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller());
 		table.addRow(vermoegenTitle);
 		table.addRow(bruttovermoegen);
 		table.addRow(schulden);
@@ -478,7 +478,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			// Total wird bei 1 GS beim 1. GS eingetragen
 			total.setGs1(totalAbzuegeBeiderGS);
 		}
-		FinanzielleSituationTable table = new FinanzielleSituationTable(hasSecondGesuchsteller());
+		FinanzielleSituationTable table = new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller());
 		table.addRow(abzuegeTitle);
 		table.addRow(unterhaltsbeitraege);
 		table.addRow(total);
@@ -510,7 +510,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			einkommen.setGs1(MathUtil.DEFAULT.add(gs1.getZwischentotalEinkommen(), gs2.getZwischentotalEinkommen()));
 			abzuege.setGs1(MathUtil.DEFAULT.add(gs1.getZwischetotalAbzuege(), gs2.getZwischetotalAbzuege()));
 		}
-		FinanzielleSituationTable table = new FinanzielleSituationTable(false, true);
+		FinanzielleSituationTable table = new FinanzielleSituationTable(getPageConfiguration(), false, true);
 		table.addRow(zusammenzugTitle);
 		table.addRow(einkommen);
 		table.addRow(vermoegen);
