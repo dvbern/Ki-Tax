@@ -157,6 +157,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuch.getGesuchsteller1().getAdressen().get(0).setGesuchstellerContainer(gesuch.getGesuchsteller1());
 		persistence.persist(gesuch.getGesuchsteller1().getAdressen().get(0));
 		persistence.persist(antragStatusHistory);
+		//verfuegung ist nicht gespeichert
 		gesuch = persistence.merge(gesuch);
 
 		Optional<Gesuch> gesuchOptional = this.gesuchService.antragMutieren(gesuch.getId(), LocalDate.now());
