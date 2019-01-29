@@ -89,9 +89,6 @@ public final class PdfUtil {
 	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
 		FONT_SIZE_H2, Font.BOLD, Color.BLACK);
 
-	public static final Font FONT_RED = FontFactory.getFont(FONT_FACE_OPEN_SANS, WINANSI, EMBEDDED,
-		FONT_SIZE,  Font.NORMAL, Color.RED);
-
 	private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 	private static final String WATERMARK = "PdfGeneration_Watermark";
 	private static final float FONT_SIZE_WATERMARK = 40.0f;

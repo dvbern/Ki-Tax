@@ -40,6 +40,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -58,7 +59,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
 public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
@@ -99,6 +99,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungPdfGenerator.class);
 
 	private Font fontTabelle = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8.0f);
+	private Font fontRed = PdfUtilities.createFontWithColor(getPageConfiguration().getFont(), Color.RED);
 
 	public enum Art {
 		NORMAL,
@@ -235,7 +236,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		String telefon = getGemeindeStammdaten().getTelefon();
 		String mail = getGemeindeStammdaten().getMail();
 		Object[] args = {gemeinde, telefon, mail};
-		return PdfUtil.createParagraph(translate(VERWEIS_KONTINGENTIERUNG, args), 0, PdfUtil.FONT_RED);
+		return PdfUtil.createParagraph(translate(VERWEIS_KONTINGENTIERUNG, args), 0, fontRed);
 	}
 
 	@Nonnull
@@ -250,7 +251,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		} catch (DocumentException e) {
 			LOG.error("Failed to set the width: {}", e.getMessage());
 		}
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * fontTabelle.getSize() * 2);
 
 		// Referenznummern
@@ -397,9 +398,9 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 		PdfPTable table = new PdfPTable(1);
 		table.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		PdfPTable innerTable = new PdfPTable(1);
-		innerTable.setWidthPercentage(FULL_WIDTH);
+		innerTable.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		innerTable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		innerTable.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		innerTable.addCell(PdfUtil.createBoldParagraph(translate(RECHTSMITTELBELEHRUNG_TITLE), 0));
