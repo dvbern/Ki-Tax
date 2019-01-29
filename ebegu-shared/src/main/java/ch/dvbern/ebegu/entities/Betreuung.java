@@ -119,9 +119,10 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@SortNatural
 	private Set<BetreuungspensumContainer> betreuungspensumContainers = new TreeSet<>();
 
+//	todo homa evaluate and probably turn relationship around kibon-106
 	@NotNull
 	@Valid
-	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	private ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer();
 
 	@Valid

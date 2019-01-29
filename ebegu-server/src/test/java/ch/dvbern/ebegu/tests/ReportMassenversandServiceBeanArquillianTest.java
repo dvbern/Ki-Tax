@@ -17,10 +17,13 @@ package ch.dvbern.ebegu.tests;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.massenversand.MassenversandDataRow;
 import ch.dvbern.ebegu.util.Constants;
@@ -44,6 +47,16 @@ public class ReportMassenversandServiceBeanArquillianTest extends AbstractEbeguL
 
 	@Inject
 	ReportMassenversandService reportService;
+
+	@Inject
+	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Test
+	public void checkVerfuegungenPresent() {
+		final Collection<Betreuung> all = criteriaQueryHelper.getAll(Betreuung.class);
+		Assert.assertEquals(19, all.size());
+
+	}
 
 	/**
 	 * This will simulate the first massenversand at the date 27-11-2018 for the periode 1718 and only JA.

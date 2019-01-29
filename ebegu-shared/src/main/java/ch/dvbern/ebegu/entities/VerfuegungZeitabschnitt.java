@@ -375,7 +375,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return vollkosten;
 	}
 
-	public final void setVollkosten(BigDecimal vollkosten) {
+	public  void setVollkosten(BigDecimal vollkosten) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
 		this.vollkosten = MathUtil.toTwoKommastelle(vollkosten);
 	}
@@ -384,7 +384,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return elternbeitrag;
 	}
 
-	public final void setElternbeitrag(BigDecimal elternbeitrag) {
+	public  void setElternbeitrag(BigDecimal elternbeitrag) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
 		this.elternbeitrag = MathUtil.toTwoKommastelle(elternbeitrag);
 	}
@@ -393,7 +393,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return abzugFamGroesse;
 	}
 
-	public final void setAbzugFamGroesse(BigDecimal abzugFamGroesse) {
+	public  void setAbzugFamGroesse(BigDecimal abzugFamGroesse) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
 		this.abzugFamGroesse = MathUtil.toTwoKommastelle(abzugFamGroesse);
 	}
@@ -412,7 +412,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return massgebendesEinkommenVorAbzugFamgr;
 	}
 
-	public final void setMassgebendesEinkommenVorAbzugFamgr(@Nonnull BigDecimal massgebendesEinkommenVorAbzugFamgr) {
+	public  void setMassgebendesEinkommenVorAbzugFamgr(@Nonnull BigDecimal massgebendesEinkommenVorAbzugFamgr) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
 		this.massgebendesEinkommenVorAbzugFamgr = MathUtil.toTwoKommastelle(massgebendesEinkommenVorAbzugFamgr);
 	}
@@ -498,7 +498,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return famGroesse;
 	}
 
-	public final void setFamGroesse(BigDecimal famGroesse) {
+	public  void setFamGroesse(BigDecimal famGroesse) {
 		// Wir stellen direkt im setter sicher, dass wir die FamGroesse mit 1 Nachkommastelle speichern
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 	}
@@ -635,7 +635,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return verguenstigungOhneBeruecksichtigungVollkosten;
 	}
 
-	public final void setVerguenstigungOhneBeruecksichtigungVollkosten(BigDecimal
+	public  void setVerguenstigungOhneBeruecksichtigungVollkosten(BigDecimal
 		verguenstigungOhneBeruecksichtigungVollkosten
 	) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
@@ -646,7 +646,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return verguenstigungOhneBeruecksichtigungMinimalbeitrag;
 	}
 
-	public final void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal
+	public  void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal
 		verguenstigungOhneBeruecksichtigungMinimalbeitrag
 	) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
@@ -657,7 +657,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return verguenstigung;
 	}
 
-	public final void setVerguenstigung(BigDecimal verguenstigung) {
+	public  void setVerguenstigung(BigDecimal verguenstigung) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
 		this.verguenstigung = MathUtil.toTwoKommastelle(verguenstigung);
 	}
@@ -666,7 +666,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return minimalerElternbeitrag;
 	}
 
-	public final void setMinimalerElternbeitrag(BigDecimal minimalerElternbeitrag) {
+	public  void setMinimalerElternbeitrag(BigDecimal minimalerElternbeitrag) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
 		this.minimalerElternbeitrag = MathUtil.toTwoKommastelle(minimalerElternbeitrag);
 	}

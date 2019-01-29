@@ -53,6 +53,7 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String manuelleBemerkungen;
 
+	//	todo homa evaluate and probably turn relationship around kibon-106
 	@NotNull
 	@OneToOne(optional = false, mappedBy = "verfuegung")
 	private Betreuung betreuung;
