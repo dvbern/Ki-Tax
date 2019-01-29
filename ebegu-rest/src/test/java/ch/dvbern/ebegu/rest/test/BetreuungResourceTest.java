@@ -16,12 +16,19 @@
 package ch.dvbern.ebegu.rest.test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
+import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
+import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
@@ -37,6 +44,7 @@ import ch.dvbern.ebegu.api.resource.FachstelleResource;
 import ch.dvbern.ebegu.api.resource.FallResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
 import ch.dvbern.ebegu.api.resource.KindResource;
+import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -368,4 +376,54 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 
 		Assert.assertFalse(betreuungResource.hasDuplicate(jaxNewBetreuung, betreuungen));
 	}
+
+
+	@Test
+	public void testStoreAbwesenheit() {
+
+		Betreuung initialBetr = this.storeInitialBetreung();
+
+		final Set<AbwesenheitContainer> abwenseheitContList = new HashSet<>();
+		final AbwesenheitContainer abwesenheit1 = TestDataUtil.createShortAbwesenheitContainer(initialBetr.extractGesuchsperiode());
+		abwenseheitContList.add(abwesenheit1);
+
+		//neue lange Abwesenheit die 3 Monate spaeter stattfindet
+		final AbwesenheitContainer lateAbwesenheit = TestDataUtil.createLongAbwesenheitContainer(initialBetr.extractGesuchsperiode());
+		lateAbwesenheit.getAbwesenheitJA().getGueltigkeit().setGueltigAb(
+			lateAbwesenheit.getAbwesenheitJA().getGueltigkeit().getGueltigAb().plusMonths(3));
+		lateAbwesenheit.getAbwesenheitJA().getGueltigkeit().setGueltigBis(
+			lateAbwesenheit.getAbwesenheitJA().getGueltigkeit().getGueltigBis().plusMonths(3));
+		abwenseheitContList.add(lateAbwesenheit);
+		initialBetr.setAbwesenheitContainers(abwenseheitContList);
+		JaxBetreuung jaxNewBetreuung = converter.betreuungToJAX(initialBetr);
+		initialBetr.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+		List<JaxBetreuung> abwesenheitsbetr = new ArrayList<>();
+		abwesenheitsbetr.add(jaxNewBetreuung);
+		final List<JaxBetreuung> storedBetr = betreuungResource.saveAbwesenheiten(abwesenheitsbetr, Boolean.TRUE, DUMMY_URIINFO, DUMMY_RESPONSE);
+
+		Assert.assertEquals(1,storedBetr.size());
+		final JaxBetreuung jaxBetreuung = storedBetr.get(0);
+		Assert.assertEquals(2,jaxBetreuung.getAbwesenheitContainers().size());
+		Comparator<JaxAbwesenheit> comp = Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb);
+		Optional<JaxAbwesenheit> firstAbwOpt =
+			jaxBetreuung.getAbwesenheitContainers().stream()
+				.map(JaxAbwesenheitContainer::getAbwesenheitJA).min(comp);
+
+
+		Assert.assertTrue(firstAbwOpt.isPresent());
+		final JaxAbwesenheit firstAbw = firstAbwOpt.get();
+
+		Assert.assertNotNull(firstAbw);
+		Assert.assertEquals(
+			abwesenheit1.getAbwesenheitJA().getGueltigkeit().getGueltigAb(),
+			firstAbw.getGueltigAb()
+		);
+
+		Assert.assertEquals(
+			abwesenheit1.getAbwesenheitJA().getGueltigkeit().getGueltigBis(),
+			firstAbw.getGueltigBis()
+		);
+
+	}
+
 }

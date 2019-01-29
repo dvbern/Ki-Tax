@@ -28,6 +28,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -62,6 +64,7 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.Validate;
 
 /**
  * REST Resource fuer Betreuungen. Betreuung = ein Kind in einem Betreuungsangebot bei einer Institution.
@@ -128,10 +131,13 @@ public class BetreuungResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<JaxBetreuung> saveAbwesenheiten(
-		@Nonnull @NotNull @Valid List<JaxBetreuung> betreuungenJAXP,
-		@Nonnull @NotNull @PathParam("abwesenheit") Boolean abwesenheit,
+		List<JaxBetreuung> betreuungenJAXP,
+		@Nonnull @PathParam("abwesenheit") Boolean abwesenheit,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
+		Validate.notNull(betreuungenJAXP, "betreuungenJAXP may not be null");
+		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
+		betreuungenJAXP.forEach(jaxBetreuung -> validator.validate(jaxBetreuung));
 
 		if (!betreuungenJAXP.isEmpty()) {
 			final String gesuchId = betreuungenJAXP.get(0).getGesuchId();
