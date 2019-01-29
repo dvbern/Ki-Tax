@@ -747,7 +747,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testChangeFinSitStatusAbgelehnt() {
 		Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, null, AntragStatus.VERFUEGT, gesuchsperiode);
-		Assert.assertEquals(FinSitStatus.AKZEPTIERT, gesuch.getFinSitStatus());
+		Assert.assertNull(gesuch.getFinSitStatus());
 		Assert.assertNull(gesuch.getFinSitStatus());
 
 		gesuchService.changeFinSitStatus(gesuch.getId(), FinSitStatus.ABGELEHNT);
