@@ -33,6 +33,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -58,13 +59,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.NEWLINE;
 import static com.lowagie.text.pdf.BaseFont.EMBEDDED;
 import static com.lowagie.text.pdf.BaseFont.WINANSI;
 
 public final class PdfUtil {
 
+	// Muss vor den FontFactory.getFont aufrufen definiert werden
+	static {
+		FontFactory.register("/font/OpenSans-Light.ttf", "OpenSans-Light");
+		FontFactory.register("/font/OpenSans-SemiBold.ttf", "OpenSans-Bold");
+	}
 
 	public static final String FONT_FACE_OPEN_SANS = "OpenSans-Light";
 	public static final String FONT_FACE_OPEN_SANS_BOLD = "OpenSans-Light";
@@ -72,27 +77,20 @@ public final class PdfUtil {
 	public static final float FONT_SIZE = 10.0f;
 	public static final float FONT_SIZE_H1 = 14.0f;
 	public static final float FONT_SIZE_H2 = 12.0f;
-	public static final float FONT_SIZE_VERFUEGUNGSTABELLE = 8.0f;
 
 	public static final Font DEFAULT_FONT = FontFactory.getFont(FONT_FACE_OPEN_SANS, WINANSI, EMBEDDED,
 		FONT_SIZE, Font.NORMAL, Color.BLACK);
 	public static final Font DEFAULT_FONT_BOLD = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
-		FONT_SIZE, Font.NORMAL, Color.BLACK);
+		FONT_SIZE, Font.BOLD, Color.BLACK);
 	public static final Font FONT_TITLE = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
-		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
+		FONT_SIZE_H1, Font.BOLD, Color.BLACK);
 	public static final Font FONT_H1 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
-		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
+		FONT_SIZE_H1, Font.BOLD, Color.BLACK);
 	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
-		FONT_SIZE_H2, Font.NORMAL, Color.BLACK);
+		FONT_SIZE_H2, Font.BOLD, Color.BLACK);
 
 	public static final Font FONT_RED = FontFactory.getFont(FONT_FACE_OPEN_SANS, WINANSI, EMBEDDED,
 		FONT_SIZE,  Font.NORMAL, Color.RED);
-
-	// Muss vor den FontFactory.getFont aufrufen definiert werden
-	static {
-		FontFactory.register("/font/OpenSans-Light.ttf", "OpenSans-Light");
-		FontFactory.register("/font/OpenSans-SemiBold.ttf", "OpenSans-Bold");
-	}
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 	private static final String WATERMARK = "PdfGeneration_Watermark";
@@ -133,7 +131,7 @@ public final class PdfUtil {
 		final int emptyLinesBetween,
 		final int emptyLinesAfter) {
 		PdfPTable table = new PdfPTable(1);
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setKeepTogether(true);
 		table.getDefaultCell().setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
@@ -234,7 +232,7 @@ public final class PdfUtil {
 
 	public static void setTableDefaultStyles(PdfPTable table) {
 		table.setSpacingBefore(0);
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setKeepTogether(true);
 		table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		table.getDefaultCell().setPadding(0);
@@ -259,7 +257,7 @@ public final class PdfUtil {
 		} catch (DocumentException e) {
 			LOG.error("Failed to set the width: {}", e.getMessage());
 		}
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setHeaderRows(1);
 		boolean first = true;
 		for (String[] value : values) {

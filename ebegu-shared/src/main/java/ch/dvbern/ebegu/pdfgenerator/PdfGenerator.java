@@ -78,7 +78,7 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 		List<ComponentRenderer<? extends ComponentConfiguration, ?>> componentRenderers =
 			getComponentRenderers(empfaengerAdresse);
-		OnPageHandler onPageHandler = new OnPageHandler(getConfiguration(), componentRenderers);
+		OnPageHandler onPageHandler = new OnPageHandler(getPdfElementGenerator(), componentRenderers);
 
 		generate(outputStream, onPageHandler, pdfGenerator -> {
 			Document document = pdfGenerator.getDocument();
