@@ -724,9 +724,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public isGesuchsteller(): boolean {
-        if (this.authServiceRs.isRole(TSRole.GESUCHSTELLER)) {
-            return true;
-        }
-        return false;
+        return this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
     }
 }
