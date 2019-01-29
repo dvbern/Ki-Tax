@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.DocumentException;
@@ -35,8 +36,6 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
 public class FinanzielleSituationTable {
 
@@ -86,7 +85,7 @@ public class FinanzielleSituationTable {
 		} catch (DocumentException e) {
 			LOG.error("Failed to set the width: {}", e.getMessage());
 		}
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setHeaderRows(numberOfTitleRows);
 		for (int i = 0; i < rows.size(); i++) {
 			boolean isHeader = i < numberOfTitleRows;

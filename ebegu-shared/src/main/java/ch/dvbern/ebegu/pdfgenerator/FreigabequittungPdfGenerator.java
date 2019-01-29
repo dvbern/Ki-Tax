@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
@@ -48,7 +49,6 @@ import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_FONT_SIZE;
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
 
 public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 
@@ -153,7 +153,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	@Nonnull
 	public PdfPTable createBetreuungsangeboteTable() throws DocumentException {
 		PdfPTable table = new PdfPTable(3);
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setWidths(new int[] {30, 50, 20});
 		table.setHeaderRows(1);
 		table.setKeepTogether(true);
