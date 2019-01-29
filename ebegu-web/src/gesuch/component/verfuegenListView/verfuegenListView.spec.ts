@@ -66,7 +66,6 @@ describe('verfuegenListViewTest', () => {
         spyOn(gesuchModelManager, 'calculateVerfuegungen').and.returnValue($q.when({}));
 
         const gesuchMock = new TSGesuch();
-        gesuchMock.hasFSDokument = false;
         gesuchMock.dossier = new TSDossier();
         gesuchMock.dossier.gemeinde = new TSGemeinde();
         spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuchMock);

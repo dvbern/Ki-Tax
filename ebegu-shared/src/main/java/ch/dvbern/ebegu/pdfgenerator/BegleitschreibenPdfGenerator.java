@@ -26,8 +26,9 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import com.lowagie.text.Document;
 
 public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
@@ -50,7 +51,10 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	@Nonnull
 	@Override
 	protected String getDocumentTitle() {
-		return translate(BEGLEITSCHREIBEN_TITLE, getGesuch().getJahrFallAndGemeindenummer(), getGesuch().getGesuchsperiode().getGesuchsperiodeString());
+		return translate(
+			BEGLEITSCHREIBEN_TITLE,
+			getGesuch().getJahrFallAndGemeindenummer(),
+			getGesuch().getGesuchsperiode().getGesuchsperiodeString());
 	}
 
 	@Nonnull
@@ -74,7 +78,7 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 			.filter(this::isOrCanBeVerfuegt)
 			.map(this::getBeilagenText).collect(Collectors.toList());
 		// Finanzielle Situation
-		if (getGesuch().isHasFSDokument()) {
+		if (EbeguUtil.isFinanzielleSituationRequired(gesuch) && getGesuch().getFinSitStatus() == FinSitStatus.AKZEPTIERT) {
 			beilagen.add(translate(BEILAGE_FINANZIELLESITUATION));
 		}
 		return beilagen;
