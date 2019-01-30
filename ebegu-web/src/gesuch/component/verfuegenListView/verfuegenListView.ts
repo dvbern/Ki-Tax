@@ -704,6 +704,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.form.$setPristine();
     }
 
+    public verfuegungEingeschriebenChanged(): void {
+        this.gesuchModelManager.updateGesuch();
+    }
+
     public isSuperAdmin(): boolean {
         return this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
     }

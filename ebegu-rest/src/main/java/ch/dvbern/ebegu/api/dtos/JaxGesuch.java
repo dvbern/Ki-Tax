@@ -105,6 +105,8 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	private boolean hasFSDokument;
 
+	private boolean verfuegungEingeschrieben;
+
 	@Nullable
 	private FinSitStatus finSitStatus;
 
@@ -227,6 +229,14 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setHasFSDokument(boolean hasFSDokument) {
 		this.hasFSDokument = hasFSDokument;
+	}
+
+	public boolean isVerfuegungEingeschrieben() {
+		return verfuegungEingeschrieben;
+	}
+
+	public void setVerfuegungEingeschrieben(boolean verfuegungEingeschrieben) {
+		this.verfuegungEingeschrieben = verfuegungEingeschrieben;
 	}
 
 	public boolean isGesperrtWegenBeschwerde() {

@@ -915,6 +915,7 @@ export default class EbeguRestUtil {
         restGesuch.gesuchBetreuungenStatus = gesuch.gesuchBetreuungenStatus;
         restGesuch.geprueftSTV = gesuch.geprueftSTV;
         restGesuch.hasFSDokument = gesuch.hasFSDokument;
+        restGesuch.verfuegungEingeschrieben = gesuch.verfuegungEingeschrieben;
         restGesuch.gesperrtWegenBeschwerde = gesuch.gesperrtWegenBeschwerde;
         restGesuch.datumGewarntNichtFreigegeben = DateUtil.momentToLocalDate(gesuch.datumGewarntNichtFreigegeben);
         restGesuch.datumGewarntFehlendeQuittung = DateUtil.momentToLocalDate(gesuch.datumGewarntFehlendeQuittung);
@@ -946,6 +947,7 @@ export default class EbeguRestUtil {
             gesuchTS.gesuchBetreuungenStatus = gesuchFromServer.gesuchBetreuungenStatus;
             gesuchTS.geprueftSTV = gesuchFromServer.geprueftSTV;
             gesuchTS.hasFSDokument = gesuchFromServer.hasFSDokument;
+            gesuchTS.verfuegungEingeschrieben = gesuchFromServer.verfuegungEingeschrieben;
             gesuchTS.gesperrtWegenBeschwerde = gesuchFromServer.gesperrtWegenBeschwerde;
             gesuchTS.datumGewarntNichtFreigegeben =
                 DateUtil.localDateToMoment(gesuchFromServer.datumGewarntNichtFreigegeben);
