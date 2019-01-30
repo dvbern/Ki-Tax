@@ -702,14 +702,29 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			});
 	}
 
+	@Transient
+	public boolean hasProvisorischeBetreuungen() {
+		return kindContainers.stream()
+			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
+			.anyMatch(betreuung -> betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
+	}
+
 	@Nullable
 	@Transient
 	public LocalDate getRegelStartDatum() {
 		if (null != getRegelnGueltigAb()) {
 			return getRegelnGueltigAb();
 		}
+		if (getEingangsdatum() == null
+			&& getEingangsart() == Eingangsart.ONLINE
+			&& hasProvisorischeBetreuungen()) {
+			// damit die prov. Berechnung korrekt funktioniert, wird als default das heutige Datum gesetzt
+			// falls es ein Online Gesuch ist
+			return LocalDate.now();
+		}
 		return getEingangsdatum();
 	}
+
 
 	@Nullable
 	public Familiensituation extractFamiliensituation() {

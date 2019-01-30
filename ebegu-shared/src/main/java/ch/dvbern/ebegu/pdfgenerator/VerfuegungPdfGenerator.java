@@ -82,6 +82,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String FUSSZEILE_1 = "PdfGeneration_Verfuegung_Fusszeile1";
 	private static final String FUSSZEILE_2 = "PdfGeneration_Verfuegung_Fusszeile2";
 	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
+	public static final String UNKNOWN_INSTITUTION_NAME = "?";
 
 	public enum Art {
 		NORMAL,
@@ -205,11 +206,10 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	@Nonnull
 	private PdfPTable createIntro() {
 
-		String institutionName = betreuung.getInstitutionStammdaten().getInstitution().getName();
 		//für unbekannte Institutionen soll ein Fragezeichen auf die Verfügung aufgedruckt werden
-		if (institutionName.equals("")) {
-			institutionName = "?";
-		}
+		final String institutionName = betreuung.getInstitutionStammdaten().getInstitution().getName().isEmpty()
+			? UNKNOWN_INSTITUTION_NAME
+			: betreuung.getInstitutionStammdaten().getInstitution().getName();
 
 		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
 		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));

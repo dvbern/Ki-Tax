@@ -131,13 +131,6 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                     this.berechnungsManager.clear();
                     return this.gesuchModelManager.saveErneuerungsgesuch();
                 }
-                // damit die prov. Berechnung korrekt funktioniert, wird als default das heutige Datum gesetzt
-                // falls es ein Online Gesuch ist
-                if (this.gesuchModelManager.getGesuch().eingangsart === TSEingangsart.ONLINE &&
-                    this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERSTGESUCH) {
-                    this.getGesuchModel().eingangsdatum = moment(moment.now());
-                }
-
             }
             return this.gesuchModelManager.saveGesuchAndFall();
         }
