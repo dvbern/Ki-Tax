@@ -121,6 +121,8 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verfuegungsdatum, dataRow.getVerfuegungsdatum());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.fallId, dataRow.getFallId());
 
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gemeinde, dataRow.getGemeinde());
+
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1Name, dataRow.getGs1Name());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1Vorname, dataRow.getGs1Vorname());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1Strasse, dataRow.getGs1Strasse());
@@ -236,6 +238,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.fallIdTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.fallIdTitle, ServerMessageUtil.getMessage("Reports_fallIdTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gemeindeTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesuchsteller1Title.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchsteller1Title, ServerMessageUtil.getMessage("Reports_gesuchsteller1Title", locale));

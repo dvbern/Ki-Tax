@@ -25,6 +25,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public class KantonDataRow {
 
+	private String gemeinde;
 	private String bgNummer;
 	private String gesuchId;
 	private String name;
@@ -134,5 +135,13 @@ public class KantonDataRow {
 
 	public void setBetreuungsTyp(String betreuungsTyp) {
 		this.betreuungsTyp = betreuungsTyp;
+	}
+
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }

@@ -51,6 +51,7 @@ public class GesuchStichtagExcelConverter implements ExcelConverter {
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldGesuchStichtag.repeatGesuchStichtagRow);
+			excelRowGroup.addValue(MergeFieldGesuchStichtag.gemeinde, dataRow.getGemeinde());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.bgNummer, dataRow.getBgNummer());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.gesuchLaufNr, dataRow.getGesuchLaufNr());
 			excelRowGroup.addValue(MergeFieldGesuchStichtag.institution, dataRow.getInstitution());
@@ -66,6 +67,7 @@ public class GesuchStichtagExcelConverter implements ExcelConverter {
 	}
 
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
+		excelMerger.addValue(MergeFieldGesuchStichtag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
 		excelMerger.addValue(MergeFieldGesuchStichtag.bgNummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale));
 		excelMerger.addValue(MergeFieldGesuchStichtag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
 		excelMerger.addValue(MergeFieldGesuchStichtag.angebotTitle, ServerMessageUtil.getMessage("Reports_angebotTitle", locale));

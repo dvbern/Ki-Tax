@@ -22,6 +22,7 @@ import java.util.List;
  */
 public class MassenversandDataRow {
 
+	private String gemeinde;
 	private String gesuchsperiode;
 	private String fall;
 
@@ -43,6 +44,13 @@ public class MassenversandDataRow {
 
 	private List<MassenversandRepeatKindDataCol> kinderCols;
 
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
+	}
 
 	public String getGesuchsperiode() {
 		return gesuchsperiode;

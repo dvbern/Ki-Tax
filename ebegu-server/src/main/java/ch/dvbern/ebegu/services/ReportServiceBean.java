@@ -221,9 +221,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<GesuchStichtagDataRow> getReportDataGesuchStichtag(
 		@Nonnull LocalDate date,
 		@Nullable String gesuchPeriodeID) {
@@ -431,8 +430,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnittList) {
 			KantonDataRow row = new KantonDataRow();
 			Betreuung betreuung = zeitabschnitt.getVerfuegung().getBetreuung();
+			final Gesuch gesuch = betreuung.extractGesuch();
+
+			row.setGemeinde(gesuch.extractGemeinde().getName());
 			row.setBgNummer(betreuung.getBGNummer());
-			row.setGesuchId(betreuung.extractGesuch().getId());
+			row.setGesuchId(gesuch.getId());
 			row.setName(betreuung.getKind().getKindJA().getNachname());
 			row.setVorname(betreuung.getKind().getKindJA().getVorname());
 			row.setGeburtsdatum(betreuung.getKind().getKindJA().getGeburtsdatum());
@@ -1059,6 +1061,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			}
 		}
 		row.setFallId(Integer.parseInt(String.valueOf(gesuch.getFall().getFallNummer())));
+		row.setGemeinde(gesuch.getDossier().getGemeinde().getName());
 		row.setBgNummer(zeitabschnitt.getVerfuegung().getBetreuung().getBGNummer());
 	}
 

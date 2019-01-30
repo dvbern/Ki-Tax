@@ -30,6 +30,7 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 
 public enum MergeFieldMassenversand implements MergeFieldProvider {
 
+	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
 	serienbriefeTitle(new SimpleMergeField<>("serienbriefeTitle", STRING_CONVERTER)),
 	parameterTitle(new SimpleMergeField<>("parameterTitle", STRING_CONVERTER)),
 	vonTitle(new SimpleMergeField<>("vonTitle", STRING_CONVERTER)),
@@ -70,6 +71,7 @@ public enum MergeFieldMassenversand implements MergeFieldProvider {
 	auswertungOhneFolgegesuch(new SimpleMergeField<>("auswertungOhneFolgegesuch", BOOLEAN_X_CONVERTER)),
 	auswertungText(new SimpleMergeField<>("auswertungText", STRING_CONVERTER)),
 
+	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	gesuchsperiode(new SimpleMergeField<>("gesuchsperiode", STRING_CONVERTER)),
 	fall(new SimpleMergeField<>("fall", STRING_CONVERTER)),
 
