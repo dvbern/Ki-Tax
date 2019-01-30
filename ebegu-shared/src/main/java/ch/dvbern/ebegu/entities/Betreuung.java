@@ -85,7 +85,6 @@ import org.hibernate.search.annotations.Indexed;
 @Table(
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer"),
-		@UniqueConstraint(columnNames = "verfuegung_id", name = "UK_betreuung_verfuegung_id")    //hibernate ignoriert den namen leider
 	}
 )
 @Indexed
@@ -119,10 +118,9 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@SortNatural
 	private Set<BetreuungspensumContainer> betreuungspensumContainers = new TreeSet<>();
 
-//	todo homa evaluate and probably turn relationship around kibon-106
 	@NotNull
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	private ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer();
 
 	@Valid
@@ -141,8 +139,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	@Nullable
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuung_verfuegung_id"), nullable = true)
+	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "betreuung")
 	private Verfuegung verfuegung;
 
 	@Nullable

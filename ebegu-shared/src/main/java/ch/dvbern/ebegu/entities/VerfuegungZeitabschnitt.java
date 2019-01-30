@@ -235,7 +235,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	/**
 	 * copy Konstruktor
 	 */
-	@SuppressWarnings("AccessingNonPublicFieldOfAnotherObject")
+	@SuppressWarnings({"AccessingNonPublicFieldOfAnotherObject", "PMD.ConstructorCallsOverridableMethod"})
 	public VerfuegungZeitabschnitt(VerfuegungZeitabschnitt toCopy) {
 		this.setGueltigkeit(new DateRange(toCopy.getGueltigkeit()));
 		this.erwerbspensumGS1 = toCopy.erwerbspensumGS1;

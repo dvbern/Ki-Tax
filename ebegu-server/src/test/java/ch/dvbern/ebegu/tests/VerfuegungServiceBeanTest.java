@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -97,7 +98,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Betreuung betreuung = insertBetreuung();
 		TestDataUtil.createGemeindeStammdaten(betreuung.extractGesuch().extractGemeinde(), persistence);
 		Assert.assertNull(betreuung.getVerfuegung());
-		Verfuegung verfuegung = new Verfuegung();
+		Verfuegung verfuegung = new Verfuegung(betreuung);
 		verfuegung.setBetreuung(betreuung);
 		betreuung.setVerfuegung(verfuegung);
 		Verfuegung persistedVerfuegung = verfuegungService.verfuegen(verfuegung, betreuung.getId(), false);
@@ -139,8 +140,9 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		KindContainer kind = kindContainers.iterator().next();
 		Assert.assertEquals(1, kindContainers.size());
 		Set<Betreuung> betreuungen = kind.getBetreuungen();
-		betreuungen.forEach(this::createAndPersistVerfuegteVerfuegung);
-		Betreuung betreuung = betreuungen.iterator().next();
+		Set<Betreuung> verfuegteBetr = betreuungen.stream().map(this::createAndPersistVerfuegteVerfuegung).collect(Collectors.toSet());
+		kind.setBetreuungen(verfuegteBetr);
+		Betreuung betreuung = verfuegteBetr.iterator().next();
 		Integer betreuungNummer = betreuung.getBetreuungNummer();
 		Verfuegung verfuegung1 = betreuung.getVerfuegung();
 		LocalDateTime timestampVerfuegt = LocalDateTime.of(2016, Month.APRIL, 1, 0, 0);
@@ -209,16 +211,16 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private Verfuegung insertVerfuegung() {
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
-		return createAndPersistVerfuegteVerfuegung(betreuung);
+		return createAndPersistVerfuegteVerfuegung(betreuung).getVerfuegung();
 	}
 
-	private Verfuegung createAndPersistVerfuegteVerfuegung(Betreuung betreuung) {
+	private Betreuung createAndPersistVerfuegteVerfuegung(Betreuung betreuung) {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
-		Assert.assertNull(betreuung.getVerfuegung());
-		Verfuegung verfuegung = new Verfuegung();
-		verfuegung.setBetreuung(betreuung);
-		betreuung.setVerfuegung(verfuegung);
-		return persistence.persist(verfuegung);
+		Betreuung storedBetr = persistence.merge(betreuung);
+		Assert.assertNull(storedBetr.getVerfuegung());
+		Verfuegung verfuegung = new Verfuegung(storedBetr);
+		final Verfuegung createdVerf = verfuegungService.persistVerfuegung(verfuegung, storedBetr.getId(), Betreuungsstatus.VERFUEGT);
+		return createdVerf.getBetreuung();
 	}
 
 	private VerfuegungZeitabschnitt createGesuchWithVerfuegungZeitabschnitt() {

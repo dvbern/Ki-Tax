@@ -6,10 +6,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -17,18 +18,16 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-@Table(
-	uniqueConstraints = @UniqueConstraint(columnNames = "betreuung_id", name = "UK_erweiterte_betreuung_betreuung")
-)
+@Table()
 public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 4847428166714262413L;
 
-	// This cannot really be null because there is no sense in having an ErweiterteBetreuungContainer without Betreuung
-	// anyway this bidirectional relation cannot have both sides being Nullable=false, because one must exist before the other
-	@Nullable
-	@OneToOne(optional = true)
+
+	@NotNull
+	@OneToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_betreuung_id"))
+	@MapsId //foreign key of betreuung is primary key of this entity
 	private Betreuung betreuung;
 
 	@Nullable

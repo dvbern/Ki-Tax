@@ -24,6 +24,10 @@ import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -55,7 +59,9 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	//	todo homa evaluate and probably turn relationship around kibon-106
 	@NotNull
-	@OneToOne(optional = false, mappedBy = "verfuegung")
+	@OneToOne(optional = false, fetch = FetchType.EAGER)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_betreuung_id"), nullable = false)
+	@MapsId()
 	private Betreuung betreuung;
 
 	@Nonnull
@@ -79,6 +85,16 @@ public class Verfuegung extends AbstractMutableEntity {
 	@NotNull
 	@Column(nullable = false)
 	private boolean kategorieNichtEintreten = false;
+
+	public Verfuegung() {
+		setId(null);
+
+	}
+
+	public Verfuegung(Betreuung betreuung) {
+		this.betreuung = betreuung;
+		betreuung.setVerfuegung(this);
+	}
 
 	@Nullable
 	public String getGeneratedBemerkungen() {
