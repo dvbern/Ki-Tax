@@ -76,6 +76,7 @@ import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
@@ -136,6 +137,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 
 /**
  * Service fuer Gesuch
@@ -1963,7 +1965,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		CriteriaQuery<Tuple> query = cb.createTupleQuery();
 		Root<Gesuch> root = query.from(Gesuch.class);
 
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+				"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
+
 		Join<Gesuch, AntragStatusHistory> antragStatusHistoryJoin = root.join(Gesuch_.antragStatusHistories, JoinType.LEFT);
+		Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
 
 		// Prepare TypedParameters
 		ParameterExpression<Gesuchsperiode> gesuchsperiodeIdParam = cb.parameter(Gesuchsperiode.class, "gesuchsperiode");
@@ -1976,13 +1983,16 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		ParameterExpression<Eingangsart> onlineParam = cb.parameter(Eingangsart.class, "online");
 
 		// Predicates
-		Predicate predicateStatusTransition = getStatusTransitionPredicate(cb, root, antragStatusHistoryJoin, datumVonParam, datumBisParam,
-			geprueftParam, freigegebenParam, nurSchulamtParam, papierParam, onlineParam);
-		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiodeIdParam);
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(getStatusTransitionPredicate(cb, root, antragStatusHistoryJoin, datumVonParam, datumBisParam,
+			geprueftParam, freigegebenParam, nurSchulamtParam, papierParam, onlineParam));
+		predicates.add(cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiodeIdParam));
 		// An Erstgesuch is not MUTATION (i.e. ERSTGESUCH or ERNEUERUNGSGESUCH)
-		Predicate predicateErstgesuch = cb.equal(root.get(Gesuch_.typ), AntragTyp.MUTATION).not();
+		predicates.add(cb.equal(root.get(Gesuch_.typ), AntragTyp.MUTATION).not());
+		// Nur Gesuche von Gemeinden, fuer die ich berechtigt bin
+		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
 
-		query.where(predicateGesuchsperiode, predicateStatusTransition, predicateErstgesuch);
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 
 		query.groupBy(
 			root.get(Gesuch_.dossier).get(AbstractEntity_.id),
