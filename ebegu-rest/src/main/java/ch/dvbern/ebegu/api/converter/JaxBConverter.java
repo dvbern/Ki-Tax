@@ -2962,12 +2962,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxLoginElement.setStatus(benutzer.getStatus());
 		jaxLoginElement.setCurrentBerechtigung(berechtigungToJax(benutzer.getCurrentBerechtigung()));
 		// Berechtigungen
-		final Set<JaxBerechtigung> jaxBerechtigungen = new TreeSet<>();
+		Set<JaxBerechtigung> jaxBerechtigungen = new TreeSet<>();
 		if (benutzer.getBerechtigungen() != null) {
-			jaxBerechtigungen.addAll(benutzer.getBerechtigungen()
-				.stream()
+			jaxBerechtigungen = benutzer.getBerechtigungen().stream()
 				.map(this::berechtigungToJax)
-				.collect(Collectors.toList()));
+				.sorted()
+				.collect(Collectors.toCollection(TreeSet::new));
 		}
 		jaxLoginElement.setBerechtigungen(jaxBerechtigungen);
 

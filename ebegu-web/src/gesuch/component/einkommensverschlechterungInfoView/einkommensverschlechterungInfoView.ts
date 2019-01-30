@@ -289,7 +289,7 @@ export class EinkommensverschlechterungInfoViewController
         if (gesuch.gesuchsteller1 && !gesuch.gesuchsteller1.einkommensverschlechterungContainer) {
             gesuch.gesuchsteller1.einkommensverschlechterungContainer = new TSEinkommensverschlechterungContainer();
         }
-        if (this.gesuchModelManager.isGesuchsteller2Required()
+        if (this.gesuchModelManager.isGesuchsteller2Required() && gesuch.gesuchsteller2
             && !gesuch.gesuchsteller2.einkommensverschlechterungContainer) {
             gesuch.gesuchsteller2.einkommensverschlechterungContainer = new TSEinkommensverschlechterungContainer();
         }
