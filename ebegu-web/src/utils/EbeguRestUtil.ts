@@ -914,7 +914,6 @@ export default class EbeguRestUtil {
         restGesuch.laufnummer = gesuch.laufnummer;
         restGesuch.gesuchBetreuungenStatus = gesuch.gesuchBetreuungenStatus;
         restGesuch.geprueftSTV = gesuch.geprueftSTV;
-        restGesuch.hasFSDokument = gesuch.hasFSDokument;
         restGesuch.gesperrtWegenBeschwerde = gesuch.gesperrtWegenBeschwerde;
         restGesuch.datumGewarntNichtFreigegeben = DateUtil.momentToLocalDate(gesuch.datumGewarntNichtFreigegeben);
         restGesuch.datumGewarntFehlendeQuittung = DateUtil.momentToLocalDate(gesuch.datumGewarntFehlendeQuittung);
@@ -945,7 +944,6 @@ export default class EbeguRestUtil {
             gesuchTS.laufnummer = gesuchFromServer.laufnummer;
             gesuchTS.gesuchBetreuungenStatus = gesuchFromServer.gesuchBetreuungenStatus;
             gesuchTS.geprueftSTV = gesuchFromServer.geprueftSTV;
-            gesuchTS.hasFSDokument = gesuchFromServer.hasFSDokument;
             gesuchTS.gesperrtWegenBeschwerde = gesuchFromServer.gesperrtWegenBeschwerde;
             gesuchTS.datumGewarntNichtFreigegeben =
                 DateUtil.localDateToMoment(gesuchFromServer.datumGewarntNichtFreigegeben);
@@ -1300,27 +1298,6 @@ export default class EbeguRestUtil {
             return finanzielleSituationTS;
         }
         return undefined;
-    }
-
-    public finanzielleSituationResultateToRestObject(
-        restFinanzielleSituationResultate: any,
-        finanzielleSituationResultateDTO: TSFinanzielleSituationResultateDTO,
-    ): TSFinanzielleSituationResultateDTO {
-        restFinanzielleSituationResultate.geschaeftsgewinnDurchschnittGesuchsteller1 =
-            finanzielleSituationResultateDTO.geschaeftsgewinnDurchschnittGesuchsteller1;
-        restFinanzielleSituationResultate.geschaeftsgewinnDurchschnittGesuchsteller2 =
-            finanzielleSituationResultateDTO.geschaeftsgewinnDurchschnittGesuchsteller2;
-        restFinanzielleSituationResultate.einkommenBeiderGesuchsteller =
-            finanzielleSituationResultateDTO.einkommenBeiderGesuchsteller;
-        restFinanzielleSituationResultate.nettovermoegenFuenfProzent =
-            finanzielleSituationResultateDTO.nettovermoegenFuenfProzent;
-        restFinanzielleSituationResultate.anrechenbaresEinkommen =
-            finanzielleSituationResultateDTO.anrechenbaresEinkommen;
-        restFinanzielleSituationResultate.abzuegeBeiderGesuchsteller =
-            finanzielleSituationResultateDTO.abzuegeBeiderGesuchsteller;
-        restFinanzielleSituationResultate.massgebendesEinkVorAbzFamGr =
-            finanzielleSituationResultateDTO.massgebendesEinkVorAbzFamGr;
-        return restFinanzielleSituationResultate;
     }
 
     public parseFinanzielleSituationResultate(
