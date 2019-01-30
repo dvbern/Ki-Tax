@@ -17,18 +17,25 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
-import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfContentByte;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
+
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.ColumnText;
+import com.lowagie.text.pdf.PdfContentByte;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
@@ -36,9 +43,12 @@ import static com.lowagie.text.Utilities.millimetersToPoints;
 public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
 	protected static final String ANREDE_FAMILIE = "PdfGeneration_AnredeFamilie";
+	protected static final String ANREDE_HERR = "PdfGeneration_AnredeHerr";
+	protected static final String ANREDE_FRAU = "PdfGeneration_AnredeFrau";
+	protected static final String SACHBEARBEITUNG = "PdfGeneration_Sachbearbeitung";
+
 	private static final String GRUSS = "PdfGeneration_Gruss";
 	private static final String SIGNIERT = "PdfGeneration_Signiert";
-	private static final String SACHBEARBEITUNG = "PdfGeneration_Sachbearbeitung";
 
 	protected DokumentAnFamilieGenerator(
 		@Nonnull Gesuch gesuch,
@@ -56,6 +66,28 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 	@Nonnull
 	protected Paragraph createParagraphGruss() {
 		return PdfUtil.createParagraph(translate(GRUSS), 2);
+	}
+
+	@Nonnull
+	protected Paragraph createAnrede() {
+		final StringBuilder anrede = new StringBuilder();
+		addAnrede(anrede, gesuch.getGesuchsteller1(), true);
+		addAnrede(anrede, gesuch.getGesuchsteller2(), false);
+		return PdfUtil.createParagraph(anrede.toString());
+	}
+
+	private void addAnrede(final StringBuilder anrede, final GesuchstellerContainer gesuchsteller, final boolean first) {
+		if (gesuchsteller != null) {
+			final String singleAnrede = gesuchsteller.getGesuchstellerJA().getGeschlecht() == Geschlecht.MAENNLICH ? translate(ANREDE_HERR) : translate(ANREDE_FRAU);
+			if (first) {
+				anrede.append(singleAnrede);
+			} else {
+				anrede.append(", ");
+				anrede.append(Character.toLowerCase(singleAnrede.charAt(0))).append(singleAnrede.substring(1));
+			}
+			anrede.append(' ');
+			anrede.append(gesuchsteller.getGesuchstellerJA().getNachname());
+		}
 	}
 
 	@Nonnull
@@ -78,7 +110,7 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		final float height = millimetersToPoints(20);
 		final float width = millimetersToPoints(170);
 		final float loverLeftX = millimetersToPoints(PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM);
-		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4);
+		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4.0f);
 		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
 		Font fontWithSize = PdfUtilities.createFontWithSize(8);
