@@ -157,7 +157,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED,
             this.gesuchModelManager.getDossier().gemeinde,
-            this.gesuchModelManager.getGesuchsperiode()
+            this.gesuchModelManager.getGesuchsperiode(),
         )
             .then(response => {
                 this.kontingentierungEnabled = JSON.parse(response.value);
@@ -182,41 +182,55 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
      * Nur bestaetigte Betreuungen koennen geoeffnet werden
      */
     public openVerfuegung(kind: TSKindContainer, betreuung: TSBetreuung): void {
-        if (!this.kannVerfuegungOeffnen(betreuung)) {
-            return;
-        }
+        this.openVerfuegungPDF(betreuung);
+        // if (!this.kannVerfuegungOeffnen(betreuung)) {
+        //     return;
+        // }
+        //
+        // if (!kind || !betreuung) {
+        //     return;
+        // }
+        //
+        // const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
+        // if (kindIndex < 0) {
+        //     return;
+        // }
+        //
+        // this.gesuchModelManager.setKindIndex(kindIndex);
+        // this.$state.go('gesuch.verfuegenView', {
+        //     betreuungNumber: betreuung.betreuungNummer,
+        //     kindNumber: kind.kindNummer,
+        //     gesuchId: this.getGesuchId(),
+        // });
+    }
 
-        if (!kind || !betreuung) {
-            return;
-        }
-
-        const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
-        if (kindIndex < 0) {
-            return;
-        }
-
-        this.gesuchModelManager.setKindIndex(kindIndex);
-        this.$state.go('gesuch.verfuegenView', {
-            betreuungNumber: betreuung.betreuungNummer,
-            kindNumber: kind.kindNummer,
-            gesuchId: this.getGesuchId(),
-        });
+    public openVerfuegungPDF(betreuung: TSBetreuung): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
+            betreuung.id, false, 'TEST')
+            .then((downloadFile: TSDownloadFile) => {
+                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
+            })
+            .catch(ex => EbeguUtil.handleDownloadError(win, ex));
     }
 
     public kannVerfuegungOeffnen(betreuung: TSBetreuung): boolean {
         return this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
     }
 
+    /**
+     * Der Gesuchsteller kann Verfügungen vor der Freigabe des Gesuchs nur dann öffnen,
+     * wenn der Status der Betreuung Bestätigt oder Unbekannte Institution ist.
+     * Nach Freigabe darf er wie alle anderen Rollen alle Verfügungen öffnen.
+     */
     private isDetailAvailableForBetreuungstatus(betreuungsstatus: TSBetreuungsstatus): boolean {
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
-            TSBetreuungsstatus.VERFUEGT,
-            TSBetreuungsstatus.NICHT_EINGETRETEN,
-            TSBetreuungsstatus.STORNIERT,
             TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
             TSBetreuungsstatus.BESTAETIGT,
-            TSBetreuungsstatus.WARTEN,
         ];
-        return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
+        return (this.isGesuchsteller() && !isAtLeastFreigegeben(this.getAntragStatus())) ?
+            allowedBetstatus.indexOf(betreuungsstatus) !== -1 :
+            true;
     }
 
     /**
@@ -326,26 +340,27 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
             return this.gesuchRS.verfuegenStarten(this.gesuchModelManager.getGesuch().id)
                 .then(
-                response => {
-                    if (response.status === TSAntragStatus.NUR_SCHULAMT) {
-                        // If AntragStatus==NUR_SCHULAMT the Sachbearbeiter_BG has no rights to work with or even to
-                        // see this gesuch any more For this reason we have to navigate directly out of the gesuch once
-                        // it has been saved. We navigate to the default start page for the current role.
-                        // createNeededPDFs is not being called for the same reason. Anyway, the Gesuch vanishes for
-                        // the role JA and is only available for the role SACHBEARBEITER_TS/ADMIN_TS, so JA doesn't
-                        // need the PDFs to be created. When a Schulamt worker opens this Gesuch, she can generate the
-                        // PDFs by clicking on the corresponding links
-                        navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
-                        return this.gesuchModelManager.getGesuch();
-                    }
-                    // for NUR_SCHULAMT this makes no sense
-                    this.gesuchModelManager.setGesuch(response);
-                    this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf
-                                              // clean setzen
-                    return this.refreshKinderListe().then(() => {
-                        return this.gesuchModelManager.getGesuch();
+                    response => {
+                        if (response.status === TSAntragStatus.NUR_SCHULAMT) {
+                            // If AntragStatus==NUR_SCHULAMT the Sachbearbeiter_BG has no rights to work with or even
+                            // to
+                            // see this gesuch any more For this reason we have to navigate directly out of the gesuch
+                            // once it has been saved. We navigate to the default start page for the current role.
+                            // createNeededPDFs is not being called for the same reason. Anyway, the Gesuch vanishes
+                            // for the role JA and is only available for the role SACHBEARBEITER_TS/ADMIN_TS, so JA
+                            // doesn't need the PDFs to be created. When a Schulamt worker opens this Gesuch, she can
+                            // generate the PDFs by clicking on the corresponding links
+                            navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
+                            return this.gesuchModelManager.getGesuch();
+                        }
+                        // for NUR_SCHULAMT this makes no sense
+                        this.gesuchModelManager.setGesuch(response);
+                        this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf
+                                                  // clean setzen
+                        return this.refreshKinderListe().then(() => {
+                            return this.gesuchModelManager.getGesuch();
+                        });
                     });
-                });
         });
     }
 
