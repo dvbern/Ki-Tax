@@ -148,6 +148,8 @@ public abstract class AbstractEbeguTest {
 			.addAsResource("testogin-users.properties", "users.properties")
 			.addAsResource("testlogin-roles.properties", "roles.properties")
 			.addAsWebInfResource("META-INF/test-jboss-web.xml", "jboss-web.xml")
+			.addAsResource("font/OpenSans-Light.ttf", "font/OpenSans-Light.ttf")
+			.addAsResource("font/OpenSans-SemiBold.ttf", "font/OpenSans-SemiBold.ttf")
 			// Deploy our test datasource
 			.addAsWebInfResource("test-ds.xml");
 		if (classesToAdd != null) {

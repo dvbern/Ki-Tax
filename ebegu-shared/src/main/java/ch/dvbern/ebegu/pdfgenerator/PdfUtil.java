@@ -72,7 +72,7 @@ public final class PdfUtil {
 	}
 
 	public static final String FONT_FACE_OPEN_SANS = "OpenSans-Light";
-	public static final String FONT_FACE_OPEN_SANS_BOLD = "OpenSans-Light";
+	public static final String FONT_FACE_OPEN_SANS_BOLD = "OpenSans-Bold";
 
 	public static final float FONT_SIZE = 10.0f;
 	public static final float FONT_SIZE_H1 = 14.0f;
@@ -81,13 +81,13 @@ public final class PdfUtil {
 	public static final Font DEFAULT_FONT = FontFactory.getFont(FONT_FACE_OPEN_SANS, WINANSI, EMBEDDED,
 		FONT_SIZE, Font.NORMAL, Color.BLACK);
 	public static final Font DEFAULT_FONT_BOLD = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
-		FONT_SIZE, Font.BOLD, Color.BLACK);
+		FONT_SIZE, Font.NORMAL, Color.BLACK);
 	public static final Font FONT_TITLE = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
-		FONT_SIZE_H1, Font.BOLD, Color.BLACK);
+		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
 	public static final Font FONT_H1 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
-		FONT_SIZE_H1, Font.BOLD, Color.BLACK);
+		FONT_SIZE_H1, Font.NORMAL, Color.BLACK);
 	public static final Font FONT_H2 = FontFactory.getFont(FONT_FACE_OPEN_SANS_BOLD, WINANSI, EMBEDDED,
-		FONT_SIZE_H2, Font.BOLD, Color.BLACK);
+		FONT_SIZE_H2, Font.NORMAL, Color.BLACK);
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 	private static final String WATERMARK = "PdfGeneration_Watermark";
