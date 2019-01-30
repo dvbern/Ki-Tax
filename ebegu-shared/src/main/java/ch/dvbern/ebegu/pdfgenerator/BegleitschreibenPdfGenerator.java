@@ -38,8 +38,7 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String BEILAGEN = "PdfGeneration_Beilagen";
 	private static final String BEILAGE_VERFUEGUNG = "PdfGeneration_BeilageVerfuegung";
 	private static final String BEILAGE_FINANZIELLESITUATION = "PdfGeneration_BeilageFinanzielleSituation";
-
-
+	private static final String BEILAGE_ERLAEUTERUNG = "PdfGeneration_BeilageErlaeuterung";
 
 	public BegleitschreibenPdfGenerator(
 		@Nonnull Gesuch gesuch,
@@ -62,10 +61,10 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 	protected CustomGenerator getCustomGenerator() {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
-			document.add(PdfUtil.createParagraph(translate(ANREDE_FAMILIE)));
+			document.add(createAnrede());
 			document.add(PdfUtil.createParagraph(translate(BEGLEITSCHREIBEN_CONTENT), 2));
 			document.add(createParagraphGruss());
-			document.add(createParagraphSignatur());
+			document.add(PdfUtil.createParagraph(translate(DokumentAnFamilieGenerator.SACHBEARBEITUNG), 2));
 			document.add(PdfUtil.createParagraph(translate(BEILAGEN), 0));
 			document.add(PdfUtil.createListInParagraph(getBeilagen()));
 		};
@@ -81,6 +80,7 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 		if (EbeguUtil.isFinanzielleSituationRequired(gesuch) && getGesuch().getFinSitStatus() == FinSitStatus.AKZEPTIERT) {
 			beilagen.add(translate(BEILAGE_FINANZIELLESITUATION));
 		}
+		beilagen.add(translate(BEILAGE_ERLAEUTERUNG));
 		return beilagen;
 	}
 
@@ -96,6 +96,6 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private String getBeilagenText(@Nonnull Betreuung betreuung) {
-		return translate(BEILAGE_VERFUEGUNG, betreuung.getBGNummer());
+		return translate(BEILAGE_VERFUEGUNG, betreuung.getKind().getKindJA().getNachname() + " " + betreuung.getKind().getKindJA().getVorname(), betreuung.getBGNummer());
 	}
 }
