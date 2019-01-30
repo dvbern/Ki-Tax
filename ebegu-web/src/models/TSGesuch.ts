@@ -45,7 +45,6 @@ export default class TSGesuch extends TSAbstractAntragEntity {
     private _bemerkungenPruefungSTV: string;
     private _laufnummer: number;
     private _geprueftSTV: boolean = false;
-    private _hasFSDokument: boolean = true;
     private _verfuegungEingeschrieben: boolean = false;
     private _finSitStatus: TSFinSitStatus;
     private _gesperrtWegenBeschwerde: boolean = false;
@@ -139,14 +138,6 @@ export default class TSGesuch extends TSAbstractAntragEntity {
 
     public set geprueftSTV(value: boolean) {
         this._geprueftSTV = value;
-    }
-
-    public get hasFSDokument(): boolean {
-        return this._hasFSDokument;
-    }
-
-    public set hasFSDokument(value: boolean) {
-        this._hasFSDokument = value;
     }
 
     public get verfuegungEingeschrieben(): boolean {

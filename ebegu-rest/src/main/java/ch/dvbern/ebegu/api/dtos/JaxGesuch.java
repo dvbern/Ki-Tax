@@ -103,7 +103,6 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	private boolean geprueftSTV;
 
-	private boolean hasFSDokument;
 
 	private boolean verfuegungEingeschrieben;
 
@@ -221,14 +220,6 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setGeprueftSTV(boolean geprueftSTV) {
 		this.geprueftSTV = geprueftSTV;
-	}
-
-	public boolean isHasFSDokument() {
-		return hasFSDokument;
-	}
-
-	public void setHasFSDokument(boolean hasFSDokument) {
-		this.hasFSDokument = hasFSDokument;
 	}
 
 	public boolean isVerfuegungEingeschrieben() {

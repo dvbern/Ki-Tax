@@ -152,7 +152,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }
         this.refreshKinderListe();
         this.finSitStatus = EnumEx.getNames(TSFinSitStatus);
-        this.setHasFSDokumentAccordingToFinSitState();
 
         // Die Einstellung bezueglich Kontingentierung lesen
         this.einstellungRS.findEinstellung(
@@ -232,10 +231,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const isGesuchsteller = this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
         if (isGesuchsteller) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus())
-                && this.getGesuch().hasFSDokument
                 && !this.isFinSitAbglehnt();
         }
-        return this.getGesuch().hasFSDokument && !this.isFinSitAbglehnt();
+        return !this.isFinSitAbglehnt();
 
     }
 
@@ -308,7 +306,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
         }).then(() => {
             return this.gesuchRS.closeWithoutAngebot(this.gesuchModelManager.getGesuch().id).then(response => {
-                // muss gespeichert werden um hasfsdokument zu aktualisieren
                 this.gesuchModelManager.setGesuch(response);
                 this.form.$setPristine(); // nach dem es gespeichert wird, muessen wir das Form wieder auf clean setzen
                 return this.refreshKinderListe().then(() => {
@@ -327,9 +324,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             elementID: undefined,
         }).then(() => {
 
-            return this.gesuchRS.verfuegenStarten(
-                this.gesuchModelManager.getGesuch().id, this.gesuchModelManager.getGesuch().hasFSDokument).then(
-                response => {  // muss gespeichert werden um hasfsdokument zu aktualisieren
+            return this.gesuchRS.verfuegenStarten(this.gesuchModelManager.getGesuch().id)
+                .then(
+                response => {
                     if (response.status === TSAntragStatus.NUR_SCHULAMT) {
                         // If AntragStatus==NUR_SCHULAMT the Sachbearbeiter_BG has no rights to work with or even to
                         // see this gesuch any more For this reason we have to navigate directly out of the gesuch once
@@ -631,7 +628,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }).then(() => {
             return this.gesuchRS.setAbschliessen(this.getGesuch().id).then((gesuch: TSGesuch) => {
                 this.gesuchModelManager.setGesuch(gesuch);
-                this.setHasFSDokumentAccordingToFinSitState();
                 return this.gesuchModelManager.getGesuch();
             });
         });
@@ -684,24 +680,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return;
         }
 
-        this.setHasFSDokumentAccordingToFinSitState();
         this.gesuchRS.changeFinSitStatus(this.getGesuch().id,
             this.getGesuch().finSitStatus).then(() => {
             this.gesuchModelManager.setGesuch(this.getGesuch());
             this.form.$setPristine();
         });
-    }
-
-    private setHasFSDokumentAccordingToFinSitState(): void {
-        this.getGesuch().hasFSDokument =
-            this.gesuchModelManager.isFinanzielleSituationRequired() && !this.isFinSitAbglehnt();
-    }
-
-    public fsDokumentChanged(): void {
-        // dirty checker wird hier ausgeschaltet. Aenderungen des fs flag wird automatisch gespeichert wenn gesuch auf
-        // geprüft gesetzt wird Aus performance Gründen wird hier daruf verzichtet das Gesuch neu zu persisten, nur
-        // weil das Flag ändert.
-        this.form.$setPristine();
     }
 
     public verfuegungEingeschriebenChanged(): void {
