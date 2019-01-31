@@ -928,7 +928,7 @@
     "CONFIRM_GESUCH_STATUS_GEPRUEFT": "fr_Möchten Sie das Gesuch wirklich als \"geprüft\" setzen?",
     "CONFIRM_GESUCH_STATUS_VERFUEGEN": "fr_Möchten Sie den Verfügungsprozess wirklich starten?",
     "CONFIRM_GESUCH_STATUS_KEIN_ANGEBOT": "fr_Möchten Sie das Gesuch wirklich ohne Angebot beenden?",
-    "BESCHREIBUNG_GESUCH_STATUS_WECHSELN": "fr_Diese Änderung können Sie nicht mehr rückgängig machen",
+    "BESCHREIBUNG_GESUCH_STATUS_WECHSELN": "fr_Die Korrespondenz mit dem Gesuchsteller muss ausserhalb kiBons erfolgen! Diese Änderung können Sie nicht mehr rückgängig machen",
     "BESCHREIBUNG_GESUCH_STATUS_WECHSELN_SCHULAMT": "fr_Das Gesuch enthält nur Schulangebote. Wenn Sie auf Ja klicken, ändert der Status des Gesuches auf \"Schulamt\" und kann nicht mehr vom Jugendamt bearbeitet werden. Wollen Sie wirklich fortfahren?",
     "CONFIRM_SAVE_VERFUEGUNG": "fr_Möchten Sie das Betreuungsangebot wirklich verfügen?",
     "CONFIRM_SAVE_MUTIERTE_VERFUEGUNG": "fr_Mutation führt zu Korrekturen bei bereits ausbezahlten Beträgen, trotzdem verfügen?",
