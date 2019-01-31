@@ -523,6 +523,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final CriteriaQuery<Tuple> query = builder.createTupleQuery();
 		query.distinct(true);
 
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
+
 		Root<Gesuch> root = query.from(Gesuch.class);
 
 		final Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.INNER);
@@ -530,6 +533,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			dossierJoin.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
 		SetJoin<Benutzer, Berechtigung> verantwortlicherBerechtigungenJoin =
 			verantwortlicherJoin.join(Benutzer_.berechtigungen);
+		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin = verantwortlicherBerechtigungenJoin.join(Berechtigung_.gemeindeList);
 
 		query.multiselect(
 			verantwortlicherJoin.get(AbstractEntity_.id).alias(AbstractEntity_.id.getName()),
@@ -545,6 +549,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		);
 		query.orderBy(builder.asc(verantwortlicherJoin.get(Benutzer_.nachname)));
 
+		List<Predicate> predicates = new ArrayList<>();
 		// Der Benutzer muss eine aktive Berechtigung mit Rolle ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE oder
 		// SACHBEARBEITER_GEMEINDE haben
 		Path<DateRange> dateRange = verantwortlicherBerechtigungenJoin.get(AbstractDateRangedEntity_.gueltigkeit);
@@ -553,6 +558,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			dateRange.get(DateRange_.gueltigAb),
 			dateRange.get(DateRange_.gueltigBis)
 		);
+		predicates.add(predicateActive);
 
 		Set<UserRole> requiredRoles = Sets.newHashSet(
 			UserRole.ADMIN_BG,
@@ -562,9 +568,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Predicate isRolleCorrect =
 			verantwortlicherBerechtigungenJoin.get(Berechtigung_.role).in(requiredRoles);
+		predicates.add(isRolleCorrect);
 
-		query.where(predicateActive, isRolleCorrect);
+		// Nur Benutzer von Gemeinden, fuer die ich berechtigt bin
+		setGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
 
+		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
 		return persistence.getCriteriaResults(query);
 	}
 
