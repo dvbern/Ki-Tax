@@ -716,12 +716,11 @@ public class GesuchResource {
 		"wechselt der Status auf NUR_SCHULAMT", response = JaxGesuch.class)
 	@Nullable
 	@POST
-	@Path("/verfuegenStarten/{antragId}/{hasFSDocument}")
+	@Path("/verfuegenStarten/{antragId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response verfuegenStarten(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
-		@PathParam("hasFSDocument") boolean hasFSDocument,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -731,8 +730,9 @@ public class GesuchResource {
 		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 
-		final Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow(() -> new EbeguEntityNotFoundException("verfuegenStarten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragId));
-		gesuch.setHasFSDokument(hasFSDocument);
+		final Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow(() ->
+			new EbeguEntityNotFoundException("verfuegenStarten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragId)
+		);
 		Gesuch closedGesuch = gesuchService.verfuegenStarten(gesuch);
 
 		return Response.ok(converter.gesuchToJAX(closedGesuch)).build();
