@@ -57,7 +57,9 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 		applyLogo(gemeindeLogo);
 		if (absenderHeader != null && !absenderHeader.isEmpty()) {
 			setHeader(new PhraseRenderer(absenderHeader,
-				LEFT_PAGE_DEFAULT_MARGIN_MM, RECEIVER_TOP_IN_MM, ADRESSE_WIDTH, ADRESSE_HEIGHT,
+				LEFT_PAGE_DEFAULT_MARGIN_MM,
+				RECEIVER_TOP_IN_MM,
+				ADRESSE_WIDTH, ADRESSE_HEIGHT,
 				PdfUtil.DEFAULT_FONT));
 		}
 	}

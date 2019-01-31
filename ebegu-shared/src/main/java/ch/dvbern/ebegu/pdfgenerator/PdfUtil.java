@@ -286,6 +286,9 @@ public final class PdfUtil {
 	@Nonnull
 	public static String printBigDecimal(@Nullable BigDecimal valueAsBigDecimal) {
 		if (valueAsBigDecimal != null) {
+			// though CURRENCY_FORMAT is created with Locale de-CH, it is required in this case since in
+			// Switzerland we have always the same currency format independently of the language. So we
+			// don't need to care about the Locale chosen by the user
 			return Constants.CURRENCY_FORMAT.format(valueAsBigDecimal);
 		}
 		return "";

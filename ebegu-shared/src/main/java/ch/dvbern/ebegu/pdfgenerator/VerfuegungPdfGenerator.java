@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -99,6 +100,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungPdfGenerator.class);
 
 	private Font fontTabelle = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8.0f);
+	private Font fontTabelleBold = PdfUtilities.createFontWithSize(getPageConfiguration().getFontBold(), 8.0f);
 	private Font fontRed = PdfUtilities.createFontWithColor(getPageConfiguration().getFont(), Color.RED);
 
 	public enum Art {
@@ -255,44 +257,44 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * fontTabelle.getSize() * 2);
 
 		// Referenznummern
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, "VIII", Color.LIGHT_GRAY, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VIII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
 
 		// Spaltentitel, Row 1
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VON), null, 2, 1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(BIS), null, 2, 1));
-		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(PENSUM_TITLE), null, 1, 3));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, 2, 1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN), null, 2, 1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG), Color.LIGHT_GRAY, 2, 1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(ELTERNBEITRAG), Color.LIGHT_GRAY, 2, 1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN), Color.LIGHT_GRAY, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VON), null, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(BIS), null, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(PENSUM_TITLE), null, fontTabelle, 1, 3));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN), null, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(ELTERNBEITRAG), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN), Color.LIGHT_GRAY, fontTabelle, 2, 1));
 
 		// Spaltentitel, Row 2
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_BETREUUNG), null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_ANSPRUCH), null, 1, 1));
-		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_BG), null, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_BETREUUNG), null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_ANSPRUCH), null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_BG), null, fontTabelle, 1, 1));
 
 		// Inhalte (Werte)
 		for (VerfuegungZeitabschnitt abschnitt : getVerfuegungZeitabschnitt()) {
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()), null, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()), null, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getBetreuungspensum()), null, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum()), null, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getBgPensum()), null, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVollkosten()), null, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten()), null, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()), Color.LIGHT_GRAY, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getMinimalerElternbeitragGekuerzt()), Color.LIGHT_GRAY, 1, 1));
-			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigung()), Color.LIGHT_GRAY, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getBetreuungspensum()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getBgPensum()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVollkosten()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()), Color.LIGHT_GRAY, fontTabelleBold, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getMinimalerElternbeitragGekuerzt()), Color.LIGHT_GRAY, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigung()), Color.LIGHT_GRAY, fontTabelle, 1, 1));
 		}
 		return table;
 	}
@@ -301,12 +303,13 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		boolean isHeaderRow,
 		int alignment,
 		String value,
-		Color bgColor,
+		@Nullable Color bgColor,
+		@Nullable Font font,
 		int rowspan,
 		int colspan
 	) {
 		PdfPCell cell;
-		cell = new PdfPCell(new Phrase(value, fontTabelle));
+		cell = new PdfPCell(new Phrase(value, font));
 		cell.setHorizontalAlignment(alignment);
 		cell.setVerticalAlignment(Element.ALIGN_TOP);
 		if (bgColor != null) {

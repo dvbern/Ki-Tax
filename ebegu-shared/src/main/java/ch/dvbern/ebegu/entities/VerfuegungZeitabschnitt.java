@@ -673,7 +673,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Nonnull
 	public BigDecimal getMinimalerElternbeitragGekuerzt() {
-		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT.subtract(getVollkosten(), getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		BigDecimal vollkostenMinusVerguenstigung = MathUtil.DEFAULT
+			.subtract(getVollkosten(), getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		if (vollkostenMinusVerguenstigung.compareTo(getMinimalerElternbeitrag()) > 0) {
 			return MathUtil.DEFAULT.from(0);
 		}

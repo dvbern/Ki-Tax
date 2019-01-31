@@ -1117,7 +1117,7 @@
     "ARIA_REMOVE_ERWERBSPENSUM": "fr_Das Beschäftigungspensum dieser Zeile entfernen",
     "ARIA_ADD_ERWERBSPENSUM": "fr_Ein neues Beschäftigungspensum erfassen",
     "ARIA_KONTAKT_MENU": "fr_Kontakt des Jugendamtes",
-    "BEMERKUNGEN_DIALOG": "fr_Begründung",
+    "BEMERKUNGEN_DIALOG": "fr_Bemerkungen",
     "FREIGABE_SCH": "fr_FREIGABE SCHULAMT",
     "FREIGABE_JA": "fr_FREIGABE JUGENDAMT",
     "FREIGABE_JA_BESCHREIBUNG": "fr_Möchten Sie wirklich die Bearbeitung beenden und das Gesuch fürs Jugendamt freigeben?",
@@ -1480,5 +1480,6 @@
     "CHANGE_FRANZOESISCH": "Passer en français",
     "NO_ERWERBSPENSUM_DATA": "fr_Keine Erwerbspensum Daten vorhanden",
     "CONFIRM_KEIN_KONTINGENT_TITLE": "fr_Wollen Sie den Status auf 'Kein Kontingent' setzen?",
-    "CONFIRM_KEIN_KONTINGENT_TEXT": "fr_Für diesen Antrag besteht kein Kontingent. Sie müssen die Gesuchsteller ausserhalb kiBon über diesen Sachverhalt informieren"
+    "CONFIRM_KEIN_KONTINGENT_TEXT": "fr_Für diesen Antrag besteht kein Kontingent. Sie müssen die Gesuchsteller ausserhalb kiBon über diesen Sachverhalt informieren",
+    "BEGRUENDUNG": "Begründung"
 }
