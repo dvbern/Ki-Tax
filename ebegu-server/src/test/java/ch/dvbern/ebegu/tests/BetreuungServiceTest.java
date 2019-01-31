@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -121,8 +122,8 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		Betreuung betreuung = betreuungOptional.get();
 		Assert.assertNotNull(betreuung.getErweiterteBetreuungContainer());
 
-		final ErweiterteBetreuung erweiterteBetreuung = persistence.find(ErweiterteBetreuung.class, betreuung.getId());//shared id
-		Assert.assertNotNull(erweiterteBetreuung);
+		final ErweiterteBetreuungContainer erweiterteBetreuungCont = persistence.find(ErweiterteBetreuungContainer.class, betreuung.getId());//shared id
+		Assert.assertNotNull(erweiterteBetreuungCont);
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));

@@ -42,6 +42,15 @@ public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_container_erweiterte_betreuung_ja"))
 	private ErweiterteBetreuung erweiterteBetreuungJA;
 
+	public ErweiterteBetreuungContainer() {
+	}
+
+	public ErweiterteBetreuungContainer(Betreuung betreuung) {
+		this.betreuung = betreuung; //maintain relation for hibernate
+		betreuung.setErweiterteBetreuungContainer(this); // maintain relation for java
+	}
+
+
 	@Nullable
 	public Betreuung getBetreuung() {
 		return betreuung;
