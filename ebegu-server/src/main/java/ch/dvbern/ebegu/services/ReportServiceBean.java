@@ -56,6 +56,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
@@ -72,6 +73,7 @@ import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -128,6 +130,7 @@ import ch.dvbern.oss.lib.excelmerger.RowFiller;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -150,6 +153,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 
 @Stateless
 @Local(ReportService.class)
@@ -915,6 +919,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nullable Gesuchsperiode gesuchsperiode) {
 		validateDateParams(datumVon, datumBis);
 
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getReportDataBetreuungen", "No User is logged in"));
+
 		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
 		// verfuegte.
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
@@ -923,6 +930,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
 		Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung);
 		Join<Verfuegung, Betreuung> joinBetreuung = joinVerfuegung.join(Verfuegung_.betreuung);
+		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(Betreuung_.kind, JoinType.LEFT);
+		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch, JoinType.LEFT);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
+
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
 		// startAbschnitt <= datumBis && endeAbschnitt >= datumVon
@@ -943,6 +955,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = builder.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
 		predicatesToUse.add(predicateGueltig);
+
+		// Nur Gesuche von Gemeinden, fuer die ich berechtigt bin
+		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicatesToUse);
 
 		// Sichtbarkeit nach eingeloggtem Benutzer
 		boolean isInstitutionsbenutzer =
@@ -994,6 +1009,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private List<VerfuegungZeitabschnitt> getReportDataBetreuungen(@Nonnull LocalDate stichtag) {
 		validateStichtagParam(stichtag);
 
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getReportDataBetreuungen", "No User is logged in"));
+
 		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
 		// verfuegte.
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
@@ -1002,6 +1020,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
 		Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung);
 		Join<Verfuegung, Betreuung> joinBetreuung = joinVerfuegung.join(Verfuegung_.betreuung);
+		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(Betreuung_.kind, JoinType.LEFT);
+		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch, JoinType.LEFT);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
+
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
 		// Stichtag
@@ -1012,6 +1035,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		predicatesToUse.add(intervalPredicate);
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = builder.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
+
+		// Nur Gesuche von Gemeinden, fuer die ich berechtigt bin
+		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicatesToUse);
+
 		predicatesToUse.add(predicateGueltig);
 
 		// Sichtbarkeit nach eingeloggtem Benutzer
@@ -1668,45 +1695,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT, REVISOR })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
 	public List<BenutzerDataRow> getReportDataBenutzer(@Nonnull Locale locale) {
-		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Benutzer> query = builder.createQuery(Benutzer.class);
-		Root<Benutzer> root = query.from(Benutzer.class);
-		SetJoin<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
-
-		List<Predicate> predicates = new ArrayList<>();
-
-		// Gesuchsteller sollen nicht ausgegeben werden
-		Path<DateRange> dateRangePath = joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit);
-		Predicate predicateActive = builder.between(
-			builder.literal(LocalDate.now()),
-			dateRangePath.get(DateRange_.gueltigAb),
-			dateRangePath.get(DateRange_.gueltigBis)
-		);
-		Predicate predicateRoleNotGS = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.GESUCHSTELLER).not();
-		predicates.add(predicateActive);
-		predicates.add(predicateRoleNotGS);
-
-		// Wenn es sich nicht um einen SuperAdmin handelt, muss noch der Mandant beachtet werden, sowie die SuperAdmin
-		// ausgefiltert werden.
-		Benutzer user = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguRuntimeException("searchBenutzer", "No User is logged in"));
-		UserRole role = user.getRole();
-		if (role != UserRole.SUPER_ADMIN) {
-			// Admins duerfen alle Benutzer ihres Mandanten sehen
-			predicates.add(builder.equal(root.get(Benutzer_.mandant), user.getMandant()));
-			// Und sie duerfen keine Superadmins sehen
-			Predicate predicateRoleNotSuperadmin =
-				joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN).not();
-			predicates.add(predicateRoleNotSuperadmin);
-		}
-
-		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
-		List<Benutzer> benutzerList = persistence.getCriteriaResults(query);
+		Pair<Long, List<Benutzer>> searchResultPair = benutzerService.searchBenutzer(new BenutzerTableFilterDTO());
+		List<Benutzer> benutzerList = searchResultPair.getRight();
 
 		Map<String, EnumSet<BetreuungsangebotTyp>> betreuungsangebotMap = new HashMap<>();
 		return convertToBenutzerDataRow(benutzerList, betreuungsangebotMap, locale);

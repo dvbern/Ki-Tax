@@ -26,8 +26,10 @@ import javax.annotation.Nonnull;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Benutzer_;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -113,5 +115,35 @@ public final class FilterFunctions {
 			joinCurrentBerechtigung.get(Berechtigung_.institution).get(Institution_.traegerschaft), userTraegerschaft);
 
 		predicates.add(cb.or(sameTraegerschaft, institutionOfTraegerschaft));
+	}
+
+	public static void setMandantFilterForCurrentUser(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Root<Benutzer> root,
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull List<Predicate> predicates
+	) {
+		final UserRole role = currentBenutzer.getCurrentBerechtigung().getRole();
+
+		// Alle ausser Superadmin duerfen nur Benutzer ihres Mandanten sehen
+		if (role != UserRole.SUPER_ADMIN) {
+			predicates.add(cb.equal(root.get(Benutzer_.mandant), currentBenutzer.getMandant()));
+		}
+	}
+
+	public static void setSuperAdminFilterForCurrentUser(
+		@Nonnull Benutzer currentBenutzer,
+		@Nonnull Join<Benutzer, Berechtigung> joinBerechtigungen,
+		@Nonnull List<Predicate> predicates
+	) {
+
+		final UserRole role = currentBenutzer.getCurrentBerechtigung().getRole();
+
+		// Alle ausser Superadmin duerfen keine Superadmins sehen
+		if (role != UserRole.SUPER_ADMIN) {
+			Predicate predicateRoleNotSuperadmin =
+				joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN).not();
+			predicates.add(predicateRoleNotSuperadmin);
+		}
 	}
 }
