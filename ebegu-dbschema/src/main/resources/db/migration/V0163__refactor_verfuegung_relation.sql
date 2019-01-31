@@ -32,3 +32,15 @@ alter table verfuegung
 		primary key (betreuung_id);
 
 
+
+-- todo drop fk FK_verfuegung_zeitabschnitt_verfuegung_id if rename does not work
+
+
+
+ALTER TABLE verfuegung_zeitabschnitt 
+RENAME COLUMN verfuegung_id TO verfuegung_betreuung_id;
+
+
+ALTER TABLE verfuegung_zeitabschnitt_aud
+RENAME COLUMN verfuegung_id TO verfuegung_betreuung_id;
+
