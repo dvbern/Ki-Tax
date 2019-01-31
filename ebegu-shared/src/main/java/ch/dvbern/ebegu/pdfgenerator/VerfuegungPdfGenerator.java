@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.awt.Color;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +28,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
@@ -38,6 +41,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -45,26 +49,35 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.FULL_WIDTH;
+import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 
 public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
+	private static final String NAME_KIND = "PdfGeneration_NameKind";
 	private static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String VERFUEGUNG_CONTENT = "PdfGeneration_Verfuegung_Content";
 	private static final String VON = "PdfGeneration_Verfuegung_Von";
 	private static final String BIS = "PdfGeneration_Verfuegung_Bis";
+	private static final String PENSUM_TITLE = "PdfGeneration_Verfuegung_PensumTitle";
 	private static final String PENSUM_BETREUUNG = "PdfGeneration_Verfuegung_Betreuungspensum";
 	private static final String PENSUM_ANSPRUCH = "PdfGeneration_Verfuegung_Anspruchspensum";
 	private static final String PENSUM_BG = "PdfGeneration_Verfuegung_BgPensum";
 	private static final String VOLLKOSTEN = "PdfGeneration_Verfuegung_Vollkosten";
+	private static final String GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN = "PdfGeneration_Verfuegung_GutscheinOhneBeruecksichtigungVollkosten";
+	private static final String GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG = "PdfGeneration_Verfuegung_GutscheinOhneBeruecksichtigungMinimalbeitrag";
 	private static final String GUTSCHEIN = "PdfGeneration_Verfuegung_Gutschein";
-	private static final String ELTERNBEITRAG = "PdfGeneration_Verfuegung_Elternbeitrag";
+	private static final String ELTERNBEITRAG = "PdfGeneration_Verfuegung_MinimalerElternbeitrag";
 	private static final String KEIN_ANSPRUCH_CONTENT = "PdfGeneration_KeinAnspruch_Content";
 	private static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
 	private static final String NICHT_EINTRETEN_CONTENT_2 = "PdfGeneration_NichtEintreten_Content_2";
@@ -79,9 +92,16 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
 	private static final String RECHTSMITTELBELEHRUNG_TITLE = "PdfGeneration_Rechtsmittelbelehrung_Title";
 	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
-	private static final String FUSSZEILE_1 = "PdfGeneration_Verfuegung_Fusszeile1";
-	private static final String FUSSZEILE_2 = "PdfGeneration_Verfuegung_Fusszeile2";
+	private static final String FUSSZEILE_1_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile1";
+	private static final String FUSSZEILE_2_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile2";
+	private static final String FUSSZEILE_1_VERFUEGUNG = "PdfGeneration_Verfuegung_Fusszeile1";
 	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
+
+	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungPdfGenerator.class);
+
+	private Font fontTabelle = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8.0f);
+	private Font fontTabelleBold = PdfUtilities.createFontWithSize(getPageConfiguration().getFontBold(), 8.0f);
+	private Font fontRed = PdfUtilities.createFontWithColor(getPageConfiguration().getFont(), Color.RED);
 
 	public enum Art {
 		NORMAL,
@@ -120,7 +140,6 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		return (generator, ctx) -> {
 			Document document = generator.getDocument();
 			document.add(createIntroAndInfoKontingentierung());
-			document.add(PdfUtil.createParagraph(translate(ANREDE_FAMILIE)));
 			createContent(document, generator);
 		};
 	}
@@ -131,6 +150,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
 		switch (art) {
 			case NORMAL:
+				createFusszeileNormaleVerfuegung(generator.getDirectContent());
 				document.add(PdfUtil.createParagraph(translate(VERFUEGUNG_CONTENT,
 					kind.getFullName(),
 					Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2));
@@ -146,7 +166,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 				addBemerkungenIfAvailable(document);
 				break;
 			case NICHT_EINTRETTEN:
-				createFusszeile(generator.getDirectContent());
+				createFusszeileNichtEintreten(generator.getDirectContent());
 				LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 				document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_1,
 					Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
@@ -160,7 +180,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 				Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
 				paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-				paragraphWithSupertext.add(new Chunk(translate(NICHT_EINTRETEN_CONTENT_5), PdfUtilities.DEFAULT_FONT));
+				paragraphWithSupertext.add(new Chunk(translate(NICHT_EINTRETEN_CONTENT_5)));
 				paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
 				paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
 				document.add(paragraphWithSupertext);
@@ -206,7 +226,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private PdfPTable createIntro() {
 		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
 		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
-		introBasisjahr.add(new TableRowLabelValue(NAME, betreuung.getKind().getKindJA().getFullName()));
+		introBasisjahr.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
 		introBasisjahr.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, betreuung.getInstitutionStammdaten().getInstitution().getName()));
 		return PdfUtil.creatreIntroTable(introBasisjahr, sprache);
@@ -218,40 +238,96 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		String telefon = getGemeindeStammdaten().getTelefon();
 		String mail = getGemeindeStammdaten().getMail();
 		Object[] args = {gemeinde, telefon, mail};
-		return PdfUtil.createParagraph(translate(VERWEIS_KONTINGENTIERUNG, args), 0, PdfUtil.FONT_RED);
+		return PdfUtil.createParagraph(translate(VERWEIS_KONTINGENTIERUNG, args), 0, fontRed);
 	}
 
 	@Nonnull
 	private PdfPTable createVerfuegungTable() {
 		Objects.requireNonNull(betreuung.getVerfuegung());
-		List<String[]> values = new ArrayList<>();
-		String[] titles = {
-			translate(VON),
-			translate(BIS),
-			translate(PENSUM_BETREUUNG),
-			translate(PENSUM_ANSPRUCH),
-			translate(PENSUM_BG),
-			translate(VOLLKOSTEN),
-			translate(GUTSCHEIN),
-			translate(ELTERNBEITRAG)
-		};
-		values.add(titles);
-		for (VerfuegungZeitabschnitt abschnitt : getVerfuegungZeitabschnitt()) {
-			String[] data = {
-				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()),
-				Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
-				PdfUtil.printPercent(abschnitt.getBetreuungspensum()),
-				PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum()),
-				PdfUtil.printPercent(abschnitt.getBgPensum()),
-				PdfUtil.printBigDecimal(abschnitt.getVollkosten()),
-				PdfUtil.printBigDecimal(abschnitt.getVerguenstigung()),
-				PdfUtil.printBigDecimal(abschnitt.getElternbeitrag()),
-			};
-			values.add(data);
+
+		// Tabelle initialisieren
+		float[] columnWidths = {90, 100, 88, 88, 88, 100, 100, 100, 108, 110};
+		PdfPTable table = new PdfPTable(columnWidths.length);
+		try {
+			table.setWidths(columnWidths);
+		} catch (DocumentException e) {
+			LOG.error("Failed to set the width: {}", e.getMessage());
 		}
-		float[] columnWidths = {10, 10, 10, 10, 10, 10, 12, 12};
-		int[] alignement = {Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT, Element.ALIGN_RIGHT };
-		return PdfUtil.createTable(values, columnWidths, alignement, 2);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
+		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * fontTabelle.getSize() * 2);
+
+		// Referenznummern
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "I", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "II", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "III", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "IV", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "V", null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VI", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, "VIII", Color.LIGHT_GRAY, fontTabelle, 1, 1));
+
+		// Spaltentitel, Row 1
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VON), null, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(BIS), null, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(PENSUM_TITLE), null, fontTabelle, 1, 3));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN), null, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(ELTERNBEITRAG), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN), Color.LIGHT_GRAY, fontTabelle, 2, 1));
+
+		// Spaltentitel, Row 2
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_BETREUUNG), null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_ANSPRUCH), null, fontTabelle, 1, 1));
+		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(PENSUM_BG), null, fontTabelle, 1, 1));
+
+		// Inhalte (Werte)
+		for (VerfuegungZeitabschnitt abschnitt : getVerfuegungZeitabschnitt()) {
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getBetreuungspensum()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printPercent(abschnitt.getBgPensum()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVollkosten()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten()), null, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag()), Color.LIGHT_GRAY, fontTabelleBold, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getMinimalerElternbeitragGekuerzt()), Color.LIGHT_GRAY, fontTabelle, 1, 1));
+			table.addCell(createCell(false, Element.ALIGN_RIGHT, PdfUtil.printBigDecimal(abschnitt.getVerguenstigung()), Color.LIGHT_GRAY, fontTabelle, 1, 1));
+		}
+		return table;
+	}
+
+	private PdfPCell createCell(
+		boolean isHeaderRow,
+		int alignment,
+		String value,
+		@Nullable Color bgColor,
+		@Nullable Font font,
+		int rowspan,
+		int colspan
+	) {
+		PdfPCell cell;
+		cell = new PdfPCell(new Phrase(value, font));
+		cell.setHorizontalAlignment(alignment);
+		cell.setVerticalAlignment(Element.ALIGN_TOP);
+		if (bgColor != null) {
+			cell.setBackgroundColor(bgColor);
+		}
+		cell.setRowspan(rowspan);
+		cell.setColspan(colspan);
+
+		cell.setBorderWidthBottom(0.0f);
+		cell.setBorderWidthTop(isHeaderRow ? 0.0f : 0.5f);
+		cell.setBorderWidthLeft(0.0f);
+		cell.setBorderWidthRight(0.0f);
+
+		cell.setLeading(0.0F, PdfUtil.DEFAULT_CELL_LEADING);
+		cell.setPadding(0.0f);
+		cell.setPaddingTop(2.0f);
+		cell.setPaddingBottom(2.0f);
+		return cell;
 	}
 
 	@Nonnull
@@ -318,23 +394,35 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	public PdfPTable createRechtsmittelBelehrung() {
+		Adresse beschwerdeAdresse = getGemeindeStammdaten().getBeschwerdeAdresse();
+		if (beschwerdeAdresse == null) {
+			beschwerdeAdresse = getGemeindeStammdaten().getAdresse();
+		}
+
 		PdfPTable table = new PdfPTable(1);
 		table.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		PdfPTable innerTable = new PdfPTable(1);
-		innerTable.setWidthPercentage(FULL_WIDTH);
+		innerTable.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		innerTable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		innerTable.getDefaultCell().setLeading(0,PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		innerTable.addCell(PdfUtil.createBoldParagraph(translate(RECHTSMITTELBELEHRUNG_TITLE), 0));
-		innerTable.addCell(PdfUtil.createParagraph(translate(RECHTSMITTELBELEHRUNG_CONTENT)));
+		innerTable.addCell(PdfUtil.createParagraph(translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine())));
 		table.addCell(innerTable);
 		return table;
 	}
 
-	private void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+	private void createFusszeileNichtEintreten(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
 		createFusszeile(
 			dirPdfContentByte,
-			Lists.newArrayList(translate(FUSSZEILE_1), translate(FUSSZEILE_2))
+			Lists.newArrayList(translate(FUSSZEILE_1_NICHT_EINTRETEN), translate(FUSSZEILE_2_NICHT_EINTRETEN))
+		);
+	}
+
+	private void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+		createFusszeile(
+			dirPdfContentByte,
+			Lists.newArrayList(translate(FUSSZEILE_1_VERFUEGUNG))
 		);
 	}
 }
