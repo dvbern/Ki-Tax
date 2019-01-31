@@ -378,6 +378,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	) {
 		validateDateParams(datumVon, datumBis);
 
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
+
 		Collection<Gesuchsperiode> relevanteGesuchsperioden =
 			gesuchsperiodeService.getGesuchsperiodenBetween(datumVon, datumBis);
 		if (relevanteGesuchsperioden.isEmpty()) {
@@ -391,6 +394,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
 		Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung);
 		Join<Verfuegung, Betreuung> joinBetreuung = joinVerfuegung.join(Verfuegung_.betreuung);
+		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(Betreuung_.kind, JoinType.LEFT);
+		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch, JoinType.LEFT);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Gemeinde> joinGemeinde = joinDossier.join(Dossier_.gemeinde, JoinType.LEFT);
+
 		List<Predicate> predicatesToUse = new ArrayList<>();
 
 		// startAbschnitt <= datumBis && endeAbschnitt >= datumVon
@@ -407,7 +415,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		predicatesToUse.add(predicateGueltig);
 
 		// Sichtbarkeit nach eingeloggtem Benutzer
-
 		boolean isInstitutionsbenutzer =
 			principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
 		if (isInstitutionsbenutzer) {
@@ -420,6 +427,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				.in(allowedInstitutionen);
 			predicatesToUse.add(predicateAllowedInstitutionen);
 		}
+
+		// Nur Gesuche von Gemeinden, fuer die ich berechtigt bin
+		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicatesToUse);
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicatesToUse));
 		List<VerfuegungZeitabschnitt> zeitabschnittList = persistence.getCriteriaResults(query);
