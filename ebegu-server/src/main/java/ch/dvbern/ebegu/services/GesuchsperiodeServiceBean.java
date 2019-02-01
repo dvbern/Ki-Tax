@@ -32,6 +32,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -52,6 +53,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -192,6 +194,25 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		query.orderBy(cb.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
 		return persistence.getCriteriaResults(query);
 
+	}
+
+	@Override
+	@PermitAll
+	public Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key) {
+		List<Gesuchsperiode> gesuchsperioden = null;
+		Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(key);
+		if (gesuchsperiode.isPresent()) {
+			LocalDate datumVon = gesuchsperiode.get().getGueltigkeit().getGueltigAb();
+			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+			final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
+			Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
+			Path<DateRange> dateRangePath = root.get(AbstractDateRangedEntity_.gueltigkeit);
+			Predicate predicateVon = cb.greaterThanOrEqualTo(dateRangePath.get(DateRange_.gueltigAb), datumVon);
+			query.where(predicateVon);
+			query.orderBy(cb.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
+			gesuchsperioden = persistence.getCriteriaResults(query);
+		}
+		return gesuchsperioden;
 	}
 
 	@Override

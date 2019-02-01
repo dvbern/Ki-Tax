@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -270,7 +271,10 @@ public class GemeindeResource {
 		// - wenn die Gemeinde im Status "Eingeladen" ist
 		boolean eingeladen = GemeindeStatus.EINGELADEN == jaxStammdaten.getGemeinde().getStatus();
 		jaxStammdaten.getKonfigurationsListe().forEach(konfiguration -> {
-			if (eingeladen || GesuchsperiodeStatus.ENTWURF == konfiguration.getGesuchsperiodeStatus()) {
+			if (eingeladen) {
+				// TODO KIBON-360
+				saveAllFutureJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
+			} else if (GesuchsperiodeStatus.ENTWURF == konfiguration.getGesuchsperiodeStatus()) {
 				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
 			}
 		});
@@ -286,23 +290,44 @@ public class GemeindeResource {
 
 	}
 
-	private void saveJaxGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull JaxGemeindeKonfiguration konfiguration) {
+	private void saveJaxGemeindeKonfiguration(@Nonnull Gemeinde gemeinde,
+		@Nonnull JaxGemeindeKonfiguration konfiguration) {
 		if (konfiguration.getGesuchsperiodeId() != null) {
-			Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiodeId());
+			Optional<Gesuchsperiode> gesuchsperiode =
+				gesuchsperiodeService.findGesuchsperiode(konfiguration.getGesuchsperiodeId());
 			if (gesuchsperiode.isPresent()) {
 				for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
-					Einstellung einstellung = einstellungService.findEinstellung(jaxKonfig.getKey(), gemeinde, gesuchsperiode.get());
-					if (!gemeinde.equals(einstellung.getGemeinde()) || !gesuchsperiode.get().equals(einstellung.getGesuchsperiode())) {
-						einstellung = new Einstellung();
-						einstellung.setKey(jaxKonfig.getKey());
-						einstellung.setGemeinde(gemeinde);
-						einstellung.setGesuchsperiode(gesuchsperiode.get());
-					}
-					einstellung.setValue(jaxKonfig.getValue());
-					einstellungService.saveEinstellung(einstellung);
+					saveEinstellung(gemeinde, gesuchsperiode.get(), jaxKonfig);
 				}
 			}
 		}
+	}
+
+	private void saveAllFutureJaxGemeindeKonfiguration(@Nonnull Gemeinde gemeinde,
+		@Nonnull JaxGemeindeKonfiguration konfiguration) {
+		if (konfiguration.getGesuchsperiodeId() != null) {
+			Collection<Gesuchsperiode> gesuchsperioden =
+				gesuchsperiodeService.findThisAndFutureGesuchsperioden(konfiguration.getGesuchsperiodeId());
+			if (gesuchsperioden != null && !gesuchsperioden.isEmpty()) {
+				for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
+					for (JaxEinstellung jaxKonfig : konfiguration.getKonfigurationen()) {
+						saveEinstellung(gemeinde, gesuchsperiode, jaxKonfig);
+					}
+				}
+			}
+		}
+	}
+
+	private void saveEinstellung(@Nonnull Gemeinde gemeinde, Gesuchsperiode gesuchsperiode, JaxEinstellung jaxKonfig) {
+		Einstellung einstellung = einstellungService.findEinstellung(jaxKonfig.getKey(), gemeinde, gesuchsperiode);
+		if (!gemeinde.equals(einstellung.getGemeinde()) || !gesuchsperiode.equals(einstellung.getGesuchsperiode())) {
+			einstellung = new Einstellung();
+			einstellung.setKey(jaxKonfig.getKey());
+			einstellung.setGemeinde(gemeinde);
+			einstellung.setGesuchsperiode(gesuchsperiode);
+		}
+		einstellung.setValue(jaxKonfig.getValue());
+		einstellungService.saveEinstellung(einstellung);
 	}
 
 	@ApiOperation("Stores the logo image of the Gemeinde with the given id")

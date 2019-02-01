@@ -60,6 +60,12 @@ public interface GesuchsperiodeService {
 	Collection<Gesuchsperiode> getAllGesuchsperioden();
 
 	/**
+	 * @param key PK (id) der Gesuchsperiode
+	 * @return Diese und alle zukünftigen Gesuchsperioden
+	 */
+	public Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key);
+
+	/**
 	 * Loescht alle Gesuchsperioden inkl. Gesuche und Dokumente, wenn die Gesuchsperiode mehr als 10 Jahre alt ist.
 	 */
 	void removeGesuchsperiode(@Nonnull String gesuchsPeriodeId);
