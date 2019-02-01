@@ -14,12 +14,10 @@
  */
 
 import {IComponentOptions, IPromise, IQService, IScope} from 'angular';
-import * as moment from 'moment';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSGemeinde from '../../../models/TSGemeinde';
