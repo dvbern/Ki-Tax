@@ -182,32 +182,41 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
      * Nur bestaetigte Betreuungen koennen geoeffnet werden
      */
     public openVerfuegung(kind: TSKindContainer, betreuung: TSBetreuung): void {
-        this.openVerfuegungPDF(betreuung);
-        // if (!this.kannVerfuegungOeffnen(betreuung)) {
-        //     return;
-        // }
-        //
-        // if (!kind || !betreuung) {
-        //     return;
-        // }
-        //
-        // const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
-        // if (kindIndex < 0) {
-        //     return;
-        // }
-        //
-        // this.gesuchModelManager.setKindIndex(kindIndex);
-        // this.$state.go('gesuch.verfuegenView', {
-        //     betreuungNumber: betreuung.betreuungNummer,
-        //     kindNumber: kind.kindNummer,
-        //     gesuchId: this.getGesuchId(),
-        // });
+        if (!this.kannVerfuegungOeffnen(betreuung)) {
+            return;
+        }
+
+        if (!kind || !betreuung) {
+            return;
+        }
+
+        const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
+        if (kindIndex < 0) {
+            return;
+        }
+
+        /**
+         * Falls es sich um den Gesuchsteller handelt und das Gesuch nicht freigegeben ist,
+         * wird bei Betreuungen im Status Bestätigt und Unbekannte Institution direkt das PDF erzeugt.
+         * Alle anderen darf der GS nicht anschauen (siehe isDetailAvailableForBetreuungstatus())
+         */
+        if (this.isGesuchsteller() && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) {
+            this.openVerfuegungPDF(betreuung);
+            return;
+        }
+
+        this.gesuchModelManager.setKindIndex(kindIndex);
+        this.$state.go('gesuch.verfuegenView', {
+            betreuungNumber: betreuung.betreuungNummer,
+            kindNumber: kind.kindNummer,
+            gesuchId: this.getGesuchId(),
+        });
     }
 
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
-            betreuung.id, false, 'TEST')
+            betreuung.id, false, betreuung.verfuegung.manuelleBemerkungen)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
@@ -228,7 +237,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
             TSBetreuungsstatus.BESTAETIGT,
         ];
-        return (this.isGesuchsteller() && !isAtLeastFreigegeben(this.getAntragStatus())) ?
+        return (this.isGesuchsteller() && !isAnyStatusOfVerfuegt(this.getAntragStatus())) ?
             allowedBetstatus.indexOf(betreuungsstatus) !== -1 :
             true;
     }
@@ -714,11 +723,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public getTitle(): string {
-        if (isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            || (this.gesuchModelManager.getGesuch().status === TSAntragStatus.FREIGABEQUITTUNG)) {
-            return this.$translate.instant('VERFUEGUNGEN');
+        if (this.isGesuchsteller()
+            && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) {
+            return this.$translate.instant('PROVISORISCHE_BERECHNUNG');
         }
-        return this.$translate.instant('PROVISORISCHE_BERECHNUNG');
+        return this.$translate.instant('VERFUEGUNGEN');
     }
 
     public isGesuchsteller(): boolean {

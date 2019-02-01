@@ -19,7 +19,11 @@ import {LogFactory} from '../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../app/core/service/antragStatusHistoryRS.rest';
 import EwkRS from '../app/core/service/ewkRS.rest';
 import AuthServiceRS from '../authentication/service/AuthServiceRS.rest';
-import {IN_BEARBEITUNG_BASE_NAME, isAtLeastFreigegeben, TSAntragStatus} from '../models/enums/TSAntragStatus';
+import {
+    IN_BEARBEITUNG_BASE_NAME,
+    isAnyStatusOfVerfuegt,
+    TSAntragStatus,
+} from '../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSGesuchBetreuungenStatus} from '../models/enums/TSGesuchBetreuungenStatus';
 import {TSGesuchEvent} from '../models/enums/TSGesuchEvent';
@@ -397,9 +401,8 @@ export class GesuchRouteController implements IController {
     public getVerfuegenText(): string {
 
         if (this.gesuchModelManager.getGesuch()
-            &&  this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())
-            && !isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            && (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG)) {
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())
+            && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) {
 
             return this.$translate.instant('MENU_PROVISORISCHE_BERECHNUNG');
         }
