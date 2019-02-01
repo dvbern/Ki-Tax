@@ -184,12 +184,10 @@
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-directory-provider</artifactId>
-            <!--<scope>compile</scope>-->
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-cachestore-jdbc</artifactId>
-            <!--<scope>provided</scope>-->
         </dependency>
     </dependencies>
 

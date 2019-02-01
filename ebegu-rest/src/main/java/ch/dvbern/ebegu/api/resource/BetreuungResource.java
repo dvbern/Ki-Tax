@@ -135,6 +135,7 @@ public class BetreuungResource {
 		@Nonnull @PathParam("abwesenheit") Boolean abwesenheit,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
+		Validate.notNull(abwesenheit, "abwesenheit may not be null");
 		Validate.notNull(betreuungenJAXP, "betreuungenJAXP may not be null");
 		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
 		betreuungenJAXP.forEach(jaxBetreuung -> validator.validate(jaxBetreuung));

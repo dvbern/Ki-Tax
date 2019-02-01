@@ -226,14 +226,6 @@
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
             <exclusions>
-                <!--<exclusion>-->
-                    <!--<artifactId>javassist</artifactId>-->
-                    <!--<groupId>org.javassist</groupId>-->
-                <!--</exclusion>-->
-                <!--<exclusion>-->
-                    <!--<artifactId>jsr311-api</artifactId>-->
-                    <!--<groupId>javax.ws.rs</groupId>-->
-                <!--</exclusion>-->
             </exclusions>
         </dependency>
 

@@ -59,7 +59,6 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(
-
 			joinColumns = @JoinColumn(name = "ferieninsel_stammdaten_id", nullable = false),
 			inverseJoinColumns = @JoinColumn(name = "zeitraum_list_id", nullable = false),
 			foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_ferieninsel_stammdaten_id"),

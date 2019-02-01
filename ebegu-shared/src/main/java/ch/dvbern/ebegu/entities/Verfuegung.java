@@ -57,7 +57,6 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String manuelleBemerkungen;
 
-	//	todo homa evaluate and probably turn relationship around kibon-106
 	@NotNull
 	@OneToOne(optional = false, fetch = FetchType.EAGER)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_verfuegung_betreuung_id"), nullable = false)
@@ -87,7 +86,7 @@ public class Verfuegung extends AbstractMutableEntity {
 	private boolean kategorieNichtEintreten = false;
 
 	public Verfuegung() {
-		setId(null);
+		setId(null);    // verfuegung shares id with betreuung, it can not exist alone
 
 	}
 

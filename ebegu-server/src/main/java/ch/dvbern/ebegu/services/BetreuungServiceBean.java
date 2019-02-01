@@ -573,9 +573,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		authorizer.checkWriteAuthorization(betreuung);
 		final Gesuch gesuch = betreuung.extractGesuch();
 
-		// must be set to null so that hibernate understands it must remove it
-		//noinspection ConstantConditions
-//		betreuung.setErweiterteBetreuungContainer(new ErweiterteBetreuungContainer());
+
 
 		persistence.remove(betreuung);
 

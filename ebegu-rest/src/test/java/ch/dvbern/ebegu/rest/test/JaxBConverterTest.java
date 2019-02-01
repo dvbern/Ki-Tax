@@ -206,6 +206,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT) //to load lazy zeitabschnitte we keep a session
 	public void pensumFachstelleSpeichernDarfFachstelleNichtUpdaten() {
 		Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
 		fachstelle = persistence.persist(fachstelle);
