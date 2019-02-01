@@ -214,4 +214,17 @@ public class Adresse extends AbstractDateRangedEntity {
 		sb.append(getPlz()).append(' ').append(getOrt());
 		return sb.toString();
 	}
+
+	@Nonnull
+	public String getAddressAsStringInOneLine() {
+		StringBuilder sb = new StringBuilder();
+		if (StringUtils.isNotEmpty(getOrganisation())) {
+			sb.append(getOrganisation());
+			sb.append(", ");
+		}
+		sb.append(getStrasse()).append(' ').append(getHausnummer());
+		sb.append(", ");
+		sb.append(getPlz()).append(' ').append(getOrt());
+		return sb.toString();
+	}
 }
