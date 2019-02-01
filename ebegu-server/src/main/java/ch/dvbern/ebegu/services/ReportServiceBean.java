@@ -244,8 +244,26 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("stichTagDate", Constants.SQL_DATE_FORMAT.format(date.plusDays(1)));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
-
+		query.setParameter("gemeindeIdList", getCommaSeparatedListOfBerechtigteGemeinden());
 		return query.getResultList();
+	}
+
+	@Nullable
+	private String getCommaSeparatedListOfBerechtigteGemeinden() {
+		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getCommaSeparatedListOfBerechtigteGemeinden", "User not logged in"));
+
+		if (!benutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			return null;
+		} else {
+			StringBuilder sb = new StringBuilder();
+			for (Gemeinde gemeinde : benutzer.extractGemeindenForUser()) {
+				sb.append('\'').append(gemeinde.getId()).append("', ");
+			}
+			String gemeinden = sb.toString();
+			gemeinden = StringUtils.removeEnd(gemeinden, ", ");
+			return gemeinden;
+		}
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -318,6 +336,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("toDate", Constants.SQL_DATE_FORMAT.format(dateBis));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
+		query.setParameter("gemeindeIdList", getCommaSeparatedListOfBerechtigteGemeinden());
 
 		return query.getResultList();
 	}
@@ -540,10 +559,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		final Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.INNER);
 		final Join<Dossier, Benutzer> verantwortlicherJoin =
-			dossierJoin.join(Dossier_.verantwortlicherBG, JoinType.LEFT);
+			dossierJoin.join(Dossier_.verantwortlicherBG, JoinType.INNER);
 		SetJoin<Benutzer, Berechtigung> verantwortlicherBerechtigungenJoin =
-			verantwortlicherJoin.join(Benutzer_.berechtigungen);
-		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin = verantwortlicherBerechtigungenJoin.join(Berechtigung_.gemeindeList);
+			verantwortlicherJoin.join(Benutzer_.berechtigungen, JoinType.INNER);
+		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin = verantwortlicherBerechtigungenJoin.join(Berechtigung_.gemeindeList, JoinType.INNER);
 
 		query.multiselect(
 			verantwortlicherJoin.get(AbstractEntity_.id).alias(AbstractEntity_.id.getName()),
