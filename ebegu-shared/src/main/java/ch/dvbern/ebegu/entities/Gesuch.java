@@ -210,9 +210,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = false)
 	private boolean geprueftSTV = false;
 
-	@Column(nullable = false)
-	private boolean hasFSDokument = true;
-
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	@Nullable
@@ -450,14 +447,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public void setGeprueftSTV(boolean geprueftSTV) {
 		this.geprueftSTV = geprueftSTV;
-	}
-
-	public boolean isHasFSDokument() {
-		return hasFSDokument;
-	}
-
-	public void setHasFSDokument(boolean hasFSDokument) {
-		this.hasFSDokument = hasFSDokument;
 	}
 
 	public boolean isGesperrtWegenBeschwerde() {

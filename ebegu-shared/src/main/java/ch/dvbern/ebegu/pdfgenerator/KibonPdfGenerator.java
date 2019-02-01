@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 
 public abstract class KibonPdfGenerator {
@@ -41,7 +42,6 @@ public abstract class KibonPdfGenerator {
 	protected static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
 	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
 	protected static final String FAMILIE = "PdfGeneration_Familie";
-	protected static final String NAME = "PdfGeneration_Name";
 	protected static final String BETREUUNG_INSTITUTION = "PdfGeneration_Institution";
 
 
@@ -82,6 +82,11 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected PdfGenerator getPdfGenerator() {
 		return pdfGenerator;
+	}
+
+	@Nonnull
+	public PageConfiguration getPageConfiguration() {
+		return pdfGenerator.getConfiguration();
 	}
 
 	@Nonnull
