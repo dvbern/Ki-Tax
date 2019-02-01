@@ -25,6 +25,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
@@ -54,6 +58,17 @@ public class FerieninselStammdaten extends AbstractMutableEntity {
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(
+
+			joinColumns = @JoinColumn(name = "ferieninsel_stammdaten_id", nullable = false),
+			inverseJoinColumns = @JoinColumn(name = "zeitraum_list_id", nullable = false),
+			foreignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_ferieninsel_stammdaten_id"),
+			inverseForeignKey = @ForeignKey(name = "FK_ferieninsel_stammdaten_ferieninsel_zeitraum_list_id"),
+			indexes = {
+				@Index(name = "IX_fi_stammdaten_ferieninsel_stammdaten_id", columnList = "ferieninsel_stammdaten_id"),
+				@Index(name = "IX_fi_stammdaten_gemeinde_zeitraum_list_id", columnList = "zeitraum_list_id"),
+			}
+		)
 	private List<FerieninselZeitraum> zeitraumList = new ArrayList<>();
 
 	@NotNull
