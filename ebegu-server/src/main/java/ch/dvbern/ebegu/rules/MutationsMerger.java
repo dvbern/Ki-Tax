@@ -89,9 +89,9 @@ public final class MutationsMerger {
 
 			if (vorangehenderAbschnitt != null) {
 				handleVerminderungEinkommen(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
-				handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 				handleAnpassungErweiterteBeduerfnisse(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 			}
+			handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 			monatsSchritte.add(zeitabschnitt);
 		}
 
@@ -142,12 +142,12 @@ public final class MutationsMerger {
 
 	private static void handleAnpassungAnspruch(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
+		@Nullable VerfuegungZeitabschnitt vorangehenderAbschnitt,
 		@Nonnull LocalDate mutationsEingansdatum,
 		@Nonnull Locale locale
 	) {
 		final int anspruchberechtigtesPensum = zeitabschnitt.getAnspruchberechtigtesPensum();
-		final int anspruchAufVorgaengerVerfuegung = vorangehenderAbschnitt.getAnspruchberechtigtesPensum();
+		final int anspruchAufVorgaengerVerfuegung = vorangehenderAbschnitt == null ? 0 : vorangehenderAbschnitt.getAnspruchberechtigtesPensum();
 
 		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
 			//Anspruch wird erhöht
