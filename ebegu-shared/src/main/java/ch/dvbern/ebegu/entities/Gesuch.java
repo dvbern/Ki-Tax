@@ -702,13 +702,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			});
 	}
 
-	@Transient
-	public boolean hasProvisorischeBetreuungen() {
-		return kindContainers.stream()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.anyMatch(betreuung -> betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
-	}
-
 	@Nullable
 	@Transient
 	public LocalDate getRegelStartDatum() {
@@ -716,10 +709,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			return getRegelnGueltigAb();
 		}
 		if (getEingangsdatum() == null
-			&& getEingangsart() == Eingangsart.ONLINE
-			&& hasProvisorischeBetreuungen()) {
+			&& getEingangsart() == Eingangsart.ONLINE) {
 			// damit die prov. Berechnung korrekt funktioniert, wird als default das heutige Datum gesetzt
-			// falls es ein Online Gesuch ist
+			// falls es ein Online Gesuch ist. If it doesn't have any prov. Berechnung too
 			return LocalDate.now();
 		}
 		return getEingangsdatum();

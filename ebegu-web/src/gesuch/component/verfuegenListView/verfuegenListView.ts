@@ -718,8 +718,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public getTitle(): string {
+        const gesuch = this.gesuchModelManager.getGesuch();
         if (this.isGesuchsteller()
-            && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)) {
+            && gesuch && !isAnyStatusOfVerfuegt(gesuch.status)) {
             return this.$translate.instant('PROVISORISCHE_BERECHNUNG');
         }
         return this.$translate.instant('VERFUEGUNGEN');

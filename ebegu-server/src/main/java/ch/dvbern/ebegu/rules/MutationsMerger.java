@@ -147,7 +147,9 @@ public final class MutationsMerger {
 		@Nonnull Locale locale
 	) {
 		final int anspruchberechtigtesPensum = zeitabschnitt.getAnspruchberechtigtesPensum();
-		final int anspruchAufVorgaengerVerfuegung = vorangehenderAbschnitt == null ? 0 : vorangehenderAbschnitt.getAnspruchberechtigtesPensum();
+		final int anspruchAufVorgaengerVerfuegung = vorangehenderAbschnitt == null
+			? 0
+			: vorangehenderAbschnitt.getAnspruchberechtigtesPensum();
 
 		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
 			//Anspruch wird erhöht
