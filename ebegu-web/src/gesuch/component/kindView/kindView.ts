@@ -309,8 +309,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
     }
 
-    public getDatumEinschulung(): moment.Moment {
-        return this.gesuchModelManager.getGesuchsperiodeBegin();
+    public getYearEinschulung(): number {
+        return this.gesuchModelManager.getGesuchsperiodeBegin().year();
     }
 
     public getTextFachstelleKorrekturJA(): string {
