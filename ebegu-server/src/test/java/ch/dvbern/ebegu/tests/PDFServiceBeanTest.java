@@ -244,7 +244,7 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testPrintErsteMahnungOnePage() throws Exception {
 
-		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
+		Mahnung mahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 8);
 
 		byte[] bytes = pdfService.generateMahnung(mahnung, Optional.empty(), writeProtectPDF, Constants.DEFAULT_LOCALE);
 
@@ -326,8 +326,8 @@ public class PDFServiceBeanTest {
 	@Test
 	public void testPrintZweiteMahnungOnePage() throws Exception {
 
-		Mahnung ersteMahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
-		Mahnung zweiteMahnung = TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 10);
+		Mahnung ersteMahnung = TestDataUtil.createMahnung(MahnungTyp.ERSTE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 9);
+		Mahnung zweiteMahnung = TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_2GS, LocalDate.now().plusWeeks(2), 9);
 		zweiteMahnung.setVorgaengerId(ersteMahnung.getId());
 
 		byte[] bytes = pdfService.generateMahnung(zweiteMahnung,  Optional.of(ersteMahnung), writeProtectPDF, Constants.DEFAULT_LOCALE);

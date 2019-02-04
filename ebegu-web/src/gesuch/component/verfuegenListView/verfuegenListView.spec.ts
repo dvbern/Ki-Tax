@@ -105,6 +105,7 @@ describe('verfuegenListViewTest', () => {
         describe('openVerfuegen', () => {
             it('does not open the betreuung because it is not BESTAETIGT', () => {
                 spyOn(gesuchModelManager, 'findKind').and.returnValue(1);
+                spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(1);
                 const betreuung = new TSBetreuung();
                 betreuung.betreuungsstatus = TSBetreuungsstatus.ABGEWIESEN;
 

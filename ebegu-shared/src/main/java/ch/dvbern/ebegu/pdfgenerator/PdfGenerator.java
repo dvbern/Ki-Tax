@@ -45,6 +45,12 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 			.map(ComponentRenderer::getComponentConfiguration)
 			.forEach(componenConfiguratoin -> componenConfiguratoin.setOnPage(OnPage.FIRST));
 		layoutConfiguration.getEmpfaengerAdresse().setOnPage(OnPage.FIRST);
+		// Die Default-Schriften aus der Library ueberschreiben
+		layoutConfiguration.setFont(PdfUtil.DEFAULT_FONT);
+		layoutConfiguration.setFontBold(PdfUtil.DEFAULT_FONT_BOLD);
+		layoutConfiguration.setFontTitle(PdfUtil.FONT_TITLE);
+		layoutConfiguration.setFontH1(PdfUtil.FONT_H1);
+		layoutConfiguration.setFontH2(PdfUtil.FONT_H2);
 		return new PdfGenerator(layoutConfiguration);
 	}
 
@@ -72,7 +78,7 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 		List<ComponentRenderer<? extends ComponentConfiguration, ?>> componentRenderers =
 			getComponentRenderers(empfaengerAdresse);
-		OnPageHandler onPageHandler = new OnPageHandler(getConfiguration(), componentRenderers);
+		OnPageHandler onPageHandler = new OnPageHandler(getPdfElementGenerator(), componentRenderers);
 
 		generate(outputStream, onPageHandler, pdfGenerator -> {
 			Document document = pdfGenerator.getDocument();

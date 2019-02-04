@@ -85,6 +85,11 @@ public abstract class KibonPdfGenerator {
 	}
 
 	@Nonnull
+	public PageConfiguration getPageConfiguration() {
+		return pdfGenerator.getConfiguration();
+	}
+
+	@Nonnull
 	protected Gesuch getGesuch() {
 		return gesuch;
 	}
