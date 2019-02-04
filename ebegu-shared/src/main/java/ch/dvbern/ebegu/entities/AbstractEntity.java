@@ -35,6 +35,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.StringUUIDType;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.util.AbstractEntityListener;
@@ -42,6 +43,8 @@ import ch.dvbern.ebegu.util.Constants;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.hibernate.envers.Audited;
 
 @SuppressWarnings("ClassReferencesSubclass")
@@ -92,14 +95,21 @@ import org.hibernate.envers.Audited;
 			@ColumnResult(name = "anzahlVerfuegungenNichtEintreten", type = Integer.class) }
 	))
 })
+@TypeDef(
+	name = "string-uuid-binary",
+	typeClass = StringUUIDType.class
+)
 public abstract class AbstractEntity implements Serializable {
 
 	private static final long serialVersionUID = -979317154050183445L;
 
 	@Id
-	@Column(unique = true, nullable = false, updatable = false, length = Constants.UUID_LENGTH)
+	@Column(unique = true, nullable = false, updatable = false, length = 16)
 	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
+	@Type( type = "string-uuid-binary" )
 	private String id;
+
+
 
 	@Version
 	@NotNull
