@@ -1407,6 +1407,10 @@ export default class GesuchModelManager {
                         TSAntragStatus.GEPRUEFT;
                 }
 
+                if (this.getGesuch() && this.getGesuch().hasProvisorischeBetreuungen()) {
+                    return TSAntragStatus.IN_BEARBEITUNG_GS;
+                }
+
                 if (this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.BETREUUNG,
                     TSWizardStepStatus.PLATZBESTAETIGUNG)) {
                     return TSAntragStatus.PLATZBESTAETIGUNG_WARTEN;

@@ -145,15 +145,15 @@ public class CopyTest {
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_GS, mutationNeuesDossier.getStatus());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_GS, erneuerungNeuesDossier.getStatus());
 
-		// Eingangsdatum / RegelnAbDatum: Immer null
+		// Eingangsdatum / RegelnAbDatum: notnull because it is an online gesuch
 		Assert.assertNull(mutation.getEingangsdatum());
-		Assert.assertNull(mutation.getRegelStartDatum());
+		Assert.assertNotNull(mutation.getRegelStartDatum());
 		Assert.assertNull(erneuerung.getEingangsdatum());
-		Assert.assertNull(erneuerung.getRegelStartDatum());
+		Assert.assertNotNull(erneuerung.getRegelStartDatum());
 		Assert.assertNull(mutationNeuesDossier.getEingangsdatum());
-		Assert.assertNull(mutationNeuesDossier.getRegelStartDatum());
+		Assert.assertNotNull(mutationNeuesDossier.getRegelStartDatum());
 		Assert.assertNull(erneuerungNeuesDossier.getEingangsdatum());
-		Assert.assertNull(erneuerungNeuesDossier.getRegelStartDatum());
+		Assert.assertNotNull(erneuerungNeuesDossier.getRegelStartDatum());
 
 		// Typ
 		Assert.assertEquals(AntragTyp.MUTATION, mutation.getTyp());
