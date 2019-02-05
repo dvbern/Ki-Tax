@@ -45,8 +45,6 @@
                                     <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN"
                                           data-translate-values="{{vm.basisJahrUndPeriode}}"></span>
                                 </span>
-                                    <dv-tooltip
-                                        text="'EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN_HELP' | translate"></dv-tooltip>
                                     <dv-radio-container name="einkommensverschlechterung"
                                                         ng-model="vm.getEinkommensverschlechterungsInfo().einkommensverschlechterung"
                                                         ng-required="true" class="radio input-element"
@@ -75,7 +73,6 @@
                                    <span data-translate="EKVI_FUER_JAHR"
                                          translate-values="{basisjahr: vm.getBasisJahrPlusAsString(0)}"></span>
                                     </md-checkbox>
-                                    <dv-tooltip text="'EKVI_MONAT_DES_EREIGNISSES_1_HELP' | translate"></dv-tooltip>
                                     <div class="dv-error-messages">
                                         <div ng-messages="vm.form.ekvFuerBasisJahrPlus1.$error"
                                              role="alert"
@@ -167,7 +164,6 @@
                                     <span data-translate="EKVI_FUER_JAHR"
                                           translate-values="{basisjahr: vm.getBasisJahrPlusAsString(1)}"></span>
                                     </md-checkbox>
-                                    <dv-tooltip text="'EKVI_MONAT_DES_EREIGNISSES_2_HELP' | translate"></dv-tooltip>
                                     <div class="dv-error-messages">
                                         <div ng-messages="vm.form.ekvFuerBasisJahrPlus2.$error" role="alert"
                                              class="error">
