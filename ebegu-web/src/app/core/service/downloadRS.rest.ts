@@ -19,10 +19,11 @@ import TSDownloadFile from '../../../models/TSDownloadFile';
 import TSMahnung from '../../../models/TSMahnung';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
+import ITranslateService = angular.translate.ITranslateService;
 
 export class DownloadRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$window', '$interval'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', '$window', '$interval', '$translate'];
 
     public serviceURL: string;
 
@@ -33,6 +34,7 @@ export class DownloadRS {
         public log: ILogService,
         private readonly $window: IWindowService,
         private readonly $interval: IIntervalService,
+        private readonly $translate: ITranslateService,
     ) {
         this.serviceURL = `${REST_API}blobs/temp`;
     }
@@ -175,8 +177,8 @@ export class DownloadRS {
         } else {
             myWindow.focus();
         }
+
         // as soon as the window is ready send it to the download
-        this.addCloseButtonHandler(myWindow);
         this.redirectWindowToDownloadWhenReady(myWindow, href, accessToken);
 
         // This would be the way to open file in new window (for now it's better to open in new tab)
@@ -184,50 +186,66 @@ export class DownloadRS {
     }
 
     public prepareDownloadWindow(): Window {
-        return this.$window.open('assets/downloadWindow/downloadWindow.html', EbeguUtil.generateRandomName(5));
+        return this.$window.open(`assets/downloadWindow/downloadWindow.html?spinnerTextLoading=${encodeURIComponent(this.$translate.instant('DOWNLOAD_WINDOW_LOADING_TEXT'))}&spinnerTitle=${encodeURIComponent(this.$translate.instant('DOWNLOAD_WINDOW_TITLE'))}`,
+            EbeguUtil.generateRandomName(5));
     }
 
     private redirectWindowToDownloadWhenReady(win: Window, href: string, _name: string): void {
         // wir pruefen den dokumentstatus alle 100ms, insgesamt maximal 300 mal
-        const count = 300;
+        const count = 3000;
         const readyTimer = this.$interval(() => {
             if (win.document.readyState !== 'complete') {
                 return;
             }
             this.$interval.cancel(readyTimer);
             // do stuff
-            this.hideSpinner(win);
+            this.downloadFinished(win);
             win.open(href, win.name);
         }, 100, count);
     }
 
-    /**
-     * Es kann sein, dass das popup noch gar nicht fertig gerendert ist bevor wir den spinner schon wieder verstecken
-     * wollen in diesem fall warten wir noch bis das popup in den readyState 'conplete' wechselt und verstecken den
-     * spinner dann
-     */
-    public hideSpinner(win: Window): void {
-        this.log.debug('hiding spinner');
-        const element = win.document.getElementById('spinnerCont');
-        if (element) {
-            element.style.display = 'none';
-        } else {
-            console.log('element not found, can not hide spinner');
-        }
-        const buttonElement = win.document.getElementById('closeButton');
-        if (buttonElement) {
-            buttonElement.style.display = 'block';
-            this.addCloseButtonHandler(win);
-        }
+    private downloadFinished(win: Window): void {
+        this.hideElement(win, 'spinnerCont');
+        this.addTextToElement(win, 'spinnerText', 'DOWNLOAD_WINDOW_FINISHED_TEXT');
+        this.showCloseButton(win);
     }
 
-    public addCloseButtonHandler(win: Window): void {
-        const element = win.document.getElementById('closeButton');
+    public addTextToElement(win: Window, elementId: string, textToTranslate: string): void {
+        const element = win.document.getElementById(elementId);
         if (!element) {
-            console.log('element not found, can not attach window close handler spinner');
+            this.log.error(`element not found, can not add text to element ${elementId}`);
             return;
         }
 
+        // noinspection InnerHTMLJS
+        element.innerHTML = this.$translate.instant(textToTranslate);
+    }
+
+    private showCloseButton(win: Window): void {
+        const buttonElement = win.document.getElementById('closeButton');
+        if (!buttonElement) {
+            return;
+        }
+        buttonElement.style.display = 'block';
+        this.addCloseButtonHandler(win, buttonElement);
+        this.addTextToElement(win, 'buttonText', 'DOWNLOAD_WINDOW_CLOSE_TEXT');
+    }
+
+    public addCloseButtonHandler(win: Window, element: HTMLElement): void {
         element.addEventListener('click', () => win.close(), false);
+    }
+
+    /**
+     * Es kann sein, dass das popup noch gar nicht fertig gerendert ist bevor wir das Element schon wieder verstecken
+     * wollen in diesem fall warten wir noch bis das popup in den readyState 'complete' wechselt und verstecken das
+     * Element dann
+     */
+    public hideElement(win: Window, elementId: string): void {
+        const element = win.document.getElementById(elementId);
+        if (element) {
+            element.style.display = 'none';
+        } else {
+            this.log.error(`element not found, can not hide ${elementId}`);
+        }
     }
 }

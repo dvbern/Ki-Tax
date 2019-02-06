@@ -1469,5 +1469,9 @@
     "NO_ERWERBSPENSUM_DATA": "FR_Keine Erwerbspensum Daten vorhanden",
     "CONFIRM_KEIN_KONTINGENT_TITLE": "FR_Wollen Sie den Status auf 'Kein Kontingent' setzen?",
     "CONFIRM_KEIN_KONTINGENT_TEXT": "FR_Für diesen Antrag besteht kein Kontingent. Sie müssen die Gesuchsteller ausserhalb kiBon über diesen Sachverhalt informieren",
-    "BEGRUENDUNG": ""
+    "BEGRUENDUNG": "",
+    "DOWNLOAD_WINDOW_LOADING_TEXT": "FR_Das gewünschte Dokument wird aufbereitet und angezeigt / heruntergeladen.",
+    "DOWNLOAD_WINDOW_FINISHED_TEXT": "FR_Das Dokument wurde heruntergeladen. Sie können dieses Fenster schliessen.",
+    "DOWNLOAD_WINDOW_CLOSE_TEXT": "FR_Fenster schliessen",
+    "DOWNLOAD_WINDOW_TITLE": "FR_Filedownload"
 }
