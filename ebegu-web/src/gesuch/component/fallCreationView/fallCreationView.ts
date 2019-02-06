@@ -104,7 +104,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
 
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gesuchModelManager.getDossier().gemeinde.id).then(
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gesuchModelManager.getDossier().gemeinde.id, this.gesuchModelManager.getDossier().id).then(
             (response: TSGesuchsperiode[]) => {
                 this.gesuchsperiodenListe = angular.copy(response);
             });

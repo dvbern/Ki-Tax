@@ -217,15 +217,39 @@ public class GesuchsperiodeResource {
 		@Nonnull @PathParam("gemeindeId") String gemeindeId,
 		@Nullable @QueryParam("dossierId") String dossierId) {
 
+		Collection<Gesuchsperiode> perioden = dossierId == null
+			? gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden()
+			: gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId);
+
+		return getGesuchsperiodes(gemeindeId, perioden);
+	}
+
+	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV sind und nach dem " +
+		"BetreuungsgutscheineStartdatum der Gemeinde liegen.",
+		responseContainer = "List",
+		response = JaxGesuchsperiode.class)
+	@Nonnull
+	@GET
+	@Path("/aktive/gemeinde/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxGesuchsperiode> getAllAktivePeriodenForGemeinde(
+		@Nonnull @PathParam("gemeindeId") String gemeindeId,
+		@Nullable @QueryParam("dossierId") String dossierId) {
+
+		Collection<Gesuchsperiode> perioden = dossierId == null
+			? gesuchsperiodeService.getAllActiveGesuchsperioden()
+			: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
+
+		return getGesuchsperiodes(gemeindeId, perioden);
+	}
+
+	private List<JaxGesuchsperiode> getGesuchsperiodes(@Nonnull String gemeindeId, @Nonnull Collection<Gesuchsperiode> perioden) {
 		LocalDate startdatum = gemeindeService.findGemeinde(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"getAllPeriodenForGemeinde",
 				String.format("Keine Gemeinde für ID %s", gemeindeId)))
 			.getBetreuungsgutscheineStartdatum();
-
-		Collection<Gesuchsperiode> perioden = dossierId == null
-			? gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden()
-			: gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId);
 
 		return perioden.stream()
 			.filter(periode -> periode.getGueltigkeit().endsAfterOrSame(startdatum))
