@@ -206,10 +206,10 @@
                     <!-- Kontoinhaber -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate for="kontoinhaber_id">INSTITUTION_KONTOINHABER</label>
+                            <label class="required" translate for="kontoinhaber_id">INSTITUTION_KONTOINHABER</label>
                             <input id="kontoinhaber_id" type="text" name="kontoinhaber_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.kontoinhaber"
-                                   [maxlength]="255" class="kontoinhaber_id">
+                                   [maxlength]="255" class="kontoinhaber_id" required>
                             <dv-error-messages [errorObject]="form.controls.kontoinhaber_id?.errors" inputId="kontoinhaber_id"></dv-error-messages>
                         </div>
                     </div>
