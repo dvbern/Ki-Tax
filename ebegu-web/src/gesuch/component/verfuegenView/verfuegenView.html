@@ -207,22 +207,21 @@
                 <div class="dv-navigation dv-navigation--verfuegen">
                     <dv-navigation dv-cancel="vm.cancel()" dv-next="false" dv-sub-step="2">
                     </dv-navigation>
-                    <div class="dv-navigation-flex"
+                    <div class="dv-navigation-item"
                          dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
-                        <div class="dv-navigation-item"
-                             ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()">
-                            <dv-loading-button type="submit" button-click="vm.save()">
-                                <span data-translate="VERFUEGEN_UPPER"></span>
-                            </dv-loading-button>
-                        </div>
-                        <div class="dv-navigation-item"
-                             ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
-                            <dv-loading-button type="submit"
-                                               button-click="vm.nichtEintreten()">
-                                <span data-translate="VERFUEGEN_NICHT_EINTRETEN_UPPER"></span>
-                            </dv-loading-button>
-                        </div>
+                        <dv-loading-button type="submit"
+                                           button-click="vm.save()"
+                                           ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()"
+                                           class="dv-navigation-item">
+                            <span data-translate="VERFUEGEN_UPPER"></span>
+                        </dv-loading-button>
+                        <dv-loading-button type="submit"
+                                           button-click="vm.nichtEintreten()"
+                                           ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()"
+                                           class="dv-navigation-item">
+                            <span data-translate="VERFUEGEN_NICHT_EINTRETEN_UPPER"></span>
+                        </dv-loading-button>
                         <div class="dv-navigation-item"
                              ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung

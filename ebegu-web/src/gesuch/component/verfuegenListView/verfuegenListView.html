@@ -220,8 +220,7 @@
             <dv-navigation dv-previous="true" dv-next="false" dv-sub-step="1">
             </dv-navigation>
 
-            <div class="dv-navigation-flex"
-                 dv-show-element
+            <div class="dv-navigation-item" dv-show-element
                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button class="dv-navigation-item"
@@ -232,6 +231,7 @@
                     <span data-translate="ABSCHLIESSEN_UPPER"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
+                                   button-click="vm.ersteMahnungErstellen()"
                                    button-click="vm.ersteMahnungErstellen()"
                                    aria-label="{{'ERSTE_MAHNUNG_UPPER' | translate}}"
                                    ng-if="vm.showErsteMahnungErstellen()">
@@ -298,8 +298,7 @@
                     <span data-translate="STV_PRUEFUNG_ABSCHLIESSEN_UPPER"></span>
                 </dv-loading-button>
             </div>
-            <div class="dv-navigation-flex"
-                 dv-show-element
+            <div class="dv-navigation-item" dv-show-element
                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button class="dv-navigation-item"
