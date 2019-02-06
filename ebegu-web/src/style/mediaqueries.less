@@ -37,8 +37,12 @@
             margin-top: 20rem !important;
             align-items: stretch;
         }
+        .gdashboard-panel + .gdashboard-panel {
+            padding-left: 6rem;
+        }
         .gdashboard-panel {
             display: flex;
+            text-align: center;
             flex-direction: column;
             justify-content: flex-start;
             max-width: 32rem;
@@ -50,9 +54,6 @@
                     padding-left: 6rem;
                     max-width: 38rem;
                 }
-            }
-            &:last-child {
-                padding-left: 6rem;
             }
             .gdashboard-panel__button {
                 &--margin {
