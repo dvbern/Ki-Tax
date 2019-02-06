@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -152,11 +153,13 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.adresse = adresse;
 	}
 
+	@SuppressFBWarnings("NM_CONFUSING")
 	@Nullable
 	public String getKontoinhaber() {
 		return kontoinhaber;
 	}
 
+	@SuppressFBWarnings("NM_CONFUSING")
 	public void setKontoinhaber(@Nullable String kontoinhaber) {
 		this.kontoinhaber = kontoinhaber;
 	}
