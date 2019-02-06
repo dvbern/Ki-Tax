@@ -35,7 +35,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import ch.dvbern.ebegu.StringUUIDType;
+import ch.dvbern.ebegu.hibernate.StringUUIDType;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.util.AbstractEntityListener;
@@ -110,6 +110,26 @@ public abstract class AbstractEntity implements Serializable {
 	private String id;
 
 
+//	todo reviewer, can probably delete that, i made a script that allows manual insertion of the id_text colum. see EBEGU-1511.sql
+//	@Column(columnDefinition = "varchar(36) generated always as"
+//		+ " (insert("
+//		+ "    insert("
+//		+ "      insert("
+//		+ "        insert(hex(id),9,0,'-'),"
+//		+ "        14,0,'-'),"
+//		+ "      19,0,'-'),"
+//		+ "    24,0,'-')"
+//		+ " ) virtual")
+//	@GeneratedValue()
+//	private String id_text;
+//
+//	public String getId_text() {
+//		return id_text;
+//	}
+//
+//	public void setId_text(String id_text) {
+//		this.id_text = id_text;
+//	}
 
 	@Version
 	@NotNull

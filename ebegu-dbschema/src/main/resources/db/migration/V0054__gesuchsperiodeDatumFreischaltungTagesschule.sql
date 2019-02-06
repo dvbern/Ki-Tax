@@ -1,2 +1,0 @@
-ALTER TABLE gesuchsperiode ADD datum_freischaltung_tagesschule DATE;
-ALTER TABLE gesuchsperiode_aud ADD datum_freischaltung_tagesschule DATE;
