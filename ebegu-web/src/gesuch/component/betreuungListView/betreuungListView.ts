@@ -116,6 +116,13 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         return false;
     }
 
+    public hasProvisorischeBetreuungen(): boolean {
+        if (this.gesuchModelManager.getGesuch()) {
+            return this.gesuchModelManager.getGesuch().hasProvisorischeBetreuungen();
+        }
+        return false;
+    }
+
     public createBetreuung(kind: TSKindContainer): void {
         const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kind.kindNummer);
         if (kindIndex < 0) {

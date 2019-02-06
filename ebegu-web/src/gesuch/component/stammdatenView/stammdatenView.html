@@ -117,9 +117,11 @@
                         <div class="col-sm-12 dv-input-container-medium"
                              ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
                             <div class="form-group">
-                                <label class="md-no-float required"
-                                       data-translate="KORRESPONDENZSPRACHE"
-                                       for="korrespondenzSprache">
+                                <label class="md-no-float required">
+                                       <span data-translate="KORRESPONDENZSPRACHE"
+                                             for="korrespondenzSprache"></span>
+                                        <dv-tooltip input-id="korrespondenzSprache"
+                                                    text="'KORRESPONDENZSPRACHE_HELP' | translate"></dv-tooltip>
                                 </label>
                                 <div class="dv-select-style dv-input-container-medium-select">
                                     <select name="korrespondenzSprache" id="korrespondenzSprache" class="form-control"
@@ -245,7 +247,7 @@
                                 organisation="true"></dv-adresse>
 
                     <!--Rechnungsadresse Checkbox-->
-                    <div class="row" ng-if="vm.gesuchModelManager.getGesuchstellerNumber() === 1">
+                    <div class="row" ng-if="vm.showRechnungsadresseCheckbox()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class=" checkbox">
                                 <md-checkbox ng-model="vm.showRechnungsadr"
