@@ -65,7 +65,7 @@
 
                         <!-- Auswahl Basisjahr Plus 1 -->
                         <div class="row">
-                            <div class="form-group col-xs-12 dv-input-container-question" ng-if="vm.showEkvi()">
+                            <div class="form-group no-margin col-xs-12 dv-input-container-question" ng-if="vm.showEkvi()">
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus1"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1"
@@ -114,7 +114,7 @@
                         </div>
 
                         <!--Grund für BasisJahr plus 1-->
-                        <div class="row marginBottom20">
+                        <div class="row">
                             <div class="form-group col-sm-12 dv-input-container-medium"
                                  ng-if="vm.showEkvi() && vm.showJahrPlus1()">
                                 <dv-input-container class="form-group">
@@ -138,7 +138,7 @@
                         </div>
 
                         <!-- Ablehnung durch JA fuer Basisjahr plus 1 -->
-                        <div class="row marginBottom20"
+                        <div class="row"
                              ng-if="vm.showAblehnungBasisJahrPlus1()">
                             <div class="form-group col-sm-12 dv-input-container-medium">
                                 <div class="checkbox">
@@ -157,7 +157,7 @@
 
                         <!-- Auswahl Basisjahr Plus 2 -->
                         <div class="row">
-                            <div class="form-group col-sm-12 dv-input-container-question" ng-if="vm.showEkvi()">
+                            <div class="form-group no-margin col-sm-12 dv-input-container-question" ng-if="vm.showEkvi()">
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus2"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2"
@@ -231,7 +231,7 @@
 
 
                         <!-- Ablehnung durch JA fuer Basisjahr plus 2 -->
-                        <div class="row marginBottom20"
+                        <div class="row"
                              ng-if="vm.showAblehnungBasisJahrPlus2()">
                             <div class="form-group col-sm-12 dv-input-container-medium">
                                 <div class="checkbox">
