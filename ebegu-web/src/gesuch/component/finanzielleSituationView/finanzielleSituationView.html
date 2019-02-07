@@ -109,21 +109,23 @@
 
                     <!-- Familienzulage -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="familienzulage">
                                     <span data-translate="FINANZIELLE_SITUATION_FAMILIENZULAGE"></span>
                                     <dv-tooltip input-id="familienzulage"
                                                 text="'FINANZIELLE_SITUATION_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-valueinput input-id="familienzulage" name="familienzulage"
-                                               ng-model="vm.getModel().finanzielleSituationJA.familienzulage"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher gs="vm.getModel().finanzielleSituationGS.familienzulage"
-                                           ja="vm.getModel().finanzielleSituationJA.familienzulage"></dv-bisher>
-                                <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="familienzulage" name="familienzulage"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.familienzulage"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.familienzulage"
+                                               ja="vm.getModel().finanzielleSituationJA.familienzulage"></dv-bisher>
+                                    <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>
@@ -151,21 +153,23 @@
 
                     <!-- Erhaltene Alimente -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="erhalteneAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_ERHALTENEALIMENTE"></span>
                                     <dv-tooltip input-id="erhalteneAlimente"
                                                 text="'FINANZIELLE_SITUATION_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-valueinput input-id="erhalteneAlimente" name="erhalteneAlimente"
-                                               ng-model="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher gs="vm.getModel().finanzielleSituationGS.erhalteneAlimente"
-                                           ja="vm.getModel().finanzielleSituationJA.erhalteneAlimente"></dv-bisher>
-                                <dv-error-messages input-id="erhalteneAlimente" for="vm.form.erhalteneAlimente.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="erhalteneAlimente" name="erhalteneAlimente"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.erhalteneAlimente"
+                                               ja="vm.getModel().finanzielleSituationJA.erhalteneAlimente"></dv-bisher>
+                                    <dv-error-messages input-id="erhalteneAlimente" for="vm.form.erhalteneAlimente.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>
@@ -323,21 +327,23 @@
 
                     <!-- Geleistete Alimente -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="geleisteteAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_GELEISTETEALIMENTE"></span>
                                     <dv-tooltip input-id="geleisteteAlimente"
                                                 text="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-valueinput input-id="geleisteteAlimente" name="geleisteteAlimente"
-                                               ng-model="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher gs="vm.getModel().finanzielleSituationGS.geleisteteAlimente"
-                                           ja="vm.getModel().finanzielleSituationJA.geleisteteAlimente"></dv-bisher>
-                                <dv-error-messages input-id="geleisteteAlimente" for="vm.form.geleisteteAlimente.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="geleisteteAlimente" name="geleisteteAlimente"
+                                                   ng-model="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher gs="vm.getModel().finanzielleSituationGS.geleisteteAlimente"
+                                               ja="vm.getModel().finanzielleSituationJA.geleisteteAlimente"></dv-bisher>
+                                    <dv-error-messages input-id="geleisteteAlimente" for="vm.form.geleisteteAlimente.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>

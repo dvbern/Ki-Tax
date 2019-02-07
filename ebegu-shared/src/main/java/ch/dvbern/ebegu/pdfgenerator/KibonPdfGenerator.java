@@ -41,7 +41,7 @@ public abstract class KibonPdfGenerator {
 
 	protected static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
 	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
-	protected static final String FAMILIE = "PdfGeneration_Familie";
+	protected static final String EINSCHREIBEN = "PdfGeneration_VerfuegungEingeschrieben";
 	protected static final String BETREUUNG_INSTITUTION = "PdfGeneration_Institution";
 
 
@@ -149,7 +149,9 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected List<String> getFamilieAdresse() {
 		final List<String> empfaengerAdresse = new ArrayList<>();
-		empfaengerAdresse.add(translate(FAMILIE));
+		if (getGesuch().isVerfuegungEingeschrieben()) {
+			empfaengerAdresse.add(translate(EINSCHREIBEN));
+		}
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()));
 		if (getGesuch().getGesuchsteller2() != null) {
 			empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller2()));
