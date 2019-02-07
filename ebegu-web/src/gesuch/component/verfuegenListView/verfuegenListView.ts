@@ -318,7 +318,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public closeWithoutAngebot(): IPromise<TSGesuch> {
         return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
             title: 'CONFIRM_GESUCH_STATUS_KEIN_ANGEBOT',
-            deleteText: 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN',
+            deleteText: 'BESCHREIBUNG_GESUCH_KEIN_ANGEBOT',
             parentController: undefined,
             elementID: undefined,
 
