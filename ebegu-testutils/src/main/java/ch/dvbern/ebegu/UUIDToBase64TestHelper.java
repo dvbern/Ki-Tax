@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.xml.bind.DatatypeConverter;
 
 import ch.dvbern.ebegu.util.Constants;
@@ -30,7 +31,7 @@ public class UUIDToBase64TestHelper {
 		System.out.println("complex match " + complexMatch);
 
 		lineList = Files.lines(Paths.get("/home/homa/java/ideaprojects/jugendamt/ebegu-test/ebegu/ebegu-testutils/src/main/resources"
-			+ "/datasets/reportTestData.xml")).collect(Collectors.toList());
+			+ "/datasets/massenversand-dataset.xml")).collect(Collectors.toList());
 
 		StringBuffer sb = new StringBuffer();
 		Pattern p = Pattern.compile(Constants.REGEX_UUID);
@@ -41,9 +42,7 @@ public class UUIDToBase64TestHelper {
 			while (matcher.find()) {
 
 				String uuidMatch = matcher.group(2);
-				final String changedUUID = uuidMatch.replaceAll("-", "");
-				final byte[] bytes = DatatypeConverter.parseHexBinary(changedUUID);
-				String base64EncodedUUID = new String(Base64.encode(bytes));
+				String base64EncodedUUID = uuidToBase64(uuidMatch);
 				matcher.appendReplacement(sb, "$1" + base64EncodedUUID + "$3");
 			}
 			matcher.appendTail(sb);
@@ -52,7 +51,14 @@ public class UUIDToBase64TestHelper {
 		}
 		System.out.println(sb.toString());
 
+
 	}
 
+	@Nonnull
+	private static String uuidToBase64(String uuidMatch) {
+		final String changedUUID = uuidMatch.replaceAll("-", "");
+		final byte[] bytes = DatatypeConverter.parseHexBinary(changedUUID);
+		return new String(Base64.encode(bytes));
+	}
 
 }
