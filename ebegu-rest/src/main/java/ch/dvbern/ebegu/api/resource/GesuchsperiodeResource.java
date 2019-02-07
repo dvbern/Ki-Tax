@@ -221,7 +221,7 @@ public class GesuchsperiodeResource {
 			? gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden()
 			: gesuchsperiodeService.getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId);
 
-		return getGesuchsperiodes(gemeindeId, perioden);
+		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
 
 	@ApiOperation(value = "Gibt alle Gesuchsperioden zurück, welche AKTIV sind und nach dem " +
@@ -241,13 +241,16 @@ public class GesuchsperiodeResource {
 			? gesuchsperiodeService.getAllActiveGesuchsperioden()
 			: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
 
-		return getGesuchsperiodes(gemeindeId, perioden);
+		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
 	}
 
-	private List<JaxGesuchsperiode> getGesuchsperiodes(@Nonnull String gemeindeId, @Nonnull Collection<Gesuchsperiode> perioden) {
+	private List<JaxGesuchsperiode> extractValidGesuchsperiodenForGemeinde(
+		@Nonnull String gemeindeId,
+		@Nonnull Collection<Gesuchsperiode> perioden
+	) {
 		LocalDate startdatum = gemeindeService.findGemeinde(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getAllPeriodenForGemeinde",
+				"extractValidGesuchsperiodenForGemeinde",
 				String.format("Keine Gemeinde für ID %s", gemeindeId)))
 			.getBetreuungsgutscheineStartdatum();
 
