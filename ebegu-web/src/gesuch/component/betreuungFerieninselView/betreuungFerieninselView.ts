@@ -201,7 +201,7 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
     }
 
     public getButtonTextSpeichern(): string {
-        return this.direktAnmeldenSchulamt() ? 'ANMELDEN_FERIENINSEL' : 'SPEICHERN_UPPER';
+        return this.direktAnmeldenSchulamt() ? 'ANMELDEN_FERIENINSEL' : 'SPEICHERN';
     }
 
     public anmelden(): IPromise<any> {

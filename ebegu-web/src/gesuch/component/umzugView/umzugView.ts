@@ -278,10 +278,10 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
     }
 
     public getPreviousButtonText(): string {
-        return this.getUmzugAdressenList().length === 0 ? 'ZURUECK_ONLY_UPPER' : 'ZURUECK_UPPER';
+        return this.getUmzugAdressenList().length === 0 ? 'ZURUECK_ONLY' : 'ZURUECK';
     }
 
     public getNextButtonText(): string {
-        return this.getUmzugAdressenList().length === 0 ? 'WEITER_ONLY_UPPER' : 'WEITER_UPPER';
+        return this.getUmzugAdressenList().length === 0 ? 'WEITER_ONLY' : 'WEITER';
     }
 }

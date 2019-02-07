@@ -198,7 +198,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public getButtonTextSpeichern(): string {
-        return this.direktAnmeldenSchulamt() ? 'ANMELDEN_TAGESSCHULE' : 'SPEICHERN_UPPER';
+        return this.direktAnmeldenSchulamt() ? 'ANMELDEN_TAGESSCHULE' : 'SPEICHERN';
     }
 
     /**

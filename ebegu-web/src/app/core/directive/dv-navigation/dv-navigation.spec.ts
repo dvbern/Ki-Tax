@@ -69,32 +69,32 @@ describe('dvNavigation', () => {
     }));
 
     describe('getNextButtonName', () => {
-        it('returns WEITER_UPPER if dvSave exists', () => {
+        it('returns WEITER if dvSave exists', () => {
             isStatusVerfuegen = false;
-            expect(navController.getNextButtonName()).toEqual('SPEICHERN UND WEITER');
+            expect(navController.getNextButtonName()).toEqual('Speichern und Weiter');
         });
-        it('returns WEITER_ONLY_UPPER if status is VERFUEGEN', () => {
-            expect(navController.getNextButtonName()).toEqual('WEITER');
+        it('returns WEITER_ONLY if status is VERFUEGEN', () => {
+            expect(navController.getNextButtonName()).toEqual('Weiter');
         });
-        it('returns WEITER_ONLY_UPPER if dvSave does not exist', () => {
+        it('returns WEITER_ONLY if dvSave does not exist', () => {
             isStatusVerfuegen = false;
             navController.dvSave = undefined;
-            expect(navController.getNextButtonName()).toEqual('WEITER');
+            expect(navController.getNextButtonName()).toEqual('Weiter');
         });
     });
 
     describe('getNextButtonName', () => {
-        it('returns ZURUECK_UPPER if dvSave exists', () => {
+        it('returns ZURUECK if dvSave exists', () => {
             isStatusVerfuegen = false;
-            expect(navController.getPreviousButtonName()).toEqual('SPEICHERN UND ZURÜCK');
+            expect(navController.getPreviousButtonName()).toEqual('Speichern und Zurück');
         });
-        it('returns ZURUECK_ONLY_UPPER if status is VERFUEGEN', () => {
-            expect(navController.getPreviousButtonName()).toEqual('ZURÜCK');
+        it('returns ZURUECK_ONLY if status is VERFUEGEN', () => {
+            expect(navController.getPreviousButtonName()).toEqual('Zurück');
         });
-        it('returns ZURUECK_ONLY_UPPER if dvSave does not exist', () => {
+        it('returns ZURUECK_ONLY if dvSave does not exist', () => {
             isStatusVerfuegen = false;
             navController.dvSave = undefined;
-            expect(navController.getPreviousButtonName()).toEqual('ZURÜCK');
+            expect(navController.getPreviousButtonName()).toEqual('Zurück');
         });
     });
     describe('nextStep', () => {

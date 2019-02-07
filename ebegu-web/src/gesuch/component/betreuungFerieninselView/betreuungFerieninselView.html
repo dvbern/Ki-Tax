@@ -165,7 +165,7 @@
              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
              dv-show-expression="vm.betreuung.isEnabled() && vm.isAnmeldungMoeglich() && !vm.isFreigabequittungAusstehend()">
             <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save">
-                <span data-translate="{{vm.getButtonTextSpeichern()}}"></span>
+                <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
         </div>
 
@@ -175,7 +175,7 @@
              dv-show-expression="vm.isFalscheInstitutionAndUserInRole() && vm.isAnmeldungMoeglich() && vm.aktuellGueltig">
             <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save"
                                class="dv-navigation-item">
-                <span data-translate="{{vm.getButtonTextSpeichern()}}"></span>
+                <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
             <dv-loading-button class="dv-navigation-item"
                                button-click="vm.anmeldungSchulamtAblehnen()"
@@ -193,19 +193,19 @@
                                button-click="vm.anmeldungSchulamtUebernehmen()"
                                type="button"
                                button-class="save">
-                <span data-translate="SCHULAMT_ANMELDUNG_UEBERNEHMEN"></span>
+                <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_UEBERNEHMEN"></span>
             </dv-loading-button>
             <dv-loading-button class="dv-navigation-item"
                                button-click="vm.anmeldungSchulamtAblehnen()"
                                type="button"
                                button-class="save">
-                <span data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
+                <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
             <dv-loading-button class="dv-navigation-item"
                                button-click="vm.anmeldungSchulamtFalscheInstitution()"
                                type="button"
                                button-class="save">
-                <span data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
+                <span class="uppercase" data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
             </dv-loading-button>
 
         </div>
@@ -214,7 +214,7 @@
                            button-click="vm.cancel()"
                            button-class="cancel-button"
                            type="reset">
-            <span data-translate="ABBRECHEN_UPPER"></span>
+            <span class="uppercase" data-translate="ABBRECHEN"></span>
         </dv-loading-button>
     </div>
 

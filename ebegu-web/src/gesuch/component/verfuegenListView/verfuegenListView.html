@@ -225,77 +225,77 @@
                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.setAbschliessen()"
-                                   aria-label="{{'ABSCHLIESSEN_UPPER' | translate}}"
+                                   aria-label="{{'ABSCHLIESSEN' | translate}}"
                                    ng-if="vm.showAbschliessen() && !vm.showCloseWithoutAngebot()"
                                    button-disabled="!vm.isFinSitChoosen()">
-                    <span data-translate="ABSCHLIESSEN_UPPER"></span>
+                    <span class="uppercase" data-translate="ABSCHLIESSEN"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.ersteMahnungErstellen()"
                                    button-click="vm.ersteMahnungErstellen()"
-                                   aria-label="{{'ERSTE_MAHNUNG_UPPER' | translate}}"
+                                   aria-label="{{'ERSTE_MAHNUNG' | translate}}"
                                    ng-if="vm.showErsteMahnungErstellen()">
-                    <span data-translate="ERSTE_MAHNUNG_UPPER"></span>
+                    <span class="uppercase" data-translate="ERSTE_MAHNUNG"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    type="submit" button-click="vm.saveMahnung()"
-                                   aria-label="{{'ERSTE_MAHNUNG_AUSLOESEN_UPPER' | translate}}"
+                                   aria-label="{{'ERSTE_MAHNUNG_AUSLOESEN' | translate}}"
                                    ng-if="vm.showErsteMahnungAusloesen()">
-                    <span data-translate="ERSTE_MAHNUNG_AUSLOESEN_UPPER"></span>
+                    <span class="uppercase" data-translate="ERSTE_MAHNUNG_AUSLOESEN"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.zweiteMahnungErstellen()"
-                                   aria-label="{{'ZWEITE_MAHNUNG_UPPER' | translate}}"
+                                   aria-label="{{'ZWEITE_MAHNUNG' | translate}}"
                                    ng-if="vm.showZweiteMahnungErstellen()">
-                    <span data-translate="ZWEITE_MAHNUNG_UPPER"></span>
+                    <span class="uppercase" data-translate="ZWEITE_MAHNUNG"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    type="submit" button-click="vm.saveMahnung()"
-                                   aria-label="{{'ZWEITE_MAHNUNG_AUSLOESEN_UPPER' | translate}}"
+                                   aria-label="{{'ZWEITE_MAHNUNG_AUSLOESEN' | translate}}"
                                    ng-if="vm.showZweiteMahnungAusloesen()">
-                    <span data-translate="ZWEITE_MAHNUNG_AUSLOESEN_UPPER"></span>
+                    <span class="uppercase" data-translate="ZWEITE_MAHNUNG_AUSLOESEN"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.mahnlaufBeenden()"
-                                   aria-label="{{'DOKUMENTE_KOMPLETT_UPPER' | translate}}"
+                                   aria-label="{{'DOKUMENTE_KOMPLETT' | translate}}"
                                    ng-if="vm.showMahnlaufBeenden()">
-                    <span data-translate="MAHNLAUF_BEENDEN"></span>
+                    <span class="uppercase" data-translate="MAHNLAUF_BEENDEN"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.dokumenteNichtKomplett()"
-                                   aria-label="{{'DOKUMENTE_NICHT_KOMPLETT_UPPER' | translate}}"
+                                   aria-label="{{'DOKUMENTE_NICHT_KOMPLETT' | translate}}"
                                    ng-if="vm.showDokumenteNichtKomplett()">
-                    <span data-translate="DOKUMENTE_NICHT_KOMPLETT_UPPER"></span>
+                    <span class="uppercase" data-translate="DOKUMENTE_NICHT_KOMPLETT"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.zweiteMahnungNichtEingetreten()"
                                    aria-label="{{'ZWEITE_MAHNUNG_NCINT_EINGETRETEN' | translate}}"
                                    ng-if="vm.showZweiteMahnungNichtEingetreten()">
-                    <span data-translate="ZWEITE_MAHNUNG_NCINT_EINGETRETEN"></span>
+                    <span class="uppercase" data-translate="ZWEITE_MAHNUNG_NCINT_EINGETRETEN"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    type="button" button-click="vm.setGesuchStatusBeschwerdeHaengig()"
-                                   aria-label="{{'BESCHWERDE_HAENGIG_UPPER' | translate}}"
+                                   aria-label="{{'BESCHWERDE_HAENGIG' | translate}}"
                                    ng-if="vm.showBeschwerdeHaengig()">
-                    <span data-translate="BESCHWERDE_HAENGIG_UPPER"></span>
+                    <span class="uppercase" data-translate="BESCHWERDE_HAENGIG"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    type="button" button-click="vm.setGesuchStatusBeschwerdeAbschliessen()"
-                                   aria-label="{{'BESCHWERDE_ABSCHLIESSEN_UPPER' | translate}}"
+                                   aria-label="{{'BESCHWERDE_ABSCHLIESSEN' | translate}}"
                                    ng-if="vm.showBeschwerdeAbschliessen()">
-                    <span data-translate="BESCHWERDE_ABSCHLIESSEN_UPPER"></span>
+                    <span class="uppercase" data-translate="BESCHWERDE_ABSCHLIESSEN"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.sendToSteuerverwaltung()"
-                                   aria-label="{{'SEND_TO_STV_UPPER' | translate}}"
+                                   aria-label="{{'SEND_TO_STV' | translate}}"
                                    ng-if="vm.showSendToSteuerverwaltung()">
-                    <span data-translate="SEND_TO_STV_UPPER"></span>
+                    <span class="uppercase" data-translate="SEND_TO_STV"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.stvPruefungAbschliessen()"
-                                   aria-label="{{'STV_PRUEFUNG_ABSCHLIESSEN_UPPER' | translate}}"
+                                   aria-label="{{'STV_PRUEFUNG_ABSCHLIESSEN' | translate}}"
                                    ng-if="vm.showSTVPruefungAbschliessen()">
-                    <span data-translate="STV_PRUEFUNG_ABSCHLIESSEN_UPPER"></span>
+                    <span class="uppercase" data-translate="STV_PRUEFUNG_ABSCHLIESSEN"></span>
                 </dv-loading-button>
             </div>
             <div class="dv-navigation-item" dv-show-element
@@ -303,33 +303,33 @@
                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button class="dv-navigation-item"
                                    type="button" button-click="vm.setGesuchStatusGeprueft()"
-                                   aria-label="{{'GEPRUEFT_UPPER' | translate}}" ng-if="vm.showGeprueft()"
+                                   aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
                                    button-disabled="!vm.isFinSitChoosen()">
-                    <span data-translate="GEPRUEFT_UPPER"></span>
+                    <span class="uppercase" data-translate="GEPRUEFT"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.setGesuchStatusVerfuegen()"
-                                   aria-label="{{'VERFUEGUNG_STARTEN_UPPER' | translate}}"
+                                   aria-label="{{'VERFUEGUNG_STARTEN' | translate}}"
                                    ng-if="vm.showVerfuegenStarten()">
-                    <span data-translate="VERFUEGUNG_STARTEN_UPPER"></span>
+                    <span class="uppercase" data-translate="VERFUEGUNG_STARTEN"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.setGesuchStatusKeinKontingent()"
-                                   aria-label="{{'KEIN_KONTINGENT_UPPER' | translate}}"
+                                   aria-label="{{'KEIN_KONTINGENT' | translate}}"
                                    ng-if="vm.showKeinKontingent()">
-                    <span data-translate="KEIN_KONTINGENT_UPPER"></span>
+                    <span class="uppercase" data-translate="KEIN_KONTINGENT"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.setGesuchStatusGeprueft()"
-                                   aria-label="{{'KONTINGENT_VORHANDEN_UPPER' | translate}}"
+                                   aria-label="{{'KONTINGENT_VORHANDEN' | translate}}"
                                    ng-if="vm.showKontingentVorhanden()">
-                    <span data-translate="KONTINGENT_VORHANDEN_UPPER"></span>
+                    <span class="uppercase" data-translate="KONTINGENT_VORHANDEN"></span>
                 </dv-loading-button>
                 <dv-loading-button class="dv-navigation-item"
                                    button-click="vm.closeWithoutAngebot()"
-                                   aria-label="{{'BEENDEN_OHNE_ANGEBOT_UPPER' | translate}}"
+                                   aria-label="{{'BEENDEN_OHNE_ANGEBOT' | translate}}"
                                    ng-if="vm.showCloseWithoutAngebot()">
-                    <span data-translate="BEENDEN_OHNE_ANGEBOT_UPPER"></span>
+                    <span class="uppercase" data-translate="BEENDEN_OHNE_ANGEBOT"></span>
                 </dv-loading-button>
             </div>
         </div>

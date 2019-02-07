@@ -76,7 +76,7 @@
                 <button ng-click="vmx.gesuchLoeschen()"
                         aria-label="{{'TOOLBAR_LOESCHEN' | translate}}" style="text-align: center;"
                         input-id="{{'gesuchLoeschenButton'}}" type="reset">
-                    <span data-translate="TOOLBAR_LOESCHEN"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_LOESCHEN"></span>
                 </button>
             </div>
 
@@ -86,7 +86,7 @@
                  dv-show-expression="vmx.showVerlauf()">
                 <button ng-click="vmx.openVerlauf()"
                         aria-label="{{'TOOLBAR_VERLAUF' | translate}}" style="text-align: center;">
-                    <span data-translate="TOOLBAR_VERLAUF"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_VERLAUF"></span>
                 </button>
             </div>
 
@@ -96,7 +96,7 @@
                  dv-show-expression="!vmx.getGesuch().isNew()">
                 <button ng-click="vmx.openAlleVerfuegungen()"
                         aria-label="{{'TOOLBAR_ALLE_VERFUEGUNGEN' | translate}}" style="text-align: center;">
-                    <span data-translate="TOOLBAR_ALLE_VERFUEGUNGEN"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_ALLE_VERFUEGUNGEN"></span>
                 </button>
             </div>
 
@@ -106,7 +106,7 @@
                  dv-show-expression="!vmx.getGesuch().isNew()">
                 <button ng-click="vmx.openMitteilungen()"
                         aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" style="text-align: center;">
-                    <span data-translate="TOOLBAR_MITTEILUNGEN"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_MITTEILUNGEN"></span>
                 </button>
             </div>
 
@@ -116,7 +116,7 @@
                  dv-show-expression="vmx.showButtonMutieren()">
                 <button ng-click="vmx.antragMutieren()"
                         aria-label="{{'TOOLBAR_MUTIEREN' | translate}}" style="text-align: center;">
-                    <span data-translate="TOOLBAR_MUTIEREN"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_MUTIEREN"></span>
                 </button>
             </div>
 
@@ -126,7 +126,7 @@
                  dv-show-expression="vmx.erneuernPossibleForCurrentAntrag && !vmx.hideActionButtons && !vmx.getGesuch().isNew()">
                 <button ng-click="vmx.antragErneuern()"
                         aria-label="{{'TOOLBAR_ERNEUERN' | translate}}" style="text-align: center;">
-                    <span data-translate="TOOLBAR_ERNEUERN"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_ERNEUERN"></span>
                 </button>
             </div>
 
@@ -134,7 +134,7 @@
             <md-menu ng-if="vmx.showKontaktMenu()">
                 <button ng-click="$mdMenu.open()" aria-label="{{vmx.getCurrentGesuchsperiode()}}">
                     <i class="ellipsis-icon fa fa-envelope"></i>
-                    <span data-translate="TOOLBAR_KONTAKT"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_KONTAKT"></span>
                 </button>
                 <md-menu-content class="no-padding menu-item-container kontakt">
 

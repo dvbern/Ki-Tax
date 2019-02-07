@@ -21,7 +21,7 @@
                 <dv-loading-button type="button" button-click="vm.gotToUebersicht()"
                                    button-class="dv-btn-operation">
                     <i class="fa fa-lg fa-chevron-left"></i>
-                    <span data-translate="ZAHLUNG_UEBERSICHT"></span>
+                    <span class="uppercase" data-translate="ZAHLUNG_UEBERSICHT"></span>
                 </dv-loading-button>
             </div>
 
@@ -41,12 +41,12 @@
                        class="table fixedtable table-striped ebegu-table">
                     <thead>
                     <tr>
-                        <th st-sort="institutionsName" class="sortable row-institutionsName"
-                            data-translate="ZAHLUNG_INSTITUTION_UPPER" st-sort-default="true"></th>
-                        <th data-translate="ZAHLUNG_DETAILPOSITIONEN_UPPER"></th>
-                        <th st-sort="betragTotalZahlung" class="sortable row-status"
-                            data-translate="ZAHLUNG_BETRAG_UPPER" id="betragTotalZahlung"></th>
-                        <th st-sort="status" class="sortable row-status" data-translate="ZAHLUNG_STATUS_UPPER"></th>
+                        <th st-sort="institutionsName" class="sortable row-institutionsName uppercase"
+                            data-translate="ZAHLUNG_INSTITUTION" st-sort-default="true"></th>
+                        <th class="uppercase" data-translate="ZAHLUNG_DETAILPOSITIONEN"></th>
+                        <th st-sort="betragTotalZahlung" class="sortable row-status uppercase"
+                            data-translate="ZAHLUNG_BETRAG" id="betragTotalZahlung"></th>
+                        <th st-sort="status" class="sortable row-status uppercase" data-translate="ZAHLUNG_STATUS"></th>
 
                     </tr>
                     </thead>

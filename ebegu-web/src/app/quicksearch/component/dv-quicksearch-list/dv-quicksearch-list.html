@@ -38,25 +38,25 @@
                     <thead>
                     <!--Sortierspalten-->
                     <tr>
-                        <th st-sort="fallNummer" class="sortable row-fallnr" data-translate="FALL_UPPER"></th>
-                        <th st-sort="gemeinde" class="sortable row-name" data-translate="GEMEINDE_UPPER"></th>
-                        <th st-sort="familienName" class="sortable row-name" data-translate="FAMILIE_UPPER"></th>
-                        <th st-sort="kinder" class="sortable row-name" data-translate="KINDER_UPPER"></th>
-                        <th st-sort="antragTyp" class="sortable row-antrag" data-translate="TYP_UPPER"></th>
-                        <th st-sort="gesuchsperiodeString" class="sortable row-periode"
-                            data-translate="PERIODE_UPPER"></th>
-                        <th st-sort="eingangsdatum" st-sort-default="reverse" class="sortable row-geandert"
-                            data-translate="EINGANG_UPPER"></th>
-                        <th st-sort="status" class="sortable row-status" data-translate="STATUS_UPPER"></th>
-                        <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen"
-                            data-translate="DOKUMENTE_HOCHGELADEN_UPPER"></th>
-                        <th st-sort="angebote" class="sortable row-angebot" data-translate="ANGEBOT_UPPER"></th>
-                        <th st-sort="institutionen[0]" class="sortable row-inst"
-                            data-translate="INSTITUTION_UPPER"></th>
-                        <th st-sort="verantwortlicherTS" class="sortable row-ver"
+                        <th st-sort="fallNummer" class="sortable row-fallnr uppercase" data-translate="FALL"></th>
+                        <th st-sort="gemeinde" class="sortable row-name uppercase" data-translate="GEMEINDE"></th>
+                        <th st-sort="familienName" class="sortable row-name uppercase" data-translate="FAMILIE"></th>
+                        <th st-sort="kinder" class="sortable row-name uppercase" data-translate="KINDER"></th>
+                        <th st-sort="antragTyp" class="sortable row-antrag uppercase" data-translate="TYP"></th>
+                        <th st-sort="gesuchsperiodeString" class="sortable row-periode uppercase"
+                            data-translate="PERIODE"></th>
+                        <th st-sort="eingangsdatum" st-sort-default="reverse" class="sortable row-geandert uppercase"
+                            data-translate="EINGANG"></th>
+                        <th st-sort="status" class="sortable row-status uppercase" data-translate="STATUS"></th>
+                        <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen uppercase"
+                            data-translate="DOKUMENTE_HOCHGELADEN_KURZ"></th>
+                        <th st-sort="angebote" class="sortable row-angebot uppercase" data-translate="ANGEBOT"></th>
+                        <th st-sort="institutionen[0]" class="sortable row-inst uppercase"
+                            data-translate="INSTITUTION"></th>
+                        <th st-sort="verantwortlicherTS" class="sortable row-ver uppercase"
                             data-translate="VERANTWORTLICHER_SCHULAMT"
                             ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()"></th>
-                        <th st-sort="verantwortlicherBG" class="sortable row-ver"
+                        <th st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
                             data-translate="{{vm.ebeguUtil.isTagesschulangebotEnabled() ? 'VERANTWORTLICHER_JUGENDAMT' : 'VERANTWORTLICHER_OHNE_SCHULAMT'}}"></th>
                     </tr>
                     <!--Filterspalten-->

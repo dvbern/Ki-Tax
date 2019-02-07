@@ -20,7 +20,7 @@ mit Flexlayout wieder korrigiert. Grund ist, dass beim druecken von Enter in ein
     <dv-loading-button class="dv-navigation-item"
                        ng-if="vm.dvNext()"
                        button-click="vm.nextStep()"
-                       button-class="next"
+                       button-class="next uppercase"
                        type="submit"
                        button-disabled="vm.isNextButtonDisabled()"
                        title="{{vm.getTooltip()}}"
@@ -33,7 +33,7 @@ mit Flexlayout wieder korrigiert. Grund ist, dass beim druecken von Enter in ein
     <dv-loading-button class="dv-navigation-item"
                        ng-if="vm.dvPrevious()"
                        button-click="vm.previousStep()"
-                       button-class="previous"
+                       button-class="previous uppercase"
                        type="submit"
                        aria-label="{{vm.getPreviousButtonName()}}">
         <span ng-bind="vm.getPreviousButtonName()" hide-xs></span>
@@ -42,9 +42,9 @@ mit Flexlayout wieder korrigiert. Grund ist, dass beim druecken von Enter in ein
     <dv-loading-button class="dv-navigation-item"
                        ng-if="vm.doesCancelExist()"
                        button-click="vm.cancel()"
-                       button-class="cancel-button"
+                       button-class="cancel-button uppercase"
                        type="reset"
                        aria-label="{{'CANCEL' | translate}}">
-        <span data-translate="ABBRECHEN_UPPER"></span>
+        <span data-translate="ABBRECHEN"></span>
     </dv-loading-button>
 </div>

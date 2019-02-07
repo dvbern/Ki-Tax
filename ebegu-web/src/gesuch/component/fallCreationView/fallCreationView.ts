@@ -185,10 +185,10 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             }
             if (this.gesuchModelManager.isGesuchReadonly()
                 || this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                return this.$translate.instant('WEITER_ONLY_UPPER');
+                return this.$translate.instant('WEITER_ONLY');
             }
         }
-        return this.$translate.instant('WEITER_UPPER');
+        return this.$translate.instant('WEITER');
     }
 
     public isSelectedGesuchsperiodeInaktiv(): boolean {

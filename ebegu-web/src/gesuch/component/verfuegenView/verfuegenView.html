@@ -214,13 +214,13 @@
                                            button-click="vm.save()"
                                            ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()"
                                            class="dv-navigation-item">
-                            <span data-translate="VERFUEGEN_UPPER"></span>
+                            <span class="uppercase" data-translate="VERFUEGEN"></span>
                         </dv-loading-button>
                         <dv-loading-button type="submit"
                                            button-click="vm.nichtEintreten()"
                                            ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()"
                                            class="dv-navigation-item">
-                            <span data-translate="VERFUEGEN_NICHT_EINTRETEN_UPPER"></span>
+                            <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
                         </dv-loading-button>
                         <div class="dv-navigation-item"
                              ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
@@ -229,20 +229,20 @@
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()"
                                                ng-if="!vm.disableAblehnen()">
-                                <span data-translate="VERFUEGEN_ABLEHNEN_UPPER"></span>
+                                <span class="uppercase" data-translate="VERFUEGEN_ABLEHNEN"></span>
                             </dv-loading-button>
                         </div>
                         <div class="dv-navigation-item"
                              ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()">
-                                <span data-translate="VERFUEGEN_VERZICHTEN_UPPER"></span>
+                                <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
                             </dv-loading-button>
                         </div>
                         <div class="dv-navigation-item"
                              ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
                             <dv-loading-button type="submit" button-click="vm.save()">
-                                <span data-translate="TROTZDEM_VERFUEGEN_UPPER"></span>
+                                <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
                             </dv-loading-button>
                         </div>
                     </div>

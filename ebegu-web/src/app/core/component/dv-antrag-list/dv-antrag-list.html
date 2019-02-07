@@ -38,49 +38,49 @@
                 <thead>
                 <!--Sortierspalten-->
                 <tr id="antraegeHeadRow">
-                    <th st-sort="fallNummer" class="sortable row-fallnr" data-translate="FALL_UPPER"></th>
-                    <th st-sort="gemeinde" class="sortable row-name" data-translate="GEMEINDE_UPPER"></th>
-                    <th st-sort="familienName" class="sortable row-name" data-translate="FAMILIE_UPPER"></th>
-                    <th st-sort="kinder" class="sortable row-name" data-translate="KINDER_UPPER"
+                    <th st-sort="fallNummer" class="sortable row-fallnr uppercase" data-translate="FALL"></th>
+                    <th st-sort="gemeinde" class="sortable row-name uppercase" data-translate="GEMEINDE"></th>
+                    <th st-sort="familienName" class="sortable row-name uppercase" data-translate="FAMILIE"></th>
+                    <th st-sort="kinder" class="sortable row-name uppercase" data-translate="KINDER"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
-                    <th st-sort="antragTyp" class="sortable row-antrag" data-translate="TYP_UPPER"></th>
-                    <th st-sort="gesuchsperiode" class="sortable row-periode" data-translate="PERIODE_UPPER"></th>
-                    <th st-sort="aenderungsdatum" class="sortable row-geandert"
-                        data-translate="GEANDERT_UPPER" dv-display-element
+                    <th st-sort="antragTyp" class="sortable row-antrag uppercase" data-translate="TYP"></th>
+                    <th st-sort="gesuchsperiode" class="sortable row-periode uppercase" data-translate="PERIODE"></th>
+                    <th st-sort="aenderungsdatum" class="sortable row-geandert uppercase"
+                        data-translate="GEANDERT" dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
                         dv-display-expression="!vm.pendenz">
                     </th>
-                    <th st-sort="eingangsdatumSTV" class="sortable row-geandert"
-                        data-translate="EINGANG_UPPER" dv-display-element
+                    <th st-sort="eingangsdatumSTV" class="sortable row-geandert uppercase"
+                        data-translate="EINGANG" dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
                         dv-display-expression="vm.pendenz">
                     </th>
-                    <th st-sort="eingangsdatumSTV" class="sortable row-geandert"
-                        data-translate="EINGANG_UPPER" dv-display-element
+                    <th st-sort="eingangsdatumSTV" class="sortable row-geandert uppercase"
+                        data-translate="EINGANG" dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
                     </th>
-                    <th st-sort="status" class="sortable row-status" data-translate="STATUS_UPPER"></th>
-                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen"
-                        data-translate="DOKUMENTE_HOCHGELADEN_UPPER"
+                    <th st-sort="status" class="sortable row-status uppercase" data-translate="STATUS"></th>
+                    <th st-sort="dokumenteHochgeladen" class="sortable row-dokumenteHochgeladen uppercase"
+                        data-translate="DOKUMENTE_HOCHGELADEN_KURZ"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtRoles()">
                     </th>
-                    <th st-sort="angebote" class="sortable row-angebot" data-translate="ANGEBOT_UPPER"
+                    <th st-sort="angebote" class="sortable row-angebot uppercase" data-translate="ANGEBOT"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
-                    <th st-sort="institutionen" class="sortable row-inst" data-translate="INSTITUTION_UPPER"
+                    <th st-sort="institutionen" class="sortable row-inst uppercase" data-translate="INSTITUTION"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">
                     </th>
-                    <th st-sort="verantwortlicherTS" class="sortable row-ver" data-translate="VERANTWORTLICHER_SCHULAMT"
+                    <th st-sort="verantwortlicherTS" class="sortable row-ver uppercase" data-translate="VERANTWORTLICHER_SCHULAMT"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()"
                         ng-if="vm.ebeguUtil.isTagesschulangebotEnabled()">
                     </th>
-                    <th st-sort="verantwortlicherBG" class="sortable row-ver"
+                    <th st-sort="verantwortlicherBG" class="sortable row-ver uppercase"
                         data-translate="{{vm.ebeguUtil.isTagesschulangebotEnabled() ? 'VERANTWORTLICHER_JUGENDAMT' : 'VERANTWORTLICHER_OHNE_SCHULAMT'}}"
                         dv-display-element
                         dv-display-allowed-roles="vm.TSRoleUtil.getAllRolesButSteueramt()">

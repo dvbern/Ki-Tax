@@ -123,12 +123,12 @@ export class NavigatorController implements IController {
             return this.$translate.instant(this.dvTranslatePrevious);
         }
         if (this.gesuchModelManager.isGesuchReadonly()) {
-            return this.$translate.instant('ZURUECK_ONLY_UPPER');
+            return this.$translate.instant('ZURUECK_ONLY');
         }
         if (this.dvSave) {
-            return this.$translate.instant('ZURUECK_UPPER');
+            return this.$translate.instant('ZURUECK');
         }
-        return this.$translate.instant('ZURUECK_ONLY_UPPER');
+        return this.$translate.instant('ZURUECK_ONLY');
     }
 
     /**
@@ -139,12 +139,12 @@ export class NavigatorController implements IController {
             return this.$translate.instant(this.dvTranslateNext);
         }
         if (this.gesuchModelManager.isGesuchReadonly()) {
-            return this.$translate.instant('WEITER_ONLY_UPPER');
+            return this.$translate.instant('WEITER_ONLY');
         }
         if (this.dvSave) {
-            return this.$translate.instant('WEITER_UPPER');
+            return this.$translate.instant('WEITER');
         }
-        return this.$translate.instant('WEITER_ONLY_UPPER');
+        return this.$translate.instant('WEITER_ONLY');
     }
 
     /**

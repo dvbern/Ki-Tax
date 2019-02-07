@@ -150,9 +150,9 @@
         <dv-navigation ng-if="!vm.canBeFreigegeben()"
                        dv-previous="true" dv-next="true"
                        dv-translate-next="WEITER_ZU_PROV_BERECHNUNG"
-                       class="freigabe-nav">
+                       class="freigabe-nav uppercase">
         </dv-navigation>
-        <dv-loading-button class="dv-navigation-item"
+        <dv-loading-button class="dv-navigation-item uppercase"
                            type="submit"
                            button-click="vm.gesuchEinreichen()"
                            aria-label="{{'ANTRAG_EINREICHEN' | translate}}"
