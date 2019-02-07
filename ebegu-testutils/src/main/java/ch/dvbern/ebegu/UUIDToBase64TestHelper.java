@@ -29,7 +29,7 @@ public class UUIDToBase64TestHelper {
 
 	public static void main(String[] args) throws IOException {
 
-		String path = "/home/homa/java/ideaprojects/jugendamt/ebegu-test/ebegu/ebegu-testutils/src/main/resources/datasets/massenversand-dataset.xml";
+		String path = "/home/homa/java/ideaprojects/jugendamt/ebegu-test/ebegu/ebegu-testutils/src/main/resources/datasets/applicationPropertyAudited.xml";
 		if(args.length > 0){
 			path = args[0];
 		}

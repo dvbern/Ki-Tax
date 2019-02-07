@@ -45,7 +45,7 @@ public class StringUUIDTypeDescriptor extends AbstractTypeDescriptor<String> {
 
 			uuid = UUID.fromString(uuidAsString);
 		} catch (IllegalArgumentException ex) {
-			LOG.error("Could not map value as uuid. Check that it is a valid uuid. Otherwise mapping");
+			LOG.error("Could not map value '{}' as uuid. Check that it is a valid uuid. ", uuidAsString);
 			throw ex;
 		}
 
