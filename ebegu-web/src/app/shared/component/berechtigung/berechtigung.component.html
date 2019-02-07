@@ -15,74 +15,100 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<div *ngIf="useInputComponents">
 <div class="row">
     <!-- Rolle -->
-    <div [class]="displayClass">
-        <div class="form-group">
-            <dv-benutzer-rolle [inputId]="rolleId"
-                               [name]="rolleId"
-                               [required]="true"
-                               [disabled]="disabled"
-                               [excludedRoles]="excludedRoles"
-                               [(benutzerRolle)]="berechtigung.role">
-            </dv-benutzer-rolle>
+        <div [class]="displayClass">
+            <div class="form-group">
+                <dv-benutzer-rolle [inputId]="rolleId"
+                                   [name]="rolleId"
+                                   [required]="true"
+                                   [disabled]="disabled"
+                                   [excludedRoles]="excludedRoles"
+                                   [(benutzerRolle)]="berechtigung.role">
+                </dv-benutzer-rolle>
+            </div>
         </div>
-    </div>
 
-    <!-- Gemeinde(n) -->
-    <div [class]="displayClass" *ngIf="berechtigung.hasGemeindeRole()">
-        <dv-gemeinde-multiselect [selected]="berechtigung.gemeindeList"
-                                 [disabled]="disabled"
-                                 [required]="true">
-        </dv-gemeinde-multiselect>
-    </div>
+        <!-- Gemeinde(n) -->
+        <div [class]="displayClass" *ngIf="berechtigung.hasGemeindeRole()">
+            <dv-gemeinde-multiselect [selected]="berechtigung.gemeindeList"
+                                     [disabled]="disabled"
+                                     [required]="true">
+            </dv-gemeinde-multiselect>
+        </div>
 
-    <!-- Institution -->
-    <div [class]="displayClass" *ngIf="berechtigung.hasInstitutionRole()">
-        <div class="form-group">
-            <label translate [for]="institutionId">INSTITUTION</label>
-            <div class="dv-select-style">
-                <select [attr.aria-describedby]="institutionId + '-error'"
-                        [name]="institutionId"
-                        [id]="institutionId"
-                        class="form-control"
-                        [disabled]="disabled"
-                        [required]="true"
-                        [(ngModel)]="berechtigung.institution"
-                        [compareWith]="compareById">
-                    <option *ngFor="let institution of institutionen$ | async" [ngValue]="institution">
-                        {{institution.name}}
-                    </option>
-                </select>
-                <dv-error-messages [inputId]="institutionId"
-                                   [errorObject]="form.controls[institutionId]?.errors">
-                </dv-error-messages>
+        <!-- Institution -->
+        <div [class]="displayClass" *ngIf="berechtigung.hasInstitutionRole()">
+            <div class="form-group">
+                <label translate [for]="institutionId">INSTITUTION</label>
+                <div class="dv-select-style">
+                    <select [attr.aria-describedby]="institutionId + '-error'"
+                            [name]="institutionId"
+                            [id]="institutionId"
+                            class="form-control"
+                            [disabled]="disabled"
+                            [required]="true"
+                            [(ngModel)]="berechtigung.institution"
+                            [compareWith]="compareById">
+                        <option *ngFor="let institution of institutionen$ | async" [ngValue]="institution">
+                            {{institution.name}}
+                        </option>
+                    </select>
+                    <dv-error-messages [inputId]="institutionId"
+                                       [errorObject]="form.controls[institutionId]?.errors">
+                    </dv-error-messages>
+                </div>
+            </div>
+        </div>
+
+        <!-- Traegerschaft -->
+        <div [class]="displayClass" *ngIf="berechtigung.hasTraegerschaftRole()">
+            <div class="form-group">
+                <label translate [for]="traegerschaftId">TRAEGERSCHAFT</label>
+                <div class="dv-select-style">
+                    <select [attr.aria-describedby]="traegerschaftId + '-error'"
+                            [name]="traegerschaftId"
+                            [id]="traegerschaftId"
+                            class="form-control"
+                            [disabled]="disabled"
+                            [required]="true"
+                            [(ngModel)]="berechtigung.traegerschaft"
+                            [compareWith]="compareById">
+                        <option *ngFor="let traegerschaft of traegerschaften$ | async"
+                                [ngValue]="traegerschaft">
+                            {{traegerschaft.name}}
+                        </option>
+                    </select>
+                    <dv-error-messages [inputId]="traegerschaftId"
+                                       [errorObject]="form.controls[traegerschaftId]?.errors">
+                    </dv-error-messages>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Traegerschaft -->
-    <div [class]="displayClass" *ngIf="berechtigung.hasTraegerschaftRole()">
-        <div class="form-group">
-            <label translate [for]="traegerschaftId">TRAEGERSCHAFT</label>
-            <div class="dv-select-style">
-                <select [attr.aria-describedby]="traegerschaftId + '-error'"
-                        [name]="traegerschaftId"
-                        [id]="traegerschaftId"
-                        class="form-control"
-                        [disabled]="disabled"
-                        [required]="true"
-                        [(ngModel)]="berechtigung.traegerschaft"
-                        [compareWith]="compareById">
-                    <option *ngFor="let traegerschaft of traegerschaften$ | async"
-                            [ngValue]="traegerschaft">
-                        {{traegerschaft.name}}
-                    </option>
-                </select>
-                <dv-error-messages [inputId]="traegerschaftId"
-                                   [errorObject]="form.controls[traegerschaftId]?.errors">
-                </dv-error-messages>
-            </div>
+</div>
+<div *ngIf="!useInputComponents">
+    <fieldset>
+        <div>
+            <table class="berechtigung">
+                <tr>
+                    <td class="bold" translate>ROLLE</td>
+                    <td translate>{{translationKeyForRole(berechtigung.role)}}</td>
+                </tr>
+                <tr *ngIf="berechtigung.hasGemeindeRole()">
+                    <td class="bold" translate>GEMEINDEN</td>
+                    <td>{{berechtigung.gemeindeListToString()}}</td>
+                </tr>
+                <tr *ngIf="berechtigung.hasInstitutionRole()">
+                    <td class="bold" translate>INSTITUTION</td>
+                    <td>{{berechtigung.institution.name}}</td>
+                </tr>
+                <tr *ngIf="berechtigung.hasTraegerschaftRole()">
+                    <td class="bold" translate>TRAEGERSCHAFT</td>
+                    <td>{{berechtigung.traegerschaft.name}}</td>
+                </tr>
+            </table>
         </div>
-    </div>
+    </fieldset>
 </div>

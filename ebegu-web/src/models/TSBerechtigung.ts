@@ -124,4 +124,14 @@ export default class TSBerechtigung extends TSAbstractDateRangedEntity {
             this.traegerschaft = undefined;
         }
     }
+
+    public gemeindeListToString(): string {
+        const gemeindeNamen = [];
+
+        for (const gemeinde of this.gemeindeList) {
+            gemeindeNamen.push(gemeinde.name);
+        }
+
+        return gemeindeNamen.join(', ');
+    }
 }
