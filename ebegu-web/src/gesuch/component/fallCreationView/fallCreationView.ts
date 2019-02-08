@@ -24,6 +24,7 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {INewFallStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -99,16 +100,17 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
 
     private initViewModel(): void {
         // gesuch should already have been initialized in resolve function
-        if ((this.gesuchsperiodeId === null || this.gesuchsperiodeId === undefined || this.gesuchsperiodeId === '')
+        if ((EbeguUtil.isNullOrUndefined(this.gesuchsperiodeId) || this.gesuchsperiodeId === '')
             && this.gesuchModelManager.getGesuchsperiode()) {
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
 
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(
-            this.gesuchModelManager.getDossier().gemeinde.id,
-            this.gesuchModelManager.getDossier().id)
-            .then(
-            (response: TSGesuchsperiode[]) => {
+        const dossier = this.gesuchModelManager.getDossier();
+        if (!dossier) {
+            return;
+        }
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(dossier.gemeinde.id, dossier.id)
+            .then((response: TSGesuchsperiode[]) => {
                 this.yetUnusedGesuchsperiodenListe = angular.copy(response);
             });
     }
