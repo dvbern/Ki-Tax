@@ -233,57 +233,59 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-sm-6">
                         <!-- Kontoinhaber -->
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="required" translate for="kontoInhaber_id">KONTO_INHABER</label>
-                                <input id="kontoInhaber_id" type="text" name="kontoInhaber_id" #name="ngModel"
-                                       [(ngModel)]="stammdaten.kontoInhaber"
-                                       [maxlength]="255" class="form-control">
-                                <dv-error-messages [errorObject]="form.controls.kontoInhaber_id?.errors"
-                                                   inputId="kontoInhaber_id"></dv-error-messages>
-                            </div>
+                        <div class="form-group">
+                            <label class="required" translate for="kontoInhaber_id">KONTO_INHABER</label>
+                            <input id="kontoInhaber_id" type="text"
+                                   name="kontoInhaber_id" #name="ngModel"
+                                   required
+                                   [(ngModel)]="stammdaten.kontoInhaber"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.kontoInhaber_id?.errors"
+                                               inputId="kontoInhaber_id"></dv-error-messages>
                         </div>
                         <!-- BIC/SWIFT-Nummer -->
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="required" translate for="bic_id">BIC_SWIFT_NUMMER</label>
-                                <input id="bic_id" type="text" name="bic_id" #name="ngModel"
-                                       [(ngModel)]="stammdaten.bic"
-                                       [maxlength]="255" class="form-control">
-                                <dv-error-messages [errorObject]="form.controls.bic_id?.errors"
-                                                   inputId="bic_id"></dv-error-messages>
-                            </div>
+                        <div class="form-group">
+                            <label class="required" translate for="bic_id">BIC_SWIFT_NUMMER</label>
+                            <input id="bic_id" type="text"
+                                   name="bic_id" #name="ngModel"
+                                   required
+                                   [(ngModel)]="stammdaten.bic"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.bic_id?.errors"
+                                               inputId="bic_id"></dv-error-messages>
                         </div>
                         <!-- IBAN-Nummer -->
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="required" translate for="iban_id">IBAN_NUMMER</label>
-                                <input id="iban_id" type="text" name="iban_id" #name="ngModel"
-                                       [(ngModel)]="stammdaten.iban"
-                                       [maxlength]="255" class="form-control">
-                                <dv-error-messages [errorObject]="form.controls.iban_id?.errors"
-                                                   inputId="iban_id"></dv-error-messages>
-                            </div>
+                        <div class="form-group">
+                            <label class="required" translate for="iban_id">IBAN_NUMMER</label>
+                            <input id="iban_id" type="text"
+                                   name="iban_id" #name="ngModel"
+                                   required
+                                   [(ngModel)]="stammdaten.iban"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.iban_id?.errors"
+                                               inputId="iban_id"></dv-error-messages>
                         </div>
-                        <!-- Standardverantwortliche BG -->
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <h3 translate class="required" for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</h3>
-                                <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
-                                            id="verantwortliche_bg_id"
-                                            name="verantwortliche_bg_id"
-                                            class="form-control"
-                                            [compareWith]="compareBenutzer"
-                                            required>
-                                    <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
-                                        {{vbg.vorname}} {{vbg.nachname}}
-                                    </mat-option>
-                                </mat-select>
-                                <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
-                                                   inputId="verantwortliche_bg_id"></dv-error-messages>
-                            </div>
+                    </div>
+                    <!-- Standardverantwortliche BG -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate class="required" for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</label>
+                            <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
+                                        id="verantwortliche_bg_id"
+                                        name="verantwortliche_bg_id"
+                                        class="form-control"
+                                        [compareWith]="compareBenutzer"
+                                        required>
+                                <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
+                                    {{vbg.vorname}} {{vbg.nachname}}
+                                </mat-option>
+                            </mat-select>
+                            <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
+                                               inputId="verantwortliche_bg_id"></dv-error-messages>
                         </div>
+                    </div>
                     <div class="col-sm-6">
                         <div class="form-group">
                         </div>

@@ -3990,7 +3990,9 @@ public class JaxBConverter extends AbstractConverter {
 
 		stammdaten.setKontoInhaber(jaxStammdaten.getKontoInhaber());
 		stammdaten.setBic(jaxStammdaten.getBic());
-		stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
+		if (jaxStammdaten.getIban() != null) {
+			stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
+		}
 
 		return stammdaten;
 	}

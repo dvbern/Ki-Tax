@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -114,6 +115,8 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private String bic;
 
 	@NotNull
+	@Column(nullable = false)
+	@Embedded
 	@Valid
 	private IBAN iban;
 
