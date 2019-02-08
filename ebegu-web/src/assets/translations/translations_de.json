@@ -1232,7 +1232,7 @@
     "FERIENINSEL_TITLE": "Daten der Ferieninseln",
     "EINTRITTSDATUM": "Eintrittsdatum",
     "REGELN_GUELTIG_AB": "Alternatives Eingangsdatum für Regelwerk",
-    "EKV_FIN_SIT_NOT_REQUIRED": "Eine Einkommenverschlechterung muss in diesem Fall nicht erfasst werden. Klicken Sie auf \"Weiter\", um fortzufahren.",
+    "EKV_FIN_SIT_NOT_REQUIRED": "Eine Härtefallregelung muss in diesem Fall nicht erfasst werden. Klicken Sie auf \"Weiter\", um fortzufahren.",
     "FIN_SIT_NOT_REQUIRED": "Die finanzielle Situation muss in diesem Fall nicht erfasst werden. Klicken Sie auf \"Weiter\", um fortzufahren.",
     "FERIENNAME": "Ferien",
     "WARN_FERIEN_NOCH_NICHT_BUCHBAR": "Für diese Ferien kann noch keine Ferieninsel gebucht werden. Versuchen Sie es später wieder.",

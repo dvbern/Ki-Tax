@@ -131,13 +131,7 @@ export class EditGemeindeComponent implements OnInit {
         if (!file) {
             return;
         }
-        if (this.isRegisteringGemeinde) {
-            // upload later if the stammdaten are new, because if the object doesn't exist yet we will get an error
-            this.fileToUpload = file;
-            return;
-        }
-        this.persistLogo(file, false);
-        this.fileToUpload = undefined;
+        this.fileToUpload = file;
     }
 
     private validateData(stammdaten: TSGemeindeStammdaten): boolean {
