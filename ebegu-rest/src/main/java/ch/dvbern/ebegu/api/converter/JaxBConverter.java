@@ -1022,6 +1022,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setLaufnummer(antragJAXP.getLaufnummer());
 		antrag.setGesuchBetreuungenStatus(antragJAXP.getGesuchBetreuungenStatus());
 		antrag.setGeprueftSTV(antragJAXP.isGeprueftSTV());
+		antrag.setVerfuegungEingeschrieben(antragJAXP.isVerfuegungEingeschrieben());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
@@ -1185,6 +1186,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuch.setLaufnummer(persistedGesuch.getLaufnummer());
 		jaxGesuch.setGesuchBetreuungenStatus(persistedGesuch.getGesuchBetreuungenStatus());
 		jaxGesuch.setGeprueftSTV(persistedGesuch.isGeprueftSTV());
+		jaxGesuch.setVerfuegungEingeschrieben(persistedGesuch.isVerfuegungEingeschrieben());
 		jaxGesuch.setGesperrtWegenBeschwerde(persistedGesuch.isGesperrtWegenBeschwerde());
 		jaxGesuch.setDatumGewarntNichtFreigegeben(persistedGesuch.getDatumGewarntNichtFreigegeben());
 		jaxGesuch.setDatumGewarntFehlendeQuittung(persistedGesuch.getDatumGewarntFehlendeQuittung());

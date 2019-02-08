@@ -121,7 +121,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		evaluator.evaluate(gesuch_verheiratet, getParameter(), Constants.DEFAULT_LOCALE);
 		final VerfuegungPdfGenerator verheiratet =
 			new VerfuegungPdfGenerator(getFirstBetreuung(gesuch_verheiratet), stammdaten,
-				VerfuegungPdfGenerator.Art.NORMAL, true);
+				VerfuegungPdfGenerator.Art.NORMAL, false);
 		verheiratet.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + "/Verfügung_verheiratet.pdf"));
 	}
 

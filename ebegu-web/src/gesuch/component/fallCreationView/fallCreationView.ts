@@ -24,6 +24,7 @@ import TSGemeinde from '../../../models/TSGemeinde';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import DateUtil from '../../../utils/DateUtil';
+import EbeguUtil from '../../../utils/EbeguUtil';
 import {INewFallStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
@@ -59,7 +60,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
     // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
     public showError: boolean = false;
-    private gesuchsperiodenListe: Array<TSGesuchsperiode>;
+    private yetUnusedGesuchsperiodenListe: Array<TSGesuchsperiode>;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -99,17 +100,22 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
 
     private initViewModel(): void {
         // gesuch should already have been initialized in resolve function
-        if ((this.gesuchsperiodeId === null || this.gesuchsperiodeId === undefined || this.gesuchsperiodeId === '')
+        if ((EbeguUtil.isNullOrUndefined(this.gesuchsperiodeId) || this.gesuchsperiodeId === '')
             && this.gesuchModelManager.getGesuchsperiode()) {
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
 
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gesuchModelManager.getDossier().gemeinde.id).then(
-            (response: TSGesuchsperiode[]) => {
-                this.gesuchsperiodenListe = angular.copy(response);
+        const dossier = this.gesuchModelManager.getDossier();
+        if (!dossier) {
+            return;
+        }
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(dossier.gemeinde.id, dossier.id)
+            .then((response: TSGesuchsperiode[]) => {
+                this.yetUnusedGesuchsperiodenListe = angular.copy(response);
             });
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public save(): IPromise<TSGesuch> {
         this.showError = true;
         if (this.isGesuchValid()) {
@@ -139,7 +145,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getAllActiveGesuchsperioden(): Array<TSGesuchsperiode> {
-        return this.gesuchsperiodenListe;
+        return this.yetUnusedGesuchsperiodenListe;
     }
 
     public setSelectedGesuchsperiode(): void {
@@ -208,5 +214,14 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
 
     public getPeriodString(): string {
         return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
+    }
+
+    /**
+     * There could be Gesuchsperiode in the list so we can chose it, or the gesuch has already a
+     * gesuchsperiode set
+     */
+    public isThereAnyGesuchsperiode(): boolean {
+        return (this.yetUnusedGesuchsperiodenListe && this.yetUnusedGesuchsperiodenListe.length > 0)
+            || (this.gesuchModelManager.getGesuch() && !!this.gesuchModelManager.getGesuch().gesuchsperiode);
     }
 }

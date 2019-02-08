@@ -210,6 +210,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = false)
 	private boolean geprueftSTV = false;
 
+	@Column(nullable = false)
+	private boolean verfuegungEingeschrieben = false;
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	@Nullable
@@ -447,6 +450,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public void setGeprueftSTV(boolean geprueftSTV) {
 		this.geprueftSTV = geprueftSTV;
+	}
+
+	public boolean isVerfuegungEingeschrieben() {
+		return verfuegungEingeschrieben;
+	}
+
+	public void setVerfuegungEingeschrieben(boolean verfuegungEingeschrieben) {
+		this.verfuegungEingeschrieben = verfuegungEingeschrieben;
 	}
 
 	public boolean isGesperrtWegenBeschwerde() {
@@ -708,8 +719,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (null != getRegelnGueltigAb()) {
 			return getRegelnGueltigAb();
 		}
+		if (getEingangsdatum() == null
+			&& getEingangsart() == Eingangsart.ONLINE) {
+			// damit die prov. Berechnung korrekt funktioniert, wird als default das heutige Datum gesetzt
+			// falls es ein Online Gesuch ist. If it doesn't have any prov. Berechnung too
+			return LocalDate.now();
+		}
 		return getEingangsdatum();
 	}
+
 
 	@Nullable
 	public Familiensituation extractFamiliensituation() {
