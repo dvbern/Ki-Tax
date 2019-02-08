@@ -376,11 +376,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	@Nonnull
 	private List<String> getBemerkungen() {
 		Verfuegung verfuegung = betreuung.getVerfuegung();
-		if (verfuegung != null) {
-			String bemerkungenAsString = verfuegung.getManuelleBemerkungen();
-			if (bemerkungenAsString != null) {
-				return splitBemerkungen(bemerkungenAsString);
-			}
+		if (verfuegung != null && verfuegung.getManuelleBemerkungen() != null) {
+			return splitBemerkungen(verfuegung.getManuelleBemerkungen());
 		}
 		return Collections.emptyList();
 	}
