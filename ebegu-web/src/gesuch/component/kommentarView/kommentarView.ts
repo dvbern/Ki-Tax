@@ -226,7 +226,7 @@ export class KommentarViewController {
     }
 
     public isGesuchUnsaved(): boolean {
-        return this.getGesuch().isNew();
+        return this.getGesuch() && this.getGesuch().isNew();
     }
 
     public getCurrentWizardStep(): TSWizardStep {
