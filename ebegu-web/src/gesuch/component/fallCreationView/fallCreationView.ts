@@ -219,7 +219,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
      * gesuchsperiode set
      */
     public isThereAnyGesuchsperiode(): boolean {
-        return this.yetUnusedGesuchsperiodenListe.length > 0
+        return (this.yetUnusedGesuchsperiodenListe && this.yetUnusedGesuchsperiodenListe.length > 0)
             || (this.gesuchModelManager.getGesuch() && !!this.gesuchModelManager.getGesuch().gesuchsperiode);
     }
 }
