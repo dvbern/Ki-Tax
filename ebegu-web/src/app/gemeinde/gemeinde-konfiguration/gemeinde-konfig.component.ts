@@ -83,7 +83,8 @@ export class GemeindeKonfigComponent implements OnInit {
     public isKonfigurationEditable(gk: TSGemeindeKonfiguration): boolean {
         return 'gemeinde.edit' === this.navigationDest.name
             && (TSGemeindeStatus.EINGELADEN === this.gemeindeStatus
-                || TSGesuchsperiodeStatus.ENTWURF === gk.gesuchsperiodeStatus);
+                || (gk.gesuchsperiodeStatus &&
+                    TSGesuchsperiodeStatus.GESCHLOSSEN !== gk.gesuchsperiodeStatus));
     }
 
     private initProperties(): void {

@@ -61,7 +61,7 @@
                 </div>
 
                 <fieldset ng-disabled="vm.isGesuchReadonly()"
-                          ng-if="vm.gesuchsperiodenListe.length > 0">
+                          ng-if="vm.isThereAnyGesuchsperiode()">
 
                     <!--Eingangsdatum-->
                     <div class="row marginTop30" dv-show-element
@@ -104,7 +104,7 @@
                     </div>
 
                     <!-- Gesuchsperiode: Auswahl -->
-                    <div ng-if="vm.canChangeGesuchsperiode() && vm.gesuchsperiodenListe.length > 0">
+                    <div ng-if="vm.canChangeGesuchsperiode() && vm.yetUnusedGesuchsperiodenListe.length > 0">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -135,7 +135,7 @@
                 </fieldset>
 
                 <!-- Gesuchsperiode: Readonly -->
-                <div class="row" ng-if="!vm.canChangeGesuchsperiode() && vm.gesuchsperiodenListe.length > 0">
+                <div class="row" ng-if="!vm.canChangeGesuchsperiode() && vm.isThereAnyGesuchsperiode()">
                     <div class="col-sm-12">
                         <dv-input-container>
                             <label class="md-no-float" data-translate="GESUCHSPERIODE"
@@ -145,7 +145,7 @@
                     </div>
                 </div>
                 <!-- Hinweis, dass für die Gemeinde keine gültigen Perioden vorhanden sind -->
-                <div class="marginTop30" ng-if="vm.gesuchsperiodenListe.length == 0">
+                <div class="marginTop30" ng-if="!vm.isThereAnyGesuchsperiode()">
                     <div class="well well-status-warten">
                         <i class="fa fa-exclamation " aria-hidden="true"></i>
                         <span data-translate="GSDASHBOARD_KEINE_PERIODEN"
@@ -159,7 +159,7 @@
                 <dv-navigation dv-next="true"
                                dv-translate-next="{{vm.getNextButtonText()}}"
                                dv-save="vm.save()"
-                               ng-if="vm.gesuchsperiodenListe.length > 0">
+                               ng-if="vm.isThereAnyGesuchsperiode()">
                 </dv-navigation>
 
             </form>

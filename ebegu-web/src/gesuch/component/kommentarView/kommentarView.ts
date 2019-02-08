@@ -275,4 +275,9 @@ export class KommentarViewController {
             'FREIGABE_SCH_BESCHREIBUNG' :
             'FREIGABE_JA_BESCHREIBUNG';
     }
+
+    public showEwkFields(): boolean {
+        // todo this should be shown after GERES is implemented
+        return false;
+    }
 }

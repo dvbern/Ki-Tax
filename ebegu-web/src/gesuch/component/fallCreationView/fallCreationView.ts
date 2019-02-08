@@ -59,7 +59,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     // showError ist ein Hack damit, die Fehlermeldung fuer die Checkboxes nicht direkt beim Laden der Seite angezeigt
     // wird sondern erst nachdem man auf ein checkbox oder auf speichern geklickt hat
     public showError: boolean = false;
-    private gesuchsperiodenListe: Array<TSGesuchsperiode>;
+    private yetUnusedGesuchsperiodenListe: Array<TSGesuchsperiode>;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -104,9 +104,12 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
 
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.gesuchModelManager.getDossier().gemeinde.id).then(
+        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(
+            this.gesuchModelManager.getDossier().gemeinde.id,
+            this.gesuchModelManager.getDossier().id)
+            .then(
             (response: TSGesuchsperiode[]) => {
-                this.gesuchsperiodenListe = angular.copy(response);
+                this.yetUnusedGesuchsperiodenListe = angular.copy(response);
             });
     }
 
@@ -140,7 +143,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getAllActiveGesuchsperioden(): Array<TSGesuchsperiode> {
-        return this.gesuchsperiodenListe;
+        return this.yetUnusedGesuchsperiodenListe;
     }
 
     public setSelectedGesuchsperiode(): void {
@@ -209,5 +212,14 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
 
     public getPeriodString(): string {
         return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
+    }
+
+    /**
+     * There could be Gesuchsperiode in the list so we can chose it, or the gesuch has already a
+     * gesuchsperiode set
+     */
+    public isThereAnyGesuchsperiode(): boolean {
+        return this.yetUnusedGesuchsperiodenListe.length > 0
+            || (this.gesuchModelManager.getGesuch() && !!this.gesuchModelManager.getGesuch().gesuchsperiode);
     }
 }
