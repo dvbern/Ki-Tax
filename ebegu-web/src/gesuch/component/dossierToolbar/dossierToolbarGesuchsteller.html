@@ -77,7 +77,7 @@
                 <button ng-click="vmgs.gesuchLoeschen()"
                         aria-label="{{'TOOLBAR_LOESCHEN' | translate}}" style="text-align: center;"
                         input-id="{{'gesuchLoeschenButton'}}">
-                    <span data-translate="TOOLBAR_LOESCHEN"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_LOESCHEN"></span>
                 </button>
             </div>
 
@@ -86,7 +86,7 @@
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtRoles()">
                 <button id="button" ng-click="vmgs.openAlleVerfuegungen()"
                         aria-label="{{'TOOLBAR_ALLE_VERFUEGUNGEN' | translate}}" style="text-align: center;">
-                    <span data-translate="TOOLBAR_ALLE_VERFUEGUNGEN"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_ALLE_VERFUEGUNGEN"></span>
                 </button>
             </div>
 
@@ -95,7 +95,7 @@
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtOtherAmtRoles()">
                 <button ng-click="vmgs.openMitteilungen()"
                         aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" style="text-align: center;">
-                    <span data-translate="TOOLBAR_MITTEILUNGEN"></span>
+                    <span class="uppercase" data-translate="TOOLBAR_MITTEILUNGEN"></span>
                     <span ng-bind="vmgs.getAmountNewMitteilungenGS()"></span>
                 </button>
             </div>
@@ -105,7 +105,7 @@
                 <button ng-click="vmgs.showKontakt()" id="kontaktButton"
                         aria-label="{{'ARIA_KONTAKT_MENU' | translate}}">
                     <i class="ellipsis-icon fa fa-envelope"></i>
-                    <span data-translate="TOOLBAR_KONTAKT"></span>
+                    <span class="uppercase"  data-translate="TOOLBAR_KONTAKT"></span>
                 </button>
             </div>
 
