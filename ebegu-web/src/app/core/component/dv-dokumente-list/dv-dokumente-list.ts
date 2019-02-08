@@ -249,7 +249,8 @@ export class DVDokumenteListController implements IController {
         // Dokument-Upload ist eigentlich in jedem Status möglich, aber nicht für alle Rollen. Also nicht
         // gleichbedeutend mit readonly auf dem Gesuch
         // Jedoch darf der Gesuchsteller nach der Verfuegung nichts mehr hochladen
-        const gsAndVerfuegt = isAnyStatusOfVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status)
+        const gsAndVerfuegt = this.gesuchModelManager.getGesuch()
+            && isAnyStatusOfVerfuegtButSchulamt(this.gesuchModelManager.getGesuch().status)
             && this.authServiceRS.isRole(TSRole.GESUCHSTELLER);
         return gsAndVerfuegt || this.authServiceRS.isOneOfRoles(TSRoleUtil.getReadOnlyRoles());
     }
