@@ -109,7 +109,6 @@ export class NavigatorController implements IController {
         if (!this.containerClass) {
             this.containerClass = 'dv-navigation-flex';
         }
-        debugger;
     }
 
     public doesCancelExist(): boolean {
