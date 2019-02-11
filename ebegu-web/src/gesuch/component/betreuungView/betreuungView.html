@@ -550,25 +550,23 @@
                 <!--Hier wird die Direktive dv-navigation nicht benutzt. Grund dafuer ist, dass die Logik in diesem Fall sehr kompliziert ist.
                     wenn wir die Direktive benutzen wollen muessen wir viel anpassen, daher lohnt es sich die Buttons direkt zu erstellen-->
                 <!-- todo verbessern. Es muss fuer alle Angebottypen geprueft werden ob die Buttons hier oder in den individuellen Component implementiert sind-->
-                <div class="dv-navigation dv-navigation--betreuung" ng-if="vm.displayGlobalNavigationButtons()">
+                <div class="dv-navigation dv-navigation-flex" ng-if="vm.displayGlobalNavigationButtons()">
                     <!--Die Order der Knoepfe soll im HTML so sein, dass der weiter Knopf als erster im Form ist, dies wird dann fuer die darstelltung
                     mit Flexlayout wieder korrigiert. Grund ist, dass beim druecken von Enter in einem input Feld automaitisch der erste submit button triggered wird-->
-                    <div class="dv-navigation-item"
-                         dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
-                         dv-show-expression="vm.isTagesschule() && !vm.tageschuleSaveDisabled()">
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                          dv-show-expression="vm.isTagesschule() && !vm.tageschuleSaveDisabled()">
 
                         <dv-loading-button button-click="vm.saveSchulamt()" type="submit"
                                            button-class="save">
                             <span class="uppercase" data-translate="SPEICHERN"></span>
                         </dv-loading-button>
-                    </div>
+                    </span>
 
                     <!--Institution Buttons-->
-                    <div class="dv-navigation-item"
-                         dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                         dv-show-expression="vm.isMutationsmeldungAllowed()">
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+                          dv-show-expression="vm.isMutationsmeldungAllowed()">
 
                         <dv-loading-button button-click="vm.mutationsmeldungErstellen()"
                                            ng-if="!vm.isMutationsmeldungStatus"
@@ -580,75 +578,69 @@
                                            aria-label="{{MUTATIONSMELDUNG_SENDEN | translate}}">
                             <span class="uppercase" data-translate="MUTATIONSMELDUNG_SENDEN"></span>
                         </dv-loading-button>
-                    </div>
+                    </span>
 
-                    <div class="dv-navigation-flex"
-                         dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                         dv-show-expression="vm.isBetreuungsstatusWarten()">
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+                          dv-show-expression="vm.isBetreuungsstatusWarten()">
 
-                        <div class="dv-navigation-item"
-                             ng-if="vm.isFromMutation()">
+                        <span ng-if="vm.isFromMutation()">
                             <dv-loading-button button-click="vm.stornieren()"
                                                aria-label="{{'STORNIEREN' | translate}}">
                                 <span class="uppercase" data-translate="STORNIEREN"></span>
                             </dv-loading-button>
-                        </div>
+                        </span>
 
-                        <div class="dv-navigation-item">
+                        <span>
                             <dv-loading-button button-click="vm.platzBestaetigen()" type="submit"
                                                aria-label="{{'BESTAETIGEN' | translate}}">
                                 <span class="uppercase" data-translate="BESTAETIGEN"></span>
                             </dv-loading-button>
-                        </div>
+                        </span>
 
-                        <div class="dv-navigation-item"
-                             ng-if="!vm.isFromMutation()">
+                        <span ng-if="!vm.isFromMutation()">
                             <dv-loading-button button-click="vm.platzAbweisen()" type="submit"
                                                aria-label="{{'ABWEISEN' | translate}}">
                                 <span class="uppercase" data-translate="ABWEISEN"></span>
                             </dv-loading-button>
-                        </div>
+                        </span>
 
-                    </div>
+                    </span>
 
                     <!--Platz anfordern-->
-                    <div class="dv-navigation-item"
-                         dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
-                         dv-show-expression="vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution() && !vm.isProvisorischeBetreuung()">
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerJugendamtSchulamtRoles()"
+                          dv-show-expression="vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution() && !vm.isProvisorischeBetreuung()">
                         <dv-loading-button button-click="vm.platzAnfordern()" type="submit">
                             <span class="uppercase" data-translate="PLATZBESTAETIGUNG_ANFORDERN"></span>
                         </dv-loading-button>
-                    </div>
+                    </span>
 
                     <!-- Save -->
-                    <div class="dv-navigation-item"
-                         dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
-                         dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+                          dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
                         <dv-loading-button button-click="vm.saveBetreuung()" type="submit">
                             <span class="uppercase" data-translate="SPEICHERN"></span>
                         </dv-loading-button>
-                    </div>
+                    </span>
 
                     <!-- Save provisorische Berechnung-->
-                    <div class="dv-navigation-item"
-                         dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
-                         dv-show-expression="vm.isProvisorischeBetreuung() && vm.isEnabled()">
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
+                          dv-show-expression="vm.isProvisorischeBetreuung() && vm.isEnabled()">
                         <dv-loading-button button-click="vm.saveProvisorischeBetreuung()" type="submit">
                             <span class="uppercase" data-translate="SPEICHERN"></span>
                         </dv-loading-button>
-                    </div>
+                    </span>
 
                     <!-- Abbrechen -->
-                    <div class="dv-navigation-item">
+                    <span>
                         <dv-loading-button button-click="vm.cancel()" button-class="cancel-button"
                                            type="reset">
                             <span class="uppercase" data-translate="ABBRECHEN"></span>
                         </dv-loading-button>
-                    </div>
+                    </span>
                 </div>
             </form>
         </div>

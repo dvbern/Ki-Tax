@@ -16,7 +16,7 @@
 <!--Die Order der Knoepfe soll im HTML so sein, dass der weiter Knopf als erster im Form ist, dies wird dann fuer die darstelltung
 mit Flexlayout wieder korrigiert. Grund ist, dass beim druecken von Enter in einem input Feld automaitisch der erste submit button triggered wird-->
 <!--<div layout="row" layout-align="space-between center" layout-align-gt-sm="center center" class="dv-navigation">-->
-<div class="dv-navigation-flex">
+<div class="{{vm.containerClass}}">
     <dv-loading-button class="dv-navigation-item"
                        ng-if="vm.dvNext()"
                        button-click="vm.nextStep()"

@@ -53,6 +53,7 @@ export class DVNavigation implements IDirective {
         dvSavingPossible: '<?',
         dvTranslateNext: '@',
         dvTranslatePrevious: '@',
+        containerClass: '<',
     };
     public template = require('./dv-navigation.html');
 
@@ -86,6 +87,7 @@ export class NavigatorController implements IController {
     public dvTranslatePrevious: string;
     // this semaphore will prevent a navigation button to be called again until the prozess is not finished
     public isRequestInProgress: boolean = false;
+    public containerClass: string;
 
     public performSave: boolean;
 
@@ -104,7 +106,10 @@ export class NavigatorController implements IController {
     public $onInit(): void {
         // initial nach aktuell eingeloggtem filtern
         this.dvSavingPossible = this.dvSavingPossible || false;
-
+        if (!this.containerClass) {
+            this.containerClass = 'dv-navigation-flex';
+        }
+        debugger;
     }
 
     public doesCancelExist(): boolean {
@@ -676,6 +681,10 @@ export class NavigatorController implements IController {
         return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK).then(() => {
             return this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
         }) as any;
+    }
+
+    public getContainerClass(): string {
+        return 'gugus';
     }
 
 }
