@@ -795,7 +795,9 @@ export default class EbeguRestUtil {
             restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
             restStammdaten.konfigurationsListe =
                 this.gemeindeKonfigurationListToRestObject(stammdaten.konfigurationsListe);
-
+            restStammdaten.kontoInhaber = stammdaten.kontoInhaber;
+            restStammdaten.bic = stammdaten.bic;
+            restStammdaten.iban = stammdaten.iban;
             return restStammdaten;
         }
         return undefined;
@@ -822,6 +824,9 @@ export default class EbeguRestUtil {
             stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
             stammdatenTS.konfigurationsListe =
                 this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
+            stammdatenTS.kontoInhaber = stammdatenFromServer.kontoInhaber;
+            stammdatenTS.bic = stammdatenFromServer.bic;
+            stammdatenTS.iban = stammdatenFromServer.iban;
 
             return stammdatenTS;
         }

@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -32,12 +33,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -102,6 +106,19 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Lob
 	private byte[] logoContent;
 
+	@NotNull
+	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	private String kontoInhaber;
+
+	@NotNull
+	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
+	private String bic;
+
+	@NotNull
+	@Column(nullable = false)
+	@Embedded
+	@Valid
+	private IBAN iban;
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
@@ -197,6 +214,33 @@ public class GemeindeStammdaten extends AbstractEntity {
 			this.logoContent = Arrays.copyOf(logoContent, logoContent.length);
 		}
 	}
+
+	@SuppressFBWarnings("NM_CONFUSING")
+	public String getKontoInhaber() {
+		return kontoInhaber;
+	}
+
+	@SuppressFBWarnings("NM_CONFUSING")
+	public void setKontoInhaber(String kontoInhaber) {
+		this.kontoInhaber = kontoInhaber;
+	}
+
+	public String getBic() {
+		return bic;
+	}
+
+	public void setBic(String bic) {
+		this.bic = bic;
+	}
+
+	public IBAN getIban() {
+		return iban;
+	}
+
+	public void setIban(IBAN iban) {
+		this.iban = iban;
+	}
+
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
