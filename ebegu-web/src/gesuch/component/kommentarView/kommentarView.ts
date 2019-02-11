@@ -226,7 +226,7 @@ export class KommentarViewController {
     }
 
     public isGesuchUnsaved(): boolean {
-        return this.getGesuch().isNew();
+        return this.getGesuch() && this.getGesuch().isNew();
     }
 
     public getCurrentWizardStep(): TSWizardStep {
@@ -274,5 +274,10 @@ export class KommentarViewController {
         return this.getGesuch().areThereOnlySchulamtAngebote() ?
             'FREIGABE_SCH_BESCHREIBUNG' :
             'FREIGABE_JA_BESCHREIBUNG';
+    }
+
+    public showEwkFields(): boolean {
+        // todo this should be shown after GERES is implemented
+        return false;
     }
 }
