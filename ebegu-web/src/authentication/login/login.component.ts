@@ -60,19 +60,19 @@ export class LoginComponentController implements IController {
         this.authService.burnPortalTimeout().finally(() => {
 
             this.authService.initSSOLogin(relayUrl)
-                      .then(url => {
-                          this.redirectionHref = url;
-                          if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
-                              this.doLogout();
-                              return;
-                          }
+                .then(url => {
+                    this.redirectionHref = url;
+                    if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
+                        this.doLogout();
+                        return;
+                    }
 
-                          this.redirecting = true;
-                          if (this.countdown > 0) {
-                              this.$timeout(this.doCountdown, 1000);
-                          }
-                          this.$timeout(() => this.redirect(url), this.countdown * 1000);
-                      });
+                    this.redirecting = true;
+                    if (this.countdown > 0) {
+                        this.$timeout(this.doCountdown, 1000);
+                    }
+                    this.$timeout(() => this.redirect(url), this.countdown * 1000);
+                });
         });
     }
 
