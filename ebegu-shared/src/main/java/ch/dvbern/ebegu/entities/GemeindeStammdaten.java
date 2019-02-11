@@ -108,7 +108,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@NotNull
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String kontoInhaber;
+	private String kontoinhaber;
 
 	@NotNull
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
@@ -216,13 +216,13 @@ public class GemeindeStammdaten extends AbstractEntity {
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")
-	public String getKontoInhaber() {
-		return kontoInhaber;
+	public String getKontoinhaber() {
+		return kontoinhaber;
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")
-	public void setKontoInhaber(String kontoInhaber) {
-		this.kontoInhaber = kontoInhaber;
+	public void setKontoinhaber(String kontoinhaber) {
+		this.kontoinhaber = kontoinhaber;
 	}
 
 	public String getBic() {

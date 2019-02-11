@@ -183,14 +183,14 @@
                         <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>
                         <!-- Kontoinhaber -->
                         <div class="form-group">
-                            <label class="required" translate for="kontoInhaber_id">KONTO_INHABER</label>
-                            <input id="kontoInhaber_id" type="text"
-                                   name="kontoInhaber_id" #name="ngModel"
+                            <label class="required" translate for="kontoinhaber_id">KONTO_INHABER</label>
+                            <input id="kontoinhaber_id" type="text"
+                                   name="kontoinhaber_id" #name="ngModel"
                                    required
-                                   [(ngModel)]="stammdaten.kontoInhaber"
+                                   [(ngModel)]="stammdaten.kontoinhaber"
                                    [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.kontoInhaber_id?.errors"
-                                               inputId="kontoInhaber_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.kontoinhaber_id?.errors"
+                                               inputId="kontoinhaber_id"></dv-error-messages>
                         </div>
                         <!-- BIC/SWIFT-Nummer -->
                         <div class="form-group">
