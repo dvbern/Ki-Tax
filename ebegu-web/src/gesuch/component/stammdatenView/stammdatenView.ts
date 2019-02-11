@@ -335,6 +335,11 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         return getTSSpracheValues();
     }
 
+    public showEwkFields(): boolean {
+        // todo this should be shown after GERES is implemented
+        return false;
+    }
+
     public showRechnungsadresseCheckbox(): boolean {
         // todo this should be shown for GS1 when Tagesschulen are active
         return false;

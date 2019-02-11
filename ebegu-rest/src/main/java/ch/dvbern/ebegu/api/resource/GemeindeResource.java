@@ -270,7 +270,7 @@ public class GemeindeResource {
 		// - wenn die Gemeinde im Status "Eingeladen" ist
 		boolean eingeladen = GemeindeStatus.EINGELADEN == jaxStammdaten.getGemeinde().getStatus();
 		jaxStammdaten.getKonfigurationsListe().forEach(konfiguration -> {
-			if (eingeladen || GesuchsperiodeStatus.ENTWURF == konfiguration.getGesuchsperiodeStatus()) {
+			if (eingeladen || GesuchsperiodeStatus.GESCHLOSSEN != konfiguration.getGesuchsperiodeStatus()) {
 				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
 			}
 		});
