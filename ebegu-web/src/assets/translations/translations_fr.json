@@ -1415,6 +1415,7 @@
     "ADRESSE_ANSCHRIFT": "FR_Anschrift",
     "ADRESSE_NUMMER": "FR_Nummer",
     "WEBSEITE": "FR_Webseite",
+    "BANKDATEN": "FR_Bankdaten",
     "BESCHWERDE_ADRESSE": "FR_Beschwerde-Adresse",
     "BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT": "FR_Identisch wie Kontaktadresse",
     "STANDARD_VERANTWORTLICHE": "FR_Standard-Verantwortliche",
