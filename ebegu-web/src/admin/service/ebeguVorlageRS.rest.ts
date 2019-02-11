@@ -31,7 +31,7 @@ export class EbeguVorlageRS {
         public ebeguRestUtil: EbeguRestUtil,
         private readonly upload: any,
         private readonly $q: IQService,
-        private base64: any
+        private readonly base64: any
     ) {
         this.serviceURL = `${REST_API}ebeguVorlage`;
     }

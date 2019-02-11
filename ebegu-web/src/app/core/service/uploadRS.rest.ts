@@ -29,7 +29,7 @@ export class UploadRS {
         private readonly upload: any,
         public ebeguRestUtil: EbeguRestUtil,
         public q: IQService,
-        private base64: any
+        private readonly base64: any
     ) {
         this.serviceURL = REST_API + 'upload';
     }
