@@ -375,4 +375,16 @@ export default class TSGesuch extends TSAbstractAntragEntity {
         }
         return undefined;
     }
+
+    /**
+     * Returns true if all kinder have an ausserordentlicher anspruch defined
+     */
+    public allKindHaveAusserordentlicherAnspruch(): boolean {
+        if (this.kindContainers) {
+            return this.kindContainers.every(kind => {
+                return !!kind.kindJA.pensumAusserordentlicherAnspruch;
+            });
+        }
+        return false;
+    }
 }

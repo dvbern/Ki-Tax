@@ -375,15 +375,9 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private List<String> getBemerkungen() {
-		// Wenn die Betreuung VERFUEGT ist -> manuelle Bemerkungen Wenn die Betreuung noch nicht VERFUEGT ist ->
-		// generated Bemerkungen
 		Verfuegung verfuegung = betreuung.getVerfuegung();
-		if (verfuegung != null) {
-			String bemerkungenAsString = gesuch.getStatus().isAnyStatusOfVerfuegt() ? verfuegung.getManuelleBemerkungen()
-				: verfuegung.getGeneratedBemerkungen();
-			if (bemerkungenAsString != null) {
-				return splitBemerkungen(bemerkungenAsString);
-			}
+		if (verfuegung != null && verfuegung.getManuelleBemerkungen() != null) {
+			return splitBemerkungen(verfuegung.getManuelleBemerkungen());
 		}
 		return Collections.emptyList();
 	}

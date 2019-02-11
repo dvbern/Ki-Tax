@@ -3988,6 +3988,12 @@ public class JaxBConverter extends AbstractConverter {
 			throw new IllegalArgumentException("Die Korrespondenzsprache muss gesetzt sein");
 		}
 
+		stammdaten.setKontoinhaber(jaxStammdaten.getKontoinhaber());
+		stammdaten.setBic(jaxStammdaten.getBic());
+		if (jaxStammdaten.getIban() != null) {
+			stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
+		}
+
 		return stammdaten;
 	}
 
@@ -4049,6 +4055,12 @@ public class JaxBConverter extends AbstractConverter {
 					gesuchsperiode));
 			}
 		}
+		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
+		jaxStammdaten.setBic(stammdaten.getBic());
+		if(stammdaten.getIban() != null) {
+			jaxStammdaten.setIban(stammdaten.getIban().getIban());
+		}
+
 
 		return jaxStammdaten;
 	}
