@@ -63,6 +63,12 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private List<JaxBenutzer> benutzerListeBG; // Für die ComboBox Standardverantwortliche BG
 	@Nullable
 	private List<JaxBenutzer> benutzerListeTS; // Für die ComboBox Standardverantwortliche TS
+	@NotNull
+	private String kontoInhaber;
+	@NotNull
+	private String bic;
+	@NotNull
+	private String iban;
 	// ---------- Konfiguration ----------
 	@NotNull
 	private List<JaxGemeindeKonfiguration> konfigurationsListe = new ArrayList<>();
@@ -195,6 +201,30 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
 	public void setKonfigurationsListe(List<JaxGemeindeKonfiguration> konfigurationsListe) {
 		this.konfigurationsListe = konfigurationsListe;
+	}
+
+	public String getKontoInhaber() {
+		return kontoInhaber;
+	}
+
+	public void setKontoInhaber(String kontoInhaber) {
+		this.kontoInhaber = kontoInhaber;
+	}
+
+	public String getBic() {
+		return bic;
+	}
+
+	public void setBic(String bic) {
+		this.bic = bic;
+	}
+
+	public String getIban() {
+		return iban;
+	}
+
+	public void setIban(String iban) {
+		this.iban = iban;
 	}
 
 }
