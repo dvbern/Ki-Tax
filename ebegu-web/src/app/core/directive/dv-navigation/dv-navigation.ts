@@ -682,8 +682,4 @@ export class NavigatorController implements IController {
         }) as any;
     }
 
-    public getContainerClass(): string {
-        return 'gugus';
-    }
-
 }
