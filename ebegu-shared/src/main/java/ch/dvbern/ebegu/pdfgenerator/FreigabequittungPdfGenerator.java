@@ -104,7 +104,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			document.add(dokumenteParagraph);
 			List<Element> seite2Paragraphs = Lists.newArrayList();
 			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(EINWILLIGUNG_STEUERDATEN_TITLE)));
-			seite2Paragraphs.add(PdfUtil.createParagraph(translate(EINWILLIGUNG_STEUERDATEN_CONTENT)));
+			seite2Paragraphs.add(PdfUtil.createParagraph(translate(EINWILLIGUNG_STEUERDATEN_CONTENT, gesuch.getDossier().getGemeinde().getName())));
 			seite2Paragraphs.add(new Paragraph());
 			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(KENNTNISSNAHME_TITLE)));
 			seite2Paragraphs.add(PdfUtil.createParagraph(translate(KENTNISSNAHME_CONTENT)));
