@@ -21,7 +21,7 @@ import IQService = angular.IQService;
 
 export class EbeguVorlageRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'Upload', '$q', 'base64'];
 
     public serviceURL: string;
 
@@ -31,6 +31,7 @@ export class EbeguVorlageRS {
         public ebeguRestUtil: EbeguRestUtil,
         private readonly upload: any,
         private readonly $q: IQService,
+        private base64: any
     ) {
         this.serviceURL = `${REST_API}ebeguVorlage`;
     }
@@ -43,7 +44,7 @@ export class EbeguVorlageRS {
         let restEbeguVorlage = {};
         restEbeguVorlage = this.ebeguRestUtil.ebeguVorlageToRestObject(restEbeguVorlage, ebeguVorlage);
         this.upload.json(restEbeguVorlage);
-        const encodedFilename = btoa(file.name);
+        const encodedFilename = this.base64.encode(file.name);
         return this.upload.upload({
             url: this.serviceURL,
             method: 'POST',

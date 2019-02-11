@@ -152,6 +152,7 @@
     "raven-js": "~3.27.0",
     "rxjs": "^6.2.2",
     "rxjs-compat": "^6.0.0-rc.0",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "angular-utf8-base64": "0.0.5"
   }
 }

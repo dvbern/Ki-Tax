@@ -19,7 +19,7 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class UploadRS {
 
-    public static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q'];
+    public static $inject = ['$http', 'REST_API', '$log', 'Upload', 'EbeguRestUtil', '$q', 'base64'];
     public serviceURL: string;
 
     public constructor(
@@ -29,6 +29,7 @@ export class UploadRS {
         private readonly upload: any,
         public ebeguRestUtil: EbeguRestUtil,
         public q: IQService,
+        private base64: any
     ) {
         this.serviceURL = REST_API + 'upload';
     }
@@ -42,7 +43,7 @@ export class UploadRS {
         const names: string [] = [];
         for (const file of files) {
             if (file) {
-                const encodedFilename = btoa(file.name);
+                const encodedFilename = this.base64.encode(file.name);
                 names.push(encodedFilename);
             }
         }

@@ -32,6 +32,7 @@ import 'angular-translate-loader-static-files';
 import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'ng-file-upload';
+import 'angular-utf8-base64';
 import 'raven-js';
 import 'raven-js/plugins/angular';
 // tslint:enable-no-import-side-effect
@@ -161,12 +162,12 @@ const dependencies = [
     'ui.bootstrap',
     'smart-table',
     'ngMaterial',
-    'ngMessages',
     'pascalprecht.translate',
     'angularMoment',
     'cfp.hotkeys',
     'ngFileUpload',
     'unsavedChanges',
+    'utf8-base64',
 ];
 
 const dynamicDependencies = (): string[] => {
