@@ -137,16 +137,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <!-- Beschwerde-Adresse Checkbox -->
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
-                            <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
-                                          [(ngModel)]="keineBeschwerdeAdresse">
-                                {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
-                            </mat-checkbox>
-                        </div>
-                    </div>
                     <!-- Korrespondenzsprache -->
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -169,71 +159,28 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div *ngIf="!keineBeschwerdeAdresse" class="row">
-                    <!-- Beschwerde-Adresse -->
+                    <!-- Standardverantwortliche BG -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="required" translate for="anschrift_ba_id">ADRESSE_ANSCHRIFT</label>
-                            <input id="anschrift_ba_id" type="text" name="anschrift_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
-                                   [maxlength]="255" class="form-control" required
-                                   placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
-                            <dv-error-messages [errorObject]="form.controls.anschrift_ba_id?.errors"
-                                               inputId="anschrift_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="!keineBeschwerdeAdresse" class="row">
-                    <!-- Strasse -->
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label class="required" translate for="strasse_ba_id">ADRESSE_STRASSE</label>
-                            <input id="strasse_ba_id" type="text" name="strasse_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.strasse_ba_id?.errors"
-                                               inputId="strasse_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                    <!-- Hausnummer -->
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label translate for="hausnummer_ba_id">ADRESSE_NUMMER</label>
-                            <input id="hausnummer_ba_id" type="text" name="hausnummer_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
-                                   [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.hausnummer_ba_id?.errors"
-                                               inputId="hausnummer_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                </div>
-                <div *ngIf="!keineBeschwerdeAdresse" class="row">
-                    <!-- PLZ -->
-                    <div class="col-sm-1">
-                        <div class="form-group">
-                            <label class="required" translate for="plz_ba_id">ADRESSE_PLZ</label>
-                            <input id="plz_ba_id" type="text" name="plz_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.plz"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.plz_ba_id?.errors"
-                                               inputId="plz_ba_id"></dv-error-messages>
-                        </div>
-                    </div>
-                    <!-- Ort -->
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label class="required" translate for="ort_ba_id">ADRESSE_ORT</label>
-                            <input id="ort_ba_id" type="text" name="ort_ba_id" #name="ngModel"
-                                   [(ngModel)]="stammdaten.beschwerdeAdresse.ort"
-                                   [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.ort_ba_id?.errors"
-                                               inputId="ort_ba_id"></dv-error-messages>
+                            <label translate class="required" for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</label>
+                            <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
+                                        id="verantwortliche_bg_id"
+                                        name="verantwortliche_bg_id"
+                                        class="form-control"
+                                        [compareWith]="compareBenutzer"
+                                        required>
+                                <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
+                                    {{vbg.vorname}} {{vbg.nachname}}
+                                </mat-option>
+                            </mat-select>
+                            <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
+                                               inputId="verantwortliche_bg_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
+                        <h3 translate for="korrespondenzsprache_id">BANKVERBINDUNG</h3>
                         <!-- Kontoinhaber -->
                         <div class="form-group">
                             <label class="required" translate for="kontoInhaber_id">KONTO_INHABER</label>
@@ -268,26 +215,84 @@
                                                inputId="iban_id"></dv-error-messages>
                         </div>
                     </div>
-                    <!-- Standardverantwortliche BG -->
+                </div>
+
+                <div class="row">
+                    <!-- Beschwerde-Adresse Checkbox -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate class="required" for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</label>
-                            <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
-                                        id="verantwortliche_bg_id"
-                                        name="verantwortliche_bg_id"
-                                        class="form-control"
-                                        [compareWith]="compareBenutzer"
-                                        required>
-                                <mat-option *ngFor="let vbg of stammdaten.benutzerListeBG" [value]="vbg">
-                                    {{vbg.vorname}} {{vbg.nachname}}
-                                </mat-option>
-                            </mat-select>
-                            <dv-error-messages [errorObject]="form.controls.verantwortliche_bg_id?.errors"
-                                               inputId="verantwortliche_bg_id"></dv-error-messages>
+                            <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
+                            <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
+                                          [(ngModel)]="keineBeschwerdeAdresse">
+                                {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
+                            </mat-checkbox>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
+                    <div class="col-sm-12">
+                        <div *ngIf="!keineBeschwerdeAdresse" class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="required" translate for="anschrift_ba_id">ADRESSE_ANSCHRIFT</label>
+                                    <input id="anschrift_ba_id" type="text" name="anschrift_ba_id" #name="ngModel"
+                                           [(ngModel)]="stammdaten.beschwerdeAdresse.organisation"
+                                           [maxlength]="255" class="form-control" required
+                                           placeholder="{{'AMT_JUGENDAMT'|translate}}, {{'AMT_SCHULAMT'|translate}}, ...">
+                                    <dv-error-messages [errorObject]="form.controls.anschrift_ba_id?.errors"
+                                                       inputId="anschrift_ba_id"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div *ngIf="!keineBeschwerdeAdresse" class="row">
+                            <!-- Strasse -->
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label class="required" translate for="strasse_ba_id">ADRESSE_STRASSE</label>
+                                    <input id="strasse_ba_id" type="text" name="strasse_ba_id" #name="ngModel"
+                                           [(ngModel)]="stammdaten.beschwerdeAdresse.strasse"
+                                           [maxlength]="255" class="form-control" required>
+                                    <dv-error-messages [errorObject]="form.controls.strasse_ba_id?.errors"
+                                                       inputId="strasse_ba_id"></dv-error-messages>
+                                </div>
+                            </div>
+                            <!-- Hausnummer -->
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label translate for="hausnummer_ba_id">ADRESSE_NUMMER</label>
+                                    <input id="hausnummer_ba_id" type="text" name="hausnummer_ba_id" #name="ngModel"
+                                           [(ngModel)]="stammdaten.beschwerdeAdresse.hausnummer"
+                                           [maxlength]="255" class="form-control">
+                                    <dv-error-messages [errorObject]="form.controls.hausnummer_ba_id?.errors"
+                                                       inputId="hausnummer_ba_id"></dv-error-messages>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div *ngIf="!keineBeschwerdeAdresse" class="row">
+                            <!-- PLZ -->
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label class="required" translate for="plz_ba_id">ADRESSE_PLZ</label>
+                                    <input id="plz_ba_id" type="text" name="plz_ba_id" #name="ngModel"
+                                           [(ngModel)]="stammdaten.beschwerdeAdresse.plz"
+                                           [maxlength]="255" class="form-control" required>
+                                    <dv-error-messages [errorObject]="form.controls.plz_ba_id?.errors"
+                                                       inputId="plz_ba_id"></dv-error-messages>
+                                </div>
+                            </div>
+                            <!-- Ort -->
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label class="required" translate for="ort_ba_id">ADRESSE_ORT</label>
+                                    <input id="ort_ba_id" type="text" name="ort_ba_id" #name="ngModel"
+                                           [(ngModel)]="stammdaten.beschwerdeAdresse.ort"
+                                           [maxlength]="255" class="form-control" required>
+                                    <dv-error-messages [errorObject]="form.controls.ort_ba_id?.errors"
+                                                       inputId="ort_ba_id"></dv-error-messages>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
