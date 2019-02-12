@@ -204,7 +204,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		final List<String> bemerkungen = getBemerkungen();
 		if (!bemerkungen.isEmpty()) {
 			bemerkungenElements.add(PdfUtil.createParagraph(translate(BEMERKUNGEN)));
-			bemerkungenElements.add(PdfUtil.createList(getBemerkungen()));
+			bemerkungenElements.add(PdfUtil.createList(bemerkungen));
 			document.add(PdfUtil.createKeepTogetherTable(bemerkungenElements, 0, 2));
 		}
 	}
