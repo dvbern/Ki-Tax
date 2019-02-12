@@ -254,15 +254,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		if (!benutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			return null;
-		} else {
-			StringBuilder sb = new StringBuilder();
-			for (Gemeinde gemeinde : benutzer.extractGemeindenForUser()) {
-				sb.append('\'').append(gemeinde.getId()).append("', ");
-			}
-			String gemeinden = sb.toString();
-			gemeinden = StringUtils.removeEnd(gemeinden, ", ");
-			return gemeinden;
 		}
+
+		StringBuilder sb = new StringBuilder();
+		for (Gemeinde gemeinde : benutzer.extractGemeindenForUser()) {
+			sb.append('\'').append(gemeinde.getId()).append("', ");
+		}
+		String gemeinden = sb.toString();
+		gemeinden = StringUtils.removeEnd(gemeinden, ", ");
+		return gemeinden;
 	}
 
 	@SuppressWarnings("Duplicates")
