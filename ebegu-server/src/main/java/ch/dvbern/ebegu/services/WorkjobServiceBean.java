@@ -217,7 +217,8 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT,
+		SACHBEARBEITER_BG, SACHBEARBEITER_TS, SACHBEARBEITER_MANDANT, SACHBEARBEITER_GEMEINDE, REVISOR })
 	public Workjob createNewReporting(
 		@Nonnull Workjob workJob,
 		@Nonnull ReportVorlage vorlage,

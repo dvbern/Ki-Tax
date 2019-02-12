@@ -100,7 +100,7 @@ FROM kind_container
 
 WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
       AND (institution_stammdaten.betreuungsangebot_typ = 'TAGESSCHULE' OR :onlySchulamt = 0)
-      AND (:gemeindeIdList is null OR (dossier.gemeinde_id IN (:gemeindeIdList)))
+      AND (:allGemeinden = true OR dossier.gemeinde_id IN (:gemeindeIdList))
       AND (
         IFNULL(NichtFreigegebeneGesuch.Anzahl, 0) = 1
         OR IFNULL(Mahnungen.Anzahl, 0) = 1

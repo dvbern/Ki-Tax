@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,6 +59,7 @@ import javax.persistence.criteria.SetJoin;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.BenutzerTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
@@ -243,12 +245,16 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("stichTagDate", Constants.SQL_DATE_FORMAT.format(date.plusDays(1)));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
-		query.setParameter("gemeindeIdList", getCommaSeparatedListOfBerechtigteGemeinden());
+		final List<String> berechtigteGemeinden = getCommaSeparatedListOfBerechtigteGemeinden();
+		// pass a boolean param to indicate if it has to take all Gemeinden are just those of the user
+		// this is easier than checking the list within the sql-query
+		query.setParameter("allGemeinden", berechtigteGemeinden == null);
+		query.setParameter("gemeindeIdList", berechtigteGemeinden);
 		return query.getResultList();
 	}
 
 	@Nullable
-	private String getCommaSeparatedListOfBerechtigteGemeinden() {
+	private List<String> getCommaSeparatedListOfBerechtigteGemeinden() {
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getCommaSeparatedListOfBerechtigteGemeinden", "User not logged in"));
 
@@ -256,13 +262,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			return null;
 		}
 
-		StringBuilder sb = new StringBuilder();
-		for (Gemeinde gemeinde : benutzer.extractGemeindenForUser()) {
-			sb.append('\'').append(gemeinde.getId()).append("', ");
-		}
-		String gemeinden = sb.toString();
-		gemeinden = StringUtils.removeEnd(gemeinden, ", ");
-		return gemeinden;
+		return benutzer.extractGemeindenForUser().stream()
+			.map(AbstractEntity::getId)
+			.collect(Collectors.toList());
 	}
 
 	@SuppressWarnings("Duplicates")
@@ -550,12 +552,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	 */
 	@Nonnull
 	private List<Tuple> getAllVerantwortlicheGesuche() {
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
+
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Tuple> query = builder.createTupleQuery();
 		query.distinct(true);
-
-		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
 
 		Root<Gesuch> root = query.from(Gesuch.class);
 
@@ -597,6 +599,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			UserRole.ADMIN_GEMEINDE,
 			UserRole.SACHBEARBEITER_GEMEINDE);
 
+		if (principalBean.discoverMostPrivilegedRole() != UserRole.SUPER_ADMIN) {
+			// for others than superadmin, Superadmin cannot be listed
+			predicates.add(builder.notEqual(verantwortlicherBerechtigungenJoin.get(Berechtigung_.role), UserRole.SUPER_ADMIN));
+		}
+
 		Predicate isRolleCorrect =
 			verantwortlicherBerechtigungenJoin.get(Berechtigung_.role).in(requiredRoles);
 		predicates.add(isRolleCorrect);
@@ -614,6 +621,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	 */
 	@Nonnull
 	private List<Tuple> getAllVerfuegteGesuche(LocalDate datumVon, LocalDate datumBis) {
+		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getAllVerfuegteGesuche", "No User is logged in"));
+
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Tuple> query = builder.createTupleQuery();
 		query.distinct(true);
@@ -622,6 +632,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final Join<AntragStatusHistory, Benutzer> benutzerJoin =
 			root.join(AntragStatusHistory_.benutzer, JoinType.INNER);
 		SetJoin<Benutzer, Berechtigung> joinBerechtigungen = benutzerJoin.join(Benutzer_.berechtigungen);
+		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin = joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.INNER);
 
 		query.multiselect(
 			benutzerJoin.get(AbstractEntity_.id).alias(AbstractEntity_.id.getName()),
@@ -629,23 +640,28 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			benutzerJoin.get(Benutzer_.vorname).alias(Benutzer_.vorname.getName()),
 			builder.count(root).alias("allVerfuegteGesuche"));
 
+		List<Predicate> predicates = new ArrayList<>();
+		if (principalBean.discoverMostPrivilegedRole() != UserRole.SUPER_ADMIN) {
+			// for others than superadmin, Superadmin cannot be listed
+			predicates.add(builder.notEqual(joinBerechtigungen.get(Berechtigung_.role), UserRole.SUPER_ADMIN));
+		}
 		// Status ist verfuegt
-		Predicate predicateStatus = root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtStates());
+		predicates.add(root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtStates()));
 		// Datum der Verfuegung muss nach (oder gleich) dem Anfang des Abfragezeitraums sein
-		final Predicate predicateDatumVon =
-			builder.greaterThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumVon.atStartOfDay());
+		predicates.add(builder.greaterThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumVon.atStartOfDay()));
 		// Datum der Verfuegung muss vor (oder gleich) dem Ende des Abfragezeitraums sein
-		final Predicate predicateDatumBis =
-			builder.lessThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumBis.atStartOfDay());
+		predicates.add(builder.lessThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumBis.atTime(LocalTime.MAX)));
 		// Der Benutzer muss eine aktive Berechtigung mit Rolle ADMIN_BG oder SACHBEARBEITER_BG haben
-		Predicate predicateActive = builder.between(
+		predicates.add(builder.between(
 			builder.literal(LocalDate.now()),
 			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
-		Predicate isCorrectRole =
-			joinBerechtigungen.get(Berechtigung_.role).in(UserRole.getJugendamtSuperadminRoles());
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
+		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(UserRole.getJugendamtSuperadminRoles()));
 
-		query.where(predicateStatus, predicateDatumVon, predicateDatumBis, predicateActive, isCorrectRole);
+		// Nur Benutzer von Gemeinden, fuer die ich berechtigt bin
+		setGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
+
+		query.where(CriteriaQueryHelper.concatenateExpressions(builder, predicates));
 
 		query.groupBy(
 			benutzerJoin.get(AbstractEntity_.id),
