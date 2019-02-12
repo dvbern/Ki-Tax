@@ -90,6 +90,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -637,6 +638,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		stammdaten.getAdresse().setOrt("Bern");
 		stammdaten.getAdresse().setPlz("3000");
 		stammdaten.getAdresse().setStrasse("Nussbaumstrasse");
+		stammdaten.setIban(new IBAN("CH93 0076 2011 6238 5295 7"));
+		stammdaten.setBic("BIC123");
+		stammdaten.setKontoinhaber("Inhaber");
 		gemeindeService.saveGemeindeStammdaten(stammdaten);
 	}
 

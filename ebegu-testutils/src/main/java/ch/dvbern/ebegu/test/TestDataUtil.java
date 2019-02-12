@@ -1326,6 +1326,9 @@ public final class TestDataUtil {
 		stammdaten.setAdresse(persistence.merge(createDefaultAdresse()));
 		stammdaten.setGemeinde(getTestGemeinde(persistence));
 		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
+		stammdaten.setIban(new IBAN("CH93 0076 2011 6238 5295 7"));
+		stammdaten.setBic("BIC123");
+		stammdaten.setKontoinhaber("Inhaber");
 		stammdaten.setMail("info@bern.ch");
 		stammdaten.setLogoContent(new byte[0]);
 
@@ -1344,6 +1347,9 @@ public final class TestDataUtil {
 		stammdaten.setMail("info@bern.ch");
 		stammdaten.setTelefon("031 123 12 12");
 		stammdaten.setWebseite("www.bern.ch");
+		stammdaten.setIban(new IBAN("CH93 0076 2011 6238 5295 7"));
+		stammdaten.setBic("BIC123");
+		stammdaten.setKontoinhaber("Inhaber");
 		return stammdaten;
 	}
 

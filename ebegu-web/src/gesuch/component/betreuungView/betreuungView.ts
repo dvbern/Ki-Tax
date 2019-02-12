@@ -1070,7 +1070,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.getBetreuungModel().betreuungspensumContainers = [];
         this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
 
-        if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+        if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
         }
 
