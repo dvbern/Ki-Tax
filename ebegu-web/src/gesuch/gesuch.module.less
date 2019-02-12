@@ -338,15 +338,17 @@ dv-accordion.ewksubsub {
         }
     }
 
-    .dv-navigation--betreuung {
-        flex-direction: column;
-        .dv-navigation-flex {
-            flex-direction: column;
-        }
+    .betreuungView .dv-navigation-flex span,
+    .verfuegenListView .dv-navigation-flex .ie11-fix{
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-        .dv-navigation-item {
-            padding: .75rem 0;
-        }
+    .betreuungView .dv-navigation-flex dv-loading-button,
+    .verfuegenListView .dv-navigation-flex dv-loading-button {
+        padding: 0 .75rem;
     }
 
     .dv-navigation--verfuegen {

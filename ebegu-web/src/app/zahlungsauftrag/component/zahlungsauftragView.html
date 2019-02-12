@@ -62,7 +62,7 @@
                          layout-align="center center">
                         <dv-loading-button button-click="vm.createZahlungsauftrag()"
                                            aria-label="{{'ZAHLUNG_ERSTELLEN' | translate}}">
-                            <span data-translate="ZAHLUNG_ERSTELLEN"></span>
+                            <span class="uppercase" data-translate="ZAHLUNG_ERSTELLEN"></span>
                         </dv-loading-button>
                     </div>
                 </div>
@@ -83,19 +83,19 @@
                st-delay="20" class="table ebegu-table fixedtable table-striped">
             <thead>
             <tr>
-                <th st-sort="datumFaellig" class="sortable zahlungsauftrag-percent-15"
-                    data-translate="ZAHLUNG_FAELLIGKEIT_UPPER"></th>
-                <th st-sort-default="reverse" st-sort="datumGeneriert" class="sortable zahlungsauftrag-percent-10"
-                    data-translate="ZAHLUNG_GENERIERT_UPPER"></th>
-                <th data-translate="ZAHLUNG_PAIN001_UPPER" dv-show-element class="zahlungsauftrag-percent-10"
+                <th st-sort="datumFaellig" class="sortable zahlungsauftrag-percent-15 uppercase"
+                    data-translate="ZAHLUNG_FAELLIGKEIT"></th>
+                <th st-sort-default="reverse" st-sort="datumGeneriert" class="sortable zahlungsauftrag-percent-10 uppercase"
+                    data-translate="ZAHLUNG_GENERIERT"></th>
+                <th data-translate="ZAHLUNG_PAIN001" dv-show-element class="zahlungsauftrag-percent-10 uppercase"
                     dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN']"></th>
-                <th data-translate="ZAHLUNG_DETAILPOSITIONEN_UPPER" class="zahlungsauftrag-percent-15"></th>
-                <th class="zahlungsauftrag-percent-15 sortable" st-sort="betragTotalAuftrag"
-                    data-translate="ZAHLUNG_TOTAL_UPPER" id="betragTotalAuftrag"></th>
-                <th st-sort="beschrieb" class="sortable zahlungsauftrag-percent-45"
-                    data-translate="ZAHLUNG_BESCHRIEB_UPPER"></th>
-                <th st-sort="status" class="sortable zahlungsauftrag-percent-35"
-                    data-translate="ZAHLUNG_STATUS_UPPER"></th>
+                <th data-translate="ZAHLUNG_DETAILPOSITIONEN" class="zahlungsauftrag-percent-15 uppercase"></th>
+                <th class="zahlungsauftrag-percent-15 sortable uppercase" st-sort="betragTotalAuftrag"
+                    data-translate="ZAHLUNG_TOTAL" id="betragTotalAuftrag"></th>
+                <th st-sort="beschrieb" class="sortable zahlungsauftrag-percent-45 uppercase"
+                    data-translate="ZAHLUNG_BESCHRIEB"></th>
+                <th st-sort="status" class="sortable zahlungsauftrag-percent-35 uppercase"
+                    data-translate="ZAHLUNG_STATUS"></th>
                 <th class="zahlungsauftrag-percent-5" dv-show-element
                     dv-show-allowed-roles="['ADMIN_BG', 'SUPER_ADMIN']"></th>
                 <th class="zahlungsauftrag-percent-5" dv-show-element

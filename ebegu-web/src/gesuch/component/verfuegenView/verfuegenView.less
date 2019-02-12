@@ -17,6 +17,9 @@
     .result {
         background-color: #d9d9d9;
     }
+    .table > tbody > tr:hover .result{
+        background-color: transparent !important;
+    }
     th.text-right.betrag.result.gutschein {
         span {
             font-weight: bold;
@@ -25,16 +28,19 @@
     .gutschein {
         font-weight: bold;
     }
+    th{
+        text-align: right;
+    }
     th.text-right.betrag,
     th.text-right.datum {
         width: 10%;
         vertical-align: top !important;
         border-top: none;
-        text-align: center;
+        text-align: right;
     }
     td.infotext {
-        border-bottom: none;
-        text-align: center;
+        border-bottom: none !important;
+        text-align: right;
         vertical-align: bottom !important;
     }
 }
