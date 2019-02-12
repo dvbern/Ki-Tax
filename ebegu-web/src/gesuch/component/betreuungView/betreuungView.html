@@ -180,9 +180,9 @@
                                     <dv-input-container class="form-group">
                                         <label class="md-no-float"
                                                for="provMonatlicheBetreuungskosten">
-                                            <span data-translate="MONATLICHE_BETREUUNGSKOSTEN"></span>
+                                            <span data-translate="GESCHAETZTE_MONATLICHE_BETREUUNGSKOSTEN"></span>
                                             <dv-tooltip input-id="provMonatlicheBetreuungskosten"
-                                                        text="'MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
+                                                        text="'GESCHAETZTE_MONATLICHE_BETREUUNGSKOSTEN_HELP' | translate"></dv-tooltip>
                                         </label>
                                         <div class="dv-input-container-medium-label">
                                             <input aria-describedby="provMonatlicheBetreuungskosten-error"
@@ -512,14 +512,6 @@
                                 <a href="" ng-click="vm.platzAnfordern()"
                                    data-translate="ANGABEN_KORRIGIEREN"></a>
                             </div>
-                        </div>
-
-
-                        <!--Hint-->
-                        <div ng-if="!vm.isProvisorischeBetreuung()">
-                            <p class="inlineHint marginTop20" data-translate="BETREUUNGSPENSUM_HINT1"
-                               dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
-                               dv-show-expression="!vm.isSchulamt()"></p>
                         </div>
 
                         <!--Hint-->

@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -51,11 +52,12 @@ public class JaxGemeindeKonfiguration {
 		this.gesuchsperiodeId = gesuchsperiodeId;
 	}
 
+	@Nonnull
 	public GesuchsperiodeStatus getGesuchsperiodeStatus() {
 		return gesuchsperiodeStatus;
 	}
 
-	public void setGesuchsperiodeStatus(GesuchsperiodeStatus gesuchsperiodeStatus) {
+	public void setGesuchsperiodeStatus(@Nonnull GesuchsperiodeStatus gesuchsperiodeStatus) {
 		this.gesuchsperiodeStatus = gesuchsperiodeStatus;
 	}
 

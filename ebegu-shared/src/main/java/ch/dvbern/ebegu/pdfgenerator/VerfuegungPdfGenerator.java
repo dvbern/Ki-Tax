@@ -96,6 +96,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String FUSSZEILE_2_NICHT_EINTRETEN = "PdfGeneration_NichtEintreten_Fusszeile2";
 	private static final String FUSSZEILE_1_VERFUEGUNG = "PdfGeneration_Verfuegung_Fusszeile1";
 	private static final String VERWEIS_KONTINGENTIERUNG = "PdfGeneration_Verweis_Kontingentierung";
+	public static final String UNKNOWN_INSTITUTION_NAME = "?";
 
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungPdfGenerator.class);
 
@@ -203,7 +204,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		final List<String> bemerkungen = getBemerkungen();
 		if (!bemerkungen.isEmpty()) {
 			bemerkungenElements.add(PdfUtil.createParagraph(translate(BEMERKUNGEN)));
-			bemerkungenElements.add(PdfUtil.createList(getBemerkungen()));
+			bemerkungenElements.add(PdfUtil.createList(bemerkungen));
 			document.add(PdfUtil.createKeepTogetherTable(bemerkungenElements, 0, 2));
 		}
 	}
@@ -224,11 +225,17 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private PdfPTable createIntro() {
+
+		//für unbekannte Institutionen soll ein Fragezeichen auf die Verfügung aufgedruckt werden
+		final String institutionName = betreuung.getInstitutionStammdaten().getInstitution().getName().isEmpty()
+			? UNKNOWN_INSTITUTION_NAME
+			: betreuung.getInstitutionStammdaten().getInstitution().getName();
+
 		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
 		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
 		introBasisjahr.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
 		introBasisjahr.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
-		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, betreuung.getInstitutionStammdaten().getInstitution().getName()));
+		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 		return PdfUtil.creatreIntroTable(introBasisjahr, sprache);
 	}
 
@@ -368,15 +375,9 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private List<String> getBemerkungen() {
-		// Wenn die Betreuung VERFUEGT ist -> manuelle Bemerkungen Wenn die Betreuung noch nicht VERFUEGT ist ->
-		// generated Bemerkungen
 		Verfuegung verfuegung = betreuung.getVerfuegung();
-		if (verfuegung != null) {
-			String bemerkungenAsString = gesuch.getStatus().isAnyStatusOfVerfuegt() ? verfuegung.getManuelleBemerkungen()
-				: verfuegung.getGeneratedBemerkungen();
-			if (bemerkungenAsString != null) {
-				return splitBemerkungen(bemerkungenAsString);
-			}
+		if (verfuegung != null && verfuegung.getManuelleBemerkungen() != null) {
+			return splitBemerkungen(verfuegung.getManuelleBemerkungen());
 		}
 		return Collections.emptyList();
 	}
