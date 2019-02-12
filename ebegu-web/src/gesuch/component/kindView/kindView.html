@@ -165,9 +165,6 @@
                             <div class="form-group">
                                 <span class="ebeguH1 required">
                                     <span data-translate="FAM_ERGAENZENDE_BETREUUNG"></span>
-                                    <dv-tooltip input-id="familienErgaenzendeBetreuung"
-                                                text="'FAM_ERGAENZENDE_BETREUUNG_HELP' | translate:'{ gemeinde: &quot;' + vm.gesuchModelManager.getDossier().gemeinde.name + '&quot;}'"
-                                    </dv-tooltip>
                                 </span>
                                 <span
                                     ng-if="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt() && vm.hasKindBetreuungen()"
@@ -227,7 +224,7 @@
                             <div class="form-group" ng-if="vm.getModel().familienErgaenzendeBetreuung">
                                 <span class="ebeguH1 required">
                                     <span data-translate="EINSCHULUNG"
-                                          data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}">
+                                          data-translate-value-jahr="{{vm.getYearEinschulung()}}">
                                     </span>
                                 </span>
                                 <div class="dv-select-style">

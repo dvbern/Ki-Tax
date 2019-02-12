@@ -34,14 +34,14 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 
 public abstract class KibonPdfGenerator {
 
 	protected static final String REFERENZNUMMER = "PdfGeneration_Referenznummer";
 	protected static final String ABSENDER_TELEFON = "PdfGeneration_Telefon";
-	protected static final String FAMILIE = "PdfGeneration_Familie";
-	protected static final String NAME = "PdfGeneration_Name";
+	protected static final String EINSCHREIBEN = "PdfGeneration_VerfuegungEingeschrieben";
 	protected static final String BETREUUNG_INSTITUTION = "PdfGeneration_Institution";
 
 
@@ -82,6 +82,11 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected PdfGenerator getPdfGenerator() {
 		return pdfGenerator;
+	}
+
+	@Nonnull
+	public PageConfiguration getPageConfiguration() {
+		return pdfGenerator.getConfiguration();
 	}
 
 	@Nonnull
@@ -144,7 +149,9 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected List<String> getFamilieAdresse() {
 		final List<String> empfaengerAdresse = new ArrayList<>();
-		empfaengerAdresse.add(translate(FAMILIE));
+		if (getGesuch().isVerfuegungEingeschrieben()) {
+			empfaengerAdresse.add(translate(EINSCHREIBEN));
+		}
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()));
 		if (getGesuch().getGesuchsteller2() != null) {
 			empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller2()));

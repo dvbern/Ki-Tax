@@ -104,6 +104,8 @@ public class JaxGesuch extends JaxAbstractDTO {
 	private boolean geprueftSTV;
 
 
+	private boolean verfuegungEingeschrieben;
+
 	@Nullable
 	private FinSitStatus finSitStatus;
 
@@ -218,6 +220,14 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setGeprueftSTV(boolean geprueftSTV) {
 		this.geprueftSTV = geprueftSTV;
+	}
+
+	public boolean isVerfuegungEingeschrieben() {
+		return verfuegungEingeschrieben;
+	}
+
+	public void setVerfuegungEingeschrieben(boolean verfuegungEingeschrieben) {
+		this.verfuegungEingeschrieben = verfuegungEingeschrieben;
 	}
 
 	public boolean isGesperrtWegenBeschwerde() {

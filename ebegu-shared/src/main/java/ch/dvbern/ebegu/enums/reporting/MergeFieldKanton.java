@@ -32,6 +32,7 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 	kantonTitle(new SimpleMergeField<>("kantonTitle", STRING_CONVERTER)),
 	vonTitle(new SimpleMergeField<>("vonTitle", STRING_CONVERTER)),
 	bisTitle(new SimpleMergeField<>("bisTitle", STRING_CONVERTER)),
+	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
 	fallIdTitle(new SimpleMergeField<>("fallIdTitle", STRING_CONVERTER)),
 	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
 	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
@@ -55,6 +56,7 @@ public enum MergeFieldKanton implements MergeFieldProvider {
 
 	repeatKantonRow(new RepeatRowMergeField("repeatKantonRow")),
 
+	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
 	gesuchId(new SimpleMergeField<>("gesuchId", STRING_CONVERTER)),
 	name(new SimpleMergeField<>("name", STRING_CONVERTER)),

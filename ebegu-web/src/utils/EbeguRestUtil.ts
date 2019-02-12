@@ -795,7 +795,9 @@ export default class EbeguRestUtil {
             restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
             restStammdaten.konfigurationsListe =
                 this.gemeindeKonfigurationListToRestObject(stammdaten.konfigurationsListe);
-
+            restStammdaten.kontoinhaber = stammdaten.kontoinhaber;
+            restStammdaten.bic = stammdaten.bic;
+            restStammdaten.iban = stammdaten.iban;
             return restStammdaten;
         }
         return undefined;
@@ -822,6 +824,9 @@ export default class EbeguRestUtil {
             stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
             stammdatenTS.konfigurationsListe =
                 this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
+            stammdatenTS.kontoinhaber = stammdatenFromServer.kontoinhaber;
+            stammdatenTS.bic = stammdatenFromServer.bic;
+            stammdatenTS.iban = stammdatenFromServer.iban;
 
             return stammdatenTS;
         }
@@ -914,6 +919,7 @@ export default class EbeguRestUtil {
         restGesuch.laufnummer = gesuch.laufnummer;
         restGesuch.gesuchBetreuungenStatus = gesuch.gesuchBetreuungenStatus;
         restGesuch.geprueftSTV = gesuch.geprueftSTV;
+        restGesuch.verfuegungEingeschrieben = gesuch.verfuegungEingeschrieben;
         restGesuch.gesperrtWegenBeschwerde = gesuch.gesperrtWegenBeschwerde;
         restGesuch.datumGewarntNichtFreigegeben = DateUtil.momentToLocalDate(gesuch.datumGewarntNichtFreigegeben);
         restGesuch.datumGewarntFehlendeQuittung = DateUtil.momentToLocalDate(gesuch.datumGewarntFehlendeQuittung);
@@ -944,6 +950,7 @@ export default class EbeguRestUtil {
             gesuchTS.laufnummer = gesuchFromServer.laufnummer;
             gesuchTS.gesuchBetreuungenStatus = gesuchFromServer.gesuchBetreuungenStatus;
             gesuchTS.geprueftSTV = gesuchFromServer.geprueftSTV;
+            gesuchTS.verfuegungEingeschrieben = gesuchFromServer.verfuegungEingeschrieben;
             gesuchTS.gesperrtWegenBeschwerde = gesuchFromServer.gesperrtWegenBeschwerde;
             gesuchTS.datumGewarntNichtFreigegeben =
                 DateUtil.localDateToMoment(gesuchFromServer.datumGewarntNichtFreigegeben);

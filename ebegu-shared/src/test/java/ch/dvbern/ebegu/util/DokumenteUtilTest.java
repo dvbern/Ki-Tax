@@ -75,7 +75,7 @@ public class DokumenteUtilTest {
 
 	@Test
 	public void testGetFileNameForGeneratedDokumentTypFINANZIELLE_SITUATION() {
-		Assert.assertEquals("Finanzielle_Situation_16.000001.pdf", DokumenteUtil
+		Assert.assertEquals("Finanzielle_Verhaeltnisse_16.000001.pdf", DokumenteUtil
 			.getFileNameForGeneratedDokumentTyp(
 				GeneratedDokumentTyp.FINANZIELLE_SITUATION,
 				"16.000001",

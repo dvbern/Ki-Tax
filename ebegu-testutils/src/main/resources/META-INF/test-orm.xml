@@ -41,6 +41,7 @@ SELECT
   , kind_container.kind_nummer
   , betreuung.betreuung_nummer
   )                                                                       AS BGNummer,
+  gemeinde.name                                                           AS gemeinde,
   gesuch.laufnummer 													  AS gesuchLaufNr,
   CONCAT(IFNULL(CONCAT(traegerschaft.name, ' - '), ''), institution.name) AS Institution,
   institution_stammdaten.betreuungsangebot_typ                            AS BetreuungsTyp,
@@ -61,6 +62,7 @@ FROM kind_container
   INNER JOIN gesuch ON gesuch.id = kind_container.gesuch_id
   INNER JOIN gesuchsperiode ON gesuchsperiode.id = gesuch.gesuchsperiode_id
   INNER JOIN dossier ON dossier.id = gesuch.dossier_id
+  INNER JOIN gemeinde ON gemeinde.id = dossier.gemeinde_id
   INNER JOIN fall ON fall.id = dossier.fall_id
 
   LEFT OUTER JOIN (

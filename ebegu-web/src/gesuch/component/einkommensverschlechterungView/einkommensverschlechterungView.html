@@ -25,6 +25,7 @@
             </h2>
             <hr class="header"/>
             <!-- Infotext -->
+            <p class="inlineHint" data-translate="EKVI_HINT_MONAT_FELDER"></p>
             <p class="inlineHint" data-translate="EKVI__HINT_STEUERERKLAERUNG"
                translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"
                ng-if="vm.showHintSteuererklaerung()"></p>
@@ -364,23 +365,25 @@
 
                     <!-- Familienzulage -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="familienzulage">
                                     <span data-translate="FINANZIELLE_SITUATION_FAMILIENZULAGE"></span>
                                     <dv-tooltip input-id="familienzulage"
-                                                text="'EINKOMMENSVERSCHLECHTERUNG_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
+                                                text="'FINANZIELLE_SITUATION_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-valueinput input-id="familienzulage"
-                                               name="familienzulage"
-                                               ng-model="vm.model.getEkvToWorkWith().familienzulage"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().familienzulage"
-                                    ja="vm.model.getEkvToWorkWith().familienzulage"></dv-bisher>
-                                <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="familienzulage"
+                                                   name="familienzulage"
+                                                   ng-model="vm.model.getEkvToWorkWith().familienzulage"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher
+                                        gs="vm.model.getEkvToWorkWith_GS().familienzulage"
+                                        ja="vm.model.getEkvToWorkWith().familienzulage"></dv-bisher>
+                                    <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>
@@ -392,7 +395,7 @@
                                 <label class="md-no-float" for="ersatzeinkommen">
                                     <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN"></span>
                                     <dv-tooltip input-id="ersatzeinkommen"
-                                                text="'EINKOMMENSVERSCHLECHTERUNG_ERSATZEINKOMMEN_HELP' | translate"></dv-tooltip>
+                                                text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_HELP' | translate"></dv-tooltip>
                                 </label>
                                 <dv-valueinput input-id="ersatzeinkommen"
                                                name="ersatzeinkommen"
@@ -410,23 +413,25 @@
 
                     <!-- Erhaltene Alimente -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="erhalteneAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_ERHALTENEALIMENTE"></span>
                                     <dv-tooltip input-id="erhalteneAlimente"
-                                                text="'EINKOMMENSVERSCHLECHTERUNG_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
+                                                text="'FINANZIELLE_SITUATION_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-valueinput input-id="erhalteneAlimente"
-                                               name="erhalteneAlimente"
-                                               ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
-                                    ja="vm.model.getEkvToWorkWith().erhalteneAlimente"></dv-bisher>
-                                <dv-error-messages input-id="erhalteneAlimente" for="vm.form.erhalteneAlimente.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="erhalteneAlimente"
+                                                   name="erhalteneAlimente"
+                                                   ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher
+                                        gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
+                                        ja="vm.model.getEkvToWorkWith().erhalteneAlimente"></dv-bisher>
+                                    <dv-error-messages input-id="erhalteneAlimente" for="vm.form.erhalteneAlimente.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>
@@ -446,7 +451,7 @@
                                     <span data-translate="FINANZIELLE_SITUATION_SELBSTAENDIGKEIT"></span>
                                 </md-checkbox>
                                 <dv-tooltip input-id="showSelbstaendig"
-                                            text="'EINKOMMENSVERSCHLECHTERUNG_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
+                                            text="'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
                                 <dv-bisher gs="vm.showSelbstaendigGS" class="dv-bisher-break"
                                            ja="vm.showSelbstaendig"
                                            specific-bisher-text="vm.getTextSelbstaendigKorrektur()"></dv-bisher>
@@ -586,13 +591,14 @@
 
                     <!-- Geleistete Alimente -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="geleisteteAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_GELEISTETEALIMENTE"></span>
                                     <dv-tooltip input-id="geleisteteAlimente"
                                                 text="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE_HELP' | translate"></dv-tooltip>
                                 </label>
+                                <div class="dv-input-container-medium-select">
                                 <dv-valueinput input-id="geleisteteAlimente"
                                                name="geleisteteAlimente"
                                                ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
@@ -603,6 +609,7 @@
                                     ja="vm.model.getEkvToWorkWith().geleisteteAlimente"></dv-bisher>
                                 <dv-error-messages input-id="geleisteteAlimente" for="vm.form.geleisteteAlimente.$error"
                                                    class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>

@@ -113,9 +113,9 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4.0f);
 		fz.setSimpleColumn(loverLeftX, loverLeftY, loverLeftX + width, loverLeftY + height);
 		fz.setLeading(0, DEFAULT_MULTIPLIED_LEADING);
-		Font fontWithSize = PdfUtilities.createFontWithSize(8);
+		Font fontWithSize = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8);
 		for (int i = 0; i < content.size(); i++) {
-			Chunk chunk = new Chunk((i + 1) + " ", PdfUtilities.createFontWithSize(6));
+			Chunk chunk = new Chunk((i + 1) + " ", PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 6));
 			chunk.setTextRise(2);
 			fz.addText(chunk);
 			fz.addText(new Phrase(content.get(i) + '\n', fontWithSize));

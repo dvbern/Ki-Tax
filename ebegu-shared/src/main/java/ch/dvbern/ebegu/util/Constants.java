@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.util;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,7 +65,8 @@ public final class Constants {
 	public static final DateTimeFormatter SQL_DATE_FORMAT = DateTimeFormatter.ofPattern(SQL_PATTERN_DATE);
 
 	public static final String CURRENCY_PATTERN = "#,##0.00";
-	public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat(CURRENCY_PATTERN);
+	public static final DecimalFormatSymbols SYMBOLS_DE_CH = new DecimalFormatSymbols(new Locale("de", "CH"));
+	public static final DecimalFormat CURRENCY_FORMAT = new DecimalFormat(CURRENCY_PATTERN, SYMBOLS_DE_CH);
 
 	public static final String SERVER_MESSAGE_BUNDLE_NAME = "ch.dvbern.ebegu.i18n.server-messages";
 	public static final String VALIDATION_MESSAGE_BUNDLE_NAME = "ValidationMessages";
