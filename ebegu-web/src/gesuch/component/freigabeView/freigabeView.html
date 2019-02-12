@@ -75,6 +75,13 @@
                     <span data-translate="{{vm.getTextForFreigebenNotAllowed()}}"></span>
                 </div>
             </div>
+            <div class="row" ng-if="vm.hasProvisorischeBerechnungen()">
+                <div class="col-md-12">
+                    <span data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN_1"></span>
+                    <a ui-sref="gesuch.verfuegen({gesuchId: vm.getGesuchId()})" data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN_2"></a>
+                    <span data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN_3"></span>
+                </div>
+            </div>
             <div class="marginTop40" ng-if="vm.isThereAnyAbgewieseneBetreuung()">
                 <div class="well well-status-warten">
                     <p class="ebeguH3" data-translate="HINT_BETREUUNGEN_LOESCHEN"></p>
@@ -143,23 +150,22 @@
     </div>
 
     <div class="dv-navigation dv-navigation-flex">
+        <span>
+            <dv-loading-button class="uppercase"
+                               type="submit"
+                               button-click="vm.gesuchEinreichen()"
+                               aria-label="{{'ANTRAG_EINREICHEN' | translate}}"
+                               ng-if="vm.isNotFreigegeben()"
+                               button-disabled="!vm.canBeFreigegeben()">
+            <span data-translate="ANTRAG_EINREICHEN">
 
-        <dv-navigation ng-if="vm.canBeFreigegeben()"
-                       dv-previous="true" dv-next="false">
-        </dv-navigation>
-        <dv-navigation ng-if="!vm.canBeFreigegeben()"
-                       dv-previous="true" dv-next="true"
-                       dv-translate-next="WEITER_ZU_PROV_BERECHNUNG"
-                       class="freigabe-nav uppercase">
-        </dv-navigation>
-        <dv-loading-button class="dv-navigation-item uppercase"
-                           type="submit"
-                           button-click="vm.gesuchEinreichen()"
-                           aria-label="{{'ANTRAG_EINREICHEN' | translate}}"
-                           ng-if="vm.canBeFreigegeben()">
-            <span data-translate="ANTRAG_EINREICHEN"></span>
-        </dv-loading-button>
-
+            </span>
+            </dv-loading-button>
+        </span>
+        <span>
+            <dv-navigation dv-previous="true" dv-next="!vm.isNotFreigegeben()">
+            </dv-navigation>
+        </span>
     </div>
 
 </div>

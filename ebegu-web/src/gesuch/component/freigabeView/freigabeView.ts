@@ -32,6 +32,7 @@ import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
+import {TSBetreuungsstatus} from "../../../models/enums/TSBetreuungsstatus";
 
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
@@ -159,6 +160,11 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         return '';
     }
 
+    public hasProvisorischeBerechnungen(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        return (gesuch && gesuch.hasProvisorischeBerechnungen());
+    }
+
     public getTextForFreigebenNotAllowed(): string {
         const gesuch = this.gesuchModelManager.getGesuch();
         if (gesuch && gesuch.gesperrtWegenBeschwerde) {
@@ -183,6 +189,10 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         return this.wizardStepManager.areAllStepsOK(this.gesuchModelManager.getGesuch()) &&
             this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG)
             && !this.isGesuchReadonly() && this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS);
+    }
+
+    public isNotFreigegeben(): boolean {
+        return this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS);
     }
 
     public isThereAnyAbgewieseneBetreuung(): boolean {

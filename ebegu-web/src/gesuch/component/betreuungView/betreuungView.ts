@@ -662,7 +662,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public saveProvisorischeBetreuung(): void {
         if (this.isGesuchValid()) {
-            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            if (this.getBetreuungModel().keineKesbPlatzierung) {
+                this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            } else {
+                this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                    title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+                    deleteText: 'Möchten Sie die Betreuung trotzdem speichern?',
+                    cancelText: 'LABEL_ABBRECHEN',
+                    confirmText: 'LABEL_SPEICHERN',
+                })
+                    .then(() => {   // User confirmed removal
+                        this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+                    });
+            }
         }
     }
 

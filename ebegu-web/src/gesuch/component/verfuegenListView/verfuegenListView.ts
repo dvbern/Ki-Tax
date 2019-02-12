@@ -255,6 +255,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     }
 
+    public hasNonProvisorischeBerechnungen(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        return (gesuch && gesuch.hasNonProvisorischeBerechnungen());
+    }
+
     public isFinanzielleSituationRequired(): boolean {
         return this.gesuchModelManager.isFinanzielleSituationRequired();
     }
