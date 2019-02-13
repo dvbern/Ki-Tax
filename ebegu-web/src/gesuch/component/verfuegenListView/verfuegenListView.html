@@ -81,6 +81,16 @@
 
                     </div>
                 </div>
+
+                <div class="row marginTop40" ng-show="vm.hasNichtBerechenbareBetreuungen()"
+                     dv-show-element
+                     dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerOnlyRoles()">
+                    <div class="col-md-12">
+                        <div class="well well-status-warten">
+                            <span data-translate="BETREUUNGEN_KOENNEN_NICHT_BERECHNET_WERDEN"></span>
+                        </div>
+                    </div>
+                </div>
                 <!--FinSitStatus-->
                 <div class="row marginTop30" ng-if="vm.isFinanzielleSituationRequired() && !vm.isGesuchsteller()">
                     <div class="col-xs-12 dv-input-container-medium">
