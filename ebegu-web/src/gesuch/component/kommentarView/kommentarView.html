@@ -73,7 +73,7 @@
             <div class="kommentar-padding">
                 <dv-loading-button button-click="vm.freigebenSTV()" button-class="centered-btn" type="submit"
                                    aria-label="{{vm.getFreigabeName()}}">
-                    <span ng-bind="vm.getFreigabeName()"></span>
+                    <span class="uppercase" ng-bind="vm.getFreigabeName()"></span>
                 </dv-loading-button>
             </div>
         </div>
@@ -94,7 +94,7 @@
                 </dv-input-container>
             </div>
 
-            <div ng-if="!vm.isGesuchUnsaved()" class="kommentar-padding">
+            <div ng-if="!vm.isGesuchUnsaved()" class="kommentar-padding uppercase">
                 <div ng-if="vm.hasPapiergesuch()" ng-click="vm.download()" class="dv-btn kommentar-button">
                     <span data-translate="PAPIERGESUCH_OEFFNEN"></span>
                 </div>

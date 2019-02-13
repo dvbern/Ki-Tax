@@ -91,8 +91,10 @@
                                 <th class="text-right betrag" data-translate="ANSPRUCH"></th>
                                 <th class="text-right betrag" data-translate="VERGUENSTIGT"></th>
                                 <th class="text-right betrag" data-translate="VOLLKOSTEN"></th>
-                                <th class="text-right betrag" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
-                                <th class="text-right betrag result gutschein" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
+                                <th class="text-right betrag"
+                                    data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
+                                <th class="text-right betrag result gutschein"
+                                    data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th class="text-right betrag result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th class="text-right betrag result" data-translate="VERGUENSTIGUNG"></th>
                             </tr>
@@ -107,13 +109,16 @@
                                     ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
                                 <!-- Effektives Betreuungspensum -->
                                 <td class="text-right"><span
-                                    ng-bind="verfuegungZeitabschnitt.betreuungspensum"></span>%</td>
+                                    ng-bind="verfuegungZeitabschnitt.betreuungspensum"></span>%
+                                </td>
                                 <!-- Anspruchberechtigtes Pensum -->
                                 <td class="text-right"><span
-                                    ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"></span>%</td>
+                                    ng-bind="verfuegungZeitabschnitt.anspruchberechtigtesPensum"></span>%
+                                </td>
                                 <!-- Vergünstigtes Pensum -->
                                 <td class="text-right"><span
-                                    ng-bind="verfuegungZeitabschnitt.bgPensum"></span>%</td>
+                                    ng-bind="verfuegungZeitabschnitt.bgPensum"></span>%
+                                </td>
                                 <!-- Kosten -->
                                 <td class="text-right"
                                     ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"></td>
@@ -204,49 +209,45 @@
                 </div>
 
                 <!-- Navigation Buttons -->
-                <div class="dv-navigation dv-navigation--verfuegen">
-                    <dv-navigation dv-cancel="vm.cancel()" dv-next="false" dv-sub-step="2">
-                    </dv-navigation>
-                    <div class="dv-navigation-flex"
-                         dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
-                        <div class="dv-navigation-item"
-                             ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()">
-                            <dv-loading-button type="submit" button-click="vm.save()">
-                                <span data-translate="VERFUEGEN_UPPER"></span>
-                            </dv-loading-button>
-                        </div>
-                        <div class="dv-navigation-item"
-                             ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
-                            <dv-loading-button type="submit"
-                                               button-click="vm.nichtEintreten()">
-                                <span data-translate="VERFUEGEN_NICHT_EINTRETEN_UPPER"></span>
-                            </dv-loading-button>
-                        </div>
-                        <div class="dv-navigation-item"
-                             ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
+                <div class="dv-navigation dv-navigation-flex">
+                    <span class="ie11-fix" dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
+                        <dv-loading-button type="submit"
+                                           button-click="vm.save()"
+                                           ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()"
+                                           class="dv-navigation-item">
+                            <span class="uppercase" data-translate="VERFUEGEN"></span>
+                        </dv-loading-button>
+                        <dv-loading-button type="submit"
+                                           button-click="vm.nichtEintreten()"
+                                           ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
+                            <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
+                        </dv-loading-button>
+                        <div ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()"
                                                ng-if="!vm.disableAblehnen()">
-                                <span data-translate="VERFUEGEN_ABLEHNEN_UPPER"></span>
+                                <span class="uppercase" data-translate="VERFUEGEN_ABLEHNEN"></span>
                             </dv-loading-button>
                         </div>
-                        <div class="dv-navigation-item"
-                             ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
+                        <div ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()">
-                                <span data-translate="VERFUEGEN_VERZICHTEN_UPPER"></span>
+                                <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
                             </dv-loading-button>
                         </div>
-                        <div class="dv-navigation-item"
-                             ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
+                        <div ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
                             <dv-loading-button type="submit" button-click="vm.save()">
-                                <span data-translate="TROTZDEM_VERFUEGEN_UPPER"></span>
+                                <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
                             </dv-loading-button>
                         </div>
-                    </div>
+                    </span>
+                    <span>
+                        <dv-navigation container-class="avoid" dv-cancel="vm.cancel()" dv-next="false" dv-sub-step="2">
+                        </dv-navigation>
+                    </span>
                 </div>
 
             </form>
