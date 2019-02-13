@@ -319,6 +319,16 @@ export default class TSGesuch extends TSAbstractAntragEntity {
         return this.checkForBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
     }
 
+    public hasBerechenbareBetreuungen(): boolean {
+        return this.checkForBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT)
+            || this.checkForBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
+    }
+
+    public hasNichtBerechenbareBetreuungen(): boolean {
+        return this.checkForBetreuungsstatus(TSBetreuungsstatus.ABGEWIESEN)
+            || this.checkForBetreuungsstatus(TSBetreuungsstatus.WARTEN);
+    }
+
     public checkForBetreuungsstatus(status: TSBetreuungsstatus): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
