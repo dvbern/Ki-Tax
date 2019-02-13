@@ -643,7 +643,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             } else {
                 this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
                     title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
-                    deleteText: 'Möchten Sie die Betreuung trotzdem speichern?',
+                    deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
                     cancelText: 'LABEL_ABBRECHEN',
                     confirmText: 'LABEL_SPEICHERN',
                 })
@@ -661,21 +661,25 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * creates a Betreuungspensum for the whole period
      */
     public saveProvisorischeBetreuung(): void {
-        if (this.isGesuchValid()) {
-            if (this.getBetreuungModel().keineKesbPlatzierung) {
-                this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-            } else {
-                this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
-                    title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
-                    deleteText: 'Möchten Sie die Betreuung trotzdem speichern?',
-                    cancelText: 'LABEL_ABBRECHEN',
-                    confirmText: 'LABEL_SPEICHERN',
-                })
-                    .then(() => {   // User confirmed removal
-                        this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
-                    });
-            }
+        if (!this.isGesuchValid()) {
+            return;
         }
+        if (this.getBetreuungModel().keineKesbPlatzierung) {
+            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            return;
+        }
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+            title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+            deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+            cancelText: 'LABEL_ABBRECHEN',
+            confirmText: 'LABEL_SPEICHERN',
+        })
+            .then(() => {   // User confirmed removal
+                this.save(
+                    TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
+                    GESUCH_BETREUUNGEN,
+                    {gesuchId: this.getGesuchId()});
+            });
     }
 
     public platzBestaetigen(): void {

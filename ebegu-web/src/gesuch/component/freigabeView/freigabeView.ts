@@ -32,7 +32,6 @@ import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
-import {TSBetreuungsstatus} from "../../../models/enums/TSBetreuungsstatus";
 
 const dialogTemplate = require('../../dialog/removeDialogTemplate.html');
 
@@ -160,9 +159,9 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         return '';
     }
 
-    public hasProvisorischeBerechnungen(): boolean {
+    public hasBerechenbareBetreuungen(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
-        return (gesuch && gesuch.hasProvisorischeBerechnungen());
+        return (gesuch && gesuch.hasBerechenbareBetreuungen());
     }
 
     public getTextForFreigebenNotAllowed(): string {

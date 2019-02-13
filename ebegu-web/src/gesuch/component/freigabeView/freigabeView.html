@@ -75,11 +75,10 @@
                     <span data-translate="{{vm.getTextForFreigebenNotAllowed()}}"></span>
                 </div>
             </div>
-            <div class="row" ng-if="vm.hasProvisorischeBerechnungen()">
+            <div class="row" ng-if="vm.hasBerechenbareBetreuungen()">
                 <div class="col-md-12">
-                    <span data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN_1"></span>
-                    <a ui-sref="gesuch.verfuegen({gesuchId: vm.getGesuchId()})" data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN_2"></a>
-                    <span data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN_3"></span>
+                    <span data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN"></span>
+                    <a ui-sref="gesuch.verfuegen({gesuchId: vm.getGesuchId()})" data-translate="PROVISORISCHE_BERECHNUNG_ANZEIGEN_LINK"></a>
                 </div>
             </div>
             <div class="marginTop40" ng-if="vm.isThereAnyAbgewieseneBetreuung()">
@@ -157,9 +156,8 @@
                                aria-label="{{'ANTRAG_EINREICHEN' | translate}}"
                                ng-if="vm.isNotFreigegeben()"
                                button-disabled="!vm.canBeFreigegeben()">
-            <span data-translate="ANTRAG_EINREICHEN">
-
-            </span>
+				<span data-translate="ANTRAG_EINREICHEN">
+				</span>
             </dv-loading-button>
         </span>
         <span>
