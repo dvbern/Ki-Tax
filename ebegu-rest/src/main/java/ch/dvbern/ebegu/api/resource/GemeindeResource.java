@@ -272,7 +272,7 @@ public class GemeindeResource {
 		boolean eingeladen = GemeindeStatus.EINGELADEN == jaxStammdaten.getGemeinde().getStatus();
 		jaxStammdaten.getKonfigurationsListe().forEach(konfiguration -> {
 			if (eingeladen) {
-				// TODO KIBON-360
+				// KIBON-360: die Konfiguration in der aktuellen und in allen zukünftigen Gesuchsperioden speichern
 				saveAllFutureJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
 			} else if (GesuchsperiodeStatus.ENTWURF == konfiguration.getGesuchsperiodeStatus()) {
 				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
