@@ -161,6 +161,8 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterFor
 @Local(ReportService.class)
 public class ReportServiceBean extends AbstractReportServiceBean implements ReportService {
 
+	private static final String NO_USER_IS_LOGGED_IN = "No User is logged in";
+
 	@Inject
 	private BenutzerService benutzerService;
 
@@ -224,6 +226,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private GesuchService gesuchService;
 
 
+	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
@@ -245,7 +248,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("stichTagDate", Constants.SQL_DATE_FORMAT.format(date.plusDays(1)));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
-		final List<String> berechtigteGemeinden = getCommaSeparatedListOfBerechtigteGemeinden();
+		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
 		// pass a boolean param to indicate if it has to take all Gemeinden are just those of the user
 		// this is easier than checking the list within the sql-query
 		query.setParameter("allGemeinden", berechtigteGemeinden == null);
@@ -254,9 +257,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Nullable
-	private List<String> getCommaSeparatedListOfBerechtigteGemeinden() {
+	private List<String> getListOfBerechtigteGemeinden() {
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getCommaSeparatedListOfBerechtigteGemeinden", "User not logged in"));
+			"getListOfBerechtigteGemeinden", "User not logged in"));
 
 		if (!benutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			return null;
@@ -307,12 +310,12 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			getContentTypeForExport());
 	}
 
+	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR,
-		ADMIN_TRAEGERSCHAFT,
-		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
@@ -337,7 +340,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("toDate", Constants.SQL_DATE_FORMAT.format(dateBis));
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
-		query.setParameter("gemeindeIdList", getCommaSeparatedListOfBerechtigteGemeinden());
+		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
+		// pass a boolean param to indicate if it has to take all Gemeinden are just those of the user
+		// this is easier than checking the list within the sql-query
+		query.setParameter("allGemeinden", berechtigteGemeinden == null);
+		query.setParameter("gemeindeIdList", berechtigteGemeinden);
 
 		return query.getResultList();
 	}
@@ -399,7 +406,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		validateDateParams(datumVon, datumBis);
 
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
+			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", NO_USER_IS_LOGGED_IN));
 
 		Collection<Gesuchsperiode> relevanteGesuchsperioden =
 			gesuchsperiodeService.getGesuchsperiodenBetween(datumVon, datumBis);
@@ -553,7 +560,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	private List<Tuple> getAllVerantwortlicheGesuche() {
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", "No User is logged in"));
+			"getGepruefteFreigegebeneGesucheForGesuchsperiodeTuples", NO_USER_IS_LOGGED_IN));
 
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Tuple> query = builder.createTupleQuery();
@@ -622,7 +629,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Nonnull
 	private List<Tuple> getAllVerfuegteGesuche(LocalDate datumVon, LocalDate datumBis) {
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getAllVerfuegteGesuche", "No User is logged in"));
+			"getAllVerfuegteGesuche", NO_USER_IS_LOGGED_IN));
 
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Tuple> query = builder.createTupleQuery();
@@ -976,7 +983,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		validateDateParams(datumVon, datumBis);
 
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getReportDataBetreuungen", "No User is logged in"));
+			"getReportDataBetreuungen", NO_USER_IS_LOGGED_IN));
 
 		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
 		// verfuegte.
@@ -1066,7 +1073,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		validateStichtagParam(stichtag);
 
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getReportDataBetreuungen", "No User is logged in"));
+			"getReportDataBetreuungen", NO_USER_IS_LOGGED_IN));
 
 		// Alle Verfuegungszeitabschnitte zwischen datumVon und datumBis. Aber pro Fall immer nur das zuletzt
 		// verfuegte.
