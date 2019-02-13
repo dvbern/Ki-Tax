@@ -45,8 +45,6 @@
                                     <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN"
                                           data-translate-values="{{vm.basisJahrUndPeriode}}"></span>
                                 </span>
-                                    <dv-tooltip
-                                        text="'EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN_HELP' | translate"></dv-tooltip>
                                     <dv-radio-container name="einkommensverschlechterung"
                                                         ng-model="vm.getEinkommensverschlechterungsInfo().einkommensverschlechterung"
                                                         ng-required="true" class="radio input-element"
@@ -65,7 +63,7 @@
 
                         <!-- Auswahl Basisjahr Plus 1 -->
                         <div class="row">
-                            <div class="form-group col-xs-12 dv-input-container-question" ng-if="vm.showEkvi()">
+                            <div class="form-group no-margin col-xs-12 dv-input-container-question" ng-if="vm.showEkvi()">
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus1"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1"
@@ -75,7 +73,6 @@
                                    <span data-translate="EKVI_FUER_JAHR"
                                          translate-values="{basisjahr: vm.getBasisJahrPlusAsString(0)}"></span>
                                     </md-checkbox>
-                                    <dv-tooltip text="'EKVI_MONAT_DES_EREIGNISSES_1_HELP' | translate"></dv-tooltip>
                                     <div class="dv-error-messages">
                                         <div ng-messages="vm.form.ekvFuerBasisJahrPlus1.$error"
                                              role="alert"
@@ -114,7 +111,7 @@
                         </div>
 
                         <!--Grund für BasisJahr plus 1-->
-                        <div class="row marginBottom20">
+                        <div class="row">
                             <div class="form-group col-sm-12 dv-input-container-medium"
                                  ng-if="vm.showEkvi() && vm.showJahrPlus1()">
                                 <dv-input-container class="form-group">
@@ -138,7 +135,7 @@
                         </div>
 
                         <!-- Ablehnung durch JA fuer Basisjahr plus 1 -->
-                        <div class="row marginBottom20"
+                        <div class="row"
                              ng-if="vm.showAblehnungBasisJahrPlus1()">
                             <div class="form-group col-sm-12 dv-input-container-medium">
                                 <div class="checkbox">
@@ -157,7 +154,7 @@
 
                         <!-- Auswahl Basisjahr Plus 2 -->
                         <div class="row">
-                            <div class="form-group col-sm-12 dv-input-container-question" ng-if="vm.showEkvi()">
+                            <div class="form-group no-margin col-sm-12 dv-input-container-question" ng-if="vm.showEkvi()">
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus2"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2"
@@ -167,7 +164,6 @@
                                     <span data-translate="EKVI_FUER_JAHR"
                                           translate-values="{basisjahr: vm.getBasisJahrPlusAsString(1)}"></span>
                                     </md-checkbox>
-                                    <dv-tooltip text="'EKVI_MONAT_DES_EREIGNISSES_2_HELP' | translate"></dv-tooltip>
                                     <div class="dv-error-messages">
                                         <div ng-messages="vm.form.ekvFuerBasisJahrPlus2.$error" role="alert"
                                              class="error">
@@ -231,7 +227,7 @@
 
 
                         <!-- Ablehnung durch JA fuer Basisjahr plus 2 -->
-                        <div class="row marginBottom20"
+                        <div class="row"
                              ng-if="vm.showAblehnungBasisJahrPlus2()">
                             <div class="form-group col-sm-12 dv-input-container-medium">
                                 <div class="checkbox">

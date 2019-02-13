@@ -175,7 +175,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setTyp(AntragTyp.MUTATION);
-		gesuch.setEingangsdatum(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.DECEMBER, 26));
+		gesuch.setEingangsdatum(LocalDate.of(TestDataUtil.PERIODE_JAHR_0, Month.DECEMBER, 26));
 
 		from1GSTo2GS(betreuung, gesuch);
 
@@ -389,10 +389,13 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertEquals(15, result.get(0).getErwerbspensumGS1().intValue());
-		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		assertFalse(result.get(0).isBezahltVollkosten());
-		assertFalse(result.get(0).getBemerkungen().isEmpty());
+		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
+		assertNotNull(verfuegungZeitabschnitt.getErwerbspensumGS1());
+		assertEquals(15, verfuegungZeitabschnitt.getErwerbspensumGS1().intValue());
+		assertEquals(0, verfuegungZeitabschnitt.getAnspruchberechtigtesPensum());
+		assertFalse(verfuegungZeitabschnitt.isBezahltVollkosten());
+		assertNotNull(verfuegungZeitabschnitt.getBemerkungen());
+		assertFalse(verfuegungZeitabschnitt.getBemerkungen().isEmpty());
 	}
 
 	private Betreuung createGesuch(final boolean gs2) {

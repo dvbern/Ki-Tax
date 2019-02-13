@@ -106,7 +106,10 @@ export class ErwerbspensumListViewController
     private setShowInfoAusserordentlichenAnspruchIfPossible(): void {
         this.gesuchModelManager.showInfoAusserordentlichenAnspruch().then((resp: any) => {
             this.showInfoAusserordentlichenAnspruch = JSON.parse(resp);
-            this.showInfoAusserordentlichenAnspruch = this.showInfoAusserordentlichenAnspruch && !this.isSaveDisabled();
+            this.showInfoAusserordentlichenAnspruch =
+                this.showInfoAusserordentlichenAnspruch
+                && !this.gesuchModelManager.getGesuch().allKindHaveAusserordentlicherAnspruch()
+                && !this.isSaveDisabled();
         });
     }
 

@@ -1022,6 +1022,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setLaufnummer(antragJAXP.getLaufnummer());
 		antrag.setGesuchBetreuungenStatus(antragJAXP.getGesuchBetreuungenStatus());
 		antrag.setGeprueftSTV(antragJAXP.isGeprueftSTV());
+		antrag.setVerfuegungEingeschrieben(antragJAXP.isVerfuegungEingeschrieben());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
@@ -1185,6 +1186,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuch.setLaufnummer(persistedGesuch.getLaufnummer());
 		jaxGesuch.setGesuchBetreuungenStatus(persistedGesuch.getGesuchBetreuungenStatus());
 		jaxGesuch.setGeprueftSTV(persistedGesuch.isGeprueftSTV());
+		jaxGesuch.setVerfuegungEingeschrieben(persistedGesuch.isVerfuegungEingeschrieben());
 		jaxGesuch.setGesperrtWegenBeschwerde(persistedGesuch.isGesperrtWegenBeschwerde());
 		jaxGesuch.setDatumGewarntNichtFreigegeben(persistedGesuch.getDatumGewarntNichtFreigegeben());
 		jaxGesuch.setDatumGewarntFehlendeQuittung(persistedGesuch.getDatumGewarntFehlendeQuittung());
@@ -3986,6 +3988,12 @@ public class JaxBConverter extends AbstractConverter {
 			throw new IllegalArgumentException("Die Korrespondenzsprache muss gesetzt sein");
 		}
 
+		stammdaten.setKontoinhaber(jaxStammdaten.getKontoinhaber());
+		stammdaten.setBic(jaxStammdaten.getBic());
+		if (jaxStammdaten.getIban() != null) {
+			stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
+		}
+
 		return stammdaten;
 	}
 
@@ -4047,6 +4055,12 @@ public class JaxBConverter extends AbstractConverter {
 					gesuchsperiode));
 			}
 		}
+		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
+		jaxStammdaten.setBic(stammdaten.getBic());
+		if(stammdaten.getIban() != null) {
+			jaxStammdaten.setIban(stammdaten.getIban().getIban());
+		}
+
 
 		return jaxStammdaten;
 	}

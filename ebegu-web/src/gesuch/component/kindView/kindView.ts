@@ -14,7 +14,6 @@
  */
 
 import {IComponentOptions} from 'angular';
-import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
@@ -309,8 +308,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
     }
 
-    public getDatumEinschulung(): moment.Moment {
-        return this.gesuchModelManager.getGesuchsperiodeBegin();
+    public getYearEinschulung(): number {
+        return this.gesuchModelManager.getGesuchsperiodeBegin().year();
     }
 
     public getTextFachstelleKorrekturJA(): string {
