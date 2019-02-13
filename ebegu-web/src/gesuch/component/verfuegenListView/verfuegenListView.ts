@@ -255,7 +255,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     }
 
-    public hasNonProvisorischeBerechnungen(): boolean {
+    public hasNichtBerechenbareBetreuungen(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
         return (gesuch && gesuch.hasNichtBerechenbareBetreuungen());
     }
