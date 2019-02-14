@@ -268,16 +268,10 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetReportMitarbeiterinnen() throws Exception {
-		final List<MitarbeiterinnenDataRow> reportMitarbeiterinnen = reportService.getReportMitarbeiterinnen(LocalDate.of(1000, 1, 1), TestDataUtil.ENDE_PERIODE);
-		Assert.assertNotNull(reportMitarbeiterinnen);
-		Assert.assertEquals(2, reportMitarbeiterinnen.size());
+		final List<MitarbeiterinnenDataRow> reportMitarbeiterinnen = reportService
+			.getReportMitarbeiterinnen(LocalDate.of(1000, 1, 1), LocalDate.now());
 
-//		reportMitarbeiterinnen.sort( new Comparator<MitarbeiterinnenDataRow>() {
-//			@Override
-//			public int compare(MitarbeiterinnenDataRow o1, MitarbeiterinnenDataRow o2) {
-//				return o1.getName().compareTo(o2.getName());
-//			}
-//		});
+		Assert.assertEquals(3, reportMitarbeiterinnen.size());
 
 		//case with only Gesuche als Verantwortlicher
 		MitarbeiterinnenDataRow maBlaser = reportMitarbeiterinnen.get(0);

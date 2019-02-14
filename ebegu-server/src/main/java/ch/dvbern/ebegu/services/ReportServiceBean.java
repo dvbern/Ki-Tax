@@ -573,7 +573,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			dossierJoin.join(Dossier_.verantwortlicherBG, JoinType.INNER);
 		SetJoin<Benutzer, Berechtigung> verantwortlicherBerechtigungenJoin =
 			verantwortlicherJoin.join(Benutzer_.berechtigungen, JoinType.INNER);
-		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin = verantwortlicherBerechtigungenJoin.join(Berechtigung_.gemeindeList, JoinType.INNER);
+		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin = verantwortlicherBerechtigungenJoin
+			.join(Berechtigung_.gemeindeList, JoinType.LEFT);
 
 		query.multiselect(
 			verantwortlicherJoin.get(AbstractEntity_.id).alias(AbstractEntity_.id.getName()),
@@ -606,14 +607,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			UserRole.ADMIN_GEMEINDE,
 			UserRole.SACHBEARBEITER_GEMEINDE);
 
+		Predicate isRolleCorrect =
+			verantwortlicherBerechtigungenJoin.get(Berechtigung_.role).in(requiredRoles);
+		predicates.add(isRolleCorrect);
+
 		if (principalBean.discoverMostPrivilegedRole() != UserRole.SUPER_ADMIN) {
 			// for others than superadmin, Superadmin cannot be listed
 			predicates.add(builder.notEqual(verantwortlicherBerechtigungenJoin.get(Berechtigung_.role), UserRole.SUPER_ADMIN));
 		}
-
-		Predicate isRolleCorrect =
-			verantwortlicherBerechtigungenJoin.get(Berechtigung_.role).in(requiredRoles);
-		predicates.add(isRolleCorrect);
 
 		// Nur Benutzer von Gemeinden, fuer die ich berechtigt bin
 		setGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
@@ -639,7 +640,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		final Join<AntragStatusHistory, Benutzer> benutzerJoin =
 			root.join(AntragStatusHistory_.benutzer, JoinType.INNER);
 		SetJoin<Benutzer, Berechtigung> joinBerechtigungen = benutzerJoin.join(Benutzer_.berechtigungen);
-		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin = joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.INNER);
+		SetJoin<Berechtigung, Gemeinde> gemeindeSetJoin = joinBerechtigungen
+			.join(Berechtigung_.gemeindeList, JoinType.LEFT);
 
 		query.multiselect(
 			benutzerJoin.get(AbstractEntity_.id).alias(AbstractEntity_.id.getName()),
