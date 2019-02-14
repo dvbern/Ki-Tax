@@ -55,8 +55,10 @@ public class Testfall02_FeutzYvonne extends AbstractTestfall {
 		// Gesuch, Gesuchsteller
 		gesuch = createVerheiratet();
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
+		gesuchsteller1.getGesuchstellerJA().setGeschlecht(Geschlecht.WEIBLICH);
 		gesuch.setGesuchsteller1(gesuchsteller1);
 		GesuchstellerContainer gesuchsteller2 = createGesuchstellerContainer(FAMILIENNAME, "Tizian");
+		gesuchsteller2.getGesuchstellerJA().setGeschlecht(Geschlecht.MAENNLICH);
 		gesuch.setGesuchsteller2(gesuchsteller2);
 		// Erwerbspensum
 		ErwerbspensumContainer erwerbspensumGS1 = createErwerbspensum(40);

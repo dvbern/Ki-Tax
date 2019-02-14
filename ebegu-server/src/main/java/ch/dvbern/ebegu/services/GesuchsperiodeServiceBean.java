@@ -22,7 +22,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -32,6 +31,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -195,6 +196,25 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	}
 
 	@Override
+	@PermitAll
+	public Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key) {
+		List<Gesuchsperiode> gesuchsperioden = null;
+		Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(key);
+		if (gesuchsperiode.isPresent()) {
+			LocalDate datumVon = gesuchsperiode.get().getGueltigkeit().getGueltigAb();
+			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+			final CriteriaQuery<Gesuchsperiode> query = cb.createQuery(Gesuchsperiode.class);
+			Root<Gesuchsperiode> root = query.from(Gesuchsperiode.class);
+			Path<DateRange> dateRangePath = root.get(AbstractDateRangedEntity_.gueltigkeit);
+			Predicate predicateVon = cb.greaterThanOrEqualTo(dateRangePath.get(DateRange_.gueltigAb), datumVon);
+			query.where(predicateVon);
+			query.orderBy(cb.desc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
+			gesuchsperioden = persistence.getCriteriaResults(query);
+		}
+		return gesuchsperioden;
+	}
+
+	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@RolesAllowed(SUPER_ADMIN)
 	public void removeGesuchsperiode(@Nonnull String gesuchsPeriodeId) {
@@ -277,22 +297,39 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Nonnull
 	@PermitAll
 	public Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(
-		@Nullable String dossierId) {
-		Dossier dossier = persistence.find(Dossier.class, dossierId);
-
-		if (dossier == null) {
-			throw new EbeguEntityNotFoundException("getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden",
-				ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, dossierId);
-		}
-
+		@Nonnull String dossierId
+	) {
+		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() ->
+			new EbeguEntityNotFoundException("getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden",
+				ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, dossierId)
+		);
 		final Collection<Gesuchsperiode> nichtAbgeschlossenePerioden = getAllNichtAbgeschlosseneGesuchsperioden();
-		if (!nichtAbgeschlossenePerioden.isEmpty()) {
+
+		filterAllGesuchperiodenForDossier(dossier, nichtAbgeschlossenePerioden);
+		return nichtAbgeschlossenePerioden;
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Gesuchsperiode> getAllAktiveNichtVerwendeteGesuchsperioden(@Nonnull String dossierId) {
+		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() ->
+			new EbeguEntityNotFoundException("getAllAktiveNichtVerwendeteGesuchsperioden",
+				ErrorCodeEnum.ERROR_PARAMETER_NOT_FOUND, dossierId)
+		);
+		final Collection<Gesuchsperiode> aktivePerioden = getAllActiveGesuchsperioden();
+
+		filterAllGesuchperiodenForDossier(dossier, aktivePerioden);
+		return aktivePerioden;
+	}
+
+	private void filterAllGesuchperiodenForDossier(@Nonnull Dossier dossier, @Nonnull Collection<Gesuchsperiode> perioden) {
+		if (!perioden.isEmpty()) {
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 			Root<Gesuch> root = query.from(Gesuch.class);
 			Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
-			Predicate gesuchsperiodePredicate = root.get(Gesuch_.gesuchsperiode).in(nichtAbgeschlossenePerioden);
+			Predicate gesuchsperiodePredicate = root.get(Gesuch_.gesuchsperiode).in(perioden);
 			// Es interessieren nur die Gesuche, die entweder Papier oder Online und freigegeben sind, also keine, die
 			// in Bearbeitung GS sind.
 
@@ -303,10 +340,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			// Die Gesuchsperioden, die jetzt in der Liste sind, sind sicher besetzt (eventuell noch weitere, sprich
 			// Online-Gesuche)
 			for (Gesuch criteriaResult : criteriaResults) {
-				nichtAbgeschlossenePerioden.remove(criteriaResult.getGesuchsperiode());
+				perioden.remove(criteriaResult.getGesuchsperiode());
 			}
 		}
-		return nichtAbgeschlossenePerioden;
 	}
 
 	private Collection<Gesuchsperiode> getGesuchsperiodenImStatus(GesuchsperiodeStatus... status) {

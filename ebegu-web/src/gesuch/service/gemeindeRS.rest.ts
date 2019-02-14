@@ -22,6 +22,7 @@ import {switchMap} from 'rxjs/operators';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import AuthServiceRS from '../../authentication/service/AuthServiceRS.rest';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
+import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSBfsGemeinde from '../../models/TSBfsGemeinde';
 import TSGemeinde from '../../models/TSGemeinde';
@@ -94,7 +95,7 @@ export default class GemeindeRS implements IEntityRS {
             return of([]); // empty list for unknown user
         }
 
-        if (TSRoleUtil.isGemeindeRole(user.getCurrentRole())) {
+        if (TSRoleUtil.isGemeindeRole(user.getCurrentRole()) && TSRole.SUPER_ADMIN !== user.getCurrentRole()) {
             return of(angular.copy(user.extractCurrentGemeinden()));
         }
 

@@ -17,22 +17,25 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.util.ServerMessageUtil;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.lib.invoicegenerator.dto.PageConfiguration;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfElementGenerator;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities;
-import com.lowagie.text.*;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
-import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.*;
 
 public class FinanzielleSituationTable {
 
@@ -43,15 +46,17 @@ public class FinanzielleSituationTable {
 	private int numberOfTitleRows = 1;
 	private boolean lastLineBold = false;
 	private List<FinanzielleSituationRow> rows = new ArrayList<>();
+	private PageConfiguration pageConfiguration;
 
 	private boolean hasSecondGesuchsteller;
 
-	public FinanzielleSituationTable(boolean hasSecondGesuchsteller, boolean lastLineBold) {
-		this(hasSecondGesuchsteller);
+	public FinanzielleSituationTable(PageConfiguration pageConfiguration, boolean hasSecondGesuchsteller, boolean lastLineBold) {
+		this(pageConfiguration, hasSecondGesuchsteller);
 		this.lastLineBold = lastLineBold;
 	}
 
-	public FinanzielleSituationTable(boolean hasSecondGesuchsteller) {
+	public FinanzielleSituationTable(PageConfiguration pageConfiguration, boolean hasSecondGesuchsteller) {
+		this.pageConfiguration = pageConfiguration;
 		this.hasSecondGesuchsteller = hasSecondGesuchsteller;
 		final float[] width1Gs = {14,4};
 		final float[] width2Gs = {10,4,4};
@@ -80,13 +85,13 @@ public class FinanzielleSituationTable {
 		} catch (DocumentException e) {
 			LOG.error("Failed to set the width: {}", e.getMessage());
 		}
-		table.setWidthPercentage(FULL_WIDTH);
+		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setHeaderRows(numberOfTitleRows);
 		for (int i = 0; i < rows.size(); i++) {
 			boolean isHeader = i < numberOfTitleRows;
 			boolean isFooter = lastLineBold && i == rows.size() - 1;
 			Color bgColor = isHeader ? Color.LIGHT_GRAY : Color.WHITE;
-			Font font = isFooter ? DEFAULT_FONT_BOLD : DEFAULT_FONT;
+			Font font = isFooter ? pageConfiguration.getFontBold() : pageConfiguration.getFont();
 
 			FinanzielleSituationRow row = rows.get(i);
 			addRow(table, row, font, bgColor);
@@ -108,7 +113,7 @@ public class FinanzielleSituationTable {
 			phrase.add(PdfUtil.createSuperTextInText(supertext));
 		}
 		if (originalValue != null) {
-			Font fontWithSize = PdfUtilities.createFontWithSize(6);
+			Font fontWithSize = PdfUtilities.createFontWithSize(pageConfiguration.getFont(), 6);
 			fontWithSize.setColor(Color.GRAY);
 			phrase.add(
 				new Chunk(

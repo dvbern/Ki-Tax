@@ -76,6 +76,7 @@
 
         .textContainer {
             display: inline-block;
+            padding-left: 1rem;
         }
 
         #closeButton {
@@ -133,25 +134,44 @@
 <body style="margin: 50px;">
 <!--Anhand der id='spinnerCont' wird in downloadRS.rest.ts#hideSpinner der spinner versteckt-->
 
-
 <div class="filedownload">
-    <h1>Filedownload</h1>
+    <h1 id="spinnerTitle"></h1>
     <hr/>
     <div style="vertical-align: top; margin-top: 37px">
-        <div id="spinnerCont" class="loader">
-        </div>
-        <div class="textContainer">
-            <p>Das gew&uuml;nschte Dokument wird aufbereitet und angezeigt / heruntergeladen.</p>
-            <p>Sie k&ouml;nnen dieses Fenster nach dem Herunterladen schliessen.</p>
-        </div>
+        <div id="spinnerCont" class="loader"></div>
     </div>
+    <br>
+    <div class="textContainer">
+        <span id="spinnerText"></span>
+    </div>
+
 
     <div class="btnContainer">
         <button id="closeButton" type="button" aria-label="Download Fenster schliessen">
-            <span>Fenster schliessen</span>
+            <span id="buttonText"></span>
         </button>
     </div>
 </div>
+
+
+<script type="text/javascript">
+
+    function getGETValueFromURL(search_for) {
+        var query = window.location.search.substring(1);
+        var parms = query.split('&');
+        for (var i = 0; i < parms.length; i++) {
+            var pos = parms[i].indexOf('=');
+            if (pos > 0 && search_for === parms[i].substring(0, pos)) {
+                return parms[i].substring(pos + 1);
+            }
+        }
+        return "";
+    }
+
+    // we set the default texts from the url.
+    document.getElementById("spinnerText").innerHTML = decodeURIComponent(getGETValueFromURL("spinnerTextLoading"));
+    document.getElementById("spinnerTitle").innerHTML = decodeURIComponent(getGETValueFromURL("spinnerTitle"));
+</script>
 
 </body>
 </html>

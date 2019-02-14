@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
@@ -360,7 +361,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	}
 
 	private void addFinanzielleSituationDoc(Gesuch gesuch, List<InputStream> docsToMerge) throws MergeDocException {
-		if (gesuch.isHasFSDokument()) {
+		if (EbeguUtil.isFinanzielleSituationRequired(gesuch) && gesuch.getFinSitStatus() == FinSitStatus.AKZEPTIERT) {
 			byte[] finanzielleSituation = readFileIfExists(GeneratedDokumentTyp.FINANZIELLE_SITUATION, gesuch.getJahrFallAndGemeindenummer(), gesuch);
 			if (finanzielleSituation.length > 0) {
 				docsToMerge.add(new ByteArrayInputStream(finanzielleSituation));

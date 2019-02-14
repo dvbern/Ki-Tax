@@ -211,7 +211,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	private boolean geprueftSTV = false;
 
 	@Column(nullable = false)
-	private boolean hasFSDokument = true;
+	private boolean verfuegungEingeschrieben = false;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
@@ -452,12 +452,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		this.geprueftSTV = geprueftSTV;
 	}
 
-	public boolean isHasFSDokument() {
-		return hasFSDokument;
+	public boolean isVerfuegungEingeschrieben() {
+		return verfuegungEingeschrieben;
 	}
 
-	public void setHasFSDokument(boolean hasFSDokument) {
-		this.hasFSDokument = hasFSDokument;
+	public void setVerfuegungEingeschrieben(boolean verfuegungEingeschrieben) {
+		this.verfuegungEingeschrieben = verfuegungEingeschrieben;
 	}
 
 	public boolean isGesperrtWegenBeschwerde() {
@@ -719,8 +719,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (null != getRegelnGueltigAb()) {
 			return getRegelnGueltigAb();
 		}
+		if (getEingangsdatum() == null
+			&& getEingangsart() == Eingangsart.ONLINE) {
+			// damit die prov. Berechnung korrekt funktioniert, wird als default das heutige Datum gesetzt
+			// falls es ein Online Gesuch ist. If it doesn't have any prov. Berechnung too
+			return LocalDate.now();
+		}
 		return getEingangsdatum();
 	}
+
 
 	@Nullable
 	public Familiensituation extractFamiliensituation() {
@@ -982,8 +989,11 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (hasSCHAngebote.get()) {
 			return GesuchTypFromAngebotTyp.TS_GESUCH;
 		}
-		// a gesuch with no Angebot will be considered a BG-Gesuch
-		return GesuchTypFromAngebotTyp.BG_GESUCH;
+		if (hasBGAngebote.get()) {
+			return GesuchTypFromAngebotTyp.BG_GESUCH;
+		}
+
+		return GesuchTypFromAngebotTyp.NO_ANGEBOT_GESUCH;
 	}
 
 	@Nullable

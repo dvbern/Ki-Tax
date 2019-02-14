@@ -66,7 +66,6 @@ describe('verfuegenListViewTest', () => {
         spyOn(gesuchModelManager, 'calculateVerfuegungen').and.returnValue($q.when({}));
 
         const gesuchMock = new TSGesuch();
-        gesuchMock.hasFSDokument = false;
         gesuchMock.dossier = new TSDossier();
         gesuchMock.dossier.gemeinde = new TSGemeinde();
         spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuchMock);
@@ -106,6 +105,7 @@ describe('verfuegenListViewTest', () => {
         describe('openVerfuegen', () => {
             it('does not open the betreuung because it is not BESTAETIGT', () => {
                 spyOn(gesuchModelManager, 'findKind').and.returnValue(1);
+                spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(1);
                 const betreuung = new TSBetreuung();
                 betreuung.betreuungsstatus = TSBetreuungsstatus.ABGEWIESEN;
 
