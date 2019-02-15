@@ -126,10 +126,10 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(persitedBetreuung.getId());
 		assertTrue(betreuungOptional.isPresent());
 		Betreuung betreuung = betreuungOptional.get();
-		Assert.assertNotNull(betreuung.getErweiterteBetreuungContainer());
+		assertNotNull(betreuung.getErweiterteBetreuungContainer());
 
 		final ErweiterteBetreuungContainer erweiterteBetreuungCont = persistence.find(ErweiterteBetreuungContainer.class, betreuung.getId());//shared id
-		Assert.assertNotNull(erweiterteBetreuungCont);
+		assertNotNull(erweiterteBetreuungCont);
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
