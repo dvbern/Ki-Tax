@@ -1337,7 +1337,7 @@
     "AUSWAEHLEN": "FR_Auswählen",
     "KIBON": "FR_kiBon",
     "ONBOARDING_BG_BEANTRAGEN": "Demander un bon de garde",
-    "ONBOARDING_GEMEINDE_AUSWAHL": "Des bons de garde sont disponibles dans les communes suivantes :",
+    "ONBOARDING_GEMEINDE_AUSWAHL": "Des bons de garde sont disponibles dans les communes suivantes",
     "ONBOARDING_GEMEINDE_AUSWAEHLEN": "Sélectionner une commune",
     "ONBOARDING_ACCOUNT_VORHANDEN": "Possédez-vous déjà un compte ?",
     "ONBOARDING_ANMELDEN": "Se connecter",
