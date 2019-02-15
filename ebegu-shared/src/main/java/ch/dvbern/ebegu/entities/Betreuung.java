@@ -120,7 +120,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	@NotNull
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
+	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	private ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer(this);
 
 	@Valid
@@ -139,7 +139,7 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	@Nullable
 	@Valid
-	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "betreuung")
+	@OneToOne(optional = true, cascade = CascadeType.REMOVE,  orphanRemoval = true, mappedBy = "betreuung")
 	private Verfuegung verfuegung;
 
 	@Nullable

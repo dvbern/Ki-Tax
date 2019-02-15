@@ -8,7 +8,6 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -18,7 +17,6 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-@Table()
 public class ErweiterteBetreuungContainer extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 4847428166714262413L;
