@@ -169,12 +169,9 @@ public class Kind extends AbstractPersonEntity {
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
-			target.setEinschulungTyp(this.getEinschulungTyp());
-			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
-			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
-			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
+			target.setEinschulungTyp(this.getEinschulungTyp());
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			copyAusserordentlicherAnspruchIfStillValid(target, copyType, gesuchsperiode);
 			break;

@@ -60,6 +60,12 @@ public interface GesuchsperiodeService {
 	Collection<Gesuchsperiode> getAllGesuchsperioden();
 
 	/**
+	 * @param key PK (id) der Gesuchsperiode
+	 * @return Diese und alle zukünftigen Gesuchsperioden
+	 */
+	Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key);
+
+	/**
 	 * Loescht alle Gesuchsperioden inkl. Gesuche und Dokumente, wenn die Gesuchsperiode mehr als 10 Jahre alt ist.
 	 */
 	void removeGesuchsperiode(@Nonnull String gesuchsPeriodeId);
@@ -83,7 +89,14 @@ public interface GesuchsperiodeService {
 	 * Dossier noch kein Gesuch freigegeben hat.
 	 */
 	@Nonnull
-	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nullable String dossierId);
+	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nonnull String dossierId);
+
+	/**
+	 * Gibt alle aktiven Gesuchsperioden zurueck, deren Ende-Datum noch nicht erreicht ist, und für die das angegebene
+	 * Dossier noch kein Gesuch freigegeben hat.
+	 */
+	@Nonnull
+	Collection<Gesuchsperiode> getAllAktiveNichtVerwendeteGesuchsperioden(@Nonnull String dossierId);
 
 	/**
 	 * Gibt die Gesuchsperiode zurueck, welche am uebergebenen Stichtag aktuell war/ist

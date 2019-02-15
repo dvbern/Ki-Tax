@@ -140,15 +140,33 @@ export default class AuthServiceRS {
 
     public burnPortalTimeout(): IPromise<any> {
         return this.getPortalAccountCreationPageLink().then((linktext: string) => {
-            LOG.debug('try to burn timeout page at ' + linktext);
-            if (linktext) {
+
+            if (linktext && this.isBeLoginLink(linktext)) {
+                LOG.debug('Burn BE-Login timeout page at ' + linktext);
                 return this.$http.get(linktext, {withCredentials: true}).then(() =>
-                    LOG.debug('retrieved portal account creation page to burn unwanted timeout warning')
-                );
+                        LOG.debug('retrieved portal account creation page to burn unwanted timeout warning')
+                    , () => LOG.debug(`failed to read ${linktext} during burnrequest but this is expected`));
             }
 
             return this.$q(undefined);
         });
+    }
+
+    /**
+     * helper that checks if a link redirects to be-login by checking if it ends with .be.ch (to include testsystems)
+     * @param link to check
+     */
+    private isBeLoginLink(link: string): boolean {
+        try {
+            if (link) {
+                const parsedURL = new URL(link);
+                return (parsedURL.hostname && parsedURL.hostname.endsWith('.be.ch'));
+            }
+
+        } catch (e) {
+            return false;
+        }
+        return false;
     }
 
     public reloadCurrentUser(): IPromise<TSBenutzer> {

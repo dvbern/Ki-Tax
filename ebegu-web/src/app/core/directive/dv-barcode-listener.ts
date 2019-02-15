@@ -107,8 +107,8 @@ export class DVBarcodeController implements IController {
     }
 
     public barcodeOnKeyPressed(e: any): void {
-
-        const keyPressChar: string = e.key ? e.key : String.fromCharCode(e.which);
+        const key = e.keyCode || e.which || 0;
+        const keyPressChar = String.fromCharCode(key);
 
         if (this.barcodeReading) {
             e.preventDefault();
@@ -157,7 +157,8 @@ export class DVBarcodeController implements IController {
                 this.$log.debug('End Barcode read');
                 this.$log.debug('Clearing buffer: ' + this.barcodeBuffer.join(''));
                 this.barcodeBuffer = [];
-            }, 1000);
+                // tslint:disable-next-line:no-magic-numbers
+            }, 2000);
         }
         this.barcodeReading = !this.barcodeReading;
     }

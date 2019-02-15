@@ -319,6 +319,16 @@ export default class TSGesuch extends TSAbstractAntragEntity {
         return this.checkForBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
     }
 
+    public hasBerechenbareBetreuungen(): boolean {
+        return this.checkForBetreuungsstatus(TSBetreuungsstatus.BESTAETIGT)
+            || this.checkForBetreuungsstatus(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION);
+    }
+
+    public hasNichtBerechenbareBetreuungen(): boolean {
+        return this.checkForBetreuungsstatus(TSBetreuungsstatus.ABGEWIESEN)
+            || this.checkForBetreuungsstatus(TSBetreuungsstatus.WARTEN);
+    }
+
     public checkForBetreuungsstatus(status: TSBetreuungsstatus): boolean {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
@@ -374,5 +384,17 @@ export default class TSGesuch extends TSAbstractAntragEntity {
             return this.kindContainers.find(kc => kc.kindNummer === kindNumber);
         }
         return undefined;
+    }
+
+    /**
+     * Returns true if all kinder have an ausserordentlicher anspruch defined
+     */
+    public allKindHaveAusserordentlicherAnspruch(): boolean {
+        if (this.kindContainers) {
+            return this.kindContainers.every(kind => {
+                return !!kind.kindJA.pensumAusserordentlicherAnspruch;
+            });
+        }
+        return false;
     }
 }

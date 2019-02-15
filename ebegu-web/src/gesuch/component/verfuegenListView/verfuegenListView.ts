@@ -211,7 +211,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     public openVerfuegungPDF(betreuung: TSBetreuung): void {
         const win = this.downloadRS.prepareDownloadWindow();
         this.downloadRS.getAccessTokenVerfuegungGeneratedDokument(this.gesuchModelManager.getGesuch().id,
-            betreuung.id, false, betreuung.verfuegung.manuelleBemerkungen)
+            betreuung.id, false, betreuung.verfuegung.generatedBemerkungen)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
             })
@@ -253,6 +253,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }
         return !this.isFinSitAbglehnt();
 
+    }
+
+    public hasNichtBerechenbareBetreuungen(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        return (gesuch && gesuch.hasNichtBerechenbareBetreuungen());
     }
 
     public isFinanzielleSituationRequired(): boolean {
@@ -640,7 +645,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public setAbschliessen(): IPromise<TSGesuch> {
         return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'ABSCHLIESSEN',
+            title: 'GESUCH_ABSCHLIESSEN',
             deleteText: 'BESCHREIBUNG_GESUCH_ABSCHLIESSEN',
             parentController: undefined,
             elementID: undefined,

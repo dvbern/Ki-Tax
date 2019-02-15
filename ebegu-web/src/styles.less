@@ -484,6 +484,17 @@ html.cdk-global-scrollblock {
     overflow-y: visible;
 }
 
+.uppercase,
+.uppercase span{
+    text-transform: uppercase;
+}
+
+// IE11 hack for vertically centering table contents
+// no other fix available due to (yet?) buggy implementation of flexbox
+_:-ms-fullscreen, .mat-cell {
+    padding-top: 15px;
+}
+
 /* Personal preference for BS modal.  The LESS below makes the backdrop white and
    causes the modal to fade in rather than slide in. */
 //@modal-backdrop-bg: white;
