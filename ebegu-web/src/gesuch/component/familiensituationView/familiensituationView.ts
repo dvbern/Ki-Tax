@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
+import {logger} from 'codelyzer/util/logger';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
@@ -22,6 +23,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import TSFamiliensituation from '../../../models/TSFamiliensituation';
 import TSFamiliensituationContainer from '../../../models/TSFamiliensituationContainer';
+import {TSDateRange} from '../../../models/types/TSDateRange';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -143,6 +145,10 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return this.model.familiensituationJA;
     }
 
+    public isStartKonkubinatVisible(): boolean {
+        return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+    }
+
     public getFamiliensituationErstgesuch(): TSFamiliensituation {
         return this.model.familiensituationErstgesuch;
     }
@@ -157,23 +163,26 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     }
 
     private checkChanged2To1GS(): boolean {
+        const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.gesuchModelManager.getGesuch().gesuchsteller2
             && this.gesuchModelManager.getGesuch().gesuchsteller2.id
-            && this.initialFamiliensituation.hasSecondGesuchsteller()
+            && this.initialFamiliensituation.hasSecondGesuchsteller(bis)
             && this.isScheidung();
     }
 
     private checkChanged2To1GSMutation(): boolean {
+        const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.gesuchModelManager.getGesuch().gesuchsteller2
             && this.gesuchModelManager.getGesuch().gesuchsteller2.id
             && this.isScheidung()
             && this.model.familiensituationErstgesuch
-            && !this.model.familiensituationErstgesuch.hasSecondGesuchsteller();
+            && !this.model.familiensituationErstgesuch.hasSecondGesuchsteller(bis);
     }
 
     private isScheidung(): boolean {
-        return this.initialFamiliensituation.hasSecondGesuchsteller()
-            && !this.getFamiliensituation().hasSecondGesuchsteller();
+        const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
+        return this.initialFamiliensituation.hasSecondGesuchsteller(bis)
+            && !this.getFamiliensituation().hasSecondGesuchsteller(bis);
     }
 
     public isMutationAndDateSet(): boolean {

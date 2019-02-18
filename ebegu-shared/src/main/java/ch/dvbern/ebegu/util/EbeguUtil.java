@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,18 +55,24 @@ public final class EbeguUtil {
 	/**
 	 * Berechnet ob die Daten bei der Familiensituation von einem GS auf 2 GS geaendert wurde.
 	 */
-	public static boolean fromOneGSToTwoGS(FamiliensituationContainer familiensituationContainer) {
+	public static boolean fromOneGSToTwoGS(FamiliensituationContainer familiensituationContainer,
+		LocalDate referenzdatum) {
 		Objects.requireNonNull(familiensituationContainer);
 		Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA());
 		Objects.requireNonNull(familiensituationContainer.getFamiliensituationErstgesuch());
 
-		return fromOneGSToTwoGS(familiensituationContainer.getFamiliensituationErstgesuch(), familiensituationContainer.getFamiliensituationJA());
+		return fromOneGSToTwoGS(familiensituationContainer.getFamiliensituationErstgesuch(),
+			familiensituationContainer.getFamiliensituationJA(), referenzdatum);
 	}
 
-	public static boolean fromOneGSToTwoGS(Familiensituation oldFamiliensituation, Familiensituation newFamiliensituation) {
+	public static boolean fromOneGSToTwoGS(Familiensituation oldFamiliensituation,
+		Familiensituation newFamiliensituation,
+		LocalDate referenzdatum) {
 		Objects.requireNonNull(oldFamiliensituation);
 		Objects.requireNonNull(newFamiliensituation);
-		return !oldFamiliensituation.hasSecondGesuchsteller() && newFamiliensituation.hasSecondGesuchsteller();
+		// TODO rima mit dem Bis Datum aus der Gesuchsperiode vergleichen
+		return !oldFamiliensituation.hasSecondGesuchsteller(LocalDate.now())
+			&& newFamiliensituation.hasSecondGesuchsteller(LocalDate.now());
 	}
 
 	/**

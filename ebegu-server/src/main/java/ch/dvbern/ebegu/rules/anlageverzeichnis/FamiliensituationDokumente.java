@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Set;
 
@@ -86,8 +87,9 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 		switch (dokumentTyp) {
 		case NACHWEIS_TRENNUNG:
 			//überprüfen, ob ein Wechsel von zwei Gesuchsteller auf einen stattgefunden hat.
-			return familiensituationErstgesuch.hasSecondGesuchsteller()
-				&& !familiensituationMutation.hasSecondGesuchsteller();
+			// TODO rima mit dem Bis Datum aus der Gesuchsperiode vergleichen
+			return familiensituationErstgesuch.hasSecondGesuchsteller(LocalDate.now())
+				&& !familiensituationMutation.hasSecondGesuchsteller(LocalDate.now());
 		default:
 			return false;
 		}

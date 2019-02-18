@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -63,6 +64,10 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private LocalDate aenderungPer;
 
+	@Nullable
+	@Column(nullable = true)
+	private LocalDate startKonkubinat;
+
 	public Familiensituation() {
 	}
 
@@ -71,6 +76,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.familienstatus = that.getFamilienstatus();
 			this.gemeinsameSteuererklaerung = that.getGemeinsameSteuererklaerung();
 			this.aenderungPer = that.getAenderungPer();
+			this.startKonkubinat = that.getStartKonkubinat();
 			this.sozialhilfeBezueger = that.getSozialhilfeBezueger();
 			this.verguenstigungGewuenscht = that.getVerguenstigungGewuenscht();
 		}
@@ -104,6 +110,15 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
+	public LocalDate getStartKonkubinat() {
+		return startKonkubinat;
+	}
+
+	public void setStartKonkubinat(@Nullable LocalDate startKonkubinat) {
+		this.startKonkubinat = startKonkubinat;
+	}
+
+	@Nullable
 	public Boolean getSozialhilfeBezueger() {
 		return sozialhilfeBezueger;
 	}
@@ -122,16 +137,17 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Transient
-	public boolean hasSecondGesuchsteller() {
+	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
 			switch (this.familienstatus) {
 			case ALLEINERZIEHEND:
-			case WENIGER_FUENF_JAHRE:
 				return false;
 			case VERHEIRATET:
 			case KONKUBINAT:
-			case LAENGER_FUENF_JAHRE:
 				return true;
+			case KONKUBINAT_KEIN_KIND:
+				return this.startKonkubinat == null ||
+					this.startKonkubinat.isAfter(LocalDate.now().minus(5, ChronoUnit.YEARS));
 			}
 		}
 		return false;

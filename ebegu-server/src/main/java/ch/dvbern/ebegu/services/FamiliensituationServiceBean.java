@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -74,8 +75,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		// Falls noch nicht vorhanden, werden die GemeinsameSteuererklaerung fuer FS und EV auf false gesetzt
 		Familiensituation newFamiliensituation = familiensituationContainer.extractFamiliensituation();
 		Objects.requireNonNull(newFamiliensituation);
-
-		if (gesuch.isMutation() && EbeguUtil.fromOneGSToTwoGS(familiensituationContainer)) {
+		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		if (gesuch.isMutation() && EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, bis)) {
 
 			if (newFamiliensituation.getGemeinsameSteuererklaerung() == null) {
 				newFamiliensituation.setGemeinsameSteuererklaerung(false);
@@ -92,11 +93,10 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 				//noinspection ConstantConditions (ist mit extractEinkommensverschlechterungInfo().isPresent() sichergestellt)einkommensverschlechterungInfoService.updateEinkommensverschlechterungInfo(gesuch.getEinkommensverschlechterungInfoContainer());
 			}
 		} else {
-			Familiensituation familiensituationErstgesuch = familiensituationContainer
-				.getFamiliensituationErstgesuch();
+			Familiensituation familiensituationErstgesuch = familiensituationContainer.getFamiliensituationErstgesuch();
 			if (familiensituationErstgesuch != null &&
-				(!familiensituationErstgesuch.hasSecondGesuchsteller() && !newFamiliensituation.hasSecondGesuchsteller
-					())) {
+				(!familiensituationErstgesuch.hasSecondGesuchsteller(bis)
+					&& !newFamiliensituation.hasSecondGesuchsteller(bis))) {
 				// if there is no GS2 the field gemeinsameSteuererklaerung must be set to null
 				newFamiliensituation.setGemeinsameSteuererklaerung(null);
 			}
@@ -117,6 +117,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		}
 
 			//Alle Daten des GS2 loeschen wenn man von 2GS auf 1GS wechselt und GS2 bereits erstellt wurde
+		assert mergedFamiliensituationContainer != null;
 		if (gesuch.getGesuchsteller2() != null && isNeededToRemoveGesuchsteller2(gesuch,
 			mergedFamiliensituationContainer.extractFamiliensituation(), oldFamiliensituation)) {
 				gesuchstellerService.removeGesuchsteller(gesuch.getGesuchsteller2());
@@ -146,10 +147,13 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeFamiliensituation(@Nonnull FamiliensituationContainer familiensituation) {
 		Objects.requireNonNull(familiensituation);
-		FamiliensituationContainer familiensituationToRemove = findFamiliensituation(familiensituation.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("removeFall", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, familiensituation));
+		FamiliensituationContainer familiensituationToRemove =
+			findFamiliensituation(familiensituation.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"removeFall", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, familiensituation));
 		persistence.remove(familiensituationToRemove);
 	}
 
@@ -160,12 +164,16 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	 */
 	private boolean isNeededToRemoveGesuchsteller2(Gesuch gesuch, Familiensituation newFamiliensituation,
 		Familiensituation familiensituationErstgesuch) {
-		return (!gesuch.isMutation() && gesuch.getGesuchsteller2() != null && !newFamiliensituation.hasSecondGesuchsteller())
+		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		return (!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
+			&& !newFamiliensituation.hasSecondGesuchsteller(bis))
 			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation, familiensituationErstgesuch));
 	}
 
-	private boolean isChanged1To2Reverted(Gesuch gesuch, Familiensituation newFamiliensituation, Familiensituation familiensituationErstgesuch) {
-		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller()
-			&& !newFamiliensituation.hasSecondGesuchsteller();
+	private boolean isChanged1To2Reverted(Gesuch gesuch, Familiensituation newFamiliensituation,
+		Familiensituation familiensituationErstgesuch) {
+		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller(bis)
+			&& !newFamiliensituation.hasSecondGesuchsteller(bis);
 	}
 }

@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.time.LocalDate;
+
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -25,6 +27,8 @@ import org.junit.Test;
  * test fuer Ebeguutil
  */
 public class EbeguUtilTest {
+
+	// TODO rima verify tests
 
 	@Test
 	public void testFromOneGSToTwoGS_From2To1() {
@@ -37,7 +41,7 @@ public class EbeguUtilTest {
 		fsc.setFamiliensituationErstgesuch(oldData);
 		fsc.setFamiliensituationJA(newData);
 
-		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc));
+		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc, LocalDate.now()));
 	}
 
 	@Test
@@ -51,13 +55,15 @@ public class EbeguUtilTest {
 		fsc.setFamiliensituationErstgesuch(oldData);
 		fsc.setFamiliensituationJA(newData);
 
-		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc));
+		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc, LocalDate.now()));
 	}
 
 	@Test
 	public void testFromOneGSToTwoGS_From1To1() {
 		Familiensituation oldData = new Familiensituation();
-		oldData.setFamilienstatus(EnumFamilienstatus.WENIGER_FUENF_JAHRE);
+		oldData.setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+		oldData.setStartKonkubinat(LocalDate.now());
+
 		Familiensituation newData = new Familiensituation();
 		newData.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 
@@ -65,7 +71,7 @@ public class EbeguUtilTest {
 		fsc.setFamiliensituationErstgesuch(oldData);
 		fsc.setFamiliensituationJA(newData);
 
-		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc));
+		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc, LocalDate.now()));
 	}
 
 	@Test
@@ -79,7 +85,7 @@ public class EbeguUtilTest {
 		fsc.setFamiliensituationErstgesuch(oldData);
 		fsc.setFamiliensituationJA(newData);
 
-		Assert.assertTrue(EbeguUtil.fromOneGSToTwoGS(fsc));
+		Assert.assertTrue(EbeguUtil.fromOneGSToTwoGS(fsc, LocalDate.now()));
 	}
 
 	@Test
@@ -91,6 +97,6 @@ public class EbeguUtilTest {
 		fsc.setFamiliensituationErstgesuch(oldData);
 		fsc.setFamiliensituationJA(newData);
 
-		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc));
+		Assert.assertFalse(EbeguUtil.fromOneGSToTwoGS(fsc, LocalDate.now()));
 	}
 }

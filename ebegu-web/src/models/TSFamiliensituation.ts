@@ -22,6 +22,7 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
     private _familienstatus: TSFamilienstatus;
     private _gemeinsameSteuererklaerung: boolean;
     private _aenderungPer: moment.Moment;
+    private _startKonkubinat: moment.Moment;
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
 
@@ -29,6 +30,7 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         familienstatus?: TSFamilienstatus,
         gemeinsameSteuererklaerung?: boolean,
         aenderungPer?: moment.Moment,
+        startKonkubinat?: moment.Moment,
         sozialhilfeBezueger?: boolean,
         verguenstigungGewuenscht?: boolean,
     ) {
@@ -36,6 +38,7 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         this._familienstatus = familienstatus;
         this._gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
         this._aenderungPer = aenderungPer;
+        this._startKonkubinat = startKonkubinat;
         this._sozialhilfeBezueger = sozialhilfeBezueger;
         this._verguenstigungGewuenscht = verguenstigungGewuenscht;
     }
@@ -64,6 +67,14 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         this._aenderungPer = value;
     }
 
+    public get startKonkubinat(): moment.Moment {
+        return this._startKonkubinat;
+    }
+
+    public set startKonkubinat(value: moment.Moment) {
+        this._startKonkubinat = value;
+    }
+
     public get sozialhilfeBezueger(): boolean {
         return this._sozialhilfeBezueger;
     }
@@ -80,15 +91,17 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         this._verguenstigungGewuenscht = value;
     }
 
-    public hasSecondGesuchsteller(): boolean {
+    public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
         switch (this.familienstatus) {
             case TSFamilienstatus.ALLEINERZIEHEND:
-            case TSFamilienstatus.WENIGER_FUENF_JAHRE:
                 return false;
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
-            case TSFamilienstatus.LAENGER_FUENF_JAHRE:
                 return true;
+            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
+                const gs2 = !this.startKonkubinat ||
+                    this.startKonkubinat.isAfter(referenzdatum.subtract(5, 'years'));
+                return gs2;
             default:
                 throw new Error(`hasSecondGesuchsteller is not implemented for status ${this.familienstatus}`);
         }

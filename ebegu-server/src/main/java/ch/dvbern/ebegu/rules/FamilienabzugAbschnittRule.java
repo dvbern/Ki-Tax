@@ -186,9 +186,10 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 					|| date.isBefore(getStichtagForEreignis(familiensituationGueltigAb)))) {
 
 				famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (familiensituationErstgesuch
-					.hasSecondGesuchsteller() ? 2 : 1);
+					.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()) ? 2 : 1);
 			} else {
-				famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (familiensituation.hasSecondGesuchsteller() ? 2 : 1);
+				famGrBeruecksichtigungAbzug = famGrBeruecksichtigungAbzug + (familiensituation
+					.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()) ? 2 : 1);
 			}
 		} else {
 			LOG.warn("Die Familiengroesse kann noch nicht richtig berechnet werden weil die Familiensituation nicht richtig ausgefuellt ist. Antragnummer: {}", gesuch.getJahrFallAndGemeindenummer());
