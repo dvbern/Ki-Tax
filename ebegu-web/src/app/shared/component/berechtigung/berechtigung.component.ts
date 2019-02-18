@@ -25,6 +25,7 @@ import TSBerechtigung from '../../../../models/TSBerechtigung';
 import TSInstitution from '../../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../../core/service/traegerschaftRS.rest';
 import {Displayable} from '../../interfaces/displayable';
@@ -34,6 +35,7 @@ let nextId = 0;
 @Component({
     selector: 'dv-berechtigung',
     templateUrl: './berechtigung.component.html',
+    styleUrls: ['./berechtigung.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
@@ -43,6 +45,7 @@ export class BerechtigungComponent {
     @Input() public disabled: boolean = false;
     @Input() public readonly excludedRoles: TSRole[] = [];
     @Input() public readonly displayClass: string = 'col-sm-12';
+    @Input() public readonly useInputComponents: boolean = true;
 
     public readonly inputId = `berechtigung-${nextId++}`;
     public readonly rolleId: string;
@@ -96,5 +99,9 @@ export class BerechtigungComponent {
                 }),
                 map(BerechtigungComponent.sortByName),
             );
+    }
+
+    public translationKeyForRole(role: TSRole): string {
+        return TSRoleUtil.translationKeyForRole(role);
     }
 }
