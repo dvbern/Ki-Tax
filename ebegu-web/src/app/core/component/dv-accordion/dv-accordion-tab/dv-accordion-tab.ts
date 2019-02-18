@@ -26,6 +26,7 @@ export class DvAccordionTabComponentConfig implements IComponentOptions {
     public controllerAs = 'vm';
     public bindings = {
         tabid: '@',
+        info: '@',
     };
     public require: any = {vm: '^dvAccordion'};
 
@@ -35,5 +36,6 @@ export class DvAccordionTabController {
     public static $inject: ReadonlyArray<string> = [];
 
     public tabid: string;
+    public  info: string;
     public vm: DvAccordionController;
 }
