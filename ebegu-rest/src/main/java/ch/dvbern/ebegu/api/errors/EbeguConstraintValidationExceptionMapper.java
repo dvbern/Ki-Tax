@@ -30,8 +30,6 @@ import javax.ws.rs.ext.Provider;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.resteasy.api.validation.ResteasyViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by imanol on 01.03.16.
@@ -39,8 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 @Provider
 public class EbeguConstraintValidationExceptionMapper extends AbstractEbeguExceptionMapper<EJBTransactionRolledbackException> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(EbeguConstraintValidationExceptionMapper.class.getSimpleName());
 
 	@Nullable
 	@Override
@@ -52,7 +48,6 @@ public class EbeguConstraintValidationExceptionMapper extends AbstractEbeguExcep
 	public Response toResponse(EJBTransactionRolledbackException exception) {
 		Throwable rootCause = ExceptionUtils.getRootCause(exception);
 		if (rootCause instanceof ConstraintViolationException) {
-			LOG.warn("Constraint Violation occured ", exception);
 			ConstraintViolationException constViolationEx = (ConstraintViolationException) rootCause;
 			ResteasyViolationException resteasyViolationException = new ResteasyViolationException(constViolationEx.getConstraintViolations());
 			final MediaType acceptMediaType = getAcceptMediaType(resteasyViolationException.getAccept());
