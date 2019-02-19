@@ -1163,7 +1163,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			row.setKindGeburtsdatum(MIN_DATE);
 		}
 		row.setKindFachstelle(kind.getPensumFachstelle() != null ?
-			kind.getPensumFachstelle().getFachstelle().getName() :
+			String.valueOf(kind.getPensumFachstelle().getFachstelle().getName()) :
 			StringUtils.EMPTY);
 
 		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {

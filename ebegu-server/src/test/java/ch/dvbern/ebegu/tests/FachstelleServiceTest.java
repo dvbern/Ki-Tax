@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.services.FachstelleService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -57,7 +58,6 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals(1, allFachstellen.size());
 		Fachstelle nextFamsit = allFachstellen.iterator().next();
 		Assert.assertEquals("Fachstelle1", nextFamsit.getName());
-		Assert.assertEquals("Kinder Fachstelle", nextFamsit.getBeschreibung());
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(fachstelle.isPresent());
 		Assert.assertEquals("Fachstelle1", fachstelle.get().getName());
 
-		fachstelle.get().setName("Fachstelle2");
+		fachstelle.get().setName(FachstelleName.FRÜHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN);
 		Fachstelle updatedFachstelle = fachstelleService.saveFachstelle(fachstelle.get());
 		Assert.assertEquals("Fachstelle2", updatedFachstelle.getName());
 		Optional<Fachstelle> fachstelleReRead = fachstelleService.findFachstelle(updatedFachstelle.getId());

@@ -1471,5 +1471,12 @@
     "NO_ERWERBSPENSUM_DATA": "FR_Keine Erwerbspensum Daten vorhanden",
     "CONFIRM_KEIN_KONTINGENT_TITLE": "FR_Wollen Sie den Status auf 'Kein Kontingent' setzen?",
     "CONFIRM_KEIN_KONTINGENT_TEXT": "FR_Für diesen Antrag besteht kein Kontingent. Sie müssen die Gesuchsteller ausserhalb kiBon über diesen Sachverhalt informieren",
-    "BEGRUENDUNG": ""
+    "BEGRUENDUNG": "",
+    "MUTTER_VATER_BERATUNG_BERN": "FR_Mütter- und Väterberatung Bern",
+    "SOZIALDIENST": "FR_Sozialdienst",
+    "KINDES_ERWACHSENEN_SCHUTZBEHOERDE": "FR_Kindes- und Erwachsenenschutzbehörde",
+    "FRÜHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN": "FR_Heilpädagogische Früherziehung für blinde und sehbehinderte Kinder der Blindenschule Zollikofen",
+    "FRÜHERZIEHUNGSDIENST_KANTON_BERN": "FR_Früherziehungsdienst des Kantons Bern",
+    "ERZIEHEUNGSBERATUNG": "FR_Erziehungsberatung",
+    "DIENST_ZENTRUM_HOEREN_SPRACHE": "FR_Audiopädagogischen Dienst des Pädagogischen Zentrums für Hören und Sprache HSM"
 }

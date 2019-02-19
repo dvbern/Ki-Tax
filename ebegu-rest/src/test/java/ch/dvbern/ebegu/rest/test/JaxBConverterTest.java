@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
@@ -224,7 +225,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		kindContainer = persistence.merge(kindContainer);
 		JaxKindContainer jaxKindContainer = converter.kindContainerToJAX(kindContainer);
 		Assert.assertNotNull(jaxKindContainer.getKindJA().getPensumFachstelle());
-		jaxKindContainer.getKindJA().getPensumFachstelle().getFachstelle().setName("FachstelleChanged");
+		jaxKindContainer.getKindJA().getPensumFachstelle().getFachstelle().setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Fachstelle loadedFachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();

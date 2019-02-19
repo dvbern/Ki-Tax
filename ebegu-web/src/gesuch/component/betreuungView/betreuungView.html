@@ -293,7 +293,7 @@
                                             id="fachstelle"
                                             ng-model="vm.fachstelleId"
                                             class="form-control"
-                                            ng-options="fachstelle.id as fachstelle.name for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
+                                            ng-options="fachstelle.id as fachstelle.name | translate for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
                                             ng-required="vm.isFachstelleRequired()"
                                             ng-disabled="!vm.enableErweiterteBeduerfnisse()"
                                             ng-change="vm.setSelectedFachsstelle()">

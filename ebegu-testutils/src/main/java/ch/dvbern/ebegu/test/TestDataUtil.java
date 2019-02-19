@@ -108,6 +108,7 @@ import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
@@ -418,8 +419,7 @@ public final class TestDataUtil {
 
 	public static Fachstelle createDefaultFachstelle() {
 		Fachstelle fachstelle = new Fachstelle();
-		fachstelle.setName("Fachstelle1");
-		fachstelle.setBeschreibung("Kinder Fachstelle");
+		fachstelle.setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		fachstelle.setFachstelleAnspruch(true);
 		fachstelle.setFachstelleErweiterteBetreuung(false);
 		return fachstelle;
