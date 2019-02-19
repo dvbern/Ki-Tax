@@ -95,10 +95,11 @@ describe('ErwerbspensumRS', () => {
             changedEwp.pensum = pensum;
             mockErwerbspensum.erwerbspensumJA = changedEwp;
             mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject({}, mockErwerbspensum);
-            let updatedErwerbspensumContainerContainer: TSErwerbspensumContainer;
+
             $httpBackend.expectPUT(`${erwerbspensumRS.serviceURL}/${gesuchstellerId}/${gesuchId}`,
                 mockErwerbspensumRS).respond(mockErwerbspensumRS);
 
+            let updatedErwerbspensumContainerContainer: TSErwerbspensumContainer;
             erwerbspensumRS.saveErwerbspensum(mockErwerbspensum, gesuchstellerId, gesuchId)
                 .then(result => {
                     updatedErwerbspensumContainerContainer = result;
@@ -134,11 +135,10 @@ describe('ErwerbspensumRS', () => {
         expect(foundEWPCont).toBeDefined();
         expect(foundEWPCont.erwerbspensumJA).toBeDefined();
         TestDataUtil.checkGueltigkeitAndSetIfSame(foundEWPCont.erwerbspensumJA, mockErwerbspensum.erwerbspensumJA);
-        expect(foundEWPCont.erwerbspensumJA).toEqual(mockErwerbspensum.erwerbspensumJA);
+        TestDataUtil.compareDefinedProperties(foundEWPCont.erwerbspensumJA, mockErwerbspensum.erwerbspensumJA);
         expect(foundEWPCont.erwerbspensumGS).toBeDefined();
         TestDataUtil.checkGueltigkeitAndSetIfSame(foundEWPCont.erwerbspensumGS, mockErwerbspensum.erwerbspensumGS);
-        expect(foundEWPCont.erwerbspensumGS).toEqual(mockErwerbspensum.erwerbspensumGS);
-        expect(foundEWPCont).toEqual(mockErwerbspensum);
+        TestDataUtil.compareDefinedProperties(foundEWPCont.erwerbspensumGS, mockErwerbspensum.erwerbspensumGS);
     }
 
 });

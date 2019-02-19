@@ -17,7 +17,6 @@
 
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import {TSDateRange} from './types/TSDateRange';
 
 export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
@@ -25,16 +24,8 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
     private _pensum: number;
     private _monatlicheBetreuungskosten: number;
 
-    public constructor(
-        monatlicheBetreuungskosten: number,
-        unitForDisplay?: TSPensumUnits,
-        pensum?: number,
-        gueltigkeit?: TSDateRange
-    ) {
-        super(gueltigkeit);
-        this._unitForDisplay = unitForDisplay;
-        this._pensum = pensum;
-        this._monatlicheBetreuungskosten = monatlicheBetreuungskosten;
+    public constructor() {
+        super();
     }
 
     public get unitForDisplay(): TSPensumUnits {

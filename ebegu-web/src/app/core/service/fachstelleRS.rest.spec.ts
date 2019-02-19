@@ -41,8 +41,11 @@ describe('fachstelleRS', () => {
     }));
 
     beforeEach(() => {
-        mockFachstelle = new TSFachstelle('Fachstelle_Test', 'Ein Test', true);
+        mockFachstelle = new TSFachstelle();
         mockFachstelle.id = '2afc9d9a-957e-4550-9a22-9762422d8f05';
+        mockFachstelle.name = 'Fachstelle_Test';
+        mockFachstelle.beschreibung = 'Ein Test';
+        mockFachstelle.fachstelleAnspruch = true;
         mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject({}, mockFachstelle);
     });
 

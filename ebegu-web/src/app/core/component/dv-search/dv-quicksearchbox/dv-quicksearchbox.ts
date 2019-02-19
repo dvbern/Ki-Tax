@@ -153,7 +153,7 @@ export class DvQuicksearchboxController {
     /**
      * Oeffnet das Gesuch und geht zur gegebenen Seite (route)
      */
-    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, inNewTab?: boolean): void {
+    private openGesuch(antrag: TSAntragDTO, urlToGoTo: string, inNewTab: boolean = false): void {
         if (!antrag) {
             return;
         }

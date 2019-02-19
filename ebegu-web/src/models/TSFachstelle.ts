@@ -22,17 +22,8 @@ export class TSFachstelle extends TSAbstractMutableEntity {
     private _fachstelleAnspruch: boolean;
     private _fachstelleErweiterteBetreuung: boolean;
 
-    public constructor(
-        name?: string,
-        beschreibung?: string,
-        fachstelleAnspruch?: boolean,
-        fachstelleErweiterteBetreuung?: boolean
-    ) {
+    public constructor() {
         super();
-        this._name = name;
-        this._beschreibung = beschreibung;
-        this._fachstelleAnspruch = !!fachstelleAnspruch;
-        this._fachstelleErweiterteBetreuung = !!fachstelleErweiterteBetreuung;
     }
 
     public get name(): string {

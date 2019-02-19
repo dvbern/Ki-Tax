@@ -32,49 +32,8 @@ export default class TSEinkommensverschlechterung extends TSAbstractFinanzielleS
     private _nettolohnZus: number;
     private _geschaeftsgewinnBasisjahrMinus1: number;
 
-    public constructor(
-        steuerveranlagungErhalten?: boolean,
-        steuererklaerungAusgefuellt?: boolean,
-        nettolohnJan?: number,
-        nettolohnFeb?: number,
-        nettolohnMrz?: number,
-        nettolohnApr?: number,
-        nettolohnMai?: number,
-        nettolohnJun?: number,
-        nettolohnJul?: number,
-        nettolohnAug?: number,
-        nettolohnSep?: number,
-        nettolohnOkt?: number,
-        nettolohnNov?: number,
-        nettolohnDez?: number,
-        nettolohnZus?: number,
-        familienzulage?: number,
-        ersatzeinkommen?: number,
-        erhalteneAlimente?: number,
-        bruttovermoegen?: number,
-        schulden?: number,
-        geschaeftsgewinnBasisjahr?: number,
-        geleisteteAlimente?: number,
-        geschaeftsgewinnBasisjahrMinus1?: number,
-    ) {
-        super(steuerveranlagungErhalten, steuererklaerungAusgefuellt,
-            familienzulage, ersatzeinkommen, erhalteneAlimente, bruttovermoegen,
-            schulden, geschaeftsgewinnBasisjahr, geleisteteAlimente);
-
-        this._nettolohnJan = nettolohnJan;
-        this._nettolohnFeb = nettolohnFeb;
-        this._nettolohnMrz = nettolohnMrz;
-        this._nettolohnApr = nettolohnApr;
-        this._nettolohnMai = nettolohnMai;
-        this._nettolohnJun = nettolohnJun;
-        this._nettolohnJul = nettolohnJul;
-        this._nettolohnAug = nettolohnAug;
-        this._nettolohnSep = nettolohnSep;
-        this._nettolohnOkt = nettolohnOkt;
-        this._nettolohnNov = nettolohnNov;
-        this._nettolohnDez = nettolohnDez;
-        this._nettolohnZus = nettolohnZus;
-        this._geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
+    public constructor() {
+        super();
     }
 
     public get nettolohnJan(): number {
