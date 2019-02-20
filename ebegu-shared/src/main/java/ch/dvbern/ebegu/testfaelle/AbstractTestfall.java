@@ -275,7 +275,8 @@ public abstract class AbstractTestfall {
 		kind.setNachname(name);
 		kind.setVorname(vorname);
 		kind.setGeburtsdatum(geburtsdatum);
-		kind.setKinderabzug(kinderabzug);
+		kind.setKinderabzugErstesHalbjahr(kinderabzug);
+		kind.setKinderabzugZweitesHalbjahr(kinderabzug);
 		kind.setFamilienErgaenzendeBetreuung(betreuung);
 		if (betreuung) {
 			kind.setSprichtAmtssprache(Boolean.TRUE);

@@ -213,8 +213,8 @@ export default class GesuchRS implements IEntityRS {
             });
     }
 
-    public verfuegenStarten(antragId: string, hasFSDocument: boolean): IPromise<TSGesuch> {
-        return this.$http.post(`${this.serviceURL}/verfuegenStarten/${encodeURIComponent(antragId)}/${hasFSDocument}`,
+    public verfuegenStarten(antragId: string): IPromise<TSGesuch> {
+        return this.$http.post(`${this.serviceURL}/verfuegenStarten/${encodeURIComponent(antragId)}`,
             null).then(response => {
             return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
         });
@@ -272,6 +272,13 @@ export default class GesuchRS implements IEntityRS {
         return this.$http.get(`${this.serviceURL}/massenversand/${encodeURIComponent(gesuchID)}`)
             .then((response: any) => {
                 return response.data;
+            });
+    }
+
+    public setKeinKontingent(antragId: string): IPromise<TSGesuch> {
+        return this.$http.post(`${this.serviceURL}/setKeinKontingent/${encodeURIComponent(antragId)}`, null).then(
+            response => {
+                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
             });
     }
 }

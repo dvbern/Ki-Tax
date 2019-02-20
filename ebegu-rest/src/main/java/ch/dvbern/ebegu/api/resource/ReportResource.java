@@ -15,14 +15,10 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -44,10 +40,9 @@ import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import io.swagger.annotations.Api;
@@ -63,8 +58,6 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 @Api(description = "Resource für Statistiken und Reports")
 public class ReportResource {
 
-	public static final String DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN = "Das von-Datum muss vor dem bis-Datum sein.";
-
 	@Inject
 	private ReportService reportService;
 
@@ -74,127 +67,6 @@ public class ReportResource {
 	@Inject
 	private JaxBConverter converter;
 
-	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuch-Stichtag'", response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/gesuchStichtag")
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getGesuchStichtagReportExcel(
-		@QueryParam("dateTimeStichtag") @Nonnull String dateTimeStichtag,
-		@QueryParam("gesuchPeriodeID") @Nullable @Valid JaxId gesuchPeriodIdParam,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException {
-
-		String ip = downloadResource.getIP(request);
-
-		Objects.requireNonNull(dateTimeStichtag);
-		LocalDate date = DateUtil.parseStringToDateOrReturnNow(dateTimeStichtag);
-
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(date,
-			gesuchPeriodIdParam != null ? gesuchPeriodIdParam.getId() : null);
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
-	}
-
-	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuch-Zeitraum'", response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/gesuchZeitraum")
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getGesuchZeitraumReportExcel(
-		@QueryParam("dateTimeFrom") @Nonnull String dateTimeFromParam,
-		@QueryParam("dateTimeTo") @Nonnull String dateTimeToParam,
-		@QueryParam("gesuchPeriodeID") @Nullable @Valid JaxId gesuchPeriodIdParam,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException, EbeguRuntimeException {
-
-		String ip = downloadResource.getIP(request);
-
-		Objects.requireNonNull(dateTimeFromParam);
-		Objects.requireNonNull(dateTimeToParam);
-		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(dateTimeFromParam);
-		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(dateTimeToParam);
-
-		if (!dateTo.isAfter(dateFrom)) {
-			throw new EbeguRuntimeException("getGesuchZeitraumReportExcel", "Fehler beim erstellen Report Gesuch Zeitraum"
-				, DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
-		}
-
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchZeitraum(dateFrom,
-			dateTo,
-			gesuchPeriodIdParam != null ? gesuchPeriodIdParam.getId() : null);
-
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
-	}
-
-	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Kanton'", response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/kanton")
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getKantonReportExcel(
-		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
-		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException, EbeguRuntimeException {
-
-		String ip = downloadResource.getIP(request);
-
-		Objects.requireNonNull(auswertungVon);
-		Objects.requireNonNull(auswertungBis);
-		LocalDate dateAuswertungVon = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
-		LocalDate dateAuswertungBis = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
-
-		if (!dateAuswertungBis.isAfter(dateAuswertungVon)) {
-			throw new EbeguRuntimeException("getKantonReportExcel", "Fehler beim erstellen Report Kanton", DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
-		}
-
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportKanton(dateAuswertungVon, dateAuswertungBis);
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
-	}
-
-	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'MitarbeiterInnen'", response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/mitarbeiterinnen")
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMitarbeiterinnenReportExcel(
-		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
-		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException, EbeguRuntimeException {
-
-		String ip = downloadResource.getIP(request);
-
-		Objects.requireNonNull(auswertungVon);
-		Objects.requireNonNull(auswertungBis);
-		LocalDate dateAuswertungVon = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
-		LocalDate dateAuswertungBis = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
-
-		if (!dateAuswertungBis.isAfter(dateAuswertungVon)) {
-			throw new EbeguRuntimeException("getMitarbeiterinnenReportExcel", "Fehler beim erstellen Report Mitarbeiterinnen", DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
-		}
-
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportMitarbeiterinnen(dateAuswertungVon, dateAuswertungBis);
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
-	}
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Zahlungsauftrag'", response = JaxDownloadFile.class)
 	@Nonnull
@@ -213,7 +85,7 @@ public class ReportResource {
 		String ip = downloadResource.getIP(request);
 		String id = converter.toEntityId(jaxId);
 
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlungAuftrag(id);
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlungAuftrag(id, LocaleThreadLocal.get());
 
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
@@ -237,128 +109,11 @@ public class ReportResource {
 		String ip = downloadResource.getIP(request);
 		String id = converter.toEntityId(jaxId);
 
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlung(id);
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlung(id, LocaleThreadLocal.get());
 
 		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
 
 		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
 	}
 
-	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Zahlungen pro Periode'", response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/zahlungperiode")
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getZahlungPeridoReportExcel(
-		@QueryParam("gesuchsperiodeID") @Nonnull @Valid JaxId jaxId,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, EbeguRuntimeException {
-
-		Objects.requireNonNull(jaxId);
-		String ip = downloadResource.getIP(request);
-		String id = converter.toEntityId(jaxId);
-
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportZahlungPeriode(id);
-
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
-	}
-
-	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuchsteller-Kinder-Betreuung'", response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/gesuchstellerkinderbetreuung")
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getGesuchstellerKinderBetreuungReportExcel(
-		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
-		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
-		@QueryParam("gesuchPeriodeID") @Nullable @Valid JaxId gesuchPeriodIdParam,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException, EbeguRuntimeException {
-
-		String ip = downloadResource.getIP(request);
-
-		Objects.requireNonNull(auswertungVon);
-		Objects.requireNonNull(auswertungBis);
-		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
-		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
-
-		if (!dateTo.isAfter(dateFrom)) {
-			throw new EbeguRuntimeException("getGesuchstellerKinderBetreuungReportExcel", "Fehler beim erstellen Report Gesuchsteller-Kinder-Betreuung"
-				, DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
-		}
-
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo,
-			gesuchPeriodIdParam != null ? gesuchPeriodIdParam.getId() : null);
-
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
-	}
-
-	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Kinder'", response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/kinder")
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getKinderReportExcel(
-		@QueryParam("auswertungVon") @Nonnull String auswertungVon,
-		@QueryParam("auswertungBis") @Nonnull String auswertungBis,
-		@QueryParam("gesuchPeriodeID") @Nullable @Valid JaxId gesuchPeriodIdParam,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException, EbeguRuntimeException {
-
-		String ip = downloadResource.getIP(request);
-
-		Objects.requireNonNull(auswertungVon);
-		Objects.requireNonNull(auswertungBis);
-		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(auswertungVon);
-		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(auswertungBis);
-
-		if (!dateTo.isAfter(dateFrom)) {
-			throw new EbeguRuntimeException("getKinderReportExcel", "Fehler beim erstellen Report Kinder"
-				, DAS_VON_DATUM_MUSS_VOR_DEM_BIS_DATUM_SEIN);
-		}
-
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportKinder(dateFrom, dateTo,
-			gesuchPeriodIdParam != null ? gesuchPeriodIdParam.getId() : null);
-
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
-	}
-
-	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuchsteller'", response = JaxDownloadFile.class)
-	@Nonnull
-	@GET
-	@Path("/excel/gesuchsteller")
-	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getGesuchstellerReportExcel(
-		@QueryParam("stichtag") @Nonnull String stichtag,
-		@Context HttpServletRequest request, @Context UriInfo uriInfo)
-		throws ExcelMergeException, MergeDocException, URISyntaxException, IOException {
-
-		String ip = downloadResource.getIP(request);
-
-		Objects.requireNonNull(stichtag);
-		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stichtag);
-
-		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchsteller(date);
-		DownloadFile downloadFileInfo = new DownloadFile(uploadFileInfo, ip);
-
-		return downloadResource.getFileDownloadResponse(uriInfo, ip, downloadFileInfo);
-	}
 }

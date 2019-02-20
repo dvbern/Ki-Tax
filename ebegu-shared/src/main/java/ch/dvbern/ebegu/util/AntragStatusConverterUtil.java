@@ -68,6 +68,8 @@ public final class AntragStatusConverterUtil {
 			return AntragStatusDTO.ZWEITE_MAHNUNG_ABGELAUFEN;
 		case GEPRUEFT:
 			return convertGeprueftStatusToDTO(antrag);
+		case KEIN_KONTINGENT:
+			return AntragStatusDTO.KEIN_KONTINGENT;
 		case VERFUEGEN:
 			return AntragStatusDTO.VERFUEGEN;
 		case VERFUEGT:
@@ -135,6 +137,8 @@ public final class AntragStatusConverterUtil {
 		case PLATZBESTAETIGUNG_WARTEN:
 		case GEPRUEFT:
 			return AntragStatus.GEPRUEFT;
+		case KEIN_KONTINGENT:
+			return AntragStatus.KEIN_KONTINGENT;
 		case VERFUEGEN:
 			return AntragStatus.VERFUEGEN;
 		case VERFUEGT:

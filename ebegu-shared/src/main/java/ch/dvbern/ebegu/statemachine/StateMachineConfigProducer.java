@@ -54,7 +54,8 @@ public class StateMachineConfigProducer {
 		gesuchFSMConfig.configure(AntragStatus.GEPRUEFT)
 			.permit(AntragEvents.ZUWEISUNG_SCHULAMT, AntragStatus.NUR_SCHULAMT)
 			.permit(AntragEvents.VERFUEGUNG_STARTEN, AntragStatus.VERFUEGEN)
-			.permit(AntragEvents.VERFUEGEN_OHNE_ANGEBOT, AntragStatus.KEIN_ANGEBOT);
+			.permit(AntragEvents.VERFUEGEN_OHNE_ANGEBOT, AntragStatus.KEIN_ANGEBOT)
+			.permit(AntragEvents.KEIN_KONTINGENT, AntragStatus.KEIN_KONTINGENT);
 
 		gesuchFSMConfig.configure(AntragStatus.VERFUEGEN)
 			.permit(AntragEvents.VERFUEGEN, AntragStatus.VERFUEGT);
@@ -105,6 +106,9 @@ public class StateMachineConfigProducer {
 
 		gesuchFSMConfig.configure(AntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN)
 			.permit(AntragEvents.MAHNLAUF_BEENDEN, AntragStatus.IN_BEARBEITUNG_JA);
+
+		gesuchFSMConfig.configure(AntragStatus.KEIN_KONTINGENT)
+			.permit(AntragEvents.GEPRUEFT, AntragStatus.GEPRUEFT);
 
 		return gesuchFSMConfig;
 

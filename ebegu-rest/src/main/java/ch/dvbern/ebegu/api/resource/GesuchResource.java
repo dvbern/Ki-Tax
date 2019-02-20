@@ -716,12 +716,11 @@ public class GesuchResource {
 		"wechselt der Status auf NUR_SCHULAMT", response = JaxGesuch.class)
 	@Nullable
 	@POST
-	@Path("/verfuegenStarten/{antragId}/{hasFSDocument}")
+	@Path("/verfuegenStarten/{antragId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response verfuegenStarten(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
-		@PathParam("hasFSDocument") boolean hasFSDocument,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
@@ -731,8 +730,9 @@ public class GesuchResource {
 		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 
-		final Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow(() -> new EbeguEntityNotFoundException("verfuegenStarten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragId));
-		gesuch.setHasFSDokument(hasFSDocument);
+		final Gesuch gesuch = gesuchService.findGesuch(antragId).orElseThrow(() ->
+			new EbeguEntityNotFoundException("verfuegenStarten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragId)
+		);
 		Gesuch closedGesuch = gesuchService.verfuegenStarten(gesuch);
 
 		return Response.ok(converter.gesuchToJAX(closedGesuch)).build();
@@ -899,5 +899,29 @@ public class GesuchResource {
 	public List<String> getMassenversandTexteForGesuch(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchIdJax) {
 		Validate.notNull(gesuchIdJax.getId());
 		return gesuchService.getMassenversandTexteForGesuch(converter.toEntityId(gesuchIdJax));
+	}
+
+	@ApiOperation(value = "Setzt das gegebene Gesuch in den Status KEIN_KONTINGENT", response = JaxGesuch.class)
+	@Nullable
+	@POST
+	@Path("/setKeinKontingent/{antragId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response setKeinKontingent(
+		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(antragJaxId.getId());
+		final String antragId = converter.toEntityId(antragJaxId);
+		Optional<Gesuch> gesuch = gesuchService.findGesuch(antragId);
+
+		if (gesuch.isPresent()) {
+			resourceHelper.assertGesuchStatus(gesuch.get(), AntragStatusDTO.GEPRUEFT);
+			Gesuch persistedGesuch = gesuchService.setKeinKontingent(gesuch.get());
+			return Response.ok(converter.gesuchToJAX(persistedGesuch)).build();
+		}
+		throw new EbeguEntityNotFoundException("setKeinKontingent",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, GESUCH_ID_INVALID + antragJaxId.getId());
 	}
 }

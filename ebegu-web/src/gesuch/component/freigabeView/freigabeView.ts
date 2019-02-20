@@ -159,14 +159,20 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         return '';
     }
 
+    public hasBerechenbareBetreuungen(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        return (gesuch && gesuch.hasBerechenbareBetreuungen());
+    }
+
     public getTextForFreigebenNotAllowed(): string {
-        if (this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesperrtWegenBeschwerde) {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        if (gesuch && gesuch.gesperrtWegenBeschwerde) {
             return 'FREIGABEQUITTUNG_NOT_ALLOWED_BESCHWERDE_TEXT';
         }
         if (this.gesuchModelManager.isGesuchsperiodeReadonly()) {
             return 'FREIGABEQUITTUNG_NOT_ALLOWED_GESUCHSPERIODE_TEXT';
         }
-        if (this.gesuchModelManager.getGesuch().hasProvisorischeBetreuungen()) {
+        if (gesuch && gesuch.hasProvisorischeBetreuungen()) {
             return 'FREIGABEQUITTUNG_NOT_ALLOWED_PROVISORISCHE_BETREUUNG_TEXT';
         }
 
@@ -182,6 +188,10 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         return this.wizardStepManager.areAllStepsOK(this.gesuchModelManager.getGesuch()) &&
             this.wizardStepManager.isStepStatusOk(TSWizardStepName.BETREUUNG)
             && !this.isGesuchReadonly() && this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS);
+    }
+
+    public isNotFreigegeben(): boolean {
+        return this.isGesuchInStatus(TSAntragStatus.IN_BEARBEITUNG_GS);
     }
 
     public isThereAnyAbgewieseneBetreuung(): boolean {

@@ -168,6 +168,10 @@ public class Einstellung extends AbstractEntity {
 		return DateUtil.parseStringToDate(value);
 	}
 
+	public Boolean getValueAsBoolean() {
+		return Boolean.parseBoolean(value);
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality

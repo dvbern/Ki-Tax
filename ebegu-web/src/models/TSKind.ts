@@ -23,7 +23,8 @@ import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export default class TSKind extends TSAbstractPersonEntity {
 
-    private _kinderabzug: TSKinderabzug;
+    private _kinderabzugErstesHalbjahr: TSKinderabzug;
+    private _kinderabzugZweitesHalbjahr: TSKinderabzug;
     private _familienErgaenzendeBetreuung: boolean;
     private _sprichtAmtssprache: boolean;
     private _einschulungTyp: TSEinschulungTyp;
@@ -35,7 +36,8 @@ export default class TSKind extends TSAbstractPersonEntity {
         nachname?: string,
         geburtsdatum?: moment.Moment,
         geschlecht?: TSGeschlecht,
-        kinderabzug?: TSKinderabzug,
+        kinderabzug1?: TSKinderabzug,
+        kinderabzug2?: TSKinderabzug,
         familienErgaenzendeBetreuung?: boolean,
         sprichtAmtssprache?: boolean,
         pensumFachstelle?: TSPensumFachstelle,
@@ -44,7 +46,8 @@ export default class TSKind extends TSAbstractPersonEntity {
     ) {
 
         super(vorname, nachname, geburtsdatum, geschlecht);
-        this._kinderabzug = kinderabzug;
+        this._kinderabzugErstesHalbjahr = kinderabzug1;
+        this._kinderabzugZweitesHalbjahr = kinderabzug2;
         this._familienErgaenzendeBetreuung = familienErgaenzendeBetreuung;
         this._sprichtAmtssprache = sprichtAmtssprache;
         this._einschulungTyp = einschulungTyp;
@@ -52,12 +55,20 @@ export default class TSKind extends TSAbstractPersonEntity {
         this._pensumAusserordentlicherAnspruch = pensumAusserordentlicherAnspruch;
     }
 
-    public get kinderabzug(): TSKinderabzug {
-        return this._kinderabzug;
+    public get kinderabzugErstesHalbjahr(): TSKinderabzug {
+        return this._kinderabzugErstesHalbjahr;
     }
 
-    public set kinderabzug(value: TSKinderabzug) {
-        this._kinderabzug = value;
+    public set kinderabzugErstesHalbjahr(value: TSKinderabzug) {
+        this._kinderabzugErstesHalbjahr = value;
+    }
+
+    public get kinderabzugZweitesHalbjahr(): TSKinderabzug {
+        return this._kinderabzugZweitesHalbjahr;
+    }
+
+    public set kinderabzugZweitesHalbjahr(value: TSKinderabzug) {
+        this._kinderabzugZweitesHalbjahr = value;
     }
 
     public get familienErgaenzendeBetreuung(): boolean {

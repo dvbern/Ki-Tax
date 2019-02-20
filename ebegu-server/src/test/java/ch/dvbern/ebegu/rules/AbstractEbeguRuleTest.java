@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -35,9 +36,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests für die Hilfsmethoden auf AbstractEbeguRule
@@ -346,7 +345,7 @@ public class AbstractEbeguRuleTest {
 		int expectedBetreuungspensum,
 		int expectedAnspruchsPensum,
 		int expectedBgPensum,
-		@Nullable RuleKey expectedBemerkungIfAny) {
+		@Nullable MsgKey expectedBemerkungIfAny) {
 
 		assertEquals(MathUtil.DEFAULT.from(expectedBetreuungspensum), zeitabschnitt.getBetreuungspensum());
 		assertEquals(expectedAnspruchsPensum, zeitabschnitt.getAnspruchberechtigtesPensum());
@@ -354,12 +353,13 @@ public class AbstractEbeguRuleTest {
 
 		final String bemerkungen = zeitabschnitt.getBemerkungen();
 		if (expectedBemerkungIfAny != null) {
-			assertNotNull(bemerkungen);
-			assertFalse(bemerkungen.isEmpty());
-			assertTrue(bemerkungen.contains(expectedBemerkungIfAny.name()));
+			Assert.assertFalse(zeitabschnitt.getBemerkungenMap().isEmpty());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenMap().containsKey(expectedBemerkungIfAny));
 		} else {
 			assertNotNull(bemerkungen);
-			assertTrue(bemerkungen.isEmpty());
+			Assert.assertFalse(zeitabschnitt.getBemerkungenMap().isEmpty());
+			Assert.assertEquals(1, zeitabschnitt.getBemerkungenMap().size());
+			Assert.assertTrue(zeitabschnitt.getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		}
 	}
 }

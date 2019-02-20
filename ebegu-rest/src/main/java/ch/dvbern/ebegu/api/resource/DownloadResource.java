@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -363,7 +364,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("gesuchid") JaxId jaxGesuchId,
 		@Nonnull @Valid @PathParam("betreuungId") JaxId jaxBetreuungId,
 		@Nonnull @Valid @PathParam("forceCreation") Boolean forceCreation,
-		@Nonnull @NotNull @Valid String manuelleBemerkungen,
+		@Nullable String manuelleBemerkungen,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException,
 		IOException, MimeTypeParseException {
 

@@ -1022,7 +1022,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setLaufnummer(antragJAXP.getLaufnummer());
 		antrag.setGesuchBetreuungenStatus(antragJAXP.getGesuchBetreuungenStatus());
 		antrag.setGeprueftSTV(antragJAXP.isGeprueftSTV());
-		antrag.setHasFSDokument(antragJAXP.isHasFSDokument());
+		antrag.setVerfuegungEingeschrieben(antragJAXP.isVerfuegungEingeschrieben());
 		antrag.setFinSitStatus(antragJAXP.getFinSitStatus());
 		antrag.setDokumenteHochgeladen(antragJAXP.isDokumenteHochgeladen());
 		return antrag;
@@ -1186,7 +1186,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuch.setLaufnummer(persistedGesuch.getLaufnummer());
 		jaxGesuch.setGesuchBetreuungenStatus(persistedGesuch.getGesuchBetreuungenStatus());
 		jaxGesuch.setGeprueftSTV(persistedGesuch.isGeprueftSTV());
-		jaxGesuch.setHasFSDokument(persistedGesuch.isHasFSDokument());
+		jaxGesuch.setVerfuegungEingeschrieben(persistedGesuch.isVerfuegungEingeschrieben());
 		jaxGesuch.setGesperrtWegenBeschwerde(persistedGesuch.isGesperrtWegenBeschwerde());
 		jaxGesuch.setDatumGewarntNichtFreigegeben(persistedGesuch.getDatumGewarntNichtFreigegeben());
 		jaxGesuch.setDatumGewarntFehlendeQuittung(persistedGesuch.getDatumGewarntFehlendeQuittung());
@@ -1587,7 +1587,8 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxKind kindToJAX(@Nonnull final Kind persistedKind) {
 		final JaxKind jaxKind = new JaxKind();
 		convertAbstractPersonFieldsToJAX(persistedKind, jaxKind);
-		jaxKind.setKinderabzug(persistedKind.getKinderabzug());
+		jaxKind.setKinderabzugErstesHalbjahr(persistedKind.getKinderabzugErstesHalbjahr());
+		jaxKind.setKinderabzugZweitesHalbjahr(persistedKind.getKinderabzugZweitesHalbjahr());
 		jaxKind.setFamilienErgaenzendeBetreuung(persistedKind.getFamilienErgaenzendeBetreuung());
 		jaxKind.setSprichtAmtssprache(persistedKind.getSprichtAmtssprache());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
@@ -1713,7 +1714,8 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(kindJAXP);
 		requireNonNull(kind);
 		convertAbstractPersonFieldsToEntity(kindJAXP, kind);
-		kind.setKinderabzug(kindJAXP.getKinderabzug());
+		kind.setKinderabzugErstesHalbjahr(kindJAXP.getKinderabzugErstesHalbjahr());
+		kind.setKinderabzugZweitesHalbjahr(kindJAXP.getKinderabzugZweitesHalbjahr());
 		kind.setFamilienErgaenzendeBetreuung(kindJAXP.getFamilienErgaenzendeBetreuung());
 		kind.setSprichtAmtssprache(kindJAXP.getSprichtAmtssprache());
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
@@ -2960,12 +2962,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxLoginElement.setStatus(benutzer.getStatus());
 		jaxLoginElement.setCurrentBerechtigung(berechtigungToJax(benutzer.getCurrentBerechtigung()));
 		// Berechtigungen
-		final Set<JaxBerechtigung> jaxBerechtigungen = new TreeSet<>();
+		Set<JaxBerechtigung> jaxBerechtigungen = new TreeSet<>();
 		if (benutzer.getBerechtigungen() != null) {
-			jaxBerechtigungen.addAll(benutzer.getBerechtigungen()
-				.stream()
+			jaxBerechtigungen = benutzer.getBerechtigungen().stream()
 				.map(this::berechtigungToJax)
-				.collect(Collectors.toList()));
+				.sorted()
+				.collect(Collectors.toCollection(TreeSet::new));
 		}
 		jaxLoginElement.setBerechtigungen(jaxBerechtigungen);
 
@@ -3986,6 +3988,12 @@ public class JaxBConverter extends AbstractConverter {
 			throw new IllegalArgumentException("Die Korrespondenzsprache muss gesetzt sein");
 		}
 
+		stammdaten.setKontoinhaber(jaxStammdaten.getKontoinhaber());
+		stammdaten.setBic(jaxStammdaten.getBic());
+		if (jaxStammdaten.getIban() != null) {
+			stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
+		}
+
 		return stammdaten;
 	}
 
@@ -4047,6 +4055,12 @@ public class JaxBConverter extends AbstractConverter {
 					gesuchsperiode));
 			}
 		}
+		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
+		jaxStammdaten.setBic(stammdaten.getBic());
+		if(stammdaten.getIban() != null) {
+			jaxStammdaten.setIban(stammdaten.getIban().getIban());
+		}
+
 
 		return jaxStammdaten;
 	}

@@ -117,7 +117,12 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	@Test
 	public void calculateVerfuegung() {
 
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.of(1980, Month.MARCH, 25),
+			null,
+			gesuchsperiode);
 		TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde(), persistence);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertEquals(33, einstellungService.getAllEinstellungenBySystem(gesuch.getGesuchsperiode()).size());
@@ -132,8 +137,12 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void findVorgaengerVerfuegung() {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(2016, Month.MARCH, 25), AntragStatus
-			.VERFUEGT, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.of(2016, Month.MARCH, 25),
+			AntragStatus.VERFUEGT,
+			gesuchsperiode);
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Set<KindContainer> kindContainers = gesuch.getKindContainers();
 		KindContainer kind = kindContainers.iterator().next();
@@ -164,7 +173,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch mutation = persistence.merge(gesuchOptional.get());
 
 		List<Betreuung> allBetreuungenFromGesuch = this.betreuungService.findAllBetreuungenFromGesuch(mutation.getId());
-		Optional<Betreuung> optFolgeBetreeung = allBetreuungenFromGesuch.stream().filter(b -> b.getBetreuungNummer().equals(betreuungNummer)).findAny();
+		Optional<Betreuung> optFolgeBetreeung = allBetreuungenFromGesuch.stream()
+			.filter(b -> b.getBetreuungNummer().equals(betreuungNummer)).findAny();
 		Assert.assertTrue(optFolgeBetreeung.isPresent());
 		Optional<Verfuegung> optVorherigeVerfuegungBetreuung = this.verfuegungService.findVorgaengerVerfuegung(optFolgeBetreeung.get());
 		Assert.assertTrue(optVorherigeVerfuegungBetreuung.isPresent());
@@ -177,7 +187,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		Verfuegung verfuegung2 = insertVerfuegung();
 		Collection<Verfuegung> allVerfuegungen = this.verfuegungService.getAllVerfuegungen();
 		Assert.assertEquals(2, allVerfuegungen.size());
-		Assert.assertTrue(allVerfuegungen.stream().allMatch(currentVerfuegung -> currentVerfuegung.equals(verfuegung) || currentVerfuegung.equals(verfuegung2)));
+		Assert.assertTrue(allVerfuegungen.stream()
+			.allMatch(currentVerfuegung -> currentVerfuegung.equals(verfuegung) || currentVerfuegung.equals(verfuegung2)));
 	}
 
 	@Test
@@ -191,7 +202,10 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		VerfuegungZeitabschnitt zeitabschnitt = createGesuchWithVerfuegungZeitabschnitt();
 
 		List<VerfuegungZeitabschnitt> zeitabschnittListe = new ArrayList<>();
-		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(zeitabschnitt, zeitabschnitt.getVerfuegung().getBetreuung(), zeitabschnittListe);
+		verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+			zeitabschnitt,
+			zeitabschnitt.getVerfuegung().getBetreuung(),
+			zeitabschnittListe);
 
 		Assert.assertEquals(0, zeitabschnittListe.size());
 	}
@@ -199,14 +213,24 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	//Helpers
 
 	private Betreuung insertBetreuung() {
-		Betreuung betreuung = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode)
-			.getKindContainers().iterator().next().getBetreuungen().iterator().next();
+		Betreuung betreuung = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.of(1980, Month.MARCH, 25),
+			null,
+			gesuchsperiode
+		).getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		return persistence.merge(betreuung);
 	}
 
 	private Verfuegung insertVerfuegung() {
-		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(instService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(
+			instService,
+			persistence,
+			LocalDate.of(1980, Month.MARCH, 25),
+			null,
+			gesuchsperiode);
 		Betreuung betreuung = gesuch.getKindContainers().iterator().next().getBetreuungen().iterator().next();
 		return createAndPersistVerfuegteVerfuegung(betreuung);
 	}

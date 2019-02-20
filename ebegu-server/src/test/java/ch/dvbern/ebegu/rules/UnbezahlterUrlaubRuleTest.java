@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Before;
@@ -59,7 +60,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
-		assertZeitabschnitt(result.get(0), 80, 0, 0, RuleKey.ERWERBSPENSUM);
+		assertZeitabschnitt(result.get(0), 80, 0, 0, MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(2, result.size());
-		assertZeitabschnitt(result.get(0), 80, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(0), 80, 0, 0, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
@@ -101,7 +102,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		assertNotNull(result);
 		assertEquals(3, result.size());
 		assertZeitabschnitt(result.get(0), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
-		assertZeitabschnitt(result.get(1), 80, 0, 0, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(1), 80, 0, 0, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 		assertZeitabschnitt(result.get(2), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, null);
 	}
 
@@ -125,7 +126,7 @@ public class UnbezahlterUrlaubRuleTest extends AbstractEbeguRuleTest {
 		assertNotNull(result);
 		assertEquals(3, result.size());
 		assertZeitabschnitt(result.get(0), 80, 100, 80, null);
-		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, RuleKey.UNBEZAHLTER_URLAUB);
+		assertZeitabschnitt(result.get(1), 80, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, MsgKey.UNBEZAHLTER_URLAUB_MSG);
 		assertZeitabschnitt(result.get(2), 80, 100, 80, null);
 	}
 

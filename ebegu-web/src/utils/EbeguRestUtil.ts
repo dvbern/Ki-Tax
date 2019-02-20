@@ -795,7 +795,9 @@ export default class EbeguRestUtil {
             restStammdaten.korrespondenzspracheFr = stammdaten.korrespondenzspracheFr;
             restStammdaten.konfigurationsListe =
                 this.gemeindeKonfigurationListToRestObject(stammdaten.konfigurationsListe);
-
+            restStammdaten.kontoinhaber = stammdaten.kontoinhaber;
+            restStammdaten.bic = stammdaten.bic;
+            restStammdaten.iban = stammdaten.iban;
             return restStammdaten;
         }
         return undefined;
@@ -822,6 +824,9 @@ export default class EbeguRestUtil {
             stammdatenTS.benutzerListeTS = stammdatenFromServer.benutzerListeTS;
             stammdatenTS.konfigurationsListe =
                 this.parseGemeindeKonfigurationList(stammdatenFromServer.konfigurationsListe);
+            stammdatenTS.kontoinhaber = stammdatenFromServer.kontoinhaber;
+            stammdatenTS.bic = stammdatenFromServer.bic;
+            stammdatenTS.iban = stammdatenFromServer.iban;
 
             return stammdatenTS;
         }
@@ -914,7 +919,7 @@ export default class EbeguRestUtil {
         restGesuch.laufnummer = gesuch.laufnummer;
         restGesuch.gesuchBetreuungenStatus = gesuch.gesuchBetreuungenStatus;
         restGesuch.geprueftSTV = gesuch.geprueftSTV;
-        restGesuch.hasFSDokument = gesuch.hasFSDokument;
+        restGesuch.verfuegungEingeschrieben = gesuch.verfuegungEingeschrieben;
         restGesuch.gesperrtWegenBeschwerde = gesuch.gesperrtWegenBeschwerde;
         restGesuch.datumGewarntNichtFreigegeben = DateUtil.momentToLocalDate(gesuch.datumGewarntNichtFreigegeben);
         restGesuch.datumGewarntFehlendeQuittung = DateUtil.momentToLocalDate(gesuch.datumGewarntFehlendeQuittung);
@@ -945,7 +950,7 @@ export default class EbeguRestUtil {
             gesuchTS.laufnummer = gesuchFromServer.laufnummer;
             gesuchTS.gesuchBetreuungenStatus = gesuchFromServer.gesuchBetreuungenStatus;
             gesuchTS.geprueftSTV = gesuchFromServer.geprueftSTV;
-            gesuchTS.hasFSDokument = gesuchFromServer.hasFSDokument;
+            gesuchTS.verfuegungEingeschrieben = gesuchFromServer.verfuegungEingeschrieben;
             gesuchTS.gesperrtWegenBeschwerde = gesuchFromServer.gesperrtWegenBeschwerde;
             gesuchTS.datumGewarntNichtFreigegeben =
                 DateUtil.localDateToMoment(gesuchFromServer.datumGewarntNichtFreigegeben);
@@ -1302,27 +1307,6 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public finanzielleSituationResultateToRestObject(
-        restFinanzielleSituationResultate: any,
-        finanzielleSituationResultateDTO: TSFinanzielleSituationResultateDTO,
-    ): TSFinanzielleSituationResultateDTO {
-        restFinanzielleSituationResultate.geschaeftsgewinnDurchschnittGesuchsteller1 =
-            finanzielleSituationResultateDTO.geschaeftsgewinnDurchschnittGesuchsteller1;
-        restFinanzielleSituationResultate.geschaeftsgewinnDurchschnittGesuchsteller2 =
-            finanzielleSituationResultateDTO.geschaeftsgewinnDurchschnittGesuchsteller2;
-        restFinanzielleSituationResultate.einkommenBeiderGesuchsteller =
-            finanzielleSituationResultateDTO.einkommenBeiderGesuchsteller;
-        restFinanzielleSituationResultate.nettovermoegenFuenfProzent =
-            finanzielleSituationResultateDTO.nettovermoegenFuenfProzent;
-        restFinanzielleSituationResultate.anrechenbaresEinkommen =
-            finanzielleSituationResultateDTO.anrechenbaresEinkommen;
-        restFinanzielleSituationResultate.abzuegeBeiderGesuchsteller =
-            finanzielleSituationResultateDTO.abzuegeBeiderGesuchsteller;
-        restFinanzielleSituationResultate.massgebendesEinkVorAbzFamGr =
-            finanzielleSituationResultateDTO.massgebendesEinkVorAbzFamGr;
-        return restFinanzielleSituationResultate;
-    }
-
     public parseFinanzielleSituationResultate(
         finanzielleSituationResultateDTO: TSFinanzielleSituationResultateDTO,
         finanzielleSituationResultateFromServer: any,
@@ -1477,7 +1461,8 @@ export default class EbeguRestUtil {
 
     private kindToRestObject(restKind: any, kind: TSKind): any {
         this.abstractPersonEntitytoRestObject(restKind, kind);
-        restKind.kinderabzug = kind.kinderabzug;
+        restKind.kinderabzugErstesHalbjahr = kind.kinderabzugErstesHalbjahr;
+        restKind.kinderabzugZweitesHalbjahr = kind.kinderabzugZweitesHalbjahr;
         restKind.sprichtAmtssprache = kind.sprichtAmtssprache;
         restKind.einschulungTyp = kind.einschulungTyp;
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
@@ -1537,7 +1522,8 @@ export default class EbeguRestUtil {
     private parseKind(kindTS: TSKind, kindFromServer: any): TSKind {
         if (kindFromServer) {
             this.parseAbstractPersonEntity(kindTS, kindFromServer);
-            kindTS.kinderabzug = kindFromServer.kinderabzug;
+            kindTS.kinderabzugErstesHalbjahr = kindFromServer.kinderabzugErstesHalbjahr;
+            kindTS.kinderabzugZweitesHalbjahr = kindFromServer.kinderabzugZweitesHalbjahr;
             kindTS.sprichtAmtssprache = kindFromServer.sprichtAmtssprache;
             kindTS.einschulungTyp = kindFromServer.einschulungTyp;
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;

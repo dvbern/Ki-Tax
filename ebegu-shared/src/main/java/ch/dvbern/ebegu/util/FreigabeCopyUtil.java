@@ -164,7 +164,8 @@ public final class FreigabeCopyUtil {
 		}
 		kindGS.setEinschulungTyp(kindJA.getEinschulungTyp());
 		kindGS.setFamilienErgaenzendeBetreuung(kindJA.getFamilienErgaenzendeBetreuung());
-		kindGS.setKinderabzug(kindJA.getKinderabzug());
+		kindGS.setKinderabzugErstesHalbjahr(kindJA.getKinderabzugErstesHalbjahr());
+		kindGS.setKinderabzugZweitesHalbjahr(kindJA.getKinderabzugZweitesHalbjahr());
 		kindGS.setGeburtsdatum(kindJA.getGeburtsdatum());
 		kindGS.setNachname(kindJA.getNachname());
 		kindGS.setGeschlecht(kindJA.getGeschlecht());

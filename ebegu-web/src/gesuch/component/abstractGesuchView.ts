@@ -66,8 +66,10 @@ export default class AbstractGesuchViewController<T> implements IController {
          * Damit dies nicht passiert, hoeren wir in allen Views auf diesen Event und setzen das Form auf dirty
          */
         this.$scope.$on(TSMessageEvent[TSMessageEvent.ERROR_UPDATE], (_event: any, _errors: TSExceptionReport[]) => {
-            this.form.$dirty = true;
-            this.form.$pristine = false;
+            if (this.form) {
+                this.form.$dirty = true;
+                this.form.$pristine = false;
+            }
         });
     }
 

@@ -18,8 +18,10 @@ import {IComponentOptions, ILogService, IPromise, IScope, IWindowService} from '
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import TSBetreuung from '../../../models/TSBetreuung';
 import TSDownloadFile from '../../../models/TSDownloadFile';
@@ -63,6 +65,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         'ExportRS',
         'ApplicationPropertyRS',
         '$timeout',
+        'AuthServiceRS',
     ];
 
     // this is the model...
@@ -87,6 +90,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly exportRS: ExportRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         $timeout: ITimeoutService,
+        private readonly authServiceRs: AuthServiceRS,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -367,6 +371,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public isBemerkungenDisabled(): boolean {
+        // GS darf das Feld nicht bearbeiten
+        if (this.authServiceRs.isRole(TSRole.GESUCHSTELLER)) {
+            return true;
+        }
+
         return this.gesuchModelManager.getGesuch()
             && (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.VERFUEGEN
                 || this.getBetreuung().betreuungsstatus === TSBetreuungsstatus.VERFUEGT

@@ -24,7 +24,6 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
 
 import static ch.dvbern.ebegu.enums.MsgKey.EINREICHUNGSFRIST_MSG;
-import static ch.dvbern.ebegu.enums.MsgKey.EINREICHUNGSFRIST_VOLLKOSTEN_MSG;
 
 /**
  * Regel bezüglich der Einreichungsfrist des Gesuchs:
@@ -54,9 +53,6 @@ public class EinreichungsfristCalcRule extends AbstractCalcRule {
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_MSG, getLocale());
-				} else {
-					verfuegungZeitabschnitt.setBezahltVollkosten(true);
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, EINREICHUNGSFRIST_VOLLKOSTEN_MSG, getLocale());
 				}
 			}
 		}

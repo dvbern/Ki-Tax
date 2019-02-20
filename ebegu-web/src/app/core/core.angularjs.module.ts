@@ -32,10 +32,12 @@ import 'angular-translate-loader-static-files';
 import 'angular-ui-bootstrap';
 import 'angular-unsavedchanges';
 import 'ng-file-upload';
+import 'angular-utf8-base64';
 import 'raven-js';
 import 'raven-js/plugins/angular';
 // tslint:enable-no-import-side-effect
 import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {AUTHENTICATION_JS_MODULE} from '../../authentication/authentication.module';
 import {AuthLifeCycleService} from '../../authentication/service/authLifeCycle.service';
 import router from '../../dvbModules/router/router.module';
@@ -160,12 +162,12 @@ const dependencies = [
     'ui.bootstrap',
     'smart-table',
     'ngMaterial',
-    'ngMessages',
     'pascalprecht.translate',
     'angularMoment',
     'cfp.hotkeys',
     'ngFileUpload',
     'unsavedChanges',
+    'utf8-base64',
 ];
 
 const dynamicDependencies = (): string[] => {
@@ -223,6 +225,7 @@ export const CORE_JS_MODULE = angular
     .service('ExportRS', ExportRS)
     .service('DossierRS', DossierRS)
     .service('GemeindeRS', GemeindeRS)
+    .service('EinstellungRS', EinstellungRS)
     .factory('PosteingangService', downgradeInjectable(PosteingangService) as any)
     .factory('AuthLifeCycleService', downgradeInjectable(AuthLifeCycleService) as any)
     .factory('GesuchGenerator', downgradeInjectable(GesuchGenerator) as any)

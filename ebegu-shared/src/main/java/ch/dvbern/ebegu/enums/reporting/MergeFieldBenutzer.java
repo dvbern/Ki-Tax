@@ -33,6 +33,26 @@ public enum MergeFieldBenutzer implements MergeFieldProvider {
 
 	repeatBenutzerRow(new RepeatRowMergeField("repeatBenutzerRow")),
 
+	reportBenutzerTitle(new SimpleMergeField<>("reportBenutzerTitle", STRING_CONVERTER)),
+
+	usernameTitle(new SimpleMergeField<>("usernameTitle", STRING_CONVERTER)),
+	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
+	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
+	emailTitle(new SimpleMergeField<>("emailTitle", STRING_CONVERTER)),
+	roleTitle(new SimpleMergeField<>("roleTitle", STRING_CONVERTER)),
+	roleGueltigBisTitel(new SimpleMergeField<>("roleGueltigBisTitel", STRING_CONVERTER)),
+	gemeindenTitle(new SimpleMergeField<>("gemeindenTitle", STRING_CONVERTER)),
+	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
+	traegerschaftTitle(new SimpleMergeField<>("traegerschaftTitle", STRING_CONVERTER)),
+	kitaTitel(new SimpleMergeField<>("kitaTitel", STRING_CONVERTER)),
+	tagesfamilienTitle(new SimpleMergeField<>("tagesfamilienTitle", STRING_CONVERTER)),
+	tagesschulenTitel(new SimpleMergeField<>("tagesschulenTitel", STRING_CONVERTER)),
+	ferieninselTitle(new SimpleMergeField<>("ferieninselTitle", STRING_CONVERTER)),
+	isJugendamtTitle(new SimpleMergeField<>("isJugendamtTitle", STRING_CONVERTER)),
+	isSchulamtTitle(new SimpleMergeField<>("isSchulamtTitle", STRING_CONVERTER)),
+	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
+	stichtagTitle(new SimpleMergeField<>("stichtagTitle", STRING_CONVERTER)),
+
 	stichtag(new SimpleMergeField<>("stichtag", DATE_CONVERTER)),
 
 	username(new SimpleMergeField<>("username", STRING_CONVERTER)),

@@ -86,7 +86,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 			TestfallName.LUETHI_MERET, gesuchsperiode, eingangsdatum, datumGeneriertErsterZahlungsauftrag.minusDays(1));
 		erstgesuch = testdataCreationService.createErstgesuch(config);
 
-		lastZahlungsauftrag = zahlungService.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Normal August", datumGeneriertErsterZahlungsauftrag);
+		lastZahlungsauftrag = zahlungService
+			.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Normal August", datumGeneriertErsterZahlungsauftrag);
 		lastZahlungsauftrag = zahlungService.zahlungsauftragAusloesen(lastZahlungsauftrag.getId());
 
 		erstgesuch = gesuchService.findGesuch(erstgesuch.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("findGesuch",
@@ -96,7 +97,8 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Assert.assertNotNull(alleZeitabschnitte);
 		Assert.assertEquals(12, alleZeitabschnitte.size());
 		// (1) Erstgesuch
-		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 	}
 
 	@Test
@@ -111,9 +113,11 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Assert.assertNotNull(alleZeitabschnitte);
 		Assert.assertEquals(24, alleZeitabschnitte.size());
 		// (1) Erstgesuch
-		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 		// (2) M1: Da es keine Anpassungen gab, bleibt der "Verrechnungszustand" gleich
-		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 	}
 
 	@Test
@@ -128,9 +132,11 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Assert.assertNotNull(alleZeitabschnitte);
 		Assert.assertEquals(24, alleZeitabschnitte.size());
 		// (1) Erstgesuch
-		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 		// (2) M1: Da es keine Anpassungen gab, bleibt der "Verrechnungszustand" gleich
-		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 	}
 
 	@Test
@@ -145,9 +151,11 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Assert.assertNotNull(alleZeitabschnitte);
 		Assert.assertEquals(24, alleZeitabschnitte.size());
 		// (1) Erstgesuch
-		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 		// (2) M1: Da es keine Anpassungen gab, bleibt der "Verrechnungszustand" gleich
-		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 	}
 
 	@Test
@@ -158,16 +166,19 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Gesuch mutation = testdataCreationService.createMutation(configMutationIgnoriert, erstgesuch);
 
 		// Zahlung im gleichen Monat
-		zahlungService.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Repetition August", lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
+		zahlungService.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Repetition August",
+			lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
 
 		Assert.assertNotNull(mutation);
 		List<VerfuegungZeitabschnitt> alleZeitabschnitte = getAllZeitabschnitteOrderedByGesuchAndDatum();
 		Assert.assertNotNull(alleZeitabschnitte);
 		Assert.assertEquals(24, alleZeitabschnitte.size());
 		// (1) Erstgesuch
-		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 		// (2) M1: Da es keine Anpassungen gab, bleibt der "Verrechnungszustand" gleich
-		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT, VerfuegungsZeitabschnittZahlungsstatus.NEU);
+		assertZahlungsstatus(alleZeitabschnitte, 12, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU);
 	}
 
 	@Test
@@ -178,15 +189,16 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		Gesuch mutation = testdataCreationService.createMutation(configMutationIgnoriert, erstgesuch);
 
 		// Zahlung im gleichen Monat
-		zahlungService.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Normal September", lastZahlungsauftrag.getDatumGeneriert().plusMonths
-			(1));
+		zahlungService.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Normal September",
+			lastZahlungsauftrag.getDatumGeneriert().plusMonths(1));
 
 		Assert.assertNotNull(mutation);
 		List<VerfuegungZeitabschnitt> alleZeitabschnitte = getAllZeitabschnitteOrderedByGesuchAndDatum();
 		Assert.assertNotNull(alleZeitabschnitte);
 		Assert.assertEquals(24, alleZeitabschnitte.size());
 		// (1) Erstgesuch
-		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT, VerfuegungsZeitabschnittZahlungsstatus.NEU); // EG
+		assertZahlungsstatus(alleZeitabschnitte, 0, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT,
+			VerfuegungsZeitabschnittZahlungsstatus.NEU); // EG
 		// (2) M1: Da es keine Anpassungen gab, bleibt der "Verrechnungszustand" gleich
 		assertZahlungsstatus(alleZeitabschnitte, 12, 12, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT); // M August
 		assertZahlungsstatus(alleZeitabschnitte, 13, 13, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET); // M Septempber

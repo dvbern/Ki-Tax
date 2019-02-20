@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import org.junit.Assert;
@@ -66,10 +67,10 @@ public class KesbPlatzierungCalcRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertEquals(
-			"KESB_PLATZIERUNG: Bei einer KESB-Platzierung wird kein Gutschein ausgestellt. Die Betreuungskosten werden"
-				+ " von der KESB übernommen.",
-			result.get(0).getBemerkungen());
+		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		Assert.assertEquals(2, result.get(0).getBemerkungenMap().size());
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.KESB_PLATZIERUNG_MSG));
 	}
 
 	@Test

@@ -40,13 +40,13 @@ public class GeuschZeitraumExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<GesuchZeitraumDataRow> data, @Nonnull Locale lang) {
+	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<GesuchZeitraumDataRow> data, @Nonnull Locale locale) {
 		checkNotNull(data);
 
-		ExcelMergerDTO sheet = new ExcelMergerDTO();
+		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
 		data.forEach(dataRow -> {
-			ExcelMergerDTO excelRowGroup = sheet.createGroup(MergeFieldGesuchZeitraum.repeatGesuchZeitraumRow);
+			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldGesuchZeitraum.repeatGesuchZeitraumRow);
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.bgNummer, dataRow.getBgNummer());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.gesuchLaufNr, dataRow.getGesuchLaufNr());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.institution, dataRow.getInstitution());
@@ -76,6 +76,6 @@ public class GeuschZeitraumExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.anzahlVerfuegungenNichtEintreten, dataRow.getAnzahlVerfuegungenNichtEintreten());
 		});
 
-		return sheet;
+		return excelMerger;
 	}
 }

@@ -47,8 +47,12 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 	}
 
 	@Nonnull
-	public Sheet mergeHeaderFields(@Nonnull List<GesuchstellerKinderBetreuungDataRow> data, @Nonnull Sheet sheet,
-		@Nonnull LocalDate stichtag) throws ExcelMergeException {
+	public Sheet mergeHeaderFieldsStichtag(
+		@Nonnull List<GesuchstellerKinderBetreuungDataRow> data,
+		@Nonnull Sheet sheet,
+		@Nonnull LocalDate stichtag,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		checkNotNull(data);
 
@@ -58,14 +62,22 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.stichtag.getMergeField());
 		excelMergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.stichtag.getMergeField(), stichtag);
 
+		addHeaders(excelMergerDTO, mergeFields, locale);
+
 		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
 
 		return sheet;
 	}
 
 	@Nonnull
-	public Sheet mergeHeaderFields(@Nonnull List<GesuchstellerKinderBetreuungDataRow> data, @Nonnull Sheet sheet,
-		@Nonnull LocalDate auswertungVon, @Nonnull LocalDate auswertungBis, @Nullable Gesuchsperiode auswertungPeriode) throws ExcelMergeException {
+	public Sheet mergeHeaderFieldsPeriode(
+		@Nonnull List<GesuchstellerKinderBetreuungDataRow> data,
+		@Nonnull Sheet sheet,
+		@Nonnull LocalDate auswertungVon,
+		@Nonnull LocalDate auswertungBis,
+		@Nullable Gesuchsperiode auswertungPeriode,
+		@Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		checkNotNull(data);
 
@@ -80,8 +92,11 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.auswertungPeriode.getMergeField());
 		if (auswertungPeriode != null) {
-			excelMergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.auswertungPeriode.getMergeField(), auswertungPeriode.getGesuchsperiodeString());
+			excelMergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.auswertungPeriode.getMergeField(),
+				auswertungPeriode.getGesuchsperiodeString());
 		}
+
+		addHeaders(excelMergerDTO, mergeFields, locale);
 
 		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
 
@@ -98,7 +113,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgNummer, dataRow.getBgNummer());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungsTyp,
-				requireNonNull(dataRow.getBetreuungsTyp()).name());
+				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getBetreuungsTyp()), locale));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.periode, dataRow.getPeriode());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchStatus, dataRow.getGesuchStatus());
 
@@ -138,7 +153,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpGesundhtl, MathUtil.GANZZAHL.from(dataRow.getGs2EwpGesundhtl()));
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs2EwpIntegration, MathUtil.GANZZAHL.from(dataRow.getGs2EwpIntegration()));
 
-			String familiensituation = dataRow.getFamiliensituation() != null ? dataRow.getFamiliensituation().name() : "";
+			String familiensituation = dataRow.getFamiliensituation() != null
+				? ServerMessageUtil.translateEnumValue(dataRow.getFamiliensituation(), locale)
+				: "";
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.familiensituation, familiensituation);
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.familiengroesse, dataRow.getFamiliengroesse());
 
@@ -184,6 +201,224 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			rowFiller.fillRow(excelRowGroup);
 		});
 	}
+
+	@SuppressWarnings("PMD.NcssMethodCount")
+	private void addHeaders(@Nonnull ExcelMergerDTO mergerDTO, @Nonnull List<MergeField<?>> mergeFields, @Nonnull Locale locale) {
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesuchstellerTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchstellerTitle.getMergeField(), ServerMessageUtil.getMessage("Reports_gesuchstellerTitleTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.stichtagTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.stichtagTitle.getMergeField(), ServerMessageUtil.getMessage("Reports_stichtagTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.institutionTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.angebotTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.angebotTitle, ServerMessageUtil.getMessage("Reports_angebotTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.parameterTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.parameterTitle.getMergeField(), ServerMessageUtil.getMessage("Reports_parameterTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.periodeTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.periodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.eingangsdatumTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.eingangsdatumTitle, ServerMessageUtil.getMessage("Reports_eingangsdatumTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.nachnameTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.nachnameTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.vornameTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.vornameTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.verfuegungsdatumTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.verfuegungsdatumTitle, ServerMessageUtil.getMessage("Reports_verfuegungsdatumTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.fallIdTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.fallIdTitle, ServerMessageUtil.getMessage("Reports_fallIdTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesuchsteller1Title.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchsteller1Title, ServerMessageUtil.getMessage("Reports_gesuchsteller1Title", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesuchsteller2Title.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchsteller2Title, ServerMessageUtil.getMessage("Reports_gesuchsteller2Title", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.strasseTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.strasseTitle, ServerMessageUtil.getMessage("Reports_strasseTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.strasseNrTitel.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.strasseNrTitel, ServerMessageUtil.getMessage("Reports_strasseNrTitel", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.zusatzTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.zusatzTitle, ServerMessageUtil.getMessage("Reports_zusatzTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.plzTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.plzTitle, ServerMessageUtil.getMessage("Reports_plzTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.ortTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.ortTitle, ServerMessageUtil.getMessage("Reports_ortTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.ewkTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.ewkTitle, ServerMessageUtil.getMessage("Reports_ewkTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.diplomatTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.diplomatTitle, ServerMessageUtil.getMessage("Reports_diplomatTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.beschaeftigungspensumTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.beschaeftigungspensumTitle, ServerMessageUtil.getMessage("Reports_beschaeftigungspensumTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.totalTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.totalTitle, ServerMessageUtil.getMessage("Reports_totalTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.angestelltTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.angestelltTitle, ServerMessageUtil.getMessage("Reports_angestelltTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.weiterbildungTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.weiterbildungTitle, ServerMessageUtil.getMessage("Reports_weiterbildungTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.selbstaendigTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.selbstaendigTitle, ServerMessageUtil.getMessage("Reports_selbstaendigTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.arbeitssuchendTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.arbeitssuchendTitle, ServerMessageUtil.getMessage("Reports_arbeitssuchendTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.integrationTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.integrationTitle, ServerMessageUtil.getMessage("Reports_integrationTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesIndikationTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesIndikationTitle, ServerMessageUtil.getMessage("Reports_gesIndikationTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.familieTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.familieTitle, ServerMessageUtil.getMessage("Reports_familieTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.famSituationTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.famSituationTitle, ServerMessageUtil.getMessage("Reports_famSituationTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.famGroesseTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.famGroesseTitle, ServerMessageUtil.getMessage("Reports_famGroesseTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommenTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommenTitle, ServerMessageUtil.getMessage("Reports_einkommenTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommenVorAbzugTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommenVorAbzugTitle, ServerMessageUtil.getMessage("Reports_einkommenVorAbzugTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.famAbzugTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.famAbzugTitle, ServerMessageUtil.getMessage("Reports_famAbzugTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.massEinkommenTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.massEinkommenTitle, ServerMessageUtil.getMessage("Reports_massEinkommenTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensjahrTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensjahrTitle, ServerMessageUtil.getMessage("Reports_einkommensjahrTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.einkommensverschlechterungTitle, ServerMessageUtil.getMessage("Reports_einkommensverschlechterungTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.geprueftSTVTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.geprueftSTVTitle, ServerMessageUtil.getMessage("Reports_geprueftSTVTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.veranlagtTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.veranlagtTitle, ServerMessageUtil.getMessage("Reports_veranlagtTitle", locale));
+
+
+
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.kinderTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.kinderTitle, ServerMessageUtil.getMessage("Reports_kinderTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.kindTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.kindTitle, ServerMessageUtil.getMessage("Reports_kindTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.vonTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.vonTitle, ServerMessageUtil.getMessage("Reports_vonTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bisTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bisTitle, ServerMessageUtil.getMessage("Reports_bisTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.geburtsdatumTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.fachstelleTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.fachstelleTitle, ServerMessageUtil.getMessage("Reports_fachstelleTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.babyFaktorTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.babyFaktorTitle, ServerMessageUtil.getMessage("Reports_babyFaktorTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.besonderebeduerfnisseTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.besonderebeduerfnisseTitle, ServerMessageUtil.getMessage("Reports_besonderebeduerfnisseTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.sprichtAmtsspracheTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.sprichtAmtsspracheTitle, ServerMessageUtil.getMessage("Reports_sprichtAmtsspracheTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.schulstufeTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.schulstufeTitle, ServerMessageUtil.getMessage("Reports_schulstufeTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bis1MonateTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bis1MonateTitle, ServerMessageUtil.getMessage("Reports_bis1MonateTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bis2MonateTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bis2MonateTitle, ServerMessageUtil.getMessage("Reports_bis2MonateTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bis3MonateTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bis3MonateTitle, ServerMessageUtil.getMessage("Reports_bis3MonateTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.abMonateTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.abMonateTitle, ServerMessageUtil.getMessage("Reports_abMonateTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.betreuungVonTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungVonTitle, ServerMessageUtil.getMessage("Reports_betreuungVonTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.betreuungBisTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungBisTitle, ServerMessageUtil.getMessage("Reports_betreuungBisTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.betreuungStatus.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungStatus, ServerMessageUtil.getMessage("Reports_betreuungStatus", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.anteilMonatTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.anteilMonatTitle, ServerMessageUtil.getMessage("Reports_anteilMonatTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.betreuungTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungTitle, ServerMessageUtil.getMessage("Reports_betreuungTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.pensumTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.pensumTitle, ServerMessageUtil.getMessage("Reports_pensumTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.kostenTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.kostenTitle, ServerMessageUtil.getMessage("Reports_kostenTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchberechtigtTitle, ServerMessageUtil.getMessage("Reports_anspruchberechtigtTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTitle, ServerMessageUtil.getMessage("Reports_bgPensumTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgPensumStdTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumStdTitle, ServerMessageUtil.getMessage("Reports_bgPensumStdTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgMonatspensumTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgMonatspensumTitle, ServerMessageUtil.getMessage("Reports_bgMonatspensumTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.vollkostenTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkostenTitle, ServerMessageUtil.getMessage("Reports_vollkostenTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.elternbeitragTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitragTitle, ServerMessageUtil.getMessage("Reports_elternbeitragTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gutscheinTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gutscheinTitle, ServerMessageUtil.getMessage("Reports_gutscheinTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.statusTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesuchstellerKinderBetreuungTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchstellerKinderBetreuungTitle, ServerMessageUtil.getMessage("Reports_gesuchstellerKinderBetreuungTitle", locale));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgNummerTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgNummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle", locale));
+
+	}
+
 }
 
 

@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -105,15 +104,9 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 
 		for (Betreuung betreuung : gesuchWithCalcVerfuegung.extractAllBetreuungen()) {
 			Objects.requireNonNull(betreuung.getVerfuegung());
-			// Ermitteln, ob die Minimales-Erwerbspensum-Regel zugeschlagen hat: Kommt die entsprechende
-			// Bemerkung vor?
+			// Ermitteln, ob die Minimales-Erwerbspensum-Regel zugeschlagen hat
 			for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
-				// the language is irrelevant, a translation in german will always work in this case
-				String message = ServerMessageUtil.translateEnumValue(MsgKey.ERWERBSPENSUM_MINIMUM_MSG, Constants.DEFAULT_LOCALE);
-				// Die Bemerkung hat einen Parameter, diesen wollen wir nicht aus den Einstellungen lesen. Darum
-				// vergleichen wir nur bis zu diesem Parameter
-				message = StringUtils.substringBefore(message, "{");
-				if (!StringUtils.contains(verfuegungZeitabschnitt.getBemerkungen(), message)) {
+				if (!verfuegungZeitabschnitt.isMinimalesEwpUnterschritten()) {
 					return false;
 				}
 			}

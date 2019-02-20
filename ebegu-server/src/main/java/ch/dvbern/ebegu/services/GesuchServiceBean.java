@@ -858,10 +858,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		SACHBEARBEITER_TS, ADMIN_TS })
+	public Gesuch setKeinKontingent(@Nonnull Gesuch gesuch) {
+		gesuch.setStatus(AntragStatus.KEIN_KONTINGENT);
+		return updateGesuch(gesuch, true, null);
+	}
+
+	@Override
+	@Nonnull
 	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public Gesuch setBeschwerdeHaengigForPeriode(@Nonnull Gesuch gesuch) {
-
 		final List<Gesuch> allGesucheForDossier =
 			getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
 		allGesucheForDossier.iterator().forEachRemaining(gesuchLoop -> {
@@ -1832,9 +1840,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaUpdate<Gesuch> update = cb.createCriteriaUpdate(Gesuch.class);
 		Root<Gesuch> root = update.from(Gesuch.class);
 		update.set(Gesuch_.finSitStatus, finSitStatus);
-		if (finSitStatus == FinSitStatus.ABGELEHNT) {
-			update.set(Gesuch_.hasFSDokument, false); // immer auf false wenn ABGELEHNT
-		}
 
 		Predicate predGesuch = cb.equal(root.get(AbstractEntity_.id), antragId);
 		update.where(predGesuch);

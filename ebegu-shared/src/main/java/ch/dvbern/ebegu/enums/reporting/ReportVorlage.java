@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.enums.reporting;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.enums.ReportFileName;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
@@ -29,39 +30,83 @@ public enum ReportVorlage {
 
 	// Achtung mit Filename, da mehrere Dokumente mit gleichem Namen aber unterschiedlichem Inhalt gespeichert werden.
 	// Falls der Name geaendert wuerde, muesste das File wieder geloescht werden.
-	VORLAGE_REPORT_GESUCH_STICHTAG("/reporting/GesuchStichtag.xlsx", "GesuchStichtag.xlsx", Constants.DATA,
-		MergeFieldGesuchStichtag.class),
-	VORLAGE_REPORT_GESUCH_ZEITRAUM("/reporting/GesuchZeitraum.xlsx", "VerfuegteGesucheMutationenNachZeitraum.xlsx", Constants.DATA,
-		MergeFieldGesuchZeitraum.class),
-	VORLAGE_REPORT_KANTON("/reporting/Kanton.xlsx", "Kanton.xlsx", Constants.DATA,
-		MergeFieldKanton.class),
-	VORLAGE_REPORT_MITARBEITERINNEN("/reporting/Mitarbeiterinnen.xlsx", "Mitarbeiterinnen.xlsx", Constants.DATA,
-		MergeFieldMitarbeiterinnen.class),
-	VORLAGE_REPORT_BENUTZER("/reporting/Benutzer.xlsx", "Benutzer.xlsx", Constants.DATA,
-		MergeFieldBenutzer.class),
-	VORLAGE_REPORT_ZAHLUNG_AUFTRAG("/reporting/ZahlungAuftrag.xlsx", "ZahlungAuftrag.xlsx", Constants.DATA,
-		MergeFieldZahlungAuftrag.class),
-	VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE("/reporting/ZahlungAuftragPeriode.xlsx", "ZahlungAuftragPeriode.xlsx", Constants.DATA,
-		MergeFieldZahlungAuftragPeriode.class),
-	VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG("/reporting/GesuchstellerKinderBetreuung.xlsx", "GesuchstellerKinderBetreuung.xlsx", Constants.DATA,
-		MergeFieldGesuchstellerKinderBetreuung.class),
-	VORLAGE_REPORT_KINDER("/reporting/Kinder.xlsx", "Kinder.xlsx", Constants.DATA,
-		MergeFieldGesuchstellerKinderBetreuung.class),
-	VORLAGE_REPORT_GESUCHSTELLER("/reporting/Gesuchsteller.xlsx", "Gesuchsteller.xlsx", Constants.DATA,
-		MergeFieldGesuchstellerKinderBetreuung.class),
-	VORLAGE_REPORT_MASSENVERSAND("/reporting/Massenversand.xlsx", "Massenversand.xlsx", Constants.DATA,
-		MergeFieldMassenversand.class);
+	VORLAGE_REPORT_GESUCH_STICHTAG(
+		"/reporting/GesuchStichtag.xlsx",
+		ReportFileName.GESUCH_STICHTAG,
+		Constants.DATA,
+		MergeFieldGesuchStichtag.class
+	),
+	VORLAGE_REPORT_GESUCH_ZEITRAUM(
+		"/reporting/GesuchZeitraum.xlsx",
+		ReportFileName.GESUCH_ZEITRAUM,
+		Constants.DATA,
+		MergeFieldGesuchZeitraum.class
+	),
+	VORLAGE_REPORT_KANTON(
+		"/reporting/Kanton.xlsx",
+		ReportFileName.KANTON,
+		Constants.DATA,
+		MergeFieldKanton.class
+	),
+	VORLAGE_REPORT_MITARBEITERINNEN(
+		"/reporting/Mitarbeiterinnen.xlsx",
+		ReportFileName.MITARBEITERINNEN,
+		Constants.DATA,
+		MergeFieldMitarbeiterinnen.class
+	),
+	VORLAGE_REPORT_BENUTZER(
+		"/reporting/Benutzer.xlsx",
+		ReportFileName.BENUTZER,
+		Constants.DATA,
+		MergeFieldBenutzer.class
+	),
+	VORLAGE_REPORT_ZAHLUNG_AUFTRAG(
+		"/reporting/ZahlungAuftrag.xlsx",
+		ReportFileName.ZAHLUNG_AUFTRAG,
+		Constants.DATA,
+		MergeFieldZahlungAuftrag.class
+	),
+	VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE(
+		"/reporting/ZahlungAuftragPeriode.xlsx",
+		ReportFileName.ZAHLUNG_AUFTRAG_PERIODE,
+		Constants.DATA,
+		MergeFieldZahlungAuftragPeriode.class
+	),
+	VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG(
+		"/reporting/GesuchstellerKinderBetreuung.xlsx",
+		ReportFileName.GESUCHSTELLER_KINDER_BETREUUNG,
+		Constants.DATA,
+		MergeFieldGesuchstellerKinderBetreuung.class
+	),
+	VORLAGE_REPORT_KINDER(
+		"/reporting/Kinder.xlsx",
+		ReportFileName.KINDER,
+		Constants.DATA,
+		MergeFieldGesuchstellerKinderBetreuung.class
+	),
+	VORLAGE_REPORT_GESUCHSTELLER(
+		"/reporting/Gesuchsteller.xlsx",
+		ReportFileName.GESUCHSTELLER,
+		Constants.DATA,
+		MergeFieldGesuchstellerKinderBetreuung.class
+	),
+	VORLAGE_REPORT_MASSENVERSAND(
+		"/reporting/Massenversand.xlsx",
+		ReportFileName.MASSENVERSAND,
+		Constants.DATA,
+		MergeFieldMassenversand.class
+	);
 
 	@Nonnull
 	private final String templatePath;
 	@Nonnull
-	private final String defaultExportFilename;
+	private final ReportFileName defaultExportFilename;
 	@Nonnull
 	private final Class<? extends MergeFieldProvider> mergeFields;
 	@Nonnull
 	private final String dataSheetName;
 
-	ReportVorlage(@Nonnull String templatePath, @Nonnull String defaultExportFilename,
+	ReportVorlage(@Nonnull String templatePath, @Nonnull ReportFileName defaultExportFilename,
 		@Nonnull String dataSheetName, @Nonnull Class<? extends MergeFieldProvider> mergeFields) {
 		this.templatePath = templatePath;
 		this.defaultExportFilename = defaultExportFilename;
@@ -75,7 +120,7 @@ public enum ReportVorlage {
 	}
 
 	@Nonnull
-	public String getDefaultExportFilename() {
+	public ReportFileName getDefaultExportFilename() {
 		return defaultExportFilename;
 	}
 

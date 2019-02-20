@@ -22,11 +22,11 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
-import org.apache.poi.ss.usermodel.Sheet;
-
 import ch.dvbern.ebegu.enums.reporting.MergeFieldKanton;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -38,15 +38,23 @@ public class KantonExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<KantonDataRow> data, @Nonnull Locale lang, @Nonnull LocalDate datumVon, @Nonnull LocalDate datumBis) {
+	public ExcelMergerDTO toExcelMergerDTO(
+		@Nonnull List<KantonDataRow> data,
+		@Nonnull Locale locale,
+		@Nonnull LocalDate datumVon,
+		@Nonnull LocalDate datumBis
+	) {
 		checkNotNull(data);
 
-		ExcelMergerDTO sheet = new ExcelMergerDTO();
-		sheet.addValue(MergeFieldKanton.auswertungVon, datumVon);
-		sheet.addValue(MergeFieldKanton.auswertungBis, datumBis);
+		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
+
+		addHeaders(excelMerger, locale);
+
+		excelMerger.addValue(MergeFieldKanton.auswertungVon, datumVon);
+		excelMerger.addValue(MergeFieldKanton.auswertungBis, datumBis);
 
 		data.forEach(dataRow -> {
-			ExcelMergerDTO excelRowGroup = sheet.createGroup(MergeFieldKanton.repeatKantonRow);
+			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldKanton.repeatKantonRow);
 			excelRowGroup.addValue(MergeFieldKanton.bgNummer, dataRow.getBgNummer());
 			excelRowGroup.addValue(MergeFieldKanton.gesuchId, dataRow.getGesuchId());
 			excelRowGroup.addValue(MergeFieldKanton.name, dataRow.getName());
@@ -68,6 +76,30 @@ public class KantonExcelConverter implements ExcelConverter {
 			}
 		});
 
-		return sheet;
+		return excelMerger;
+	}
+
+	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
+		excelMerger.addValue(MergeFieldKanton.kantonTitle, ServerMessageUtil.getMessage("Reports_kantonTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.parameterTitle, ServerMessageUtil.getMessage("Reports_parameterTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.vonTitle, ServerMessageUtil.getMessage("Reports_vonTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.bisTitle, ServerMessageUtil.getMessage("Reports_bisTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.fallIdTitle, ServerMessageUtil.getMessage("Reports_fallIdTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.vornameTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.nachnameTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.geburtsdatumTitle, ServerMessageUtil.getMessage("Reports_geburtsdatumTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.betreuungVonTitle, ServerMessageUtil.getMessage("Reports_betreuungVonTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.betreuungBisTitle, ServerMessageUtil.getMessage("Reports_betreuungBisTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.bgPensumTitle, ServerMessageUtil.getMessage("Reports_bgPensumTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.monatsanfangTitle, ServerMessageUtil.getMessage("Reports_monatsanfangTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.monatsendeTitle, ServerMessageUtil.getMessage("Reports_monatsendeTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.platzbelegungTageTitle, ServerMessageUtil.getMessage("Reports_platzbelegungTageTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.kostenCHFTitle, ServerMessageUtil.getMessage("Reports_kostenCHFTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.vollkostenTitle, ServerMessageUtil.getMessage("Reports_vollkostenTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.elternbeitragTitle, ServerMessageUtil.getMessage("Reports_elternbeitragTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.gutscheinTitle, ServerMessageUtil.getMessage("Reports_gutscheinTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.babyFaktorTitle, ServerMessageUtil.getMessage("Reports_babyFaktorTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.totalTitle, ServerMessageUtil.getMessage("Reports_totalTitle", locale));
 	}
 }

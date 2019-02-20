@@ -78,7 +78,8 @@ public class DokumentenverzeichnisEvaluatorTest {
 		final KindContainer kindContainer = TestDataUtil.createDefaultKindContainer();
 		kindContainer.getKindJA().setNachname("Chavez");
 		kindContainer.getKindJA().setVorname(vorname);
-		kindContainer.getKindJA().setKinderabzug(ganzerAbzug);
+		kindContainer.getKindJA().setKinderabzugErstesHalbjahr(ganzerAbzug);
+		kindContainer.getKindJA().setKinderabzugZweitesHalbjahr(ganzerAbzug);
 
 		if (fachstellename != null) {
 			final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();

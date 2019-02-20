@@ -59,7 +59,6 @@ import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -190,7 +189,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			jobParameters.setProperty(TEXT, text);
 		}
 		jobParameters.setProperty(REPORT_VORLAGE_TYPE_PARAM, vorlage.name());
-		jobParameters.setProperty(LANGUAGE, LocaleThreadLocal.get().getLanguage());
+		jobParameters.setProperty(LANGUAGE, locale.getLanguage());
 
 		setPropertyIfPresent(jobParameters, WorkJobConstants.GESUCH_PERIODE_ID_PARAM, gesuchPeriodIdParam);
 		jobParameters.setProperty(WorkJobConstants.EMAIL_OF_USER, principalBean.getBenutzer().getEmail());

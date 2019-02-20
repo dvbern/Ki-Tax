@@ -32,7 +32,10 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	private static final long serialVersionUID = -1297026881674137397L;
 
 	@NotNull
-	private Kinderabzug kinderabzug;
+	private Kinderabzug kinderabzugErstesHalbjahr;
+
+	@NotNull
+	private Kinderabzug kinderabzugZweitesHalbjahr;
 
 	@NotNull
 	private Boolean familienErgaenzendeBetreuung;
@@ -51,12 +54,20 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 
 	@NotNull
-	public Kinderabzug getKinderabzug() {
-		return kinderabzug;
+	public Kinderabzug getKinderabzugErstesHalbjahr() {
+		return kinderabzugErstesHalbjahr;
 	}
 
-	public void setKinderabzug(Kinderabzug kinderabzug) {
-		this.kinderabzug = kinderabzug;
+	public void setKinderabzugErstesHalbjahr(Kinderabzug kinderabzugErstesHalbjahr) {
+		this.kinderabzugErstesHalbjahr = kinderabzugErstesHalbjahr;
+	}
+
+	public Kinderabzug getKinderabzugZweitesHalbjahr() {
+		return kinderabzugZweitesHalbjahr;
+	}
+
+	public void setKinderabzugZweitesHalbjahr(Kinderabzug kinderabzugZweitesHalbjahr) {
+		this.kinderabzugZweitesHalbjahr = kinderabzugZweitesHalbjahr;
 	}
 
 	public Boolean getFamilienErgaenzendeBetreuung() {

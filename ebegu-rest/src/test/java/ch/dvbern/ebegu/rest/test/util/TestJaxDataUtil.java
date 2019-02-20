@@ -255,7 +255,8 @@ public final class TestJaxDataUtil {
 		jaxKind.setSprichtAmtssprache(false);
 		jaxKind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		jaxKind.setFamilienErgaenzendeBetreuung(true);
-		jaxKind.setKinderabzug(Kinderabzug.GANZER_ABZUG);
+		jaxKind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
+		jaxKind.setKinderabzugZweitesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		return jaxKind;
 	}
 

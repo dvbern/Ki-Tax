@@ -88,24 +88,43 @@ public final class MutationsMerger {
 				findZeitabschnittInVorgaenger(zeitabschnittStart, vorgaengerVerfuegung);
 
 			if (vorangehenderAbschnitt != null) {
-				handleVerminderungEinkommen(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum);
-				handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
+				handleVerminderungEinkommen(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
+				handleAnpassungErweiterteBeduerfnisse(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 			}
+			handleAnpassungAnspruch(zeitabschnitt, vorangehenderAbschnitt, mutationsEingansdatum, locale);
 			monatsSchritte.add(zeitabschnitt);
 		}
 
 		return monatsSchritte;
 	}
 
+	private static void handleAnpassungErweiterteBeduerfnisse(
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
+		@Nonnull LocalDate mutationsEingansdatum,
+		@Nonnull Locale locale
+	) {
+		// Es muss nur etwas gemacht werden, wenn im alten Abschnitt kein Zuschlag war, neu aber schon, UND
+		// zu spät eingereicht
+		if (zeitabschnitt.isBesondereBeduerfnisse()
+			&& !vorangehenderAbschnitt.isBesondereBeduerfnisse()
+			&& !zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)
+		) {
+			zeitabschnitt.setBesondereBeduerfnisse(false);
+			zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+		}
+	}
+
 	private static void handleVerminderungEinkommen(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull VerfuegungZeitabschnitt vorangehenderAbschnitt,
-		@Nonnull LocalDate mutationsEingansdatum
+		@Nonnull LocalDate mutationsEingansdatum,
+		@Nonnull Locale locale
 	) {
 		// Massgebendes Einkommen
 		BigDecimal massgebendesEinkommen = zeitabschnitt.getMassgebendesEinkommen();
 
-		if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
+		if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) <= 0) {
 			// Massgebendes Einkommen wird kleiner, der Anspruch also höher: Darf nicht rückwirkend sein!
 			if (!zeitabschnitt.getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
 				// Der Stichtag fuer diese Erhöhung ist noch nicht erreicht -> Wir arbeiten mit dem alten Wert!
@@ -114,18 +133,23 @@ public final class MutationsMerger {
 				zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
 				zeitabschnitt.setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
 				zeitabschnitt.setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
+				if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {
+					zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+				}
 			}
 		}
 	}
 
 	private static void handleAnpassungAnspruch(
-		VerfuegungZeitabschnitt zeitabschnitt,
-		VerfuegungZeitabschnitt vorangehenderAbschnitt,
-		LocalDate mutationsEingansdatum,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+		@Nullable VerfuegungZeitabschnitt vorangehenderAbschnitt,
+		@Nonnull LocalDate mutationsEingansdatum,
 		@Nonnull Locale locale
 	) {
 		final int anspruchberechtigtesPensum = zeitabschnitt.getAnspruchberechtigtesPensum();
-		final int anspruchAufVorgaengerVerfuegung = vorangehenderAbschnitt.getAnspruchberechtigtesPensum();
+		final int anspruchAufVorgaengerVerfuegung = vorangehenderAbschnitt == null
+			? 0
+			: vorangehenderAbschnitt.getAnspruchberechtigtesPensum();
 
 		if (anspruchberechtigtesPensum > anspruchAufVorgaengerVerfuegung) {
 			//Anspruch wird erhöht
@@ -143,22 +167,12 @@ public final class MutationsMerger {
 				zeitabschnitt.addBemerkung(RuleKey.ANSPRUCHSBERECHNUNGSREGELN_MUTATIONEN, MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
 			}
 		}
-
-		//SCHULKINDER: Sonderregel bei zu Mutation von zu spaet eingereichten Schulkindangeboten
-		//fuer Abschnitte ab dem Folgemonat des Mutationseingangs rechnen wir bisher, fuer alle vorherigen folgende Sonderregel
-		if (!isMeldungRechzeitig(zeitabschnitt, mutationsEingansdatum)) {
-
-			// Wenn der Benutzer vorher keine Verfuenstigung bekam weil er zu spaet eingereicht hat DANN bezahlt er auch in Mutation vollkosten
-			if (vorangehenderAbschnitt.getVerguenstigung().compareTo(BigDecimal.ZERO) == 0
-				&& vorangehenderAbschnitt.isZuSpaetEingereicht()) {
-				zeitabschnitt.setBezahltVollkosten(true);
-				zeitabschnitt.setZuSpaetEingereicht(true);
-				zeitabschnitt.addBemerkung(RuleKey.EINREICHUNGSFRIST, MsgKey.EINREICHUNGSFRIST_VOLLKOSTEN_MSG, locale);
-			}
-		}
 	}
 
-	private static boolean isMeldungRechzeitig(VerfuegungZeitabschnitt verfuegungZeitabschnitt, @Nonnull LocalDate mutationsEingansdatum) {
+	private static boolean isMeldungRechzeitig(
+		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt,
+		@Nonnull LocalDate mutationsEingansdatum
+	) {
 		return verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().withDayOfMonth(1).isAfter((mutationsEingansdatum));
 	}
 
@@ -166,7 +180,10 @@ public final class MutationsMerger {
 	 * Hilfsmethode welche in der Vorgaengerferfuegung den gueltigen Zeitabschnitt fuer einen bestimmten Stichtag sucht
 	 */
 	@Nullable
-	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(@Nonnull LocalDate stichtag, @Nullable Verfuegung vorgaengerVerf) {
+	private static VerfuegungZeitabschnitt findZeitabschnittInVorgaenger(
+		@Nonnull LocalDate stichtag,
+		@Nullable Verfuegung vorgaengerVerf
+	) {
 		if (vorgaengerVerf == null) {
 			return null;
 		}
@@ -181,9 +198,8 @@ public final class MutationsMerger {
 		return null;
 	}
 
-	private static VerfuegungZeitabschnitt copy(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+	private static VerfuegungZeitabschnitt copy(@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(verfuegungZeitabschnitt);
 		return zeitabschnitt;
 	}
-
 }

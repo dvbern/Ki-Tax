@@ -14,6 +14,7 @@
  */
 
 import {IAugmentedJQuery, IController, IDirective, IDirectiveFactory, INgModelController} from 'angular';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import ITimeoutService = angular.ITimeoutService;
 
 declare let require: any;
@@ -189,7 +190,7 @@ export class ValueinputController implements IController {
         const transformedInput = this.sanitizeInputString();
 
         // neuen wert ins model schreiben
-        if (transformedInput && transformedInput !== this.ngModelCtrl.$viewValue) {
+        if (EbeguUtil.isNotNullOrUndefined(transformedInput) && transformedInput !== this.ngModelCtrl.$viewValue) {
             // setting the new raw number into the invisible parentmodel
             this.ngModelCtrl.$setViewValue(ValueinputController.formatToNumberString(transformedInput));
             this.ngModelCtrl.$render();

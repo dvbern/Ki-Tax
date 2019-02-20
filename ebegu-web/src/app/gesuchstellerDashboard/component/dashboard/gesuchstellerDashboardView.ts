@@ -108,7 +108,7 @@ export class GesuchstellerDashboardViewController implements IController {
     }
 
     private updateActiveGesuchsperiodenList(): void {
-        this.gesuchsperiodeRS.getAllPeriodenForGemeinde(this.dossier.gemeinde.id)
+        this.gesuchsperiodeRS.getAktivePeriodenForGemeinde(this.dossier.gemeinde.id)
             .then((response: TSGesuchsperiode[]) => {
                 this.activeGesuchsperiodenList = response;
                 // Jetzt sind sowohl die Gesuchsperioden wie die Gesuche des Falles geladen.

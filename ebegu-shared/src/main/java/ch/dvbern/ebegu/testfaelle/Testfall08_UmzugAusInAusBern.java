@@ -60,7 +60,7 @@ public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 		GesuchstellerContainer gesuchsteller1 = createGesuchstellerContainer();
 		gesuch.setGesuchsteller1(gesuchsteller1);
 
-		//Wohnadresse NICHT in Bern
+		//Wohnadresse NICHT in Bern: 01.01.1900 - 14.12.2017
 		GesuchstellerAdresse gesuchstellerAdresseJA = gesuchsteller1.getAdressen().get(0).getGesuchstellerAdresseJA();
 		Objects.requireNonNull(gesuchstellerAdresseJA);
 		gesuchstellerAdresseJA.setNichtInGemeinde(true);
@@ -68,7 +68,7 @@ public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 		gesuchstellerAdresseJA
 			.setGueltigkeit(new DateRange(Constants.START_OF_TIME, LocalDate.of(gesuchsperiodeFirstYear, 12, 14)));
 
-		// Umzugsadresse am 15.12.2016 in Bern
+		// Umzugsadresse am 15.12.2016 in Bern: 15.12.2017 - 31.12.2017
 		GesuchstellerAdresseContainer umzugInBern = createWohnadresseContainer(gesuchsteller1);
 		GesuchstellerAdresse umzugInBernAdresseJA = umzugInBern.getGesuchstellerAdresseJA();
 		Objects.requireNonNull(umzugInBernAdresseJA);

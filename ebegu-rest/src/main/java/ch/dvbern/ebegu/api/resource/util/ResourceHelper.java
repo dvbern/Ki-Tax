@@ -63,7 +63,7 @@ public class ResourceHelper {
 		requireNonNull(gesuchId);
 		Optional<Gesuch> optGesuch = gesuchService.findGesuchForFreigabe(gesuchId);
 		Gesuch gesuch = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
-		assertGesuchStatus(gesuchId, gesuch, AntragStatusDTO.IN_BEARBEITUNG_GS, AntragStatusDTO.FREIGABEQUITTUNG);
+		assertGesuchStatus(gesuch, AntragStatusDTO.IN_BEARBEITUNG_GS, AntragStatusDTO.FREIGABEQUITTUNG);
 	}
 
 	@SuppressWarnings("ConstantConditions")
@@ -71,14 +71,14 @@ public class ResourceHelper {
 		requireNonNull(gesuchId);
 		Optional<Gesuch> optGesuch = gesuchService.findGesuch(gesuchId);
 		Gesuch gesuch = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
-		assertGesuchStatus(gesuchId, gesuch, antragStatusFromClient);
+		assertGesuchStatus(gesuch, antragStatusFromClient);
 	}
 
 	/**
 	 * Checks for the given gesuch if its status belongs to one of those that have been passed. If not an exception
 	 * is thrown.
 	 */
-	private void assertGesuchStatus(@Nonnull String gesuchId, Gesuch gesuch, @Nonnull AntragStatusDTO... antragStatusFromClient) {
+	public void assertGesuchStatus(@Nonnull Gesuch gesuch, @Nonnull AntragStatusDTO... antragStatusFromClient) {
 		for (AntragStatusDTO antragStatusDTO : antragStatusFromClient) {
 			if (gesuch.getStatus() == AntragStatusConverterUtil.convertStatusToEntity(antragStatusDTO)) {
 				return;
@@ -87,7 +87,7 @@ public class ResourceHelper {
 		// Kein Status hat gepasst
 		String msg = "Expected GesuchStatus to be one of " + Arrays.toString(antragStatusFromClient) + " but was "
 			+ gesuch.getStatus();
-		throw new EbeguRuntimeException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuchId, msg);
+		throw new EbeguRuntimeException(ASSERT_GESUCH_STATUS_EQUAL, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, gesuch.getId(), msg);
 	}
 
 	public void assertGesuchStatusForBenutzerRole(@Nonnull Gesuch gesuch) {

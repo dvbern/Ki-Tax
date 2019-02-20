@@ -15,9 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Transition} from '@uirouter/core';
-import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 
 @Component({
     selector: 'dv-onboarding-be-login',
@@ -25,27 +24,12 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
     styleUrls: ['./onboarding-be-login.component.less', '../onboarding.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OnboardingBeLoginComponent implements OnInit {
+export class OnboardingBeLoginComponent {
 
     public readonly gemeindeId: string;
-    public portalAccountCreationLink: string = undefined;
 
-    public constructor(private readonly transition: Transition,
-                       private readonly authService: AuthServiceRS,
-                       private readonly cdRef: ChangeDetectorRef,
-    ) {
+    public constructor(private readonly transition: Transition) {
         this.gemeindeId = this.transition.params().gemeindeId;
-    }
-
-    public ngOnInit(): void {
-        this.loadPortalAccountCreationLink();
-    }
-
-    public loadPortalAccountCreationLink(): void {
-        this.authService.getPortalAccountCreationPageLink().then(result => {
-            this.portalAccountCreationLink = result;
-            this.cdRef.markForCheck();
-        });
     }
 
 }
