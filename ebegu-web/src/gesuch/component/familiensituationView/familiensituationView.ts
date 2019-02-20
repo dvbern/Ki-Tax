@@ -147,6 +147,12 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
     }
 
+    public familienstatusChanged(): void {
+        if (this.isStartKonkubinatVisible()) {
+            this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
+        }
+    }
+
     public getFamiliensituationErstgesuch(): TSFamiliensituation {
         return this.model.familiensituationErstgesuch;
     }
@@ -225,4 +231,5 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     public gesuchstellerHasChangedZivilstand(): boolean {
         return this.model.familiensituationGS && !!this.model.familiensituationGS.aenderungPer;
     }
+
 }

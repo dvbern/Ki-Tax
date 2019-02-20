@@ -147,7 +147,7 @@ public class Familiensituation extends AbstractMutableEntity {
 				return true;
 			case KONKUBINAT_KEIN_KIND:
 				return this.startKonkubinat == null ||
-					this.startKonkubinat.isAfter(LocalDate.now().minus(5, ChronoUnit.YEARS));
+					this.startKonkubinat.isBefore(LocalDate.now().minus(5, ChronoUnit.YEARS));
 			}
 		}
 		return false;

@@ -99,8 +99,9 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
             case TSFamilienstatus.KONKUBINAT:
                 return true;
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
-                const gs2 = !this.startKonkubinat ||
-                    this.startKonkubinat.isAfter(referenzdatum.subtract(5, 'years'));
+                const ref = moment(referenzdatum); // must copy otherwise source is also subtracted
+                const fiveBack = ref.subtract(5, 'years');
+                const gs2 = !this.startKonkubinat || this.startKonkubinat.isBefore(fiveBack);
                 return gs2;
             default:
                 throw new Error(`hasSecondGesuchsteller is not implemented for status ${this.familienstatus}`);
@@ -108,11 +109,16 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
     }
 
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {
-        return this.familienstatus === other.familienstatus;
+        let same = this.familienstatus === other.familienstatus;
+        if (same && this.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            same = this.startKonkubinat === other.startKonkubinat;
+        }
+        return same;
     }
 
     public revertFamiliensituation(other: TSFamiliensituation): void {
         this.familienstatus = other.familienstatus;
+        this.startKonkubinat = other.startKonkubinat;
     }
 
 }
