@@ -1327,6 +1327,7 @@
     "BENUTZER_STATISTIK": "FR_Benutzer",
     "BENUTZER_ADD": "FR_Mitarbeiter hinzufügen",
     "BENUTZER_INVITE": "FR_Mitarbeiter einladen",
+    "BENUTZER_INVITED_MESSAGE": "FR_{{fullName}} wurde erfolgreich hinzugefügt und mittels E-Mail eingeladen",
     "BENUTZER_STATUS_AKTIV": "FR_aktiv",
     "BENUTZER_STATUS_GESPERRT": "FR_gesperrt",
     "BENUTZER_STATUS_EINGELADEN": "FR_eingeladen",

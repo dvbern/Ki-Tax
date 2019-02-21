@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBenutzerStatus} from '../../../models/enums/TSBenutzerStatus';
@@ -24,6 +25,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSBenutzer from '../../../models/TSBenutzer';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
+import ErrorService from '../../core/errors/service/ErrorService';
 
 @Component({
     selector: 'dv-benutzer-einladen',
@@ -40,6 +42,8 @@ export class BenutzerEinladenComponent {
         private readonly benutzerRS: BenutzerRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly stateService: StateService,
+        private readonly errorService: ErrorService,
+        private readonly translate: TranslateService,
     ) {
     }
 
@@ -55,7 +59,13 @@ export class BenutzerEinladenComponent {
         this.benutzer.berechtigungen.forEach(berechtigung => berechtigung.prepareForSave());
 
         this.benutzerRS.einladen(this.benutzer)
-            .then(() => this.stateService.go('admin.benutzerlist'));
+            .then(() => {
+                this.stateService.go('admin.benutzerlist').then(() => {
+                    this.errorService.addMesageAsInfo(this.translate.instant('BENUTZER_INVITED_MESSAGE',{
+                        fullName: this.benutzer.getFullName(),
+                    }));
+                });
+            });
     }
 
 }
