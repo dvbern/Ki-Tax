@@ -158,6 +158,7 @@ public class Familiensituation extends AbstractMutableEntity {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamilienstatus(this.getFamilienstatus());
 		target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
+		target.setStartKonkubinat(this.getStartKonkubinat());
 		target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 		target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
 		switch (copyType) {
@@ -189,7 +190,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			getFamilienstatus() == otherFamiliensituation.getFamilienstatus() &&
 			EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung(), otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
-			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht());
+			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
+			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat());
 
 	}
 }

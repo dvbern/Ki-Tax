@@ -111,7 +111,7 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {
         let same = this.familienstatus === other.familienstatus;
         if (same && this.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
-            same = this.startKonkubinat === other.startKonkubinat;
+            same = this.startKonkubinat.isSame(other.startKonkubinat);
         }
         return same;
     }
