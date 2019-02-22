@@ -60,7 +60,8 @@ public abstract class AbstractBGRechner {
 			unter12Monate,
 			eingeschult,
 			besonderebeduerfnisse,
-			massgebendesEinkommen);
+			massgebendesEinkommen,
+			verfuegungZeitabschnitt.isBezahltVollkosten());
 
 		BigDecimal anteilMonat = getAnteilMonat(parameterDTO, von, bis);
 
@@ -92,9 +93,9 @@ public abstract class AbstractBGRechner {
 		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
 		// Runden und auf Zeitabschnitt zurückschreiben
-		if (verfuegungZeitabschnitt.isBezahltVollkosten()) {
-			elternbeitrag = vollkosten;
-		}
+//		if (verfuegungZeitabschnitt.isBezahltVollkosten()) {
+//			elternbeitrag = vollkosten;
+//		}
 		verfuegungZeitabschnitt.setMinimalerElternbeitrag(minBetrag);
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
@@ -132,7 +133,12 @@ public abstract class AbstractBGRechner {
 		@Nonnull Boolean unter12Monate,
 		@Nonnull Boolean eingeschult,
 		@Nonnull Boolean besonderebeduerfnisse,
-		@Nonnull BigDecimal massgebendesEinkommen) {
+		@Nonnull BigDecimal massgebendesEinkommen,
+		boolean bezahltVollkosten) {
+
+		if (bezahltVollkosten) {
+			return BigDecimal.ZERO;
+		}
 
 		BigDecimal maximaleVerguenstigungProTag =
 			getMaximaleVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, eingeschult);
