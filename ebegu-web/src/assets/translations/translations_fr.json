@@ -512,7 +512,7 @@
     "VERANTWORTLICHER": "FR_Verantwortlicher: {{name}}",
     "VERANTWORTLICHER_SCHULAMT": "FR_Schulamt",
     "VERANTWORTLICHER_JUGENDAMT": "FR_Jugendamt",
-    "VERANTWORTLICHER_OHNE_SCHULAMT": "",
+    "VERANTWORTLICHER_OHNE_SCHULAMT": "Responsable",
     "NO_VERANTWORTLICHER_SELECTED": "Aucun resp.",
     "DOKUMENTE_HOCHGELADEN_KURZ": "DOC",
     "EINGANG": "Date de réception",
@@ -1452,7 +1452,6 @@
     "DOWNLOAD_WINDOW_FINISHED_TEXT": "FR_Das Dokument wurde heruntergeladen. Sie können dieses Fenster schliessen.",
     "DOWNLOAD_WINDOW_CLOSE_TEXT": "FR_Fenster schliessen",
     "DOWNLOAD_WINDOW_TITLE": "FR_Filedownload",
-    "Land_NICHTAERKANNT": "Non reconnu",
     "STATISTIKEN_GESUCHE_NACH_STICHTAG_HINT": "FR_Die Statistik Gesuche nach Stichtag, zeigt die Anzahl nicht freigegebenen Gesuchen, die offenen Mahnungen und Beschwerden zu einem bestimmten Stichtag an.<br><br>Zur Generierung muss ein Stichtag und allenfalls eine Periode ausgewählt werden.",
     "STATISTIKEN_GESUCHE_NACH_ZEITRAUM_HINT": "FR_Die Statistik Gesuche nach Zeitraum zeigt diverse Statistiken zu Anzahl Gesuchen und Mutationen je Institution und Betreuungsangebot über einen Zeitraum an.<br><br>Zur Generierung muss ein von- und bis-Datum eingegeben und allenfalls eine Periode ausgewählt werden.",
     "STATISTIKEN_ZAHLUNGEN_HINT": "FR_Zeigt sämtliche Auszahlungen einer Periode an die Institutionen an. Zur Generierung muss eine Periode ausgewählt werden.",
@@ -1463,5 +1462,4 @@
     "STATISTIK_BENUTZER_HINT": "FR_Zeigt eine Liste mit sämtlichen kiBon-Benutzern und deren Rolle an.",
     "STATISTIK_GESUCHSTELLER_KINDER_BETREUUNG_HINT": "FR_Zeigt eine List mit Detailinformationen zu Gesuchsteller, deren Familien- und Finanzieller-Situation, Kinder und deren Betreuung. Es gibt pro Kind, Betreuungsangebot und Zeitabschnitt eine Zeile.<br><br>Bei der Erstellung muss ein von- und ein bis-Datum sowie eingegeben werden.",
     "STATISTIK_SERIENBRIEFE_HINT": "FR_Zeigt die Kontaktdaten der Gesuchstellenden einer bestimmte Periode an. Zusätzlich können weitere Parameter gesetzt werden, z.B. ob die Gesuchsteller bereits ein Folgegesuch der Periode haben."
-}
 }
