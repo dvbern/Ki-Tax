@@ -15,12 +15,8 @@
 
 <!--suppress Annotator -->
 <div class="dv-accordion-tab-title" ng-click="vm.vm.toggleTab(vm.tabid)"
-     ng-class="{'tab-open': vm.vm.isTagOpen(vm.tabid)}">
-                                    <span>
-                                        <span ng-transclude="title"></span>
-                                        <dv-tooltip input-id="{{vm.tabid}}" ng-if="vm.info" ng-click="$event.stopPropagation()"
-                                                text="vm.info | translate"></dv-tooltip>
-                                    </span>
+     ng-class="{'tab-open': vm.vm.isTagOpen(vm.tabid)}" ng-transclude="title">
+    {{vm.title}}
 </div>
 <div class="dv-accordion-tab-content" ng-show="vm.vm.isTagOpen(vm.tabid)" ng-transclude="body">
 </div>
