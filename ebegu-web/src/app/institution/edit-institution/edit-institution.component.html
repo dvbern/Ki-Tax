@@ -138,6 +138,28 @@
                             <dv-error-messages [errorObject]="form.controls.ort_id?.errors" inputId="ort_id"></dv-error-messages>
                         </div>
                     </div>
+                    <!-- Webseite -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="webseite_id">WEBSEITE</label>
+                            <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.webseite"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.webseite_id?.errors"
+                                               inputId="webseite_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Öffnungszeiten -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label translate for="oeffnungszeiten_id">OEFFNUNGSZEITEN</label>
+                            <input id="oeffnungszeiten_id" type="text" name="oeffnungszeiten_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.oeffnungszeiten"
+                                   [maxlength]="255" class="form-control"
+                                   placeholder="z.B. Mo-Fr, 6:30-18:00">
+                            <dv-error-messages [errorObject]="form.controls.oeffnungszeiten_id?.errors" inputId="oeffnungszeiten_id"></dv-error-messages>
+                        </div>
+                    </div>
                     <!-- Betreuungsgutscheine akzeptieren ab/bis -->
                     <div class="form-group">
                         <div class="col-sm-6">
@@ -216,10 +238,10 @@
                     <!-- Checkbox Abweichende Zahlungsadresse -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate for="abweichende_za_id">INSTITUTION_DIFFERENT_ZAHLUNGSADRESSE</label>
                             <mat-checkbox id="abweichende_za_id" name="abweichende_za_id"
                                           [(ngModel)]="abweichendeZahlungsAdresse"
                                           (click)="onAbweichendeZahlungsAdresseClick()">
+                                {{'INSTITUTION_DIFFERENT_ZAHLUNGSADRESSE'|translate}}
                             </mat-checkbox>
                         </div>
                     </div>
@@ -265,6 +287,62 @@
                                    [(ngModel)]="stammdaten.adresseKontoinhaber.ort"
                                    [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.za_ort_id?.errors" inputId="za_ort_id"></dv-error-messages>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate for="alterskategorie_id">INSTITUTION_ALTERSKATEGORIE</h3>
+                            <div class="form-group" id="alterskategorie_id">
+                                <mat-checkbox id="alterskategorieBaby_id" name="alterskategorieBaby_id"
+                                              [(ngModel)]="stammdaten.alterskategorieBaby">
+                                    {{'INSTITUTION_ALTERSKATEGORIE_BABY'|translate}}
+                                </mat-checkbox>
+                                <mat-checkbox id="alterskategorieVorschule_id" name="alterskategorieVorschule_id"
+                                              [(ngModel)]="stammdaten.alterskategorieVorschule">
+                                    {{'INSTITUTION_ALTERSKATEGORIE_VORSCHULE'|translate}}
+                                </mat-checkbox>
+                                <mat-checkbox id="alterskategorieKindergarten_id" name="alterskategorieKindergarten_id"
+                                              [(ngModel)]="stammdaten.alterskategorieKindergarten">
+                                    {{'INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'|translate}}
+                                </mat-checkbox>
+                                <mat-checkbox id="alterskategorieSchule_id" name="alterskategorieSchule_id"
+                                              [(ngModel)]="stammdaten.alterskategorieSchule">
+                                    {{'INSTITUTION_ALTERSKATEGORIE_SCHULE'|translate}}
+                                </mat-checkbox>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Checkbox Abweichende Zahlungsadresse -->
+                    <div class="col-sm-6">
+                        <h3 translate>INSTITUTION_PLAETZE</h3>
+                        <div class="form-group">
+                            <mat-checkbox id="subventioniertePlaetze_id" name="subventioniertePlaetze_id"
+                                          [(ngModel)]="subventioniertePlaetze">
+                                {{'INSTITUTION_SUBVENTIONIERTE_PLAETZE'|translate}}
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                    <!-- Anzahl Plätze -->
+                    <div class="col-sm-3">
+                        <div *ngIf="subventioniertePlaetze" class="form-group">
+                            <label translate for="anzahlPlaetze_id">INSTITUTION_ANZAHL_PLAETZE</label>
+                            <input id="anzahlPlaetze_id" type="text" name="anzahlPlaetze_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.anzahlPlaetze"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.anzahlPlaetze_id?.errors" inputId="anzahlPlaetze_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Anzahl Plätze Firmen -->
+                    <div class="col-sm-3">
+                        <div *ngIf="subventioniertePlaetze" class="form-group">
+                            <label translate for="anzahlPlaetzeFirmen_id">INSTITUTION_ANZAHL_PLAETZE_FIRMEN</label>
+                            <input id="anzahlPlaetzeFirmen_id" type="text" name="anzahlPlaetzeFirmen_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.anzahlPlaetzeFirmen"
+                                   [maxlength]="255" class="form-control">
+                            <dv-error-messages [errorObject]="form.controls.anzahlPlaetzeFirmen_id?.errors" inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>

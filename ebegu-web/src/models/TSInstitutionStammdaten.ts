@@ -31,9 +31,15 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
     public adresse: TSAdresse;
     public mail: string;
     public telefon: string;
+    public webseite: string;
+    public oeffnungszeiten: string;
     public iban: string;
     public kontoinhaber: string;
     public adresseKontoinhaber: TSAdresse;
+    public alterskategorieBaby: boolean;
+    public alterskategorieVorschule: boolean;
+    public alterskategorieKindergarten: boolean;
+    public alterskategorieSchule: boolean;
     public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
     public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
 
@@ -44,9 +50,15 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
         adresse?: TSAdresse,
         mail?: string,
         telefon?: string,
+        webseite?: string,
+        oeffnunszeiten?: string,
         gueltigkeit?: TSDateRange,
         kontoinhaber?: string,
         adresseKontoinhaber?: TSAdresse,
+        alterskategorieBaby?: boolean,
+        alterskategorieVorschule?: boolean,
+        alterskategorieKindergarten?: boolean,
+        alterskategorieSchule?: boolean,
         institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
         institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
         administratoren?: string,
@@ -59,8 +71,14 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
         this.adresse = adresse;
         this.mail = mail;
         this.telefon = telefon;
+        this.webseite = webseite;
+        this.oeffnungszeiten = oeffnunszeiten;
         this.kontoinhaber = kontoinhaber;
         this.adresseKontoinhaber = adresseKontoinhaber;
+        this.alterskategorieBaby = alterskategorieBaby;
+        this.alterskategorieVorschule = alterskategorieVorschule;
+        this.alterskategorieKindergarten = alterskategorieKindergarten;
+        this.alterskategorieSchule = alterskategorieSchule;
         this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
         this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
         this.administratoren = administratoren;

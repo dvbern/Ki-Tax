@@ -52,6 +52,7 @@ export class EditInstitutionComponent implements OnInit {
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
     public abweichendeZahlungsAdresse: boolean;
+    public subventioniertePlaetze: boolean;
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
 
