@@ -114,7 +114,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		}
 		final boolean isAccessedLocally = localhostChecker.isAddressLocalhost(request.getRemoteAddr());
 		if (!isAccessedLocally) {
-			builder.append(" WARNING access is not local");
+			builder
+				.append(" WARNING access is not local. Remote Address is: ")
+				.append(request.getRemoteAddr());
 		}
 		return builder.toString();
 
