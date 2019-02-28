@@ -19,6 +19,7 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../models/enums/TSBetreuungsstatus';
+import {TSFachstelleName} from '../models/enums/TSFachstelleName';
 import {TSGeschlecht} from '../models/enums/TSGeschlecht';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
@@ -106,8 +107,7 @@ describe('EbeguRestUtil', () => {
 
                 expect(transformedPers.gesuchstellerJA.telefon).toBeUndefined(); // der leere String wurde in undefined
                                                                                  // umgewandelt deswegen muessen wir
-                                                                                 // hier
-                                                                                 // undefined zurueckbekommen
+                                                                                 // hier undefined zurueckbekommen
                 transformedPers.gesuchstellerJA.telefon = ''; // um das Objekt zu validieren, muessen wird das Telefon
                                                               // wieder auf '' setzen
 
@@ -117,13 +117,12 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseFachstelle()', () => {
             it('should transform TSFachstelle to REST object and back', () => {
-                const myFachstelle = new TSFachstelle('Fachstelle_name', 'Beschreibung', true);
+                const myFachstelle = new TSFachstelle(TSFachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, true, true);
                 TestDataUtil.setAbstractMutableFieldsUndefined(myFachstelle);
 
                 const restFachstelle = ebeguRestUtil.fachstelleToRestObject({}, myFachstelle);
                 expect(restFachstelle).toBeDefined();
                 expect(restFachstelle.name).toEqual(myFachstelle.name);
-                expect(restFachstelle.beschreibung).toEqual(myFachstelle.beschreibung);
 
                 const transformedFachstelle = ebeguRestUtil.parseFachstelle(new TSFachstelle(), restFachstelle);
                 expect(transformedFachstelle).toBeDefined();

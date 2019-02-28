@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.services.FachstelleService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -29,9 +30,12 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Arquillian Tests fuer die Klasse FachstelleService
@@ -49,41 +53,40 @@ public class FachstelleServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void createFachstelle() {
-		Assert.assertNotNull(fachstelleService);
+		assertNotNull(fachstelleService);
 		Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
 		fachstelleService.saveFachstelle(fachstelle);
 
 		Collection<Fachstelle> allFachstellen = fachstelleService.getAllFachstellen();
-		Assert.assertEquals(1, allFachstellen.size());
+		assertEquals(1, allFachstellen.size());
 		Fachstelle nextFamsit = allFachstellen.iterator().next();
-		Assert.assertEquals("Fachstelle1", nextFamsit.getName());
-		Assert.assertEquals("Kinder Fachstelle", nextFamsit.getBeschreibung());
+		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, nextFamsit.getName());
 	}
 
 	@Test
 	public void updateFamiliensituationTest() {
-		Assert.assertNotNull(fachstelleService);
+		assertNotNull(fachstelleService);
 		Fachstelle insertedFachstelle = insertNewEntity();
 		Optional<Fachstelle> fachstelle = fachstelleService.findFachstelle(insertedFachstelle.getId());
-		Assert.assertTrue(fachstelle.isPresent());
-		Assert.assertEquals("Fachstelle1", fachstelle.get().getName());
+		assertTrue(fachstelle.isPresent());
+		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, fachstelle.get().getName());
 
-		fachstelle.get().setName("Fachstelle2");
+		fachstelle.get().setName(FachstelleName.FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN);
 		Fachstelle updatedFachstelle = fachstelleService.saveFachstelle(fachstelle.get());
-		Assert.assertEquals("Fachstelle2", updatedFachstelle.getName());
+		assertEquals(FachstelleName.FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN, updatedFachstelle.getName());
 		Optional<Fachstelle> fachstelleReRead = fachstelleService.findFachstelle(updatedFachstelle.getId());
-		Assert.assertTrue(fachstelleReRead.isPresent());
-		Assert.assertEquals("Fachstelle2", fachstelleReRead.get().getName());
+		assertTrue(fachstelleReRead.isPresent());
+		assertEquals(FachstelleName.FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN, fachstelleReRead.get().getName());
 	}
 
 	@Test
 	public void removeFachstelleTest() {
-		Assert.assertNotNull(fachstelleService);
+		assertNotNull(fachstelleService);
 		Fachstelle insertedFachstelle = insertNewEntity();
-		Assert.assertEquals(1, fachstelleService.getAllFachstellen().size());
+		assertEquals(1, fachstelleService.getAllFachstellen().size());
 
 		fachstelleService.removeFachstelle(insertedFachstelle.getId());
-		Assert.assertEquals(0, fachstelleService.getAllFachstellen().size());
+		assertEquals(0, fachstelleService.getAllFachstellen().size());
 	}
 
 	// HELP METHODS

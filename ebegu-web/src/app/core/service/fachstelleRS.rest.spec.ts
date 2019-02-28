@@ -15,6 +15,7 @@
 
 import {IHttpBackendService, IHttpService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
+import {TSFachstelleName} from '../../../models/enums/TSFachstelleName';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
@@ -41,7 +42,7 @@ describe('fachstelleRS', () => {
     }));
 
     beforeEach(() => {
-        mockFachstelle = new TSFachstelle('Fachstelle_Test', 'Ein Test', true);
+        mockFachstelle = new TSFachstelle(TSFachstelleName.ERZIEHUNGSBERATUNG, true, true);
         mockFachstelle.id = '2afc9d9a-957e-4550-9a22-9762422d8f05';
         mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject({}, mockFachstelle);
     });
@@ -82,7 +83,7 @@ describe('fachstelleRS', () => {
 
         describe('updateFachstelle', () => {
             it('should update an fachstelle', () => {
-                mockFachstelle.name = 'changedname';
+                mockFachstelle.name = TSFachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE;
                 mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject({}, mockFachstelle);
                 let updatedFachstelle: TSFachstelle;
                 $httpBackend.expectPUT(fachstelleRS.serviceURL, mockFachstelleRest).respond(mockFachstelleRest);
@@ -133,7 +134,6 @@ describe('fachstelleRS', () => {
         expect(fachstelle1).toBeDefined();
         expect(fachstelle1.name).toEqual(fachstelle2.name);
         expect(fachstelle1.id).toEqual(fachstelle2.id);
-        expect(fachstelle1.beschreibung).toEqual(fachstelle2.beschreibung);
     }
 
 });

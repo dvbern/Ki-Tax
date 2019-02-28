@@ -13,42 +13,32 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSFachstelleName} from './enums/TSFachstelleName';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export class TSFachstelle extends TSAbstractMutableEntity {
 
-    private _name: string;
-    private _beschreibung: string;
+    private _name: TSFachstelleName;
     private _fachstelleAnspruch: boolean;
     private _fachstelleErweiterteBetreuung: boolean;
 
     public constructor(
-        name?: string,
-        beschreibung?: string,
+        name?: TSFachstelleName,
         fachstelleAnspruch?: boolean,
         fachstelleErweiterteBetreuung?: boolean
     ) {
         super();
         this._name = name;
-        this._beschreibung = beschreibung;
         this._fachstelleAnspruch = !!fachstelleAnspruch;
         this._fachstelleErweiterteBetreuung = !!fachstelleErweiterteBetreuung;
     }
 
-    public get name(): string {
+    public get name(): TSFachstelleName {
         return this._name;
     }
 
-    public set name(value: string) {
+    public set name(value: TSFachstelleName) {
         this._name = value;
-    }
-
-    public get beschreibung(): string {
-        return this._beschreibung;
-    }
-
-    public set beschreibung(value: string) {
-        this._beschreibung = value;
     }
 
     public get fachstelleAnspruch(): boolean {
