@@ -1461,12 +1461,12 @@
     "STATISTIK_MIRABEITERINNEN_HINT": "FR_Zeigt eine Liste mit der Anzahl zugewiesenen Fällen und der Anzahl erstellten Verfügungen je Mitarbeiterin.<br><br>Bei der Erstellung muss ein von- und ein bis-Datum sowie eingegeben werden:",
     "STATISTIK_BENUTZER_HINT": "FR_Zeigt eine Liste mit sämtlichen kiBon-Benutzern und deren Rolle an.",
     "STATISTIK_GESUCHSTELLER_KINDER_BETREUUNG_HINT": "FR_Zeigt eine List mit Detailinformationen zu Gesuchsteller, deren Familien- und Finanzieller-Situation, Kinder und deren Betreuung. Es gibt pro Kind, Betreuungsangebot und Zeitabschnitt eine Zeile.<br><br>Bei der Erstellung muss ein von- und ein bis-Datum sowie eingegeben werden.",
-    "STATISTIK_SERIENBRIEFE_HINT": "FR_Zeigt die Kontaktdaten der Gesuchstellenden einer bestimmte Periode an. Zusätzlich können weitere Parameter gesetzt werden, z.B. ob die Gesuchsteller bereits ein Folgegesuch der Periode haben."
+    "STATISTIK_SERIENBRIEFE_HINT": "FR_Zeigt die Kontaktdaten der Gesuchstellenden einer bestimmte Periode an. Zusätzlich können weitere Parameter gesetzt werden, z.B. ob die Gesuchsteller bereits ein Folgegesuch der Periode haben.",
     "MUTTER_VATER_BERATUNG_BERN": "FR_Mütter- und Väterberatung Bern",
     "SOZIALDIENST": "FR_Sozialdienst",
     "KINDES_ERWACHSENEN_SCHUTZBEHOERDE": "FR_Kindes- und Erwachsenenschutzbehörde",
-    "FRÜHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN": "FR_Heilpädagogische Früherziehung für blinde und sehbehinderte Kinder der Blindenschule Zollikofen",
-    "FRÜHERZIEHUNGSDIENST_KANTON_BERN": "FR_Früherziehungsdienst des Kantons Bern",
-    "ERZIEHEUNGSBERATUNG": "FR_Erziehungsberatung",
+    "FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN": "FR_Heilpädagogische Früherziehung für blinde und sehbehinderte Kinder der Blindenschule Zollikofen",
+    "FRUEHERZIEHUNGSDIENST_KANTON_BERN": "FR_Früherziehungsdienst des Kantons Bern",
+    "ERZIEHUNGSBERATUNG": "FR_Erziehungsberatung",
     "DIENST_ZENTRUM_HOEREN_SPRACHE": "FR_Audiopädagogischen Dienst des Pädagogischen Zentrums für Hören und Sprache HSM"
 }

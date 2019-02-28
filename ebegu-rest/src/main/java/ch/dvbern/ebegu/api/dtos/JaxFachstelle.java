@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,7 +23,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.dvbern.ebegu.enums.FachstelleName;
 
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_SHORT_LENGTH;
 
 /**

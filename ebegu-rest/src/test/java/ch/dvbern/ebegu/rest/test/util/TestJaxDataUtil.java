@@ -241,7 +241,7 @@ public final class TestJaxDataUtil {
 
 	public static JaxFachstelle createTestJaxFachstelle() {
 		JaxFachstelle jaxFachstelle = new JaxFachstelle();
-		jaxFachstelle.setName(FachstelleName.FRÜHERZIEHUNGSDIENST_KANTON_BERN);
+		jaxFachstelle.setName(FachstelleName.FRUEHERZIEHUNGSDIENST_KANTON_BERN);
 		return jaxFachstelle;
 	}
 
