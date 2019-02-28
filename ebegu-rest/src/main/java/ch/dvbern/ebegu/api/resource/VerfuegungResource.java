@@ -122,9 +122,6 @@ public class VerfuegungResource {
 			Gesuch gesuch = gesuchOptional.get();
 			Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
 
-			// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum das Gesuch detachen
-			gesuchService.loadRelationsAndDetach(gesuchWithCalcVerfuegung);
-
 			JaxGesuch gesuchJax = converter.gesuchToJAX(gesuchWithCalcVerfuegung);
 
 			Set<JaxKindContainer> kindContainers = gesuchJax.getKindContainers();

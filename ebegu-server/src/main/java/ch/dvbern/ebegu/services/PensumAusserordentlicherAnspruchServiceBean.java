@@ -95,8 +95,6 @@ public class PensumAusserordentlicherAnspruchServiceBean extends AbstractBaseSer
 
 	private boolean isMinimalesErwerbspensumUnterschritten(@Nonnull Gesuch gesuch) {
 		Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
-		// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum das Gesuch detachen
-		loadRelationsAndDetach(gesuchWithCalcVerfuegung);
 
 		if (gesuchWithCalcVerfuegung.extractAllBetreuungen().isEmpty()) {
 			return false;
