@@ -15,7 +15,7 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="row">
+<div *ngIf="useInputComponents" class="row">
     <!-- Rolle -->
     <div [class]="displayClass">
         <div class="form-group">
@@ -85,4 +85,26 @@
             </div>
         </div>
     </div>
+</div>
+<div *ngIf="!useInputComponents">
+    <fieldset>
+        <table class="berechtigung">
+            <tr>
+                <td class="bold" translate>ROLLE</td>
+                <td translate>{{translationKeyForRole(berechtigung.role)}}</td>
+            </tr>
+            <tr *ngIf="berechtigung.hasGemeindeRole()">
+                <td class="bold" translate>GEMEINDEN</td>
+                <td>{{berechtigung.gemeindeListToString()}}</td>
+            </tr>
+            <tr *ngIf="berechtigung.hasInstitutionRole()">
+                <td class="bold" translate>INSTITUTION</td>
+                <td>{{berechtigung.institution.name}}</td>
+            </tr>
+            <tr *ngIf="berechtigung.hasTraegerschaftRole()">
+                <td class="bold" translate>TRAEGERSCHAFT</td>
+                <td>{{berechtigung.traegerschaft.name}}</td>
+            </tr>
+        </table>
+    </fieldset>
 </div>

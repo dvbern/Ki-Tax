@@ -189,7 +189,7 @@ public class BetreuungsgutscheinEvaluator {
 
 					// Die Verfügung erstellen
 					if (betreuung.getVerfuegung() == null) {
-						Verfuegung verfuegung = new Verfuegung();
+						Verfuegung verfuegung = new Verfuegung(betreuung);
 						betreuung.setVerfuegung(verfuegung);
 						verfuegung.setBetreuung(betreuung);
 					}

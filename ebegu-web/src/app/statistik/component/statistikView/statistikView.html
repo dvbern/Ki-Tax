@@ -23,7 +23,13 @@
                      dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_GEMEINDE', 'SUPER_ADMIN', 'REVISOR',
                      'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuch_stichtag">
-                        <tab-title data-translate="GESUCHE_NACH_STICHTAG"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="GESUCHE_NACH_STICHTAG"></span>
+                            <dv-tooltip input-id="gesuch_stichtag_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIKEN_GESUCHE_NACH_STICHTAG_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="gesuch_stichtag"
                                   ng-submit="vm.generateStatistik(gesuch_stichtag, 'GESUCH_STICHTAG')" novalidate>
@@ -59,12 +65,12 @@
                                     <div class="col-xs-3 col-xs-offset-3 statistik-button">
                                         <dv-loading-button type="submit"
                                                            style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
                             </form>
-                            </form></tab-body>
+                        </tab-body>
                     </dv-accordion-tab>
                 </div>
 
@@ -72,7 +78,13 @@
                      dv-show-allowed-roles="['SACHBEARBEITER_BG', 'ADMIN_BG', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE', 'ADMIN_BG', 'SUPER_ADMIN',
                      'REVISOR', 'ADMIN_TS', 'SACHBEARBEITER_TS', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuch_zeitraum">
-                        <tab-title data-translate="GESUCHE_NACH_ZEITRAUM"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="GESUCHE_NACH_ZEITRAUM"></span>
+                            <dv-tooltip input-id="gesuch_zeitraum_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIKEN_GESUCHE_NACH_ZEITRAUM_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="gesuch_zeitraum"
                                   ng-submit="vm.generateStatistik(gesuch_zeitraum, vm.TSStatistikParameterType.GESUCH_ZEITRAUM)"
@@ -119,7 +131,7 @@
                                     <div class="col-xs-3 statistik-button">
                                         <dv-loading-button type="submit"
                                                            style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -132,7 +144,13 @@
                      dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
                      'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="zahlungen_periode">
-                        <tab-title data-translate="ZAHLUNGEN_NACH_PERIODE"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="ZAHLUNGEN_NACH_PERIODE"></span>
+                            <dv-tooltip input-id="zahlungen_periode_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIKEN_ZAHLUNGEN_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="zahlungen_periode"
                                   ng-submit="vm.generateStatistik(zahlungen_periode, vm.TSStatistikParameterType.ZAHLUNGEN_PERIODE)"
@@ -157,7 +175,7 @@
                                     <div class="col-xs-3 statistik-button">
                                         <dv-loading-button type="submit"
                                                            style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -171,7 +189,13 @@
                      'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT', 'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT',
                      'SACHBEARBEITER_TRAEGERSCHAFT']">
                     <dv-accordion-tab tabid="kinder">
-                        <tab-title data-translate="STATISTIK_KINDER"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="STATISTIK_KINDER"></span>
+                            <dv-tooltip input-id="kinder_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIKEN_KINDER_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="kinder"
                                   ng-submit="vm.generateStatistik(kinder, vm.TSStatistikParameterType.KINDER)"
@@ -220,7 +244,7 @@
                                     <div class="col-xs-3 statistik-button">
                                         <dv-loading-button type="submit"
                                                            style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -233,7 +257,13 @@
                      dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE',
                      'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="gesuchsteller">
-                        <tab-title data-translate="GESUCHSTELLER_UPPER"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="GESUCHSTELLER"></span>
+                            <dv-tooltip input-id="gesuchsteller_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIKEN_GESUCHSTELLER_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="gesuchsteller"
                                   ng-submit="vm.generateStatistik(gesuchsteller, vm.TSStatistikParameterType.GESUCHSTELLER)"
@@ -254,7 +284,7 @@
                                     </div>
                                     <div class="col-xs-3 col-xs-offset-6 statistik-button">
                                         <dv-loading-button type="submit">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -268,7 +298,13 @@
                      'ADMIN_INSTITUTION', 'SACHBEARBEITER_INSTITUTION', 'ADMIN_TRAEGERSCHAFT', 'SACHBEARBEITER_TRAEGERSCHAFT', 'ADMIN_MANDANT',
                      'SACHBEARBEITER_MANDANT']">
                     <dv-accordion-tab tabid="kanton">
-                        <tab-title data-translate="KANTON"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="KANTON"></span>
+                            <dv-tooltip input-id="kanton_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIKEN_KANTON_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="kanton"
                                   ng-submit="vm.generateStatistik(kanton, vm.TSStatistikParameterType.KANTON)"
@@ -300,7 +336,7 @@
                                     </div>
                                     <div class="col-xs-3 col-xs-offset-3 statistik-button">
                                         <dv-loading-button type="submit">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -312,7 +348,13 @@
                 <div dv-show-element
                      dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="mitarbeiterinnen">
-                        <tab-title data-translate="MITARBEITERINNEN"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="MITARBEITERINNEN"></span>
+                            <dv-tooltip input-id="mitarbeiterinnen_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIK_MIRABEITERINNEN_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="mitarbeiterinnen"
                                   ng-submit="vm.generateStatistik(mitarbeiterinnen, vm.TSStatistikParameterType.MITARBEITERINNEN)"
@@ -344,7 +386,7 @@
                                     </div>
                                     <div class="col-xs-3 col-xs-offset-3 statistik-button">
                                         <dv-loading-button type="submit">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -357,7 +399,13 @@
                      dv-show-allowed-roles="['ADMIN_BG', 'ADMIN_TS', 'ADMIN_GEMEINDE', 'SUPER_ADMIN', 'REVISOR', 'ADMIN_TRAEGERSCHAFT',
                      'ADMIN_INSTITUTION', 'ADMIN_MANDANT']">
                     <dv-accordion-tab tabid="benutzer">
-                        <tab-title data-translate="BENUTZER_STATISTIK"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="BENUTZER_STATISTIK"></span>
+                            <dv-tooltip input-id="benutzer_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIK_BENUTZER_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="benutzer"
                                   ng-submit="vm.generateStatistik(benutzer, vm.TSStatistikParameterType.BENUTZER)"
@@ -365,7 +413,7 @@
                                 <div class="row">
                                     <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
                                         <dv-loading-button type="submit">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -378,7 +426,13 @@
                      dv-show-allowed-roles="['SACHBEARBEITER_BG','ADMIN_BG','SUPER_ADMIN','REVISOR', 'ADMIN_MANDANT', 'SACHBEARBEITER_MANDANT',
                      'ADMIN_GEMEINDE', 'SACHBEARBEITER_GEMEINDE']">
                     <dv-accordion-tab tabid="betreuung">
-                        <tab-title data-translate="GESUCHSTELLER_KINDER_BETREUUNG"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="GESUCHSTELLER_KINDER_BETREUUNG"></span>
+                            <dv-tooltip input-id="betreuung_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIK_GESUCHSTELLER_KINDER_BETREUUNG_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="betreuung"
                                   ng-submit="vm.generateStatistik(betreuung, vm.TSStatistikParameterType.GESUCHSTELLER_KINDER_BETREUUNG)"
@@ -427,7 +481,7 @@
                                     </div>
                                     <div class="col-xs-3 statistik-button">
                                         <dv-loading-button type="submit">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>
@@ -439,7 +493,13 @@
                 <div dv-show-element
                      dv-show-allowed-roles="['SUPER_ADMIN','ADMIN_BG','ADMIN_TS','ADMIN_GEMEINDE']">
                     <dv-accordion-tab tabid="massenversand">
-                        <tab-title data-translate="MASSENVERSAND"></tab-title>
+                        <tab-title>
+                            <span class="uppercase" data-translate="MASSENVERSAND"></span>
+                            <dv-tooltip input-id="massenversand_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIK_SERIENBRIEFE_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
                         <tab-body>
                             <form name="massenversand"
                                   ng-submit="vm.generateStatistik(massenversand, 'MASSENVERSAND')"
@@ -489,7 +549,7 @@
                                     </div>
                                     <div class="col-xs-3 statistik-button">
                                         <dv-loading-button type="submit">
-                                            <span data-translate="GENERIEREN"></span>
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
                                         </dv-loading-button>
                                     </div>
                                 </div>

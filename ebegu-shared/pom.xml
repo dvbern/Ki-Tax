@@ -18,7 +18,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2019.1.0-SNAPSHOT</version>
+        <version>2019.3.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -140,12 +140,8 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-search-orm</artifactId>
-            <!--<scope>provided</scope> eigentlich ware das in jboss vorhanden, gibt aber ein problem bei einzeltests in ide-->
+            <!--<scope>provided</scope>-->
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>org.infinispan</groupId>-->
-        <!--<artifactId>infinispan-directory-provider</artifactId>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.hibernate</groupId>

@@ -246,7 +246,7 @@ FROM kind_container
 
   LEFT OUTER JOIN (
                     SELECT
-                      id,
+                      betreuung_id,
                       1 AS AnzahlVerfuegungen,
                       kategorie_normal,
                       kategorie_max_einkommen,
@@ -254,7 +254,7 @@ FROM kind_container
                       kategorie_nicht_eintreten
                     FROM verfuegung
                     WHERE timestamp_erstellt BETWEEN :fromDateTime AND :toDateTime
-                  ) Verfuegungen ON Verfuegungen.id = betreuung.verfuegung_id
+                  ) Verfuegungen ON Verfuegungen.betreuung_id = betreuung.id
 WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	  AND gesuch.status IN ('VERFUEGT', 'NUR_SCHULAMT', 'BESCHWERDE_HAENGIG',
 			'PRUEFUNG_STV', 'IN_BEARBEITUNG_STV', 'GEPRUEFT_STV', 'KEIN_ANGEBOT')

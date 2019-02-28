@@ -358,7 +358,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return gesuchsperiode;
 	}
 
-	public final void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
+	public void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
@@ -367,7 +367,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return eingangsdatum;
 	}
 
-	public final void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
+	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
 
@@ -399,7 +399,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return status;
 	}
 
-	public final void setStatus(@Nonnull AntragStatus status) {
+	public void setStatus(@Nonnull AntragStatus status) {
 		this.status = status;
 	}
 
@@ -407,7 +407,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return typ;
 	}
 
-	public final void setTyp(AntragTyp typ) {
+	public void setTyp(AntragTyp typ) {
 		this.typ = typ;
 	}
 

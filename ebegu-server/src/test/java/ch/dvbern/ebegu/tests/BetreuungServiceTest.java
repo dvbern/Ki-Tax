@@ -26,6 +26,8 @@ import ch.dvbern.ebegu.entities.BelegungFerieninsel;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -48,10 +50,16 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests fuer die Klasse betreuungService
@@ -88,36 +96,40 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void createAndUpdateBetreuungTest() {
-		Assert.assertNotNull(betreuungService);
+		assertNotNull(betreuungService);
 		Betreuung persitedBetreuung = TestDataUtil.persistBetreuung(betreuungService, persistence, gesuchsperiode);
 		Optional<Betreuung> betreuungOpt = betreuungService.findBetreuungWithBetreuungsPensen(persitedBetreuung.getId());
-		Assert.assertTrue(betreuungOpt.isPresent());
+		assertTrue(betreuungOpt.isPresent());
 		Betreuung betreuung = betreuungOpt.get();
-		Assert.assertEquals(persitedBetreuung.getBetreuungsstatus(), betreuung.getBetreuungsstatus());
+		assertEquals(persitedBetreuung.getBetreuungsstatus(), betreuung.getBetreuungsstatus());
 
-		Assert.assertEquals(GesuchBetreuungenStatus.WARTEN, betreuung.extractGesuch().getGesuchBetreuungenStatus());
+		assertEquals(GesuchBetreuungenStatus.WARTEN, betreuung.extractGesuch().getGesuchBetreuungenStatus());
 		betreuung.setGrundAblehnung("abgewiesen");
 		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
 		betreuungService.saveBetreuung(betreuung, false);
 		Optional<Betreuung> updatedBetreuung = betreuungService.findBetreuung(persitedBetreuung.getId());
-		Assert.assertTrue(updatedBetreuung.isPresent());
+		assertTrue(updatedBetreuung.isPresent());
 
-		Assert.assertEquals(GesuchBetreuungenStatus.ABGEWIESEN, updatedBetreuung.get().extractGesuch()
+		assertEquals(GesuchBetreuungenStatus.ABGEWIESEN, updatedBetreuung.get().extractGesuch()
 			.getGesuchBetreuungenStatus());
-		Assert.assertEquals(Integer.valueOf(1), updatedBetreuung.get().getBetreuungNummer());
+		assertEquals(Integer.valueOf(1), updatedBetreuung.get().getBetreuungNummer());
 		final Optional<KindContainer> kind = kindService.findKind(betreuung.getKind().getId());
-		Assert.assertTrue(kind.isPresent());
-		Assert.assertEquals(Integer.valueOf(2), kind.get().getNextNumberBetreuung());
+		assertTrue(kind.isPresent());
+		assertEquals(Integer.valueOf(2), kind.get().getNextNumberBetreuung());
 	}
 
 	@Test
 	public void removeBetreuungTest() {
-		Assert.assertNotNull(betreuungService);
+		assertNotNull(betreuungService);
 		Betreuung persitedBetreuung = TestDataUtil.persistBetreuung(betreuungService, persistence, gesuchsperiode);
 		TestDataUtil.createGemeindeStammdaten(persitedBetreuung.extractGesuch().extractGemeinde(), persistence);
 		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(persitedBetreuung.getId());
-		Assert.assertTrue(betreuungOptional.isPresent());
+		assertTrue(betreuungOptional.isPresent());
 		Betreuung betreuung = betreuungOptional.get();
+		assertNotNull(betreuung.getErweiterteBetreuungContainer());
+
+		final ErweiterteBetreuungContainer erweiterteBetreuungCont = persistence.find(ErweiterteBetreuungContainer.class, betreuung.getId());//shared id
+		assertNotNull(erweiterteBetreuungCont);
 
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer(gesuch));
@@ -127,10 +139,14 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuungService.removeBetreuung(betreuung.getId());
 
 		Optional<Betreuung> betreuungAfterRemove = betreuungService.findBetreuung(persitedBetreuung.getId());
-		Assert.assertFalse(betreuungAfterRemove.isPresent());
+		assertFalse(betreuungAfterRemove.isPresent());
 		gesuch = persistence.find(Gesuch.class, gesuchId);
-		Assert.assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus());
+		assertEquals(GesuchBetreuungenStatus.ALLE_BESTAETIGT, gesuch.getGesuchBetreuungenStatus());
+		final ErweiterteBetreuung erweiterteBetreuungAfterRemove = persistence.find(ErweiterteBetreuung.class, betreuung.getId());//shared id
+		assertNull(erweiterteBetreuungAfterRemove);
 	}
+
+
 
 	@Test
 	public void removeBetreuungWithMitteilungTest() {
@@ -142,23 +158,26 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		Betreuung betreuungUnderTest = dagmarGesuch.extractAllBetreuungen().get(0);
 		mitteilung.setBetreuung(betreuungUnderTest);
 		final Mitteilung persistedMitteilung = mitteilungService.sendMitteilung(mitteilung);
-		Assert.assertEquals(betreuungUnderTest, persistedMitteilung.getBetreuung());
+		assertEquals(betreuungUnderTest, persistedMitteilung.getBetreuung());
 
 		Optional<Betreuung> betreuung = betreuungService.findBetreuung(betreuungUnderTest.getId());
-		Assert.assertTrue(betreuung.isPresent());
+		assertTrue(betreuung.isPresent());
 		Collection<Mitteilung> mitteilungen = this.mitteilungService.findAllMitteilungenForBetreuung(betreuungUnderTest);
-		Assert.assertEquals(1, mitteilungen.size());
-		Assert.assertEquals(betreuungUnderTest, mitteilungen.stream().findFirst().get().getBetreuung());
+		assertEquals(1, mitteilungen.size());
+		final Optional<Mitteilung> firstOpt = mitteilungen.stream().findFirst();
+		assertTrue(firstOpt.isPresent());
+		assertEquals(betreuungUnderTest, firstOpt.get().getBetreuung());
 		betreuungService.removeBetreuung(betreuung.get().getId());
 		Optional<Betreuung> betreuungAfterRemove = betreuungService.findBetreuung(betreuungUnderTest.getId());
-		Assert.assertFalse(betreuungAfterRemove.isPresent());
+		assertFalse(betreuungAfterRemove.isPresent());
 		Collection<Mitteilung> mitteilungenAfterRemove = this.mitteilungService.findAllMitteilungenForBetreuung(betreuungUnderTest);
-		Assert.assertEquals(0, mitteilungenAfterRemove.size());
+		assertEquals(0, mitteilungenAfterRemove.size());
 
 		//die Mitteilung muss noch existieren
-		Optional<Mitteilung> stillExistingMitteilung = this.mitteilungService.findMitteilung(mitteilungen.stream().findFirst().get().getId());
-		Assert.assertNotNull(stillExistingMitteilung.get());
-		Assert.assertNull(stillExistingMitteilung.get().getBetreuung());
+		Optional<Mitteilung> stillExistingMitteilung = this.mitteilungService.findMitteilung(firstOpt.get().getId());
+		assertTrue(stillExistingMitteilung.isPresent());
+		assertNotNull(stillExistingMitteilung.get());
+		assertNull(stillExistingMitteilung.get().getBetreuung());
 
 	}
 
@@ -179,19 +198,19 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 		loginAsSuperadmin();
 		Optional<Betreuung> betreuung = betreuungService.findBetreuung(betreuungUnderTest.getId());
-		Assert.assertTrue(betreuung.isPresent());
+		assertTrue(betreuung.isPresent());
 		Collection<Mitteilung> mitteilungen = this.mitteilungService.findAllMitteilungenForBetreuung(betreuungUnderTest);
-		Assert.assertEquals(1, mitteilungen.size());
-		Assert.assertEquals(betreuungUnderTest, mitteilungen.stream().findFirst().get().getBetreuung());
-		Assert.assertEquals(persistedFirstMitteilung, mitteilungen.stream().findFirst().get());
+		assertEquals(1, mitteilungen.size());
+		assertEquals(betreuungUnderTest, mitteilungen.stream().findFirst().get().getBetreuung());
+		assertEquals(persistedFirstMitteilung, mitteilungen.stream().findFirst().get());
 		betreuungService.removeBetreuung(betreuung.get().getId());
 		Optional<Betreuung> betreuungAfterRemove = betreuungService.findBetreuung(betreuungUnderTest.getId());
-		Assert.assertFalse(betreuungAfterRemove.isPresent());
+		assertFalse(betreuungAfterRemove.isPresent());
 		Collection<Mitteilung> mitteilungenAfterRemove = this.mitteilungService.findAllMitteilungenForBetreuung(betreuungUnderTest);
-		Assert.assertEquals(0, mitteilungenAfterRemove.size());
+		assertEquals(0, mitteilungenAfterRemove.size());
 		//die Betreuungsmitteilung muss geloescht sein
 		Optional<Mitteilung> removedMitteilung = this.mitteilungService.findMitteilung(mitteilungen.stream().findFirst().get().getId());
-		Assert.assertFalse(removedMitteilung.isPresent());
+		assertFalse(removedMitteilung.isPresent());
 
 	}
 
@@ -204,32 +223,32 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuungUnderTest.setBelegungFerieninsel(belegungFerieninsel);
 		Betreuung persistedBetreuung = betreuungService.saveBetreuung(betreuungUnderTest, false);
 
-		Assert.assertNotNull(persistedBetreuung);
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel());
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel().getTage());
-		Assert.assertFalse(persistedBetreuung.getBelegungFerieninsel().getTage().isEmpty());
-		Assert.assertEquals(1, persistedBetreuung.getBelegungFerieninsel().getTage().size());
+		assertNotNull(persistedBetreuung);
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getTage());
+		assertFalse(persistedBetreuung.getBelegungFerieninsel().getTage().isEmpty());
+		assertEquals(1, persistedBetreuung.getBelegungFerieninsel().getTage().size());
 
 		// Einen Tag hinzufügen
 		persistedBetreuung.getBelegungFerieninsel().getTage().add(TestDataUtil.createBelegungFerieninselTag(LocalDate.now().plusMonths(4)));
 		persistedBetreuung = betreuungService.saveBetreuung(persistedBetreuung, false);
-		Assert.assertNotNull(persistedBetreuung);
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel());
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel().getTage());
-		Assert.assertFalse(persistedBetreuung.getBelegungFerieninsel().getTage().isEmpty());
-		Assert.assertEquals(2, persistedBetreuung.getBelegungFerieninsel().getTage().size());
+		assertNotNull(persistedBetreuung);
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getTage());
+		assertFalse(persistedBetreuung.getBelegungFerieninsel().getTage().isEmpty());
+		assertEquals(2, persistedBetreuung.getBelegungFerieninsel().getTage().size());
 
 		// Einen wieder loeschen
 		persistedBetreuung.getBelegungFerieninsel().getTage().remove(1);
 		persistedBetreuung = betreuungService.saveBetreuung(persistedBetreuung, false);
-		Assert.assertNotNull(persistedBetreuung);
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel());
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
-		Assert.assertNotNull(persistedBetreuung.getBelegungFerieninsel().getTage());
-		Assert.assertFalse(persistedBetreuung.getBelegungFerieninsel().getTage().isEmpty());
-		Assert.assertEquals(1, persistedBetreuung.getBelegungFerieninsel().getTage().size());
+		assertNotNull(persistedBetreuung);
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel());
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getFerienname());
+		assertNotNull(persistedBetreuung.getBelegungFerieninsel().getTage());
+		assertFalse(persistedBetreuung.getBelegungFerieninsel().getTage().isEmpty());
+		assertEquals(1, persistedBetreuung.getBelegungFerieninsel().getTage().size());
 	}
 
 	private void prepareDependentObjects() {
@@ -250,39 +269,39 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void getFallnummerFromBetreuungsIdTest() {
-		Assert.assertEquals(108L, betreuungService.getFallnummerFromBGNummer("18.000108.1.2").longValue());
-		Assert.assertEquals(123456L, betreuungService.getFallnummerFromBGNummer("18.123456.1.2").longValue());
+		assertEquals(108L, betreuungService.getFallnummerFromBGNummer("18.000108.1.2").longValue());
+		assertEquals(123456L, betreuungService.getFallnummerFromBGNummer("18.123456.1.2").longValue());
 	}
 
 	@Test
 	public void getYearFromBetreuungsIdTest() {
-		Assert.assertEquals(2018, betreuungService.getYearFromBGNummer("18.000108.1.2"));
+		assertEquals(2018, betreuungService.getYearFromBGNummer("18.000108.1.2"));
 	}
 
 	@Test
 	public void getKindNummerFromBetreuungsIdTest() {
-		Assert.assertEquals(1, betreuungService.getKindNummerFromBGNummer("18.000108.1.2"));
-		Assert.assertEquals(2, betreuungService.getKindNummerFromBGNummer("18.000108.2.2"));
-		Assert.assertEquals(88, betreuungService.getKindNummerFromBGNummer("18.000108.88.2"));
+		assertEquals(1, betreuungService.getKindNummerFromBGNummer("18.000108.1.2"));
+		assertEquals(2, betreuungService.getKindNummerFromBGNummer("18.000108.2.2"));
+		assertEquals(88, betreuungService.getKindNummerFromBGNummer("18.000108.88.2"));
 	}
 
 	@Test
 	public void getBetreuungNummerFromBetreuungsId() {
-		Assert.assertEquals(2, betreuungService.getBetreuungNummerFromBGNummer("18.000108.1.2"));
-		Assert.assertEquals(1, betreuungService.getBetreuungNummerFromBGNummer("18.000108.2.1"));
-		Assert.assertEquals(99, betreuungService.getBetreuungNummerFromBGNummer("18.000108.88.99"));
+		assertEquals(2, betreuungService.getBetreuungNummerFromBGNummer("18.000108.1.2"));
+		assertEquals(1, betreuungService.getBetreuungNummerFromBGNummer("18.000108.2.1"));
+		assertEquals(99, betreuungService.getBetreuungNummerFromBGNummer("18.000108.88.99"));
 	}
 
 	@Test
 	public void validateBGNummer() {
-		Assert.assertTrue("18.000108.1.2", betreuungService.validateBGNummer("18.000108.1.2"));
-		Assert.assertTrue("88.999999.77.66", betreuungService.validateBGNummer("88.999999.77.66"));
-		Assert.assertTrue("88.999999.7.66", betreuungService.validateBGNummer("88.999999.7.66"));
-		Assert.assertTrue("88.999999.77.6", betreuungService.validateBGNummer("88.999999.77.6"));
-		Assert.assertFalse("1.000108.1.2", betreuungService.validateBGNummer("1.000108.1.2"));
-		Assert.assertFalse("88.99999.77.66", betreuungService.validateBGNummer("88.99999.77.66"));
-		Assert.assertFalse("88.999999.66", betreuungService.validateBGNummer("88.999999.66"));
-		Assert.assertFalse("88.999999.66", betreuungService.validateBGNummer("88.999999.66"));
+		assertTrue("18.000108.1.2", betreuungService.validateBGNummer("18.000108.1.2"));
+		assertTrue("88.999999.77.66", betreuungService.validateBGNummer("88.999999.77.66"));
+		assertTrue("88.999999.7.66", betreuungService.validateBGNummer("88.999999.7.66"));
+		assertTrue("88.999999.77.6", betreuungService.validateBGNummer("88.999999.77.6"));
+		assertFalse("1.000108.1.2", betreuungService.validateBGNummer("1.000108.1.2"));
+		assertFalse("88.99999.77.66", betreuungService.validateBGNummer("88.99999.77.66"));
+		assertFalse("88.999999.66", betreuungService.validateBGNummer("88.999999.66"));
+		assertFalse("88.999999.66", betreuungService.validateBGNummer("88.999999.66"));
 	}
 
 	/**
@@ -309,31 +328,31 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom);
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil);
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (2) Pensum innerhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.minusDays(1));
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (3) Pensum ausserhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.plusDays(1));
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (4) Pensum innerhalb Kita-Zeitraum mit bis=END_OF_TIME
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (5) Pensum ausserhalb Kita-Zeitraum mit bis=END_OF_TIME
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 	}
 
 	/**
@@ -354,20 +373,20 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom);
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil);
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (2) Pensum innerhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.minusDays(1));
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (3) Pensum ausserhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.plusDays(1));
 		try {
 			betreuungService.betreuungPlatzBestaetigen(betreuung);
-			Assert.fail("Exception expected");
+			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
 		}
@@ -376,14 +395,14 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (5) Pensum ausserhalb Kita-Zeitraum mit bis=END_OF_TIME
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		try {
 			betreuungService.betreuungPlatzBestaetigen(betreuung);
-			Assert.fail("Exception expected");
+			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
 		}
@@ -407,20 +426,20 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom);
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil);
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (2) Pensum innerhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.plusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.minusDays(1));
 		betreuung = betreuungService.betreuungPlatzBestaetigen(betreuung);
-		Assert.assertNotNull(betreuung);
+		assertNotNull(betreuung);
 
 		// (3) Pensum ausserhalb Kita-Zeitraum
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigAb(kitaFrom.minusDays(1));
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(kitaUntil.plusDays(1));
 		try {
 			betreuungService.betreuungPlatzBestaetigen(betreuung);
-			Assert.fail("Exception expected");
+			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
 		}
@@ -430,7 +449,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		try {
 			betreuungService.betreuungPlatzBestaetigen(betreuung);
-			Assert.fail("Exception expected");
+			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
 		}
@@ -440,7 +459,7 @@ public class BetreuungServiceTest extends AbstractEbeguLoginTest {
 		betreuung.getBetreuungspensumContainers().iterator().next().getBetreuungspensumJA().getGueltigkeit().setGueltigBis(Constants.END_OF_TIME);
 		try {
 			betreuungService.betreuungPlatzBestaetigen(betreuung);
-			Assert.fail("Exception expected");
+			fail("Exception expected");
 		} catch (Exception e) {
 			// Expected
 		}

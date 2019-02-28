@@ -255,6 +255,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     }
 
+    public hasNichtBerechenbareBetreuungen(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        return (gesuch && gesuch.hasNichtBerechenbareBetreuungen());
+    }
+
     public isFinanzielleSituationRequired(): boolean {
         return this.gesuchModelManager.isFinanzielleSituationRequired();
     }
@@ -640,7 +645,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public setAbschliessen(): IPromise<TSGesuch> {
         return this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
-            title: 'ABSCHLIESSEN',
+            title: 'GESUCH_ABSCHLIESSEN',
             deleteText: 'BESCHREIBUNG_GESUCH_ABSCHLIESSEN',
             parentController: undefined,
             elementID: undefined,
