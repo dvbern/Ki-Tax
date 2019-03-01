@@ -279,37 +279,9 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	@Override
-	public void resetTutorialdaten() {
-		LOG.info("Lösche Tutorialdaten... ");
-		deleteTutorialdaten();
-		LOG.info("Erstelle Tutorialdaten...");
-		createTutorialdaten();
-		LOG.info("... beendet");
-	}
-
-	@Override
-	public void deleteTutorialdaten() {
-		// Bevor die Testinstitutionen geloescht werden, muss sichergestellt sein, dass diese von keinen "normalen"
-		// Testfaellen verwendet werden -> auf Kita Brünnen umbiegen
-		Optional<InstitutionStammdaten> institutionStammdatenOptional = institutionStammdatenService
-			.findInstitutionStammdaten(KITA_BRUENNEN_STAMMDATEN_ID);
-		if (institutionStammdatenOptional.isPresent()) {
-			InstitutionStammdaten institutionStammdaten = institutionStammdatenOptional.get();
-			assertInstitutionNotUsedInNormalenGesuchen(KITA_TUTORIAL_ID, institutionStammdaten);
-		}
-
-		removeBenutzer(BENUTZER_TUTORIAL_GEMEINDE_USERNAME);
-
-		if (institutionStammdatenService.findInstitutionStammdaten(KITA_TUTORIAL_ID).isPresent()) {
-			institutionStammdatenService.removeInstitutionStammdaten(KITA_TUTORIAL_ID);
-		}
-		if (institutionService.findInstitution(INSTITUTION_TUTORIAL_ID).isPresent()) {
-			institutionService.deleteInstitution(INSTITUTION_TUTORIAL_ID);
-		}
-	}
-
-	@Override
 	public void createTutorialdaten() {
+		LOG.info("Erstelle Tutorialdaten...");
+
 		Gemeinde gemeinde = createGemeindeTutorial();
 		GemeindeStammdaten gemeindeStammdaten = createGemeindeStammdatenTutorial(gemeinde);
 
@@ -325,6 +297,8 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		);
 
 		setUserAsDefaultVerantwortlicher(gemeindeStammdaten, gemeindeBenutzer);
+
+		LOG.info("... beendet");
 	}
 
 	private GemeindeStammdaten setUserAsDefaultVerantwortlicher(
@@ -364,7 +338,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		stammdaten.setWebseite("www.tutorialgemeinde.ch");
 
 		try {
-			final InputStream logo = SchulungServiceBean.class.getResourceAsStream("schulung/logo-kibon-bern.svg");
+			final InputStream logo = SchulungServiceBean.class.getResourceAsStream("/schulung/logo-kibon-bern.png");
 			final byte[] gemeindeLogo = IOUtils.toByteArray(logo);
 			stammdaten.setLogoContent(gemeindeLogo);
 		} catch (IOException e) {

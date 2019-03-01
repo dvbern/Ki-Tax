@@ -28,9 +28,5 @@ public interface SchulungService {
 
 	String[] getSchulungBenutzer();
 
-	void resetTutorialdaten();
-
-	void deleteTutorialdaten();
-
 	void createTutorialdaten();
 }

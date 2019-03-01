@@ -192,24 +192,13 @@ public class TestfaelleResource {
 
 	@ApiOperation(value = "Setzt die Tutorialdaten zurueck. Gemeinde und Institution", response = String.class)
 	@GET
-	@Path("/schulung/tutorial/reset")
+	@Path("/schulung/tutorial/create")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response resetTutorialdaten() {
+	public Response createTutorialdaten() {
 		assertTestfaelleAccessAllowed();
-		schulungService.resetTutorialdaten();
-		return Response.ok("Tutorialdaten zurückgesetzt").build();
-	}
-
-	@ApiOperation(value = "Loescht alle in der Tutorial erstellten Daten. Gemeinde und Institution", response = String.class)
-	@DELETE
-	@Path("/schulung/tutorial/delete")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response deleteTutorialdaten() {
-		assertTestfaelleAccessAllowed();
-		schulungService.deleteTutorialdaten();
-		return Response.ok("Tutorialdaten gelöscht").build();
+		schulungService.createTutorialdaten();
+		return Response.ok("Tutorialdaten erstellt").build();
 	}
 
 	@ApiOperation(value = "Gibt eine Liste der Schulungsbenutzer zurueck",
