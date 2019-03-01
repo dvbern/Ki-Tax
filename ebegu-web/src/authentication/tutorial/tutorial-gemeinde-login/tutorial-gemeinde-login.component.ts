@@ -17,18 +17,18 @@
 
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
-import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
-import {TSRole} from '../../models/enums/TSRole';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSGemeinde from '../../models/TSGemeinde';
-import {TSMandant} from '../../models/TSMandant';
-import {returnToOriginalState} from '../../utils/AuthenticationUtil';
-import AuthServiceRS from '../service/AuthServiceRS.rest';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
+import TSGemeinde from '../../../models/TSGemeinde';
+import {TSMandant} from '../../../models/TSMandant';
+import {returnToOriginalState} from '../../../utils/AuthenticationUtil';
+import AuthServiceRS from '../../service/AuthServiceRS.rest';
 
 @Component({
     selector: 'dv-tutorial-gemeinde-login',
     templateUrl: './tutorial-gemeinde-login.component.html',
-    styleUrls: ['./tutorial-gemeinde-login.component.less'],
+    styleUrls: ['../tutorial-login.component.less'],
 })
 export class TutorialGemeindeLoginComponent {
 

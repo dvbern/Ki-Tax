@@ -20,8 +20,8 @@ import {Transition} from '@uirouter/core';
 import {getTSRoleValues} from '../models/enums/TSRole';
 import {returnTo} from './authentication.route';
 import {LocalLoginComponent} from './local-login/local-login.component';
-import {TutorialGemeindeLoginComponent} from './tutorial-gemeinde-login/tutorial-gemeinde-login.component';
-import {TutorialInstitutionLoginComponent} from './tutorial-institution-login/tutorial-institution-login.component';
+import {TutorialGemeindeLoginComponent} from './tutorial/tutorial-gemeinde-login/tutorial-gemeinde-login.component';
+import {TutorialInstitutionLoginComponent} from './tutorial/tutorial-institution-login/tutorial-institution-login.component';
 
 export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
     name: 'authentication.locallogin',

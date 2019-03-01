@@ -17,8 +17,8 @@ import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
 import {LocalLoginComponent} from './local-login/local-login.component';
 import {NgAuthenticationRoutingModule} from './ng-authentication-routing.module';
-import {TutorialGemeindeLoginComponent} from './tutorial-gemeinde-login/tutorial-gemeinde-login.component';
-import {TutorialInstitutionLoginComponent} from './tutorial-institution-login/tutorial-institution-login.component';
+import {TutorialGemeindeLoginComponent} from './tutorial/tutorial-gemeinde-login/tutorial-gemeinde-login.component';
+import {TutorialInstitutionLoginComponent} from './tutorial/tutorial-institution-login/tutorial-institution-login.component';
 
 @NgModule({
     imports: [

@@ -17,17 +17,17 @@
 
 import {Component, Input} from '@angular/core';
 import {StateService, TargetState} from '@uirouter/core';
-import {TSRole} from '../../models/enums/TSRole';
-import TSBenutzer from '../../models/TSBenutzer';
-import TSInstitution from '../../models/TSInstitution';
-import {TSMandant} from '../../models/TSMandant';
-import {returnToOriginalState} from '../../utils/AuthenticationUtil';
-import AuthServiceRS from '../service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
+import TSBenutzer from '../../../models/TSBenutzer';
+import TSInstitution from '../../../models/TSInstitution';
+import {TSMandant} from '../../../models/TSMandant';
+import {returnToOriginalState} from '../../../utils/AuthenticationUtil';
+import AuthServiceRS from '../../service/AuthServiceRS.rest';
 
 @Component({
     selector: 'dv-tutorial-institution-login',
     templateUrl: './tutorial-institution-login.component.html',
-    styleUrls: ['./tutorial-institution-login.component.less'],
+    styleUrls: ['../tutorial-login.component.less'],
 })
 export class TutorialInstitutionLoginComponent {
 
