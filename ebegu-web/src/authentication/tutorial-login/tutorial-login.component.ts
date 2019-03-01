@@ -36,7 +36,8 @@ import AuthServiceRS from '../service/AuthServiceRS.rest';
 })
 export class TutorialLoginComponent {
 
-    private static readonly ID_GEMEINDE_TUTORIAL = 'ea02b313-e7c3-4b26-9ef7-e413f4046d77';
+    private static readonly ID_KITA_TUTORIAL = '22222222-1111-1111-1111-444444444444';
+    private static readonly ID_GEMEINDE_TUTORIAL = '11111111-1111-4444-4444-111111111111';
 
     @Input() public returnTo: TargetState;
 
@@ -176,7 +177,7 @@ export class TutorialLoginComponent {
     private getInsitution(): TSInstitution {
         const institution = new TSInstitution();
         institution.name = 'Kita Tutorial';
-        institution.id = '1b6f476f-e0f5-4380-9ef6-836d68885377';
+        institution.id = TutorialLoginComponent.ID_KITA_TUTORIAL;
         institution.traegerschaft = undefined;
         institution.mandant = this.mandant;
         return institution;
