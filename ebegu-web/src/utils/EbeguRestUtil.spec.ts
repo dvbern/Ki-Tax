@@ -19,6 +19,7 @@ import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAntragTyp} from '../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../models/enums/TSBetreuungsstatus';
+import {TSFachstelleName} from '../models/enums/TSFachstelleName';
 import {TSGeschlecht} from '../models/enums/TSGeschlecht';
 import {TSGesuchsperiodeStatus} from '../models/enums/TSGesuchsperiodeStatus';
 import {TSPensumUnits} from '../models/enums/TSPensumUnits';
@@ -106,8 +107,7 @@ describe('EbeguRestUtil', () => {
 
                 expect(transformedPers.gesuchstellerJA.telefon).toBeUndefined(); // der leere String wurde in undefined
                                                                                  // umgewandelt deswegen muessen wir
-                                                                                 // hier
-                                                                                 // undefined zurueckbekommen
+                                                                                 // hier undefined zurueckbekommen
                 transformedPers.gesuchstellerJA.telefon = ''; // um das Objekt zu validieren, muessen wird das Telefon
                                                               // wieder auf '' setzen
 
@@ -118,15 +118,13 @@ describe('EbeguRestUtil', () => {
         describe('parseFachstelle()', () => {
             it('should transform TSFachstelle to REST object and back', () => {
                 const myFachstelle = new TSFachstelle();
-                myFachstelle.name = 'Fachstelle_name';
-                myFachstelle.beschreibung = 'Beschreibung';
+                myFachstelle.name = TSFachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE
                 myFachstelle.fachstelleAnspruch = true;
                 TestDataUtil.setAbstractMutableFieldsUndefined(myFachstelle);
 
                 const restFachstelle = ebeguRestUtil.fachstelleToRestObject({}, myFachstelle);
                 expect(restFachstelle).toBeDefined();
                 expect(restFachstelle.name).toEqual(myFachstelle.name);
-                expect(restFachstelle.beschreibung).toEqual(myFachstelle.beschreibung);
 
                 const transformedFachstelle = ebeguRestUtil.parseFachstelle(new TSFachstelle(), restFachstelle);
                 expect(transformedFachstelle).toBeDefined();
@@ -368,20 +366,25 @@ describe('EbeguRestUtil', () => {
                 expect(restInstitutionStammdaten.iban).toEqual(myInstitutionStammdaten.iban);
                 expect(restInstitutionStammdaten.mail).toEqual(myInstitutionStammdaten.mail);
                 expect(restInstitutionStammdaten.telefon).toEqual(myInstitutionStammdaten.telefon);
-                expect(restInstitutionStammdaten.gueltigAb).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
-                expect(restInstitutionStammdaten.gueltigBis).toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
-                expect(restInstitutionStammdaten.betreuungsangebotTyp).toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
+                expect(restInstitutionStammdaten.gueltigAb)
+                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigAb));
+                expect(restInstitutionStammdaten.gueltigBis)
+                    .toEqual(DateUtil.momentToLocalDate(myInstitutionStammdaten.gueltigkeit.gueltigBis));
+                expect(restInstitutionStammdaten.betreuungsangebotTyp)
+                    .toEqual(myInstitutionStammdaten.betreuungsangebotTyp);
                 expect(restInstitutionStammdaten.institution.name).toEqual(myInstitutionStammdaten.institution.name);
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule).toBeDefined();
                 expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule.length).toBe(1);
-                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag).toBeUndefined();
+                expect(restInstitutionStammdaten.institutionStammdatenTagesschule.moduleTagesschule[0].wochentag)
+                    .toBeUndefined();
 
                 const transformedInstitutionStammdaten = ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(),
                     restInstitutionStammdaten);
 
                 TestDataUtil.checkGueltigkeitAndSetIfSame(transformedInstitutionStammdaten, myInstitutionStammdaten);
-                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedInstitutionStammdaten.adresse, myInstitutionStammdaten.adresse);
+                TestDataUtil.checkGueltigkeitAndSetIfSame(transformedInstitutionStammdaten.adresse,
+                    myInstitutionStammdaten.adresse);
                 restInstitutionStammdaten.administratoren = undefined;
                 restInstitutionStammdaten.sachbearbeiter = undefined;
                 transformedInstitutionStammdaten.administratoren = undefined;
