@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -72,7 +73,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale());
+				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
 				return;
 			}
 		}
@@ -106,7 +107,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					reduceAnspruchInNormalCase(betreuung, verfuegungZeitabschnitt);
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale());
+					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
 				}
 			}
 		}
@@ -143,7 +144,8 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					RuleKey.EINKOMMEN,
 					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 					locale,
-					String.valueOf(basisjahrPlus1)
+					String.valueOf(basisjahrPlus1),
+					String.valueOf(basisjahr)
 				);
 			} else {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
@@ -160,7 +162,8 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,
-						String.valueOf(basisjahrPlus1));
+						String.valueOf(basisjahrPlus1),
+						String.valueOf(basisjahr));
 				}
 			}
 
@@ -173,7 +176,8 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					RuleKey.EINKOMMEN,
 					MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 					locale,
-					String.valueOf(basisjahrPlus2));
+					String.valueOf(basisjahrPlus2),
+					String.valueOf(basisjahr));
 			} else {
 				if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
 					verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
@@ -193,7 +197,8 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,
-						String.valueOf(basisjahrPlus2));
+						String.valueOf(basisjahrPlus2),
+						String.valueOf(basisjahr));
 				}
 			}
 		} else {
@@ -228,7 +233,8 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,
 						locale,
-						String.valueOf(basisjahrPlus1));
+						String.valueOf(basisjahrPlus1),
+						String.valueOf(basisjahrPlus1 - 1));
 				} else if (finanzDatenDTO.isEkv1Annulliert()) {
 					verfuegungZeitabschnitt.addBemerkung(
 						RuleKey.EINKOMMEN,
@@ -240,7 +246,8 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 						RuleKey.EINKOMMEN,
 						MsgKey.EINKOMMENSVERSCHLECHTERUNG_NOT_ACCEPT_MSG,
 						locale,
-						String.valueOf(basisjahrPlus1));
+						String.valueOf(basisjahrPlus1),
+						String.valueOf(basisjahrPlus1 - 1));
 				}
 			}
 		}
