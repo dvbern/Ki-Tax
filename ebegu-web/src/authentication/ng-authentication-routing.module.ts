@@ -20,6 +20,7 @@ import {Transition} from '@uirouter/core';
 import {getTSRoleValues} from '../models/enums/TSRole';
 import {returnTo} from './authentication.route';
 import {LocalLoginComponent} from './local-login/local-login.component';
+import {TutorialLoginComponent} from './tutorial-login/tutorial-login.component';
 
 export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
     name: 'authentication.locallogin',
@@ -38,9 +39,30 @@ export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
     },
 };
 
+export const TUTORIALLOGIN_STATE: Ng2StateDeclaration = {
+    name: 'authentication.tutoriallogin',
+    url: '/tutorial',
+    component: TutorialLoginComponent,
+    resolve: [
+        {
+            token: 'returnTo',
+            deps: [Transition],
+            resolveFn: returnTo,
+        },
+    ],
+    data: {
+        roles: getTSRoleValues(),
+        requiresDummyLogin: true,
+    },
+};
+
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [LOCALLOGIN_STATE]}),
+        UIRouterUpgradeModule.forChild(
+            {
+                states: [LOCALLOGIN_STATE, TUTORIALLOGIN_STATE]
+            }
+        ),
     ],
     exports: [],
 })

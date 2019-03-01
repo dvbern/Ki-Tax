@@ -28,7 +28,7 @@ import {OnErrorPriorities} from './onErrorPriorities';
  */
 errorAfterLoginHookRunBlock.$inject = ['$transitions'];
 
-const loginStates = ['authentication.login', 'authentication.locallogin'];
+const loginStates = ['authentication.login', 'authentication.locallogin', 'authentication.tutoriallogin'];
 
 export function errorAfterLoginHookRunBlock($transitions: TransitionService): void {
     $transitions.onError({from: state => loginStates.includes(state.name)},

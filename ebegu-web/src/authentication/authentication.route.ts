@@ -78,7 +78,7 @@ export function returnTo($transition$: Transition): TargetState {
 
     // The user was not redirected to the login state; they directly activated the login state somehow.
     // Return them to the state they came from.
-    const prohibitetReturnStates = ['', 'authentication.login', 'authentication.locallogin'];
+    const prohibitetReturnStates = ['', 'authentication.login', 'authentication.locallogin', 'authentication.tutoriallogin'];
     if (!prohibitetReturnStates.includes($transition$.from().name)) {
         return $state.target($transition$.from(), $transition$.params('from'));
     }

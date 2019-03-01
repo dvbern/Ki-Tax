@@ -1468,5 +1468,16 @@
     "FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN": "Heilpädagogische Früherziehung für blinde und sehbehinderte Kinder der Blindenschule Zollikofen",
     "FRUEHERZIEHUNGSDIENST_KANTON_BERN": "Früherziehungsdienst des Kantons Bern",
     "ERZIEHUNGSBERATUNG": "Erziehungsberatung",
-    "DIENST_ZENTRUM_HOEREN_SPRACHE": "Audiopädagogischen Dienst des Pädagogischen Zentrums für Hören und Sprache HSM"
+    "DIENST_ZENTRUM_HOEREN_SPRACHE": "Audiopädagogischen Dienst des Pädagogischen Zentrums für Hören und Sprache HSM",
+    "TUTORIAL_CHOSE_USER": "Wählen Sie bitte einen Benutzer aus.",
+    "TUTORIAL_GEMEINDE_ROLES": "Gemeinde Rollen",
+    "TUTORIAL_INSTITUTION_ROLES": "Institution Rollen",
+    "TUTORIAL_ADMIN_GEMEINDE": "Administrator Gemeinde",
+    "TUTORIAL_SACHBEARBEITER_GEMEINDE": "Sachbearbeiter Gemeinde",
+    "TUTORIAL_JURIST_GEMEINDE": "Jurist",
+    "TUTORIAL_STEUERAMT_GEMEINDE": "Steueramt",
+    "TUTORIAL_REVISOR_GEMEINDE": "Revisor",
+    "TUTORIAL_ADMIN_INSTITUTION": "Administrator Institution",
+    "TUTORIAL_SACHBEARBEITER_INSTITUTION": "Sachbearbeiter Institution",
+    "TUTORIAL_LOGIN_AS": "Einloggen als"
 }
