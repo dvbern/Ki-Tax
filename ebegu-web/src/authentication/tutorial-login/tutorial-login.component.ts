@@ -125,7 +125,7 @@ export class TutorialLoginComponent {
             'password9',
             'gerlinde.tutorial@example.com',
             this.mandant,
-            TSRole.ADMIN_GEMEINDE,
+            TSRole.ADMIN_BG,
             undefined,
             undefined,
             [this.gemeindeTutorial]);
@@ -135,7 +135,7 @@ export class TutorialLoginComponent {
             'password9',
             'stefan.tutorial@example.com',
             this.mandant,
-            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.SACHBEARBEITER_BG,
             undefined,
             undefined,
             [this.gemeindeTutorial]);
@@ -176,7 +176,7 @@ export class TutorialLoginComponent {
      */
     private getInsitution(): TSInstitution {
         const institution = new TSInstitution();
-        institution.name = 'Kita Tutorial';
+        institution.name = 'Kita kiBon';
         institution.id = TutorialLoginComponent.ID_KITA_TUTORIAL;
         institution.traegerschaft = undefined;
         institution.mandant = this.mandant;

@@ -65,6 +65,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -97,7 +98,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
  * Service fuer erstellen und mutieren von Schulungsdaten
  */
 @SuppressWarnings({ "DLS_DEAD_LOCAL_STORE", "DM_CONVERT_CASE", "EI_EXPOSE_REP", "ConstantNamingConvention",
-	"NonBooleanMethodNameMayNotStartWithQuestion", "SpringAutowiredFieldsWarningInspection" })
+	"SpringAutowiredFieldsWarningInspection" })
 @Stateless
 @Local(SchulungService.class)
 @RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
@@ -253,16 +254,25 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		Gemeinde gemeinde = gemeindeService.getFirst();
 		Traegerschaft traegerschaftFisch = createTraegerschaft(TRAEGERSCHAFT_FISCH_ID, "Fisch");
 
-		Institution institutionForelle = createtInstitution(INSTITUTION_FORELLE_ID, "Forelle", traegerschaftFisch);
-		Institution institutionHecht = createtInstitution(INSTITUTION_HECHT_ID, "Hecht", traegerschaftFisch);
-		Institution institutionLachs = createtInstitution(INSTITUTION_LACHS_ID, "Lachs", traegerschaftFisch);
+		Institution institutionForelle = createInstitution(INSTITUTION_FORELLE_ID, "Forelle", traegerschaftFisch);
+		Institution institutionHecht = createInstitution(INSTITUTION_HECHT_ID, "Hecht", traegerschaftFisch);
+		Institution institutionLachs = createInstitution(INSTITUTION_LACHS_ID, "Lachs", traegerschaftFisch);
 
-		InstitutionStammdaten kitaForelle =
-			createInstitutionStammdaten(KITA_FORELLE_ID, institutionForelle, BetreuungsangebotTyp.KITA);
-		InstitutionStammdaten tageselternForelle =
-			createInstitutionStammdaten(TAGESELTERN_FORELLE_ID, institutionLachs, BetreuungsangebotTyp.TAGESFAMILIEN);
-		InstitutionStammdaten kitaHecht =
-			createInstitutionStammdaten(KITA_HECHT_ID, institutionHecht, BetreuungsangebotTyp.KITA);
+		InstitutionStammdaten kitaForelle = createInstitutionStammdaten(
+			KITA_FORELLE_ID,
+			institutionForelle,
+			BetreuungsangebotTyp.KITA,
+			institutionForelle.getName() + EXAMPLE_COM);
+		InstitutionStammdaten tageselternForelle = createInstitutionStammdaten(
+			TAGESELTERN_FORELLE_ID,
+			institutionLachs,
+			BetreuungsangebotTyp.TAGESFAMILIEN,
+			institutionLachs.getName() + EXAMPLE_COM);
+		InstitutionStammdaten kitaHecht = createInstitutionStammdaten(
+			KITA_HECHT_ID,
+			institutionHecht,
+			BetreuungsangebotTyp.KITA,
+			institutionHecht.getName() + EXAMPLE_COM);
 
 		List<InstitutionStammdaten> institutionenForSchulung = new LinkedList<>();
 		institutionenForSchulung.add(kitaForelle);
@@ -285,8 +295,12 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		Gemeinde gemeinde = createGemeindeTutorial();
 		GemeindeStammdaten gemeindeStammdaten = createGemeindeStammdatenTutorial(gemeinde);
 
-		Institution institutionTutorial = createtInstitution(INSTITUTION_TUTORIAL_ID, "Tutorial", null);
-		createInstitutionStammdaten(KITA_TUTORIAL_ID, institutionTutorial, BetreuungsangebotTyp.KITA);
+		Institution institutionTutorial = createInstitution(INSTITUTION_TUTORIAL_ID, "Kita kiBon", null);
+		createInstitutionStammdaten(
+			KITA_TUTORIAL_ID,
+			institutionTutorial,
+			BetreuungsangebotTyp.KITA,
+			"kita.kibon" + EXAMPLE_COM);
 
 		final Benutzer gemeindeBenutzer = createBenutzer(
 			BENUTZER_TUTORIAL_GEMEINDE_NAME, BENUTZER_TUTORIAL_GEMEINDE_VORNAME,
@@ -301,13 +315,13 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		LOG.info("... beendet");
 	}
 
-	private GemeindeStammdaten setUserAsDefaultVerantwortlicher(
+	private void setUserAsDefaultVerantwortlicher(
 		@Nonnull GemeindeStammdaten gemeindeStammdaten,
 		@Nonnull Benutzer gemeindeBenutzer
 	) {
 		gemeindeStammdaten.setDefaultBenutzerBG(gemeindeBenutzer);
 		gemeindeStammdaten.setDefaultBenutzerTS(gemeindeBenutzer);
-		return gemeindeService.saveGemeindeStammdaten(gemeindeStammdaten);
+		gemeindeService.saveGemeindeStammdaten(gemeindeStammdaten);
 	}
 
 	private Gemeinde createGemeindeTutorial() {
@@ -316,7 +330,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		gemeinde.setId(GEMEINDE_TUTORIAL_ID);
 		gemeinde.setMandant(mandant);
 		gemeinde.setBetreuungsgutscheineStartdatum(Constants.START_OF_TIME);
-		gemeinde.setName("Tutorial");
+		gemeinde.setName("Gemeinde kiBon");
 		gemeinde.setStatus(GemeindeStatus.AKTIV);
 		gemeinde.setBfsNummer(5555L); // this BFS-number cannot exist
 		gemeinde.setGemeindeNummer(5555); // this number cannot exist
@@ -371,7 +385,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	}
 
 	@Nonnull
-	private Institution createtInstitution(
+	private Institution createInstitution(
 		@Nonnull String id,
 		@Nonnull String name,
 		@Nullable Traegerschaft traegerschaft
@@ -382,6 +396,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		institution.setId(id);
 		institution.setName(name);
 		institution.setMandant(mandant);
+		institution.setStatus(InstitutionStatus.AKTIV);
 		if (traegerschaft != null) {
 			institution.setTraegerschaft(traegerschaft);
 		}
@@ -393,17 +408,19 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	private InstitutionStammdaten createInstitutionStammdaten(
 		@Nonnull String id,
 		@Nonnull Institution institution,
-		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp
+		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
+		@Nonnull String email
 	) {
 
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
 		instStammdaten.setId(id);
 		instStammdaten.setIban(new IBAN("CH39 0900 0000 3066 3817 2"));
+		instStammdaten.setKontoinhaber("DvBern");
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		instStammdaten.setBetreuungsangebotTyp(betreuungsangebotTyp);
 		instStammdaten.setAdresse(createAdresse(id));
 		instStammdaten.setInstitution(institution);
-		instStammdaten.setMail(institution.getName() + EXAMPLE_COM);
+		instStammdaten.setMail(email);
 		return institutionStammdatenService.saveInstitutionStammdaten(instStammdaten);
 	}
 
@@ -411,6 +428,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	private Adresse createAdresse(@Nonnull String id) {
 		Adresse adresse = new Adresse();
 		adresse.setId(id);
+		adresse.setOrganisation("DvBern");
 		adresse.setStrasse("Nussbaumstrasse");
 		adresse.setHausnummer("21");
 		adresse.setPlz("3014");
@@ -419,8 +437,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		return adresse;
 	}
 
-	@Nonnull
-	private Benutzer createGesuchsteller(@Nonnull String name, @Nonnull String username) {
+	private void createGesuchsteller(@Nonnull String name, @Nonnull String username) {
 		Mandant mandant = mandantService.getFirst();
 		Benutzer benutzer = new Benutzer();
 		benutzer.setVorname(GESUCHSTELLER_VORNAME);
@@ -432,7 +449,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		benutzer.setEmail(GESUCHSTELLER_VORNAME.toLowerCase(Locale.GERMAN) + '.' + name.toLowerCase(Locale.GERMAN) + EXAMPLE_COM);
 		benutzer.setUsername(username);
 		benutzer.setMandant(mandant);
-		return benutzerService.saveBenutzer(benutzer);
+		benutzerService.saveBenutzer(benutzer);
 	}
 
 	@Nonnull
@@ -461,7 +478,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 			berechtigung.setInstitution(institution);
 		}
 		if (gemeinden != null && !gemeinden.isEmpty()) {
-			berechtigung.setRole(UserRole.ADMIN_GEMEINDE);
+			berechtigung.setRole(UserRole.ADMIN_BG);
 			berechtigung.setGemeindeList(gemeinden);
 		}
 		benutzer.getBerechtigungen().add(berechtigung);
@@ -567,7 +584,6 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 	@Nonnull
 	private Gesuch createFallForSuche(@Nonnull AbstractTestfall testfall,
 		@Nonnull List<InstitutionStammdaten> institutionenForSchulung, boolean verfuegen, boolean noRandom) {
-		@SuppressWarnings("DuplicateBooleanBranch")
 
 		Gesuch gesuch = testfaelleService.createAndSaveGesuch(testfall, verfuegen, null);
 		gesuch.setEingangsdatum(LocalDate.now());
