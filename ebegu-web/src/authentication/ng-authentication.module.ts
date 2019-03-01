@@ -17,7 +17,8 @@ import {NgModule} from '@angular/core';
 import {SharedModule} from '../app/shared/shared.module';
 import {LocalLoginComponent} from './local-login/local-login.component';
 import {NgAuthenticationRoutingModule} from './ng-authentication-routing.module';
-import {TutorialLoginComponent} from './tutorial-login/tutorial-login.component';
+import {TutorialGemeindeLoginComponent} from './tutorial-gemeinde-login/tutorial-gemeinde-login.component';
+import {TutorialInstitutionLoginComponent} from './tutorial-institution-login/tutorial-institution-login.component';
 
 @NgModule({
     imports: [
@@ -26,11 +27,13 @@ import {TutorialLoginComponent} from './tutorial-login/tutorial-login.component'
     ],
     declarations: [
         LocalLoginComponent,
-        TutorialLoginComponent,
+        TutorialInstitutionLoginComponent,
+        TutorialGemeindeLoginComponent,
     ],
     entryComponents: [
         LocalLoginComponent,
-        TutorialLoginComponent,
+        TutorialInstitutionLoginComponent,
+        TutorialGemeindeLoginComponent,
     ],
     providers: [
         // use providedIn in the class instead

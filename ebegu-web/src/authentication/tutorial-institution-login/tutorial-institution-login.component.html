@@ -1,0 +1,51 @@
+<!--
+  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="tutorial-login row">
+    <h3 class="col-md-5 col-md-offset-3" translate>
+        TUTORIAL_CHOSE_USER
+    </h3>
+
+
+    <div class="col-md-12 col-md-offset-1">
+        <table class="ebegu-table">
+            <tr>
+                <th colspan="3">
+                    <h2 class="tutorial-login-h2" translate>TUTORIAL_INSTITUTION_ROLES</h2>
+                </th>
+            </tr>
+
+            <!-- Institutionen / Traegerschaften -->
+            <tr>
+                <td translate>TUTORIAL_ADMIN_INSTITUTION</td>
+                <td>
+                    <div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="getTextForLoginButton(administratorInstitutionKitaTutorial)"
+                         (click)="logIn(administratorInstitutionKitaTutorial)"></div>
+                </td>
+            </tr>
+            <tr>
+                <td translate>TUTORIAL_SACHBEARBEITER_INSTITUTION</td>
+                <td>
+                    <div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="getTextForLoginButton(sachbearbeiterInstitutionKitaTutorial)"
+                         (click)="logIn(sachbearbeiterInstitutionKitaTutorial)"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

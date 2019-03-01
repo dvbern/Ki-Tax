@@ -78,7 +78,10 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
                     return getRoleBasedTargetState(currentRole, transition.router.stateService);
                 }
 
-                if (transition.from().name === 'authentication.locallogin' || transition.from().name === 'authentication.tutoriallogin') {
+                if (transition.from().name === 'authentication.locallogin'
+                    || transition.from().name === 'authentication.tutorialInstitutionLogin'
+                    || transition.from().name === 'authentication.tutorialGemeindeLogin'
+                ) {
                     // when changing the user via locallogin and the selected user is not allowed to return to the
                     // previous state, navigate to the role-based landing state
                     return getRoleBasedTargetState(currentRole, transition.router.stateService);
