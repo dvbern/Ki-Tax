@@ -34,7 +34,6 @@ public class JaxFachstelle extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1277026901764135397L;
 
-	@Size(min = 1, max = DB_DEFAULT_SHORT_LENGTH)
 	@NotNull
 	private FachstelleName name;
 

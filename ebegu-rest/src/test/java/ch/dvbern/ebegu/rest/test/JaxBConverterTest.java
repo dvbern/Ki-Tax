@@ -213,7 +213,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	public void pensumFachstelleSpeichernDarfFachstelleNichtUpdaten() {
 		Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
 		fachstelle = persistence.persist(fachstelle);
-		assertEquals(FachstelleName.FRUEHERZIEHUNGSDIENST_KANTON_BERN, fachstelle.getName());
+		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, fachstelle.getName());
 
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
@@ -232,6 +232,6 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Fachstelle loadedFachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();
-		assertEquals(FachstelleName.FRUEHERZIEHUNGSDIENST_KANTON_BERN, loadedFachstelle.getName());
+		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, loadedFachstelle.getName());
 	}
 }
