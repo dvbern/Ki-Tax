@@ -118,7 +118,7 @@ describe('EbeguRestUtil', () => {
         describe('parseFachstelle()', () => {
             it('should transform TSFachstelle to REST object and back', () => {
                 const myFachstelle = new TSFachstelle();
-                myFachstelle.name = TSFachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE
+                myFachstelle.name = TSFachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE;
                 myFachstelle.fachstelleAnspruch = true;
                 TestDataUtil.setAbstractMutableFieldsUndefined(myFachstelle);
 
