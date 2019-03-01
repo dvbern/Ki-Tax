@@ -1470,15 +1470,8 @@
     "ERZIEHUNGSBERATUNG": "FR_Erziehungsberatung",
     "DIENST_ZENTRUM_HOEREN_SPRACHE": "FR_Audiopädagogischen Dienst des Pädagogischen Zentrums für Hören und Sprache HSM",
     "TUTORIAL_TITLE": "FR_Tutorial",
-    "TUTORIAL_CHOSE_USER": "FR_Wählen Sie bitte einen Benutzer aus.",
-    "TUTORIAL_GEMEINDE_ROLES": "FR_Gemeinde Rollen",
-    "TUTORIAL_INSTITUTION_ROLES": "FR_Institution Rollen",
-    "TUTORIAL_ADMIN_GEMEINDE": "FR_Administrator Gemeinde",
-    "TUTORIAL_SACHBEARBEITER_GEMEINDE": "FR_Sachbearbeiter Gemeinde",
-    "TUTORIAL_JURIST_GEMEINDE": "FR_Jurist",
-    "TUTORIAL_STEUERAMT_GEMEINDE": "FR_Steueramt",
-    "TUTORIAL_REVISOR_GEMEINDE": "FR_Revisor",
-    "TUTORIAL_ADMIN_INSTITUTION": "FR_Administrator Institution",
-    "TUTORIAL_SACHBEARBEITER_INSTITUTION": "FR_Sachbearbeiter Institution",
-    "TUTORIAL_LOGIN_AS": "FR_Einloggen als"
+    "TUTORIAL_WILLKOMMEN": "FR_Willkomen zur kiBon-Schulung",
+    "TUTORIAL_INSTITUTION_TEXT": "FR_Klicken Sie bitte auf  Button, um sich als Sachbearbeitende der Test-Institution \"Kita kiBon\" und weiter das wundervolle kiBon-Erlebnis geniessen zu können",
+    "TUTORIAL_GEMEINDE_TEXT": "FR_Klicken Sie bitte auf den untenstehenden Button, um sich als Sachbearbeitende der Test-Gemeinde \"kiBon\" und weiter das wundervolle kiBon-Erlebnis geniessen zu können",
+    "TUTORIAL_LOGIN": "FR_Einloggen"
 }

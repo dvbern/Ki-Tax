@@ -16,10 +16,7 @@
  */
 
 import {Component, Input} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {StateService, TargetState} from '@uirouter/core';
-import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
-import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSInstitution from '../../models/TSInstitution';
@@ -27,9 +24,8 @@ import {TSMandant} from '../../models/TSMandant';
 import {returnToOriginalState} from '../../utils/AuthenticationUtil';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
 
-// tslint:disable:no-duplicate-string no-identical-functions
 @Component({
-    selector: 'dv-tutorial-login',
+    selector: 'dv-tutorial-institution-login',
     templateUrl: './tutorial-institution-login.component.html',
     styleUrls: ['./tutorial-institution-login.component.less'],
 })
@@ -39,28 +35,19 @@ export class TutorialInstitutionLoginComponent {
 
     @Input() public returnTo: TargetState;
 
-    // Institution Users
-    public administratorInstitutionKitaTutorial: TSBenutzer;
+    // Only the role Sachbearbeiter. This simplifies the tutorial and gives the user a restricted access
     public sachbearbeiterInstitutionKitaTutorial: TSBenutzer;
-
-    public devMode: boolean;
 
     private readonly mandant: TSMandant;
     private readonly institutionTutorial: TSInstitution;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly stateService: StateService,
-        private readonly gemeindeRS: GemeindeRS,
-        private readonly translate: TranslateService,
     ) {
 
         this.mandant = TutorialInstitutionLoginComponent.getMandant();
         this.institutionTutorial = this.getInsitution();
-        this.applicationPropertyRS.isDevMode().then(response => {
-            this.devMode = response;
-        });
 
         this.initUsers();
     }
@@ -80,15 +67,6 @@ export class TutorialInstitutionLoginComponent {
     }
 
     private createInstitutionUsers(): void {
-        this.administratorInstitutionKitaTutorial = new TSBenutzer('Silvia',
-            'Tutorial',
-            'tusi',
-            'password9',
-            'silvia.tutorial@example.com',
-            this.mandant,
-            TSRole.ADMIN_INSTITUTION,
-            undefined,
-            this.institutionTutorial);
         this.sachbearbeiterInstitutionKitaTutorial = new TSBenutzer('Sophie',
             'Tutorial',
             'tuso',
@@ -112,15 +90,8 @@ export class TutorialInstitutionLoginComponent {
         return institution;
     }
 
-    public logIn(credentials: TSBenutzer): void {
-        this.authServiceRS.loginRequest(credentials)
+    public logIn(): void {
+        this.authServiceRS.loginRequest(this.sachbearbeiterInstitutionKitaTutorial)
             .then(() => returnToOriginalState(this.stateService, this.returnTo));
-    }
-
-    public getTextForLoginButton(user: TSBenutzer): string {
-        if (!user) {
-            return '';
-        }
-        return `${this.translate.instant('TUTORIAL_LOGIN_AS')} ${user.vorname} ${user.nachname}`;
     }
 }

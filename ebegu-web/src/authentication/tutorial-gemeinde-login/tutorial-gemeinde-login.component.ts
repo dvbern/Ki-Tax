@@ -16,9 +16,7 @@
  */
 
 import {Component, Input} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {StateService, TargetState} from '@uirouter/core';
-import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import GemeindeRS from '../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
@@ -27,7 +25,6 @@ import {TSMandant} from '../../models/TSMandant';
 import {returnToOriginalState} from '../../utils/AuthenticationUtil';
 import AuthServiceRS from '../service/AuthServiceRS.rest';
 
-// tslint:disable:no-duplicate-string no-identical-functions
 @Component({
     selector: 'dv-tutorial-gemeinde-login',
     templateUrl: './tutorial-gemeinde-login.component.html',
@@ -39,31 +36,19 @@ export class TutorialGemeindeLoginComponent {
 
     @Input() public returnTo: TargetState;
 
-    // Gemeindeabhängige Users
-    public administratorGemeindeTutorial: TSBenutzer;
+    // Only the role Sachbearbeiter. This simplifies the tutorial and gives the user a restricted access
     public sachbearbeiterGemeindeTutorial: TSBenutzer;
-
-    public steueramtTutorial: TSBenutzer;
-    public revisorTutorial: TSBenutzer;
-    public juristTutorial: TSBenutzer;
-
-    public devMode: boolean;
 
     private readonly mandant: TSMandant;
     private gemeindeTutorial: TSGemeinde;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
-        private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly stateService: StateService,
         private readonly gemeindeRS: GemeindeRS,
-        private readonly translate: TranslateService,
     ) {
 
         this.mandant = TutorialGemeindeLoginComponent.getMandant();
-        this.applicationPropertyRS.isDevMode().then(response => {
-            this.devMode = response;
-        });
 
         // getAktiveGemeinden() can be called by anonymous.
         this.gemeindeRS.getAktiveGemeinden().then(aktiveGemeinden => {
@@ -89,67 +74,20 @@ export class TutorialGemeindeLoginComponent {
     }
 
     private createUsersOfGemeinde(): void {
-        this.administratorGemeindeTutorial = new TSBenutzer('Gerlinde',
-            'Tutorial',
-            'tuge',
-            'password9',
-            'gerlinde.tutorial@example.com',
-            this.mandant,
-            TSRole.ADMIN_BG,
-            undefined,
-            undefined,
-            [this.gemeindeTutorial]);
-        this.sachbearbeiterGemeindeTutorial = new TSBenutzer('Stefan',
+        this.sachbearbeiterGemeindeTutorial = new TSBenutzer('Gerlinde',
             'Tutorial',
             'tust',
             'password9',
-            'stefan.tutorial@example.com',
+            'gerlinde.tutorial@example.com',
             this.mandant,
             TSRole.SACHBEARBEITER_BG,
             undefined,
             undefined,
             [this.gemeindeTutorial]);
-        this.steueramtTutorial = new TSBenutzer('Rodolfo',
-            'Tutorial',
-            'turo',
-            'password9',
-            'rodolfo.tutorial@example.com',
-            this.mandant,
-            TSRole.STEUERAMT,
-            undefined,
-            undefined,
-            [this.gemeindeTutorial]);
-        this.revisorTutorial = new TSBenutzer('Reto',
-            'Tutorial',
-            'ture',
-            'password9',
-            'reto.tutorial@example.com',
-            this.mandant,
-            TSRole.REVISOR,
-            undefined,
-            undefined,
-            [this.gemeindeTutorial]);
-        this.juristTutorial = new TSBenutzer('Julia',
-            'Tutorial',
-            'tuju',
-            'password9',
-            'julia.tutorial@example.com',
-            this.mandant,
-            TSRole.JURIST,
-            undefined,
-            undefined,
-            [this.gemeindeTutorial]);
     }
 
-    public logIn(credentials: TSBenutzer): void {
-        this.authServiceRS.loginRequest(credentials)
+    public logIn(): void {
+        this.authServiceRS.loginRequest(this.sachbearbeiterGemeindeTutorial)
             .then(() => returnToOriginalState(this.stateService, this.returnTo));
-    }
-
-    public getTextForLoginButton(user: TSBenutzer): string {
-        if (!user) {
-            return '';
-        }
-        return `${this.translate.instant('TUTORIAL_LOGIN_AS')} ${user.vorname} ${user.nachname}`;
     }
 }

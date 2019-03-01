@@ -127,7 +127,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 
 	private static final String GESUCH_ID = "44444444-1111-1111-1111-1111111111XX";
 
-	private static final String BENUTZER_TUTORIAL_GEMEINDE_USERNAME = "tuge";
+	private static final String BENUTZER_TUTORIAL_GEMEINDE_USERNAME = "tust";
 	private static final String BENUTZER_FISCH_USERNAME = "sch20";
 	private static final String BENUTZER_FORELLE_USERNAME = "sch21";
 	private static final String BENUTZER_FISCH_NAME = "Fisch";
