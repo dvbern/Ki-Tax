@@ -25,19 +25,8 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
 
-    public constructor(
-        familienstatus?: TSFamilienstatus,
-        gemeinsameSteuererklaerung?: boolean,
-        aenderungPer?: moment.Moment,
-        sozialhilfeBezueger?: boolean,
-        verguenstigungGewuenscht?: boolean,
-    ) {
+    public constructor() {
         super();
-        this._familienstatus = familienstatus;
-        this._gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
-        this._aenderungPer = aenderungPer;
-        this._sozialhilfeBezueger = sozialhilfeBezueger;
-        this._verguenstigungGewuenscht = verguenstigungGewuenscht;
     }
 
     public get familienstatus(): TSFamilienstatus {

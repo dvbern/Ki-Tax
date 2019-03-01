@@ -26,6 +26,7 @@ import {TSEingangsart} from '../../models/enums/TSEingangsart';
 import TSBenutzer from '../../models/TSBenutzer';
 import TSDossier from '../../models/TSDossier';
 import TSFall from '../../models/TSFall';
+import TSGemeinde from '../../models/TSGemeinde';
 import TSGesuch from '../../models/TSGesuch';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
@@ -46,13 +47,14 @@ describe('gesuchGenerator', () => {
     let gesuchGenerator: GesuchGenerator;
     let gesuchsperiode: TSGesuchsperiode;
     let user: TSBenutzer;
+    const gemeinde = new TSGemeinde();
 
     beforeEach(async(() => {
 
         initValues();
 
         const gemeindeServiceSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, {
-            getAllGemeinden: Promise.resolve(['findGemeinde']),
+            getAllGemeinden: Promise.resolve([gemeinde]),
         });
 
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {

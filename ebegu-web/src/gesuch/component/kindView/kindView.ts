@@ -333,7 +333,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private initEmptyKind(kindNumber: number): TSKindContainer {
-        const tsKindContainer = new TSKindContainer(undefined, new TSKind());
+        const tsKindContainer = new TSKindContainer();
+        tsKindContainer.kindGS = undefined;
+        tsKindContainer.kindJA = new TSKind();
         tsKindContainer.kindNummer = kindNumber;
         return tsKindContainer;
     }
