@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource.authentication;
 
+import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
@@ -25,7 +26,10 @@ import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.client.ClientRequestLogger;
 import ch.dvbern.ebegu.api.client.ClientResponseLogger;
 import ch.dvbern.ebegu.api.connector.clientinfo.ILoginProviderInfoResource;
+import ch.dvbern.ebegu.api.resource.auth.LocalhostChecker;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -47,6 +51,9 @@ public class LoginProviderInfoRestService {
 
 	@Inject
 	private EbeguConfiguration configuration;
+
+	@Inject
+	private LocalhostChecker localhostChecker;
 
 	private ILoginProviderInfoResource loginProviderInfoRESTService;
 
@@ -71,23 +78,51 @@ public class LoginProviderInfoRestService {
 
 	private ILoginProviderInfoResource getLoginProviderInfoProxClient() {
 		if (loginProviderInfoRESTService == null) {
-			String baseURL = configuration.getLoginProviderAPIUrl();
-			if (baseURL == null) {
-				final String errMsg = "Can not construct LoginConnectorService because API-URI of connector is not specified via property. The required URI "
-					+ "must be specified using the property " + EBEGU_LOGIN_PROVIDER_API_URL;
-				throw new IllegalStateException(errMsg);
-			}
-			LOG.debug("Creating REST Client for URL {}", baseURL);
+			String baseURL = determineConnectorApiBaseURL();
 			ResteasyClient client = buildClient();
 			ResteasyWebTarget target = client.target(baseURL);
 			this.loginProviderInfoRESTService = target.proxy(ILoginProviderInfoResource.class);
 			LOG.debug("Creating REST Proxy for Login Provider");
-			final String responseMsg = loginProviderInfoRESTService.getHeartBeat();
-			LOG.debug("version {}", responseMsg);
+			try {
+				final String responseMsg = loginProviderInfoRESTService.getHeartBeat();
+				LOG.debug("version {}", responseMsg);
+			} catch (RuntimeException ex) {
+				LOG.error("Failure during REST client construction for Connector. Could not create client for URL '{}'. Check configuration ", baseURL, ex);
+				throw ex;
+			}
 
 		}
 		return loginProviderInfoRESTService;
 	}
+
+	private String determineConnectorApiBaseURL() {
+		String baseURL = configuration.getLoginProviderAPIUrl();
+		if (baseURL == null) {
+			final String errMsg = "Can not construct LoginConnectorService because API-URI of connector is not specified via property. The required URI "
+				+ "must be specified using the property " + EBEGU_LOGIN_PROVIDER_API_URL;
+			throw new IllegalStateException(errMsg);
+		}
+
+		try {
+			final String domainName = LocalhostChecker.getDomainName(baseURL);
+			if ("localhost".equals(domainName) || "127.0.0.1".equals(domainName)) {
+				LOG.debug("Configured Connector API Url '{}' seems to be localhost. Since wildfly is only bound to the actual"
+					+ " ip we try to replace localhost with the real ip of the server", baseURL);
+				final String localIp = localhostChecker.findLocalIp();
+				baseURL = LocalhostChecker.replaceHostInUrl(baseURL, localIp);
+				LOG.debug("Changed configured host for connector api to to '{}'", baseURL);
+
+			}
+		} catch (URISyntaxException e) {
+			LOG.error("Invalid configured connector API Url: '{}'", baseURL);
+			throw new EbeguRuntimeException("determineConnectorApiBaseURL", "Could not parse url", ErrorCodeEnum.ERROR_INVALID_CONFIGURATION, e);
+		}
+
+		LOG.debug("Creating REST Client for URL {}", baseURL);
+		return baseURL;
+	}
+
+
 
 	private boolean isConnectorEndpointSpecified() {
 		return !StringUtils.isEmpty(configuration.getLoginProviderAPIUrl());
