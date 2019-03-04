@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.api.resource.auth.LocalhostChecker;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.util.LogConsolidated;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -106,12 +107,12 @@ public class LoginProviderInfoRestService {
 		try {
 			final String domainName = LocalhostChecker.getDomainName(baseURL);
 			if ("localhost".equals(domainName) || "127.0.0.1".equals(domainName)) {
-				LOG.debug("Configured Connector API Url '{}' seems to be localhost. Since wildfly is only bound to the actual"
-					+ " ip we try to replace localhost with the real ip of the server", baseURL);
+				String logmsg = String.format("Configured Connector API Url %s seems to be localhost. Since wildfly is only bound to the actual ip we try "
+					+ "to replace localhost with the real ip of the server", baseURL);
+				LogConsolidated.warning(LOG, Long.MAX_VALUE, logmsg , null );
 				final String localIp = localhostChecker.findLocalIp();
 				baseURL = LocalhostChecker.replaceHostInUrl(baseURL, localIp);
-				LOG.debug("Changed configured host for connector api to to '{}'", baseURL);
-
+				LogConsolidated.warning(LOG, Long.MAX_VALUE, "Changed configured host for connector api to to " + baseURL , null );
 			}
 		} catch (URISyntaxException e) {
 			LOG.error("Invalid configured connector API Url: '{}'", baseURL);

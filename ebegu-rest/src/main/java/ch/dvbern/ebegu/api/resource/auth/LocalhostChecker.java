@@ -71,7 +71,6 @@ public class LocalhostChecker {
 	}
 
 	/**
-	 *
 	 * @return should return the ip of the machine that this jvm makes connections from
 	 */
 	public String findLocalIp() {
@@ -81,41 +80,37 @@ public class LocalhostChecker {
 				socket.connect(InetAddress.getByName("8.8.8.8"), 10002); // connect to google dns to test our ip
 				this.localIp = socket.getLocalAddress().getHostAddress();
 			} catch (SocketException | UnknownHostException e) {
-				throw new EbeguRuntimeException("findLocalIp", "Error while trying to determine the ip of the localhost", ErrorCodeEnum.ERROR_INVALID_CONFIGURATION, e);
+				throw new EbeguRuntimeException("findLocalIp", "Error while trying to determine the ip of the localhost",
+					ErrorCodeEnum.ERROR_INVALID_CONFIGURATION, e);
 			}
 		}
 		return this.localIp;
 	}
 
 	/**
-	 * @param url
 	 * @return hostname of passed url
-	 * @throws URISyntaxException
 	 */
 	public static String getDomainName(String url) throws URISyntaxException {
-	    URI uri = new URI(url);
-	    String domain = uri.getHost();
-	    return domain.startsWith("www.") ? domain.substring(4) : domain;
+		URI uri = new URI(url);
+		String domain = uri.getHost();
+		return domain.startsWith("www.") ? domain.substring(4) : domain;
 	}
 
 	/**
 	 * replaces the host part and maybe the port of a given url
+	 *
 	 * @param originalURL original url, may or may not connect port
 	 * @param newHost new host, may optionally specify port in the form testhost:port
 	 * @return the originalUrl where the host was replaced
-	 * @throws URISyntaxException
 	 */
-	public static String replaceHostInUrl(String originalURL,
-	                                      String newHost)
-	throws URISyntaxException {
+	public static String replaceHostInUrl(String originalURL, String newHost) throws URISyntaxException {
 
-	    URI uri = new URI(originalURL);
-
+		URI uri = new URI(originalURL);
 		final int oldPort = uri.getPort();
-		String newAuthority = newHost.contains(":") || oldPort == -1 ? newHost : newHost +":"+ oldPort;
+		String newAuthority = newHost.contains(":") || oldPort == -1 ? newHost : newHost + ":" + oldPort;
 		uri = new URI(uri.getScheme().toLowerCase(Locale.US), newAuthority,
-	        uri.getPath(), uri.getQuery(), uri.getFragment());
+			uri.getPath(), uri.getQuery(), uri.getFragment());
 
-	    return uri.toString();
+		return uri.toString();
 	}
 }
