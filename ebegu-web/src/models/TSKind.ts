@@ -13,9 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
 import {TSEinschulungTyp} from './enums/TSEinschulungTyp';
-import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSKinderabzug} from './enums/TSKinderabzug';
 import TSAbstractPersonEntity from './TSAbstractPersonEntity';
 import {TSPensumAusserordentlicherAnspruch} from './TSPensumAusserordentlicherAnspruch';
@@ -31,28 +29,8 @@ export default class TSKind extends TSAbstractPersonEntity {
     private _pensumFachstelle: TSPensumFachstelle;
     private _pensumAusserordentlicherAnspruch: TSPensumAusserordentlicherAnspruch;
 
-    public constructor(
-        vorname?: string,
-        nachname?: string,
-        geburtsdatum?: moment.Moment,
-        geschlecht?: TSGeschlecht,
-        kinderabzug1?: TSKinderabzug,
-        kinderabzug2?: TSKinderabzug,
-        familienErgaenzendeBetreuung?: boolean,
-        sprichtAmtssprache?: boolean,
-        pensumFachstelle?: TSPensumFachstelle,
-        pensumAusserordentlicherAnspruch?: TSPensumAusserordentlicherAnspruch,
-        einschulungTyp?: TSEinschulungTyp,
-    ) {
-
-        super(vorname, nachname, geburtsdatum, geschlecht);
-        this._kinderabzugErstesHalbjahr = kinderabzug1;
-        this._kinderabzugZweitesHalbjahr = kinderabzug2;
-        this._familienErgaenzendeBetreuung = familienErgaenzendeBetreuung;
-        this._sprichtAmtssprache = sprichtAmtssprache;
-        this._einschulungTyp = einschulungTyp;
-        this._pensumFachstelle = pensumFachstelle;
-        this._pensumAusserordentlicherAnspruch = pensumAusserordentlicherAnspruch;
+    public constructor() {
+        super();
     }
 
     public get kinderabzugErstesHalbjahr(): TSKinderabzug {

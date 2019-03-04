@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rechner.AbstractBGRechner;
@@ -78,7 +79,10 @@ public class BetreuungsgutscheinEvaluator {
 
 		// Fuer die Familiensituation ist die Betreuung nicht relevant. Wir brauchen aber eine, da die Signatur der Rules
 		// mit Betreuungen funktioniert. Wir nehmen einfach die erste von irgendeinem Kind, das heisst ohne betreuung koennen wir nicht berechnen
-		Betreuung firstBetreuungOfGesuch = gesuch.getFirstBetreuung();
+		// Fuer ein Gesuch im Status KEIN_ANGEBOT wir können keine Betreuung finden, da es keine gibt.
+		Betreuung firstBetreuungOfGesuch = gesuch.getStatus() == AntragStatus.KEIN_ANGEBOT
+			? null
+			: gesuch.getFirstBetreuung();
 
 		// Die Initialen Zeitabschnitte erstellen (1 pro Gesuchsperiode)
 		List<VerfuegungZeitabschnitt> zeitabschnitte = createInitialenRestanspruch(gesuch.getGesuchsperiode());
@@ -98,7 +102,9 @@ public class BetreuungsgutscheinEvaluator {
 
 			// Falls jetzt wieder Abschnitte innerhalb eines Monats "gleich" sind, im Sinne der *angezeigten* Daten, diese auch noch mergen
 			zeitabschnitte = AbschlussNormalizer.execute(zeitabschnitte, true);
-		} else {
+
+		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
+			// for Status KEIN_ANGEBOT it makes no sense to log an error because it is not an error
 			LOG.warn("Keine Betreuung vorhanden kann Familiengroesse und Abzuege nicht berechnen");
 		}
 
@@ -189,7 +195,7 @@ public class BetreuungsgutscheinEvaluator {
 
 					// Die Verfügung erstellen
 					if (betreuung.getVerfuegung() == null) {
-						Verfuegung verfuegung = new Verfuegung();
+						Verfuegung verfuegung = new Verfuegung(betreuung);
 						betreuung.setVerfuegung(verfuegung);
 						verfuegung.setBetreuung(betreuung);
 					}

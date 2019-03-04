@@ -968,7 +968,6 @@ export default class EbeguRestUtil {
     public fachstelleToRestObject(restFachstelle: any, fachstelle: TSFachstelle): any {
         this.abstractMutableEntityToRestObject(restFachstelle, fachstelle);
         restFachstelle.name = fachstelle.name;
-        restFachstelle.beschreibung = fachstelle.beschreibung;
         restFachstelle.fachstelleAnspruch = fachstelle.fachstelleAnspruch;
         restFachstelle.fachstelleErweiterteBetreuung = fachstelle.fachstelleErweiterteBetreuung;
         return restFachstelle;
@@ -986,7 +985,6 @@ export default class EbeguRestUtil {
     public parseFachstelle(parsedFachstelle: TSFachstelle, receivedFachstelle: any): TSFachstelle {
         this.parseAbstractMutableEntity(parsedFachstelle, receivedFachstelle);
         parsedFachstelle.name = receivedFachstelle.name;
-        parsedFachstelle.beschreibung = receivedFachstelle.beschreibung;
         parsedFachstelle.fachstelleAnspruch = receivedFachstelle.fachstelleAnspruch;
         parsedFachstelle.fachstelleErweiterteBetreuung = receivedFachstelle.fachstelleErweiterteBetreuung;
         return parsedFachstelle;

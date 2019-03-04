@@ -122,9 +122,6 @@ public class VerfuegungResource {
 			Gesuch gesuch = gesuchOptional.get();
 			Gesuch gesuchWithCalcVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
 
-			// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum das Gesuch detachen
-			gesuchService.loadRelationsAndDetach(gesuchWithCalcVerfuegung);
-
 			JaxGesuch gesuchJax = converter.gesuchToJAX(gesuchWithCalcVerfuegung);
 
 			Set<JaxKindContainer> kindContainers = gesuchJax.getKindContainers();
@@ -165,10 +162,10 @@ public class VerfuegungResource {
 		if (gesuch.isPresent()) {
 			Optional<Betreuung> betreuung = betreuungService.findBetreuung(betreuungId.getId());
 			if (betreuung.isPresent()) {
-				Verfuegung verfuegungToMerge = new Verfuegung();
+				Verfuegung verfuegungToMerge = new Verfuegung(betreuung.get());
 				if (verfuegungJAXP.getId() != null) {
 					Optional<Verfuegung> optional = verfuegungService.findVerfuegung(verfuegungJAXP.getId());
-					verfuegungToMerge = optional.orElse(new Verfuegung());
+					verfuegungToMerge = optional.orElse(new Verfuegung(betreuung.get()));
 				}
 				Verfuegung convertedVerfuegung = converter.verfuegungToEntity(verfuegungJAXP, verfuegungToMerge);
 
@@ -210,10 +207,10 @@ public class VerfuegungResource {
 
 		Optional<Betreuung> betreuung = betreuungService.findBetreuung(betreuungId.getId());
 		if (betreuung.isPresent()) {
-			Verfuegung verfuegungToMerge = new Verfuegung();
+			Verfuegung verfuegungToMerge = new Verfuegung(betreuung.get());
 			if (verfuegungJAXP.getId() != null) {
 				Optional<Verfuegung> optional = verfuegungService.findVerfuegung(verfuegungJAXP.getId());
-				verfuegungToMerge = optional.orElse(new Verfuegung());
+				verfuegungToMerge = optional.orElse(new Verfuegung(betreuung.get()));
 			}
 			Verfuegung convertedVerfuegung = converter.verfuegungToEntity(verfuegungJAXP, verfuegungToMerge);
 			Verfuegung persistedVerfuegung = this.verfuegungService.nichtEintreten(convertedVerfuegung, betreuung.get().getId());

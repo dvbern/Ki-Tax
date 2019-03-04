@@ -43,7 +43,8 @@ describe('institutionRS', () => {
     }));
 
     beforeEach(() => {
-        traegerschaft = new TSTraegerschaft('Traegerschaft_Test');
+        traegerschaft = new TSTraegerschaft();
+        traegerschaft.name = 'Traegerschaft_Test';
         mandant = new TSMandant('Mandant_Test');
         mockInstitution = new TSInstitution('InstitutionTest', traegerschaft, mandant);
         mockInstitution.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';

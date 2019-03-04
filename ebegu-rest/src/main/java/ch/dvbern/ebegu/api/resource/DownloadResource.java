@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.activation.MimeTypeParseException;
@@ -52,7 +51,6 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.WriteProtectedDokument;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -71,12 +69,13 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.VorlageService;
 import ch.dvbern.ebegu.services.ZahlungService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
-import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * REST Resource fuer den Download von Dokumenten
@@ -118,9 +117,6 @@ public class DownloadResource {
 
 	@Inject
 	private GeneratedDokumentService generatedDokumentService;
-
-	@Inject
-	private Persistence persistence;
 
 	@Inject
 	private EbeguVorlageService ebeguVorlageService;
@@ -176,7 +172,7 @@ public class DownloadResource {
 
 		String ip = getIP(request);
 
-		Objects.requireNonNull(jaxId.getId());
+		requireNonNull(jaxId.getId());
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = dokumentService.findDokument(id)
@@ -197,7 +193,7 @@ public class DownloadResource {
 
 		String ip = getIP(request);
 
-		Objects.requireNonNull(jaxId.getId());
+		requireNonNull(jaxId.getId());
 		String id = converter.toEntityId(jaxId);
 
 		final FileMetadata dokument = vorlageService.findVorlage(id)
@@ -241,7 +237,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("gesuchid") JaxId jaxGesuchId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException, MimeTypeParseException {
 
-		Objects.requireNonNull(jaxGesuchId.getId());
+		requireNonNull(jaxGesuchId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -274,7 +270,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("gesuchid") JaxId jaxGesuchId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException, MimeTypeParseException {
 
-		Objects.requireNonNull(jaxGesuchId.getId());
+		requireNonNull(jaxGesuchId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -307,7 +303,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("gesuchid") JaxId jaxGesuchId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException, MimeTypeParseException {
 
-		Objects.requireNonNull(jaxGesuchId.getId());
+		requireNonNull(jaxGesuchId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuch = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -335,7 +331,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("forceCreation") Boolean forceCreation,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException, MimeTypeParseException {
 
-		Objects.requireNonNull(jaxGesuchId.getId());
+		requireNonNull(jaxGesuchId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
@@ -368,16 +364,15 @@ public class DownloadResource {
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MergeDocException,
 		IOException, MimeTypeParseException {
 
-		Objects.requireNonNull(jaxGesuchId.getId());
-		Objects.requireNonNull(jaxBetreuungId.getId());
+		requireNonNull(jaxGesuchId.getId());
+		requireNonNull(jaxBetreuungId.getId());
 		String ip = getIP(request);
 
 		final Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(jaxGesuchId));
 		if (gesuchOptional.isPresent()) {
 			Betreuung betreuung = gesuchOptional.get().extractBetreuungById(jaxBetreuungId.getId());
-
-			// Wir verwenden das Gesuch nur zur Berechnung und wollen nicht speichern, darum das Gesuch detachen
-			loadRelationsAndDetach(gesuchOptional.get());
+			requireNonNull(betreuung);
+			requireNonNull(manuelleBemerkungen);
 
 			WriteProtectedDokument persistedDokument = generatedDokumentService
 				.getVerfuegungDokumentAccessTokenGeneratedDokument(gesuchOptional.get(), betreuung, manuelleBemerkungen, forceCreation);
@@ -400,7 +395,7 @@ public class DownloadResource {
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException,
 		IOException, MimeTypeParseException, MergeDocException {
 
-		Objects.requireNonNull(jaxMahnung);
+		requireNonNull(jaxMahnung);
 		String ip = getIP(request);
 
 		Mahnung mahnung = converter.mahnungToEntity(jaxMahnung, new Mahnung());
@@ -426,7 +421,7 @@ public class DownloadResource {
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException,
 		IOException, MimeTypeParseException, MergeDocException {
 
-		Objects.requireNonNull(jaxBetreuungId);
+		requireNonNull(jaxBetreuungId);
 		String ip = getIP(request);
 
 		Betreuung betreuung = betreuungService.findBetreuung(jaxBetreuungId.getId()).orElseThrow(()
@@ -452,7 +447,7 @@ public class DownloadResource {
 	public Response getDokumentAccessTokenVerfuegungExport(
 		@Nonnull @Valid @PathParam("betreuungId") JaxId jaxBetreuungId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException {
-		Objects.requireNonNull(jaxBetreuungId);
+		requireNonNull(jaxBetreuungId);
 		String ip = getIP(request);
 
 		UploadFileInfo uploadFileInfo = exportService.exportVerfuegungOfBetreuungAsFile(converter.toEntityId(jaxBetreuungId));
@@ -471,7 +466,7 @@ public class DownloadResource {
 		@Nonnull @Valid @PathParam("zahlungsauftragId") JaxId jaxId,
 		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException, MimeTypeParseException {
 
-		Objects.requireNonNull(jaxId.getId());
+		requireNonNull(jaxId.getId());
 		String ip = getIP(request);
 
 		final Optional<Zahlungsauftrag> zahlungsauftrag = zahlungService.findZahlungsauftrag(converter.toEntityId(jaxId));
@@ -511,27 +506,5 @@ public class DownloadResource {
 			ipAddress = request.getRemoteAddr();
 		}
 		return ipAddress;
-	}
-
-	/**
-	 * Hack, welcher das Gesuch detached, damit es auf keinen Fall gespeichert wird. Vorher muessen die Lazy geloadeten
-	 * BetreuungspensumContainers geladen werden, da danach keine Session mehr zur Verfuegung steht!
-	 */
-	private void loadRelationsAndDetach(Gesuch gesuch) {
-		for (KindContainer kindContainer : gesuch.getKindContainers()) {
-			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
-				betreuung.getBetreuungspensumContainers().size();
-				betreuung.getAbwesenheitContainers().size();
-			}
-		}
-		if (gesuch.getGesuchsteller1() != null) {
-			gesuch.getGesuchsteller1().getErwerbspensenContainers().size();
-			gesuch.getGesuchsteller1().getAdressen().size();
-		}
-		if (gesuch.getGesuchsteller2() != null) {
-			gesuch.getGesuchsteller2().getErwerbspensenContainers().size();
-			gesuch.getGesuchsteller2().getAdressen().size();
-		}
-		persistence.getEntityManager().detach(gesuch);
 	}
 }

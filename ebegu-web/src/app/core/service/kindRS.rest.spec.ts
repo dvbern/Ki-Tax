@@ -49,11 +49,18 @@ describe('KindRS', () => {
 
     beforeEach(() => {
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000feb';
-        const kindGS = new TSKind('Pedro', 'Bern');
+        const kindGS = new TSKind();
+        kindGS.vorname = 'Pedro';
+        kindGS.nachname = 'Bern';
         TestDataUtil.setAbstractMutableFieldsUndefined(kindGS);
-        const kindJA = new TSKind('Johan', 'Basel');
+        const kindJA = new TSKind();
+        kindJA.vorname = 'Johan';
+        kindJA.nachname = 'Basel';
         TestDataUtil.setAbstractMutableFieldsUndefined(kindJA);
-        mockKind = new TSKindContainer(kindGS, kindJA, []);
+        mockKind = new TSKindContainer();
+        mockKind.kindGS = kindGS;
+        mockKind.kindJA = kindJA;
+        mockKind.betreuungen = [];
         TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
         mockKind.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         mockKindRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
@@ -92,7 +99,9 @@ describe('KindRS', () => {
         });
         describe('updateKind', () => {
             it('should update a Kind', () => {
-                const kindJA2 = new TSKind('Johan', 'Basel');
+                const kindJA2 = new TSKind();
+                kindJA2.vorname = 'Johan';
+                kindJA2.nachname = 'Basel';
                 TestDataUtil.setAbstractMutableFieldsUndefined(kindJA2);
                 mockKind.kindJA = kindJA2;
                 mockKindRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
@@ -131,10 +140,9 @@ describe('KindRS', () => {
 
     function checkFieldValues(foundKind: TSKindContainer): void {
         expect(foundKind).toBeDefined();
-        expect(foundKind).toEqual(mockKind);
         expect(foundKind.kindGS).toBeDefined();
-        expect(foundKind.kindGS).toEqual(mockKind.kindGS);
+        TestDataUtil.compareDefinedProperties(foundKind.kindGS, mockKind.kindGS);
         expect(foundKind.kindJA).toBeDefined();
-        expect(foundKind.kindJA).toEqual(mockKind.kindJA);
+        TestDataUtil.compareDefinedProperties(foundKind.kindJA, mockKind.kindJA);
     }
 });

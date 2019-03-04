@@ -23,11 +23,10 @@ import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.services.DailyBatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @RunAs(UserRoleName.SUPER_ADMIN)
@@ -38,7 +37,7 @@ public class DailyBatchScheduler {
 	@Inject
 	private DailyBatch dailyBatch;
 
-	@Schedule(second = "59", minute = "59", hour = "23", persistent = false)
+	@Schedule(second = "59", minute = "59", hour = "23", persistent = true)
 	public void runBatchCleanDownloadFiles() {
 		Future<Boolean> booleanFuture = dailyBatch.runBatchCleanDownloadFiles();
 		try {
@@ -49,12 +48,12 @@ public class DailyBatchScheduler {
 		}
 	}
 
-	@Schedule(second = "59", minute = "58", hour = "23", persistent = false)
+	@Schedule(second = "59", minute = "58", hour = "23", persistent = true)
 	public void runBatchCleanWorkjobs() {
 		dailyBatch.runBatchCleanWorkjobs();
 	}
 
-	@Schedule(second = "59", minute = "00", hour = "01", persistent = false)
+	@Schedule(second = "59", minute = "00", hour = "01", persistent = true)
 	public void runBatchMahnungFristablauf() {
 		Future<Boolean> booleanFuture = dailyBatch.runBatchMahnungFristablauf();
 		try {
@@ -65,32 +64,32 @@ public class DailyBatchScheduler {
 		}
 	}
 
-	@Schedule(second = "59", minute = "10", hour = "22", persistent = false)
+	@Schedule(second = "59", minute = "10", hour = "22", persistent = true)
 	public void runBatchWarnungGesuchNichtFreigegeben() {
 		dailyBatch.runBatchWarnungGesuchNichtFreigegeben();
 	}
 
-	@Schedule(second = "59", minute = "30", hour = "22", persistent = false)
+	@Schedule(second = "59", minute = "30", hour = "22", persistent = true)
 	public void runBatchWarnungFreigabequittungFehlt() {
 		dailyBatch.runBatchWarnungFreigabequittungFehlt();
 	}
 
-	@Schedule(second = "59", minute = "50", hour = "22", persistent = false)
+	@Schedule(second = "59", minute = "50", hour = "22", persistent = true)
 	public void runBatchGesucheLoeschen() {
 		dailyBatch.runBatchGesucheLoeschen();
 	}
 
-	@Schedule(second = "59", minute = "10", hour = "21", dayOfMonth = "1", month = "8", persistent = false)
+	@Schedule(second = "59", minute = "10", hour = "21", dayOfMonth = "1", month = "8", persistent = true)
 	public void runBatchGesuchsperiodeLoeschen() {
 		dailyBatch.runBatchGesuchsperiodeLoeschen();
 	}
 
-	@Schedule(second = "00", minute = "30", hour = "0", persistent = false)
+	@Schedule(second = "00", minute = "30", hour = "0", persistent = true)
 	public void runBatchAbgelaufeneRollen() {
 		dailyBatch.runBatchAbgelaufeneRollen();
 	}
 
-	@Schedule(second = "59", minute = "00", hour = "02", persistent = false)
+	@Schedule(second = "59", minute = "00", hour = "02", persistent = true)
 	public void runBatchDeleteInvalidAuthTokens() {
 		dailyBatch.runBatchDeleteInvalidAuthTokens();
 	}

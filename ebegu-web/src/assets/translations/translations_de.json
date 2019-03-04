@@ -1461,5 +1461,12 @@
     "STATISTIK_MIRABEITERINNEN_HINT": "Zeigt eine Liste mit der Anzahl zugewiesenen Fällen und der Anzahl erstellten Verfügungen je Mitarbeiterin.<br><br>Bei der Erstellung muss ein von- und ein bis-Datum sowie eingegeben werden:",
     "STATISTIK_BENUTZER_HINT": "Zeigt eine Liste mit sämtlichen kiBon-Benutzern und deren Rolle an.",
     "STATISTIK_GESUCHSTELLER_KINDER_BETREUUNG_HINT": "Zeigt eine List mit Detailinformationen zu Gesuchsteller, deren Familien- und Finanzieller-Situation, Kinder und deren Betreuung. Es gibt pro Kind, Betreuungsangebot und Zeitabschnitt eine Zeile.<br><br>Bei der Erstellung muss ein von- und ein bis-Datum sowie eingegeben werden.",
-    "STATISTIK_SERIENBRIEFE_HINT": "Zeigt die Kontaktdaten der Gesuchstellenden einer bestimmte Periode an. Zusätzlich können weitere Parameter gesetzt werden, z.B. ob die Gesuchsteller bereits ein Folgegesuch der Periode haben."
+    "STATISTIK_SERIENBRIEFE_HINT": "Zeigt die Kontaktdaten der Gesuchstellenden einer bestimmte Periode an. Zusätzlich können weitere Parameter gesetzt werden, z.B. ob die Gesuchsteller bereits ein Folgegesuch der Periode haben.",
+    "MUTTER_VATER_BERATUNG_BERN": "Mütter- und Väterberatung Bern",
+    "SOZIALDIENST": "Sozialdienst",
+    "KINDES_ERWACHSENEN_SCHUTZBEHOERDE": "Kindes- und Erwachsenenschutzbehörde",
+    "FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN": "Heilpädagogische Früherziehung für blinde und sehbehinderte Kinder der Blindenschule Zollikofen",
+    "FRUEHERZIEHUNGSDIENST_KANTON_BERN": "Früherziehungsdienst des Kantons Bern",
+    "ERZIEHUNGSBERATUNG": "Erziehungsberatung",
+    "DIENST_ZENTRUM_HOEREN_SPRACHE": "Audiopädagogischen Dienst des Pädagogischen Zentrums für Hören und Sprache HSM"
 }

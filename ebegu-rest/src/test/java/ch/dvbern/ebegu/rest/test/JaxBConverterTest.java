@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
@@ -58,10 +59,12 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests fuer den JaxBConverter. Insbesondere wird geprüft, dass beim Speichern von Gesuchsdaten keine Stammdaten verändert werden dürfen.
@@ -127,7 +130,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 	@Transactional(TransactionMode.DEFAULT)
 	@Test
 	public void gesuchSpeichernDarfGesuchsperiodeNichtUpdaten() {
-		Assert.assertEquals(GesuchsperiodeStatus.AKTIV, gesuchsperiode.getStatus());
+		assertEquals(GesuchsperiodeStatus.AKTIV, gesuchsperiode.getStatus());
 
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
@@ -140,7 +143,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		gesuchResource.create(jaxGesuch, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Gesuchsperiode loadedGesuchsperiode = criteriaQueryHelper.getAll(Gesuchsperiode.class).iterator().next();
-		Assert.assertEquals(GesuchsperiodeStatus.AKTIV, loadedGesuchsperiode.getStatus());
+		assertEquals(GesuchsperiodeStatus.AKTIV, loadedGesuchsperiode.getStatus());
 	}
 
 	@Test
@@ -149,8 +152,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		Mandant mandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft traegerschaft = TestDataUtil.createDefaultTraegerschaft();
 		traegerschaft = persistence.persist(traegerschaft);
-		Assert.assertEquals("TestMandantDBUnit", mandant.getName());
-		Assert.assertEquals("Traegerschaft1", traegerschaft.getName());
+		assertEquals("TestMandantDBUnit", mandant.getName());
+		assertEquals("Traegerschaft1", traegerschaft.getName());
 
 		Institution institution = TestDataUtil.createDefaultInstitution();
 		institution.setTraegerschaft(traegerschaft);
@@ -163,8 +166,8 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 
 		Mandant loadedMandant = criteriaQueryHelper.getAll(Mandant.class).iterator().next();
 		Traegerschaft loadedTraegerschaft = criteriaQueryHelper.getAll(Traegerschaft.class).iterator().next();
-		Assert.assertEquals("TestMandantDBUnit", loadedMandant.getName());
-		Assert.assertEquals("Traegerschaft1", loadedTraegerschaft.getName());
+		assertEquals("TestMandantDBUnit", loadedMandant.getName());
+		assertEquals("Traegerschaft1", loadedTraegerschaft.getName());
 	}
 
 	@Test
@@ -174,7 +177,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		institution.setMandant(mandant);
 		institution.setTraegerschaft(null);
 		institution = persistence.persist(institution);
-		Assert.assertEquals("Institution1", institution.getName());
+		assertEquals("Institution1", institution.getName());
 
 		JaxInstitutionStammdaten jaxStammdaten = TestJaxDataUtil.createTestJaxInstitutionsStammdaten();
 		jaxStammdaten.setInstitution(converter.institutionToJAX(institution));
@@ -182,14 +185,14 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		final JaxInstitutionStammdaten updatedInstitution = institutionStammdatenResource
 			.saveInstitutionStammdaten(jaxStammdaten, DUMMY_URIINFO, DUMMY_RESPONSE);
 
-		Assert.assertNotNull(updatedInstitution);
-		Assert.assertEquals("Institution1", updatedInstitution.getInstitution().getName());
+		assertNotNull(updatedInstitution);
+		assertEquals("Institution1", updatedInstitution.getInstitution().getName());
 	}
 
 	@Test
 	public void betreuungSpeichernDarfInstitutionsStammdatenNichtUpdaten() {
 		InstitutionStammdaten kitaBruennen = TestDataUtil.createInstitutionStammdatenKitaBruennen();
-		Assert.assertEquals(Constants.START_OF_TIME, kitaBruennen.getGueltigkeit().getGueltigAb());
+		assertEquals(Constants.START_OF_TIME, kitaBruennen.getGueltigkeit().getGueltigAb());
 
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
@@ -202,14 +205,15 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		betreuungResource.saveBetreuung(converter.toJaxId(betreuung.getKind()), jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		InstitutionStammdaten loadedKitaBruennen = criteriaQueryHelper.getAll(InstitutionStammdaten.class).iterator().next();
-		Assert.assertEquals(Constants.START_OF_TIME, loadedKitaBruennen.getGueltigkeit().getGueltigAb());
+		assertEquals(Constants.START_OF_TIME, loadedKitaBruennen.getGueltigkeit().getGueltigAb());
 	}
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT) //to load lazy zeitabschnitte we keep a session
 	public void pensumFachstelleSpeichernDarfFachstelleNichtUpdaten() {
 		Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
 		fachstelle = persistence.persist(fachstelle);
-		Assert.assertEquals("Fachstelle1", fachstelle.getName());
+		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, fachstelle.getName());
 
 		final ErstgesuchConfig config = ErstgesuchConfig.createErstgesuchVerfuegt(
 			TestfallName.BECKER_NORA, gesuchsperiode, LocalDate.now(), LocalDateTime.now());
@@ -223,11 +227,11 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		kindContainer.getKindJA().setPensumFachstelle(pensumFachstelle);
 		kindContainer = persistence.merge(kindContainer);
 		JaxKindContainer jaxKindContainer = converter.kindContainerToJAX(kindContainer);
-		Assert.assertNotNull(jaxKindContainer.getKindJA().getPensumFachstelle());
-		jaxKindContainer.getKindJA().getPensumFachstelle().getFachstelle().setName("FachstelleChanged");
+		assertNotNull(jaxKindContainer.getKindJA().getPensumFachstelle());
+		jaxKindContainer.getKindJA().getPensumFachstelle().getFachstelle().setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Fachstelle loadedFachstelle = criteriaQueryHelper.getAll(Fachstelle.class).iterator().next();
-		Assert.assertEquals("Fachstelle1", loadedFachstelle.getName());
+		assertEquals(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE, loadedFachstelle.getName());
 	}
 }
