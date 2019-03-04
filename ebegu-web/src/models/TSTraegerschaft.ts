@@ -20,10 +20,8 @@ export class TSTraegerschaft extends TSAbstractMutableEntity {
     private _name: string;
     private _active: boolean;
 
-    public constructor(name?: string, active?: boolean) {
+    public constructor() {
         super();
-        this._name = name;
-        this._active = active;
     }
 
     public get name(): string {

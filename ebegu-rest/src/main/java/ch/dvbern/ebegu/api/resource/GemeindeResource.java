@@ -266,15 +266,13 @@ public class GemeindeResource {
 		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
 
 		// Konfiguration
-		// Die Gemeindekonfigurationen kann nur in folgenden Fällen bearbeitet werden:
-		// - wenn die Gesuchsperiode im Status "Entwurf" ist
-		// - wenn die Gemeinde im Status "Eingeladen" ist
+		// Die Konfiguratoin kann bearbeitet werden, bis die Periode geschlossen ist.
 		boolean eingeladen = GemeindeStatus.EINGELADEN == jaxStammdaten.getGemeinde().getStatus();
 		jaxStammdaten.getKonfigurationsListe().forEach(konfiguration -> {
 			if (eingeladen) {
 				// KIBON-360: die Konfiguration in der aktuellen und in allen zukünftigen Gesuchsperioden speichern
 				saveAllFutureJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
-			} else if (GesuchsperiodeStatus.ENTWURF == konfiguration.getGesuchsperiodeStatus()) {
+			} else if (GesuchsperiodeStatus.GESCHLOSSEN != konfiguration.getGesuchsperiodeStatus()) {
 				saveJaxGemeindeKonfiguration(stammdaten.getGemeinde(), konfiguration);
 			}
 		});

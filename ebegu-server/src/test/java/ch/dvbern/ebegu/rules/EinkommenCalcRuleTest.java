@@ -34,8 +34,12 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Testet die MaximalesEinkommen-Regel
@@ -46,14 +50,14 @@ public class EinkommenCalcRuleTest {
 	public void testKitaNormalfall() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(50000), BetreuungsangebotTyp.KITA, 100, new BigDecimal(1000)));
 
-		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(0, (new BigDecimal("50000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
-		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).isBezahltVollkosten());
-		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
-		Assert.assertEquals(1, result.get(0).getBemerkungenMap().size());
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(0, (new BigDecimal("50000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
+		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
+		assertFalse(result.get(0).isBezahltVollkosten());
+		assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		assertEquals(1, result.get(0).getBemerkungenMap().size());
+		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	@Test
@@ -61,15 +65,15 @@ public class EinkommenCalcRuleTest {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(MathUtil.DEFAULT.from(180000),
 			BetreuungsangebotTyp.KITA, 100, new BigDecimal(1000)));
 
-		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(0, (new BigDecimal("180000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
-		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertFalse(result.get(0).isBezahltVollkosten());
-		Assert.assertFalse(result.get(0).getBemerkungenMap().isEmpty());
-		Assert.assertEquals(2, result.get(0).getBemerkungenMap().size());
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_MSG));
-		Assert.assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(0, (new BigDecimal("180000.00")).compareTo(result.get(0).getMassgebendesEinkommen()));
+		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
+		assertFalse(result.get(0).isBezahltVollkosten());
+		assertFalse(result.get(0).getBemerkungenMap().isEmpty());
+		assertEquals(2, result.get(0).getBemerkungenMap().size());
+		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.EINKOMMEN_MSG));
+		assertTrue(result.get(0).getBemerkungenMap().containsKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 	}
 
 	/**
@@ -91,6 +95,7 @@ public class EinkommenCalcRuleTest {
 		einkommensverschlechterungInfoJA.setStichtagFuerBasisJahrPlus2(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, 4, 1));
 		gesuch.getEinkommensverschlechterungInfoContainer().setEinkommensverschlechterungInfoJA(einkommensverschlechterungInfoJA);
 
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
@@ -106,31 +111,33 @@ public class EinkommenCalcRuleTest {
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
-		Assert.assertEquals(3, result.size());
+		assertEquals(3, result.size());
 
-		Assert.assertEquals(50000, result.get(0).getMassgebendesEinkommen().intValue());
+		assertEquals(50000, result.get(0).getMassgebendesEinkommen().intValue());
 		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt1 = result.get(0).getBemerkungenMap();
-		Assert.assertNotNull(bemerkungenAbschnitt1);
-		Assert.assertEquals(1, bemerkungenAbschnitt1.size());
-		Assert.assertTrue(bemerkungenAbschnitt1.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		assertNotNull(bemerkungenAbschnitt1);
+		assertEquals(1, bemerkungenAbschnitt1.size());
+		assertTrue(bemerkungenAbschnitt1.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 
-		Assert.assertEquals(25000, result.get(1).getMassgebendesEinkommen().intValue());
+		assertEquals(25000, result.get(1).getMassgebendesEinkommen().intValue());
 		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = result.get(1).getBemerkungenMap();
-		Assert.assertNotNull(bemerkungenAbschnitt2);
-		Assert.assertEquals(2, bemerkungenAbschnitt2.size());
-		Assert.assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
-		Assert.assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
-		String bemerkungEKV1 = "Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_1;
-		Assert.assertTrue(bemerkungenAbschnitt2.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV1));
+		assertNotNull(bemerkungenAbschnitt2);
+		assertEquals(2, bemerkungenAbschnitt2.size());
+		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		String bemerkungEKV1 = "Ihr Antrag zur Anwendung der Härtefallregelung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
+			+ TestDataUtil.PERIODE_JAHR_1;
+		assertTrue(bemerkungenAbschnitt2.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV1));
 
-		Assert.assertEquals(20000, result.get(2).getMassgebendesEinkommen().intValue());
+		assertEquals(20000, result.get(2).getMassgebendesEinkommen().intValue());
 		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = result.get(2).getBemerkungenMap();
-		Assert.assertNotNull(bemerkungenAbschnitt3);
-		Assert.assertEquals(2, bemerkungenAbschnitt3.size());
-		Assert.assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
-		Assert.assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
-		String bemerkungEKV2 = "Die Bemessung erfolgt auf dem provisorischen Einkommen des Jahres " + TestDataUtil.PERIODE_JAHR_2;
-		Assert.assertTrue(bemerkungenAbschnitt3.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV2));
+		assertNotNull(bemerkungenAbschnitt3);
+		assertEquals(2, bemerkungenAbschnitt3.size());
+		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
+		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
+		String bemerkungEKV2 = "Ihr Antrag zur Anwendung der Härtefallregelung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
+			+ TestDataUtil.PERIODE_JAHR_2;
+		assertTrue(bemerkungenAbschnitt3.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV2));
 	}
 
 	private Betreuung prepareData(BigDecimal massgebendesEinkommen, BetreuungsangebotTyp angebot, int pensum, BigDecimal monatlicheVollkosten) {
@@ -138,6 +145,7 @@ public class EinkommenCalcRuleTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		TestDataUtil.calculateFinanzDaten(gesuch);
+		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());

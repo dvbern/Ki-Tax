@@ -21,10 +21,8 @@ export default class TSAbwesenheitContainer extends TSAbstractMutableEntity {
     private _abwesenheitGS: TSAbwesenheit;
     private _abwesenheitJA: TSAbwesenheit;
 
-    public constructor(abwesenheitGS?: TSAbwesenheit, abwesenheitJA?: TSAbwesenheit) {
+    public constructor() {
         super();
-        this._abwesenheitGS = abwesenheitGS;
-        this._abwesenheitJA = abwesenheitJA;
     }
 
     public get abwesenheitGS(): TSAbwesenheit {

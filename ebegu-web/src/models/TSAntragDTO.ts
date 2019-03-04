@@ -49,60 +49,8 @@ export default class TSAntragDTO extends TSAbstractAntragDTO {
     private _dokumenteHochgeladen: boolean;
     private _gemeinde: string;
 
-    public constructor(
-        antragId?: string,
-        fallNummer?: number,
-        familienName?: string,
-        antragTyp?: TSAntragTyp,
-        eingangsdatum?: moment.Moment,
-        eingangsdatumSTV?: moment.Moment,
-        aenderungsdatum?: moment.Moment,
-        angebote?: Array<TSBetreuungsangebotTyp>,
-        institutionen?: Array<string>,
-        verantwortlicherBG?: string,
-        verantwortlicherTS?: string,
-        status?: TSAntragStatus,
-        gesuchsperiodeGueltigAb?: moment.Moment,
-        gesuchsperiodeGueltigBis?: moment.Moment,
-        verfuegt?: boolean,
-        laufnummer?: number,
-        besitzerUsername?: string,
-        eingangsart?: TSEingangsart,
-        beschwerdeHaengig?: boolean,
-        kinder?: Array<string>,
-        gesuchBetreuungenStatus?: TSGesuchBetreuungenStatus,
-        dokumenteHochgeladen?: boolean,
-        verantwortlicherUsernameBG?: string,
-        verantwortlicherUsernameTS?: string,
-        dossierId?: string,
-        gemeinde?: string,
-    ) {
-
-        super(fallNummer, dossierId, familienName);
-        this._antragId = antragId;
-        this._antragTyp = antragTyp;
-        this._eingangsdatum = eingangsdatum;
-        this._eingangsdatumSTV = eingangsdatumSTV;
-        this._aenderungsdatum = aenderungsdatum;
-        this._angebote = angebote;
-        this._institutionen = institutionen;
-        this._verantwortlicherBG = verantwortlicherBG;
-        this._verantwortlicherTS = verantwortlicherTS;
-        this._status = status;
-        this._gesuchsperiodeGueltigAb = gesuchsperiodeGueltigAb;
-        this._gesuchsperiodeGueltigBis = gesuchsperiodeGueltigBis;
-        this._verfuegt = verfuegt;
-        this._laufnummer = laufnummer;
-        this._besitzerUsername = besitzerUsername;
-        this._eingangsart = eingangsart;
-        this._beschwerdeHaengig = beschwerdeHaengig;
-        this._kinder = kinder;
-        this._gesuchBetreuungenStatus = gesuchBetreuungenStatus;
-        this._dokumenteHochgeladen = dokumenteHochgeladen;
-        this._verantwortlicherUsernameBG = verantwortlicherUsernameBG;
-        this._verantwortlicherUsernameTS = verantwortlicherUsernameTS;
-        this._gemeinde = gemeinde;
-        this._regelnGueltigAb = undefined;
+    public constructor() {
+        super();
     }
 
     public get antragId(): string {

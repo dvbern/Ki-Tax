@@ -296,7 +296,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if (findBenutzer(benutzer.getUsername()).isPresent()) {
 				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist
 				// already
-				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
+				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername(), ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 			}
 		}
 

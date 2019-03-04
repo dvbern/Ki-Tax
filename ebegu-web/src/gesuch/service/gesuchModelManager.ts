@@ -598,7 +598,10 @@ export default class GesuchModelManager {
             const name = principal ? principal.nachname : undefined;
             const vorname = principal ? principal.vorname : undefined;
             const email = principal ? principal.email : undefined;
-            gesuchsteller = new TSGesuchsteller(vorname, name, undefined, undefined, email);
+            gesuchsteller = new TSGesuchsteller();
+            gesuchsteller.vorname = vorname;
+            gesuchsteller.nachname = name;
+            gesuchsteller.mail = email;
         } else {
             gesuchsteller = new TSGesuchsteller();
         }

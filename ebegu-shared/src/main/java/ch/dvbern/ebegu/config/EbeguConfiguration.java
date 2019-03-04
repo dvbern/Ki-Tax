@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.config;
 
+import ch.dvbern.ebegu.errors.KibonLogLevel;
+
 /**
  * Konfiguration von Kurstool
  */
@@ -168,4 +170,9 @@ public interface EbeguConfiguration {
 	 * read sentry env from system properties
 	 */
 	String getSentryEnv();
+
+	/**
+	 * Returns the LogLevel by default. INFO for Dev-Mode and ERROR for others (production)
+	 */
+	KibonLogLevel getDefaultLogLevel();
 }

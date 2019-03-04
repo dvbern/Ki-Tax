@@ -84,6 +84,7 @@ export function appRun(
             'fedletSSOInit',
             'sendRedirectForValidation',
             'locallogin',
+            'tutorial',
         ];
 
         if (loginConnectorPaths.some(path => currentPath.includes(path))) {
