@@ -54,18 +54,32 @@ public class FachstelleCalcRule extends AbstractCalcRule {
 			if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
 				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(roundedPensumFachstelle);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.FACHSTELLE, MsgKey.FACHSTELLE_MSG, getLocale(), getIndikation(betreuung), getFachstelle(betreuung));
+				verfuegungZeitabschnitt.addBemerkung(
+					RuleKey.FACHSTELLE,
+					MsgKey.FACHSTELLE_MSG,
+					getLocale(),
+					getIndikation(betreuung),
+					getFachstelle(betreuung));
 			}
 		}
 	}
 
 	private String getIndikation(@Nonnull Betreuung betreuung) {
+		if (betreuung.getKind().getKindJA().getPensumFachstelle() == null) {
+			return "";
+		}
+		// we cannot translate the Enum directly because we need another translation specific for this Bemerkung
 		return betreuung.getKind().getKindJA().getPensumFachstelle().getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION ?
 			ServerMessageUtil.getMessage("Sozialen_Indikation", getLocale()) :
 			ServerMessageUtil.getMessage("Sprachlichen_Indikation", getLocale());
 	}
 
 	private String getFachstelle(@Nonnull Betreuung betreuung) {
-		return betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle().getName();
+		if (betreuung.getKind().getKindJA().getPensumFachstelle() == null) {
+			return "";
+		}
+		return ServerMessageUtil.translateEnumValue(
+			betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle().getName(),
+			getLocale());
 	}
 }

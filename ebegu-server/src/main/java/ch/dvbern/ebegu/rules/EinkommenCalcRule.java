@@ -73,7 +73,11 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
-				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
+				verfuegungZeitabschnitt.addBemerkung(
+					RuleKey.EINKOMMEN,
+					MsgKey.EINKOMMEN_MSG,
+					getLocale(),
+					NumberFormat.getInstance().format(maximalesEinkommen));
 				return;
 			}
 		}
@@ -107,7 +111,11 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
 					reduceAnspruchInNormalCase(betreuung, verfuegungZeitabschnitt);
-					verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
+					verfuegungZeitabschnitt.addBemerkung(
+						RuleKey.EINKOMMEN,
+						MsgKey.EINKOMMEN_MSG,
+						getLocale(),
+						NumberFormat.getInstance().format(maximalesEinkommen));
 				}
 			}
 		}
