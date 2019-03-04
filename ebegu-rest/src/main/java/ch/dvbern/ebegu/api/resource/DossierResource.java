@@ -160,8 +160,10 @@ public class DossierResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxDossier findNewestDossierByCurrentBenutzerAsBesitzer() {
 		Optional<Fall> optFall = fallService.findFallByCurrentBenutzerAsBesitzer();
-		String fallId = optFall.orElseThrow(() -> new EbeguEntityNotFoundException("findNewestDossierByCurrentBenutzerAsBesitzer",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND))
+		String fallId = optFall
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"findNewestDossierByCurrentBenutzerAsBesitzer",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND))
 			.getId();
 		Collection<Dossier> dossierList = dossierService.findDossiersByFall(fallId);
 

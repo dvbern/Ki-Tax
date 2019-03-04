@@ -125,20 +125,21 @@ describe('DVQuicksearchList', () => {
 
     function mockGetAntragList(): TSAntragDTO {
         const fallNummer = 123;
-        const mockAntrag = new TSAntragDTO('66345345',
-            fallNummer,
-            'name',
-            TSAntragTyp.ERSTGESUCH,
-            undefined,
-            undefined,
-            undefined,
-            [TSBetreuungsangebotTyp.KITA],
-            ['Inst1, Inst2'],
-            'Juan Arbolado',
-            'Juan Arbolado',
-            undefined,
-            undefined,
-            undefined);
+        const mockAntrag = new TSAntragDTO();
+        mockAntrag.antragId = '66345345';
+        mockAntrag.fallNummer = fallNummer;
+        mockAntrag.familienName = 'name';
+        mockAntrag.antragTyp = TSAntragTyp.ERSTGESUCH;
+        mockAntrag.eingangsdatum = undefined;
+        mockAntrag.eingangsdatumSTV = undefined;
+        mockAntrag.aenderungsdatum = undefined;
+        mockAntrag.angebote = [TSBetreuungsangebotTyp.KITA];
+        mockAntrag.institutionen = ['Inst1, Inst2'];
+        mockAntrag.verantwortlicherBG = 'Juan Arbolado';
+        mockAntrag.verantwortlicherTS = 'Juan Arbolado';
+        mockAntrag.status = undefined;
+        mockAntrag.gesuchsperiodeGueltigAb = undefined;
+        mockAntrag.gesuchsperiodeGueltigBis = undefined;
         const result = [mockAntrag];
         spyOn(searchRS, 'getPendenzenList').and.returnValue($q.when(result));
         return mockAntrag;

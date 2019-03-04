@@ -24,6 +24,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Heloer to check if a request originates from localhost
@@ -31,6 +34,7 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 @ApplicationScoped
 public class LocalhostChecker {
 
+	private static final Logger LOG = LoggerFactory.getLogger(LocalhostChecker.class.getSimpleName());
 	private Set<String> localAddresses = new HashSet<>();
 
 	@SuppressWarnings({ "OverlyBroadCatchBlock", "PMD.UnusedPrivateMethod" })
@@ -47,7 +51,13 @@ public class LocalhostChecker {
 	}
 
 	public boolean isAddressLocalhost(String localhost) {
-		return localAddresses.contains(localhost);
+		final boolean isLocalAccess = localAddresses.contains(localhost);
+
+		if (!isLocalAccess) {
+			final String localhosts = StringUtils.join(localAddresses, ';');
+			LOG.warn("Access is not considered local. Local addesses are : '{}'",localhosts);
+		}
+		return isLocalAccess;
 
 	}
 }

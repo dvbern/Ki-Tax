@@ -47,52 +47,14 @@ describe('quicksearchFilter', () => {
         gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(ab, bis));
 
         quicksearchArray = [];
-        antrag1 = new TSAntragDTO('id1',
-            1,
-            'Hernandez',
-            TSAntragTyp.ERSTGESUCH,
-            ab,
-            ab,
-            undefined,
-            [TSBetreuungsangebotTyp.KITA],
-            ['Instit1'],
-            'Juan Arbolado',
-            'Juan Arbolado',
-            TSAntragStatus.IN_BEARBEITUNG_JA,
-            gesuchsperiode.gueltigkeit.gueltigAb,
-            gesuchsperiode.gueltigkeit.gueltigBis);
+        createAntrag1(ab);
         quicksearchArray.push(antrag1);
 
-        antrag2 = new TSAntragDTO('id2',
-            2,
-            'Perez',
-            TSAntragTyp.ERSTGESUCH,
-            ab,
-            ab,
-            undefined,
-            [TSBetreuungsangebotTyp.TAGESFAMILIEN],
-            ['Instit2'],
-            'Antonio Jimenez',
-            'Antonio Jimenez',
-            TSAntragStatus.IN_BEARBEITUNG_JA,
-            gesuchsperiode.gueltigkeit.gueltigAb,
-            gesuchsperiode.gueltigkeit.gueltigBis);
+        createAntrag2(ab);
+
         quicksearchArray.push(antrag2);
 
-        antrag3 = new TSAntragDTO('id3',
-            3,
-            'Dominguez',
-            TSAntragTyp.MUTATION,
-            ab,
-            ab,
-            undefined,
-            [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN],
-            ['Instit1', 'Instit2'],
-            'Eustaquio Romualdo',
-            'Eustaquio Romualdo',
-            TSAntragStatus.IN_BEARBEITUNG_JA,
-            gesuchsperiode.gueltigkeit.gueltigAb,
-            gesuchsperiode.gueltigkeit.gueltigBis);
+        createAntrag3(ab);
         quicksearchArray.push(antrag3);
 
     }));
@@ -168,5 +130,56 @@ describe('quicksearchFilter', () => {
                 .toEqual([antrag1]);
         });
     });
+
+    function createAntrag1(ab: moment.Moment): void {
+        antrag1 = new TSAntragDTO();
+        antrag1.antragId = 'id1';
+        antrag1.fallNummer = 1;
+        antrag1.familienName = 'Hernandez';
+        antrag1.antragTyp = TSAntragTyp.ERSTGESUCH;
+        antrag1.eingangsdatum = ab;
+        antrag1.eingangsdatumSTV = ab;
+        antrag1.angebote = [TSBetreuungsangebotTyp.KITA];
+        antrag1.institutionen = ['Instit1'];
+        antrag1.verantwortlicherBG = 'Juan Arbolado';
+        antrag1.verantwortlicherTS = 'Juan Arbolado';
+        antrag1.status = TSAntragStatus.IN_BEARBEITUNG_JA;
+        antrag1.gesuchsperiodeGueltigAb = gesuchsperiode.gueltigkeit.gueltigAb;
+        antrag1.gesuchsperiodeGueltigBis = gesuchsperiode.gueltigkeit.gueltigBis;
+    }
+
+    function createAntrag2(ab: moment.Moment): void {
+        antrag2 = new TSAntragDTO();
+        antrag2.antragId = 'id2';
+        antrag2.fallNummer = 2;
+        antrag2.familienName = 'Perez';
+        antrag2.antragTyp = TSAntragTyp.ERSTGESUCH;
+        antrag2.eingangsdatum = ab;
+        antrag2.eingangsdatumSTV = ab;
+        antrag2.angebote = [TSBetreuungsangebotTyp.TAGESFAMILIEN];
+        antrag2.institutionen = ['Instit2'];
+        antrag2.verantwortlicherBG = 'Antonio Jimenez';
+        antrag2.verantwortlicherTS = 'Antonio Jimenez';
+        antrag2.status = TSAntragStatus.IN_BEARBEITUNG_JA;
+        antrag2.gesuchsperiodeGueltigAb = gesuchsperiode.gueltigkeit.gueltigAb;
+        antrag2.gesuchsperiodeGueltigBis = gesuchsperiode.gueltigkeit.gueltigBis;
+    }
+
+    function createAntrag3(ab: moment.Moment): void {
+        antrag3 = new TSAntragDTO();
+        antrag3.antragId = 'id3';
+        antrag3.fallNummer = 3;
+        antrag3.familienName = 'Dominguez';
+        antrag3.antragTyp = TSAntragTyp.MUTATION;
+        antrag3.eingangsdatum = ab;
+        antrag3.eingangsdatumSTV = ab;
+        antrag3.angebote = [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN];
+        antrag3.institutionen = ['Instit1', 'Instit2'];
+        antrag3.verantwortlicherBG = 'Eustaquio Romualdo';
+        antrag3.verantwortlicherTS = 'Eustaquio Romualdo';
+        antrag3.status = TSAntragStatus.IN_BEARBEITUNG_JA;
+        antrag3.gesuchsperiodeGueltigAb = gesuchsperiode.gueltigkeit.gueltigAb;
+        antrag3.gesuchsperiodeGueltigBis = gesuchsperiode.gueltigkeit.gueltigBis;
+    }
 
 });

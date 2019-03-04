@@ -21,10 +21,8 @@ export default class TSBetreuungsmitteilung extends TSMitteilung {
     private _betreuungspensen: Array<TSBetreuungsmitteilungPensum>;
     private _applied: boolean;
 
-    public constructor(betreuungspensen?: Array<TSBetreuungsmitteilungPensum>, applied?: boolean) {
+    public constructor() {
         super();
-        this._betreuungspensen = betreuungspensen;
-        this._applied = applied;
     }
 
     public get betreuungspensen(): Array<TSBetreuungsmitteilungPensum> {

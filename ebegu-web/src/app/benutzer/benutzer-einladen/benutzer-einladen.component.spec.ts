@@ -34,7 +34,7 @@ describe('BenutzerEinladenComponent', () => {
     let fixture: ComponentFixture<BenutzerEinladenComponent>;
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'getGemeindenForPrincipal$', 'getVisibleRolesForPrincipal']);
+        ['isRole', 'getVisibleRolesForPrincipal']);
     const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
         ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);

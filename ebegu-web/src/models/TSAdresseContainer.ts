@@ -22,10 +22,8 @@ export default class TSAdresseContainer extends TSAbstractMutableEntity {
     private _adresseGS: TSAdresse;
     private _showDatumVon: boolean;
 
-    public constructor(adresseJA?: TSAdresse, adresseGS?: TSAdresse) {
+    public constructor() {
         super();
-        this._adresseGS = adresseGS;
-        this._adresseJA = adresseJA;
     }
 
     public get adresseJA(): TSAdresse {
