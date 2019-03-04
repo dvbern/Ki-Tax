@@ -63,7 +63,7 @@ const states: Ng2StateDeclaration[] = [
         component: EinladungAbschliessenComponent,
         data: {
             // Da ein Mitarbeiter mit irgend einer Rolle angelegt werden kann, müssen wir alle Rollen erlauben
-            roles: TSRoleUtil.getAllRolesButAnonymous(),
+            roles: TSRoleUtil.getAllRolesButAnonymous(), // anonyme benutzer werden vom authentication.hook umgeleitet zur loginpage
         },
         resolve: [
             {

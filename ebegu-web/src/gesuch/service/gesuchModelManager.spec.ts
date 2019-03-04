@@ -363,7 +363,8 @@ describe('gesuchModelManager', () => {
                 const betreuung = new TSBetreuung();
                 betreuung.id = 'betreuungId';
                 const betreuungen = [betreuung];
-                const kindContainer = new TSKindContainer(undefined, undefined, betreuungen);
+                const kindContainer = new TSKindContainer();
+                kindContainer.betreuungen = betreuungen;
                 kindContainer.id = 'kindID';
                 myGesuch.kindContainers = [kindContainer];
 
@@ -456,7 +457,8 @@ describe('gesuchModelManager', () => {
     }
 
     function createKind(): void {
-        const tsKindContainer = new TSKindContainer(undefined, new TSKind());
+        const tsKindContainer = new TSKindContainer();
+        tsKindContainer.kindJA = new TSKind();
         gesuchModelManager.getGesuch().kindContainers.push(tsKindContainer);
         gesuchModelManager.setKindIndex(gesuchModelManager.getGesuch().kindContainers.length - 1);
         tsKindContainer.kindNummer = gesuchModelManager.getKindIndex() + 1;

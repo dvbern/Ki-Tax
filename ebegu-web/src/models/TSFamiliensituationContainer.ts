@@ -22,15 +22,8 @@ export default class TSFamiliensituationContainer extends TSAbstractMutableEntit
     private _familiensituationGS: TSFamiliensituation;
     private _familiensituationErstgesuch: TSFamiliensituation;
 
-    public constructor(
-        familiensituationJA?: TSFamiliensituation,
-        familiensituationGS?: TSFamiliensituation,
-        familiensituationErstgesuch?: TSFamiliensituation,
-    ) {
+    public constructor() {
         super();
-        this._familiensituationJA = familiensituationJA;
-        this._familiensituationGS = familiensituationGS;
-        this._familiensituationErstgesuch = familiensituationErstgesuch;
     }
 
     public get familiensituationJA(): TSFamiliensituation {

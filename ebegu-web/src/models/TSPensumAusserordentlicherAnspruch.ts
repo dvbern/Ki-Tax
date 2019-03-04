@@ -16,15 +16,13 @@
  */
 
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
-import {TSDateRange} from './types/TSDateRange';
 
 export class TSPensumAusserordentlicherAnspruch extends TSAbstractIntegerPensumEntity {
 
     private _begruendung: string;
 
-    public constructor(begruendung?: string, pensum?: number, gueltigkeit?: TSDateRange) {
-        super(pensum, gueltigkeit);
-        this._begruendung = begruendung;
+    public constructor() {
+        super();
     }
 
     public get begruendung(): string {

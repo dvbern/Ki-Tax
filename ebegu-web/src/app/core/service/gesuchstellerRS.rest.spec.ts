@@ -48,8 +48,10 @@ describe('GesuchstellerRS', () => {
 
     beforeEach(() => {
         mockGesuchsteller = new TSGesuchstellerContainer();
-        mockGesuchsteller.gesuchstellerJA = new TSGesuchsteller('Tim', 'Tester');
+        mockGesuchsteller.gesuchstellerJA = new TSGesuchsteller();
         mockGesuchsteller.gesuchstellerJA.id = '2afc9d9a-957e-4550-9a22-97624a1d8fe1';
+        mockGesuchsteller.gesuchstellerJA.vorname = 'Tim';
+        mockGesuchsteller.gesuchstellerJA.nachname = 'Tester';
         mockGesuchsteller.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         mockGesuchstellerRest = ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller);
 
