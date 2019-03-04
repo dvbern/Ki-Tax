@@ -14,15 +14,13 @@
  */
 
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import {TSDateRange} from './types/TSDateRange';
 
 export class TSAbstractIntegerPensumEntity extends TSAbstractDateRangedEntity {
 
     private _pensum: number;
 
-    public constructor(pensum?: number, gueltigkeit?: TSDateRange) {
-        super(gueltigkeit);
-        this._pensum = pensum;
+    public constructor() {
+        super();
     }
 
     public get pensum(): number {

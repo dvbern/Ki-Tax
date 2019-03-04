@@ -211,8 +211,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			String message = String.format(
 				"Mail InfoMitteilungErhalten konnte nicht verschickt werden fuer Mitteilung %s",
 				mitteilung.getId());
-			KibonLogLevel logLevel = ebeguConfiguration.getIsDevmode() ? KibonLogLevel.INFO : KibonLogLevel.ERROR;
-			throw new EbeguRuntimeException(logLevel, "sendMitteilung", message, ErrorCodeEnum.ERROR_MAIL, e);
+			throw new EbeguRuntimeException(ebeguConfiguration.getDefaultLogLevel(),
+				"sendMitteilung", message, ErrorCodeEnum.ERROR_MAIL, e);
 		}
 
 		return persistence.merge(mitteilung);

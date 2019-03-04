@@ -16,22 +16,14 @@
 import {TSIntegrationTyp} from './enums/TSIntegrationTyp';
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import {TSFachstelle} from './TSFachstelle';
-import {TSDateRange} from './types/TSDateRange';
 
 export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     private _fachstelle: TSFachstelle;
     private _integrationTyp: TSIntegrationTyp;
 
-    public constructor(
-        fachstelle?: TSFachstelle,
-        integrationTyp?: TSIntegrationTyp,
-        pensum?: number,
-        gueltigkeit?: TSDateRange
-    ) {
-        super(pensum, gueltigkeit);
-        this._fachstelle = fachstelle;
-        this._integrationTyp = integrationTyp;
+    public constructor() {
+        super();
     }
 
     public get fachstelle(): TSFachstelle {

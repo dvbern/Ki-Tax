@@ -406,6 +406,7 @@ describe('betreuungView', () => {
         betreuungView.model.vertrag = true;
         spyOn($state, 'go');
         spyOn(gesuchModelManager, 'saveBetreuung').and.returnValue(promiseResponse);
+        spyOn(gesuchModelManager, 'setBetreuungToWorkWith').and.returnValue({});
         betreuungView.platzAnfordern();
         $rootScope.$apply();
         // tslint:disable-next-line:no-unbound-method

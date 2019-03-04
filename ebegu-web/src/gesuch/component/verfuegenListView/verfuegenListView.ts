@@ -231,10 +231,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const allowedBetstatus: Array<TSBetreuungsstatus> = [
             TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
             TSBetreuungsstatus.BESTAETIGT,
+            TSBetreuungsstatus.VERFUEGT,
+            TSBetreuungsstatus.NICHT_EINGETRETEN,
+            TSBetreuungsstatus.STORNIERT
         ];
-        return (this.isGesuchsteller() && !isAnyStatusOfVerfuegt(this.getAntragStatus())) ?
-            allowedBetstatus.indexOf(betreuungsstatus) !== -1 :
-            true;
+        return allowedBetstatus.indexOf(betreuungsstatus) !== -1;
     }
 
     /**

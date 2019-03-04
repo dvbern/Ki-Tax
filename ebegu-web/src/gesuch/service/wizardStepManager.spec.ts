@@ -183,7 +183,12 @@ describe('wizardStepManager', () => {
         });
         it('returns false if the Step does not exist', () => {
             wizardStepManager.getWizardSteps().splice(0, wizardStepManager.getWizardSteps().length);
-            const step = new TSWizardStep('', TSWizardStepName.GESUCH_ERSTELLEN, TSWizardStepStatus.OK, '', true);
+            const step = new TSWizardStep();
+            step.gesuchId = '';
+            step.wizardStepName = TSWizardStepName.GESUCH_ERSTELLEN;
+            step.wizardStepStatus = TSWizardStepStatus.OK;
+            step.bemerkungen = '';
+            step.verfuegbar = true;
             wizardStepManager.getWizardSteps().push(step);
             expect(wizardStepManager.hasStepGivenStatus(TSWizardStepName.BETREUUNG, TSWizardStepStatus.NOK))
                 .toBe(false);
@@ -314,31 +319,25 @@ describe('wizardStepManager', () => {
 
     function createAllSteps(status: TSWizardStepStatus): void {
         wizardStepManager.getWizardSteps().splice(0, wizardStepManager.getWizardSteps().length);
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('',
-            TSWizardStepName.GESUCH_ERSTELLEN,
-            status,
-            '',
-            true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('',
-            TSWizardStepName.FAMILIENSITUATION,
-            status,
-            '',
-            true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.GESUCHSTELLER, status, '', true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.KINDER, status, '', true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.BETREUUNG, status, '', true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.ERWERBSPENSUM, status, '', true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('',
-            TSWizardStepName.FINANZIELLE_SITUATION,
-            status,
-            '',
-            true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('',
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
-            status,
-            '',
-            true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.DOKUMENTE, status, '', true));
-        wizardStepManager.getWizardSteps().push(new TSWizardStep('', TSWizardStepName.VERFUEGEN, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.GESUCH_ERSTELLEN, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.FAMILIENSITUATION, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.GESUCHSTELLER, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.KINDER, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.BETREUUNG, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.ERWERBSPENSUM, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.FINANZIELLE_SITUATION, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.DOKUMENTE, status, '', true));
+        wizardStepManager.getWizardSteps().push(
+            wizardStepManager.createWizardStep('', TSWizardStepName.VERFUEGEN, status, '', true));
     }
 });

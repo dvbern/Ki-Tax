@@ -44,11 +44,18 @@ describe('VerfuegungRS', () => {
     }));
 
     beforeEach(() => {
-        const kindGS = new TSKind('Pedro', 'Bern');
+        const kindGS = new TSKind();
+        kindGS.vorname = 'Pedro';
+        kindGS.nachname = 'Bern';
         TestDataUtil.setAbstractMutableFieldsUndefined(kindGS);
-        const kindJA = new TSKind('Pedro', 'Bern');
+        const kindJA = new TSKind();
+        kindJA.vorname = 'Pedro';
+        kindJA.nachname = 'Bern';
         TestDataUtil.setAbstractMutableFieldsUndefined(kindJA);
-        mockKind = new TSKindContainer(kindGS, kindJA, []);
+        mockKind = new TSKindContainer();
+        mockKind.kindGS = kindGS;
+        mockKind.kindJA = kindJA;
+        mockKind.betreuungen = [];
         TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
         mockKind.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         mockKindContainerListRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
@@ -73,7 +80,7 @@ describe('VerfuegungRS', () => {
                 $httpBackend.flush();
                 expect(foundKind).toBeDefined();
                 expect(foundKind.length).toBe(1);
-                expect(foundKind[0]).toEqual(mockKind);
+                expect(foundKind[0].id).toEqual(mockKind.id);
             });
         });
         describe('saveVerfuegung', () => {
@@ -89,7 +96,7 @@ describe('VerfuegungRS', () => {
                 });
                 $httpBackend.flush();
                 expect(savedVerfuegung).toBeDefined();
-                expect(savedVerfuegung).toEqual(verfuegung);
+                expect(savedVerfuegung.id).toEqual(verfuegung.id);
             });
         });
     });
