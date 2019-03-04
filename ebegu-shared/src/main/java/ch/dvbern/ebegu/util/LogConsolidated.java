@@ -7,7 +7,8 @@ import javax.annotation.Nullable;
 import org.slf4j.Logger;
 
 /**
- * This helper checks the origin of a logmessage and consolidates repeated logmessages to one message if they occur within
+ * This helper checks the origin of a logmessage (filename and line in sourcecode)
+ * and consolidates repeated logmessages to one message if they occur within
  * a given timeframe
  */
 public class LogConsolidated {
