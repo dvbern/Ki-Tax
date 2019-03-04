@@ -61,9 +61,10 @@ export class BenutzerEinladenComponent {
         this.benutzerRS.einladen(this.benutzer)
             .then(() => {
                 this.stateService.go('admin.benutzerlist').then(() => {
-                    this.errorService.addMesageAsInfo(this.translate.instant('BENUTZER_INVITED_MESSAGE',{
-                        fullName: this.benutzer.getFullName(),
-                    }));
+                    this.errorService.addMesageAsInfo(this.translate.instant(
+                        'BENUTZER_INVITED_MESSAGE',
+                        {fullName: this.benutzer.getFullName()}
+                    ));
                 });
             });
     }
