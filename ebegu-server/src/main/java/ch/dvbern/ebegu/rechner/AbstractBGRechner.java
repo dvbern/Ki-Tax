@@ -93,9 +93,6 @@ public abstract class AbstractBGRechner {
 		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
 		// Runden und auf Zeitabschnitt zurückschreiben
-//		if (verfuegungZeitabschnitt.isBezahltVollkosten()) {
-//			elternbeitrag = vollkosten;
-//		}
 		verfuegungZeitabschnitt.setMinimalerElternbeitrag(minBetrag);
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
