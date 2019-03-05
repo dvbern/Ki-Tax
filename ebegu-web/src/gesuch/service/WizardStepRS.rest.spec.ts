@@ -66,7 +66,7 @@ describe('WizardStepRS', () => {
                 $httpBackend.flush();
                 expect(foundSteps).toBeDefined();
                 expect(foundSteps.length).toEqual(1);
-                expect(foundSteps[0]).toEqual(mockWizardStep);
+                TestDataUtil.compareDefinedProperties(foundSteps[0], mockWizardStep);
             });
         });
     });

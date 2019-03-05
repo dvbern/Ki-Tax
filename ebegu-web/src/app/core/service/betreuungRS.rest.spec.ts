@@ -51,7 +51,9 @@ describe('betreuungRS', () => {
     beforeEach(() => {
         kindId = '2afc9d9a-957e-4550-9a22-97624a000feb';
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a000a12';
-        mockBetreuung = new TSBetreuung(undefined, TSBetreuungsstatus.AUSSTEHEND, []);
+        mockBetreuung = new TSBetreuung();
+        mockBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
+        mockBetreuung.betreuungspensumContainers = [];
         TestDataUtil.setAbstractMutableFieldsUndefined(mockBetreuung);
         mockBetreuungRest = ebeguRestUtil.betreuungToRestObject({}, mockBetreuung);
 
@@ -76,7 +78,7 @@ describe('betreuungRS', () => {
                 });
                 $httpBackend.flush();
                 expect(foundBetreuung).toBeDefined();
-                expect(foundBetreuung).toEqual(mockBetreuung);
+                TestDataUtil.compareDefinedProperties(foundBetreuung, mockBetreuung);
             });
 
         });
@@ -94,7 +96,7 @@ describe('betreuungRS', () => {
                 // tslint:disable-next-line:no-unbound-method
                 expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(gesuchId);
                 expect(createdBetreuung).toBeDefined();
-                expect(createdBetreuung).toEqual(mockBetreuung);
+                TestDataUtil.compareDefinedProperties(createdBetreuung, mockBetreuung);
             });
         });
         describe('removeBetreuung', () => {

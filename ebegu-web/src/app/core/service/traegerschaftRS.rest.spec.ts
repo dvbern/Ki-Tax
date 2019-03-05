@@ -39,7 +39,8 @@ describe('traegerschaftRS', () => {
     }));
 
     beforeEach(() => {
-        mockTraegerschaft = new TSTraegerschaft('TraegerschaftTest');
+        mockTraegerschaft = new TSTraegerschaft();
+        mockTraegerschaft.name = 'TraegerschaftTest';
         mockTraegerschaft.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
         mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
     });

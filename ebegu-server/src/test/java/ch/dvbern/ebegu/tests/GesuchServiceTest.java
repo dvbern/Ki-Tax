@@ -994,8 +994,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	private void findAllIdsOfAbstractEntities(AbstractEntity entity, Map<String, AbstractEntity> entities, int depth) throws IllegalAccessException,
 		NoSuchMethodException, InvocationTargetException {
 		String id = BeanUtils.getProperty(entity, "id");
-		if (!entities.containsKey(id)) {
-			entities.put(id, entity);
+		if (!entities.containsKey(constructMapKey(entity, id))) {
+			entities.put(constructMapKey(entity, id), entity);
 			StringBuilder indent = new StringBuilder();
 			for (int i = 0; i < depth; i++) {
 				indent.append(' ');
@@ -1019,6 +1019,11 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 				}
 			}
 		}
+	}
+
+	@Nonnull
+	private String constructMapKey(AbstractEntity entity, String id) {
+		return entity.getClass().getSimpleName() + ":" + id;
 	}
 
 	private boolean isCorrectlyIgnored(AbstractEntity property) {

@@ -228,6 +228,35 @@
 
         <div class="dv-navigation dv-navigation-flex">
             <span class="ie11-fix" dv-show-element
+                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
+                <dv-loading-button type="button" button-click="vm.setGesuchStatusGeprueft()"
+                                   aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
+                                   button-disabled="!vm.isFinSitChoosen()">
+                    <span class="uppercase" data-translate="GEPRUEFT"></span>
+                </dv-loading-button>
+                <dv-loading-button button-click="vm.setGesuchStatusVerfuegen()"
+                                   aria-label="{{'VERFUEGUNG_STARTEN' | translate}}"
+                                   ng-if="vm.showVerfuegenStarten()">
+                    <span class="uppercase" data-translate="VERFUEGUNG_STARTEN"></span>
+                </dv-loading-button>
+                <dv-loading-button button-click="vm.setGesuchStatusKeinKontingent()"
+                                   aria-label="{{'KEIN_KONTINGENT' | translate}}"
+                                   ng-if="vm.showKeinKontingent()">
+                    <span class="uppercase" data-translate="KEIN_KONTINGENT"></span>
+                </dv-loading-button>
+                <dv-loading-button button-click="vm.setGesuchStatusGeprueft()"
+                                   aria-label="{{'KONTINGENT_VORHANDEN' | translate}}"
+                                   ng-if="vm.showKontingentVorhanden()">
+                    <span class="uppercase" data-translate="KONTINGENT_VORHANDEN"></span>
+                </dv-loading-button>
+                <dv-loading-button button-click="vm.closeWithoutAngebot()"
+                                   aria-label="{{'BEENDEN_OHNE_ANGEBOT' | translate}}"
+                                   ng-if="vm.showCloseWithoutAngebot()">
+                    <span class="uppercase" data-translate="BEENDEN_OHNE_ANGEBOT"></span>
+                </dv-loading-button>
+            </span>
+            <span class="ie11-fix" dv-show-element
                   dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
                   dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button button-click="vm.setAbschliessen()"
@@ -291,35 +320,6 @@
                                    aria-label="{{'STV_PRUEFUNG_ABSCHLIESSEN' | translate}}"
                                    ng-if="vm.showSTVPruefungAbschliessen()">
                     <span class="uppercase" data-translate="STV_PRUEFUNG_ABSCHLIESSEN"></span>
-                </dv-loading-button>
-            </span>
-            <span class="ie11-fix" dv-show-element
-                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
-                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <dv-loading-button type="button" button-click="vm.setGesuchStatusGeprueft()"
-                                   aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
-                                   button-disabled="!vm.isFinSitChoosen()">
-                    <span class="uppercase" data-translate="GEPRUEFT"></span>
-                </dv-loading-button>
-                <dv-loading-button button-click="vm.setGesuchStatusVerfuegen()"
-                                   aria-label="{{'VERFUEGUNG_STARTEN' | translate}}"
-                                   ng-if="vm.showVerfuegenStarten()">
-                    <span class="uppercase" data-translate="VERFUEGUNG_STARTEN"></span>
-                </dv-loading-button>
-                <dv-loading-button button-click="vm.setGesuchStatusKeinKontingent()"
-                                   aria-label="{{'KEIN_KONTINGENT' | translate}}"
-                                   ng-if="vm.showKeinKontingent()">
-                    <span class="uppercase" data-translate="KEIN_KONTINGENT"></span>
-                </dv-loading-button>
-                <dv-loading-button button-click="vm.setGesuchStatusGeprueft()"
-                                   aria-label="{{'KONTINGENT_VORHANDEN' | translate}}"
-                                   ng-if="vm.showKontingentVorhanden()">
-                    <span class="uppercase" data-translate="KONTINGENT_VORHANDEN"></span>
-                </dv-loading-button>
-                <dv-loading-button button-click="vm.closeWithoutAngebot()"
-                                   aria-label="{{'BEENDEN_OHNE_ANGEBOT' | translate}}"
-                                   ng-if="vm.showCloseWithoutAngebot()">
-                    <span class="uppercase" data-translate="BEENDEN_OHNE_ANGEBOT"></span>
                 </dv-loading-button>
             </span>
             <span>

@@ -28,16 +28,8 @@ export default class TSKindContainer extends TSAbstractMutableEntity {
     private _nextNumberBetreuung: number;
     private _kindMutiert: boolean;
 
-    public constructor(kindGS?: TSKind, kindJA?: TSKind, betreuungen?: Array<TSBetreuung>, kindNummer?: number,
-                       nextNumberBetreuung?: number, kindMutiert?: boolean,
-    ) {
+    public constructor() {
         super();
-        this._kindGS = kindGS;
-        this._kindJA = kindJA;
-        this._betreuungen = betreuungen ? betreuungen : [];
-        this._kindNummer = kindNummer;
-        this._nextNumberBetreuung = nextNumberBetreuung;
-        this._kindMutiert = kindMutiert;
     }
 
     public get kindGS(): TSKind {

@@ -21,6 +21,7 @@ import {TSBetreuungsangebotTyp} from '../../models/enums/TSBetreuungsangebotTyp'
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../models/TSAntragSearchresultDTO';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
+import TestDataUtil from '../../utils/TestDataUtil.spec';
 import SearchRS from './searchRS.rest';
 
 // tslint:disable:no-magic-numbers
@@ -42,22 +43,15 @@ describe('searchRS', () => {
     }));
 
     beforeEach(() => {
-        mockPendenz = new TSAntragDTO('id1',
-            123,
-            'name',
-            TSAntragTyp.ERSTGESUCH,
-            undefined,
-            undefined,
-            undefined,
-            [TSBetreuungsangebotTyp.KITA],
-            ['Inst1, Inst2'],
-            'Juan Arbolado',
-            'Juan Arbolado',
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined);
+        mockPendenz = new TSAntragDTO();
+        mockPendenz.antragId = 'id1';
+        mockPendenz.fallNummer = 123;
+        mockPendenz.familienName = 'name';
+        mockPendenz.antragTyp = TSAntragTyp.ERSTGESUCH;
+        mockPendenz.angebote = [TSBetreuungsangebotTyp.KITA];
+        mockPendenz.institutionen = ['Inst1, Inst2'];
+        mockPendenz.verantwortlicherBG = 'Juan Arbolado';
+        mockPendenz.verantwortlicherTS = 'Juan Arbolado';
         ebeguRestUtil.antragDTOToRestObject({}, mockPendenz);
     });
 
@@ -81,7 +75,7 @@ describe('searchRS', () => {
                 $httpBackend.flush();
                 expect(foundPendenzen).toBeDefined();
                 expect(foundPendenzen.totalResultSize).toBe(1);
-                expect(foundPendenzen.antragDTOs[0]).toEqual(tsAntragDTO);
+                TestDataUtil.compareDefinedProperties(foundPendenzen.antragDTOs[0], tsAntragDTO);
             });
         });
     });

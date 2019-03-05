@@ -20,6 +20,8 @@ import {Transition} from '@uirouter/core';
 import {getTSRoleValues} from '../models/enums/TSRole';
 import {returnTo} from './authentication.route';
 import {LocalLoginComponent} from './local-login/local-login.component';
+import {TutorialGemeindeLoginComponent} from './tutorial/tutorial-gemeinde-login/tutorial-gemeinde-login.component';
+import {TutorialInstitutionLoginComponent} from './tutorial/tutorial-institution-login/tutorial-institution-login.component';
 
 export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
     name: 'authentication.locallogin',
@@ -38,9 +40,51 @@ export const LOCALLOGIN_STATE: Ng2StateDeclaration = {
     },
 };
 
+export const TUTORIAL_INSTITUTION_LOGIN_STATE: Ng2StateDeclaration = {
+    name: 'authentication.tutorialInstitutionLogin',
+    url: '/tutorial/institution',
+    component: TutorialInstitutionLoginComponent,
+    resolve: [
+        {
+            token: 'returnTo',
+            deps: [Transition],
+            resolveFn: returnTo,
+        },
+    ],
+    data: {
+        roles: getTSRoleValues(),
+        requiresDummyLogin: true,
+    },
+};
+
+export const TUTORIAL_GEMEINDE_LOGIN_STATE: Ng2StateDeclaration = {
+    name: 'authentication.tutorialGemeindeLogin',
+    url: '/tutorial/gemeinde',
+    component: TutorialGemeindeLoginComponent,
+    resolve: [
+        {
+            token: 'returnTo',
+            deps: [Transition],
+            resolveFn: returnTo,
+        },
+    ],
+    data: {
+        roles: getTSRoleValues(),
+        requiresDummyLogin: true,
+    },
+};
+
 @NgModule({
     imports: [
-        UIRouterUpgradeModule.forChild({states: [LOCALLOGIN_STATE]}),
+        UIRouterUpgradeModule.forChild(
+            {
+                states: [
+                    LOCALLOGIN_STATE,
+                    TUTORIAL_INSTITUTION_LOGIN_STATE,
+                    TUTORIAL_GEMEINDE_LOGIN_STATE,
+                ]
+            }
+        ),
     ],
     exports: [],
 })
