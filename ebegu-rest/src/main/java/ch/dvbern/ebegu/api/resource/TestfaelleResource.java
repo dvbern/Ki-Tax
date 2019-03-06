@@ -190,6 +190,17 @@ public class TestfaelleResource {
 		return Response.ok("Schulungsdaten erstellt").build();
 	}
 
+	@ApiOperation(value = "Setzt die Tutorialdaten zurueck. Gemeinde und Institution", response = String.class)
+	@GET
+	@Path("/schulung/tutorial/create")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response createTutorialdaten() {
+		assertTestfaelleAccessAllowed();
+		schulungService.createTutorialdaten();
+		return Response.ok("Tutorialdaten erstellt").build();
+	}
+
 	@ApiOperation(value = "Gibt eine Liste der Schulungsbenutzer zurueck",
 		responseContainer = "Array", response = String.class)
 	@GET

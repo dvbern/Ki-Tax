@@ -22,6 +22,7 @@ import {of} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
+import ErrorService from '../../core/errors/service/ErrorService';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -34,7 +35,7 @@ describe('BenutzerEinladenComponent', () => {
     let fixture: ComponentFixture<BenutzerEinladenComponent>;
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['isRole', 'getGemeindenForPrincipal$', 'getVisibleRolesForPrincipal']);
+        ['isRole', 'getVisibleRolesForPrincipal']);
     const insitutionSpy = jasmine.createSpyObj<InstitutionRS>(InstitutionRS.name,
         ['getInstitutionenForCurrentBenutzer']);
     const traegerschaftSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name, ['getAllTraegerschaften']);
@@ -42,6 +43,7 @@ describe('BenutzerEinladenComponent', () => {
     const benutzerSpy = jasmine.createSpyObj<BenutzerRS>(BenutzerRS.name, ['einladen']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
 
     beforeEach(async(() => {
         const superadmin = TestDataUtil.createSuperadmin();
@@ -65,6 +67,7 @@ describe('BenutzerEinladenComponent', () => {
                 {provide: InstitutionRS, useValue: insitutionSpy},
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
             ],
         })
             .compileComponents();

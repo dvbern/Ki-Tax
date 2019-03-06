@@ -18,13 +18,11 @@ import {TSFachstelle} from './TSFachstelle';
 
 export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
-    private _erweiterteBeduerfnisse: boolean;
+    private _erweiterteBeduerfnisse: boolean = false;
     private _fachstelle: TSFachstelle;
 
-    public constructor(erweiterteBeduerfnisse?: boolean, fachstelle?: TSFachstelle) {
+    public constructor() {
         super();
-        this._erweiterteBeduerfnisse = !!erweiterteBeduerfnisse;
-        this._fachstelle = fachstelle;
     }
 
     public get erweiterteBeduerfnisse(): boolean {

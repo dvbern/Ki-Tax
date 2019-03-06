@@ -204,6 +204,12 @@ export class TestdatenViewComponent implements OnInit {
         });
     }
 
+    public createTutorialdaten(): IPromise<any> {
+        return this.testFaelleRS.createTutorialdaten().then(response => {
+            this.createAndOpenOkDialog(response.data);
+        });
+    }
+
     public zahlungenKontrollieren(): void {
         this.zahlungRS.zahlungenKontrollieren();
     }

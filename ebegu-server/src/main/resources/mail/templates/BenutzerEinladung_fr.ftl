@@ -26,7 +26,7 @@ Content-Type: text/html;charset=utf-8
 	<!--[if !mso]><!-->
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"><!--<![endif]-->
 	<title></title>
-	<!--[if !mso]><!-- -->
+	<!--[if !mso]><!-->
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
 	<!--<![endif]-->
 
@@ -462,7 +462,7 @@ Content-Type: text/html;charset=utf-8
 													align="center">
 													<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml"
 																 xmlns:w="urn:schemas-microsoft-com:office:word"
-																 href="${acceptLink}
+																 href="${acceptLink}"
 																 style="height:34pt; v-text-anchor:middle; width:228pt;"
 																 arcsize="0%" strokecolor="#D50025" fillcolor="#D50025">
 														<w:anchorlock/>
