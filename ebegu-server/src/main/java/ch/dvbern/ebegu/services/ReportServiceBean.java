@@ -225,7 +225,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	@Inject
 	private GesuchService gesuchService;
 
-
 	@SuppressWarnings("Duplicates")
 	@Nonnull
 	@Override
@@ -249,7 +248,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		query.setParameter("gesuchPeriodeID", gesuchPeriodeID);
 		query.setParameter("onlySchulamt", onlySchulamt());
 		final List<String> berechtigteGemeinden = getListOfBerechtigteGemeinden();
-		// pass a boolean param to indicate if it has to take all Gemeinden are just those of the user
+		// pass a boolean param to indicate if it has to take all Gemeinden or just those of the user
 		// this is easier than checking the list within the sql-query
 		query.setParameter("allGemeinden", berechtigteGemeinden == null);
 		query.setParameter("gemeindeIdList", berechtigteGemeinden);
@@ -613,7 +612,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		if (principalBean.discoverMostPrivilegedRole() != UserRole.SUPER_ADMIN) {
 			// for others than superadmin, Superadmin cannot be listed
-			predicates.add(builder.notEqual(verantwortlicherBerechtigungenJoin.get(Berechtigung_.role), UserRole.SUPER_ADMIN));
+			predicates.add(builder.notEqual(
+				verantwortlicherBerechtigungenJoin.get(Berechtigung_.role),
+				UserRole.SUPER_ADMIN));
 		}
 
 		// Nur Benutzer von Gemeinden, fuer die ich berechtigt bin
@@ -657,9 +658,13 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Status ist verfuegt
 		predicates.add(root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtStates()));
 		// Datum der Verfuegung muss nach (oder gleich) dem Anfang des Abfragezeitraums sein
-		predicates.add(builder.greaterThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumVon.atStartOfDay()));
+		predicates.add(builder.greaterThanOrEqualTo(
+			root.get(AntragStatusHistory_.timestampVon),
+			datumVon.atStartOfDay()));
 		// Datum der Verfuegung muss vor (oder gleich) dem Ende des Abfragezeitraums sein
-		predicates.add(builder.lessThanOrEqualTo(root.get(AntragStatusHistory_.timestampVon), datumBis.atTime(LocalTime.MAX)));
+		predicates.add(builder.lessThanOrEqualTo(
+			root.get(AntragStatusHistory_.timestampVon),
+			datumBis.atTime(LocalTime.MAX)));
 		// Der Benutzer muss eine aktive Berechtigung mit Rolle ADMIN_BG oder SACHBEARBEITER_BG haben
 		predicates.add(builder.between(
 			builder.literal(LocalDate.now()),
@@ -1601,7 +1606,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportGesuchsteller(@Nonnull LocalDate stichtag, @Nonnull Locale locale)
+		throws ExcelMergeException {
 		validateStichtagParam(stichtag);
 
 		final ReportVorlage reportResource = ReportVorlage.VORLAGE_REPORT_GESUCHSTELLER;
@@ -1615,7 +1621,11 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<GesuchstellerKinderBetreuungDataRow> reportData = getReportDataGesuchsteller(stichtag, locale);
 
 		final XSSFSheet xsslSheet =
-			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsStichtag(reportData, sheet, stichtag, locale);
+			(XSSFSheet) gesuchstellerKinderBetreuungExcelConverter.mergeHeaderFieldsStichtag(
+				reportData,
+				sheet,
+				stichtag,
+				locale);
 
 		final RowFiller rowFiller = fillAndMergeRows(reportResource, xsslSheet, reportData, locale);
 		return saveExcelDokument(reportResource, rowFiller, locale);
@@ -1761,7 +1771,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_MANDANT, REVISOR })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION,
+		ADMIN_MANDANT, REVISOR })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1876,7 +1887,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	private int onlySchulamt() {
-		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS};
+		String[] schulamtRoles = { SACHBEARBEITER_TS, ADMIN_TS };
 
 		return principalBean.isCallerInAnyOfRole(schulamtRoles) ? 1 : 0;
 	}
