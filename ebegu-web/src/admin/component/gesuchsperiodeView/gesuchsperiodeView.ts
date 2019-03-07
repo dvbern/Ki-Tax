@@ -16,13 +16,16 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService} from 'angular';
 import * as moment from 'moment';
+import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {getTSGesuchsperiodeStatusValues, TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import TSDokumentGrund from '../../../models/TSDokumentGrund';
 import TSEinstellung from '../../../models/TSEinstellung';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
@@ -50,6 +53,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         '$log',
         '$stateParams',
         '$state',
+        '$translate',
         'AuthServiceRS',
     ];
 
@@ -60,6 +64,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public initialStatus: TSGesuchsperiodeStatus;
     public datumFreischaltungTagesschule: moment.Moment;
     public datumFreischaltungMax: moment.Moment;
+
+    public uploadRS: UploadRS;
 
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
@@ -234,5 +240,44 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         const gueltigAb = angular.copy(this.gesuchsperiode.gueltigkeit.gueltigAb);
 
         return gueltigAb.subtract(1, 'days');
+    }
+
+    public uploadAnhaenge(files: any[], urlSuffix: string): void {
+        const filesTooBig: any[] = [];
+        const filesOk: any[] = [];
+        for (const file of files) {
+            this.$log.debug(`File: ${file.name} size: ${file.size}`);
+            if (file.size > MAX_FILE_SIZE) {
+                filesTooBig.push(file);
+            } else {
+                filesOk.push(file);
+            }
+        }
+        // TODO KIBON 352: validierung
+        // if (filesTooBig.length > 0) {
+        //     // DialogBox anzeigen für Files, welche zu gross sind!
+        //     let returnString = `${this.$translate.instant('FILE_ZU_GROSS')}<br/><br/>`;
+        //     returnString += '<ul>';
+        //     for (const file of filesTooBig) {
+        //         returnString += '<li>';
+        //         returnString += file.name;
+        //         returnString += '</li>';
+        //     }
+        //     returnString += '</ul>';
+        //
+        //     this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+        //         title: returnString,
+        //     });
+        // }
+
+        if (filesOk.length <= 0) {
+            return;
+        }
+        // this.uploadRS.uploadErlaeuterungVerfuegung(filesOk, urlSuffix, this.gesuchsperiode.id).then(response => {
+        //     const returnedDG = angular.copy(response);
+        //     // TODO KIBON-352: überprüfen
+        //     // this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id)
+        //     //     .then(() => this.handleUpload(returnedDG));
+        // });
     }
 }

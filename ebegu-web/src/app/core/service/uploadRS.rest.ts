@@ -72,6 +72,10 @@ export class UploadRS {
             this.q.defer().notify();
         });
     }
+    //
+    // public uploadErlaeuterungVerfuegung(files: any, urlSuffix: string, periodeID: string): IPromise<any> {
+    //
+    // }
 
     public getServiceName(): string {
         return 'UploadRS';

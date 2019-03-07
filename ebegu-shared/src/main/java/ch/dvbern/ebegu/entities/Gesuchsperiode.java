@@ -20,10 +20,13 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -33,6 +36,8 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
+import static ch.dvbern.ebegu.util.Constants.TEN_MEG;
+
 /**
  * Entity fuer Gesuchsperiode.
  */
@@ -41,6 +46,7 @@ import org.hibernate.envers.Audited;
 public class Gesuchsperiode extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -9132257370971574570L;
+	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	@NotNull
 	@Column(nullable = false)
@@ -58,6 +64,19 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	@Nullable
 	@Column(nullable = true)
 	private LocalDate datumErsterSchultag;
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MEG) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] verfuegungErlaeuterungenDe;
+
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MEG) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] verfuegungErlaeuterungenFr;
 
 
 	public GesuchsperiodeStatus getStatus() {
@@ -104,6 +123,24 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 
 	public void setDatumErsterSchultag(@Nullable LocalDate datumErsterSchultag) {
 		this.datumErsterSchultag = datumErsterSchultag;
+	}
+
+	@Nullable
+	public byte[] getVerfuegungErlaeuterungenDe() {
+		return verfuegungErlaeuterungenDe;
+	}
+
+	public void setVerfuegungErlaeuterungenDe(@Nullable byte[] erlaeuterungenDe) {
+		this.verfuegungErlaeuterungenDe = erlaeuterungenDe;
+	}
+
+	@Nullable
+	public byte[] getVerfuegungErlaeuterungenFr() {
+		return verfuegungErlaeuterungenFr;
+	}
+
+	public void setVerfuegungErlaeuterungenFr(@Nullable byte[] erlaeuterungenFr) {
+		this.verfuegungErlaeuterungenFr = erlaeuterungenFr;
 	}
 
 	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
