@@ -29,7 +29,7 @@ export class UploadRS {
         private readonly upload: any,
         public ebeguRestUtil: EbeguRestUtil,
         public q: IQService,
-        private readonly base64: any
+        private readonly base64: any,
     ) {
         this.serviceURL = REST_API + 'upload';
     }
@@ -72,10 +72,25 @@ export class UploadRS {
             this.q.defer().notify();
         });
     }
-    //
-    // public uploadErlaeuterungVerfuegung(files: any, urlSuffix: string, periodeID: string): IPromise<any> {
-    //
-    // }
+
+    public uploadErlaeuterungVerfuegung(file: any, sprache: string, periodeID: string): IPromise<any> {
+        return this.upload.upload({
+            url: this.serviceURL + '/erlaeuterung' + sprache + '/' + periodeID,
+            method: 'POST',
+            headers: {
+                'x-filename': this.base64.encode(file.name),
+                'x-periodeID': periodeID,
+            },
+            data: {
+                file
+            },
+        }).then((response: any) => {
+            return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
+        }, (response: any) => {
+            console.log('Upload File: NOT SUCCESS');
+            return this.q.reject(response);
+        });
+    }
 
     public getServiceName(): string {
         return 'UploadRS';

@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 
 /**
  * Service zum Verwalten von Gesuchsperiode
@@ -42,7 +43,9 @@ public interface GesuchsperiodeService {
 	 * evt. weitere Aktionen durchgeführt werden müssen (z.B. E-Mails etc.)
 	 */
 	@Nonnull
-	Gesuchsperiode saveGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GesuchsperiodeStatus statusBisher);
+	Gesuchsperiode saveGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull GesuchsperiodeStatus statusBisher);
 
 	/**
 	 * @param key PK (id) der Gesuchsperiode
@@ -115,4 +118,10 @@ public interface GesuchsperiodeService {
 	 */
 	@Nonnull
 	Optional<Gesuchsperiode> findNewestGesuchsperiode();
+
+	@Nonnull
+	Gesuchsperiode uploadErlaeuterungenVerfuegung(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Sprache sprache,
+		@Nonnull byte[] content);
 }

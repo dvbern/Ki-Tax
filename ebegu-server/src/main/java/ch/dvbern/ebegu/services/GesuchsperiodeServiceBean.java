@@ -48,6 +48,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -406,6 +407,19 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			return Optional.empty();
 		}
 		return Optional.of(results.get(0));
+	}
+
+	@Nonnull
+	@Override
+	public Gesuchsperiode uploadErlaeuterungenVerfuegung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache, @Nonnull byte[] content) {
+		Objects.requireNonNull(gesuchsperiodeId);
+		Objects.requireNonNull(content);
+
+		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
+			() -> new EbeguEntityNotFoundException("uploadLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId)
+		);
+		gesuchsperiode.setVerfuegungErlaeuterungenDe(content);
+		return saveGesuchsperiode(gesuchsperiode);
 	}
 
 	private boolean isStatusUebergangValid(GesuchsperiodeStatus statusBefore, GesuchsperiodeStatus statusAfter) {

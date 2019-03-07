@@ -26,13 +26,17 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.activation.MimeTypeParseException;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,15 +45,20 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
+import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
+import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -57,6 +66,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.tika.Tika;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -81,6 +91,9 @@ public class UploadResource {
 	private DokumentGrundService dokumentGrundService;
 
 	@Inject
+	private GesuchsperiodeService gesuchsperiodeService;
+
+	@Inject
 	private JaxBConverter converter;
 
 	@Inject
@@ -93,7 +106,6 @@ public class UploadResource {
 	private static final String GESUCHID_HEADER = "x-gesuchID";
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadResource.class);
-
 
 	@ApiOperation(value = "Speichert ein Dokument in der Datenbank", response = JaxDokumentGrund.class)
 	@POST
@@ -177,6 +189,24 @@ public class UploadResource {
 		return Response.created(uri).entity(jaxDokumentGrundToReturn).build();
 	}
 
+	@ApiOperation("Stores the logo image of the Gemeinde with the given id")
+	@POST
+	@Path("/erlaeuterung/{sprache}/{periodeId}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response saveErlaeuterungVerfuegung(
+		@Nonnull @NotNull @PathParam("sprache") Sprache sprache,
+		@Nonnull @NotNull @PathParam("periodeId") String periodeId,
+		@Nonnull @NotNull MultipartFormDataInput input) {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+		Validate.notEmpty(fileList, "Need to upload something");
+
+		gesuchsperiodeService.uploadErlaeuterungenVerfuegung(periodeId, sprache, fileList.get(0).getContent());
+
+		return Response.ok().build();
+	}
+
 	@Nullable
 	private String[] getFilenamesFromHeader(@Context HttpServletRequest request) {
 		String filenamesJson = request.getHeader(FILENAME_HEADER);
@@ -187,7 +217,11 @@ public class UploadResource {
 		return filenames;
 	}
 
-	private void extractFilesFromInput(MultipartFormDataInput input, String[] encodedFilenames, String gesuchId, JaxDokumentGrund jaxDokumentGrund) throws MimeTypeParseException, IOException {
+	private void extractFilesFromInput(
+		MultipartFormDataInput input,
+		String[] encodedFilenames,
+		String gesuchId,
+		JaxDokumentGrund jaxDokumentGrund) throws MimeTypeParseException, IOException {
 		int filecounter = 0;
 		String partrileName = PART_FILE + '[' + filecounter + ']';
 
@@ -198,7 +232,8 @@ public class UploadResource {
 
 			// evil workaround, (Umlaute werden sonst nicht richtig übertragen!)
 			if (encodedFilenames[filecounter] != null) {
-				String decodedFilenamesJson = new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), Charset.forName("UTF-8"));
+				String decodedFilenamesJson =
+					new String(Base64.getDecoder().decode(encodedFilenames[filecounter]), Charset.forName("UTF-8"));
 				fileInfo.setFilename(decodedFilenamesJson);
 			}
 
@@ -229,10 +264,14 @@ public class UploadResource {
 				LOG.warn("Content type from Header did not match content type returned from probing. "
 					+ "\n\t header:   {} \n\t probing:  {}", fileInfo.getContentType(), contentType);
 			}
-			if(!applicationPropertyService.readMimeTypeWhitelist().contains(contentType)){
+			if (!applicationPropertyService.readMimeTypeWhitelist().contains(contentType)) {
 				fileSaverService.remove(fileInfo.getPath());
 				String message = "Blocked upload of filetype that is not in whitelist: " + contentType;
-				throw new EbeguRuntimeException("checkFiletypeAllowed", message, ErrorCodeEnum.ERROR_UPLOAD_INVALID_FILETYPE, contentType);
+				throw new EbeguRuntimeException(
+					"checkFiletypeAllowed",
+					message,
+					ErrorCodeEnum.ERROR_UPLOAD_INVALID_FILETYPE,
+					contentType);
 			}
 
 		} catch (IOException e) {
@@ -253,7 +292,10 @@ public class UploadResource {
 				jaxDokument.setFilename(uploadFileInfo.getFilename());
 				jaxDokument.setFilepfad(uploadFileInfo.getPath());
 				jaxDokument.setFilesize(uploadFileInfo.getSizeString());
-				LOG.info("Replace placeholder on {} by file {}", jaxDokumentGrund.getDokumentTyp(), uploadFileInfo.getFilename());
+				LOG.info(
+					"Replace placeholder on {} by file {}",
+					jaxDokumentGrund.getDokumentTyp(),
+					uploadFileInfo.getFilename());
 				return;
 			}
 		}
