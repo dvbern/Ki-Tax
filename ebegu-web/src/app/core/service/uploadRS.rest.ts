@@ -76,7 +76,7 @@ export class UploadRS {
 
     public uploadErlaeuterungVerfuegung(file: any, sprache: TSSprache, periodeID: string): IPromise<any> {
         return this.upload.upload({
-            url: this.serviceURL + '/erlaeuterung/' + sprache + '/' + periodeID,
+            url: `${this.serviceURL}/erlaeuterung/${sprache}/${periodeID}`,
             method: 'POST',
             data: {
                 file

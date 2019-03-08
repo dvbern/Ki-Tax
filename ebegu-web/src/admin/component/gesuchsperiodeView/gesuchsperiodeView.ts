@@ -16,10 +16,12 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService} from 'angular';
 import * as moment from 'moment';
+import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {OkHtmlDialogController} from '../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
@@ -32,8 +34,10 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IGesuchsperiodeStateParams} from '../../admin.route';
 import {EinstellungRS} from '../../service/einstellungRS.rest';
+import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 
 export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
     public transclude: boolean = false;
@@ -52,6 +56,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         '$log',
         '$stateParams',
         '$state',
+        '$translate',
         'UploadRS',
         'AuthServiceRS',
     ];
@@ -72,6 +77,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         private readonly $log: ILogService,
         private readonly $stateParams: IGesuchsperiodeStateParams,
         private readonly $state: StateService,
+        private readonly $translate: ITranslateService,
         private readonly uploadRS: UploadRS,
         authServiceRS: AuthServiceRS,
     ) {
@@ -242,31 +248,18 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     public uploadErlaeuterung(file: any[], sprache: TSSprache): void {
 
-        // TODO KIBON 352: validierung
-        // if (file.size > MAX_FILE_SIZE) {
-        //     // DialogBox anzeigen für Files, welche zu gross sind!
-        //     let returnString = `${this.$translate.instant('FILE_ZU_GROSS')}<br/><br/>`;
-        //     returnString += '<ul>';
-        //     for (const file of filesTooBig) {
-        //         returnString += '<li>';
-        //         returnString += file.name;
-        //         returnString += '</li>';
-        //     }
-        //     returnString += '</ul>';
-        //
-        //     this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
-        //         title: returnString,
-        //     });
-        // }
-
         if (file.length <= 0) {
             return;
         }
-        this.uploadRS.uploadErlaeuterungVerfuegung(file[0], sprache, this.gesuchsperiode.id).then(response => {
-            // const returnedDG = angular.copy(response);
-            // TODO KIBON-352: überprüfen
-            // this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id)
-            //     .then(() => this.handleUpload(returnedDG));
+
+        const selectedFile = file[0];
+        if (selectedFile.size > MAX_FILE_SIZE) {
+            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                title: this.$translate.instant('FILE_ZU_GROSS'),
+            });
+        }
+        this.uploadRS.uploadErlaeuterungVerfuegung(selectedFile, sprache, this.gesuchsperiode.id).then(response => {
+            console.log(response);
         });
     }
 }
