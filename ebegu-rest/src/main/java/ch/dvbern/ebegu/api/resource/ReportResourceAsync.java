@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -118,7 +119,8 @@ public class ReportResourceAsync {
 		String periodeId = gesuchPeriodIdParam != null ? gesuchPeriodIdParam.getId() : null;
 		workJob = workjobService.createNewReporting(
 			workJob,
-			ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG,
+			LocaleThreadLocal.get().equals(Locale.FRENCH) ?
+				ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_FR : ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_DE,
 			datumVon,
 			null,
 			periodeId,
@@ -164,7 +166,8 @@ public class ReportResourceAsync {
 		String periodeId = gesuchPeriodIdParam != null ? gesuchPeriodIdParam.getId() : null;
 		workJob = workjobService.createNewReporting(
 			workJob,
-			ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM,
+			LocaleThreadLocal.get().equals(Locale.FRENCH) ?
+				ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_FR : ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_DE,
 			dateFrom,
 			dateTo,
 			periodeId,

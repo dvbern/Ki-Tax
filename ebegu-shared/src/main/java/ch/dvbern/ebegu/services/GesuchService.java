@@ -305,7 +305,7 @@ public interface GesuchService {
 	Optional<String> getIdOfNeuestesGesuchForDossier(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt das Geusch zurueck, das mit dem Fall verknuepft ist und das neueste fuer das SchulamtInterface ist. Das
+	 * Gibt das Gesuch zurueck, das mit dem Fall verknuepft ist und das neueste fuer das SchulamtInterface ist. Das
 	 * Flag FinSitStatus
 	 * muss nicht NULL sein, sonst gilt es als nicht geprueft.
 	 */
