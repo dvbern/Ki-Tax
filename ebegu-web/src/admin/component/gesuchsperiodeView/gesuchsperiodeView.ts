@@ -52,7 +52,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         '$log',
         '$stateParams',
         '$state',
-        '$translate',
+        'UploadRS',
         'AuthServiceRS',
     ];
 
@@ -64,8 +64,6 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public datumFreischaltungTagesschule: moment.Moment;
     public datumFreischaltungMax: moment.Moment;
 
-    public uploadRS: UploadRS;
-
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
         private readonly dvDialog: DvDialog,
@@ -74,6 +72,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         private readonly $log: ILogService,
         private readonly $stateParams: IGesuchsperiodeStateParams,
         private readonly $state: StateService,
+        private readonly uploadRS: UploadRS,
         authServiceRS: AuthServiceRS,
     ) {
         super(authServiceRS);
@@ -263,7 +262,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         if (file.length <= 0) {
             return;
         }
-        this.uploadRS.uploadErlaeuterungVerfuegung(file, sprache, this.gesuchsperiode.id).then(response => {
+        this.uploadRS.uploadErlaeuterungVerfuegung(file[0], sprache, this.gesuchsperiode.id).then(response => {
             // const returnedDG = angular.copy(response);
             // TODO KIBON-352: überprüfen
             // this.wizardStepManager.findStepsFromGesuch(this.gesuchModelManager.getGesuch().id)
