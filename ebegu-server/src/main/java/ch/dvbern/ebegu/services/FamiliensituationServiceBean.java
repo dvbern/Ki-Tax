@@ -75,8 +75,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		// Falls noch nicht vorhanden, werden die GemeinsameSteuererklaerung fuer FS und EV auf false gesetzt
 		Familiensituation newFamiliensituation = familiensituationContainer.extractFamiliensituation();
 		Objects.requireNonNull(newFamiliensituation);
-		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		if (gesuch.isMutation() && EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, bis)) {
+		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		if (gesuch.isMutation() && EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, gesuchsperiodeBis)) {
 
 			if (newFamiliensituation.getGemeinsameSteuererklaerung() == null) {
 				newFamiliensituation.setGemeinsameSteuererklaerung(false);
@@ -90,13 +90,12 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 				if (einkommensverschlechterungInfo.getGemeinsameSteuererklaerung_BjP2() == null) {
 					einkommensverschlechterungInfo.setGemeinsameSteuererklaerung_BjP2(false);
 				}
-				//noinspection ConstantConditions (ist mit extractEinkommensverschlechterungInfo().isPresent() sichergestellt)einkommensverschlechterungInfoService.updateEinkommensverschlechterungInfo(gesuch.getEinkommensverschlechterungInfoContainer());
 			}
 		} else {
 			Familiensituation familiensituationErstgesuch = familiensituationContainer.getFamiliensituationErstgesuch();
 			if (familiensituationErstgesuch != null &&
-				(!familiensituationErstgesuch.hasSecondGesuchsteller(bis)
-					&& !newFamiliensituation.hasSecondGesuchsteller(bis))) {
+				(!familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)
+					&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))) {
 				// if there is no GS2 the field gemeinsameSteuererklaerung must be set to null
 				newFamiliensituation.setGemeinsameSteuererklaerung(null);
 			}
@@ -164,16 +163,16 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	 */
 	private boolean isNeededToRemoveGesuchsteller2(Gesuch gesuch, Familiensituation newFamiliensituation,
 		Familiensituation familiensituationErstgesuch) {
-		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		return (!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
-			&& !newFamiliensituation.hasSecondGesuchsteller(bis))
+			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))
 			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation, familiensituationErstgesuch));
 	}
 
 	private boolean isChanged1To2Reverted(Gesuch gesuch, Familiensituation newFamiliensituation,
 		Familiensituation familiensituationErstgesuch) {
-		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller(bis)
-			&& !newFamiliensituation.hasSecondGesuchsteller(bis);
+		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)
+			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis);
 	}
 }

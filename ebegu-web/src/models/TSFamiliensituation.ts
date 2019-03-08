@@ -87,9 +87,10 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
                 return true;
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 const ref = moment(referenzdatum); // must copy otherwise source is also subtracted
-                const fiveBack = ref.subtract(5, 'years');
-                const gs2 = !this.startKonkubinat || this.startKonkubinat.isBefore(fiveBack);
-                return gs2;
+                const fiveBack = ref
+                    .subtract(5, 'years')  // 5 years for konkubinat
+                    .subtract(1, 'month'); // 1 month for rule
+                return !this.startKonkubinat || !this.startKonkubinat.isAfter(fiveBack);
             default:
                 throw new Error(`hasSecondGesuchsteller is not implemented for status ${this.familienstatus}`);
         }

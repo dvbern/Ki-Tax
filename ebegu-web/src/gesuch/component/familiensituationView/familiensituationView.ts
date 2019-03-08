@@ -128,8 +128,10 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     private save(): IPromise<TSFamiliensituationContainer> {
         this.errorService.clearAll();
-        return this.familiensituationRS.saveFamiliensituation(this.model,
-            this.gesuchModelManager.getGesuch().id).then((familienContainerResponse: any) => {
+        return this.familiensituationRS.saveFamiliensituation(
+            this.model,
+            this.gesuchModelManager.getGesuch().id
+        ).then((familienContainerResponse: any) => {
             this.model = familienContainerResponse;
             this.gesuchModelManager.getGesuch().familiensituationContainer = familienContainerResponse;
             // Gesuchsteller may changed...
@@ -147,7 +149,24 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
     }
 
+    /**
+     * Removes startKonkubinat when the familienstatus doesn't require it.
+     * If we are in a mutation and we change to KONKUBINAT_KEIN_KIND we need to copy aenderungPer into startKonkubinat
+     */
     public familienstatusChanged(): void {
+        if (this.getFamiliensituation().familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            this.getFamiliensituation().startKonkubinat = undefined;
+
+        } else if (this.isMutation() && this.getFamiliensituation().aenderungPer && this.isStartKonkubinatVisible()) {
+            this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
+        }
+    }
+
+    /**
+     * This should happen only in a Mutation, where we can change the field aenderungPer but not startKonkubinat.
+     * Any change in aenderungPer will copy the value into startKonkubinat if the last is visible
+     */
+    public aenderungPerChanged(): void {
         if (this.isStartKonkubinatVisible()) {
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
@@ -199,6 +218,10 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
 
     public isEnabled(): boolean {
         return this.isMutationAndDateSet() && !this.isGesuchReadonly() && !this.isKorrekturModusJugendamt();
+    }
+
+    public isStartKonkubinatDisabled(): boolean {
+        return this.isMutation() || (this.isGesuchReadonly() && !this.isKorrekturModusJugendamt());
     }
 
     public hasEmptyAenderungPer(): boolean {

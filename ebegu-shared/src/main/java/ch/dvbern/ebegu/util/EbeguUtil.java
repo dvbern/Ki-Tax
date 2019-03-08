@@ -44,6 +44,8 @@ import com.google.common.collect.ArrayListMultimap;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Allgemeine Utils fuer EBEGU
  */
@@ -55,24 +57,32 @@ public final class EbeguUtil {
 	/**
 	 * Berechnet ob die Daten bei der Familiensituation von einem GS auf 2 GS geaendert wurde.
 	 */
-	public static boolean fromOneGSToTwoGS(FamiliensituationContainer familiensituationContainer,
-		LocalDate referenzdatum) {
-		Objects.requireNonNull(familiensituationContainer);
-		Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA());
-		Objects.requireNonNull(familiensituationContainer.getFamiliensituationErstgesuch());
+	public static boolean fromOneGSToTwoGS(
+		FamiliensituationContainer familiensituationContainer,
+		LocalDate referenzdatum
+	) {
+		requireNonNull(familiensituationContainer);
+		requireNonNull(familiensituationContainer.getFamiliensituationJA());
+		requireNonNull(familiensituationContainer.getFamiliensituationErstgesuch());
 
-		return fromOneGSToTwoGS(familiensituationContainer.getFamiliensituationErstgesuch(),
-			familiensituationContainer.getFamiliensituationJA(), referenzdatum);
+		return fromOneGSToTwoGS(
+			familiensituationContainer.getFamiliensituationErstgesuch(),
+			familiensituationContainer.getFamiliensituationJA(),
+			referenzdatum
+		);
 	}
 
-	public static boolean fromOneGSToTwoGS(Familiensituation oldFamiliensituation,
-		Familiensituation newFamiliensituation,
-		LocalDate referenzdatum) {
-		Objects.requireNonNull(oldFamiliensituation);
-		Objects.requireNonNull(newFamiliensituation);
-		// TODO rima mit dem Bis Datum aus der Gesuchsperiode vergleichen
-		return !oldFamiliensituation.hasSecondGesuchsteller(LocalDate.now())
-			&& newFamiliensituation.hasSecondGesuchsteller(LocalDate.now());
+	public static boolean fromOneGSToTwoGS(
+		@Nonnull Familiensituation oldFamiliensituation,
+		@Nonnull Familiensituation newFamiliensituation,
+		@Nonnull LocalDate referenzdatum
+	) {
+		requireNonNull(oldFamiliensituation);
+		requireNonNull(newFamiliensituation);
+		requireNonNull(referenzdatum);
+
+		return !oldFamiliensituation.hasSecondGesuchsteller(referenzdatum)
+			&& newFamiliensituation.hasSecondGesuchsteller(referenzdatum);
 	}
 
 	/**

@@ -50,7 +50,8 @@ public class CheckGesuchCompleteValidator implements ConstraintValidator<CheckGe
 			valid = false;
 		}
 		// Gesuchsteller 2
-		if (gesuch.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())) {
+		if (gesuch.getFamiliensituationContainer().getFamiliensituationJA()
+			.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())) {
 			if (gesuch.getGesuchsteller2() == null) {
 				LOG.error("FamiliensituationContainer is empty for Gesuch {}", gesuch.getId());
 				valid = false;

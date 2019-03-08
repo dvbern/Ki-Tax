@@ -79,7 +79,8 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
 		Familiensituation familiensituationErstgesuch,
-		Familiensituation familiensituationMutation) {
+		Familiensituation familiensituationMutation,
+		@Nonnull LocalDate stichtag) {
 
 		if (familiensituationErstgesuch == null || familiensituationMutation == null) {
 			return false;
@@ -87,9 +88,9 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 		switch (dokumentTyp) {
 		case NACHWEIS_TRENNUNG:
 			//überprüfen, ob ein Wechsel von zwei Gesuchsteller auf einen stattgefunden hat.
-			// TODO rima mit dem Bis Datum aus der Gesuchsperiode vergleichen
-			return familiensituationErstgesuch.hasSecondGesuchsteller(LocalDate.now())
-				&& !familiensituationMutation.hasSecondGesuchsteller(LocalDate.now());
+			// TODO fragen ???? rima mit dem Bis Datum aus der Gesuchsperiode vergleichen
+			return familiensituationErstgesuch.hasSecondGesuchsteller(stichtag)
+				&& !familiensituationMutation.hasSecondGesuchsteller(stichtag);
 		default:
 			return false;
 		}

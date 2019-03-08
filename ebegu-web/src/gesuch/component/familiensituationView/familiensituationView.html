@@ -47,7 +47,7 @@
                                                        class="input-element"
                                                        ng-required="vm.isKorrekturModusJugendamt() && vm.gesuchstellerHasChangedZivilstand()"
                                                        dv-on-blur="vm.onDatumBlur()"
-                                                       ng-change="vm.familienstatusChanged()"
+                                                       ng-change="vm.aenderungPerChanged()"
                                                        ng-disabled="vm.isGesuchReadonly() || (vm.isKorrekturModusJugendamt() && !vm.gesuchstellerHasChangedZivilstand())">
                                         </dv-datepicker>
                                         <dv-bisher gs="vm.model.familiensituationGS.aenderungPer"
@@ -89,21 +89,21 @@
                     <div class="row" ng-if="vm.isStartKonkubinatVisible()">
                         <div class="col-md-12">
                             <dv-input-container class="form-group">
-                                <div class="row">
-                                    <div class="col-xs-12 dv-input-container-small">
-                                        <label class="md-no-float" data-translate="START_KONKUBINAT" for="startKonkubinat_ID">
-                                        </label>
-                                        <dv-datepicker input-id="startKonkubinat_ID" name="startKonkubinat"
-                                                       ng-model="vm.getFamiliensituation().startKonkubinat"
-                                                       class="input-element"
-                                                       ng-init="01.01.2019"
-                                                       ng-required="vm.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND"
-                                                       dv-on-blur="vm.onDatumBlur()"
-                                                       ng-disabled="!vm.isEnabled()">
-                                        </dv-datepicker>
-                                        <dv-error-messages input-id="startKonkubinat_ID" for="vm.form.startKonkubinat.$error"
-                                                           class="error"></dv-error-messages>
-                                    </div>
+                                <label class="md-no-float" data-translate="START_KONKUBINAT" for="startKonkubinat_ID">
+                                </label>
+                                <div class="dv-input-container-medium-label">
+                                    <dv-datepicker input-id="startKonkubinat_ID" name="startKonkubinat"
+                                                   ng-model="vm.getFamiliensituation().startKonkubinat"
+                                                   class="input-element"
+                                                   ng-init="01.01.2019"
+                                                   ng-required="true"
+                                                   dv-on-blur="vm.onDatumBlur()"
+                                                   ng-disabled="vm.isStartKonkubinatDisabled()">
+                                    </dv-datepicker>
+                                    <dv-bisher gs="vm.model.familiensituationGS.startKonkubinat"
+                                               ja="vm.model.familiensituationJA.startKonkubinat"></dv-bisher>
+                                    <dv-error-messages input-id="startKonkubinat_ID" for="vm.form.startKonkubinat.$error"
+                                                       class="error"></dv-error-messages>
                                 </div>
                             </dv-input-container>
                         </div>
