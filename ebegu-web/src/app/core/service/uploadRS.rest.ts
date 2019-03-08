@@ -78,10 +78,6 @@ export class UploadRS {
         return this.upload.upload({
             url: this.serviceURL + '/erlaeuterung/' + sprache + '/' + periodeID,
             method: 'POST',
-            headers: {
-                'x-filename': this.base64.encode(file.name),
-                'x-periodeID': periodeID,
-            },
             data: {
                 file
             },

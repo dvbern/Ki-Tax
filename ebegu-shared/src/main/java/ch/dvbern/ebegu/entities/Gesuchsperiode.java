@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -127,20 +128,34 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 
 	@Nullable
 	public byte[] getVerfuegungErlaeuterungenDe() {
-		return verfuegungErlaeuterungenDe;
+		if (verfuegungErlaeuterungenDe == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(verfuegungErlaeuterungenDe, verfuegungErlaeuterungenDe.length);
 	}
 
-	public void setVerfuegungErlaeuterungenDe(@Nullable byte[] erlaeuterungenDe) {
-		this.verfuegungErlaeuterungenDe = erlaeuterungenDe;
+	public void setVerfuegungErlaeuterungenDe(@Nullable byte[] verfuegungErlaeuterungenDe) {
+		if (verfuegungErlaeuterungenDe == null) {
+			this.verfuegungErlaeuterungenDe = null;
+		} else {
+			this.verfuegungErlaeuterungenDe = Arrays.copyOf(verfuegungErlaeuterungenDe, verfuegungErlaeuterungenDe.length);
+		}
 	}
 
 	@Nullable
 	public byte[] getVerfuegungErlaeuterungenFr() {
-		return verfuegungErlaeuterungenFr;
+		if (verfuegungErlaeuterungenFr == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(verfuegungErlaeuterungenFr, verfuegungErlaeuterungenFr.length);
 	}
 
-	public void setVerfuegungErlaeuterungenFr(@Nullable byte[] erlaeuterungenFr) {
-		this.verfuegungErlaeuterungenFr = erlaeuterungenFr;
+	public void setVerfuegungErlaeuterungenFr(@Nullable byte[] verfuegungErlaeuterungenFr) {
+		if (verfuegungErlaeuterungenFr == null) {
+			this.verfuegungErlaeuterungenFr = null;
+		} else {
+			this.verfuegungErlaeuterungenFr = Arrays.copyOf(verfuegungErlaeuterungenFr, verfuegungErlaeuterungenFr.length);
+		}
 	}
 
 	@SuppressWarnings({ "OverlyComplexBooleanExpression" })
