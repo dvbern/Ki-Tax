@@ -189,7 +189,7 @@ public class UploadResource {
 		return Response.created(uri).entity(jaxDokumentGrundToReturn).build();
 	}
 
-	@ApiOperation("Stores the logo image of the Gemeinde with the given id")
+	@ApiOperation("Stores the Erlaeuterungen zu Verfuegung pdf of the Gesuchsperiode with the given id and Sprache")
 	@POST
 	@Path("/erlaeuterung/{sprache}/{periodeId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
