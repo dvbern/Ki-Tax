@@ -35,6 +35,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private LocalDate eingangsdatum;
 	@Nullable private LocalDate verfuegungsdatum;
 	@Nullable private Integer fallId;
+	@Nullable private String gemeinde;
 
 	@Nullable private String gs1Name;
 	@Nullable private String gs1Vorname;
@@ -163,6 +164,15 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setVerfuegungsdatum(@Nullable LocalDate verfuegungsdatum) {
 		this.verfuegungsdatum = verfuegungsdatum;
+	}
+
+	@Nullable
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nullable String gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 
 	@Nullable

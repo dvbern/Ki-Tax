@@ -24,7 +24,7 @@ export default class TSAdresse extends TSAbstractDateRangedEntity {
     private _zusatzzeile: string;
     private _plz: string;
     private _ort: string;
-    private _land: string;
+    private _land: string = 'CH';
     private _gemeinde: string;
     private _adresseTyp: TSAdressetyp = TSAdressetyp.WOHNADRESSE;
     private _nichtInGemeinde: boolean;

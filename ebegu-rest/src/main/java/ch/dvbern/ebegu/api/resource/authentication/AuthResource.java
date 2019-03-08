@@ -101,6 +101,17 @@ public class AuthResource {
 	}
 
 
+	@Path("/connectorPing")
+	@GET
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@PermitAll
+	public Response connectorPing(){
+		final String response = this.loginProviderInfoRestService.pingLoginProvider();
+		return Response.ok(response).build();
+
+	}
+
 	@Path("/singleSignOn")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
