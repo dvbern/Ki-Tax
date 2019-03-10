@@ -119,9 +119,18 @@ public interface GesuchsperiodeService {
 	@Nonnull
 	Optional<Gesuchsperiode> findNewestGesuchsperiode();
 
+	/**
+	 * Fügt eine Erläuterung zur Verfügung einer Gesuchsperiode abhängig der Sprache an.
+	 */
 	@Nonnull
 	Gesuchsperiode uploadErlaeuterungenVerfuegung(
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull Sprache sprache,
 		@Nonnull byte[] content);
+
+	/**
+	 * Löscht eine Erläuterung zur Verfügung einer Gesuchsperiode abhängig der Sprache.
+	 */
+	@Nonnull
+	Gesuchsperiode removeErlaeuterungVerfuegung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
 }

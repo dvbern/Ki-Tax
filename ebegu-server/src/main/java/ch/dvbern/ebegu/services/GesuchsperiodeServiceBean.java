@@ -429,6 +429,24 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		return saveGesuchsperiode(gesuchsperiode);
 	}
 
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public Gesuchsperiode removeErlaeuterungVerfuegung(String gesuchsperiodeId, Sprache sprache) {
+		Objects.requireNonNull(gesuchsperiodeId);
+		Objects.requireNonNull(sprache);
+
+		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
+			() -> new EbeguEntityNotFoundException("uploadErlaeuterungenVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId)
+		);
+
+		if(sprache == Sprache.DEUTSCH) {
+			gesuchsperiode.setVerfuegungErlaeuterungenDe(null);
+		} else {
+			gesuchsperiode.setVerfuegungErlaeuterungenFr(null);
+		}
+		return saveGesuchsperiode(gesuchsperiode);
+	}
+
 	private boolean isStatusUebergangValid(GesuchsperiodeStatus statusBefore, GesuchsperiodeStatus statusAfter) {
 		if (GesuchsperiodeStatus.ENTWURF == statusBefore) {
 			return GesuchsperiodeStatus.AKTIV == statusAfter;

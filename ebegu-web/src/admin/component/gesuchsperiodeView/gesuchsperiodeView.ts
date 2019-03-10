@@ -262,4 +262,10 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             console.log(response);
         });
     }
+
+    public removeErlaeuterung(sprache: TSSprache): void {
+        this.gesuchsperiodeRS.removeErlaeuterungVerfuegung(this.gesuchsperiode.id, sprache).then(response => {
+            console.log(response);
+        });
+    }
 }

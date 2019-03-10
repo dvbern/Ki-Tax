@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
@@ -242,6 +243,21 @@ public class GesuchsperiodeResource {
 			: gesuchsperiodeService.getAllAktiveNichtVerwendeteGesuchsperioden(dossierId);
 
 		return extractValidGesuchsperiodenForGemeinde(gemeindeId, perioden);
+	}
+
+	@Nullable
+	@DELETE
+	@Path("/{gesuchsperiodeId}/{sprache}")
+	@Consumes(MediaType.WILDCARD)
+	public Response removeErlaeuterungVerfuegung(
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Nullable @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(gesuchsperiodeId);
+		gesuchsperiodeService.removeErlaeuterungVerfuegung(gesuchsperiodeId, sprache);
+		return Response.ok().build();
+
 	}
 
 	private List<JaxGesuchsperiode> extractValidGesuchsperiodenForGemeinde(

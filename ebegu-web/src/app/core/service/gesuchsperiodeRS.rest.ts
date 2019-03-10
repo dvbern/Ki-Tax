@@ -14,6 +14,7 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {TSSprache} from '../../../models/enums/TSSprache';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
@@ -134,5 +135,9 @@ export default class GesuchsperiodeRS {
                 this.log.debug('PARSING Gesuchsperiode REST object ', response.data);
                 return this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data);
             });
+    }
+
+    public removeErlaeuterungVerfuegung(gesuchsperiodeId: string, sprache: TSSprache): IHttpPromise<TSGesuchsperiode> {
+        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`);
     }
 }

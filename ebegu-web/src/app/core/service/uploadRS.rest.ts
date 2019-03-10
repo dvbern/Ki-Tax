@@ -82,7 +82,7 @@ export class UploadRS {
                 file
             },
         }).then((response: any) => {
-            return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
+            return response.data;
         }, (response: any) => {
             console.log('Upload File: NOT SUCCESS');
             return this.q.reject(response);
