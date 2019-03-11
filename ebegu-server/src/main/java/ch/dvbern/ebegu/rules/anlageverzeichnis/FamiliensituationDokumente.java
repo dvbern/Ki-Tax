@@ -49,10 +49,22 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
 		@Nonnull Locale locale
 	) {
+		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		Familiensituation famsitErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 		if (famsitErstgesuch != null) {
-			add(getDokument(DokumentTyp.NACHWEIS_TRENNUNG, famsitErstgesuch, gesuch.extractFamiliensituation(),
-				null, null, null, DokumentGrundTyp.FAMILIENSITUATION), anlageVerzeichnis);
+			add(
+				getDokument(
+					DokumentTyp.NACHWEIS_TRENNUNG,
+					famsitErstgesuch,
+					gesuch.extractFamiliensituation(),
+					null,
+					null,
+					null,
+					DokumentGrundTyp.FAMILIENSITUATION,
+					gesuchsperiodeBis
+				),
+				anlageVerzeichnis
+			);
 		}
 		// dieses Dokument gehoert eigentlich zur FinSit aber muss hier hinzugefuegt werden, da es Daten aus der
 		// Familiensituation benoetigt
@@ -80,15 +92,14 @@ public class FamiliensituationDokumente extends AbstractDokumente<Familiensituat
 		@Nonnull DokumentTyp dokumentTyp,
 		Familiensituation familiensituationErstgesuch,
 		Familiensituation familiensituationMutation,
-		@Nonnull LocalDate stichtag) {
+		@Nullable LocalDate stichtag) {
 
-		if (familiensituationErstgesuch == null || familiensituationMutation == null) {
+		if (familiensituationErstgesuch == null || familiensituationMutation == null || stichtag == null) {
 			return false;
 		}
 		switch (dokumentTyp) {
 		case NACHWEIS_TRENNUNG:
 			//überprüfen, ob ein Wechsel von zwei Gesuchsteller auf einen stattgefunden hat.
-			// TODO fragen ???? rima mit dem Bis Datum aus der Gesuchsperiode vergleichen
 			return familiensituationErstgesuch.hasSecondGesuchsteller(stichtag)
 				&& !familiensituationMutation.hasSecondGesuchsteller(stichtag);
 		default:

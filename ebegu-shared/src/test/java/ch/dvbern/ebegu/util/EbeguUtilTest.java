@@ -28,8 +28,6 @@ import org.junit.Test;
  */
 public class EbeguUtilTest {
 
-	// TODO rima verify tests. fragen!
-
 	@Test
 	public void testFromOneGSToTwoGS_From2To1() {
 
