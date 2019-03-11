@@ -23,6 +23,7 @@ import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
 @Component({
     selector: 'dv-welcome-main',
     templateUrl: './welcome-main.component.html',
+    styleUrls: ['./welcome-main.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WelcomeMainComponent {

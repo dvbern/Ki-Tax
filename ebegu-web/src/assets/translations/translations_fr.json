@@ -1420,7 +1420,7 @@
     "AUSSERORDENTLICHER_ANSPRUCH_BETREUUNGSPENSUM": "FR_Anspruch",
     "UNBEZAHLTER_URLAUB": "Avez-vous prévu un congé non payé de plus de trois mois ?",
     "JA_KORREKTUR_UNBEZAHLTER_URLAUB": "FR_Unbezahlter Urlaub, {{von}} – {{bis}}",
-    "WELCOME": "FR_Willkommen",
+    "WELCOME": "Bienvenue",
     "LETS_START": "FR_los geht's",
     "KEINE": "FR_Keine",
     "LAST_REPORTS": "FR_Letzte Reports",
