@@ -87,7 +87,7 @@ public final class BemerkungsMerger {
 		}
 		Collections.sort(listOrdered);
 		for (BemerkungItem poi : listOrdered) {
-			joiner.add('[' + poi.getRange().toRangeString() + "] " + poi.getMessage());
+			joiner.add(poi.getRange().toRangeString() + ": " + poi.getMessage());
 		}
 		return joiner.toString();
 	}
