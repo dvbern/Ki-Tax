@@ -268,24 +268,22 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetReportMitarbeiterinnen() throws Exception {
-		final List<MitarbeiterinnenDataRow> reportMitarbeiterinnen = reportService.getReportMitarbeiterinnen(LocalDate.of(1000, 1, 1), TestDataUtil.ENDE_PERIODE);
-		Assert.assertNotNull(reportMitarbeiterinnen);
+		final List<MitarbeiterinnenDataRow> reportMitarbeiterinnen = reportService
+			.getReportMitarbeiterinnen(LocalDate.of(1000, 1, 1), LocalDate.now());
+
 		Assert.assertEquals(3, reportMitarbeiterinnen.size());
 
 		//case with only Gesuche als Verantwortlicher
-		Assert.assertEquals("Blaser", reportMitarbeiterinnen.get(0).getName());
-		Assert.assertEquals(BigDecimal.valueOf(2), reportMitarbeiterinnen.get(0).getVerantwortlicheGesuche());
-		Assert.assertEquals(BigDecimal.ZERO, reportMitarbeiterinnen.get(0).getVerfuegungenAusgestellt());
+		MitarbeiterinnenDataRow maBlaser = reportMitarbeiterinnen.get(0);
+		Assert.assertEquals("Blaser", maBlaser.getName());
+		Assert.assertEquals(BigDecimal.valueOf(2), maBlaser.getVerantwortlicheGesuche());
+		Assert.assertEquals(BigDecimal.ZERO, maBlaser.getVerfuegungenAusgestellt());
 
 		//case with only verfuegte Gesuche
-		Assert.assertEquals("Bogabante", reportMitarbeiterinnen.get(1).getName());
-		Assert.assertEquals(BigDecimal.ZERO, reportMitarbeiterinnen.get(1).getVerantwortlicheGesuche());
-		Assert.assertEquals(BigDecimal.ONE, reportMitarbeiterinnen.get(1).getVerfuegungenAusgestellt());
-
-		//case with both verfuegte Gesuche und Gesuche als Verantwortlicher
-		Assert.assertEquals("Superuser", reportMitarbeiterinnen.get(2).getName());
-		Assert.assertEquals(BigDecimal.valueOf(8), reportMitarbeiterinnen.get(2).getVerantwortlicheGesuche());
-		Assert.assertEquals(BigDecimal.valueOf(15), reportMitarbeiterinnen.get(2).getVerfuegungenAusgestellt());
+		MitarbeiterinnenDataRow maBrogabante = reportMitarbeiterinnen.get(1);
+		Assert.assertEquals("Bogabante", maBrogabante.getName());
+		Assert.assertEquals(BigDecimal.ZERO, maBrogabante.getVerantwortlicheGesuche());
+		Assert.assertEquals(BigDecimal.ONE, maBrogabante.getVerfuegungenAusgestellt());
 
 		// case with no Gesuche at all are not shown
 
