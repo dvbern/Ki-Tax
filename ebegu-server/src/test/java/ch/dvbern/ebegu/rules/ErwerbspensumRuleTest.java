@@ -30,11 +30,9 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -56,7 +54,6 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		final String bemerkungen = result.get(0).getBemerkungen();
 		assertNotNull(bemerkungen);
 		assertFalse(bemerkungen.isEmpty());
-		assertTrue(bemerkungen.contains(RuleKey.ERWERBSPENSUM.name()));
 	}
 
 	@Test
@@ -98,7 +95,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		assertEquals("BETREUUNGSANGEBOT_TYP: Betreuungsangebot Schulamt", result.get(0).getBemerkungen());
+		assertEquals("Betreuungsangebot Schulamt", result.get(0).getBemerkungen());
 	}
 
 	@Test
