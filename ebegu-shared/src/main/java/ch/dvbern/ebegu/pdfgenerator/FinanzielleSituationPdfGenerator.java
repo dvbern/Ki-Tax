@@ -84,8 +84,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private static final String FUSSZEILE_VERMOEGEN = "PdfGeneration_FinSit_Fusszeile_Vermoegen";
 	private static final String FUSSZEILE_ABZUEGE = "PdfGeneration_FinSit_Fusszeile_Abzuege";
 	private static final String EKV_TITLE = "PdfGeneration_FinSit_Ekv_Title";
-	private static final String EKV_DATUM = "PdfGeneration_FinSit_Ekv_Datum";
-	private static final String EKV_GRUND = "PdfGeneration_FinSit_Ekv_Grund";
 	private static final String MASSG_EINK_TITLE = "PdfGeneration_MassgEink_Title";
 
 	private final Verfuegung verfuegungFuerMassgEinkommen;
@@ -120,10 +118,10 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
 			if (ekvInfo != null) {
 				if (ekvInfo.getEkvFuerBasisJahrPlus1()) {
-					createPageEkv1(generator, document, ekvInfo);
+					createPageEkv1(generator, document);
 				}
 				if (ekvInfo.getEkvFuerBasisJahrPlus2()) {
-					createPageEkv2(generator, document, ekvInfo);
+					createPageEkv2(generator, document);
 				}
 			}
 			// Massgebendes Einkommen
@@ -177,8 +175,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 	private void createPageEkv1(
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
-		@Nonnull Document document,
-		@Nonnull EinkommensverschlechterungInfo ekvInfo
+		@Nonnull Document document
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
 		EinkommensverschlechterungContainer ekvContainerGS1 = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
@@ -190,7 +187,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			translate(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus1()),
 			2)
 		);
-		document.add(createIntroEkv1(ekvInfo));
+		document.add(createIntroEkv());
 
 		Einkommensverschlechterung ekv1GS1 = ekvContainerGS1.getEkvJABasisJahrPlus1();
 		Einkommensverschlechterung ekv1GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus1();
@@ -209,8 +206,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 	private void createPageEkv2(
 		@Nonnull ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator generator,
-		@Nonnull Document document,
-		@Nonnull EinkommensverschlechterungInfo ekvInfo
+		@Nonnull Document document
 	) {
 		requireNonNull(gesuch.getGesuchsteller1());
 		EinkommensverschlechterungContainer ekvContainerGS1 = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer();
@@ -222,7 +218,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			translate(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus2()),
 			2)
 		);
-		document.add(createIntroEkv2(ekvInfo));
+		document.add(createIntroEkv());
 
 		Einkommensverschlechterung ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
 		Einkommensverschlechterung ekv2GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus2();
@@ -292,17 +288,10 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	@Nonnull
-	private PdfPTable createIntroEkv1(@Nonnull EinkommensverschlechterungInfo ekvInfo) {
+	private PdfPTable createIntroEkv() {
 		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
 		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
 		return PdfUtil.creatreIntroTable(introEkv1, sprache);
-	}
-
-	@Nonnull
-	private PdfPTable createIntroEkv2(@Nonnull EinkommensverschlechterungInfo ekvInfo) {
-		List<TableRowLabelValue> introEkv2 = new ArrayList<>();
-		introEkv2.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		return PdfUtil.creatreIntroTable(introEkv2, sprache);
 	}
 
 	@Nonnull
