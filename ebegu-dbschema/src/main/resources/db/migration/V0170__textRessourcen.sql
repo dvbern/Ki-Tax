@@ -36,8 +36,8 @@ CREATE TABLE text_ressource_container (
 	user_mutiert              VARCHAR(36) NOT NULL,
 	version                   BIGINT      NOT NULL,
 	vorgaenger_id             VARCHAR(36),
-	text_ressource_de_id      VARCHAR(36),
-	text_ressource_fr_id      VARCHAR(36),
+	deutsch_id                VARCHAR(36),
+	franzoesisch_id           VARCHAR(36),
 	PRIMARY KEY (id)
 );
 
@@ -51,8 +51,8 @@ CREATE TABLE text_ressource_container_aud (
 	user_erstellt             VARCHAR(36),
 	user_mutiert              VARCHAR(36),
 	vorgaenger_id             VARCHAR(36),
-	text_ressource_de_id      VARCHAR(36),
-	text_ressource_fr_id      VARCHAR(36),
+	deutsch_id                VARCHAR(36),
+	franzoesisch_id           VARCHAR(36),
 	PRIMARY KEY (id, rev)
 );
 
@@ -84,10 +84,10 @@ REFERENCES text_ressource_container (id);
 
 ALTER TABLE text_ressource_container
 	ADD CONSTRAINT FK_text_ressource_container_text_ressource_deutsch
-FOREIGN KEY (text_ressource_de_id)
+FOREIGN KEY (deutsch_id)
 REFERENCES text_ressource (id);
 
 ALTER TABLE text_ressource_container
 	ADD CONSTRAINT FK_text_ressource_container_text_ressource_franzoesisch
-FOREIGN KEY (text_ressource_fr_id)
+FOREIGN KEY (franzoesisch_id)
 REFERENCES text_ressource (id);
