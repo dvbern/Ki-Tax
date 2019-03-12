@@ -13,7 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 // tslint:disable:naming-convention variable-name
