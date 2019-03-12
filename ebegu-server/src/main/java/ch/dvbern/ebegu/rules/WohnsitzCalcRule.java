@@ -73,7 +73,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		Objects.requireNonNull(familiensituation);
 		LocalDate familiensituationAenderungPer = familiensituation.getAenderungPer();
 		// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
-		LocalDate bis = betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		if (!gesuch.isMutation()
 			|| (familiensituationAenderungPer != null
 			&& !getStichtagForEreignis(familiensituationAenderungPer)
