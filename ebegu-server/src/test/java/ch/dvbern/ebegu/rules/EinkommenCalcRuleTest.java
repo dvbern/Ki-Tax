@@ -112,16 +112,11 @@ public class EinkommenCalcRuleTest {
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
-		assertEquals(3, result.size());
+		assertEquals(2, result.size());
 
-		assertEquals(50000, result.get(0).getMassgebendesEinkommen().intValue());
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt1 = result.get(0).getBemerkungenMap();
-		assertNotNull(bemerkungenAbschnitt1);
-		assertEquals(1, bemerkungenAbschnitt1.size());
-		assertTrue(bemerkungenAbschnitt1.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
-
-		assertEquals(25000, result.get(1).getMassgebendesEinkommen().intValue());
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = result.get(1).getBemerkungenMap();
+		VerfuegungZeitabschnitt abschnittErstesHalbjahrEKV1 = result.get(0);
+		assertEquals(25000, abschnittErstesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
+		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = abschnittErstesHalbjahrEKV1.getBemerkungenMap();
 		assertNotNull(bemerkungenAbschnitt2);
 		assertEquals(2, bemerkungenAbschnitt2.size());
 		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
@@ -130,8 +125,9 @@ public class EinkommenCalcRuleTest {
 			+ TestDataUtil.PERIODE_JAHR_1;
 		assertTrue(bemerkungenAbschnitt2.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV1));
 
-		assertEquals(20000, result.get(2).getMassgebendesEinkommen().intValue());
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = result.get(2).getBemerkungenMap();
+		VerfuegungZeitabschnitt abschnittZweitesHalbjahrEKV1 = result.get(1);
+		assertEquals(20000, abschnittZweitesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
+		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = abschnittZweitesHalbjahrEKV1.getBemerkungenMap();
 		assertNotNull(bemerkungenAbschnitt3);
 		assertEquals(2, bemerkungenAbschnitt3.size());
 		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));

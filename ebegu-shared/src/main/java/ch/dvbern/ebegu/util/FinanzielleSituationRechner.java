@@ -159,6 +159,8 @@ public class FinanzielleSituationRechner {
 			BigDecimal massgebendesEinkommenBasisjahrZuZweit = finanzielleSituationResultateDTOZuZweit.getMassgebendesEinkVorAbzFamGr();
 
 			if (ekvInfo.getEkvFuerBasisJahrPlus1() != null && ekvInfo.getEkvFuerBasisJahrPlus1()) {
+				finanzDatenDTOAlleine.setEkv1Erfasst(true);
+				finanzDatenDTOZuZweit.setEkv1Erfasst(true);
 				if (ekvInfo.getEkvBasisJahrPlus1Annulliert()) {
 					finanzDatenDTOAlleine.setEkv1Annulliert(Boolean.TRUE);
 					finanzDatenDTOZuZweit.setEkv1Annulliert(Boolean.TRUE);
@@ -184,6 +186,8 @@ public class FinanzielleSituationRechner {
 			}
 
 			if (ekvInfo.getEkvFuerBasisJahrPlus2() != null && ekvInfo.getEkvFuerBasisJahrPlus2()) {
+				finanzDatenDTOAlleine.setEkv2Erfasst(true);
+				finanzDatenDTOZuZweit.setEkv2Erfasst(true);
 				if (ekvInfo.getEkvBasisJahrPlus2Annulliert()) {
 					finanzDatenDTOAlleine.setEkv2Annulliert(Boolean.TRUE);
 					finanzDatenDTOZuZweit.setEkv2Annulliert(Boolean.TRUE);
