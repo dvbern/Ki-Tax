@@ -46,6 +46,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
+import ch.dvbern.ebegu.api.dtos.JaxPublicAppConfig;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -117,6 +118,12 @@ public class ApplicationPropertyResource {
 	public JaxApplicationProperties getWhitelist(
 		@Context HttpServletResponse response) {
 
+		final String list = readWhitelistAsString();
+		ApplicationProperty applicationProperty = new ApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, list);
+		return converter.applicationPropertyToJAX(applicationProperty);
+	}
+
+	private String readWhitelistAsString() {
 		final Collection<String> whitelist = this.applicationPropertyService.readMimeTypeWhitelist();
 		MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
 
@@ -129,9 +136,7 @@ public class ApplicationPropertyResource {
 			}
 		}).filter(Objects::nonNull).collect(Collectors.toList());
 
-		final String list = StringUtils.join(extensions, ",");
-		ApplicationProperty applicationProperty = new ApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, list);
-		return converter.applicationPropertyToJAX(applicationProperty);
+		return StringUtils.join(extensions, ",");
 	}
 
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
@@ -149,7 +154,7 @@ public class ApplicationPropertyResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/sentryenv")
-	public JaxApplicationProperties getSentryEnvName(@Context HttpServletResponse response) {
+	public JaxApplicationProperties getSentryEnvName() {
 
 		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService
 			.readApplicationProperty(ApplicationPropertyKey.SENTRY_ENV);
@@ -168,7 +173,7 @@ public class ApplicationPropertyResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/background")
-	public JaxApplicationProperties getBackgroundColor(@Context HttpServletResponse response) {
+	public JaxApplicationProperties getBackgroundColor() {
 		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR);
 		ApplicationProperty prop = propertyFromDB.orElse(new ApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR, "#FFFFFF"));
 		return converter.applicationPropertyToJAX(prop);
@@ -258,4 +263,34 @@ public class ApplicationPropertyResource {
 		}
 		return Response.noContent().build();
 	}
+
+
+	@ApiOperation(value = "Single request to load public config", response = Boolean.class)
+	@GET
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/public/all")
+	public Response getPublicProperties(@Context HttpServletResponse response) {
+
+		boolean devmode = ebeguConfiguration.getIsDevmode();
+		final String whitelist = readWhitelistAsString();
+		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled();
+		String sentryEnvName = getSentryEnvName().getValue();
+		String background = getBackgroundColor().getValue();
+		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
+
+		String nodeName = "todo load nodename";
+		JaxPublicAppConfig pubAppConf = new JaxPublicAppConfig(
+			nodeName,
+			String.valueOf(devmode),
+			whitelist,
+			String.valueOf(dummyMode),
+			sentryEnvName,
+			background,
+			String.valueOf(zahlungentestmode)
+			);
+
+		return Response.ok(pubAppConf).build();
+
+		}
 }

@@ -98,4 +98,12 @@ export class ApplicationPropertyRS {
             return response.data as boolean;
         });
     }
+
+    //todo not any
+    public getPublicProperties(): IPromise<any> {
+        return this.http.get(`${this.serviceURL}/public/all`, {cache: true}).then(response => {
+            return response.data as boolean;
+        });
+
+    }
 }
