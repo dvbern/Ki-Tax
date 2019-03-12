@@ -120,6 +120,16 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Valid
 	private IBAN iban;
 
+	@NotNull
+	@Column(nullable = false)
+	private Boolean standardRechtsmittelbelehrung = true;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name =
+		"FK_text_ressource_container_id"))
+	private TextRessourceContainer rechtsmittelbelehrung;
+
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
 		return defaultBenutzerBG;
@@ -241,6 +251,23 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.iban = iban;
 	}
 
+	@Nonnull
+	public Boolean getStandardRechtsmittelbelehrung() {
+		return standardRechtsmittelbelehrung;
+	}
+
+	public void setStandardRechtsmittelbelehrung(@Nonnull Boolean beschwerdeStandardtext) {
+		this.standardRechtsmittelbelehrung = beschwerdeStandardtext;
+	}
+
+	@Nullable
+	public TextRessourceContainer getRechtsmittelbelehrung() {
+		return rechtsmittelbelehrung;
+	}
+
+	public void setRechtsmittelbelehrung(@Nullable TextRessourceContainer rechtsmittelbelehrung) {
+		this.rechtsmittelbelehrung = rechtsmittelbelehrung;
+	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -103,6 +104,8 @@ import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
+import ch.dvbern.ebegu.api.dtos.JaxTextRessourceContainer;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
@@ -175,6 +178,8 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.TextRessource;
+import ch.dvbern.ebegu.entities.TextRessourceContainer;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -243,7 +248,7 @@ import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity"})
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
@@ -1661,7 +1666,9 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		final JaxPensumAusserordentlicherAnspruch jaxPensumAusserordentlicherAnspruch =
 			new JaxPensumAusserordentlicherAnspruch();
-		convertAbstractPensumFieldsToJAX(persistedPensumAusserordentlicherAnspruch, jaxPensumAusserordentlicherAnspruch);
+		convertAbstractPensumFieldsToJAX(
+			persistedPensumAusserordentlicherAnspruch,
+			jaxPensumAusserordentlicherAnspruch);
 		jaxPensumAusserordentlicherAnspruch.setBegruendung(persistedPensumAusserordentlicherAnspruch.getBegruendung());
 		return jaxPensumAusserordentlicherAnspruch;
 	}
@@ -2077,7 +2084,9 @@ public class JaxBConverter extends AbstractConverter {
 					findUnbezahlterUrlaub(jaxErwerbspensum.getUnbezahlterUrlaub().getId())
 					.orElse(new UnbezahlterUrlaub());
 			}
-			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(jaxErwerbspensum.getUnbezahlterUrlaub(), existingUrlaub));
+			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(
+				jaxErwerbspensum.getUnbezahlterUrlaub(),
+				existingUrlaub));
 		} else {
 			erwerbspensum.setUnbezahlterUrlaub(null);
 		}
@@ -2212,7 +2221,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
-		if(Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())){
+		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
 			requireNonNull(erweiterteBetreuungJAXP.getFachstelle(), "Fachstelle muss existieren");
 			requireNonNull(
 				erweiterteBetreuungJAXP.getFachstelle().getId(),
@@ -2684,7 +2693,7 @@ public class JaxBConverter extends AbstractConverter {
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(jaxVerfuegungZeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		verfuegungZeitabschnitt.setVerguenstigung(jaxVerfuegungZeitabschnitt.getVerguenstigung());
 		verfuegungZeitabschnitt.setMinimalerElternbeitrag(jaxVerfuegungZeitabschnitt.getMinimalerElternbeitrag());
-			verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
+		verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
 		verfuegungZeitabschnitt.setAbzugFamGroesse(jaxVerfuegungZeitabschnitt.getAbzugFamGroesse());
 		BigDecimal einkommen = jaxVerfuegungZeitabschnitt.getMassgebendesEinkommenVorAbzugFamgr();
 		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(einkommen);
@@ -2831,12 +2840,14 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuungContainer, jaxErweiterteBetreuungContainer);
 
 		if (erweiterteBetreuungContainer.getErweiterteBetreuungGS() != null) {
-			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungGS());
+			JaxErweiterteBetreuung jaxErweiterteBetreuung =
+				erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungGS());
 			jaxErweiterteBetreuungContainer.setErweiterteBetreuungGS(jaxErweiterteBetreuung);
 		}
 
 		if (erweiterteBetreuungContainer.getErweiterteBetreuungJA() != null) {
-			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungJA());
+			JaxErweiterteBetreuung jaxErweiterteBetreuung =
+				erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungJA());
 			jaxErweiterteBetreuungContainer.setErweiterteBetreuungJA(jaxErweiterteBetreuung);
 		}
 
@@ -2852,7 +2863,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
 
-		if(erweiterteBetreuung.getFachstelle() != null) {
+		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
 		}
 
@@ -3946,6 +3957,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxStammdaten.getGemeinde());
 		requireNonNull(jaxStammdaten.getGemeinde().getId());
 		requireNonNull(jaxStammdaten.getAdresse());
+		requireNonNull(jaxStammdaten.getStandardRechtsmittelbelehrung());
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
@@ -3990,6 +4002,17 @@ public class JaxBConverter extends AbstractConverter {
 		stammdaten.setBic(jaxStammdaten.getBic());
 		if (jaxStammdaten.getIban() != null) {
 			stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
+		}
+
+		stammdaten.setStandardRechtsmittelbelehrung(jaxStammdaten.getStandardRechtsmittelbelehrung());
+
+		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
+			if (stammdaten.getRechtsmittelbelehrung() == null) {
+				stammdaten.setRechtsmittelbelehrung(new TextRessourceContainer());
+			}
+			stammdaten.setRechtsmittelbelehrung(textRessourceContainerToEntity(
+				jaxStammdaten.getRechtsmittelbelehrung(),
+				stammdaten.getRechtsmittelbelehrung()));
 		}
 
 		return stammdaten;
@@ -4043,24 +4066,105 @@ public class JaxBConverter extends AbstractConverter {
 		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
 			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
 			if (gesuchsperiode != null) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+					stammdaten.getGemeinde(),
 					gesuchsperiode));
 			}
 		} else {
 			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
 			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+					stammdaten.getGemeinde(),
 					gesuchsperiode));
 			}
 		}
 		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
 		jaxStammdaten.setBic(stammdaten.getBic());
-		if(stammdaten.getIban() != null) {
+		if (stammdaten.getIban() != null) {
 			jaxStammdaten.setIban(stammdaten.getIban().getIban());
 		}
 
+		jaxStammdaten.setStandardRechtsmittelbelehrung(stammdaten.getStandardRechtsmittelbelehrung());
+
+		if (stammdaten.getRechtsmittelbelehrung() != null) {
+			jaxStammdaten.setRechtsmittelbelehrung(textRessourceContainerToJAX(stammdaten.getRechtsmittelbelehrung()));
+		}
 
 		return jaxStammdaten;
+	}
+
+	public JaxTextRessourceContainer textRessourceContainerToJAX(
+		@Nonnull final TextRessourceContainer textRessourceContainer) {
+		Objects.requireNonNull(textRessourceContainer);
+
+		final JaxTextRessourceContainer jaxTextRessourceContainer = new JaxTextRessourceContainer();
+
+		convertAbstractFieldsToJAX(textRessourceContainer, jaxTextRessourceContainer);
+
+		if (textRessourceContainer.getDeutsch() != null) {
+			jaxTextRessourceContainer.setDeutsch(textRessourceToJAX(textRessourceContainer.getDeutsch()));
+		}
+		if (textRessourceContainer.getFranzoesisch() != null) {
+			jaxTextRessourceContainer.setFranzoesisch(textRessourceToJAX(textRessourceContainer.getFranzoesisch()));
+		}
+
+		return jaxTextRessourceContainer;
+	}
+
+	public TextRessourceContainer textRessourceContainerToEntity(
+		@Nonnull final JaxTextRessourceContainer containerJAX,
+		@Nonnull final TextRessourceContainer container) {
+
+		requireNonNull(containerJAX);
+		requireNonNull(container);
+
+		convertAbstractFieldsToEntity(containerJAX, container);
+
+		TextRessource textRessourceToMergeWith;
+
+		if (containerJAX.getDeutsch() != null) {
+			textRessourceToMergeWith = Optional.ofNullable(container.getDeutsch())
+				.orElseGet(TextRessource::new);
+			container.setDeutsch(textRessourceToEntity(
+				containerJAX.getDeutsch(),
+				textRessourceToMergeWith));
+		}
+
+		if (containerJAX.getFranzoesisch() != null) {
+			textRessourceToMergeWith = Optional.ofNullable(container.getFranzoesisch())
+				.orElseGet(TextRessource::new);
+			container.setFranzoesisch(textRessourceToEntity(
+				containerJAX.getFranzoesisch(),
+				textRessourceToMergeWith));
+		}
+		return container;
+	}
+
+	public TextRessource textRessourceToEntity(
+		@Nonnull final JaxTextRessource textRessourceJAX,
+		@Nonnull TextRessource textRessource) {
+		requireNonNull(textRessourceJAX);
+		requireNonNull(textRessource);
+
+		convertAbstractFieldsToEntity(textRessourceJAX, textRessource);
+
+		textRessource.setSprache(textRessourceJAX.getSprache());
+		textRessource.setText(textRessourceJAX.getText());
+
+		return textRessource;
+	}
+
+	public JaxTextRessource textRessourceToJAX(@Nonnull final TextRessource textRessource) {
+		Objects.requireNonNull(textRessource);
+
+		final JaxTextRessource jaxTextRessource = new JaxTextRessource();
+
+		convertAbstractFieldsToJAX(textRessource, jaxTextRessource);
+
+		jaxTextRessource.setSprache(textRessource.getSprache());
+		jaxTextRessource.setText(textRessource.getText());
+
+		return jaxTextRessource;
 	}
 
 	/**
@@ -4077,7 +4181,9 @@ public class JaxBConverter extends AbstractConverter {
 		return gpBeguStart.orElseGet(() -> gpNewest.orElse(null));
 	}
 
-	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
 		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());

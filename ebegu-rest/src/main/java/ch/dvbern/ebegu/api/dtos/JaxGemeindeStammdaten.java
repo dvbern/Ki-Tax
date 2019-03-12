@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -69,6 +70,11 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	private String bic;
 	@NotNull
 	private String iban;
+	@NotNull
+	private Boolean standardRechtsmittelbelehrung;
+	@Nullable
+	private JaxTextRessourceContainer rechtsmittelbelehrung;
+
 	// ---------- Konfiguration ----------
 	@NotNull
 	private List<JaxGemeindeKonfiguration> konfigurationsListe = new ArrayList<>();
@@ -227,4 +233,21 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 		this.iban = iban;
 	}
 
+	@Nonnull
+	public Boolean getStandardRechtsmittelbelehrung() {
+		return standardRechtsmittelbelehrung;
+	}
+
+	public void setStandardRechtsmittelbelehrung(@Nonnull Boolean standardRechtsmittelbelehrung) {
+		this.standardRechtsmittelbelehrung = standardRechtsmittelbelehrung;
+	}
+
+	@Nullable
+	public JaxTextRessourceContainer getRechtsmittelbelehrung() {
+		return rechtsmittelbelehrung;
+	}
+
+	public void setRechtsmittelbelehrung(@Nullable JaxTextRessourceContainer rechtsmittelbelehrung) {
+		this.rechtsmittelbelehrung = rechtsmittelbelehrung;
+	}
 }
