@@ -295,8 +295,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private PdfPTable createIntroEkv1(@Nonnull EinkommensverschlechterungInfo ekvInfo) {
 		List<TableRowLabelValue> introEkv1 = new ArrayList<>();
 		introEkv1.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introEkv1.add(new TableRowLabelValue(EKV_DATUM, PdfUtil.printLocalDate(ekvInfo.getStichtagFuerBasisJahrPlus1())));
-		introEkv1.add(new TableRowLabelValue(EKV_GRUND, PdfUtil.printString(ekvInfo.getGrundFuerBasisJahrPlus1())));
 		return PdfUtil.creatreIntroTable(introEkv1, sprache);
 	}
 
@@ -304,8 +302,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private PdfPTable createIntroEkv2(@Nonnull EinkommensverschlechterungInfo ekvInfo) {
 		List<TableRowLabelValue> introEkv2 = new ArrayList<>();
 		introEkv2.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
-		introEkv2.add(new TableRowLabelValue(EKV_DATUM, PdfUtil.printLocalDate(ekvInfo.getStichtagFuerBasisJahrPlus2())));
-		introEkv2.add(new TableRowLabelValue(EKV_GRUND, PdfUtil.printString(ekvInfo.getGrundFuerBasisJahrPlus2())));
 		return PdfUtil.creatreIntroTable(introEkv2, sprache);
 	}
 

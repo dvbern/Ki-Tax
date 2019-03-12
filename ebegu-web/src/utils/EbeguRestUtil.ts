@@ -566,14 +566,6 @@ export default class EbeguRestUtil {
                 einkommensverschlechterungInfo.ekvFuerBasisJahrPlus1;
             restEinkommensverschlechterungInfo.ekvFuerBasisJahrPlus2 =
                 einkommensverschlechterungInfo.ekvFuerBasisJahrPlus2;
-            restEinkommensverschlechterungInfo.grundFuerBasisJahrPlus1 =
-                einkommensverschlechterungInfo.grundFuerBasisJahrPlus1;
-            restEinkommensverschlechterungInfo.grundFuerBasisJahrPlus2 =
-                einkommensverschlechterungInfo.grundFuerBasisJahrPlus2;
-            restEinkommensverschlechterungInfo.stichtagFuerBasisJahrPlus1 =
-                DateUtil.momentToLocalDate(einkommensverschlechterungInfo.stichtagFuerBasisJahrPlus1);
-            restEinkommensverschlechterungInfo.stichtagFuerBasisJahrPlus2 =
-                DateUtil.momentToLocalDate(einkommensverschlechterungInfo.stichtagFuerBasisJahrPlus2);
             restEinkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1 =
                 einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1;
             restEinkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP2 =
@@ -657,14 +649,6 @@ export default class EbeguRestUtil {
                 einkommensverschlechterungInfoFromServer.ekvFuerBasisJahrPlus1;
             einkommensverschlechterungInfo.ekvFuerBasisJahrPlus2 =
                 einkommensverschlechterungInfoFromServer.ekvFuerBasisJahrPlus2;
-            einkommensverschlechterungInfo.grundFuerBasisJahrPlus1 =
-                einkommensverschlechterungInfoFromServer.grundFuerBasisJahrPlus1;
-            einkommensverschlechterungInfo.grundFuerBasisJahrPlus2 =
-                einkommensverschlechterungInfoFromServer.grundFuerBasisJahrPlus2;
-            einkommensverschlechterungInfo.stichtagFuerBasisJahrPlus1 =
-                DateUtil.localDateToMoment(einkommensverschlechterungInfoFromServer.stichtagFuerBasisJahrPlus1);
-            einkommensverschlechterungInfo.stichtagFuerBasisJahrPlus2 =
-                DateUtil.localDateToMoment(einkommensverschlechterungInfoFromServer.stichtagFuerBasisJahrPlus2);
             einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1 =
                 einkommensverschlechterungInfoFromServer.gemeinsameSteuererklaerung_BjP1;
             einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP2 =

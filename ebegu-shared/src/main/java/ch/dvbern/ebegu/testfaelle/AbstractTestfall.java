@@ -360,9 +360,9 @@ public abstract class AbstractTestfall {
 		return finanzielleSituationContainer;
 	}
 
-	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(Gesuch gesuch, LocalDate stichtagEKV1, LocalDate stichtagEKV2) {
-		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(stichtagEKV1 != null, stichtagEKV2 != null);
-		EinkommensverschlechterungInfoContainer infoContainer = createEinkommensverschlechterungInfoContainer(stichtagEKV1, stichtagEKV2);
+	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(Gesuch gesuch, boolean hasEKV1, boolean hasEKV2) {
+		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(hasEKV1, hasEKV2);
+		EinkommensverschlechterungInfoContainer infoContainer = createEinkommensverschlechterungInfoContainer(hasEKV1, hasEKV2);
 		gesuch.setEinkommensverschlechterungInfoContainer(infoContainer);
 		infoContainer.setGesuch(gesuch);
 		return ekvContainer;
@@ -397,22 +397,11 @@ public abstract class AbstractTestfall {
 		ekvInfoContainer.setEinkommensverschlechterungInfoJA(ekvInfoJA);
 	}
 
-	protected EinkommensverschlechterungInfoContainer createEinkommensverschlechterungInfoContainer(
-			@Nullable LocalDate stichtagEKV1, @Nullable LocalDate stichtagEKV2) {
+	protected EinkommensverschlechterungInfoContainer createEinkommensverschlechterungInfoContainer(boolean ekv1, boolean ekv2) {
 		EinkommensverschlechterungInfoContainer infoContainer = new EinkommensverschlechterungInfoContainer();
 		EinkommensverschlechterungInfo info = new EinkommensverschlechterungInfo();
-		info.setEkvFuerBasisJahrPlus1(stichtagEKV1 != null);
-		if (info.getEkvFuerBasisJahrPlus1()) {
-			info.setStichtagFuerBasisJahrPlus1(stichtagEKV1);
-			info.setGrundFuerBasisJahrPlus1("Test");
-
-		}
-		info.setEkvFuerBasisJahrPlus2(stichtagEKV2 != null);
-		if (info.getEkvFuerBasisJahrPlus2()) {
-			info.setStichtagFuerBasisJahrPlus2(stichtagEKV2);
-			info.setGrundFuerBasisJahrPlus2("Test");
-
-		}
+		info.setEkvFuerBasisJahrPlus1(ekv1);
+		info.setEkvFuerBasisJahrPlus2(ekv2);
 		info.setEinkommensverschlechterung(info.getEkvFuerBasisJahrPlus1() || info.getEkvFuerBasisJahrPlus2());
 		infoContainer.setEinkommensverschlechterungInfoJA(info);
 		return infoContainer;

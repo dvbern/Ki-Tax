@@ -24,12 +24,6 @@ export default class TSEinkommensverschlechterungInfo extends TSAbstractMutableE
     private _ekvFuerBasisJahrPlus1: boolean;
     private _ekvFuerBasisJahrPlus2: boolean;
 
-    private _grundFuerBasisJahrPlus1: string;
-    private _grundFuerBasisJahrPlus2: string;
-
-    private _stichtagFuerBasisJahrPlus1: moment.Moment;
-    private _stichtagFuerBasisJahrPlus2: moment.Moment;
-
     private _gemeinsameSteuererklaerung_BjP1: boolean;
     private _gemeinsameSteuererklaerung_BjP2: boolean;
 
@@ -58,38 +52,6 @@ export default class TSEinkommensverschlechterungInfo extends TSAbstractMutableE
 
     public set ekvFuerBasisJahrPlus2(value: boolean) {
         this._ekvFuerBasisJahrPlus2 = value;
-    }
-
-    public get grundFuerBasisJahrPlus1(): string {
-        return this._grundFuerBasisJahrPlus1;
-    }
-
-    public set grundFuerBasisJahrPlus1(value: string) {
-        this._grundFuerBasisJahrPlus1 = value;
-    }
-
-    public get grundFuerBasisJahrPlus2(): string {
-        return this._grundFuerBasisJahrPlus2;
-    }
-
-    public set grundFuerBasisJahrPlus2(value: string) {
-        this._grundFuerBasisJahrPlus2 = value;
-    }
-
-    public get stichtagFuerBasisJahrPlus1(): moment.Moment {
-        return this._stichtagFuerBasisJahrPlus1;
-    }
-
-    public set stichtagFuerBasisJahrPlus1(value: moment.Moment) {
-        this._stichtagFuerBasisJahrPlus1 = value;
-    }
-
-    public get stichtagFuerBasisJahrPlus2(): moment.Moment {
-        return this._stichtagFuerBasisJahrPlus2;
-    }
-
-    public set stichtagFuerBasisJahrPlus2(value: moment.Moment) {
-        this._stichtagFuerBasisJahrPlus2 = value;
     }
 
     public get gemeinsameSteuererklaerung_BjP1(): boolean {

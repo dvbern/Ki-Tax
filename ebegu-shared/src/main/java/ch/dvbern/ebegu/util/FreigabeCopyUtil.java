@@ -307,10 +307,6 @@ public final class FreigabeCopyUtil {
 		gs.setEkvFuerBasisJahrPlus2(ja.getEkvFuerBasisJahrPlus2());
 		gs.setGemeinsameSteuererklaerung_BjP1(ja.getGemeinsameSteuererklaerung_BjP1());
 		gs.setGemeinsameSteuererklaerung_BjP2(ja.getGemeinsameSteuererklaerung_BjP2());
-		gs.setGrundFuerBasisJahrPlus1(ja.getGrundFuerBasisJahrPlus1());
-		gs.setGrundFuerBasisJahrPlus2(ja.getGrundFuerBasisJahrPlus2());
-		gs.setStichtagFuerBasisJahrPlus1(ja.getStichtagFuerBasisJahrPlus1());
-		gs.setStichtagFuerBasisJahrPlus2(ja.getStichtagFuerBasisJahrPlus2());
 	}
 
 	private static void copyEinkommensverschlechterungContainer(@Nullable EinkommensverschlechterungContainer container) {

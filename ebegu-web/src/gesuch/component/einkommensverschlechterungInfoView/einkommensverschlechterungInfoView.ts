@@ -14,12 +14,10 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import * as moment from 'moment';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
-import {getTSMonthValues, getTSMonthWithVorjahrValues, TSMonth} from '../../../models/enums/TSMonth';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -67,14 +65,6 @@ export class EinkommensverschlechterungInfoViewController
         '$timeout',
     ];
 
-    public monthsStichtage: Array<TSMonth>;
-    public monthsStichtageWithVorjahr: Array<TSMonth>;
-    public selectedStichtagBjP1: TSMonth = undefined;
-    public selectedStichtagBjP2: TSMonth = undefined;
-    // tslint:disable-next-line:variable-name naming-convention
-    public selectedStichtagBjP1_GS: TSMonth = undefined;
-    // tslint:disable-next-line:variable-name naming-convention
-    public selectedStichtagBjP2_GS: TSMonth = undefined;
     public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
     public allowedRoles: Array<TSRole>;
     public basisJahrUndPeriode = {
@@ -112,18 +102,6 @@ export class EinkommensverschlechterungInfoViewController
 
     private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
-        this.monthsStichtage = getTSMonthValues();
-        this.monthsStichtageWithVorjahr = getTSMonthWithVorjahrValues();
-        this.selectedStichtagBjP1 =
-            this.getMonatFromStichtag(this.getEinkommensverschlechterungsInfo().stichtagFuerBasisJahrPlus1, 1);
-        this.selectedStichtagBjP2 =
-            this.getMonatFromStichtag(this.getEinkommensverschlechterungsInfo().stichtagFuerBasisJahrPlus2, 2);
-        if (this.getEinkommensverschlechterungsInfoGS()) {
-            this.selectedStichtagBjP1_GS =
-                this.getMonatFromStichtag(this.getEinkommensverschlechterungsInfoGS().stichtagFuerBasisJahrPlus1, 1);
-            this.selectedStichtagBjP2_GS =
-                this.getMonatFromStichtag(this.getEinkommensverschlechterungsInfoGS().stichtagFuerBasisJahrPlus2, 2);
-        }
         this.initializeEKVContainers();
     }
 
@@ -163,35 +141,6 @@ export class EinkommensverschlechterungInfoViewController
 
     public getBasisJahrPlusAsString(jahr: number): string {
         return this.ebeguUtil.getBasisJahrPlusAsString(this.gesuchModelManager.getGesuch().gesuchsperiode, jahr);
-    }
-
-    /**
-     * Gibt den Tag (Moment) anhand des Jahres und Monat enum zurück
-     */
-    private getStichtagFromMonat(monat: TSMonth, basisJahrPlus: number): moment.Moment {
-        if (!monat) {
-            return null;
-        }
-
-        const jahr = this.gesuchModelManager.getBasisjahr() + basisJahrPlus;
-        if (monat === TSMonth.VORJAHR) {
-            return moment([jahr - 1, 11]); // 1. Dezember des Vorjahres
-        }
-        return moment([jahr, this.monthsStichtage.indexOf(monat)]);
-    }
-
-    /**
-     * Gibt den Monat enum anhand des Stichtages zurück
-     */
-    private getMonatFromStichtag(stichtag: moment.Moment, basisJahrPlus: number): TSMonth {
-        if (!stichtag) {
-            return null;
-        }
-
-        if ((this.gesuchModelManager.getBasisjahr() + basisJahrPlus) !== stichtag.year()) {
-            return TSMonth.VORJAHR;
-        }
-        return this.monthsStichtage[stichtag.month()];
     }
 
     public confirmAndSave(): IPromise<TSEinkommensverschlechterungInfoContainer> {
@@ -254,10 +203,6 @@ export class EinkommensverschlechterungInfoViewController
             if (this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 === undefined) {
                 this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 = false;
             }
-            this.getEinkommensverschlechterungsInfo().stichtagFuerBasisJahrPlus1 =
-                this.getStichtagFromMonat(this.selectedStichtagBjP1, 1);
-            this.getEinkommensverschlechterungsInfo().stichtagFuerBasisJahrPlus2 =
-                this.getStichtagFromMonat(this.selectedStichtagBjP2, 2);
 
             this.initializeEKVContainers();
         } else {
@@ -267,10 +212,6 @@ export class EinkommensverschlechterungInfoViewController
             this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 = false;
             this.getEinkommensverschlechterungsInfo().gemeinsameSteuererklaerung_BjP1 = undefined;
             this.getEinkommensverschlechterungsInfo().gemeinsameSteuererklaerung_BjP2 = undefined;
-            this.getEinkommensverschlechterungsInfo().grundFuerBasisJahrPlus1 = undefined;
-            this.getEinkommensverschlechterungsInfo().grundFuerBasisJahrPlus2 = undefined;
-            this.getEinkommensverschlechterungsInfo().stichtagFuerBasisJahrPlus1 = undefined;
-            this.getEinkommensverschlechterungsInfo().stichtagFuerBasisJahrPlus2 = undefined;
         }
 
         return this.einkommensverschlechterungInfoRS.saveEinkommensverschlechterungInfo(

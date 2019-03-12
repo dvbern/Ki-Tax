@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -149,9 +148,7 @@ public class FinanzielleSituationRechner {
 		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOZuZweit = calculateResultateFinanzielleSituation(gesuch, true);
 
 		finanzDatenDTOAlleine.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOAlleine.getMassgebendesEinkVorAbzFamGr());
-		finanzDatenDTOAlleine.setDatumVonBasisjahr(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 		finanzDatenDTOZuZweit.setMassgebendesEinkBjVorAbzFamGr(finanzielleSituationResultateDTOZuZweit.getMassgebendesEinkVorAbzFamGr());
-		finanzDatenDTOZuZweit.setDatumVonBasisjahr(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 
 		//Berechnung wird nur ausgefuehrt wenn Daten vorhanden, wenn es keine gibt machen wir nichts
 		EinkommensverschlechterungInfo ekvInfo = gesuch.extractEinkommensverschlechterungInfo();
@@ -167,9 +164,9 @@ public class FinanzielleSituationRechner {
 					finanzDatenDTOZuZweit.setEkv1Annulliert(Boolean.TRUE);
 				}
 				// In der EKV 1 vergleichen wir immer mit dem Basisjahr
-				handleEKV1(finanzDatenDTOAlleine, ekvInfo.getStichtagFuerBasisJahrPlus1(), resultateEKV1Alleine.getMassgebendesEinkVorAbzFamGr(),
+				handleEKV1(finanzDatenDTOAlleine, resultateEKV1Alleine.getMassgebendesEinkVorAbzFamGr(),
 					massgebendesEinkommenBasisjahrAlleine, minimumEKV);
-				handleEKV1(finanzDatenDTOZuZweit, ekvInfo.getStichtagFuerBasisJahrPlus1(), resultateEKV1ZuZweit.getMassgebendesEinkVorAbzFamGr(),
+				handleEKV1(finanzDatenDTOZuZweit, resultateEKV1ZuZweit.getMassgebendesEinkVorAbzFamGr(),
 					massgebendesEinkommenBasisjahrZuZweit, minimumEKV);
 			}
 
@@ -194,11 +191,9 @@ public class FinanzielleSituationRechner {
 				FinanzielleSituationResultateDTO resultateEKV2Alleine = calculateResultateEinkommensverschlechterung(gesuch, 2, false);
 				FinanzielleSituationResultateDTO resultateEKV2ZuZweit = calculateResultateEinkommensverschlechterung(gesuch, 2, true);
 				// In der EKV 2 vergleichen wir immer mit dem EKV 1, egal ob diese akzeptiert war
-				handleEKV2(finanzDatenDTOAlleine, ekvInfo.getStichtagFuerBasisJahrPlus2(),
-					resultateEKV2Alleine.getMassgebendesEinkVorAbzFamGr(), massgebendesEinkommenVorjahrAlleine,
+				handleEKV2(finanzDatenDTOAlleine, resultateEKV2Alleine.getMassgebendesEinkVorAbzFamGr(), massgebendesEinkommenVorjahrAlleine,
 					massgebendesEinkommenBasisjahrAlleine, minimumEKV);
-				handleEKV2(finanzDatenDTOZuZweit, ekvInfo.getStichtagFuerBasisJahrPlus2(),
-					resultateEKV2ZuZweit.getMassgebendesEinkVorAbzFamGr(), massgebendesEinkommenVorjahrZuZweit,
+				handleEKV2(finanzDatenDTOZuZweit,  resultateEKV2ZuZweit.getMassgebendesEinkVorAbzFamGr(), massgebendesEinkommenVorjahrZuZweit,
 					massgebendesEinkommenBasisjahrZuZweit, minimumEKV);
 			} else {
 				finanzDatenDTOAlleine.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenVorjahrAlleine);
@@ -211,13 +206,12 @@ public class FinanzielleSituationRechner {
 
 	private void handleEKV1(
 		@Nonnull FinanzDatenDTO finanzDatenDTO,
-		@Nullable LocalDate stichtagEKV1,
 		BigDecimal massgebendesEinkommenEKV1,
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal minimumEKV
 	) {
 		// In der EKV 1 vergleichen wir immer mit dem Basisjahr
-		finanzDatenDTO.setDatumVonBasisjahrPlus1(stichtagEKV1);
+		finanzDatenDTO.setEkv1Erfasst(true);
 		boolean accepted = acceptEKV(massgebendesEinkommenBasisjahr, massgebendesEinkommenEKV1, minimumEKV);
 		finanzDatenDTO.setEkv1Accepted(accepted);
 		if (accepted) {
@@ -229,14 +223,13 @@ public class FinanzielleSituationRechner {
 
 	private void handleEKV2(
 		@Nonnull FinanzDatenDTO finanzDatenDTO,
-		@Nullable LocalDate stichtagEKV2,
 		BigDecimal massgebendesEinkommenEKV2,
 		BigDecimal massgebendesEinkommenVorjahr,
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal minimumEKV
 	) {
 		// In der EKV 2 vergleichen wir immer mit dem EKV 1, egal ob diese akzeptiert war
-		finanzDatenDTO.setDatumVonBasisjahrPlus2(stichtagEKV2);
+		finanzDatenDTO.setEkv2Erfasst(true);
 		boolean ekv2AlleineAccepted = acceptEKV2(massgebendesEinkommenVorjahr, massgebendesEinkommenBasisjahr, massgebendesEinkommenEKV2, minimumEKV);
 		finanzDatenDTO.setEkv2Accepted(ekv2AlleineAccepted);
 		if (ekv2AlleineAccepted) {

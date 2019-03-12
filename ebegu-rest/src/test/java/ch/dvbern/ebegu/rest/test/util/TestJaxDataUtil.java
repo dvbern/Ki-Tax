@@ -334,8 +334,6 @@ public final class TestJaxDataUtil {
 		JaxEinkommensverschlechterungInfo jaxEinkommensverschlechterungInfo = new JaxEinkommensverschlechterungInfo();
 		jaxEinkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		jaxEinkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
-		jaxEinkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(LocalDate.now());
-		jaxEinkommensverschlechterungInfo.setGrundFuerBasisJahrPlus1("Grund fuer basis Jahr Plus 1");
 		jaxEinkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
 		jaxEinkommensverschlechterungInfo.setEkvBasisJahrPlus1Annulliert(Boolean.FALSE);
 		jaxEinkommensverschlechterungInfo.setEkvBasisJahrPlus2Annulliert(Boolean.FALSE);

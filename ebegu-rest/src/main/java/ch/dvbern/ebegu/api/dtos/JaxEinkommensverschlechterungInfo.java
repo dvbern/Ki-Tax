@@ -15,18 +15,11 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.time.LocalDate;
-
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
  * DTO fuer Familiensituationen
@@ -53,22 +46,6 @@ public class JaxEinkommensverschlechterungInfo extends JaxAbstractDTO {
 	@Nullable
 	@SuppressWarnings("checkstyle:MemberName")
 	private Boolean gemeinsameSteuererklaerung_BjP2;
-
-	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
-	@Nullable
-	private String grundFuerBasisJahrPlus1;
-
-	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
-	@Nullable
-	private String grundFuerBasisJahrPlus2;
-
-	@Nullable
-	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
-	private LocalDate stichtagFuerBasisJahrPlus1;
-
-	@Nullable
-	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
-	private LocalDate stichtagFuerBasisJahrPlus2;
 
 	@NotNull
 	private Boolean ekvBasisJahrPlus1Annulliert;
@@ -98,42 +75,6 @@ public class JaxEinkommensverschlechterungInfo extends JaxAbstractDTO {
 
 	public void setEkvFuerBasisJahrPlus2(final Boolean ekvFuerBasisJahrPlus2) {
 		this.ekvFuerBasisJahrPlus2 = ekvFuerBasisJahrPlus2;
-	}
-
-	@Nullable
-	public String getGrundFuerBasisJahrPlus1() {
-		return grundFuerBasisJahrPlus1;
-	}
-
-	public void setGrundFuerBasisJahrPlus1(@Nullable final String grundFuerBasisJahrPlus1) {
-		this.grundFuerBasisJahrPlus1 = grundFuerBasisJahrPlus1;
-	}
-
-	@Nullable
-	public String getGrundFuerBasisJahrPlus2() {
-		return grundFuerBasisJahrPlus2;
-	}
-
-	public void setGrundFuerBasisJahrPlus2(@Nullable final String grundFuerBasisJahrPlus2) {
-		this.grundFuerBasisJahrPlus2 = grundFuerBasisJahrPlus2;
-	}
-
-	@Nullable
-	public LocalDate getStichtagFuerBasisJahrPlus1() {
-		return stichtagFuerBasisJahrPlus1;
-	}
-
-	public void setStichtagFuerBasisJahrPlus1(@Nullable final LocalDate stichtagFuerBasisJahrPlus1) {
-		this.stichtagFuerBasisJahrPlus1 = stichtagFuerBasisJahrPlus1;
-	}
-
-	@Nullable
-	public LocalDate getStichtagFuerBasisJahrPlus2() {
-		return stichtagFuerBasisJahrPlus2;
-	}
-
-	public void setStichtagFuerBasisJahrPlus2(@Nullable final LocalDate stichtagFuerBasisJahrPlus2) {
-		this.stichtagFuerBasisJahrPlus2 = stichtagFuerBasisJahrPlus2;
 	}
 
 	@Nullable

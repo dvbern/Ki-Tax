@@ -580,8 +580,6 @@ public class MassgebendesEinkommenFristenTest {
 		gesuch.setEinkommensverschlechterungInfoContainer(new EinkommensverschlechterungInfoContainer());
 		Assert.assertNotNull(gesuch.getEinkommensverschlechterungInfoContainer());
 		gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().setEinkommensverschlechterung(true);
-		gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().setGrundFuerBasisJahrPlus1("Etwas");
-		gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().setStichtagFuerBasisJahrPlus1(ereignisdatum);
 		gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().setEkvFuerBasisJahrPlus1(true);
 		RECHNER.calculateFinanzDaten(gesuch, new BigDecimal(20));
 	}
