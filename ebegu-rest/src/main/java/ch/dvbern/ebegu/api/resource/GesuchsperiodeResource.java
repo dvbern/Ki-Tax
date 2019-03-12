@@ -251,7 +251,7 @@ public class GesuchsperiodeResource {
 	@Consumes(MediaType.WILDCARD)
 	public Response removeErlaeuterungVerfuegung(
 		@Nonnull @PathParam("sprache") Sprache sprache,
-		@Nullable @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
+		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
 		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(gesuchsperiodeId);

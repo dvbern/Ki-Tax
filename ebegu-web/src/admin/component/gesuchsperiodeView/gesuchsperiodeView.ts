@@ -258,14 +258,10 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                 title: this.$translate.instant('FILE_ZU_GROSS'),
             });
         }
-        this.uploadRS.uploadErlaeuterungVerfuegung(selectedFile, sprache, this.gesuchsperiode.id).then(response => {
-            console.log(response);
-        });
+        this.uploadRS.uploadErlaeuterungVerfuegung(selectedFile, sprache, this.gesuchsperiode.id);
     }
 
     public removeErlaeuterung(sprache: TSSprache): void {
-        this.gesuchsperiodeRS.removeErlaeuterungVerfuegung(this.gesuchsperiode.id, sprache).then(response => {
-            console.log(response);
-        });
+        this.gesuchsperiodeRS.removeErlaeuterungVerfuegung(this.gesuchsperiode.id, sprache);
     }
 }
