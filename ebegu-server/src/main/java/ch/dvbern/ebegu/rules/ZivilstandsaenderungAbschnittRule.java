@@ -81,7 +81,7 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 
 			zivilstandsaenderungAbschnitte.add(
 				createVerfuegungZeitabschnittForZivilstand(
-					familiensituation,
+					familiensituationErstgesuch,
 					gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
 					stichtag.minusDays(1)
 				)
