@@ -18,7 +18,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon – Betreuung gelöscht</title>
+	<title>${institution.name}: kiBon – Betreuung gelöscht</title>
 
 </head>
 
@@ -29,7 +29,7 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Der folgende Betreuungseintrag wurde entfernt:
+		Die folgende Betreuung wurde gelöscht:
 	</p>
 	<table>
 		<tbody>
@@ -61,7 +61,7 @@ ${templateConfiguration.mailCss}
 	</table>
 	<br/>
 	<p>
-		Der Betreuungseintrag war am ${datumErstellung} erstellt worden.
+		Die Betreuung wurde am ${datumErstellung} erfasset.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
