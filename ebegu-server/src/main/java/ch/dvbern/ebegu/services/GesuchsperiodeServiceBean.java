@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -252,6 +253,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			persistence.remove(gesuchsperiode);
 		} else {
 			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
 				"removeGesuchsperiode",
 				ErrorCodeEnum.ERROR_GESUCHSPERIODE_CANNOT_BE_REMOVED);
 		}
