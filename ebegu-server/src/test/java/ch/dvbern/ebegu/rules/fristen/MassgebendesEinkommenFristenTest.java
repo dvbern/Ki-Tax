@@ -23,6 +23,7 @@ import java.time.Month;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
@@ -73,7 +74,7 @@ public class MassgebendesEinkommenFristenTest {
 	 */
 	@Test
 	public void erstgesuchGeburtNeuesKindRechtzeitig() {
-		Betreuung betreuung = createErstgesuch(EINREICHUNG_RECHTZEITIG);
+		Betreuung betreuung = createErstgesuch(EINREICHUNG_RECHTZEITIG, false, 50000);
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		addKind(gesuch, LocalDate.of(2017, Month.NOVEMBER, 16));
@@ -106,7 +107,7 @@ public class MassgebendesEinkommenFristenTest {
 	 */
 	@Test
 	public void mutationGeburtNeuesKindRechtzeitig() {
-		Betreuung mutationBetreuung = createMutation(EINREICHUNG_RECHTZEITIG);
+		Betreuung mutationBetreuung = createMutationAlleine(EINREICHUNG_RECHTZEITIG);
 		addKind(mutationBetreuung.extractGesuch(), LocalDate.of(2017, Month.NOVEMBER, 16));
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
@@ -136,7 +137,7 @@ public class MassgebendesEinkommenFristenTest {
 	 */
 	@Test
 	public void mutationGeburtNeuesKindZuSpaet() {
-		Betreuung mutationBetreuung = createMutation(EINREICHUNG_ZU_SPAET);
+		Betreuung mutationBetreuung = createMutationAlleine(EINREICHUNG_ZU_SPAET);
 		addKind(mutationBetreuung.extractGesuch(), LocalDate.of(2017, Month.NOVEMBER, 16));
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
@@ -391,8 +392,8 @@ public class MassgebendesEinkommenFristenTest {
 	 */
 	@Test
 	public void erstgesuchEinkommensverschlechterungRechtzeitig() {
-		Betreuung erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG);
-		createEinkommensverschlechterung(erstgesuch.extractGesuch(), 20000);
+		Betreuung erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG, false, 50000);
+		createEinkommensverschlechterung(erstgesuch.extractGesuch(), 20000, 0);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(erstgesuch);
 		Assert.assertEquals(12, result.size());
@@ -420,8 +421,8 @@ public class MassgebendesEinkommenFristenTest {
 	 */
 	@Test
 	public void erstgesuchEinkommensverschlechterungZuSpaet() {
-		Betreuung erstgesuch = createErstgesuch(EINREICHUNG_ZU_SPAET);
-		createEinkommensverschlechterung(erstgesuch.extractGesuch(), 20000);
+		Betreuung erstgesuch = createErstgesuch(EINREICHUNG_ZU_SPAET, false, 50000);
+		createEinkommensverschlechterung(erstgesuch.extractGesuch(), 20000, 0);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(erstgesuch);
 		Assert.assertEquals(12, result.size());
@@ -499,6 +500,36 @@ public class MassgebendesEinkommenFristenTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 20000, 20000, true);
 	}
 
+	/**
+	 * Mutation verheiratet, der Partner verdient weniger, danach erfolgt aber die Scheidung
+	 * => Bis zur Scheidung müsste die EKV gelten, danach nicht mehr, da GS1 keine Verschlechterung erfahren hat
+	 */
+	@Test
+	public void mutationScheidungMitEinkommensverschlechterungGs2() {
+		LocalDate scheidungsdatum = LocalDate.of(2018, Month.APRIL, 16);
+		Betreuung erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG, true, 50000);
+		Betreuung mutation = createMutationScheidungMitEkv(erstgesuch.extractGesuch(), EINREICHUNG_RECHTZEITIG, scheidungsdatum, 50000, 10000);
+
+		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutation);
+		Assert.assertEquals(12, result.size());
+		int i = 0;
+
+		// EKV theoretisch gültig für den ganzen Zeitraum
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 3, 60000, 2017);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 3, 60000, 2017);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 3, 60000, 2017);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 3, 60000, 2017);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 60000, 2017);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 60000, 2017);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 3, 60000, 2017);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 3, 60000, 2017);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 3, 60000, 2017);
+		// Scheidung
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 50000, 2016);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 50000, 2016);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 50000, 2016);
+	}
+
 	private void assertZeitabschnitt(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull LocalDate gueltigAb, int familiengroesse, int massgEinkVorAbzug, int massgEink) {
 		Assert.assertEquals(gueltigAb, abschnitt.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(familiengroesse, abschnitt.getFamGroesse().intValue());
@@ -506,8 +537,7 @@ public class MassgebendesEinkommenFristenTest {
 		Assert.assertEquals(massgEink, abschnitt.getMassgebendesEinkommen().intValue());
 	}
 
-	private void assertZeitabschnitt(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull LocalDate gueltigAb, int familiengroesse, int massgEinkVorAbzug,
-		int massgEink, boolean hasAnspruch) {
+	private void assertZeitabschnitt(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull LocalDate gueltigAb, int familiengroesse, int massgEinkVorAbzug, int massgEink, boolean hasAnspruch) {
 		Assert.assertEquals(gueltigAb, abschnitt.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(familiengroesse, abschnitt.getFamGroesse().intValue());
 		Assert.assertEquals(massgEinkVorAbzug, abschnitt.getMassgebendesEinkommenVorAbzFamgr().intValue());
@@ -515,22 +545,57 @@ public class MassgebendesEinkommenFristenTest {
 		Assert.assertEquals(hasAnspruch, abschnitt.getAnspruchberechtigtesPensum() > 0);
 	}
 
-	private Betreuung createErstgesuch(@Nonnull LocalDate eingangsdatum) {
+	private void assertZeitabschnittMitJahr(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull LocalDate gueltigAb, int familiengroesse,
+		int massgEinkVorAbzug,
+		int einkommensjahr) {
+		Assert.assertEquals(gueltigAb, abschnitt.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(familiengroesse, abschnitt.getFamGroesse().intValue());
+		Assert.assertEquals(massgEinkVorAbzug, abschnitt.getMassgebendesEinkommenVorAbzFamgr().intValue());
+		Assert.assertEquals(einkommensjahr, abschnitt.getEinkommensjahr().intValue());
+	}
+
+	private Betreuung createErstgesuch(@Nonnull LocalDate eingangsdatum, boolean zuZweit, int einkommmenProGs) {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 100,  BigDecimal.valueOf(2000));
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
-		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		Gesuch gesuch = betreuung.extractGesuch();
 		GesuchstellerContainer gs1 = gesuch.getGesuchsteller1();
 		Assert.assertNotNull(gs1);
 		Assert.assertNotNull(gs1.getFinanzielleSituationContainer());
 		gs1.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
-		gs1.getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(50000L));
+		gs1.getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(einkommmenProGs));
 		gesuch.setRegelnGueltigAb(eingangsdatum);
+		if (zuZweit) {
+			Familiensituation familiensituation = gesuch.extractFamiliensituation();
+			Assert.assertNotNull(familiensituation);
+			familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
+			GesuchstellerContainer gs2 = new GesuchstellerContainer();
+			Assert.assertNotNull(gs2);
+			gesuch.setGesuchsteller2(gs2);
+			gs2.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
+			gs2.setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+			Assert.assertNotNull(gs2.getFinanzielleSituationContainer());
+			gs2.getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
+			gs2.getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(einkommmenProGs));
+		}
 		return betreuung;
 	}
 
-	private Betreuung createMutation(@Nonnull LocalDate eingangsdatum) {
-		Gesuch erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG).extractGesuch();
+	private Betreuung createMutation(@Nullable Gesuch erstgesuch, @Nonnull LocalDate eingangsdatum, boolean zuZweit) {
+		if (erstgesuch == null) {
+			erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG, zuZweit, 50000).extractGesuch();
+		}
+		List<VerfuegungZeitabschnitt> calculate = calculateInklAllgemeineRegeln(erstgesuch.extractAllBetreuungen().get(0));
+		Verfuegung verfuegungErstgesuch = new Verfuegung();
+		verfuegungErstgesuch.setZeitabschnitte(calculate);
+		Gesuch mutation = erstgesuch.copyForMutation(new Gesuch(), Eingangsart.ONLINE);
+		addBetreuung(mutation.getKindContainers().iterator().next());
+		mutation.extractAllBetreuungen().get(0).setVorgaengerVerfuegung(verfuegungErstgesuch);
+		mutation.setRegelnGueltigAb(eingangsdatum);
+		return mutation.extractAllBetreuungen().get(0);
+	}
+
+	private Betreuung createMutationAlleine(@Nonnull LocalDate eingangsdatum) {
+		Gesuch erstgesuch = createErstgesuch(EINREICHUNG_RECHTZEITIG, false, 50000).extractGesuch();
 		List<VerfuegungZeitabschnitt> calculate = calculateInklAllgemeineRegeln(erstgesuch.extractAllBetreuungen().get(0));
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(calculate);
@@ -542,7 +607,7 @@ public class MassgebendesEinkommenFristenTest {
 	}
 
 	private Betreuung createMutationHeirat(@Nonnull LocalDate eingangsdatum, @Nonnull LocalDate heiratsdatum, int einkommenPartner) {
-		Betreuung mutationBetreuung = createMutation(eingangsdatum);
+		Betreuung mutationBetreuung = createMutationAlleine(eingangsdatum);
 		Gesuch mutation = mutationBetreuung.extractGesuch();
 		Familiensituation verheiratet = new Familiensituation();
 		verheiratet.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
@@ -562,8 +627,22 @@ public class MassgebendesEinkommenFristenTest {
 		return mutationBetreuung;
 	}
 
+	private Betreuung createMutationScheidungMitEkv(@Nullable Gesuch erstgesuch, @Nonnull LocalDate eingangsdatum, @Nonnull LocalDate scheidungsdatum,
+		int einkommenGS1, int einkommenGS2) {
+		Betreuung mutationBetreuung = createMutation(erstgesuch, eingangsdatum, true);
+		Gesuch mutation = mutationBetreuung.extractGesuch();
+		Familiensituation alleinerziehend = new Familiensituation();
+		alleinerziehend.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+		alleinerziehend.setAenderungPer(scheidungsdatum);
+		Assert.assertNotNull(mutation);
+		Assert.assertNotNull(mutation.getFamiliensituationContainer());
+		mutation.getFamiliensituationContainer().setFamiliensituationJA(alleinerziehend);
+		createEinkommensverschlechterung(mutation, einkommenGS1, einkommenGS2);
+		return mutationBetreuung;
+	}
+
 	private Betreuung createMutationFinanzielleSituation(@Nonnull LocalDate eingangsdatum, int neuesEinkommen) {
-		Betreuung mutationBetreuung = createMutation(eingangsdatum);
+		Betreuung mutationBetreuung = createMutationAlleine(eingangsdatum);
 		Gesuch mutation = mutationBetreuung.extractGesuch();
 		Assert.assertNotNull(mutation.getGesuchsteller1());
 		Assert.assertNotNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer());
@@ -572,23 +651,34 @@ public class MassgebendesEinkommenFristenTest {
 	}
 
 	private Betreuung createMutationEinkommensverschlechterung(@Nonnull LocalDate eingangsdatum, int neuesEinkommen) {
-		Betreuung mutationBetreuung = createMutation(eingangsdatum);
+		Betreuung mutationBetreuung = createMutationAlleine(eingangsdatum);
 		Gesuch mutation = mutationBetreuung.extractGesuch();
-		createEinkommensverschlechterung(mutation, neuesEinkommen);
+		createEinkommensverschlechterung(mutation, neuesEinkommen, 0);
 		return mutationBetreuung;
 	}
 
-	private void createEinkommensverschlechterung(@Nonnull Gesuch gesuch, int neuesEinkommen) {
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer());
-		Assert.assertNotNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
-		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
-		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohnJan(new BigDecimal(neuesEinkommen));
+	private void createEinkommensverschlechterung(@Nonnull Gesuch gesuch, int neuesEinkommenGS1, int neuesEinkommenGS2) {
+		// GS1
+		if (gesuch.getGesuchsteller1() != null) {
+			createEinkommensverschlechterungForGesuchsteller(gesuch.getGesuchsteller1(), neuesEinkommenGS1);
+		}
+		// GS2
+		if (gesuch.getGesuchsteller2() != null) {
+			createEinkommensverschlechterungForGesuchsteller(gesuch.getGesuchsteller2(), neuesEinkommenGS2);
+		}
 		gesuch.setEinkommensverschlechterungInfoContainer(new EinkommensverschlechterungInfoContainer());
 		Assert.assertNotNull(gesuch.getEinkommensverschlechterungInfoContainer());
 		gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().setEinkommensverschlechterung(true);
 		gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().setEkvFuerBasisJahrPlus1(true);
 		RECHNER.calculateFinanzDaten(gesuch, new BigDecimal(20));
+	}
+
+	private void createEinkommensverschlechterungForGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller, int neuesEinkommen) {
+		Assert.assertNotNull(gesuchsteller);
+		gesuchsteller.setEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer());
+		Assert.assertNotNull(gesuchsteller.getEinkommensverschlechterungContainer());
+		gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
+		gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohnJan(new BigDecimal(neuesEinkommen));
 	}
 
 	private void addBetreuung(@Nonnull KindContainer kind) {
