@@ -51,10 +51,12 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 		List<VerfuegungZeitabschnitt> erwerbspensumAbschnitte = new ArrayList<>();
 		Gesuch gesuch = betreuung.extractGesuch();
 		if (gesuch.getGesuchsteller1() != null) {
-			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch, gesuch.getGesuchsteller1(), false));
+			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch,
+				gesuch.getGesuchsteller1(), false));
 		}
 		if (gesuch.getGesuchsteller2() != null) {
-			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch, gesuch.getGesuchsteller2(), true));
+			erwerbspensumAbschnitte.addAll(getErwerbspensumAbschnittForGesuchsteller(gesuch,
+				gesuch.getGesuchsteller2(), true));
 		}
 		return erwerbspensumAbschnitte;
 	}
@@ -74,15 +76,16 @@ public abstract class AbstractErwerbspensumAbschnittRule extends AbstractAbschni
 		if (familiensituationGueltigAb != null) {
 			// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
 			LocalDate familiensituationStichtag = getStichtagForEreignis(familiensituationGueltigAb);
-			if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
+			if (!familiensituationErstgesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis())
+				&& familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis())) {
 				// 1GS to 2GS
 				if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)
 					&& gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)) {
 
 					gueltigkeit.setGueltigAb(familiensituationStichtag);
 				}
-			} else if (familiensituationErstgesuch.hasSecondGesuchsteller()
-				&& !familiensituation.hasSecondGesuchsteller()
+			} else if (familiensituationErstgesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis())
+				&& !familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis())
 				&& gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)
 				&& gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)) {
 
