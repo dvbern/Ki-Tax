@@ -40,6 +40,9 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
     public alterskategorieVorschule: boolean;
     public alterskategorieKindergarten: boolean;
     public alterskategorieSchule: boolean;
+    public subventioniertePlaetze: boolean;
+    public anzahlPlaetze: number;
+    public anzahlPlaetzeFirmen: number;
     public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
     public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
 
@@ -59,6 +62,9 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
         alterskategorieVorschule?: boolean,
         alterskategorieKindergarten?: boolean,
         alterskategorieSchule?: boolean,
+        subventioniertePlaetze?: boolean,
+        anzahlPlaetze?: number,
+        anzahlPlaetzeFirmen?: number,
         institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
         institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
         administratoren?: string,
@@ -79,6 +85,9 @@ export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity 
         this.alterskategorieVorschule = alterskategorieVorschule;
         this.alterskategorieKindergarten = alterskategorieKindergarten;
         this.alterskategorieSchule = alterskategorieSchule;
+        this.subventioniertePlaetze = subventioniertePlaetze;
+        this.anzahlPlaetze = anzahlPlaetze;
+        this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
         this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
         this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
         this.administratoren = administratoren;

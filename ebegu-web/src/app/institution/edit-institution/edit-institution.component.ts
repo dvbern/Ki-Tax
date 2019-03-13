@@ -21,6 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
@@ -52,7 +53,8 @@ export class EditInstitutionComponent implements OnInit {
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
     public abweichendeZahlungsAdresse: boolean;
-    public subventioniertePlaetze: boolean;
+    public alterskategorie: string;
+    public subventioniertePlaetze: string;
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
 
@@ -94,6 +96,7 @@ export class EditInstitutionComponent implements OnInit {
                         this.createInstitutionStammdaten(institution);
                     }
                     this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
+                    this.initStrings(stammdaten);
                     this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
                 });
@@ -220,5 +223,36 @@ export class EditInstitutionComponent implements OnInit {
 
     public compareTraegerschaft(b1: TSTraegerschaft, b2: TSTraegerschaft): boolean {
         return b1 && b2 ? b1.id === b2.id : b1 === b2;
+    }
+
+    private initStrings(stammdaten: TSInstitutionStammdaten): void {
+        const alterskategorien: string[] = [];
+        this.subventioniertePlaetze = this.translate.instant('INSTITUTION_SUBVENTIONIERTE_PLAETZE');
+        if (stammdaten.alterskategorieBaby) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY'));
+        }
+        if (stammdaten.alterskategorieVorschule) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE'));
+        }
+        if (stammdaten.alterskategorieKindergarten) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'));
+        }
+        if (stammdaten.alterskategorieSchule) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
+        }
+        if (!stammdaten.subventioniertePlaetze) {
+            this.subventioniertePlaetze = '';
+        }
+        this.alterskategorie = alterskategorien.join(', ');
+    }
+
+    public getPlaceholderForPlaetze(): string {
+        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA) {
+            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_1');
+        }
+        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2');
+        }
+        return '';
     }
 }
