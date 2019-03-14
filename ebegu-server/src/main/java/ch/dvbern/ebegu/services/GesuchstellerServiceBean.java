@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -179,8 +180,9 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	 * Wenn aufgrund der Familiensitation 1 GS noetig ist kommt hier true zurueck wenn gsNumber = 1
 	 */
 	private boolean isSavingLastNecessaryGesuchsteller(Gesuch gesuch, Integer gsNumber) {
-		return (gesuch.extractFamiliensituation().hasSecondGesuchsteller() && gsNumber == 2)
-			|| (!gesuch.extractFamiliensituation().hasSecondGesuchsteller() && gsNumber == 1);
+		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		boolean gs2 = Objects.requireNonNull(gesuch.extractFamiliensituation()).hasSecondGesuchsteller(bis);
+		return (gs2 && gsNumber == 2) || (!gs2 && gsNumber == 1);
 	}
 
 	@Nonnull

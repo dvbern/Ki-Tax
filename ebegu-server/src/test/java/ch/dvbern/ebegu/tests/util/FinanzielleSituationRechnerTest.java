@@ -54,7 +54,9 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	public void testPositiverDurschnittlicherGewinn() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		TestDataUtil.calculateFinanzDaten(gesuch);
+
 		//positiv value
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		Assert.assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
@@ -63,7 +65,8 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(300));
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		Assert.assertNotNull(familiensituation);
-		FinanzielleSituationResultateDTO finSitResultateDTO1 = finSitRechner.calculateResultateFinanzielleSituation(gesuch, familiensituation.hasSecondGesuchsteller());
+		FinanzielleSituationResultateDTO finSitResultateDTO1 = finSitRechner
+			.calculateResultateFinanzielleSituation(gesuch, familiensituation.hasSecondGesuchsteller(bis));
 
 		Assert.assertEquals(BigDecimal.valueOf(100), finSitResultateDTO1.getGeschaeftsgewinnDurchschnittGesuchsteller1());
 	}
@@ -72,6 +75,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 	public void testNegativerDurschnittlicherGewinn() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
+		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		//negativ value
@@ -82,7 +86,8 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(-300));
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		Assert.assertNotNull(familiensituation);
-		FinanzielleSituationResultateDTO finSitResultateDTO2 = finSitRechner.calculateResultateFinanzielleSituation(gesuch, familiensituation.hasSecondGesuchsteller());
+		FinanzielleSituationResultateDTO finSitResultateDTO2 = finSitRechner
+			.calculateResultateFinanzielleSituation(gesuch, familiensituation.hasSecondGesuchsteller(bis));
 
 		Assert.assertEquals(BigDecimal.ZERO, finSitResultateDTO2.getGeschaeftsgewinnDurchschnittGesuchsteller1());
 	}

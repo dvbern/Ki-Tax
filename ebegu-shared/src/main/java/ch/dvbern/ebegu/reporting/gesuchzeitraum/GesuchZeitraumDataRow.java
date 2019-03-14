@@ -20,6 +20,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class GesuchZeitraumDataRow {
 
 	private String bgNummer;
+	private String gemeinde;
 	private Integer gesuchLaufNr;
 	private String institution;
 	private String betreuungsTyp;
@@ -47,7 +48,8 @@ public class GesuchZeitraumDataRow {
 	private Integer anzahlSteueramtAusgeloest;
 	private Integer anzahlSteueramtGeprueft;
 
-	public GesuchZeitraumDataRow(String bgNummer, Integer gesuchLaufNr, String institution, String betreuungsTyp,
+	public GesuchZeitraumDataRow(
+		String bgNummer, String gemeinde, Integer gesuchLaufNr, String institution, String betreuungsTyp,
 		String periode, Integer anzahlGesuchOnline, Integer anzahlGesuchPapier, Integer anzahlMutationOnline,
 		Integer anzahlMutationPapier, Integer anzahlMutationAbwesenheit, Integer anzahlMutationBetreuung,
 		Integer anzahlMutationEV, Integer anzahlMutationEwerbspensum, Integer anzahlMutationFamilienSitutation,
@@ -55,8 +57,10 @@ public class GesuchZeitraumDataRow {
 		Integer anzahlMutationUmzug, Integer anzahlMahnungen, Integer anzahlSteueramtAusgeloest,
 		Integer anzahlSteueramtGeprueft, Integer anzahlBeschwerde, Integer anzahlVerfuegungen,
 		Integer anzahlVerfuegungenNormal, Integer anzahlVerfuegungenMaxEinkommen, Integer anzahlVerfuegungenKeinPensum,
-		Integer anzahlVerfuegungenNichtEintreten) {
+		Integer anzahlVerfuegungenNichtEintreten
+	) {
 		this.bgNummer = bgNummer;
+		this.gemeinde = gemeinde;
 		this.gesuchLaufNr = gesuchLaufNr;
 		this.institution = institution;
 		this.betreuungsTyp = betreuungsTyp;
@@ -92,6 +96,14 @@ public class GesuchZeitraumDataRow {
 
 	public void setBgNummer(String bgNummer) {
 		this.bgNummer = bgNummer;
+	}
+
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 
 	public Integer getGesuchLaufNr() {

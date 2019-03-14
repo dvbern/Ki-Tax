@@ -66,7 +66,7 @@ public class AbwesenheitCalcRuleTest {
 
 		Assert.assertTrue(zeitAbschnitt.isBezahltVollkosten());
 		Assert.assertEquals(
-			"ABWESENHEIT: Das Kind wird länger als 30 aufeinanderfolgende Kalendertage nicht familienergänzend betreut"
+			"Das Kind wird länger als 30 aufeinanderfolgende Kalendertage nicht familienergänzend betreut"
 				+ " (z.B. aufgrund einer längeren Reise). Deshalb wird kein Betreuungsgutschein mehr ausbezahlt (Art. 34u Abs. 1).",
 			zeitAbschnitt.getBemerkungen());
 
