@@ -18,6 +18,7 @@ import {IComponentOptions, IFormController, ILogService} from 'angular';
 import * as moment from 'moment';
 import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -59,6 +60,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         '$translate',
         'UploadRS',
         'AuthServiceRS',
+        'DownloadRS'
     ];
 
     public form: IFormController;
@@ -82,7 +84,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         private readonly $state: StateService,
         private readonly $translate: ITranslateService,
         private readonly uploadRS: UploadRS,
-        authServiceRS: AuthServiceRS,
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly downloadRS: DownloadRS,
     ) {
         super(authServiceRS);
     }
@@ -281,10 +284,11 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public downloadErlaeuterung(sprache: TSSprache): void {
+        const win = this.downloadRS.prepareDownloadWindow();
         this.gesuchsperiodeRS.downloadErlaeuterung(this.gesuchsperiode.id, sprache).then(response => {
             const file = new Blob([response], { type: 'application/pdf' });
             const fileURL = URL.createObjectURL(file);
-            window.open(fileURL, '_blank');
+            win.open(fileURL);
         });
     }
 
