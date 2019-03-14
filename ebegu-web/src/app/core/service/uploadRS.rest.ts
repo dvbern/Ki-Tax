@@ -14,6 +14,7 @@
  */
 
 import {IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {TSSprache} from '../../../models/enums/TSSprache';
 import TSDokumentGrund from '../../../models/TSDokumentGrund';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
@@ -29,7 +30,7 @@ export class UploadRS {
         private readonly upload: any,
         public ebeguRestUtil: EbeguRestUtil,
         public q: IQService,
-        private readonly base64: any
+        private readonly base64: any,
     ) {
         this.serviceURL = REST_API + 'upload';
     }
@@ -70,6 +71,21 @@ export class UploadRS {
             const progressPercentage = 100 * loaded / total;
             console.log(`progress: ${progressPercentage}% `);
             this.q.defer().notify();
+        });
+    }
+
+    public uploadErlaeuterungVerfuegung(file: any, sprache: TSSprache, periodeID: string): IPromise<any> {
+        return this.upload.upload({
+            url: `${this.serviceURL}/erlaeuterung/${sprache}/${periodeID}`,
+            method: 'POST',
+            data: {
+                file
+            },
+        }).then((response: any) => {
+            return response.data;
+        }, (response: any) => {
+            console.log('Upload File: NOT SUCCESS');
+            return this.q.reject(response);
         });
     }
 

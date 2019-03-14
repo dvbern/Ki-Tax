@@ -1490,5 +1490,8 @@
     "TUTORIAL_WILLKOMMEN": "Willkomen zur kiBon-Schulung",
     "TUTORIAL_INSTITUTION_TEXT": "Klicken Sie bitte auf den untenstehenden Button, um sich als Sachbearbeitende der Test-Institution \"Kita kiBon\" anzumelden und das wundervolle kiBon-Erlebnis geniessen zu können",
     "TUTORIAL_GEMEINDE_TEXT": "Klicken Sie bitte auf den untenstehenden Button, um sich als Sachbearbeitende der Test-Gemeinde \"kiBon\" anzumelden und das wundervolle kiBon-Erlebnis geniessen zu können",
-    "TUTORIAL_LOGIN": "Einloggen"
+    "TUTORIAL_LOGIN": "Einloggen",
+    "ERLAEUTERUNG_VERFUEGUNG_DE": "Erläuterung zur Verfügung Deutsch",
+    "ERLAEUTERUNG_VERFUEGUNG_FR": "Erläuterung zur Verfügung Französisch",
+    "ERLAEUTERUNG_VERFUEGUNG": "Erläuterungen zur Verfügung"
 }
