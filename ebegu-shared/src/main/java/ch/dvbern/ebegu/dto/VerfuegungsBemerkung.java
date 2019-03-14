@@ -86,12 +86,10 @@ public class VerfuegungsBemerkung {
 	}
 
 	public String getTranslated() {
-		String bemerkungsText = null;
 		if (args != null) {
-			bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, sprache, args);
+			return ServerMessageUtil.translateEnumValue(msgKey, sprache, args);
 		} else {
-			bemerkungsText = ServerMessageUtil.translateEnumValue(msgKey, sprache);
+			return ServerMessageUtil.translateEnumValue(msgKey, sprache);
 		}
-		return ruleKey.name() + ": " + bemerkungsText;
 	}
 }

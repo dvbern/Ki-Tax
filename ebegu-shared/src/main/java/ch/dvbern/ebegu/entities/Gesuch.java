@@ -309,7 +309,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public FinanzDatenDTO getFinanzDatenDTO() {
 		final Familiensituation familiensituation = extractFamiliensituation();
-		if (familiensituation != null && familiensituation.hasSecondGesuchsteller()) {
+		if (familiensituation != null
+			&& familiensituation.hasSecondGesuchsteller(gesuchsperiode.getGueltigkeit().getGueltigBis())) {
 			return finanzDatenDTO_zuZweit;
 		}
 		return finanzDatenDTO_alleine;
@@ -830,7 +831,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (this.getGesuchsteller2() != null
 			&& target.getFamiliensituationContainer() != null
 			&& target.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& target.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller()) {
+			&& target.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller(gesuchsperiode.getGueltigkeit().getGueltigBis())) {
 
 			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.persistence;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -34,8 +35,10 @@ import ch.dvbern.lib.cdipersistence.Persistence;
  */
 @Stateless
 @Local(Persistence.class)
-public class PersistenceService implements Persistence {
+public class PersistenceService implements Persistence, Serializable {
 
+	private static final long serialVersionUID = -4643759053039027750L;
+	
 	@PersistenceContext(unitName = "ebeguPersistenceUnit")
 	private EntityManager em;
 
