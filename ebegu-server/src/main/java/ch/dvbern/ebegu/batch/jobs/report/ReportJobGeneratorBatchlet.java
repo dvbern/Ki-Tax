@@ -111,18 +111,12 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 		switch (workJobType) {
 
-		case VORLAGE_REPORT_GESUCH_STICHTAG_DE: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID, locale);
-			return uploadFileInfo;
-		}
+		case VORLAGE_REPORT_GESUCH_STICHTAG_DE:
 		case VORLAGE_REPORT_GESUCH_STICHTAG_FR: {
 			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID, locale);
 			return uploadFileInfo;
 		}
-		case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID, locale);
-			return uploadFileInfo;
-		}
+		case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
 		case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
 			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID, locale);
 			return uploadFileInfo;

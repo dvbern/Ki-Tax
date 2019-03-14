@@ -286,8 +286,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Objects.requireNonNull(date, "Das Argument 'date' darf nicht leer sein");
 
-		final ReportVorlage reportVorlage = locale.equals(Locale.FRENCH) ?
-			ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_FR : ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_DE;
+		final ReportVorlage reportVorlage = locale.equals(Locale.FRENCH)
+			? ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_FR
+			: ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_DE;
 
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		Objects.requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
@@ -368,8 +369,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		validateDateParams(dateVon, dateBis);
 		validateDateParams(dateVon, dateBis);
 
-		final ReportVorlage reportVorlage = locale.equals(Locale.FRENCH) ?
-			ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_FR : ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_DE;
+		final ReportVorlage reportVorlage = locale.equals(Locale.FRENCH)
+			? ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_FR
+			: ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_DE;
 
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		Objects.requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);

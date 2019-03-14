@@ -48,8 +48,8 @@ public class GesuchZeitraumDataRow {
 	private Integer anzahlSteueramtAusgeloest;
 	private Integer anzahlSteueramtGeprueft;
 
-	public GesuchZeitraumDataRow(String bgNummer, String gemeinde, Integer gesuchLaufNr, String institution,
-		String betreuungsTyp,
+	public GesuchZeitraumDataRow(
+		String bgNummer, String gemeinde, Integer gesuchLaufNr, String institution, String betreuungsTyp,
 		String periode, Integer anzahlGesuchOnline, Integer anzahlGesuchPapier, Integer anzahlMutationOnline,
 		Integer anzahlMutationPapier, Integer anzahlMutationAbwesenheit, Integer anzahlMutationBetreuung,
 		Integer anzahlMutationEV, Integer anzahlMutationEwerbspensum, Integer anzahlMutationFamilienSitutation,
@@ -57,7 +57,8 @@ public class GesuchZeitraumDataRow {
 		Integer anzahlMutationUmzug, Integer anzahlMahnungen, Integer anzahlSteueramtAusgeloest,
 		Integer anzahlSteueramtGeprueft, Integer anzahlBeschwerde, Integer anzahlVerfuegungen,
 		Integer anzahlVerfuegungenNormal, Integer anzahlVerfuegungenMaxEinkommen, Integer anzahlVerfuegungenKeinPensum,
-		Integer anzahlVerfuegungenNichtEintreten) {
+		Integer anzahlVerfuegungenNichtEintreten
+	) {
 		this.bgNummer = bgNummer;
 		this.gemeinde = gemeinde;
 		this.gesuchLaufNr = gesuchLaufNr;
