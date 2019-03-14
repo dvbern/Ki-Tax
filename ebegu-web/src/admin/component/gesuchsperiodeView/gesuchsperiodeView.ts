@@ -69,6 +69,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public datumFreischaltungTagesschule: moment.Moment;
     public datumFreischaltungMax: moment.Moment;
 
+    public isErlaeuterungDE: boolean = false;
+    public isErlaeuterungFR: boolean = false;
+
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
         private readonly dvDialog: DvDialog,
@@ -94,6 +97,12 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         this.gesuchsperiodeRS.findGesuchsperiode(this.$stateParams.gesuchsperiodeId).then((found: TSGesuchsperiode) => {
             this.setSelectedGesuchsperiode(found);
             this.initialStatus = this.gesuchsperiode.status;
+            this.gesuchsperiodeRS.existErlaeuterung(this.gesuchsperiode.id, TSSprache.DEUTSCH).then(result => {
+                this.isErlaeuterungDE = !!result;
+            });
+            this.gesuchsperiodeRS.existErlaeuterung(this.gesuchsperiode.id, TSSprache.FRANZOESISCH).then(result => {
+                this.isErlaeuterungFR = !!result;
+            });
         });
     }
 
@@ -258,10 +267,37 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                 title: this.$translate.instant('FILE_ZU_GROSS'),
             });
         }
-        this.uploadRS.uploadErlaeuterungVerfuegung(selectedFile, sprache, this.gesuchsperiode.id);
+        this.uploadRS.uploadErlaeuterungVerfuegung(selectedFile, sprache, this.gesuchsperiode.id)
+            .then(() => {
+                this.setErlauterungBoolean(true, sprache);
+            });
     }
 
     public removeErlaeuterung(sprache: TSSprache): void {
-        this.gesuchsperiodeRS.removeErlaeuterungVerfuegung(this.gesuchsperiode.id, sprache);
+        this.gesuchsperiodeRS.removeErlaeuterungVerfuegung(this.gesuchsperiode.id, sprache)
+            .then(() => {
+                this.setErlauterungBoolean(false, sprache);
+            });
+    }
+
+    public downloadErlaeuterung(sprache: TSSprache): void {
+        this.gesuchsperiodeRS.downloadErlaeuterung(this.gesuchsperiode.id, sprache).then(response => {
+            const file = new Blob([response], { type: 'application/pdf' });
+            const fileURL = URL.createObjectURL(file);
+            window.open(fileURL, '_blank');
+        });
+    }
+
+    private setErlauterungBoolean(value: boolean, sprache: TSSprache): void {
+        switch (sprache) {
+            case TSSprache.FRANZOESISCH:
+                this.isErlaeuterungFR = value;
+                break;
+            case TSSprache.DEUTSCH:
+                this.isErlaeuterungDE = value;
+                break;
+            default:
+                return;
+        }
     }
 }

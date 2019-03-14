@@ -203,8 +203,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	/**
 	 * Sucht ein WriteProtectedDokument mit demselben Namen und Pfad und vom selben Gesuch. Wen das Dokument
-	 * existiert, wird dieses gelöscht
-	 * und mit dem Neuen ersetzt. Wenn es nicht existiert, ein neues wird erstellt.
+	 * existiert, wird dieses gelöscht und mit dem Neuen ersetzt. Wenn es nicht existiert, ein neues wird erstellt.
 	 */
 	@Nonnull
 	@Override
@@ -291,8 +290,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			// existiert und wir muessen es trotzdem erstellen
 			if (!gesuch.hasOnlyBetreuungenOfSchulamt()) {
 				// Bei nur Schulamt prüfen wir die Berechtigung nicht, damit das JA solche Gesuche schliessen kann.
-				// Der UseCase ist, dass zuerst ein zweites
-				// Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.
+				// Der UseCase ist, dass zuerst ein zweites Angebot vorhanden war, dieses aber durch das JA gelöscht wurde.
 				authorizer.checkReadAuthorizationFinSit(gesuch);
 			}
 			finanzielleSituationService.calculateFinanzDaten(gesuch);
@@ -342,9 +340,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		);
 
 		// Das Begleitschreiben wird per Definition immer erst nach dem Verfügen erstellt, da die Verfügungen bzw.
-		// Nicht-Eintretensverfügungen als
-		// Anhang im Brief erwähnt werden! Sollte das Gesuch ein Status von Verfuegt haben, wird es als writeprotected
-		// gespeichert
+		// Nicht-Eintretensverfügungen als Anhang im Brief erwähnt werden! Sollte das Gesuch ein Status von
+		// Verfuegt haben, wird es als writeprotected gespeichert
 		WriteProtectedDokument document =
 			getDocumentIfExistsAndIsWriteProtected(gesuch.getId(), fileNameForGeneratedDokumentTyp, forceCreation);
 		if (document == null) {
@@ -401,19 +398,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	private void addErlaeuterungenDoc(Gesuch gesuch, List<InputStream> docsToMerge) {
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
 		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
-		byte[] content = null;
 
-		switch (sprache) {
-		case DEUTSCH:
-			content = gesuchsperiode.getVerfuegungErlaeuterungenDe();
-			break;
-		case FRANZOESISCH:
-			content = gesuchsperiode.getVerfuegungErlaeuterungenFr();
-			break;
-		default:
-			break;
-		}
-		if(content != null) {
+		byte[] content = gesuchsperiode.getVerfuegungErlaeuterungWithSprache(sprache);
+
+		if (content.length != 0) {
 			docsToMerge.add(new ByteArrayInputStream(content));
 		}
 	}
@@ -612,12 +600,10 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		if (optionalDokument.isPresent() && optionalDokument.get().isWriteProtected()) {
 			if (forceCreation) {
 				// Dies ist ein Zustand, der eigentlich gar nicht vorkommen dürfte: Wir wollen explizit das Dokument
-				// neu
-				// erstellen (forceCreate), es ist aber writeProtected.
-				// Wir vermuten/hoffen, dass dies nur bei sehr schnellem Doppelklick vorkommen kann. Da der Benutzer
-				// mit
-				// einer eventuellen Fehlermeldung sowieso nichts anfangen könnte, geben wir das bereits vorhandene
-				// Dokument zurück, loggen aber den Vorfall.
+				// neu erstellen (forceCreate), es ist aber writeProtected. Wir vermuten/hoffen, dass dies nur bei
+				// sehr schnellem Doppelklick vorkommen kann. Da der Benutzer mit einer eventuellen Fehlermeldung
+				// sowieso nichts anfangen könnte, geben wir das bereits vorhandene Dokument zurück, loggen aber den
+				// Vorfall.
 				LOGGER.error(
 					"Achtung, es wurde versucht, ein Dokument mit WriteProtection neu zu erstellen. "
 						+ "PersistedDokument-ID: {}",
@@ -741,10 +727,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		// Das Dokument muss solange neu erstellt werden, bis die Mahnung ausgelöst war
 		boolean regenerateFile = (mahnungDB == null);
-		// Wenn wir es nicht neu generieren wollen, suchen wir erst gar nicht nach einem evt. schon existierenden file
-		// . Grund: Der Entwurf wird immer unter
-		// demselben Namen gespeichert, so dass wir im Status ENTWURF sehr wahrscheinlich bereits ein altes File
-		// finden.
+		// Wenn wir es nicht neu generieren wollen, suchen wir erst gar nicht nach einem evt. schon existierenden
+		// file. Grund: Der Entwurf wird immer unter demselben Namen gespeichert, so dass wir im Status ENTWURF
+		// sehr wahrscheinlich bereits ein altes File finden.
 		if (!regenerateFile) {
 			WriteProtectedDokument documentIfExistsAndIsWriteProtected =
 				getDocumentIfExistsAndIsWriteProtected(gesuch.getId(),

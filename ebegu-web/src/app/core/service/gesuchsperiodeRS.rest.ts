@@ -138,6 +138,21 @@ export default class GesuchsperiodeRS {
     }
 
     public removeErlaeuterungVerfuegung(gesuchsperiodeId: string, sprache: TSSprache): IHttpPromise<TSGesuchsperiode> {
-        return this.http.delete(`${this.serviceURL}/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`);
+        return this.http.delete(`${this.serviceURL}/erlauterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`);
+    }
+
+    public existErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/existErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public downloadErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<boolean> {
+        return this.http
+            .get(`${this.serviceURL}/downloadErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache};attachment=false;`)
+            .then((response: any) => {
+                return response.data;
+            });
     }
 }

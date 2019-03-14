@@ -45,7 +45,6 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
-import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
@@ -222,6 +221,7 @@ public class UploadResource {
 		String[] encodedFilenames,
 		String gesuchId,
 		JaxDokumentGrund jaxDokumentGrund) throws MimeTypeParseException, IOException {
+
 		int filecounter = 0;
 		String partrileName = PART_FILE + '[' + filecounter + ']';
 
@@ -279,7 +279,6 @@ public class UploadResource {
 		}
 	}
 
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private void addFileToDokumentGrund(JaxDokumentGrund jaxDokumentGrund, UploadFileInfo uploadFileInfo) {
 		Objects.requireNonNull(jaxDokumentGrund.getDokumente());
 

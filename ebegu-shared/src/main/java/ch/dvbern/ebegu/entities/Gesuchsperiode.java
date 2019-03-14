@@ -31,13 +31,14 @@ import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
 
-import static ch.dvbern.ebegu.util.Constants.TEN_MEG;
+import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 
 /**
  * Entity fuer Gesuchsperiode.
@@ -67,14 +68,14 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	private LocalDate datumErsterSchultag;
 
 	@Nullable
-	@Column(nullable = true, length = TEN_MEG) // 10 megabytes
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] verfuegungErlaeuterungenDe;
 
 
 	@Nullable
-	@Column(nullable = true, length = TEN_MEG) // 10 megabytes
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	private byte[] verfuegungErlaeuterungenFr;
@@ -126,7 +127,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 		this.datumErsterSchultag = datumErsterSchultag;
 	}
 
-	@Nullable
+	@Nonnull
 	public byte[] getVerfuegungErlaeuterungenDe() {
 		if (verfuegungErlaeuterungenDe == null) {
 			return EMPTY_BYTE_ARRAY;
@@ -142,7 +143,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 		}
 	}
 
-	@Nullable
+	@Nonnull
 	public byte[] getVerfuegungErlaeuterungenFr() {
 		if (verfuegungErlaeuterungenFr == null) {
 			return EMPTY_BYTE_ARRAY;
@@ -155,6 +156,23 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 			this.verfuegungErlaeuterungenFr = null;
 		} else {
 			this.verfuegungErlaeuterungenFr = Arrays.copyOf(verfuegungErlaeuterungenFr, verfuegungErlaeuterungenFr.length);
+		}
+	}
+
+	/**
+	 * Returns the correct VerfuegungErlaeuterung for the given language
+	 */
+	@Nonnull
+	public byte[] getVerfuegungErlaeuterungWithSprache(
+		@Nonnull Sprache sprache
+	) {
+		switch (sprache) {
+		case DEUTSCH:
+			return this.getVerfuegungErlaeuterungenDe();
+		case FRANZOESISCH:
+			return this.getVerfuegungErlaeuterungenFr();
+		default:
+			return EMPTY_BYTE_ARRAY;
 		}
 	}
 

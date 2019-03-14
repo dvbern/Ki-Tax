@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
@@ -133,4 +132,11 @@ public interface GesuchsperiodeService {
 	 */
 	@Nonnull
 	Gesuchsperiode removeErlaeuterungVerfuegung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
+
+	/**
+	 * retuns true id the VerfuegungErlaeuterung exists for the given language
+	 */
+	boolean existErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
+
+	byte[] downloadErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
 }

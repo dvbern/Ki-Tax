@@ -15,11 +15,11 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,12 +41,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsperiode;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -55,6 +57,8 @@ import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * REST Resource fuer Gesuchsperiode
@@ -110,7 +114,7 @@ public class GesuchsperiodeResource {
 	public JaxGesuchsperiode findGesuchsperiode(
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId) {
 
-		Objects.requireNonNull(gesuchsperiodeJAXPId.getId());
+		requireNonNull(gesuchsperiodeJAXPId.getId());
 		String gesuchsperiodeID = converter.toEntityId(gesuchsperiodeJAXPId);
 		Optional<Gesuchsperiode> optional = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID);
 
@@ -138,7 +142,7 @@ public class GesuchsperiodeResource {
 		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJAXPId,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(gesuchsperiodeJAXPId.getId());
+		requireNonNull(gesuchsperiodeJAXPId.getId());
 		gesuchsperiodeService.removeGesuchsperiode(converter.toEntityId(gesuchsperiodeJAXPId));
 		return Response.ok().build();
 	}
@@ -247,14 +251,14 @@ public class GesuchsperiodeResource {
 
 	@Nullable
 	@DELETE
-	@Path("/{gesuchsperiodeId}/{sprache}")
+	@Path("/erlauterung/{gesuchsperiodeId}/{sprache}")
 	@Consumes(MediaType.WILDCARD)
 	public Response removeErlaeuterungVerfuegung(
-		@Nonnull @PathParam("sprache") Sprache sprache,
 		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(gesuchsperiodeId);
+		requireNonNull(gesuchsperiodeId);
 		gesuchsperiodeService.removeErlaeuterungVerfuegung(gesuchsperiodeId, sprache);
 		return Response.ok().build();
 
@@ -276,5 +280,49 @@ public class GesuchsperiodeResource {
 			.filter(periode -> periode.getGueltigAb() != null)
 			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
 			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "retuns true id the VerfuegungErlaeuterung exists for the given language",
+		response = boolean.class)
+	@GET
+	@Path("/existErlaeuterung/{gesuchsperiodeId}/{sprache}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean existErlaeuterung(
+		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Context HttpServletResponse response
+	) {
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+		return gesuchsperiodeService.existErlaeuterung(gesuchsperiodeId, sprache);
+	}
+
+	@ApiOperation("return the VerfuegungErlaeuterung for the given language")
+	@GET
+	@Path("/downloadErlaeuterung/{gesuchsperiodeId}/{sprache}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response downloadErlaeuterung(
+		@Nonnull @PathParam("gesuchsperiodeId") String gesuchsperiodeId,
+		@Nonnull @PathParam("sprache") Sprache sprache,
+		@Context HttpServletResponse response
+	) {
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+
+		final byte[] content = gesuchsperiodeService.downloadErlaeuterung(gesuchsperiodeId, sprache);
+
+		if (content != null && content.length > 0) {
+			try {
+				//noinspection StringConcatenationMissingWhitespace
+				return RestUtil.buildDownloadResponse(false, "erlaeuterung" + sprache + ".pdf",
+					"application/octet-stream", content);
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND).entity("Verfügung Erläuterung kann nicht gelesen werden").build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
 	}
 }
