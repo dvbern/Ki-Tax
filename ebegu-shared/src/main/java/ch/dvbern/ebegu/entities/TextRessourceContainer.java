@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Locale;
+
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -64,5 +66,18 @@ public class TextRessourceContainer extends AbstractMutableEntity {
 	public boolean isSame(AbstractEntity other) {
 		// TODO KIBN-387
 		return false;
+	}
+
+	@Nullable
+	public TextRessource findTextRessourceByLocale(Locale locale) {
+		switch (locale.getLanguage()) {
+
+		case "de":
+			return deutsch;
+		case "fr":
+			return franzoesisch;
+		default:
+			return null;
+		}
 	}
 }
