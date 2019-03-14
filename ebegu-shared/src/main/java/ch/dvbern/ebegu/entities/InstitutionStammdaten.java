@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -92,6 +93,16 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Pattern(regexp = Constants.REGEX_TELEFON, message = "{validator.constraints.phonenumber.message}")
 	private String telefon;
 
+	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = true)
+	private String webseite;
+
+	@Nullable
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Column(nullable = true)
+	private String oeffnungszeiten;
+
 	@NotNull
 	@OneToOne(optional = false, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adresse_id"), nullable = false)
@@ -106,6 +117,34 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_stammdaten_adressekontoinhaber_id"), nullable = true)
 	private Adresse adresseKontoinhaber;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean alterskategorieBaby;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean alterskategorieVorschule;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean alterskategorieKindergarten;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean alterskategorieSchule;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean subventioniertePlaetze;
+
+	@NotNull
+	@Column(nullable = false)
+	private BigDecimal anzahlPlaetze;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal anzahlPlaetzeFirmen;
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -206,6 +245,81 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setTelefon(@Nullable String telefon) {
 		this.telefon = telefon;
+	}
+
+	@Nullable
+	public String getWebseite() {
+		return webseite;
+	}
+
+	public void setWebseite(@Nullable String webseite) {
+		this.webseite = webseite;
+	}
+
+	@Nullable
+	public String getOeffnungszeiten() {
+		return oeffnungszeiten;
+	}
+
+	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
+		this.oeffnungszeiten = oeffnungszeiten;
+	}
+
+	public boolean getAlterskategorieBaby() {
+		return alterskategorieBaby;
+	}
+
+	public void setAlterskategorieBaby(boolean alterskategorieBaby) {
+		this.alterskategorieBaby = alterskategorieBaby;
+	}
+
+	public boolean getAlterskategorieVorschule() {
+		return alterskategorieVorschule;
+	}
+
+	public void setAlterskategorieVorschule(boolean alterskategorieVorschule) {
+		this.alterskategorieVorschule = alterskategorieVorschule;
+	}
+
+	public boolean getAlterskategorieKindergarten() {
+		return alterskategorieKindergarten;
+	}
+
+	public void setAlterskategorieKindergarten(boolean alterskategorieKindergarten) {
+		this.alterskategorieKindergarten = alterskategorieKindergarten;
+	}
+
+	public boolean getAlterskategorieSchule() {
+		return alterskategorieSchule;
+	}
+
+	public void setAlterskategorieSchule(boolean alterskategorieSchule) {
+		this.alterskategorieSchule = alterskategorieSchule;
+	}
+
+	public boolean getSubventioniertePlaetze() {
+		return subventioniertePlaetze;
+	}
+
+	public void setSubventioniertePlaetze(boolean subventioniertePlaetze) {
+		this.subventioniertePlaetze = subventioniertePlaetze;
+	}
+
+	public BigDecimal getAnzahlPlaetze() {
+		return anzahlPlaetze;
+	}
+
+	public void setAnzahlPlaetze(BigDecimal anzahlPlaetze) {
+		this.anzahlPlaetze = anzahlPlaetze;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlPlaetzeFirmen() {
+		return anzahlPlaetzeFirmen;
+	}
+
+	public void setAnzahlPlaetzeFirmen(@Nullable BigDecimal anzahlPlaetzeFirmen) {
+		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
 	}
 
 	/**
