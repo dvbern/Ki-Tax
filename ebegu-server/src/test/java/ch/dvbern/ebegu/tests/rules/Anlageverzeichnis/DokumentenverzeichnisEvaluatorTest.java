@@ -528,35 +528,26 @@ public class DokumentenverzeichnisEvaluatorTest {
 		final Einkommensverschlechterung ekvJABasisJahrPlus2 = testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2();
 		ekvJABasisJahrPlus2.setNettolohnJan(BigDecimal.valueOf(200000));
 
-		//Test wenn Steuererklärung ausgefüllt ist
 		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
-		Assert.assertEquals(8, dokumentGrunds.size());
+		Assert.assertEquals(4, dokumentGrunds.size());
 
 		Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
-		Assert.assertEquals(4, dokumentGrundGS1.size());
+		Assert.assertEquals(2, dokumentGrundGS1.size());
 
 		assertType(dokumentGrundGS1, DokumentTyp.NACHWEIS_EINKOMMENSSITUATION_MONAT, testgesuch.getGesuchsteller1().extractFullName(), "2016",
-			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
-		assertType(dokumentGrundGS1, DokumentTyp.STEUERERKLAERUNG, testgesuch.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
 
 		assertType(dokumentGrundGS1, DokumentTyp.NACHWEIS_EINKOMMENSSITUATION_MONAT, testgesuch.getGesuchsteller1().extractFullName(), "2017",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
-		assertType(dokumentGrundGS1, DokumentTyp.STEUERERKLAERUNG, testgesuch.getGesuchsteller1().extractFullName(), "2017",
-			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
 
 		Set<DokumentGrund> dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
-		Assert.assertEquals(4, dokumentGrundGS2.size());
+		Assert.assertEquals(2, dokumentGrundGS2.size());
 
 		Assert.assertNotNull(testgesuch.getGesuchsteller2());
 		assertType(dokumentGrundGS2, DokumentTyp.NACHWEIS_EINKOMMENSSITUATION_MONAT, testgesuch.getGesuchsteller2().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
-		assertType(dokumentGrundGS2, DokumentTyp.STEUERERKLAERUNG, testgesuch.getGesuchsteller2().extractFullName(), "2016",
-			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
 
 		assertType(dokumentGrundGS2, DokumentTyp.NACHWEIS_EINKOMMENSSITUATION_MONAT, testgesuch.getGesuchsteller2().extractFullName(), "2017",
-			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
-		assertType(dokumentGrundGS2, DokumentTyp.STEUERERKLAERUNG, testgesuch.getGesuchsteller2().extractFullName(), "2017",
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
 
 	}
