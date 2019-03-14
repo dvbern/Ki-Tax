@@ -261,8 +261,6 @@ export default class TSFinanzModel {
             || (gesuchstellerNumber !== 2 && gesuchstellerNumber !== 1)) {
             return;
         }
-        const infoJA = this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA;
-
         if (gesuchstellerNumber === 1) {
             if (!this.einkommensverschlechterungContainerGS1) {
                 this.einkommensverschlechterungContainerGS1 = new TSEinkommensverschlechterungContainer();
@@ -271,15 +269,11 @@ export default class TSFinanzModel {
             if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1) {
                 this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus1 =
                     new TSEinkommensverschlechterung();
-
             }
-            if (basisjahrPlus === 2) {
-                if (!this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2) {
-                    this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 =
-                        new TSEinkommensverschlechterung();
-                }
+            if (basisjahrPlus === 2 && !this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2) {
+                this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 =
+                    new TSEinkommensverschlechterung();
             }
-
         } else {
 
             if (!this.einkommensverschlechterungContainerGS2) {
@@ -288,13 +282,10 @@ export default class TSFinanzModel {
             if (basisjahrPlus === 1 && !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1) {
                 this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus1 =
                     new TSEinkommensverschlechterung();
-
             }
-            if (basisjahrPlus === 2) {
-                if (!this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2) {
-                    this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2 =
-                        new TSEinkommensverschlechterung();
-                }
+            if (basisjahrPlus === 2 && !this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2) {
+                this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2 =
+                    new TSEinkommensverschlechterung();
             }
         }
     }
