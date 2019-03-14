@@ -31,7 +31,9 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
+import ch.dvbern.ebegu.enums.DokumentTyp;
 
 /**
  * Dokumente für Einkommensverschlechterung:
@@ -119,6 +121,20 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 
 		getAllDokumenteGesuchsteller(anlageVerzeichnis, basisJahr, gemeinsam,
 			gesuchstellerNumber, einkommensverschlechterung, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag);
+
+		add(
+			getDokument(
+				DokumentTyp.JAHRESLOHNAUSWEISE,
+				einkommensverschlechterung,
+				gesuchsteller.extractFullName(),
+				String.valueOf(basisJahr),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG,
+				stichtag
+			),
+			anlageVerzeichnis
+		);
 	}
 
 	@Override
