@@ -459,77 +459,57 @@ public final class TestDataUtil {
 	}
 
 	public static InstitutionStammdaten createDefaultInstitutionStammdaten() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			UUID.randomUUID().toString(),
+			"Testinstitution",
+			BetreuungsangebotTyp.KITA);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenKitaWeissenstein() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Kita Aaregg");
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA,
+			"Kita Aaregg",
+			BetreuungsangebotTyp.KITA);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenTagesfamilien() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Tagesfamilien");
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN,
+			"Tagesfamilien",
+			BetreuungsangebotTyp.TAGESFAMILIEN);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenKitaBruennen() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA);
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Kita Brünnen");
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA,
+			"Kita Brünnen",
+			BetreuungsangebotTyp.KITA);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleBern() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Tagesschule Bern");
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE,
+			"Tagesschule Bern",
+			BetreuungsangebotTyp.TAGESSCHULE);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenFerieninselGuarda() {
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL,
+			"Ferieninsel Guarda",
+			BetreuungsangebotTyp.FERIENINSEL);
+	}
+
+	private static InstitutionStammdaten createInstitutionStammdaten(@Nonnull String id, @Nonnull String name, @Nonnull BetreuungsangebotTyp angebotTyp) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL);
+		instStammdaten.setId(id);
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setMail(TESTMAIL);
+		instStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
+		instStammdaten.setBetreuungsangebotTyp(angebotTyp);
 		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Ferieninsel Guarda");
+		instStammdaten.getInstitution().setName(name);
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
 	}
