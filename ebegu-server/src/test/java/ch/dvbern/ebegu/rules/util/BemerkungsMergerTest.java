@@ -78,11 +78,11 @@ public class BemerkungsMergerTest {
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(5, strings.length);
-		Assert.assertTrue(strings[0].startsWith("[01.01.2016 - 29.02.2016] EINREICHUNGSFRIST:"));
-		Assert.assertTrue(strings[1].startsWith("[01.01.2016 - 31.03.2016] BETREUUNGSANGEBOT_TYP:"));
-		Assert.assertTrue(strings[2].startsWith("[01.01.2016 - 31.05.2016] ABWESENHEIT:"));
-		Assert.assertTrue(strings[3].startsWith("[01.04.2016 - 31.05.2016] EINREICHUNGSFRIST:"));
-		Assert.assertTrue(strings[4].startsWith("[01.05.2016 - 31.05.2016] BETREUUNGSANGEBOT_TYP:"));
+		Assert.assertTrue(strings[0].startsWith("01.01.2016 - 29.02.2016: Für diesen Zeitraum wird noch kein Betreuungsgutschein ausgestellt"));
+		Assert.assertTrue(strings[1].startsWith("01.01.2016 - 31.03.2016: Betreuungsangebot Schulamt"));
+		Assert.assertTrue(strings[2].startsWith("01.01.2016 - 31.05.2016: Das Kind wird länger als "));
+		Assert.assertTrue(strings[3].startsWith("01.04.2016 - 31.05.2016: Für diesen Zeitraum wird noch kein Betreuungsgutschein ausgestellt"));
+		Assert.assertTrue(strings[4].startsWith("01.05.2016 - 31.05.2016: Betreuungsangebot Schulamt"));
 	}
 
 	@Test
@@ -123,7 +123,7 @@ public class BemerkungsMergerTest {
 		Assert.assertNotNull(resultingBem);
 		String[] strings = NEW_LINE.split(resultingBem);
 		Assert.assertEquals(2, strings.length);
-		Assert.assertTrue(strings[0].startsWith("[01.01.2016 - 31.01.2016] AUSSERORDENTLICHER_ANSPRUCH:"));
-		Assert.assertTrue(strings[1].startsWith("[01.02.2016 - 29.02.2016] FACHSTELLE:"));
+		Assert.assertTrue(strings[0].startsWith("01.01.2016 - 31.01.2016: Für diesen Zeitraum ist das erforderliche Beschäftigungspensum für den Erhalt eines Betreuungsgutscheins nicht erreicht"));
+		Assert.assertTrue(strings[1].startsWith("01.02.2016 - 29.02.2016: Für diesen Zeitraum ist der Bedarf für die familienergänzende Betreuung"));
 	}
 }
