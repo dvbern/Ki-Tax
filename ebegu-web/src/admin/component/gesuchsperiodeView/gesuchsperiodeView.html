@@ -178,7 +178,7 @@
                     </div>
 
                     <!--Erläuterungen zur Verfügung-->
-                    <div class="row viewTitle marginTop30">
+                    <div class="row viewTitle marginTop30" ng-if="vm.gesuchsperiode && !vm.gesuchsperiode.isNew()">
                         <div class="col-md-12">
                             <h1>
                                 <span data-translate="ERLAEUTERUNG_VERFUEGUNG"></span>

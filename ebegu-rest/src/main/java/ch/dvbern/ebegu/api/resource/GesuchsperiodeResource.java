@@ -264,24 +264,6 @@ public class GesuchsperiodeResource {
 
 	}
 
-	private List<JaxGesuchsperiode> extractValidGesuchsperiodenForGemeinde(
-		@Nonnull String gemeindeId,
-		@Nonnull Collection<Gesuchsperiode> perioden
-	) {
-		LocalDate startdatum = gemeindeService.findGemeinde(gemeindeId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"extractValidGesuchsperiodenForGemeinde",
-				String.format("Keine Gemeinde für ID %s", gemeindeId)))
-			.getBetreuungsgutscheineStartdatum();
-
-		return perioden.stream()
-			.filter(periode -> periode.getGueltigkeit().endsAfterOrSame(startdatum))
-			.map(periode -> converter.gesuchsperiodeToJAX(periode))
-			.filter(periode -> periode.getGueltigAb() != null)
-			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
-			.collect(Collectors.toList());
-	}
-
 	@ApiOperation(value = "retuns true id the VerfuegungErlaeuterung exists for the given language",
 		response = boolean.class)
 	@GET
@@ -316,13 +298,34 @@ public class GesuchsperiodeResource {
 		if (content != null && content.length > 0) {
 			try {
 				//noinspection StringConcatenationMissingWhitespace
-				return RestUtil.buildDownloadResponse(false, "erlaeuterung" + sprache + ".pdf",
+				return RestUtil.buildDownloadResponse(true, "erlaeuterung" + sprache + ".pdf",
 					"application/octet-stream", content);
 			} catch (IOException e) {
-				return Response.status(Status.NOT_FOUND).entity("Verfügung Erläuterung kann nicht gelesen werden").build();
+				return Response.status(Status.NOT_FOUND)
+					.entity("Verfügung Erläuterung kann nicht gelesen werden")
+					.build();
 			}
 		}
 
 		return Response.status(Status.NO_CONTENT).build();
 	}
+
+	private List<JaxGesuchsperiode> extractValidGesuchsperiodenForGemeinde(
+		@Nonnull String gemeindeId,
+		@Nonnull Collection<Gesuchsperiode> perioden
+	) {
+		LocalDate startdatum = gemeindeService.findGemeinde(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"extractValidGesuchsperiodenForGemeinde",
+				String.format("Keine Gemeinde für ID %s", gemeindeId)))
+			.getBetreuungsgutscheineStartdatum();
+
+		return perioden.stream()
+			.filter(periode -> periode.getGueltigkeit().endsAfterOrSame(startdatum))
+			.map(periode -> converter.gesuchsperiodeToJAX(periode))
+			.filter(periode -> periode.getGueltigAb() != null)
+			.sorted(Comparator.comparing(JaxAbstractDateRangedDTO::getGueltigAb).reversed())
+			.collect(Collectors.toList());
+	}
+
 }

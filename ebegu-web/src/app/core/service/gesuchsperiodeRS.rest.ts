@@ -26,11 +26,12 @@ export default class GesuchsperiodeRS {
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService,
-                       private readonly $q: IQService,
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly $q: IQService,
     ) {
         this.serviceURL = `${REST_API}gesuchsperioden`;
     }
@@ -87,7 +88,7 @@ export default class GesuchsperiodeRS {
             .get(`${this.serviceURL}/aktive/gemeinde/${gemeindeId}`, {
                 params: {
                     dossierId,
-                }
+                },
             })
             .then(response => {
                 return this.ebeguRestUtil.parseGesuchsperioden(response.data);
@@ -99,7 +100,7 @@ export default class GesuchsperiodeRS {
             .get(`${this.serviceURL}/gemeinde/${gemeindeId}`, {
                 params: {
                     dossierId,
-                }
+                },
             })
             .then(response => {
                 return this.ebeguRestUtil.parseGesuchsperioden(response.data);
@@ -150,7 +151,8 @@ export default class GesuchsperiodeRS {
 
     public downloadErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<boolean> {
         return this.http
-            .get(`${this.serviceURL}/downloadErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache};attachment=false;`)
+            .get(`${this.serviceURL}/downloadErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`,
+                {responseType: 'blob'})
             .then((response: any) => {
                 return response.data;
             });

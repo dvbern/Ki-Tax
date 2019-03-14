@@ -167,6 +167,10 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// some tests we won't have a lastGesuchsperiode so we cannot copy the Einstellungen. In production
 				// if there is no lastGesuchsperiode there is also nothing to copy
 				einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode.get());
+
+				//copy erlaeuterung verfuegung from previos Gesuchperiode
+				gesuchsperiode.setVerfuegungErlaeuterungenDe(lastGesuchsperiode.get().getVerfuegungErlaeuterungenDe());
+				gesuchsperiode.setVerfuegungErlaeuterungenFr(lastGesuchsperiode.get().getVerfuegungErlaeuterungenFr());
 			}
 			// Wenn die Gesuchsperiode neu ist, muss das Datum Freischaltung Tagesschule gesetzt werden: Defaultmässig
 			// erster Tag der Gesuchsperiode. Kann nach Aktivierung der Periode auf ein beliebiges Datum gesetzt werden
@@ -325,7 +329,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		return aktivePerioden;
 	}
 
-	private void filterAllGesuchperiodenForDossier(@Nonnull Dossier dossier, @Nonnull Collection<Gesuchsperiode> perioden) {
+	private void filterAllGesuchperiodenForDossier(
+		@Nonnull Dossier dossier,
+		@Nonnull Collection<Gesuchsperiode> perioden) {
 		if (!perioden.isEmpty()) {
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
@@ -414,13 +420,19 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Nonnull
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public Gesuchsperiode uploadErlaeuterungenVerfuegung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache, @Nonnull byte[] content) {
+	public Gesuchsperiode uploadErlaeuterungenVerfuegung(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Sprache sprache,
+		@Nonnull byte[] content) {
 		requireNonNull(gesuchsperiodeId);
 		requireNonNull(sprache);
 		requireNonNull(content);
 
 		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
-			() -> new EbeguEntityNotFoundException("uploadErlaeuterungenVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId)
+			() -> new EbeguEntityNotFoundException(
+				"uploadErlaeuterungenVerfuegung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId)
 		);
 
 		if (sprache == Sprache.DEUTSCH) {
@@ -442,7 +454,10 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		requireNonNull(sprache);
 
 		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
-			() -> new EbeguEntityNotFoundException("uploadErlaeuterungenVerfuegung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId)
+			() -> new EbeguEntityNotFoundException(
+				"uploadErlaeuterungenVerfuegung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId)
 		);
 
 		if (sprache == Sprache.DEUTSCH) {
@@ -464,7 +479,10 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		requireNonNull(sprache);
 
 		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
-			() -> new EbeguEntityNotFoundException("existErlaeuterung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsperiodeId)
+			() -> new EbeguEntityNotFoundException(
+				"existErlaeuterung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId)
 		);
 
 		if (sprache == Sprache.DEUTSCH) {

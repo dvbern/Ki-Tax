@@ -59,8 +59,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         '$state',
         '$translate',
         'UploadRS',
+        'DownloadRS',
         'AuthServiceRS',
-        'DownloadRS'
     ];
 
     public form: IFormController;
@@ -84,8 +84,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         private readonly $state: StateService,
         private readonly $translate: ITranslateService,
         private readonly uploadRS: UploadRS,
-        private readonly authServiceRS: AuthServiceRS,
         private readonly downloadRS: DownloadRS,
+        authServiceRS: AuthServiceRS,
     ) {
         super(authServiceRS);
     }
@@ -100,12 +100,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         this.gesuchsperiodeRS.findGesuchsperiode(this.$stateParams.gesuchsperiodeId).then((found: TSGesuchsperiode) => {
             this.setSelectedGesuchsperiode(found);
             this.initialStatus = this.gesuchsperiode.status;
-            this.gesuchsperiodeRS.existErlaeuterung(this.gesuchsperiode.id, TSSprache.DEUTSCH).then(result => {
-                this.isErlaeuterungDE = !!result;
-            });
-            this.gesuchsperiodeRS.existErlaeuterung(this.gesuchsperiode.id, TSSprache.FRANZOESISCH).then(result => {
-                this.isErlaeuterungFR = !!result;
-            });
+
+            this.updateExistErlaeuterung(this.gesuchsperiode);
         });
     }
 
@@ -201,6 +197,11 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
                 newestGesuchsperiode.gueltigkeit.gueltigBis.clone().add(1, 'years');
             this.gesuchsperiode.datumFreischaltungTagesschule = this.gesuchsperiode.gueltigkeit.gueltigAb;
             this.datumFreischaltungMax = this.getDatumFreischaltungMax();
+
+            // we need to check for erlaeuterung already here, because the server wont send any information back and we
+            // do not want to reloade the page
+            this.updateExistErlaeuterung(newestGesuchsperiode);
+
         });
         this.gesuchsperiode = undefined;
     }
@@ -286,9 +287,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public downloadErlaeuterung(sprache: TSSprache): void {
         const win = this.downloadRS.prepareDownloadWindow();
         this.gesuchsperiodeRS.downloadErlaeuterung(this.gesuchsperiode.id, sprache).then(response => {
-            const file = new Blob([response], { type: 'application/pdf' });
+            const file = new Blob([response], {type: 'application/pdf'});
             const fileURL = URL.createObjectURL(file);
-            win.open(fileURL);
+            this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, '');
         });
     }
 
@@ -303,5 +304,14 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             default:
                 return;
         }
+    }
+
+    private updateExistErlaeuterung(gesuchsperiode: TSGesuchsperiode): void {
+        this.gesuchsperiodeRS.existErlaeuterung(gesuchsperiode.id, TSSprache.DEUTSCH).then(result => {
+            this.isErlaeuterungDE = !!result;
+        });
+        this.gesuchsperiodeRS.existErlaeuterung(gesuchsperiode.id, TSSprache.FRANZOESISCH).then(result => {
+            this.isErlaeuterungFR = !!result;
+        });
     }
 }
