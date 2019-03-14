@@ -1392,7 +1392,7 @@
     "ADRESSE_NUMMER": "Nummer",
     "WEBSEITE": "Webseite",
     "BANKVERBINDUNG": "Bankverbindung für Auszahlungen",
-    "BESCHWERDE_ADRESSE": "Beschwerde-Adresse",
+    "BESCHWERDE_ADRESSE": "Beschwerde",
     "BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT": "Identisch wie Kontaktadresse",
     "STANDARD_VERANTWORTLICHE": "Standard-Verantwortliche",
     "KONTO_INHABER": "Kontoinhaber",
@@ -1474,5 +1474,9 @@
     "TUTORIAL_WILLKOMMEN": "Willkomen zur kiBon-Schulung",
     "TUTORIAL_INSTITUTION_TEXT": "Klicken Sie bitte auf den untenstehenden Button, um sich als Sachbearbeitende der Test-Institution \"Kita kiBon\" anzumelden und das wundervolle kiBon-Erlebnis geniessen zu können",
     "TUTORIAL_GEMEINDE_TEXT": "Klicken Sie bitte auf den untenstehenden Button, um sich als Sachbearbeitende der Test-Gemeinde \"kiBon\" anzumelden und das wundervolle kiBon-Erlebnis geniessen zu können",
-    "TUTORIAL_LOGIN": "Einloggen"
+    "TUTORIAL_LOGIN": "Einloggen",
+    "STANDARD_TEXT": "Standardtext",
+    "BENUTZERDEFINIERTER_TEXT": "Benutzerdefinierter Text",
+    "RECHTSMITTELBELEHRUNG_TEXT_DE": "Rechtsmittelbelehrungstext Deutsch",
+    "RECHTSMITTELBELEHRUNG_TEXT_FR": "Rechtsmittelbelehrungstext Französisch"
 }

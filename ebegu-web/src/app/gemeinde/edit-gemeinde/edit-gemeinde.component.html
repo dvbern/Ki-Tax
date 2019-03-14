@@ -162,7 +162,9 @@
                     <!-- Standardverantwortliche BG -->
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label translate class="required" for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</label>
+                            <label translate
+                                   class="required"
+                                   for="verantwortliche_bg_id">STANDARD_VERANTWORTLICHE</label>
                             <mat-select [(ngModel)]="stammdaten.defaultBenutzerBG"
                                         id="verantwortliche_bg_id"
                                         name="verantwortliche_bg_id"
@@ -220,8 +222,49 @@
                 <div class="row">
                     <!-- Beschwerde-Adresse Checkbox -->
                     <div class="col-sm-6">
+                        <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
                         <div class="form-group">
-                            <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE</h3>
+                            <mat-radio-group name="creationType"
+                                             [(ngModel)]="stammdaten.standardRechtsmittelbelehrung"
+                                             required>
+                                <mat-radio-button [value]="true">{{'STANDARD_TEXT'|translate}}</mat-radio-button>
+                                &nbsp;
+                                <mat-radio-button [value]="false">{{'BENUTZERDEFINIERTER_TEXT'|translate}}</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <div class="row" *ngIf="!stammdaten.standardRechtsmittelbelehrung">
+                            <div class="col-sm-12">
+                                <div class="form-group" *ngIf="stammdaten.korrespondenzspracheDe">
+                                    <div class="form-group" id="rechtsmittelbelehrung-deutsch">
+                                <textarea md-no-autogrow
+                                          class="form-control"
+                                          rows="6"
+                                          maxlength="4000"
+                                          id="rechtsmittelbelehrung-deutsch-textarea"
+                                          name="rechtsmittelbelehrung-deutsch-textarea"
+                                          placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_DE'|translate}}"
+                                          [(ngModel)]="stammdaten.rechtsmittelbelehrung.deutsch.text">
+								</textarea>
+
+                                    </div>
+                                </div>
+                                <div class="form-group" *ngIf="stammdaten.korrespondenzspracheFr">
+                                    <div class="form-group" id="rechtsmittelbelehrung-franzoesisch">
+                                <textarea md-no-autogrow
+                                          class="form-control"
+                                          rows="6"
+                                          maxlength="4000"
+                                          id="rechtsmittelbelehrung-franzoesisch-textarea"
+                                          name="rechtsmittelbelehrung-franzoesisch-textarea"
+                                          placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_FR'|translate}}"
+                                          [(ngModel)]="stammdaten.rechtsmittelbelehrung.franzoesisch.text">
+								</textarea>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="stammdaten.standardRechtsmittelbelehrung">
                             <mat-checkbox id="keineBeschwerdeAdresse_id" name="keineBeschwerdeAdresse_id"
                                           [(ngModel)]="keineBeschwerdeAdresse">
                                 {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}

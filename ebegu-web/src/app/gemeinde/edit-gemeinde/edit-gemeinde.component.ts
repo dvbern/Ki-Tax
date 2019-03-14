@@ -23,10 +23,13 @@ import {StateDeclaration} from '@uirouter/core/lib/state/interface';
 import {from, Observable} from 'rxjs';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSRole} from '../../../models/enums/TSRole';
+import {TSSprache} from '../../../models/enums/TSSprache';
 import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import TSTextRessource from '../../../models/TSTextRessource';
+import TSTextRessourceContainer from '../../../models/TSTextRessourceContainer';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import ErrorService from '../../core/errors/service/ErrorService';
@@ -73,6 +76,16 @@ export class EditGemeindeComponent implements OnInit {
                 if (stammdaten.beschwerdeAdresse === undefined) {
                     stammdaten.beschwerdeAdresse = new TSAdresse();
                 }
+
+                if (stammdaten.standardRechtsmittelbelehrung === false && !stammdaten.rechtsmittelbelehrung) {
+                    stammdaten.rechtsmittelbelehrung = new TSTextRessourceContainer();
+
+                    stammdaten.rechtsmittelbelehrung.deutsch = new TSTextRessource();
+                    stammdaten.rechtsmittelbelehrung.deutsch.sprache = TSSprache.DEUTSCH;
+                    stammdaten.rechtsmittelbelehrung.franzoesisch = new TSTextRessource();
+                    stammdaten.rechtsmittelbelehrung.franzoesisch.sprache = TSSprache.FRANZOESISCH;
+                }
+
                 return stammdaten;
             }));
     }
@@ -107,6 +120,7 @@ export class EditGemeindeComponent implements OnInit {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
         }
+
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
             if (this.fileToUpload) {
                 this.persistLogo(this.fileToUpload, true);

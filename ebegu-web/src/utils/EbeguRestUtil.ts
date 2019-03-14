@@ -861,40 +861,6 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseTextRessourceContainer(
-        containerTS: TSTextRessourceContainer,
-        containerFromServer: any,
-    ): TSTextRessourceContainer {
-        if (containerFromServer) {
-            this.parseAbstractMutableEntity(containerTS, containerFromServer);
-
-            if (containerFromServer.deutsch) {
-                containerTS.deutsch =
-                    this.parseTextRessource(containerTS.deutsch || new TSTextRessource(),
-                        containerFromServer.deutsch);
-            }
-
-            if (containerFromServer.franzoesisch) {
-                containerTS.franzoesisch =
-                    this.parseTextRessource(containerTS.franzoesisch || new TSTextRessource(),
-                        containerFromServer.franzoesisch);
-            }
-
-            return containerTS;
-        }
-        return undefined;
-    }
-
-    public parseTextRessource(textRessourceTS: TSTextRessource, textRessourceFromServer: any): TSTextRessource {
-        if (textRessourceFromServer) {
-            this.parseAbstractMutableEntity(textRessourceTS, textRessourceFromServer);
-            textRessourceTS.sprache = textRessourceFromServer.sprache;
-            textRessourceTS.text = textRessourceFromServer.text;
-        }
-
-        return textRessourceTS;
-    }
-
     private gemeindeKonfigurationListToRestObject(konfigurationListTS: Array<TSGemeindeKonfiguration>): Array<any> {
         return konfigurationListTS
             ? konfigurationListTS.map(item => this.gemeindeKonfigurationToRestObject({}, item))
@@ -3249,5 +3215,39 @@ export default class EbeguRestUtil {
         }
 
         return restTextRessource;
+    }
+
+    public parseTextRessourceContainer(
+        containerTS: TSTextRessourceContainer,
+        containerFromServer: any,
+    ): TSTextRessourceContainer {
+        if (containerFromServer) {
+            this.parseAbstractMutableEntity(containerTS, containerFromServer);
+
+            if (containerFromServer.deutsch) {
+                containerTS.deutsch =
+                    this.parseTextRessource(containerTS.deutsch || new TSTextRessource(),
+                        containerFromServer.deutsch);
+            }
+
+            if (containerFromServer.franzoesisch) {
+                containerTS.franzoesisch =
+                    this.parseTextRessource(containerTS.franzoesisch || new TSTextRessource(),
+                        containerFromServer.franzoesisch);
+            }
+
+            return containerTS;
+        }
+        return undefined;
+    }
+
+    public parseTextRessource(textRessourceTS: TSTextRessource, textRessourceFromServer: any): TSTextRessource {
+        if (textRessourceFromServer) {
+            this.parseAbstractMutableEntity(textRessourceTS, textRessourceFromServer);
+            textRessourceTS.sprache = textRessourceFromServer.sprache;
+            textRessourceTS.text = textRessourceFromServer.text;
+        }
+
+        return textRessourceTS;
     }
 }
