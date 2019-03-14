@@ -38,7 +38,8 @@ public class CheckAbwesenheitDatesOverlappingValidator implements ConstraintVali
 
 	@Override
 	public boolean isValid(Betreuung instance, ConstraintValidatorContext context) {
-		return !(checkOverlapping("JA", instance.getAbwesenheitContainers()) || checkOverlapping("GS", instance.getAbwesenheitContainers()));
+		return !(checkOverlapping("JA", instance.getAbwesenheitContainers())
+			|| checkOverlapping("GS", instance.getAbwesenheitContainers()));
 	}
 
 	/**

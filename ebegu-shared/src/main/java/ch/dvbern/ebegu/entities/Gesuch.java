@@ -309,7 +309,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public FinanzDatenDTO getFinanzDatenDTO() {
 		final Familiensituation familiensituation = extractFamiliensituation();
-		if (familiensituation != null && familiensituation.hasSecondGesuchsteller()) {
+		if (familiensituation != null
+			&& familiensituation.hasSecondGesuchsteller(gesuchsperiode.getGueltigkeit().getGueltigBis())) {
 			return finanzDatenDTO_zuZweit;
 		}
 		return finanzDatenDTO_alleine;
@@ -358,7 +359,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return gesuchsperiode;
 	}
 
-	public final void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
+	public void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
@@ -367,7 +368,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return eingangsdatum;
 	}
 
-	public final void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
+	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
 
@@ -399,7 +400,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return status;
 	}
 
-	public final void setStatus(@Nonnull AntragStatus status) {
+	public void setStatus(@Nonnull AntragStatus status) {
 		this.status = status;
 	}
 
@@ -407,7 +408,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return typ;
 	}
 
-	public final void setTyp(AntragTyp typ) {
+	public void setTyp(AntragTyp typ) {
 		this.typ = typ;
 	}
 
@@ -830,7 +831,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (this.getGesuchsteller2() != null
 			&& target.getFamiliensituationContainer() != null
 			&& target.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& target.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller()) {
+			&& target.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller(gesuchsperiode.getGueltigkeit().getGueltigBis())) {
 
 			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}

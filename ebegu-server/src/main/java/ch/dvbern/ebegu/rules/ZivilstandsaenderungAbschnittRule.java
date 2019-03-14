@@ -27,8 +27,10 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.RuleUtil;
 
 /**
  * Umsetzung der ASIV Revision: Finanzielle Situation bei Mutation der Familiensituation anpassen
@@ -57,15 +59,19 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation);
 		Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
+
+		LocalDate gesuchsperiodeBis = betreuung.extractGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
+
+		RuleKey ruleKey = RuleKey.ZIVILSTANDSAENDERUNG;
+
 		if (familiensituation.getAenderungPer() != null && familiensituationErstgesuch != null &&
-			familiensituation.hasSecondGesuchsteller() != familiensituationErstgesuch.hasSecondGesuchsteller()) {
+			familiensituation.hasSecondGesuchsteller(gesuchsperiodeBis) != familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)) {
 
 			// Die Zivilstandsaenderung gilt ab anfang nächstem Monat, die Bemerkung muss aber "per Heirat/Trennung" erfolgen
 			final LocalDate stichtag = getStichtagForEreignis(familiensituation.getAenderungPer());
 			// Bemerkung erstellen
-			RuleKey ruleKey = RuleKey.ZIVILSTANDSAENDERUNG;
 			MsgKey msgKey = null;
-			if (familiensituation.hasSecondGesuchsteller()) {
+			if (familiensituation.hasSecondGesuchsteller(gesuchsperiodeBis)) {
 				// Heirat
 				msgKey = MsgKey.FAMILIENSITUATION_HEIRAT_MSG;
 			} else {
@@ -73,20 +79,71 @@ public class ZivilstandsaenderungAbschnittRule extends AbstractAbschnittRule {
 				msgKey = MsgKey.FAMILIENSITUATION_TRENNUNG_MSG;
 			}
 
-			VerfuegungZeitabschnitt abschnittVorMutation = new VerfuegungZeitabschnitt(new DateRange(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), stichtag.minusDays(1)));
-			abschnittVorMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituationErstgesuch.hasSecondGesuchsteller());
-			zivilstandsaenderungAbschnitte.add(abschnittVorMutation);
+			zivilstandsaenderungAbschnitte.add(
+				createVerfuegungZeitabschnittForZivilstand(
+					familiensituationErstgesuch,
+					gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+					stichtag.minusDays(1)
+				)
+			);
 
-			VerfuegungZeitabschnitt abschnittNachMutation = new VerfuegungZeitabschnitt(new DateRange(stichtag, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
-			abschnittNachMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituation.hasSecondGesuchsteller());
+			VerfuegungZeitabschnitt abschnittNachMutation = createVerfuegungZeitabschnittForZivilstand(
+				familiensituation,
+				stichtag,
+				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
+			);
 			abschnittNachMutation.addBemerkung(ruleKey, msgKey, getLocale());
 			zivilstandsaenderungAbschnitte.add(abschnittNachMutation);
+
+		} else if (familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND
+			&& familiensituation.getStartKonkubinat() != null
+			&& gesuch.getGesuchsperiode().getGueltigkeit().contains(familiensituation.getStartKonkubinat().plusYears(5))
+		) {
+			final LocalDate startKonkubinatPlusFive = RuleUtil
+				.getStichtagForEreignis(familiensituation.getStartKonkubinat().plusYears(5));
+
+			zivilstandsaenderungAbschnitte.add(
+				createVerfuegungZeitabschnittForZivilstand(
+					familiensituation,
+					gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+					startKonkubinatPlusFive.minusDays(1)
+				)
+			);
+
+			final VerfuegungZeitabschnitt abschnittKonkubinat2GS = createVerfuegungZeitabschnittForZivilstand(
+				familiensituation,
+				startKonkubinatPlusFive,
+				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
+			);
+			abschnittKonkubinat2GS.addBemerkung(ruleKey, MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getLocale());
+			zivilstandsaenderungAbschnitte.add(abschnittKonkubinat2GS);
+
 		} else {
-			VerfuegungZeitabschnitt abschnittOhneMutation = new VerfuegungZeitabschnitt(gesuch.getGesuchsperiode().getGueltigkeit());
-			abschnittOhneMutation.setHasSecondGesuchstellerForFinanzielleSituation(familiensituation.hasSecondGesuchsteller());
-			zivilstandsaenderungAbschnitte.add(abschnittOhneMutation);
+			zivilstandsaenderungAbschnitte.add(
+				createVerfuegungZeitabschnittForZivilstand(
+					familiensituation,
+					gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+					gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()
+				)
+			);
 		}
 		return zivilstandsaenderungAbschnitte;
+	}
+
+	@Nonnull
+	private VerfuegungZeitabschnitt createVerfuegungZeitabschnittForZivilstand(
+		@Nonnull Familiensituation familiensituation,
+		@Nonnull LocalDate dateAb,
+		@Nonnull LocalDate dateBis
+	) {
+		VerfuegungZeitabschnitt abschnitt = new VerfuegungZeitabschnitt(new DateRange(dateAb, dateBis));
+		abschnitt.setHasSecondGesuchstellerForFinanzielleSituation(
+			familiensituation.hasSecondGesuchsteller(
+				// it must be checked at the end of the zeitabschnitt
+				abschnitt.getGueltigkeit().getGueltigBis()
+			)
+		);
+		return abschnitt;
 	}
 
 	@Override

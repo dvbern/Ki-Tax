@@ -638,6 +638,7 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setFamilienstatus(familiensituationJAXP.getFamilienstatus());
 		familiensituation.setGemeinsameSteuererklaerung(familiensituationJAXP.getGemeinsameSteuererklaerung());
 		familiensituation.setAenderungPer(familiensituationJAXP.getAenderungPer());
+		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
 		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
 
@@ -650,6 +651,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setFamilienstatus(persistedFamiliensituation.getFamilienstatus());
 		jaxFamiliensituation.setGemeinsameSteuererklaerung(persistedFamiliensituation.getGemeinsameSteuererklaerung());
 		jaxFamiliensituation.setAenderungPer(persistedFamiliensituation.getAenderungPer());
+		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 
@@ -1238,7 +1240,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(fachstelle);
 		convertAbstractVorgaengerFieldsToEntity(fachstelleJAXP, fachstelle);
 		fachstelle.setName(fachstelleJAXP.getName());
-		fachstelle.setBeschreibung(fachstelleJAXP.getBeschreibung());
 		fachstelle.setFachstelleAnspruch(fachstelleJAXP.isFachstelleAnspruch());
 		fachstelle.setFachstelleErweiterteBetreuung(fachstelleJAXP.isFachstelleErweiterteBetreuung());
 		return fachstelle;
@@ -1248,7 +1249,6 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxFachstelle jaxFachstelle = new JaxFachstelle();
 		convertAbstractVorgaengerFieldsToJAX(persistedFachstelle, jaxFachstelle);
 		jaxFachstelle.setName(persistedFachstelle.getName());
-		jaxFachstelle.setBeschreibung(persistedFachstelle.getBeschreibung());
 		jaxFachstelle.setFachstelleAnspruch(persistedFachstelle.isFachstelleAnspruch());
 		jaxFachstelle.setFachstelleErweiterteBetreuung(persistedFachstelle.isFachstelleErweiterteBetreuung());
 		return jaxFachstelle;

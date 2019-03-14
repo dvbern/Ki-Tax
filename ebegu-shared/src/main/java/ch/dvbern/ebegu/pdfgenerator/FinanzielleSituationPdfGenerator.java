@@ -133,7 +133,8 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 	private boolean hasSecondGesuchsteller() {
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		return familiensituation != null && familiensituation.hasSecondGesuchsteller();
+		return familiensituation != null
+			&& familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
 	}
 
 	private void createPageBasisJahr(

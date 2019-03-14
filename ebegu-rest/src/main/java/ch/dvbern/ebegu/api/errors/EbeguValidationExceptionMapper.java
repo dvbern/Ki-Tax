@@ -27,8 +27,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 import org.jboss.resteasy.api.validation.ResteasyViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Created by imanol on 01.03.16.
@@ -39,12 +37,8 @@ import org.slf4j.LoggerFactory;
 @Provider
 public class EbeguValidationExceptionMapper extends AbstractEbeguExceptionMapper<ValidationException> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EbeguValidationExceptionMapper.class.getSimpleName());
-
 	@Override
 	public Response toResponse(ValidationException exception) {
-		LOG.warn("ResteasyValidationException occured ", exception);
-
 		if (exception instanceof ConstraintDefinitionException) {
 			return buildResponse(unwrapException(exception), MediaType.TEXT_PLAIN, Status.INTERNAL_SERVER_ERROR);
 		}
@@ -55,17 +49,20 @@ public class EbeguValidationExceptionMapper extends AbstractEbeguExceptionMapper
 			return buildResponse(unwrapException(exception), MediaType.TEXT_PLAIN, Status.INTERNAL_SERVER_ERROR);
 		}
 		if (exception instanceof ResteasyViolationException) {
-			ResteasyViolationException resteasyViolationException = ResteasyViolationException.class.cast(exception);
+			ResteasyViolationException resteasyViolationException = (ResteasyViolationException) exception;
 			Exception e = resteasyViolationException.getException();
 			if (e != null) {
 				return buildResponse(unwrapException(e), MediaType.TEXT_PLAIN, Status.INTERNAL_SERVER_ERROR);
 			}
-			final MediaType acceptMediaType = getAcceptMediaType(resteasyViolationException.getAccept());
+			MediaType acceptMediaType = getAcceptMediaType(resteasyViolationException.getAccept());
+
 			return ViolationReportCreator.buildViolationReportResponse(resteasyViolationException, Status.BAD_REQUEST, acceptMediaType);
 		}
 		if (exception instanceof ConstraintViolationException) {
-			ResteasyViolationException resteasyViolationException = new ResteasyViolationException(((ConstraintViolationException) exception).getConstraintViolations());
-			final MediaType acceptMediaType = getAcceptMediaType(resteasyViolationException.getAccept());
+			ResteasyViolationException resteasyViolationException =
+				new ResteasyViolationException(((ConstraintViolationException) exception).getConstraintViolations());
+			MediaType acceptMediaType = getAcceptMediaType(resteasyViolationException.getAccept());
+
 			return ViolationReportCreator.buildViolationReportResponse(resteasyViolationException, Status.BAD_REQUEST, acceptMediaType);
 		}
 		return buildResponse(unwrapException(exception), MediaType.TEXT_PLAIN, Status.INTERNAL_SERVER_ERROR);

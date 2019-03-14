@@ -37,8 +37,8 @@ import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
 import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import org.jboss.arquillian.junit.Arquillian;
@@ -59,7 +59,7 @@ import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings({ "InstanceMethodNamingConvention", "MethodParameterNamingConvention", "InstanceVariableNamingConvention" })
 @RunWith(Arquillian.class)
-@UsingDataSet("datasets/reportTestData.xml")
+@UsingDataSet("datasets/reportTestDataFixed.xml")
 @Transactional(TransactionMode.DISABLED)
 public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
@@ -210,26 +210,49 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void generateExcelReportGesuchStichtag() throws Exception {
+	public void generateExcelReportGesuchStichtagDE() throws Exception {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(
 			LocalDate.now(),
 			null,
-			Constants.DEFAULT_LOCALE);
+			Constants.DEUTSCH_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
-		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag.xlsx");
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag_DE.xlsx");
 	}
 
 	@Test
-	public void generateExcelReportGesuchZeitraum() throws Exception {
+	public void generateExcelReportGesuchStichtagFR() throws Exception {
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(
+			LocalDate.now(),
+			null,
+			Constants.FRENCH_LOCALE);
+
+		assertNotNull(uploadFileInfo.getBytes());
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag_FR.xlsx");
+	}
+
+	@Test
+	public void generateExcelReportGesuchZeitraumDE() throws Exception {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchZeitraum(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
 			null,
-			Constants.DEFAULT_LOCALE);
+			Constants.DEUTSCH_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
-		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum.xlsx");
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum_DE.xlsx");
+	}
+
+	@Test
+	public void generateExcelReportGesuchZeitraumFR() throws Exception {
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchZeitraum(
+			LocalDate.of(2016, Month.JANUARY, 1),
+			LocalDate.of(2017, Month.DECEMBER, 31),
+			null,
+			Constants.FRENCH_LOCALE);
+
+		assertNotNull(uploadFileInfo.getBytes());
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum_FR.xlsx");
 	}
 
 	@Test
@@ -268,24 +291,22 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testGetReportMitarbeiterinnen() throws Exception {
-		final List<MitarbeiterinnenDataRow> reportMitarbeiterinnen = reportService.getReportMitarbeiterinnen(LocalDate.of(1000, 1, 1), TestDataUtil.ENDE_PERIODE);
-		Assert.assertNotNull(reportMitarbeiterinnen);
+		final List<MitarbeiterinnenDataRow> reportMitarbeiterinnen = reportService
+			.getReportMitarbeiterinnen(LocalDate.of(1000, 1, 1), LocalDate.now());
+
 		Assert.assertEquals(3, reportMitarbeiterinnen.size());
 
 		//case with only Gesuche als Verantwortlicher
-		Assert.assertEquals("Blaser", reportMitarbeiterinnen.get(0).getName());
-		Assert.assertEquals(BigDecimal.valueOf(2), reportMitarbeiterinnen.get(0).getVerantwortlicheGesuche());
-		Assert.assertEquals(BigDecimal.ZERO, reportMitarbeiterinnen.get(0).getVerfuegungenAusgestellt());
+		MitarbeiterinnenDataRow maBlaser = reportMitarbeiterinnen.get(0);
+		Assert.assertEquals("Blaser", maBlaser.getName());
+		Assert.assertEquals(BigDecimal.valueOf(2), maBlaser.getVerantwortlicheGesuche());
+		Assert.assertEquals(BigDecimal.ZERO, maBlaser.getVerfuegungenAusgestellt());
 
 		//case with only verfuegte Gesuche
-		Assert.assertEquals("Bogabante", reportMitarbeiterinnen.get(1).getName());
-		Assert.assertEquals(BigDecimal.ZERO, reportMitarbeiterinnen.get(1).getVerantwortlicheGesuche());
-		Assert.assertEquals(BigDecimal.ONE, reportMitarbeiterinnen.get(1).getVerfuegungenAusgestellt());
-
-		//case with both verfuegte Gesuche und Gesuche als Verantwortlicher
-		Assert.assertEquals("Superuser", reportMitarbeiterinnen.get(2).getName());
-		Assert.assertEquals(BigDecimal.valueOf(8), reportMitarbeiterinnen.get(2).getVerantwortlicheGesuche());
-		Assert.assertEquals(BigDecimal.valueOf(15), reportMitarbeiterinnen.get(2).getVerfuegungenAusgestellt());
+		MitarbeiterinnenDataRow maBrogabante = reportMitarbeiterinnen.get(1);
+		Assert.assertEquals("Bogabante", maBrogabante.getName());
+		Assert.assertEquals(BigDecimal.ZERO, maBrogabante.getVerantwortlicheGesuche());
+		Assert.assertEquals(BigDecimal.ONE, maBrogabante.getVerfuegungenAusgestellt());
 
 		// case with no Gesuche at all are not shown
 

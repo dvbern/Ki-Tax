@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -240,8 +241,7 @@ public final class TestJaxDataUtil {
 
 	public static JaxFachstelle createTestJaxFachstelle() {
 		JaxFachstelle jaxFachstelle = new JaxFachstelle();
-		jaxFachstelle.setName("Fachstelle_Test");
-		jaxFachstelle.setBeschreibung("Notizen der Fachstelle");
+		jaxFachstelle.setName(FachstelleName.FRUEHERZIEHUNGSDIENST_KANTON_BERN);
 		return jaxFachstelle;
 	}
 

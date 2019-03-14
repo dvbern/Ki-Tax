@@ -15,14 +15,14 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import ch.dvbern.ebegu.enums.FachstelleName;
+
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_SHORT_LENGTH;
 
 /**
@@ -34,33 +34,19 @@ public class JaxFachstelle extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1277026901764135397L;
 
-	@Size(min = 1, max = DB_DEFAULT_SHORT_LENGTH)
 	@NotNull
-	private String name;
-
-	@Nullable
-	@Size(max = DB_DEFAULT_MAX_LENGTH)
-	private String beschreibung;
+	private FachstelleName name;
 
 	private boolean fachstelleAnspruch;
 
 	private boolean fachstelleErweiterteBetreuung;
 
-	public String getName() {
+	public FachstelleName getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(FachstelleName name) {
 		this.name = name;
-	}
-
-	@Nullable
-	public String getBeschreibung() {
-		return beschreibung;
-	}
-
-	public void setBeschreibung(@Nullable String beschreibung) {
-		this.beschreibung = beschreibung;
 	}
 
 	public boolean isFachstelleAnspruch() {

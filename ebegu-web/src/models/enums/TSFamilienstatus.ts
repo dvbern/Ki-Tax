@@ -17,8 +17,7 @@ export enum TSFamilienstatus {
     ALLEINERZIEHEND = 'ALLEINERZIEHEND',
     VERHEIRATET = 'VERHEIRATET',
     KONKUBINAT = 'KONKUBINAT',
-    LAENGER_FUENF_JAHRE = 'LAENGER_FUENF_JAHRE',
-    WENIGER_FUENF_JAHRE = 'WENIGER_FUENF_JAHRE',
+    KONKUBINAT_KEIN_KIND = 'KONKUBINAT_KEIN_KIND',
 }
 
 export function getTSFamilienstatusValues(): Array<TSFamilienstatus> {
@@ -26,7 +25,6 @@ export function getTSFamilienstatusValues(): Array<TSFamilienstatus> {
         TSFamilienstatus.ALLEINERZIEHEND,
         TSFamilienstatus.VERHEIRATET,
         TSFamilienstatus.KONKUBINAT,
-        TSFamilienstatus.LAENGER_FUENF_JAHRE,
-        TSFamilienstatus.WENIGER_FUENF_JAHRE,
+        TSFamilienstatus.KONKUBINAT_KEIN_KIND,
     ];
 }

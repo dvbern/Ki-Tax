@@ -105,7 +105,8 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 					pensumJA.getName(locale),
 					DokumentGrundPersonType.GESUCHSTELLER,
 					gesuchstellerNumber,
-					DokumentGrundTyp.ERWERBSPENSUM));
+					DokumentGrundTyp.ERWERBSPENSUM,
+					null));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_SELBSTAENDIGKEIT, locale));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_AUSBILDUNG, locale));
 				adder.accept(getDokument(gesuchstellerNumber, pensumJA, NACHWEIS_RAV, locale));
@@ -136,7 +137,9 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
 		Erwerbspensum erwerbspensum,
-		LocalDate periodenstart) {
+		LocalDate periodenstart,
+		LocalDate stichtag
+	) {
 
 		return isDokumentNeeded(dokumentTyp, erwerbspensum);
 	}

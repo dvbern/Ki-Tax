@@ -167,9 +167,9 @@ public class ErwerbspensumCalcRule extends AbstractCalcRule {
 		if (familiensituationGueltigAb != null
 			&& familiensituationErstGesuch != null
 			&& gueltigkeit.getGueltigAb().isBefore(familiensituationGueltigAb)) {
-				return familiensituationErstGesuch.hasSecondGesuchsteller();
+				return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 		}
-		return familiensituation.hasSecondGesuchsteller();
+		return familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 	}
 
 	private String getBeschaeftigungsTypen(@Nonnull VerfuegungZeitabschnitt abschnitt, @Nonnull Locale locale) {

@@ -70,6 +70,7 @@ export default class TestDataUtil {
         dummyErwerbspensum.pensum = 100;
         dummyErwerbspensum.gueltigkeit = new TSDateRange(DateUtil.today(), DateUtil.today().add(7, 'months'));
         dummyErwerbspensum.bezeichnung = undefined;
+        dummyErwerbspensum.unbezahlterUrlaub = undefined;
         this.setAbstractMutableFieldsUndefined(dummyErwerbspensum);
         return dummyErwerbspensum;
     }
@@ -258,5 +259,19 @@ export default class TestDataUtil {
         user.currentBerechtigung = new TSBerechtigung();
         user.currentBerechtigung.role = TSRole.SUPER_ADMIN;
         return user;
+    }
+
+    /**
+     * Compares both objects checking all properties that are defined. This is useful when comparing mocks because
+     * sometimes in a mock we don't need to define all parameters and we just focus in some of them. So using this
+     * method we don't need to worry about all those parameters that are not existing in the mock
+     */
+    public static compareDefinedProperties(objectToCheck: any, expected: any): void {
+        Object.keys(expected)
+            .filter(value => expected[value])
+            .forEach(key => {
+                expect(objectToCheck.hasOwnProperty(key)).toBe(true);
+                expect(objectToCheck[key]).toEqual(expected[key]);
+            });
     }
 }

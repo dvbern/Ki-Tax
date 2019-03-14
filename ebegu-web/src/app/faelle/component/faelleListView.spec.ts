@@ -113,20 +113,16 @@ describe('faelleListView', () => {
 
     function mockGetPendenzenList(): TSAntragDTO {
         const fallNummer = 123;
-        const mockPendenz = new TSAntragDTO('66345345',
-            fallNummer,
-            'name',
-            TSAntragTyp.ERSTGESUCH,
-            undefined,
-            undefined,
-            undefined,
-            [TSBetreuungsangebotTyp.KITA],
-            ['Inst1, Inst2'],
-            'Juan Arbolado',
-            'Juan Arbolado',
-            undefined,
-            undefined,
-            undefined);
+        const mockPendenz = new TSAntragDTO();
+        mockPendenz.antragId = '66345345';
+        mockPendenz.fallNummer = fallNummer;
+        mockPendenz.familienName = 'name';
+        mockPendenz.antragTyp = TSAntragTyp.ERSTGESUCH;
+        mockPendenz.angebote = [TSBetreuungsangebotTyp.KITA];
+        mockPendenz.institutionen = ['Inst1, Inst2'];
+        mockPendenz.verantwortlicherBG = 'Juan Arbolado';
+        mockPendenz.verantwortlicherTS = 'Juan Arbolado';
+
         mockPendenz.dossierId = '11111111';
         const dtoList = [mockPendenz];
         const totalSize = 1;

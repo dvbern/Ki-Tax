@@ -26,6 +26,7 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 
 public enum MergeFieldGesuchStichtag implements MergeFieldProvider {
 
+	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
 	bgNummerTitle(new SimpleMergeField<>("bgNummerTitle", STRING_CONVERTER)),
 	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
 	angebotTitle(new SimpleMergeField<>("angebotTitle", STRING_CONVERTER)),
@@ -37,6 +38,7 @@ public enum MergeFieldGesuchStichtag implements MergeFieldProvider {
 
 	repeatGesuchStichtagRow(new RepeatRowMergeField("repeatGesuchStichtagRow")),
 
+	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
 	gesuchLaufNr(new SimpleMergeField<>("gesuchLaufNr", INTEGER_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),

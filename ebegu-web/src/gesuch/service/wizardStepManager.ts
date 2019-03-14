@@ -69,23 +69,42 @@ export default class WizardStepManager {
         return this.currentStepName;
     }
 
+    public createWizardStep(
+        gesuchId: string,
+        stepName: TSWizardStepName,
+        status: TSWizardStepStatus,
+        bemerkungen: string,
+        verfuegbar: boolean,
+    ): TSWizardStep {
+
+        const tsWizardStep = new TSWizardStep();
+        tsWizardStep.gesuchId = gesuchId;
+        tsWizardStep.wizardStepName = stepName;
+        tsWizardStep.wizardStepStatus = status;
+        tsWizardStep.bemerkungen = bemerkungen;
+        tsWizardStep.verfuegbar = verfuegbar;
+        return tsWizardStep;
+    }
+
     /**
      * Initializes WizardSteps with one single Step GESUCH_ERSTELLEN which status is IN_BEARBEITUNG.
      * This method must be called only when the Gesuch doesn't exist yet.
      */
     public initWizardSteps(): void {
         this.wizardSteps = [
-            new TSWizardStep(undefined,
+            this.createWizardStep(undefined,
                 TSWizardStepName.GESUCH_ERSTELLEN,
                 TSWizardStepStatus.IN_BEARBEITUNG,
                 undefined,
                 true),
         ];
-        this.wizardSteps.push(new TSWizardStep(undefined,
-            TSWizardStepName.FAMILIENSITUATION,
-            TSWizardStepStatus.UNBESUCHT,
-            'initFinSit dummy',
-            false));
+        this.wizardSteps.push(
+            this.createWizardStep(undefined,
+                TSWizardStepName.FAMILIENSITUATION,
+                TSWizardStepStatus.UNBESUCHT,
+                'initFinSit dummy',
+                false)
+        );
         this.currentStepName = TSWizardStepName.GESUCH_ERSTELLEN;
     }
 

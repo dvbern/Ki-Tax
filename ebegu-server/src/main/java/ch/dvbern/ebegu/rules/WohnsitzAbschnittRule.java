@@ -140,7 +140,9 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 						// from 1GS to 2GS
 						Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
 						requireNonNull(familiensituationErstgesuch);
-						if (!familiensituationErstgesuch.hasSecondGesuchsteller() && familiensituation.hasSecondGesuchsteller()) {
+						LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+						if (!familiensituationErstgesuch.hasSecondGesuchsteller(bis)
+							&& familiensituation.hasSecondGesuchsteller(bis)) {
 							if (gueltigkeit.getGueltigBis().isAfter(familiensituationStichtag)) {
 								if (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)) {
 									gueltigkeit.setGueltigAb(familiensituationStichtag);
@@ -149,8 +151,8 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 							}
 						}
 						// from 2GS to 1GS
-						else if (familiensituationErstgesuch.hasSecondGesuchsteller() && !familiensituation
-							.hasSecondGesuchsteller()
+						else if (familiensituationErstgesuch.hasSecondGesuchsteller(bis)
+							&& !familiensituation.hasSecondGesuchsteller(bis)
 							&& (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag))) {
 
 							if (!gueltigkeit.getGueltigBis().isBefore(familiensituationStichtag)) {
