@@ -30,11 +30,6 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -4629044440787545634L;
 
-	@NotNull
-	private Boolean steuerveranlagungErhalten;
-
-	@NotNull
-	private Boolean steuererklaerungAusgefuellt;
 
 	@Nullable
 	private BigDecimal nettolohn;
@@ -53,21 +48,6 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	private BigDecimal geleisteteAlimente;
 
-	public Boolean getSteuerveranlagungErhalten() {
-		return steuerveranlagungErhalten;
-	}
-
-	public void setSteuerveranlagungErhalten(final Boolean steuerveranlagungErhalten) {
-		this.steuerveranlagungErhalten = steuerveranlagungErhalten;
-	}
-
-	public Boolean getSteuererklaerungAusgefuellt() {
-		return steuererklaerungAusgefuellt;
-	}
-
-	public void setSteuererklaerungAusgefuellt(final Boolean steuererklaerungAusgefuellt) {
-		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
-	}
 
 	@Nullable
 	public BigDecimal getNettolohn() {

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -119,15 +120,11 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 			if (gs1Container != null && gs1Container.getEinkommensverschlechterungContainer() != null) {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
 					final Einkommensverschlechterung ekvJABasisJahrPlus1 = new Einkommensverschlechterung();
-					ekvJABasisJahrPlus1.setSteuerveranlagungErhalten(false); // by default
-					ekvJABasisJahrPlus1.setSteuererklaerungAusgefuellt(false); // by default
 					//noinspection ConstantConditions: Wird ausserhalb des IF-Blocks schon gesetzt
 					gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(ekvJABasisJahrPlus1);
 				}
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2() != null) {
 					final Einkommensverschlechterung ekvJABasisJahrPlus2 = new Einkommensverschlechterung();
-					ekvJABasisJahrPlus2.setSteuerveranlagungErhalten(false); // by default
-					ekvJABasisJahrPlus2.setSteuererklaerungAusgefuellt(false); // by default
 					gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 				}
 			}
@@ -183,8 +180,9 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	 * Wenn aufgrund der Familiensitation 1 GS noetig ist kommt hier true zurueck wenn gsNumber = 1
 	 */
 	private boolean isSavingLastNecessaryGesuchsteller(Gesuch gesuch, Integer gsNumber) {
-		return (gesuch.extractFamiliensituation().hasSecondGesuchsteller() && gsNumber == 2)
-			|| (!gesuch.extractFamiliensituation().hasSecondGesuchsteller() && gsNumber == 1);
+		LocalDate bis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+		boolean gs2 = Objects.requireNonNull(gesuch.extractFamiliensituation()).hasSecondGesuchsteller(bis);
+		return (gs2 && gsNumber == 2) || (!gs2 && gsNumber == 1);
 	}
 
 	@Nonnull

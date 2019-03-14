@@ -40,7 +40,6 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
-import ch.dvbern.ebegu.rules.RuleKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -53,7 +52,6 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.test.TestDataUtil.createDefaultInstitutionStammdaten;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Test der als Proof of Concept dienen soll fuer das Regelsystem
@@ -116,7 +114,6 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 				assertNotNull(betreuung.getVerfuegung());
 				assertNotNull(betreuung.getVerfuegung().getGeneratedBemerkungen());
 				assertFalse(betreuung.getVerfuegung().getGeneratedBemerkungen().isEmpty());
-				assertTrue(betreuung.getVerfuegung().getGeneratedBemerkungen().contains(RuleKey.EINKOMMEN.name()));
 			}
 		}
 	}

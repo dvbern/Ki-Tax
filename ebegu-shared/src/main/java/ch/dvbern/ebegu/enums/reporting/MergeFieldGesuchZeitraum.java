@@ -29,6 +29,7 @@ public enum MergeFieldGesuchZeitraum implements MergeFieldProvider {
 	repeatGesuchZeitraumRow(new RepeatRowMergeField("repeatGesuchZeitraumRow")),
 
 	bgNummer(new SimpleMergeField<>("bgNummer", STRING_CONVERTER)),
+	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	gesuchLaufNr(new SimpleMergeField<>("gesuchLaufNr", INTEGER_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
 	betreuungsTyp(new SimpleMergeField<>("betreuungsTyp", STRING_CONVERTER)),

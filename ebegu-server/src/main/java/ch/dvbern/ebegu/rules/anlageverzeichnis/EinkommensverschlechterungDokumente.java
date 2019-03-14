@@ -16,10 +16,12 @@
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -80,21 +82,28 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
 
+		// we need to check the familiensituation at the end of the period to see if there is 1GS or 2GS
+		final LocalDate stichtag = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
+
 		if (einkommensverschlechterungInfo != null) {
 			if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus1()) {
-				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, 1, basisJahrPlus1);
-				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, 1, basisJahrPlus1);
+				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, 1, basisJahrPlus1, stichtag);
+				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, 1, basisJahrPlus1, stichtag);
 			}
 			if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
-				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, 2, basisJahrPlus2);
-				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, 2, basisJahrPlus2);
+				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, 2, basisJahrPlus2, stichtag);
+				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, 2, basisJahrPlus2, stichtag);
 			}
 		}
 
 	}
 
-	private void getAllDokumenteGesuchsteller(Set<DokumentGrund> anlageVerzeichnis, GesuchstellerContainer gesuchsteller,
-		boolean gemeinsam, int gesuchstellerNumber, int basisJahrPlusNumber, int basisJahr) {
+	private void getAllDokumenteGesuchsteller(
+		Set<DokumentGrund> anlageVerzeichnis,
+		@Nullable GesuchstellerContainer gesuchsteller,
+		boolean gemeinsam, int gesuchstellerNumber, int basisJahrPlusNumber, int basisJahr,
+		@Nonnull LocalDate stichtag
+		) {
 
 		if (gesuchsteller == null || gesuchsteller.getEinkommensverschlechterungContainer() == null) {
 			return;
@@ -108,8 +117,8 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 			einkommensverschlechterung = einkommensverschlechterungContainer.getEkvJABasisJahrPlus1();
 		}
 
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller.extractFullName(), basisJahr, gemeinsam,
-			gesuchstellerNumber, einkommensverschlechterung, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
+		getAllDokumenteGesuchsteller(anlageVerzeichnis, basisJahr, gemeinsam,
+			gesuchstellerNumber, einkommensverschlechterung, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag);
 	}
 
 	@Override

@@ -16,11 +16,13 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -35,6 +37,14 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	private static final long serialVersionUID = -4401110366293613225L;
 
+	@NotNull
+	@Column(nullable = false)
+	private Boolean steuerveranlagungErhalten;
+
+	@NotNull
+	@Column(nullable = false)
+	private Boolean steuererklaerungAusgefuellt;
+
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
@@ -44,6 +54,23 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
 	public FinanzielleSituation() {
+	}
+
+
+	public Boolean getSteuerveranlagungErhalten() {
+		return steuerveranlagungErhalten;
+	}
+
+	public void setSteuerveranlagungErhalten(final Boolean steuerveranlagungErhalten) {
+		this.steuerveranlagungErhalten = steuerveranlagungErhalten;
+	}
+
+	public Boolean getSteuererklaerungAusgefuellt() {
+		return steuererklaerungAusgefuellt;
+	}
+
+	public void setSteuererklaerungAusgefuellt(final Boolean steuererklaerungAusgefuellt) {
+		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
 	}
 
 	@Nullable
@@ -70,6 +97,8 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
 			super.copyAbstractFinanzielleSituation(target, copyType);
+			target.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
+			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
 			break;
@@ -96,7 +125,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			return false;
 		}
 		final FinanzielleSituation otherFinSit = (FinanzielleSituation) other;
-		return MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
+		return Objects.equals(getSteuerveranlagungErhalten(), otherFinSit.getSteuerveranlagungErhalten()) &&
+			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
+			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2());
 	}
 }

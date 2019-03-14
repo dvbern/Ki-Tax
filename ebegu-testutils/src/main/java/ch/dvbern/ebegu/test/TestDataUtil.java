@@ -41,7 +41,6 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.SortDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
@@ -284,7 +283,6 @@ public final class TestDataUtil {
 
 	public static Einkommensverschlechterung createDefaultEinkommensverschlechterung() {
 		Einkommensverschlechterung einkommensverschlechterung = new Einkommensverschlechterung();
-		createDefaultAbstractFinanzielleSituation(einkommensverschlechterung);
 		einkommensverschlechterung.setNettolohn(MathUtil.DEFAULT.from(BigDecimal.ONE));
 		return einkommensverschlechterung;
 	}
@@ -428,16 +426,11 @@ public final class TestDataUtil {
 	}
 
 	public static FinanzielleSituation createDefaultFinanzielleSituation() {
-
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
-		createDefaultAbstractFinanzielleSituation(finanzielleSituation);
+		finanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
+		finanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 		finanzielleSituation.setNettolohn(BigDecimal.valueOf(100000));
 		return finanzielleSituation;
-	}
-
-	public static void createDefaultAbstractFinanzielleSituation(AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		abstractFinanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
-		abstractFinanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 	}
 
 	public static Traegerschaft createDefaultTraegerschaft() {

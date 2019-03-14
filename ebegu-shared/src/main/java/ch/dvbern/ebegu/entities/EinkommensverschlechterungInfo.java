@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -53,14 +52,6 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private Boolean ekvFuerBasisJahrPlus2;
 
-	@Nullable
-	@Column(nullable = true)
-	private Boolean gemeinsameSteuererklaerung_BjP1;
-
-	@Nullable
-	@Column(nullable = true)
-	private Boolean gemeinsameSteuererklaerung_BjP2;
-
 	@NotNull
 	@Column(nullable = false)
 	private Boolean ekvBasisJahrPlus1Annulliert = false;
@@ -77,8 +68,6 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 			this.einkommensverschlechterung = other.getEinkommensverschlechterung();
 			this.ekvFuerBasisJahrPlus1 = other.getEkvFuerBasisJahrPlus1();
 			this.ekvFuerBasisJahrPlus2 = other.getEkvFuerBasisJahrPlus2();
-			this.gemeinsameSteuererklaerung_BjP1 = other.getGemeinsameSteuererklaerung_BjP1();
-			this.gemeinsameSteuererklaerung_BjP2 = other.getGemeinsameSteuererklaerung_BjP2();
 		}
 	}
 
@@ -106,24 +95,6 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 		this.ekvFuerBasisJahrPlus2 = ekvFuerBasisJahrPlus2;
 	}
 
-	@Nullable
-	public Boolean getGemeinsameSteuererklaerung_BjP1() {
-		return gemeinsameSteuererklaerung_BjP1;
-	}
-
-	public void setGemeinsameSteuererklaerung_BjP1(@Nullable Boolean gemeinsameSteuererklaerung_BjP1) {
-		this.gemeinsameSteuererklaerung_BjP1 = gemeinsameSteuererklaerung_BjP1;
-	}
-
-	@Nullable
-	public Boolean getGemeinsameSteuererklaerung_BjP2() {
-		return gemeinsameSteuererklaerung_BjP2;
-	}
-
-	public void setGemeinsameSteuererklaerung_BjP2(@Nullable Boolean gemeinsameSteuererklaerung_BjP2) {
-		this.gemeinsameSteuererklaerung_BjP2 = gemeinsameSteuererklaerung_BjP2;
-	}
-
 	public Boolean getEkvBasisJahrPlus1Annulliert() {
 		return ekvBasisJahrPlus1Annulliert;
 	}
@@ -149,8 +120,6 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 			target.setEinkommensverschlechterung(this.getEinkommensverschlechterung());
 			target.setEkvFuerBasisJahrPlus1(this.getEkvFuerBasisJahrPlus1());
 			target.setEkvFuerBasisJahrPlus2(this.getEkvFuerBasisJahrPlus2());
-			target.setGemeinsameSteuererklaerung_BjP1(this.getGemeinsameSteuererklaerung_BjP1());
-			target.setGemeinsameSteuererklaerung_BjP2(this.getGemeinsameSteuererklaerung_BjP2());
 			target.setEkvBasisJahrPlus1Annulliert(this.getEkvBasisJahrPlus1Annulliert());
 			target.setEkvBasisJahrPlus2Annulliert(this.getEkvBasisJahrPlus2Annulliert());
 			break;
@@ -188,21 +157,13 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 
 	private boolean isSameBasisJahrPlus1(EinkommensverschlechterungInfo otherEKVInfo) {
 		// if BasisJahrPlus1 is not set (ekvFuerBasisJahrPlus1==false) there is no need to compare the rest
-		//noinspection SimplifiableIfStatement -> for clarity sake
-		if (Objects.equals(getEkvFuerBasisJahrPlus1(), otherEKVInfo.getEkvFuerBasisJahrPlus1())
-			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus1())) {
-			return true;
-		}
-		return EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung_BjP1(), otherEKVInfo.getGemeinsameSteuererklaerung_BjP1());
+		return Objects.equals(getEkvFuerBasisJahrPlus1(), otherEKVInfo.getEkvFuerBasisJahrPlus1())
+			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus1());
 	}
 
 	private boolean isSameBasisJahrPlus2(EinkommensverschlechterungInfo otherEKVInfo) {
 		// if BasisJahrPlus2 is not set (ekvFuerBasisJahrPlus2==false) there is no need to compare the rest
-		//noinspection SimplifiableIfStatement -> for clarity sake
-		if (Objects.equals(getEkvFuerBasisJahrPlus2(), otherEKVInfo.getEkvFuerBasisJahrPlus2())
-			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus2())) {
-			return true;
-		}
-		return EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung_BjP2(), otherEKVInfo.getGemeinsameSteuererklaerung_BjP2());
+		return Objects.equals(getEkvFuerBasisJahrPlus2(), otherEKVInfo.getEkvFuerBasisJahrPlus2())
+			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus2());
 	}
 }

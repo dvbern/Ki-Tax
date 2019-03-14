@@ -525,6 +525,7 @@ export default class EbeguRestUtil {
             restFamiliensituation.familienstatus = familiensituation.familienstatus;
             restFamiliensituation.gemeinsameSteuererklaerung = familiensituation.gemeinsameSteuererklaerung;
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
+            restFamiliensituation.startKonkubinat = DateUtil.momentToLocalDate(familiensituation.startKonkubinat);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
             restFamiliensituation.verguenstigungGewuenscht = familiensituation.verguenstigungGewuenscht;
             return restFamiliensituation;
@@ -566,10 +567,6 @@ export default class EbeguRestUtil {
                 einkommensverschlechterungInfo.ekvFuerBasisJahrPlus1;
             restEinkommensverschlechterungInfo.ekvFuerBasisJahrPlus2 =
                 einkommensverschlechterungInfo.ekvFuerBasisJahrPlus2;
-            restEinkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1 =
-                einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1;
-            restEinkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP2 =
-                einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP2;
             restEinkommensverschlechterungInfo.ekvBasisJahrPlus1Annulliert =
                 einkommensverschlechterungInfo.ekvBasisJahrPlus1Annulliert;
             restEinkommensverschlechterungInfo.ekvBasisJahrPlus2Annulliert =
@@ -587,6 +584,7 @@ export default class EbeguRestUtil {
             familiensituation.familienstatus = familiensituationFromServer.familienstatus;
             familiensituation.gemeinsameSteuererklaerung = familiensituationFromServer.gemeinsameSteuererklaerung;
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
+            familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
             familiensituation.verguenstigungGewuenscht = familiensituationFromServer.verguenstigungGewuenscht;
             return familiensituation;
@@ -649,10 +647,6 @@ export default class EbeguRestUtil {
                 einkommensverschlechterungInfoFromServer.ekvFuerBasisJahrPlus1;
             einkommensverschlechterungInfo.ekvFuerBasisJahrPlus2 =
                 einkommensverschlechterungInfoFromServer.ekvFuerBasisJahrPlus2;
-            einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1 =
-                einkommensverschlechterungInfoFromServer.gemeinsameSteuererklaerung_BjP1;
-            einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP2 =
-                einkommensverschlechterungInfoFromServer.gemeinsameSteuererklaerung_BjP2;
             einkommensverschlechterungInfo.ekvBasisJahrPlus1Annulliert =
                 einkommensverschlechterungInfoFromServer.ekvBasisJahrPlus1Annulliert;
             einkommensverschlechterungInfo.ekvBasisJahrPlus2Annulliert =
@@ -1224,6 +1218,8 @@ export default class EbeguRestUtil {
                                             finanzielleSituation: TSFinanzielleSituation,
     ): TSFinanzielleSituation {
         this.abstractfinanzielleSituationToRestObject(restFinanzielleSituation, finanzielleSituation);
+        restFinanzielleSituation.steuerveranlagungErhalten = finanzielleSituation.steuerveranlagungErhalten;
+        restFinanzielleSituation.steuererklaerungAusgefuellt = finanzielleSituation.steuererklaerungAusgefuellt || false;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         return restFinanzielleSituation;
@@ -1234,10 +1230,6 @@ export default class EbeguRestUtil {
         abstractFinanzielleSituation: TSAbstractFinanzielleSituation,
     ): TSAbstractFinanzielleSituation {
         this.abstractMutableEntityToRestObject(restAbstractFinanzielleSituation, abstractFinanzielleSituation);
-        restAbstractFinanzielleSituation.steuerveranlagungErhalten =
-            abstractFinanzielleSituation.steuerveranlagungErhalten;
-        restAbstractFinanzielleSituation.steuererklaerungAusgefuellt =
-            abstractFinanzielleSituation.steuererklaerungAusgefuellt || false;
         restAbstractFinanzielleSituation.nettolohn = abstractFinanzielleSituation.nettolohn;
         restAbstractFinanzielleSituation.familienzulage = abstractFinanzielleSituation.familienzulage;
         restAbstractFinanzielleSituation.ersatzeinkommen = abstractFinanzielleSituation.ersatzeinkommen;
@@ -1256,10 +1248,6 @@ export default class EbeguRestUtil {
     ): TSAbstractFinanzielleSituation {
         if (abstractFinanzielleSituationFromServer) {
             this.parseAbstractMutableEntity(abstractFinanzielleSituationTS, abstractFinanzielleSituationFromServer);
-            abstractFinanzielleSituationTS.steuerveranlagungErhalten =
-                abstractFinanzielleSituationFromServer.steuerveranlagungErhalten;
-            abstractFinanzielleSituationTS.steuererklaerungAusgefuellt =
-                abstractFinanzielleSituationFromServer.steuererklaerungAusgefuellt;
             abstractFinanzielleSituationTS.nettolohn = abstractFinanzielleSituationFromServer.nettolohn;
             abstractFinanzielleSituationTS.familienzulage = abstractFinanzielleSituationFromServer.familienzulage;
             abstractFinanzielleSituationTS.ersatzeinkommen = abstractFinanzielleSituationFromServer.ersatzeinkommen;
@@ -1280,6 +1268,10 @@ export default class EbeguRestUtil {
     ): TSFinanzielleSituation {
         if (finanzielleSituationFromServer) {
             this.parseAbstractFinanzielleSituation(finanzielleSituationTS, finanzielleSituationFromServer);
+            finanzielleSituationTS.steuerveranlagungErhalten =
+                finanzielleSituationFromServer.steuerveranlagungErhalten;
+            finanzielleSituationTS.steuererklaerungAusgefuellt =
+                finanzielleSituationFromServer.steuererklaerungAusgefuellt;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus2 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =

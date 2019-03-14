@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Set;
 
@@ -43,7 +44,9 @@ abstract class AbstractDokumente<T1, T2> {
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
 		@Nullable T1 dataForDocument1,
-		@Nullable T2 dataForDocument2) {
+		@Nullable T2 dataForDocument2,
+		@Nullable LocalDate stichtag
+	) {
 
 		return isDokumentNeeded(dokumentTyp, dataForDocument1);
 	}
@@ -77,9 +80,10 @@ abstract class AbstractDokumente<T1, T2> {
 		@Nullable String tag,
 		@Nullable DokumentGrundPersonType personType,
 		@Nullable Integer personNumber,
-		@Nonnull DokumentGrundTyp dokumentGrundTyp) {
+		@Nonnull DokumentGrundTyp dokumentGrundTyp,
+		@Nullable LocalDate stichtag) {
 
-		if (isDokumentNeeded(dokumentTyp, dataForDocument1, dataForDocument2)) {
+		if (isDokumentNeeded(dokumentTyp, dataForDocument1, dataForDocument2, stichtag)) {
 			return new DokumentGrund(dokumentGrundTyp, tag, personType, personNumber, dokumentTyp);
 		}
 		return null;

@@ -32,7 +32,6 @@ import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situatio
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
 import {EinkommensverschlechterungResultateViewComponentConfig} from './component/einkommensverschlechterungResultateView/einkommensverschlechterungResultateView';
-import {EinkommensverschlechterungSteuernViewComponentConfig} from './component/einkommensverschlechterungSteuernView/einkommensverschlechterungSteuernView';
 import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterungView/einkommensverschlechterungView';
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
@@ -76,7 +75,6 @@ export const GESUCH_JS_MODULE =
         .component('dossierToolbar', new DossierToolbarComponentConfig())
         .component('dossierToolbarGesuchsteller', new DossierToolbarGesuchstellerComponentConfig())
         .component('einkommensverschlechterungInfoView', new EinkommensverschlechterungInfoViewComponentConfig())
-        .component('einkommensverschlechterungSteuernView', new EinkommensverschlechterungSteuernViewComponentConfig())
         .component('einkommensverschlechterungView', new EinkommensverschlechterungViewComponentConfig())
         .component('einkommensverschlechterungResultateView',
             new EinkommensverschlechterungResultateViewComponentConfig())
