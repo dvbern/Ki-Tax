@@ -51,6 +51,10 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@Column(nullable = false)
 	private Boolean steuererklaerungAusgefuellt;
 
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettolohn;
+
 	@Column(nullable = true)
 	private BigDecimal familienzulage;
 
@@ -76,7 +80,13 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	}
 
 	@Nullable
-	public abstract BigDecimal getNettolohn();
+	public BigDecimal getNettolohn() {
+		return nettolohn;
+	}
+
+	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
+		this.nettolohn = nettolohn;
+	}
 
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
@@ -158,6 +168,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		case MUTATION_NEUES_DOSSIER:
 			target.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
 			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
+			target.setNettolohn(this.getNettolohn());
 			target.setFamilienzulage(this.getFamilienzulage());
 			target.setErsatzeinkommen(this.getErsatzeinkommen());
 			target.setErhalteneAlimente(this.getErhalteneAlimente());
@@ -188,6 +199,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		final AbstractFinanzielleSituation otherFinSituation = (AbstractFinanzielleSituation) other;
 		return Objects.equals(getSteuerveranlagungErhalten(), otherFinSituation.getSteuerveranlagungErhalten()) &&
 			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSituation.getSteuererklaerungAusgefuellt()) &&
+			MathUtil.isSame(getNettolohn(), otherFinSituation.getNettolohn()) &&
 			MathUtil.isSame(getFamilienzulage(), otherFinSituation.getFamilienzulage()) &&
 			MathUtil.isSame(getErsatzeinkommen(), otherFinSituation.getErsatzeinkommen()) &&
 			MathUtil.isSame(getErhalteneAlimente(), otherFinSituation.getErhalteneAlimente()) &&

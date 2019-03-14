@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,6 +35,9 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	@NotNull
 	private Boolean steuererklaerungAusgefuellt;
+
+	@Nullable
+	private BigDecimal nettolohn;
 
 	private BigDecimal familienzulage;
 
@@ -63,6 +67,15 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	public void setSteuererklaerungAusgefuellt(final Boolean steuererklaerungAusgefuellt) {
 		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
+	}
+
+	@Nullable
+	public BigDecimal getNettolohn() {
+		return nettolohn;
+	}
+
+	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
+		this.nettolohn = nettolohn;
 	}
 
 	public BigDecimal getFamilienzulage() {

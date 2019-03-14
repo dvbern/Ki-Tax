@@ -17,20 +17,11 @@ import TSAbstractFinanzielleSituation from './TSAbstractFinanzielleSituation';
 
 export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
-    private _nettolohn: number;
     private _geschaeftsgewinnBasisjahrMinus2: number;
     private _geschaeftsgewinnBasisjahrMinus1: number;
 
     public constructor() {
         super();
-    }
-
-    public get nettolohn(): number {
-        return this._nettolohn;
-    }
-
-    public set nettolohn(value: number) {
-        this._nettolohn = value;
     }
 
     public get geschaeftsgewinnBasisjahrMinus2(): number {

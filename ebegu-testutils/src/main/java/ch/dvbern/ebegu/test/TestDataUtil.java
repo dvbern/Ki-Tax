@@ -268,15 +268,15 @@ public final class TestDataUtil {
 		einkommensverschlechterungContainer.setEkvGSBasisJahrPlus1(createDefaultEinkommensverschlechterung());
 
 		final Einkommensverschlechterung ekvGSBasisJahrPlus2 = createDefaultEinkommensverschlechterung();
-		ekvGSBasisJahrPlus2.setNettolohnJan(BigDecimal.valueOf(2));
+		ekvGSBasisJahrPlus2.setNettolohn(BigDecimal.valueOf(2));
 		einkommensverschlechterungContainer.setEkvGSBasisJahrPlus2(ekvGSBasisJahrPlus2);
 
 		final Einkommensverschlechterung ekvJABasisJahrPlus1 = createDefaultEinkommensverschlechterung();
-		ekvJABasisJahrPlus1.setNettolohnJan(BigDecimal.valueOf(3));
+		ekvJABasisJahrPlus1.setNettolohn(BigDecimal.valueOf(3));
 		einkommensverschlechterungContainer.setEkvJABasisJahrPlus1(ekvJABasisJahrPlus1);
 
 		final Einkommensverschlechterung ekvJABasisJahrPlus2 = createDefaultEinkommensverschlechterung();
-		ekvJABasisJahrPlus2.setNettolohnJan(BigDecimal.valueOf(4));
+		ekvJABasisJahrPlus2.setNettolohn(BigDecimal.valueOf(4));
 		einkommensverschlechterungContainer.setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 
 		return einkommensverschlechterungContainer;
@@ -285,7 +285,7 @@ public final class TestDataUtil {
 	public static Einkommensverschlechterung createDefaultEinkommensverschlechterung() {
 		Einkommensverschlechterung einkommensverschlechterung = new Einkommensverschlechterung();
 		createDefaultAbstractFinanzielleSituation(einkommensverschlechterung);
-		einkommensverschlechterung.setNettolohnJan(MathUtil.DEFAULT.from(BigDecimal.ONE));
+		einkommensverschlechterung.setNettolohn(MathUtil.DEFAULT.from(BigDecimal.ONE));
 		return einkommensverschlechterung;
 	}
 
@@ -928,7 +928,7 @@ public final class TestDataUtil {
 		if (basisJahrPlus1) {
 			gesuchsteller.getEinkommensverschlechterungContainer()
 				.setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
-			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohnAug(einkommen);
+			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohn(einkommen);
 			EinkommensverschlechterungInfo einkommensverschlechterungInfo =
 				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);
@@ -937,7 +937,7 @@ public final class TestDataUtil {
 		} else {
 			gesuchsteller.getEinkommensverschlechterungContainer()
 				.setEkvJABasisJahrPlus2(new Einkommensverschlechterung());
-			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2().setNettolohnAug(einkommen);
+			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2().setNettolohn(einkommen);
 			EinkommensverschlechterungInfo einkommensverschlechterungInfo =
 				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);

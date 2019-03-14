@@ -29,9 +29,7 @@ import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
-import ch.dvbern.ebegu.enums.DokumentTyp;
 
 /**
  * Dokumente für Einkommensverschlechterung:
@@ -112,35 +110,15 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 
 		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller.extractFullName(), basisJahr, gemeinsam,
 			gesuchstellerNumber, einkommensverschlechterung, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG);
-
-		add(getDokument(DokumentTyp.NACHWEIS_EINKOMMENSSITUATION_MONAT, einkommensverschlechterung, gesuchsteller.extractFullName(),
-			String.valueOf(basisJahr), DokumentGrundPersonType.GESUCHSTELLER,
-			gesuchstellerNumber, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG), anlageVerzeichnis);
-
 	}
 
 	@Override
-	protected boolean isMonatsLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation instanceof Einkommensverschlechterung) {
+			Einkommensverschlechterung ekv = (Einkommensverschlechterung) abstractFinanzielleSituation;
 
-			Einkommensverschlechterung einkommensverschlechterung = (Einkommensverschlechterung) abstractFinanzielleSituation;
-
-			return !einkommensverschlechterung.getSteuerveranlagungErhalten() &&
-				(
-					einkommensverschlechterung.getNettolohnJan() != null && einkommensverschlechterung.getNettolohnJan().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnFeb() != null && einkommensverschlechterung.getNettolohnFeb().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnMrz() != null && einkommensverschlechterung.getNettolohnMrz().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnApr() != null && einkommensverschlechterung.getNettolohnApr().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnMai() != null && einkommensverschlechterung.getNettolohnMai().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnJun() != null && einkommensverschlechterung.getNettolohnJun().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnJul() != null && einkommensverschlechterung.getNettolohnJul().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnAug() != null && einkommensverschlechterung.getNettolohnAug().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnSep() != null && einkommensverschlechterung.getNettolohnSep().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnOkt() != null && einkommensverschlechterung.getNettolohnOkt().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnNov() != null && einkommensverschlechterung.getNettolohnNov().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnDez() != null && einkommensverschlechterung.getNettolohnDez().compareTo(BigDecimal.ZERO) > 0 ||
-						einkommensverschlechterung.getNettolohnZus() != null && einkommensverschlechterung.getNettolohnZus().compareTo(BigDecimal.ZERO) > 0
-				);
+			return ekv.getNettolohn() != null &&
+				ekv.getNettolohn().compareTo(BigDecimal.ZERO) > 0;
 		}
 		return false;
 	}

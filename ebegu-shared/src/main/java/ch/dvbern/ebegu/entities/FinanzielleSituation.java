@@ -37,10 +37,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal nettolohn;
-
-	@Nullable
-	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
 	@Nullable
@@ -48,16 +44,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
 	public FinanzielleSituation() {
-	}
-
-	@Nullable
-	@Override
-	public BigDecimal getNettolohn() {
-		return nettolohn;
-	}
-
-	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
-		this.nettolohn = nettolohn;
 	}
 
 	@Nullable
@@ -84,7 +70,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
 			super.copyAbstractFinanzielleSituation(target, copyType);
-			target.setNettolohn(this.getNettolohn());
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
 			break;
@@ -111,8 +96,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			return false;
 		}
 		final FinanzielleSituation otherFinSit = (FinanzielleSituation) other;
-		return MathUtil.isSame(getNettolohn(), otherFinSit.getNettolohn()) &&
-			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
+		return MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2());
 	}
 }

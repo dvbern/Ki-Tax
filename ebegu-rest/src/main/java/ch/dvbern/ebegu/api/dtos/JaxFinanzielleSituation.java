@@ -29,22 +29,10 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	private static final long serialVersionUID = -403919135454757656L;
 
-	@Nullable
-	private BigDecimal nettolohn;
-
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
-
-	@Nullable
-	public BigDecimal getNettolohn() {
-		return nettolohn;
-	}
-
-	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
-		this.nettolohn = nettolohn;
-	}
 
 	@Nullable
 	public BigDecimal getGeschaeftsgewinnBasisjahrMinus2() {
@@ -63,5 +51,4 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
-
 }

@@ -104,11 +104,11 @@ public class EinkommenCalcRuleTest {
 
 		gesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer());
 		final Einkommensverschlechterung ekvJABasisJahrPlus1 = new Einkommensverschlechterung();
-		ekvJABasisJahrPlus1.setNettolohnJan(new BigDecimal(25000));
+		ekvJABasisJahrPlus1.setNettolohn(new BigDecimal(25000));
 		assertNotNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(ekvJABasisJahrPlus1);
 		final Einkommensverschlechterung ekvJABasisJahrPlus2 = new Einkommensverschlechterung();
-		ekvJABasisJahrPlus2.setNettolohnJan(new BigDecimal(20000));
+		ekvJABasisJahrPlus2.setNettolohn(new BigDecimal(20000));
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);

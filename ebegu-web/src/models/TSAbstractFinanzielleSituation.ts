@@ -19,6 +19,7 @@ export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEnt
 
     private _steuerveranlagungErhalten: boolean = false;
     private _steuererklaerungAusgefuellt: boolean = false;
+    private _nettolohn: number;
     private _familienzulage: number;
     private _ersatzeinkommen: number;
     private _erhalteneAlimente: number;
@@ -45,6 +46,14 @@ export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEnt
 
     public set steuererklaerungAusgefuellt(value: boolean) {
         this._steuererklaerungAusgefuellt = value;
+    }
+
+    public get nettolohn(): number {
+        return this._nettolohn;
+    }
+
+    public set nettolohn(value: number) {
+        this._nettolohn = value;
     }
 
     public get familienzulage(): number {

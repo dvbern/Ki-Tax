@@ -678,7 +678,7 @@ public class MassgebendesEinkommenFristenTest {
 		gesuchsteller.setEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer());
 		Assert.assertNotNull(gesuchsteller.getEinkommensverschlechterungContainer());
 		gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
-		gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohnJan(new BigDecimal(neuesEinkommen));
+		gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohn(new BigDecimal(neuesEinkommen));
 	}
 
 	private void addBetreuung(@Nonnull KindContainer kind) {
