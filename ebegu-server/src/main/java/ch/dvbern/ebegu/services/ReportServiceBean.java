@@ -111,7 +111,7 @@ import ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung.GesuchstellerKinde
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagExcelConverter;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
-import ch.dvbern.ebegu.reporting.gesuchzeitraum.GeuschZeitraumExcelConverter;
+import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.KantonDataRow;
 import ch.dvbern.ebegu.reporting.kanton.KantonExcelConverter;
 import ch.dvbern.ebegu.reporting.kanton.mitarbeiterinnen.MitarbeiterinnenDataRow;
@@ -175,7 +175,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private GesuchStichtagExcelConverter gesuchStichtagExcelConverter;
 
 	@Inject
-	private GeuschZeitraumExcelConverter geuschZeitraumExcelConverter;
+	private GesuchZeitraumExcelConverter gesuchZeitraumExcelConverter;
 
 	@Inject
 	private KantonExcelConverter kantonExcelConverter;
@@ -286,7 +286,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		Objects.requireNonNull(date, "Das Argument 'date' darf nicht leer sein");
 
-		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG;
+		final ReportVorlage reportVorlage = locale.equals(Locale.FRENCH)
+			? ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_FR
+			: ReportVorlage.VORLAGE_REPORT_GESUCH_STICHTAG_DE;
 
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		Objects.requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
@@ -367,7 +369,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		validateDateParams(dateVon, dateBis);
 		validateDateParams(dateVon, dateBis);
 
-		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM;
+		final ReportVorlage reportVorlage = locale.equals(Locale.FRENCH)
+			? ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_FR
+			: ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_DE;
 
 		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		Objects.requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
@@ -376,10 +380,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 		List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID);
-		ExcelMergerDTO excelMergerDTO = geuschZeitraumExcelConverter.toExcelMergerDTO(reportData, locale);
+		ExcelMergerDTO excelMergerDTO = gesuchZeitraumExcelConverter.toExcelMergerDTO(reportData, locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
-		geuschZeitraumExcelConverter.applyAutoSize(sheet);
+		gesuchZeitraumExcelConverter.applyAutoSize(sheet);
 
 		byte[] bytes = createWorkbook(workbook);
 

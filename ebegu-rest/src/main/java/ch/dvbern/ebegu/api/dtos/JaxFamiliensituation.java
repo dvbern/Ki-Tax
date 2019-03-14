@@ -55,6 +55,10 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate aenderungPer = null;
 
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
+	private LocalDate startKonkubinat = null;
+
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -91,6 +95,15 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setAenderungPer(@Nullable LocalDate aenderungPer) {
 		this.aenderungPer = aenderungPer;
+	}
+
+	@Nullable
+	public LocalDate getStartKonkubinat() {
+		return startKonkubinat;
+	}
+
+	public void setStartKonkubinat(@Nullable LocalDate startKonkubinat) {
+		this.startKonkubinat = startKonkubinat;
 	}
 
 	@Nullable
