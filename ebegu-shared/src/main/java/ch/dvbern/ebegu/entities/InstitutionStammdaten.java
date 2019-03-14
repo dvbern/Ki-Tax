@@ -43,7 +43,6 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.checkerframework.checker.initialization.qual.NotOnlyInitialized;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;

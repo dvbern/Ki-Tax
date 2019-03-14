@@ -53,8 +53,6 @@ export class EditInstitutionComponent implements OnInit {
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
     public abweichendeZahlungsAdresse: boolean;
-    public alterskategorie: string;
-    public subventioniertePlaetze: string;
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
 
@@ -96,7 +94,6 @@ export class EditInstitutionComponent implements OnInit {
                         this.createInstitutionStammdaten(institution);
                     }
                     this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
-                    this.initStrings(stammdaten);
                     this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
                 });
@@ -225,25 +222,21 @@ export class EditInstitutionComponent implements OnInit {
         return b1 && b2 ? b1.id === b2.id : b1 === b2;
     }
 
-    private initStrings(stammdaten: TSInstitutionStammdaten): void {
+    public getAlterskategorien(): string {
         const alterskategorien: string[] = [];
-        this.subventioniertePlaetze = this.translate.instant('INSTITUTION_SUBVENTIONIERTE_PLAETZE');
-        if (stammdaten.alterskategorieBaby) {
+        if (this.stammdaten.alterskategorieBaby) {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY'));
         }
-        if (stammdaten.alterskategorieVorschule) {
+        if (this.stammdaten.alterskategorieVorschule) {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE'));
         }
-        if (stammdaten.alterskategorieKindergarten) {
+        if (this.stammdaten.alterskategorieKindergarten) {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'));
         }
-        if (stammdaten.alterskategorieSchule) {
+        if (this.stammdaten.alterskategorieSchule) {
             alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
         }
-        if (!stammdaten.subventioniertePlaetze) {
-            this.subventioniertePlaetze = '';
-        }
-        this.alterskategorie = alterskategorien.join(', ');
+        return alterskategorien.join(', ');
     }
 
     public getPlaceholderForPlaetze(): string {
@@ -254,5 +247,9 @@ export class EditInstitutionComponent implements OnInit {
             return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2');
         }
         return '';
+    }
+
+    public getPlaceholderForOeffnungszeiten(): string {
+        return this.translate.instant('INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER');
     }
 }

@@ -156,7 +156,7 @@
                             <input id="oeffnungszeiten_id" type="text" name="oeffnungszeiten_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.oeffnungszeiten"
                                    [maxlength]="255" class="form-control"
-                                   placeholder="z.B. Mo-Fr, 6:30-18:00" required>
+                                   placeholder="{{getPlaceholderForOeffnungszeiten()}}" required>
                             <dv-error-messages [errorObject]="form.controls.oeffnungszeiten_id?.errors" inputId="oeffnungszeiten_id"></dv-error-messages>
                         </div>
                     </div>
@@ -423,14 +423,17 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <h3 translate>INSTITUTION_ALTERSKATEGORIE</h3>
-                                <p>{{alterskategorie}}</p>
+                                <p>{{getAlterskategorien()}}</p>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <!-- Subventionierte Plätze -->
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <h3 translate>INSTITUTION_PLAETZE</h3>
-                                <p>{{subventioniertePlaetze}}</p>
+                                <p *ngIf="stammdaten.subventioniertePlaetze"
+                                   translate>INSTITUTION_SUBVENTIONIERTE_PLAETZE</p>
                                 <p translate [translateParams]="{anzahlPlaetze: stammdaten.anzahlPlaetze  ? stammdaten.anzahlPlaetze : 0}">
                                     INSTITUTION_ANZAHL_PLAETZE_PARAM
                                 </p>
