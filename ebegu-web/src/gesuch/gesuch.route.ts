@@ -501,28 +501,6 @@ export class EbeguEinkommensverschlechterungInfoState implements Ng1StateDeclara
     };
 }
 
-export class EbeguEinkommensverschlechterungSteuernState implements Ng1StateDeclaration {
-    public name = 'gesuch.einkommensverschlechterungSteuern';
-    public url = '/einkommensverschlechterungSteuern/:gesuchId';
-
-    public views: { [name: string]: Ng1StateDeclaration } = {
-        gesuchViewPort: {
-            template: '<einkommensverschlechterung-steuern-view>',
-        },
-        kommentarViewPort: {
-            template: kommentarView,
-        },
-    };
-
-    public resolve = {
-        gesuch: getGesuchModelManager,
-    };
-
-    public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
-    };
-}
-
 export class EbeguEinkommensverschlechterungState implements Ng1StateDeclaration {
     public name = 'gesuch.einkommensverschlechterung';
     public url = '/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber/:basisjahrPlus';
@@ -667,7 +645,6 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguVerfuegenListState(),
     new EbeguVerfuegenState(),
     new EbeguEinkommensverschlechterungInfoState(),
-    new EbeguEinkommensverschlechterungSteuernState(),
     new EbeguEinkommensverschlechterungState(),
     new EbeguEinkommensverschlechterungResultateState(),
     new EbeguDokumenteState(),
