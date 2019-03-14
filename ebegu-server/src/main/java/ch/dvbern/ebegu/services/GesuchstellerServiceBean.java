@@ -119,15 +119,11 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 			if (gs1Container != null && gs1Container.getEinkommensverschlechterungContainer() != null) {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
 					final Einkommensverschlechterung ekvJABasisJahrPlus1 = new Einkommensverschlechterung();
-					ekvJABasisJahrPlus1.setSteuerveranlagungErhalten(false); // by default
-					ekvJABasisJahrPlus1.setSteuererklaerungAusgefuellt(false); // by default
 					//noinspection ConstantConditions: Wird ausserhalb des IF-Blocks schon gesetzt
 					gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(ekvJABasisJahrPlus1);
 				}
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2() != null) {
 					final Einkommensverschlechterung ekvJABasisJahrPlus2 = new Einkommensverschlechterung();
-					ekvJABasisJahrPlus2.setSteuerveranlagungErhalten(false); // by default
-					ekvJABasisJahrPlus2.setSteuererklaerungAusgefuellt(false); // by default
 					gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 				}
 			}

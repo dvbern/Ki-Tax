@@ -97,6 +97,16 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 	public Einkommensverschlechterung() {
 	}
 
+	@Override
+	public Boolean getSteuerveranlagungErhalten() {
+		return false;
+	}
+
+	@Override
+	public Boolean getSteuererklaerungAusgefuellt() {
+		return false;
+	}
+
 	@Nullable
 	public BigDecimal getNettolohnJan() {
 		return nettolohnJan;

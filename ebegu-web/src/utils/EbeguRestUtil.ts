@@ -566,10 +566,6 @@ export default class EbeguRestUtil {
                 einkommensverschlechterungInfo.ekvFuerBasisJahrPlus1;
             restEinkommensverschlechterungInfo.ekvFuerBasisJahrPlus2 =
                 einkommensverschlechterungInfo.ekvFuerBasisJahrPlus2;
-            restEinkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1 =
-                einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1;
-            restEinkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP2 =
-                einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP2;
             restEinkommensverschlechterungInfo.ekvBasisJahrPlus1Annulliert =
                 einkommensverschlechterungInfo.ekvBasisJahrPlus1Annulliert;
             restEinkommensverschlechterungInfo.ekvBasisJahrPlus2Annulliert =
@@ -649,10 +645,6 @@ export default class EbeguRestUtil {
                 einkommensverschlechterungInfoFromServer.ekvFuerBasisJahrPlus1;
             einkommensverschlechterungInfo.ekvFuerBasisJahrPlus2 =
                 einkommensverschlechterungInfoFromServer.ekvFuerBasisJahrPlus2;
-            einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP1 =
-                einkommensverschlechterungInfoFromServer.gemeinsameSteuererklaerung_BjP1;
-            einkommensverschlechterungInfo.gemeinsameSteuererklaerung_BjP2 =
-                einkommensverschlechterungInfoFromServer.gemeinsameSteuererklaerung_BjP2;
             einkommensverschlechterungInfo.ekvBasisJahrPlus1Annulliert =
                 einkommensverschlechterungInfoFromServer.ekvBasisJahrPlus1Annulliert;
             einkommensverschlechterungInfo.ekvBasisJahrPlus2Annulliert =
@@ -1224,6 +1216,8 @@ export default class EbeguRestUtil {
                                             finanzielleSituation: TSFinanzielleSituation,
     ): TSFinanzielleSituation {
         this.abstractfinanzielleSituationToRestObject(restFinanzielleSituation, finanzielleSituation);
+        restFinanzielleSituation.steuerveranlagungErhalten = finanzielleSituation.steuerveranlagungErhalten;
+        restFinanzielleSituation.steuererklaerungAusgefuellt = finanzielleSituation.steuererklaerungAusgefuellt || false;
         restFinanzielleSituation.nettolohn = finanzielleSituation.nettolohn;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
@@ -1235,10 +1229,6 @@ export default class EbeguRestUtil {
         abstractFinanzielleSituation: TSAbstractFinanzielleSituation,
     ): TSAbstractFinanzielleSituation {
         this.abstractMutableEntityToRestObject(restAbstractFinanzielleSituation, abstractFinanzielleSituation);
-        restAbstractFinanzielleSituation.steuerveranlagungErhalten =
-            abstractFinanzielleSituation.steuerveranlagungErhalten;
-        restAbstractFinanzielleSituation.steuererklaerungAusgefuellt =
-            abstractFinanzielleSituation.steuererklaerungAusgefuellt || false;
         restAbstractFinanzielleSituation.familienzulage = abstractFinanzielleSituation.familienzulage;
         restAbstractFinanzielleSituation.ersatzeinkommen = abstractFinanzielleSituation.ersatzeinkommen;
         restAbstractFinanzielleSituation.erhalteneAlimente = abstractFinanzielleSituation.erhalteneAlimente;
@@ -1256,10 +1246,6 @@ export default class EbeguRestUtil {
     ): TSAbstractFinanzielleSituation {
         if (abstractFinanzielleSituationFromServer) {
             this.parseAbstractMutableEntity(abstractFinanzielleSituationTS, abstractFinanzielleSituationFromServer);
-            abstractFinanzielleSituationTS.steuerveranlagungErhalten =
-                abstractFinanzielleSituationFromServer.steuerveranlagungErhalten;
-            abstractFinanzielleSituationTS.steuererklaerungAusgefuellt =
-                abstractFinanzielleSituationFromServer.steuererklaerungAusgefuellt;
             abstractFinanzielleSituationTS.familienzulage = abstractFinanzielleSituationFromServer.familienzulage;
             abstractFinanzielleSituationTS.ersatzeinkommen = abstractFinanzielleSituationFromServer.ersatzeinkommen;
             abstractFinanzielleSituationTS.erhalteneAlimente = abstractFinanzielleSituationFromServer.erhalteneAlimente;
@@ -1279,6 +1265,10 @@ export default class EbeguRestUtil {
     ): TSFinanzielleSituation {
         if (finanzielleSituationFromServer) {
             this.parseAbstractFinanzielleSituation(finanzielleSituationTS, finanzielleSituationFromServer);
+            finanzielleSituationTS.steuerveranlagungErhalten =
+                finanzielleSituationFromServer.steuerveranlagungErhalten;
+            finanzielleSituationTS.steuererklaerungAusgefuellt =
+                finanzielleSituationFromServer.steuererklaerungAusgefuellt;
             finanzielleSituationTS.nettolohn = finanzielleSituationFromServer.nettolohn;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus2 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;

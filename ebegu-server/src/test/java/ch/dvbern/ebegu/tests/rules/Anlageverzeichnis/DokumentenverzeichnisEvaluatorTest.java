@@ -523,13 +523,9 @@ public class DokumentenverzeichnisEvaluatorTest {
 		Assert.assertNotNull(testgesuch.getGesuchsteller1());
 		Assert.assertNotNull(testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		final Einkommensverschlechterung ekvJABasisJahrPlus1 = testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
-		ekvJABasisJahrPlus1.setSteuererklaerungAusgefuellt(true);
-		ekvJABasisJahrPlus1.setSteuerveranlagungErhalten(false);
 		ekvJABasisJahrPlus1.setNettolohnJan(BigDecimal.valueOf(100000));
 
 		final Einkommensverschlechterung ekvJABasisJahrPlus2 = testgesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2();
-		ekvJABasisJahrPlus2.setSteuererklaerungAusgefuellt(true);
-		ekvJABasisJahrPlus2.setSteuerveranlagungErhalten(false);
 		ekvJABasisJahrPlus2.setNettolohnJan(BigDecimal.valueOf(200000));
 
 		//Test wenn Steuererklärung ausgefüllt ist

@@ -278,12 +278,6 @@ export default class TSFinanzModel {
                     this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2 =
                         new TSEinkommensverschlechterung();
                 }
-                // Wenn z.B. in der Periode 2016/2017 eine Einkommensverschlechterung für 2017 geltend gemacht wird,
-                // ist es unmöglich, dass die Steuerveranlagung und Steuererklärung für 2017 schon dem Gesuchsteller
-                // vorliegt
-                infoJA.gemeinsameSteuererklaerung_BjP2 = false;
-                this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2.steuerveranlagungErhalten = false;
-                this.einkommensverschlechterungContainerGS1.ekvJABasisJahrPlus2.steuererklaerungAusgefuellt = false;
             }
 
         } else {
@@ -301,20 +295,8 @@ export default class TSFinanzModel {
                     this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2 =
                         new TSEinkommensverschlechterung();
                 }
-                infoJA.gemeinsameSteuererklaerung_BjP2 = false;
-                this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuerveranlagungErhalten = false;
-                this.einkommensverschlechterungContainerGS2.ekvJABasisJahrPlus2.steuererklaerungAusgefuellt = false;
             }
         }
-
-    }
-
-    public getGemeinsameSteuererklaerungToWorkWith(): boolean {
-        const info = this.einkommensverschlechterungInfoContainer.einkommensverschlechterungInfoJA;
-
-        return this.basisjahrPlus === 2 ?
-            info.gemeinsameSteuererklaerung_BjP2 :
-            info.gemeinsameSteuererklaerung_BjP1;
     }
 
     public getBasisJahrPlus(): number {

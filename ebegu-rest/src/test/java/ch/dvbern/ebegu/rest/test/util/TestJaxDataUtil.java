@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
@@ -362,14 +361,8 @@ public final class TestJaxDataUtil {
 
 	public static JaxEinkommensverschlechterung createDefaultJaxEinkommensverschlechterungs() {
 		JaxEinkommensverschlechterung einkommensverschlechterung = new JaxEinkommensverschlechterung();
-		createDefaultAbstractFinanzielleSituation(einkommensverschlechterung);
 		einkommensverschlechterung.setNettolohnJan(BigDecimal.ONE);
 		return einkommensverschlechterung;
-	}
-
-	public static void createDefaultAbstractFinanzielleSituation(JaxAbstractFinanzielleSituation abstractFinanzielleSituation) {
-		abstractFinanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
-		abstractFinanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 	}
 
 	public static JaxMandant createTestMandant() {

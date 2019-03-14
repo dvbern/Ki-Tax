@@ -23,9 +23,6 @@ export default class TSEinkommensverschlechterungInfo extends TSAbstractMutableE
     private _ekvFuerBasisJahrPlus1: boolean;
     private _ekvFuerBasisJahrPlus2: boolean;
 
-    private _gemeinsameSteuererklaerung_BjP1: boolean;
-    private _gemeinsameSteuererklaerung_BjP2: boolean;
-
     private _ekvBasisJahrPlus1Annulliert: boolean = false;
     private _ekvBasisJahrPlus2Annulliert: boolean = false;
 
@@ -51,22 +48,6 @@ export default class TSEinkommensverschlechterungInfo extends TSAbstractMutableE
 
     public set ekvFuerBasisJahrPlus2(value: boolean) {
         this._ekvFuerBasisJahrPlus2 = value;
-    }
-
-    public get gemeinsameSteuererklaerung_BjP1(): boolean {
-        return this._gemeinsameSteuererklaerung_BjP1;
-    }
-
-    public set gemeinsameSteuererklaerung_BjP1(value: boolean) {
-        this._gemeinsameSteuererklaerung_BjP1 = value;
-    }
-
-    public get gemeinsameSteuererklaerung_BjP2(): boolean {
-        return this._gemeinsameSteuererklaerung_BjP2;
-    }
-
-    public set gemeinsameSteuererklaerung_BjP2(value: boolean) {
-        this._gemeinsameSteuererklaerung_BjP2 = value;
     }
 
     public get ekvBasisJahrPlus1Annulliert(): boolean {
