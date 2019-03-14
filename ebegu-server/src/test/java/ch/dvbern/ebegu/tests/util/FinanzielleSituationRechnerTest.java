@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.tests.util;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import javax.inject.Inject;
 
