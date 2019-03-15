@@ -76,10 +76,13 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 			familiensituation.getGemeinsameSteuererklaerung() != null &&
 			familiensituation.getGemeinsameSteuererklaerung();
 
-		final EinkommensverschlechterungInfo einkommensverschlechterungInfo = gesuch.extractEinkommensverschlechterungInfo();
+		final EinkommensverschlechterungInfo einkommensverschlechterungInfo =
+			gesuch.extractEinkommensverschlechterungInfo();
 
-		final int basisJahrPlus1 = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear() + 1;
-		final int basisJahrPlus2 = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear() + 2;
+		final int basisJahrPlus1 =
+			gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear() + 1;
+		final int basisJahrPlus2 =
+			gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear() + 2;
 
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
@@ -89,12 +92,40 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 
 		if (einkommensverschlechterungInfo != null) {
 			if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus1()) {
-				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, 1, basisJahrPlus1, stichtag);
-				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, 1, basisJahrPlus1, stichtag);
+				getAllDokumenteGesuchsteller(
+					anlageVerzeichnis,
+					gesuchsteller1,
+					gemeinsam,
+					1,
+					1,
+					basisJahrPlus1,
+					stichtag);
+				getAllDokumenteGesuchsteller(
+					anlageVerzeichnis,
+					gesuchsteller2,
+					gemeinsam,
+					2,
+					1,
+					basisJahrPlus1,
+					stichtag);
 			}
 			if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
-				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, 2, basisJahrPlus2, stichtag);
-				getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, 2, basisJahrPlus2, stichtag);
+				getAllDokumenteGesuchsteller(
+					anlageVerzeichnis,
+					gesuchsteller1,
+					gemeinsam,
+					1,
+					2,
+					basisJahrPlus2,
+					stichtag);
+				getAllDokumenteGesuchsteller(
+					anlageVerzeichnis,
+					gesuchsteller2,
+					gemeinsam,
+					2,
+					2,
+					basisJahrPlus2,
+					stichtag);
 			}
 		}
 
@@ -105,13 +136,14 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 		@Nullable GesuchstellerContainer gesuchsteller,
 		boolean gemeinsam, int gesuchstellerNumber, int basisJahrPlusNumber, int basisJahr,
 		@Nonnull LocalDate stichtag
-		) {
+	) {
 
 		if (gesuchsteller == null || gesuchsteller.getEinkommensverschlechterungContainer() == null) {
 			return;
 		}
 
-		final EinkommensverschlechterungContainer einkommensverschlechterungContainer = gesuchsteller.getEinkommensverschlechterungContainer();
+		final EinkommensverschlechterungContainer einkommensverschlechterungContainer =
+			gesuchsteller.getEinkommensverschlechterungContainer();
 		Einkommensverschlechterung einkommensverschlechterung;
 		if (basisJahrPlusNumber == 2) {
 			einkommensverschlechterung = einkommensverschlechterungContainer.getEkvJABasisJahrPlus2();
@@ -151,12 +183,15 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 	@Override
 	protected boolean isErfolgsrechnungNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int minus) {
 		if (abstractFinanzielleSituation instanceof Einkommensverschlechterung) {
-			Einkommensverschlechterung einkommensverschlechterung = (Einkommensverschlechterung) abstractFinanzielleSituation;
+			Einkommensverschlechterung einkommensverschlechterung =
+				(Einkommensverschlechterung) abstractFinanzielleSituation;
 			switch (minus) {
 			case 0:
-				return !einkommensverschlechterung.getSteuerveranlagungErhalten() && (einkommensverschlechterung.getGeschaeftsgewinnBasisjahr() != null);
+				return !einkommensverschlechterung.getSteuerveranlagungErhalten()
+					&& (einkommensverschlechterung.getGeschaeftsgewinnBasisjahr() != null);
 			case 1:
-				return !einkommensverschlechterung.getSteuerveranlagungErhalten() && (einkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1() != null);
+				return !einkommensverschlechterung.getSteuerveranlagungErhalten()
+					&& (einkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1() != null);
 			}
 		}
 		return false;

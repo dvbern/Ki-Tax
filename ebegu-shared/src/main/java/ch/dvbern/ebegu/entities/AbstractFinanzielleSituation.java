@@ -41,7 +41,6 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	private static final long serialVersionUID = 2596930494846119259L;
 
-
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal nettolohn;

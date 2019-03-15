@@ -120,7 +120,8 @@
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
                                         ja="vm.model.getEkvToWorkWith().erhalteneAlimente"></dv-bisher>
-                                    <dv-error-messages input-id="erhalteneAlimente" for="vm.form.erhalteneAlimente.$error"
+                                    <dv-error-messages input-id="erhalteneAlimente"
+                                                       for="vm.form.erhalteneAlimente.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
                             </dv-input-container>
@@ -290,16 +291,17 @@
                                                 text="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE_HELP' | translate"></dv-tooltip>
                                 </label>
                                 <div class="dv-input-container-medium-select">
-                                <dv-valueinput input-id="geleisteteAlimente"
-                                               name="geleisteteAlimente"
-                                               ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"
-                                    ja="vm.model.getEkvToWorkWith().geleisteteAlimente"></dv-bisher>
-                                <dv-error-messages input-id="geleisteteAlimente" for="vm.form.geleisteteAlimente.$error"
-                                                   class="error"></dv-error-messages>
+                                    <dv-valueinput input-id="geleisteteAlimente"
+                                                   name="geleisteteAlimente"
+                                                   ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher
+                                        gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"
+                                        ja="vm.model.getEkvToWorkWith().geleisteteAlimente"></dv-bisher>
+                                    <dv-error-messages input-id="geleisteteAlimente"
+                                                       for="vm.form.geleisteteAlimente.$error"
+                                                       class="error"></dv-error-messages>
                                 </div>
                             </dv-input-container>
                         </div>
