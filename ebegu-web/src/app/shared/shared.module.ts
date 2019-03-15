@@ -23,6 +23,7 @@ import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
+import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu';
@@ -76,6 +77,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
+        DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
@@ -94,6 +96,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvHelpmenuComponent,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
+        DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,
@@ -118,6 +121,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
+        DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
         DvNgOkDialogComponent,
         DvNgRemoveDialogComponent,

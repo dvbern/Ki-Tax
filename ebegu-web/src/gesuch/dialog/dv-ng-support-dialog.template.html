@@ -1,0 +1,43 @@
+<!--
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<mat-dialog-content role="document" tabindex="-1" id="dialogContent">
+
+    <div>
+        <h2 [textContent]="'SUPPORTANFRAGE_STELLEN' | translate"></h2>
+        <p>Hier der bla bla Text</p>
+        <div class="form-group">
+            <label class="required" translate for="beschreibung_id">ADRESSE_ANSCHRIFT</label>
+            <textarea md-no-autogrow
+                      class="form-control"
+                      rows="6"
+                      maxlength="4000"
+                      id="beschreibung_id"
+                      name="beschreibung"
+                      placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_DE'|translate}}"
+                      [(ngModel)]="beschreibung">
+            </textarea>
+        </div>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions class="marginTop40" layout-align="center center">
+    <div class="dv-dialog-actions">
+        <button class="dv-btn" (click)="send()" [textContent]="'SENDEN' | translate"></button>
+    </div>
+</mat-dialog-actions>
