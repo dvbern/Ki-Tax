@@ -120,27 +120,27 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	@NotNull
 	@Column(nullable = false)
-	private boolean alterskategorieBaby;
+	private boolean alterskategorieBaby = false;
 
 	@NotNull
 	@Column(nullable = false)
-	private boolean alterskategorieVorschule;
+	private boolean alterskategorieVorschule = false;
 
 	@NotNull
 	@Column(nullable = false)
-	private boolean alterskategorieKindergarten;
+	private boolean alterskategorieKindergarten = false;
 
 	@NotNull
 	@Column(nullable = false)
-	private boolean alterskategorieSchule;
+	private boolean alterskategorieSchule = false;
 
 	@NotNull
 	@Column(nullable = false)
-	private boolean subventioniertePlaetze;
+	private boolean subventioniertePlaetze = false;
 
 	@NotNull
 	@Column(nullable = false)
-	private BigDecimal anzahlPlaetze;
+	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
 
 	@Nullable
 	@Column(nullable = true)
