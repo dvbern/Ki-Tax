@@ -256,19 +256,21 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	public Future<Integer> sendInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull List<Gesuch> gesucheToSendMail) {
-		int i = 0;
+		int versendetZaehler = 0;
 		for (Gesuch gesuch : gesucheToSendMail) {
-			sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch, i);
+			if (sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch)) {
+				versendetZaehler++;
+			}
+			;
 		}
-		return new AsyncResult<>(i);
+		return new AsyncResult<>(versendetZaehler);
 	}
 
 	@Override
-	@RolesAllowed(SUPER_ADMIN)
-	public void sendInfoFreischaltungGesuchsperiode(
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
+	public boolean sendInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Gesuch gesuch,
-		int i) {
+		@Nonnull Gesuch gesuch) {
 		try {
 			if (doSendMail(gesuch.getFall())) {
 				Optional<String> emailAddress = findEMailAddress(gesuch);
@@ -282,17 +284,19 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					sendMessageWithTemplate(message, adr);
 
 					LOG.debug("Email fuer InfoFreischaltungGesuchsperiode wurde versendet an {}", adr);
+					return true;
 				} else {
 					LOG.warn("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 is null");
+					return false;
 				}
 			}
-			i++;
 		} catch (Exception e) {
 			logExceptionAccordingToEnvironment(
 				e,
 				"Mail InfoFreischaltungGesuchsperiode konnte nicht verschickt werden fuer Gesuch",
 				gesuch.getId());
 		}
+		return false;
 	}
 
 	@Override

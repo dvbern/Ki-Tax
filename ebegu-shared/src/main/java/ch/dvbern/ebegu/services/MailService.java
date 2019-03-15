@@ -21,6 +21,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.RolesAllowed;
 
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -30,6 +31,10 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.errors.MailException;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service zum Versenden von E-Mails
@@ -110,10 +115,9 @@ public interface MailService {
 	/**
 	 * Sendet eine Mail an den GS1 des übergebenen Gesuchs, dass die übergebene Gesuchsperiode eröffnet wurde.
 	 */
-	void sendInfoFreischaltungGesuchsperiode(
+	boolean sendInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Gesuch gesuch,
-		int i);
+		@Nonnull Gesuch gesuch);
 
 	/**
 	 * Sendet unter gewissen Bedingungen pro Betreuung eine Email mit der Information, dass ein Betreuungsplatz
