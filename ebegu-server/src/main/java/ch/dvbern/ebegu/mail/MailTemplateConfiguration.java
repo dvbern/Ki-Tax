@@ -18,9 +18,7 @@ package ch.dvbern.ebegu.mail;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,18 +27,11 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import freemarker.template.Configuration;
@@ -62,6 +53,7 @@ public class MailTemplateConfiguration {
 	public static final String GESUCHSPERIODE = "gesuchsperiode";
 	public static final String START_DATUM = "startDatum";
 	public static final String GESUCH = "gesuch";
+	public static final String ADRESSE = "adresse";
 	public static final String MITTEILUNG = "mitteilung";
 	public static final String TEMPLATES_FOLDER = "/mail/templates";
 
@@ -69,6 +61,9 @@ public class MailTemplateConfiguration {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	public MailTemplateConfiguration() {
 		this.freeMarkerConfiguration = new Configuration();
@@ -82,7 +77,6 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache
 	) {
-
 		return processTemplateBetreuung(
 			MailTemplate.InfoBetreuungAbgelehnt,
 			betreuung,
@@ -186,9 +180,9 @@ public class MailTemplateConfiguration {
 	public String getInfoMitteilungErhalten(
 		@Nonnull Mitteilung mitteilung,
 		@Nonnull String empfaengerMail,
-		@Nonnull Sprache sprache
+		@Nonnull List<Sprache> sprachen
 	) {
-		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail), sprache);
+		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail), sprachen);
 	}
 
 	public String getInfoVerfuegtGesuch(
@@ -262,6 +256,10 @@ public class MailTemplateConfiguration {
 		LocalDate datumLoeschung = LocalDate.now().plusDays(anzahlTage).minusDays(1);
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+
+		GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId()).get();
+
+		paramMap.put(ADRESSE, stammdaten.getAdresse().getAddressAsStringInOneLine());
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
 		paramMap.put(DATUM_LOESCHUNG, Constants.DATE_FORMATTER.format(datumLoeschung));
 
@@ -308,8 +306,7 @@ public class MailTemplateConfiguration {
 	@Nonnull
 	public String getBenutzerEinladung(
 		@Nonnull Benutzer einladender,
-		@Nonnull Einladung einladung,
-		@Nonnull Locale locale
+		@Nonnull Einladung einladung
 	) {
 
 		Benutzer eingeladener = einladung.getEingeladener();
@@ -319,18 +316,28 @@ public class MailTemplateConfiguration {
 		paramMap.put("acceptLink", createLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
 		paramMap.put(
-			"content",
+			"contentDE",
 			ServerMessageUtil.getMessage(
 				"EinladungEmail_" + einladung.getEinladungTyp(),
-				locale,
+				Locale.GERMAN,
 				einladender.getFullName(),
-				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), locale),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), Locale.GERMAN),
 				getRollenZusatz(einladung, eingeladener)
 			)
 		);
-		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", locale));
-
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.BenutzerEinladung, locale), paramMap);
+		paramMap.put("footerDE", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", Locale.GERMAN));
+		paramMap.put(
+			"contentFR",
+			ServerMessageUtil.getMessage(
+				"EinladungEmail_" + einladung.getEinladungTyp(),
+				Locale.FRENCH,
+				einladender.getFullName(),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), Locale.FRENCH),
+				getRollenZusatz(einladung, eingeladener)
+			)
+		);
+		paramMap.put("footerFR", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", Locale.FRENCH));
+		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + ".ftl", paramMap);
 	}
 
 	@Nonnull
@@ -450,12 +457,10 @@ public class MailTemplateConfiguration {
 	private String processTemplateMitteilung(
 		@Nonnull Mitteilung mitteilung,
 		@Nonnull Map<Object, Object> paramMap,
-		@Nonnull Sprache sprache
+		@Nonnull List<Sprache> sprachen
 	) {
-
 		paramMap.put(MITTEILUNG, mitteilung);
-
-		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoMitteilungErhalten, sprache), paramMap);
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoMitteilungErhalten, sprachen), paramMap);
 	}
 
 	/**
@@ -463,6 +468,13 @@ public class MailTemplateConfiguration {
 	 */
 	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Sprache sprache) {
 		return appendLanguageToTemplateName(mailTemplate, sprache.getLocale());
+	}
+
+	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull List<Sprache> sprachen) {
+		if (sprachen.size() == 1) {
+			return appendLanguageToTemplateName(mailTemplate, sprachen.get(0).getLocale());
+		}
+		return mailTemplate.name() + "_defr.ftl";
 	}
 
 	private String appendLanguageToTemplateName(@Nonnull final MailTemplate mailTemplate, @Nonnull Locale locale) {
@@ -495,8 +507,9 @@ public class MailTemplateConfiguration {
 			"        body {\n" +
 			"            font-family: \"Open Sans\", Arial, Helvetica, sans-serif;\n" +
 			"        }\n" +
-			"      .kursInfoHeader {background-color: #bce1ff; font-weight: bold;}" +
-			"    </style>";
+			"      .kursInfoHeader {background-color: #bce1ff; font-weight: bold;}\n" +
+			"    </style>\n" +
+			"    <link href=\"https://fonts.googleapis.com/css?family=Open+Sans\" rel=\"stylesheet\">";
 	}
 
 	@Nonnull
