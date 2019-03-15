@@ -46,7 +46,7 @@ public class GutscheineStartdatumCalcRuleTest {
 
 		assertEquals(0, zeitabschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(
-			"BEGU_STARTDATUM: Für diesen Zeitraum stellt die Gemeinde Bern noch keine Betreuungsgutscheine aus.",
+			"Für diesen Zeitraum stellt die Gemeinde Bern noch keine Betreuungsgutscheine aus.",
 			zeitabschnitt.getBemerkungen());
 	}
 
