@@ -77,7 +77,7 @@ export class EditGemeindeComponent implements OnInit {
                     stammdaten.beschwerdeAdresse = new TSAdresse();
                 }
 
-                if (stammdaten.standardRechtsmittelbelehrung === false && !stammdaten.rechtsmittelbelehrung) {
+                if (!stammdaten.standardRechtsmittelbelehrung && !stammdaten.rechtsmittelbelehrung) {
                     stammdaten.rechtsmittelbelehrung = new TSTextRessourceContainer();
 
                     stammdaten.rechtsmittelbelehrung.deutsch = new TSTextRessource();
