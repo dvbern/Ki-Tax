@@ -172,7 +172,7 @@ public final class EbeguUtil {
 	 */
 	@Nonnull
 	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
-		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gesuch, gemeindeService);
+		final List<Sprache> gemeindeSprachen = extractGemeindeSprachenFromGesuch(gesuch, gemeindeService);
 		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
 
 		if (gesuchstellerGewuenschteSprache != null && gemeindeSprachen.contains(gesuchstellerGewuenschteSprache)) {
@@ -196,7 +196,7 @@ public final class EbeguUtil {
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */
 	@Nonnull
-	private static List<Sprache> extractGemeindeSprachen(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
+	private static List<Sprache> extractGemeindeSprachenFromGesuch(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
 		return  extractGemeindeSprachen(gesuch.getDossier().getGemeinde(), gemeindeService);
 	}
 

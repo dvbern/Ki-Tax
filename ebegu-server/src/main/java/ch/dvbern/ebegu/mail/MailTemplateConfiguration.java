@@ -257,7 +257,8 @@ public class MailTemplateConfiguration {
 
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 
-		GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId()).get();
+		GemeindeStammdaten stammdaten = gemeindeService
+			.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId()).get();
 
 		paramMap.put(ADRESSE, stammdaten.getAdresse().getAddressAsStringInOneLine());
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
@@ -303,6 +304,9 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoFreischaltungGesuchsperiode, sprache), paramMap);
 	}
 
+	/**
+	 * Benutzereinladung is sent in two languages FR and DE since we don't know which the right language is.
+	 */
 	@Nonnull
 	public String getBenutzerEinladung(
 		@Nonnull Benutzer einladender,
@@ -315,29 +319,34 @@ public class MailTemplateConfiguration {
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
 		paramMap.put("acceptLink", createLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
-		paramMap.put(
-			"contentDE",
-			ServerMessageUtil.getMessage(
-				"EinladungEmail_" + einladung.getEinladungTyp(),
-				Locale.GERMAN,
-				einladender.getFullName(),
-				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), Locale.GERMAN),
-				getRollenZusatz(einladung, eingeladener)
-			)
-		);
-		paramMap.put("footerDE", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", Locale.GERMAN));
-		paramMap.put(
-			"contentFR",
-			ServerMessageUtil.getMessage(
-				"EinladungEmail_" + einladung.getEinladungTyp(),
-				Locale.FRENCH,
-				einladender.getFullName(),
-				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), Locale.FRENCH),
-				getRollenZusatz(einladung, eingeladener)
-			)
-		);
-		paramMap.put("footerFR", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", Locale.FRENCH));
+
+		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Locale.GERMAN);
+
+		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
+
 		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + ".ftl", paramMap);
+	}
+
+	private void addContentInLanguage(
+		@Nonnull Benutzer einladender,
+		@Nonnull Einladung einladung,
+		@Nonnull Benutzer eingeladener,
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull String contentName,
+		@Nonnull String footerName,
+		@Nonnull Locale french
+	) {
+		paramMap.put(
+			contentName,
+			ServerMessageUtil.getMessage(
+				"EinladungEmail_" + einladung.getEinladungTyp(),
+				french,
+				einladender.getFullName(),
+				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), french),
+				getRollenZusatz(einladung, eingeladener)
+			)
+		);
+		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", french));
 	}
 
 	@Nonnull
