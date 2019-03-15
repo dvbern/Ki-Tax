@@ -18,10 +18,10 @@ package ch.dvbern.ebegu.services;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -48,9 +48,11 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -61,6 +63,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Gesuchsperiode
@@ -100,7 +103,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Gesuchsperiode saveGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode) {
-		Objects.requireNonNull(gesuchsperiode);
+		requireNonNull(gesuchsperiode);
 		return persistence.merge(gesuchsperiode);
 	}
 
@@ -165,6 +168,10 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 				// some tests we won't have a lastGesuchsperiode so we cannot copy the Einstellungen. In production
 				// if there is no lastGesuchsperiode there is also nothing to copy
 				einstellungService.copyEinstellungenToNewGesuchsperiode(gesuchsperiode, lastGesuchsperiode.get());
+
+				//copy erlaeuterung verfuegung from previos Gesuchperiode
+				gesuchsperiode.setVerfuegungErlaeuterungenDe(lastGesuchsperiode.get().getVerfuegungErlaeuterungenDe());
+				gesuchsperiode.setVerfuegungErlaeuterungenFr(lastGesuchsperiode.get().getVerfuegungErlaeuterungenFr());
 			}
 			// Wenn die Gesuchsperiode neu ist, muss das Datum Freischaltung Tagesschule gesetzt werden: Defaultmässig
 			// erster Tag der Gesuchsperiode. Kann nach Aktivierung der Periode auf ein beliebiges Datum gesetzt werden
@@ -177,7 +184,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 	@Override
 	@PermitAll
 	public Optional<Gesuchsperiode> findGesuchsperiode(@Nonnull String key) {
-		Objects.requireNonNull(key, "id muss gesetzt sein");
+		requireNonNull(key, "id muss gesetzt sein");
 		Gesuchsperiode gesuchsperiode = persistence.find(Gesuchsperiode.class, key);
 		return Optional.ofNullable(gesuchsperiode);
 	}
@@ -195,6 +202,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 
 	}
 
+	@Nullable
 	@Override
 	@PermitAll
 	public Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key) {
@@ -252,6 +260,7 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			persistence.remove(gesuchsperiode);
 		} else {
 			throw new EbeguRuntimeException(
+				KibonLogLevel.NONE,
 				"removeGesuchsperiode",
 				ErrorCodeEnum.ERROR_GESUCHSPERIODE_CANNOT_BE_REMOVED);
 		}
@@ -322,7 +331,9 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 		return aktivePerioden;
 	}
 
-	private void filterAllGesuchperiodenForDossier(@Nonnull Dossier dossier, @Nonnull Collection<Gesuchsperiode> perioden) {
+	private void filterAllGesuchperiodenForDossier(
+		@Nonnull Dossier dossier,
+		@Nonnull Collection<Gesuchsperiode> perioden) {
 		if (!perioden.isEmpty()) {
 			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 			final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
@@ -406,6 +417,93 @@ public class GesuchsperiodeServiceBean extends AbstractBaseService implements Ge
 			return Optional.empty();
 		}
 		return Optional.of(results.get(0));
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public Gesuchsperiode uploadErlaeuterungenVerfuegung(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Sprache sprache,
+		@Nonnull byte[] content) {
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+		requireNonNull(content);
+
+		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
+			() -> new EbeguEntityNotFoundException(
+				"uploadErlaeuterungenVerfuegung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId)
+		);
+
+		if (sprache == Sprache.DEUTSCH) {
+			gesuchsperiode.setVerfuegungErlaeuterungenDe(content);
+		} else if (sprache == Sprache.FRANZOESISCH) {
+			gesuchsperiode.setVerfuegungErlaeuterungenFr(content);
+		} else {
+			// in case we don't recognize the language we don't do anything, so we don't overwrite accidentaly
+			return gesuchsperiode;
+		}
+
+		return saveGesuchsperiode(gesuchsperiode);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public Gesuchsperiode removeErlaeuterungVerfuegung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache) {
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+
+		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
+			() -> new EbeguEntityNotFoundException(
+				"uploadErlaeuterungenVerfuegung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId)
+		);
+
+		if (sprache == Sprache.DEUTSCH) {
+			gesuchsperiode.setVerfuegungErlaeuterungenDe(null);
+		} else if (sprache == Sprache.FRANZOESISCH) {
+			gesuchsperiode.setVerfuegungErlaeuterungenFr(null);
+		} else {
+			// in case we don't recognize the language we don't do anything, so we don't remove accidentaly
+			return gesuchsperiode;
+		}
+
+		return saveGesuchsperiode(gesuchsperiode);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public boolean existErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache) {
+		requireNonNull(gesuchsperiodeId);
+		requireNonNull(sprache);
+
+		final Gesuchsperiode gesuchsperiode = findGesuchsperiode(gesuchsperiodeId).orElseThrow(
+			() -> new EbeguEntityNotFoundException(
+				"existErlaeuterung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsperiodeId)
+		);
+
+		if (sprache == Sprache.DEUTSCH) {
+			return gesuchsperiode.getVerfuegungErlaeuterungenDe().length != 0;
+		}
+		if (sprache == Sprache.FRANZOESISCH) {
+			return gesuchsperiode.getVerfuegungErlaeuterungenFr().length != 0;
+		}
+
+		return false;
+	}
+
+	@Nullable
+	@Override
+	public byte[] downloadErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache) {
+		final Optional<Gesuchsperiode> gesuchsperiode = findGesuchsperiode(gesuchsperiodeId);
+		return gesuchsperiode
+			.map(gesuchsperiode1 -> gesuchsperiode1.getVerfuegungErlaeuterungWithSprache(sprache))
+			.orElse(null);
 	}
 
 	private boolean isStatusUebergangValid(GesuchsperiodeStatus statusBefore, GesuchsperiodeStatus statusAfter) {

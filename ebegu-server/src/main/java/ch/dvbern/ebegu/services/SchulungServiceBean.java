@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -421,6 +422,7 @@ public class SchulungServiceBean extends AbstractBaseService implements Schulung
 		instStammdaten.setAdresse(createAdresse(id));
 		instStammdaten.setInstitution(institution);
 		instStammdaten.setMail(email);
+		instStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
 		return institutionStammdatenService.saveInstitutionStammdaten(instStammdaten);
 	}
 
