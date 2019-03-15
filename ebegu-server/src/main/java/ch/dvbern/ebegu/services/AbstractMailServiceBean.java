@@ -200,7 +200,6 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessage(messageBody, mailadress);
-			doSendMessage(messageBody, "xaver.weibel@dvbern.ch");
 		}
 	}
 
