@@ -21,49 +21,32 @@ import TSAdresse from './TSAdresse';
 import TSInstitution from './TSInstitution';
 import TSInstitutionStammdatenFerieninsel from './TSInstitutionStammdatenFerieninsel';
 import TSInstitutionStammdatenTagesschule from './TSInstitutionStammdatenTagesschule';
-import {TSDateRange} from './types/TSDateRange';
 
 export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity {
-    public administratoren: string; // read only
-    public sachbearbeiter: string; // read only
-    public betreuungsangebotTyp: TSBetreuungsangebotTyp;
-    public institution: TSInstitution;
-    public adresse: TSAdresse;
-    public mail: string;
-    public telefon: string;
-    public iban: string;
-    public kontoinhaber: string;
-    public adresseKontoinhaber: TSAdresse;
-    public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
-    public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
 
-    public constructor(
-        iban?: string,
-        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
-        institution?: TSInstitution,
-        adresse?: TSAdresse,
-        mail?: string,
-        telefon?: string,
-        gueltigkeit?: TSDateRange,
-        kontoinhaber?: string,
-        adresseKontoinhaber?: TSAdresse,
-        institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
-        institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
-        administratoren?: string,
-        sachbearbeiter?: string,
-    ) {
-        super(gueltigkeit);
-        this.iban = iban;
-        this.betreuungsangebotTyp = betreuungsangebotTyp;
-        this.institution = institution;
-        this.adresse = adresse;
-        this.mail = mail;
-        this.telefon = telefon;
-        this.kontoinhaber = kontoinhaber;
-        this.adresseKontoinhaber = adresseKontoinhaber;
-        this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
-        this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
-        this.administratoren = administratoren;
-        this.sachbearbeiter = sachbearbeiter;
+    public administratoren: string = undefined; // read only
+    public sachbearbeiter: string = undefined; // read only
+    public betreuungsangebotTyp: TSBetreuungsangebotTyp = undefined;
+    public institution: TSInstitution = undefined;
+    public adresse: TSAdresse = undefined;
+    public mail: string = undefined;
+    public telefon: string = undefined;
+    public webseite: string = undefined;
+    public oeffnungszeiten: string = undefined;
+    public iban: string = undefined;
+    public kontoinhaber: string = undefined;
+    public adresseKontoinhaber: TSAdresse = undefined;
+    public alterskategorieBaby: boolean = undefined;
+    public alterskategorieVorschule: boolean = undefined;
+    public alterskategorieKindergarten: boolean = undefined;
+    public alterskategorieSchule: boolean = undefined;
+    public subventioniertePlaetze: boolean = undefined;
+    public anzahlPlaetze: number = undefined;
+    public anzahlPlaetzeFirmen: number = undefined;
+    public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule = undefined;
+    public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel = undefined;
+
+    public constructor() {
+        super();
     }
 }
