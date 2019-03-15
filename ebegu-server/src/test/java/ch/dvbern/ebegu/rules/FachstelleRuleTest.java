@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -93,11 +94,15 @@ public class FachstelleRuleTest {
 			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		betreuung.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
+
+		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
+		pensumFachstelle.setFachstelle(new Fachstelle());
+		pensumFachstelle.setPensum(80);
+		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
+		betreuung.getKind().getKindJA().setPensumFachstelle(pensumFachstelle);
+
 		Assert.assertNotNull(betreuung.getKind().getKindJA().getPensumFachstelle());
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
-		betreuung.getKind().getKindJA().getPensumFachstelle().setPensum(80);
-		betreuung.getKind().getKindJA().getPensumFachstelle().setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 

@@ -237,6 +237,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		intro.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
 		intro.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
 		if (betreuung.getVorgaengerVerfuegung() != null) {
+			Objects.requireNonNull(betreuung.getVorgaengerVerfuegung().getTimestampErstellt());
 			intro.add(new TableRowLabelValue(BEMERKUNG, translate(ERSETZT_VERFUEGUNG,
 				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
 		}

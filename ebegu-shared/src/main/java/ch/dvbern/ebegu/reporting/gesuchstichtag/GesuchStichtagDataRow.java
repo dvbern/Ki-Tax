@@ -20,6 +20,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class GesuchStichtagDataRow {
 
 	private String bgNummer;
+	private String gemeinde;
 	private Integer gesuchLaufNr;
 	private String institution;
 	private String betreuungsTyp;
@@ -30,6 +31,7 @@ public class GesuchStichtagDataRow {
 
 	public GesuchStichtagDataRow(
 		String bgNummer,
+		String gemeinde,
 		Integer gesuchLaufNr,
 		String institution,
 		String betreuungsTyp,
@@ -46,6 +48,7 @@ public class GesuchStichtagDataRow {
 		this.nichtFreigegeben = nichtFreigegeben;
 		this.mahnungen = mahnungen;
 		this.beschwerde = beschwerde;
+		this.gemeinde = gemeinde;
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")
@@ -111,5 +114,13 @@ public class GesuchStichtagDataRow {
 
 	public void setBeschwerde(Integer beschwerde) {
 		this.beschwerde = beschwerde;
+	}
+
+	public String getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(String gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }

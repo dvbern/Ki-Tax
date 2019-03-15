@@ -24,12 +24,8 @@ export default class TSAbstractPersonEntity extends TSAbstractMutableEntity {
     private _geburtsdatum: moment.Moment;
     private _geschlecht: TSGeschlecht;
 
-    public constructor(vorname?: string, nachname?: string, geburtsdatum?: moment.Moment, geschlecht?: TSGeschlecht) {
+    public constructor() {
         super();
-        this._vorname = vorname;
-        this._nachname = nachname;
-        this._geburtsdatum = geburtsdatum;
-        this.geschlecht = geschlecht;
     }
 
     public get vorname(): string {

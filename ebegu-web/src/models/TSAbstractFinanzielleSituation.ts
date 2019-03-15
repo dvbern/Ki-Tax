@@ -17,8 +17,6 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
-    private _steuerveranlagungErhalten: boolean;
-    private _steuererklaerungAusgefuellt: boolean;
     private _familienzulage: number;
     private _ersatzeinkommen: number;
     private _erhalteneAlimente: number;
@@ -27,43 +25,8 @@ export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEnt
     private _geschaeftsgewinnBasisjahr: number;
     private _geleisteteAlimente: number;
 
-    public constructor(
-        steuerveranlagungErhalten?: boolean,
-        steuererklaerungAusgefuellt?: boolean,
-        familienzulage?: number,
-        ersatzeinkommen?: number,
-        erhalteneAlimente?: number,
-        bruttovermoegen?: number,
-        schulden?: number,
-        geschaeftsgewinnBasisjahr?: number,
-        geleisteteAlimente?: number,
-    ) {
+    public constructor() {
         super();
-        this._steuerveranlagungErhalten = steuerveranlagungErhalten || false;
-        this._steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
-        this._familienzulage = familienzulage;
-        this._ersatzeinkommen = ersatzeinkommen;
-        this._erhalteneAlimente = erhalteneAlimente;
-        this._bruttovermoegen = bruttovermoegen;
-        this._schulden = schulden;
-        this._geschaeftsgewinnBasisjahr = geschaeftsgewinnBasisjahr;
-        this._geleisteteAlimente = geleisteteAlimente;
-    }
-
-    public get steuerveranlagungErhalten(): boolean {
-        return this._steuerveranlagungErhalten;
-    }
-
-    public set steuerveranlagungErhalten(value: boolean) {
-        this._steuerveranlagungErhalten = value;
-    }
-
-    public get steuererklaerungAusgefuellt(): boolean {
-        return this._steuererklaerungAusgefuellt;
-    }
-
-    public set steuererklaerungAusgefuellt(value: boolean) {
-        this._steuererklaerungAusgefuellt = value;
     }
 
     public get familienzulage(): number {

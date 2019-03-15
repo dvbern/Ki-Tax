@@ -112,6 +112,10 @@ export class TestFaelleRS {
         return this.http.delete(`${this.serviceURL}/schulung/delete`);
     }
 
+    public createTutorialdaten(): IHttpPromise<string> {
+        return this.http.get(`${this.serviceURL}/schulung/tutorial/create`);
+    }
+
     public getSchulungBenutzer(): IPromise<string[]> {
         return this.http.get(`${this.serviceURL}/schulung/public/user`).then((response: any) => {
             return response.data;

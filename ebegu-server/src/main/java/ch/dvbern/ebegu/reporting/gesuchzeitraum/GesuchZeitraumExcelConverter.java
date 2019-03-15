@@ -29,7 +29,7 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Dependent
-public class GeuschZeitraumExcelConverter implements ExcelConverter {
+public class GesuchZeitraumExcelConverter implements ExcelConverter {
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
@@ -48,6 +48,7 @@ public class GeuschZeitraumExcelConverter implements ExcelConverter {
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldGesuchZeitraum.repeatGesuchZeitraumRow);
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.bgNummer, dataRow.getBgNummer());
+			excelRowGroup.addValue(MergeFieldGesuchZeitraum.gemeinde, dataRow.getGemeinde());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.gesuchLaufNr, dataRow.getGesuchLaufNr());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldGesuchZeitraum.betreuungsTyp, dataRow.getBetreuungsTyp());

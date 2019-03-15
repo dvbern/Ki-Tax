@@ -30,11 +30,9 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -56,7 +54,6 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		final String bemerkungen = result.get(0).getBemerkungen();
 		assertNotNull(bemerkungen);
 		assertFalse(bemerkungen.isEmpty());
-		assertTrue(bemerkungen.contains(RuleKey.ERWERBSPENSUM.name()));
 	}
 
 	@Test
@@ -65,9 +62,11 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		assertNotNull(gesuch.getGesuchsteller2());
-		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
+		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -86,15 +85,17 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		assertNotNull(gesuch.getGesuchsteller2());
-		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
+		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		assertEquals("BETREUUNGSANGEBOT_TYP: Betreuungsangebot Schulamt", result.get(0).getBemerkungen());
+		assertEquals("Betreuungsangebot Schulamt", result.get(0).getBemerkungen());
 	}
 
 	@Test
@@ -103,7 +104,8 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -121,7 +123,8 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -138,7 +141,8 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 120));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 120));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -155,9 +159,11 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 110));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 110));
 		assertNotNull(gesuch.getGesuchsteller2());
-		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 110));
+		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 110));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -165,8 +171,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		final String bemerkungen = result.get(0).getBemerkungen();
 		assertNotNull(bemerkungen);
-		assertTrue(bemerkungen.contains("Maximaler Anspruch Beschäftigungspensum 100 %"));
-		assertTrue(bemerkungen.contains("Maximaler Anspruch Beschäftigungspensum 100 %"));
+		assertTrue(bemerkungen.contains("Das totale Beschäftigungspensum pro Gesuchsteller kann 100% nicht übertreffen."));
 	}
 
 	@Test
@@ -194,9 +199,11 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 
 	private void from1GSTo2GS(Betreuung betreuung, Gesuch gesuch) {
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 90));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 90));
 		assertNotNull(gesuch.getGesuchsteller2());
-		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80));
+		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80));
 
 		assertNotNull(gesuch.getFamiliensituationContainer());
 		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(new Familiensituation());
@@ -233,7 +240,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 0, anspruchZuZweit, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 0, anspruchZuZweit, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 0, anspruchZuZweit, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 0, anspruchZuZweit, 0);
+		assertZeitabschnitt(result.get(i), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 0, anspruchZuZweit, 0);
 	}
 
 	@Test
@@ -245,9 +252,11 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		gesuch.setEingangsdatum(LocalDate.of(2016, Month.DECEMBER, 26));
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 90));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 90));
 		assertNotNull(gesuch.getGesuchsteller2());
-		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 70));
+		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 70));
 
 		assertNotNull(gesuch.getFamiliensituationContainer());
 		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(new Familiensituation());
@@ -282,7 +291,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 0, anspruchAlleine, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 0, anspruchAlleine, 0);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 0, anspruchAlleine, 0);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 0, anspruchAlleine, 0);
+		assertZeitabschnitt(result.get(i), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 0, anspruchAlleine, 0);
 	}
 
 	/**
@@ -297,63 +306,75 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, -1));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, -1));
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 0));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 0));
 		List<VerfuegungZeitabschnitt> result2 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(0, result2.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 1));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 1));
 		List<VerfuegungZeitabschnitt> result3 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(0, result3.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 50));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 50));
 		List<VerfuegungZeitabschnitt> result4 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result4.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 51));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 51));
 		List<VerfuegungZeitabschnitt> result5 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result5.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 54));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 54));
 		List<VerfuegungZeitabschnitt> result6 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(55 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result6.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 55));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 55));
 		List<VerfuegungZeitabschnitt> result7 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(55 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result7.get(0).getAnspruchberechtigtesPensum());
 
 		//mit zuschlag
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 55));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 55));
 		List<VerfuegungZeitabschnitt> result8 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(55 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result8.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 59));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 59));
 		List<VerfuegungZeitabschnitt> result9 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, result9.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 99));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 99));
 		List<VerfuegungZeitabschnitt> result10 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(100, result10.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		List<VerfuegungZeitabschnitt> result11 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(100, result11.get(0).getAnspruchberechtigtesPensum());
 
 		gesuch.getGesuchsteller1().setErwerbspensenContainers(new HashSet<>());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 101));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 101));
 		List<VerfuegungZeitabschnitt> result12 = EbeguRuleTestsHelper.calculate(betreuung);
 		assertEquals(100, result12.get(0).getAnspruchberechtigtesPensum());
 
@@ -365,9 +386,11 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 115));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 115));
 		assertNotNull(gesuch.getGesuchsteller2());
-		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 110));
+		gesuch.getGesuchsteller2().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 110));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);
@@ -375,7 +398,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
 		final String bemerkungen = result.get(0).getBemerkungen();
 		assertNotNull(bemerkungen);
-		assertTrue(bemerkungen.contains("Maximaler Anspruch Beschäftigungspensum 100 %"));
+		assertTrue(bemerkungen.contains("Das totale Beschäftigungspensum pro Gesuchsteller kann 100% nicht übertreffen."));
 	}
 
 	@Test
@@ -384,7 +407,8 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 
 		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 15));
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
+			.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 15));
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 		assertNotNull(result);

@@ -115,7 +115,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setGemeindeFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setInstitutionFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setMandantFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setRoleFilterForCurrentUser;
+import static ch.dvbern.ebegu.services.util.FilterFunctions.setSuperAdminFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.FilterFunctions.setTraegerschaftFilterForCurrentUser;
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -296,7 +298,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if (findBenutzer(benutzer.getUsername()).isPresent()) {
 				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist
 				// already
-				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername());
+				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername(), ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 			}
 		}
 
@@ -794,10 +796,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		if (!principalBean.isCallerInRole(UserRole.SUPER_ADMIN)) {
 			// Not SuperAdmin users are allowed to see all users of their mandant
-			predicates.add(cb.equal(root.get(Benutzer_.mandant), user.getMandant()));
+			setMandantFilterForCurrentUser(user, root, cb, predicates);
 
 			// They cannot see superadmin users
-			predicates.add(cb.notEqual(currentBerechtigungJoin.get(Berechtigung_.role), UserRole.SUPER_ADMIN));
+			setSuperAdminFilterForCurrentUser(user, currentBerechtigungJoin, predicates);
 
 			setGemeindeFilterForCurrentUser(user, gemeindeSetJoin, predicates);
 

@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 @Dependent
 public class EbeguConfigurationImpl extends SystemConfiguration implements EbeguConfiguration, Serializable {
+
 	private static final Logger LOG = LoggerFactory.getLogger(EbeguConfigurationImpl.class.getSimpleName());
 
 	private static final long serialVersionUID = 463057263479503486L;
@@ -221,5 +223,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getSentryEnv() {
 		return getString(SENTRY_ENVIRONMENT, "unspecified");
+	}
+
+	@Override
+	public KibonLogLevel getDefaultLogLevel() {
+		return this.getIsDevmode() ? KibonLogLevel.INFO : KibonLogLevel.ERROR;
 	}
 }

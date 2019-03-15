@@ -190,7 +190,7 @@ export class DownloadRS {
             EbeguUtil.generateRandomName(5));
     }
 
-    private redirectWindowToDownloadWhenReady(win: Window, href: string, _name: string): void {
+    public redirectWindowToDownloadWhenReady(win: Window, href: string, _name: string): void {
         // wir pruefen den dokumentstatus alle 100ms, insgesamt maximal 300 mal
         const count = 3000;
         const readyTimer = this.$interval(() => {

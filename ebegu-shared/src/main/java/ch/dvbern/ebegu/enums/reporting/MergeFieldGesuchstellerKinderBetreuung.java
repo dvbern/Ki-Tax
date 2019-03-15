@@ -40,6 +40,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
 	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
 	verfuegungsdatumTitle(new SimpleMergeField<>("verfuegungsdatumTitle", STRING_CONVERTER)),
+	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
 	fallIdTitle(new SimpleMergeField<>("fallIdTitle", STRING_CONVERTER)),
 	gesuchsteller1Title(new SimpleMergeField<>("gesuchsteller1Title", STRING_CONVERTER)),
 	gesuchsteller2Title(new SimpleMergeField<>("gesuchsteller2Title", STRING_CONVERTER)),
@@ -117,6 +118,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	eingangsdatum(new SimpleMergeField<>("eingangsdatum", DATE_CONVERTER)),
 	verfuegungsdatum(new SimpleMergeField<>("verfuegungsdatum", DATE_CONVERTER)),
 	fallId(new SimpleMergeField<>("fallId", INTEGER_CONVERTER)),
+	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 
 	gs1Name(new SimpleMergeField<>("gs1Name", STRING_CONVERTER)),
 	gs1Vorname(new SimpleMergeField<>("gs1Vorname", STRING_CONVERTER)),

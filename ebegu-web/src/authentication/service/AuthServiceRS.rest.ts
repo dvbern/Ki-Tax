@@ -112,6 +112,7 @@ export default class AuthServiceRS {
 
         const authIdbase64 = this.$cookies.get('authId');
         if (!authIdbase64) {
+            LOG.info('no login cookie available');
             this.clearPrincipal();
             return this.$q.reject(TSAuthEvent.NOT_AUTHENTICATED);
         }

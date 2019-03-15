@@ -16,10 +16,12 @@
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.DokumentGrund;
@@ -83,16 +85,21 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 			familiensituation.getGemeinsameSteuererklaerung();
 
 		final int basisJahr = gesuch.getGesuchsperiode().getGueltigkeit().calculateEndOfPreviousYear().getYear();
+		LocalDate stichtag = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, basisJahr);
+		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, gemeinsam, 1, basisJahr, stichtag);
 
 		final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, basisJahr);
+		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, gemeinsam, 2, basisJahr, stichtag);
 	}
 
-	private void getAllDokumenteGesuchsteller(Set<DokumentGrund> anlageVerzeichnis, GesuchstellerContainer gesuchsteller,
-		boolean gemeinsam, int gesuchstellerNumber, int basisJahr) {
+	private void getAllDokumenteGesuchsteller(
+		Set<DokumentGrund> anlageVerzeichnis,
+		@Nullable GesuchstellerContainer gesuchsteller,
+		boolean gemeinsam, int gesuchstellerNumber, int basisJahr,
+		@Nonnull LocalDate stichtag
+	) {
 
 		if (gesuchsteller == null || gesuchsteller.getFinanzielleSituationContainer() == null) {
 			return;
@@ -102,10 +109,29 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 
 		final FinanzielleSituation finanzielleSituationJA = finanzielleSituationContainer.getFinanzielleSituationJA();
 
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller.extractFullName(), basisJahr, gemeinsam, gesuchstellerNumber, finanzielleSituationJA, DokumentGrundTyp.FINANZIELLESITUATION);
+		getAllDokumenteGesuchsteller(
+			anlageVerzeichnis,
+			basisJahr,
+			gemeinsam,
+			gesuchstellerNumber,
+			finanzielleSituationJA,
+			DokumentGrundTyp.FINANZIELLESITUATION,
+			stichtag
+		);
 
-		add(getDokument(DokumentTyp.JAHRESLOHNAUSWEISE, finanzielleSituationJA, gesuchsteller.extractFullName(), String.valueOf(basisJahr), DokumentGrundPersonType.GESUCHSTELLER,
-			gesuchstellerNumber, DokumentGrundTyp.FINANZIELLESITUATION), anlageVerzeichnis);
+		add(
+			getDokument(
+				DokumentTyp.JAHRESLOHNAUSWEISE,
+				finanzielleSituationJA,
+				gesuchsteller.extractFullName(),
+				String.valueOf(basisJahr),
+				DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber,
+				DokumentGrundTyp.FINANZIELLESITUATION,
+				stichtag
+			),
+			anlageVerzeichnis
+		);
 
 	}
 
@@ -132,6 +158,8 @@ public class FinanzielleSituationDokumente extends AbstractFinanzielleSituationD
 				return !finanzielleSituation.getSteuerveranlagungErhalten() && (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1() != null);
 			case 2:
 				return !finanzielleSituation.getSteuerveranlagungErhalten() && (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null);
+			default:
+				return false;
 			}
 		}
 		return false;

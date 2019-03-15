@@ -222,7 +222,7 @@ export default class GesuchModelManager {
      */
     public isGesuchsteller2Required(): boolean {
         if (this.gesuch && this.getFamiliensituation() && this.getFamiliensituation().familienstatus) {
-            return this.getFamiliensituation().hasSecondGesuchsteller()
+            return this.getFamiliensituation().hasSecondGesuchsteller(this.getGesuchsperiode().gueltigkeit.gueltigBis)
                 || (this.gesuch.isMutation() && !!this.gesuch.gesuchsteller2);
         }
 
@@ -598,7 +598,10 @@ export default class GesuchModelManager {
             const name = principal ? principal.nachname : undefined;
             const vorname = principal ? principal.vorname : undefined;
             const email = principal ? principal.email : undefined;
-            gesuchsteller = new TSGesuchsteller(vorname, name, undefined, undefined, email);
+            gesuchsteller = new TSGesuchsteller();
+            gesuchsteller.vorname = vorname;
+            gesuchsteller.nachname = name;
+            gesuchsteller.mail = email;
         } else {
             gesuchsteller = new TSGesuchsteller();
         }

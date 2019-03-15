@@ -56,8 +56,8 @@ describe('fallToolbar', () => {
             getAktiveGemeinden: Promise.resolve([gemeinde1, gemeinde2]),
         });
         const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
-            getPrincipalRole: Promise.resolve(TSRole.SUPER_ADMIN),
-            getPrincipal: Promise.resolve(user),
+            getPrincipalRole: TSRole.SUPER_ADMIN,
+            getPrincipal: user,
             isRole: false,
             isOneOfRoles: false,
         });

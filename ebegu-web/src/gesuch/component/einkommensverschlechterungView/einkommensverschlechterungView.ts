@@ -126,38 +126,6 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
         }
     }
 
-    /**
-     *  Wenn z.B. in der Periode 2016/2017 eine Einkommensverschlechterung für 2017 geltend gemacht wird,
-     *  ist es unmöglich, dass die Steuerveranlagung und Steuererklärung für 2017 schon dem Gesuchsteller vorliegt
-     */
-    public showSteuerveranlagung(): boolean {
-        return this.model.getBasisJahrPlus() === 1 && !this.model.getGemeinsameSteuererklaerungToWorkWith();
-    }
-
-    public showSteuererklaerung(): boolean {
-        return !this.model.getEkvToWorkWith().steuerveranlagungErhalten;
-    }
-
-    public showHintSteuererklaerung(): boolean {
-        const ekvToWorkWith = this.model.getEkvToWorkWith();
-
-        return ekvToWorkWith.steuererklaerungAusgefuellt && !ekvToWorkWith.steuerveranlagungErhalten;
-    }
-
-    public showHintSteuerveranlagung(): boolean {
-        return this.model.getEkvToWorkWith().steuerveranlagungErhalten;
-    }
-
-    public steuerveranlagungClicked(): void {
-        // Wenn Steuerveranlagung JA -> auch StekErhalten -> JA
-        if (this.model.getEkvToWorkWith().steuerveranlagungErhalten) {
-            this.model.getEkvToWorkWith().steuererklaerungAusgefuellt = true;
-        } else if (!this.model.getEkvToWorkWith().steuerveranlagungErhalten) {
-            // Steuerveranlagung neu NEIN -> Fragen loeschen
-            this.model.getEkvToWorkWith().steuererklaerungAusgefuellt = undefined;
-        }
-    }
-
     public save(): IPromise<TSEinkommensverschlechterungContainer> {
         if (this.isGesuchValid()) {
             if (!this.form.$dirty) {

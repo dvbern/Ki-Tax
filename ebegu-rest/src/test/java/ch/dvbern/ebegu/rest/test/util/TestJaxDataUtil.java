@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
@@ -59,6 +58,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -240,8 +240,7 @@ public final class TestJaxDataUtil {
 
 	public static JaxFachstelle createTestJaxFachstelle() {
 		JaxFachstelle jaxFachstelle = new JaxFachstelle();
-		jaxFachstelle.setName("Fachstelle_Test");
-		jaxFachstelle.setBeschreibung("Notizen der Fachstelle");
+		jaxFachstelle.setName(FachstelleName.FRUEHERZIEHUNGSDIENST_KANTON_BERN);
 		return jaxFachstelle;
 	}
 
@@ -334,8 +333,6 @@ public final class TestJaxDataUtil {
 		JaxEinkommensverschlechterungInfo jaxEinkommensverschlechterungInfo = new JaxEinkommensverschlechterungInfo();
 		jaxEinkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		jaxEinkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
-		jaxEinkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(LocalDate.now());
-		jaxEinkommensverschlechterungInfo.setGrundFuerBasisJahrPlus1("Grund fuer basis Jahr Plus 1");
 		jaxEinkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
 		jaxEinkommensverschlechterungInfo.setEkvBasisJahrPlus1Annulliert(Boolean.FALSE);
 		jaxEinkommensverschlechterungInfo.setEkvBasisJahrPlus2Annulliert(Boolean.FALSE);
@@ -364,14 +361,8 @@ public final class TestJaxDataUtil {
 
 	public static JaxEinkommensverschlechterung createDefaultJaxEinkommensverschlechterungs() {
 		JaxEinkommensverschlechterung einkommensverschlechterung = new JaxEinkommensverschlechterung();
-		createDefaultAbstractFinanzielleSituation(einkommensverschlechterung);
 		einkommensverschlechterung.setNettolohnJan(BigDecimal.ONE);
 		return einkommensverschlechterung;
-	}
-
-	public static void createDefaultAbstractFinanzielleSituation(JaxAbstractFinanzielleSituation abstractFinanzielleSituation) {
-		abstractFinanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
-		abstractFinanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 	}
 
 	public static JaxMandant createTestMandant() {

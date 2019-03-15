@@ -26,67 +26,12 @@
             <hr class="header"/>
             <!-- Infotext -->
             <p class="inlineHint" data-translate="EKVI_HINT_MONAT_FELDER"></p>
-            <p class="inlineHint" data-translate="EKVI__HINT_STEUERERKLAERUNG"
-               translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"
-               ng-if="vm.showHintSteuererklaerung()"></p>
-            <p class="inlineHint" data-translate="EKVI__HINT_VERANLAGUNGSVERFUEGUNG"
-               translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"
-               ng-if="vm.showHintSteuerveranlagung()"></p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
-
-                    <!--Steuerveranlagung -->
-                    <div class="row">
-                        <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
-                            <div class="form-group">
-                                <span class="ebeguH1 required">
-                                    <span data-translate="FINANZIELLE_SITUATION_STEUERVERANLAGUNG"
-                                          translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></span>
-                                </span>
-                                <dv-radio-container name="steuerveranlagung"
-                                                    ng-model="vm.model.getEkvToWorkWith().steuerveranlagungErhalten"
-                                                    ng-required="true" class="radio input-element"
-                                                    ng-change="vm.steuerveranlagungClicked()"
-                                                    dv-enable-element
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' |translate}}"
-                                                    aria-described-by="steuerveranlagung-error">
-                                </dv-radio-container>
-                                <dv-error-messages input-id="steuerveranlagung" for="vm.form.steuerveranlagung.$error"
-                                                   class="error"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Steuererklärung -->
-                    <div class="row">
-                        <div class="col-xs-12 dv-input-container-question"
-                             ng-if="vm.showSteuerveranlagung() && vm.showSteuererklaerung()">
-                            <div class="form-group">
-                                <span class="ebeguH1 required">
-                                    <span data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG"
-                                          translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></span>
-                                </span>
-                                <dv-radio-container name="steuererklaerung"
-                                                    ng-model="vm.model.getEkvToWorkWith().steuererklaerungAusgefuellt"
-                                                    ng-required="true" class="radio input-element"
-                                                    dv-enable-element
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERERKLAERUNG' |translate}}"
-                                                    aria-described-by="steuererklaerung-error">
-                                </dv-radio-container>
-                                <dv-error-messages input-id="steuererklaerung" for="vm.form.steuererklaerung.$error"
-                                                   class="error"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-
 
                     <!-- Nettolohn Jan-->
                     <div class="row">
