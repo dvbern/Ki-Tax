@@ -102,7 +102,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoBetreuungBestaetigt",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungenBestaetigt(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungenBestaetigt(gesuch, gesuchsteller, adr,
+				sprache)
 		);
 	}
 
@@ -114,7 +115,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			betreuung.extractGesuch(),
 			"InfoBetreuungAbgelehnt",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungAbgelehnt(betreuung, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungAbgelehnt(betreuung, gesuchsteller, adr,
+				sprache)
 		);
 	}
 
@@ -135,7 +137,11 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			betreuung.extractGesuch(),
 			"InfoSchulamtAnmeldungAbgelehnt",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoSchulamtAnmeldungAbgelehnt(betreuung, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoSchulamtAnmeldungAbgelehnt(
+				betreuung,
+				gesuchsteller,
+				adr,
+				sprache)
 		);
 	}
 
@@ -144,7 +150,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoMitteilungErhalten(@Nonnull Mitteilung mitteilung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(mitteilung.getBetreuung().extractGesuch(), gemeindeService);
+		final Sprache sprache =
+			EbeguUtil.extractKorrespondenzsprache(mitteilung.getBetreuung().extractGesuch(), gemeindeService);
 		if (doSendMail(mitteilung.getFall())) {
 			String mailaddress = fallService.getCurrentEmailAddress(mitteilung.getFall().getId()).orElse(null);
 			if (StringUtils.isNotEmpty(mailaddress)) {
@@ -203,7 +210,12 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			gesuch,
 			"WarnungGesuchNichtFreigegeben",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getWarnungGesuchNichtFreigegeben(gesuch, gesuchsteller, adr, anzahlTageBisLoeschung, sprache)
+				mailTemplateConfig.getWarnungGesuchNichtFreigegeben(
+					gesuch,
+					gesuchsteller,
+					adr,
+					anzahlTageBisLoeschung,
+					sprache)
 		);
 	}
 
@@ -217,7 +229,12 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			gesuch,
 			"WarnungFreigabequittungFehlt",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getWarnungFreigabequittungFehlt(gesuch, gesuchsteller, adr, anzahlTageBisLoeschung, sprache)
+				mailTemplateConfig.getWarnungFreigabequittungFehlt(
+					gesuch,
+					gesuchsteller,
+					adr,
+					anzahlTageBisLoeschung,
+					sprache)
 		);
 	}
 
@@ -241,31 +258,41 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		@Nonnull List<Gesuch> gesucheToSendMail) {
 		int i = 0;
 		for (Gesuch gesuch : gesucheToSendMail) {
-			try {
-				if (doSendMail(gesuch.getFall())) {
-					Optional<String> emailAddress = findEMailAddress(gesuch);
-					Optional<Gesuchsteller> gesuchsteller = gesuch.extractGesuchsteller1();
-					if (gesuchsteller.isPresent() && emailAddress.isPresent()) {
-						String adr = emailAddress.get();
-
-						final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
-						String message = mailTemplateConfig
-							.getInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuchsteller.get(), adr, gesuch, sprache);
-						sendMessageWithTemplate(message, adr);
-
-						LOG.debug("Email fuer InfoFreischaltungGesuchsperiode wurde versendet an {}", adr);
-					} else {
-						LOG.warn("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 is null");
-					}
-				}
-				i++;
-			} catch (Exception e) {
-				logExceptionAccordingToEnvironment(e,
-					"Mail InfoFreischaltungGesuchsperiode konnte nicht verschickt werden fuer Gesuch",
-					gesuch.getId());
-			}
+			sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch, i);
 		}
 		return new AsyncResult<>(i);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void sendInfoFreischaltungGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gesuch gesuch,
+		int i) {
+		try {
+			if (doSendMail(gesuch.getFall())) {
+				Optional<String> emailAddress = findEMailAddress(gesuch);
+				Optional<Gesuchsteller> gesuchsteller = gesuch.extractGesuchsteller1();
+				if (gesuchsteller.isPresent() && emailAddress.isPresent()) {
+					String adr = emailAddress.get();
+
+					final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+					String message = mailTemplateConfig
+						.getInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuchsteller.get(), adr, gesuch, sprache);
+					sendMessageWithTemplate(message, adr);
+
+					LOG.debug("Email fuer InfoFreischaltungGesuchsperiode wurde versendet an {}", adr);
+				} else {
+					LOG.warn("skipping InfoFreischaltungGesuchsperiode because Gesuchsteller 1 is null");
+				}
+			}
+			i++;
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail InfoFreischaltungGesuchsperiode konnte nicht verschickt werden fuer Gesuch",
+				gesuch.getId());
+		}
 	}
 
 	@Override
@@ -327,7 +354,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 				}
 			} catch (MailException e) {
-				logExceptionAccordingToEnvironment(e,
+				logExceptionAccordingToEnvironment(
+					e,
 					"Mail InfoBetreuungGeloescht konnte nicht verschickt werden fuer Betreuung",
 					betreuung.getId());
 			}
@@ -360,7 +388,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			sendMessageWithTemplate(message, mailaddress);
 			LOG.info("Email fuer InfoBetreuungVerfuegt wurde versendet an {}", mailaddress);
 		} catch (MailException e) {
-			logExceptionAccordingToEnvironment(e,
+			logExceptionAccordingToEnvironment(
+				e,
 				"Mail InfoBetreuungVerfuegt konnte nicht verschickt werden fuer Betreuung",
 				betreuung.getId());
 		}
@@ -386,7 +415,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			}
 			LOG.debug("E-Mail mit Report versendet an {}", receiverEmail);
 		} catch (MailException e) {
-			logExceptionAccordingToEnvironment(e,
+			logExceptionAccordingToEnvironment(
+				e,
 				"E-Mail mit Report versendet konnte nicht verschickt werden an",
 				receiverEmail);
 			throw e; // Wird spaeter nicht mehr geloggt

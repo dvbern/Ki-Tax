@@ -101,11 +101,19 @@ public interface MailService {
 	void sendInfoGesuchGeloescht(@Nonnull Gesuch gesuch) throws MailException;
 
 	/**
-	 * Sendet eine Mail an den GS1 des übergebenen Gesuchs, dass die übergebene Gesuchsperiode eröffnet wurde.
+	 * Sendet eine Mail an den GS1 der übergebenen Gesuche, dass die übergebene Gesuchsperiode eröffnet wurde.
 	 */
 	Future<Integer> sendInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull List<Gesuch> gesucheToSendMail);
+
+	/**
+	 * Sendet eine Mail an den GS1 des übergebenen Gesuchs, dass die übergebene Gesuchsperiode eröffnet wurde.
+	 */
+	void sendInfoFreischaltungGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gesuch gesuch,
+		int i);
 
 	/**
 	 * Sendet unter gewissen Bedingungen pro Betreuung eine Email mit der Information, dass ein Betreuungsplatz
