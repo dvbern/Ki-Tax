@@ -242,7 +242,9 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 	}
 
 	@Nonnull
-	public Einkommensverschlechterung copyEinkommensverschlechterung(@Nonnull Einkommensverschlechterung target, @Nonnull AntragCopyType copyType) {
+	public Einkommensverschlechterung copyEinkommensverschlechterung(
+		@Nonnull Einkommensverschlechterung target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
@@ -300,6 +302,8 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			MathUtil.isSame(getNettolohnNov(), otherEinkommensverschlechterung.getNettolohnNov()) &&
 			MathUtil.isSame(getNettolohnDez(), otherEinkommensverschlechterung.getNettolohnDez()) &&
 			MathUtil.isSame(getNettolohnZus(), otherEinkommensverschlechterung.getNettolohnZus()) &&
-			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
+			MathUtil.isSame(
+				getGeschaeftsgewinnBasisjahrMinus1(),
+				otherEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
 	}
 }
