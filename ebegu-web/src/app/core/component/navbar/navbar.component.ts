@@ -13,9 +13,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy
+} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
+import {GuidedTourService, Orientation} from 'ngx-guided-tour';
 import {from as fromPromise, Observable, of, Subject} from 'rxjs';
 import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
@@ -26,6 +34,7 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {KiBonGuidedTour, KiBonTourStep} from '../../../kibonTour/KiBonGuidedTour';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
@@ -37,7 +46,7 @@ const LOG = LogFactory.createLog('NavbarComponent');
     styleUrls: ['./navbar.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavbarComponent implements OnDestroy {
+export class NavbarComponent implements OnDestroy, AfterViewInit {
 
     public readonly TSRoleUtil = TSRoleUtil;
 
@@ -49,6 +58,9 @@ export class NavbarComponent implements OnDestroy {
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
         private readonly gemeindeRS: GemeindeRS,
+        private guidedTourService: GuidedTourService,
+        private readonly state: StateService,
+        public readonly translate: TranslateService
     ) {
 
         // navbar depends on the principal. trigger change detection when the principal changes
@@ -87,6 +99,43 @@ export class NavbarComponent implements OnDestroy {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
+
+    public ngAfterViewInit(): void {
+
+        // TODO: Text content in DE
+        // TODO: FR Translations
+        // TODO: Styling
+        // TODO: Welcome dialog analog invision design
+        // TODO: End dialog analog invision design
+        // TODO: Link to start tour again in help dialog
+        // TODO: Restrict tour startup based on role and cookie value "AlreadyViewedTour"
+        // TODO: Consider replacing CSS selectors like "a[uisref="pendenzen.list-view"]" with ids
+
+        this.guidedTourService.startTour(new KiBonGuidedTour('kibon-tour',
+            [new KiBonTourStep(this.translate.instant('TOUR_START_TITLE'), this.translate.instant('TOUR_START_CONTENT'),
+                '', Orientation.Center, this.state, 'pendenzen.list-view'),
+
+                new KiBonTourStep(this.translate.instant('TOUR_STEP_1_TITLE'), this.translate.instant('TOUR_STEP_1_CONTENT'),
+                    'a[uisref="pendenzen.list-view"]', Orientation.Bottom, this.state, 'faelle.list'),
+
+                new KiBonTourStep(this.translate.instant('TOUR_STEP_2_TITLE'), this.translate.instant('TOUR_STEP_2_CONTENT'),
+                    'a[uisref="faelle.list"]', Orientation.Bottom, this.state, 'zahlungsauftrag.view'),
+
+                new KiBonTourStep(this.translate.instant('TOUR_STEP_3_TITLE'), this.translate.instant('TOUR_STEP_3_CONTENT'),
+                    'a[uisref="zahlungsauftrag.view"]', Orientation.Bottom, this.state, 'statistik.view'),
+
+                new KiBonTourStep(this.translate.instant('TOUR_STEP_4_TITLE'), this.translate.instant('TOUR_STEP_4_CONTENT'),
+                    'a[uisref="statistik.view"]', Orientation.Bottom, this.state, 'posteingang.view'),
+
+                new KiBonTourStep(this.translate.instant('TOUR_STEP_5_TITLE'), this.translate.instant('TOUR_STEP_5_CONTENT'),
+                    'dv-posteingang[uisref="posteingang.view"]', Orientation.Bottom),
+
+                new KiBonTourStep(this.translate.instant('TOUR_END_TITLE'), this.translate.instant('TOUR_END_CONTENT'),
+                    '[class~="dv-helpmenu-question"]', Orientation.Left)],
+            false
+        ));
+    }
+
 
     private getGemeindeIDFromUser$(): Observable<string> {
         return this.authServiceRS.principal$

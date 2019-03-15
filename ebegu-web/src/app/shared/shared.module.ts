@@ -22,6 +22,7 @@ import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
+import {GuidedTourModule} from 'ngx-guided-tour';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
@@ -66,6 +67,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
                 deps: [HttpClient],
             },
         }),
+        GuidedTourModule.forRoot(),
     ],
     declarations: [
         AccordionDirective,

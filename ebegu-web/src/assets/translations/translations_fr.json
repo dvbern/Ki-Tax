@@ -1494,4 +1494,18 @@
     "ERLAEUTERUNG_VERFUEGUNG_DE": "FR_Erläuterung zur Verfügung Deutsch",
     "ERLAEUTERUNG_VERFUEGUNG_FR": "FR_Erläuterung zur Verfügung Französisch",
     "ERLAEUTERUNG_VERFUEGUNG": "FR_Erläuterungen zur Verfügung"
+    "TOUR_START_TITLE": "",
+    "TOUR_START_CONTENT": "",
+    "TOUR_STEP_1_TITLE": "",
+    "TOUR_STEP_1_CONTENT": "",
+    "TOUR_STEP_2_TITLE": "",
+    "TOUR_STEP_2_CONTENT": "",
+    "TOUR_STEP_3_TITLE": "",
+    "TOUR_STEP_3_CONTENT": "",
+    "TOUR_STEP_4_TITLE": "",
+    "TOUR_STEP_4_CONTENT": "",
+    "TOUR_STEP_5_TITLE": "",
+    "TOUR_STEP_5_CONTENT": "",
+    "TOUR_END_TITLE": "",
+    "TOUR_END_CONTENT": ""
 }
