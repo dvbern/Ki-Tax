@@ -65,6 +65,7 @@ import org.hibernate.envers.Audited;
 	@SqlResultSetMapping(name = "GesuchZeitraumDataRowMapping", classes = @ConstructorResult(targetClass = GesuchZeitraumDataRow.class,
 		columns = {
 			@ColumnResult(name = "bgNummer", type = String.class),
+			@ColumnResult(name = "gemeinde", type = String.class),
 			@ColumnResult(name = "gesuchLaufNr", type = Integer.class),
 			@ColumnResult(name = "institution", type = String.class),
 			@ColumnResult(name = "betreuungsTyp", type = String.class),

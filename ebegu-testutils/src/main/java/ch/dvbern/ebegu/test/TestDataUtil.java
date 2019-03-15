@@ -41,7 +41,6 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.SortDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
@@ -194,10 +193,6 @@ public final class TestDataUtil {
 	public static final LocalDate START_PERIODE = LocalDate.of(PERIODE_JAHR_1, Month.AUGUST, 1);
 	public static final LocalDate ENDE_PERIODE = LocalDate.of(PERIODE_JAHR_2, Month.JULY, 31);
 
-	public static final LocalDate STICHTAG_EKV_1 = LocalDate.of(PERIODE_JAHR_1, Month.SEPTEMBER, 1);
-	public static final LocalDate STICHTAG_EKV_1_GUELTIG = STICHTAG_EKV_1.plusMonths(1);
-	public static final LocalDate STICHTAG_EKV_2 = LocalDate.of(PERIODE_JAHR_2, Month.APRIL, 1);
-	public static final LocalDate STICHTAG_EKV_2_GUELTIG = STICHTAG_EKV_2.plusMonths(1);
 	public static final String TEST_STRASSE = "Nussbaumstrasse";
 
 	public static final String GEMEINDE_BERN_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
@@ -288,7 +283,6 @@ public final class TestDataUtil {
 
 	public static Einkommensverschlechterung createDefaultEinkommensverschlechterung() {
 		Einkommensverschlechterung einkommensverschlechterung = new Einkommensverschlechterung();
-		createDefaultAbstractFinanzielleSituation(einkommensverschlechterung);
 		einkommensverschlechterung.setNettolohnJan(MathUtil.DEFAULT.from(BigDecimal.ONE));
 		return einkommensverschlechterung;
 	}
@@ -432,16 +426,11 @@ public final class TestDataUtil {
 	}
 
 	public static FinanzielleSituation createDefaultFinanzielleSituation() {
-
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
-		createDefaultAbstractFinanzielleSituation(finanzielleSituation);
+		finanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
+		finanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 		finanzielleSituation.setNettolohn(BigDecimal.valueOf(100000));
 		return finanzielleSituation;
-	}
-
-	public static void createDefaultAbstractFinanzielleSituation(AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		abstractFinanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
-		abstractFinanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 	}
 
 	public static Traegerschaft createDefaultTraegerschaft() {
@@ -459,77 +448,57 @@ public final class TestDataUtil {
 	}
 
 	public static InstitutionStammdaten createDefaultInstitutionStammdaten() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			UUID.randomUUID().toString(),
+			"Testinstitution",
+			BetreuungsangebotTyp.KITA);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenKitaWeissenstein() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA);
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Kita Aaregg");
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA,
+			"Kita Aaregg",
+			BetreuungsangebotTyp.KITA);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenTagesfamilien() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN);
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESFAMILIEN);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Tagesfamilien");
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_TAGESFAMILIEN,
+			"Tagesfamilien",
+			BetreuungsangebotTyp.TAGESFAMILIEN);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenKitaBruennen() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA);
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Kita Brünnen");
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BRUENNEN_KITA,
+			"Kita Brünnen",
+			BetreuungsangebotTyp.KITA);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenTagesschuleBern() {
-		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE);
-		instStammdaten.setIban(new IBAN(iban));
-		instStammdaten.setMail(TESTMAIL);
-		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
-		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Tagesschule Bern");
-		instStammdaten.setAdresse(createDefaultAdresse());
-		return instStammdaten;
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_BERN_TAGESSCULHE,
+			"Tagesschule Bern",
+			BetreuungsangebotTyp.TAGESSCHULE);
 	}
 
 	public static InstitutionStammdaten createInstitutionStammdatenFerieninselGuarda() {
+		return createInstitutionStammdaten(
+			AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL,
+			"Ferieninsel Guarda",
+			BetreuungsangebotTyp.FERIENINSEL);
+	}
+
+	private static InstitutionStammdaten createInstitutionStammdaten(@Nonnull String id, @Nonnull String name, @Nonnull BetreuungsangebotTyp angebotTyp) {
 		InstitutionStammdaten instStammdaten = new InstitutionStammdaten();
-		instStammdaten.setId(AbstractTestfall.ID_INSTITUTION_STAMMDATEN_GUARDA_FERIENINSEL);
+		instStammdaten.setId(id);
 		instStammdaten.setIban(new IBAN(iban));
 		instStammdaten.setMail(TESTMAIL);
+		instStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
 		instStammdaten.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
-		instStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.FERIENINSEL);
+		instStammdaten.setBetreuungsangebotTyp(angebotTyp);
 		instStammdaten.setInstitution(createDefaultInstitution());
-		instStammdaten.getInstitution().setName("Ferieninsel Guarda");
+		instStammdaten.getInstitution().setName(name);
 		instStammdaten.setAdresse(createDefaultAdresse());
 		return instStammdaten;
 	}
@@ -798,8 +767,6 @@ public final class TestDataUtil {
 		final EinkommensverschlechterungInfo einkommensverschlechterungInfo = new EinkommensverschlechterungInfo();
 		einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
-		einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(LocalDate.now());
-		einkommensverschlechterungInfo.setGrundFuerBasisJahrPlus1("Grund fuer basis Jahr Plus 1");
 		einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
 		return einkommensverschlechterungInfo;
 	}
@@ -939,7 +906,6 @@ public final class TestDataUtil {
 				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
-			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(STICHTAG_EKV_1);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		} else {
 			gesuchsteller.getEinkommensverschlechterungContainer()
@@ -949,7 +915,6 @@ public final class TestDataUtil {
 				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(true);
-			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus2(STICHTAG_EKV_2);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		}
 	}

@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.FallService;
@@ -160,8 +161,10 @@ public class DossierResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxDossier findNewestDossierByCurrentBenutzerAsBesitzer() {
 		Optional<Fall> optFall = fallService.findFallByCurrentBenutzerAsBesitzer();
+		// Beim ersten Einloggen ist der Fall nie vorhanden, dies ist also ein erwarteter Fehler. Wir loggen es nicht.
 		String fallId = optFall
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				KibonLogLevel.NONE,
 				"findNewestDossierByCurrentBenutzerAsBesitzer",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND))
 			.getId();

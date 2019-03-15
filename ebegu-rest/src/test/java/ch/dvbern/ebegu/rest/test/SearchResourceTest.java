@@ -80,7 +80,7 @@ public class SearchResourceTest extends AbstractEbeguRestLoginTest {
 		Assert.assertEquals(AntragTyp.ERSTGESUCH, firstElement.getAntragTyp());
 
 		Set<String> institutionen = new LinkedHashSet<>();
-		institutionen.add("Institution1");
+		institutionen.add("Testinstitution");
 		Assert.assertEquals(institutionen, firstElement.getInstitutionen());
 		Assert.assertEquals(gesuch1.getGesuchsperiode().getGueltigkeit().getGueltigAb(), firstElement.getGesuchsperiodeGueltigAb());
 		Assert.assertEquals(gesuch1.getGesuchsperiode().getGueltigkeit().getGueltigBis(), firstElement.getGesuchsperiodeGueltigBis());

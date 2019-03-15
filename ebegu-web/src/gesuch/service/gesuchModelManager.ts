@@ -222,7 +222,7 @@ export default class GesuchModelManager {
      */
     public isGesuchsteller2Required(): boolean {
         if (this.gesuch && this.getFamiliensituation() && this.getFamiliensituation().familienstatus) {
-            return this.getFamiliensituation().hasSecondGesuchsteller()
+            return this.getFamiliensituation().hasSecondGesuchsteller(this.getGesuchsperiode().gueltigkeit.gueltigBis)
                 || (this.gesuch.isMutation() && !!this.gesuch.gesuchsteller2);
         }
 
