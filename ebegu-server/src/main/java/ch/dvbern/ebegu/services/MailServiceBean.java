@@ -15,42 +15,13 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.concurrent.Future;
-import java.util.function.BiFunction;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.DownloadFile;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -58,18 +29,20 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.*;
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.concurrent.Future;
+import java.util.function.BiFunction;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -144,11 +117,11 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		ADMIN_INSTITUTION,
 		SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, SACHBEARBEITER_TS, ADMIN_TS })
 	public void sendInfoMitteilungErhalten(@Nonnull Mitteilung mitteilung) throws MailException {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(mitteilung.getBetreuung().extractGesuch(), gemeindeService);
+		List<Sprache> sprachen = EbeguUtil.extractGemeindeSprachen(mitteilung.getDossier().getGemeinde(), gemeindeService);
 		if (doSendMail(mitteilung.getFall())) {
 			String mailaddress = fallService.getCurrentEmailAddress(mitteilung.getFall().getId()).orElse(null);
 			if (StringUtils.isNotEmpty(mailaddress)) {
-				String message = mailTemplateConfig.getInfoMitteilungErhalten(mitteilung, mailaddress, sprache);
+				String message = mailTemplateConfig.getInfoMitteilungErhalten(mitteilung, mailaddress, sprachen);
 				sendMessageWithTemplate(message, mailaddress);
 				LOG.debug("Email fuer InfoMitteilungErhalten wurde versendet an {}", mailaddress);
 			} else {
@@ -401,7 +374,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		requireNonNull(einladender);
 		requireNonNull(einladung);
 
-		String message = mailTemplateConfig.getBenutzerEinladung(einladender, einladung, LocaleThreadLocal.get());
+		String message = mailTemplateConfig.getBenutzerEinladung(einladender, einladung);
 
 		sendMessageWithTemplate(message, einladung.getEingeladener().getEmail());
 	}
