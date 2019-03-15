@@ -44,6 +44,9 @@ public class TextRessourceContainer extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_text_ressource_container_text_ressource_franzoesisch"))
 	private TextRessource franzoesisch;
 
+
+
+
 	@Nullable
 	public TextRessource getDeutsch() {
 		return deutsch;

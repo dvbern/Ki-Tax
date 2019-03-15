@@ -79,7 +79,6 @@ export class EditGemeindeComponent implements OnInit {
 
                 if (!stammdaten.standardRechtsmittelbelehrung && !stammdaten.rechtsmittelbelehrung) {
                     stammdaten.rechtsmittelbelehrung = new TSTextRessourceContainer();
-
                     stammdaten.rechtsmittelbelehrung.deutsch = new TSTextRessource();
                     stammdaten.rechtsmittelbelehrung.deutsch.sprache = TSSprache.DEUTSCH;
                     stammdaten.rechtsmittelbelehrung.franzoesisch = new TSTextRessource();
