@@ -231,14 +231,15 @@ describe('EbeguRestUtil', () => {
 
         describe('parseBetreuung()', () => {
             it('should transform TSBetreuung to REST object and back', () => {
-                const instStam = new TSInstitutionStammdaten(
-                    'iban',
-                    TSBetreuungsangebotTyp.KITA,
-                    createInstitution(),
-                    createAdresse(),
-                    'mail@example.com',
-                    'telefon',
-                    new TSDateRange(DateUtil.today(), DateUtil.today()));
+                const instStam = new TSInstitutionStammdaten();
+                instStam.iban = 'iban';
+                instStam.betreuungsangebotTyp = TSBetreuungsangebotTyp.KITA;
+                instStam.institution = createInstitution();
+                instStam.adresse = createAdresse();
+                instStam.mail = 'mail@example.com';
+                instStam.telefon = 'telefon';
+                instStam.gueltigkeit = new TSDateRange(DateUtil.today(), DateUtil.today());
+
                 TestDataUtil.setAbstractMutableFieldsUndefined(instStam);
 
                 const tsBetreuungspensumGS = createBetreuungspensum(
@@ -346,17 +347,16 @@ describe('EbeguRestUtil', () => {
                 tsInstStammdatenTagesschule.moduleTagesschule = [tsModul];
                 tsInstStammdatenTagesschule.gueltigkeit = new TSDateRange();
                 TestDataUtil.setAbstractMutableFieldsUndefined(tsInstStammdatenTagesschule);
-                const myInstitutionStammdaten = new TSInstitutionStammdaten(
-                    'my-iban',
-                    TSBetreuungsangebotTyp.KITA,
-                    myInstitution,
-                    myAdress,
-                    'my-mail',
-                    'my-phone',
-                    new TSDateRange(DateUtil.today(), DateUtil.today()),
-                    '',
-                    undefined,
-                    tsInstStammdatenTagesschule);
+                const myInstitutionStammdaten = new TSInstitutionStammdaten();
+                myInstitutionStammdaten.iban = 'my-iban';
+                myInstitutionStammdaten.betreuungsangebotTyp = TSBetreuungsangebotTyp.KITA;
+                myInstitutionStammdaten.institution = myInstitution;
+                myInstitutionStammdaten.adresse = myAdress;
+                myInstitutionStammdaten.mail = 'my-mail';
+                myInstitutionStammdaten.telefon = 'my-phone';
+                myInstitutionStammdaten.gueltigkeit = new TSDateRange(DateUtil.today(), DateUtil.today());
+                myInstitutionStammdaten.institutionStammdatenTagesschule = tsInstStammdatenTagesschule;
+
                 TestDataUtil.setAbstractMutableFieldsUndefined(myInstitutionStammdaten);
 
                 const restInstitutionStammdaten = ebeguRestUtil.institutionStammdatenToRestObject({},

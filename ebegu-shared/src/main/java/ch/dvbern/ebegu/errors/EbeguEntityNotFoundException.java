@@ -46,6 +46,10 @@ public class EbeguEntityNotFoundException extends EbeguRuntimeException {
 		super(methodName, message, errorCodeEnum, args);
 	}
 
+	public EbeguEntityNotFoundException(@Nonnull KibonLogLevel logLevel, @Nullable String methodName, @Nullable ErrorCodeEnum errorCodeEnum, @Nonnull Serializable... args) {
+		super(logLevel, methodName, errorCodeEnum, args);
+	}
+
 	public EbeguEntityNotFoundException(@Nullable String methodName, @Nullable ErrorCodeEnum errorCodeEnum, @Nonnull Serializable... args) {
 		super(methodName, errorCodeEnum, args);
 	}

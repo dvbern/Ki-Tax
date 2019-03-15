@@ -70,7 +70,6 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	public AbstractFinanzielleSituation() {
 	}
 
-
 	public abstract Boolean getSteuerveranlagungErhalten();
 
 	public abstract Boolean getSteuererklaerungAusgefuellt();
@@ -141,7 +140,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	}
 
 	@Nonnull
-	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(@Nonnull AbstractFinanzielleSituation target, @Nonnull AntragCopyType copyType) {
+	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
+		@Nonnull AbstractFinanzielleSituation target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:

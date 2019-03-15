@@ -59,7 +59,7 @@ import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings({ "InstanceMethodNamingConvention", "MethodParameterNamingConvention", "InstanceVariableNamingConvention" })
 @RunWith(Arquillian.class)
-@UsingDataSet("datasets/reportTestDataFixed.xml")
+@UsingDataSet("datasets/reportTestData.xml")
 @Transactional(TransactionMode.DISABLED)
 public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 

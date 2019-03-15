@@ -137,7 +137,7 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 	}
 
 	/**
-	 * Removes all EKV of the given Gesuch if the year is not set. The field GemeinsameSteuererklaerung_BjPX will be
+	 * Removes all EKV of the given Gesuch if the year is not set. The field EkvJABasisJahrPlusX will be
 	 * also set to null. If the year is set nothing will be done.
 	 */
 	private void removeEinkommensverschlechterungFromGesuch(Gesuch gesuch, EinkommensverschlechterungInfoContainer
