@@ -21,6 +21,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSAdresse from '../../../models/TSAdresse';
@@ -219,5 +220,36 @@ export class EditInstitutionComponent implements OnInit {
 
     public compareTraegerschaft(b1: TSTraegerschaft, b2: TSTraegerschaft): boolean {
         return b1 && b2 ? b1.id === b2.id : b1 === b2;
+    }
+
+    public getAlterskategorien(): string {
+        const alterskategorien: string[] = [];
+        if (this.stammdaten.alterskategorieBaby) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_BABY'));
+        }
+        if (this.stammdaten.alterskategorieVorschule) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_VORSCHULE'));
+        }
+        if (this.stammdaten.alterskategorieKindergarten) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN'));
+        }
+        if (this.stammdaten.alterskategorieSchule) {
+            alterskategorien.push(this.translate.instant('INSTITUTION_ALTERSKATEGORIE_SCHULE'));
+        }
+        return alterskategorien.join(', ');
+    }
+
+    public getPlaceholderForPlaetze(): string {
+        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA) {
+            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_1');
+        }
+        if (this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            return this.translate.instant('INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2');
+        }
+        return '';
+    }
+
+    public getPlaceholderForOeffnungszeiten(): string {
+        return this.translate.instant('INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER');
     }
 }
