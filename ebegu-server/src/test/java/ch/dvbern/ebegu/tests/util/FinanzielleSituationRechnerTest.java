@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.tests.util;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Month;
 
 import javax.inject.Inject;
 
@@ -25,10 +24,9 @@ import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
-import ch.dvbern.ebegu.util.RuleUtil;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
@@ -103,13 +101,12 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(BigDecimal.ZERO, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		Assert.assertNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 
 		Assert.assertEquals(BigDecimal.ZERO, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		Assert.assertNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 	}
 
 	@Test
@@ -122,14 +119,13 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr()); // Abgelehnt
-		Assert.assertNotNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1());
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		Assert.assertNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 	}
 
 	@Test
@@ -142,17 +138,13 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		LocalDate datumEkv1 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1();
-		Assert.assertNotNull(datumEkv1);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1, datumEkv1);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv1));
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		Assert.assertNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 	}
 
 	@Test
@@ -166,17 +158,13 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr()); // Abgelehnt
-		Assert.assertNotNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1());
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		LocalDate datumEkv2 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2();
-		Assert.assertNotNull(datumEkv2);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2, datumEkv2);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv2));
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 	}
 
 	@Test
@@ -190,20 +178,13 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		LocalDate datumEkv1 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1();
-		Assert.assertNotNull(datumEkv1);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1, datumEkv1);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv1));
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		LocalDate datumEkv2 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2();
-		Assert.assertNotNull(datumEkv2);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2, datumEkv2);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv2));
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Accepted());
 	}
 
@@ -218,20 +199,13 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		LocalDate datumEkv1 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1();
-		Assert.assertNotNull(datumEkv1);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1, datumEkv1);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_1_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv1));
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN_2, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		LocalDate datumEkv2 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2();
-		Assert.assertNotNull(datumEkv2);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2, datumEkv2);
-		Assert.assertEquals(TestDataUtil.STICHTAG_EKV_2_GUELTIG, RuleUtil.getStichtagForEreignis(datumEkv2));
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv2Accepted());
 	}
 
@@ -246,14 +220,13 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr()); // Abgelehnt
-		Assert.assertNotNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1());
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr()); // Abgelehnt
-		Assert.assertNotNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2());
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Accepted());
 	}
 
@@ -265,21 +238,15 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, true);
 		Assert.assertNotNull(gesuch.getEinkommensverschlechterungInfoContainer());
-		gesuch.getEinkommensverschlechterungInfoContainer().getEinkommensverschlechterungInfoJA().setStichtagFuerBasisJahrPlus1(LocalDate.of(2016, Month.DECEMBER, 1));
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), gesuch.getFinanzDatenDTO().getDatumVonBasisjahr());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP1VorAbzFamGr());
-		LocalDate datumEkv1 = gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus1();
-		Assert.assertNotNull(datumEkv1);
-		Assert.assertEquals(LocalDate.of(2016, Month.DECEMBER, 1), datumEkv1);
-		Assert.assertEquals(LocalDate.of(2017, Month.JANUARY, 1), RuleUtil.getStichtagForEreignis(datumEkv1));
+		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
 		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
-		Assert.assertNull(gesuch.getFinanzDatenDTO().getDatumVonBasisjahrPlus2());
+		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 	}
-
 }

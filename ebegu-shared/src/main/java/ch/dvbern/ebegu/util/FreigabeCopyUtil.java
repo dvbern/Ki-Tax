@@ -281,8 +281,6 @@ public final class FreigabeCopyUtil {
 	}
 
 	private static void copyAbstractFinanzielleSituation(@Nonnull AbstractFinanzielleSituation gs, @Nonnull AbstractFinanzielleSituation ja) {
-		gs.setSteuerveranlagungErhalten(ja.getSteuerveranlagungErhalten());
-		gs.setSteuererklaerungAusgefuellt(ja.getSteuererklaerungAusgefuellt());
 		gs.setFamilienzulage(ja.getFamilienzulage());
 		gs.setErsatzeinkommen(ja.getErsatzeinkommen());
 		gs.setErhalteneAlimente(ja.getErhalteneAlimente());
@@ -306,12 +304,6 @@ public final class FreigabeCopyUtil {
 		gs.setEinkommensverschlechterung(ja.getEinkommensverschlechterung());
 		gs.setEkvFuerBasisJahrPlus1(ja.getEkvFuerBasisJahrPlus1());
 		gs.setEkvFuerBasisJahrPlus2(ja.getEkvFuerBasisJahrPlus2());
-		gs.setGemeinsameSteuererklaerung_BjP1(ja.getGemeinsameSteuererklaerung_BjP1());
-		gs.setGemeinsameSteuererklaerung_BjP2(ja.getGemeinsameSteuererklaerung_BjP2());
-		gs.setGrundFuerBasisJahrPlus1(ja.getGrundFuerBasisJahrPlus1());
-		gs.setGrundFuerBasisJahrPlus2(ja.getGrundFuerBasisJahrPlus2());
-		gs.setStichtagFuerBasisJahrPlus1(ja.getStichtagFuerBasisJahrPlus1());
-		gs.setStichtagFuerBasisJahrPlus2(ja.getStichtagFuerBasisJahrPlus2());
 	}
 
 	private static void copyEinkommensverschlechterungContainer(@Nullable EinkommensverschlechterungContainer container) {
@@ -371,6 +363,8 @@ public final class FreigabeCopyUtil {
 
 	private static void copyFinanzielleSituation(@Nonnull FinanzielleSituation gs, @Nonnull FinanzielleSituation ja) {
 		copyAbstractFinanzielleSituation(gs, ja);
+		gs.setSteuerveranlagungErhalten(ja.getSteuerveranlagungErhalten());
+		gs.setSteuererklaerungAusgefuellt(ja.getSteuererklaerungAusgefuellt());
 		gs.setNettolohn(ja.getNettolohn());
 		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setGeschaeftsgewinnBasisjahrMinus2(ja.getGeschaeftsgewinnBasisjahrMinus2());

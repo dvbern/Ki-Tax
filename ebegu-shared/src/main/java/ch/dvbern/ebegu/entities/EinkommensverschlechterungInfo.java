@@ -15,18 +15,14 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.hibernate.envers.Audited;
 
@@ -56,32 +52,6 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private Boolean ekvFuerBasisJahrPlus2;
 
-	@Nullable
-	@Column(nullable = true)
-	private Boolean gemeinsameSteuererklaerung_BjP1;
-
-	@Nullable
-	@Column(nullable = true)
-	private Boolean gemeinsameSteuererklaerung_BjP2;
-
-	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
-	@Nullable
-	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String grundFuerBasisJahrPlus1;
-
-	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
-	@Nullable
-	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
-	private String grundFuerBasisJahrPlus2;
-
-	@Nullable
-	@Column(nullable = true)
-	private LocalDate stichtagFuerBasisJahrPlus1; //Ereignisdatum
-
-	@Nullable
-	@Column(nullable = true)
-	private LocalDate stichtagFuerBasisJahrPlus2;
-
 	@NotNull
 	@Column(nullable = false)
 	private Boolean ekvBasisJahrPlus1Annulliert = false;
@@ -98,12 +68,6 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 			this.einkommensverschlechterung = other.getEinkommensverschlechterung();
 			this.ekvFuerBasisJahrPlus1 = other.getEkvFuerBasisJahrPlus1();
 			this.ekvFuerBasisJahrPlus2 = other.getEkvFuerBasisJahrPlus2();
-			this.gemeinsameSteuererklaerung_BjP1 = other.getGemeinsameSteuererklaerung_BjP1();
-			this.gemeinsameSteuererklaerung_BjP2 = other.getGemeinsameSteuererklaerung_BjP2();
-			this.grundFuerBasisJahrPlus1 = other.getGrundFuerBasisJahrPlus1();
-			this.grundFuerBasisJahrPlus2 = other.getGrundFuerBasisJahrPlus2();
-			this.stichtagFuerBasisJahrPlus1 = other.getStichtagFuerBasisJahrPlus1();
-			this.stichtagFuerBasisJahrPlus2 = other.getStichtagFuerBasisJahrPlus2();
 		}
 	}
 
@@ -131,60 +95,6 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 		this.ekvFuerBasisJahrPlus2 = ekvFuerBasisJahrPlus2;
 	}
 
-	@Nullable
-	public String getGrundFuerBasisJahrPlus1() {
-		return grundFuerBasisJahrPlus1;
-	}
-
-	public void setGrundFuerBasisJahrPlus1(@Nullable final String grundFuerBasisJahrPlus1) {
-		this.grundFuerBasisJahrPlus1 = grundFuerBasisJahrPlus1;
-	}
-
-	@Nullable
-	public String getGrundFuerBasisJahrPlus2() {
-		return grundFuerBasisJahrPlus2;
-	}
-
-	public void setGrundFuerBasisJahrPlus2(@Nullable final String grundFuerBasisJahrPlus2) {
-		this.grundFuerBasisJahrPlus2 = grundFuerBasisJahrPlus2;
-	}
-
-	@Nullable
-	public LocalDate getStichtagFuerBasisJahrPlus1() {
-		return stichtagFuerBasisJahrPlus1;
-	}
-
-	public void setStichtagFuerBasisJahrPlus1(@Nullable final LocalDate stichtagFuerBasisJahrPlus1) {
-		this.stichtagFuerBasisJahrPlus1 = stichtagFuerBasisJahrPlus1;
-	}
-
-	@Nullable
-	public LocalDate getStichtagFuerBasisJahrPlus2() {
-		return stichtagFuerBasisJahrPlus2;
-	}
-
-	public void setStichtagFuerBasisJahrPlus2(@Nullable final LocalDate stichtagFuerBasisJahrPlus2) {
-		this.stichtagFuerBasisJahrPlus2 = stichtagFuerBasisJahrPlus2;
-	}
-
-	@Nullable
-	public Boolean getGemeinsameSteuererklaerung_BjP1() {
-		return gemeinsameSteuererklaerung_BjP1;
-	}
-
-	public void setGemeinsameSteuererklaerung_BjP1(@Nullable Boolean gemeinsameSteuererklaerung_BjP1) {
-		this.gemeinsameSteuererklaerung_BjP1 = gemeinsameSteuererklaerung_BjP1;
-	}
-
-	@Nullable
-	public Boolean getGemeinsameSteuererklaerung_BjP2() {
-		return gemeinsameSteuererklaerung_BjP2;
-	}
-
-	public void setGemeinsameSteuererklaerung_BjP2(@Nullable Boolean gemeinsameSteuererklaerung_BjP2) {
-		this.gemeinsameSteuererklaerung_BjP2 = gemeinsameSteuererklaerung_BjP2;
-	}
-
 	public Boolean getEkvBasisJahrPlus1Annulliert() {
 		return ekvBasisJahrPlus1Annulliert;
 	}
@@ -210,12 +120,6 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 			target.setEinkommensverschlechterung(this.getEinkommensverschlechterung());
 			target.setEkvFuerBasisJahrPlus1(this.getEkvFuerBasisJahrPlus1());
 			target.setEkvFuerBasisJahrPlus2(this.getEkvFuerBasisJahrPlus2());
-			target.setGemeinsameSteuererklaerung_BjP1(this.getGemeinsameSteuererklaerung_BjP1());
-			target.setGemeinsameSteuererklaerung_BjP2(this.getGemeinsameSteuererklaerung_BjP2());
-			target.setGrundFuerBasisJahrPlus1(this.getGrundFuerBasisJahrPlus1());
-			target.setGrundFuerBasisJahrPlus2(this.getGrundFuerBasisJahrPlus2());
-			target.setStichtagFuerBasisJahrPlus1(this.getStichtagFuerBasisJahrPlus1());
-			target.setStichtagFuerBasisJahrPlus2(this.getStichtagFuerBasisJahrPlus2());
 			target.setEkvBasisJahrPlus1Annulliert(this.getEkvBasisJahrPlus1Annulliert());
 			target.setEkvBasisJahrPlus2Annulliert(this.getEkvBasisJahrPlus2Annulliert());
 			break;
@@ -253,25 +157,13 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 
 	private boolean isSameBasisJahrPlus1(EinkommensverschlechterungInfo otherEKVInfo) {
 		// if BasisJahrPlus1 is not set (ekvFuerBasisJahrPlus1==false) there is no need to compare the rest
-		//noinspection SimplifiableIfStatement -> for clarity sake
-		if (Objects.equals(getEkvFuerBasisJahrPlus1(), otherEKVInfo.getEkvFuerBasisJahrPlus1())
-			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus1())) {
-			return true;
-		}
-		return EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung_BjP1(), otherEKVInfo.getGemeinsameSteuererklaerung_BjP1()) &&
-			Objects.equals(getGrundFuerBasisJahrPlus1(), otherEKVInfo.getGrundFuerBasisJahrPlus1()) &&
-			Objects.equals(getStichtagFuerBasisJahrPlus1(), otherEKVInfo.getStichtagFuerBasisJahrPlus1());
+		return Objects.equals(getEkvFuerBasisJahrPlus1(), otherEKVInfo.getEkvFuerBasisJahrPlus1())
+			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus1());
 	}
 
 	private boolean isSameBasisJahrPlus2(EinkommensverschlechterungInfo otherEKVInfo) {
 		// if BasisJahrPlus2 is not set (ekvFuerBasisJahrPlus2==false) there is no need to compare the rest
-		//noinspection SimplifiableIfStatement -> for clarity sake
-		if (Objects.equals(getEkvFuerBasisJahrPlus2(), otherEKVInfo.getEkvFuerBasisJahrPlus2())
-			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus2())) {
-			return true;
-		}
-		return EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung_BjP2(), otherEKVInfo.getGemeinsameSteuererklaerung_BjP2()) &&
-			Objects.equals(getGrundFuerBasisJahrPlus2(), otherEKVInfo.getGrundFuerBasisJahrPlus2()) &&
-			Objects.equals(getStichtagFuerBasisJahrPlus2(), otherEKVInfo.getStichtagFuerBasisJahrPlus2());
+		return Objects.equals(getEkvFuerBasisJahrPlus2(), otherEKVInfo.getEkvFuerBasisJahrPlus2())
+			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus2());
 	}
 }

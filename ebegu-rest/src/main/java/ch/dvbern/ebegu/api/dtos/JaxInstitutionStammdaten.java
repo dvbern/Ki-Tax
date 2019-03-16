@@ -67,7 +67,7 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 	private boolean alterskategorieKindergarten;
 	private boolean alterskategorieSchule;
 	private boolean subventioniertePlaetze;
-	private BigDecimal anzahlPlaetze;
+	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
 	@Nullable
 	private BigDecimal anzahlPlaetzeFirmen;
 
