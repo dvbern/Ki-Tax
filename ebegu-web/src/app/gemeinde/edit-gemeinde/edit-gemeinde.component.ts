@@ -76,7 +76,7 @@ export class EditGemeindeComponent implements OnInit {
                     stammdaten.beschwerdeAdresse = new TSAdresse();
                 }
 
-                if (stammdaten.standardRechtsmittelbelehrung === false && !stammdaten.rechtsmittelbelehrung) {
+                if (!stammdaten.rechtsmittelbelehrung) {
                     stammdaten.rechtsmittelbelehrung = new TSTextRessource();
                 }
 
@@ -113,6 +113,11 @@ export class EditGemeindeComponent implements OnInit {
         if (this.keineBeschwerdeAdresse) {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
+        }
+
+        if (stammdaten.standardRechtsmittelbelehrung) {
+            // reset custom Rechtsmittelbelehrung if checkbox not checked
+            stammdaten.rechtsmittelbelehrung = undefined;
         }
 
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {

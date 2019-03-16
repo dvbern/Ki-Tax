@@ -229,37 +229,48 @@
                                              required>
                                 <mat-radio-button [value]="true">{{'STANDARD_TEXT'|translate}}</mat-radio-button>
                                 &nbsp;
-                                <mat-radio-button [value]="false">{{'BENUTZERDEFINIERTER_TEXT'|translate}}</mat-radio-button>
+                                <mat-radio-button [value]="false">{{'BENUTZERDEFINIERTER_TEXT'|translate}}
+                                </mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="row" *ngIf="!stammdaten.standardRechtsmittelbelehrung">
                             <div class="col-sm-12">
                                 <div class="form-group" *ngIf="stammdaten.korrespondenzspracheDe">
-                                    <div class="form-group" id="rechtsmittelbelehrung-deutsch">
-										<textarea md-no-autogrow
-												  class="form-control"
-												  rows="6"
-												  maxlength="4000"
-												  id="rechtsmittelbelehrung-deutsch-textarea"
-												  name="rechtsmittelbelehrung-deutsch-textarea"
-												  placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_DE'|translate}}"
-												  [(ngModel)]="stammdaten.rechtsmittelbelehrung.deutsch.text">
-										</textarea>
 
-											</div>
-										</div>
-										<div class="form-group" *ngIf="stammdaten.korrespondenzspracheFr">
-											<div class="form-group" id="rechtsmittelbelehrung-franzoesisch">
-										<textarea md-no-autogrow
-												  class="form-control"
-												  rows="6"
-												  maxlength="4000"
-												  id="rechtsmittelbelehrung-franzoesisch-textarea"
-												  name="rechtsmittelbelehrung-franzoesisch-textarea"
-												  placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_FR'|translate}}"
-												  [(ngModel)]="stammdaten.rechtsmittelbelehrung.franzoesisch.text">
+                                    <label class="required" translate for="rechtsmittelbelehrung_deutsch_textarea">RECHTSMITTELBELEHRUNG_TEXT_DE</label>
+
+                                    <textarea md-no-autogrow
+                                              class="form-control"
+                                              rows="6"
+                                              required
+                                              maxlength="4000"
+                                              id="rechtsmittelbelehrung_deutsch_textarea"
+                                              name="rechtsmittelbelehrung_deutsch_textarea"
+                                              placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_DE'|translate}}"
+                                              [(ngModel)]="stammdaten.rechtsmittelbelehrung.textDeutsch">
 										</textarea>
-                                    </div>
+                                    <dv-error-messages [errorObject]="form.controls.rechtsmittelbelehrung_deutsch_textarea?.errors"
+                                                       inputId="rechtsmittelbelehrung_deutsch_textarea"></dv-error-messages>
+
+                                </div>
+                                <div class="form-group"
+                                     id="rechtsmittelbelehrung-franzoesisch"
+                                     *ngIf="stammdaten.korrespondenzspracheFr">
+
+                                    <label class="required" translate for="rechtsmittelbelehrung_franzoesisch_textarea">RECHTSMITTELBELEHRUNG_TEXT_FR</label>
+
+                                    <textarea md-no-autogrow
+                                              class="form-control"
+                                              rows="6"
+                                              required
+                                              maxlength="4000"
+                                              id="rechtsmittelbelehrung_franzoesisch_textarea"
+                                              name="rechtsmittelbelehrung_franzoesisch_textarea"
+                                              placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_FR'|translate}}"
+                                              [(ngModel)]="stammdaten.rechtsmittelbelehrung.textFranzoesisch">
+										</textarea>
+                                    <dv-error-messages [errorObject]="form.controls.rechtsmittelbelehrung_franzoesisch_textarea?.errors"
+                                                       inputId="rechtsmittelbelehrung_franzoesisch_textarea"></dv-error-messages>
                                 </div>
                             </div>
                         </div>
