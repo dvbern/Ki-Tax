@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -628,9 +629,11 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	private void updateAllStatusForFamiliensituation(List<WizardStep> wizardSteps, Familiensituation oldEntity, Familiensituation newEntity) {
 		for (WizardStep wizardStep : wizardSteps) {
 			if (WizardStepStatus.UNBESUCHT != wizardStep.getWizardStepStatus()) { // vermeide, dass der Status eines unbesuchten Steps geaendert wird
+				LocalDate bis = wizardStep.getGesuch().getGesuchsperiode().getGueltigkeit().getGueltigBis();
 				if (WizardStepName.FAMILIENSITUATION == wizardStep.getWizardStepName()) {
 					setWizardStepOkOrMutiert(wizardStep);
-				} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity) && wizardStep.getGesuch().getGesuchsteller2() == null) {
+				} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)
+					&& wizardStep.getGesuch().getGesuchsteller2() == null) {
 
 					if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
 						wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
@@ -646,7 +649,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 
 					}
 					//kann man effektiv sagen dass bei nur einem GS niemals Rote Schritte FinanzielleSituation und EVK gibt
-				} else if (!newEntity.hasSecondGesuchsteller() && wizardStep.getGesuch().getGesuchsteller1() != null) { // nur 1 GS
+				} else if (!newEntity.hasSecondGesuchsteller(bis)
+					&& wizardStep.getGesuch().getGesuchsteller1() != null) { // nur 1 GS
 					if (WizardStepName.GESUCHSTELLER == wizardStep.getWizardStepName()) {
 						if (wizardStep.getGesuch().isMutation()) {
 							setWizardStepOkOrMutiert(wizardStep);

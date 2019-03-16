@@ -236,30 +236,29 @@
                             <div class="col-sm-12">
                                 <div class="form-group" *ngIf="stammdaten.korrespondenzspracheDe">
                                     <div class="form-group" id="rechtsmittelbelehrung-deutsch">
-                                <textarea md-no-autogrow
-                                          class="form-control"
-                                          rows="6"
-                                          maxlength="4000"
-                                          id="rechtsmittelbelehrung-deutsch-textarea"
-                                          name="rechtsmittelbelehrung-deutsch-textarea"
-                                          placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_DE'|translate}}"
-                                          [(ngModel)]="stammdaten.rechtsmittelbelehrung.deutsch.text">
-								</textarea>
+										<textarea md-no-autogrow
+												  class="form-control"
+												  rows="6"
+												  maxlength="4000"
+												  id="rechtsmittelbelehrung-deutsch-textarea"
+												  name="rechtsmittelbelehrung-deutsch-textarea"
+												  placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_DE'|translate}}"
+												  [(ngModel)]="stammdaten.rechtsmittelbelehrung.deutsch.text">
+										</textarea>
 
-                                    </div>
-                                </div>
-                                <div class="form-group" *ngIf="stammdaten.korrespondenzspracheFr">
-                                    <div class="form-group" id="rechtsmittelbelehrung-franzoesisch">
-                                <textarea md-no-autogrow
-                                          class="form-control"
-                                          rows="6"
-                                          maxlength="4000"
-                                          id="rechtsmittelbelehrung-franzoesisch-textarea"
-                                          name="rechtsmittelbelehrung-franzoesisch-textarea"
-                                          placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_FR'|translate}}"
-                                          [(ngModel)]="stammdaten.rechtsmittelbelehrung.franzoesisch.text">
-								</textarea>
-
+											</div>
+										</div>
+										<div class="form-group" *ngIf="stammdaten.korrespondenzspracheFr">
+											<div class="form-group" id="rechtsmittelbelehrung-franzoesisch">
+										<textarea md-no-autogrow
+												  class="form-control"
+												  rows="6"
+												  maxlength="4000"
+												  id="rechtsmittelbelehrung-franzoesisch-textarea"
+												  name="rechtsmittelbelehrung-franzoesisch-textarea"
+												  placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_FR'|translate}}"
+												  [(ngModel)]="stammdaten.rechtsmittelbelehrung.franzoesisch.text">
+										</textarea>
                                     </div>
                                 </div>
                             </div>

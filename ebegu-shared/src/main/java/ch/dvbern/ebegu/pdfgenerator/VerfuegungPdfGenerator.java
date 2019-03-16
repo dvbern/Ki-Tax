@@ -65,6 +65,8 @@ import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED
 public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private static final String NAME_KIND = "PdfGeneration_NameKind";
+	private static final String BEMERKUNG = "PdfGeneration_Bemerkung";
+	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
 	private static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String VERFUEGUNG_CONTENT = "PdfGeneration_Verfuegung_Content";
@@ -221,7 +223,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private PdfPTable createIntroAndInfoKontingentierung() {
-		float[] columnWidths = { 1, 1 };
+		float[] columnWidths = { 30,22 };
 		PdfPTable table = new PdfPTable(columnWidths);
 		PdfUtil.setTableDefaultStyles(table);
 		table.addCell(createIntro());
@@ -241,12 +243,17 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			? UNKNOWN_INSTITUTION_NAME
 			: betreuung.getInstitutionStammdaten().getInstitution().getName();
 
-		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
-		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
-		introBasisjahr.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
-		introBasisjahr.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
-		introBasisjahr.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
-		return PdfUtil.creatreIntroTable(introBasisjahr, sprache);
+		List<TableRowLabelValue> intro = new ArrayList<>();
+		intro.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
+		intro.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
+		if (betreuung.getVorgaengerVerfuegung() != null) {
+			Objects.requireNonNull(betreuung.getVorgaengerVerfuegung().getTimestampErstellt());
+			intro.add(new TableRowLabelValue(BEMERKUNG, translate(ERSETZT_VERFUEGUNG,
+				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
+		}
+		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
+		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
+		return PdfUtil.creatreIntroTable(intro, sprache);
 	}
 
 	@Nonnull

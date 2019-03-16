@@ -641,6 +641,7 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setFamilienstatus(familiensituationJAXP.getFamilienstatus());
 		familiensituation.setGemeinsameSteuererklaerung(familiensituationJAXP.getGemeinsameSteuererklaerung());
 		familiensituation.setAenderungPer(familiensituationJAXP.getAenderungPer());
+		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
 		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
 
@@ -653,6 +654,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setFamilienstatus(persistedFamiliensituation.getFamilienstatus());
 		jaxFamiliensituation.setGemeinsameSteuererklaerung(persistedFamiliensituation.getGemeinsameSteuererklaerung());
 		jaxFamiliensituation.setAenderungPer(persistedFamiliensituation.getAenderungPer());
+		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
 		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
 
@@ -1336,6 +1338,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setBetreuungsangebotTyp(persistedInstStammdaten.getBetreuungsangebotTyp());
 		jaxInstStammdaten.setMail(persistedInstStammdaten.getMail());
 		jaxInstStammdaten.setTelefon(persistedInstStammdaten.getTelefon());
+		jaxInstStammdaten.setWebseite(persistedInstStammdaten.getWebseite());
+		jaxInstStammdaten.setOeffnungszeiten(persistedInstStammdaten.getOeffnungszeiten());
 		if (persistedInstStammdaten.getInstitutionStammdatenTagesschule() != null) {
 			jaxInstStammdaten.setInstitutionStammdatenTagesschule(institutionStammdatenTagesschuleToJAX(
 				persistedInstStammdaten
@@ -1349,6 +1353,13 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setInstitution(institutionToJAX(persistedInstStammdaten.getInstitution()));
 		jaxInstStammdaten.setAdresse(adresseToJAX(persistedInstStammdaten.getAdresse()));
 		jaxInstStammdaten.setKontoinhaber(persistedInstStammdaten.getKontoinhaber());
+		jaxInstStammdaten.setAlterskategorieBaby(persistedInstStammdaten.getAlterskategorieBaby());
+		jaxInstStammdaten.setAlterskategorieVorschule(persistedInstStammdaten.getAlterskategorieVorschule());
+		jaxInstStammdaten.setAlterskategorieKindergarten(persistedInstStammdaten.getAlterskategorieKindergarten());
+		jaxInstStammdaten.setAlterskategorieSchule(persistedInstStammdaten.getAlterskategorieSchule());
+		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
+		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
+		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
@@ -1370,6 +1381,8 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		institutionStammdaten.setMail(institutionStammdatenJAXP.getMail());
 		institutionStammdaten.setTelefon(institutionStammdatenJAXP.getTelefon());
+		institutionStammdaten.setWebseite(institutionStammdatenJAXP.getWebseite());
+		institutionStammdaten.setOeffnungszeiten(institutionStammdatenJAXP.getOeffnungszeiten());
 		institutionStammdaten.setBetreuungsangebotTyp(institutionStammdatenJAXP.getBetreuungsangebotTyp());
 		if (institutionStammdatenJAXP.getInstitutionStammdatenTagesschule() != null) {
 			// wenn InstitutionStammdatenTagesschule vorhanden ist es eine Tagesschule und Objekt muss, wenn noch
@@ -1396,6 +1409,13 @@ public class JaxBConverter extends AbstractConverter {
 			institutionStammdaten.setInstitutionStammdatenFerieninsel(convertedIsFI);
 		}
 		institutionStammdaten.setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
+		institutionStammdaten.setAlterskategorieBaby(institutionStammdatenJAXP.isAlterskategorieBaby());
+		institutionStammdaten.setAlterskategorieVorschule(institutionStammdatenJAXP.isAlterskategorieVorschule());
+		institutionStammdaten.setAlterskategorieKindergarten(institutionStammdatenJAXP.isAlterskategorieKindergarten());
+		institutionStammdaten.setAlterskategorieSchule(institutionStammdatenJAXP.isAlterskategorieSchule());
+		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
+		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
+		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
 
 		Adresse convertedAdresse = null;
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {

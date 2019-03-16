@@ -45,7 +45,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
-import static ch.dvbern.ebegu.util.Constants.ONE_MEG;
+import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 
 @Audited
 @Entity
@@ -102,7 +102,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 	private KorrespondenzSpracheTyp korrespondenzsprache = KorrespondenzSpracheTyp.DE;
 
 	@Nullable
-	@Column(nullable = true, length = ONE_MEG) // 1 megabytes
+	@Column(nullable = true, length = ONE_MB) // 1 megabytes
 	@Lob
 	private byte[] logoContent;
 

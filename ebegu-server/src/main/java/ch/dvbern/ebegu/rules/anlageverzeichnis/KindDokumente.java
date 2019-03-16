@@ -66,7 +66,8 @@ public class KindDokumente extends AbstractDokumente<Kind, Object> {
 			null,
 			DokumentGrundPersonType.KIND,
 			kindContainer.getKindNummer(),
-			DokumentGrundTyp.KINDER);
+			DokumentGrundTyp.KINDER,
+			null);
 	}
 
 	@SuppressWarnings("ParameterNameDiffersFromOverriddenParameter")

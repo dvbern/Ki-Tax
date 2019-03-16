@@ -534,6 +534,7 @@ export default class EbeguRestUtil {
             restFamiliensituation.familienstatus = familiensituation.familienstatus;
             restFamiliensituation.gemeinsameSteuererklaerung = familiensituation.gemeinsameSteuererklaerung;
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
+            restFamiliensituation.startKonkubinat = DateUtil.momentToLocalDate(familiensituation.startKonkubinat);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
             restFamiliensituation.verguenstigungGewuenscht = familiensituation.verguenstigungGewuenscht;
             return restFamiliensituation;
@@ -605,6 +606,7 @@ export default class EbeguRestUtil {
             familiensituation.familienstatus = familiensituationFromServer.familienstatus;
             familiensituation.gemeinsameSteuererklaerung = familiensituationFromServer.gemeinsameSteuererklaerung;
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
+            familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
             familiensituation.verguenstigungGewuenscht = familiensituationFromServer.verguenstigungGewuenscht;
             return familiensituation;
@@ -1113,8 +1115,17 @@ export default class EbeguRestUtil {
             restInstitutionStammdaten.adresse = this.adresseToRestObject({}, institutionStammdaten.adresse);
             restInstitutionStammdaten.mail = institutionStammdaten.mail;
             restInstitutionStammdaten.telefon = institutionStammdaten.telefon;
+            restInstitutionStammdaten.webseite = institutionStammdaten.webseite;
+            restInstitutionStammdaten.oeffnungszeiten = institutionStammdaten.oeffnungszeiten;
             restInstitutionStammdaten.iban = institutionStammdaten.iban;
             restInstitutionStammdaten.kontoinhaber = institutionStammdaten.kontoinhaber;
+            restInstitutionStammdaten.alterskategorieBaby = institutionStammdaten.alterskategorieBaby;
+            restInstitutionStammdaten.alterskategorieVorschule = institutionStammdaten.alterskategorieVorschule;
+            restInstitutionStammdaten.alterskategorieKindergarten = institutionStammdaten.alterskategorieKindergarten;
+            restInstitutionStammdaten.alterskategorieSchule = institutionStammdaten.alterskategorieSchule;
+            restInstitutionStammdaten.subventioniertePlaetze = institutionStammdaten.subventioniertePlaetze;
+            restInstitutionStammdaten.anzahlPlaetze = institutionStammdaten.anzahlPlaetze;
+            restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
             restInstitutionStammdaten.adresseKontoinhaber =
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
             restInstitutionStammdaten.institutionStammdatenTagesschule =
@@ -1143,8 +1154,17 @@ export default class EbeguRestUtil {
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresse);
             institutionStammdatenTS.mail = institutionStammdatenFromServer.mail;
             institutionStammdatenTS.telefon = institutionStammdatenFromServer.telefon;
+            institutionStammdatenTS.webseite = institutionStammdatenFromServer.webseite;
+            institutionStammdatenTS.oeffnungszeiten = institutionStammdatenFromServer.oeffnungszeiten;
             institutionStammdatenTS.iban = institutionStammdatenFromServer.iban;
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
+            institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
+            institutionStammdatenTS.alterskategorieVorschule = institutionStammdatenFromServer.alterskategorieVorschule;
+            institutionStammdatenTS.alterskategorieKindergarten = institutionStammdatenFromServer.alterskategorieKindergarten;
+            institutionStammdatenTS.alterskategorieSchule = institutionStammdatenFromServer.alterskategorieSchule;
+            institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
+            institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
+            institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
             institutionStammdatenTS.adresseKontoinhaber =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
             institutionStammdatenTS.institutionStammdatenTagesschule =

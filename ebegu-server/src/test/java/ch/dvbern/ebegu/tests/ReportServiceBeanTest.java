@@ -59,7 +59,7 @@ import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings({ "InstanceMethodNamingConvention", "MethodParameterNamingConvention", "InstanceVariableNamingConvention" })
 @RunWith(Arquillian.class)
-@UsingDataSet("datasets/reportTestDataFixed.xml")
+@UsingDataSet("datasets/reportTestData.xml")
 @Transactional(TransactionMode.DISABLED)
 public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 
@@ -210,26 +210,49 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
-	public void generateExcelReportGesuchStichtag() throws Exception {
+	public void generateExcelReportGesuchStichtagDE() throws Exception {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(
 			LocalDate.now(),
 			null,
-			Constants.DEFAULT_LOCALE);
+			Constants.DEUTSCH_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
-		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag.xlsx");
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag_DE.xlsx");
 	}
 
 	@Test
-	public void generateExcelReportGesuchZeitraum() throws Exception {
+	public void generateExcelReportGesuchStichtagFR() throws Exception {
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchStichtag(
+			LocalDate.now(),
+			null,
+			Constants.FRENCH_LOCALE);
+
+		assertNotNull(uploadFileInfo.getBytes());
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchStichtag_FR.xlsx");
+	}
+
+	@Test
+	public void generateExcelReportGesuchZeitraumDE() throws Exception {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchZeitraum(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
 			null,
-			Constants.DEFAULT_LOCALE);
+			Constants.DEUTSCH_LOCALE);
 
 		assertNotNull(uploadFileInfo.getBytes());
-		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum.xlsx");
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum_DE.xlsx");
+	}
+
+	@Test
+	public void generateExcelReportGesuchZeitraumFR() throws Exception {
+		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchZeitraum(
+			LocalDate.of(2016, Month.JANUARY, 1),
+			LocalDate.of(2017, Month.DECEMBER, 31),
+			null,
+			Constants.FRENCH_LOCALE);
+
+		assertNotNull(uploadFileInfo.getBytes());
+		unitTestTempfolder.writeToTempDir(uploadFileInfo.getBytes(), "ExcelReportGesuchZeitraum_FR.xlsx");
 	}
 
 	@Test
