@@ -15,10 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSSprache} from './enums/TSSprache';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSTextRessource extends TSAbstractMutableEntity {
-    public sprache: TSSprache;
-    public text: string;
+    public textDeutsch: string;
+    public textFranzoesisch: string;
 }

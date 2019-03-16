@@ -99,7 +99,6 @@ import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
 import TSTextRessource from '../models/TSTextRessource';
-import TSTextRessourceContainer from '../models/TSTextRessourceContainer';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import TSUnbezahlterUrlaub from '../models/TSUnbezahlterUrlaub';
 import TSVerfuegung from '../models/TSVerfuegung';
@@ -814,7 +813,7 @@ export default class EbeguRestUtil {
 
             if (stammdaten.rechtsmittelbelehrung) {
                 restStammdaten.rechtsmittelbelehrung =
-                    this.textRessourceContainerToRestObject({}, stammdaten.rechtsmittelbelehrung);
+                    this.textRessourceToRestObject({}, stammdaten.rechtsmittelbelehrung);
             }
             return restStammdaten;
         }
@@ -850,8 +849,8 @@ export default class EbeguRestUtil {
             stammdatenTS.standardRechtsmittelbelehrung = stammdatenFromServer.standardRechtsmittelbelehrung;
             if (stammdatenFromServer.rechtsmittelbelehrung) {
                 stammdatenTS.rechtsmittelbelehrung =
-                    this.parseTextRessourceContainer(
-                        new TSTextRessourceContainer(),
+                    this.parseTextRessource(
+                        new TSTextRessource(),
                         stammdatenFromServer.rechtsmittelbelehrung,
                     );
             }
@@ -3188,64 +3187,21 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public textRessourceContainerToRestObject(
-        restTextRessourceContainer: any,
-        textRessourceContainer: TSTextRessourceContainer,
-    ): TSTextRessourceContainer {
-        if (textRessourceContainer) {
-            this.abstractEntityToRestObject(restTextRessourceContainer, textRessourceContainer);
-            if (textRessourceContainer.deutsch) {
-                restTextRessourceContainer.deutsch =
-                    this.textRessourceToRestObject({}, textRessourceContainer.deutsch);
-            }
-            if (textRessourceContainer.franzoesisch) {
-                restTextRessourceContainer.franzoesisch =
-                    this.textRessourceToRestObject({}, textRessourceContainer.franzoesisch);
-            }
-        }
-
-        return restTextRessourceContainer;
-    }
-
     public textRessourceToRestObject(restTextRessource: any, textRessource: TSTextRessource): TSTextRessource {
         if (textRessource) {
             this.abstractEntityToRestObject(restTextRessource, textRessource);
-            restTextRessource.sprache = textRessource.sprache;
-            restTextRessource.text = textRessource.text;
+            restTextRessource.textDeutsch = textRessource.textDeutsch;
+            restTextRessource.textFranzoesisch = textRessource.textFranzoesisch;
         }
 
         return restTextRessource;
     }
 
-    public parseTextRessourceContainer(
-        containerTS: TSTextRessourceContainer,
-        containerFromServer: any,
-    ): TSTextRessourceContainer {
-        if (containerFromServer) {
-            this.parseAbstractMutableEntity(containerTS, containerFromServer);
-
-            if (containerFromServer.deutsch) {
-                containerTS.deutsch =
-                    this.parseTextRessource(containerTS.deutsch || new TSTextRessource(),
-                        containerFromServer.deutsch);
-            }
-
-            if (containerFromServer.franzoesisch) {
-                containerTS.franzoesisch =
-                    this.parseTextRessource(containerTS.franzoesisch || new TSTextRessource(),
-                        containerFromServer.franzoesisch);
-            }
-
-            return containerTS;
-        }
-        return undefined;
-    }
-
     public parseTextRessource(textRessourceTS: TSTextRessource, textRessourceFromServer: any): TSTextRessource {
         if (textRessourceFromServer) {
             this.parseAbstractMutableEntity(textRessourceTS, textRessourceFromServer);
-            textRessourceTS.sprache = textRessourceFromServer.sprache;
-            textRessourceTS.text = textRessourceFromServer.text;
+            textRessourceTS.textDeutsch = textRessourceFromServer.textDeutsch;
+            textRessourceTS.textFranzoesisch = textRessourceFromServer.textFranzoesisch;
         }
 
         return textRessourceTS;

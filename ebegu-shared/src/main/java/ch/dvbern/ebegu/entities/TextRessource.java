@@ -17,6 +17,9 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Locale;
+
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -33,29 +36,41 @@ public class TextRessource extends AbstractMutableEntity{
 
 	public static final long serialVersionUID = -3510401542520028556L;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
 	@NotNull
-	private Sprache sprache;
+	private String textDeutsch;
 
 	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
 	@NotNull
-	private String text;
+	private String textFranzoesisch;
 
-	public Sprache getSprache() {
-		return sprache;
+	public String getTextDeutsch() {
+		return textDeutsch;
 	}
 
-	public void setSprache(Sprache sprache) {
-		this.sprache = sprache;
+	public void setTextDeutsch(String textDeutsch) {
+		this.textDeutsch = textDeutsch;
 	}
 
-	public String getText() {
-		return text;
+	public String getTextFranzoesisch() {
+		return textFranzoesisch;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setTextFranzoesisch(String textFranzoesisch) {
+		this.textFranzoesisch = textFranzoesisch;
+	}
+
+	@Nullable
+	public String findTextByLocale(Locale locale) {
+		switch (locale.getLanguage()) {
+
+		case "de":
+			return textDeutsch;
+		case "fr":
+			return textFranzoesisch;
+		default:
+			return "";
+		}
 	}
 
 	@Override

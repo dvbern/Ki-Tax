@@ -20,7 +20,7 @@ import TSAdresse from './TSAdresse';
 import TSBenutzer from './TSBenutzer';
 import TSGemeinde from './TSGemeinde';
 import TSGemeindeKonfiguration from './TSGemeindeKonfiguration';
-import TSTextRessourceContainer from './TSTextRessourceContainer';
+import TSTextRessource from './TSTextRessource';
 
 export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public administratoren: string; // read only
@@ -41,7 +41,7 @@ export default class TSGemeindeStammdaten extends TSAbstractEntity {
     public bic: string;
     public iban: string;
     public standardRechtsmittelbelehrung: boolean;
-    public rechtsmittelbelehrung: TSTextRessourceContainer;
+    public rechtsmittelbelehrung: TSTextRessource;
     // ---------- Konfiguration ----------
     public konfigurationsListe: TSGemeindeKonfiguration[];
 }

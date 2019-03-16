@@ -29,7 +29,6 @@ import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSTextRessource from '../../../models/TSTextRessource';
-import TSTextRessourceContainer from '../../../models/TSTextRessourceContainer';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import ErrorService from '../../core/errors/service/ErrorService';
@@ -78,12 +77,7 @@ export class EditGemeindeComponent implements OnInit {
                 }
 
                 if (stammdaten.standardRechtsmittelbelehrung === false && !stammdaten.rechtsmittelbelehrung) {
-                    stammdaten.rechtsmittelbelehrung = new TSTextRessourceContainer();
-
-                    stammdaten.rechtsmittelbelehrung.deutsch = new TSTextRessource();
-                    stammdaten.rechtsmittelbelehrung.deutsch.sprache = TSSprache.DEUTSCH;
-                    stammdaten.rechtsmittelbelehrung.franzoesisch = new TSTextRessource();
-                    stammdaten.rechtsmittelbelehrung.franzoesisch.sprache = TSSprache.FRANZOESISCH;
+                    stammdaten.rechtsmittelbelehrung = new TSTextRessource();
                 }
 
                 return stammdaten;

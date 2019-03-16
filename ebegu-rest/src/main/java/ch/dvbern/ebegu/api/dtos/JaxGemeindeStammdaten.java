@@ -73,7 +73,7 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	@NotNull
 	private Boolean standardRechtsmittelbelehrung;
 	@Nullable
-	private JaxTextRessourceContainer rechtsmittelbelehrung;
+	private JaxTextRessource rechtsmittelbelehrung;
 
 	// ---------- Konfiguration ----------
 	@NotNull
@@ -243,11 +243,11 @@ public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public JaxTextRessourceContainer getRechtsmittelbelehrung() {
+	public JaxTextRessource getRechtsmittelbelehrung() {
 		return rechtsmittelbelehrung;
 	}
 
-	public void setRechtsmittelbelehrung(@Nullable JaxTextRessourceContainer rechtsmittelbelehrung) {
+	public void setRechtsmittelbelehrung(@Nullable JaxTextRessource rechtsmittelbelehrung) {
 		this.rechtsmittelbelehrung = rechtsmittelbelehrung;
 	}
 }
