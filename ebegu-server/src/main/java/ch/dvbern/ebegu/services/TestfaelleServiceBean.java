@@ -903,7 +903,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			mailService.sendWarnungGesuchNichtFreigegeben(gesuch, 10);
 			mailService.sendWarnungFreigabequittungFehlt(gesuch, 10);
 			mailService.sendInfoGesuchGeloescht(gesuch);
-			mailService.sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch, 0);
+			mailService.sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch);
 			mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
 			mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
 			mailService.sendBenutzerEinladung(besitzer, einladung);
