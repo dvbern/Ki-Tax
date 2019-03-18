@@ -205,7 +205,7 @@ public class InstitutionStammdatenResource {
 	 * Sucht in der DB alle aktiven InstitutionStammdaten, deren Gueltigkeit zwischen DatumVon und DatumBis
 	 * der Gesuchsperiode liegt
 	 *
-	 * @param gesuchsperiodeId id der Gesuchsperiode fuer die Stammdaten gesucht werden sollen
+	 * @param gesuchsperiodeJaxId id der Gesuchsperiode fuer die Stammdaten gesucht werden sollen
 	 * @return Liste mit allen InstitutionStammdaten die den Bedingungen folgen
 	 */
 	@ApiOperation(value = "Gibt alle Institutionsstammdaten zurueck, welche am angegebenen Datum existieren und aktiv "

@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 
-	private static final long serialVersionUID = -1893677808323618626L;
+	private static final long serialVersionUID = -1893677808322218626L;
 
 	@Nullable
 	private BetreuungsangebotTyp betreuungsangebotTyp;

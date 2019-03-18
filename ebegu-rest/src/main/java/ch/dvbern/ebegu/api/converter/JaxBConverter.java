@@ -3483,6 +3483,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * Geht durch die ganze Liste von KindContainers durch und gibt ein Set mit den Namen aller Institutionen zurueck.
 	 * Da ein Set zurueckgegeben wird, sind die Daten nie dupliziert.
 	 */
+	@SuppressWarnings("Duplicates")
 	private Set<String> createInstitutionenList(Set<KindContainer> kindContainers) {
 		return kindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
@@ -3492,6 +3493,7 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.toSet());
 	}
 
+	@SuppressWarnings("Duplicates")
 	private Set<String> createInstitutionenList(Collection<JaxKindContainer> jaxKindContainers) {
 		return jaxKindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())

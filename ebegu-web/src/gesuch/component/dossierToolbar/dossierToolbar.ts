@@ -690,7 +690,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private institutionenStammdatenToHtml(): string {
         let html = '';
-        const institutionIds: Array<string> = new Array();
+        const institutionIds: Array<string> = [];
         for (const kc of this.getGesuch().kindContainers) {
             for (const be of kc.betreuungen) {
                 if (!(institutionIds.includes(be.institutionStammdaten.institution.id))) {
