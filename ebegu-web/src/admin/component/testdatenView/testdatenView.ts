@@ -58,6 +58,8 @@ export class TestdatenViewComponent implements OnInit {
     public selectedGemeinde: TSGemeinde;
     public gemeindeList: Array<TSGemeinde>;
 
+    public mailadresse: string;
+
     public devMode: boolean;
 
     public constructor(
@@ -180,6 +182,10 @@ export class TestdatenViewComponent implements OnInit {
             .then(response => {
                 this.createAndOpenOkDialog(response.data);
             });
+    }
+
+    public testAllMails(): IPromise<any> {
+        return this.testFaelleRS.testAllMails(this.mailadresse);
     }
 
     public mutiereFallScheidung(): IPromise<any> {

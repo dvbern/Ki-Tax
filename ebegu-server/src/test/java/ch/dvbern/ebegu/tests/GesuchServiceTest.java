@@ -113,7 +113,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Arquillian Tests fuer die Klasse GesuchService
  */
-@SuppressWarnings("LocalVariableNamingConvention")
+@SuppressWarnings({ "LocalVariableNamingConvention", "JUnit3StyleTestMethodInJUnit4Class" })
 @RunWith(Arquillian.class)
 @UsingDataSet("datasets/mandant-dataset.xml")
 @Transactional(TransactionMode.DISABLED)

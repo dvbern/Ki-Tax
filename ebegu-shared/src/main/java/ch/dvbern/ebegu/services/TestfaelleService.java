@@ -100,4 +100,6 @@ public interface TestfaelleService {
 	Gesuch createAndSaveGesuch(@Nonnull AbstractTestfall fromTestfall, boolean verfuegen, @Nullable Benutzer besitzer);
 
 	void gesuchVerfuegenUndSpeichern(boolean verfuegen, @Nonnull Gesuch gesuch, boolean mutation, boolean ignorierenInZahlungslauf);
+
+	void testAllMails(@Nonnull String mailadresse);
 }
