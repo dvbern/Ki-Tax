@@ -61,7 +61,7 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 		Collection<EinkommensverschlechterungContainer> allEinkommensverschlechterungContainer = einkommensverschlechterungService.getAllEinkommensverschlechterungContainer();
 		Assert.assertEquals(1, allEinkommensverschlechterungContainer.size());
 		EinkommensverschlechterungContainer einkommensverschlechterungContainer = allEinkommensverschlechterungContainer.iterator().next();
-		Assert.assertEquals(0, einkommensverschlechterungContainer.getEkvGSBasisJahrPlus1().getNettolohnJan().compareTo(BigDecimal.ONE));
+		Assert.assertEquals(0, einkommensverschlechterungContainer.getEkvGSBasisJahrPlus1().getNettolohn().compareTo(BigDecimal.ONE));
 	}
 
 	private EinkommensverschlechterungContainer getEinkommensverschlechterungContainer() {
@@ -97,7 +97,7 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 		Collection<EinkommensverschlechterungContainer> allEinkommensverschlechterungContainer = einkommensverschlechterungService.getAllEinkommensverschlechterungContainer();
 		EinkommensverschlechterungContainer einkommensverschlechterungContainer = allEinkommensverschlechterungContainer.iterator().next();
 
-		einkommensverschlechterungContainer.getEkvGSBasisJahrPlus1().setNettolohnJan(BigDecimal.TEN);
+		einkommensverschlechterungContainer.getEkvGSBasisJahrPlus1().setNettolohn(BigDecimal.TEN);
 
 		einkommensverschlechterungService.saveEinkommensverschlechterungContainer(einkommensverschlechterungContainer, null);
 
@@ -106,7 +106,7 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 		if (einkommensverschlechterungContainerUpdated.isPresent()) {
 			final EinkommensverschlechterungContainer container1 = einkommensverschlechterungContainerUpdated.get();
 			Assert.assertNotNull(container1);
-			Assert.assertEquals(0, container1.getEkvGSBasisJahrPlus1().getNettolohnJan().compareTo(BigDecimal.TEN));
+			Assert.assertEquals(0, container1.getEkvGSBasisJahrPlus1().getNettolohn().compareTo(BigDecimal.TEN));
 		} else {
 			Assert.fail("Einkommensverschlechterungsinfo konnte nicht aktualisiert werden");
 		}

@@ -79,7 +79,7 @@ public class Testfall_ASIV_09 extends AbstractASIVTestfall {
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
 		// Einkommensverschlechterug
 		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, false, true);
-		ekvContainer.getEkvJABasisJahrPlus2().setNettolohnJan(MathUtil.DEFAULT.from(50000));
+		ekvContainer.getEkvJABasisJahrPlus2().setNettolohn(MathUtil.DEFAULT.from(50000));
 		gesuchsteller1.setEinkommensverschlechterungContainer(ekvContainer);
 		return erstgesuch;
 	}
@@ -100,7 +100,7 @@ public class Testfall_ASIV_09 extends AbstractASIVTestfall {
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationContainerGS2);
 		// Einkommensverschlechterug
 		EinkommensverschlechterungContainer ekvContainerGS2 = createEinkommensverschlechterungContainer(false, true);
-		ekvContainerGS2.getEkvJABasisJahrPlus2().setNettolohnJan(MathUtil.DEFAULT.from(29000));
+		ekvContainerGS2.getEkvJABasisJahrPlus2().setNettolohn(MathUtil.DEFAULT.from(29000));
 		gesuchsteller2.setEinkommensverschlechterungContainer(ekvContainerGS2);
 		return mutation;
 	}

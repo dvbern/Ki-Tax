@@ -214,8 +214,7 @@
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
                         <dv-loading-button type="submit"
                                            button-click="vm.save()"
-                                           ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()"
-                                           class="dv-navigation-item">
+                                           ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen()">
                             <span class="uppercase" data-translate="VERFUEGEN"></span>
                         </dv-loading-button>
                         <dv-loading-button type="submit"
@@ -223,7 +222,7 @@
                                            ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
                             <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
                         </dv-loading-button>
-                        <div ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
+                        <span class="ie11-fix" ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button type="submit"
@@ -231,18 +230,18 @@
                                                ng-if="!vm.disableAblehnen()">
                                 <span class="uppercase" data-translate="VERFUEGEN_ABLEHNEN"></span>
                             </dv-loading-button>
-                        </div>
-                        <div ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
+                        </span>
+                        <span class="ie11-fix" ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
                             <dv-loading-button type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()">
                                 <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
                             </dv-loading-button>
-                        </div>
-                        <div ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
+                        </span>
+                        <span class="ie11-fix" ng-show="vm.showVerfuegen() && vm.isSameVerfuegungsdaten()">
                             <dv-loading-button type="submit" button-click="vm.save()">
                                 <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
                             </dv-loading-button>
-                        </div>
+                        </span>
                     </span>
                     <span>
                         <dv-navigation container-class="avoid" dv-cancel="vm.cancel()" dv-next="false" dv-sub-step="2">

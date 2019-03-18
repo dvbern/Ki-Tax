@@ -281,6 +281,7 @@ public final class FreigabeCopyUtil {
 	}
 
 	private static void copyAbstractFinanzielleSituation(@Nonnull AbstractFinanzielleSituation gs, @Nonnull AbstractFinanzielleSituation ja) {
+		gs.setNettolohn(ja.getNettolohn());
 		gs.setFamilienzulage(ja.getFamilienzulage());
 		gs.setErsatzeinkommen(ja.getErsatzeinkommen());
 		gs.setErhalteneAlimente(ja.getErhalteneAlimente());
@@ -331,19 +332,6 @@ public final class FreigabeCopyUtil {
 
 	private static void copyEinkommensverschlechterung(@Nonnull Einkommensverschlechterung gs, @Nonnull Einkommensverschlechterung ja) {
 		copyAbstractFinanzielleSituation(gs, ja);
-		gs.setNettolohnJan(ja.getNettolohnJan());
-		gs.setNettolohnFeb(ja.getNettolohnFeb());
-		gs.setNettolohnMrz(ja.getNettolohnMrz());
-		gs.setNettolohnApr(ja.getNettolohnApr());
-		gs.setNettolohnMai(ja.getNettolohnMai());
-		gs.setNettolohnJun(ja.getNettolohnJun());
-		gs.setNettolohnJul(ja.getNettolohnJul());
-		gs.setNettolohnAug(ja.getNettolohnAug());
-		gs.setNettolohnSep(ja.getNettolohnSep());
-		gs.setNettolohnOkt(ja.getNettolohnOkt());
-		gs.setNettolohnNov(ja.getNettolohnNov());
-		gs.setNettolohnDez(ja.getNettolohnDez());
-		gs.setNettolohnZus(ja.getNettolohnZus());
 	}
 
 	private static void copyFinanzielleSituationContainer(@Nullable FinanzielleSituationContainer container) {
@@ -365,7 +353,6 @@ public final class FreigabeCopyUtil {
 		copyAbstractFinanzielleSituation(gs, ja);
 		gs.setSteuerveranlagungErhalten(ja.getSteuerveranlagungErhalten());
 		gs.setSteuererklaerungAusgefuellt(ja.getSteuererklaerungAusgefuellt());
-		gs.setNettolohn(ja.getNettolohn());
 		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setGeschaeftsgewinnBasisjahrMinus2(ja.getGeschaeftsgewinnBasisjahrMinus2());
 	}
