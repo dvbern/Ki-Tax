@@ -210,8 +210,6 @@ export class EinkommensverschlechterungInfoViewController
             // sollen
             this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 = false;
             this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2 = false;
-            this.getEinkommensverschlechterungsInfo().gemeinsameSteuererklaerung_BjP1 = undefined;
-            this.getEinkommensverschlechterungsInfo().gemeinsameSteuererklaerung_BjP2 = undefined;
         }
 
         return this.einkommensverschlechterungInfoRS.saveEinkommensverschlechterungInfo(

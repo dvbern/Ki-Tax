@@ -17,7 +17,8 @@ import TSAbstractFinanzielleSituation from './TSAbstractFinanzielleSituation';
 
 export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
-    private _nettolohn: number;
+    private _steuerveranlagungErhalten: boolean = false;
+    private _steuererklaerungAusgefuellt: boolean = false;
     private _geschaeftsgewinnBasisjahrMinus2: number;
     private _geschaeftsgewinnBasisjahrMinus1: number;
 
@@ -25,12 +26,20 @@ export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituati
         super();
     }
 
-    public get nettolohn(): number {
-        return this._nettolohn;
+    public get steuerveranlagungErhalten(): boolean {
+        return this._steuerveranlagungErhalten;
     }
 
-    public set nettolohn(value: number) {
-        this._nettolohn = value;
+    public set steuerveranlagungErhalten(value: boolean) {
+        this._steuerveranlagungErhalten = value;
+    }
+
+    public get steuererklaerungAusgefuellt(): boolean {
+        return this._steuererklaerungAusgefuellt;
+    }
+
+    public set steuererklaerungAusgefuellt(value: boolean) {
+        this._steuererklaerungAusgefuellt = value;
     }
 
     public get geschaeftsgewinnBasisjahrMinus2(): number {

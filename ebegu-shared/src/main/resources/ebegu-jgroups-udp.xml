@@ -24,7 +24,7 @@
         mcast_send_buf_size="212k"
         ucast_recv_buf_size="212k"
         mcast_recv_buf_size="212k"
-        ip_ttl="${jgroups.ip_ttl:2}"
+        ip_ttl="${jgroups.ip_ttl:5}"
         thread_naming_pattern="pl"
         enable_diagnostics="false"
 

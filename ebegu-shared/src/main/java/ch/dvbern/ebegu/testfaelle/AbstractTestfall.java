@@ -373,14 +373,10 @@ public abstract class AbstractTestfall {
 		EinkommensverschlechterungContainer ekvContainer = new EinkommensverschlechterungContainer();
 		if (erstesJahr) {
 			Einkommensverschlechterung ekv1 = new Einkommensverschlechterung();
-			ekv1.setSteuerveranlagungErhalten(true);
-			ekv1.setSteuererklaerungAusgefuellt(true);
 			ekvContainer.setEkvJABasisJahrPlus1(ekv1);
 		}
 		if (zweitesJahr) {
 			Einkommensverschlechterung ekv2 = new Einkommensverschlechterung();
-			ekv2.setSteuerveranlagungErhalten(true);
-			ekv2.setSteuererklaerungAusgefuellt(true);
 			ekvContainer.setEkvJABasisJahrPlus2(ekv2);
 		}
 		return ekvContainer;

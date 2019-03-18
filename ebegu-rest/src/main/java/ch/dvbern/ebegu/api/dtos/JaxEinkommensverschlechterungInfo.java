@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -38,14 +37,6 @@ public class JaxEinkommensverschlechterungInfo extends JaxAbstractDTO {
 
 	@NotNull
 	private Boolean ekvFuerBasisJahrPlus2;
-
-	@Nullable
-	@SuppressWarnings("checkstyle:MemberName")
-	private Boolean gemeinsameSteuererklaerung_BjP1;
-
-	@Nullable
-	@SuppressWarnings("checkstyle:MemberName")
-	private Boolean gemeinsameSteuererklaerung_BjP2;
 
 	@NotNull
 	private Boolean ekvBasisJahrPlus1Annulliert;
@@ -75,28 +66,6 @@ public class JaxEinkommensverschlechterungInfo extends JaxAbstractDTO {
 
 	public void setEkvFuerBasisJahrPlus2(final Boolean ekvFuerBasisJahrPlus2) {
 		this.ekvFuerBasisJahrPlus2 = ekvFuerBasisJahrPlus2;
-	}
-
-	@Nullable
-	@SuppressWarnings("checkstyle:MethodName")
-	public Boolean getGemeinsameSteuererklaerung_BjP1() {
-		return gemeinsameSteuererklaerung_BjP1;
-	}
-
-	@SuppressWarnings({"checkstyle:MethodName", "checkstyle:ParameterName"})
-	public void setGemeinsameSteuererklaerung_BjP1(@Nullable Boolean gemeinsameSteuererklaerung_BjP1) {
-		this.gemeinsameSteuererklaerung_BjP1 = gemeinsameSteuererklaerung_BjP1;
-	}
-
-	@Nullable
-	@SuppressWarnings({"checkstyle:MethodName", "checkstyle:ParameterName"})
-	public Boolean getGemeinsameSteuererklaerung_BjP2() {
-		return gemeinsameSteuererklaerung_BjP2;
-	}
-
-	@SuppressWarnings({"checkstyle:MethodName", "checkstyle:ParameterName"})
-	public void setGemeinsameSteuererklaerung_BjP2(@Nullable Boolean gemeinsameSteuererklaerung_BjP2) {
-		this.gemeinsameSteuererklaerung_BjP2 = gemeinsameSteuererklaerung_BjP2;
 	}
 
 	public Boolean getEkvBasisJahrPlus1Annulliert() {

@@ -129,8 +129,6 @@ public class FamiliensituationServiceTest extends AbstractEbeguLoginTest {
 		assertNull(extractedNewFamiliensituation.getGemeinsameSteuererklaerung());
 		final EinkommensverschlechterungInfo extractedEkvInfo = gesuch.extractEinkommensverschlechterungInfo();
 		assertNotNull(extractedEkvInfo);
-		assertNull(extractedEkvInfo.getGemeinsameSteuererklaerung_BjP1());
-		assertNull(extractedEkvInfo.getGemeinsameSteuererklaerung_BjP2());
 	}
 
 	// HELP METHODS

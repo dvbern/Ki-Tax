@@ -40,169 +40,19 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal nettolohnJan;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnFeb;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnMrz;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnApr;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnMai;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnJun;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnJul;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnAug;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnSep;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnOkt;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnNov;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnDez;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal nettolohnZus;
-
-	@Nullable
-	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
 	public Einkommensverschlechterung() {
 	}
 
-	@Nullable
-	public BigDecimal getNettolohnJan() {
-		return nettolohnJan;
+	@Override
+	public Boolean getSteuerveranlagungErhalten() {
+		return false;
 	}
 
-	public void setNettolohnJan(@Nullable final BigDecimal nettolohnJan) {
-		this.nettolohnJan = nettolohnJan;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnFeb() {
-		return nettolohnFeb;
-	}
-
-	public void setNettolohnFeb(@Nullable final BigDecimal nettolohnFeb) {
-		this.nettolohnFeb = nettolohnFeb;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnMrz() {
-		return nettolohnMrz;
-	}
-
-	public void setNettolohnMrz(@Nullable final BigDecimal nettolohnMrz) {
-		this.nettolohnMrz = nettolohnMrz;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnApr() {
-		return nettolohnApr;
-	}
-
-	public void setNettolohnApr(@Nullable final BigDecimal nettolohnApr) {
-		this.nettolohnApr = nettolohnApr;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnMai() {
-		return nettolohnMai;
-	}
-
-	public void setNettolohnMai(@Nullable final BigDecimal nettolohnMai) {
-		this.nettolohnMai = nettolohnMai;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnJun() {
-		return nettolohnJun;
-	}
-
-	public void setNettolohnJun(@Nullable final BigDecimal nettolohnJun) {
-		this.nettolohnJun = nettolohnJun;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnJul() {
-		return nettolohnJul;
-	}
-
-	public void setNettolohnJul(@Nullable final BigDecimal nettolohnJul) {
-		this.nettolohnJul = nettolohnJul;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnAug() {
-		return nettolohnAug;
-	}
-
-	public void setNettolohnAug(@Nullable final BigDecimal nettolohnAug) {
-		this.nettolohnAug = nettolohnAug;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnSep() {
-		return nettolohnSep;
-	}
-
-	public void setNettolohnSep(@Nullable final BigDecimal nettolohnSep) {
-		this.nettolohnSep = nettolohnSep;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnOkt() {
-		return nettolohnOkt;
-	}
-
-	public void setNettolohnOkt(@Nullable final BigDecimal nettolohnOkt) {
-		this.nettolohnOkt = nettolohnOkt;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnNov() {
-		return nettolohnNov;
-	}
-
-	public void setNettolohnNov(@Nullable final BigDecimal nettolohnNov) {
-		this.nettolohnNov = nettolohnNov;
-	}
-
-	@Nullable
-	public BigDecimal getNettolohnDez() {
-		return nettolohnDez;
-	}
-
-	public void setNettolohnDez(@Nullable final BigDecimal nettolohnDez) {
-		this.nettolohnDez = nettolohnDez;
+	@Override
+	public Boolean getSteuererklaerungAusgefuellt() {
+		return false;
 	}
 
 	@Nullable
@@ -214,23 +64,6 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
 
-	@Nullable
-	public BigDecimal getNettolohnZus() {
-		return nettolohnZus;
-	}
-
-	public void setNettolohnZus(@Nullable BigDecimal nettolohnZus) {
-		this.nettolohnZus = nettolohnZus;
-	}
-
-	@Override
-	public BigDecimal getNettolohn() {
-
-		return MathUtil.DEFAULT.add(nettolohnJan, nettolohnFeb, nettolohnMrz, nettolohnApr,
-			nettolohnMai, nettolohnJun, nettolohnJul, nettolohnAug, nettolohnSep,
-			nettolohnOkt, nettolohnNov, nettolohnDez, nettolohnZus);
-	}
-
 	@Nonnull
 	public Einkommensverschlechterung copyEinkommensverschlechterung(@Nonnull Einkommensverschlechterung target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
@@ -238,19 +71,6 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
 			super.copyAbstractFinanzielleSituation(target, copyType);
-			target.setNettolohnJan(this.getNettolohnJan());
-			target.setNettolohnFeb(this.getNettolohnFeb());
-			target.setNettolohnMrz(this.getNettolohnMrz());
-			target.setNettolohnApr(this.getNettolohnApr());
-			target.setNettolohnMai(this.getNettolohnMai());
-			target.setNettolohnJun(this.getNettolohnJun());
-			target.setNettolohnJul(this.getNettolohnJul());
-			target.setNettolohnAug(this.getNettolohnAug());
-			target.setNettolohnSep(this.getNettolohnSep());
-			target.setNettolohnOkt(this.getNettolohnOkt());
-			target.setNettolohnNov(this.getNettolohnNov());
-			target.setNettolohnDez(this.getNettolohnDez());
-			target.setNettolohnZus(this.getNettolohnZus());
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			break;
 		case ERNEUERUNG:
@@ -277,19 +97,6 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			return false;
 		}
 		final Einkommensverschlechterung otherEinkommensverschlechterung = (Einkommensverschlechterung) other;
-		return MathUtil.isSame(getNettolohnJan(), otherEinkommensverschlechterung.getNettolohnJan()) &&
-			MathUtil.isSame(getNettolohnFeb(), otherEinkommensverschlechterung.getNettolohnFeb()) &&
-			MathUtil.isSame(getNettolohnMrz(), otherEinkommensverschlechterung.getNettolohnMrz()) &&
-			MathUtil.isSame(getNettolohnApr(), otherEinkommensverschlechterung.getNettolohnApr()) &&
-			MathUtil.isSame(getNettolohnMai(), otherEinkommensverschlechterung.getNettolohnMai()) &&
-			MathUtil.isSame(getNettolohnJun(), otherEinkommensverschlechterung.getNettolohnJun()) &&
-			MathUtil.isSame(getNettolohnJul(), otherEinkommensverschlechterung.getNettolohnJul()) &&
-			MathUtil.isSame(getNettolohnAug(), otherEinkommensverschlechterung.getNettolohnAug()) &&
-			MathUtil.isSame(getNettolohnSep(), otherEinkommensverschlechterung.getNettolohnSep()) &&
-			MathUtil.isSame(getNettolohnOkt(), otherEinkommensverschlechterung.getNettolohnOkt()) &&
-			MathUtil.isSame(getNettolohnNov(), otherEinkommensverschlechterung.getNettolohnNov()) &&
-			MathUtil.isSame(getNettolohnDez(), otherEinkommensverschlechterung.getNettolohnDez()) &&
-			MathUtil.isSame(getNettolohnZus(), otherEinkommensverschlechterung.getNettolohnZus()) &&
-			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
+		return MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
 	}
 }

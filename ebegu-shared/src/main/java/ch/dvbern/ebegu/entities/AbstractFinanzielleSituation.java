@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,7 +23,6 @@ import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -43,13 +41,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	private static final long serialVersionUID = 2596930494846119259L;
 
-	@NotNull
-	@Column(nullable = false)
-	private Boolean steuerveranlagungErhalten;
-
-	@NotNull
-	@Column(nullable = false)
-	private Boolean steuererklaerungAusgefuellt;
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettolohn;
 
 	@Column(nullable = true)
 	private BigDecimal familienzulage;
@@ -75,23 +69,17 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	public AbstractFinanzielleSituation() {
 	}
 
+	public abstract Boolean getSteuerveranlagungErhalten();
+
+	public abstract Boolean getSteuererklaerungAusgefuellt();
+
 	@Nullable
-	public abstract BigDecimal getNettolohn();
-
-	public Boolean getSteuerveranlagungErhalten() {
-		return steuerveranlagungErhalten;
+	public BigDecimal getNettolohn() {
+		return nettolohn;
 	}
 
-	public void setSteuerveranlagungErhalten(final Boolean steuerveranlagungErhalten) {
-		this.steuerveranlagungErhalten = steuerveranlagungErhalten;
-	}
-
-	public Boolean getSteuererklaerungAusgefuellt() {
-		return steuererklaerungAusgefuellt;
-	}
-
-	public void setSteuererklaerungAusgefuellt(final Boolean steuererklaerungAusgefuellt) {
-		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
+	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
+		this.nettolohn = nettolohn;
 	}
 
 	public BigDecimal getFamilienzulage() {
@@ -151,13 +139,14 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	}
 
 	@Nonnull
-	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(@Nonnull AbstractFinanzielleSituation target, @Nonnull AntragCopyType copyType) {
+	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
+		@Nonnull AbstractFinanzielleSituation target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
-			target.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
-			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
+			target.setNettolohn(this.getNettolohn());
 			target.setFamilienzulage(this.getFamilienzulage());
 			target.setErsatzeinkommen(this.getErsatzeinkommen());
 			target.setErhalteneAlimente(this.getErhalteneAlimente());
@@ -186,8 +175,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			return false;
 		}
 		final AbstractFinanzielleSituation otherFinSituation = (AbstractFinanzielleSituation) other;
-		return Objects.equals(getSteuerveranlagungErhalten(), otherFinSituation.getSteuerveranlagungErhalten()) &&
-			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSituation.getSteuererklaerungAusgefuellt()) &&
+		return MathUtil.isSame(getNettolohn(), otherFinSituation.getNettolohn()) &&
 			MathUtil.isSame(getFamilienzulage(), otherFinSituation.getFamilienzulage()) &&
 			MathUtil.isSame(getErsatzeinkommen(), otherFinSituation.getErsatzeinkommen()) &&
 			MathUtil.isSame(getErhalteneAlimente(), otherFinSituation.getErhalteneAlimente()) &&

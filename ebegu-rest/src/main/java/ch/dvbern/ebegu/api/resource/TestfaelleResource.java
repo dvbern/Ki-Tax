@@ -213,6 +213,20 @@ public class TestfaelleResource {
 		return Response.ok(schulungBenutzer).build();
 	}
 
+	@ApiOperation(value = "Sendet ein Beispiel aller Mails an die uebergebene Adresse", response = String.class)
+	@GET
+	@Path("/mailtest/{mailadresse}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response testAllMails(
+		@PathParam("mailadresse") String mailadresse) {
+
+		assertTestfaelleAccessAllowed();
+
+		testfaelleService.testAllMails(mailadresse);
+		return Response.ok().build();
+	}
+
 	private void assertTestfaelleAccessAllowed() {
 		// Testfaelle duerfen nur erstellt werden, wenn das Flag gesetzt ist und das Dummy Login eingeschaltet ist
 		if (!ebeguConfiguration.isDummyLoginEnabled()) {
