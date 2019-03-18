@@ -17,38 +17,29 @@ import TSAbstractFinanzielleSituation from './TSAbstractFinanzielleSituation';
 
 export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
-    private _nettolohn: number;
+    private _steuerveranlagungErhalten: boolean = false;
+    private _steuererklaerungAusgefuellt: boolean = false;
     private _geschaeftsgewinnBasisjahrMinus2: number;
     private _geschaeftsgewinnBasisjahrMinus1: number;
 
-    public constructor(
-        steuerveranlagungErhalten?: boolean,
-        steuererklaerungAusgefuellt?: boolean,
-        nettolohn?: number,
-        familienzulage?: number,
-        ersatzeinkommen?: number,
-        erhalteneAlimente?: number,
-        bruttovermoegen?: number,
-        schulden?: number,
-        geschaeftsgewinnBasisjahrMinus2?: number,
-        geschaeftsgewinnBasisjahrMinus1?: number,
-        geschaeftsgewinnBasisjahr?: number,
-        geleisteteAlimente?: number,
-    ) {
-        super(steuerveranlagungErhalten, steuererklaerungAusgefuellt,
-            familienzulage, ersatzeinkommen, erhalteneAlimente, bruttovermoegen,
-            schulden, geschaeftsgewinnBasisjahr, geleisteteAlimente);
-        this._nettolohn = nettolohn;
-        this._geschaeftsgewinnBasisjahrMinus2 = geschaeftsgewinnBasisjahrMinus2;
-        this._geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
+    public constructor() {
+        super();
     }
 
-    public get nettolohn(): number {
-        return this._nettolohn;
+    public get steuerveranlagungErhalten(): boolean {
+        return this._steuerveranlagungErhalten;
     }
 
-    public set nettolohn(value: number) {
-        this._nettolohn = value;
+    public set steuerveranlagungErhalten(value: boolean) {
+        this._steuerveranlagungErhalten = value;
+    }
+
+    public get steuererklaerungAusgefuellt(): boolean {
+        return this._steuererklaerungAusgefuellt;
+    }
+
+    public set steuererklaerungAusgefuellt(value: boolean) {
+        this._steuererklaerungAusgefuellt = value;
     }
 
     public get geschaeftsgewinnBasisjahrMinus2(): number {

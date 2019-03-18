@@ -210,6 +210,9 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Column(nullable = false)
 	private boolean geprueftSTV = false;
 
+	@Column(nullable = false)
+	private boolean verfuegungEingeschrieben = false;
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = true)
 	@Nullable
@@ -306,7 +309,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public FinanzDatenDTO getFinanzDatenDTO() {
 		final Familiensituation familiensituation = extractFamiliensituation();
-		if (familiensituation != null && familiensituation.hasSecondGesuchsteller()) {
+		if (familiensituation != null
+			&& familiensituation.hasSecondGesuchsteller(gesuchsperiode.getGueltigkeit().getGueltigBis())) {
 			return finanzDatenDTO_zuZweit;
 		}
 		return finanzDatenDTO_alleine;
@@ -355,7 +359,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return gesuchsperiode;
 	}
 
-	public final void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
+	public void setGesuchsperiode(Gesuchsperiode gesuchsperiode) {
 		this.gesuchsperiode = gesuchsperiode;
 	}
 
@@ -364,7 +368,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return eingangsdatum;
 	}
 
-	public final void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
+	public void setEingangsdatum(@Nullable LocalDate eingangsdatum) {
 		this.eingangsdatum = eingangsdatum;
 	}
 
@@ -396,7 +400,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return status;
 	}
 
-	public final void setStatus(@Nonnull AntragStatus status) {
+	public void setStatus(@Nonnull AntragStatus status) {
 		this.status = status;
 	}
 
@@ -404,7 +408,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		return typ;
 	}
 
-	public final void setTyp(AntragTyp typ) {
+	public void setTyp(AntragTyp typ) {
 		this.typ = typ;
 	}
 
@@ -447,6 +451,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public void setGeprueftSTV(boolean geprueftSTV) {
 		this.geprueftSTV = geprueftSTV;
+	}
+
+	public boolean isVerfuegungEingeschrieben() {
+		return verfuegungEingeschrieben;
+	}
+
+	public void setVerfuegungEingeschrieben(boolean verfuegungEingeschrieben) {
+		this.verfuegungEingeschrieben = verfuegungEingeschrieben;
 	}
 
 	public boolean isGesperrtWegenBeschwerde() {
@@ -708,8 +720,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (null != getRegelnGueltigAb()) {
 			return getRegelnGueltigAb();
 		}
+		if (getEingangsdatum() == null
+			&& getEingangsart() == Eingangsart.ONLINE) {
+			// damit die prov. Berechnung korrekt funktioniert, wird als default das heutige Datum gesetzt
+			// falls es ein Online Gesuch ist. If it doesn't have any prov. Berechnung too
+			return LocalDate.now();
+		}
 		return getEingangsdatum();
 	}
+
 
 	@Nullable
 	public Familiensituation extractFamiliensituation() {
@@ -812,7 +831,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (this.getGesuchsteller2() != null
 			&& target.getFamiliensituationContainer() != null
 			&& target.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& target.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller()) {
+			&& target.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller(gesuchsperiode.getGueltigkeit().getGueltigBis())) {
 
 			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}

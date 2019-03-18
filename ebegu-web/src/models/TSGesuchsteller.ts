@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {TSGeschlecht} from './enums/TSGeschlecht';
 import {TSSprache} from './enums/TSSprache';
 import TSAbstractPersonEntity from './TSAbstractPersonEntity';
 
@@ -29,29 +28,8 @@ export default class TSGesuchsteller extends TSAbstractPersonEntity {
     private _ewkAbfrageDatum: moment.Moment;
     private _korrespondenzSprache: TSSprache;
 
-    public constructor(
-        vorname?: string,
-        nachname?: string,
-        geburtsdatum?: moment.Moment,
-        geschlecht?: TSGeschlecht,
-        email?: string,
-        mobile?: string,
-        telefon?: string,
-        telefonAusland?: string,
-        diplomatenstatus?: boolean,
-        ewkPersonId?: string,
-        ewkAbfrageDatum?: moment.Moment,
-        korrespondenzSprache?: TSSprache,
-    ) {
-        super(vorname, nachname, geburtsdatum, geschlecht);
-        this._mail = email;
-        this._mobile = mobile;
-        this._telefon = telefon;
-        this._telefonAusland = telefonAusland;
-        this._diplomatenstatus = diplomatenstatus;
-        this._ewkPersonId = ewkPersonId;
-        this._ewkAbfrageDatum = ewkAbfrageDatum;
-        this._korrespondenzSprache = korrespondenzSprache;
+    public constructor() {
+        super();
     }
 
     public get mail(): string {

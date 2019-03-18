@@ -20,10 +20,10 @@ import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 
 /**
  * Service zum Verwalten von Gesuchsperiode
@@ -42,7 +42,9 @@ public interface GesuchsperiodeService {
 	 * evt. weitere Aktionen durchgeführt werden müssen (z.B. E-Mails etc.)
 	 */
 	@Nonnull
-	Gesuchsperiode saveGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull GesuchsperiodeStatus statusBisher);
+	Gesuchsperiode saveGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull GesuchsperiodeStatus statusBisher);
 
 	/**
 	 * @param key PK (id) der Gesuchsperiode
@@ -58,6 +60,12 @@ public interface GesuchsperiodeService {
 	 */
 	@Nonnull
 	Collection<Gesuchsperiode> getAllGesuchsperioden();
+
+	/**
+	 * @param key PK (id) der Gesuchsperiode
+	 * @return Diese und alle zukünftigen Gesuchsperioden
+	 */
+	Collection<Gesuchsperiode> findThisAndFutureGesuchsperioden(@Nonnull String key);
 
 	/**
 	 * Loescht alle Gesuchsperioden inkl. Gesuche und Dokumente, wenn die Gesuchsperiode mehr als 10 Jahre alt ist.
@@ -83,7 +91,14 @@ public interface GesuchsperiodeService {
 	 * Dossier noch kein Gesuch freigegeben hat.
 	 */
 	@Nonnull
-	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nullable String dossierId);
+	Collection<Gesuchsperiode> getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(@Nonnull String dossierId);
+
+	/**
+	 * Gibt alle aktiven Gesuchsperioden zurueck, deren Ende-Datum noch nicht erreicht ist, und für die das angegebene
+	 * Dossier noch kein Gesuch freigegeben hat.
+	 */
+	@Nonnull
+	Collection<Gesuchsperiode> getAllAktiveNichtVerwendeteGesuchsperioden(@Nonnull String dossierId);
 
 	/**
 	 * Gibt die Gesuchsperiode zurueck, welche am uebergebenen Stichtag aktuell war/ist
@@ -102,4 +117,26 @@ public interface GesuchsperiodeService {
 	 */
 	@Nonnull
 	Optional<Gesuchsperiode> findNewestGesuchsperiode();
+
+	/**
+	 * Fügt eine Erläuterung zur Verfügung einer Gesuchsperiode abhängig der Sprache an.
+	 */
+	@Nonnull
+	Gesuchsperiode uploadErlaeuterungenVerfuegung(
+		@Nonnull String gesuchsperiodeId,
+		@Nonnull Sprache sprache,
+		@Nonnull byte[] content);
+
+	/**
+	 * Löscht eine Erläuterung zur Verfügung einer Gesuchsperiode abhängig der Sprache.
+	 */
+	@Nonnull
+	Gesuchsperiode removeErlaeuterungVerfuegung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
+
+	/**
+	 * retuns true id the VerfuegungErlaeuterung exists for the given language
+	 */
+	boolean existErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
+
+	byte[] downloadErlaeuterung(@Nonnull String gesuchsperiodeId, @Nonnull Sprache sprache);
 }

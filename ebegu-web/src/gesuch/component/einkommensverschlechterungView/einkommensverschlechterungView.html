@@ -26,12 +26,6 @@
             <hr class="header"/>
             <!-- Infotext -->
             <p class="inlineHint" data-translate="EKVI_HINT_MONAT_FELDER"></p>
-            <p class="inlineHint" data-translate="EKVI__HINT_STEUERERKLAERUNG"
-               translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"
-               ng-if="vm.showHintSteuererklaerung()"></p>
-            <p class="inlineHint" data-translate="EKVI__HINT_VERANLAGUNGSVERFUEGUNG"
-               translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"
-               ng-if="vm.showHintSteuerveranlagung()"></p>
         </div>
     </div>
     <div class="row">
@@ -39,325 +33,22 @@
             <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
 
-                    <!--Steuerveranlagung -->
-                    <div class="row">
-                        <div class="col-xs-12 dv-input-container-question" ng-if="vm.showSteuerveranlagung()">
-                            <div class="form-group">
-                                <span class="ebeguH1 required">
-                                    <span data-translate="FINANZIELLE_SITUATION_STEUERVERANLAGUNG"
-                                          translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></span>
-                                </span>
-                                <dv-radio-container name="steuerveranlagung"
-                                                    ng-model="vm.model.getEkvToWorkWith().steuerveranlagungErhalten"
-                                                    ng-required="true" class="radio input-element"
-                                                    ng-change="vm.steuerveranlagungClicked()"
-                                                    dv-enable-element
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERVERANLAGUNG' |translate}}"
-                                                    aria-described-by="steuerveranlagung-error">
-                                </dv-radio-container>
-                                <dv-error-messages input-id="steuerveranlagung" for="vm.form.steuerveranlagung.$error"
-                                                   class="error"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Steuererklärung -->
-                    <div class="row">
-                        <div class="col-xs-12 dv-input-container-question"
-                             ng-if="vm.showSteuerveranlagung() && vm.showSteuererklaerung()">
-                            <div class="form-group">
-                                <span class="ebeguH1 required">
-                                    <span data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG"
-                                          translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></span>
-                                </span>
-                                <dv-radio-container name="steuererklaerung"
-                                                    ng-model="vm.model.getEkvToWorkWith().steuererklaerungAusgefuellt"
-                                                    ng-required="true" class="radio input-element"
-                                                    dv-enable-element
-                                                    dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                                    aria-label="{{ 'FINANZIELLE_SITUATION_STEUERERKLAERUNG' |translate}}"
-                                                    aria-described-by="steuererklaerung-error">
-                                </dv-radio-container>
-                                <dv-error-messages input-id="steuererklaerung" for="vm.form.steuererklaerung.$error"
-                                                   class="error"></dv-error-messages>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- Nettolohn Jan-->
+                    <!-- Nettolohn -->
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_JANUARY"
-                                       for="nettolohn_Jan"></label>
-                                <dv-valueinput input-id="nettolohn_Jan"
-                                               name="nettolohn_Jan"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnJan"
+                                <label class="md-no-float" data-translate="FINANZIELLE_SITUATION_NETTOLOHN"
+                                       for="nettolohn"></label>
+                                <dv-valueinput input-id="nettolohn"
+                                               name="nettolohn"
+                                               ng-model="vm.model.getEkvToWorkWith().nettolohn"
                                                class="input-element">
                                 </dv-valueinput>
                                 <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnJan"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnJan"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Jan"
-                                                   for="vm.form.nettolohn_Jan.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Feb-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_FEBRUARY"
-                                       for="nettolohn_Feb"></label>
-                                <dv-valueinput input-id="nettolohn_Feb"
-                                               name="nettolohn_Feb"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnFeb"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnFeb"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnFeb"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Feb"
-                                                   for="vm.form.nettolohn_Feb.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Mrz-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_MARCH"
-                                       for="nettolohn_Mrz"></label>
-                                <dv-valueinput input-id="nettolohn_Mrz"
-                                               name="nettolohn_Mrz"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnMrz"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnMrz"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnMrz"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Mrz"
-                                                   for="vm.form.nettolohn_Mrz.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Apr-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_APRIL"
-                                       for="nettolohn_Apr"></label>
-                                <dv-valueinput input-id="nettolohn_Apr"
-                                               name="nettolohn_Apr"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnApr"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnApr"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnApr"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Apr"
-                                                   for="vm.form.nettolohn_Apr.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Mai-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_MAY"
-                                       for="nettolohn_Mai"></label>
-                                <dv-valueinput input-id="nettolohn_Mai"
-                                               name="nettolohn_Mai"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnMai"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnMai"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnMai"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Mai"
-                                                   for="vm.form.nettolohn_Mai.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Jun-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_JUNE"
-                                       for="nettolohn_Jun"></label>
-                                <dv-valueinput input-id="nettolohn_Jun"
-                                               name="nettolohn_Jun"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnJun"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnJun"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnJun"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Jun"
-                                                   for="vm.form.nettolohn_Jun.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Jul-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_JULY"
-                                       for="nettolohn_Jul"></label>
-                                <dv-valueinput input-id="nettolohn_Jul"
-                                               name="nettolohn_Jul"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnJul"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnJul"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnJul"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Jul"
-                                                   for="vm.form.nettolohn_Jul.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Aug-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_AUGUST"
-                                       for="nettolohn_Aug"></label>
-                                <dv-valueinput input-id="nettolohn_Aug"
-                                               name="nettolohn_Aug"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnAug"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnAug"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnAug"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Aug"
-                                                   for="vm.form.nettolohn_Aug.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Sep-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_SEPTEMBER"
-                                       for="nettolohn_Sep"></label>
-                                <dv-valueinput input-id="nettolohn_Sep"
-                                               name="nettolohn_Sep"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnSep"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnSep"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnSep"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Sep"
-                                                   for="vm.form.nettolohn_Sep.$error"
-                                                   class="error"></dv-error-messages>
-
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Okt-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_OCTOBER"
-                                       for="nettolohn_Okt"></label>
-                                <dv-valueinput input-id="nettolohn_Okt"
-                                               name="nettolohn_Okt"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnOkt"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnOkt"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnOkt"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Okt"
-                                                   for="vm.form.nettolohn_Okt.$error"
-                                                   class="error"></dv-error-messages>
-
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Nov-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_NOVEMBER"
-                                       for="nettolohn_Nov"></label>
-                                <dv-valueinput input-id="nettolohn_Nov"
-                                               name="nettolohn_Nov"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnNov"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnNov"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnNov"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Nov"
-                                                   for="vm.form.nettolohn_Nov.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Dez-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_DECEMBER"
-                                       for="nettolohn_Dez"></label>
-                                <dv-valueinput input-id="nettolohn_Dez"
-                                               name="nettolohn_Dez"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnDez"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnDez"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnDez"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Dez"
-                                                   for="vm.form.nettolohn_Dez.$error"
-                                                   class="error"></dv-error-messages>
-                            </dv-input-container>
-                        </div>
-                    </div>
-
-                    <!-- Nettolohn Zus-->
-                    <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
-                            <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EKVI_NETTOLOHN_ZUS"
-                                       for="nettolohn_Zus"></label>
-                                <dv-valueinput input-id="nettolohn_Zus"
-                                               name="nettolohn_Zus"
-                                               ng-model="vm.model.getEkvToWorkWith().nettolohnZus"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().nettolohnZus"
-                                    ja="vm.model.getEkvToWorkWith().nettolohnZus"></dv-bisher>
-                                <dv-error-messages input-id="nettolohn_Zus"
-                                                   for="vm.form.nettolohn_Zus.$error"
+                                    gs="vm.model.getEkvToWorkWith_GS().nettolohn"
+                                    ja="vm.model.getEkvToWorkWith().nettolohn"></dv-bisher>
+                                <dv-error-messages input-id="nettolohn"
+                                                   for="vm.form.nettolohn.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
                         </div>
@@ -365,23 +56,25 @@
 
                     <!-- Familienzulage -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="familienzulage">
                                     <span data-translate="FINANZIELLE_SITUATION_FAMILIENZULAGE"></span>
                                     <dv-tooltip input-id="familienzulage"
-                                                text="'EINKOMMENSVERSCHLECHTERUNG_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
+                                                text="'FINANZIELLE_SITUATION_FAMILIENZULAGE_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-valueinput input-id="familienzulage"
-                                               name="familienzulage"
-                                               ng-model="vm.model.getEkvToWorkWith().familienzulage"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().familienzulage"
-                                    ja="vm.model.getEkvToWorkWith().familienzulage"></dv-bisher>
-                                <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="familienzulage"
+                                                   name="familienzulage"
+                                                   ng-model="vm.model.getEkvToWorkWith().familienzulage"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher
+                                        gs="vm.model.getEkvToWorkWith_GS().familienzulage"
+                                        ja="vm.model.getEkvToWorkWith().familienzulage"></dv-bisher>
+                                    <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>
@@ -393,7 +86,7 @@
                                 <label class="md-no-float" for="ersatzeinkommen">
                                     <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN"></span>
                                     <dv-tooltip input-id="ersatzeinkommen"
-                                                text="'EINKOMMENSVERSCHLECHTERUNG_ERSATZEINKOMMEN_HELP' | translate"></dv-tooltip>
+                                                text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_HELP' | translate"></dv-tooltip>
                                 </label>
                                 <dv-valueinput input-id="ersatzeinkommen"
                                                name="ersatzeinkommen"
@@ -411,23 +104,26 @@
 
                     <!-- Erhaltene Alimente -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="erhalteneAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_ERHALTENEALIMENTE"></span>
                                     <dv-tooltip input-id="erhalteneAlimente"
-                                                text="'EINKOMMENSVERSCHLECHTERUNG_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
+                                                text="'FINANZIELLE_SITUATION_ERHALTENEALIMENTE_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-valueinput input-id="erhalteneAlimente"
-                                               name="erhalteneAlimente"
-                                               ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
-                                    ja="vm.model.getEkvToWorkWith().erhalteneAlimente"></dv-bisher>
-                                <dv-error-messages input-id="erhalteneAlimente" for="vm.form.erhalteneAlimente.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="erhalteneAlimente"
+                                                   name="erhalteneAlimente"
+                                                   ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher
+                                        gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
+                                        ja="vm.model.getEkvToWorkWith().erhalteneAlimente"></dv-bisher>
+                                    <dv-error-messages input-id="erhalteneAlimente"
+                                                       for="vm.form.erhalteneAlimente.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>
@@ -436,7 +132,7 @@
                     <!--Checkbox Selbstaendigkeit -->
                     <div class="row">
                         <div class="col-xs-12 dv-input-container-question">
-                            <div class="checkbox">
+                            <div class="checkbox no-margin">
                                 <md-checkbox ng-model="vm.showSelbstaendig"
                                              name="showSelbstaendig"
                                              id="showSelbstaendig"
@@ -447,7 +143,7 @@
                                     <span data-translate="FINANZIELLE_SITUATION_SELBSTAENDIGKEIT"></span>
                                 </md-checkbox>
                                 <dv-tooltip input-id="showSelbstaendig"
-                                            text="'EINKOMMENSVERSCHLECHTERUNG_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
+                                            text="'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
                                 <dv-bisher gs="vm.showSelbstaendigGS" class="dv-bisher-break"
                                            ja="vm.showSelbstaendig"
                                            specific-bisher-text="vm.getTextSelbstaendigKorrektur()"></dv-bisher>
@@ -487,7 +183,7 @@
                         <!-- Geschäftsgewinn Basisjahr-1 - disabled only show value vor bj-1-->
                         <div class="row" ng-if="!vm.enableGeschaeftsgewinnBasisjahrMinus1()">
                             <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
+                                <dv-input-container class="form-group no-margin">
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
@@ -507,7 +203,7 @@
                         <!-- Geschäftsgewinn Basisjahr-1  - geschaeftsgewinnBasisjahrMinus1 -->
                         <div class="row" ng-if="vm.enableGeschaeftsgewinnBasisjahrMinus1()">
                             <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
+                                <dv-input-container class="form-group no-margin">
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
@@ -534,7 +230,7 @@
                         <!-- Geschäftsgewinn Basisjahr-2 -->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group">
+                                <dv-input-container class="form-group no-margin">
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS2"
                                            for="geschaeftsgewinnBasisjahrMinus2"
@@ -554,7 +250,7 @@
                         <!-- Durchschnitt Geschäftsgewinn -->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group"
+                                <dv-input-container class="form-group no-margin"
                                                     ng-if="vm.gesuchModelManager.gesuchstellerNumber === 1">
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
@@ -587,23 +283,26 @@
 
                     <!-- Geleistete Alimente -->
                     <div class="row">
-                        <div class="col-sm-12 dv-input-container-small">
+                        <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" for="geleisteteAlimente">
                                     <span data-translate="FINANZIELLE_SITUATION_GELEISTETEALIMENTE"></span>
                                     <dv-tooltip input-id="geleisteteAlimente"
                                                 text="'FINANZIELLE_SITUATION_GELEISTETEALIMENTE_HELP' | translate"></dv-tooltip>
                                 </label>
-                                <dv-valueinput input-id="geleisteteAlimente"
-                                               name="geleisteteAlimente"
-                                               ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
-                                               class="input-element">
-                                </dv-valueinput>
-                                <dv-bisher
-                                    gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"
-                                    ja="vm.model.getEkvToWorkWith().geleisteteAlimente"></dv-bisher>
-                                <dv-error-messages input-id="geleisteteAlimente" for="vm.form.geleisteteAlimente.$error"
-                                                   class="error"></dv-error-messages>
+                                <div class="dv-input-container-medium-select">
+                                    <dv-valueinput input-id="geleisteteAlimente"
+                                                   name="geleisteteAlimente"
+                                                   ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
+                                                   class="input-element">
+                                    </dv-valueinput>
+                                    <dv-bisher
+                                        gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"
+                                        ja="vm.model.getEkvToWorkWith().geleisteteAlimente"></dv-bisher>
+                                    <dv-error-messages input-id="geleisteteAlimente"
+                                                       for="vm.form.geleisteteAlimente.$error"
+                                                       class="error"></dv-error-messages>
+                                </div>
                             </dv-input-container>
                         </div>
                     </div>

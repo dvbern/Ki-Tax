@@ -284,6 +284,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.model;
     }
 
+    // tslint:disable-next-line:cognitive-complexity
     public changedAngebot(): void {
         if (!this.getBetreuungModel()) {
             return;
@@ -309,6 +310,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             }
         } else {
             this.getBetreuungModel().betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
+            if (this.isProvisorischeBetreuung()) {
+                this.createProvisorischeBetreuung();
+            }
             this.cleanInstitutionStammdaten();
         }
         this.cleanBelegungen();
@@ -345,6 +349,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.$log.error('there was an error saving the betreuung ', this.model, exception);
             if (exception[0].errorCodeEnum === 'ERROR_DUPLICATE_BETREUUNG') {
                 this.isDuplicated = true;
+                this.model.betreuungsstatus = oldStatus;
                 this.copyModuleToBelegung();
             } else {
                 this.isSavingData = false;
@@ -611,8 +616,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.getBetreuungModel()) {
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
+        const tsBetreuungspensum = new TSBetreuungspensum();
+        tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        tsBetreuungspensum.nichtEingetreten = false;
+        tsBetreuungspensum.gueltigkeit = new TSDateRange();
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE, false, undefined, undefined, new TSDateRange())));
+            tsBetreuungspensum));
     }
 
     public removeBetreuungspensum(betreuungspensumToDelete: TSBetreuungspensumContainer): void {
@@ -638,7 +647,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             } else {
                 this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
                     title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
-                    deleteText: 'Möchten Sie die Betreuung trotzdem speichern?',
+                    deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
                     cancelText: 'LABEL_ABBRECHEN',
                     confirmText: 'LABEL_SPEICHERN',
                 })
@@ -656,9 +665,25 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * creates a Betreuungspensum for the whole period
      */
     public saveProvisorischeBetreuung(): void {
-        if (this.isGesuchValid()) {
-            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        if (!this.isGesuchValid()) {
+            return;
         }
+        if (this.getBetreuungModel().keineKesbPlatzierung) {
+            this.save(TSBetreuungsstatus.UNBEKANNTE_INSTITUTION, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+            return;
+        }
+        this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+            title: 'KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+            deleteText: 'BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT',
+            cancelText: 'LABEL_ABBRECHEN',
+            confirmText: 'LABEL_SPEICHERN',
+        })
+            .then(() => {   // User confirmed removal
+                this.save(
+                    TSBetreuungsstatus.UNBEKANNTE_INSTITUTION,
+                    GESUCH_BETREUUNGEN,
+                    {gesuchId: this.getGesuchId()});
+            });
     }
 
     public platzBestaetigen(): void {
@@ -710,7 +735,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public isEnabled(): boolean {
         if (this.isDuplicated) {
-            return false;
+            return true;
         }
 
         if (this.isProvisorischeBetreuung() ||
@@ -1055,33 +1080,31 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public getTextFachstelleKorrekturJA(): string {
         if ((this.getErweiterteBetreuungGS() && this.getErweiterteBetreuungGS().erweiterteBeduerfnisse)
             && (this.getErweiterteBetreuungJA() && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)) {
-            return this.getErweiterteBetreuungGS().fachstelle.name;
+            return this.$translate.instant(this.getErweiterteBetreuungGS().fachstelle.name.toLocaleString());
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 
     private createProvisorischeBetreuung(): void {
-
         // always clear existing Betreuungspensum
         this.getBetreuungModel().betreuungspensumContainers = [];
-        this.instStammId = null;
+        this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
 
-        if (this.betreuungsangebot === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+        if (this.betreuungsangebot && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_TAGESFAMILIE;
         }
-        this.instStammId = this.CONSTANTS.ID_UNKNOWN_INSTITUTION_STAMMDATEN_KITA;
 
         this.gesuchModelManager.getUnknownInstitutionStammdaten(this.instStammId)
             .then((stammdaten: TSInstitutionStammdaten) => {
                 this.getBetreuungModel().institutionStammdaten = stammdaten;
             });
 
+        const tsBetreuungspensum = new TSBetreuungspensum();
+        tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        tsBetreuungspensum.nichtEingetreten = false;
+        tsBetreuungspensum.gueltigkeit = this.gesuchModelManager.getGesuchsperiode().gueltigkeit;
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE,
-                false,
-                null,
-                null,
-                this.gesuchModelManager.getGesuchsperiode().gueltigkeit)));
+            tsBetreuungspensum));
     }
 
     public isProvisorischeBetreuung(): boolean {

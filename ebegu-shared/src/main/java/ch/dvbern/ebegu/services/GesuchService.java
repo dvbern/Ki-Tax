@@ -305,7 +305,7 @@ public interface GesuchService {
 	Optional<String> getIdOfNeuestesGesuchForDossier(@Nonnull Dossier dossier);
 
 	/**
-	 * Gibt das Geusch zurueck, das mit dem Fall verknuepft ist und das neueste fuer das SchulamtInterface ist. Das
+	 * Gibt das Gesuch zurueck, das mit dem Fall verknuepft ist und das neueste fuer das SchulamtInterface ist. Das
 	 * Flag FinSitStatus
 	 * muss nicht NULL sein, sonst gilt es als nicht geprueft.
 	 */
@@ -457,12 +457,6 @@ public interface GesuchService {
 	 * Schliesst die Pruefung STV ab und setzt den Status auf den Status, den das Gesuch vor der Pruefung hatte
 	 */
 	Gesuch stvPruefungAbschliessen(@Nonnull Gesuch gesuch);
-
-	/**
-	 * Hack, welcher das Gesuch detached, damit es auf keinen Fall gespeichert wird. Vorher muessen die Lazy geloadeten
-	 * BetreuungspensumContainers geladen werden, da danach keine Session mehr zur Verfuegung steht!
-	 */
-	void loadRelationsAndDetach(Gesuch gesuchWithCalcVerfuegung);
 
 	/**
 	 * Speichert einen Massenversand in der Datenbank

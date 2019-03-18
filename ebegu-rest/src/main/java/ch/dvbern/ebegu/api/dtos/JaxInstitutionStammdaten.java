@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -48,6 +50,10 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 	private String mail;
 	@Nullable
 	private String telefon;
+	@Nullable
+	private String webseite;
+	@Nullable
+	private String oeffnungszeiten;
 	@NotNull
 	private JaxAdresse adresse;
 	@Nullable
@@ -56,6 +62,14 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 	private String kontoinhaber;
 	@Nullable
 	private JaxAdresse adresseKontoinhaber;
+	private boolean alterskategorieBaby;
+	private boolean alterskategorieVorschule;
+	private boolean alterskategorieKindergarten;
+	private boolean alterskategorieSchule;
+	private boolean subventioniertePlaetze;
+	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
+	@Nullable
+	private BigDecimal anzahlPlaetzeFirmen;
 
 
 	@Nullable
@@ -161,6 +175,81 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 
 	public void setTelefon(@Nullable String telefon) {
 		this.telefon = telefon;
+	}
+
+	@Nullable
+	public String getWebseite() {
+		return webseite;
+	}
+
+	public void setWebseite(@Nullable String webseite) {
+		this.webseite = webseite;
+	}
+
+	@Nullable
+	public String getOeffnungszeiten() {
+		return oeffnungszeiten;
+	}
+
+	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
+		this.oeffnungszeiten = oeffnungszeiten;
+	}
+
+	public boolean isAlterskategorieBaby() {
+		return alterskategorieBaby;
+	}
+
+	public void setAlterskategorieBaby(boolean alterskategorieBaby) {
+		this.alterskategorieBaby = alterskategorieBaby;
+	}
+
+	public boolean isAlterskategorieVorschule() {
+		return alterskategorieVorschule;
+	}
+
+	public void setAlterskategorieVorschule(boolean alterskategorieVorschule) {
+		this.alterskategorieVorschule = alterskategorieVorschule;
+	}
+
+	public boolean isAlterskategorieKindergarten() {
+		return alterskategorieKindergarten;
+	}
+
+	public void setAlterskategorieKindergarten(boolean alterskategorieKindergarten) {
+		this.alterskategorieKindergarten = alterskategorieKindergarten;
+	}
+
+	public boolean isAlterskategorieSchule() {
+		return alterskategorieSchule;
+	}
+
+	public void setAlterskategorieSchule(boolean alterskategorieSchule) {
+		this.alterskategorieSchule = alterskategorieSchule;
+	}
+
+	public boolean isSubventioniertePlaetze() {
+		return subventioniertePlaetze;
+	}
+
+	public void setSubventioniertePlaetze(boolean subventioniertePlaetze) {
+		this.subventioniertePlaetze = subventioniertePlaetze;
+	}
+
+	public BigDecimal getAnzahlPlaetze() {
+		return anzahlPlaetze;
+	}
+
+	public void setAnzahlPlaetze(BigDecimal anzahlPlaetze) {
+		this.anzahlPlaetze = anzahlPlaetze;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlPlaetzeFirmen() {
+		return anzahlPlaetzeFirmen;
+	}
+
+	public void setAnzahlPlaetzeFirmen(@Nullable BigDecimal anzahlPlaetzeFirmen) {
+		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
 	}
 
 }

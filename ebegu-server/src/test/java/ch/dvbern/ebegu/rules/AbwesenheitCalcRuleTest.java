@@ -65,8 +65,10 @@ public class AbwesenheitCalcRuleTest {
 		BemerkungsMerger.prepareGeneratedBemerkungen(zeitAbschnitt);
 
 		Assert.assertTrue(zeitAbschnitt.isBezahltVollkosten());
-		Assert.assertEquals("ABWESENHEIT: Ab dem 31. Tag einer Abwesenheit (Krankheit oder Unfall " +
-			"des Kinds und bei Mutterschaft ausgeschlossen) entfällt der Gutschein.", zeitAbschnitt.getBemerkungen());
+		Assert.assertEquals(
+			"Das Kind wird länger als 30 aufeinanderfolgende Kalendertage nicht familienergänzend betreut"
+				+ " (z.B. aufgrund einer längeren Reise). Deshalb wird kein Betreuungsgutschein mehr ausbezahlt (Art. 34u Abs. 1).",
+			zeitAbschnitt.getBemerkungen());
 
 	}
 

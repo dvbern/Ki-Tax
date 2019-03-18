@@ -14,6 +14,7 @@
  */
 
 import {IHttpPromise, IHttpService, ILogService, IPromise, IQService} from 'angular';
+import {TSSprache} from '../../../models/enums/TSSprache';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
@@ -25,11 +26,12 @@ export default class GesuchsperiodeRS {
     private activeGesuchsperiodenList: Array<TSGesuchsperiode>;
     private nichtAbgeschlosseneGesuchsperiodenList: Array<TSGesuchsperiode>;
 
-    public constructor(public http: IHttpService,
-                       REST_API: string,
-                       public ebeguRestUtil: EbeguRestUtil,
-                       public log: ILogService,
-                       private readonly $q: IQService,
+    public constructor(
+        public http: IHttpService,
+        REST_API: string,
+        public ebeguRestUtil: EbeguRestUtil,
+        public log: ILogService,
+        private readonly $q: IQService,
     ) {
         this.serviceURL = `${REST_API}gesuchsperioden`;
     }
@@ -81,12 +83,24 @@ export default class GesuchsperiodeRS {
         return this.$q.when(this.activeGesuchsperiodenList); // we need to return a promise
     }
 
+    public getAktivePeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
+        return this.http
+            .get(`${this.serviceURL}/aktive/gemeinde/${gemeindeId}`, {
+                params: {
+                    dossierId,
+                },
+            })
+            .then(response => {
+                return this.ebeguRestUtil.parseGesuchsperioden(response.data);
+            });
+    }
+
     public getAllPeriodenForGemeinde(gemeindeId: string, dossierId?: string): IPromise<TSGesuchsperiode[]> {
         return this.http
             .get(`${this.serviceURL}/gemeinde/${gemeindeId}`, {
                 params: {
                     dossierId,
-                }
+                },
             })
             .then(response => {
                 return this.ebeguRestUtil.parseGesuchsperioden(response.data);
@@ -116,17 +130,31 @@ export default class GesuchsperiodeRS {
         return this.$q.when(this.nichtAbgeschlosseneGesuchsperiodenList); // we need to return a promise
     }
 
-    public getAllNichtAbgeschlosseneNichtVerwendeteGesuchsperioden(dossierId: string): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/unclosed/${dossierId}`).then((response: any) => {
-            return this.ebeguRestUtil.parseGesuchsperioden(response.data);
-        });
-    }
-
     public getNewestGesuchsperiode(): IPromise<TSGesuchsperiode> {
         return this.http.get(`${this.serviceURL}/newestGesuchsperiode/`)
             .then((response: any) => {
                 this.log.debug('PARSING Gesuchsperiode REST object ', response.data);
                 return this.ebeguRestUtil.parseGesuchsperiode(new TSGesuchsperiode(), response.data);
+            });
+    }
+
+    public removeErlaeuterungVerfuegung(gesuchsperiodeId: string, sprache: TSSprache): IHttpPromise<TSGesuchsperiode> {
+        return this.http.delete(`${this.serviceURL}/erlauterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`);
+    }
+
+    public existErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<boolean> {
+        return this.http.get(`${this.serviceURL}/existErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public downloadErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<boolean> {
+        return this.http
+            .get(`${this.serviceURL}/downloadErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`,
+                {responseType: 'blob'})
+            .then((response: any) => {
+                return response.data;
             });
     }
 }

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<infinispan
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:infinispan:config:9.3 http://www.infinispan.org/schemas/infinispan-config:9.3"
+        xmlns="urn:infinispan:config:9.3"
+		xmlns:jdbc="urn:infinispan:config:store:jdbc:9.3">
+
+	<!-- *************************** -->
+	<!-- System-wide global settings -->
+	<!-- *************************** -->
+	<jgroups>
+		<!-- Note that the JGroups transport uses sensible defaults if no configuration
+			property is defined. See the JGroupsTransport javadocs for more flags.
+			jgroups-udp.xml is the default stack bundled in the Infinispan core jar: integration
+			and tuning are tested by Infinispan. -->
+		<stack-file name="default-jgroups-udp" path="default-configs/default-jgroups-udp.xml"/>
+		<!-- kiBon-jgroups-upd is based on default-jgroups-udp, but with reduced send and receive buffer sizes,
+		such that the buffer sizes match the OS (docker-container) allocated memory.
+		In case the performance is bad, adjust the OS buffer sizes instead.
+		https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/single/configuration_guide/index#configure_jgroups_send_receive_buffers
+		-->
+		<stack-file name="ebegu-jgroups-udp" path="ebegu-jgroups-udp.xml"/>
+	</jgroups>
+
+	<cache-container name="HibernateSearch" statistics="false" shutdown-hook="DONT_REGISTER">
+
+		<transport cluster="EBEGU Hibernate Search" stack="ebegu-jgroups-udp"/>
+
+		<!-- Duplicate domains are allowed so that multiple deployments with default fconfiguration
+			of Hibernate Search applications work - if possible it would be better to use JNDI to share
+			the CacheManager across applications -->
+		<jmx duplicate-domains="true"/>
+
+		<!-- *************************************** -->
+		<!--  Cache to store Lucene's file metadata  -->
+		<!-- *************************************** -->
+		<replicated-cache name="LuceneIndexesMetadata" mode="SYNC" remote-timeout="25000">
+			<locking striping="false" acquire-timeout="10000" concurrency-level="500"/>
+			<transaction mode="NONE"/>
+			<expiration max-idle="-1"/>
+			<indexing index="NONE"/>
+			<state-transfer enabled="true" timeout="480000" await-initial-transfer="true"/>
+			<persistence>
+				<jdbc:string-keyed-jdbc-store preload="true" shared="true" read-only="false" fetch-state="true"
+				                    key-to-string-mapper="org.infinispan.lucene.LuceneKey2StringMapper">
+					<write-behind/>
+					<jdbc:data-source jndi-url="java:/jdbc/ebegu_ejb_meta"/>
+					<jdbc:string-keyed-table prefix="hibernatesearch" create-on-start="true">
+						<jdbc:id-column name="ID_COLUMN" type="VARCHAR(255)"/>
+						<jdbc:data-column name="DATA_COLUMN" type="BLOB"/>
+						<jdbc:timestamp-column name="TIMESTAMP_COLUMN" type="BIGINT"/>
+					</jdbc:string-keyed-table>
+				</jdbc:string-keyed-jdbc-store>
+			</persistence>
+		</replicated-cache>
+
+		<!-- **************************** -->
+		<!--  Cache to store Lucene data  -->
+		<!-- **************************** -->
+		<distributed-cache name="LuceneIndexesData" mode="SYNC" remote-timeout="25000">
+			<locking striping="false" acquire-timeout="10000" concurrency-level="500"/>
+			<transaction mode="NONE"/>
+			<expiration max-idle="-1"/>
+			<indexing index="NONE"/>
+			<state-transfer enabled="true" timeout="480000" await-initial-transfer="true"/>
+
+			<persistence>
+				<jdbc:string-keyed-jdbc-store preload="true" shared="true" read-only="false" fetch-state="true"
+											  key-to-string-mapper="org.infinispan.lucene.LuceneKey2StringMapper">
+					<write-behind/>
+					<jdbc:data-source jndi-url="java:/jdbc/ebegu_ejb_meta"/>
+					<jdbc:string-keyed-table prefix="hibernatesearch" drop-on-exit="false" create-on-start="true">
+						<jdbc:id-column name="ID_COLUMN" type="VARCHAR(255)"/>
+						<jdbc:data-column name="DATA_COLUMN" type="BLOB"/>
+						<jdbc:timestamp-column name="TIMESTAMP_COLUMN" type="BIGINT"/>
+					</jdbc:string-keyed-table>
+				</jdbc:string-keyed-jdbc-store>
+			</persistence>
+		</distributed-cache>
+
+		<!-- ***************************** -->
+		<!--  Cache to store Lucene locks  -->
+		<!-- ***************************** -->
+		<replicated-cache name="LuceneIndexesLocking" mode="SYNC" remote-timeout="25000">
+			<locking striping="false" acquire-timeout="10000" concurrency-level="500"/>
+			<transaction mode="NONE"/>
+			<expiration max-idle="-1"/>
+			<indexing index="NONE"/>
+			<state-transfer enabled="true" timeout="480000" await-initial-transfer="true"/>
+		</replicated-cache>
+	</cache-container>
+
+</infinispan>

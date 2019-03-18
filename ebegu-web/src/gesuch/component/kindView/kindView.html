@@ -165,9 +165,6 @@
                             <div class="form-group">
                                 <span class="ebeguH1 required">
                                     <span data-translate="FAM_ERGAENZENDE_BETREUUNG"></span>
-                                    <dv-tooltip input-id="familienErgaenzendeBetreuung"
-                                                text="'FAM_ERGAENZENDE_BETREUUNG_HELP' | translate:'{ gemeinde: &quot;' + vm.gesuchModelManager.getDossier().gemeinde.name + '&quot;}'"
-                                    </dv-tooltip>
                                 </span>
                                 <span
                                     ng-if="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt() && vm.hasKindBetreuungen()"
@@ -227,7 +224,7 @@
                             <div class="form-group" ng-if="vm.getModel().familienErgaenzendeBetreuung">
                                 <span class="ebeguH1 required">
                                     <span data-translate="EINSCHULUNG"
-                                          data-translate-value-date="{{vm.getDatumEinschulung() | amDateFormat : 'DD.MM.YYYY'}}">
+                                          data-translate-value-jahr="{{vm.getYearEinschulung()}}">
                                     </span>
                                 </span>
                                 <div class="dv-select-style">
@@ -310,7 +307,7 @@
                                             id="fachstelle"
                                             ng-model="vm.fachstelleId"
                                             class="form-control"
-                                            ng-options="fachstelle.id as fachstelle.name for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
+                                            ng-options="fachstelle.id as fachstelle.name | translate for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
                                             ng-required="vm.isFachstelleRequired()"
                                             ng-change="vm.setSelectedFachsstelle()">
                                     </select>
@@ -410,6 +407,8 @@
                                              ng-change="vm.showAusserordentlicherAnspruchClicked()">
                                     <span data-translate="AUSSERORDENTLICHER_ANSPRUCH"></span>
                                 </md-checkbox>
+                                <dv-tooltip input-id="showAusserordentlicherAnspruch"
+                                            text="'AUSSERORDENTLICHER_ANSPRUCH_HINT' | translate"></dv-tooltip>
                                 <dv-error-messages for="vm.form.showAusserordentlicherAnspruch.$error"
                                                    class="error"></dv-error-messages>
                             </div>
@@ -498,7 +497,7 @@
                 <dv-navigation dv-cancel="vm.cancel()"
                                dv-next="!vm.isGesuchReadonly()"
                                dv-save="vm.save()" dv-sub-step="2"
-                               dv-translate-next="{{'SPEICHERN_UPPER'}}">
+                               dv-translate-next="{{'SPEICHERN'}}">
                 </dv-navigation>
             </form>
         </div>

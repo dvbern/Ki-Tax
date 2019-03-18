@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-@import "../../../style/variables.less";
+@import (reference) "../../../style/variables.less";
 
 @toolbar-height: 4rem;
 
@@ -35,7 +35,8 @@
 
     .dossier-list {
         margin-left: auto;
-
+        padding: 0 !important;
+        max-height: 30px !important;
         .dossier-element {
             background-color: @grey;
             color: @contrast-lightest;

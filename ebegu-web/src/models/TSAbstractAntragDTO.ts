@@ -21,10 +21,7 @@ export default class TSAbstractAntragDTO {
     private _dossierId: string;
     private _familienName: string;
 
-    public constructor(fallNummer?: number, dossierId?: string, familienName?: string) {
-        this._fallNummer = fallNummer;
-        this._dossierId = dossierId;
-        this._familienName = familienName;
+    public constructor() {
     }
 
     public get fallNummer(): number {

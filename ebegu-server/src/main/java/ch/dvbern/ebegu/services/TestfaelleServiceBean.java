@@ -32,6 +32,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -51,6 +52,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -63,6 +65,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
@@ -90,6 +93,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,6 +146,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private DossierService dossierService;
 	@Inject
 	private GemeindeService gemeindeService;
+	@Inject
+	private MailService mailService;
 
 	@Override
 	@Nonnull
@@ -637,6 +643,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		stammdaten.getAdresse().setOrt("Bern");
 		stammdaten.getAdresse().setPlz("3000");
 		stammdaten.getAdresse().setStrasse("Nussbaumstrasse");
+		stammdaten.setIban(new IBAN("CH93 0076 2011 6238 5295 7"));
+		stammdaten.setBic("BIC123");
+		stammdaten.setKontoinhaber("Inhaber");
 		gemeindeService.saveGemeindeStammdaten(stammdaten);
 	}
 
@@ -850,5 +859,61 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setSozialhilfeBezueger(false);
 		famsit.setVerguenstigungGewuenscht(true);
 		return famsit;
+	}
+
+	@Override
+	public void testAllMails(@Nonnull String mailadresse) {
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() -> new IllegalArgumentException());
+		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden().stream().findFirst().orElseThrow(() -> new IllegalArgumentException());;
+		Benutzer besitzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalStateException());
+		List<InstitutionStammdaten> institutionStammdatenList = getInstitutionsstammdatenForTestfaelle();
+		final Gesuch gesuch = createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, true, gemeinde),
+			true, null);
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Betreuung firstBetreuung = gesuch.getFirstBetreuung();
+		Objects.requireNonNull(firstBetreuung);
+
+		String oldAdresseUser = besitzer.getEmail();
+		String oldAdresseInstitution = firstBetreuung.getInstitutionStammdaten().getMail();
+
+		besitzer.setEmail(mailadresse);
+		firstBetreuung.getInstitutionStammdaten().setMail(mailadresse);
+
+		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail(mailadresse);
+		gesuch.getFall().setBesitzer(besitzer);
+
+		Mitteilung mitteilung = new Mitteilung();
+		mitteilung.setEmpfaenger(besitzer);
+		mitteilung.setBetreuung(firstBetreuung);
+		mitteilung.setDossier(gesuch.getDossier());
+
+		List<Gesuch> gesuche = new ArrayList<>();
+		gesuche.add(gesuch);
+		Einladung einladung = Einladung.forMitarbeiter(besitzer);
+
+		try {
+			mailService.sendInfoBetreuungenBestaetigt(gesuch);
+			mailService.sendInfoBetreuungAbgelehnt(firstBetreuung);
+			mailService.sendInfoSchulamtAnmeldungUebernommen(firstBetreuung);
+			mailService.sendInfoSchulamtAnmeldungAbgelehnt(firstBetreuung);
+			mailService.sendInfoMitteilungErhalten(mitteilung);
+			mailService.sendInfoVerfuegtGesuch(gesuch);
+			mailService.sendInfoVerfuegtMutation(gesuch);
+			mailService.sendInfoMahnung(gesuch);
+			mailService.sendWarnungGesuchNichtFreigegeben(gesuch, 10);
+			mailService.sendWarnungFreigabequittungFehlt(gesuch, 10);
+			mailService.sendInfoGesuchGeloescht(gesuch);
+			mailService.sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch);
+			mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
+			mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
+			mailService.sendBenutzerEinladung(besitzer, einladung);
+			mailService.sendInfoGesuchGeloescht(gesuch);
+		} catch (MailException e) {
+			LOG.error("Could not send Mails", e);
+		} finally {
+			besitzer.setEmail(oldAdresseUser);
+			gesuch.getFall().setBesitzer(null);
+			firstBetreuung.getInstitutionStammdaten().setMail(oldAdresseInstitution);
+		}
 	}
 }

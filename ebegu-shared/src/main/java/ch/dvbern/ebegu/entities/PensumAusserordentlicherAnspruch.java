@@ -57,7 +57,10 @@ public class PensumAusserordentlicherAnspruch extends AbstractIntegerPensum {
 	}
 
 	@Nonnull
-	public PensumAusserordentlicherAnspruch copyPensumAusserordentlicherAnspruch(@Nonnull PensumAusserordentlicherAnspruch target, @Nonnull AntragCopyType copyType) {
+	public PensumAusserordentlicherAnspruch copyPensumAusserordentlicherAnspruch(
+		@Nonnull PensumAusserordentlicherAnspruch target,
+		@Nonnull AntragCopyType copyType
+	) {
 		super.copyAbstractPensumEntity(target, copyType);
 		target.setBegruendung(this.getBegruendung());
 		return target;

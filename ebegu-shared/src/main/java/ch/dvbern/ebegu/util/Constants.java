@@ -32,8 +32,8 @@ public final class Constants {
 	public static final int DB_DEFAULT_MAX_LENGTH = 255;
 	public static final int DB_TEXTAREA_LENGTH = 4000;
 	public static final int DB_DEFAULT_SHORT_LENGTH = 100;
-	public static final int ONE_MEG = 1048576;
-	public static final int TEN_MEG = 10485760;
+	public static final int ONE_MB = 1048576;
+	public static final int TEN_MB = 10485760;
 
 	public static final int UUID_LENGTH = 36;
 

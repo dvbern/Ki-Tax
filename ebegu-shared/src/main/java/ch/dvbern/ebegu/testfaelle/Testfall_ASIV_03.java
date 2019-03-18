@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -86,9 +87,9 @@ public class Testfall_ASIV_03 extends AbstractASIVTestfall {
 	public Gesuch createMutation(Gesuch erstgesuch) {
 		// Gesuch, Gesuchsteller
 		// Einkommensverschlechterug
-		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(
-			erstgesuch, LocalDate.of(gesuchsperiode.getBasisJahrPlus1(), Month.OCTOBER, 15), null);
-		ekvContainer.getEkvJABasisJahrPlus1().setNettolohnJan(MathUtil.DEFAULT.from(49000));
+		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, true, false);
+		ekvContainer.getEkvJABasisJahrPlus1().setNettolohn(MathUtil.DEFAULT.from(49000));
+		Objects.requireNonNull(erstgesuch.getGesuchsteller1());
 		erstgesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(ekvContainer);
 		return erstgesuch;
 	}

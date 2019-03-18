@@ -30,14 +30,26 @@ public enum ReportVorlage {
 
 	// Achtung mit Filename, da mehrere Dokumente mit gleichem Namen aber unterschiedlichem Inhalt gespeichert werden.
 	// Falls der Name geaendert wuerde, muesste das File wieder geloescht werden.
-	VORLAGE_REPORT_GESUCH_STICHTAG(
-		"/reporting/GesuchStichtag.xlsx",
+	VORLAGE_REPORT_GESUCH_STICHTAG_DE(
+		"/reporting/GesuchStichtag_DE.xlsx",
 		ReportFileName.GESUCH_STICHTAG,
 		Constants.DATA,
 		MergeFieldGesuchStichtag.class
 	),
-	VORLAGE_REPORT_GESUCH_ZEITRAUM(
-		"/reporting/GesuchZeitraum.xlsx",
+	VORLAGE_REPORT_GESUCH_STICHTAG_FR(
+		"/reporting/GesuchStichtag_FR.xlsx",
+		ReportFileName.GESUCH_STICHTAG,
+		Constants.DATA,
+		MergeFieldGesuchStichtag.class
+	),
+	VORLAGE_REPORT_GESUCH_ZEITRAUM_DE(
+		"/reporting/GesuchZeitraum_DE.xlsx",
+		ReportFileName.GESUCH_ZEITRAUM,
+		Constants.DATA,
+		MergeFieldGesuchZeitraum.class
+	),
+	VORLAGE_REPORT_GESUCH_ZEITRAUM_FR(
+		"/reporting/GesuchZeitraum_FR.xlsx",
 		ReportFileName.GESUCH_ZEITRAUM,
 		Constants.DATA,
 		MergeFieldGesuchZeitraum.class
@@ -149,7 +161,8 @@ public enum ReportVorlage {
 		}
 
 		if (UserRole.getSchulamtRoles().contains(role)) {
-			return vorlage == VORLAGE_REPORT_GESUCH_STICHTAG || vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM
+			return vorlage == VORLAGE_REPORT_GESUCH_STICHTAG_DE || vorlage == VORLAGE_REPORT_GESUCH_STICHTAG_FR
+				|| vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM_DE || vorlage == VORLAGE_REPORT_GESUCH_ZEITRAUM_FR
 				|| vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_GESUCHSTELLER
 				|| vorlage == VORLAGE_REPORT_BENUTZER || vorlage == VORLAGE_REPORT_MASSENVERSAND;
 		}

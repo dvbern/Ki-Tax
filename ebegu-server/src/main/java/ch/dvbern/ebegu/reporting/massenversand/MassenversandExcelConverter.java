@@ -76,6 +76,7 @@ public class MassenversandExcelConverter implements ExcelConverter {
 		data.forEach(dataRow -> {
 			ExcelMergerDTO fallRowGroup = excelMerger.createGroup(MergeFieldMassenversand.repeatRow);
 			fallRowGroup.addValue(MergeFieldMassenversand.gesuchsperiode, dataRow.getGesuchsperiode());
+			fallRowGroup.addValue(MergeFieldMassenversand.gemeinde, dataRow.getGemeinde());
 			fallRowGroup.addValue(MergeFieldMassenversand.fall, dataRow.getFall());
 			fallRowGroup.addValue(MergeFieldMassenversand.gs1Name, dataRow.getGs1Name());
 			fallRowGroup.addValue(MergeFieldMassenversand.gs1Vorname, dataRow.getGs1Vorname());
@@ -107,6 +108,7 @@ public class MassenversandExcelConverter implements ExcelConverter {
 	}
 
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
+		excelMerger.addValue(MergeFieldMassenversand.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
 		excelMerger.addValue(MergeFieldMassenversand.serienbriefeTitle, ServerMessageUtil.getMessage("Reports_serienbriefeTitle", locale));
 		excelMerger.addValue(MergeFieldMassenversand.parameterTitle, ServerMessageUtil.getMessage("Reports_parameterTitle", locale));
 		excelMerger.addValue(MergeFieldMassenversand.vonTitle, ServerMessageUtil.getMessage("Reports_vonTitle", locale));

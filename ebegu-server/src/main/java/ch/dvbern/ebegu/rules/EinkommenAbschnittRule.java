@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -57,22 +58,16 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			boolean hasEKV1 = false;
 
 			// Einkommensverschlechterung 1: In mind. 1 Kombination eingegeben
-			if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() != null || finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus1() != null) {
-				LocalDate startEKV1 = finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() != null
-					? finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1()
-					: finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus1();
-				LocalDate stichtagEKV1 = getStichtagForEreignis(startEKV1);
+			if (finanzDatenDTOAlleine.isEkv1Erfasst() || finanzDatenDTOZuZweit.isEkv1Erfasst()) {
+				LocalDate stichtagEKV1 = LocalDate.of(betreuung.extractGesuchsperiode().getBasisJahrPlus1(), Month.JANUARY, 1);
 				DateRange rangeEKV1 = new DateRange(stichtagEKV1, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
 
-				if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus1() != null) {
-					// EKV1 fuer alleine erfasst
-					abschnittEinkommensverschlechterung1.setEkv1Alleine(true);
-				}
-				if (finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus1() != null) {
-					// EKV1 fuer zu Zweit erfasst
-					abschnittEinkommensverschlechterung1.setEkv1ZuZweit(true);
-				}
+				// EKV1 fuer alleine erfasst
+				abschnittEinkommensverschlechterung1.setEkv1Alleine(finanzDatenDTOAlleine.isEkv1Erfasst());
+				// EKV1 fuer zu Zweit erfasst
+				abschnittEinkommensverschlechterung1.setEkv1ZuZweit(finanzDatenDTOZuZweit.isEkv1Erfasst());
+
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung1);
 				// Den vorherigen Zeitabschnitt beenden
 				lastAbschnitt.getGueltigkeit().endOnDayBefore(abschnittEinkommensverschlechterung1.getGueltigkeit());
@@ -81,23 +76,17 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			}
 
 			// Einkommensverschlechterung 2: In mind. 1 Kombination akzeptiert
-			if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() != null || finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus2() != null) {
-				LocalDate startEKV2 = finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() != null
-					? finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2()
-					: finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus2();
-				LocalDate stichtagEKV2 = getStichtagForEreignis(startEKV2);
+			if (finanzDatenDTOAlleine.isEkv2Erfasst() || finanzDatenDTOZuZweit.isEkv2Erfasst()) {
+				LocalDate stichtagEKV2 = LocalDate.of(betreuung.extractGesuchsperiode().getBasisJahrPlus2(), Month.JANUARY, 1);
 				DateRange rangeEKV2 = new DateRange(stichtagEKV2, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
 				abschnittEinkommensverschlechterung2.setEkv1NotExisting(!hasEKV1);
 
-				if (finanzDatenDTOAlleine.getDatumVonBasisjahrPlus2() != null) {
-					// EKV2 fuer alleine erfasst
-					abschnittEinkommensverschlechterung2.setEkv2Alleine(true);
-				}
-				if (finanzDatenDTOZuZweit.getDatumVonBasisjahrPlus2() != null) {
-					// EKV2 fuer zu Zweit erfasst
-					abschnittEinkommensverschlechterung2.setEkv2ZuZweit(true);
-				}
+				// EKV2 fuer alleine erfasst
+				abschnittEinkommensverschlechterung2.setEkv2Alleine(finanzDatenDTOAlleine.isEkv2Erfasst());
+				// EKV2 fuer zu Zweit erfasst
+				abschnittEinkommensverschlechterung2.setEkv2ZuZweit(finanzDatenDTOZuZweit.isEkv2Erfasst());
+
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung2);
 				// Den vorherigen Zeitabschnitt beenden
 				lastAbschnitt.getGueltigkeit().endOnDayBefore(abschnittEinkommensverschlechterung2.getGueltigkeit());

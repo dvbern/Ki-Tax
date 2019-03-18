@@ -16,13 +16,18 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, ILogService} from 'angular';
 import * as moment from 'moment';
+import {MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
+import {UploadRS} from '../../../app/core/service/uploadRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {OkHtmlDialogController} from '../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
 import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {getTSGesuchsperiodeStatusValues, TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
+import {TSSprache} from '../../../models/enums/TSSprache';
 import TSEinstellung from '../../../models/TSEinstellung';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import {TSDateRange} from '../../../models/types/TSDateRange';
@@ -30,8 +35,10 @@ import EbeguUtil from '../../../utils/EbeguUtil';
 import AbstractAdminViewController from '../../abstractAdminView';
 import {IGesuchsperiodeStateParams} from '../../admin.route';
 import {EinstellungRS} from '../../service/einstellungRS.rest';
+import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../../gesuch/dialog/removeDialogTemplate.html');
+const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 
 export class GesuchsperiodeViewComponentConfig implements IComponentOptions {
     public transclude: boolean = false;
@@ -50,6 +57,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         '$log',
         '$stateParams',
         '$state',
+        '$translate',
+        'UploadRS',
+        'DownloadRS',
         'AuthServiceRS',
     ];
 
@@ -61,6 +71,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     public datumFreischaltungTagesschule: moment.Moment;
     public datumFreischaltungMax: moment.Moment;
 
+    public isErlaeuterungDE: boolean = false;
+    public isErlaeuterungFR: boolean = false;
+
     public constructor(
         private readonly einstellungenRS: EinstellungRS,
         private readonly dvDialog: DvDialog,
@@ -69,6 +82,9 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         private readonly $log: ILogService,
         private readonly $stateParams: IGesuchsperiodeStateParams,
         private readonly $state: StateService,
+        private readonly $translate: ITranslateService,
+        private readonly uploadRS: UploadRS,
+        private readonly downloadRS: DownloadRS,
         authServiceRS: AuthServiceRS,
     ) {
         super(authServiceRS);
@@ -84,6 +100,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         this.gesuchsperiodeRS.findGesuchsperiode(this.$stateParams.gesuchsperiodeId).then((found: TSGesuchsperiode) => {
             this.setSelectedGesuchsperiode(found);
             this.initialStatus = this.gesuchsperiode.status;
+
+            this.updateExistErlaeuterung(this.gesuchsperiode);
         });
     }
 
@@ -169,16 +187,21 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public createGesuchsperiode(): void {
-        this.gesuchsperiodeRS.getNewestGesuchsperiode().then(newestGeuschsperiode => {
+        this.gesuchsperiodeRS.getNewestGesuchsperiode().then(newestGesuchsperiode => {
             this.gesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.ENTWURF, new TSDateRange());
             this.initialStatus = undefined; // initialStatus ist undefined for new created Gesuchsperioden
             this.datumFreischaltungTagesschule = undefined;
             this.gesuchsperiode.gueltigkeit.gueltigAb =
-                newestGeuschsperiode.gueltigkeit.gueltigAb.clone().add(1, 'years');
+                newestGesuchsperiode.gueltigkeit.gueltigAb.clone().add(1, 'years');
             this.gesuchsperiode.gueltigkeit.gueltigBis =
-                newestGeuschsperiode.gueltigkeit.gueltigBis.clone().add(1, 'years');
+                newestGesuchsperiode.gueltigkeit.gueltigBis.clone().add(1, 'years');
             this.gesuchsperiode.datumFreischaltungTagesschule = this.gesuchsperiode.gueltigkeit.gueltigAb;
             this.datumFreischaltungMax = this.getDatumFreischaltungMax();
+
+            // we need to check for erlaeuterung already here, because the server wont send any information back and we
+            // do not want to reloade the page
+            this.updateExistErlaeuterung(newestGesuchsperiode);
+
         });
         this.gesuchsperiode = undefined;
     }
@@ -234,5 +257,61 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
         const gueltigAb = angular.copy(this.gesuchsperiode.gueltigkeit.gueltigAb);
 
         return gueltigAb.subtract(1, 'days');
+    }
+
+    public uploadErlaeuterung(file: any[], sprache: TSSprache): void {
+
+        if (file.length <= 0) {
+            return;
+        }
+
+        const selectedFile = file[0];
+        if (selectedFile.size > MAX_FILE_SIZE) {
+            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                title: this.$translate.instant('FILE_ZU_GROSS'),
+            });
+        }
+        this.uploadRS.uploadErlaeuterungVerfuegung(selectedFile, sprache, this.gesuchsperiode.id)
+            .then(() => {
+                this.setErlauterungBoolean(true, sprache);
+            });
+    }
+
+    public removeErlaeuterung(sprache: TSSprache): void {
+        this.gesuchsperiodeRS.removeErlaeuterungVerfuegung(this.gesuchsperiode.id, sprache)
+            .then(() => {
+                this.setErlauterungBoolean(false, sprache);
+            });
+    }
+
+    public downloadErlaeuterung(sprache: TSSprache): void {
+        const win = this.downloadRS.prepareDownloadWindow();
+        this.gesuchsperiodeRS.downloadErlaeuterung(this.gesuchsperiode.id, sprache).then(response => {
+            const file = new Blob([response], {type: 'application/pdf'});
+            const fileURL = URL.createObjectURL(file);
+            this.downloadRS.redirectWindowToDownloadWhenReady(win, fileURL, '');
+        });
+    }
+
+    private setErlauterungBoolean(value: boolean, sprache: TSSprache): void {
+        switch (sprache) {
+            case TSSprache.FRANZOESISCH:
+                this.isErlaeuterungFR = value;
+                break;
+            case TSSprache.DEUTSCH:
+                this.isErlaeuterungDE = value;
+                break;
+            default:
+                return;
+        }
+    }
+
+    private updateExistErlaeuterung(gesuchsperiode: TSGesuchsperiode): void {
+        this.gesuchsperiodeRS.existErlaeuterung(gesuchsperiode.id, TSSprache.DEUTSCH).then(result => {
+            this.isErlaeuterungDE = !!result;
+        });
+        this.gesuchsperiodeRS.existErlaeuterung(gesuchsperiode.id, TSSprache.FRANZOESISCH).then(result => {
+            this.isErlaeuterungFR = !!result;
+        });
     }
 }

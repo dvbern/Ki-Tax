@@ -125,6 +125,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 			|| path.startsWith(apiBasePath + "/schulamt/heartbeat")
 			|| path.startsWith(apiBasePath + "/auth/portalAccountPage")
 			|| path.startsWith(apiBasePath + "/auth/singleSignOn")
+			|| path.startsWith(apiBasePath + "/auth/connectorPing")
 			|| path.startsWith(apiBasePath + "/auth/singleLogout")
 			|| path.startsWith(apiBasePath + "/swagger.json")
 			|| path.startsWith(request.getContextPath() + "/ebeguTestLogin.jsp")

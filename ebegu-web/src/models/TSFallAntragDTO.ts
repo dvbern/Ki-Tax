@@ -29,8 +29,7 @@ export default class TSFallAntragDTO extends TSAbstractAntragDTO {
 
     private _fallID: string;
 
-    public constructor(fallID?: string, dossierId?: string, fallNummer?: number, familienName?: string) {
-        super(fallNummer, dossierId, familienName);
-        this._fallID = fallID;
+    public constructor() {
+        super();
     }
 }

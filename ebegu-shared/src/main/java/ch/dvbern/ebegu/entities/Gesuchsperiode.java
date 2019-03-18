@@ -16,22 +16,29 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
+
+import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 
 /**
  * Entity fuer Gesuchsperiode.
@@ -41,6 +48,7 @@ import org.hibernate.envers.Audited;
 public class Gesuchsperiode extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -9132257370971574570L;
+	public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
 	@NotNull
 	@Column(nullable = false)
@@ -58,6 +66,19 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 	@Nullable
 	@Column(nullable = true)
 	private LocalDate datumErsterSchultag;
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] verfuegungErlaeuterungenDe;
+
+
+	@Nullable
+	@Column(nullable = true, length = TEN_MB) // 10 megabytes
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] verfuegungErlaeuterungenFr;
 
 
 	public GesuchsperiodeStatus getStatus() {
@@ -104,6 +125,55 @@ public class Gesuchsperiode extends AbstractDateRangedEntity {
 
 	public void setDatumErsterSchultag(@Nullable LocalDate datumErsterSchultag) {
 		this.datumErsterSchultag = datumErsterSchultag;
+	}
+
+	@Nonnull
+	public byte[] getVerfuegungErlaeuterungenDe() {
+		if (verfuegungErlaeuterungenDe == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(verfuegungErlaeuterungenDe, verfuegungErlaeuterungenDe.length);
+	}
+
+	public void setVerfuegungErlaeuterungenDe(@Nullable byte[] verfuegungErlaeuterungenDe) {
+		if (verfuegungErlaeuterungenDe == null) {
+			this.verfuegungErlaeuterungenDe = null;
+		} else {
+			this.verfuegungErlaeuterungenDe = Arrays.copyOf(verfuegungErlaeuterungenDe, verfuegungErlaeuterungenDe.length);
+		}
+	}
+
+	@Nonnull
+	public byte[] getVerfuegungErlaeuterungenFr() {
+		if (verfuegungErlaeuterungenFr == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(verfuegungErlaeuterungenFr, verfuegungErlaeuterungenFr.length);
+	}
+
+	public void setVerfuegungErlaeuterungenFr(@Nullable byte[] verfuegungErlaeuterungenFr) {
+		if (verfuegungErlaeuterungenFr == null) {
+			this.verfuegungErlaeuterungenFr = null;
+		} else {
+			this.verfuegungErlaeuterungenFr = Arrays.copyOf(verfuegungErlaeuterungenFr, verfuegungErlaeuterungenFr.length);
+		}
+	}
+
+	/**
+	 * Returns the correct VerfuegungErlaeuterung for the given language
+	 */
+	@Nonnull
+	public byte[] getVerfuegungErlaeuterungWithSprache(
+		@Nonnull Sprache sprache
+	) {
+		switch (sprache) {
+		case DEUTSCH:
+			return this.getVerfuegungErlaeuterungenDe();
+		case FRANZOESISCH:
+			return this.getVerfuegungErlaeuterungenFr();
+		default:
+			return EMPTY_BYTE_ARRAY;
+		}
 	}
 
 	@SuppressWarnings({ "OverlyComplexBooleanExpression" })

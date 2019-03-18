@@ -14,7 +14,6 @@
  */
 
 import {IComponentOptions} from 'angular';
-import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
@@ -309,8 +308,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.getModel() && this.getModel().familienErgaenzendeBetreuung && this.showAusserordentlicherAnspruch;
     }
 
-    public getDatumEinschulung(): moment.Moment {
-        return this.gesuchModelManager.getGesuchsperiodeBegin();
+    public getYearEinschulung(): number {
+        return this.gesuchModelManager.getGesuchsperiodeBegin().year();
     }
 
     public getTextFachstelleKorrekturJA(): string {
@@ -334,7 +333,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private initEmptyKind(kindNumber: number): TSKindContainer {
-        const tsKindContainer = new TSKindContainer(undefined, new TSKind());
+        const tsKindContainer = new TSKindContainer();
+        tsKindContainer.kindGS = undefined;
+        tsKindContainer.kindJA = new TSKind();
         tsKindContainer.kindNummer = kindNumber;
         return tsKindContainer;
     }
