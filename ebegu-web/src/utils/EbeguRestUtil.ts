@@ -87,6 +87,7 @@ import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import TSInstitution from '../models/TSInstitution';
 import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenFerieninsel from '../models/TSInstitutionStammdatenFerieninsel';
+import TSInstitutionStammdatenSummary from '../models/TSInstitutionStammdatenSummary';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
 import TSKind from '../models/TSKind';
 import TSKindContainer from '../models/TSKindContainer';
@@ -1050,7 +1051,7 @@ export default class EbeguRestUtil {
     }
 
     public institutionStammdatenToRestObject(restInstitutionStammdaten: any,
-                                             institutionStammdaten: TSInstitutionStammdaten,
+                                             institutionStammdaten: TSInstitutionStammdatenSummary,
     ): any {
         if (institutionStammdaten) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdaten, institutionStammdaten);
@@ -1083,13 +1084,11 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseInstitutionStammdaten(institutionStammdatenTS: TSInstitutionStammdaten,
-                                      institutionStammdatenFromServer: any,
-    ): TSInstitutionStammdaten {
+    public parseInstitutionStammdatenSummary(institutionStammdatenTS: TSInstitutionStammdatenSummary,
+                                             institutionStammdatenFromServer: any,
+    ): TSInstitutionStammdatenSummary {
         if (institutionStammdatenFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTS, institutionStammdatenFromServer);
-            institutionStammdatenTS.administratoren = institutionStammdatenFromServer.administratoren;
-            institutionStammdatenTS.sachbearbeiter = institutionStammdatenFromServer.sachbearbeiter;
             institutionStammdatenTS.betreuungsangebotTyp = institutionStammdatenFromServer.betreuungsangebotTyp;
             institutionStammdatenTS.institution =
                 this.parseInstitution(new TSInstitution(), institutionStammdatenFromServer.institution);
@@ -1116,6 +1115,18 @@ export default class EbeguRestUtil {
             institutionStammdatenTS.institutionStammdatenFerieninsel =
                 this.parseInstitutionStammdatenFerieninsel(new TSInstitutionStammdatenFerieninsel(),
                     institutionStammdatenFromServer.institutionStammdatenFerieninsel);
+            return institutionStammdatenTS;
+        }
+        return undefined;
+    }
+
+    public parseInstitutionStammdaten(institutionStammdatenTS: TSInstitutionStammdaten,
+                                      institutionStammdatenFromServer: any,
+    ): TSInstitutionStammdaten {
+        if (institutionStammdatenFromServer) {
+            this.parseInstitutionStammdatenSummary(institutionStammdatenTS, institutionStammdatenFromServer);
+            institutionStammdatenTS.administratoren = institutionStammdatenFromServer.administratoren;
+            institutionStammdatenTS.sachbearbeiter = institutionStammdatenFromServer.sachbearbeiter;
             return institutionStammdatenTS;
         }
         return undefined;
@@ -1238,7 +1249,6 @@ export default class EbeguRestUtil {
         this.abstractfinanzielleSituationToRestObject(restFinanzielleSituation, finanzielleSituation);
         restFinanzielleSituation.steuerveranlagungErhalten = finanzielleSituation.steuerveranlagungErhalten;
         restFinanzielleSituation.steuererklaerungAusgefuellt = finanzielleSituation.steuererklaerungAusgefuellt || false;
-        restFinanzielleSituation.nettolohn = finanzielleSituation.nettolohn;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         return restFinanzielleSituation;
@@ -1249,6 +1259,7 @@ export default class EbeguRestUtil {
         abstractFinanzielleSituation: TSAbstractFinanzielleSituation,
     ): TSAbstractFinanzielleSituation {
         this.abstractMutableEntityToRestObject(restAbstractFinanzielleSituation, abstractFinanzielleSituation);
+        restAbstractFinanzielleSituation.nettolohn = abstractFinanzielleSituation.nettolohn;
         restAbstractFinanzielleSituation.familienzulage = abstractFinanzielleSituation.familienzulage;
         restAbstractFinanzielleSituation.ersatzeinkommen = abstractFinanzielleSituation.ersatzeinkommen;
         restAbstractFinanzielleSituation.erhalteneAlimente = abstractFinanzielleSituation.erhalteneAlimente;
@@ -1266,6 +1277,7 @@ export default class EbeguRestUtil {
     ): TSAbstractFinanzielleSituation {
         if (abstractFinanzielleSituationFromServer) {
             this.parseAbstractMutableEntity(abstractFinanzielleSituationTS, abstractFinanzielleSituationFromServer);
+            abstractFinanzielleSituationTS.nettolohn = abstractFinanzielleSituationFromServer.nettolohn;
             abstractFinanzielleSituationTS.familienzulage = abstractFinanzielleSituationFromServer.familienzulage;
             abstractFinanzielleSituationTS.ersatzeinkommen = abstractFinanzielleSituationFromServer.ersatzeinkommen;
             abstractFinanzielleSituationTS.erhalteneAlimente = abstractFinanzielleSituationFromServer.erhalteneAlimente;
@@ -1289,7 +1301,6 @@ export default class EbeguRestUtil {
                 finanzielleSituationFromServer.steuerveranlagungErhalten;
             finanzielleSituationTS.steuererklaerungAusgefuellt =
                 finanzielleSituationFromServer.steuererklaerungAusgefuellt;
-            finanzielleSituationTS.nettolohn = finanzielleSituationFromServer.nettolohn;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus2 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
@@ -1359,19 +1370,6 @@ export default class EbeguRestUtil {
         einkommensverschlechterung: TSEinkommensverschlechterung,
     ): TSEinkommensverschlechterung {
         this.abstractfinanzielleSituationToRestObject(restEinkommensverschlechterung, einkommensverschlechterung);
-        restEinkommensverschlechterung.nettolohnJan = einkommensverschlechterung.nettolohnJan;
-        restEinkommensverschlechterung.nettolohnFeb = einkommensverschlechterung.nettolohnFeb;
-        restEinkommensverschlechterung.nettolohnMrz = einkommensverschlechterung.nettolohnMrz;
-        restEinkommensverschlechterung.nettolohnApr = einkommensverschlechterung.nettolohnApr;
-        restEinkommensverschlechterung.nettolohnMai = einkommensverschlechterung.nettolohnMai;
-        restEinkommensverschlechterung.nettolohnJun = einkommensverschlechterung.nettolohnJun;
-        restEinkommensverschlechterung.nettolohnJul = einkommensverschlechterung.nettolohnJul;
-        restEinkommensverschlechterung.nettolohnAug = einkommensverschlechterung.nettolohnAug;
-        restEinkommensverschlechterung.nettolohnSep = einkommensverschlechterung.nettolohnSep;
-        restEinkommensverschlechterung.nettolohnOkt = einkommensverschlechterung.nettolohnOkt;
-        restEinkommensverschlechterung.nettolohnNov = einkommensverschlechterung.nettolohnNov;
-        restEinkommensverschlechterung.nettolohnDez = einkommensverschlechterung.nettolohnDez;
-        restEinkommensverschlechterung.nettolohnZus = einkommensverschlechterung.nettolohnZus;
         restEinkommensverschlechterung.geschaeftsgewinnBasisjahrMinus1 =
             einkommensverschlechterung.geschaeftsgewinnBasisjahrMinus1;
         return restEinkommensverschlechterung;
@@ -1419,19 +1417,6 @@ export default class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
-        einkommensverschlechterungTS.nettolohnJan = einkommensverschlechterungFromServer.nettolohnJan;
-        einkommensverschlechterungTS.nettolohnFeb = einkommensverschlechterungFromServer.nettolohnFeb;
-        einkommensverschlechterungTS.nettolohnMrz = einkommensverschlechterungFromServer.nettolohnMrz;
-        einkommensverschlechterungTS.nettolohnApr = einkommensverschlechterungFromServer.nettolohnApr;
-        einkommensverschlechterungTS.nettolohnMai = einkommensverschlechterungFromServer.nettolohnMai;
-        einkommensverschlechterungTS.nettolohnJun = einkommensverschlechterungFromServer.nettolohnJun;
-        einkommensverschlechterungTS.nettolohnJul = einkommensverschlechterungFromServer.nettolohnJul;
-        einkommensverschlechterungTS.nettolohnAug = einkommensverschlechterungFromServer.nettolohnAug;
-        einkommensverschlechterungTS.nettolohnSep = einkommensverschlechterungFromServer.nettolohnSep;
-        einkommensverschlechterungTS.nettolohnOkt = einkommensverschlechterungFromServer.nettolohnOkt;
-        einkommensverschlechterungTS.nettolohnNov = einkommensverschlechterungFromServer.nettolohnNov;
-        einkommensverschlechterungTS.nettolohnDez = einkommensverschlechterungFromServer.nettolohnDez;
-        einkommensverschlechterungTS.nettolohnZus = einkommensverschlechterungFromServer.nettolohnZus;
         einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
             einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
         return einkommensverschlechterungTS;

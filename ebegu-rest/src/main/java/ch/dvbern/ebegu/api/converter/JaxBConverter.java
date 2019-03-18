@@ -94,6 +94,8 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
@@ -1301,21 +1303,11 @@ public class JaxBConverter extends AbstractConverter {
 		return institution;
 	}
 
-	public JaxInstitutionStammdaten institutionStammdatenToJAX(
-		@Nonnull final InstitutionStammdaten persistedInstStammdaten) {
-		final JaxInstitutionStammdaten jaxInstStammdaten = new JaxInstitutionStammdaten();
+	public <T extends JaxAbstractInstitutionStammdaten> T institutionStammdatenSummaryToJAX(
+		@Nonnull final InstitutionStammdaten persistedInstStammdaten,
+		@Nonnull final T jaxInstStammdaten
+	) {
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
-
-		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
-			persistedInstStammdaten.getInstitution());
-		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
-			persistedInstStammdaten.getInstitution());
-		jaxInstStammdaten.setAdministratoren(administratoren.stream()
-			.map(Benutzer::getFullName)
-			.collect(Collectors.joining(", ")));
-		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
-			.map(Benutzer::getFullName)
-			.collect(Collectors.joining(", ")));
 
 		if (persistedInstStammdaten.getIban() != null) {
 			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
@@ -1348,6 +1340,24 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
+		return jaxInstStammdaten;
+	}
+
+	public JaxInstitutionStammdaten institutionStammdatenToJAX(
+		@Nonnull final InstitutionStammdaten persistedInstStammdaten
+	) {
+		final JaxInstitutionStammdaten jaxInstStammdaten = institutionStammdatenSummaryToJAX(persistedInstStammdaten, new JaxInstitutionStammdaten());
+
+		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
+			persistedInstStammdaten.getInstitution());
+		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
+			persistedInstStammdaten.getInstitution());
+		jaxInstStammdaten.setAdministratoren(administratoren.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
 		return jaxInstStammdaten;
 	}
 
@@ -1893,6 +1903,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(abstractFinanzielleSituationJAXP);
 
 		convertAbstractVorgaengerFieldsToEntity(abstractFinanzielleSituationJAXP, abstractFinanzielleSituation);
+		abstractFinanzielleSituation.setNettolohn(abstractFinanzielleSituationJAXP.getNettolohn());
 		abstractFinanzielleSituation.setFamilienzulage(abstractFinanzielleSituationJAXP.getFamilienzulage());
 		abstractFinanzielleSituation.setErsatzeinkommen(abstractFinanzielleSituationJAXP.getErsatzeinkommen());
 		abstractFinanzielleSituation.setErhalteneAlimente(abstractFinanzielleSituationJAXP.getErhalteneAlimente());
@@ -1913,6 +1924,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		convertAbstractVorgaengerFieldsToJAX(persistedAbstractFinanzielleSituation, jaxAbstractFinanzielleSituation);
+		jaxAbstractFinanzielleSituation.setNettolohn(persistedAbstractFinanzielleSituation.getNettolohn());
 		jaxAbstractFinanzielleSituation.setFamilienzulage(persistedAbstractFinanzielleSituation.getFamilienzulage());
 		jaxAbstractFinanzielleSituation.setErsatzeinkommen(persistedAbstractFinanzielleSituation.getErsatzeinkommen());
 		jaxAbstractFinanzielleSituation.setErhalteneAlimente(persistedAbstractFinanzielleSituation.getErhalteneAlimente());
@@ -1932,7 +1944,6 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituationToEntity(finanzielleSituationJAXP, finanzielleSituation);
 		finanzielleSituation.setSteuerveranlagungErhalten(finanzielleSituationJAXP.getSteuerveranlagungErhalten());
 		finanzielleSituation.setSteuererklaerungAusgefuellt(finanzielleSituationJAXP.getSteuererklaerungAusgefuellt());
-		finanzielleSituation.setNettolohn(finanzielleSituationJAXP.getNettolohn());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
@@ -1953,7 +1964,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuererklaerungAusgefuellt(persistedFinanzielleSituation.getSteuererklaerungAusgefuellt());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
-		jaxFinanzielleSituation.setNettolohn(persistedFinanzielleSituation.getNettolohn());
+
 
 		return jaxFinanzielleSituation;
 	}
@@ -1966,20 +1977,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(einkommensverschlechterungJAXP);
 
 		abstractFinanzielleSituationToEntity(einkommensverschlechterungJAXP, einkommensverschlechterung);
-
-		einkommensverschlechterung.setNettolohnJan(einkommensverschlechterungJAXP.getNettolohnJan());
-		einkommensverschlechterung.setNettolohnFeb(einkommensverschlechterungJAXP.getNettolohnFeb());
-		einkommensverschlechterung.setNettolohnMrz(einkommensverschlechterungJAXP.getNettolohnMrz());
-		einkommensverschlechterung.setNettolohnApr(einkommensverschlechterungJAXP.getNettolohnApr());
-		einkommensverschlechterung.setNettolohnMai(einkommensverschlechterungJAXP.getNettolohnMai());
-		einkommensverschlechterung.setNettolohnJun(einkommensverschlechterungJAXP.getNettolohnJun());
-		einkommensverschlechterung.setNettolohnJul(einkommensverschlechterungJAXP.getNettolohnJul());
-		einkommensverschlechterung.setNettolohnAug(einkommensverschlechterungJAXP.getNettolohnAug());
-		einkommensverschlechterung.setNettolohnSep(einkommensverschlechterungJAXP.getNettolohnSep());
-		einkommensverschlechterung.setNettolohnOkt(einkommensverschlechterungJAXP.getNettolohnOkt());
-		einkommensverschlechterung.setNettolohnNov(einkommensverschlechterungJAXP.getNettolohnNov());
-		einkommensverschlechterung.setNettolohnDez(einkommensverschlechterungJAXP.getNettolohnDez());
-		einkommensverschlechterung.setNettolohnZus(einkommensverschlechterungJAXP.getNettolohnZus());
 		einkommensverschlechterung.setGeschaeftsgewinnBasisjahrMinus1(einkommensverschlechterungJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
 		return einkommensverschlechterung;
@@ -1996,20 +1993,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxEinkommensverschlechterung eikvs = new JaxEinkommensverschlechterung();
 
 		abstractFinanzielleSituationToJAX(persistedEinkommensverschlechterung, eikvs);
-
-		eikvs.setNettolohnJan(persistedEinkommensverschlechterung.getNettolohnJan());
-		eikvs.setNettolohnFeb(persistedEinkommensverschlechterung.getNettolohnFeb());
-		eikvs.setNettolohnMrz(persistedEinkommensverschlechterung.getNettolohnMrz());
-		eikvs.setNettolohnApr(persistedEinkommensverschlechterung.getNettolohnApr());
-		eikvs.setNettolohnMai(persistedEinkommensverschlechterung.getNettolohnMai());
-		eikvs.setNettolohnJun(persistedEinkommensverschlechterung.getNettolohnJun());
-		eikvs.setNettolohnJul(persistedEinkommensverschlechterung.getNettolohnJul());
-		eikvs.setNettolohnAug(persistedEinkommensverschlechterung.getNettolohnAug());
-		eikvs.setNettolohnSep(persistedEinkommensverschlechterung.getNettolohnSep());
-		eikvs.setNettolohnOkt(persistedEinkommensverschlechterung.getNettolohnOkt());
-		eikvs.setNettolohnNov(persistedEinkommensverschlechterung.getNettolohnNov());
-		eikvs.setNettolohnDez(persistedEinkommensverschlechterung.getNettolohnDez());
-		eikvs.setNettolohnZus(persistedEinkommensverschlechterung.getNettolohnZus());
 		eikvs.setGeschaeftsgewinnBasisjahrMinus1(persistedEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
 
 		return eikvs;
@@ -2490,7 +2473,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
 		jaxBetreuung.setKeineKesbPlatzierung(betreuungFromServer.getKeineKesbPlatzierung());
-		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenToJAX(betreuungFromServer.getInstitutionStammdaten()));
+		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
+			betreuungFromServer.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
 		if (betreuungFromServer.getKind() != null) {
 			jaxBetreuung.setKindFullname(betreuungFromServer.getKind().getKindJA().getFullName());
@@ -3499,6 +3483,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * Geht durch die ganze Liste von KindContainers durch und gibt ein Set mit den Namen aller Institutionen zurueck.
 	 * Da ein Set zurueckgegeben wird, sind die Daten nie dupliziert.
 	 */
+	@SuppressWarnings("Duplicates")
 	private Set<String> createInstitutionenList(Set<KindContainer> kindContainers) {
 		return kindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
@@ -3508,6 +3493,7 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.toSet());
 	}
 
+	@SuppressWarnings("Duplicates")
 	private Set<String> createInstitutionenList(Collection<JaxKindContainer> jaxKindContainers) {
 		return jaxKindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
