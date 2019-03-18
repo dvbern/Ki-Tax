@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Institution;
@@ -156,9 +157,9 @@ public class InstitutionStammdatenResource {
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdaten> getAllInstitutionStammdaten() {
+	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdaten() {
 		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
-			.map(instStammdaten -> converter.institutionStammdatenToJAX(instStammdaten))
+			.map(instStammdaten -> converter.institutionStammdatenSummaryToJAX(instStammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 
@@ -191,12 +192,12 @@ public class InstitutionStammdatenResource {
 	@Path("/date")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdaten> getAllInstitutionStammdatenByDate(
+	public List<JaxInstitutionStammdatenSummary> getAllInstitutionStammdatenByDate(
 		@Nullable @QueryParam("date") String stringDate) {
 
 		LocalDate date = DateUtil.parseStringToDateOrReturnNow(stringDate);
 		return institutionStammdatenService.getAllInstitutionStammdatenByDate(date).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenToJAX(institutionStammdaten))
+			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 
@@ -215,14 +216,14 @@ public class InstitutionStammdatenResource {
 	@Path("/gesuchsperiode/active")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<JaxInstitutionStammdaten> getAllActiveInstitutionStammdatenByGesuchsperiode(
+	public List<JaxInstitutionStammdatenSummary> getAllActiveInstitutionStammdatenByGesuchsperiode(
 		@Nonnull @NotNull @QueryParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId) {
 
 		Objects.requireNonNull(gesuchsperiodeJaxId);
 		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
 		String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
 		return institutionStammdatenService.getAllActiveInstitutionStammdatenByGesuchsperiode(gesuchsperiodeId).stream()
-			.map(institutionStammdaten -> converter.institutionStammdatenToJAX(institutionStammdaten))
+			.map(institutionStammdaten -> converter.institutionStammdatenSummaryToJAX(institutionStammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
 	}
 

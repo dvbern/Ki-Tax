@@ -94,6 +94,8 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
@@ -1301,21 +1303,11 @@ public class JaxBConverter extends AbstractConverter {
 		return institution;
 	}
 
-	public JaxInstitutionStammdaten institutionStammdatenToJAX(
-		@Nonnull final InstitutionStammdaten persistedInstStammdaten) {
-		final JaxInstitutionStammdaten jaxInstStammdaten = new JaxInstitutionStammdaten();
+	public <T extends JaxAbstractInstitutionStammdaten> T institutionStammdatenSummaryToJAX(
+		@Nonnull final InstitutionStammdaten persistedInstStammdaten,
+		@Nonnull final T jaxInstStammdaten
+	) {
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
-
-		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
-			persistedInstStammdaten.getInstitution());
-		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
-			persistedInstStammdaten.getInstitution());
-		jaxInstStammdaten.setAdministratoren(administratoren.stream()
-			.map(Benutzer::getFullName)
-			.collect(Collectors.joining(", ")));
-		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
-			.map(Benutzer::getFullName)
-			.collect(Collectors.joining(", ")));
 
 		if (persistedInstStammdaten.getIban() != null) {
 			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
@@ -1348,6 +1340,24 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
+		return jaxInstStammdaten;
+	}
+
+	public JaxInstitutionStammdaten institutionStammdatenToJAX(
+		@Nonnull final InstitutionStammdaten persistedInstStammdaten
+	) {
+		final JaxInstitutionStammdaten jaxInstStammdaten = institutionStammdatenSummaryToJAX(persistedInstStammdaten, new JaxInstitutionStammdaten());
+
+		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
+			persistedInstStammdaten.getInstitution());
+		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
+			persistedInstStammdaten.getInstitution());
+		jaxInstStammdaten.setAdministratoren(administratoren.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
 		return jaxInstStammdaten;
 	}
 
@@ -2490,7 +2500,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
 		jaxBetreuung.setKeineKesbPlatzierung(betreuungFromServer.getKeineKesbPlatzierung());
-		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenToJAX(betreuungFromServer.getInstitutionStammdaten()));
+		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
+			betreuungFromServer.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
 		if (betreuungFromServer.getKind() != null) {
 			jaxBetreuung.setKindFullname(betreuungFromServer.getKind().getKindJA().getFullName());

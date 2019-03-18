@@ -87,6 +87,7 @@ import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
 import TSInstitution from '../models/TSInstitution';
 import TSInstitutionStammdaten from '../models/TSInstitutionStammdaten';
 import TSInstitutionStammdatenFerieninsel from '../models/TSInstitutionStammdatenFerieninsel';
+import TSInstitutionStammdatenSummary from '../models/TSInstitutionStammdatenSummary';
 import TSInstitutionStammdatenTagesschule from '../models/TSInstitutionStammdatenTagesschule';
 import TSKind from '../models/TSKind';
 import TSKindContainer from '../models/TSKindContainer';
@@ -1050,7 +1051,7 @@ export default class EbeguRestUtil {
     }
 
     public institutionStammdatenToRestObject(restInstitutionStammdaten: any,
-                                             institutionStammdaten: TSInstitutionStammdaten,
+                                             institutionStammdaten: TSInstitutionStammdatenSummary,
     ): any {
         if (institutionStammdaten) {
             this.abstractDateRangeEntityToRestObject(restInstitutionStammdaten, institutionStammdaten);
@@ -1083,13 +1084,11 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseInstitutionStammdaten(institutionStammdatenTS: TSInstitutionStammdaten,
-                                      institutionStammdatenFromServer: any,
-    ): TSInstitutionStammdaten {
+    public parseInstitutionStammdatenSummary(institutionStammdatenTS: TSInstitutionStammdatenSummary,
+                                             institutionStammdatenFromServer: any,
+    ): TSInstitutionStammdatenSummary {
         if (institutionStammdatenFromServer) {
             this.parseDateRangeEntity(institutionStammdatenTS, institutionStammdatenFromServer);
-            institutionStammdatenTS.administratoren = institutionStammdatenFromServer.administratoren;
-            institutionStammdatenTS.sachbearbeiter = institutionStammdatenFromServer.sachbearbeiter;
             institutionStammdatenTS.betreuungsangebotTyp = institutionStammdatenFromServer.betreuungsangebotTyp;
             institutionStammdatenTS.institution =
                 this.parseInstitution(new TSInstitution(), institutionStammdatenFromServer.institution);
@@ -1116,6 +1115,18 @@ export default class EbeguRestUtil {
             institutionStammdatenTS.institutionStammdatenFerieninsel =
                 this.parseInstitutionStammdatenFerieninsel(new TSInstitutionStammdatenFerieninsel(),
                     institutionStammdatenFromServer.institutionStammdatenFerieninsel);
+            return institutionStammdatenTS;
+        }
+        return undefined;
+    }
+
+    public parseInstitutionStammdaten(institutionStammdatenTS: TSInstitutionStammdaten,
+                                      institutionStammdatenFromServer: any,
+    ): TSInstitutionStammdaten {
+        if (institutionStammdatenFromServer) {
+            this.parseInstitutionStammdatenSummary(institutionStammdatenTS, institutionStammdatenFromServer);
+            institutionStammdatenTS.administratoren = institutionStammdatenFromServer.administratoren;
+            institutionStammdatenTS.sachbearbeiter = institutionStammdatenFromServer.sachbearbeiter;
             return institutionStammdatenTS;
         }
         return undefined;

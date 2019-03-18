@@ -39,6 +39,7 @@ import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenSummary from '../../../models/TSInstitutionStammdatenSummary';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {NavigationUtil} from '../../../utils/NavigationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -678,7 +679,7 @@ export class DossierToolbarController implements IDVFocusableController {
         return html;
     }
 
-    private institutionStammdatenToHtml(stammdaten: TSInstitutionStammdaten): string {
+    private institutionStammdatenToHtml(stammdaten: TSInstitutionStammdatenSummary): string {
         let html = '';
         if (stammdaten.adresse.organisation === stammdaten.institution.name) {
             html += `<span class="marginTop20">${stammdaten.institution.name}</span><br>`;

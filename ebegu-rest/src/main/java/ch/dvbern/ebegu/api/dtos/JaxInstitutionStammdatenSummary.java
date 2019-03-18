@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import TSInstitutionStammdatenSummary from './TSInstitutionStammdatenSummary';
+package ch.dvbern.ebegu.api.dtos;
 
-export default class TSInstitutionStammdaten extends TSInstitutionStammdatenSummary {
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    public administratoren: string = undefined; // read only
-    public sachbearbeiter: string = undefined; // read only
+@XmlRootElement(name = "institutionStammdatenSummary")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxInstitutionStammdatenSummary extends JaxAbstractInstitutionStammdaten {
 
-    public constructor() {
-        super();
-    }
 }
