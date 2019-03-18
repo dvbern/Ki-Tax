@@ -1898,6 +1898,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(abstractFinanzielleSituationJAXP);
 
 		convertAbstractVorgaengerFieldsToEntity(abstractFinanzielleSituationJAXP, abstractFinanzielleSituation);
+		abstractFinanzielleSituation.setNettolohn(abstractFinanzielleSituationJAXP.getNettolohn());
 		abstractFinanzielleSituation.setFamilienzulage(abstractFinanzielleSituationJAXP.getFamilienzulage());
 		abstractFinanzielleSituation.setErsatzeinkommen(abstractFinanzielleSituationJAXP.getErsatzeinkommen());
 		abstractFinanzielleSituation.setErhalteneAlimente(abstractFinanzielleSituationJAXP.getErhalteneAlimente());
@@ -1918,6 +1919,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		convertAbstractVorgaengerFieldsToJAX(persistedAbstractFinanzielleSituation, jaxAbstractFinanzielleSituation);
+		jaxAbstractFinanzielleSituation.setNettolohn(persistedAbstractFinanzielleSituation.getNettolohn());
 		jaxAbstractFinanzielleSituation.setFamilienzulage(persistedAbstractFinanzielleSituation.getFamilienzulage());
 		jaxAbstractFinanzielleSituation.setErsatzeinkommen(persistedAbstractFinanzielleSituation.getErsatzeinkommen());
 		jaxAbstractFinanzielleSituation.setErhalteneAlimente(persistedAbstractFinanzielleSituation.getErhalteneAlimente());
@@ -1937,7 +1939,6 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituationToEntity(finanzielleSituationJAXP, finanzielleSituation);
 		finanzielleSituation.setSteuerveranlagungErhalten(finanzielleSituationJAXP.getSteuerveranlagungErhalten());
 		finanzielleSituation.setSteuererklaerungAusgefuellt(finanzielleSituationJAXP.getSteuererklaerungAusgefuellt());
-		finanzielleSituation.setNettolohn(finanzielleSituationJAXP.getNettolohn());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
@@ -1958,7 +1959,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuererklaerungAusgefuellt(persistedFinanzielleSituation.getSteuererklaerungAusgefuellt());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
-		jaxFinanzielleSituation.setNettolohn(persistedFinanzielleSituation.getNettolohn());
+
 
 		return jaxFinanzielleSituation;
 	}
@@ -1971,20 +1972,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(einkommensverschlechterungJAXP);
 
 		abstractFinanzielleSituationToEntity(einkommensverschlechterungJAXP, einkommensverschlechterung);
-
-		einkommensverschlechterung.setNettolohnJan(einkommensverschlechterungJAXP.getNettolohnJan());
-		einkommensverschlechterung.setNettolohnFeb(einkommensverschlechterungJAXP.getNettolohnFeb());
-		einkommensverschlechterung.setNettolohnMrz(einkommensverschlechterungJAXP.getNettolohnMrz());
-		einkommensverschlechterung.setNettolohnApr(einkommensverschlechterungJAXP.getNettolohnApr());
-		einkommensverschlechterung.setNettolohnMai(einkommensverschlechterungJAXP.getNettolohnMai());
-		einkommensverschlechterung.setNettolohnJun(einkommensverschlechterungJAXP.getNettolohnJun());
-		einkommensverschlechterung.setNettolohnJul(einkommensverschlechterungJAXP.getNettolohnJul());
-		einkommensverschlechterung.setNettolohnAug(einkommensverschlechterungJAXP.getNettolohnAug());
-		einkommensverschlechterung.setNettolohnSep(einkommensverschlechterungJAXP.getNettolohnSep());
-		einkommensverschlechterung.setNettolohnOkt(einkommensverschlechterungJAXP.getNettolohnOkt());
-		einkommensverschlechterung.setNettolohnNov(einkommensverschlechterungJAXP.getNettolohnNov());
-		einkommensverschlechterung.setNettolohnDez(einkommensverschlechterungJAXP.getNettolohnDez());
-		einkommensverschlechterung.setNettolohnZus(einkommensverschlechterungJAXP.getNettolohnZus());
 		einkommensverschlechterung.setGeschaeftsgewinnBasisjahrMinus1(einkommensverschlechterungJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
 		return einkommensverschlechterung;
@@ -2001,20 +1988,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxEinkommensverschlechterung eikvs = new JaxEinkommensverschlechterung();
 
 		abstractFinanzielleSituationToJAX(persistedEinkommensverschlechterung, eikvs);
-
-		eikvs.setNettolohnJan(persistedEinkommensverschlechterung.getNettolohnJan());
-		eikvs.setNettolohnFeb(persistedEinkommensverschlechterung.getNettolohnFeb());
-		eikvs.setNettolohnMrz(persistedEinkommensverschlechterung.getNettolohnMrz());
-		eikvs.setNettolohnApr(persistedEinkommensverschlechterung.getNettolohnApr());
-		eikvs.setNettolohnMai(persistedEinkommensverschlechterung.getNettolohnMai());
-		eikvs.setNettolohnJun(persistedEinkommensverschlechterung.getNettolohnJun());
-		eikvs.setNettolohnJul(persistedEinkommensverschlechterung.getNettolohnJul());
-		eikvs.setNettolohnAug(persistedEinkommensverschlechterung.getNettolohnAug());
-		eikvs.setNettolohnSep(persistedEinkommensverschlechterung.getNettolohnSep());
-		eikvs.setNettolohnOkt(persistedEinkommensverschlechterung.getNettolohnOkt());
-		eikvs.setNettolohnNov(persistedEinkommensverschlechterung.getNettolohnNov());
-		eikvs.setNettolohnDez(persistedEinkommensverschlechterung.getNettolohnDez());
-		eikvs.setNettolohnZus(persistedEinkommensverschlechterung.getNettolohnZus());
 		eikvs.setGeschaeftsgewinnBasisjahrMinus1(persistedEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
 
 		return eikvs;

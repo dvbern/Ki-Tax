@@ -277,7 +277,7 @@ public class PDFServiceBeanTest {
 
 		PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(pdfRreader, false);
 		assertTextInPdf(pdfTextExtractor, 1, "Jugendamt", "Absenderadresse ist nicht Jugendamt");
-		assertTextInPdf(pdfTextExtractor, 2, "Test Dokument 22", "Second page should begin with this text");
+		assertTextInPdf(pdfTextExtractor, 2, "Test Dokument 23", "Second page should begin with this text");
 		pdfRreader.close();
 	}
 

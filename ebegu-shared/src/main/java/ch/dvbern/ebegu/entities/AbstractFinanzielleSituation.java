@@ -41,6 +41,10 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	private static final long serialVersionUID = 2596930494846119259L;
 
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal nettolohn;
+
 	@Column(nullable = true)
 	private BigDecimal familienzulage;
 
@@ -70,7 +74,13 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	public abstract Boolean getSteuererklaerungAusgefuellt();
 
 	@Nullable
-	public abstract BigDecimal getNettolohn();
+	public BigDecimal getNettolohn() {
+		return nettolohn;
+	}
+
+	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
+		this.nettolohn = nettolohn;
+	}
 
 	public BigDecimal getFamilienzulage() {
 		return familienzulage;
@@ -136,6 +146,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+			target.setNettolohn(this.getNettolohn());
 			target.setFamilienzulage(this.getFamilienzulage());
 			target.setErsatzeinkommen(this.getErsatzeinkommen());
 			target.setErhalteneAlimente(this.getErhalteneAlimente());
@@ -164,7 +175,8 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			return false;
 		}
 		final AbstractFinanzielleSituation otherFinSituation = (AbstractFinanzielleSituation) other;
-		return MathUtil.isSame(getFamilienzulage(), otherFinSituation.getFamilienzulage()) &&
+		return MathUtil.isSame(getNettolohn(), otherFinSituation.getNettolohn()) &&
+			MathUtil.isSame(getFamilienzulage(), otherFinSituation.getFamilienzulage()) &&
 			MathUtil.isSame(getErsatzeinkommen(), otherFinSituation.getErsatzeinkommen()) &&
 			MathUtil.isSame(getErhalteneAlimente(), otherFinSituation.getErhalteneAlimente()) &&
 			MathUtil.isSame(getBruttovermoegen(), otherFinSituation.getBruttovermoegen()) &&
