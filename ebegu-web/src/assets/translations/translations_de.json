@@ -484,7 +484,7 @@
     "INSTITUTION_ANZAHL_PLAETZE_FIRMEN_PARAM": "Davon für Firmen reserviert: {{anzahlPlaetzeFirmen}}",
     "INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_1": "Plätze",
     "INSTITUTION_ANZAHL_PLAETZE_PLACEHOLDER_2": "Stunden",
-    "INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER": "FR_z.B. Mo-Fr, 6:30-18:00",
+    "INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER": "z.B. Mo-Fr, 6:30-18:00",
     "INSTITUTION_ZAHLUNGSANGABEN_INFO": "Diese Angaben müssen nur erfasst werden, wenn sie abweichend sind von Kita-Name und Kita-Adresse",
     "INSTITUTION_DIFFERENT_ZAHLUNGSADRESSE": "Abweichende Zahlungsadresse",
     "INSTITUTION_IDENTISCHE_ZAHLUNGSADRESSE": "Identische Zahlungsadresse",
