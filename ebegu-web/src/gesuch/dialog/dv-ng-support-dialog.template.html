@@ -19,16 +19,14 @@
 
     <div>
         <h2 [textContent]="'SUPPORTANFRAGE_STELLEN' | translate"></h2>
-        <p>Hier der bla bla Text</p>
+        <p [textContent]="'SUPPORTANFRAGE_ANLEITUNG' | translate"></p>
         <div class="form-group">
-            <label class="required" translate for="beschreibung_id">ADRESSE_ANSCHRIFT</label>
             <textarea md-no-autogrow
                       class="form-control"
-                      rows="6"
+                      rows="10"
                       maxlength="4000"
                       id="beschreibung_id"
                       name="beschreibung"
-                      placeholder="{{'RECHTSMITTELBELEHRUNG_TEXT_DE'|translate}}"
                       [(ngModel)]="beschreibung">
             </textarea>
         </div>
