@@ -11,9 +11,9 @@
 $tour-zindex: 1081 !default;
 $tour-step-color: #ffffff !default;
 $tour-text-color: #231f1f !default;
-$tour-next-button-color: #007bff !default;
-$tour-next-button-hover: #0069d9 !default;
-$tour-back-button-color: #007bff !default;
+$tour-next-button-color: #D50025 !default;
+$tour-next-button-hover: #BF0425 !default;
+$tour-back-button-color: #D50025 !default;
 $tour-next-text-color: #ffffff !default;
 $tour-next-text-hover: #ffffff !default;
 $tour-skip-link-color: #5e5e5e !default;
@@ -24,7 +24,7 @@ body.tour-open {
     overflow: hidden;
 }
 
-@mixin tour-triangle($direction, $color: currentColor, $size: 1rem) {
+@mixin tour-triangle($direction, $color: currentColor, $size: 22px) {
 
     @if not index(top right bottom left, $direction) {
         @error 'Direction must be either `top`, `right`, `bottom` or `left`.';
@@ -34,20 +34,25 @@ body.tour-open {
 
     @if $direction==top {
         $opposite-direction: bottom;
+        bottom: 100%;
     }
 
     @if $direction==bottom {
         $opposite-direction: top;
+        top: 100%;
     }
 
     @if $direction==right {
         $opposite-direction: left;
+        left: 100%;
     }
 
     @if $direction==left {
         $opposite-direction: right;
+        right: 100%;
     }
 
+    position: absolute;
     width: 0;
     height: 0;
     content: '';
@@ -57,6 +62,8 @@ body.tour-open {
     @if $direction==top or $direction==bottom {
         border-left: $perpendicular-borders;
         border-right: $perpendicular-borders;
+        left: 50%;
+        transform: translateX(-50%);
     }
     @else if $direction==right or $direction==left {
         border-bottom: $perpendicular-borders;
@@ -65,12 +72,14 @@ body.tour-open {
 }
 
 ngx-guided-tour {
+
     .guided-tour-user-input-mask {
         z-index: $tour-zindex;
     }
 
-    .guided-tour-spotlight-overlay {
+    div.guided-tour-spotlight-overlay {
         z-index: $tour-zindex + 1;
+        box-shadow: 0 0 0 9999px rgba(0,0,0,0), 0 0 1.5rem rgba(0,0,0,0);
     }
 
     .tour-orb {
@@ -90,33 +99,48 @@ ngx-guided-tour {
         z-index: $tour-zindex + 2;
 
         &.tour-bottom, &.tour-bottom-right, &.tour-bottom-left {
-            .tour-arrow::before {
+            .tour-block::before {
                 @include tour-triangle(top, $tour-step-color);
+            }
+            .tour-block{
+                margin-top: 22px !important;
             }
         }
 
         &.tour-top, &.tour-top-right, &.tour-top-left {
-            .tour-arrow::before {
+            .tour-block::before {
                 @include tour-triangle(bottom, $tour-step-color);
+            }
+            .tour-block{
+                margin-bottom: 22px !important;
             }
         }
 
         &.tour-left {
-            .tour-arrow::before {
+            .tour-block::before {
                 @include tour-triangle(right, $tour-step-color);
+            }
+            .tour-block{
+                margin-right: 22px !important;
             }
         }
 
         &.tour-right {
-            .tour-arrow::before {
+            .tour-block::before {
                 @include tour-triangle(left, $tour-step-color);
+            }
+            .tour-block{
+                margin-left: 22px !important;
             }
         }
 
-        .tour-block {
+        div.tour-block {
             color: $tour-text-color;
             background-color: $tour-step-color;
-            box-shadow: 0 0.4rem 0.6rem $tour-shadow-color;
+            -webkit-filter: drop-shadow(0px 3px 4px rgba(70,70,70,1));
+            filter        : drop-shadow(0px 3px 4px rgba(70,70,70,1));
+            -ms-filter    : "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#444')";
+            filter        : "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#444')";
         }
 
         .tour-buttons {

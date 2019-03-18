@@ -8,26 +8,51 @@
  * Ansicht übergeben, ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
  */
 
+import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTour, Orientation, OrientationConfiguration, TourStep} from 'ngx-guided-tour';
 import {LogFactory} from '../core/logging/LogFactory';
 
-const LOG = LogFactory.createLog('KiBonGuidedTour');
+const LOG = LogFactory.createLog('KiBonGuidedTour')
 
-export class KiBonGuidedTour implements GuidedTour {
-    public tourId: string;
-    public steps: TourStep[];
-    public useOrb: boolean;
+export class GemeindeGuidedTour implements GuidedTour {
+
+    public tourId: string = 'kibon-tour';
+    public steps: TourStep[] = [
+        new KiBonTourStep(this.translate.instant('TOUR_START_TITLE'), this.translate.instant('TOUR_START_CONTENT'),
+        '', Orientation.Center, this.state, 'pendenzen.list-view'),
+
+        new KiBonTourStep(this.translate.instant('TOUR_STEP_1_TITLE'), this.translate.instant('TOUR_STEP_1_CONTENT'),
+            'a[uisref="pendenzen.list-view"]', Orientation.BottomLeft, this.state, 'faelle.list'),
+
+        new KiBonTourStep(this.translate.instant('TOUR_STEP_2_TITLE'), this.translate.instant('TOUR_STEP_2_CONTENT'),
+            'a[uisref="faelle.list"]', Orientation.Bottom, this.state, 'zahlungsauftrag.view'),
+
+        new KiBonTourStep(this.translate.instant('TOUR_STEP_3_TITLE'), this.translate.instant('TOUR_STEP_3_CONTENT'),
+            'a[uisref="zahlungsauftrag.view"]', Orientation.Bottom, this.state, 'statistik.view'),
+
+        new KiBonTourStep(this.translate.instant('TOUR_STEP_4_TITLE'), this.translate.instant('TOUR_STEP_4_CONTENT'),
+            'a[uisref="statistik.view"]', Orientation.Bottom, this.state, 'posteingang.view'),
+
+        new KiBonTourStep(this.translate.instant('TOUR_STEP_5_TITLE'), this.translate.instant('TOUR_STEP_5_CONTENT'),
+            'dv-posteingang[uisref="posteingang.view"]', Orientation.Bottom),
+
+        new KiBonTourStep(this.translate.instant('TOUR_STEP_6_TITLE'), this.translate.instant('TOUR_STEP_6_CONTENT'),
+            '[class~="dv-ng-navbar-element-fall-eroeffnen"]', Orientation.Left),
+
+        new KiBonTourStep(this.translate.instant('TOUR_END_TITLE'), this.translate.instant('TOUR_END_CONTENT'),
+            '[class~="dv-helpmenu-question"]', Orientation.Left)];
+
+    public useOrb: boolean = false;
     public skipCallback: (stepSkippedOn: number) => void;
     public completeCallback: () => void;
-    public minimumScreenSize: number;
-    public preventBackdropFromAdvancing: boolean;
+    public minimumScreenSize: number = 0;
+    public preventBackdropFromAdvancing: boolean = false;
 
-    public constructor(tourId: string, steps: TourStep[], useOrb: boolean) {
-        this.tourId = tourId;
-        this.steps = steps;
-        this.useOrb = useOrb;
+    public constructor(private readonly state: StateService,
+                       private readonly translate: TranslateService) {
     }
+
 }
 
 export class KiBonTourStep implements TourStep {
@@ -55,7 +80,11 @@ export class KiBonTourStep implements TourStep {
         if (state !== undefined && state !== null) {
             this.closeAction = () => {
                 LOG.info('Navigating to ' + navigateTo);
-                state.go(navigateTo);
+                try {
+                    state.go(navigateTo);
+                } catch (e) {
+                    LOG.error(e);
+                }
             };
         }
     }

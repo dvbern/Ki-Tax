@@ -1493,7 +1493,7 @@
     "TUTORIAL_LOGIN": "FR_Einloggen",
     "ERLAEUTERUNG_VERFUEGUNG_DE": "FR_Erläuterung zur Verfügung Deutsch",
     "ERLAEUTERUNG_VERFUEGUNG_FR": "FR_Erläuterung zur Verfügung Französisch",
-    "ERLAEUTERUNG_VERFUEGUNG": "FR_Erläuterungen zur Verfügung"
+    "ERLAEUTERUNG_VERFUEGUNG": "FR_Erläuterungen zur Verfügung",
     "TOUR_START_TITLE": "",
     "TOUR_START_CONTENT": "",
     "TOUR_STEP_1_TITLE": "",
@@ -1505,7 +1505,9 @@
     "TOUR_STEP_4_TITLE": "",
     "TOUR_STEP_4_CONTENT": "",
     "TOUR_STEP_5_TITLE": "",
-    "TOUR_STEP_5_CONTENT": "",
+    "TOUR_STEP_5_CONTENT": "",,
+    "TOUR_STEP_6_TITLE": "",
+    "TOUR_STEP_6_CONTENT": "",
     "TOUR_END_TITLE": "",
     "TOUR_END_CONTENT": ""
 }

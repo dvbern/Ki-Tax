@@ -1493,7 +1493,7 @@
     "TUTORIAL_LOGIN": "Einloggen",
     "ERLAEUTERUNG_VERFUEGUNG_DE": "Erläuterung zur Verfügung Deutsch",
     "ERLAEUTERUNG_VERFUEGUNG_FR": "Erläuterung zur Verfügung Französisch",
-    "ERLAEUTERUNG_VERFUEGUNG": "Erläuterungen zur Verfügung"
+    "ERLAEUTERUNG_VERFUEGUNG": "Erläuterungen zur Verfügung",
     "TOUR_START_TITLE": "Welcome the KiBon Tour!",
     "TOUR_START_CONTENT": "We are ready to rock your world!",
     "TOUR_STEP_1_TITLE": "",
@@ -1506,6 +1506,8 @@
     "TOUR_STEP_4_CONTENT": "",
     "TOUR_STEP_5_TITLE": "",
     "TOUR_STEP_5_CONTENT": "",
+    "TOUR_STEP_6_TITLE": "",
+    "TOUR_STEP_6_CONTENT": "",
     "TOUR_END_TITLE": "",
     "TOUR_END_CONTENT": ""
 }
