@@ -18,15 +18,13 @@
 package ch.dvbern.ebegu.entities;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -75,7 +73,18 @@ public class TextRessource extends AbstractMutableEntity{
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		// TODO KIBON-387
-		return false;
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (other == null || !getClass().equals(other.getClass())) {
+			return false;
+		}
+		if (!(other instanceof TextRessource)) {
+			return false;
+		}
+		final TextRessource otherTextRessource = (TextRessource) other;
+		return Objects.equals(getTextDeutsch(), otherTextRessource.getTextDeutsch()) &&
+			Objects.equals(getTextFranzoesisch(), otherTextRessource.getTextFranzoesisch());
 	}
 }
