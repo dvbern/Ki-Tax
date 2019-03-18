@@ -4,7 +4,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${mitteilung.empfaenger.fullName} <${empfaengerMail}>
-Subject: <@base64Header>Neue Nachricht vom Jugendamt</@base64Header>
+Subject: <@base64Header>kiBon - Neue Nachricht der Gemeinde ${mitteilung.dossier.gemeinde.name}</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -12,7 +12,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon: Neue Nachricht</title>
+	<title>kiBon - Neue Nachricht der Gemeinde ${mitteilung.dossier.gemeinde.name}</title>
 
 </head>
 
@@ -23,8 +23,8 @@ ${templateConfiguration.mailCss}
 		Sehr geehrte Familie
 	</p>
 	<p>
-		Das Jugendamt hat Ihnen eine
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/mitteilungen/${mitteilung.fall.id}">Nachricht</a>
+		Die Gemeinde ${mitteilung.dossier.gemeinde.name} hat Ihnen eine
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/mitteilungen/${mitteilung.dossier.fall.id}/${mitteilung.dossier.id}/">Nachricht</a>
 		geschrieben.
 	</p>
 	<p>
