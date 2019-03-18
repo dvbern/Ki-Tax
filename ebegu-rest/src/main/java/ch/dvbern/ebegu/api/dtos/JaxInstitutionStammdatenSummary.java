@@ -25,4 +25,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxInstitutionStammdatenSummary extends JaxAbstractInstitutionStammdaten {
 
+	private static final long serialVersionUID = -8973046611005184530L;
 }
