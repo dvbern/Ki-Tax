@@ -130,6 +130,7 @@
     "TELEFON_AUSLAND": "Tél. à l'étranger",
     "KEIN_EINTRAG": "Aucune donnée saisie",
     "GESUCHSTELLER_DIPLOMATENSTATUS": "Statut diplomatique",
+    "GESUCHSTELLER_DIPLOMATENSTATUS_HINT": "FR_Erklärt, wieso gewisse Angaben allenfalls nicht vorhanden sind, z.B. eine Steuererklärung aus der Schweiz. Zudem ist ein Abgleich mit der Einwohnerkontrolle allenfalls nicht möglich. Ein Betreuungsgutschein kann aber genau gleich beantragt werden. Die Angaben müssen mit anderen Dokumenten belegt und überprüft werden.",
     "DATEINAME": "FR_Dateiname",
     "DATUM": "FR_Datum",
     "VERFUEGUNGS_DATUM": "FR_Verfügungsdatum",

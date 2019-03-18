@@ -24,16 +24,16 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Sie haben sich auf <a href="www.bern.ch/ki-tax">www.bern.ch/ki-tax</a> registriert. Sie haben Ihre Daten noch
+		Sie haben sich auf <a href="www.kibon.ch">www.kibon.ch</a> registriert. Sie haben Ihre Daten noch
 		nicht freigegeben.
 	</p>
 	<p>
-		Mit dieser Mail möchten wir Sie daran erinnern, Ihren Antrag rechtzeitig abzuschliessen. Die Freigabequittung muss
-		vor Beginn der Betreuung Ihres Kindes bei uns eingereicht werden, damit Sie Ihren Anspruch nicht verlieren. Ohne
-		eine Freigabe innert ${anzahlTage} Tagen erfolgt eine automatische Löschung.
+		Mit dieser Mail möchten wir Sie daran erinnern, Ihren Antrag rechtzeitig abzuschliessen. Das Gesuch gilt erst mit
+		dem Einsenden der Freigabequittung als eingereicht und kann zuvor durch die Gemeinde nicht bearbeitet werden.
+        Ohne eine Freigabe innert ${anzahlTage} Tagen erfolgt eine automatische Löschung.
 	</p>
-	<p>
-		Bei Fragen stehen wir während den Bürozeiten gerne zur Verfügung (Tel. 031 321 51 15).
+        Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Gesuchs
+        und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

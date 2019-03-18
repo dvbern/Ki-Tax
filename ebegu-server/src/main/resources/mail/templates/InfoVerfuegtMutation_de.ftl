@@ -27,7 +27,7 @@ ${templateConfiguration.mailCss}
 		Am ${gesuch.getEingangsdatumFormated()} haben Sie via kiBon eine Mutation eingereicht.
 		Wir haben die Mutation bearbeitet und Sie können das Ergebnis
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
-		prüfen.
+        einsehen.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

@@ -28,13 +28,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.Dokument;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -178,7 +172,7 @@ public final class EbeguUtil {
 	 */
 	@Nonnull
 	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
-		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gesuch, gemeindeService);
+		final List<Sprache> gemeindeSprachen = extractGemeindeSprachenFromGesuch(gesuch, gemeindeService);
 		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
 
 		if (gesuchstellerGewuenschteSprache != null && gemeindeSprachen.contains(gesuchstellerGewuenschteSprache)) {
@@ -202,8 +196,18 @@ public final class EbeguUtil {
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */
 	@Nonnull
-	private static List<Sprache> extractGemeindeSprachen(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
-		final String gemeindeId = gesuch.getDossier().getGemeinde().getId();
+	private static List<Sprache> extractGemeindeSprachenFromGesuch(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
+		return  extractGemeindeSprachen(gesuch.getDossier().getGemeinde(), gemeindeService);
+	}
+
+	/**
+	 * Will looked for the language(s) of the given Gemeinde and return them as a list.
+	 * If the Gemeinde has no Stammdaten an Exception will be thrown because this shows a real problem in the data
+	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
+	 */
+	@Nonnull
+	public static List<Sprache> extractGemeindeSprachen(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeService gemeindeService) {
+		final String gemeindeId = gemeinde.getId();
 		final GemeindeStammdaten gemeindeStammdatenOpt = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"extractGemeindeSprachen",
@@ -215,7 +219,6 @@ public final class EbeguUtil {
 		if (gemeindeSprachen.length <= 0) {
 			return Collections.singletonList(Sprache.DEUTSCH);
 		}
-
 		return Arrays.asList(gemeindeSprachen);
 	}
 }
