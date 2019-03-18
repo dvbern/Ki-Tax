@@ -22,22 +22,12 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
     private _familienstatus: TSFamilienstatus;
     private _gemeinsameSteuererklaerung: boolean;
     private _aenderungPer: moment.Moment;
+    private _startKonkubinat: moment.Moment;
     private _sozialhilfeBezueger: boolean;
     private _verguenstigungGewuenscht: boolean;
 
-    public constructor(
-        familienstatus?: TSFamilienstatus,
-        gemeinsameSteuererklaerung?: boolean,
-        aenderungPer?: moment.Moment,
-        sozialhilfeBezueger?: boolean,
-        verguenstigungGewuenscht?: boolean,
-    ) {
+    public constructor() {
         super();
-        this._familienstatus = familienstatus;
-        this._gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
-        this._aenderungPer = aenderungPer;
-        this._sozialhilfeBezueger = sozialhilfeBezueger;
-        this._verguenstigungGewuenscht = verguenstigungGewuenscht;
     }
 
     public get familienstatus(): TSFamilienstatus {
@@ -64,6 +54,14 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         this._aenderungPer = value;
     }
 
+    public get startKonkubinat(): moment.Moment {
+        return this._startKonkubinat;
+    }
+
+    public set startKonkubinat(value: moment.Moment) {
+        this._startKonkubinat = value;
+    }
+
     public get sozialhilfeBezueger(): boolean {
         return this._sozialhilfeBezueger;
     }
@@ -80,26 +78,35 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         this._verguenstigungGewuenscht = value;
     }
 
-    public hasSecondGesuchsteller(): boolean {
+    public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {
         switch (this.familienstatus) {
             case TSFamilienstatus.ALLEINERZIEHEND:
-            case TSFamilienstatus.WENIGER_FUENF_JAHRE:
                 return false;
             case TSFamilienstatus.VERHEIRATET:
             case TSFamilienstatus.KONKUBINAT:
-            case TSFamilienstatus.LAENGER_FUENF_JAHRE:
                 return true;
+            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
+                const ref = moment(referenzdatum); // must copy otherwise source is also subtracted
+                const fiveBack = ref
+                    .subtract(5, 'years')  // 5 years for konkubinat
+                    .subtract(1, 'month'); // 1 month for rule
+                return !this.startKonkubinat || !this.startKonkubinat.isAfter(fiveBack);
             default:
                 throw new Error(`hasSecondGesuchsteller is not implemented for status ${this.familienstatus}`);
         }
     }
 
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {
-        return this.familienstatus === other.familienstatus;
+        let same = this.familienstatus === other.familienstatus;
+        if (same && this.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            same = this.startKonkubinat.isSame(other.startKonkubinat);
+        }
+        return same;
     }
 
     public revertFamiliensituation(other: TSFamiliensituation): void {
         this.familienstatus = other.familienstatus;
+        this.startKonkubinat = other.startKonkubinat;
     }
 
 }

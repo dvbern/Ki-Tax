@@ -15,55 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
-import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import TSAdresse from './TSAdresse';
-import TSInstitution from './TSInstitution';
-import TSInstitutionStammdatenFerieninsel from './TSInstitutionStammdatenFerieninsel';
-import TSInstitutionStammdatenTagesschule from './TSInstitutionStammdatenTagesschule';
-import {TSDateRange} from './types/TSDateRange';
+import TSInstitutionStammdatenSummary from './TSInstitutionStammdatenSummary';
 
-export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity {
-    public administratoren: string; // read only
-    public sachbearbeiter: string; // read only
-    public betreuungsangebotTyp: TSBetreuungsangebotTyp;
-    public institution: TSInstitution;
-    public adresse: TSAdresse;
-    public mail: string;
-    public telefon: string;
-    public iban: string;
-    public kontoinhaber: string;
-    public adresseKontoinhaber: TSAdresse;
-    public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule;
-    public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel;
+export default class TSInstitutionStammdaten extends TSInstitutionStammdatenSummary {
 
-    public constructor(
-        iban?: string,
-        betreuungsangebotTyp?: TSBetreuungsangebotTyp,
-        institution?: TSInstitution,
-        adresse?: TSAdresse,
-        mail?: string,
-        telefon?: string,
-        gueltigkeit?: TSDateRange,
-        kontoinhaber?: string,
-        adresseKontoinhaber?: TSAdresse,
-        institutionStammdatenTagesschule?: TSInstitutionStammdatenTagesschule,
-        institutionStammdatenFerieninsel?: TSInstitutionStammdatenFerieninsel,
-        administratoren?: string,
-        sachbearbeiter?: string,
-    ) {
-        super(gueltigkeit);
-        this.iban = iban;
-        this.betreuungsangebotTyp = betreuungsangebotTyp;
-        this.institution = institution;
-        this.adresse = adresse;
-        this.mail = mail;
-        this.telefon = telefon;
-        this.kontoinhaber = kontoinhaber;
-        this.adresseKontoinhaber = adresseKontoinhaber;
-        this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
-        this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
-        this.administratoren = administratoren;
-        this.sachbearbeiter = sachbearbeiter;
+    public administratoren: string = undefined; // read only
+    public sachbearbeiter: string = undefined; // read only
+
+    public constructor() {
+        super();
     }
 }

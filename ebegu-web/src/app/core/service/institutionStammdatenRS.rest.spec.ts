@@ -51,14 +51,14 @@ describe('institutionStammdatenRS', () => {
         today = DateUtil.today();
         mockInstitution = new TSInstitution('Institution_Test');
         mockAdresse = new TSAdresse();
-        mockInstitutionStammdaten = new TSInstitutionStammdaten(
-            'iban',
-            TSBetreuungsangebotTyp.KITA,
-            mockInstitution,
-            mockAdresse,
-            'mail@example.com',
-            'telefon',
-            new TSDateRange(today, today));
+        mockInstitutionStammdaten = new TSInstitutionStammdaten();
+        mockInstitutionStammdaten.iban = 'iban';
+        mockInstitutionStammdaten.betreuungsangebotTyp = TSBetreuungsangebotTyp.KITA;
+        mockInstitutionStammdaten.institution = mockInstitution;
+        mockInstitutionStammdaten.adresse = mockAdresse;
+        mockInstitutionStammdaten.mail = 'mail@example.com';
+        mockInstitutionStammdaten.telefon = 'telefon';
+        mockInstitutionStammdaten.gueltigkeit = new TSDateRange(today, today);
         mockInstitutionStammdaten.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
         mockInstitutionStammdatenRest = ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
     });

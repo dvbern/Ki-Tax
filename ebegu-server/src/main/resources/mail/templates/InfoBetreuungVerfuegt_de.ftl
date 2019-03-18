@@ -17,7 +17,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon – Betreuung verfügt</title>
+	<title>${institution.name}: kiBon – Betreuung verfügt</title>
 
 </head>
 
@@ -28,7 +28,7 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Die folgende familienexterne Betreuung wurde verfügt:
+		Der folgende Betreuungsgutschein wurde verfügt:
 	</p>
 	<table>
 		<tbody>

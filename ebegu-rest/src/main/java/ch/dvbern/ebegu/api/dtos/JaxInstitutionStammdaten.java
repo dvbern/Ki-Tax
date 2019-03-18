@@ -16,12 +16,9 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 
 /**
  * Created by imanol on 17.03.16.
@@ -29,104 +26,14 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
  */
 @XmlRootElement(name = "institutionStammdaten")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
+public class JaxInstitutionStammdaten extends JaxAbstractInstitutionStammdaten {
 
 	private static final long serialVersionUID = -1893677808323618626L;
 	@Nullable
 	private String administratoren;
 	@Nullable
 	private String sachbearbeiter;
-	@Nullable
-	private BetreuungsangebotTyp betreuungsangebotTyp;
-	@NotNull
-	private JaxInstitution institution;
-	@Nullable
-	private JaxInstitutionStammdatenTagesschule institutionStammdatenTagesschule;
-	@Nullable
-	private JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninsel;
-	@NotNull
-	private String mail;
-	@Nullable
-	private String telefon;
-	@NotNull
-	private JaxAdresse adresse;
-	@Nullable
-	private String iban;
-	@Nullable
-	private String kontoinhaber;
-	@Nullable
-	private JaxAdresse adresseKontoinhaber;
 
-
-	@Nullable
-	public String getIban() {
-		return iban;
-	}
-
-	public void setIban(@Nullable String iban) {
-		this.iban = iban;
-	}
-
-	@Nullable
-	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
-		return betreuungsangebotTyp;
-	}
-
-	public void setBetreuungsangebotTyp(@Nullable BetreuungsangebotTyp betreuungsangebotTyp) {
-		this.betreuungsangebotTyp = betreuungsangebotTyp;
-	}
-
-	public JaxInstitution getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(JaxInstitution institution) {
-		this.institution = institution;
-	}
-
-	public JaxAdresse getAdresse() {
-		return adresse;
-	}
-
-	public void setAdresse(JaxAdresse adresse) {
-		this.adresse = adresse;
-	}
-
-	@Nullable
-	public String getKontoinhaber() {
-		return kontoinhaber;
-	}
-
-	public void setKontoinhaber(@Nullable String kontoinhaber) {
-		this.kontoinhaber = kontoinhaber;
-	}
-
-	@Nullable
-	public JaxAdresse getAdresseKontoinhaber() {
-		return adresseKontoinhaber;
-	}
-
-	public void setAdresseKontoinhaber(@Nullable JaxAdresse adresseKontoinhaber) {
-		this.adresseKontoinhaber = adresseKontoinhaber;
-	}
-
-	@Nullable
-	public JaxInstitutionStammdatenTagesschule getInstitutionStammdatenTagesschule() {
-		return institutionStammdatenTagesschule;
-	}
-
-	public void setInstitutionStammdatenTagesschule(@Nullable JaxInstitutionStammdatenTagesschule institutionStammdatenTagesschule) {
-		this.institutionStammdatenTagesschule = institutionStammdatenTagesschule;
-	}
-
-	@Nullable
-	public JaxInstitutionStammdatenFerieninsel getInstitutionStammdatenFerieninsel() {
-		return institutionStammdatenFerieninsel;
-	}
-
-	public void setInstitutionStammdatenFerieninsel(@Nullable JaxInstitutionStammdatenFerieninsel institutionStammdatenFerieninsel) {
-		this.institutionStammdatenFerieninsel = institutionStammdatenFerieninsel;
-	}
 
 	@Nullable
 	public String getAdministratoren() {
@@ -144,23 +51,6 @@ public class JaxInstitutionStammdaten extends JaxAbstractDateRangedDTO {
 
 	public void setSachbearbeiter(@Nullable String sachbearbeiter) {
 		this.sachbearbeiter = sachbearbeiter;
-	}
-
-	public String getMail() {
-		return mail;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-
-	@Nullable
-	public String getTelefon() {
-		return telefon;
-	}
-
-	public void setTelefon(@Nullable String telefon) {
-		this.telefon = telefon;
 	}
 
 }

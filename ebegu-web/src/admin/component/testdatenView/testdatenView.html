@@ -284,6 +284,22 @@
                 </div>
             </div>
 
+            <!-- Test der Mailvorlagen -->
+            <h2 class="marginTop20">Mails versenden</h2>
+            <div class="row">
+                <div class="col-md-12 dv-input-container-small">
+                    <label class="md-no-float" for="mailadresse">Mailadresse:</label>
+                    <input id="mailadresse" type="text" name="mailadresse" [(ngModel)]="mailadresse"
+                           class="input-testfall">
+                </div>
+                <div>
+                    <button dvNgDebounceClick (debounceClick)="testAllMails()"
+                            class="dv-btn testfall-button testfall-button">
+                        Mails senden
+                    </button>
+                </div>
+            </div>
+
             <!-- Schulungsdaten -->
             <h2 class="marginTop20">Schulung</h2>
             <div class="row">
@@ -295,6 +311,17 @@
                     <button dvNgDebounceClick (debounceClick)="deleteSchulungsdaten()"
                             class="dv-btn testfall-button-duo">
                         Schulungsdaten löschen
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tutorial-Daten -->
+            <h2 class="marginTop20" translate>TUTORIAL_TITLE</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <button dvNgDebounceClick (debounceClick)="createTutorialdaten()"
+                            class="dv-btn testfall-button-duo">
+                        Tutorialdaten erstellen
                     </button>
                 </div>
             </div>

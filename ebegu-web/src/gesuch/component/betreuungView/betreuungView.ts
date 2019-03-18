@@ -42,6 +42,7 @@ import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuun
 import TSExceptionReport from '../../../models/TSExceptionReport';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenSummary from '../../../models/TSInstitutionStammdatenSummary';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import {TSDateRange} from '../../../models/types/TSDateRange';
@@ -569,7 +570,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm));
     }
 
-    public getInstitutionSD(): TSInstitutionStammdaten {
+    public getInstitutionSD(): TSInstitutionStammdatenSummary {
         if (this.getBetreuungModel()) {
             return this.getBetreuungModel().institutionStammdaten;
         }
@@ -616,8 +617,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.getBetreuungModel()) {
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
+        const tsBetreuungspensum = new TSBetreuungspensum();
+        tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        tsBetreuungspensum.nichtEingetreten = false;
+        tsBetreuungspensum.gueltigkeit = new TSDateRange();
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE, false, undefined, undefined, new TSDateRange())));
+            tsBetreuungspensum));
     }
 
     public removeBetreuungspensum(betreuungspensumToDelete: TSBetreuungspensumContainer): void {
@@ -1076,7 +1081,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public getTextFachstelleKorrekturJA(): string {
         if ((this.getErweiterteBetreuungGS() && this.getErweiterteBetreuungGS().erweiterteBeduerfnisse)
             && (this.getErweiterteBetreuungJA() && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisse)) {
-            return this.getErweiterteBetreuungGS().fachstelle.name;
+            return this.$translate.instant(this.getErweiterteBetreuungGS().fachstelle.name.toLocaleString());
         }
         return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
@@ -1095,12 +1100,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.getBetreuungModel().institutionStammdaten = stammdaten;
             });
 
+        const tsBetreuungspensum = new TSBetreuungspensum();
+        tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        tsBetreuungspensum.nichtEingetreten = false;
+        tsBetreuungspensum.gueltigkeit = this.gesuchModelManager.getGesuchsperiode().gueltigkeit;
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
-            new TSBetreuungspensum(TSPensumUnits.PERCENTAGE,
-                false,
-                null,
-                null,
-                this.gesuchModelManager.getGesuchsperiode().gueltigkeit)));
+            tsBetreuungspensum));
     }
 
     public isProvisorischeBetreuung(): boolean {

@@ -16,7 +16,6 @@
 import {TSTaetigkeit} from './enums/TSTaetigkeit';
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
 import TSUnbezahlterUrlaub from './TSUnbezahlterUrlaub';
-import {TSDateRange} from './types/TSDateRange';
 
 /**
  * Definiert ein Erwerbspensum
@@ -29,15 +28,8 @@ export default class TSErwerbspensum extends TSAbstractIntegerPensumEntity {
 
     private _unbezahlterUrlaub: TSUnbezahlterUrlaub;
 
-    public constructor(
-        pensum?: number,
-        gueltigkeit?: TSDateRange,
-        taetigkeit?: TSTaetigkeit,
-        unbezahlterUrlaub?: TSUnbezahlterUrlaub
-    ) {
-        super(pensum, gueltigkeit);
-        this._taetigkeit = taetigkeit;
-        this._unbezahlterUrlaub = unbezahlterUrlaub;
+    public constructor() {
+        super();
     }
 
     public get taetigkeit(): TSTaetigkeit {

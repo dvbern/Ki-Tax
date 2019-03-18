@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,13 +28,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.Dokument;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -42,6 +37,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Allgemeine Utils fuer EBEGU
@@ -54,18 +51,32 @@ public final class EbeguUtil {
 	/**
 	 * Berechnet ob die Daten bei der Familiensituation von einem GS auf 2 GS geaendert wurde.
 	 */
-	public static boolean fromOneGSToTwoGS(FamiliensituationContainer familiensituationContainer) {
-		Objects.requireNonNull(familiensituationContainer);
-		Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA());
-		Objects.requireNonNull(familiensituationContainer.getFamiliensituationErstgesuch());
+	public static boolean fromOneGSToTwoGS(
+		FamiliensituationContainer familiensituationContainer,
+		LocalDate referenzdatum
+	) {
+		requireNonNull(familiensituationContainer);
+		requireNonNull(familiensituationContainer.getFamiliensituationJA());
+		requireNonNull(familiensituationContainer.getFamiliensituationErstgesuch());
 
-		return fromOneGSToTwoGS(familiensituationContainer.getFamiliensituationErstgesuch(), familiensituationContainer.getFamiliensituationJA());
+		return fromOneGSToTwoGS(
+			familiensituationContainer.getFamiliensituationErstgesuch(),
+			familiensituationContainer.getFamiliensituationJA(),
+			referenzdatum
+		);
 	}
 
-	public static boolean fromOneGSToTwoGS(Familiensituation oldFamiliensituation, Familiensituation newFamiliensituation) {
-		Objects.requireNonNull(oldFamiliensituation);
-		Objects.requireNonNull(newFamiliensituation);
-		return !oldFamiliensituation.hasSecondGesuchsteller() && newFamiliensituation.hasSecondGesuchsteller();
+	public static boolean fromOneGSToTwoGS(
+		@Nonnull Familiensituation oldFamiliensituation,
+		@Nonnull Familiensituation newFamiliensituation,
+		@Nonnull LocalDate referenzdatum
+	) {
+		requireNonNull(oldFamiliensituation);
+		requireNonNull(newFamiliensituation);
+		requireNonNull(referenzdatum);
+
+		return !oldFamiliensituation.hasSecondGesuchsteller(referenzdatum)
+			&& newFamiliensituation.hasSecondGesuchsteller(referenzdatum);
 	}
 
 	/**
@@ -161,7 +172,7 @@ public final class EbeguUtil {
 	 */
 	@Nonnull
 	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
-		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gesuch, gemeindeService);
+		final List<Sprache> gemeindeSprachen = extractGemeindeSprachenFromGesuch(gesuch, gemeindeService);
 		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
 
 		if (gesuchstellerGewuenschteSprache != null && gemeindeSprachen.contains(gesuchstellerGewuenschteSprache)) {
@@ -185,8 +196,18 @@ public final class EbeguUtil {
 	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
 	 */
 	@Nonnull
-	private static List<Sprache> extractGemeindeSprachen(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
-		final String gemeindeId = gesuch.getDossier().getGemeinde().getId();
+	private static List<Sprache> extractGemeindeSprachenFromGesuch(@Nonnull Gesuch gesuch, @Nonnull GemeindeService gemeindeService) {
+		return  extractGemeindeSprachen(gesuch.getDossier().getGemeinde(), gemeindeService);
+	}
+
+	/**
+	 * Will looked for the language(s) of the given Gemeinde and return them as a list.
+	 * If the Gemeinde has no Stammdaten an Exception will be thrown because this shows a real problem in the data
+	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
+	 */
+	@Nonnull
+	public static List<Sprache> extractGemeindeSprachen(@Nonnull Gemeinde gemeinde, @Nonnull GemeindeService gemeindeService) {
+		final String gemeindeId = gemeinde.getId();
 		final GemeindeStammdaten gemeindeStammdatenOpt = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"extractGemeindeSprachen",
@@ -198,7 +219,6 @@ public final class EbeguUtil {
 		if (gemeindeSprachen.length <= 0) {
 			return Collections.singletonList(Sprache.DEUTSCH);
 		}
-
 		return Arrays.asList(gemeindeSprachen);
 	}
 }

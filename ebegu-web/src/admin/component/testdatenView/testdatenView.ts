@@ -58,6 +58,8 @@ export class TestdatenViewComponent implements OnInit {
     public selectedGemeinde: TSGemeinde;
     public gemeindeList: Array<TSGemeinde>;
 
+    public mailadresse: string;
+
     public devMode: boolean;
 
     public constructor(
@@ -182,6 +184,10 @@ export class TestdatenViewComponent implements OnInit {
             });
     }
 
+    public testAllMails(): IPromise<any> {
+        return this.testFaelleRS.testAllMails(this.mailadresse);
+    }
+
     public mutiereFallScheidung(): IPromise<any> {
         return this.testFaelleRS.mutiereFallScheidung(this.dossierid,
             this.selectedGesuchsperiode.id,
@@ -200,6 +206,12 @@ export class TestdatenViewComponent implements OnInit {
 
     public deleteSchulungsdaten(): IPromise<any> {
         return this.testFaelleRS.deleteSchulungsdaten().then(response => {
+            this.createAndOpenOkDialog(response.data);
+        });
+    }
+
+    public createTutorialdaten(): IPromise<any> {
+        return this.testFaelleRS.createTutorialdaten().then(response => {
             this.createAndOpenOkDialog(response.data);
         });
     }

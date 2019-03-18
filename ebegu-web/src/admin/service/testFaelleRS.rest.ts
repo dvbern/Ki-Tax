@@ -84,6 +84,10 @@ export class TestFaelleRS {
         });
     }
 
+    public testAllMails(mailadresse: string): IHttpPromise<void> {
+        return this.http.get(`${this.serviceURL}/mailtest/${mailadresse}`);
+    }
+
     public mutiereFallScheidung(
         dossierid: string,
         gesuchsperiodeid: string,
@@ -110,6 +114,10 @@ export class TestFaelleRS {
 
     public deleteSchulungsdaten(): IHttpPromise<string> {
         return this.http.delete(`${this.serviceURL}/schulung/delete`);
+    }
+
+    public createTutorialdaten(): IHttpPromise<string> {
+        return this.http.get(`${this.serviceURL}/schulung/tutorial/create`);
     }
 
     public getSchulungBenutzer(): IPromise<string[]> {

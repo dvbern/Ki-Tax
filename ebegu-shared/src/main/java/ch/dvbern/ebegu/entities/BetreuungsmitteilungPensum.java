@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
@@ -36,6 +38,7 @@ public class BetreuungsmitteilungPensum extends AbstractDecimalPensum implements
 
 	@ManyToOne(optional = false)
 	@NotNull
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungsmitteilung_pens_betreuungsmitteilung_id"), nullable = false)
 	private Betreuungsmitteilung betreuungsmitteilung;
 
 	public Betreuungsmitteilung getBetreuungsmitteilung() {

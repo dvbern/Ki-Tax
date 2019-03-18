@@ -55,6 +55,7 @@ public class KantonExcelConverter implements ExcelConverter {
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldKanton.repeatKantonRow);
+			excelRowGroup.addValue(MergeFieldKanton.gemeinde, dataRow.getGemeinde());
 			excelRowGroup.addValue(MergeFieldKanton.bgNummer, dataRow.getBgNummer());
 			excelRowGroup.addValue(MergeFieldKanton.gesuchId, dataRow.getGesuchId());
 			excelRowGroup.addValue(MergeFieldKanton.name, dataRow.getName());
@@ -84,6 +85,7 @@ public class KantonExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldKanton.parameterTitle, ServerMessageUtil.getMessage("Reports_parameterTitle", locale));
 		excelMerger.addValue(MergeFieldKanton.vonTitle, ServerMessageUtil.getMessage("Reports_vonTitle", locale));
 		excelMerger.addValue(MergeFieldKanton.bisTitle, ServerMessageUtil.getMessage("Reports_bisTitle", locale));
+		excelMerger.addValue(MergeFieldKanton.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
 		excelMerger.addValue(MergeFieldKanton.fallIdTitle, ServerMessageUtil.getMessage("Reports_fallIdTitle", locale));
 		excelMerger.addValue(MergeFieldKanton.vornameTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));
 		excelMerger.addValue(MergeFieldKanton.nachnameTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));

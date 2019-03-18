@@ -62,8 +62,8 @@ public class UsernameRoleChecker {
 	 */
 	private Properties roles;
 
-	@SuppressWarnings(value = { "PMD.UnusedPrivateMethod", "PreserveStackTrace" })
-	@PostConstruct()
+	@SuppressWarnings({ "PMD.UnusedPrivateMethod", "PreserveStackTrace" })
+	@PostConstruct
 	public void init() {
 		// Load the properties file that contains the list of users and passwords
 		loadUsers();
@@ -116,7 +116,8 @@ public class UsernameRoleChecker {
 		}
 	}
 
-	@Lock(value = LockType.READ)
+	@Nullable
+	@Lock(LockType.READ)
 	protected String getUsersPassword(String username) {
 		String password = null;
 		if (username != null) {
@@ -125,7 +126,7 @@ public class UsernameRoleChecker {
 		return password;
 	}
 
-	@Lock(value = LockType.READ)
+	@Lock(LockType.READ)
 	public boolean checkLogin(String inputUsername, String inputPassword) {
 		// match against property file, null is not an acceptable password
 		String hashToMatchAgainst = getUsersPassword(inputUsername);
@@ -137,7 +138,7 @@ public class UsernameRoleChecker {
 		if (this.passwordMatchesHash(inputPassword, hashToMatchAgainst)) {
 			return true;
 		}
-		LOG.trace("Username / Pwassword were invalid " + inputUsername + " / " + inputPassword);
+		LOG.trace("Username / Pwassword were invalid {} / {}", inputUsername, inputPassword);
 		return false;
 	}
 
@@ -160,7 +161,7 @@ public class UsernameRoleChecker {
 	 * patterns.
 	 */
 	@Nullable
-	@Lock(value = LockType.READ)
+	@Lock(LockType.READ)
 	@SuppressFBWarnings("PZLA_PREFER_ZERO_LENGTH_ARRAYS")
 	protected String[] getRoles(@Nullable String username) {
 		if (username == null) {
@@ -173,7 +174,8 @@ public class UsernameRoleChecker {
 		return null;
 	}
 
-	@Lock(value = LockType.READ)
+	@Nullable
+	@Lock(LockType.READ)
 	public String getSingleRole(@Nullable String username) {
 		if (username == null) {
 			return null;

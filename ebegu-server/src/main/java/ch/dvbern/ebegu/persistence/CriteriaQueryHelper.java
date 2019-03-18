@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.persistence;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -54,7 +55,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @SuppressWarnings({ "unchecked" })
 @Dependent
-public class CriteriaQueryHelper {
+public class CriteriaQueryHelper implements Serializable {
+
+	private static final long serialVersionUID = -3995684436883429682L;
 
 	@Inject
 	private Persistence persistence;

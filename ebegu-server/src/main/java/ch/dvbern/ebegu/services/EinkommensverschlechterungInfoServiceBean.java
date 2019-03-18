@@ -137,22 +137,16 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 	}
 
 	/**
-	 * Removes all EKV of the given Gesuch if the year is not set. The field GemeinsameSteuererklaerung_BjPX will be
+	 * Removes all EKV of the given Gesuch if the year is not set. The field EkvJABasisJahrPlusX will be
 	 * also set to null. If the year is set nothing will be done.
 	 */
 	private void removeEinkommensverschlechterungFromGesuch(Gesuch gesuch, EinkommensverschlechterungInfoContainer
 		convertedEkvi) {
 		if (!convertedEkvi.getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1()) {
 			einkommensverschlechterungService.removeAllEKVOfGesuch(gesuch, 1);
-			convertedEkvi.getEinkommensverschlechterungInfoJA().setGemeinsameSteuererklaerung_BjP1(null);
-			convertedEkvi.getEinkommensverschlechterungInfoJA().setStichtagFuerBasisJahrPlus1(null);
-			convertedEkvi.getEinkommensverschlechterungInfoJA().setGrundFuerBasisJahrPlus1(null);
 		}
 		if (!convertedEkvi.getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus2()) {
 			einkommensverschlechterungService.removeAllEKVOfGesuch(gesuch, 2);
-			convertedEkvi.getEinkommensverschlechterungInfoJA().setGemeinsameSteuererklaerung_BjP2(null);
-			convertedEkvi.getEinkommensverschlechterungInfoJA().setStichtagFuerBasisJahrPlus2(null);
-			convertedEkvi.getEinkommensverschlechterungInfoJA().setGrundFuerBasisJahrPlus2(null);
 		}
 	}
 
@@ -206,8 +200,6 @@ public class EinkommensverschlechterungInfoServiceBean extends AbstractBaseServi
 	@Nonnull
 	private Einkommensverschlechterung createEmptyEKV() {
 		Einkommensverschlechterung ekvBasisPlus1 = new Einkommensverschlechterung();
-		ekvBasisPlus1.setSteuererklaerungAusgefuellt(false);
-		ekvBasisPlus1.setSteuerveranlagungErhalten(false);
 		return ekvBasisPlus1;
 	}
 }

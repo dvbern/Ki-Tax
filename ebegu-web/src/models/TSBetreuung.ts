@@ -22,17 +22,17 @@ import TSAbwesenheitContainer from './TSAbwesenheitContainer';
 import TSBelegungFerieninsel from './TSBelegungFerieninsel';
 import TSBelegungTagesschule from './TSBelegungTagesschule';
 import TSBetreuungspensumContainer from './TSBetreuungspensumContainer';
-import TSGesuchsperiode from './TSGesuchsperiode';
-import TSInstitutionStammdaten from './TSInstitutionStammdaten';
-import TSVerfuegung from './TSVerfuegung';
 import TSErweiterteBetreuungContainer from './TSErweiterteBetreuungContainer';
+import TSGesuchsperiode from './TSGesuchsperiode';
+import TSInstitutionStammdatenSummary from './TSInstitutionStammdatenSummary';
+import TSVerfuegung from './TSVerfuegung';
 
 export default class TSBetreuung extends TSAbstractMutableEntity {
 
-    private _institutionStammdaten: TSInstitutionStammdaten;
-    private _betreuungsstatus: TSBetreuungsstatus;
-    private _betreuungspensumContainers: Array<TSBetreuungspensumContainer>;
-    private _abwesenheitContainers: Array<TSAbwesenheitContainer>;
+    private _institutionStammdaten: TSInstitutionStammdatenSummary;
+    private _betreuungsstatus: TSBetreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
+    private _betreuungspensumContainers: Array<TSBetreuungspensumContainer> = [];
+    private _abwesenheitContainers: Array<TSAbwesenheitContainer> = [];
     private _erweiterteBetreuungContainer: TSErweiterteBetreuungContainer;
     private _grundAblehnung: string;
     private _betreuungNummer: number;
@@ -54,64 +54,15 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
     private _bgNummer: string;
     private _keineDetailinformationen: boolean = false;
 
-    public constructor(
-        institutionStammdaten?: TSInstitutionStammdaten,
-        betreuungsstatus?: TSBetreuungsstatus,
-        betreuungspensumContainers?: Array<TSBetreuungspensumContainer>,
-        abwesenheitContainers?: Array<TSAbwesenheitContainer>,
-        erweiterteBetreuungContainer?: TSErweiterteBetreuungContainer,
-        betreuungNummer?: number,
-        verfuegung?: TSVerfuegung,
-        vertrag?: boolean,
-        keineKesbPlatzierung?: boolean,
-        grundAblehnung?: string,
-        datumAblehnung?: moment.Moment,
-        datumBestaetigung?: moment.Moment,
-        kindFullname?: string,
-        kindNummer?: number,
-        gesuchId?: string,
-        gesuchsperiode?: TSGesuchsperiode,
-        betreuungMutiert?: boolean,
-        abwesenheitMutiert?: boolean,
-        gueltig?: boolean,
-        belegungTagesschule?: TSBelegungTagesschule,
-        belegungFerieninsel?: TSBelegungFerieninsel,
-        anmeldungMutationZustand?: TSAnmeldungMutationZustand,
-        bgNummer?: string,
-        keineDetailinformationen?: boolean,
-    ) {
+    public constructor() {
         super();
-        this._institutionStammdaten = institutionStammdaten;
-        this._betreuungsstatus = betreuungsstatus ? betreuungsstatus : TSBetreuungsstatus.AUSSTEHEND;
-        this._betreuungspensumContainers = betreuungspensumContainers ? betreuungspensumContainers : [];
-        this._abwesenheitContainers = abwesenheitContainers ? abwesenheitContainers : [];
-        this._erweiterteBetreuungContainer = erweiterteBetreuungContainer;
-        this._grundAblehnung = grundAblehnung;
-        this._betreuungNummer = betreuungNummer;
-        this._verfuegung = verfuegung;
-        this._vertrag = !!vertrag;
-        this._keineKesbPlatzierung = !!keineKesbPlatzierung;
-        this._datumAblehnung = datumAblehnung;
-        this._datumBestaetigung = datumBestaetigung;
-        this._kindFullname = kindFullname;
-        this._kindNummer = kindNummer;
-        this._gesuchId = gesuchId;
-        this._gesuchsperiode = gesuchsperiode;
-        this._betreuungMutiert = betreuungMutiert;
-        this._abwesenheitMutiert = abwesenheitMutiert;
-        this._gueltig = gueltig;
-        this._belegungTagesschule = belegungTagesschule;
-        this._belegungFerieninsel = belegungFerieninsel;
-        this._anmeldungMutationZustand = anmeldungMutationZustand;
-        this._bgNummer = bgNummer;
-        this._keineDetailinformationen = keineDetailinformationen;
     }
 
-    public get institutionStammdaten(): TSInstitutionStammdaten {
+    public get institutionStammdaten(): TSInstitutionStammdatenSummary {
         return this._institutionStammdaten;
     }
 
-    public set institutionStammdaten(value: TSInstitutionStammdaten) {
+    public set institutionStammdaten(value: TSInstitutionStammdatenSummary) {
         this._institutionStammdaten = value;
     }
 

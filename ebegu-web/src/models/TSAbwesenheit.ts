@@ -14,11 +14,10 @@
  */
 
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import {TSDateRange} from './types/TSDateRange';
 
 export default class TSAbwesenheit extends TSAbstractDateRangedEntity {
 
-    public constructor(gueltigkeit?: TSDateRange) {
-        super(gueltigkeit);
+    public constructor() {
+        super();
     }
 }
