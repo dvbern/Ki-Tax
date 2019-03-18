@@ -19,7 +19,6 @@ export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituati
 
     private _steuerveranlagungErhalten: boolean = false;
     private _steuererklaerungAusgefuellt: boolean = false;
-    private _nettolohn: number;
     private _geschaeftsgewinnBasisjahrMinus2: number;
     private _geschaeftsgewinnBasisjahrMinus1: number;
 
@@ -41,14 +40,6 @@ export default class TSFinanzielleSituation extends TSAbstractFinanzielleSituati
 
     public set steuererklaerungAusgefuellt(value: boolean) {
         this._steuererklaerungAusgefuellt = value;
-    }
-
-    public get nettolohn(): number {
-        return this._nettolohn;
-    }
-
-    public set nettolohn(value: number) {
-        this._nettolohn = value;
     }
 
     public get geschaeftsgewinnBasisjahrMinus2(): number {
