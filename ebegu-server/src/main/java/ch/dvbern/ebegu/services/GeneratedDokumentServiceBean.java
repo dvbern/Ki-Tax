@@ -665,9 +665,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		// nicht existiert und wir muessen es erstellen
 		// (Der Status wird auf Verfuegt gesetzt, BEVOR das Dokument erstellt wird!)
 		if (Betreuungsstatus.VERFUEGT != betreuung.getBetreuungsstatus() || persistedDokument == null) {
-			Gesuch gesuchWithVerfuegung = gesuch;
 			finanzielleSituationService.calculateFinanzDaten(gesuch);
-			gesuchWithVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
+			Gesuch gesuchWithVerfuegung = verfuegungService.calculateVerfuegung(gesuch);
 
 			Betreuung matchedBetreuung = gesuchWithVerfuegung.extractBetreuungById(betreuung.getId());
 			if (matchedBetreuung != null) {
