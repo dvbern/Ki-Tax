@@ -42,6 +42,7 @@ import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuun
 import TSExceptionReport from '../../../models/TSExceptionReport';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenSummary from '../../../models/TSInstitutionStammdatenSummary';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import {TSDateRange} from '../../../models/types/TSDateRange';
@@ -569,7 +570,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm));
     }
 
-    public getInstitutionSD(): TSInstitutionStammdaten {
+    public getInstitutionSD(): TSInstitutionStammdatenSummary {
         if (this.getBetreuungModel()) {
             return this.getBetreuungModel().institutionStammdaten;
         }
