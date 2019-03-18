@@ -8,7 +8,7 @@
 <#-- @ftlvariable name="acceptLink" type="java.lang.String" -->
 <#-- @ftlvariable name="acceptExpire" type="java.lang.String" -->
 From: ${configuration.senderAddress}
-To: ${eingeladener.getFullName()} <${eingeladener.email}>
+To: ${eingeladener.email}
 Subject: <@base64Header>kiBon – Einladung / Invitation</@base64Header>
 Content-Type: text/html;charset=utf-8
 
