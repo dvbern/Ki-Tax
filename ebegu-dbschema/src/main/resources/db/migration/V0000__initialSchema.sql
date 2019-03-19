@@ -401,7 +401,7 @@ CREATE TABLE berechtigung_history (
 	gemeinden          VARCHAR(255),
 	role               VARCHAR(255) NOT NULL,
 	status             VARCHAR(255) NOT NULL,
-	username           VARCHAR(255),
+	username           VARCHAR(255) NOT NULL,
 	institution_id     BINARY(16),
 	traegerschaft_id   BINARY(16),
 	PRIMARY KEY (id)
@@ -431,7 +431,6 @@ CREATE TABLE betreuung (
 	belegung_tagesschule_id    BINARY(16),
 	institution_stammdaten_id  BINARY(16)   NOT NULL,
 	kind_id                    BINARY(16)   NOT NULL,
-	verfuegung_id              BINARY(16),
 	PRIMARY KEY (id)
 );
 
@@ -460,7 +459,6 @@ CREATE TABLE betreuung_aud (
 	belegung_tagesschule_id    BINARY(16),
 	institution_stammdaten_id  BINARY(16),
 	kind_id                    BINARY(16),
-	verfuegung_id              BINARY(16),
 	PRIMARY KEY (id, rev)
 );
 
@@ -737,23 +735,9 @@ CREATE TABLE einkommensverschlechterung (
 	familienzulage                    DECIMAL(19, 2),
 	geleistete_alimente               DECIMAL(19, 2),
 	geschaeftsgewinn_basisjahr        DECIMAL(19, 2),
+	nettolohn                         DECIMAL(19, 2),
 	schulden                          DECIMAL(19, 2),
-	steuererklaerung_ausgefuellt      BIT          NOT NULL,
-	steuerveranlagung_erhalten        BIT          NOT NULL,
 	geschaeftsgewinn_basisjahr_minus1 DECIMAL(19, 2),
-	nettolohn_apr                     DECIMAL(19, 2),
-	nettolohn_aug                     DECIMAL(19, 2),
-	nettolohn_dez                     DECIMAL(19, 2),
-	nettolohn_feb                     DECIMAL(19, 2),
-	nettolohn_jan                     DECIMAL(19, 2),
-	nettolohn_jul                     DECIMAL(19, 2),
-	nettolohn_jun                     DECIMAL(19, 2),
-	nettolohn_mai                     DECIMAL(19, 2),
-	nettolohn_mrz                     DECIMAL(19, 2),
-	nettolohn_nov                     DECIMAL(19, 2),
-	nettolohn_okt                     DECIMAL(19, 2),
-	nettolohn_sep                     DECIMAL(19, 2),
-	nettolohn_zus                     DECIMAL(19, 2),
 	PRIMARY KEY (id)
 );
 
@@ -772,23 +756,9 @@ CREATE TABLE einkommensverschlechterung_aud (
 	familienzulage                    DECIMAL(19, 2),
 	geleistete_alimente               DECIMAL(19, 2),
 	geschaeftsgewinn_basisjahr        DECIMAL(19, 2),
+	nettolohn                         DECIMAL(19, 2),
 	schulden                          DECIMAL(19, 2),
-	steuererklaerung_ausgefuellt      BIT,
-	steuerveranlagung_erhalten        BIT,
 	geschaeftsgewinn_basisjahr_minus1 DECIMAL(19, 2),
-	nettolohn_apr                     DECIMAL(19, 2),
-	nettolohn_aug                     DECIMAL(19, 2),
-	nettolohn_dez                     DECIMAL(19, 2),
-	nettolohn_feb                     DECIMAL(19, 2),
-	nettolohn_jan                     DECIMAL(19, 2),
-	nettolohn_jul                     DECIMAL(19, 2),
-	nettolohn_jun                     DECIMAL(19, 2),
-	nettolohn_mai                     DECIMAL(19, 2),
-	nettolohn_mrz                     DECIMAL(19, 2),
-	nettolohn_nov                     DECIMAL(19, 2),
-	nettolohn_okt                     DECIMAL(19, 2),
-	nettolohn_sep                     DECIMAL(19, 2),
-	nettolohn_zus                     DECIMAL(19, 2),
 	PRIMARY KEY (id, rev)
 );
 
@@ -823,12 +793,6 @@ CREATE TABLE einkommensverschlechterung_info_aud (
 	ekv_basis_jahr_plus2annulliert   BIT,
 	ekv_fuer_basis_jahr_plus1        BIT,
 	ekv_fuer_basis_jahr_plus2        BIT,
-	gemeinsame_steuererklaerung_bjp1 BIT,
-	gemeinsame_steuererklaerung_bjp2 BIT,
-	grund_fuer_basis_jahr_plus1      VARCHAR(255),
-	grund_fuer_basis_jahr_plus2      VARCHAR(255),
-	stichtag_fuer_basis_jahr_plus1   DATE,
-	stichtag_fuer_basis_jahr_plus2   DATE,
 	PRIMARY KEY (id, rev)
 );
 
@@ -875,12 +839,6 @@ CREATE TABLE einkommensverschlechterung_info (
 	ekv_basis_jahr_plus2annulliert   BIT          NOT NULL,
 	ekv_fuer_basis_jahr_plus1        BIT          NOT NULL,
 	ekv_fuer_basis_jahr_plus2        BIT          NOT NULL,
-	gemeinsame_steuererklaerung_bjp1 BIT,
-	gemeinsame_steuererklaerung_bjp2 BIT,
-	grund_fuer_basis_jahr_plus1      VARCHAR(255),
-	grund_fuer_basis_jahr_plus2      VARCHAR(255),
-	stichtag_fuer_basis_jahr_plus1   DATE,
-	stichtag_fuer_basis_jahr_plus2   DATE,
 	PRIMARY KEY (id)
 );
 
@@ -943,18 +901,17 @@ CREATE TABLE erweiterte_betreuung_aud (
 );
 
 CREATE TABLE erweiterte_betreuung_container_aud (
-	id                        BINARY(16) NOT NULL,
-	rev                       INTEGER    NOT NULL,
+	betreuung_id              BINARY(16) NOT NULL,
+	rev                       INTEGER     NOT NULL,
 	revtype                   TINYINT,
 	timestamp_erstellt        DATETIME,
 	timestamp_mutiert         DATETIME,
 	user_erstellt             VARCHAR(255),
 	user_mutiert              VARCHAR(255),
 	vorgaenger_id             VARCHAR(36),
-	betreuung_id              BINARY(16),
 	erweiterte_betreuunggs_id BINARY(16),
 	erweiterte_betreuungja_id BINARY(16),
-	PRIMARY KEY (id, rev)
+	PRIMARY KEY (betreuung_id, rev)
 );
 
 CREATE TABLE erweiterte_betreuung (
@@ -971,17 +928,16 @@ CREATE TABLE erweiterte_betreuung (
 );
 
 CREATE TABLE erweiterte_betreuung_container (
-	id                        BINARY(16)   NOT NULL,
 	timestamp_erstellt        DATETIME     NOT NULL,
 	timestamp_mutiert         DATETIME     NOT NULL,
 	user_erstellt             VARCHAR(255) NOT NULL,
 	user_mutiert              VARCHAR(255) NOT NULL,
 	version                   BIGINT       NOT NULL,
 	vorgaenger_id             VARCHAR(36),
-	betreuung_id              BINARY(16),
+	betreuung_id              BINARY(16)   NOT NULL,
 	erweiterte_betreuunggs_id BINARY(16),
 	erweiterte_betreuungja_id BINARY(16),
-	PRIMARY KEY (id)
+	PRIMARY KEY (betreuung_id)
 );
 
 CREATE TABLE erwerbspensum (
@@ -1056,10 +1012,9 @@ CREATE TABLE fachstelle (
 	user_mutiert                    VARCHAR(255) NOT NULL,
 	version                         BIGINT       NOT NULL,
 	vorgaenger_id                   VARCHAR(36),
-	beschreibung                    VARCHAR(255),
 	fachstelle_anspruch             BIT          NOT NULL,
 	fachstelle_erweiterte_betreuung BIT          NOT NULL,
-	name                            VARCHAR(100) NOT NULL,
+	name                            VARCHAR(255) NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -1072,10 +1027,9 @@ CREATE TABLE fachstelle_aud (
 	user_erstellt                   VARCHAR(255),
 	user_mutiert                    VARCHAR(255),
 	vorgaenger_id                   VARCHAR(36),
-	beschreibung                    VARCHAR(255),
 	fachstelle_anspruch             BIT,
 	fachstelle_erweiterte_betreuung BIT,
-	name                            VARCHAR(100),
+	name                            VARCHAR(255),
 	PRIMARY KEY (id, rev)
 );
 
@@ -1122,6 +1076,7 @@ CREATE TABLE familiensituation (
 	familienstatus              VARCHAR(255) NOT NULL,
 	gemeinsame_steuererklaerung BIT,
 	sozialhilfe_bezueger        BIT,
+	start_konkubinat            DATE,
 	verguenstigung_gewuenscht   BIT,
 	PRIMARY KEY (id)
 );
@@ -1139,6 +1094,7 @@ CREATE TABLE familiensituation_aud (
 	familienstatus              VARCHAR(255),
 	gemeinsame_steuererklaerung BIT,
 	sozialhilfe_bezueger        BIT,
+	start_konkubinat            DATE,
 	verguenstigung_gewuenscht   BIT,
 	PRIMARY KEY (id, rev)
 );
@@ -1190,9 +1146,9 @@ CREATE TABLE ferieninsel_stammdaten_aud (
 CREATE TABLE ferieninsel_stammdaten_ferieninsel_zeitraum_aud (
 	rev                       INTEGER    NOT NULL,
 	ferieninsel_stammdaten_id BINARY(16) NOT NULL,
-	zeitraum_list_id          BINARY(16) NOT NULL,
+	zeitraum_id               BINARY(16) NOT NULL,
 	revtype                   TINYINT,
-	PRIMARY KEY (rev, ferieninsel_stammdaten_id, zeitraum_list_id)
+	PRIMARY KEY (rev, ferieninsel_stammdaten_id, zeitraum_id)
 );
 
 CREATE TABLE ferieninsel_zeitraum_aud (
@@ -1225,7 +1181,7 @@ CREATE TABLE ferieninsel_stammdaten (
 
 CREATE TABLE ferieninsel_stammdaten_ferieninsel_zeitraum (
 	ferieninsel_stammdaten_id BINARY(16) NOT NULL,
-	zeitraum_list_id          BINARY(16) NOT NULL
+	zeitraum_id               BINARY(16) NOT NULL
 );
 
 CREATE TABLE ferieninsel_zeitraum (
@@ -1256,12 +1212,12 @@ CREATE TABLE finanzielle_situation_aud (
 	familienzulage                    DECIMAL(19, 2),
 	geleistete_alimente               DECIMAL(19, 2),
 	geschaeftsgewinn_basisjahr        DECIMAL(19, 2),
+	nettolohn                         DECIMAL(19, 2),
 	schulden                          DECIMAL(19, 2),
-	steuererklaerung_ausgefuellt      BIT,
-	steuerveranlagung_erhalten        BIT,
 	geschaeftsgewinn_basisjahr_minus1 DECIMAL(19, 2),
 	geschaeftsgewinn_basisjahr_minus2 DECIMAL(19, 2),
-	nettolohn                         DECIMAL(19, 2),
+	steuererklaerung_ausgefuellt      BIT,
+	steuerveranlagung_erhalten        BIT,
 	PRIMARY KEY (id, rev)
 );
 
@@ -1295,12 +1251,12 @@ CREATE TABLE finanzielle_situation (
 	familienzulage                    DECIMAL(19, 2),
 	geleistete_alimente               DECIMAL(19, 2),
 	geschaeftsgewinn_basisjahr        DECIMAL(19, 2),
+	nettolohn                         DECIMAL(19, 2),
 	schulden                          DECIMAL(19, 2),
-	steuererklaerung_ausgefuellt      BIT          NOT NULL,
-	steuerveranlagung_erhalten        BIT          NOT NULL,
 	geschaeftsgewinn_basisjahr_minus1 DECIMAL(19, 2),
 	geschaeftsgewinn_basisjahr_minus2 DECIMAL(19, 2),
-	nettolohn                         DECIMAL(19, 2),
+	steuererklaerung_ausgefuellt      BIT          NOT NULL,
+	steuerveranlagung_erhalten        BIT          NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -1360,6 +1316,9 @@ CREATE TABLE gemeinde_stammdaten_aud (
 	timestamp_mutiert     DATETIME,
 	user_erstellt         VARCHAR(255),
 	user_mutiert          VARCHAR(255),
+	bic                   VARCHAR(255),
+	iban                  VARCHAR(34),
+	kontoinhaber          VARCHAR(255),
 	korrespondenzsprache  VARCHAR(255),
 	logo_content          LONGBLOB,
 	mail                  VARCHAR(255),
@@ -1380,6 +1339,9 @@ CREATE TABLE gemeinde_stammdaten (
 	user_erstellt         VARCHAR(255) NOT NULL,
 	user_mutiert          VARCHAR(255) NOT NULL,
 	version               BIGINT       NOT NULL,
+	bic                   VARCHAR(255) NOT NULL,
+	iban                  VARCHAR(34),
+	kontoinhaber          VARCHAR(255) NOT NULL,
 	korrespondenzsprache  VARCHAR(255) NOT NULL,
 	logo_content          LONGBLOB,
 	mail                  VARCHAR(255) NOT NULL,
@@ -1456,6 +1418,7 @@ CREATE TABLE gesuch (
 	status                                       VARCHAR(255) NOT NULL,
 	timestamp_verfuegt                           DATETIME,
 	typ                                          VARCHAR(255) NOT NULL,
+	verfuegung_eingeschrieben                    BIT          NOT NULL,
 	dossier_id                                   BINARY(16)   NOT NULL,
 	einkommensverschlechterung_info_container_id BINARY(16),
 	familiensituation_container_id               BINARY(16),
@@ -1494,6 +1457,7 @@ CREATE TABLE gesuch_aud (
 	status                                       VARCHAR(255),
 	timestamp_verfuegt                           DATETIME,
 	typ                                          VARCHAR(255),
+	verfuegung_eingeschrieben                    BIT,
 	dossier_id                                   BINARY(16),
 	einkommensverschlechterung_info_container_id BINARY(16),
 	familiensituation_container_id               BINARY(16),
@@ -1531,6 +1495,8 @@ CREATE TABLE gesuchsperiode (
 	datum_erster_schultag           DATE,
 	datum_freischaltung_tagesschule DATE,
 	status                          VARCHAR(255) NOT NULL,
+	verfuegung_erlaeuterungen_de    longblob,
+	verfuegung_erlaeuterungen_fr    longblob,
 	PRIMARY KEY (id)
 );
 
@@ -1549,6 +1515,8 @@ CREATE TABLE gesuchsperiode_aud (
 	datum_erster_schultag           DATE,
 	datum_freischaltung_tagesschule DATE,
 	status                          VARCHAR(255),
+	verfuegung_erlaeuterungen_de    longblob,
+	verfuegung_erlaeuterungen_fr    longblob,
 	PRIMARY KEY (id, rev)
 );
 
@@ -1712,11 +1680,20 @@ CREATE TABLE institution_stammdaten_aud (
 	vorgaenger_id                         VARCHAR(36),
 	gueltig_ab                            DATE,
 	gueltig_bis                           DATE,
+	alterskategorie_baby                  BIT,
+	alterskategorie_kindergarten          BIT,
+	alterskategorie_schule                BIT,
+	alterskategorie_vorschule             BIT,
+	anzahl_plaetze                        DECIMAL(19, 2),
+	anzahl_plaetze_firmen                 DECIMAL(19, 2),
 	betreuungsangebot_typ                 VARCHAR(255),
 	iban                                  VARCHAR(34),
 	kontoinhaber                          VARCHAR(255),
 	mail                                  VARCHAR(255),
+	oeffnungszeiten                       VARCHAR(255),
+	subventionierte_plaetze               BIT,
 	telefon                               VARCHAR(255),
+	webseite                              VARCHAR(255),
 	adresse_id                            BINARY(16),
 	adresse_kontoinhaber_id               BINARY(16),
 	institution_id                        BINARY(16),
@@ -1767,11 +1744,20 @@ CREATE TABLE institution_stammdaten (
 	vorgaenger_id                         VARCHAR(36),
 	gueltig_ab                            DATE         NOT NULL,
 	gueltig_bis                           DATE         NOT NULL,
+	alterskategorie_baby                  BIT            NOT NULL,
+	alterskategorie_kindergarten          BIT            NOT NULL,
+	alterskategorie_schule                BIT            NOT NULL,
+	alterskategorie_vorschule             BIT            NOT NULL,
+	anzahl_plaetze                        DECIMAL(19, 2) NOT NULL,
+	anzahl_plaetze_firmen                 DECIMAL(19, 2),
 	betreuungsangebot_typ                 VARCHAR(255) NOT NULL,
 	iban                                  VARCHAR(34),
 	kontoinhaber                          VARCHAR(255),
 	mail                                  VARCHAR(255) NOT NULL,
+	oeffnungszeiten                       VARCHAR(255),
+	subventionierte_plaetze               BIT            NOT NULL,
 	telefon                               VARCHAR(255),
+	webseite                              VARCHAR(255),
 	adresse_id                            BINARY(16)   NOT NULL,
 	adresse_kontoinhaber_id               BINARY(16),
 	institution_id                        BINARY(16)   NOT NULL,
@@ -1964,7 +1950,7 @@ CREATE TABLE massenversand (
 
 CREATE TABLE massenversand_gesuch (
 	massenversand_id BINARY(16) NOT NULL,
-	gesuche_id       BINARY(16) NOT NULL
+	gesuch_id        BINARY(16) NOT NULL
 );
 
 CREATE TABLE mitteilung (
@@ -1977,7 +1963,7 @@ CREATE TABLE mitteilung (
 	version            BIGINT       NOT NULL,
 	vorgaenger_id      VARCHAR(36),
 	empfaenger_typ     VARCHAR(255) NOT NULL,
-	message            VARCHAR(255),
+	message            VARCHAR(4000),
 	mitteilung_status  VARCHAR(255) NOT NULL,
 	sender_typ         VARCHAR(255) NOT NULL,
 	sent_datum         DATETIME,
@@ -2001,7 +1987,7 @@ CREATE TABLE mitteilung_aud (
 	user_mutiert       VARCHAR(255),
 	vorgaenger_id      VARCHAR(36),
 	empfaenger_typ     VARCHAR(255),
-	message            VARCHAR(255),
+	message            VARCHAR(4000),
 	mitteilung_status  VARCHAR(255),
 	sender_typ         VARCHAR(255),
 	sent_datum         DATETIME,
@@ -2221,7 +2207,6 @@ CREATE TABLE unbezahlter_urlaub (
 );
 
 CREATE TABLE verfuegung (
-	id                        BINARY(16)   NOT NULL,
 	timestamp_erstellt        DATETIME     NOT NULL,
 	timestamp_mutiert         DATETIME     NOT NULL,
 	user_erstellt             VARCHAR(255) NOT NULL,
@@ -2234,12 +2219,13 @@ CREATE TABLE verfuegung (
 	kategorie_nicht_eintreten BIT          NOT NULL,
 	kategorie_normal          BIT          NOT NULL,
 	manuelle_bemerkungen      VARCHAR(4000),
-	PRIMARY KEY (id)
+	betreuung_id              BINARY(16)  NOT NULL,
+	PRIMARY KEY (betreuung_id)
 );
 
 CREATE TABLE verfuegung_aud (
-	id                        BINARY(16) NOT NULL,
-	rev                       INTEGER    NOT NULL,
+	betreuung_id              BINARY(16) NOT NULL,
+	rev                       INTEGER     NOT NULL,
 	revtype                   TINYINT,
 	timestamp_erstellt        DATETIME,
 	timestamp_mutiert         DATETIME,
@@ -2252,12 +2238,12 @@ CREATE TABLE verfuegung_aud (
 	kategorie_nicht_eintreten BIT,
 	kategorie_normal          BIT,
 	manuelle_bemerkungen      VARCHAR(4000),
-	PRIMARY KEY (id, rev)
+	PRIMARY KEY (betreuung_id, rev)
 );
 
 CREATE TABLE verfuegung_zeitabschnitt_aud (
 	id                                                   BINARY(16) NOT NULL,
-	rev                                                  INTEGER    NOT NULL,
+	rev                                                  INTEGER     NOT NULL,
 	revtype                                              TINYINT,
 	timestamp_erstellt                                   DATETIME,
 	timestamp_mutiert                                    DATETIME,
@@ -2283,12 +2269,12 @@ CREATE TABLE verfuegung_zeitabschnitt_aud (
 	vollkosten                                           DECIMAL(19, 2),
 	zahlungsstatus                                       VARCHAR(255),
 	zu_spaet_eingereicht                                 BIT,
-	verfuegung_id                                        BINARY(16),
+	verfuegung_betreuung_id                              BINARY(16),
 	PRIMARY KEY (id, rev)
 );
 
 CREATE TABLE verfuegung_zeitabschnitt (
-	id                                                   BINARY(16)     NOT NULL,
+	id                                                   BINARY(16)    NOT NULL,
 	timestamp_erstellt                                   DATETIME       NOT NULL,
 	timestamp_mutiert                                    DATETIME       NOT NULL,
 	user_erstellt                                        VARCHAR(255)   NOT NULL,
@@ -2314,7 +2300,7 @@ CREATE TABLE verfuegung_zeitabschnitt (
 	vollkosten                                           DECIMAL(19, 2),
 	zahlungsstatus                                       VARCHAR(255)   NOT NULL,
 	zu_spaet_eingereicht                                 BIT            NOT NULL,
-	verfuegung_id                                        BINARY(16)     NOT NULL,
+	verfuegung_betreuung_id                              BINARY(16)    NOT NULL,
 	PRIMARY KEY (id)
 );
 
@@ -2519,8 +2505,6 @@ CREATE INDEX IX_berechtigung_gemeinde_gemeinde_id ON berechtigung_gemeinde(gemei
 ALTER TABLE betreuung
 	ADD CONSTRAINT UK_betreuung_kind_betreuung_nummer UNIQUE (betreuung_nummer, kind_id);
 
-ALTER TABLE betreuung
-	ADD CONSTRAINT UK_betreuung_verfuegung_id UNIQUE (verfuegung_id);
 CREATE INDEX IX_dossier_verantwortlicher_bg ON dossier(verantwortlicherbg_id);
 CREATE INDEX IX_dossier_verantwortlicher_ts ON dossier(verantwortlicherts_id);
 
@@ -2530,8 +2514,6 @@ ALTER TABLE dossier
 ALTER TABLE einkommensverschlechterung_container
 	ADD CONSTRAINT UK_einkommensverschlechterungcontainer_gesuchsteller UNIQUE (gesuchsteller_container_id);
 
-ALTER TABLE erweiterte_betreuung_container
-	ADD CONSTRAINT UK_erweiterte_betreuung_betreuung UNIQUE (betreuung_id);
 CREATE INDEX IX_fall_fall_nummer ON fall(fall_nummer);
 CREATE INDEX IX_fall_besitzer ON fall(besitzer_id);
 CREATE INDEX IX_fall_mandant ON fall(mandant_id);
@@ -2543,7 +2525,7 @@ ALTER TABLE fall
 	ADD CONSTRAINT UK_fall_besitzer UNIQUE (besitzer_id);
 
 ALTER TABLE ferieninsel_stammdaten_ferieninsel_zeitraum
-	ADD CONSTRAINT UK_misbqu546cnkqs8b62v06r4yr UNIQUE (zeitraum_list_id);
+	ADD CONSTRAINT UK_ferieninsel_stammdaten_zeitraum_id UNIQUE (zeitraum_id);
 
 ALTER TABLE finanzielle_situation_container
 	ADD CONSTRAINT UK_finanzielle_situation_container_gesuchsteller UNIQUE (gesuchsteller_container_id);
@@ -2558,10 +2540,10 @@ ALTER TABLE gemeinde
 	ADD CONSTRAINT UK_gemeinde_gemeindeNummer_mandant UNIQUE (gemeinde_nummer, mandant_id);
 
 ALTER TABLE gemeinde_stammdaten
-	ADD CONSTRAINT UK_i60ubl8c5ohc3tee1kjk8u58x UNIQUE (adresse_id);
+	ADD CONSTRAINT UK_gemeinde_stammdaten_gemeinde_id UNIQUE (gemeinde_id);
 
 ALTER TABLE gemeinde_stammdaten
-	ADD CONSTRAINT UK_a22nnahyf6eygk0p23fdj1x5x UNIQUE (gemeinde_id);
+	ADD CONSTRAINT UK_gemeinde_stammdaten_adresse_id UNIQUE (adresse_id);
 CREATE INDEX IX_gesuch_timestamp_erstellt ON gesuch(timestamp_erstellt);
 
 ALTER TABLE gesuch
@@ -2590,12 +2572,12 @@ ALTER TABLE wizard_step
 	ADD CONSTRAINT UK_wizardstep_gesuch_stepname UNIQUE (wizard_step_name, gesuch_id);
 
 ALTER TABLE abwesenheit_aud
-	ADD CONSTRAINT FKng1vhbp42873xg2wtpdl0oqk2
+	ADD CONSTRAINT FK_abwesenheit_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE abwesenheit_container_aud
-	ADD CONSTRAINT FK3wch3ne219lglatthsh2fuap3
+	ADD CONSTRAINT FK_abwesenheit_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2615,12 +2597,12 @@ ALTER TABLE abwesenheit_container
 			REFERENCES betreuung(id);
 
 ALTER TABLE adresse_aud
-	ADD CONSTRAINT FKeartnqqce0eqjl4tiv5my51ee
+	ADD CONSTRAINT FK_adresse_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE antrag_status_history_aud
-	ADD CONSTRAINT FKbji08vcwo43yh6vrwvxqdlwxp
+	ADD CONSTRAINT FK_antrag_status_history_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2635,7 +2617,7 @@ ALTER TABLE antrag_status_history
 			REFERENCES gesuch(id);
 
 ALTER TABLE application_property_aud
-	ADD CONSTRAINT FK68vs0wt0pakr900dxybu1tdy5
+	ADD CONSTRAINT FK_application_property_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2645,47 +2627,47 @@ ALTER TABLE authorisierter_benutzer
 			REFERENCES benutzer(id);
 
 ALTER TABLE belegung_ferieninsel_aud
-	ADD CONSTRAINT FKocjn25rl9n0cm0r92nq7wj2tt
+	ADD CONSTRAINT FK_belegung_ferieninsel_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_ferieninsel_belegung_ferieninsel_tag_aud
-	ADD CONSTRAINT FKklgh9wrplff4566h3rm2dxfjx
+	ADD CONSTRAINT FK_belegung_ferieninsel_belegung_ferieninsel_tag_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_ferieninsel_tag_aud
-	ADD CONSTRAINT FK58gghrl3m413t84vpjvqj05hj
+	ADD CONSTRAINT FK_belegung_ferieninsel_tag_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_tagesschule_aud
-	ADD CONSTRAINT FKe4ule2q27medxr46nue1kw5c9
+	ADD CONSTRAINT FK_belegung_tagesschule_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_tagesschule_modul_tagesschule_aud
-	ADD CONSTRAINT FKcl9936gltea6ttlcfgdnxs63b
+	ADD CONSTRAINT FK_belegung_tagesschule_modul_tagesschule_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_ferieninsel_belegung_ferieninsel_tag
-	ADD CONSTRAINT FKciulwk88xhorhdgm3mhmsrmjv
+	ADD CONSTRAINT FK_belegung_ferieninsel_tage_id
 		FOREIGN KEY (tage_id)
 			REFERENCES belegung_ferieninsel_tag(id);
 
 ALTER TABLE belegung_ferieninsel_belegung_ferieninsel_tag
-	ADD CONSTRAINT FK4p3ipudli5oswp4td00qs3gp3
+	ADD CONSTRAINT FK_belegung_ferieninsel_belegung_ferieninsel_id
 		FOREIGN KEY (belegung_ferieninsel_id)
 			REFERENCES belegung_ferieninsel(id);
 
 ALTER TABLE belegung_tagesschule_modul_tagesschule
-	ADD CONSTRAINT FKak6ds6xn9iaa2jo0wf9ounfjg
+	ADD CONSTRAINT FK_belegung_tagesschule_module_tagesschule_id
 		FOREIGN KEY (module_tagesschule_id)
 			REFERENCES modul_tagesschule(id);
 
 ALTER TABLE belegung_tagesschule_modul_tagesschule
-	ADD CONSTRAINT FKgn7dinsrgt9k4d51p04dgv87t
+	ADD CONSTRAINT FK_belegung_tagesschule_belegung_tagesschule_id
 		FOREIGN KEY (belegung_tagesschule_id)
 			REFERENCES belegung_tagesschule(id);
 
@@ -2695,7 +2677,7 @@ ALTER TABLE benutzer
 			REFERENCES mandant(id);
 
 ALTER TABLE benutzer_aud
-	ADD CONSTRAINT FKswc4iahf0lnluku84fvkpp5wy
+	ADD CONSTRAINT FK_benutzer_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2715,12 +2697,12 @@ ALTER TABLE berechtigung
 			REFERENCES traegerschaft(id);
 
 ALTER TABLE berechtigung_aud
-	ADD CONSTRAINT FKrwxoku5p2f4w3qx4lakpmlbrl
+	ADD CONSTRAINT FK_berechtigung_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE berechtigung_gemeinde
-	ADD CONSTRAINT FKt619gmdxpjik8203rsx2gfkl8
+	ADD CONSTRAINT FK_berechtigung_gemeinde_berechtigung_id
 		FOREIGN KEY (gemeinde_id)
 			REFERENCES gemeinde(id);
 
@@ -2730,12 +2712,12 @@ ALTER TABLE berechtigung_gemeinde
 			REFERENCES berechtigung(id);
 
 ALTER TABLE berechtigung_gemeinde_aud
-	ADD CONSTRAINT FKhj03hdnjrs0wa2iwbukp1v4ds
+	ADD CONSTRAINT FK_berechtigung_gemeinde_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE berechtigung_history_aud
-	ADD CONSTRAINT FK6sbg81ysce804v0l7crx7eiac
+	ADD CONSTRAINT FK_berechtigung_history_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2769,33 +2751,28 @@ ALTER TABLE betreuung
 		FOREIGN KEY (kind_id)
 			REFERENCES kind_container(id);
 
-ALTER TABLE betreuung
-	ADD CONSTRAINT FK_betreuung_verfuegung_id
-		FOREIGN KEY (verfuegung_id)
-			REFERENCES verfuegung(id);
-
 ALTER TABLE betreuung_aud
-	ADD CONSTRAINT FK2xh5vmlxot3aq29mla11no60y
+	ADD CONSTRAINT FK_betreuung_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE betreuungsmitteilung_pensum_aud
-	ADD CONSTRAINT FK9uwg4psfpfukay2oh88ejopob
+	ADD CONSTRAINT FK_betreuungsmitteilung_pensum_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE betreuungsmitteilung_pensum
-	ADD CONSTRAINT FKf3inckvoj5b2wm7sunf199im9
+	ADD CONSTRAINT FK_betreuungsmitteilung_pens_betreuungsmitteilung_id
 		FOREIGN KEY (betreuungsmitteilung_id)
 			REFERENCES mitteilung(id);
 
 ALTER TABLE betreuungspensum_aud
-	ADD CONSTRAINT FK7oh6pmmpm286dxqdvog63yhqy
+	ADD CONSTRAINT FK_betreuungspensum_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE betreuungspensum_container_aud
-	ADD CONSTRAINT FKnktcdcxbvqxmj4jwmiyij369e
+	ADD CONSTRAINT FK_betreuungspensum_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2825,12 +2802,12 @@ ALTER TABLE dokument
 			REFERENCES dokument_grund(id);
 
 ALTER TABLE dokument_aud
-	ADD CONSTRAINT FKk1lje21u4ksjamyfue7t3hyda
+	ADD CONSTRAINT FK_dokument_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE dokument_grund_aud
-	ADD CONSTRAINT FKso4s0v3gmc9uc8woigagw35ru
+	ADD CONSTRAINT FK_dokument_grund_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2860,12 +2837,12 @@ ALTER TABLE dossier
 			REFERENCES benutzer(id);
 
 ALTER TABLE dossier_aud
-	ADD CONSTRAINT FKrr1jcn0gmtxqnn7la4n7j7phy
+	ADD CONSTRAINT FK_dossier_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE ebegu_vorlage_aud
-	ADD CONSTRAINT FKc611a7ud0633fxbbic18kdar4
+	ADD CONSTRAINT FK_ebegu_vorlage_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2875,22 +2852,22 @@ ALTER TABLE ebegu_vorlage
 			REFERENCES vorlage(id);
 
 ALTER TABLE einkommensverschlechterung_aud
-	ADD CONSTRAINT FK56slkkb5612k09yofki48hsx7
+	ADD CONSTRAINT FK_einkommensverschlechterung_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE einkommensverschlechterung_container_aud
-	ADD CONSTRAINT FK5edp1jhvmj2bfe27smqm7rx8i
+	ADD CONSTRAINT FK_einkommensverschlechterung_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE einkommensverschlechterung_info_aud
-	ADD CONSTRAINT FKmm4qmk2w5n9kc9ne8eu9aip85
+	ADD CONSTRAINT FK_einkommensverschlechterung_info_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE einkommensverschlechterung_info_container_aud
-	ADD CONSTRAINT FKfdp2w03ouyhqq78c83rkh0f0m
+	ADD CONSTRAINT FK_einkommensverschlechterung_info_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2945,17 +2922,17 @@ ALTER TABLE einstellung
 			REFERENCES mandant(id);
 
 ALTER TABLE einstellung_aud
-	ADD CONSTRAINT FKm13a58ohgq6vexfsoopk949yv
+	ADD CONSTRAINT FK_einstellung_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE erweiterte_betreuung_aud
-	ADD CONSTRAINT FK2nvht5p6jnmxvuu1mwi87err8
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+	ADD CONSTRAINT FK_erweiterte_betreuung_aud_revinfo
+FOREIGN KEY (rev)
+REFERENCES revinfo (rev);
 
 ALTER TABLE erweiterte_betreuung_container_aud
-	ADD CONSTRAINT FK9cjovrwv3dh0hjkver0mggerd
+	ADD CONSTRAINT FK_erweiterte_betreuung_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -2966,8 +2943,8 @@ ALTER TABLE erweiterte_betreuung
 
 ALTER TABLE erweiterte_betreuung_container
 	ADD CONSTRAINT FK_erweiterte_betreuung_container_betreuung_id
-		FOREIGN KEY (betreuung_id)
-			REFERENCES betreuung(id);
+FOREIGN KEY (betreuung_id)
+REFERENCES betreuung(id);
 
 ALTER TABLE erweiterte_betreuung_container
 	ADD CONSTRAINT FK_erweiterte_betreuung_container_erweiterte_betreuung_gs
@@ -2985,12 +2962,12 @@ ALTER TABLE erwerbspensum
 			REFERENCES unbezahlter_urlaub(id);
 
 ALTER TABLE erwerbspensum_aud
-	ADD CONSTRAINT FK1v0oqhw2c90hd8xiin6mn7box
+	ADD CONSTRAINT FK_erwerbspensum_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE erwerbspensum_container_aud
-	ADD CONSTRAINT FKcn4wryotuuchxfinepa1aqg8j
+	ADD CONSTRAINT FK_erwerbspensum_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3010,7 +2987,7 @@ ALTER TABLE erwerbspensum_container
 			REFERENCES gesuchsteller_container(id);
 
 ALTER TABLE fachstelle_aud
-	ADD CONSTRAINT FKkww9j18yvjyddmx6qv2vuekfl
+	ADD CONSTRAINT FK_fachstelle_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3025,17 +3002,17 @@ ALTER TABLE fall
 			REFERENCES mandant(id);
 
 ALTER TABLE fall_aud
-	ADD CONSTRAINT FKmkfehw6pmws35qorifenrvu7e
+	ADD CONSTRAINT FK_fall_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE familiensituation_aud
-	ADD CONSTRAINT FKh00xtricpc6bcs50m5njbuaky
+	ADD CONSTRAINT FK_familiensituation_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE familiensituation_container_aud
-	ADD CONSTRAINT FK22okgcsp4dd71cqj1p5j3wi08
+	ADD CONSTRAINT FK_familiensituation_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3055,42 +3032,42 @@ ALTER TABLE familiensituation_container
 			REFERENCES familiensituation(id);
 
 ALTER TABLE ferieninsel_stammdaten_aud
-	ADD CONSTRAINT FKjpnavkjleutq2k4tsrv45uc99
+	ADD CONSTRAINT FK_ferieninsel_stammdaten_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE ferieninsel_stammdaten_ferieninsel_zeitraum_aud
-	ADD CONSTRAINT FK8muysug9y7tup7n35hob4xlik
+	ADD CONSTRAINT FK_ferieninsel_stammdaten_ferieninsel_zeitraum_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE ferieninsel_zeitraum_aud
-	ADD CONSTRAINT FKfwhjmm489aqn5n2xh6rgoay7j
+	ADD CONSTRAINT FK_ferieninsel_zeitraum_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE ferieninsel_stammdaten
-	ADD CONSTRAINT FK94jeg2xss3b2fo6tmtaxplp1l
+	ADD CONSTRAINT FK_ferieninsel_stammdaten_gesuchsperiodeId
 		FOREIGN KEY (gesuchsperiode_id)
 			REFERENCES gesuchsperiode(id);
 
 ALTER TABLE ferieninsel_stammdaten_ferieninsel_zeitraum
-	ADD CONSTRAINT FKm8jw70nlbxuui4ve64fr2xpql
-		FOREIGN KEY (zeitraum_list_id)
+	ADD CONSTRAINT FK_ferieninsel_stammdaten_ferieninsel_zeitraum_id
+FOREIGN KEY (zeitraum_id)
 			REFERENCES ferieninsel_zeitraum(id);
 
 ALTER TABLE ferieninsel_stammdaten_ferieninsel_zeitraum
-	ADD CONSTRAINT FKgp7ofx97oamawji11t4lry5m0
+	ADD CONSTRAINT FK_ferieninsel_stammdaten_ferieninsel_stammdaten_id
 		FOREIGN KEY (ferieninsel_stammdaten_id)
 			REFERENCES ferieninsel_stammdaten(id);
 
 ALTER TABLE finanzielle_situation_aud
-	ADD CONSTRAINT FK15h5ck8wvo4ldvbmu4e6fe7wr
+	ADD CONSTRAINT FK_finanzielle_situation_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE finanzielle_situation_container_aud
-	ADD CONSTRAINT FK4ycpgbn7wpjuf1eg41de7a61y
+	ADD CONSTRAINT FK_finanzielle_situation_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3115,12 +3092,12 @@ ALTER TABLE gemeinde
 			REFERENCES mandant(id);
 
 ALTER TABLE gemeinde_aud
-	ADD CONSTRAINT FK7wkhewqd3f81aasnstuv0s3q8
+	ADD CONSTRAINT FK_gemeinde_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE gemeinde_stammdaten_aud
-	ADD CONSTRAINT FKipd4wax0uc7nl5rxvap2a6v71
+	ADD CONSTRAINT FK_gemeinde_stammdaten_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3150,7 +3127,7 @@ ALTER TABLE gemeinde_stammdaten
 			REFERENCES gemeinde(id);
 
 ALTER TABLE generated_dokument_aud
-	ADD CONSTRAINT FKklxgsrr8antlc27iicw59qnlk
+	ADD CONSTRAINT FK_generated_dokument_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3190,37 +3167,37 @@ ALTER TABLE gesuch
 			REFERENCES gesuchsteller_container(id);
 
 ALTER TABLE gesuch_aud
-	ADD CONSTRAINT FKau3w8os8gh8oyci7fpr5jrnoq
+	ADD CONSTRAINT FK_gesuch_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsperiode_aud
-	ADD CONSTRAINT FKjd1ewwubxbgphr1pmogojntav
+	ADD CONSTRAINT FK_gesuchsperiode_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_adresse_aud
-	ADD CONSTRAINT FK3dh5st3mw7t9292dc1gx2d8id
+	ADD CONSTRAINT FK_gesuchsteller_adresse_aud_adresse_aud
 		FOREIGN KEY (id, rev)
 			REFERENCES adresse_aud(id, rev);
 
 ALTER TABLE gesuchsteller_adresse_container_aud
-	ADD CONSTRAINT FKhqbwibfg9v4uu8kh8dxn03cad
+	ADD CONSTRAINT FK_gesuchsteller_adresse_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_aud
-	ADD CONSTRAINT FK7j2ytwnvch3mv3gikt230uj9i
+	ADD CONSTRAINT FK_gesuchsteller_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_container_aud
-	ADD CONSTRAINT FKtnsm6qs3duwtsk406umn8vl11
+	ADD CONSTRAINT FK_gesuchsteller_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_adresse
-	ADD CONSTRAINT FKk7huw60njs23n1oqiwx7tu8dw
+	ADD CONSTRAINT FK_gesuchsteller_adresse_adresse_id # TODO Dieser FK wird als einziger nicht generiert (https://hibernate.atlassian.net/browse/HHH-10352)
 		FOREIGN KEY (id)
 			REFERENCES adresse(id);
 
@@ -3260,22 +3237,22 @@ ALTER TABLE institution
 			REFERENCES traegerschaft(id);
 
 ALTER TABLE institution_aud
-	ADD CONSTRAINT FKmh0q5supgbar7itjmlt47rom6
+	ADD CONSTRAINT FK_institution_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE institution_stammdaten_aud
-	ADD CONSTRAINT FK98l7foa2nq9ad51wvo1yc6kfp
+	ADD CONSTRAINT FK_institution_stammdaten_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE institution_stammdaten_ferieninsel_aud
-	ADD CONSTRAINT FK7covdo1m7i8nyrm9jkphrhd1f
+	ADD CONSTRAINT FK_institution_stammdaten_ferieninsel_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE institution_stammdaten_tagesschule_aud
-	ADD CONSTRAINT FK5mqsaorwajyw5sw3b056ef4j7
+	ADD CONSTRAINT FK_institution_stammdaten_tagesschule_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3315,12 +3292,12 @@ ALTER TABLE kind
 			REFERENCES pensum_fachstelle(id);
 
 ALTER TABLE kind_aud
-	ADD CONSTRAINT FK8i4febfygx85q24mxbsva18ky
+	ADD CONSTRAINT FK_kind_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE kind_container_aud
-	ADD CONSTRAINT FKjrdaj5nksetx2qq6bj4f07vim
+	ADD CONSTRAINT FK_kind_container_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3345,22 +3322,22 @@ ALTER TABLE mahnung
 			REFERENCES gesuch(id);
 
 ALTER TABLE mahnung_aud
-	ADD CONSTRAINT FKa4xsokkwkcbbesloibxkqirup
+	ADD CONSTRAINT FK_mahnung_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE mandant_aud
-	ADD CONSTRAINT FKdu77v3o68cjm2rpv18o9dtdr8
+	ADD CONSTRAINT FK_mandant_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE massenversand_gesuch
-	ADD CONSTRAINT FKt1vjixxj2hl8cfpypa5h955xe
-		FOREIGN KEY (gesuche_id)
+	ADD CONSTRAINT FK_massenversand_gesuch_id
+FOREIGN KEY (gesuch_id)
 			REFERENCES gesuch(id);
 
 ALTER TABLE massenversand_gesuch
-	ADD CONSTRAINT FKg3heh5fyj2m9xvc1j0x70yy39
+	ADD CONSTRAINT FK_massenversand_massenversand_id
 		FOREIGN KEY (massenversand_id)
 			REFERENCES massenversand(id);
 
@@ -3385,12 +3362,12 @@ ALTER TABLE mitteilung
 			REFERENCES benutzer(id);
 
 ALTER TABLE mitteilung_aud
-	ADD CONSTRAINT FKbx5q2psq93ddln9e5ltb81r0k
+	ADD CONSTRAINT FK_mitteilung_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE modul_tagesschule_aud
-	ADD CONSTRAINT FKq5ttlty2w5mrv451jnux3hare
+	ADD CONSTRAINT FK_modul_tagesschule_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3405,17 +3382,17 @@ ALTER TABLE pain001dokument
 			REFERENCES zahlungsauftrag(id);
 
 ALTER TABLE pain001dokument_aud
-	ADD CONSTRAINT FKixt7lodu7ftleyrbkdr960iae
+	ADD CONSTRAINT FK_pain001dokument_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE pensum_ausserordentlicher_anspruch_aud
-	ADD CONSTRAINT FKf63fhijfne7lu3ot9t32nh93h
+	ADD CONSTRAINT FK_pensum_ausserordentlicher_anspruch_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE pensum_fachstelle_aud
-	ADD CONSTRAINT FK49d0rsee0nsvg5gobup5bsn0s
+	ADD CONSTRAINT FK_pensum_fachstelle_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3430,37 +3407,42 @@ ALTER TABLE sequence
 			REFERENCES mandant(id);
 
 ALTER TABLE traegerschaft_aud
-	ADD CONSTRAINT FK5vyi81krf34u05x83ddth451
+	ADD CONSTRAINT FK_traegerschaft_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE unbezahlter_urlaub_aud
-	ADD CONSTRAINT FK10yopvhxm14yekil7pcuckq9k
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+	ADD CONSTRAINT FK_unbezahlter_urlaub_aud_revinfo
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
+
+ALTER TABLE verfuegung
+	ADD CONSTRAINT FK_verfuegung_betreuung_id
+FOREIGN KEY (betreuung_id)
+REFERENCES betreuung(id);
 
 ALTER TABLE verfuegung_aud
-	ADD CONSTRAINT FKcofp5cmoodxyra4it64014lpw
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+	ADD CONSTRAINT FK_verfuegung_aud_revinfo
+FOREIGN KEY (rev)
+REFERENCES revinfo (rev);
 
 ALTER TABLE verfuegung_zeitabschnitt_aud
-	ADD CONSTRAINT FKlbycrj2yev60fc3f8yq5d4vt7
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+	ADD CONSTRAINT FK_verfuegung_zeitabschnitt_aud_revinfo
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE verfuegung_zeitabschnitt
 	ADD CONSTRAINT FK_verfuegung_zeitabschnitt_verfuegung_id
-		FOREIGN KEY (verfuegung_id)
-			REFERENCES verfuegung(id);
+FOREIGN KEY (verfuegung_betreuung_id)
+REFERENCES verfuegung (betreuung_id);
 
 ALTER TABLE vorlage_aud
-	ADD CONSTRAINT FKv3al533ofb3901bx7b1keq9j
+	ADD CONSTRAINT FK_vorlage_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE wizard_step_aud
-	ADD CONSTRAINT FKrvkybxdbw4651b7upsg0t8k53
+	ADD CONSTRAINT FK_wizard_step_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
@@ -3470,7 +3452,7 @@ ALTER TABLE wizard_step
 			REFERENCES gesuch(id);
 
 ALTER TABLE zahlung
-	ADD CONSTRAINT FK_Zahlung_institutionStammdaten_id
+	ADD CONSTRAINT FK_Zahlung_institutionstammdaten_id
 		FOREIGN KEY (institution_stammdaten_id)
 			REFERENCES institution_stammdaten(id);
 
@@ -3480,19 +3462,19 @@ ALTER TABLE zahlung
 			REFERENCES zahlungsauftrag(id);
 
 ALTER TABLE zahlung_aud
-	ADD CONSTRAINT FKrni77pdlbfrnr4hsiw6t6h9us
+	ADD CONSTRAINT FK_zahlung_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE zahlungsauftrag_aud
-	ADD CONSTRAINT FKth39aofu6ptxfp1red8yfefy4
+	ADD CONSTRAINT FK_zahlungsauftrag_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
 
 ALTER TABLE zahlungsposition
 	ADD CONSTRAINT FK_Zahlungsposition_verfuegungZeitabschnitt_id
-		FOREIGN KEY (verfuegung_zeitabschnitt_id)
-			REFERENCES verfuegung_zeitabschnitt(id);
+FOREIGN KEY (verfuegung_zeitabschnitt_id)
+REFERENCES verfuegung_zeitabschnitt (id);
 
 ALTER TABLE zahlungsposition
 	ADD CONSTRAINT FK_Zahlungsposition_zahlung_id
@@ -3500,6 +3482,6 @@ ALTER TABLE zahlungsposition
 			REFERENCES zahlung(id);
 
 ALTER TABLE zahlungsposition_aud
-	ADD CONSTRAINT FKc7nfbyddcgeayy5mqdo2m3s2j
+	ADD CONSTRAINT FK_zahlungsposition_aud_revinfo
 		FOREIGN KEY (rev)
 			REFERENCES revinfo(rev);
