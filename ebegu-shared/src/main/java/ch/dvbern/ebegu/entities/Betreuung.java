@@ -84,7 +84,7 @@ import org.hibernate.search.annotations.Indexed;
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
 @Table(
 	uniqueConstraints = {
-		@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer"),
+		@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
 	}
 )
 @Indexed
