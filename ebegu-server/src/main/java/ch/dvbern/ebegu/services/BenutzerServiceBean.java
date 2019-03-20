@@ -575,6 +575,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@PermitAll
 	public Benutzer updateOrStoreUserFromIAM(@Nonnull Benutzer benutzer) {
 		requireNonNull(benutzer.getExternalUUID());
+
 		Optional<Benutzer> foundUserOptional = this.findBenutzerByExternalUUID(benutzer.getExternalUUID());
 
 		checkForPendingInvitations(benutzer);
@@ -606,6 +607,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		berechtigung.setBenutzer(benutzer);
 		benutzer.getBerechtigungen().clear();
 		benutzer.getBerechtigungen().add(berechtigung);
+
+		// Wir setzen den konfigurierten User als SUPER_ADMIN
+		String superuserMail = ebeguConfiguration.getSuperuserMail();
+		if (superuserMail != null
+			&& superuserMail.equalsIgnoreCase(benutzer.getEmail())
+			&& benutzer.getRole() != UserRole.SUPER_ADMIN) {
+			benutzer.setRole(UserRole.SUPER_ADMIN);
+			LOG.warn("Benutzer eingeloggt mit E-Mail {}: {}", benutzer.getEmail(), benutzer);
+		}
 
 		return saveBenutzer(benutzer);
 	}
