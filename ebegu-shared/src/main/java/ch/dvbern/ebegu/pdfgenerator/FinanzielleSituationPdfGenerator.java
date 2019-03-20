@@ -103,10 +103,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	private Einkommensverschlechterung ekv1GS1;
 	@Nullable
 	private Einkommensverschlechterung ekv1GS2;
-	@Nullable
-	private Einkommensverschlechterung ekv2GS1;
-	@Nullable
-	private Einkommensverschlechterung ekv2GS2;
+
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
@@ -295,11 +292,11 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		);
 		document.add(createIntroEkv());
 
-		ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
+		Einkommensverschlechterung ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
 		ekv2GS1.setDurchschnittlicherGeschaeftsgewinn(getGeschaeftsgewinnDurchschnittEkv2(basisJahrGS1, ekv1GS1, ekv2GS1));
 		Einkommensverschlechterung ekv2GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus2();
 
-		ekv2GS2 = null;
+		Einkommensverschlechterung ekv2GS2 = null;
 		Einkommensverschlechterung ekv2GS2Urspruenglich = null;
 		if (hasSecondGesuchsteller()) {
 			requireNonNull(gesuch.getGesuchsteller2());
