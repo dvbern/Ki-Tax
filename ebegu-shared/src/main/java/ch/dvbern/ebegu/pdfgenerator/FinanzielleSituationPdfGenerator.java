@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
@@ -31,6 +32,7 @@ import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -91,6 +93,19 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 	private final Verfuegung verfuegungFuerMassgEinkommen;
 	private final LocalDate erstesEinreichungsdatum;
+
+	@Nonnull
+	private FinanzielleSituation basisJahrGS1;
+	@Nullable
+	private FinanzielleSituation basisJahrGS2;
+	@Nullable
+	private Einkommensverschlechterung ekv1GS1;
+	@Nullable
+	private Einkommensverschlechterung ekv1GS2;
+	@Nullable
+	private Einkommensverschlechterung ekv2GS1;
+	@Nullable
+	private Einkommensverschlechterung ekv2GS2;
 
 	public FinanzielleSituationPdfGenerator(
 		@Nonnull Gesuch gesuch,
@@ -153,17 +168,19 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		createFusszeile(generator.getDirectContent());
 		requireNonNull(gesuch.getGesuchsteller1());
 		requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		AbstractFinanzielleSituation basisJahrGS1 =
+		basisJahrGS1 =
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+		basisJahrGS1.setDurchschnittlicherGeschaeftsgewinn(getGeschaeftsgewinnDurchschnittBasisjahr(basisJahrGS1));
 		AbstractFinanzielleSituation basisJahrGS1Urspruenglich =
 			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationGS();
 
-		AbstractFinanzielleSituation basisJahrGS2 = null;
+		basisJahrGS2 = null;
 		AbstractFinanzielleSituation basisJahrGS2Urspruenglich = null;
 		if (hasSecondGesuchsteller()) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 			basisJahrGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+			basisJahrGS2.setDurchschnittlicherGeschaeftsgewinn(getGeschaeftsgewinnDurchschnittBasisjahr(basisJahrGS2));
 			basisJahrGS2Urspruenglich =
 				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationGS();
 		}
@@ -173,9 +190,21 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			basisJahrGS2Urspruenglich);
 	}
 
+	@Nullable
+	private BigDecimal getGeschaeftsgewinnDurchschnittBasisjahr(@Nullable FinanzielleSituation finanzielleSituation) {
+		if (finanzielleSituation == null) {
+			return null;
+		}
+		BigDecimal durchschnitt = FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(
+			finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
+			finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1(),
+			finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
+		return MathUtil.roundToFrankenRappen(durchschnitt);
+	}
+
 	private void addTablesToDocument(
 		@Nonnull Document document,
-		AbstractFinanzielleSituation basisJahrGS1,
+		@Nonnull AbstractFinanzielleSituation basisJahrGS1,
 		@Nullable AbstractFinanzielleSituation basisJahrGS2,
 		@Nullable AbstractFinanzielleSituation basisJahrGS1Urspruenglich,
 		@Nullable AbstractFinanzielleSituation basisJahrGS2Urspruenglich
@@ -215,20 +244,37 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		);
 		document.add(createIntroEkv());
 
-		Einkommensverschlechterung ekv1GS1 = ekvContainerGS1.getEkvJABasisJahrPlus1();
+		ekv1GS1 = ekvContainerGS1.getEkvJABasisJahrPlus1();
+		ekv1GS1.setDurchschnittlicherGeschaeftsgewinn(getGeschaeftsgewinnDurchschnittEkv1(basisJahrGS1, ekv1GS1));
 		Einkommensverschlechterung ekv1GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus1();
 
-		Einkommensverschlechterung ekv1GS2 = null;
+		ekv1GS2 = null;
 		Einkommensverschlechterung ekv1GS2Urspruenglich = null;
 		if (hasSecondGesuchsteller()) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
 			ekv1GS2 = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
+			Objects.requireNonNull(ekv1GS2);
+			ekv1GS2.setDurchschnittlicherGeschaeftsgewinn(getGeschaeftsgewinnDurchschnittEkv1(basisJahrGS2, ekv1GS2));
 			ekv1GS2Urspruenglich =
 				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvGSBasisJahrPlus1();
 		}
 
 		addTablesToDocument(document, ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich);
+	}
+
+	private BigDecimal getGeschaeftsgewinnDurchschnittEkv1(
+		@Nullable FinanzielleSituation finSit,
+		@Nullable Einkommensverschlechterung ekv1
+	) {
+		if (finSit == null || ekv1 == null) {
+			return null;
+		}
+		BigDecimal durchschnitt = FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(
+			finSit.getGeschaeftsgewinnBasisjahr(),
+			finSit.getGeschaeftsgewinnBasisjahrMinus1(),
+			ekv1.getGeschaeftsgewinnBasisjahr());
+		return MathUtil.roundToFrankenRappen(durchschnitt);
 	}
 
 	private void createPageEkv2(
@@ -248,20 +294,39 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		);
 		document.add(createIntroEkv());
 
-		Einkommensverschlechterung ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
+		ekv2GS1 = ekvContainerGS1.getEkvJABasisJahrPlus2();
+		ekv2GS1.setDurchschnittlicherGeschaeftsgewinn(getGeschaeftsgewinnDurchschnittEkv2(basisJahrGS1, ekv1GS1, ekv2GS1));
 		Einkommensverschlechterung ekv2GS1Urspruenglich = ekvContainerGS1.getEkvGSBasisJahrPlus2();
 
-		Einkommensverschlechterung ekv2GS2 = null;
+		ekv2GS2 = null;
 		Einkommensverschlechterung ekv2GS2Urspruenglich = null;
 		if (hasSecondGesuchsteller()) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
 			ekv2GS2 = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2();
+			Objects.requireNonNull(ekv2GS2);
+			ekv2GS2.setDurchschnittlicherGeschaeftsgewinn(getGeschaeftsgewinnDurchschnittEkv2(basisJahrGS2, ekv1GS2, ekv2GS2));
 			ekv2GS2Urspruenglich =
 				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvGSBasisJahrPlus2();
 		}
 
 		addTablesToDocument(document, ekv2GS1, ekv2GS2, ekv2GS1Urspruenglich, ekv2GS2Urspruenglich);
+	}
+
+	private BigDecimal getGeschaeftsgewinnDurchschnittEkv2(
+		@Nullable FinanzielleSituation finSit,
+		@Nullable Einkommensverschlechterung ekv1,
+		@Nullable Einkommensverschlechterung ekv2
+	) {
+		if (finSit == null || ekv2 == null) {
+			return null;
+		}
+		BigDecimal basisJahrMinus1 = ekv1 != null ? ekv1.getGeschaeftsgewinnBasisjahr() : finSit.getGeschaeftsgewinnBasisjahrMinus1();
+		BigDecimal durchschnitt = FinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(
+			finSit.getGeschaeftsgewinnBasisjahr(),
+			basisJahrMinus1,
+			ekv2.getGeschaeftsgewinnBasisjahr());
+		return MathUtil.roundToFrankenRappen(durchschnitt);
 	}
 
 	private void createPageMassgebendesEinkommen(@Nonnull Document document) {
@@ -360,7 +425,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			AbstractFinanzielleSituation::getErhalteneAlimente, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
 		FinanzielleSituationRow geschaftsgewinn = createRow(translate(GESCHAEFTSGEWINN),
-			AbstractFinanzielleSituation::getGeschaeftsgewinnBasisjahr, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+			AbstractFinanzielleSituation::getDurchschnittlicherGeschaeftsgewinn, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
 		FinanzielleSituationRow zwischentotal = new FinanzielleSituationRow(
 			translate(EINKOMMEN_ZWISCHENTOTAL), gs1.getZwischentotalEinkommen());

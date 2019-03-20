@@ -382,7 +382,7 @@ public class FinanzielleSituationRechner {
 	 * uebergeben
 	 */
 	@Nullable
-	private static BigDecimal calcGeschaeftsgewinnDurchschnitt(
+	public static BigDecimal calcGeschaeftsgewinnDurchschnitt(
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahr,
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1,
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus2) {
