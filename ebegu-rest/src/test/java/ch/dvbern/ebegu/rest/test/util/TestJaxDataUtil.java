@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
@@ -299,7 +300,7 @@ public final class TestJaxDataUtil {
 
 	public static JaxBetreuung createTestJaxBetreuung() {
 		JaxBetreuung betreuung = new JaxBetreuung();
-		JaxInstitutionStammdaten jaxInst = createTestJaxInstitutionsStammdaten();
+		JaxInstitutionStammdatenSummary jaxInst = createTestJaxInstitutionsStammdatenSummary();
 		betreuung.setInstitutionStammdaten(jaxInst);
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 		betreuung.setBetreuungspensumContainers(new ArrayList<>());
@@ -308,6 +309,15 @@ public final class TestJaxDataUtil {
 
 	public static JaxInstitutionStammdaten createTestJaxInstitutionsStammdaten() {
 		JaxInstitutionStammdaten institutionStammdaten = new JaxInstitutionStammdaten();
+		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
+		institutionStammdaten.setGueltigAb(Constants.DEFAULT_GUELTIGKEIT.getGueltigAb());
+		institutionStammdaten.setMail("mail@example.com");
+		institutionStammdaten.setAdresse(createTestJaxAdr("JA").getAdresseJA());
+		return institutionStammdaten;
+	}
+
+	public static JaxInstitutionStammdatenSummary createTestJaxInstitutionsStammdatenSummary() {
+		JaxInstitutionStammdatenSummary institutionStammdaten = new JaxInstitutionStammdatenSummary();
 		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		institutionStammdaten.setGueltigAb(Constants.DEFAULT_GUELTIGKEIT.getGueltigAb());
 		institutionStammdaten.setMail("mail@example.com");

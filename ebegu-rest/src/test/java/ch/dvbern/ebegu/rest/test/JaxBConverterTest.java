@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.resource.BetreuungResource;
 import ch.dvbern.ebegu.api.resource.GesuchResource;
@@ -200,7 +201,7 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		Gesuch gesuch = testdataCreationService.createErstgesuch(config);
 		Betreuung betreuung = gesuch.extractAllBetreuungen().get(0);
 		JaxBetreuung jaxBetreuung = converter.betreuungToJAX(betreuung);
-		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenToJAX(kitaBruennen));
+		jaxBetreuung.setInstitutionStammdaten(converter.institutionStammdatenSummaryToJAX(kitaBruennen, new JaxInstitutionStammdatenSummary()));
 		jaxBetreuung.getInstitutionStammdaten().setGueltigAb(LocalDate.now());
 		betreuungResource.saveBetreuung(converter.toJaxId(betreuung.getKind()), jaxBetreuung, false, DUMMY_URIINFO, DUMMY_RESPONSE);
 
