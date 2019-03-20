@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -340,9 +341,13 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			translate(ABZUG_FAM_GROESSE),
 			translate(MASSG_EINK) };
 		values.add(titles);
+		// Falls alle Abschnitte *nach* dem ersten Einreichungsdatum liegen, wird das ganze Dokument nicht gedruckt
+		if (isAbschnittZuSpaetEingereicht(Iterables.getLast(verfuegungFuerMassgEinkommen.getZeitabschnitte()))) {
+			return;
+		}
 		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
 			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
-			if (!abschnitt.getGueltigkeit().getGueltigAb().isAfter(erstesEinreichungsdatum)) {
+			if (isAbschnittZuSpaetEingereicht(abschnitt)) {
 				continue;
 			}
 			String[] data = {
@@ -371,6 +376,10 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		document.add(PdfUtil.createBoldParagraph(translate(MASSG_EINK_TITLE), 2));
 		document.add(createIntroMassgebendesEinkommen());
 		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignmentMassgebendesEinkommen, 0));
+	}
+
+	private boolean isAbschnittZuSpaetEingereicht(VerfuegungZeitabschnitt abschnitt) {
+		return !abschnitt.getGueltigkeit().getGueltigAb().isAfter(erstesEinreichungsdatum);
 	}
 
 	@Nonnull
