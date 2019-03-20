@@ -210,7 +210,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
 		document.add(PdfUtil.createBoldParagraph(
-			translate(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus1()),
+			translate(EKV_TITLE, String.valueOf(gesuch.getGesuchsperiode().getBasisJahrPlus1())),
 			2)
 		);
 		document.add(createIntroEkv());
@@ -243,7 +243,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		document.newPage();
 		createFusszeile(generator.getDirectContent());
 		document.add(PdfUtil.createBoldParagraph(
-			translate(EKV_TITLE, gesuch.getGesuchsperiode().getBasisJahrPlus2()),
+			translate(EKV_TITLE, String.valueOf(gesuch.getGesuchsperiode().getBasisJahrPlus2())),
 			2)
 		);
 		document.add(createIntroEkv());
