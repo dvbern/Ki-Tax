@@ -49,15 +49,19 @@ public class FinanzielleSituationTable {
 	private PageConfiguration pageConfiguration;
 
 	private boolean hasSecondGesuchsteller;
+	private boolean isKorrekturmodusGemeinde;
 
-	public FinanzielleSituationTable(PageConfiguration pageConfiguration, boolean hasSecondGesuchsteller, boolean lastLineBold) {
-		this(pageConfiguration, hasSecondGesuchsteller);
+	public FinanzielleSituationTable(PageConfiguration pageConfiguration, boolean hasSecondGesuchsteller,
+		boolean isKorrekturmodusGemeinde, boolean lastLineBold) {
+		this(pageConfiguration, hasSecondGesuchsteller, isKorrekturmodusGemeinde);
 		this.lastLineBold = lastLineBold;
 	}
 
-	public FinanzielleSituationTable(PageConfiguration pageConfiguration, boolean hasSecondGesuchsteller) {
+	private FinanzielleSituationTable(PageConfiguration pageConfiguration, boolean hasSecondGesuchsteller,
+		boolean isKorrekturmodusGemeinde) {
 		this.pageConfiguration = pageConfiguration;
 		this.hasSecondGesuchsteller = hasSecondGesuchsteller;
+		this.isKorrekturmodusGemeinde = isKorrekturmodusGemeinde;
 		final float[] width1Gs = {14,4};
 		final float[] width2Gs = {10,4,4};
 		final int[] alignement1Gs = { Element.ALIGN_LEFT,Element.ALIGN_RIGHT};
@@ -112,7 +116,7 @@ public class FinanzielleSituationTable {
 		if (supertext != null) {
 			phrase.add(PdfUtil.createSuperTextInText(supertext));
 		}
-		if (originalValue != null) {
+		if (originalValue != null && isKorrekturmodusGemeinde) {
 			Font fontWithSize = PdfUtilities.createFontWithSize(pageConfiguration.getFont(), 6);
 			fontWithSize.setColor(Color.GRAY);
 			phrase.add(

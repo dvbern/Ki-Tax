@@ -35,6 +35,8 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
@@ -134,6 +136,14 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		return familiensituation != null
 			&& familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
+	}
+
+	private boolean isKorrekturmodusGemeinde() {
+		if (Eingangsart.ONLINE == gesuch.getEingangsart() &&
+		AntragStatus.getAllFreigegebeneStatus().contains(gesuch.getStatus())) {
+			return true;
+		}
+		return false;
 	}
 
 	private void createPageBasisJahr(
@@ -368,7 +378,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			total.setGs1(totalEinkommenBeiderGS);
 		}
 		FinanzielleSituationTable tableEinkommen =
-			new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller());
+			new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller(), isKorrekturmodusGemeinde(), false);
 		tableEinkommen.addRow(einkommenTitle);
 		tableEinkommen.addRow(nettolohn);
 		tableEinkommen.addRow(familienzulagen);
@@ -448,7 +458,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		}
 
 		FinanzielleSituationTable table =
-			new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller());
+			new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller(), isKorrekturmodusGemeinde(), false);
 		table.addRow(vermoegenTitle);
 		table.addRow(bruttovermoegen);
 		table.addRow(schulden);
@@ -489,7 +499,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			total.setGs1(totalAbzuegeBeiderGS);
 		}
 		FinanzielleSituationTable table =
-			new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller());
+			new FinanzielleSituationTable(getPageConfiguration(), hasSecondGesuchsteller(), isKorrekturmodusGemeinde(), false);
 		table.addRow(abzuegeTitle);
 		table.addRow(unterhaltsbeitraege);
 		table.addRow(total);
@@ -521,7 +531,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			einkommen.setGs1(MathUtil.DEFAULT.add(gs1.getZwischentotalEinkommen(), gs2.getZwischentotalEinkommen()));
 			abzuege.setGs1(MathUtil.DEFAULT.add(gs1.getZwischetotalAbzuege(), gs2.getZwischetotalAbzuege()));
 		}
-		FinanzielleSituationTable table = new FinanzielleSituationTable(getPageConfiguration(), false, true);
+		FinanzielleSituationTable table = new FinanzielleSituationTable(getPageConfiguration(), false, false, true);
 		table.addRow(zusammenzugTitle);
 		table.addRow(einkommen);
 		table.addRow(vermoegen);
