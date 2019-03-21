@@ -74,11 +74,9 @@ export class EditGemeindeComponent implements OnInit {
                 if (stammdaten.beschwerdeAdresse === undefined) {
                     stammdaten.beschwerdeAdresse = new TSAdresse();
                 }
-
                 if (!stammdaten.rechtsmittelbelehrung) {
                     stammdaten.rechtsmittelbelehrung = new TSTextRessource();
                 }
-
                 return stammdaten;
             }));
     }
@@ -113,7 +111,6 @@ export class EditGemeindeComponent implements OnInit {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
         }
-
         if (stammdaten.standardRechtsmittelbelehrung) {
             // reset custom Rechtsmittelbelehrung if checkbox not checked
             stammdaten.rechtsmittelbelehrung = undefined;

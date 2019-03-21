@@ -126,8 +126,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name =
-		"FK_rechtsmittelbelehrung_id"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rechtsmittelbelehrung_id"))
 	private TextRessource rechtsmittelbelehrung;
 
 	@Nullable

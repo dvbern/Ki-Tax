@@ -17,21 +17,19 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
-import ch.dvbern.ebegu.enums.Sprache;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxTextRessource extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -3951712064730139118L;
 
-	@NotNull
+	@Nullable
 	private String textDeutsch;
 
-	@NotNull
+	@Nullable
 	private String textFranzoesisch;
 
 	public String getTextDeutsch() {

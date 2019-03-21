@@ -23,7 +23,6 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
@@ -34,13 +33,14 @@ public class TextRessource extends AbstractMutableEntity{
 
 	public static final long serialVersionUID = -3510401542520028556L;
 
-	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
-	@NotNull
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String textDeutsch;
 
-	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
-	@NotNull
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
 	private String textFranzoesisch;
+
 
 	public String getTextDeutsch() {
 		return textDeutsch;
@@ -67,7 +67,7 @@ public class TextRessource extends AbstractMutableEntity{
 		case "fr":
 			return textFranzoesisch;
 		default:
-			return "";
+			return null;
 		}
 	}
 

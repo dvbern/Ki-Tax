@@ -7,8 +7,8 @@ CREATE TABLE text_ressource (
 	user_mutiert            VARCHAR(36)   NOT NULL,
 	version                 BIGINT        NOT NULL,
 	vorgaenger_id           VARCHAR(36),
-	text_deutsch			VARCHAR(4000) NOT NULL,
-	text_franzoesisch		VARCHAR(4000) NOT NULL,
+	text_deutsch			VARCHAR(4000),
+	text_franzoesisch		VARCHAR(4000),
 	PRIMARY KEY (id)
 );
 
