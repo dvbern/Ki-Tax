@@ -33,9 +33,6 @@ ${templateConfiguration.mailCss}
 		eine Freigabe innert ${anzahlTage} Tagen erfolgt eine automatische Löschung.
 	</p>
 	<p>
-		Bei Fragen stehen wir während den Bürozeiten gerne zur Verfügung (Tel. 031 321 51 15).
-	</p>
-	<p>
 		Freundliche Grüsse <br/>
 		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
 	</p>

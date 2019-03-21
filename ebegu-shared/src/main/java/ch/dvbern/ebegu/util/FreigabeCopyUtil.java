@@ -281,8 +281,7 @@ public final class FreigabeCopyUtil {
 	}
 
 	private static void copyAbstractFinanzielleSituation(@Nonnull AbstractFinanzielleSituation gs, @Nonnull AbstractFinanzielleSituation ja) {
-		gs.setSteuerveranlagungErhalten(ja.getSteuerveranlagungErhalten());
-		gs.setSteuererklaerungAusgefuellt(ja.getSteuererklaerungAusgefuellt());
+		gs.setNettolohn(ja.getNettolohn());
 		gs.setFamilienzulage(ja.getFamilienzulage());
 		gs.setErsatzeinkommen(ja.getErsatzeinkommen());
 		gs.setErhalteneAlimente(ja.getErhalteneAlimente());
@@ -306,12 +305,6 @@ public final class FreigabeCopyUtil {
 		gs.setEinkommensverschlechterung(ja.getEinkommensverschlechterung());
 		gs.setEkvFuerBasisJahrPlus1(ja.getEkvFuerBasisJahrPlus1());
 		gs.setEkvFuerBasisJahrPlus2(ja.getEkvFuerBasisJahrPlus2());
-		gs.setGemeinsameSteuererklaerung_BjP1(ja.getGemeinsameSteuererklaerung_BjP1());
-		gs.setGemeinsameSteuererklaerung_BjP2(ja.getGemeinsameSteuererklaerung_BjP2());
-		gs.setGrundFuerBasisJahrPlus1(ja.getGrundFuerBasisJahrPlus1());
-		gs.setGrundFuerBasisJahrPlus2(ja.getGrundFuerBasisJahrPlus2());
-		gs.setStichtagFuerBasisJahrPlus1(ja.getStichtagFuerBasisJahrPlus1());
-		gs.setStichtagFuerBasisJahrPlus2(ja.getStichtagFuerBasisJahrPlus2());
 	}
 
 	private static void copyEinkommensverschlechterungContainer(@Nullable EinkommensverschlechterungContainer container) {
@@ -339,19 +332,6 @@ public final class FreigabeCopyUtil {
 
 	private static void copyEinkommensverschlechterung(@Nonnull Einkommensverschlechterung gs, @Nonnull Einkommensverschlechterung ja) {
 		copyAbstractFinanzielleSituation(gs, ja);
-		gs.setNettolohnJan(ja.getNettolohnJan());
-		gs.setNettolohnFeb(ja.getNettolohnFeb());
-		gs.setNettolohnMrz(ja.getNettolohnMrz());
-		gs.setNettolohnApr(ja.getNettolohnApr());
-		gs.setNettolohnMai(ja.getNettolohnMai());
-		gs.setNettolohnJun(ja.getNettolohnJun());
-		gs.setNettolohnJul(ja.getNettolohnJul());
-		gs.setNettolohnAug(ja.getNettolohnAug());
-		gs.setNettolohnSep(ja.getNettolohnSep());
-		gs.setNettolohnOkt(ja.getNettolohnOkt());
-		gs.setNettolohnNov(ja.getNettolohnNov());
-		gs.setNettolohnDez(ja.getNettolohnDez());
-		gs.setNettolohnZus(ja.getNettolohnZus());
 	}
 
 	private static void copyFinanzielleSituationContainer(@Nullable FinanzielleSituationContainer container) {
@@ -371,7 +351,8 @@ public final class FreigabeCopyUtil {
 
 	private static void copyFinanzielleSituation(@Nonnull FinanzielleSituation gs, @Nonnull FinanzielleSituation ja) {
 		copyAbstractFinanzielleSituation(gs, ja);
-		gs.setNettolohn(ja.getNettolohn());
+		gs.setSteuerveranlagungErhalten(ja.getSteuerveranlagungErhalten());
+		gs.setSteuererklaerungAusgefuellt(ja.getSteuererklaerungAusgefuellt());
 		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setGeschaeftsgewinnBasisjahrMinus2(ja.getGeschaeftsgewinnBasisjahrMinus2());
 	}

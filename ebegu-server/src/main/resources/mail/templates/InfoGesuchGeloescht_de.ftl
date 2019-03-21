@@ -24,7 +24,7 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Sie haben Ihren Antrag auf <a href="www.bern.ch/ki-tax">www.bern.ch/ki-tax</a> bearbeitet, diesen aber nicht
+		Sie haben Ihren Antrag auf <a href="www.kibon.ch">www.kibon.ch</a> bearbeitet, diesen aber nicht
 		freigegeben oder die Freigabequittung nicht eingereicht. Wir hatten Sie diesbezüglich bereits informiert.
 	</p
 	<p>

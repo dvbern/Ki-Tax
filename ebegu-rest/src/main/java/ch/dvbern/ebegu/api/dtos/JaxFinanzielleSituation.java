@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.math.BigDecimal;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -29,21 +30,33 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	private static final long serialVersionUID = -403919135454757656L;
 
-	@Nullable
-	private BigDecimal nettolohn;
+	@NotNull
+	private Boolean steuerveranlagungErhalten;
 
+	@NotNull
+	private Boolean steuererklaerungAusgefuellt;
+
+	@Nullable
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
+	@Nullable
 	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
 
 
-	@Nullable
-	public BigDecimal getNettolohn() {
-		return nettolohn;
+	public Boolean getSteuerveranlagungErhalten() {
+		return steuerveranlagungErhalten;
 	}
 
-	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
-		this.nettolohn = nettolohn;
+	public void setSteuerveranlagungErhalten(final Boolean steuerveranlagungErhalten) {
+		this.steuerveranlagungErhalten = steuerveranlagungErhalten;
+	}
+
+	public Boolean getSteuererklaerungAusgefuellt() {
+		return steuererklaerungAusgefuellt;
+	}
+
+	public void setSteuererklaerungAusgefuellt(final Boolean steuererklaerungAusgefuellt) {
+		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
 	}
 
 	@Nullable
@@ -63,5 +76,4 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
-
 }

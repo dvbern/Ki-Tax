@@ -41,7 +41,6 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.SortDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Adresse;
@@ -194,10 +193,6 @@ public final class TestDataUtil {
 	public static final LocalDate START_PERIODE = LocalDate.of(PERIODE_JAHR_1, Month.AUGUST, 1);
 	public static final LocalDate ENDE_PERIODE = LocalDate.of(PERIODE_JAHR_2, Month.JULY, 31);
 
-	public static final LocalDate STICHTAG_EKV_1 = LocalDate.of(PERIODE_JAHR_1, Month.SEPTEMBER, 1);
-	public static final LocalDate STICHTAG_EKV_1_GUELTIG = STICHTAG_EKV_1.plusMonths(1);
-	public static final LocalDate STICHTAG_EKV_2 = LocalDate.of(PERIODE_JAHR_2, Month.APRIL, 1);
-	public static final LocalDate STICHTAG_EKV_2_GUELTIG = STICHTAG_EKV_2.plusMonths(1);
 	public static final String TEST_STRASSE = "Nussbaumstrasse";
 
 	public static final String GEMEINDE_BERN_ID = "4c453263-f992-48af-86b5-dc04cd7e8bb8";
@@ -272,15 +267,15 @@ public final class TestDataUtil {
 		einkommensverschlechterungContainer.setEkvGSBasisJahrPlus1(createDefaultEinkommensverschlechterung());
 
 		final Einkommensverschlechterung ekvGSBasisJahrPlus2 = createDefaultEinkommensverschlechterung();
-		ekvGSBasisJahrPlus2.setNettolohnJan(BigDecimal.valueOf(2));
+		ekvGSBasisJahrPlus2.setNettolohn(BigDecimal.valueOf(2));
 		einkommensverschlechterungContainer.setEkvGSBasisJahrPlus2(ekvGSBasisJahrPlus2);
 
 		final Einkommensverschlechterung ekvJABasisJahrPlus1 = createDefaultEinkommensverschlechterung();
-		ekvJABasisJahrPlus1.setNettolohnJan(BigDecimal.valueOf(3));
+		ekvJABasisJahrPlus1.setNettolohn(BigDecimal.valueOf(3));
 		einkommensverschlechterungContainer.setEkvJABasisJahrPlus1(ekvJABasisJahrPlus1);
 
 		final Einkommensverschlechterung ekvJABasisJahrPlus2 = createDefaultEinkommensverschlechterung();
-		ekvJABasisJahrPlus2.setNettolohnJan(BigDecimal.valueOf(4));
+		ekvJABasisJahrPlus2.setNettolohn(BigDecimal.valueOf(4));
 		einkommensverschlechterungContainer.setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 
 		return einkommensverschlechterungContainer;
@@ -288,8 +283,7 @@ public final class TestDataUtil {
 
 	public static Einkommensverschlechterung createDefaultEinkommensverschlechterung() {
 		Einkommensverschlechterung einkommensverschlechterung = new Einkommensverschlechterung();
-		createDefaultAbstractFinanzielleSituation(einkommensverschlechterung);
-		einkommensverschlechterung.setNettolohnJan(MathUtil.DEFAULT.from(BigDecimal.ONE));
+		einkommensverschlechterung.setNettolohn(MathUtil.DEFAULT.from(BigDecimal.ONE));
 		return einkommensverschlechterung;
 	}
 
@@ -432,16 +426,11 @@ public final class TestDataUtil {
 	}
 
 	public static FinanzielleSituation createDefaultFinanzielleSituation() {
-
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
-		createDefaultAbstractFinanzielleSituation(finanzielleSituation);
+		finanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
+		finanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 		finanzielleSituation.setNettolohn(BigDecimal.valueOf(100000));
 		return finanzielleSituation;
-	}
-
-	public static void createDefaultAbstractFinanzielleSituation(AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		abstractFinanzielleSituation.setSteuerveranlagungErhalten(Boolean.FALSE);
-		abstractFinanzielleSituation.setSteuererklaerungAusgefuellt(Boolean.TRUE);
 	}
 
 	public static Traegerschaft createDefaultTraegerschaft() {
@@ -778,8 +767,6 @@ public final class TestDataUtil {
 		final EinkommensverschlechterungInfo einkommensverschlechterungInfo = new EinkommensverschlechterungInfo();
 		einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
-		einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(LocalDate.now());
-		einkommensverschlechterungInfo.setGrundFuerBasisJahrPlus1("Grund fuer basis Jahr Plus 1");
 		einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(false);
 		return einkommensverschlechterungInfo;
 	}
@@ -914,22 +901,20 @@ public final class TestDataUtil {
 		if (basisJahrPlus1) {
 			gesuchsteller.getEinkommensverschlechterungContainer()
 				.setEkvJABasisJahrPlus1(new Einkommensverschlechterung());
-			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohnAug(einkommen);
+			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1().setNettolohn(einkommen);
 			EinkommensverschlechterungInfo einkommensverschlechterungInfo =
 				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus1(true);
-			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus1(STICHTAG_EKV_1);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		} else {
 			gesuchsteller.getEinkommensverschlechterungContainer()
 				.setEkvJABasisJahrPlus2(new Einkommensverschlechterung());
-			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2().setNettolohnAug(einkommen);
+			gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2().setNettolohn(einkommen);
 			EinkommensverschlechterungInfo einkommensverschlechterungInfo =
 				gesuch.extractEinkommensverschlechterungInfo();
 			Objects.requireNonNull(einkommensverschlechterungInfo);
 			einkommensverschlechterungInfo.setEkvFuerBasisJahrPlus2(true);
-			einkommensverschlechterungInfo.setStichtagFuerBasisJahrPlus2(STICHTAG_EKV_2);
 			einkommensverschlechterungInfo.setEinkommensverschlechterung(true);
 		}
 	}

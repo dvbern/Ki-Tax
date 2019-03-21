@@ -79,8 +79,10 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
-	public GesuchstellerContainer saveGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller,
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
+	public GesuchstellerContainer saveGesuchsteller(
+		@Nonnull GesuchstellerContainer gesuchsteller,
 		final Gesuch gesuch, Integer gsNumber, boolean umzug) {
 		Objects.requireNonNull(gesuchsteller);
 		Objects.requireNonNull(gesuch);
@@ -105,10 +107,14 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	}
 
 	/**
-	 * Bei Mutationen fuer den GS2 muss eine leere Einkommensverschlechterung hinzugefuegt werden, wenn sie noch nicht existiert. Dies aber
+	 * Bei Mutationen fuer den GS2 muss eine leere Einkommensverschlechterung hinzugefuegt werden, wenn sie noch nicht
+	 * existiert. Dies aber
 	 * nur wenn die Einkommensverschlechterung required ist.
 	 */
-	private void createEKVInMutationIfNotExisting(@Nonnull GesuchstellerContainer gesuchsteller, Gesuch gesuch, Integer gsNumber) {
+	private void createEKVInMutationIfNotExisting(
+		@Nonnull GesuchstellerContainer gesuchsteller,
+		Gesuch gesuch,
+		Integer gsNumber) {
 		if (gesuch.isMutation() && gesuch.extractEinkommensverschlechterungInfo() == null
 			&& gsNumber == 2 && gesuchsteller.getEinkommensverschlechterungContainer() == null
 			&& EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
@@ -118,17 +124,15 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 			gesuchsteller.setEinkommensverschlechterungContainer(evContainer);
 			GesuchstellerContainer gs1Container = gesuch.getGesuchsteller1();
 			if (gs1Container != null && gs1Container.getEinkommensverschlechterungContainer() != null) {
-				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
+				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1()
+					!= null) {
 					final Einkommensverschlechterung ekvJABasisJahrPlus1 = new Einkommensverschlechterung();
-					ekvJABasisJahrPlus1.setSteuerveranlagungErhalten(false); // by default
-					ekvJABasisJahrPlus1.setSteuererklaerungAusgefuellt(false); // by default
 					//noinspection ConstantConditions: Wird ausserhalb des IF-Blocks schon gesetzt
 					gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(ekvJABasisJahrPlus1);
 				}
-				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2() != null) {
+				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2()
+					!= null) {
 					final Einkommensverschlechterung ekvJABasisJahrPlus2 = new Einkommensverschlechterung();
-					ekvJABasisJahrPlus2.setSteuerveranlagungErhalten(false); // by default
-					ekvJABasisJahrPlus2.setSteuererklaerungAusgefuellt(false); // by default
 					gesuchsteller.getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 				}
 			}
@@ -136,10 +140,14 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	}
 
 	/**
-	 * Bei Mutationen fuer den GS2 muss eine leere Finanzielle Situation hinzugefuegt werden, wenn sie noch nicht existiert. Dies aber
+	 * Bei Mutationen fuer den GS2 muss eine leere Finanzielle Situation hinzugefuegt werden, wenn sie noch nicht
+	 * existiert. Dies aber
 	 * nur wenn die FinSit required ist.
 	 */
-	private void createFinSitInMutationIfNotExisting(@Nonnull GesuchstellerContainer gesuchsteller, Gesuch gesuch, Integer gsNumber) {
+	private void createFinSitInMutationIfNotExisting(
+		@Nonnull GesuchstellerContainer gesuchsteller,
+		Gesuch gesuch,
+		Integer gsNumber) {
 		if (gesuch.isMutation() && gsNumber == 2 && gesuchsteller.getFinanzielleSituationContainer() == null
 			&& EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
 
@@ -147,27 +155,39 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 			final FinanzielleSituation finanzielleSituationJA = new FinanzielleSituation();
 			finanzielleSituationJA.setSteuerveranlagungErhalten(false); // by default
 			finanzielleSituationJA.setSteuererklaerungAusgefuellt(false); // by default
-			finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationJA); // alle Werte by default auf null -> nichts eingetragen
-			Objects.requireNonNull(gesuch.getGesuchsteller1(), "Gesuchsteller 1 muss zu diesem Zeitpunkt gesetzt sein");
-			Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
+			finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationJA); // alle Werte by default
+			// auf null -> nichts eingetragen
+			Objects.requireNonNull(gesuch.getGesuchsteller1(), "Gesuchsteller 1 muss zu diesem Zeitpunkt gesetzt "
+				+ "sein");
+			Objects.requireNonNull(
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
 				"Finanzielle Situation GS1 muss zu diesem Zeitpunkt gesetzt sein");
-			finanzielleSituationContainer.setJahr(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getJahr()); // copy it from GS1
+			finanzielleSituationContainer.setJahr(gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getJahr()); // copy it from GS1
 			finanzielleSituationContainer.setGesuchsteller(gesuchsteller);
 			gesuchsteller.setFinanzielleSituationContainer(finanzielleSituationContainer);
 		}
 	}
 
-	private void updateWizStepsForGesuchstellerView(Gesuch gesuch, Integer gsNumber, boolean umzug, Gesuchsteller gesuchsteller) {
+	private void updateWizStepsForGesuchstellerView(
+		Gesuch gesuch,
+		Integer gsNumber,
+		boolean umzug,
+		Gesuchsteller gesuchsteller) {
 		//Wenn beide Gesuchsteller ausgefuellt werden muessen (z.B bei einer Mutation die die Familiensituation aendert
-		// (i.e. von 1GS auf 2GS) wollen wir den Benutzer zwingen beide Gesuchsteller Seiten zu besuchen bevor wir auf ok setzten.
+		// (i.e. von 1GS auf 2GS) wollen wir den Benutzer zwingen beide Gesuchsteller Seiten zu besuchen bevor wir auf
+		// ok setzten.
 		// Ansonsten setzten wir es sofort auf ok
 		if (umzug) {
 			// only if it is the last GS from both, we update the Step Umzug
-			if ((gesuch.getGesuchsteller2() == null && gsNumber == 1) || (gesuch.getGesuchsteller2() != null && gsNumber == 2)) {
+			if ((gesuch.getGesuchsteller2() == null && gsNumber == 1) || (gesuch.getGesuchsteller2() != null
+				&& gsNumber == 2)) {
 				wizardStepService.updateSteps(gesuch.getId(), null, gesuchsteller, WizardStepName.UMZUG);
 			}
 		} else {
-			WizardStep existingWizStep = wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.GESUCHSTELLER);
+			WizardStep existingWizStep =
+				wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.GESUCHSTELLER);
 			WizardStepStatus gesuchStepStatus = existingWizStep != null ? existingWizStep.getWizardStepStatus() : null;
 			if (WizardStepStatus.NOK == gesuchStepStatus || WizardStepStatus.IN_BEARBEITUNG == gesuchStepStatus) {
 				if (isSavingLastNecessaryGesuchsteller(gesuch, gsNumber)) {
@@ -206,11 +226,15 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS })
 	public void removeGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller) {
 		Objects.requireNonNull(gesuchsteller);
 		GesuchstellerContainer gesuchstellerToRemove = findGesuchsteller(gesuchsteller.getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("removeGesuchsteller", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchsteller));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"removeGesuchsteller",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				gesuchsteller));
 		persistence.remove(gesuchstellerToRemove);
 	}
 

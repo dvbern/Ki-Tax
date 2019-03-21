@@ -17,8 +17,7 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
 export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
-    private _steuerveranlagungErhalten: boolean = false;
-    private _steuererklaerungAusgefuellt: boolean = false;
+    private _nettolohn: number;
     private _familienzulage: number;
     private _ersatzeinkommen: number;
     private _erhalteneAlimente: number;
@@ -31,20 +30,12 @@ export default class TSAbstractFinanzielleSituation extends TSAbstractMutableEnt
         super();
     }
 
-    public get steuerveranlagungErhalten(): boolean {
-        return this._steuerveranlagungErhalten;
+    public get nettolohn(): number {
+        return this._nettolohn;
     }
 
-    public set steuerveranlagungErhalten(value: boolean) {
-        this._steuerveranlagungErhalten = value;
-    }
-
-    public get steuererklaerungAusgefuellt(): boolean {
-        return this._steuererklaerungAusgefuellt;
-    }
-
-    public set steuererklaerungAusgefuellt(value: boolean) {
-        this._steuererklaerungAusgefuellt = value;
+    public set nettolohn(value: number) {
+        this._nettolohn = value;
     }
 
     public get familienzulage(): number {

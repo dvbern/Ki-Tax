@@ -84,6 +84,10 @@ export class TestFaelleRS {
         });
     }
 
+    public testAllMails(mailadresse: string): IHttpPromise<void> {
+        return this.http.get(`${this.serviceURL}/mailtest/${mailadresse}`);
+    }
+
     public mutiereFallScheidung(
         dossierid: string,
         gesuchsperiodeid: string,

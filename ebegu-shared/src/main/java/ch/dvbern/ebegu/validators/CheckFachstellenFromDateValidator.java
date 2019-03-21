@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2018 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,15 +17,13 @@
 
 package ch.dvbern.ebegu.validators;
 
-import java.time.LocalDate;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 
 import javax.annotation.Nonnull;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.enums.IntegrationTyp;
+import java.time.LocalDate;
 
 /**
  * Eine sprachliche Indikation kann erst ab dem zweiten Geburtstag beurteilt werden. Dies wird mit diesem Validator überprüft.

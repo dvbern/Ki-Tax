@@ -89,8 +89,6 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() && abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
 			case JAHRESLOHNAUSWEISE:
 				return isJahresLohnausweisNeeded(abstractFinanzielleSituation);
-			case NACHWEIS_EINKOMMENSSITUATION_MONAT:
-				return isMonatsLohnausweisNeeded(abstractFinanzielleSituation);
 			case NACHWEIS_FAMILIENZULAGEN:
 				return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
 					abstractFinanzielleSituation.getFamilienzulage() != null &&
@@ -130,14 +128,8 @@ abstract class AbstractFinanzielleSituationDokumente extends AbstractDokumente<A
 		return false;
 	}
 
-	protected boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		return false;
-	}
+	protected abstract boolean isJahresLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation);
 
 	protected abstract boolean isErfolgsrechnungNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int minus);
-
-	protected boolean isMonatsLohnausweisNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		return false;
-	}
 
 }

@@ -22,14 +22,14 @@ import TSAbwesenheitContainer from './TSAbwesenheitContainer';
 import TSBelegungFerieninsel from './TSBelegungFerieninsel';
 import TSBelegungTagesschule from './TSBelegungTagesschule';
 import TSBetreuungspensumContainer from './TSBetreuungspensumContainer';
-import TSGesuchsperiode from './TSGesuchsperiode';
-import TSInstitutionStammdaten from './TSInstitutionStammdaten';
-import TSVerfuegung from './TSVerfuegung';
 import TSErweiterteBetreuungContainer from './TSErweiterteBetreuungContainer';
+import TSGesuchsperiode from './TSGesuchsperiode';
+import TSInstitutionStammdatenSummary from './TSInstitutionStammdatenSummary';
+import TSVerfuegung from './TSVerfuegung';
 
 export default class TSBetreuung extends TSAbstractMutableEntity {
 
-    private _institutionStammdaten: TSInstitutionStammdaten;
+    private _institutionStammdaten: TSInstitutionStammdatenSummary;
     private _betreuungsstatus: TSBetreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
     private _betreuungspensumContainers: Array<TSBetreuungspensumContainer> = [];
     private _abwesenheitContainers: Array<TSAbwesenheitContainer> = [];
@@ -58,11 +58,11 @@ export default class TSBetreuung extends TSAbstractMutableEntity {
         super();
     }
 
-    public get institutionStammdaten(): TSInstitutionStammdaten {
+    public get institutionStammdaten(): TSInstitutionStammdatenSummary {
         return this._institutionStammdaten;
     }
 
-    public set institutionStammdaten(value: TSInstitutionStammdaten) {
+    public set institutionStammdaten(value: TSInstitutionStammdatenSummary) {
         this._institutionStammdaten = value;
     }
 

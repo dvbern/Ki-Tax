@@ -17,9 +17,6 @@ package ch.dvbern.ebegu.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import javax.annotation.Nullable;
 
 /**
  * DTO für die Resultate der Berechnungen der Finanziellen Situation und eventueller Einkommensverschlechterungen.
@@ -35,11 +32,9 @@ public class FinanzDatenDTO implements Serializable {
 	private BigDecimal massgebendesEinkBjP1VorAbzFamGr = BigDecimal.ZERO;
 	private BigDecimal massgebendesEinkBjP2VorAbzFamGr = BigDecimal.ZERO;
 
-	private LocalDate datumVonBasisjahr = null; // Start Gesuchsperiode
-	@Nullable
-	private LocalDate datumVonBasisjahrPlus1 = null; // 1. des ausgewählten Monats. Wird auch gesetzt, wenn die EKV annulliert wurde!
-	@Nullable
-	private LocalDate datumVonBasisjahrPlus2 = null; // 1. des ausgewählten Monats. Wird auch gesetzt, wenn die EKV annulliert wurde!
+	// EKV wurde erfasst
+	private boolean ekv1Erfasst = false;
+	private boolean ekv2Erfasst = false;
 
 	// 'accepted' bedeutet, dass die EKV mehr als den Grenzwert erreicht, z.B. > 20%
 	private boolean ekv1Accepted = false;
@@ -50,31 +45,6 @@ public class FinanzDatenDTO implements Serializable {
 	private boolean ekv1Annulliert = false;
 	private boolean ekv2Annulliert = false;
 
-	public LocalDate getDatumVonBasisjahr() {
-		return datumVonBasisjahr;
-	}
-
-	public void setDatumVonBasisjahr(LocalDate datumVonBasisjahr) {
-		this.datumVonBasisjahr = datumVonBasisjahr;
-	}
-
-	@Nullable
-	public LocalDate getDatumVonBasisjahrPlus1() {
-		return datumVonBasisjahrPlus1;
-	}
-
-	public void setDatumVonBasisjahrPlus1(@Nullable LocalDate datumVonBasisjahrPlus1) {
-		this.datumVonBasisjahrPlus1 = datumVonBasisjahrPlus1;
-	}
-
-	@Nullable
-	public LocalDate getDatumVonBasisjahrPlus2() {
-		return datumVonBasisjahrPlus2;
-	}
-
-	public void setDatumVonBasisjahrPlus2(@Nullable LocalDate datumVonBasisjahrPlus2) {
-		this.datumVonBasisjahrPlus2 = datumVonBasisjahrPlus2;
-	}
 
 	public BigDecimal getMassgebendesEinkBjVorAbzFamGr() {
 		return massgebendesEinkBjVorAbzFamGr;
@@ -98,6 +68,22 @@ public class FinanzDatenDTO implements Serializable {
 
 	public void setMassgebendesEinkBjP2VorAbzFamGr(BigDecimal massgebendesEinkBjP2VorAbzFamGr) {
 		this.massgebendesEinkBjP2VorAbzFamGr = massgebendesEinkBjP2VorAbzFamGr;
+	}
+
+	public boolean isEkv1Erfasst() {
+		return ekv1Erfasst;
+	}
+
+	public void setEkv1Erfasst(boolean ekv1Erfasst) {
+		this.ekv1Erfasst = ekv1Erfasst;
+	}
+
+	public boolean isEkv2Erfasst() {
+		return ekv2Erfasst;
+	}
+
+	public void setEkv2Erfasst(boolean ekv2Erfasst) {
+		this.ekv2Erfasst = ekv2Erfasst;
 	}
 
 	public boolean isEkv1Accepted() {

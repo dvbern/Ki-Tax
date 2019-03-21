@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +33,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -91,36 +91,32 @@ public class EinkommenCalcRuleTest {
 		einkommensverschlechterungInfoJA.setEinkommensverschlechterung(true);
 		einkommensverschlechterungInfoJA.setEkvFuerBasisJahrPlus1(true);
 		einkommensverschlechterungInfoJA.setEkvFuerBasisJahrPlus2(true);
-		einkommensverschlechterungInfoJA.setStichtagFuerBasisJahrPlus1(LocalDate.of(TestDataUtil.PERIODE_JAHR_1, 10, 1));
-		einkommensverschlechterungInfoJA.setStichtagFuerBasisJahrPlus2(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, 4, 1));
+		assertNotNull(gesuch.getEinkommensverschlechterungInfoContainer());
 		gesuch.getEinkommensverschlechterungInfoContainer().setEinkommensverschlechterungInfoJA(einkommensverschlechterungInfoJA);
 
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+		assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(new BigDecimal(50000));
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		gesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer());
 		final Einkommensverschlechterung ekvJABasisJahrPlus1 = new Einkommensverschlechterung();
-		ekvJABasisJahrPlus1.setNettolohnJan(new BigDecimal(25000));
+		ekvJABasisJahrPlus1.setNettolohn(new BigDecimal(25000));
+		assertNotNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(ekvJABasisJahrPlus1);
 		final Einkommensverschlechterung ekvJABasisJahrPlus2 = new Einkommensverschlechterung();
-		ekvJABasisJahrPlus2.setNettolohnJan(new BigDecimal(20000));
+		ekvJABasisJahrPlus2.setNettolohn(new BigDecimal(20000));
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
-		assertEquals(3, result.size());
+		assertEquals(2, result.size());
 
-		assertEquals(50000, result.get(0).getMassgebendesEinkommen().intValue());
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt1 = result.get(0).getBemerkungenMap();
-		assertNotNull(bemerkungenAbschnitt1);
-		assertEquals(1, bemerkungenAbschnitt1.size());
-		assertTrue(bemerkungenAbschnitt1.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
-
-		assertEquals(25000, result.get(1).getMassgebendesEinkommen().intValue());
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = result.get(1).getBemerkungenMap();
+		VerfuegungZeitabschnitt abschnittErstesHalbjahrEKV1 = result.get(0);
+		assertEquals(25000, abschnittErstesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
+		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt2 = abschnittErstesHalbjahrEKV1.getBemerkungenMap();
 		assertNotNull(bemerkungenAbschnitt2);
 		assertEquals(2, bemerkungenAbschnitt2.size());
 		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
@@ -129,8 +125,9 @@ public class EinkommenCalcRuleTest {
 			+ TestDataUtil.PERIODE_JAHR_1;
 		assertTrue(bemerkungenAbschnitt2.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV1));
 
-		assertEquals(20000, result.get(2).getMassgebendesEinkommen().intValue());
-		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = result.get(2).getBemerkungenMap();
+		VerfuegungZeitabschnitt abschnittZweitesHalbjahrEKV1 = result.get(1);
+		assertEquals(20000, abschnittZweitesHalbjahrEKV1.getMassgebendesEinkommen().intValue());
+		Map<MsgKey, VerfuegungsBemerkung> bemerkungenAbschnitt3 = abschnittZweitesHalbjahrEKV1.getBemerkungenMap();
 		assertNotNull(bemerkungenAbschnitt3);
 		assertEquals(2, bemerkungenAbschnitt3.size());
 		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
@@ -148,6 +145,7 @@ public class EinkommenCalcRuleTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
+		Assert.assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(massgebendesEinkommen);
 		return betreuung;
