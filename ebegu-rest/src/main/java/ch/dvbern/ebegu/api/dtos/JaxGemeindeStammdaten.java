@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxGemeindeStammdaten extends JaxAbstractDTO {
 
-	private static final long serialVersionUID = -1893677808323618626L;
+	private static final long serialVersionUID = -1893677816323618626L;
 	@Nullable
 	private String administratoren;
 	@Nullable
