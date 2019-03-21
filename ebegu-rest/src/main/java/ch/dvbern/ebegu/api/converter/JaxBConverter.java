@@ -107,7 +107,6 @@ import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
-import ch.dvbern.ebegu.api.dtos.JaxTextRessourceContainer;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
@@ -181,7 +180,6 @@ import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.TextRessource;
-import ch.dvbern.ebegu.entities.TextRessourceContainer;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -4000,9 +3998,9 @@ public class JaxBConverter extends AbstractConverter {
 
 		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
 			if (stammdaten.getRechtsmittelbelehrung() == null) {
-				stammdaten.setRechtsmittelbelehrung(new TextRessourceContainer());
+				stammdaten.setRechtsmittelbelehrung(new TextRessource());
 			}
-			stammdaten.setRechtsmittelbelehrung(textRessourceContainerToEntity(
+			stammdaten.setRechtsmittelbelehrung(textRessourceToEntity(
 				jaxStammdaten.getRechtsmittelbelehrung(),
 				stammdaten.getRechtsmittelbelehrung()));
 		}
@@ -4079,57 +4077,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setStandardRechtsmittelbelehrung(stammdaten.getStandardRechtsmittelbelehrung());
 
 		if (stammdaten.getRechtsmittelbelehrung() != null) {
-			jaxStammdaten.setRechtsmittelbelehrung(textRessourceContainerToJAX(stammdaten.getRechtsmittelbelehrung()));
+			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
 		}
 
 		return jaxStammdaten;
-	}
-
-	public JaxTextRessourceContainer textRessourceContainerToJAX(
-		@Nonnull final TextRessourceContainer textRessourceContainer) {
-		Objects.requireNonNull(textRessourceContainer);
-
-		final JaxTextRessourceContainer jaxTextRessourceContainer = new JaxTextRessourceContainer();
-
-		convertAbstractFieldsToJAX(textRessourceContainer, jaxTextRessourceContainer);
-
-		if (textRessourceContainer.getDeutsch() != null) {
-			jaxTextRessourceContainer.setDeutsch(textRessourceToJAX(textRessourceContainer.getDeutsch()));
-		}
-		if (textRessourceContainer.getFranzoesisch() != null) {
-			jaxTextRessourceContainer.setFranzoesisch(textRessourceToJAX(textRessourceContainer.getFranzoesisch()));
-		}
-
-		return jaxTextRessourceContainer;
-	}
-
-	public TextRessourceContainer textRessourceContainerToEntity(
-		@Nonnull final JaxTextRessourceContainer containerJAX,
-		@Nonnull final TextRessourceContainer container) {
-
-		requireNonNull(containerJAX);
-		requireNonNull(container);
-
-		convertAbstractFieldsToEntity(containerJAX, container);
-
-		TextRessource textRessourceToMergeWith;
-
-		if (containerJAX.getDeutsch() != null) {
-			textRessourceToMergeWith = Optional.ofNullable(container.getDeutsch())
-				.orElseGet(TextRessource::new);
-			container.setDeutsch(textRessourceToEntity(
-				containerJAX.getDeutsch(),
-				textRessourceToMergeWith));
-		}
-
-		if (containerJAX.getFranzoesisch() != null) {
-			textRessourceToMergeWith = Optional.ofNullable(container.getFranzoesisch())
-				.orElseGet(TextRessource::new);
-			container.setFranzoesisch(textRessourceToEntity(
-				containerJAX.getFranzoesisch(),
-				textRessourceToMergeWith));
-		}
-		return container;
 	}
 
 	public TextRessource textRessourceToEntity(
@@ -4140,8 +4091,8 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractFieldsToEntity(textRessourceJAX, textRessource);
 
-		textRessource.setSprache(textRessourceJAX.getSprache());
-		textRessource.setText(textRessourceJAX.getText());
+		textRessource.setTextDeutsch(textRessourceJAX.getTextDeutsch());
+		textRessource.setTextFranzoesisch(textRessourceJAX.getTextFranzoesisch());
 
 		return textRessource;
 	}
@@ -4153,8 +4104,8 @@ public class JaxBConverter extends AbstractConverter {
 
 		convertAbstractFieldsToJAX(textRessource, jaxTextRessource);
 
-		jaxTextRessource.setSprache(textRessource.getSprache());
-		jaxTextRessource.setText(textRessource.getText());
+		jaxTextRessource.setTextDeutsch(textRessource.getTextDeutsch());
+		jaxTextRessource.setTextFranzoesisch(textRessource.getTextFranzoesisch());
 
 		return jaxTextRessource;
 	}

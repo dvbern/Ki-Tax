@@ -29,24 +29,24 @@ public class JaxTextRessource extends JaxAbstractDTO {
 	private static final long serialVersionUID = -3951712064730139118L;
 
 	@NotNull
-	private Sprache sprache;
+	private String textDeutsch;
 
 	@NotNull
-	private String text;
+	private String textFranzoesisch;
 
-	public Sprache getSprache() {
-		return sprache;
+	public String getTextDeutsch() {
+		return textDeutsch;
 	}
 
-	public void setSprache(Sprache sprache) {
-		this.sprache = sprache;
+	public void setTextDeutsch(String textDeutsch) {
+		this.textDeutsch = textDeutsch;
 	}
 
-	public String getText() {
-		return text;
+	public String getTextFranzoesisch() {
+		return textFranzoesisch;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setTextFranzoesisch(String textFranzoesisch) {
+		this.textFranzoesisch = textFranzoesisch;
 	}
 }

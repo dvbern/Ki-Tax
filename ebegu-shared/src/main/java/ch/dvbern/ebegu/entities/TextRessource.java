@@ -17,13 +17,14 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Locale;
+import java.util.Objects;
+
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
@@ -33,34 +34,57 @@ public class TextRessource extends AbstractMutableEntity{
 
 	public static final long serialVersionUID = -3510401542520028556L;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
 	@NotNull
-	private Sprache sprache;
+	private String textDeutsch;
 
 	@Column(nullable = false, length = Constants.DB_TEXTAREA_LENGTH)
 	@NotNull
-	private String text;
+	private String textFranzoesisch;
 
-	public Sprache getSprache() {
-		return sprache;
+	public String getTextDeutsch() {
+		return textDeutsch;
 	}
 
-	public void setSprache(Sprache sprache) {
-		this.sprache = sprache;
+	public void setTextDeutsch(String textDeutsch) {
+		this.textDeutsch = textDeutsch;
 	}
 
-	public String getText() {
-		return text;
+	public String getTextFranzoesisch() {
+		return textFranzoesisch;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setTextFranzoesisch(String textFranzoesisch) {
+		this.textFranzoesisch = textFranzoesisch;
+	}
+
+	@Nullable
+	public String findTextByLocale(Locale locale) {
+		switch (locale.getLanguage()) {
+
+		case "de":
+			return textDeutsch;
+		case "fr":
+			return textFranzoesisch;
+		default:
+			return "";
+		}
 	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {
-		// TODO KIBON-387
-		return false;
+		//noinspection ObjectEquality
+		if (this == other) {
+			return true;
+		}
+		if (other == null || !getClass().equals(other.getClass())) {
+			return false;
+		}
+		if (!(other instanceof TextRessource)) {
+			return false;
+		}
+		final TextRessource otherTextRessource = (TextRessource) other;
+		return Objects.equals(getTextDeutsch(), otherTextRessource.getTextDeutsch()) &&
+			Objects.equals(getTextFranzoesisch(), otherTextRessource.getTextFranzoesisch());
 	}
 }

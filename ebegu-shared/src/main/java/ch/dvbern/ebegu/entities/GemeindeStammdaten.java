@@ -127,8 +127,8 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name =
-		"FK_text_ressource_container_id"))
-	private TextRessourceContainer rechtsmittelbelehrung;
+		"FK_rechtsmittelbelehrung_id"))
+	private TextRessource rechtsmittelbelehrung;
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
@@ -261,11 +261,11 @@ public class GemeindeStammdaten extends AbstractEntity {
 	}
 
 	@Nullable
-	public TextRessourceContainer getRechtsmittelbelehrung() {
+	public TextRessource getRechtsmittelbelehrung() {
 		return rechtsmittelbelehrung;
 	}
 
-	public void setRechtsmittelbelehrung(@Nullable TextRessourceContainer rechtsmittelbelehrung) {
+	public void setRechtsmittelbelehrung(@Nullable TextRessource rechtsmittelbelehrung) {
 		this.rechtsmittelbelehrung = rechtsmittelbelehrung;
 	}
 
