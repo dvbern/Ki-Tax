@@ -41,6 +41,8 @@ public class JaxExternalBenutzer implements Serializable {
 	private String role = null;
 
 	private String commonName = null;
+
+	@Nullable
 	private String telephoneNumber = null;
 	private String mobile = null;
 	private String preferredLang = null;
@@ -136,11 +138,12 @@ public class JaxExternalBenutzer implements Serializable {
 		this.commonName = commonName;
 	}
 
+	@Nullable
 	public String getTelephoneNumber() {
 		return telephoneNumber;
 	}
 
-	public void setTelephoneNumber(String telephoneNumber) {
+	public void setTelephoneNumber(@Nullable String telephoneNumber) {
 		this.telephoneNumber = telephoneNumber;
 	}
 
