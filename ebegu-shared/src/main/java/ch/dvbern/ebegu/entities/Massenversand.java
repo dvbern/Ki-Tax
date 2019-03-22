@@ -21,6 +21,10 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -46,6 +50,16 @@ public class Massenversand extends AbstractEntity {
 	private String text;
 
 	@ManyToMany
+	@JoinTable(
+		joinColumns = @JoinColumn(name = "massenversand_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "gesuch_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_massenversand_massenversand_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_massenversand_gesuch_id"),
+		indexes = {
+			@Index(name = "IX_massenversand_massenversand_id", columnList = "massenversand_id"),
+			@Index(name = "IX_massenversand_gesuch_id", columnList = "gesuch_id"),
+		}
+	)
 	private List<Gesuch> gesuche = new ArrayList<>();
 
 
