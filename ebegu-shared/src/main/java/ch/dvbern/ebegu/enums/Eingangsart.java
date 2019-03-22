@@ -24,10 +24,10 @@ public enum Eingangsart {
 	PAPIER; // Von JA erfasst
 
 	public boolean isOnlineGesuch() {
-		return ONLINE.equals(this);
+		return ONLINE == this;
 	}
 
 	public boolean isPapierGesuch() {
-		return PAPIER.equals(this);
+		return PAPIER == this;
 	}
 }
