@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.enums;
 
 /**
  * Enum fuer Fachstelle
+ *
+ * Die Fachstellendetails müssen in der DB eingefügt werden.
  */
 public enum FachstelleName {
 	MUTTER_VATER_BERATUNG_BERN,

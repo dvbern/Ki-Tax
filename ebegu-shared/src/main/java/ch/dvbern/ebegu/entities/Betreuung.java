@@ -83,9 +83,8 @@ import org.hibernate.search.annotations.Indexed;
 @CheckBetreuungZeitraumInGesuchsperiode (groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
 @Table(
-	uniqueConstraints = {
+	uniqueConstraints =
 		@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
-	}
 )
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
