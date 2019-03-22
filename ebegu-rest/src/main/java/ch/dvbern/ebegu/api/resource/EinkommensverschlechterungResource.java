@@ -257,7 +257,7 @@ public class EinkommensverschlechterungResource {
 	@POST
 	@Path("/calculateDifferenz/{jahr1}/{jahr2}")
 	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response calculateProzentualeDifferenz(
 		@Nonnull @NotNull @PathParam("jahr1") String sJahr1,
 		@Nonnull @NotNull @PathParam("jahr2") String sJahr2,
