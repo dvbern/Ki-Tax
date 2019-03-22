@@ -4027,31 +4027,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(false);
-		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(false);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
-		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
-		}
-		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
-			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
-		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
-			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
-		if (!stammdaten.isNew()) {
-			if (stammdaten.getDefaultBenutzerBG() != null) {
-				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
-			}
-			if (stammdaten.getDefaultBenutzerTS() != null) {
-				jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
-			}
-			if (stammdaten.getBeschwerdeAdresse() != null) {
-				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
-			}
-		}
+		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
+		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
 		// Konfiguration
 		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
 			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
@@ -4081,6 +4058,37 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		return jaxStammdaten;
+	}
+
+	private void gemeindeStammdatenToJAXSetDefaultBenutzer(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
+		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
+			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
+		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
+			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
+		if (!stammdaten.isNew()) {
+			if (stammdaten.getDefaultBenutzerBG() != null) {
+				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
+			}
+			if (stammdaten.getDefaultBenutzerTS() != null) {
+				jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
+			}
+			if (stammdaten.getBeschwerdeAdresse() != null) {
+				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
+			}
+		}
+	}
+
+	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
+		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(false);
+		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(false);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		}
 	}
 
 	public TextRessource textRessourceToEntity(
