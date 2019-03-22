@@ -281,9 +281,7 @@ public class FinanzielleSituationRechner {
 		BigDecimal minimumEKV) {
 
 		BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
-		boolean accept =  differenz.compareTo(minimumEKV) > 0;
-		System.out.println("Differenz: " + differenz + ": " + accept);
-		return accept;
+		return differenz.compareTo(minimumEKV) > 0;
 	}
 
 	@Nonnull
