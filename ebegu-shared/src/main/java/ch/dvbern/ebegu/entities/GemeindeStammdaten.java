@@ -53,7 +53,8 @@ import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 @Table (
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "gemeinde_id", name = "UK_gemeinde_stammdaten_gemeinde_id"),
-		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_adresse_id")
+		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_adresse_id"),
+		@UniqueConstraint(columnNames = "rechtsmittelbelehrung_id", name = "UK_rechtsmittelbelehrung_id")
 	}
 )
 public class GemeindeStammdaten extends AbstractEntity {

@@ -111,28 +111,6 @@ public abstract class AbstractEntity implements Serializable {
 	@Type( type = "string-uuid-binary" )
 	private String id;
 
-
-//	todo reviewer, can probably delete that, i made a script that allows manual insertion of the id_text colum. see EBEGU-1511.sql
-//	@Column(columnDefinition = "varchar(36) generated always as"
-//		+ " (insert("
-//		+ "    insert("
-//		+ "      insert("
-//		+ "        insert(hex(id),9,0,'-'),"
-//		+ "        14,0,'-'),"
-//		+ "      19,0,'-'),"
-//		+ "    24,0,'-')"
-//		+ " ) virtual")
-//	@GeneratedValue()
-//	private String id_text;
-//
-//	public String getId_text() {
-//		return id_text;
-//	}
-//
-//	public void setId_text(String id_text) {
-//		this.id_text = id_text;
-//	}
-
 	@Version
 	@NotNull
 	private long version;

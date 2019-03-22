@@ -29,7 +29,7 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-public class TextRessource extends AbstractMutableEntity{
+public class TextRessource extends AbstractMutableEntity {
 
 	public static final long serialVersionUID = -3510401542520028556L;
 
