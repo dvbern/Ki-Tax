@@ -17,7 +17,7 @@
 
 import {Injectable} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {TSBrowserLanguage, tsBrowserLanguageFromString} from '../../../models/enums/TSBrowserLanguage';
+import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {CONSTANTS, LOCALSTORAGE_LANGUAGE_KEY} from '../../core/constants/CONSTANTS';
 import {WindowRef} from '../../core/service/windowRef.service';
 import ITranslateService = angular.translate.ITranslateService;
