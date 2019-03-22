@@ -205,7 +205,7 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 	public void testGesuchBySTVFreigeben_NotExistingGesuch() {
 		try {
 			//noinspection ConstantConditions
-			gesuchResource.gesuchBySTVFreigeben(new JaxId("dfafdasf"), null, null);
+			gesuchResource.gesuchBySTVFreigeben(new JaxId("1d1dd5db-32f1-11e6-8ae4-abab47942810"), null, null);
 			Assert.fail("Das Gesuch existiert nicht. Muss eine Exception werfen");
 		} catch (EbeguEntityNotFoundException e) {
 			//nop
@@ -248,7 +248,7 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 	public void testSendGesuchToSTV_NotExistingGesuch() {
 		try {
 			//noinspection ConstantConditions
-			gesuchResource.sendGesuchToSTV(new JaxId("dfafdasf"), null, null, null);
+			gesuchResource.sendGesuchToSTV(new JaxId("1d1dd5db-32f1-11e6-8bc4-abab47941400"), null, null, null);
 			Assert.fail("Das Gesuch existiert nicht. Muss eine Exception werfen");
 		} catch (EbeguEntityNotFoundException e) {
 			//nop

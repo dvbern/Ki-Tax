@@ -38,7 +38,6 @@ import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -65,13 +64,13 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private Persistence persistence;
 
-	@Inject
-	private BetreuungService betreuungService;
-
 	@Test
 	public void getMitteilungenOfDossierForCurrentRolleNoDossier() {
 		try {
-			mitteilungResource.getMitteilungenOfDossierForCurrentRolle(new JaxId("123456789"), DUMMY_URIINFO, DUMMY_RESPONSE);
+			mitteilungResource.getMitteilungenOfDossierForCurrentRolle(
+				new JaxId("1d1dd5db-32f1-11e6-8ae4-acab47941422"),
+				DUMMY_URIINFO,
+				DUMMY_RESPONSE);
 			Assert.fail("Exception should be thrown. The Fall doesn't exist");
 		} catch (EbeguEntityNotFoundException e) {
 			// nop
@@ -82,7 +81,8 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 	public void getMitteilungenOfDossierForCurrentRolleNoMitteilungen() {
 		final Dossier dossier = createAndPersistDossier();
 
-		final JaxMitteilungen mitteilungen = mitteilungResource.getMitteilungenOfDossierForCurrentRolle(new JaxId(dossier.getId()), DUMMY_URIINFO, DUMMY_RESPONSE);
+		final JaxMitteilungen mitteilungen = mitteilungResource
+			.getMitteilungenOfDossierForCurrentRolle(new JaxId(dossier.getId()), DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(mitteilungen);
 		Assert.assertEquals(0, mitteilungen.getMitteilungen().size());
@@ -94,12 +94,17 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 		final Dossier dossier = createAndPersistDossier();
 		final Benutzer sender = createAndPersistSender();
 
-		final Mitteilung mitteilung = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT, sender, MitteilungTeilnehmerTyp
-			.INSTITUTION);
+		final Mitteilung mitteilung = TestDataUtil.createMitteilung(
+			dossier,
+			empfaengerJA,
+			MitteilungTeilnehmerTyp.JUGENDAMT,
+			sender,
+			MitteilungTeilnehmerTyp.INSTITUTION);
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		persistence.persist(mitteilung);
 
-		final JaxMitteilungen mitteilungen = mitteilungResource.getMitteilungenOfDossierForCurrentRolle(new JaxId(dossier.getId()), DUMMY_URIINFO, DUMMY_RESPONSE);
+		final JaxMitteilungen mitteilungen = mitteilungResource
+			.getMitteilungenOfDossierForCurrentRolle(new JaxId(dossier.getId()), DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(mitteilungen);
 		Assert.assertEquals(1, mitteilungen.getMitteilungen().size());
@@ -114,12 +119,17 @@ public class MitteilungResourceTest extends AbstractEbeguRestLoginTest {
 		final Dossier dossier = createAndPersistDossier();
 		final Benutzer sender = createAndPersistSender();
 
-		final Mitteilung mitteilung = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT, sender, MitteilungTeilnehmerTyp
-			.INSTITUTION);
+		final Mitteilung mitteilung = TestDataUtil.createMitteilung(
+			dossier,
+			empfaengerJA,
+			MitteilungTeilnehmerTyp.JUGENDAMT,
+			sender,
+			MitteilungTeilnehmerTyp.INSTITUTION);
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		persistence.persist(mitteilung);
 
-		final JaxMitteilungen mitteilungen = mitteilungResource.getMitteilungenOfDossierForCurrentRolle(new JaxId(dossier.getId()), DUMMY_URIINFO, DUMMY_RESPONSE);
+		final JaxMitteilungen mitteilungen = mitteilungResource
+			.getMitteilungenOfDossierForCurrentRolle(new JaxId(dossier.getId()), DUMMY_URIINFO, DUMMY_RESPONSE);
 
 		Assert.assertNotNull(mitteilungen);
 		Assert.assertEquals(1, mitteilungen.getMitteilungen().size());

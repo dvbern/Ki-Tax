@@ -64,6 +64,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_ADMINISTRATOR_MAIL = "ebegu.admin.mail";
 	private static final String EBEGU_PORTAL_ACCOUNT_CREATION_LINK = "ebegu.portal.account.creation.link";
 	private static final String SENTRY_ENVIRONMENT = "sentry.environment"; //use same property as sentry logger
+	private static final String EBEGU_SUPERUSER_MAIL = "ebegu.superuser.mail";
 
 
 	@Inject
@@ -228,5 +229,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public KibonLogLevel getDefaultLogLevel() {
 		return this.getIsDevmode() ? KibonLogLevel.INFO : KibonLogLevel.ERROR;
+	}
+
+	@Override
+	public String getSuperuserMail() {
+		return getString(EBEGU_SUPERUSER_MAIL);
 	}
 }
