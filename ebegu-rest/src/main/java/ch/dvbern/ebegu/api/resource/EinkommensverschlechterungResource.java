@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +59,7 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.EinkommensverschlechterungService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
+import ch.dvbern.ebegu.util.MathUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -247,5 +249,30 @@ public class EinkommensverschlechterungResource {
 		// Wir wollen nur neu berechnen. Das Gesuch soll auf keinen Fall neu gespeichert werden
 		context.setRollbackOnly();
 		return Response.ok(abstFinSitResultateDTO).build();
+	}
+
+	@ApiOperation(value = "Berechnet die prozentuale Differenz zwischen den beiden uebergebenen Einkommen. Das Resultat wird immer als aufgerundete Ganzzahl "
+		+ "(String) zurückgegeben", response = String.class)
+	@Nonnull
+	@POST
+	@Path("/calculateDifferenz/{jahr1}/{jahr2}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.WILDCARD)
+	public Response calculateProzentualeDifferenz(
+		@Nonnull @NotNull @PathParam("jahr1") String sJahr1,
+		@Nonnull @NotNull @PathParam("jahr2") String sJahr2,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		BigDecimal einkommenBetragJahr = MathUtil.EXACT.from(sJahr1);
+		BigDecimal einkommenBetragJahrPlus1 = MathUtil.EXACT.from(sJahr2);
+		BigDecimal resultExact = einkVerschlService.calculateProzentualeDifferenz(einkommenBetragJahr, einkommenBetragJahrPlus1);
+		// Fuer die Anzeige im GUI runden wir immer auf die nächste Ganzzahl. Damit wird:
+		// 19.0001 => 20 => nicht akzeptiert
+		// 20.0000 => 20 => nicht akzeptiert
+		// 20.0001 => 21 => akzeptiert
+		// Somit ist das Berechnungresultat dann für die Kunden nachvollziehbar
+		double resultRoundUp = Math.ceil(resultExact.doubleValue());
+		return Response.ok(String.valueOf(resultRoundUp)).build();
 	}
 }

@@ -279,11 +279,28 @@ public class FinanzielleSituationRechner {
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal massgebendesEinkommenJahr,
 		BigDecimal minimumEKV) {
-		// EKV gewährt. Es braucht VIER_NACHKOMMASTELLE weil wir mit 1-Prozentuell arbeiten und in 100-Prozentuell
-		// gilt ZWEI_NACHKOMMASTELLE
-		return massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0
-			&& MathUtil.VIER_NACHKOMMASTELLE.divide(massgebendesEinkommenJahr, massgebendesEinkommenBasisjahr)
-			.compareTo(minimumEKV) < 0;
+
+		BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
+		boolean accept =  differenz.compareTo(minimumEKV) > 0;
+		System.out.println("Differenz: " + differenz + ": " + accept);
+		return accept;
+	}
+
+	@Nonnull
+	public static BigDecimal calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
+		BigDecimal HUNDERT = MathUtil.EXACT.from(100);
+		if (einkommenJahr == null && einkommenJahrPlus1 == null) {
+			return BigDecimal.ZERO;
+		}
+		if (einkommenJahr == null) {
+			return HUNDERT;
+		}
+		if (einkommenJahrPlus1 == null || einkommenJahrPlus1.compareTo(BigDecimal.ZERO) <= 0) {
+			return HUNDERT.negate();
+		}
+		BigDecimal divide = MathUtil.EXACT.divide(einkommenJahrPlus1, einkommenJahr);
+		divide = MathUtil.EXACT.multiply(divide, HUNDERT);
+		return  MathUtil.EXACT.subtract(HUNDERT, divide);
 	}
 
 	/**

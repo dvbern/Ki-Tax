@@ -15,12 +15,14 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -121,6 +123,13 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@PermitAll
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch, int basisJahrPlus) {
 		return finSitRechner.calculateResultateEinkommensverschlechterung(gesuch, basisJahrPlus, true);
+	}
+
+	@Override
+	@Nonnull
+	@PermitAll
+	public BigDecimal calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
+		return FinanzielleSituationRechner.calculateProzentualeDifferenz(einkommenJahr, einkommenJahrPlus1);
 	}
 
 	@Override

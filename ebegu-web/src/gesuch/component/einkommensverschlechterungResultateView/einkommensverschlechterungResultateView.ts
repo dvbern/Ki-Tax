@@ -210,35 +210,17 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
     }
 
     /**
-     *
      * @returns Veraenderung im Prozent im vergleich zum Vorjahr
      */
     public calculateVeraenderung(): string {
         if (this.resultatBasisjahr) {
-
-            const massgebendesEinkVorAbzFamGr = this.getResultate().massgebendesEinkVorAbzFamGr;
-            const massgebendesEinkVorAbzFamGrBJ = this.resultatBasisjahr.massgebendesEinkVorAbzFamGr;
-            if (massgebendesEinkVorAbzFamGr && massgebendesEinkVorAbzFamGrBJ) {
-
-                // we divide it by 10000 because we need a result with two decimals
-                const tenThousand = 10000;
-                let promil = tenThousand - (massgebendesEinkVorAbzFamGr * tenThousand / massgebendesEinkVorAbzFamGrBJ);
-                promil = Math.round(promil);
-                const sign = promil > 0 ? '- ' : '+ ';
-                const value = (Math.abs(promil) / 100).toFixed(2);
-
-                return `${sign + value} %`;
+            let resultatJahrPlus1 = this.getResultate();
+            if (resultatJahrPlus1) {
+                this.berechnungsManager.calculateProzentualeDifferenz(this.resultatBasisjahr, resultatJahrPlus1).then(abweichungInProzentZumVorjahr => {
+                    this.resultatProzent = abweichungInProzentZumVorjahr;
+                    return abweichungInProzentZumVorjahr;
+                });
             }
-            if (!massgebendesEinkVorAbzFamGr && !massgebendesEinkVorAbzFamGrBJ) {
-                // case: Kein Einkommen in diesem Jahr und im letzten Jahr
-                return '+ 0.00 %';
-            }
-            if (!massgebendesEinkVorAbzFamGr) {
-                // case: Kein Einkommen in diesem Jahr aber Einkommen im letzten Jahr
-                return '- 100.00 %';
-            }
-            // case: Kein Einkommen im letzten Jahr aber Einkommen in diesem Jahr
-            return '+ 100.00 %';
         }
         return '';
     }
