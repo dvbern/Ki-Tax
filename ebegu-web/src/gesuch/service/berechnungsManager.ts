@@ -131,7 +131,7 @@ export default class BerechnungsManager {
             });
     }
 
-    public calculateProzentualeDifferenz(jahr: TSFinanzielleSituationResultateDTO, jahrPlus1: TSFinanzielleSituationResultateDTO): IPromise<string> {
+    public calculateProzentualeDifferenz(jahr: number, jahrPlus1: number): IPromise<string> {
         return this.einkommensverschlechterungContainerRS.calculateProzentualeDifferenz(jahr, jahrPlus1);
     }
 

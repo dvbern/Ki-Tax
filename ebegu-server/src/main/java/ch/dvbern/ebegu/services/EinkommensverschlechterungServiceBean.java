@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -128,8 +129,16 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@Override
 	@Nonnull
 	@PermitAll
-	public BigDecimal calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
-		return FinanzielleSituationRechner.calculateProzentualeDifferenz(einkommenJahr, einkommenJahrPlus1);
+	public String calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
+		BigDecimal resultExact = FinanzielleSituationRechner.calculateProzentualeDifferenz(einkommenJahr, einkommenJahrPlus1);
+		String sign = MathUtil.isPositive(resultExact) ? "+" : "-";
+		// Fuer die Anzeige im GUI runden wir immer auf die nächste Ganzzahl. Damit wird:
+		// 19.0001 => 20 => nicht akzeptiert
+		// 20.0000 => 20 => nicht akzeptiert
+		// 20.0001 => 21 => akzeptiert
+		// Somit ist das Berechnungresultat dann für die Kunden nachvollziehbar
+		double resultRoundUp = Math.ceil(resultExact.abs().doubleValue());
+		return sign + new Double(resultRoundUp).intValue();
 	}
 
 	@Override

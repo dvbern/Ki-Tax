@@ -216,7 +216,8 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
         if (this.resultatBasisjahr) {
             const resultatJahrPlus1 = this.getResultate();
             if (resultatJahrPlus1) {
-                this.berechnungsManager.calculateProzentualeDifferenz(this.resultatBasisjahr, resultatJahrPlus1)
+                this.berechnungsManager.calculateProzentualeDifferenz(
+                    this.resultatBasisjahr.massgebendesEinkVorAbzFamGr, resultatJahrPlus1.massgebendesEinkVorAbzFamGr)
                     .then(abweichungInProzentZumVorjahr => {
                     this.resultatProzent = abweichungInProzentZumVorjahr;
                     return abweichungInProzentZumVorjahr;

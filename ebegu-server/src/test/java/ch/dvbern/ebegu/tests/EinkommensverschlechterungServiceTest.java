@@ -124,4 +124,18 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 		einkommensverschlechterungService.removeEinkommensverschlechterungContainer(container);
 		Assert.assertEquals(0, einkommensverschlechterungService.getAllEinkommensverschlechterungContainer().size());
 	}
+
+	@Test
+	public void calculateProzentualeDifferenz() {
+		Assert.assertEquals("-0", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(0), BigDecimal.valueOf(0)));
+		Assert.assertEquals("-0", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(100), BigDecimal.valueOf(100)));
+		Assert.assertEquals("+100", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(100), BigDecimal.valueOf(200)));
+		Assert.assertEquals("-50", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(200), BigDecimal.valueOf(100)));
+		Assert.assertEquals("-90", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(200), BigDecimal.valueOf(20)));
+		Assert.assertEquals("-82", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(59720), BigDecimal.valueOf(11230)));
+		Assert.assertEquals("-100", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(59720), BigDecimal.valueOf(0)));
+		Assert.assertEquals("+100", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(0), BigDecimal.valueOf(59720)));
+		Assert.assertEquals("-20", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(70000), BigDecimal.valueOf(56000)));
+		Assert.assertEquals("-21", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(70000), BigDecimal.valueOf(55999)));
+	}
 }

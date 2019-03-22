@@ -266,13 +266,7 @@ public class EinkommensverschlechterungResource {
 
 		BigDecimal einkommenBetragJahr = MathUtil.EXACT.from(sJahr1);
 		BigDecimal einkommenBetragJahrPlus1 = MathUtil.EXACT.from(sJahr2);
-		BigDecimal resultExact = einkVerschlService.calculateProzentualeDifferenz(einkommenBetragJahr, einkommenBetragJahrPlus1);
-		// Fuer die Anzeige im GUI runden wir immer auf die nächste Ganzzahl. Damit wird:
-		// 19.0001 => 20 => nicht akzeptiert
-		// 20.0000 => 20 => nicht akzeptiert
-		// 20.0001 => 21 => akzeptiert
-		// Somit ist das Berechnungresultat dann für die Kunden nachvollziehbar
-		double resultRoundUp = Math.ceil(resultExact.doubleValue());
-		return Response.ok(String.valueOf(resultRoundUp)).build();
+		String resultRoundedAsString = einkVerschlService.calculateProzentualeDifferenz(einkommenBetragJahr, einkommenBetragJahrPlus1);
+		return Response.ok(resultRoundedAsString).build();
 	}
 }

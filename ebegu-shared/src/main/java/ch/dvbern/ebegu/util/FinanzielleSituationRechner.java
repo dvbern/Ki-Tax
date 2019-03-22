@@ -283,7 +283,7 @@ public class FinanzielleSituationRechner {
 		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
 		if (result) {
 			BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
-			return differenz.compareTo(minimumEKV) > 0;
+			return differenz.compareTo(minimumEKV) < 0;
 		}
 		return false;
 	}
@@ -297,12 +297,23 @@ public class FinanzielleSituationRechner {
 		if (einkommenJahr == null) {
 			return HUNDERT;
 		}
-		if (einkommenJahrPlus1 == null || einkommenJahrPlus1.compareTo(BigDecimal.ZERO) <= 0) {
+		if (einkommenJahrPlus1 == null) {
 			return HUNDERT.negate();
+		}
+		boolean jahrZero = einkommenJahr.compareTo(BigDecimal.ZERO) <= 0;
+		boolean jahrPlus1Zero = einkommenJahrPlus1.compareTo(BigDecimal.ZERO) <= 0;
+		if (jahrZero && jahrPlus1Zero) {
+			return BigDecimal.ZERO;
+		}
+		if (jahrPlus1Zero) {
+			return HUNDERT.negate();
+		}
+		if (jahrZero) {
+			return HUNDERT;
 		}
 		BigDecimal divide = MathUtil.EXACT.divide(einkommenJahrPlus1, einkommenJahr);
 		divide = MathUtil.EXACT.multiply(divide, HUNDERT);
-		return  MathUtil.EXACT.subtract(HUNDERT, divide);
+		return  MathUtil.EXACT.subtract(HUNDERT, divide).negate();
 	}
 
 	/**

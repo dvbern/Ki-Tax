@@ -79,7 +79,7 @@ public interface EinkommensverschlechterungService {
 	 * Berechnet die Veränderung des Einkommens im Vergleich zum Vorjahr in Prozent
 	 */
 	@Nonnull
-	BigDecimal calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1);
+	String calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1);
 
 	/**
 	 * Removes all Einkommensverschlechterungen of the given year for the given Gesuch. The year is 1 or 2 and will
