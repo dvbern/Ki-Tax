@@ -612,7 +612,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		String superuserMail = ebeguConfiguration.getSuperuserMail();
 		if (superuserMail != null
 			&& superuserMail.equalsIgnoreCase(benutzer.getEmail())
-			&& benutzer.getRole() != UserRole.SUPER_ADMIN) {
+			&& benutzer.getRole() != UserRole.SUPER_ADMIN
+		) {
 			benutzer.setRole(UserRole.SUPER_ADMIN);
 			LOG.warn("Benutzer eingeloggt mit E-Mail {}: {}", benutzer.getEmail(), benutzer);
 		}
