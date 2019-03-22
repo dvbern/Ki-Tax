@@ -35,6 +35,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import ch.dvbern.ebegu.hibernate.StringUUIDType;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
 import ch.dvbern.ebegu.reporting.gesuchzeitraum.GesuchZeitraumDataRow;
 import ch.dvbern.ebegu.util.AbstractEntityListener;
@@ -42,6 +43,8 @@ import ch.dvbern.ebegu.util.Constants;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.hibernate.envers.Audited;
 
 @SuppressWarnings("ClassReferencesSubclass")
@@ -94,14 +97,41 @@ import org.hibernate.envers.Audited;
 			@ColumnResult(name = "anzahlVerfuegungenNichtEintreten", type = Integer.class) }
 	))
 })
+@TypeDef(
+	name = "string-uuid-binary",
+	typeClass = StringUUIDType.class
+)
 public abstract class AbstractEntity implements Serializable {
 
 	private static final long serialVersionUID = -979317154050183445L;
 
 	@Id
-	@Column(unique = true, nullable = false, updatable = false, length = Constants.UUID_LENGTH)
+	@Column(unique = true, nullable = false, updatable = false, length = 16)
 	@Size(min = Constants.UUID_LENGTH, max = Constants.UUID_LENGTH)
+	@Type( type = "string-uuid-binary" )
 	private String id;
+
+
+//	todo reviewer, can probably delete that, i made a script that allows manual insertion of the id_text colum. see EBEGU-1511.sql
+//	@Column(columnDefinition = "varchar(36) generated always as"
+//		+ " (insert("
+//		+ "    insert("
+//		+ "      insert("
+//		+ "        insert(hex(id),9,0,'-'),"
+//		+ "        14,0,'-'),"
+//		+ "      19,0,'-'),"
+//		+ "    24,0,'-')"
+//		+ " ) virtual")
+//	@GeneratedValue()
+//	private String id_text;
+//
+//	public String getId_text() {
+//		return id_text;
+//	}
+//
+//	public void setId_text(String id_text) {
+//		this.id_text = id_text;
+//	}
 
 	@Version
 	@NotNull
