@@ -88,7 +88,8 @@ export default class EinkommensverschlechterungContainerRS {
     }
 
     public calculateProzentualeDifferenz(jahr: TSFinanzielleSituationResultateDTO, jahrPlus1: TSFinanzielleSituationResultateDTO): IPromise<string> {
-        return this.$http.post(`${this.serviceURL}/calculateDifferenz/${jahr.massgebendesEinkVorAbzFamGr}/${jahrPlus1.massgebendesEinkVorAbzFamGr}`, null)
+        return this.$http.post(`${this.serviceURL}/calculateDifferenz/${jahr.massgebendesEinkVorAbzFamGr}/${jahrPlus1.massgebendesEinkVorAbzFamGr}`,
+            null)
             .then(httpresponse =>  <string>httpresponse.data);
     }
 
