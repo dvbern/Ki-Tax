@@ -280,8 +280,12 @@ public class FinanzielleSituationRechner {
 		BigDecimal massgebendesEinkommenJahr,
 		BigDecimal minimumEKV) {
 
-		BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
-		return differenz.compareTo(minimumEKV) > 0;
+		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
+		if (result) {
+			BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
+			return differenz.compareTo(minimumEKV) > 0;
+		}
+		return false;
 	}
 
 	@Nonnull
@@ -310,12 +314,14 @@ public class FinanzielleSituationRechner {
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal massgebendesEinkommenJahr,
 		BigDecimal minimumEKV) {
-		// EKV gewährt. Es braucht VIER_NACHKOMMASTELLE weil wir mit 1-Prozentuell arbeiten und in 100-Prozentuell
-		// gilt ZWEI_NACHKOMMASTELLE
-		return massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0 &&
-			massgebendesEinkommenVorjahr.compareTo(massgebendesEinkommenJahr) > 0 &&
-			MathUtil.VIER_NACHKOMMASTELLE.divide(massgebendesEinkommenJahr, massgebendesEinkommenBasisjahr)
-				.compareTo(minimumEKV) < 0;
+
+		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0 &&
+			massgebendesEinkommenVorjahr.compareTo(massgebendesEinkommenJahr) > 0;
+		if (result) {
+			BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
+			return differenz.compareTo(minimumEKV) > 0;
+		}
+		return false;
 	}
 
 	private void calculateZusammen(
