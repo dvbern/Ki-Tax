@@ -138,7 +138,7 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 		// 20.0001 => 21 => akzeptiert
 		// Somit ist das Berechnungresultat dann für die Kunden nachvollziehbar
 		double resultRoundUp = Math.ceil(resultExact.abs().doubleValue());
-		return sign + new Double(resultRoundUp).intValue();
+		return sign + Double.valueOf(resultRoundUp).intValue();
 	}
 
 	@Override
