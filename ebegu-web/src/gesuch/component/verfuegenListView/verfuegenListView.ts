@@ -80,6 +80,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         '$timeout',
         '$translate',
         'EinstellungRS',
+        'EbeguUtil',
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
@@ -103,6 +104,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
         private readonly einstellungRS: EinstellungRS,
+        private readonly ebeguUtil: EbeguUtil,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
