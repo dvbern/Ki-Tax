@@ -131,4 +131,9 @@ export class PosteingangViewController implements IController {
         this.displayedCollection = [].concat(result.mitteilungen);
         this.totalResultCount = result.totalResultSize ? result.totalResultSize.toString() : '0';
     }
+
+    public showBgOrTS(): boolean {
+        // todo this should when Tagesschulen are active
+        return false;
+    }
 }
