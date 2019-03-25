@@ -113,12 +113,13 @@ public class FinanzielleSituationRechner {
 		Einkommensverschlechterung einkommensverschlechterungGS1Bjp2 =
 			getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 2);
 		final FinanzielleSituation finanzielleSituationGS1 = getFinanzielleSituationGS(gesuch.getGesuchsteller1());
-		einkVerResultDTO.setGeschaeftsgewinnDurchschnittGesuchsteller1(
-			calcGeschaeftsgewinnDurchschnitt(finanzielleSituationGS1,
-				einkommensverschlechterungGS1Bjp1,
-				einkommensverschlechterungGS1Bjp2,
-				gesuch.extractEinkommensverschlechterungInfo(),
-				basisJahrPlus));
+		BigDecimal geschaeftsgewinnDurchschnittGesuchsteller1 = calcGeschaeftsgewinnDurchschnitt(
+			finanzielleSituationGS1,
+			einkommensverschlechterungGS1Bjp1,
+			einkommensverschlechterungGS1Bjp2,
+			gesuch.extractEinkommensverschlechterungInfo(),
+			basisJahrPlus);
+		einkVerResultDTO.setGeschaeftsgewinnDurchschnittGesuchsteller1(geschaeftsgewinnDurchschnittGesuchsteller1);
 
 		// Die Daten fuer GS 2 werden nur beruecksichtigt, wenn es (aktuell) zwei Gesuchsteller hat
 		Einkommensverschlechterung einkommensverschlechterungGS2Bjp1 = null;
@@ -336,11 +337,11 @@ public class FinanzielleSituationRechner {
 	}
 
 	private void calculateZusammen(
-		final FinanzielleSituationResultateDTO finSitResultDTO,
-		AbstractFinanzielleSituation finanzielleSituationGS1,
-		BigDecimal geschaeftsgewinnDurchschnitt1,
-		AbstractFinanzielleSituation finanzielleSituationGS2,
-		BigDecimal geschaeftsgewinnDurchschnitt2) {
+		@Nonnull final FinanzielleSituationResultateDTO finSitResultDTO,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
+		@Nullable BigDecimal geschaeftsgewinnDurchschnitt1,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
+		@Nullable BigDecimal geschaeftsgewinnDurchschnitt2) {
 
 		finSitResultDTO.setEinkommenBeiderGesuchsteller(calcEinkommen(
 			finanzielleSituationGS1, geschaeftsgewinnDurchschnitt1,
@@ -514,39 +515,46 @@ public class FinanzielleSituationRechner {
 	}
 
 	@Deprecated // Use MathUtil instead
-	protected static BigDecimal add(BigDecimal value1, BigDecimal value2) {
+	protected static BigDecimal add(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
 		value1 = value1 != null ? value1 : BigDecimal.ZERO;
 		value2 = value2 != null ? value2 : BigDecimal.ZERO;
 		return value1.add(value2);
 	}
 
 	@Deprecated // Use MathUtil instead
-	private static BigDecimal subtract(BigDecimal value1, BigDecimal value2) {
+	private static BigDecimal subtract(@Nullable BigDecimal value1, @Nullable BigDecimal value2) {
 		value1 = value1 != null ? value1 : BigDecimal.ZERO;
 		value2 = value2 != null ? value2 : BigDecimal.ZERO;
 		return value1.subtract(value2);
 	}
 
 	@Deprecated // Use MathUtil instead
-	private static BigDecimal percent(BigDecimal value, int percent) {
+	private static BigDecimal percent(@Nullable BigDecimal value, int percent) {
 		BigDecimal total = value != null ? value : BigDecimal.ZERO;
 		total = total.multiply(new BigDecimal(String.valueOf(percent)));
 		total = total.divide(new BigDecimal("100"), RoundingMode.HALF_UP);
 		return total;
 	}
 
+	@Nullable
 	private BigDecimal calcEinkommen(
-		AbstractFinanzielleSituation abstractFinanzielleSituation1, BigDecimal geschaeftsgewinnDurchschnitt1,
-		AbstractFinanzielleSituation abstractFinanzielleSituation2, BigDecimal geschaeftsgewinnDurchschnitt2) {
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
+		@Nullable BigDecimal geschaeftsgewinnDurchschnitt1,
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2,
+		@Nullable BigDecimal geschaeftsgewinnDurchschnitt2
+	) {
 		BigDecimal total = BigDecimal.ZERO;
 		total = calcEinkommenProGS(abstractFinanzielleSituation1, geschaeftsgewinnDurchschnitt1, total);
 		total = calcEinkommenProGS(abstractFinanzielleSituation2, geschaeftsgewinnDurchschnitt2, total);
 		return total;
 	}
 
+	@Nullable
 	private BigDecimal calcEinkommenProGS(
-		AbstractFinanzielleSituation abstractFinanzielleSituation,
-		BigDecimal geschaeftsgewinnDurchschnitt, BigDecimal total) {
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation,
+		@Nullable BigDecimal geschaeftsgewinnDurchschnitt,
+		@Nullable BigDecimal total
+	) {
 		if (abstractFinanzielleSituation != null) {
 			total = add(total, abstractFinanzielleSituation.getNettolohn());
 			total = add(total, abstractFinanzielleSituation.getFamilienzulage());
@@ -558,8 +566,9 @@ public class FinanzielleSituationRechner {
 	}
 
 	private BigDecimal calcAbzuege(
-		AbstractFinanzielleSituation finanzielleSituationGS1,
-		AbstractFinanzielleSituation finanzielleSituationGS2) {
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2
+	) {
 		BigDecimal totalAbzuege = BigDecimal.ZERO;
 		if (finanzielleSituationGS1 != null) {
 			totalAbzuege = add(totalAbzuege, finanzielleSituationGS1.getGeleisteteAlimente());
