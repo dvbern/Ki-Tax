@@ -330,7 +330,7 @@ public class FinanzielleSituationRechner {
 			massgebendesEinkommenVorjahr.compareTo(massgebendesEinkommenJahr) > 0;
 		if (result) {
 			BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
-			return differenz.compareTo(minimumEKV) > 0;
+			return differenz.abs().compareTo(minimumEKV) > 0;
 		}
 		return false;
 	}
