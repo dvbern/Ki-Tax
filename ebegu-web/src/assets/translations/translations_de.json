@@ -1408,7 +1408,7 @@
     "WEBSEITE": "Webseite",
     "OEFFNUNGSZEITEN": "Öffnungszeiten",
     "BANKVERBINDUNG": "Bankverbindung für Auszahlungen",
-    "BESCHWERDE_ADRESSE": "Beschwerde-Adresse",
+    "BESCHWERDE_ADRESSE": "Beschwerde",
     "BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT": "Identisch wie Kontaktadresse",
     "STANDARD_VERANTWORTLICHE": "Standard-Verantwortliche",
     "KONTO_INHABER": "Kontoinhaber",
@@ -1494,5 +1494,9 @@
     "TUTORIAL_LOGIN": "Einloggen",
     "ERLAEUTERUNG_VERFUEGUNG_DE": "Erläuterung zur Verfügung Deutsch",
     "ERLAEUTERUNG_VERFUEGUNG_FR": "Erläuterung zur Verfügung Französisch",
-    "ERLAEUTERUNG_VERFUEGUNG": "Erläuterungen zur Verfügung"
+    "ERLAEUTERUNG_VERFUEGUNG": "Erläuterungen zur Verfügung",
+    "STANDARD_TEXT": "Standardtext",
+    "BENUTZERDEFINIERTER_TEXT": "Benutzerdefinierter Text",
+    "RECHTSMITTELBELEHRUNG_TEXT_DE": "Rechtsmittelbelehrungstext Deutsch",
+    "RECHTSMITTELBELEHRUNG_TEXT_FR": "Rechtsmittelbelehrungstext Französisch"
 }
