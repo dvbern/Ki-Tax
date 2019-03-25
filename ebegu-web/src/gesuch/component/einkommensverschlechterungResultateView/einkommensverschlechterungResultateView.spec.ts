@@ -22,15 +22,12 @@ import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../gesuch.module';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
-import WizardStepManager from '../../service/wizardStepManager';
-import {EinkommensverschlechterungResultateViewController} from './einkommensverschlechterungResultateView';
 
 // tslint:disable:no-magic-numbers
 describe('einkommensverschlechterungResultateView', () => {
 
     let gesuchModelManager: GesuchModelManager;
     let berechnungsManager: BerechnungsManager;
-    let ekvrvc: EinkommensverschlechterungResultateViewController;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -39,11 +36,7 @@ describe('einkommensverschlechterungResultateView', () => {
     let component: any;
     let scope: angular.IScope;
     let $componentController: any;
-    let stateParams: any;
-    let errorservice: any;
-    let wizardStepManager: WizardStepManager;
     let $rootScope: angular.IScope;
-    let $timeout: angular.ITimeoutService;
 
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
@@ -52,10 +45,6 @@ describe('einkommensverschlechterungResultateView', () => {
         $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
         const $q = $injector.get('$q');
-        stateParams = $injector.get('$stateParams');
-        errorservice = $injector.get('ErrorService');
-        wizardStepManager = $injector.get('WizardStepManager');
-        $timeout = $injector.get('$timeout');
 
         spyOn(berechnungsManager, 'calculateFinanzielleSituation').and.returnValue($q.when({}));
 
