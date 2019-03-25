@@ -175,4 +175,9 @@ public interface EbeguConfiguration {
 	 * Returns the LogLevel by default. INFO for Dev-Mode and ERROR for others (production)
 	 */
 	KibonLogLevel getDefaultLogLevel();
+
+	/**
+	 * Gibt die E-Mail des (ersten) Superusers zurueck
+	 */
+	String getSuperuserMail();
 }

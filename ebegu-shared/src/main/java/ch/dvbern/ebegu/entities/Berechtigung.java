@@ -75,6 +75,7 @@ public class Berechtigung extends AbstractDateRangedEntity implements Comparable
 		joinColumns = @JoinColumn(name = "berechtigung_id", nullable = false),
 		inverseJoinColumns = @JoinColumn(name = "gemeinde_id", nullable = false),
 		foreignKey = @ForeignKey(name = "FK_berechtigung_gemeinde_gemeinde_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_berechtigung_gemeinde_berechtigung_id"),
 		indexes = {
 			@Index(name = "IX_berechtigung_gemeinde_berechtigung_id", columnList = "berechtigung_id"),
 			@Index(name = "IX_berechtigung_gemeinde_gemeinde_id", columnList = "gemeinde_id"),
