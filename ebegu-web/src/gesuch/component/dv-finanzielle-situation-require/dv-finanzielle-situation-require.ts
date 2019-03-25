@@ -83,4 +83,8 @@ export class DVFinanzielleSituationRequireController implements IController {
     public isGesuchReadonly(): boolean {
         return this.gesuchModelManager.isGesuchReadonly();
     }
+
+    public isKorrekturModusJugendamt(): boolean {
+        return this.gesuchModelManager.isKorrekturModusJugendamt();
+    }
 }
