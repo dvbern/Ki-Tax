@@ -22,6 +22,10 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -44,6 +48,16 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 	@SortNatural
 	@ManyToMany
 	// es darf nicht cascadeAll sein, da sonst die Module geloescht werden, wenn die Belegung geloescht wird, obwohl das Modul eigentlich zur Institutione gehoert
+	@JoinTable(
+		joinColumns = @JoinColumn(name = "belegung_tagesschule_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "module_tagesschule_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_belegung_tagesschule_belegung_tagesschule_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_belegung_tagesschule_module_tagesschule_id"),
+		indexes = {
+			@Index(name = "IX_belegung_tagesschule_belegung_tagesschule_id", columnList = "belegung_tagesschule_id"),
+			@Index(name = "IX_belegung_tagesschule_module_tagesschule_id", columnList = "module_tagesschule_id"),
+		}
+	)
 	private Set<ModulTagesschule> moduleTagesschule = new TreeSet<>();
 
 	@NotNull

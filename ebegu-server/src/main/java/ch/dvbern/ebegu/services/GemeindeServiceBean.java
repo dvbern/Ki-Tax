@@ -262,10 +262,17 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BfsGemeinde> query = cb.createQuery(BfsGemeinde.class);
 		Root<BfsGemeinde> root = query.from(BfsGemeinde.class);
+		List<Predicate> predicates = new ArrayList<>();
 
-		Predicate predicate = root.get(BfsGemeinde_.bfsNummer).in(getRegisteredBfsNummern(mandant)).not();
+		List<Long> registeredBfsNummern = getRegisteredBfsNummern(mandant);
+		if (!registeredBfsNummern.isEmpty()) {
+			Predicate predicate = root.get(BfsGemeinde_.bfsNummer).in(registeredBfsNummern).not();
+			predicates.add(predicate);
+		}
+
 		Predicate predicateMandant = cb.equal(root.get(BfsGemeinde_.mandant), mandant);
-		query.where(predicate, predicateMandant);
+		predicates.add(predicateMandant);
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		List<BfsGemeinde> unregisteredBfsGemeinden = persistence.getCriteriaResults(query);
 		return unregisteredBfsGemeinden;
 	}

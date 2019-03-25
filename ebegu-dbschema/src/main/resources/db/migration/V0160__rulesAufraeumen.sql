@@ -1,2 +1,0 @@
-ALTER TABLE verfuegung_zeitabschnitt ADD minimales_ewp_unterschritten BIT NOT NULL;
-ALTER TABLE verfuegung_zeitabschnitt_aud ADD minimales_ewp_unterschritten BIT;

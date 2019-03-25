@@ -43,6 +43,7 @@ public class BerechtigungHistory extends AbstractDateRangedEntity implements Com
 
 	private static final long serialVersionUID = -9032257320864372570L;
 
+	@Column(nullable = false)
 	@NotNull
 	private String username = null;
 

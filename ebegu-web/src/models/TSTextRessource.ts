@@ -15,19 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
-/**
- * Enum fuer Fachstelle
- *
- * Die Fachstellendetails müssen in der DB eingefügt werden.
- */
-public enum FachstelleName {
-	MUTTER_VATER_BERATUNG_BERN,
-	SOZIALDIENST,
-	KINDES_ERWACHSENEN_SCHUTZBEHOERDE,
-	ERZIEHUNGSBERATUNG,
-	FRUEHERZIEHUNGSDIENST_KANTON_BERN,
-	FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN,
-	DIENST_ZENTRUM_HOEREN_SPRACHE
+export default class TSTextRessource extends TSAbstractMutableEntity {
+
+    public textDeutsch: string;
+    public textFranzoesisch: string;
 }
