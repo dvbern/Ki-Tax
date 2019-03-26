@@ -328,7 +328,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@PermitAll
 	public Optional<Benutzer> findBenutzer(@Nonnull String username) {
 		requireNonNull(username, "username muss gesetzt sein");
-		return criteriaQueryHelper(Benutzer.class, username, Benutzer_.username);
+		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, username, Benutzer_.username);
 	}
 
 	@Nonnull
