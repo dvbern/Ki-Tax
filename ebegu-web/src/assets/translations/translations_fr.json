@@ -410,6 +410,7 @@
     "ABBRECHEN": "Interrompre",
     "ID": "ID",
     "VERFUEGUNGEN": "Décisions",
+    "PROVISORISCHE_BERECHNUNG": "Calcul provisoire",
     "PROVISORISCHE_BERECHNUNG_ANZEIGEN": "Mais Les prises en charge peuvent déjà être calculéss provisoirement.",
     "PROVISORISCHE_BERECHNUNG_ANZEIGEN_LINK": "Vers les calculs provisoires.",
     "KINDER_HINT1": "Veuillez saisir les enfants bénéficiant d'un accueil extrafamilial et les autres enfants vivant dans votre ménage.",
