@@ -301,7 +301,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if (findBenutzer(benutzer.getUsername()).isPresent()) {
 				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist
 				// already
-				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername(), ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
+				throw new EntityExistsException(
+					Benutzer.class,
+					"email",
+					benutzer.getUsername(),
+					ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 			}
 		}
 
@@ -314,8 +318,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		if (benutzer.getRole() == UserRole.SUPER_ADMIN) {
 			// Nur ein Superadmin kann Superadmin-Rechte vergeben!
 			if (!principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
-				throw new IllegalStateException("Nur ein Superadmin kann Superadmin-Rechte vergeben. Dies wurde aber versucht durch: "
-					+ principalBean.getBenutzer().getUsername());
+				throw new IllegalStateException(
+					"Nur ein Superadmin kann Superadmin-Rechte vergeben. Dies wurde aber versucht durch: "
+						+ principalBean.getBenutzer().getUsername());
 			}
 		}
 	}
@@ -423,6 +428,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	/**
 	 * Gibt alle existierenden Benutzer mit den gewünschten Rollen zurueck.
 	 * ¡Diese Methode filtert die Gemeinde über den angemeldeten Benutzer!
+	 *
 	 * @param roles Die besagten Rollen
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
@@ -436,7 +442,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
-		SetJoin<Berechtigung, Gemeinde> joinGemeinde = joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.LEFT);
+		SetJoin<Berechtigung, Gemeinde> joinGemeinde =
+			joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.LEFT);
 		query.select(root);
 
 		predicates.add(cb.between(
@@ -450,11 +457,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		query.where(predicates.toArray(NEW));
 		query.distinct(true);
 
-		return persistence.getCriteriaResults(query);	}
+		return persistence.getCriteriaResults(query);
+	}
 
 	/**
 	 * Gibt alle existierenden Benutzer mit den gewünschten Rollen zurueck.
 	 * ¡Diese Methode filtert die Gemeinde über den Gemeinde-Parameter!
+	 *
 	 * @param roles Das Rollen Filter
 	 * @param gemeinde Das Gemeinde Filter
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
@@ -635,19 +644,20 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	/**
-	 * If the given user is found in the DB by its email, it has a role that can be invited and it has no externalUUID yet
-	 * we can be sure that this user has been invited but he didn't accept the invitation yet.
+	 * If the given user is found in the DB by its email, it has a role that can be invited and it has no externalUUID
+	 * yet we can be sure that this user has been invited but he didn't accept the invitation yet.
 	 */
 	private void checkForPendingInvitations(@Nonnull Benutzer benutzer) {
 		findBenutzerByEmail(benutzer.getEmail())
 			.filter(benutzerByEmail ->
 				benutzerByEmail.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.NONE
-				&& benutzerByEmail.getExternalUUID() == null
+					&& benutzerByEmail.getExternalUUID() == null
 			)
 			.ifPresent(benutzerByEmail -> {
 				// the user
-				final String message = "Pending open invitation as a user with elevated role for user " + benutzer.getEmail() +
-					". This user must accept the invitation instead of trying to log in as Gesuchsteller";
+				final String message =
+					"Pending open invitation as a user with elevated role for user " + benutzer.getEmail() +
+						". This user must accept the invitation instead of trying to log in as Gesuchsteller";
 				LOG.debug(message);
 				throw new EbeguPendingInvitationException("updateOrStoreUserFromIAM", message);
 
@@ -1178,8 +1188,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);
 
 		ParameterExpression<String> benutzerParam = cb.parameter(String.class, "username");
-		Predicate predicateDefaultBG = cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerBG).get(Benutzer_.username), benutzerParam);
-		Predicate predicateDefaultTS = cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerTS).get(Benutzer_.username), benutzerParam);
+		Predicate predicateDefaultBG =
+			cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerBG).get(Benutzer_.username), benutzerParam);
+		Predicate predicateDefaultTS =
+			cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerTS).get(Benutzer_.username), benutzerParam);
 		Predicate anyDefault = cb.or(predicateDefaultBG, predicateDefaultTS);
 		query.where(anyDefault);
 
