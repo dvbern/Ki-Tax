@@ -573,7 +573,7 @@ export class EbeguDokumenteState implements Ng1StateDeclaration {
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
