@@ -133,7 +133,6 @@ export class PosteingangViewController implements IController {
     }
 
     public showBgOrTS(): boolean {
-        // todo this should when Tagesschulen are active
-        return false;
+        return EbeguUtil.isTagesschulangebotEnabled();
     }
 }
