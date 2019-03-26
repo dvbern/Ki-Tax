@@ -133,7 +133,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				UserRole.getRolesWithoutAbhaengigkeit(RollenAbhaengigkeit.GEMEINDE));
 			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
 				principalBean.isCallerInAnyOfRole(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
-					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, STEUERAMT);
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, STEUERAMT, JURIST);
 			if (!allGemeindenAllowed && !allowedForGemeinde) {
 				throwViolation(gemeinde);
 			}
