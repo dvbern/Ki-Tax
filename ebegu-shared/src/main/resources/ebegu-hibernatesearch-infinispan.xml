@@ -42,7 +42,7 @@
 
 	<cache-container name="HibernateSearch" statistics="false" shutdown-hook="DONT_REGISTER">
 
-		<transport cluster="EBEGU Hibernate Search" stack="ebegu-jgroups-udp"/>
+		<transport cluster="EBEGU Hibernate Search" stack="default-jgroups-udp"/>
 
 		<!-- Duplicate domains are allowed so that multiple deployments with default fconfiguration
 			of Hibernate Search applications work - if possible it would be better to use JNDI to share
