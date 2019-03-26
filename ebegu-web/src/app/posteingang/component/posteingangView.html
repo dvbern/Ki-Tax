@@ -58,7 +58,7 @@
                         <th st-sort="empfaenger" class="sortable row-empfaenger uppercase"
                             data-translate="POSTEINGANG_VERANTWORTLICH"></th>
                         <!-- Amt -->
-                        <th st-sort="empfaengerAmt"
+                        <th st-sort="empfaengerAmt" ng-if="vm.showBgOrTS()"
                             class="sortable row-amt uppercase"
                             data-translate="POSTEINGANG_AMT"></th>
                         <!-- Status -->
@@ -94,7 +94,7 @@
                                            schulamt="vm.isCurrentUserSchulamt()"></dv-userselect>
                         </th>
                         <!-- Amt -->
-                        <th>
+                        <th ng-if="vm.showBgOrTS()">
                             <div class="dv-select-style">
                                 <select st-input-event="change" name="empfaengerAmt" id="empfaengerAmt"
                                         st-search="empfaengerAmt" class="form-control"
@@ -143,7 +143,7 @@
                         <td class="ellipsis" title="{{row.empfaenger.getFullName()}}"
                             ng-bind="row.empfaenger.getFullName()"></td>
                         <!-- Amt -->
-                        <td class="ellipsis" title="{{'AMT_' + row.empfaenger.amt | translate}}"
+                        <td ng-if="vm.showBgOrTS()" class="ellipsis" title="{{'AMT_' + row.empfaenger.amt | translate}}"
                             ng-bind="'AMT_' + row.empfaenger.amt | translate"></td>
                         <!-- Status -->
                         <td class="ellipsis" title="{{row.mitteilungStatus | translate}}"
