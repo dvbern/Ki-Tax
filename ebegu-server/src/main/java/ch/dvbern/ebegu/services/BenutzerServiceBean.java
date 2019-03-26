@@ -315,13 +315,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	private void checkSuperuserRoleZuteilung(@Nonnull Benutzer benutzer) {
-		if (benutzer.getRole() == UserRole.SUPER_ADMIN) {
-			// Nur ein Superadmin kann Superadmin-Rechte vergeben!
-			if (!principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
-				throw new IllegalStateException(
-					"Nur ein Superadmin kann Superadmin-Rechte vergeben. Dies wurde aber versucht durch: "
-						+ principalBean.getBenutzer().getUsername());
-			}
+		// Nur ein Superadmin kann Superadmin-Rechte vergeben!
+		if (benutzer.getRole() == UserRole.SUPER_ADMIN && !principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
+			throw new IllegalStateException(
+				"Nur ein Superadmin kann Superadmin-Rechte vergeben. Dies wurde aber versucht durch: "
+					+ principalBean.getBenutzer().getUsername());
 		}
 	}
 
@@ -330,7 +328,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@PermitAll
 	public Optional<Benutzer> findBenutzer(@Nonnull String username) {
 		requireNonNull(username, "username muss gesetzt sein");
-		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, username, Benutzer_.username);
+		return criteriaQueryHelper(Benutzer.class, username, Benutzer_.username);
 	}
 
 	@Nonnull
