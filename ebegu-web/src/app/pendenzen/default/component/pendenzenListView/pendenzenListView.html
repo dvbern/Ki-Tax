@@ -21,7 +21,7 @@
             <div class="col-md-12 table-responsive">
 
                 <dv-antrag-list
-                    table-title="PENDENZEN_LIST"
+                    table-title="{{'PENDENZEN_LIST' | translate}}"
                     on-filter-change="vm.passFilterToServer(tableState)"
                     on-edit="vm.editpendenzJA(antrag, event)"
                     table-id="pendenzenJATable"
