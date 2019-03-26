@@ -115,22 +115,28 @@
         </div>
     </div>
 
-    <div class="dv-navigation dv-navigation-flex">
+    <!-- we need to duplicate the navigation to ensure that it works on mobile devices aswell -->
+    <div ng-if="vm.isNotFreigegeben()" class="dv-navigation dv-navigation-flex">
         <span>
             <dv-loading-button class="uppercase"
                                type="submit"
                                button-click="vm.gesuchEinreichen()"
                                aria-label="{{'ANTRAG_EINREICHEN' | translate}}"
-                               ng-if="vm.isNotFreigegeben()"
                                button-disabled="!vm.canBeFreigegeben()">
 				<span data-translate="ANTRAG_EINREICHEN">
 				</span>
             </dv-loading-button>
         </span>
         <span>
-            <dv-navigation dv-previous="true" dv-next="!vm.isNotFreigegeben()">
+            <dv-navigation dv-previous="true" dv-next="false">
             </dv-navigation>
         </span>
     </div>
 
+    <div ng-if="!vm.isNotFreigegeben()" class="dv-navigation-flex">
+        <span>
+            <dv-navigation dv-previous="true" dv-next="true">
+            </dv-navigation>
+        </span>
+    </div>
 </div>
