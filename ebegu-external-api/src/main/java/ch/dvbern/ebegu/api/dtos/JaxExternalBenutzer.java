@@ -218,4 +218,16 @@ public class JaxExternalBenutzer implements Serializable {
 	public void setGesperrt(boolean gesperrt) {
 		this.gesperrt = gesperrt;
 	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder("JaxExternalBenutzer{");
+		sb.append("username='").append(username).append('\'');
+		sb.append(", externalUUID='").append(externalUUID).append('\'');
+		sb.append(", vorname='").append(vorname).append('\'');
+		sb.append(", nachname='").append(nachname).append('\'');
+		sb.append(", email='").append(email).append('\'');
+		sb.append('}');
+		return sb.toString();
+	}
 }
