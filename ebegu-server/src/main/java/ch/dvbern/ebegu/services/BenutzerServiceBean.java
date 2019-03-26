@@ -80,6 +80,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguPendingInvitationException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -163,6 +164,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		requireNonNull(benutzer);
 		prepareBenutzerForSave(benutzer, currentBerechtigungChanged);
 		authorizer.checkWriteAuthorization(benutzer);
+		checkSuperuserRoleZuteilung(benutzer);
 		return persistence.merge(benutzer);
 	}
 
@@ -290,6 +292,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private void checkEinladung(@Nonnull Einladung einladung) {
 		Benutzer benutzer = einladung.getEingeladener();
+		checkSuperuserRoleZuteilung(einladung.getEingeladener());
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
@@ -304,6 +307,16 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		if (benutzer.isNew()) {
 			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+		}
+	}
+
+	private void checkSuperuserRoleZuteilung(@Nonnull Benutzer benutzer) {
+		if (benutzer.getRole() == UserRole.SUPER_ADMIN) {
+			// Nur ein Superadmin kann Superadmin-Rechte vergeben!
+			if (!principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
+				throw new IllegalStateException("Nur ein Superadmin kann Superadmin-Rechte vergeben. Dies wurde aber versucht durch: "
+					+ principalBean.getBenutzer().getUsername());
+			}
 		}
 	}
 
