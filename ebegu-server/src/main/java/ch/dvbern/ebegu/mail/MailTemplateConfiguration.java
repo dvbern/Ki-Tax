@@ -143,6 +143,7 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung));
 		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
+		paramMap.put("status", ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsstatus(), sprache.getLocale()));
 
 		return processTemplateBetreuungGeloescht(
 			betreuung,

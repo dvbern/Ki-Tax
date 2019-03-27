@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-md-12">
                 <dv-antrag-list
-                    table-title="PENDENZEN_LIST"
+                    table-title="{{'PENDENZEN_LIST' | translate}}"
                     on-filter-change="vm.passFilterToServer(tableState)"
                     on-edit="vm.editpendenzSteueramt(antrag, event)"
                     table-id="pendenzenSTVTable"
