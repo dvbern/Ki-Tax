@@ -57,7 +57,6 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
         '$timeout',
     ];
 
-    public bestaetigungFreigabequittung: boolean = false;
     public isFreigebenClicked: boolean = false;
     public showGesuchFreigebenSimulationButton: boolean = false;
     public readonly TSRoleUtil = TSRoleUtil;
@@ -87,7 +86,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public gesuchEinreichen(): IPromise<void> {
         this.isFreigebenClicked = true;
-        if (this.isGesuchValid() && this.bestaetigungFreigabequittung) {
+        if (this.isGesuchValid()) {
             this.form.$setPristine();
             return this.dvDialog.showDialog(dialogTemplate, FreigabeDialogController, {
                 parentController: this,
