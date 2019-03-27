@@ -6,6 +6,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="datumErstellung" type="java.lang.String" -->
 <#-- @ftlvariable name="birthday" type="java.lang.String" -->
+<#-- @ftlvariable name="status" type="java.lang.String" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 From: ${configuration.senderAddress}
@@ -55,7 +56,7 @@ ${templateConfiguration.mailCss}
 		</tr>
 		<tr>
 			<td>Status der entfernten Betreuung:</td>
-			<td>${betreuung.getBetreuungsstatus().toString()}</td>
+			<td>${status}</td>
 		</tr>
 		</tbody>
 	</table>
