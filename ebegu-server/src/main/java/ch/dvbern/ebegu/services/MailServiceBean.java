@@ -23,7 +23,6 @@ import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.AsyncResult;
@@ -37,7 +36,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -52,7 +50,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -399,30 +396,24 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendDocumentCreatedEmail(
+	public void sendInfoStatistikGeneriert(
 		@Nonnull String receiverEmail,
-		@Nullable DownloadFile attachement,
 		@Nonnull String downloadurl,
 		@Nonnull Locale locale
-	) throws MailException {
+	) {
+		Sprache sprache = Sprache.DEUTSCH;
+		if (Locale.FRENCH.getLanguage().equals(locale.getLanguage())) {
+			sprache = Sprache.FRANZOESISCH;
+		}
+		String message = mailTemplateConfig.sendInfoStatistikGeneriert(receiverEmail, downloadurl, sprache);
 
 		try {
-			final String subj = ServerMessageUtil.getMessage("MAIL_REPORT_SUBJECT", locale);
-			String body = ServerMessageUtil.getMessage("MAIL_REPORT_BODY", locale);
-
-			body = body + '\n' + downloadurl;
-			if (attachement != null) {
-				sendMessage(subj, body, receiverEmail, attachement);
-			} else {
-				sendMessage(subj, body, receiverEmail);
-			}
-			LOG.debug("E-Mail mit Report versendet an {}", receiverEmail);
+			sendMessageWithTemplate(message, receiverEmail);
+			LOG.info("Email fuer InfoStatistikGeneriert wurde versendet an {}", receiverEmail);
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(
 				e,
-				"E-Mail mit Report versendet konnte nicht verschickt werden an",
-				receiverEmail);
-			throw e; // Wird spaeter nicht mehr geloggt
+				"Mail InfoStatistikGeneriert konnte nicht verschickt werden an", receiverEmail);
 		}
 	}
 

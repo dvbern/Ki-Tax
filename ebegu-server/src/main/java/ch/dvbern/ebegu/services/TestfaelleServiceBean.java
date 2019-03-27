@@ -21,6 +21,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -881,15 +882,15 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail(mailadresse);
 		gesuch.getFall().setBesitzer(besitzer);
+		gesuch.setEingangsart(Eingangsart.ONLINE);
 
 		Mitteilung mitteilung = new Mitteilung();
 		mitteilung.setEmpfaenger(besitzer);
 		mitteilung.setBetreuung(firstBetreuung);
 		mitteilung.setDossier(gesuch.getDossier());
 
-		List<Gesuch> gesuche = new ArrayList<>();
-		gesuche.add(gesuch);
 		Einladung einladung = Einladung.forMitarbeiter(besitzer);
+		firstBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 
 		try {
 			mailService.sendInfoBetreuungenBestaetigt(gesuch);
@@ -907,7 +908,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
 			mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
 			mailService.sendBenutzerEinladung(besitzer, einladung);
-			mailService.sendInfoGesuchGeloescht(gesuch);
+			mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", Locale.GERMAN);
+			LOG.info("Es sollten 16 Mails verschickt worden sein an " + mailadresse);
 		} catch (MailException e) {
 			LOG.error("Could not send Mails", e);
 		} finally {
