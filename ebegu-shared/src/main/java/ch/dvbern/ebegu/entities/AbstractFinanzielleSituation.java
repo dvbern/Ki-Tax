@@ -207,7 +207,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			getFamilienzulage(),
 			getErsatzeinkommen(),
 			getErhalteneAlimente(),
-			getGeschaeftsgewinnBasisjahr());
+			getDurchschnittlicherGeschaeftsgewinn());
 	}
 
 	@Nonnull
