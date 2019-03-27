@@ -275,7 +275,7 @@
                                 {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                             </mat-checkbox>
                         </div>
-                        <div *ngIf="!keineBeschwerdeAdresse">
+                        <div *ngIf="!keineBeschwerdeAdresse && stammdaten.standardRechtsmittelbelehrung">
                             <div class="col-sm-12">
                                 <div class="row">
                                     <div>
