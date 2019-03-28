@@ -185,7 +185,7 @@ public abstract class AbstractTestfall {
 	private void setFinSitFieldsOfFamiliensituation(@Nonnull Familiensituation familiensituation) {
 		// by default verguenstigung gewuenscht
 		familiensituation.setSozialhilfeBezueger(false);
-		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setAntragNurFuerBehinderungszuschlag(false);
 	}
 
 	protected Gesuch createAlleinerziehend() {

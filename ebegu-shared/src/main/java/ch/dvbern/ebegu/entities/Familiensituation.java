@@ -58,7 +58,7 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	@Nullable
 	@Column(nullable = true)
-	private Boolean verguenstigungGewuenscht;
+	private Boolean antragNurFuerBehinderungszuschlag;
 
 	@Nullable
 	@Column(nullable = true)
@@ -78,7 +78,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.aenderungPer = that.getAenderungPer();
 			this.startKonkubinat = that.getStartKonkubinat();
 			this.sozialhilfeBezueger = that.getSozialhilfeBezueger();
-			this.verguenstigungGewuenscht = that.getVerguenstigungGewuenscht();
+			this.antragNurFuerBehinderungszuschlag = that.getAntragNurFuerBehinderungszuschlag();
 		}
 	}
 
@@ -128,12 +128,12 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	@Nullable
-	public Boolean getVerguenstigungGewuenscht() {
-		return verguenstigungGewuenscht;
+	public Boolean getAntragNurFuerBehinderungszuschlag() {
+		return antragNurFuerBehinderungszuschlag;
 	}
 
-	public void setVerguenstigungGewuenscht(@Nullable Boolean verguenstigungGewuenscht) {
-		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
+	public void setAntragNurFuerBehinderungszuschlag(@Nullable Boolean antragNurFuerBehinderungszuschlag) {
+		this.antragNurFuerBehinderungszuschlag = antragNurFuerBehinderungszuschlag;
 	}
 
 	@Transient
@@ -165,7 +165,7 @@ public class Familiensituation extends AbstractMutableEntity {
 		target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 		target.setStartKonkubinat(this.getStartKonkubinat());
 		target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
-		target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
+		target.setAntragNurFuerBehinderungszuschlag(this.getAntragNurFuerBehinderungszuschlag());
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());
@@ -195,7 +195,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			getFamilienstatus() == otherFamiliensituation.getFamilienstatus() &&
 			EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung(), otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
-			Objects.equals(getVerguenstigungGewuenscht(), otherFamiliensituation.getVerguenstigungGewuenscht()) &&
+			Objects.equals(getAntragNurFuerBehinderungszuschlag(), otherFamiliensituation.getAntragNurFuerBehinderungszuschlag()) &&
 			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat());
 
 	}
