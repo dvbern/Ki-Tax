@@ -615,6 +615,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			foundUser.setVorname(benutzer.getVorname());
 			foundUser.setEmail(benutzer.getEmail());
 
+			// Wir setzen den konfigurierten User als SUPER_ADMIN
+			setSuperAdminRole(foundUser);
+
 			return saveBenutzer(foundUser);
 		}
 
@@ -629,16 +632,22 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		benutzer.getBerechtigungen().add(berechtigung);
 
 		// Wir setzen den konfigurierten User als SUPER_ADMIN
-		String superuserMail = ebeguConfiguration.getSuperuserMail();
-		if (superuserMail != null
-			&& superuserMail.equalsIgnoreCase(benutzer.getEmail())
-			&& benutzer.getRole() != UserRole.SUPER_ADMIN
-		) {
-			benutzer.setRole(UserRole.SUPER_ADMIN);
-			LOG.warn("Benutzer eingeloggt mit E-Mail {}: {}", benutzer.getEmail(), benutzer);
-		}
+		setSuperAdminRole(benutzer);
 
 		return saveBenutzer(benutzer);
+	}
+
+	private void setSuperAdminRole(@Nonnull Benutzer benutzer) {
+		// Wir setzen den konfigurierten User als SUPER_ADMIN
+		String superuserMail = ebeguConfiguration.getSuperuserMail();
+		if (superuserMail != null
+			&& superuserMail.equalsIgnoreCase(benutzer.getEmail()) && benutzer.getRole() != UserRole.SUPER_ADMIN
+		) {
+			benutzer.setRole(UserRole.SUPER_ADMIN);
+			benutzer.setInstitution(null);
+			benutzer.setTraegerschaft(null);
+			LOG.warn("Benutzer eingeloggt mit E-Mail {}: {}", benutzer.getEmail(), benutzer);
+		}
 	}
 
 	/**

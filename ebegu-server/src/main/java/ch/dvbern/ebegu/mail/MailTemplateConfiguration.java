@@ -178,6 +178,17 @@ public class MailTemplateConfiguration {
 			sprache);
 	}
 
+	public String sendInfoStatistikGeneriert(
+		@Nonnull String empfaengerMail,
+		@Nonnull String downloadurl,
+		@Nonnull Sprache sprache
+	) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("downloadurl", downloadurl);
+		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale()));
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoStatistikGeneriert, sprache), paramMap);
+	}
+
 	public String getInfoMitteilungErhalten(
 		@Nonnull Mitteilung mitteilung,
 		@Nonnull String empfaengerMail,

@@ -15,10 +15,12 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
@@ -72,6 +74,12 @@ public interface EinkommensverschlechterungService {
 	 */
 	@Nonnull
 	FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch, int basisJahrPlus);
+
+	/**
+	 * Berechnet die Veränderung des Einkommens im Vergleich zum Vorjahr in Prozent
+	 */
+	@Nonnull
+	String calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1);
 
 	/**
 	 * Removes all Einkommensverschlechterungen of the given year for the given Gesuch. The year is 1 or 2 and will

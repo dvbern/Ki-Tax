@@ -19,8 +19,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.batch.api.AbstractBatchlet;
 import javax.batch.operations.JobOperator;
 import javax.batch.runtime.BatchRuntime;
@@ -31,15 +29,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.DownloadFile;
-import ch.dvbern.ebegu.entities.Workjob;
-import ch.dvbern.ebegu.enums.TokenLifespan;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
-import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.services.DownloadFileService;
 import ch.dvbern.ebegu.services.MailService;
-import ch.dvbern.ebegu.services.WorkjobService;
-import ch.dvbern.ebegu.util.UploadFileInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,19 +41,10 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	private static final Logger LOG = LoggerFactory.getLogger(SendEmailBatchlet.class);
 
 	@Inject
-	private WorkjobService workJobService;
-
-	@Inject
-	private DownloadFileService downloadFileService;
-
-	@Inject
 	private MailService mailService;
 
 	@Inject
 	private JobContext jobCtx;
-
-	@Inject
-	private JobDataContainer jobDataContainer;
 
 	@Inject
 	private EbeguConfiguration configuration;
@@ -73,54 +55,19 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 		final String receiverLanguage = getParameters().getProperty(WorkJobConstants.LANGUAGE);
 		LOG.debug("Sending mail with file for user to {}", receiverEmail);
 		Objects.requireNonNull(receiverEmail, " Email muss gesetzt sein damit der Fertige Report an den Empfaenger geschickt werden kann");
-		final Workjob workJob = readWorkjobFromDatabase();
-		final UploadFileInfo fileMetadata = jobDataContainer.getResult();
-		final DownloadFile downloadFile = createDownloadfile(workJob, fileMetadata);
 		//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs, right now we create the download file right at the start and
 		// can only change its content
 		//		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken());
 		try {
-
-			if (configuration.isSendReportAsAttachement()) {
-				mailService.sendDocumentCreatedEmail(
-					receiverEmail,
-					downloadFile,
-					createStatistikPageLink(),
-					Locale.forLanguageTag(receiverLanguage));
-			} else {
-				mailService.sendDocumentCreatedEmail(
-					receiverEmail,
-					null,
-					createStatistikPageLink(),
-					Locale.forLanguageTag(receiverLanguage)
-				);
-			}
+			mailService.sendInfoStatistikGeneriert(receiverEmail, createStatistikPageLink(), Locale.forLanguageTag(receiverLanguage));
 			return BatchStatus.COMPLETED.toString();
-		} catch (MailException ignore) {
+		} catch (Exception ignore) {
 			return BatchStatus.FAILED.toString();
 		}
 	}
 
 	private String createStatistikPageLink() {
 		return configuration.getHostname() + "/statistik";
-	}
-
-	@Nullable
-	private DownloadFile createDownloadfile(@Nonnull Workjob workJob, @Nullable UploadFileInfo uploadFile) {
-		if (uploadFile != null) {
-			//copy data into pre exsiting dowonload-file
-			//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs and download file can be generated when report is finsihed
-			return downloadFileService.insertDirectly(workJob.getResultData(), uploadFile, TokenLifespan.LONG, workJob.getTriggeringIp());
-		}
-		LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step");
-		return null;
-	}
-
-	@Nonnull
-	private Workjob readWorkjobFromDatabase() {
-		final Workjob workJob = workJobService.findWorkjobByExecutionId(jobCtx.getExecutionId());
-		Objects.requireNonNull(workJob, "Workjob mit dieser execution id muss existieren  " + jobCtx.getExecutionId());
-		return workJob;
 	}
 
 	private Properties getParameters() {
