@@ -839,7 +839,7 @@ public final class TestDataUtil {
 			gesuch.setGesuchsperiode(createGesuchsperiode1718());
 		}
 		FinanzielleSituationRechner finanzielleSituationRechner = new FinanzielleSituationRechner();
-		finanzielleSituationRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(0.80));
+		finanzielleSituationRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(20));
 	}
 
 	public static Gesuch createTestgesuchDagmar() {

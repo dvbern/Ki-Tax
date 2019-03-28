@@ -209,7 +209,10 @@ public class Adresse extends AbstractDateRangedEntity {
 			sb.append(getOrganisation());
 			sb.append(Constants.LINE_BREAK);
 		}
-		sb.append(getStrasse()).append(' ').append(getHausnummer());
+		sb.append(getStrasse());
+		if (StringUtils.isNotEmpty(getHausnummer())) {
+			sb.append(' ').append(getHausnummer());
+		}
 		sb.append(Constants.LINE_BREAK);
 		sb.append(getPlz()).append(' ').append(getOrt());
 		return sb.toString();

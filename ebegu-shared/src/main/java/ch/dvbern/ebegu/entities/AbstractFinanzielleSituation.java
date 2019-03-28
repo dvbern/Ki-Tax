@@ -23,6 +23,7 @@ import javax.persistence.Column;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -65,6 +66,10 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	@Column(nullable = true)
 	private BigDecimal geleisteteAlimente;
+
+	@Nullable
+	@Transient
+	private BigDecimal durchschnittlicherGeschaeftsgewinn;
 
 	public AbstractFinanzielleSituation() {
 	}
@@ -138,6 +143,15 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.geleisteteAlimente = geleisteteAlimente;
 	}
 
+	@Nullable
+	public BigDecimal getDurchschnittlicherGeschaeftsgewinn() {
+		return durchschnittlicherGeschaeftsgewinn;
+	}
+
+	public void setDurchschnittlicherGeschaeftsgewinn(@Nullable BigDecimal durchschnittlicherGeschaeftsgewinn) {
+		this.durchschnittlicherGeschaeftsgewinn = durchschnittlicherGeschaeftsgewinn;
+	}
+
 	@Nonnull
 	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
 		@Nonnull AbstractFinanzielleSituation target,
@@ -193,7 +207,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			getFamilienzulage(),
 			getErsatzeinkommen(),
 			getErhalteneAlimente(),
-			getGeschaeftsgewinnBasisjahr());
+			getDurchschnittlicherGeschaeftsgewinn());
 	}
 
 	@Nonnull

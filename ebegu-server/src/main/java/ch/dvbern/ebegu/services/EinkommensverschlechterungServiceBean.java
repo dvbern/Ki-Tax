@@ -15,12 +15,14 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -37,6 +39,7 @@ import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -121,6 +124,21 @@ public class EinkommensverschlechterungServiceBean extends AbstractBaseService i
 	@PermitAll
 	public FinanzielleSituationResultateDTO calculateResultate(@Nonnull Gesuch gesuch, int basisJahrPlus) {
 		return finSitRechner.calculateResultateEinkommensverschlechterung(gesuch, basisJahrPlus, true);
+	}
+
+	@Override
+	@Nonnull
+	@PermitAll
+	public String calculateProzentualeDifferenz(@Nullable BigDecimal einkommenJahr, @Nullable BigDecimal einkommenJahrPlus1) {
+		BigDecimal resultExact = FinanzielleSituationRechner.calculateProzentualeDifferenz(einkommenJahr, einkommenJahrPlus1);
+		String sign = MathUtil.isPositive(resultExact) ? "+" : "-";
+		// Fuer die Anzeige im GUI runden wir immer auf die nächste Ganzzahl. Damit wird:
+		// 19.0001 => 20 => nicht akzeptiert
+		// 20.0000 => 20 => nicht akzeptiert
+		// 20.0001 => 21 => akzeptiert
+		// Somit ist das Berechnungresultat dann für die Kunden nachvollziehbar
+		double resultRoundUp = Math.ceil(resultExact.abs().doubleValue());
+		return sign + Double.valueOf(resultRoundUp).intValue();
 	}
 
 	@Override
