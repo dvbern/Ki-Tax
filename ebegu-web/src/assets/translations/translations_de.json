@@ -413,7 +413,7 @@
     "PROVISORISCHE_BERECHNUNG_ANZEIGEN": "Die Betreuungsgutscheine können aber bereits jetzt provisorisch berechnet werden.",
     "PROVISORISCHE_BERECHNUNG_ANZEIGEN_LINK": "Zu den provisorischen Berechnungen",
     "KINDER_HINT1": "Bitte erfassen Sie sowohl die familienergänzend betreuten Kinder wie auch die weiteren Kinder, die in Ihrem Haushalt wohnen.",
-    "KINDER_HINT2": "Ebenfalls sind Kinder zu erfassen, welche nicht mehr zu Hause wohnen, sich aber noch in Erstausbildung befinden.",
+    "KINDER_HINT2": "Ebenfalls sind Kinder zu erfassen, welche nicht mehr zu Hause wohnen, für die Sie aber noch einen Kinderabzug machen können.",
     "KINDER_TOOLTIP_REQUIRED": "Es muss mindestens ein Kind mit externer Betreuung erfasst werden",
     "BETREUUNG_TOOLTIP_REQUIRED": "Es muss mindestens ein Betreuungsangebot erfasst werden",
     "ERWERBSPENSUM_TOOLTIP_REQUIRED": "Es muss mindestens ein Beschäftigungspensum erfasst werden",

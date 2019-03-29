@@ -20,21 +20,14 @@ import java.util.Locale;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.security.RolesAllowed;
 
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.errors.MailException;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
  * Service zum Versenden von E-Mails
@@ -131,15 +124,9 @@ public interface MailService {
 	void sendInfoBetreuungVerfuegt(@Nonnull Betreuung betreuung);
 
 	/**
-	 * schickt eine email an den uebergebenen Empfaenger die angibt wie das angehaengte File heruntergeladen werden
-	 * kann
+	 * Sendet eine E-Mail mit der Information, dass die Statistik erstellt wurde
 	 */
-	void sendDocumentCreatedEmail(
-		@Nonnull String receiverEmail,
-		@Nullable DownloadFile attachement,
-		@Nonnull String downloadurl,
-		@Nonnull Locale locale
-	) throws MailException;
+	void sendInfoStatistikGeneriert(@Nonnull String receiverEmail, @Nonnull String downloadurl, @Nonnull Locale locale);
 
 	/**
 	 * Sends an Einladungsemail to the given user according to the type of the Einladung
