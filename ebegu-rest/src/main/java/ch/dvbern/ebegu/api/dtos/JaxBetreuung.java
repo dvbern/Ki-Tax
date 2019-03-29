@@ -45,7 +45,7 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	private static final long serialVersionUID = -1297022381674937397L;
 
 	@NotNull
-	private JaxInstitutionStammdaten institutionStammdaten;
+	private JaxInstitutionStammdatenSummary institutionStammdaten;
 
 	@NotNull
 	private Betreuungsstatus betreuungsstatus;
@@ -118,11 +118,11 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	// transient (Not stored on server, just an information for client)
 	private String bgNummer;
 
-	public JaxInstitutionStammdaten getInstitutionStammdaten() {
+	public JaxInstitutionStammdatenSummary getInstitutionStammdaten() {
 		return institutionStammdaten;
 	}
 
-	public void setInstitutionStammdaten(JaxInstitutionStammdaten institutionStammdaten) {
+	public void setInstitutionStammdaten(JaxInstitutionStammdatenSummary institutionStammdaten) {
 		this.institutionStammdaten = institutionStammdaten;
 	}
 

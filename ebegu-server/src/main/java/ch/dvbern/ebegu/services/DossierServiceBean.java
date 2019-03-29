@@ -259,15 +259,16 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Nonnull
 	@Override
 	public LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
-		LocalDate erstesEinreichungsdatum = LocalDate.now();
+		LocalDate erstesEinreichungsdatum = null;
 		List<Gesuch> gesuchList =
 			gesuchService.getAllGesucheForDossierAndPeriod(dossier, gesuchsperiode);
 		for (Gesuch gesuch : gesuchList) {
-			if (gesuch.getRegelStartDatum() != null && gesuch.getRegelStartDatum().isBefore(erstesEinreichungsdatum)) {
+			if (gesuch.getRegelStartDatum() != null &&
+					(erstesEinreichungsdatum == null || gesuch.getRegelStartDatum().isBefore(erstesEinreichungsdatum))) {
 				erstesEinreichungsdatum = gesuch.getRegelStartDatum();
 			}
 		}
-		return erstesEinreichungsdatum;
+		return erstesEinreichungsdatum != null ? erstesEinreichungsdatum : LocalDate.now();
 	}
 
 	private void validateVerantwortlicher(@Nonnull Dossier dossier, @Nonnull Class validationGroup) {

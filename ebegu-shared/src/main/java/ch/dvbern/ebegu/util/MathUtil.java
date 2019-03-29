@@ -399,7 +399,7 @@ public enum MathUtil {
 	/**
 	 * rundet auf die naechste Ganzzahl groesser gleich 0
 	 */
-	public static BigDecimal positiveNonNullAndRound(BigDecimal value) {
+	public static BigDecimal positiveNonNullAndRound(@Nullable BigDecimal value) {
 		if (value == null) {
 			return BigDecimal.ZERO;
 		}

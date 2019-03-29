@@ -143,6 +143,7 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung));
 		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
+		paramMap.put("status", ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsstatus(), sprache.getLocale()));
 
 		return processTemplateBetreuungGeloescht(
 			betreuung,
@@ -175,6 +176,17 @@ public class MailTemplateConfiguration {
 			institution,
 			paramMap,
 			sprache);
+	}
+
+	public String sendInfoStatistikGeneriert(
+		@Nonnull String empfaengerMail,
+		@Nonnull String downloadurl,
+		@Nonnull Sprache sprache
+	) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("downloadurl", downloadurl);
+		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale()));
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoStatistikGeneriert, sprache), paramMap);
 	}
 
 	public String getInfoMitteilungErhalten(

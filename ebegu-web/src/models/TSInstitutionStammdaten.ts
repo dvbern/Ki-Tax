@@ -15,36 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
-import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
-import TSAdresse from './TSAdresse';
-import TSInstitution from './TSInstitution';
-import TSInstitutionStammdatenFerieninsel from './TSInstitutionStammdatenFerieninsel';
-import TSInstitutionStammdatenTagesschule from './TSInstitutionStammdatenTagesschule';
+import TSInstitutionStammdatenSummary from './TSInstitutionStammdatenSummary';
 
-export default class TSInstitutionStammdaten extends TSAbstractDateRangedEntity {
+export default class TSInstitutionStammdaten extends TSInstitutionStammdatenSummary {
 
     public administratoren: string = undefined; // read only
     public sachbearbeiter: string = undefined; // read only
-    public betreuungsangebotTyp: TSBetreuungsangebotTyp = undefined;
-    public institution: TSInstitution = undefined;
-    public adresse: TSAdresse = undefined;
-    public mail: string = undefined;
-    public telefon: string = undefined;
-    public webseite: string = undefined;
-    public oeffnungszeiten: string = undefined;
-    public iban: string = undefined;
-    public kontoinhaber: string = undefined;
-    public adresseKontoinhaber: TSAdresse = undefined;
-    public alterskategorieBaby: boolean = undefined;
-    public alterskategorieVorschule: boolean = undefined;
-    public alterskategorieKindergarten: boolean = undefined;
-    public alterskategorieSchule: boolean = undefined;
-    public subventioniertePlaetze: boolean = undefined;
-    public anzahlPlaetze: number = undefined;
-    public anzahlPlaetzeFirmen: number = undefined;
-    public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule = undefined;
-    public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel = undefined;
 
     public constructor() {
         super();

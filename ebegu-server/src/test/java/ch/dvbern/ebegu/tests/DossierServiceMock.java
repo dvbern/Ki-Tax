@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.util.Constants;
 
 public class DossierServiceMock extends DossierServiceBean {
 
+	@Nonnull
 	@Override
 	public LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		// return START_OF_TIME so this value will have no influence on the calculations

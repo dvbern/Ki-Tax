@@ -445,13 +445,19 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public canUebergebenAnSchulamt(mitteilung: TSMitteilung): boolean {
-        return !this.isBetreuungsmitteilung(mitteilung) &&
-            this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.JUGENDAMT) && !mitteilung.isErledigt();
+        if (EbeguUtil.isTagesschulangebotEnabled()) {
+            return !this.isBetreuungsmitteilung(mitteilung) &&
+                this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.JUGENDAMT) && !mitteilung.isErledigt();
+        }
+        return false;
     }
 
     public canUebergebenAnJugendamt(mitteilung: TSMitteilung): boolean {
-        return !this.isBetreuungsmitteilung(mitteilung) &&
-            this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.SCHULAMT) && !mitteilung.isErledigt();
+        if (EbeguUtil.isTagesschulangebotEnabled()) {
+            return !this.isBetreuungsmitteilung(mitteilung) &&
+                this.isUserAndEmpfaengerSameAmt(mitteilung, TSAmt.SCHULAMT) && !mitteilung.isErledigt();
+        }
+        return false;
     }
 
     private isUserAndEmpfaengerSameAmt(mitteilung: TSMitteilung, amt: TSAmt): boolean {

@@ -48,9 +48,7 @@ export class LocalLoginComponent {
     public administratorInstitutionKitaBruennen: TSBenutzer;
     public sachbearbeiterInstitutionKitaBruennen: TSBenutzer;
     public sachbearbeiterTraegerschaftStadtBern: TSBenutzer;
-    public administratorTraegerschaftLeoLea: TSBenutzer;
-    public sachbearbeiterTraegerschaftLeoLea: TSBenutzer;
-    public sachbearbeiterTraegerschaftSGF: TSBenutzer;
+    public administratorTraegerschaftStadtBern: TSBenutzer;
 
     public gesuchstellerEmmaGerber: TSBenutzer;
     public gesuchstellerHeinrichMueller: TSBenutzer;
@@ -98,8 +96,6 @@ export class LocalLoginComponent {
     private gemeindeOstermundigen: TSGemeinde;
     private readonly institution: TSInstitution;
     private readonly traegerschaftStadtBern: TSTraegerschaft;
-    private readonly traegerschaftLeoLea: TSTraegerschaft;
-    private readonly traegerschaftSGF: TSTraegerschaft;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -110,8 +106,6 @@ export class LocalLoginComponent {
 
         this.mandant = LocalLoginComponent.getMandant();
         this.traegerschaftStadtBern = LocalLoginComponent.getTraegerschaftStadtBern();
-        this.traegerschaftLeoLea = LocalLoginComponent.getTraegerschaftLeoLea();
-        this.traegerschaftSGF = LocalLoginComponent.getTraegerschaftSGF();
         this.institution = this.getInsitution();
         this.applicationPropertyRS.isDevMode().then(response => {
             this.devMode = response;
@@ -145,26 +139,6 @@ export class LocalLoginComponent {
         const traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'Kitas Stadt Bern';
         traegerschaft.id = 'f9ddee82-81a1-4cda-b273-fb24e9299308';
-        return traegerschaft;
-    }
-
-    /**
-     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getTraegerschaftLeoLea(): TSTraegerschaft {
-        const traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'LeoLea';
-        traegerschaft.id = 'd667e2d0-3702-4933-8fb7-be7a39755232';
-        return traegerschaft;
-    }
-
-    /**
-     * Die Traegerschaft wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
-     */
-    private static getTraegerschaftSGF(): TSTraegerschaft {
-        const traegerschaft = new TSTraegerschaft();
-        traegerschaft.name = 'SGF';
-        traegerschaft.id = 'bb5d4bd8-84c9-4cb6-8134-a97312dead67';
         return traegerschaft;
     }
 
@@ -223,30 +197,14 @@ export class LocalLoginComponent {
             this.mandant,
             TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
             this.traegerschaftStadtBern);
-        this.administratorTraegerschaftLeoLea = new TSBenutzer('Leo',
-            'Lehmann',
+        this.administratorTraegerschaftStadtBern = new TSBenutzer('Bernhard',
+            'Bern',
             'lelo',
             'password1',
             'anyone@gexample.com',
             this.mandant,
             TSRole.ADMIN_TRAEGERSCHAFT,
-            this.traegerschaftLeoLea);
-        this.sachbearbeiterTraegerschaftLeoLea = new TSBenutzer('Lea',
-            'Lehmann',
-            'lele',
-            'password7',
-            'lea.lehmann@gexample.com',
-            this.mandant,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-            this.traegerschaftLeoLea);
-        this.sachbearbeiterTraegerschaftSGF = new TSBenutzer('Simon',
-            'Gfeller',
-            'gfsi',
-            'password8',
-            'simon.gfeller@example.com',
-            this.mandant,
-            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
-            this.traegerschaftSGF);
+            this.traegerschaftStadtBern);
         this.gesuchstellerEmmaGerber = new TSBenutzer('Emma',
             'Gerber',
             'geem',

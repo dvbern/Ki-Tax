@@ -1,1 +1,0 @@
-update ebegu_parameter set value = 5 where name = 'PARAM_PENSUM_TAGI_MIN';
