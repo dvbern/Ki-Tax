@@ -29,9 +29,13 @@ import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.mocks.DossierServiceMock;
+import ch.dvbern.ebegu.mocks.CriteriaQueryHelperMock;
+import ch.dvbern.ebegu.mocks.DossierServiceBeanMock;
+import ch.dvbern.ebegu.mocks.FallServiceBeanMock;
 import ch.dvbern.ebegu.mocks.PrincipalBeanMock;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.DossierService;
+import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchServiceBean;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.tests.util.UnitTestTempFolder;
@@ -58,7 +62,13 @@ public class GesuchServiceBeanTest {
 	private PrincipalBean principalBean = new PrincipalBeanMock();
 
 	@InjectIntoMany
-	private DossierService dossierService = new DossierServiceMock();
+	private DossierService dossierService = new DossierServiceBeanMock();
+
+	@InjectIntoMany
+	private CriteriaQueryHelper criteriaQueryHelper = new CriteriaQueryHelperMock();
+
+	@InjectIntoMany
+	private FallService fallService = new FallServiceBeanMock();
 
 
 	@Test

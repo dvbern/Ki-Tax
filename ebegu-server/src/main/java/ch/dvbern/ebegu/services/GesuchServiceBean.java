@@ -1628,7 +1628,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			superAdminService.removeGesuch(gesuch.getId());
 		} else {
 			Collection<Gesuch> gesucheByDossier = findGesucheByDossier(gesuch.getDossier().getId());
-			if (gesucheByDossier != null && gesucheByDossier.size() <= 1) {
+			if (gesucheByDossier.size() <= 1) {
 				// Das zu löschende Gesuch ist das letzte dieses Dossiers. Wir löschen auch das Dossier
 				Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(gesuch.getFall().getId());
 				if (dossiersByFall.size() <= 1) {
@@ -2174,13 +2174,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 	}
 
-	@Nullable
+	@Nonnull
 	public Collection<Gesuch> findGesucheByDossier(@Nonnull String dossierId) {
 		final Dossier dossier =
 			dossierService.findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("findGesucheByDossier",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
-		Collection<Gesuch> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Gesuch.class, dossier, Gesuch_.dossier);
-		return dossiers;
+		return criteriaQueryHelper.getEntitiesByAttribute(Gesuch.class, dossier, Gesuch_.dossier);
 	}
 }
 
