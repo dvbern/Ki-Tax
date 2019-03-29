@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import EbeguUtil from '../utils/EbeguUtil';
 import {TSAntragStatus} from './enums/TSAntragStatus';
 import {TSAntragTyp} from './enums/TSAntragTyp';
 import {
@@ -402,10 +403,10 @@ export default class TSGesuch extends TSAbstractAntragEntity {
         const kinderWithBetreuungList = this.getKinderWithBetreuungList();
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.erweiterteBetreuungContainer && betreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA) {
-                    if (true === betreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse) {
+                if (betreuung.erweiterteBetreuungContainer
+                    && betreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA
+                    && EbeguUtil.isNotNullAndTrue(betreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisse)) {
                         return true;
-                    }
                 }
             }
         }

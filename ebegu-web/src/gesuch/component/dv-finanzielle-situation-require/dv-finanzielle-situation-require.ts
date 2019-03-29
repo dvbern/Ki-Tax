@@ -92,6 +92,7 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     public getFalseOptionLabel(): string {
-        return this.$translate.instant('FINANZIELLE_SITUATION_NUR_BEHINDERUNGSZUSCHLAG_GEWUENSCHT_NEIN', {maxEinkommen: this.maxMassgebendesEinkommen});
+        return this.$translate.instant('FINANZIELLE_SITUATION_NUR_BEHINDERUNGSZUSCHLAG_GEWUENSCHT_NEIN',
+            {maxEinkommen: this.maxMassgebendesEinkommen});
     }
 }

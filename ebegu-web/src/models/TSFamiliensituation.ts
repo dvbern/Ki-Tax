@@ -70,11 +70,11 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
         this._sozialhilfeBezueger = value;
     }
 
-    get antragNurFuerBehinderungszuschlag(): boolean {
+    public get antragNurFuerBehinderungszuschlag(): boolean {
         return this._antragNurFuerBehinderungszuschlag;
     }
 
-    set antragNurFuerBehinderungszuschlag(value: boolean) {
+    public set antragNurFuerBehinderungszuschlag(value: boolean) {
         this._antragNurFuerBehinderungszuschlag = value;
     }
 

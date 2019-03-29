@@ -67,6 +67,4 @@ export class DvRadioContainerController implements IController {
     public onChange(): void {
         this.ngModelCtrl.$setViewValue(this.modelToPassOn);
     }
-
-
 }
