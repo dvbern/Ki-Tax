@@ -756,6 +756,14 @@ export default class GesuchModelManager {
                 .then(betreuungenStatus => handleStatus(betreuungenStatus, storedBetreuung)));
     }
 
+    public handleErweiterteBetreuung(): void {
+        if (!this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+            // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
+            this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
+            this.updateGesuch();
+        }
+    }
+
     private doSaveBetreuung(
         betreuungToSave: TSBetreuung,
         betreuungsstatusNeu: TSBetreuungsstatus,
@@ -1002,6 +1010,7 @@ export default class GesuchModelManager {
         return this.betreuungRS.removeBetreuung(this.getBetreuungToWorkWith().id,
             this.gesuch.id).then(() => {
             this.removeBetreuungFromKind();
+            this.handleErweiterteBetreuung();
 
             return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then(betreuungenStatus => {
                 this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
