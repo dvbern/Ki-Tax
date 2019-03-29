@@ -757,7 +757,7 @@ export default class GesuchModelManager {
     }
 
     public handleErweiterteBetreuung(): void {
-        if (!this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+        if (this.getGesuch() && !this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
             // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
             this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
             this.updateGesuch();
