@@ -1076,9 +1076,8 @@ CREATE TABLE familiensituation (
 	familienstatus                       VARCHAR(255) NOT NULL,
 	gemeinsame_steuererklaerung          BIT,
 	sozialhilfe_bezueger                 BIT,
-	antrag_nur_fuer_behinderungszuschlag BIT,
 	start_konkubinat                     DATE,
-	verguenstigung_gewuenscht            BIT,
+	antrag_nur_fuer_behinderungszuschlag BIT,
 	PRIMARY KEY (id)
 );
 
@@ -1095,9 +1094,8 @@ CREATE TABLE familiensituation_aud (
 	familienstatus                       VARCHAR(255),
 	gemeinsame_steuererklaerung          BIT,
 	sozialhilfe_bezueger                 BIT,
-	antrag_nur_fuer_behinderungszuschlag BIT,
 	start_konkubinat                     DATE,
-	verguenstigung_gewuenscht            BIT,
+	antrag_nur_fuer_behinderungszuschlag BIT,
 	PRIMARY KEY (id, rev)
 );
 
