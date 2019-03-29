@@ -469,8 +469,9 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	 * Hier wird an einer Stelle definiert, an welche Benutzergruppen ein Mail geschickt werden soll.
 	 */
 	private boolean doSendMail(@Nonnull Gesuch gesuch) {
-		// Mail nur schicken, wenn es der Fall einen Besitzer hat UND das aktuelle Gesuch bzw. Mutation online eingereicht wurde
-		return doSendMail(gesuch.getFall()) && gesuch.getEingangsart().isOnlineGesuch();
+		// Mail nur schicken, wenn es der Fall einen Besitzer hat UND (das aktuelle Gesuch bzw. Mutation online eingereicht wurde ODER die Papiermutation
+		// bereits verfügt wurde)
+		return doSendMail(gesuch.getFall()) && (gesuch.getEingangsart().isOnlineGesuch() || gesuch.getStatus().isAnyStatusOfVerfuegt());
 	}
 
 	@Nonnull
