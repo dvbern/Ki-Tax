@@ -15,9 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.mocks;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -33,5 +34,11 @@ public class DossierServiceMock extends DossierServiceBean {
 	public LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		// return START_OF_TIME so this value will have no influence on the calculations
 		return Constants.START_OF_TIME;
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Dossier> findDossier(@Nonnull String id) {
+		return Optional.of(new Dossier());
 	}
 }
