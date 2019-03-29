@@ -27,7 +27,7 @@ import {MatDialogRef} from '@angular/material';
 })
 export class DvNgSupportDialogComponent {
 
-    private beschreibung: string;
+    private readonly beschreibung: string;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgSupportDialogComponent>,
@@ -35,7 +35,8 @@ export class DvNgSupportDialogComponent {
     }
 
     public send(): void {
-        //TODO (hefr) send Mail
+        console.log('Beschreibung: ', this.beschreibung);
+        // TODO (hefr) send Mail
         this.dialogRef.close();
     }
 }

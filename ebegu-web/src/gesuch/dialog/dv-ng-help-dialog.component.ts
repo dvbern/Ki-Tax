@@ -51,6 +51,6 @@ export class DvNgHelpDialogComponent {
     }
 
     public openSupportanfrage(): void {
-        this.dialogSupport.open(DvNgSupportDialogComponent)
+        this.dialogSupport.open(DvNgSupportDialogComponent);
     }
 }
