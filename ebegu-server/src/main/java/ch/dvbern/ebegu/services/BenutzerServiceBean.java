@@ -286,6 +286,22 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return persistedBenutzer;
 	}
 
+	@Nonnull
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
+		try {
+			checkArgument(eingeladener.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+			Einladung einladung = Einladung.forRolle(eingeladener);
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
+		} catch (MailException e) {
+			String message =
+				String.format("Es konnte keine Email Einladung an %s geschickt werden", eingeladener.getEmail());
+			KibonLogLevel logLevel = ebeguConfiguration.getIsDevmode() ? KibonLogLevel.INFO : KibonLogLevel.ERROR;
+			throw new EbeguRuntimeException(logLevel, "sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
+		}
+	}
+
 	/**
 	 * According to the type of Einladung it checks that the given benutzer meets the conditions required.
 	 */

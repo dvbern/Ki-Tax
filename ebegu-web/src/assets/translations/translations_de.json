@@ -1333,6 +1333,7 @@
     "BENUTZER_CANCEL": "Zurück zur Liste",
     "BENUTZER_SPERREN": "Benutzer sperren",
     "BENUTZER_REAKTIVIEREN": "Benutzer reaktivieren",
+    "BENUTZER_ERNEUT_EINLADEN": "Einladungsmail erneut senden",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TITLE": "Rollenzuweisung",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_TEXT": "Mit dieser Rolle weisen Sie dem Benutzer weitgehende Rechte zu. Sind Sie sicher, dass Sie fortfahren wollen?",
     "BENUTZER_ROLLENZUWEISUNG_CONFIRMATION_ADMIN_TITLE": "Admin-Rechte",
