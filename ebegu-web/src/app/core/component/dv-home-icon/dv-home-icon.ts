@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
+import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 
 export class DvHomeIconComponentConfig implements IComponentOptions {
@@ -27,15 +28,22 @@ export class DvHomeIconComponentConfig implements IComponentOptions {
 
 export class DvHomeIconController {
 
-    public static $inject: ReadonlyArray<string> = ['$state'];
+    public static $inject: ReadonlyArray<string> = ['$state', 'GesuchModelManager'];
 
     public readonly TSRoleUtil = TSRoleUtil;
 
-    public constructor(private readonly $state: StateService) {
+    public constructor(
+        private readonly $state: StateService,
+        private readonly gesuchModelManager: GesuchModelManager) {
     }
 
     public goBackHome(): void {
-        this.$state.go('gesuchsteller.dashboard');
+        let dossier = this.gesuchModelManager.getDossier();
+        if (dossier) {
+            this.$state.go('gesuchsteller.dashboard', {dossierId: dossier.id});
+        } else {
+            this.$state.go('gesuchsteller.dashboard');
+        }
     }
 
     public isCurrentPageGSDashboard(): boolean {
