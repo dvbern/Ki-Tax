@@ -31,6 +31,7 @@ export class DvHomeIconController {
     public static $inject: ReadonlyArray<string> = ['$state', 'GesuchModelManager'];
 
     public readonly TSRoleUtil = TSRoleUtil;
+    private readonly stateDashboard = 'gesuchsteller.dashboard';
 
     public constructor(
         private readonly $state: StateService,
@@ -38,15 +39,15 @@ export class DvHomeIconController {
     }
 
     public goBackHome(): void {
-        let dossier = this.gesuchModelManager.getDossier();
+        const dossier = this.gesuchModelManager.getDossier();
         if (dossier) {
-            this.$state.go('gesuchsteller.dashboard', {dossierId: dossier.id});
+            this.$state.go(this.stateDashboard, {dossierId: dossier.id});
         } else {
-            this.$state.go('gesuchsteller.dashboard');
+            this.$state.go(this.stateDashboard);
         }
     }
 
     public isCurrentPageGSDashboard(): boolean {
-        return (this.$state.current && this.$state.current.name === 'gesuchsteller.dashboard');
+        return (this.$state.current && this.$state.current.name === this.stateDashboard);
     }
 }
