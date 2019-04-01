@@ -1634,10 +1634,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				if (dossiersByFall.size() <= 1) {
 					// Das zu löschende Dossier ist das letzte dieses Falls. Wir löschen auch den Fall
 					superAdminService.removeFall(gesuch.getFall());
+				} else {
+					superAdminService.removeDossier(gesuch.getDossier().getId());
 				}
-				superAdminService.removeDossier(gesuch.getDossier().getId());
+			} else {
+				superAdminService.removeGesuch(gesuch.getId());
 			}
-			superAdminService.removeGesuch(gesuch.getId());
 		}
 	}
 
