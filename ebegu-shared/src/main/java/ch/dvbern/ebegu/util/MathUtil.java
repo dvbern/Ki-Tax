@@ -377,6 +377,19 @@ public enum MathUtil {
 	}
 
 	/**
+	 * Vergleicht zwei BigDecimal. Null wird gleich wie 0 behandelt!
+	 */
+	public static boolean isSameWithNullAsZero(@Nullable BigDecimal a, @Nullable BigDecimal b) {
+		if (a == null) {
+			a = BigDecimal.ZERO;
+		}
+		if (b == null) {
+			b = BigDecimal.ZERO;
+		}
+		return a.compareTo(b) == 0;
+	}
+
+	/**
 	 * Rundet die eingegebene Nummer in 10er Schritten.
 	 * Beispiel
 	 * 20 bis 24 = 20

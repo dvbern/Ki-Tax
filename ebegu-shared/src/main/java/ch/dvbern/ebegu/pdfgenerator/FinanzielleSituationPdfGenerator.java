@@ -475,10 +475,10 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		BigDecimal gs2UrspruenglichBigDecimal = gs2Urspruenglich == null ? null : getter.apply(gs2Urspruenglich);
 		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
 		row.setGs2(gs2BigDecimal);
-		if (!MathUtil.isSame(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
+		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
 			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache);
 		}
-		if (!MathUtil.isSame(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
+		if (!MathUtil.isSameWithNullAsZero(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
 			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache);
 		}
 		return row;
