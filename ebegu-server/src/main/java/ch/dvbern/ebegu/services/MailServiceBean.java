@@ -34,6 +34,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.SupportAnfrageDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -95,6 +96,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Inject
 	private BenutzerService benutzerService;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
@@ -450,7 +455,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
 
 		try {
-			sendMessage(subject, content.toString(), "franziska.herger@dvbern.ch");
+			String supportMail = ebeguConfiguration.getSupportMail();
+			sendMessage(subject, content.toString(), supportMail);
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e, "Senden der Mail nicht erfolgreich", "");
 		}

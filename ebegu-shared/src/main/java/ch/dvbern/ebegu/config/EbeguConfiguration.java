@@ -175,4 +175,9 @@ public interface EbeguConfiguration {
 	 * Gibt die E-Mail des (ersten) Superusers zurueck
 	 */
 	String getSuperuserMail();
+
+	/**
+	 * Gibt die E-Mail des Kibon-Supports zurück
+	 */
+	String getSupportMail();
 }

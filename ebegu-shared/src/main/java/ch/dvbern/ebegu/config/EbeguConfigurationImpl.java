@@ -64,6 +64,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_PORTAL_ACCOUNT_CREATION_LINK = "ebegu.portal.account.creation.link";
 	private static final String SENTRY_ENVIRONMENT = "sentry.environment"; //use same property as sentry logger
 	private static final String EBEGU_SUPERUSER_MAIL = "ebegu.superuser.mail";
+	private static final String EBEGU_SUPPORT_MAIL = "ebegu.support.mail";
 
 
 	@Inject
@@ -228,5 +229,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public String getSuperuserMail() {
 		return getString(EBEGU_SUPERUSER_MAIL);
+	}
+
+	@Override
+	public String getSupportMail() {
+		return getString(EBEGU_SUPPORT_MAIL, "support@kibon.ch");
 	}
 }
