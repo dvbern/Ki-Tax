@@ -26,8 +26,8 @@ body.tour-open {
 
 @mixin tour-triangle($direction, $color: currentColor, $size: 22px) {
 
-    @if not index(top right bottom left, $direction) {
-        @error 'Direction must be either `top`, `right`, `bottom` or `left`.';
+    @if not index(top right bottom left topright, $direction) {
+        @error 'Direction must be either `top`, `right`, `bottom` or `left` or `topright`.';
     }
 
     $opposite-direction: top;
@@ -52,6 +52,12 @@ body.tour-open {
         right: 100%;
     }
 
+    @if $direction==topright {
+        $opposite-direction: bottom;
+        bottom: 100%;
+    }
+
+
     position: absolute;
     width: 0;
     height: 0;
@@ -68,6 +74,10 @@ body.tour-open {
     @else if $direction==right or $direction==left {
         border-bottom: $perpendicular-borders;
         border-top: $perpendicular-borders;
+    }
+    @else if $direction==topright {
+        border-left: $perpendicular-borders;
+        border-right: $perpendicular-borders;
     }
 }
 
@@ -100,7 +110,8 @@ ngx-guided-tour {
 
         &.tour-bottom, &.tour-bottom-right, &.tour-bottom-left {
             .tour-block::before {
-                @include tour-triangle(top, $tour-step-color);
+                @include tour-triangle(topright, $tour-step-color);
+
             }
             .tour-block{
                 margin-top: 22px !important;

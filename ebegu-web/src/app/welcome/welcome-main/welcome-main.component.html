@@ -32,6 +32,16 @@
                 </span>
             </div>
 
+            <div class="col-sm-12 welcome-title-cotainer">
+                <span class=""
+                      translate>
+                    Um Ihnen den Start in kiBon so angenehm wie möglich zu machen, haben wir für Sie eine Tour vorbereitet.
+Die Tour führt euch kurz durch die kiBon-Anwendung und zeigt Ihnen die wichitgsten Punkte. Sie geht nur wenige Minuten.
+
+Falls Sie jetzt gerade keine Zeit haben, kann die Tour auch manuell über das “?” oben rechts in der Anwendung gestartet werden.
+                </span>
+            </div>
+
             <div class="row">
                 <div class="col-sm-12" style="text-align: center;">
                     <div class="welcome-image"></div>
@@ -46,6 +56,11 @@
             <dv-loading-button [type]="'submit'">
                 <span translate>LETS_START</span>
             </dv-loading-button>
+
+            <button type="button" class="dv-btn cancel-button"
+                    (click)="cancel()"
+                    [textContent]="'CANCEL' | translate">
+            </button>
         </div>
 
     </form>

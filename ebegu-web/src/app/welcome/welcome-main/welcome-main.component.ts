@@ -18,7 +18,8 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
+import {ITourParams} from '../../../gesuch/gesuch.route';
+import {navigateToStartPageForRole, navigateToStartPageForRoleWithParams} from '../../../utils/AuthenticationUtil';
 
 @Component({
     selector: 'dv-welcome-main',
@@ -36,7 +37,13 @@ export class WelcomeMainComponent {
     }
 
     public navigateToStartPage(): void {
-        navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
+        const params: ITourParams = {
+            tourType : 'startTour'
+        };
+        navigateToStartPageForRoleWithParams(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state, params);
     }
 
+    public cancel(): void {
+        navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
+    }
 }

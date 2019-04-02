@@ -99,7 +99,16 @@ ngx-guided-tour {
           }
       }
 
-      &.tour-bottom-right, &.tour-top-right {
+      &.tour-bottom-right {
+          .tour-block::before {
+              transform: translateX(0%);
+              right: 14px;
+              left: auto;
+          }
+          transform: translateX(20px);
+      }
+
+      &.tour-top-right {
           .tour-arrow::before {
               transform: translateX(-100%);
               left: calc(100% - 5px);
@@ -122,6 +131,7 @@ ngx-guided-tour {
           .tour-block {
               margin-right: 10px;
           }
+          transform: translateY(-18px);
       }
 
       &.tour-right {
