@@ -18,8 +18,8 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTourService} from 'ngx-guided-tour';
-import {from as fromPromise, Observable, of, Subject} from 'rxjs';
-import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {from, from as fromPromise, Observable, of, Subject} from 'rxjs';
+import {filter, map, skipUntil, switchMap, take, takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
@@ -29,6 +29,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {GemeindeGuidedTour, InstitutionGuidedTour} from '../../../kibonTour/KiBonGuidedTour';
+import {KiBonGuidedTourService} from '../../../kibonTour/KiBonGuidedTourService';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
@@ -54,14 +55,23 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly gemeindeRS: GemeindeRS,
         private guidedTourService: GuidedTourService,
         private readonly translate: TranslateService,
+        private readonly kibonGuidedTourService: KiBonGuidedTourService
     ) {
 
         // navbar depends on the principal. trigger change detection when the principal changes
+
         this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 () => {
-                    this.tourStart();
+                    this.changeDetectorRef.markForCheck();
+                },
+                err => LOG.error(err),
+            );
+        this.kibonGuidedTourService.guidedTour$.pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+                next => {
+                    this.tourStart(next);
                     this.changeDetectorRef.markForCheck();
                 },
                 err => LOG.error(err),
@@ -97,10 +107,10 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        this.tourStart();
+        this.tourStart(false);
     }
 
-    public tourStart(): void {
+    public tourStart(start: boolean): void {
 
         // TODO: Text content in DE
         // TODO: FR Translations
@@ -109,8 +119,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         // TODO: Link to start tour again in help dialog
         // TODO: Restrict tour startup based on role and cookie value "AlreadyViewedTour"
         // TODO: Consider replacing CSS selectors like "a[uisref="pendenzen.list-view"]" with ids
-
-        if (this.$state.params['tourType'] === 'startTour') {
+        if (start) {
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
                 this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
             } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
