@@ -18,32 +18,29 @@ const LOG = LogFactory.createLog('KiBonGuidedTour');
 export class GemeindeGuidedTour implements GuidedTour {
 
     public tourId: string = 'GemeindeGuidedTour';
-
-
     public steps: TourStep[] = [
-        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_START_TITLE'), this.translate.instant('GEMEINDE_TOUR_START_CONTENT'),
-            '', Orientation.Center, this.state, 'pendenzen.list-view'),
-
-        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_1_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_1_CONTENT'),
-            'a[uisref="pendenzen.list-view"]', Orientation.BottomLeft , this.state, 'faelle.list'),
-
-        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_2_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_2_CONTENT'),
-            'a[uisref="faelle.list"]', Orientation.BottomLeft, this.state, 'zahlungsauftrag.view'),
-
-        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_3_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_3_CONTENT'),
-            'a[uisref="zahlungsauftrag.view"]', Orientation.BottomLeft, this.state, 'statistik.view'),
-
-        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_4_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_4_CONTENT'),
-            'a[uisref="statistik.view"]', Orientation.BottomLeft, this.state, 'posteingang.view'),
-
-        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_5_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_5_CONTENT'),
-            'dv-posteingang[uisref="posteingang.view"]', Orientation.BottomLeft),
-
-        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_6_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_6_CONTENT'),
-            '[class~="dv-ng-navbar-element-fall-eroeffnen"]', Orientation.Left),
 
         new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_END_TITLE'), this.translate.instant('GEMEINDE_TOUR_END_CONTENT'),
-            '[class~="dv-helpmenu-question"]', Orientation.BottomRight)];
+            '[class~="dv-helpmenu-question"]', Orientation.BottomRight, this.state, 'pendenzen.list-view'),
+
+        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_1_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_1_CONTENT'),
+            'a[uisref="pendenzen.list-view"]', Orientation.BottomLeft, this.state, 'pendenzen.list-view'),
+
+        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_2_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_2_CONTENT'),
+            'a[uisref="faelle.list"]', Orientation.BottomLeft, this.state, 'faelle.list'),
+
+        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_3_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_3_CONTENT'),
+            'a[uisref="zahlungsauftrag.view"]', Orientation.BottomLeft, this.state, 'zahlungsauftrag.view'),
+
+        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_4_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_4_CONTENT'),
+            'a[uisref="statistik.view"]', Orientation.BottomLeft, this.state, 'statistik.view'),
+
+        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_5_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_5_CONTENT'),
+            'dv-posteingang[uisref="posteingang.view"]', Orientation.BottomLeft, this.state, 'posteingang.view'),
+
+        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_6_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_6_CONTENT'),
+            '[class~="dv-ng-navbar-element-fall-eroeffnen"]', Orientation.Left)
+    ];
 
     public useOrb: boolean = false;
     public skipCallback: (stepSkippedOn: number) => void;
@@ -61,9 +58,6 @@ export class InstitutionGuidedTour implements GuidedTour {
 
     public tourId: string = 'InstitutionGuidedTour';
     public steps: TourStep[] = [
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_START_TITLE'), this.translate.instant('INSTITUTION_TOUR_START_CONTENT'),
-            '', Orientation.Center, this.state, 'pendenzen.list-view'),
-
         new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_1_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_1_CONTENT'),
             'a[uisref="pendenzen.list-view"]', Orientation.Bottom, this.state, 'faelle.list'),
 
@@ -111,22 +105,51 @@ export class KiBonTourStep implements TourStep {
 
     public constructor(title: string, content: string)
     public constructor(title: string, content: string, selector: string, orientation: Orientation)
-    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService, navigateTo: string)
-    public constructor(title: string, content: string, selector?: string, orientation?: Orientation, state?: StateService, navigateTo?: string) {
+    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService, navigateToOpen: string)
+    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService, navigateToOpen: string, navigateToClose: string)
+    public constructor(title: string, content: string, selector?: string, orientation?: Orientation, state?: StateService, navigateToOpen?: string, navigateToClose?: string) {
         this.title = title;
         this.content = content;
         this.selector = selector;
         this.orientation = orientation;
         // tslint:disable-next-line:early-exit
         if (state !== undefined && state !== null) {
-            this.closeAction = () => {
-                LOG.info('Navigating to ' + navigateTo);
-                try {
-                    state.go(navigateTo);
-                } catch (e) {
-                    LOG.error(e);
-                }
-            };
+
+            /*state.defaultErrorHandler(() => {
+               // Do not log transitionTo errors
+            });*/
+
+            if (navigateToOpen !== undefined && navigateToOpen !== null) {
+                this.action = () => {
+                    LOG.info('Current state: ' + state.current.name);
+                    try {
+                        if (state.current.name !== navigateToOpen) {
+                            LOG.info('Navigating to state: ' + navigateToOpen);
+                            state.go(navigateToOpen);
+                        } else {
+                            // state.reload();
+                        }
+                    } catch (e) {
+                        LOG.error(e);
+                    }
+                };
+            }
+
+            if (navigateToClose !== undefined && navigateToClose !== null) {
+                this.closeAction = () => {
+                    LOG.info('Current state: ' + state.current.name);
+                    try {
+                        if (state.current.name !== navigateToClose) {
+                            LOG.info('Navigating to state: ' + navigateToClose);
+                            state.go(navigateToClose);
+                        } else {
+                            // state.reload();
+                        }
+                    } catch (e) {
+                        LOG.error(e);
+                    }
+                };
+            }
         }
     }
 }

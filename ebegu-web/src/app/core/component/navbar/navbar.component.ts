@@ -127,7 +127,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             }
         }
 
-        console.log(this.$state.params);
     }
 
     private getGemeindeIDFromUser$(): Observable<string> {

@@ -10,8 +10,6 @@
 
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable, of} from 'rxjs';
-import {distinctUntilChanged, map, mapTo, mergeMap} from 'rxjs/operators';
-import TSBenutzer from '../../models/TSBenutzer';
 import {LogFactory} from '../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('KiBonGuidedTourService');
@@ -20,8 +18,6 @@ const LOG = LogFactory.createLog('KiBonGuidedTourService');
     providedIn: 'root'
 })
 export class KiBonGuidedTourService {
-
-
 
     private readonly guidedTourSubject$ = new BehaviorSubject(false);
     private readonly _guidedTour$ = this.guidedTourSubject$.asObservable();
