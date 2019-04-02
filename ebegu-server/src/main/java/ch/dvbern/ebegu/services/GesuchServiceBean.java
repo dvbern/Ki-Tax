@@ -202,7 +202,26 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public Gesuch createGesuch(@Nonnull Gesuch gesuch) {
 		Objects.requireNonNull(gesuch);
-		final Gesuch persistedGesuch = persistence.persist(gesuch);
+
+		Gesuch persistedGesuch = null;
+
+		// Falls dies das erste Gesuch in einem neuen Dossier ist, müssen hier die Daten kopiert werden!
+		Optional<Gesuch> gesuchToCopyOptional = getNeustesGeprueftesGesuchInAnotherDossier(gesuch.getDossier(), true);
+		if (gesuchToCopyOptional.isPresent()) {
+			Eingangsart eingangsart = calculateEingangsart();
+			Gesuch gesuchToCopy = gesuchToCopyOptional.get();
+			Gesuch copiedGesuch = null;
+			if (gesuch.getGesuchsperiode().equals(gesuchToCopy.getGesuchsperiode())) {
+				copiedGesuch = gesuchToCopy.copyForMutationNeuesDossier(gesuch, eingangsart, gesuch.getDossier());
+			} else {
+				copiedGesuch = gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(gesuch, eingangsart, gesuch.getDossier(), gesuch.getGesuchsperiode());
+			}
+			persistedGesuch = persistence.persist(copiedGesuch);
+
+		} else {
+			persistedGesuch = persistence.persist(gesuch);
+		}
+
 		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
 		// Gesuch ohne WizardSteps gibt
 		wizardStepService.createWizardStepList(persistedGesuch);
@@ -1150,6 +1169,45 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		TypedQuery<Gesuch> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(dossierParam, dossier);
 		typedQuery.setParameter(gesuchsperiodeParam, gesuchsperiode);
+
+		List<Gesuch> criteriaResults = typedQuery.getResultList();
+
+		if (criteriaResults.isEmpty()) {
+			return Optional.empty();
+		}
+
+		Gesuch gesuch = criteriaResults.get(0);
+		if (doAuthCheck) {
+			authorizer.checkReadAuthorization(gesuch);
+		}
+		return Optional.of(gesuch);
+	}
+
+
+	private Optional<Gesuch> getNeustesGeprueftesGesuchInAnotherDossier(@Nonnull Dossier dossier, boolean doAuthCheck) {
+
+		if (doAuthCheck) {
+			authorizer.checkReadAuthorizationFall(dossier.getFall());
+		}
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier);
+
+		ParameterExpression<Fall> fallParam = cb.parameter(Fall.class, "fallId");
+
+		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllGepruefteStatus());
+		Predicate predicateNotDossier = cb.equal(root.get(Gesuch_.dossier), dossier).not();
+		Predicate predicateFall = cb.equal(joinDossier.get(Dossier_.fall), fallParam);
+
+		query.where(predicateStatus, predicateNotDossier, predicateFall);
+		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.select(root);
+
+		TypedQuery<Gesuch> typedQuery = persistence.getEntityManager().createQuery(query);
+		typedQuery.setParameter(fallParam, dossier.getFall());
 
 		List<Gesuch> criteriaResults = typedQuery.getResultList();
 
