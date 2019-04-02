@@ -58,6 +58,7 @@ import GesuchRS from '../../gesuch/service/gesuchRS.rest';
 import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import MahnungRS from '../../gesuch/service/mahnungRS.rest';
 import SearchRS from '../../gesuch/service/searchRS.rest';
+import SupportRS from '../../gesuch/service/supportRS.rest';
 import WizardStepManager from '../../gesuch/service/wizardStepManager';
 import WizardStepRS from '../../gesuch/service/WizardStepRS.rest';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -289,5 +290,6 @@ export const CORE_JS_MODULE = angular
     .service('ReportAsyncRS', ReportAsyncRS)
     .service('EwkRS', EwkRS)
     .service('DatabaseMigrationRS', DatabaseMigrationRS)
+    .service('SupportRS', SupportRS)
     .filter('arrayToString', () => arrayToString)
     .filter('gemeindenToString', () => gemeindenToString);

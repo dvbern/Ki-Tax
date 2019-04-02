@@ -99,6 +99,7 @@ import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
+import TSSupportAnfrage from '../models/TSSupportAnfrage';
 import TSTextRessource from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import TSUnbezahlterUrlaub from '../models/TSUnbezahlterUrlaub';
@@ -3184,5 +3185,14 @@ export default class EbeguRestUtil {
         }
 
         return textRessourceTS;
+    }
+
+    public supportAnfrageToRestObject(supportRest: any, supportTS: TSSupportAnfrage): any {
+        if (supportTS) {
+            supportRest.id = supportTS.id;
+            supportRest.beschreibung = supportTS.beschreibung;
+            return supportRest;
+        }
+        return undefined;
     }
 }

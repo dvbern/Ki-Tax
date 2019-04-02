@@ -17,6 +17,8 @@
 
 import {Component} from '@angular/core';
 import {MatDialogRef} from '@angular/material';
+import TSSupportAnfrage from '../../models/TSSupportAnfrage';
+import SupportRS from '../service/supportRS.rest';
 
 /**
  * This component shows a dialog to send a request of support
@@ -31,12 +33,16 @@ export class DvNgSupportDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgSupportDialogComponent>,
+        private readonly supportRS: SupportRS
     ) {
     }
 
     public send(): void {
-        console.log('Beschreibung: ', this.beschreibung);
-        // TODO (hefr) send Mail
+        const uuidv4 = require('uuid/v4');
+        let anfrage: TSSupportAnfrage = new TSSupportAnfrage();
+        anfrage.id = uuidv4();
+        anfrage.beschreibung = this.beschreibung;
         this.dialogRef.close();
+        this.supportRS.sendSupportAnfrage(anfrage);
     }
 }
