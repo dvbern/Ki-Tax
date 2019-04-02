@@ -18,6 +18,7 @@
 import {Component} from '@angular/core';
 import {MatDialogRef} from '@angular/material';
 import TSSupportAnfrage from '../../models/TSSupportAnfrage';
+import EbeguUtil from '../../utils/EbeguUtil';
 import SupportRS from '../service/supportRS.rest';
 
 /**
@@ -30,6 +31,7 @@ import SupportRS from '../service/supportRS.rest';
 export class DvNgSupportDialogComponent {
 
     private readonly beschreibung: string;
+    private readonly idLength = 20;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgSupportDialogComponent>,
@@ -38,9 +40,8 @@ export class DvNgSupportDialogComponent {
     }
 
     public send(): void {
-        const uuidv4 = require('uuid/v4');
-        let anfrage: TSSupportAnfrage = new TSSupportAnfrage();
-        anfrage.id = uuidv4();
+        const anfrage = new TSSupportAnfrage();
+        anfrage.id = EbeguUtil.generateRandomName(this.idLength);
         anfrage.beschreibung = this.beschreibung;
         this.dialogRef.close();
         this.supportRS.sendSupportAnfrage(anfrage);

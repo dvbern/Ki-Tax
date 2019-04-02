@@ -21,19 +21,19 @@ export default class TSSupportAnfrage {
 
     private _beschreibung: string;
 
-    get id(): string {
+    public get id(): string {
         return this._id;
     }
 
-    set id(value: string) {
+    public set id(value: string) {
         this._id = value;
     }
 
-    get beschreibung(): string {
+    public get beschreibung(): string {
         return this._beschreibung;
     }
 
-    set beschreibung(value: string) {
+    public set beschreibung(value: string) {
         this._beschreibung = value;
     }
 }
