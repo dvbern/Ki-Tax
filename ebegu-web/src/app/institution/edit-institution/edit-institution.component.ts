@@ -105,8 +105,7 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
-        const allowedRoles = PERMISSIONS[Permission.ROLE_INSTITUTION];
-        allowedRoles.push(TSRole.SUPER_ADMIN);
+        const allowedRoles  =  PERMISSIONS[Permission.ROLE_INSTITUTION].concat(TSRole.SUPER_ADMIN);
         return allowedRoles;
     }
 

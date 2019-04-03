@@ -604,7 +604,7 @@
     "MITTEILUNG": "FR_Mitteilung",
     "ALLE_MITTEILUNGEN": "FR_Alle Mitteilungen",
     "NEUE_MITTEILUNGEN": "FR_Neue Mitteilungen",
-    "NEUE_MITTEILUNG": "FR_Neue Mitteilung",
+    "NEUE_MITTEILUNG": "FR_Neue Mitteilung an die Gemeinde {{gemeinde}}",
     "AUSSTEHEND": "FR_Ausstehend",
     "WARTEN": "Attendre",
     "SCHULAMT": "FR_Nicht nötig",

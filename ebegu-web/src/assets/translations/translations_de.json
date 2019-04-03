@@ -604,7 +604,7 @@
     "MITTEILUNG": "Mitteilung",
     "ALLE_MITTEILUNGEN": "Alle Mitteilungen",
     "NEUE_MITTEILUNGEN": "Neue Mitteilungen",
-    "NEUE_MITTEILUNG": "Neue Mitteilung",
+    "NEUE_MITTEILUNG": "Neue Mitteilung an die Gemeinde {{gemeinde}}",
     "AUSSTEHEND": "Ausstehend",
     "WARTEN": "Warten",
     "SCHULAMT": "Nicht nötig",

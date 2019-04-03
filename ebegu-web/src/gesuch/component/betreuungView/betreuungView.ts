@@ -226,6 +226,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
+        tsBetreuung.keineKesbPlatzierung = false;
+
         return tsBetreuung;
     }
 

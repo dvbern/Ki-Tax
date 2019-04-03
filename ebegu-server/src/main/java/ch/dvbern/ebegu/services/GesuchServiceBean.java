@@ -1598,50 +1598,49 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SUPER_ADMIN })
-	public void removePapiergesuch(@Nonnull Gesuch gesuch) {
+	@RolesAllowed({ GESUCHSTELLER, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS, SUPER_ADMIN })
+	public void removeAntrag(@Nonnull Gesuch gesuch) {
+		// Jedes Loeschen eines Antrags muss geloggt werden!
 		logDeletingOfAntrag(gesuch);
-		// Antrag muss Papier sein, und darf noch nicht verfuegen/verfuegt sein
-		if (gesuch.getEingangsart().isOnlineGesuch()) {
-			throw new EbeguRuntimeException("removeAntrag", ErrorCodeEnum.ERROR_DELETION_NOT_ALLOWED_FOR_JA);
-		}
-		if (gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen()) {
-			throw new EbeguRuntimeException(
-				"removeAntrag",
-				ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED,
-				gesuch.getStatus());
-		}
-		List<Betreuung> betreuungen = new ArrayList<>(gesuch.extractAllBetreuungen());
-		// Bei Erstgesuch wird auch der Fall mitgelöscht
-		if (gesuch.getTyp() == AntragTyp.ERSTGESUCH) {
-			superAdminService.removeFall(gesuch.getFall());
+		boolean isRolleGesuchsteller = principalBean.isCallerInRole(UserRole.GESUCHSTELLER);
+		if (isRolleGesuchsteller) {
+			// Gesuchsteller:
+			// Antrag muss Online sein, und darf noch nicht freigegeben sein
+			if (gesuch.getEingangsart().isPapierGesuch()) {
+				throw new EbeguRuntimeException("removeGesuchstellerAntrag", ErrorCodeEnum.ERROR_DELETION_NOT_ALLOWED_FOR_GS);
+			}
+			if (gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
+				throw new EbeguRuntimeException("removeGesuchstellerAntrag", ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED, gesuch.getStatus());
+			}
 		} else {
+			// Alle anderen berechtigten Rollen:
+			// Antrag muss Papier sein, und darf noch nicht verfuegen/verfuegt sein
+			if (gesuch.getEingangsart().isOnlineGesuch()) {
+				throw new EbeguRuntimeException("removeAntrag", ErrorCodeEnum.ERROR_DELETION_NOT_ALLOWED_FOR_JA);
+			}
+			if (gesuch.getStatus().isAnyStatusOfVerfuegtOrVefuegen()) {
+				throw new EbeguRuntimeException("removeAntrag", ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED, gesuch.getStatus());
+			}
+		}
+		// Entscheiden, was geloescht werden soll
+		if (isRolleGesuchsteller) {
+			// Als Gesuchsteller wird IMMER nur das jeweilige Gesuch gelöscht
 			superAdminService.removeGesuch(gesuch.getId());
+		} else {
+			Collection<Gesuch> gesucheByDossier = findGesucheByDossier(gesuch.getDossier().getId());
+			if (gesucheByDossier.size() <= 1) {
+				// Das zu löschende Gesuch ist das letzte dieses Dossiers. Wir löschen auch das Dossier
+				Collection<Dossier> dossiersByFall = dossierService.findDossiersByFall(gesuch.getFall().getId());
+				if (dossiersByFall.size() <= 1) {
+					// Das zu löschende Dossier ist das letzte dieses Falls. Wir löschen auch den Fall
+					superAdminService.removeFall(gesuch.getFall());
+				} else {
+					superAdminService.removeDossier(gesuch.getDossier().getId());
+				}
+			} else {
+				superAdminService.removeGesuch(gesuch.getId());
+			}
 		}
-
-		mailService.sendInfoBetreuungGeloescht(betreuungen);
-	}
-
-	@Override
-	@RolesAllowed(GESUCHSTELLER)
-	public void removeGesuchstellerAntrag(@Nonnull Gesuch gesuch) {
-		logDeletingOfAntrag(gesuch);
-		// Antrag muss Online sein, und darf noch nicht freigegeben sein
-		if (gesuch.getEingangsart().isPapierGesuch()) {
-			throw new EbeguRuntimeException(
-				"removeGesuchstellerAntrag",
-				ErrorCodeEnum.ERROR_DELETION_NOT_ALLOWED_FOR_GS);
-		}
-		if (gesuch.getStatus() != AntragStatus.IN_BEARBEITUNG_GS) {
-			throw new EbeguRuntimeException(
-				"removeGesuchstellerAntrag",
-				ErrorCodeEnum.ERROR_DELETION_ANTRAG_NOT_ALLOWED,
-				gesuch.getStatus());
-		}
-		List<Betreuung> betreuungen = new ArrayList<>(gesuch.extractAllBetreuungen());
-		superAdminService.removeGesuch(gesuch.getId());
-
-		mailService.sendInfoBetreuungGeloescht(betreuungen);
 	}
 
 	@Override
@@ -2175,6 +2174,14 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 					+ persistedGesuch.getId(), e);
 			}
 		}
+	}
+
+	@Nonnull
+	public Collection<Gesuch> findGesucheByDossier(@Nonnull String dossierId) {
+		final Dossier dossier =
+			dossierService.findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException("findGesucheByDossier",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierId));
+		return criteriaQueryHelper.getEntitiesByAttribute(Gesuch.class, dossier, Gesuch_.dossier);
 	}
 }
 

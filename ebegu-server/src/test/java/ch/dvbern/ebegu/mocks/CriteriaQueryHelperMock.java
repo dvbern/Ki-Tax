@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,26 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.mocks;
 
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Collections;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.metamodel.Attribute;
 
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.services.GemeindeServiceBean;
-import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 
-public class GemeindeServiceMock extends GemeindeServiceBean {
+public class CriteriaQueryHelperMock extends CriteriaQueryHelper {
 
 	@Nonnull
 	@Override
-	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(
-		@Nonnull String gemeindeId
-	) {
-		GemeindeStammdaten gemeindeWithStammdaten = TestDataUtil.createGemeindeWithStammdaten();
-		// Aktuell wird als Adresse immer Jugendamt verwendet
-		gemeindeWithStammdaten.getAdresse().setOrganisation("Jugendamt");
-		return Optional.of(gemeindeWithStammdaten);
+	public <A, E> Collection<E> getEntitiesByAttribute(@Nonnull Class<E> entityClass, @Nullable A attributeValue, @Nonnull Attribute<E, A> attribute) {
+		return Collections.EMPTY_LIST;
 	}
 }
