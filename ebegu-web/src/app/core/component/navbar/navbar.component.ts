@@ -18,8 +18,8 @@ import {MatDialog, MatDialogConfig} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTourService} from 'ngx-guided-tour';
-import {from, from as fromPromise, Observable, of, Subject} from 'rxjs';
-import {filter, map, skipUntil, switchMap, take, takeUntil} from 'rxjs/operators';
+import {from as fromPromise, Observable, of, Subject} from 'rxjs';
+import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
@@ -28,7 +28,11 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
-import {GemeindeGuidedTour, InstitutionGuidedTour} from '../../../kibonTour/KiBonGuidedTour';
+import {
+    AdminInstitutionGuidedTour,
+    GemeindeGuidedTour,
+    InstitutionGuidedTour
+} from '../../../kibonTour/KiBonGuidedTour';
 import {KiBonGuidedTourService} from '../../../kibonTour/KiBonGuidedTourService';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
@@ -120,11 +124,46 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         // TODO: Restrict tour startup based on role and cookie value "AlreadyViewedTour"
         // TODO: Consider replacing CSS selectors like "a[uisref="pendenzen.list-view"]" with ids
         if (start) {
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
-            } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
-                this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
+
+            const roleLoggedIn = this.authServiceRS.getPrincipalRole();
+
+            switch (roleLoggedIn) {
+                case TSRole.ADMIN_TRAEGERSCHAFT:
+                    this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
+                    break;
+                case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+                case TSRole.JURIST:
+                case TSRole.REVISOR:
+                case TSRole.STEUERAMT:
+                case TSRole.ADMIN_MANDANT:
+                case TSRole.SACHBEARBEITER_MANDANT:
+                case TSRole.ANONYMOUS:
+                case TSRole.GESUCHSTELLER:
+                case TSRole.SACHBEARBEITER_BG:
+                case TSRole.SACHBEARBEITER_GEMEINDE:
+                    this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+                    break;
+                case TSRole.SACHBEARBEITER_INSTITUTION:
+                    this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
+                    break;
+                case TSRole.ADMIN_INSTITUTION:
+                    this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
+                    break;
+                case TSRole.SACHBEARBEITER_TS:
+                case TSRole.ADMIN_BG:
+                case TSRole.ADMIN_GEMEINDE:
+                case TSRole.SUPER_ADMIN:
+                case TSRole.ADMIN_TS:
+                default:
             }
+
+            /*if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
+                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+            } else if (this.authServiceRS.isRole(TSRole.SACHBEARBEITER_INSTITUTION)) {
+                this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
+            } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
+                this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
+            }*/
         }
 
     }

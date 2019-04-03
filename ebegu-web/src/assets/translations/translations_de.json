@@ -1518,8 +1518,6 @@
     "INSTITUTION_TOUR_STEP_4_CONTENT": "Auf dieser Seite können viele verschiedene Statistiken generiert werden. \nJe mehr Daten vorhanden sind, desto länger geht die Generierung der Statistiken. Es kann also sein, dass einzelne Statistiken einige Minuten benötigen, bis sie generiert wurden.",
     "INSTITUTION_TOUR_STEP_5_TITLE": "",
     "INSTITUTION_TOUR_STEP_5_CONTENT": "Sofern jemand Ihnen schreibt, oder sie über andere Wege eine Mitteilung erhalten, können Sie diese im Posteingang einsehen. Die Zahl in Klammern signalisiert, wie viele ungelesene Mitteilungen Sie aktuell haben.\nEs werden nur Mitteilungen angezeigt, welche an Sie adressiert sind.",
-    "INSTITUTION_TOUR_STEP_6_TITLE": "Papiergesuch erstellen",
-    "INSTITUTION_TOUR_STEP_6_CONTENT": "Erhalten Sie ein Gesuch abseits von kiBon (also kein Online-Gesuch), so können Sie es hier in kiBon eintragen.",
-    "INSTITUTION_TOUR_STEP_7_TITLE": "",
-    "INSTITUTION_TOUR_STEP_7_CONTENT": "Die Tour ist damit beendet.\nSofern Sie weitere Fragen haben, oder die Tour erneut durchführen möchten, finden Sie unter dem Fragezeichen-Icon alle nötigen Hilfestellungen und Support-Kontakte.\nVielen Dank für die Verwendung von kiBon."
+    "INSTITUTION_TOUR_STEP_ADMIN_TITLE": "",
+    "INSTITUTION_TOUR_STEP_ADMIN_CONTENT": ""
 }

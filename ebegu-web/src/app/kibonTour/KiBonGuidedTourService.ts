@@ -9,7 +9,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {LogFactory} from '../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('KiBonGuidedTourService');
@@ -23,17 +23,7 @@ export class KiBonGuidedTourService {
     private readonly _guidedTour$ = this.guidedTourSubject$.asObservable();
 
     private constructor() {
-        // hei
     }
-
-    // private emit$(): Observable<void> {
-    //     const id = this.guidedTourSubject$.getValue().id;
-    //     const next: Validity =
-    //         new Validity(this.invalidLohnausweisViaArbeitnehmer, this.invalidArbeitnehmer, id);
-    //
-    //     return this.dataStoreService.validity.update$(next)
-    //         .pipe(map(() => this.guidedTourSubject$.next(next)));
-    // }
 
     public emit(): void {
         this.guidedTourSubject$.next(true);

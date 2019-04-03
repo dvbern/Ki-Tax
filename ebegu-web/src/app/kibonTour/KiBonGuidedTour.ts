@@ -60,10 +60,10 @@ export class InstitutionGuidedTour implements GuidedTour {
     public steps: TourStep[] = [
 
         new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_1_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_1_CONTENT'),
-            '[class~="dv-helpmenu-question"]', Orientation.BottomRight, this.state, 'pendenzen.list-view'),
+            '[class~="dv-helpmenu-question"]', Orientation.BottomRight, this.state, 'pendenzenBetreuungen.list-view'),
 
         new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_2_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_2_CONTENT'),
-            'a[uisref="pendenzen.list-view"]', Orientation.BottomLeft, this.state, 'pendenzen.list-view'),
+            'a[uisref="pendenzenBetreuungen.list-view"]', Orientation.BottomLeft, this.state, 'pendenzenBetreuungen.list-view'),
 
         new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_3_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
             'a[uisref="faelle.list"]', Orientation.BottomLeft, this.state, 'faelle.list'),
@@ -74,11 +74,43 @@ export class InstitutionGuidedTour implements GuidedTour {
         new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_5_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_5_CONTENT'),
             'a[uisref="statistik.view"]', Orientation.BottomLeft, this.state, 'statistik.view'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_6_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_6_CONTENT'),
-            'dv-posteingang[uisref="posteingang.view"]', Orientation.BottomLeft, this.state, 'posteingang.view'),
+    ];
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_7_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_7_CONTENT'),
-            '[class~="dv-ng-navbar-element-fall-eroeffnen"]', Orientation.Left)
+    public useOrb: boolean = false;
+    public skipCallback: (stepSkippedOn: number) => void;
+    public completeCallback: () => void;
+    public minimumScreenSize: number = 0;
+    public preventBackdropFromAdvancing: boolean = false;
+
+    public constructor(private readonly state: StateService,
+                       private readonly translate: TranslateService) {
+    }
+
+}
+
+export class AdminInstitutionGuidedTour implements GuidedTour {
+
+    public tourId: string = 'InstitutionGuidedTour';
+    public steps: TourStep[] = [
+
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_1_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_1_CONTENT'),
+            '[class~="dv-helpmenu-question"]', Orientation.BottomRight, this.state, 'pendenzen.list-view'),
+
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
+            '[class~="user-menu"]', Orientation.BottomLeft, this.state, 'posteingang.view'),
+
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_2_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_2_CONTENT'),
+            'a[uisref="pendenzenBetreuungen.list-view"]', Orientation.BottomLeft, this.state, 'pendenzen.list-view'),
+
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_3_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
+            'a[uisref="faelle.list"]', Orientation.BottomLeft, this.state, 'faelle.list'),
+
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_4_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_4_CONTENT'),
+            'a[uisref="zahlungsauftrag.view"]', Orientation.BottomLeft, this.state, 'zahlungsauftrag.view'),
+
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_5_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_5_CONTENT'),
+            'a[uisref="statistik.view"]', Orientation.BottomLeft, this.state, 'statistik.view')
+
     ];
 
     public useOrb: boolean = false;
