@@ -645,7 +645,7 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setAenderungPer(familiensituationJAXP.getAenderungPer());
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
-		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
+		familiensituation.setAntragNurFuerBehinderungszuschlag(familiensituationJAXP.getAntragNurFuerBehinderungszuschlag());
 
 		return familiensituation;
 	}
@@ -658,7 +658,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAenderungPer(persistedFamiliensituation.getAenderungPer());
 		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
-		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
+		jaxFamiliensituation.setAntragNurFuerBehinderungszuschlag(persistedFamiliensituation.getAntragNurFuerBehinderungszuschlag());
 
 		return jaxFamiliensituation;
 	}

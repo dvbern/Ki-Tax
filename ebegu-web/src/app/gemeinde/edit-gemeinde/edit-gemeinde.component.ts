@@ -93,8 +93,7 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
-        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE];
-        allowedRoles.push(TSRole.SUPER_ADMIN);
+        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE].concat(TSRole.SUPER_ADMIN);
         return allowedRoles;
     }
 
