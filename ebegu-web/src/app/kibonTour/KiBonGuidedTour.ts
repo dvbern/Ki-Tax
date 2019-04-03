@@ -39,7 +39,10 @@ export class GemeindeGuidedTour implements GuidedTour {
             'dv-posteingang[uisref="posteingang.view"]', Orientation.BottomLeft, this.state, 'posteingang.view'),
 
         new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_7_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_7_CONTENT'),
-            '[class~="dv-ng-navbar-element-fall-eroeffnen"]', Orientation.Left)
+            '[class~="dv-ng-navbar-element-fall-eroeffnen"]', Orientation.Left),
+
+        new KiBonTourStep(this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_TITLE'), this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_CONTENT'),
+            'input[type="search"]', Orientation.BottomLeft),
     ];
 
     public useOrb: boolean = false;
@@ -59,20 +62,23 @@ export class InstitutionGuidedTour implements GuidedTour {
     public tourId: string = 'InstitutionGuidedTour';
     public steps: TourStep[] = [
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_1_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_1_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_HELP_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
             '[class~="dv-helpmenu-question"]', Orientation.BottomRight, this.state, 'pendenzenBetreuungen.list-view'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_2_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_2_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
             'a[uisref="pendenzenBetreuungen.list-view"]', Orientation.BottomLeft, this.state, 'pendenzenBetreuungen.list-view'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_3_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
             'a[uisref="faelle.list"]', Orientation.BottomLeft, this.state, 'faelle.list'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_4_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_4_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_CONTENT'),
             'a[uisref="zahlungsauftrag.view"]', Orientation.BottomLeft, this.state, 'zahlungsauftrag.view'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_5_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_5_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
             'a[uisref="statistik.view"]', Orientation.BottomLeft, this.state, 'statistik.view'),
+
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
+            'input[type="search"]', Orientation.BottomLeft),
 
     ];
 
@@ -93,23 +99,26 @@ export class AdminInstitutionGuidedTour implements GuidedTour {
     public tourId: string = 'InstitutionGuidedTour';
     public steps: TourStep[] = [
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_1_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_1_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_HELP_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
             '[class~="dv-helpmenu-question"]', Orientation.BottomRight, this.state, 'pendenzen.list-view'),
 
         new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
             '[class~="user-menu"]', Orientation.BottomLeft, this.state, 'posteingang.view'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_2_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_2_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
             'a[uisref="pendenzenBetreuungen.list-view"]', Orientation.BottomLeft, this.state, 'pendenzen.list-view'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_3_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
             'a[uisref="faelle.list"]', Orientation.BottomLeft, this.state, 'faelle.list'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_4_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_4_CONTENT'),
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_CONTENT'),
             'a[uisref="zahlungsauftrag.view"]', Orientation.BottomLeft, this.state, 'zahlungsauftrag.view'),
 
-        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_5_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_5_CONTENT'),
-            'a[uisref="statistik.view"]', Orientation.BottomLeft, this.state, 'statistik.view')
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
+            'a[uisref="statistik.view"]', Orientation.BottomLeft, this.state, 'statistik.view'),
+
+        new KiBonTourStep(this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'), this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
+            'input[type="search"]', Orientation.BottomLeft),
 
     ];
 
@@ -139,19 +148,18 @@ export class KiBonTourStep implements TourStep {
 
     public constructor(title: string, content: string)
     public constructor(title: string, content: string, selector: string, orientation: Orientation)
-    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService, navigateToOpen: string)
-    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService, navigateToOpen: string, navigateToClose: string)
-    public constructor(title: string, content: string, selector?: string, orientation?: Orientation, state?: StateService, navigateToOpen?: string, navigateToClose?: string) {
+    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService,
+                       navigateToOpen: string)
+    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService,
+                       navigateToOpen: string, navigateToClose: string)
+    public constructor(title: string, content: string, selector?: string, orientation?: Orientation,
+                       state?: StateService, navigateToOpen?: string, navigateToClose?: string) {
         this.title = title;
         this.content = content;
         this.selector = selector;
         this.orientation = orientation;
         // tslint:disable-next-line:early-exit
         if (state !== undefined && state !== null) {
-
-            /*state.defaultErrorHandler(() => {
-               // Do not log transitionTo errors
-            });*/
 
             if (navigateToOpen !== undefined && navigateToOpen !== null) {
                 this.action = () => {
