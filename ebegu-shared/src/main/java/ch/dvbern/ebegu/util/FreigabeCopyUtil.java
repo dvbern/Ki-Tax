@@ -100,6 +100,7 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setAenderungPer(familiensituationJA.getAenderungPer());
 		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
 		familiensituationGS.setAntragNurFuerBehinderungszuschlag(familiensituationJA.getAntragNurFuerBehinderungszuschlag());
+		familiensituationGS.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(familiensituationJA.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 	}
 
 	private static void copyKindContainer(@Nullable KindContainer container) {

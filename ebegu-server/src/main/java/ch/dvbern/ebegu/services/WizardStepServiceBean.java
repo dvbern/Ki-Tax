@@ -751,8 +751,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			}
 
 			if (!wizardStep.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
-				// Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
-				wizardStep.getGesuch().extractFamiliensituation().setAntragNurFuerBehinderungszuschlag(false);
 				setStatusDueToFinSitRequired(wizardStep, wizardStep.getGesuch());
 			}
 		}

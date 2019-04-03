@@ -25,6 +25,7 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
     private _startKonkubinat: moment.Moment;
     private _sozialhilfeBezueger: boolean;
     private _antragNurFuerBehinderungszuschlag: boolean;
+    private _behinderungszuschlagFuerMindEinKindEinmalBeantragt: boolean;
 
     public constructor() {
         super();
@@ -76,6 +77,14 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set antragNurFuerBehinderungszuschlag(value: boolean) {
         this._antragNurFuerBehinderungszuschlag = value;
+    }
+
+    public get behinderungszuschlagFuerMindEinKindEinmalBeantragt(): boolean {
+        return this._behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+    }
+
+    public set behinderungszuschlagFuerMindEinKindEinmalBeantragt(value: boolean) {
+        this._behinderungszuschlagFuerMindEinKindEinmalBeantragt = value;
     }
 
     public hasSecondGesuchsteller(referenzdatum: moment.Moment): boolean {

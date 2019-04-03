@@ -538,6 +538,7 @@ export default class EbeguRestUtil {
             restFamiliensituation.startKonkubinat = DateUtil.momentToLocalDate(familiensituation.startKonkubinat);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
             restFamiliensituation.antragNurFuerBehinderungszuschlag = familiensituation.antragNurFuerBehinderungszuschlag;
+            restFamiliensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt = familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
             return restFamiliensituation;
         }
         return undefined;
@@ -598,6 +599,7 @@ export default class EbeguRestUtil {
             familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
             familiensituation.antragNurFuerBehinderungszuschlag = familiensituationFromServer.antragNurFuerBehinderungszuschlag;
+            familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt = familiensituationFromServer.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
             return familiensituation;
         }
         return undefined;

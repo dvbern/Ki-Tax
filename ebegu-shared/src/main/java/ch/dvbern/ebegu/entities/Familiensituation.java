@@ -62,6 +62,10 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	@Nullable
 	@Column(nullable = true)
+	private Boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+
+	@Nullable
+	@Column(nullable = true)
 	private LocalDate aenderungPer;
 
 	@Nullable
@@ -79,6 +83,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.startKonkubinat = that.getStartKonkubinat();
 			this.sozialhilfeBezueger = that.getSozialhilfeBezueger();
 			this.antragNurFuerBehinderungszuschlag = that.getAntragNurFuerBehinderungszuschlag();
+			this.behinderungszuschlagFuerMindEinKindEinmalBeantragt = that.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt();
 		}
 	}
 
@@ -136,6 +141,15 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.antragNurFuerBehinderungszuschlag = antragNurFuerBehinderungszuschlag;
 	}
 
+	@Nullable
+	public Boolean getBehinderungszuschlagFuerMindEinKindEinmalBeantragt() {
+		return behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+	}
+
+	public void setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(@Nullable Boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
+		this.behinderungszuschlagFuerMindEinKindEinmalBeantragt = behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+	}
+
 	@Transient
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
@@ -165,13 +179,17 @@ public class Familiensituation extends AbstractMutableEntity {
 		target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 		target.setStartKonkubinat(this.getStartKonkubinat());
 		target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
-		target.setAntragNurFuerBehinderungszuschlag(this.getAntragNurFuerBehinderungszuschlag());
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());
+			target.setAntragNurFuerBehinderungszuschlag(this.getAntragNurFuerBehinderungszuschlag());
+			target.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(this.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
+			break;
+		case MUTATION_NEUES_DOSSIER:
+			target.setAntragNurFuerBehinderungszuschlag(this.getAntragNurFuerBehinderungszuschlag());
+			target.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(this.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 			break;
 		case ERNEUERUNG:
-		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}
@@ -196,6 +214,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			EbeguUtil.isSameOrNullBoolean(getGemeinsameSteuererklaerung(), otherFamiliensituation.getGemeinsameSteuererklaerung()) &&
 			Objects.equals(getSozialhilfeBezueger(), otherFamiliensituation.getSozialhilfeBezueger()) &&
 			Objects.equals(getAntragNurFuerBehinderungszuschlag(), otherFamiliensituation.getAntragNurFuerBehinderungszuschlag()) &&
+			Objects.equals(getBehinderungszuschlagFuerMindEinKindEinmalBeantragt(), otherFamiliensituation.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt()) &&
 			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat());
 
 	}

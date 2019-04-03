@@ -757,9 +757,19 @@ export default class GesuchModelManager {
     }
 
     public handleErweiterteBetreuung(): void {
-        if (this.getGesuch() && !this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+        if (!this.getGesuch()) {
+            return;
+        }
+        if (this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+            // Mindestens 1 Kind mit erweitertem Aufwand
+            // Wir setzen das Flag auf TRUE. Achtung: Es darf NIE MEHR auf false gesetzt werden!
+            this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt = true;
+        } else {
             // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
-            this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
+            // Dies aber nur, wenn der GS zu keinem Zeitpunkt bei irgendeinem Kind das Behinderungsflag gesetzt hatte!
+            if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
+                this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
+            }
             this.updateGesuch();
         }
     }

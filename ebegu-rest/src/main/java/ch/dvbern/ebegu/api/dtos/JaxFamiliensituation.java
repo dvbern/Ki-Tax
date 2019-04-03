@@ -42,7 +42,7 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@NotNull
 	private JaxGesuch gesuch;
 
-	@NotNull
+	@Nullable
 	private Boolean gemeinsameSteuererklaerung;
 
 	@Nullable
@@ -50,6 +50,9 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@Nullable
 	private Boolean antragNurFuerBehinderungszuschlag;
+
+	@Nullable
+	private Boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -79,12 +82,12 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 		this.gesuch = gesuch;
 	}
 
-	@NotNull
+	@Nullable
 	public Boolean getGemeinsameSteuererklaerung() {
 		return gemeinsameSteuererklaerung;
 	}
 
-	public void setGemeinsameSteuererklaerung(@NotNull Boolean gemeinsameSteuererklaerung) {
+	public void setGemeinsameSteuererklaerung(@Nullable Boolean gemeinsameSteuererklaerung) {
 		this.gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
 	}
 
@@ -122,5 +125,13 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setAntragNurFuerBehinderungszuschlag(@Nullable Boolean antragNurFuerBehinderungszuschlag) {
 		this.antragNurFuerBehinderungszuschlag = antragNurFuerBehinderungszuschlag;
+	}
+
+	public Boolean getBehinderungszuschlagFuerMindEinKindEinmalBeantragt() {
+		return behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+	}
+
+	public void setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(Boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
+		this.behinderungszuschlagFuerMindEinKindEinmalBeantragt = behinderungszuschlagFuerMindEinKindEinmalBeantragt;
 	}
 }

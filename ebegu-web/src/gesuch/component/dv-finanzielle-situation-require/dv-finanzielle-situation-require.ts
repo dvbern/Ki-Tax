@@ -63,11 +63,12 @@ export class DVFinanzielleSituationRequireController implements IController {
 
     /**
      * Das Feld antragNurFuerBehinderungszuschlag wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
-     * nein beantwortet wurde UND wenn mindestens eine Betreuung mit besonderem Betreuungsaufwand erfasst wurde.
+     * nein beantwortet wurde UND wenn mindestens eine Betreuung mit besonderem Betreuungsaufwand zu irgendeinem Zeitpunkt
+     * erfasst war.
      */
     public showNurPauschaleFuerBesondereBeduerfnisseGewuenscht(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger &&
-            this.gesuchModelManager.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand();
+            this.gesuchModelManager.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt;
     }
 
     public setFinanziellesituationRequired(): void {
