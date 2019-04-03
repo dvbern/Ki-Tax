@@ -226,6 +226,7 @@ export default class MitteilungRS {
                     von: datumAb,
                     bis: datumBis,
                     pensum: pensumJA.pensum,
+                    kosten: pensumJA.monatlicheBetreuungskosten
                 });
             }
             i++;

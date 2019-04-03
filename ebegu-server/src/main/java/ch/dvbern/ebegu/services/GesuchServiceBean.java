@@ -266,7 +266,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (familiensituation != null) {
 			if (Objects.equals(true, familiensituation.getSozialhilfeBezueger())) {
-				familiensituation.setVerguenstigungGewuenscht(null);
+				familiensituation.setAntragNurFuerBehinderungszuschlag(null);
 			}
 			familiensituation.setGemeinsameSteuererklaerung(null);
 		}

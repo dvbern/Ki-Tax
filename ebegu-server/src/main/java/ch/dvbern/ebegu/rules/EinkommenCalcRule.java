@@ -69,7 +69,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
 				return;
 			}
-			if (Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht())) {
+			if (Boolean.TRUE.equals(familiensituation.getAntragNurFuerBehinderungszuschlag())) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
