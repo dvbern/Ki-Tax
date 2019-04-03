@@ -21,7 +21,7 @@ const SELECTOR_STATISTIK = 'a[uisref="statistik.view"]';
 const SELECTOR_POST = 'dv-posteingang[uisref="posteingang.view"]';
 const SELECTOR_CREATE_FALL = '[class~="dv-ng-navbar-element-fall-eroeffnen"]';
 const SELECTOR_SEARCH = 'input[type="search"]';
-const SELECTOR_USERMENU = '[class~="user-menu"]';
+const SELECTOR_USERMENU = '[class~="md-menu"]';
 
 const ROUTE_PENDENZEN_LIST = 'pendenzen.list-view';
 const ROUTE_PENDENZEN_BETREUUNGEN_LIST = 'pendenzenBetreuungen.list-view';
@@ -69,6 +69,7 @@ export class GemeindeGuidedTour implements GuidedTour {
             this.translate.instant('GEMEINDE_TOUR_STEP_7_TITLE'),
             this.translate.instant('GEMEINDE_TOUR_STEP_7_CONTENT'),
             SELECTOR_CREATE_FALL, Orientation.Left),
+
         new KiBonTourStep(
             this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_TITLE'),
             this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_CONTENT'),
@@ -104,7 +105,7 @@ export class InstitutionGuidedTour implements GuidedTour {
 
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_CONTENT'),
             SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST),
 
         new KiBonTourStep(
@@ -116,6 +117,7 @@ export class InstitutionGuidedTour implements GuidedTour {
             this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
             SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK),
+
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
@@ -145,12 +147,10 @@ export class AdminInstitutionGuidedTour implements GuidedTour {
             this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
             SELECTOR_HELP_ICON, Orientation.BottomRight),
 
-        // todo medu fixme: this step is not allowed for admin institution
-        // posteingang.view is not available for institution. Maybe this was meant for ADMIN_GEMEINDE
-        // new KiBonTourStep(
-        //     this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'),
-        //     this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
-        //     SELECTOR_USERMENU, Orientation.BottomLeft, this.state, ROUTE_POST),
+        new KiBonTourStep(
+             this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'),
+             this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
+             SELECTOR_USERMENU, Orientation.BottomRight),
 
         // todo medu check, i think admin_institution should see   ROUTE_PENDENZEN_BETREUUNGEN_LIST instead of ROUTE_PENDENZEN_LIST
         new KiBonTourStep(

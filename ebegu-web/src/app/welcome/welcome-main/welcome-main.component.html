@@ -32,39 +32,29 @@
                 </span>
             </div>
 
-            <!--<div class="row">
+            <div class="row">
                 <div class="col-sm-12" style="text-align: center;">
                     <div class="welcome-image"></div>
                 </div>
-            </div>-->
-
-            <div class="col-sm-12 welcome-title-cotainer">
-                <p class=""
-                      translate>
-                    Um Ihnen den Start in kiBon so angenehm wie möglich zu machen, haben wir für Sie eine Tour vorbereitet.
-Die Tour führt euch kurz durch die kiBon-Anwendung und zeigt Ihnen die wichitgsten Punkte. Sie geht nur wenige Minuten.
-                </p><p class=""
-                       translate>
-Falls Sie jetzt gerade keine Zeit haben, kann die Tour auch manuell über das “?” oben rechts in der Anwendung gestartet werden.
-                </p>
             </div>
 
-            <!--<div class="row">
-                <div class="col-sm-12" style="text-align: center;">
-                    <div class="tour-sceen"></div>
-                </div>
-            </div>-->
+            <div class="col-sm-12 welcome-title-cotainer">
+                <p class="" style="font-size: 15px; padding: 0 12rem 0 12rem;"
+                      translate>
+                    TOUR_WELCOME_TEXT
+                </p>
+            </div>
 
             <ng-content></ng-content>
 
         </div>
 
-        <div class="dv-footer">
-            <dv-loading-button [type]="'submit'">
+        <div class="dv-footer" style="padding-bottom: 5rem;">
+            <dv-loading-button [type]="'submit'" button-class="dv-btn-bg">
                 <span translate>LETS_START</span>
             </dv-loading-button>
 
-            <button type="button" class="dv-btn cancel-button"
+            <button type="button" class="dv-btn dv-btn-bg cancel-button"
                     (click)="cancel()"
                     [textContent]="'CANCEL' | translate">
             </button>
