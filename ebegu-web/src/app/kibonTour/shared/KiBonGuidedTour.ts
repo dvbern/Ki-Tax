@@ -23,6 +23,7 @@ const SELECTOR_STATISTIK = 'a[uisref="statistik.view"]';
 const SELECTOR_POST = 'dv-posteingang[uisref="posteingang.view"]';
 const SELECTOR_CREATE_FALL = '[class~="dv-ng-navbar-element-fall-eroeffnen"]';
 const SELECTOR_SEARCH = 'input[type="search"]';
+const SELECTOR_USERMENU = '[class~="user-menu"]';
 
 const ROUTE_PENDENZEN_LIST = 'pendenzen.list-view';
 const ROUTE_PENDENZEN_BETREUUNGEN_LIST = 'pendenzenBetreuungen.list-view';
@@ -96,7 +97,7 @@ export class InstitutionGuidedTour implements GuidedTour {
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_HELP_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
-            SELECTOR_HELP_ICON, Orientation.BottomRight, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST),
+            SELECTOR_HELP_ICON, Orientation.BottomRight),
 
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'),
@@ -109,14 +110,18 @@ export class InstitutionGuidedTour implements GuidedTour {
             SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST),
 
         new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_4_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_CONTENT'),
             SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG),
 
         new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_5_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_5_CONTENT'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
             SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK),
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
+            SELECTOR_SEARCH, Orientation.BottomLeft),
 
     ];
 
@@ -138,33 +143,33 @@ export class AdminInstitutionGuidedTour implements GuidedTour {
     public steps: TourStep[] = [
 
         new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_1_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_1_CONTENT'),
-            SELECTOR_HELP_ICON, Orientation.BottomRight, this.state, ROUTE_PENDENZEN_LIST),
+            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
+            SELECTOR_HELP_ICON, Orientation.BottomRight),
 
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
-            '[class~="user-menu"]', Orientation.BottomLeft, this.state, ROUTE_POST),
+            SELECTOR_USERMENU, Orientation.BottomLeft, this.state, ROUTE_POST),
 
         new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_2_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_2_CONTENT'),
-            'a[uisref="pendenzenBetreuungen.list-view"]', Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_LIST),
+            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
+            SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_LIST),
 
         new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_3_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
             SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST),
 
         new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_4_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_4_CONTENT'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_CONTENT'),
             SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG),
 
         new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_5_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_5_CONTENT'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
             SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK)
 
     ];
