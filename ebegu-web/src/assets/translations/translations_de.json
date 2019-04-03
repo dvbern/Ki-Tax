@@ -1070,7 +1070,7 @@
     "MUTATIONSMELDUNG_BETREFF": "Mutationsmeldung",
     "MUTATIONSMELDUNG_APPLY": "Zur Mutation hinzufügen",
     "MUTATIONSMELDUNG_APPLIED": "Diese Mitteilung wurde bereits einer Mutation hinzugefügt",
-    "MUTATIONSMELDUNG_CONFIRMATION": "Möchten Sie wirklich die eingegeben Mutation mitteilen?",
+    "MUTATIONSMELDUNG_CONFIRMATION": "Möchten Sie wirklich die eingegebene Mutation mitteilen?",
     "MUTATIONSMELDUNG_BESCHREIBUNG": "Die eingegebenen Daten werden an die Gemeinde gesendet",
     "MUTATIONSMELDUNG_MESSAGE": "Pensum {{num}} von {{von}} bis {{bis}}: {{pensum}}%, monatliche Betreuungskosten: CHF {{kosten}}",
     "MUTATIONSMELDUNG_UEBERNEHMEN": "Möchten Sie wirklich die Änderungen zur Mutation hinzufügen?",
