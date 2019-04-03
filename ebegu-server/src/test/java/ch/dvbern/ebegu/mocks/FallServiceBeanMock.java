@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,23 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.mocks;
 
-import java.time.LocalDate;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.services.DossierServiceBean;
-import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.services.FallServiceBean;
 
-public class DossierServiceMock extends DossierServiceBean {
+public class FallServiceBeanMock extends FallServiceBean {
 
 	@Nonnull
 	@Override
-	public LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
-		// return START_OF_TIME so this value will have no influence on the calculations
-		return Constants.START_OF_TIME;
+	public Optional<Fall> findFall(@Nonnull String key) {
+		return Optional.of(new Fall());
 	}
 }

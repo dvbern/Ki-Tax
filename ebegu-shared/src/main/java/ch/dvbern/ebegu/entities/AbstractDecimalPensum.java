@@ -78,7 +78,8 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		final AbstractDecimalPensum otherAbstDateRangedEntity = (AbstractDecimalPensum) other;
 		return super.isSame(otherAbstDateRangedEntity)
 			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0
-			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay();
+			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay()
+			&& this.getMonatlicheBetreuungskosten().compareTo(((AbstractDecimalPensum) other).monatlicheBetreuungskosten) == 0;
 	}
 
 	public void copyAbstractBetreuungspensumEntity(

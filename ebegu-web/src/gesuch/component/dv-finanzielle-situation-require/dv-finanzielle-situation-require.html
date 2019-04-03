@@ -38,26 +38,29 @@
     </div>
 </div>
 
-<!-- verguenstigungGewuenscht -->
-<div class="row" ng-if="vm.showVerguenstigungGewuenscht()">
+<!-- Nur Pauschale fuer besondere Beduerfnisse? -->
+<div class="row"ng-if="vm.showNurPauschaleFuerBesondereBeduerfnisseGewuenscht()">
     <div class="col-xs-12 dv-input-container-question">
         <div class="form-group">
             <span class="ebeguH1 required">
-                <span data-translate="FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT"
+                <span data-translate="FINANZIELLE_SITUATION_NUR_BEHINDERUNGSZUSCHLAG_GEWUENSCHT"
                       translate-values="{maxEinkommen: vm.getMaxMassgebendesEinkommen()}"></span>
             </span>
-            <dv-radio-container name="verguenstigungGewuenscht" class="input-element"
-                                ng-model="vm.verguenstigungGewuenscht"
+            <dv-radio-container name="antragNurFuerBehinderungszuschlag" class="input-element"
+                                ng-model="vm.antragNurFuerBehinderungszuschlag"
                                 ng-required="true" class="radio" ng-change="vm.setFinanziellesituationRequired()"
                                 dv-enable-element
                                 dv-enable-allowed-roles="vm.allowedRoles"
                                 dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt()"
-                                aria-label="{{ 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT' |translate}}"
-                                aria-described-by="verguenstigungGewuenscht-error">
+                                aria-label="{{ 'FINANZIELLE_SITUATION_NUR_BEHINDERUNGSZUSCHLAG_GEWUENSCHT' |translate}}"
+                                aria-described-by="antragNurFuerBehinderungszuschlag-error"
+                                true-option-label="{{'FINANZIELLE_SITUATION_NUR_BEHINDERUNGSZUSCHLAG_GEWUENSCHT_JA' | translate}}"
+                                false-option-label="{{vm.getFalseOptionLabel()}}">
             </dv-radio-container>
-            <dv-error-messages input-id="verguenstigungGewuenscht"
-                               for="vm.form.verguenstigungGewuenscht.$error"
+            <dv-error-messages input-id="antragNurFuerBehinderungszuschlag"
+                               for="vm.form.antragNurFuerBehinderungszuschlag.$error"
                                class="error"></dv-error-messages>
         </div>
     </div>
 </div>
+

@@ -209,7 +209,10 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getGemeinde(): TSGemeinde {
-        return this.gesuchModelManager.getDossier().gemeinde;
+        if (this.gesuchModelManager.getDossier()) {
+            return this.gesuchModelManager.getDossier().gemeinde;
+        }
+        return undefined;
     }
 
     public getPeriodString(): string {
