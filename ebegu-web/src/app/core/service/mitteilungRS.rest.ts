@@ -26,6 +26,7 @@ import TSMtteilungSearchresultDTO from '../../../models/TSMitteilungSearchresult
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import ITranslateService = angular.translate.ITranslateService;
+import {NumberFormatter} from "@angular/common/src/pipes/deprecated/intl";
 
 export default class MitteilungRS {
 
@@ -226,6 +227,7 @@ export default class MitteilungRS {
                     von: datumAb,
                     bis: datumBis,
                     pensum: pensumJA.pensum,
+                    kosten: pensumJA.monatlicheBetreuungskosten
                 });
             }
             i++;
