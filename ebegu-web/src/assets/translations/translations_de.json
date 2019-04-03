@@ -1523,5 +1523,7 @@
     "INSTITUTION_TOUR_STEP_ADMIN_TITLE": "",
     "INSTITUTION_TOUR_STEP_ADMIN_CONTENT": "Hier können Sie zu Ihren Institutionen Statistiken generieren lassen.\n<BR><BR>\nÜber das \"i\"-Feld erfahren Sie mehr über die einzelnen Statistiken.",
     "INSTITUTION_TOUR_STEP_SEARCH_TITLE": "",
-    "INSTITUTION_TOUR_STEP_SEARCH_CONTENT": "Still haven't found what your looking for?"
+    "INSTITUTION_TOUR_STEP_SEARCH_CONTENT": "Still haven't found what your looking for?",
+    "BEENDEN": "Beenden",
+    "FERTIG": "Fertig"
 }

@@ -36,6 +36,7 @@ import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
+import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
@@ -91,6 +92,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         NavbarComponent,
         StammdatenHeaderComponent,
         UiViewComponent,
+        KiBonGuidedTourComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,

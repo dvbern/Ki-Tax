@@ -20,7 +20,7 @@ import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ITourParams} from '../../../gesuch/gesuch.route';
 import {navigateToStartPageForRole, navigateToStartPageForRoleWithParams} from '../../../utils/AuthenticationUtil';
-import {KiBonGuidedTourService} from '../../kibonTour/KiBonGuidedTourService';
+import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourService';
 
 @Component({
     selector: 'dv-welcome-main',

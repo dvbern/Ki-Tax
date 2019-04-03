@@ -21,9 +21,7 @@
                             "src/favicon.ico"
                         ],
                         "styles": [
-                            "src/styles.less",
-                            "src/app/kibonTour/ngx-guided-tour-base.scss",
-                            "src/app/kibonTour/ngx-guided-tour-theme.scss"
+                            "src/styles.less"
                         ],
                         "scripts": [
                             "node_modules/jquery/dist/jquery.min.js"

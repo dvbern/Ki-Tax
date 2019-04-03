@@ -32,8 +32,8 @@ import {
     AdminInstitutionGuidedTour,
     GemeindeGuidedTour,
     InstitutionGuidedTour
-} from '../../../kibonTour/KiBonGuidedTour';
-import {KiBonGuidedTourService} from '../../../kibonTour/KiBonGuidedTourService';
+} from '../../../kibonTour/shared/KiBonGuidedTour';
+import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 

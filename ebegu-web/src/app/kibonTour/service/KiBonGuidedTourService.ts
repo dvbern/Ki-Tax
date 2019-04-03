@@ -8,21 +8,23 @@
  * Ansicht übergeben, ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
  */
 
-import {Injectable} from '@angular/core';
+import {ErrorHandler, Injectable} from '@angular/core';
+import {GuidedTourService} from 'ngx-guided-tour';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {LogFactory} from '../core/logging/LogFactory';
+import {LogFactory} from '../../core/logging/LogFactory';
 
 const LOG = LogFactory.createLog('KiBonGuidedTourService');
 
 @Injectable({
     providedIn: 'root'
 })
-export class KiBonGuidedTourService {
+export class KiBonGuidedTourService extends GuidedTourService {
 
     private readonly guidedTourSubject$ = new BehaviorSubject(false);
     private readonly _guidedTour$ = this.guidedTourSubject$.asObservable();
 
-    private constructor() {
+    private constructor(public errorHandler: ErrorHandler) {
+        super(errorHandler);
     }
 
     public emit(): void {
