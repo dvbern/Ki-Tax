@@ -151,7 +151,11 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                     break;
                 case TSRole.SACHBEARBEITER_TS:
                 case TSRole.ADMIN_BG:
+                    this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+                    break;
                 case TSRole.ADMIN_GEMEINDE:
+                    this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+                    break;
                 case TSRole.SUPER_ADMIN:
                 case TSRole.ADMIN_TS:
                 default:
