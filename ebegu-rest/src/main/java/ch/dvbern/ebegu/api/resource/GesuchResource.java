@@ -655,35 +655,18 @@ public class GesuchResource {
 	}
 
 	@DELETE
-	@Path("/removePapiergesuch/{gesuchId}")
+	@Path("/removeAntrag/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
-	public Response removePapiergesuch(
+	public Response removeAntrag(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
 		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(gesuchJaxId.getId());
 
 		Gesuch gesuch = gesuchService.findGesuch(gesuchJaxId.getId(), true).orElseThrow(()
-			-> new EbeguEntityNotFoundException("removePapiergesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJaxId.getId()));
+			-> new EbeguEntityNotFoundException("removeAntrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJaxId.getId()));
 
-		gesuchService.removePapiergesuch(gesuch);
-
-		return Response.ok().build();
-	}
-
-	@DELETE
-	@Path("/removeGesuchstellerAntrag/{gesuchId}")
-	@Consumes(MediaType.WILDCARD)
-	public Response removeGesuchstellerAntrag(@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJaxId,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(gesuchJaxId.getId());
-
-		Gesuch gesuch = gesuchService.findGesuch(gesuchJaxId.getId(), true).orElseThrow(()
-			-> new EbeguEntityNotFoundException("removeGesuchstellerAntrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJaxId.getId()));
-
-		gesuchService.removeGesuchstellerAntrag(gesuch);
-
+		gesuchService.removeAntrag(gesuch);
 		return Response.ok().build();
 	}
 

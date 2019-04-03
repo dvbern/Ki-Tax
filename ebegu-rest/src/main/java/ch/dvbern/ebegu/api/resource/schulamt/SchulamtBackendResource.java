@@ -317,8 +317,8 @@ public class SchulamtBackendResource {
 
 		if ((familiensituation.getSozialhilfeBezueger() != null
 			&& !familiensituation.getSozialhilfeBezueger()
-			&& familiensituation.getVerguenstigungGewuenscht() != null
-			&& !familiensituation.getVerguenstigungGewuenscht())
+			&& familiensituation.getAntragNurFuerBehinderungszuschlag() != null
+			&& familiensituation.getAntragNurFuerBehinderungszuschlag())
 			|| neustesGesuch.getFinSitStatus() == FinSitStatus.ABGELEHNT) {
 			// SozialhilfeBezüger Nein + Vergünstigung gewünscht Nein  -> Vollzahler (keine finSit!)
 			final JaxExternalFinanzielleSituation dto = convertToJaxExternalFinanzielleSituationWithoutFinDaten(

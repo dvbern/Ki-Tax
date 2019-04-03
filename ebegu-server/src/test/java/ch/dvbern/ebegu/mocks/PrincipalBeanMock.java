@@ -15,21 +15,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.mocks;
 
-/**
- * Enum fuer Fachstelle
- *
- * Die Fachstellendetails müssen in der DB eingefügt werden.
- */
-public enum FachstelleName {
-	MUTTER_VATER_BERATUNG_BERN,
-	SOZIALDIENST,
-	KINDES_ERWACHSENEN_SCHUTZBEHOERDE,
-	ERZIEHUNGSBERATUNG,
-	FRUEHERZIEHUNGSDIENST_KANTON_BERN,
-	FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN,
-	DIENST_ZENTRUM_HOEREN_SPRACHE,
-	KANTONALE_ERZIEHUNGSBERATUNSSTELLE,
-	GEMEINDE_FACHSTELLE
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.test.TestDataUtil;
+
+public class PrincipalBeanMock extends PrincipalBean {
+
+	@Nullable
+	private Benutzer benutzer;
+
+	@Nonnull
+	@Override
+	public Benutzer getBenutzer() {
+		return benutzer != null ? benutzer : TestDataUtil.createDefaultBenutzer();
+	}
+
+	public void setBenutzer(Benutzer benutzer) {
+		this.benutzer = benutzer;
+	}
+
+	@Override
+	public boolean isCallerInRole(@Nonnull UserRole role) {
+		return benutzer != null && benutzer.getRole() == role;
+	}
 }

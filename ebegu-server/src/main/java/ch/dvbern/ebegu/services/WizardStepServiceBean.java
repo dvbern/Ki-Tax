@@ -733,7 +733,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			final List<Betreuung> betreuungenFromGesuch = betreuungService.findAllBetreuungenFromGesuch(wizardStep.getGesuch().getId());
 
 			BetreuungsangebotTyp dominantType = getDominantBetreuungsangebotTyp(betreuungenFromGesuch);
-
 			if (dominantType == BetreuungsangebotTyp.FERIENINSEL) {
 				setWizardStepOkOrMutiert(wizardStep);
 			}
@@ -749,6 +748,12 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 				} else if (!EbeguUtil.isFinanzielleSituationRequired(wizardStep.getGesuch())) {
 					setWizardStepOkOrMutiert(wizardStep);
 				}
+			}
+
+			if (!wizardStep.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+				// Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
+				wizardStep.getGesuch().extractFamiliensituation().setAntragNurFuerBehinderungszuschlag(false);
+				setStatusDueToFinSitRequired(wizardStep, wizardStep.getGesuch());
 			}
 		}
 	}
