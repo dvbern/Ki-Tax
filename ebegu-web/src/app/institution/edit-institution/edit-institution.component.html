@@ -219,7 +219,7 @@
                             <label class="required" translate for="kontoinhaber_id">INSTITUTION_KONTOINHABER</label>
                             <input id="kontoinhaber_id" type="text" name="kontoinhaber_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.kontoinhaber"
-                                   [maxlength]="255" class="kontoinhaber_id" required>
+                                   [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.kontoinhaber_id?.errors" inputId="kontoinhaber_id"></dv-error-messages>
                         </div>
                     </div>

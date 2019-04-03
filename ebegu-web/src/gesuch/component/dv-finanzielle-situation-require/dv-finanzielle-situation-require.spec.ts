@@ -42,7 +42,7 @@ describe('finanzielleSituationRequire', () => {
         $componentController = $injector.get('$componentController');
         const value = 150000;
         spyOn(einstellungRS, 'getAllEinstellungenBySystem').and.returnValue($q.when(value));
-        controller = new DVFinanzielleSituationRequireController(einstellungRS, gesuchModelManager);
+        controller = new DVFinanzielleSituationRequireController(einstellungRS, gesuchModelManager, null);
     }));
 
     it('should be defined', () => {
@@ -56,17 +56,17 @@ describe('finanzielleSituationRequire', () => {
             controller.setFinanziellesituationRequired();
             expect(controller.finanzielleSituationRequired).toBe(false);
         });
-        it('should be true when not sozialhilfeBezueger and verguenstigungGewuenscht',
+        it('should be true when not sozialhilfeBezueger and not antragNurFuerBehinderungszuschlag',
             () => {
                 controller.sozialhilfeBezueger = false;
-                controller.verguenstigungGewuenscht = true;
+                controller.antragNurFuerBehinderungszuschlag = false;
                 controller.setFinanziellesituationRequired();
                 expect(controller.finanzielleSituationRequired).toBe(true);
             });
-        it('should be true when not sozialhilfeBezueger and verguenstigungGewuenscht',
+        it('should be true when not sozialhilfeBezueger and antragNurFuerBehinderungszuschlag',
             () => {
                 controller.sozialhilfeBezueger = false;
-                controller.verguenstigungGewuenscht = false;
+                controller.antragNurFuerBehinderungszuschlag = true;
                 controller.setFinanziellesituationRequired();
                 expect(controller.finanzielleSituationRequired).toBe(false);
             });

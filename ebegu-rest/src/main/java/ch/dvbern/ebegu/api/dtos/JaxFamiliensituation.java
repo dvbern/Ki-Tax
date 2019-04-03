@@ -49,7 +49,7 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	private Boolean sozialhilfeBezueger;
 
 	@Nullable
-	private Boolean verguenstigungGewuenscht;
+	private Boolean antragNurFuerBehinderungszuschlag;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -116,12 +116,11 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	}
 
 	@Nullable
-	public Boolean getVerguenstigungGewuenscht() {
-		return verguenstigungGewuenscht;
+	public Boolean getAntragNurFuerBehinderungszuschlag() {
+		return antragNurFuerBehinderungszuschlag;
 	}
 
-	public void setVerguenstigungGewuenscht(@Nullable Boolean verguenstigungGewuenscht) {
-		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
+	public void setAntragNurFuerBehinderungszuschlag(@Nullable Boolean antragNurFuerBehinderungszuschlag) {
+		this.antragNurFuerBehinderungszuschlag = antragNurFuerBehinderungszuschlag;
 	}
-
 }
