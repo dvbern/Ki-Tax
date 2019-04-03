@@ -19,14 +19,15 @@ import {GuidedTourComponent, GuidedTourService} from 'ngx-guided-tour';
 })
 export class KiBonGuidedTourComponent extends GuidedTourComponent {
 
-    public tourStepWidth = 900;
-
+    public tourStepWidth = 500;
+    // tslint:disable
     public constructor(private readonly translate: TranslateService,
                        public readonly guidedTourService: GuidedTourService,
                        private readonly changeDetectorRef: ChangeDetectorRef) {
         super(guidedTourService);
     }
 
+    // tslint:enable
     public updateStepLocation(): void {
         super.updateStepLocation();
         this.changeDetectorRef.markForCheck();

@@ -28,12 +28,12 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {
     AdminInstitutionGuidedTour,
     GemeindeGuidedTour,
     InstitutionGuidedTour
 } from '../../../kibonTour/shared/KiBonGuidedTour';
-import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
@@ -57,7 +57,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
         private readonly gemeindeRS: GemeindeRS,
-        private guidedTourService: GuidedTourService,
+        private readonly guidedTourService: GuidedTourService,
         private readonly translate: TranslateService,
         private readonly kibonGuidedTourService: KiBonGuidedTourService
     ) {
@@ -123,51 +123,43 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         // TODO: Link to start tour again in help dialog
         // TODO: Restrict tour startup based on role and cookie value "AlreadyViewedTour"
         // TODO: Consider replacing CSS selectors like "a[uisref="pendenzen.list-view"]" with ids
-        if (start) {
+        if (!start) {
+            return;
+        }
+        const roleLoggedIn = this.authServiceRS.getPrincipalRole();
 
-            const roleLoggedIn = this.authServiceRS.getPrincipalRole();
-
-            switch (roleLoggedIn) {
-                case TSRole.ADMIN_TRAEGERSCHAFT:
-                    this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
-                    break;
-                case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
-                case TSRole.JURIST:
-                case TSRole.REVISOR:
-                case TSRole.STEUERAMT:
-                case TSRole.ADMIN_MANDANT:
-                case TSRole.SACHBEARBEITER_MANDANT:
-                case TSRole.ANONYMOUS:
-                case TSRole.GESUCHSTELLER:
-                case TSRole.SACHBEARBEITER_BG:
-                case TSRole.SACHBEARBEITER_GEMEINDE:
-                    this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
-                    break;
-                case TSRole.SACHBEARBEITER_INSTITUTION:
-                    this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
-                    break;
-                case TSRole.ADMIN_INSTITUTION:
-                    this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
-                    break;
-                case TSRole.SACHBEARBEITER_TS:
-                case TSRole.ADMIN_BG:
-                    this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
-                    break;
-                case TSRole.ADMIN_GEMEINDE:
-                    this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
-                    break;
-                case TSRole.SUPER_ADMIN:
-                case TSRole.ADMIN_TS:
-                default:
-            }
-
-            /*if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
-            } else if (this.authServiceRS.isRole(TSRole.SACHBEARBEITER_INSTITUTION)) {
-                this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
-            } else if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionRoles())) {
+        switch (roleLoggedIn) {
+            case TSRole.ADMIN_TRAEGERSCHAFT:
                 this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
-            }*/
+                break;
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+            case TSRole.JURIST:
+            case TSRole.REVISOR:
+            case TSRole.STEUERAMT:
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
+            case TSRole.ANONYMOUS:
+            case TSRole.GESUCHSTELLER:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+                break;
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+                this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
+                break;
+            case TSRole.ADMIN_INSTITUTION:
+                this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
+                break;
+            case TSRole.SACHBEARBEITER_TS:
+            case TSRole.ADMIN_BG:
+                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+                break;
+            case TSRole.ADMIN_GEMEINDE:
+                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+                break;
+            case TSRole.SUPER_ADMIN:
+            case TSRole.ADMIN_TS:
+            default:
         }
 
     }

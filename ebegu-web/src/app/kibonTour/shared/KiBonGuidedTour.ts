@@ -11,9 +11,7 @@
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTour, Orientation, OrientationConfiguration, TourStep} from 'ngx-guided-tour';
-import {LogFactory} from '../../core/logging/LogFactory';
 
-const LOG = LogFactory.createLog('KiBonGuidedTour');
 const SELECTOR_HELP_ICON = '[class~="dv-helpmenu-question"]';
 const SELECTOR_PENDENZEN_LIST = 'a[uisref="pendenzen.list-view"]';
 const SELECTOR_PENDENZEN_BETREUUNGEN_LIST = 'a[uisref="pendenzenBetreuungen.list-view"]';
@@ -72,8 +70,8 @@ export class GemeindeGuidedTour implements GuidedTour {
             this.translate.instant('GEMEINDE_TOUR_STEP_7_CONTENT'),
             SELECTOR_CREATE_FALL, Orientation.Left),
         new KiBonTourStep(
-        this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_TITLE'),
-        this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_CONTENT'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_CONTENT'),
             SELECTOR_SEARCH, Orientation.BottomLeft),
     ];
 
@@ -211,10 +209,6 @@ export class KiBonTourStep implements TourStep {
         this.orientation = orientation;
         // tslint:disable-next-line:early-exit
         if (state !== undefined && state !== null) {
-
-            /*state.defaultErrorHandler(() => {
-               // Do not log transitionTo errors
-            });*/
             this.closeAction = () => {
                 console.log('closeaction: ' + new Date().toLocaleString());
             };

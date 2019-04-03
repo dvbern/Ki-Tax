@@ -11,9 +11,6 @@
 import {ErrorHandler, Injectable} from '@angular/core';
 import {GuidedTourService} from 'ngx-guided-tour';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {LogFactory} from '../../core/logging/LogFactory';
-
-const LOG = LogFactory.createLog('KiBonGuidedTourService');
 
 @Injectable({
     providedIn: 'root'
