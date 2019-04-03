@@ -445,7 +445,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			Objects.requireNonNull(familiensituationContainer, "Familiensituation muss gesetzt sein");
 			Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA(), "FamiliensituationJA muss gesetzt sein");
 			newFamsit.setSozialhilfeBezueger(familiensituationContainer.getFamiliensituationJA().getSozialhilfeBezueger());
-			newFamsit.setVerguenstigungGewuenscht(familiensituationContainer.getFamiliensituationJA().getVerguenstigungGewuenscht());
+			newFamsit.setAntragNurFuerBehinderungszuschlag(familiensituationContainer.getFamiliensituationJA().getAntragNurFuerBehinderungszuschlag());
 			familiensituationContainer.setFamiliensituationErstgesuch(familiensituationContainer.getFamiliensituationJA());
 			familiensituationContainer.setFamiliensituationJA(newFamsit);
 			familiensituationService.saveFamiliensituation(mutation, familiensituationContainer, null);
@@ -848,7 +848,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setGemeinsameSteuererklaerung(true);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
-		famsit.setVerguenstigungGewuenscht(true);
+		famsit.setAntragNurFuerBehinderungszuschlag(false);
 		return famsit;
 	}
 
@@ -858,7 +858,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
-		famsit.setVerguenstigungGewuenscht(true);
+		famsit.setAntragNurFuerBehinderungszuschlag(false);
 		return famsit;
 	}
 
