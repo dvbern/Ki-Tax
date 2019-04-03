@@ -26,7 +26,6 @@ import TSMtteilungSearchresultDTO from '../../../models/TSMitteilungSearchresult
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 import ITranslateService = angular.translate.ITranslateService;
-import {NumberFormatter} from "@angular/common/src/pipes/deprecated/intl";
 
 export default class MitteilungRS {
 
