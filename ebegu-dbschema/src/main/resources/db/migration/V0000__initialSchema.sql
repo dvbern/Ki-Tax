@@ -1078,7 +1078,7 @@ CREATE TABLE familiensituation (
 	sozialhilfe_bezueger                                     BIT,
 	start_konkubinat                                         DATE,
 	antrag_nur_fuer_behinderungszuschlag                     BIT,
-	behinderungszuschlag_fuer_mind_ein_kind_einmal_beantragt BIT,
+	behinderungszuschlag_fuer_mind_ein_kind_einmal_beantragt BIT          NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (id)
 );
 

@@ -25,7 +25,7 @@ export default class TSFamiliensituation extends TSAbstractMutableEntity {
     private _startKonkubinat: moment.Moment;
     private _sozialhilfeBezueger: boolean;
     private _antragNurFuerBehinderungszuschlag: boolean;
-    private _behinderungszuschlagFuerMindEinKindEinmalBeantragt: boolean;
+    private _behinderungszuschlagFuerMindEinKindEinmalBeantragt: boolean = false;
 
     public constructor() {
         super();

@@ -60,9 +60,9 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private Boolean antragNurFuerBehinderungszuschlag;
 
-	@Nullable
-	@Column(nullable = true)
-	private Boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+	@NotNull
+	@Column(nullable = false)
+	private boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt =false;
 
 	@Nullable
 	@Column(nullable = true)
@@ -141,12 +141,11 @@ public class Familiensituation extends AbstractMutableEntity {
 		this.antragNurFuerBehinderungszuschlag = antragNurFuerBehinderungszuschlag;
 	}
 
-	@Nullable
-	public Boolean getBehinderungszuschlagFuerMindEinKindEinmalBeantragt() {
+	public boolean getBehinderungszuschlagFuerMindEinKindEinmalBeantragt() {
 		return behinderungszuschlagFuerMindEinKindEinmalBeantragt;
 	}
 
-	public void setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(@Nullable Boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
+	public void setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
 		this.behinderungszuschlagFuerMindEinKindEinmalBeantragt = behinderungszuschlagFuerMindEinKindEinmalBeantragt;
 	}
 

@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDate;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -51,8 +52,7 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	private Boolean antragNurFuerBehinderungszuschlag;
 
-	@Nullable
-	private Boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+	private boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt = false;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -66,19 +66,21 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 		return serialVersionUID;
 	}
 
+	@Nonnull
 	public EnumFamilienstatus getFamilienstatus() {
 		return familienstatus;
 	}
 
-	public void setFamilienstatus(EnumFamilienstatus familienstatus) {
+	public void setFamilienstatus(@Nonnull EnumFamilienstatus familienstatus) {
 		this.familienstatus = familienstatus;
 	}
 
+	@Nonnull
 	public JaxGesuch getGesuch() {
 		return gesuch;
 	}
 
-	public void setGesuch(JaxGesuch gesuch) {
+	public void setGesuch(@Nonnull JaxGesuch gesuch) {
 		this.gesuch = gesuch;
 	}
 
@@ -127,11 +129,11 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 		this.antragNurFuerBehinderungszuschlag = antragNurFuerBehinderungszuschlag;
 	}
 
-	public Boolean getBehinderungszuschlagFuerMindEinKindEinmalBeantragt() {
+	public boolean getBehinderungszuschlagFuerMindEinKindEinmalBeantragt() {
 		return behinderungszuschlagFuerMindEinKindEinmalBeantragt;
 	}
 
-	public void setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(Boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
+	public void setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
 		this.behinderungszuschlagFuerMindEinKindEinmalBeantragt = behinderungszuschlagFuerMindEinKindEinmalBeantragt;
 	}
 }
