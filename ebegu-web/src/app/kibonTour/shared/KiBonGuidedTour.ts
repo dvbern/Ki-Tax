@@ -145,19 +145,22 @@ export class AdminInstitutionGuidedTour implements GuidedTour {
             this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
             SELECTOR_HELP_ICON, Orientation.BottomRight),
 
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
-            SELECTOR_USERMENU, Orientation.BottomLeft, this.state, ROUTE_POST),
+        // todo medu fixme: this step is not allowed for admin institution
+        // posteingang.view is not available for institution. Maybe this was meant for ADMIN_GEMEINDE
+        // new KiBonTourStep(
+        //     this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'),
+        //     this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
+        //     SELECTOR_USERMENU, Orientation.BottomLeft, this.state, ROUTE_POST),
 
+        // todo medu check, i think admin_institution should see   ROUTE_PENDENZEN_BETREUUNGEN_LIST instead of ROUTE_PENDENZEN_LIST
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
-            SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_LIST),
+            SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST),
 
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_3_CONTENT'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_CONTENT'),
             SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST),
 
         new KiBonTourStep(

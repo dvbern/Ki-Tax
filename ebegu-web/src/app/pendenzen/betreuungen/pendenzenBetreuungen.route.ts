@@ -41,8 +41,8 @@ const ng1States: Ng1StateDeclaration[] = [
     {
         name: 'pendenzenBetreuungen.list-view',
         template: '<pendenzen-betreuungen-list-view flex="auto" class="overflow-scroll">',
-        url: '/pendenzenBetreuungen:tourType?',
-        params:  {
+        url: '/pendenzenBetreuungen/:tourType?',
+        params: {
             tourType: {
                 value: null,
                 squash: true
