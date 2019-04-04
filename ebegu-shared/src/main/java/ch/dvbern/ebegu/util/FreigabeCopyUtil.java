@@ -93,13 +93,16 @@ public final class FreigabeCopyUtil {
 		}
 	}
 
-	private static void copyFamiliensituation(@Nonnull Familiensituation familiensituationGS, @Nonnull Familiensituation familiensituationJA) {
+	private static void copyFamiliensituation(
+		@Nonnull Familiensituation familiensituationGS,
+		@Nonnull Familiensituation familiensituationJA) {
 		familiensituationGS.setFamilienstatus(familiensituationJA.getFamilienstatus());
 		familiensituationGS.setGemeinsameSteuererklaerung(familiensituationJA.getGemeinsameSteuererklaerung());
 		familiensituationGS.setStartKonkubinat(familiensituationJA.getStartKonkubinat());
 		familiensituationGS.setAenderungPer(familiensituationJA.getAenderungPer());
 		familiensituationGS.setSozialhilfeBezueger(familiensituationJA.getSozialhilfeBezueger());
-		familiensituationGS.setVerguenstigungGewuenscht(familiensituationJA.getVerguenstigungGewuenscht());
+		familiensituationGS.setAntragNurFuerBehinderungszuschlag(familiensituationJA.getAntragNurFuerBehinderungszuschlag());
+		familiensituationGS.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(familiensituationJA.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 	}
 
 	private static void copyKindContainer(@Nullable KindContainer container) {
@@ -186,7 +189,9 @@ public final class FreigabeCopyUtil {
 		}
 	}
 
-	private static void copyBetreuungspensum(@Nonnull Betreuungspensum betreuungspensumGS, @Nonnull Betreuungspensum betreuungspensumJA) {
+	private static void copyBetreuungspensum(
+		@Nonnull Betreuungspensum betreuungspensumGS,
+		@Nonnull Betreuungspensum betreuungspensumJA) {
 		betreuungspensumGS.setGueltigkeit(betreuungspensumJA.getGueltigkeit());
 		betreuungspensumGS.setPensum(betreuungspensumJA.getPensum());
 		betreuungspensumGS.setNichtEingetreten(betreuungspensumJA.getNichtEingetreten());
@@ -237,7 +242,9 @@ public final class FreigabeCopyUtil {
 		}
 	}
 
-	private static void copyGesuchsteller(@Nonnull Gesuchsteller gesuchstellerGS, @Nonnull Gesuchsteller gesuchstellerJA) {
+	private static void copyGesuchsteller(
+		@Nonnull Gesuchsteller gesuchstellerGS,
+		@Nonnull Gesuchsteller gesuchstellerJA) {
 		gesuchstellerGS.setGeschlecht(gesuchstellerJA.getGeschlecht());
 		gesuchstellerGS.setVorname(gesuchstellerJA.getVorname());
 		gesuchstellerGS.setNachname(gesuchstellerJA.getNachname());
@@ -280,7 +287,10 @@ public final class FreigabeCopyUtil {
 		gs.setNichtInGemeinde(ja.isNichtInGemeinde());
 	}
 
-	private static void copyAbstractFinanzielleSituation(@Nonnull AbstractFinanzielleSituation gs, @Nonnull AbstractFinanzielleSituation ja) {
+	private static void copyAbstractFinanzielleSituation(
+		@Nonnull AbstractFinanzielleSituation gs,
+		@Nonnull AbstractFinanzielleSituation ja) {
+		gs.setNettolohn(ja.getNettolohn());
 		gs.setFamilienzulage(ja.getFamilienzulage());
 		gs.setErsatzeinkommen(ja.getErsatzeinkommen());
 		gs.setErhalteneAlimente(ja.getErhalteneAlimente());
@@ -290,23 +300,29 @@ public final class FreigabeCopyUtil {
 		gs.setGeleisteteAlimente(ja.getGeleisteteAlimente());
 	}
 
-	private static void copyEinkommensverschlechterungInfoContainer(@Nullable EinkommensverschlechterungInfoContainer container) {
+	private static void copyEinkommensverschlechterungInfoContainer(
+		@Nullable EinkommensverschlechterungInfoContainer container) {
 		if (container != null) {
 			if (container.getEinkommensverschlechterungInfoGS() == null) {
 				container.setEinkommensverschlechterungInfoGS(new EinkommensverschlechterungInfo());
 			}
 			//noinspection ConstantConditions
-			copyEinkommensverschlechterungInfo(container.getEinkommensverschlechterungInfoGS(), container.getEinkommensverschlechterungInfoJA());
+			copyEinkommensverschlechterungInfo(
+				container.getEinkommensverschlechterungInfoGS(),
+				container.getEinkommensverschlechterungInfoJA());
 		}
 	}
 
-	private static void copyEinkommensverschlechterungInfo(@Nonnull EinkommensverschlechterungInfo gs, @Nonnull EinkommensverschlechterungInfo ja) {
+	private static void copyEinkommensverschlechterungInfo(
+		@Nonnull EinkommensverschlechterungInfo gs,
+		@Nonnull EinkommensverschlechterungInfo ja) {
 		gs.setEinkommensverschlechterung(ja.getEinkommensverschlechterung());
 		gs.setEkvFuerBasisJahrPlus1(ja.getEkvFuerBasisJahrPlus1());
 		gs.setEkvFuerBasisJahrPlus2(ja.getEkvFuerBasisJahrPlus2());
 	}
 
-	private static void copyEinkommensverschlechterungContainer(@Nullable EinkommensverschlechterungContainer container) {
+	private static void copyEinkommensverschlechterungContainer(
+		@Nullable EinkommensverschlechterungContainer container) {
 		if (container != null) {
 			if (container.getEkvJABasisJahrPlus1() != null) {
 				if (container.getEkvGSBasisJahrPlus1() == null) {
@@ -329,21 +345,10 @@ public final class FreigabeCopyUtil {
 		}
 	}
 
-	private static void copyEinkommensverschlechterung(@Nonnull Einkommensverschlechterung gs, @Nonnull Einkommensverschlechterung ja) {
+	private static void copyEinkommensverschlechterung(
+		@Nonnull Einkommensverschlechterung gs,
+		@Nonnull Einkommensverschlechterung ja) {
 		copyAbstractFinanzielleSituation(gs, ja);
-		gs.setNettolohnJan(ja.getNettolohnJan());
-		gs.setNettolohnFeb(ja.getNettolohnFeb());
-		gs.setNettolohnMrz(ja.getNettolohnMrz());
-		gs.setNettolohnApr(ja.getNettolohnApr());
-		gs.setNettolohnMai(ja.getNettolohnMai());
-		gs.setNettolohnJun(ja.getNettolohnJun());
-		gs.setNettolohnJul(ja.getNettolohnJul());
-		gs.setNettolohnAug(ja.getNettolohnAug());
-		gs.setNettolohnSep(ja.getNettolohnSep());
-		gs.setNettolohnOkt(ja.getNettolohnOkt());
-		gs.setNettolohnNov(ja.getNettolohnNov());
-		gs.setNettolohnDez(ja.getNettolohnDez());
-		gs.setNettolohnZus(ja.getNettolohnZus());
 	}
 
 	private static void copyFinanzielleSituationContainer(@Nullable FinanzielleSituationContainer container) {
@@ -365,7 +370,6 @@ public final class FreigabeCopyUtil {
 		copyAbstractFinanzielleSituation(gs, ja);
 		gs.setSteuerveranlagungErhalten(ja.getSteuerveranlagungErhalten());
 		gs.setSteuererklaerungAusgefuellt(ja.getSteuererklaerungAusgefuellt());
-		gs.setNettolohn(ja.getNettolohn());
 		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setGeschaeftsgewinnBasisjahrMinus2(ja.getGeschaeftsgewinnBasisjahrMinus2());
 	}
@@ -385,7 +389,9 @@ public final class FreigabeCopyUtil {
 		}
 	}
 
-	private static void copyErwerbspensum(@Nonnull Erwerbspensum erwerbspensumGS, @Nonnull Erwerbspensum erwerbspensumJA) {
+	private static void copyErwerbspensum(
+		@Nonnull Erwerbspensum erwerbspensumGS,
+		@Nonnull Erwerbspensum erwerbspensumJA) {
 		erwerbspensumGS.setGueltigkeit(new DateRange(erwerbspensumJA.getGueltigkeit()));
 		erwerbspensumGS.setPensum(erwerbspensumJA.getPensum());
 		erwerbspensumGS.setTaetigkeit(erwerbspensumJA.getTaetigkeit());
@@ -403,7 +409,9 @@ public final class FreigabeCopyUtil {
 		}
 	}
 
-	private static void copyUnbezahlterUrlaub(@Nonnull UnbezahlterUrlaub urlaubGS, @Nonnull UnbezahlterUrlaub urlaubJA) {
+	private static void copyUnbezahlterUrlaub(
+		@Nonnull UnbezahlterUrlaub urlaubGS,
+		@Nonnull UnbezahlterUrlaub urlaubJA) {
 		urlaubGS.setGueltigkeit(new DateRange(urlaubJA.getGueltigkeit()));
 	}
 }

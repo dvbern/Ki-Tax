@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.enums;
 
 /**
  * Enum fuer Fachstelle
+ *
+ * Die Fachstellendetails müssen in der DB eingefügt werden.
  */
 public enum FachstelleName {
 	MUTTER_VATER_BERATUNG_BERN,
@@ -27,5 +29,7 @@ public enum FachstelleName {
 	ERZIEHUNGSBERATUNG,
 	FRUEHERZIEHUNGSDIENST_KANTON_BERN,
 	FRUEHERZIEHUNG_BLINDENSCHULE_ZOLLIKOFEN,
-	DIENST_ZENTRUM_HOEREN_SPRACHE
+	DIENST_ZENTRUM_HOEREN_SPRACHE,
+	KANTONALE_ERZIEHUNGSBERATUNSSTELLE,
+	GEMEINDE_FACHSTELLE
 }

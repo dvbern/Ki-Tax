@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -94,6 +95,8 @@ import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
@@ -103,6 +106,7 @@ import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
@@ -175,6 +179,7 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -243,7 +248,7 @@ import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity"})
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
@@ -640,7 +645,8 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setAenderungPer(familiensituationJAXP.getAenderungPer());
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
-		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
+		familiensituation.setAntragNurFuerBehinderungszuschlag(familiensituationJAXP.getAntragNurFuerBehinderungszuschlag());
+		familiensituation.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(familiensituationJAXP.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 
 		return familiensituation;
 	}
@@ -653,7 +659,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAenderungPer(persistedFamiliensituation.getAenderungPer());
 		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
-		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
+		jaxFamiliensituation.setAntragNurFuerBehinderungszuschlag(persistedFamiliensituation.getAntragNurFuerBehinderungszuschlag());
+		jaxFamiliensituation.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(persistedFamiliensituation.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 
 		return jaxFamiliensituation;
 	}
@@ -1301,21 +1308,11 @@ public class JaxBConverter extends AbstractConverter {
 		return institution;
 	}
 
-	public JaxInstitutionStammdaten institutionStammdatenToJAX(
-		@Nonnull final InstitutionStammdaten persistedInstStammdaten) {
-		final JaxInstitutionStammdaten jaxInstStammdaten = new JaxInstitutionStammdaten();
+	public <T extends JaxAbstractInstitutionStammdaten> T institutionStammdatenSummaryToJAX(
+		@Nonnull final InstitutionStammdaten persistedInstStammdaten,
+		@Nonnull final T jaxInstStammdaten
+	) {
 		convertAbstractDateRangedFieldsToJAX(persistedInstStammdaten, jaxInstStammdaten);
-
-		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
-			persistedInstStammdaten.getInstitution());
-		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
-			persistedInstStammdaten.getInstitution());
-		jaxInstStammdaten.setAdministratoren(administratoren.stream()
-			.map(Benutzer::getFullName)
-			.collect(Collectors.joining(", ")));
-		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
-			.map(Benutzer::getFullName)
-			.collect(Collectors.joining(", ")));
 
 		if (persistedInstStammdaten.getIban() != null) {
 			jaxInstStammdaten.setIban(persistedInstStammdaten.getIban().getIban());
@@ -1348,6 +1345,24 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
+		return jaxInstStammdaten;
+	}
+
+	public JaxInstitutionStammdaten institutionStammdatenToJAX(
+		@Nonnull final InstitutionStammdaten persistedInstStammdaten
+	) {
+		final JaxInstitutionStammdaten jaxInstStammdaten = institutionStammdatenSummaryToJAX(persistedInstStammdaten, new JaxInstitutionStammdaten());
+
+		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
+			persistedInstStammdaten.getInstitution());
+		Collection<Benutzer> sachbearbeiter = benutzerService.getInstitutionSachbearbeiter(
+			persistedInstStammdaten.getInstitution());
+		jaxInstStammdaten.setAdministratoren(administratoren.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
+		jaxInstStammdaten.setSachbearbeiter(sachbearbeiter.stream()
+			.map(Benutzer::getFullName)
+			.collect(Collectors.joining(", ")));
 		return jaxInstStammdaten;
 	}
 
@@ -1669,7 +1684,9 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		final JaxPensumAusserordentlicherAnspruch jaxPensumAusserordentlicherAnspruch =
 			new JaxPensumAusserordentlicherAnspruch();
-		convertAbstractPensumFieldsToJAX(persistedPensumAusserordentlicherAnspruch, jaxPensumAusserordentlicherAnspruch);
+		convertAbstractPensumFieldsToJAX(
+			persistedPensumAusserordentlicherAnspruch,
+			jaxPensumAusserordentlicherAnspruch);
 		jaxPensumAusserordentlicherAnspruch.setBegruendung(persistedPensumAusserordentlicherAnspruch.getBegruendung());
 		return jaxPensumAusserordentlicherAnspruch;
 	}
@@ -1893,6 +1910,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(abstractFinanzielleSituationJAXP);
 
 		convertAbstractVorgaengerFieldsToEntity(abstractFinanzielleSituationJAXP, abstractFinanzielleSituation);
+		abstractFinanzielleSituation.setNettolohn(abstractFinanzielleSituationJAXP.getNettolohn());
 		abstractFinanzielleSituation.setFamilienzulage(abstractFinanzielleSituationJAXP.getFamilienzulage());
 		abstractFinanzielleSituation.setErsatzeinkommen(abstractFinanzielleSituationJAXP.getErsatzeinkommen());
 		abstractFinanzielleSituation.setErhalteneAlimente(abstractFinanzielleSituationJAXP.getErhalteneAlimente());
@@ -1913,6 +1931,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 
 		convertAbstractVorgaengerFieldsToJAX(persistedAbstractFinanzielleSituation, jaxAbstractFinanzielleSituation);
+		jaxAbstractFinanzielleSituation.setNettolohn(persistedAbstractFinanzielleSituation.getNettolohn());
 		jaxAbstractFinanzielleSituation.setFamilienzulage(persistedAbstractFinanzielleSituation.getFamilienzulage());
 		jaxAbstractFinanzielleSituation.setErsatzeinkommen(persistedAbstractFinanzielleSituation.getErsatzeinkommen());
 		jaxAbstractFinanzielleSituation.setErhalteneAlimente(persistedAbstractFinanzielleSituation.getErhalteneAlimente());
@@ -1932,7 +1951,6 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituationToEntity(finanzielleSituationJAXP, finanzielleSituation);
 		finanzielleSituation.setSteuerveranlagungErhalten(finanzielleSituationJAXP.getSteuerveranlagungErhalten());
 		finanzielleSituation.setSteuererklaerungAusgefuellt(finanzielleSituationJAXP.getSteuererklaerungAusgefuellt());
-		finanzielleSituation.setNettolohn(finanzielleSituationJAXP.getNettolohn());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
@@ -1953,7 +1971,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuererklaerungAusgefuellt(persistedFinanzielleSituation.getSteuererklaerungAusgefuellt());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
-		jaxFinanzielleSituation.setNettolohn(persistedFinanzielleSituation.getNettolohn());
+
 
 		return jaxFinanzielleSituation;
 	}
@@ -1966,20 +1984,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(einkommensverschlechterungJAXP);
 
 		abstractFinanzielleSituationToEntity(einkommensverschlechterungJAXP, einkommensverschlechterung);
-
-		einkommensverschlechterung.setNettolohnJan(einkommensverschlechterungJAXP.getNettolohnJan());
-		einkommensverschlechterung.setNettolohnFeb(einkommensverschlechterungJAXP.getNettolohnFeb());
-		einkommensverschlechterung.setNettolohnMrz(einkommensverschlechterungJAXP.getNettolohnMrz());
-		einkommensverschlechterung.setNettolohnApr(einkommensverschlechterungJAXP.getNettolohnApr());
-		einkommensverschlechterung.setNettolohnMai(einkommensverschlechterungJAXP.getNettolohnMai());
-		einkommensverschlechterung.setNettolohnJun(einkommensverschlechterungJAXP.getNettolohnJun());
-		einkommensverschlechterung.setNettolohnJul(einkommensverschlechterungJAXP.getNettolohnJul());
-		einkommensverschlechterung.setNettolohnAug(einkommensverschlechterungJAXP.getNettolohnAug());
-		einkommensverschlechterung.setNettolohnSep(einkommensverschlechterungJAXP.getNettolohnSep());
-		einkommensverschlechterung.setNettolohnOkt(einkommensverschlechterungJAXP.getNettolohnOkt());
-		einkommensverschlechterung.setNettolohnNov(einkommensverschlechterungJAXP.getNettolohnNov());
-		einkommensverschlechterung.setNettolohnDez(einkommensverschlechterungJAXP.getNettolohnDez());
-		einkommensverschlechterung.setNettolohnZus(einkommensverschlechterungJAXP.getNettolohnZus());
 		einkommensverschlechterung.setGeschaeftsgewinnBasisjahrMinus1(einkommensverschlechterungJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
 		return einkommensverschlechterung;
@@ -1996,20 +2000,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxEinkommensverschlechterung eikvs = new JaxEinkommensverschlechterung();
 
 		abstractFinanzielleSituationToJAX(persistedEinkommensverschlechterung, eikvs);
-
-		eikvs.setNettolohnJan(persistedEinkommensverschlechterung.getNettolohnJan());
-		eikvs.setNettolohnFeb(persistedEinkommensverschlechterung.getNettolohnFeb());
-		eikvs.setNettolohnMrz(persistedEinkommensverschlechterung.getNettolohnMrz());
-		eikvs.setNettolohnApr(persistedEinkommensverschlechterung.getNettolohnApr());
-		eikvs.setNettolohnMai(persistedEinkommensverschlechterung.getNettolohnMai());
-		eikvs.setNettolohnJun(persistedEinkommensverschlechterung.getNettolohnJun());
-		eikvs.setNettolohnJul(persistedEinkommensverschlechterung.getNettolohnJul());
-		eikvs.setNettolohnAug(persistedEinkommensverschlechterung.getNettolohnAug());
-		eikvs.setNettolohnSep(persistedEinkommensverschlechterung.getNettolohnSep());
-		eikvs.setNettolohnOkt(persistedEinkommensverschlechterung.getNettolohnOkt());
-		eikvs.setNettolohnNov(persistedEinkommensverschlechterung.getNettolohnNov());
-		eikvs.setNettolohnDez(persistedEinkommensverschlechterung.getNettolohnDez());
-		eikvs.setNettolohnZus(persistedEinkommensverschlechterung.getNettolohnZus());
 		eikvs.setGeschaeftsgewinnBasisjahrMinus1(persistedEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
 
 		return eikvs;
@@ -2083,7 +2073,9 @@ public class JaxBConverter extends AbstractConverter {
 					findUnbezahlterUrlaub(jaxErwerbspensum.getUnbezahlterUrlaub().getId())
 					.orElse(new UnbezahlterUrlaub());
 			}
-			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(jaxErwerbspensum.getUnbezahlterUrlaub(), existingUrlaub));
+			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(
+				jaxErwerbspensum.getUnbezahlterUrlaub(),
+				existingUrlaub));
 		} else {
 			erwerbspensum.setUnbezahlterUrlaub(null);
 		}
@@ -2218,7 +2210,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
-		if(Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())){
+		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
 			requireNonNull(erweiterteBetreuungJAXP.getFachstelle(), "Fachstelle muss existieren");
 			requireNonNull(
 				erweiterteBetreuungJAXP.getFachstelle().getId(),
@@ -2490,7 +2482,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuung.setBetreuungsstatus(betreuungFromServer.getBetreuungsstatus());
 		jaxBetreuung.setVertrag(betreuungFromServer.getVertrag());
 		jaxBetreuung.setKeineKesbPlatzierung(betreuungFromServer.getKeineKesbPlatzierung());
-		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenToJAX(betreuungFromServer.getInstitutionStammdaten()));
+		jaxBetreuung.setInstitutionStammdaten(institutionStammdatenSummaryToJAX(
+			betreuungFromServer.getInstitutionStammdaten(), new JaxInstitutionStammdatenSummary()));
 		jaxBetreuung.setBetreuungNummer(betreuungFromServer.getBetreuungNummer());
 		if (betreuungFromServer.getKind() != null) {
 			jaxBetreuung.setKindFullname(betreuungFromServer.getKind().getKindJA().getFullName());
@@ -2690,7 +2683,7 @@ public class JaxBConverter extends AbstractConverter {
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(jaxVerfuegungZeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		verfuegungZeitabschnitt.setVerguenstigung(jaxVerfuegungZeitabschnitt.getVerguenstigung());
 		verfuegungZeitabschnitt.setMinimalerElternbeitrag(jaxVerfuegungZeitabschnitt.getMinimalerElternbeitrag());
-			verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
+		verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
 		verfuegungZeitabschnitt.setAbzugFamGroesse(jaxVerfuegungZeitabschnitt.getAbzugFamGroesse());
 		BigDecimal einkommen = jaxVerfuegungZeitabschnitt.getMassgebendesEinkommenVorAbzugFamgr();
 		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(einkommen);
@@ -2837,12 +2830,14 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuungContainer, jaxErweiterteBetreuungContainer);
 
 		if (erweiterteBetreuungContainer.getErweiterteBetreuungGS() != null) {
-			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungGS());
+			JaxErweiterteBetreuung jaxErweiterteBetreuung =
+				erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungGS());
 			jaxErweiterteBetreuungContainer.setErweiterteBetreuungGS(jaxErweiterteBetreuung);
 		}
 
 		if (erweiterteBetreuungContainer.getErweiterteBetreuungJA() != null) {
-			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungJA());
+			JaxErweiterteBetreuung jaxErweiterteBetreuung =
+				erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungJA());
 			jaxErweiterteBetreuungContainer.setErweiterteBetreuungJA(jaxErweiterteBetreuung);
 		}
 
@@ -2858,7 +2853,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
 
-		if(erweiterteBetreuung.getFachstelle() != null) {
+		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
 		}
 
@@ -3499,6 +3494,7 @@ public class JaxBConverter extends AbstractConverter {
 	 * Geht durch die ganze Liste von KindContainers durch und gibt ein Set mit den Namen aller Institutionen zurueck.
 	 * Da ein Set zurueckgegeben wird, sind die Daten nie dupliziert.
 	 */
+	@SuppressWarnings("Duplicates")
 	private Set<String> createInstitutionenList(Set<KindContainer> kindContainers) {
 		return kindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
@@ -3508,6 +3504,7 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.toSet());
 	}
 
+	@SuppressWarnings("Duplicates")
 	private Set<String> createInstitutionenList(Collection<JaxKindContainer> jaxKindContainers) {
 		return jaxKindContainers.stream()
 			.flatMap(kc -> kc.getBetreuungen().stream())
@@ -3952,6 +3949,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxStammdaten.getGemeinde());
 		requireNonNull(jaxStammdaten.getGemeinde().getId());
 		requireNonNull(jaxStammdaten.getAdresse());
+		requireNonNull(jaxStammdaten.getStandardRechtsmittelbelehrung());
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
@@ -3998,6 +3996,17 @@ public class JaxBConverter extends AbstractConverter {
 			stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
 		}
 
+		stammdaten.setStandardRechtsmittelbelehrung(jaxStammdaten.getStandardRechtsmittelbelehrung());
+
+		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
+			if (stammdaten.getRechtsmittelbelehrung() == null) {
+				stammdaten.setRechtsmittelbelehrung(new TextRessource());
+			}
+			stammdaten.setRechtsmittelbelehrung(textRessourceToEntity(
+				jaxStammdaten.getRechtsmittelbelehrung(),
+				stammdaten.getRechtsmittelbelehrung()));
+		}
+
 		return stammdaten;
 	}
 
@@ -4020,16 +4029,40 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(false);
-		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(false);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
-		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
+		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
+		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
+		// Konfiguration
+		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
+			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
+			if (gesuchsperiode != null) {
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+					stammdaten.getGemeinde(),
+					gesuchsperiode));
+			}
+		} else {
+			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
+			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+					stammdaten.getGemeinde(),
+					gesuchsperiode));
+			}
 		}
+		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
+		jaxStammdaten.setBic(stammdaten.getBic());
+		if (stammdaten.getIban() != null) {
+			jaxStammdaten.setIban(stammdaten.getIban().getIban());
+		}
+
+		jaxStammdaten.setStandardRechtsmittelbelehrung(stammdaten.getStandardRechtsmittelbelehrung());
+
+		if (stammdaten.getRechtsmittelbelehrung() != null) {
+			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
+		}
+
+		return jaxStammdaten;
+	}
+
+	private void gemeindeStammdatenToJAXSetDefaultBenutzer(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
 		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
@@ -4045,28 +4078,46 @@ public class JaxBConverter extends AbstractConverter {
 				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
 			}
 		}
-		// Konfiguration
-		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
-			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
-			if (gesuchsperiode != null) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
-					gesuchsperiode));
-			}
-		} else {
-			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
-			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
-					gesuchsperiode));
-			}
-		}
-		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
-		jaxStammdaten.setBic(stammdaten.getBic());
-		if(stammdaten.getIban() != null) {
-			jaxStammdaten.setIban(stammdaten.getIban().getIban());
-		}
+	}
 
+	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
+		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(false);
+		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(false);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		}
+	}
 
-		return jaxStammdaten;
+	public TextRessource textRessourceToEntity(
+		@Nonnull final JaxTextRessource textRessourceJAX,
+		@Nonnull TextRessource textRessource) {
+		requireNonNull(textRessourceJAX);
+		requireNonNull(textRessource);
+
+		convertAbstractFieldsToEntity(textRessourceJAX, textRessource);
+
+		textRessource.setTextDeutsch(textRessourceJAX.getTextDeutsch());
+		textRessource.setTextFranzoesisch(textRessourceJAX.getTextFranzoesisch());
+
+		return textRessource;
+	}
+
+	public JaxTextRessource textRessourceToJAX(@Nonnull final TextRessource textRessource) {
+		Objects.requireNonNull(textRessource);
+
+		final JaxTextRessource jaxTextRessource = new JaxTextRessource();
+
+		convertAbstractFieldsToJAX(textRessource, jaxTextRessource);
+
+		jaxTextRessource.setTextDeutsch(textRessource.getTextDeutsch());
+		jaxTextRessource.setTextFranzoesisch(textRessource.getTextFranzoesisch());
+
+		return jaxTextRessource;
 	}
 
 	/**
@@ -4083,7 +4134,9 @@ public class JaxBConverter extends AbstractConverter {
 		return gpBeguStart.orElseGet(() -> gpNewest.orElse(null));
 	}
 
-	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
 		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());

@@ -104,11 +104,11 @@ public class EinkommenCalcRuleTest {
 
 		gesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(new EinkommensverschlechterungContainer());
 		final Einkommensverschlechterung ekvJABasisJahrPlus1 = new Einkommensverschlechterung();
-		ekvJABasisJahrPlus1.setNettolohnJan(new BigDecimal(25000));
+		ekvJABasisJahrPlus1.setNettolohn(new BigDecimal(25000));
 		assertNotNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(ekvJABasisJahrPlus1);
 		final Einkommensverschlechterung ekvJABasisJahrPlus2 = new Einkommensverschlechterung();
-		ekvJABasisJahrPlus2.setNettolohnJan(new BigDecimal(20000));
+		ekvJABasisJahrPlus2.setNettolohn(new BigDecimal(20000));
 		gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus2(ekvJABasisJahrPlus2);
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
@@ -121,7 +121,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(2, bemerkungenAbschnitt2.size());
 		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 		assertTrue(bemerkungenAbschnitt2.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
-		String bemerkungEKV1 = "Ihr Antrag zur Anwendung der Härtefallregelung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
+		String bemerkungEKV1 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_1;
 		assertTrue(bemerkungenAbschnitt2.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV1));
 
@@ -132,7 +132,7 @@ public class EinkommenCalcRuleTest {
 		assertEquals(2, bemerkungenAbschnitt3.size());
 		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.BETREUUNGSANGEBOT_MSG));
 		assertTrue(bemerkungenAbschnitt3.containsKey(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG));
-		String bemerkungEKV2 = "Ihr Antrag zur Anwendung der Härtefallregelung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
+		String bemerkungEKV2 = "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde gutgeheissen. Das massgebende Einkommen des Jahres "
 			+ TestDataUtil.PERIODE_JAHR_2;
 		assertTrue(bemerkungenAbschnitt3.get(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG).getTranslated().contains(bemerkungEKV2));
 	}

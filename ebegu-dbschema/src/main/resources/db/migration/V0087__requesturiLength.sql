@@ -1,1 +1,0 @@
-ALTER TABLE workjob MODIFY requesturi VARCHAR(4000) NOT NULL;

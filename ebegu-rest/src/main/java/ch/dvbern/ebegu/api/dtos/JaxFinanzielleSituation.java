@@ -37,9 +37,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private Boolean steuererklaerungAusgefuellt;
 
 	@Nullable
-	private BigDecimal nettolohn;
-
-	@Nullable
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
 	@Nullable
@@ -63,15 +60,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public BigDecimal getNettolohn() {
-		return nettolohn;
-	}
-
-	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
-		this.nettolohn = nettolohn;
-	}
-
-	@Nullable
 	public BigDecimal getGeschaeftsgewinnBasisjahrMinus2() {
 		return geschaeftsgewinnBasisjahrMinus2;
 	}
@@ -88,5 +76,4 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
 		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
-
 }

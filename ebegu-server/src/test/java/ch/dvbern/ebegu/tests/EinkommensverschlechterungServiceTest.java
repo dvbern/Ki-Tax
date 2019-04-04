@@ -61,7 +61,7 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 		Collection<EinkommensverschlechterungContainer> allEinkommensverschlechterungContainer = einkommensverschlechterungService.getAllEinkommensverschlechterungContainer();
 		Assert.assertEquals(1, allEinkommensverschlechterungContainer.size());
 		EinkommensverschlechterungContainer einkommensverschlechterungContainer = allEinkommensverschlechterungContainer.iterator().next();
-		Assert.assertEquals(0, einkommensverschlechterungContainer.getEkvGSBasisJahrPlus1().getNettolohnJan().compareTo(BigDecimal.ONE));
+		Assert.assertEquals(0, einkommensverschlechterungContainer.getEkvGSBasisJahrPlus1().getNettolohn().compareTo(BigDecimal.ONE));
 	}
 
 	private EinkommensverschlechterungContainer getEinkommensverschlechterungContainer() {
@@ -97,7 +97,7 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 		Collection<EinkommensverschlechterungContainer> allEinkommensverschlechterungContainer = einkommensverschlechterungService.getAllEinkommensverschlechterungContainer();
 		EinkommensverschlechterungContainer einkommensverschlechterungContainer = allEinkommensverschlechterungContainer.iterator().next();
 
-		einkommensverschlechterungContainer.getEkvGSBasisJahrPlus1().setNettolohnJan(BigDecimal.TEN);
+		einkommensverschlechterungContainer.getEkvGSBasisJahrPlus1().setNettolohn(BigDecimal.TEN);
 
 		einkommensverschlechterungService.saveEinkommensverschlechterungContainer(einkommensverschlechterungContainer, null);
 
@@ -106,7 +106,7 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 		if (einkommensverschlechterungContainerUpdated.isPresent()) {
 			final EinkommensverschlechterungContainer container1 = einkommensverschlechterungContainerUpdated.get();
 			Assert.assertNotNull(container1);
-			Assert.assertEquals(0, container1.getEkvGSBasisJahrPlus1().getNettolohnJan().compareTo(BigDecimal.TEN));
+			Assert.assertEquals(0, container1.getEkvGSBasisJahrPlus1().getNettolohn().compareTo(BigDecimal.TEN));
 		} else {
 			Assert.fail("Einkommensverschlechterungsinfo konnte nicht aktualisiert werden");
 		}
@@ -123,5 +123,19 @@ public class EinkommensverschlechterungServiceTest extends AbstractEbeguLoginTes
 
 		einkommensverschlechterungService.removeEinkommensverschlechterungContainer(container);
 		Assert.assertEquals(0, einkommensverschlechterungService.getAllEinkommensverschlechterungContainer().size());
+	}
+
+	@Test
+	public void calculateProzentualeDifferenz() {
+		Assert.assertEquals("-0", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(0), BigDecimal.valueOf(0)));
+		Assert.assertEquals("-0", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(100), BigDecimal.valueOf(100)));
+		Assert.assertEquals("+100", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(100), BigDecimal.valueOf(200)));
+		Assert.assertEquals("-50", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(200), BigDecimal.valueOf(100)));
+		Assert.assertEquals("-90", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(200), BigDecimal.valueOf(20)));
+		Assert.assertEquals("-82", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(59720), BigDecimal.valueOf(11230)));
+		Assert.assertEquals("-100", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(59720), BigDecimal.valueOf(0)));
+		Assert.assertEquals("+100", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(0), BigDecimal.valueOf(59720)));
+		Assert.assertEquals("-20", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(70000), BigDecimal.valueOf(56000)));
+		Assert.assertEquals("-21", einkommensverschlechterungService.calculateProzentualeDifferenz(BigDecimal.valueOf(70000), BigDecimal.valueOf(55999)));
 	}
 }

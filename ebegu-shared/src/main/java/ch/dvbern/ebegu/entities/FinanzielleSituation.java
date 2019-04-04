@@ -47,10 +47,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal nettolohn;
-
-	@Nullable
-	@Column(nullable = true)
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
 	@Nullable
@@ -75,16 +71,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setSteuererklaerungAusgefuellt(final Boolean steuererklaerungAusgefuellt) {
 		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
-	}
-
-	@Nullable
-	@Override
-	public BigDecimal getNettolohn() {
-		return nettolohn;
-	}
-
-	public void setNettolohn(@Nullable final BigDecimal nettolohn) {
-		this.nettolohn = nettolohn;
 	}
 
 	@Nullable
@@ -113,7 +99,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			super.copyAbstractFinanzielleSituation(target, copyType);
 			target.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
 			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
-			target.setNettolohn(this.getNettolohn());
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
 			break;
@@ -142,7 +127,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		final FinanzielleSituation otherFinSit = (FinanzielleSituation) other;
 		return Objects.equals(getSteuerveranlagungErhalten(), otherFinSit.getSteuerveranlagungErhalten()) &&
 			Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
-			MathUtil.isSame(getNettolohn(), otherFinSit.getNettolohn()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2());
 	}

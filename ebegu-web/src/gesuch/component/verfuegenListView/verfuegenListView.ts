@@ -80,6 +80,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         '$timeout',
         '$translate',
         'EinstellungRS',
+        'EbeguUtil',
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
@@ -88,6 +89,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private tempAntragStatus: TSAntragStatus;
     public finSitStatus: Array<string>;
     private kontingentierungEnabled: boolean = false;
+    // tslint:disable:no-unused-variable
+    private readonly ebeguUtil: EbeguUtil;
 
     public constructor(
         private readonly $state: StateService,
@@ -103,10 +106,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
         private readonly einstellungRS: EinstellungRS,
+        ebeguUtil: EbeguUtil,
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
         this.initViewModel();
+        this.ebeguUtil = ebeguUtil;
     }
 
     /**

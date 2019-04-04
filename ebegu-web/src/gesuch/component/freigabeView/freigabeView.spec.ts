@@ -119,17 +119,8 @@ describe('freigabeView', () => {
 
             expect(returned).toBeUndefined();
         });
-        it('should return undefined when the form is not valid', () => {
-            controller.form.$valid = true;
-            controller.bestaetigungFreigabequittung = false;
-
-            const returned = controller.gesuchEinreichen();
-
-            expect(returned).toBeUndefined();
-        });
         it('should call showDialog when form is valid', () => {
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-            controller.bestaetigungFreigabequittung = true;
 
             controller.form.$valid = true;
             spyOn(dialog, 'showDialog').and.returnValue($q.when({}));
@@ -144,7 +135,6 @@ describe('freigabeView', () => {
     describe('confirmationCallback', () => {
         it('should return a Promise when the form is valid', () => {
             TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
-            controller.bestaetigungFreigabequittung = true;
 
             controller.form.$valid = true;
 

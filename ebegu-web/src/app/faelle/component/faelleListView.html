@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col-md-12">
                 <dv-antrag-list
-                    table-title="FAELLE_LIST"
+                    table-title="{{'FAELLE_LIST' | translate}}"
                     table-id="alleFaelle"
                     on-filter-change="vm.passFilterToServer(tableState)"
                     on-edit="vm.editFall(antrag, event)"

@@ -20,12 +20,10 @@ import java.util.Locale;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -101,11 +99,18 @@ public interface MailService {
 	void sendInfoGesuchGeloescht(@Nonnull Gesuch gesuch) throws MailException;
 
 	/**
-	 * Sendet eine Mail an den GS1 des übergebenen Gesuchs, dass die übergebene Gesuchsperiode eröffnet wurde.
+	 * Sendet eine Mail an den GS1 der übergebenen Gesuche, dass die übergebene Gesuchsperiode eröffnet wurde.
 	 */
 	Future<Integer> sendInfoFreischaltungGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull List<Gesuch> gesucheToSendMail);
+
+	/**
+	 * Sendet eine Mail an den GS1 des übergebenen Gesuchs, dass die übergebene Gesuchsperiode eröffnet wurde.
+	 */
+	boolean sendInfoFreischaltungGesuchsperiode(
+		@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gesuch gesuch);
 
 	/**
 	 * Sendet unter gewissen Bedingungen pro Betreuung eine Email mit der Information, dass ein Betreuungsplatz
@@ -119,15 +124,9 @@ public interface MailService {
 	void sendInfoBetreuungVerfuegt(@Nonnull Betreuung betreuung);
 
 	/**
-	 * schickt eine email an den uebergebenen Empfaenger die angibt wie das angehaengte File heruntergeladen werden
-	 * kann
+	 * Sendet eine E-Mail mit der Information, dass die Statistik erstellt wurde
 	 */
-	void sendDocumentCreatedEmail(
-		@Nonnull String receiverEmail,
-		@Nullable DownloadFile attachement,
-		@Nonnull String downloadurl,
-		@Nonnull Locale locale
-	) throws MailException;
+	void sendInfoStatistikGeneriert(@Nonnull String receiverEmail, @Nonnull String downloadurl, @Nonnull Locale locale);
 
 	/**
 	 * Sends an Einladungsemail to the given user according to the type of the Einladung

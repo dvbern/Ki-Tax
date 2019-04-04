@@ -89,12 +89,12 @@ public class Testfall_ASIV_04 extends AbstractASIVTestfall {
 	public Gesuch createMutation(Gesuch erstgesuch) {
 		// Einkommensverschlechterug
 		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, true, false);
-		ekvContainer.getEkvJABasisJahrPlus1().setNettolohnJan(MathUtil.DEFAULT.from(49000));
+		ekvContainer.getEkvJABasisJahrPlus1().setNettolohn(MathUtil.DEFAULT.from(49000));
 		Objects.requireNonNull(erstgesuch.getGesuchsteller1());
 		erstgesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(ekvContainer);
 		// Einkommensverschlechterug
 		EinkommensverschlechterungContainer ekvContainerGS2 = createEinkommensverschlechterungContainer(true, false);
-		ekvContainerGS2.getEkvJABasisJahrPlus1().setNettolohnJan(MathUtil.DEFAULT.from(0));
+		ekvContainerGS2.getEkvJABasisJahrPlus1().setNettolohn(MathUtil.DEFAULT.from(0));
 		Objects.requireNonNull(erstgesuch.getGesuchsteller2());
 		erstgesuch.getGesuchsteller2().setEinkommensverschlechterungContainer(ekvContainerGS2);
 		return erstgesuch;

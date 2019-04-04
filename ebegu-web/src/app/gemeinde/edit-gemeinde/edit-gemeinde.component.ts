@@ -27,6 +27,7 @@ import TSAdresse from '../../../models/TSAdresse';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSGemeinde from '../../../models/TSGemeinde';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
+import TSTextRessource from '../../../models/TSTextRessource';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import ErrorService from '../../core/errors/service/ErrorService';
@@ -73,6 +74,9 @@ export class EditGemeindeComponent implements OnInit {
                 if (stammdaten.beschwerdeAdresse === undefined) {
                     stammdaten.beschwerdeAdresse = new TSAdresse();
                 }
+                if (!stammdaten.rechtsmittelbelehrung) {
+                    stammdaten.rechtsmittelbelehrung = new TSTextRessource();
+                }
                 return stammdaten;
             }));
     }
@@ -89,8 +93,7 @@ export class EditGemeindeComponent implements OnInit {
     }
 
     public getMitarbeiterVisibleRoles(): TSRole[] {
-        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE];
-        allowedRoles.push(TSRole.SUPER_ADMIN);
+        const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE].concat(TSRole.SUPER_ADMIN);
         return allowedRoles;
     }
 
@@ -107,6 +110,11 @@ export class EditGemeindeComponent implements OnInit {
             // Reset Beschwerdeadresse if not used
             stammdaten.beschwerdeAdresse = undefined;
         }
+        if (stammdaten.standardRechtsmittelbelehrung) {
+            // reset custom Rechtsmittelbelehrung if checkbox not checked
+            stammdaten.rechtsmittelbelehrung = undefined;
+        }
+
         this.gemeindeRS.saveGemeindeStammdaten(stammdaten).then(() => {
             if (this.fileToUpload) {
                 this.persistLogo(this.fileToUpload, true);

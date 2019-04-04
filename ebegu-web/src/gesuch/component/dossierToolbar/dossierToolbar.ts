@@ -22,11 +22,7 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {
-    isAnyStatusOfVerfuegt,
-    isAtLeastFreigegebenOrFreigabequittung,
-    isStatusVerfuegenVerfuegt,
-} from '../../../models/enums/TSAntragStatus';
+import {isAnyStatusOfVerfuegt, isAtLeastFreigegebenOrFreigabequittung, isStatusVerfuegenVerfuegt} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSCreationAction} from '../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -38,12 +34,11 @@ import TSDossier from '../../../models/TSDossier';
 import TSGemeindeStammdaten from '../../../models/TSGemeindeStammdaten';
 import TSGesuch from '../../../models/TSGesuch';
 import TSGesuchsperiode from '../../../models/TSGesuchsperiode';
-import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenSummary from '../../../models/TSInstitutionStammdatenSummary';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {NavigationUtil} from '../../../utils/NavigationUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-
 import {ShowTooltipController} from '../../dialog/ShowTooltipController';
 import DossierRS from '../../service/dossierRS.rest';
 import GemeindeRS from '../../service/gemeindeRS.rest';
@@ -618,17 +613,14 @@ export class DossierToolbarController implements IDVFocusableController {
             elementID: 'gesuchLoeschenButton',
         }).then(() => {
             this.setAllFormsPristine();
-            if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                this.gesuchRS.removeGesuchstellerAntrag(this.getGesuch().id).then(() => {
+            this.gesuchRS.removeAntrag(this.getGesuch().id).then(() => {
+                if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
                     this.gesuchModelManager.setGesuch(new TSGesuch());
                     this.resetNavigationParameters();
                     this.$state.go('gesuchsteller.dashboard');
-                });
-            } else {
-                this.gesuchRS.removePapiergesuch(this.getGesuch().id).then(() => {
+                } else {
                     if (this.antragList.length <= 1) {
                         this.$state.go('pendenzen.list-view');
-
                         return;
                     }
                     const navObj: any = {
@@ -636,8 +628,8 @@ export class DossierToolbarController implements IDVFocusableController {
                         dossierId: this.antragList[0].dossierId,
                     };
                     this.$state.go('gesuch.fallcreation', navObj);
-                });
-            }
+                }
+            });
         });
     }
 
@@ -678,7 +670,7 @@ export class DossierToolbarController implements IDVFocusableController {
         return html;
     }
 
-    private institutionStammdatenToHtml(stammdaten: TSInstitutionStammdaten): string {
+    private institutionStammdatenToHtml(stammdaten: TSInstitutionStammdatenSummary): string {
         let html = '';
         if (stammdaten.adresse.organisation === stammdaten.institution.name) {
             html += `<span class="marginTop20">${stammdaten.institution.name}</span><br>`;
@@ -695,7 +687,7 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private institutionenStammdatenToHtml(): string {
         let html = '';
-        const institutionIds: Array<string> = new Array();
+        const institutionIds: Array<string> = [];
         for (const kc of this.getGesuch().kindContainers) {
             for (const be of kc.betreuungen) {
                 if (!(institutionIds.includes(be.institutionStammdaten.institution.id))) {

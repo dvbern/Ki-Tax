@@ -59,11 +59,11 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_FORCE_COOKIE_SECURE_FLAG = "ebegu.force.cookie.secure.flag";
 	private static final String EBEGU_LOGIN_API_SCHULAMT_USER = "ebegu.login.api.schulamt.user";
 	private static final String EBEGU_LOGIN_API_SCHULAMT_PASSWORD = "ebegu.login.api.schulamt.password";
-	private static final String EBEGU_SEND_REPORTS_AS_ATTACHEMENT = "ebegu.send.reports.as.attachement";
 	private static final String EBEGU_TESTFAELLE_ENABLED = "ebegu.testfaelle.enabled";
 	private static final String EBEGU_ADMINISTRATOR_MAIL = "ebegu.admin.mail";
 	private static final String EBEGU_PORTAL_ACCOUNT_CREATION_LINK = "ebegu.portal.account.creation.link";
 	private static final String SENTRY_ENVIRONMENT = "sentry.environment"; //use same property as sentry logger
+	private static final String EBEGU_SUPERUSER_MAIL = "ebegu.superuser.mail";
 
 
 	@Inject
@@ -201,11 +201,6 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
-	public boolean isSendReportAsAttachement() {
-		return getBoolean(EBEGU_SEND_REPORTS_AS_ATTACHEMENT, false);
-	}
-
-	@Override
 	public boolean isTestfaelleEnabled() {
 		return getBoolean(EBEGU_TESTFAELLE_ENABLED, false);
 	}
@@ -228,5 +223,10 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public KibonLogLevel getDefaultLogLevel() {
 		return this.getIsDevmode() ? KibonLogLevel.INFO : KibonLogLevel.ERROR;
+	}
+
+	@Override
+	public String getSuperuserMail() {
+		return getString(EBEGU_SUPERUSER_MAIL);
 	}
 }

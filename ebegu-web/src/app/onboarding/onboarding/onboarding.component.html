@@ -31,7 +31,7 @@
                                     class="form-control"
                                     id="gemeinde"
                                     [required]="true">
-
+                                <option value="?" selected="selected"></option>
                                 <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
                                     {{gemeinde.name}}
                                 </option>

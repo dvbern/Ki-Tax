@@ -6,6 +6,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="datumErstellung" type="java.lang.String" -->
 <#-- @ftlvariable name="birthday" type="java.lang.String" -->
+<#-- @ftlvariable name="status" type="java.lang.String" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 From: ${configuration.senderAddress}
@@ -18,7 +19,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon – Betreuung gelöscht</title>
+	<title>${institution.name}: kiBon – Betreuung gelöscht</title>
 
 </head>
 
@@ -29,7 +30,7 @@ ${templateConfiguration.mailCss}
 		Guten Tag
 	</p>
 	<p>
-		Der folgende Betreuungseintrag wurde entfernt:
+		Die folgende Betreuung wurde gelöscht:
 	</p>
 	<table>
 		<tbody>
@@ -55,13 +56,13 @@ ${templateConfiguration.mailCss}
 		</tr>
 		<tr>
 			<td>Status der entfernten Betreuung:</td>
-			<td>${betreuung.getBetreuungsstatus().toString()}</td>
+			<td>${status}</td>
 		</tr>
 		</tbody>
 	</table>
 	<br/>
 	<p>
-		Der Betreuungseintrag war am ${datumErstellung} erstellt worden.
+		Die Betreuung wurde am ${datumErstellung} erfasset.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

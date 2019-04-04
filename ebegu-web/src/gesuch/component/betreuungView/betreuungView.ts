@@ -42,6 +42,7 @@ import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuun
 import TSExceptionReport from '../../../models/TSExceptionReport';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
+import TSInstitutionStammdatenSummary from '../../../models/TSInstitutionStammdatenSummary';
 import TSKindContainer from '../../../models/TSKindContainer';
 import TSModulTagesschule from '../../../models/TSModulTagesschule';
 import {TSDateRange} from '../../../models/types/TSDateRange';
@@ -225,6 +226,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
 
+        tsBetreuung.keineKesbPlatzierung = false;
+
         return tsBetreuung;
     }
 
@@ -341,9 +344,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.errorService.clearAll();
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
+            this.gesuchModelManager.handleErweiterteBetreuung();
             this.isSavingData = false;
             this.form.$setPristine();
             this.$state.go(nextStep, params);
+
         }).catch((exception: TSExceptionReport[]) => {
             // starting over
             this.$log.error('there was an error saving the betreuung ', this.model, exception);
@@ -569,7 +574,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 && this.gesuchModelManager.isDefaultTagesschuleAllowed(instStamm));
     }
 
-    public getInstitutionSD(): TSInstitutionStammdaten {
+    public getInstitutionSD(): TSInstitutionStammdatenSummary {
         if (this.getBetreuungModel()) {
             return this.getBetreuungModel().institutionStammdaten;
         }

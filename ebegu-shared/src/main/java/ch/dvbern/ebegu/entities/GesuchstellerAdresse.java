@@ -20,6 +20,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -31,6 +33,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
+@PrimaryKeyJoinColumn(foreignKey=@ForeignKey(name = "FK_gesuchsteller_adresse_adresse_id")) //TODO Dieser FK wird als einziger nicht generiert (https://hibernate.atlassian.net/browse/HHH-10352)
 public class GesuchstellerAdresse extends Adresse {
 
 	private static final long serialVersionUID = -7687645920281069260L;

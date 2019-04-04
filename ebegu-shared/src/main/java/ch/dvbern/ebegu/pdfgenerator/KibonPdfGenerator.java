@@ -160,14 +160,17 @@ public abstract class KibonPdfGenerator {
 		return empfaengerAdresse;
 	}
 
+	@Nonnull
 	protected String translateEnumValue(@Nullable final Enum<?> key) {
 		return ServerMessageUtil.translateEnumValue(key, sprache);
 	}
 
+	@Nonnull
 	protected String translate(String key) {
 		return ServerMessageUtil.getMessage(key, sprache);
 	}
 
+	@Nonnull
 	protected String translate(String key, Object... args) {
 		return ServerMessageUtil.getMessage(key, sprache, args);
 	}
