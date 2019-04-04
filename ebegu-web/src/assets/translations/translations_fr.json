@@ -127,7 +127,7 @@
     "DUBLETTEN": "Doublons",
     "UMZUG": "Déménagement prévu",
     "NICHT_IN_GEMEINDE_WOHNHAFT": "Ne réside pas à {{gemeinde}}",
-    "NICHT_IN_GEMEINDE_WOHNHAFT_HELP": "FR_Definiert, ob der zivilrechtliche Wohnsitz in der Gemeinde liegt. Durch aktivieren dieses Häkchens entfällt der Anspruch gemäss Art. 34 Abs. 1 Bst. c ASIV.",
+    "NICHT_IN_GEMEINDE_WOHNHAFT_HELP": "FR_Definiert, ob der zivilrechtliche Wohnsitz in der Gemeinde liegt. Durch aktivieren dieses Häkchens entfällt der Anspruch gemäss Art. 34b Abs. 1 Bst. c ASIV.",
     "TELEFON_AUSLAND": "Tél. à l'étranger",
     "KEIN_EINTRAG": "Aucune donnée saisie",
     "GESUCHSTELLER_DIPLOMATENSTATUS": "Statut diplomatique",
