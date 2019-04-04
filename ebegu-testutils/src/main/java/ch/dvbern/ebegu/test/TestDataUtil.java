@@ -585,7 +585,7 @@ public final class TestDataUtil {
 		}
 		kind.setFamilienErgaenzendeBetreuung(true);
 		kind.setSprichtAmtssprache(true);
-		kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
+		kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		return kind;
 	}
 

@@ -17,15 +17,12 @@
 
 package ch.dvbern.ebegu.validators;
 
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.IntegrationTyp;
-
 import javax.annotation.Nonnull;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.time.LocalDate;
+
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 
 /**
  *  Fachstellen dürfen nur im Vorschulalter gesetzt werden: Eine soziale oder sprachliche Indikation
