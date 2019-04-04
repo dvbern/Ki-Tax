@@ -368,7 +368,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(persistedBetreuung.isPresent());
 		Assert.assertEquals(1, persistedBetreuung.get().getBetreuungspensumContainers().size());
 		final BetreuungspensumContainer nextBetPensum = persistedBetreuung.get().getBetreuungspensumContainers().iterator().next();
-		Assert.assertEquals(BigDecimal.valueOf(33).setScale(2), nextBetPensum.getBetreuungspensumJA().getPensum());
+		Assert.assertEquals(BigDecimal.valueOf(33).setScale(10), nextBetPensum.getBetreuungspensumJA().getPensum());
 		Assert.assertEquals(gueltigkeit, nextBetPensum.getBetreuungspensumJA().getGueltigkeit());
 	}
 
