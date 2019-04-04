@@ -116,13 +116,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
 
     public tourStart(start: boolean): void {
 
-        // TODO: Text content in DE
-        // TODO: FR Translations
-        // TODO: Welcome dialog analog invision design
-        // TODO: End dialog analog invision design
-        // TODO: Link to start tour again in help dialog
-        // TODO: Restrict tour startup based on role and cookie value "AlreadyViewedTour"
-        // TODO: Consider replacing CSS selectors like "a[uisref="pendenzen.list-view"]" with ids
         if (!start) {
             return;
         }

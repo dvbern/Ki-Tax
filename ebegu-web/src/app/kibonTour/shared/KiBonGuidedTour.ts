@@ -12,16 +12,16 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTour, Orientation, OrientationConfiguration, TourStep} from 'ngx-guided-tour';
 
-const SELECTOR_HELP_ICON = '[class~="dv-helpmenu-question"]';
+const SELECTOR_HELP_ICON = 'dv-helpmenu';
 const SELECTOR_PENDENZEN_LIST = 'a[uisref="pendenzen.list-view"]';
 const SELECTOR_PENDENZEN_BETREUUNGEN_LIST = 'a[uisref="pendenzenBetreuungen.list-view"]';
 const SELECTOR_FAELLE_LIST = 'a[uisref="faelle.list"]';
 const SELECTOR_ZAHLUNG = 'a[uisref="zahlungsauftrag.view"]';
 const SELECTOR_STATISTIK = 'a[uisref="statistik.view"]';
-const SELECTOR_POST = 'dv-posteingang[uisref="posteingang.view"]';
+const SELECTOR_POST = 'dv-posteingang';
 const SELECTOR_CREATE_FALL = '[class~="dv-ng-navbar-element-fall-eroeffnen"]';
-const SELECTOR_SEARCH = 'input[type="search"]';
-const SELECTOR_USERMENU = '[class~="md-menu"]';
+const SELECTOR_SEARCH = 'dv-quicksearchbox';
+const SELECTOR_USERMENU = '#tourTipUserMenu';
 
 const ROUTE_PENDENZEN_LIST = 'pendenzen.list-view';
 const ROUTE_PENDENZEN_BETREUUNGEN_LIST = 'pendenzenBetreuungen.list-view';
@@ -30,44 +30,52 @@ const ROUTE_ZAHLUNG = 'zahlungsauftrag.view';
 const ROUTE_STATISTIK = 'statistik.view';
 const ROUTE_POST = 'posteingang.view';
 
+// TODO: FR Translations
+// TODO: Link to start tour again in help dialog
+// TODO: Configure tour for Gemeinde & Mandant
+
 export class GemeindeGuidedTour implements GuidedTour {
 
     public tourId: string = 'GemeindeGuidedTour';
     public steps: TourStep[] = [
 
         new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_1_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_1_CONTENT'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_HELP_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_HELP_CONTENT'),
             SELECTOR_HELP_ICON, Orientation.BottomRight),
 
+        // TODO: mmissing a step here for admins
+
         new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_2_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_2_CONTENT'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_PENDENZEN_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_PENDENZEN_CONTENT'),
             SELECTOR_PENDENZEN_LIST, Orientation.Bottom, this.state, ROUTE_PENDENZEN_LIST),
 
         new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_3_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_3_CONTENT'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_ALLEFAELLE_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_ALLEFAELLE_CONTENT'),
             SELECTOR_FAELLE_LIST, Orientation.Bottom, this.state, ROUTE_FAELLE_LIST),
 
+        // TODO: the zahlung step here is different for admin/sachbearbeiter
+
         new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_4_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_4_CONTENT'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_ZAHLUNG_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_ZAHLUNG_CONTENT'),
             SELECTOR_ZAHLUNG, Orientation.Bottom, this.state, ROUTE_ZAHLUNG),
 
         new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_5_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_5_CONTENT'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_STATISTIK_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_STATISTIK_CONTENT'),
             SELECTOR_STATISTIK, Orientation.Bottom, this.state, ROUTE_STATISTIK),
 
         new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_6_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_6_CONTENT'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_POST_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_POST_CONTENT'),
             SELECTOR_POST, Orientation.Bottom, this.state, ROUTE_POST),
 
         new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_7_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_7_CONTENT'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_CREATE_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_CREATE_CONTENT'),
             SELECTOR_CREATE_FALL, Orientation.Left),
 
         new KiBonTourStep(
@@ -121,7 +129,7 @@ export class InstitutionGuidedTour implements GuidedTour {
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
-            SELECTOR_SEARCH, Orientation.BottomLeft),
+            SELECTOR_SEARCH, Orientation.BottomRight),
 
     ];
 
@@ -152,7 +160,6 @@ export class AdminInstitutionGuidedTour implements GuidedTour {
              this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
              SELECTOR_USERMENU, Orientation.BottomRight),
 
-        // todo medu check, i think admin_institution should see   ROUTE_PENDENZEN_BETREUUNGEN_LIST instead of ROUTE_PENDENZEN_LIST
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
@@ -171,7 +178,12 @@ export class AdminInstitutionGuidedTour implements GuidedTour {
         new KiBonTourStep(
             this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'),
             this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
-            SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK)
+            SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
+            SELECTOR_SEARCH, Orientation.BottomRight),
 
     ];
 
