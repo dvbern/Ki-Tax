@@ -758,7 +758,7 @@ export default class GesuchModelManager {
 
     public handleErweiterteBetreuung(): void {
         // tslint:disable-next-line:early-exit
-        if (this.getGesuch()) {
+        if (this.getGesuch() && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtRoles())) {
             // tslint:disable-next-line:early-exit
             if (this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
                 // Mindestens 1 Kind mit erweitertem Aufwand
