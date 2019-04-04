@@ -764,12 +764,11 @@ export default class GesuchModelManager {
                 // Mindestens 1 Kind mit erweitertem Aufwand
                 // Wir setzen das Flag auf TRUE. Achtung: Es darf NIE MEHR auf false gesetzt werden!
                 this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt = true;
-            } else {
+                this.updateGesuch();
+            } else if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
                 // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
                 // Dies aber nur, wenn der GS zu keinem Zeitpunkt bei irgendeinem Kind das Behinderungsflag gesetzt hatte!
-                if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
-                    this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
-                }
+                this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
                 this.updateGesuch();
             }
         }
