@@ -304,7 +304,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		validateMandantMatches(dossier.getFall());
 
 		// Gemeinde muss fuer Mandant-Rollen nicht geprueft werden
-		if (!principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)
+		if (!principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)
 			&& !isUserAllowedForGemeinde(dossier.getGemeinde())) {
 			return false;
 		}

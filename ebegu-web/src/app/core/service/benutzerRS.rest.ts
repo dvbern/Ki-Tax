@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
 import TSBenutzer from '../../../models/TSBenutzer';
 import TSBerechtigungHistory from '../../../models/TSBerechtigungHistory';
 import TSUserSearchresultDTO from '../../../models/TSUserSearchresultDTO';
@@ -111,6 +111,11 @@ export default class BenutzerRS implements IEntityRS {
         return this.$http.post(`${this.serviceURL}/einladen/`, benutzerRest).then((response: any) => {
             return this.ebeguRestUtil.parseUser(new TSBenutzer(), response.data);
         });
+    }
+
+    public erneutEinladen(benutzer: TSBenutzer): IHttpPromise<any> {
+        const benutzerRest = this.ebeguRestUtil.userToRestObject({}, benutzer);
+        return this.$http.post(`${this.serviceURL}/erneutEinladen/`, benutzerRest);
     }
 
     public saveBenutzerBerechtigungen(benutzer: TSBenutzer): IPromise<TSBenutzer> {
