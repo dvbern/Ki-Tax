@@ -19,12 +19,13 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import GesuchModelManager from '../../service/gesuchModelManager';
+import ITranslateService = angular.translate.ITranslateService;
 
 export class DvFinanzielleSituationRequire implements IComponentOptions {
     public transclude = false;
     public bindings = {
         sozialhilfeBezueger: '=',
-        verguenstigungGewuenscht: '=',
+        antragNurFuerBehinderungszuschlag: '=',
         finanzielleSituationRequired: '=',
     };
     public template = require('./dv-finanzielle-situation-require.html');
@@ -34,17 +35,18 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
 
 export class DVFinanzielleSituationRequireController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager'];
+    public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager', '$translate'];
 
     public finanzielleSituationRequired: boolean;
     public sozialhilfeBezueger: boolean;
-    public verguenstigungGewuenscht: boolean;
+    public antragNurFuerBehinderungszuschlag: boolean;
 
     public maxMassgebendesEinkommen: string;
 
     public constructor(
         private readonly einstellungRS: EinstellungRS,
         private readonly gesuchModelManager: GesuchModelManager,
+        private readonly $translate: ITranslateService,
     ) {
     }
 
@@ -60,15 +62,17 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     /**
-     * Das Feld verguenstigungGewuenscht wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
-     * nein beantwortet wurde.
+     * Das Feld antragNurFuerBehinderungszuschlag wird nur angezeigt, wenn das Feld sozialhilfeBezueger eingeblendet ist und mit
+     * nein beantwortet wurde UND wenn mindestens eine Betreuung mit besonderem Betreuungsaufwand zu irgendeinem Zeitpunkt
+     * erfasst war.
      */
-    public showVerguenstigungGewuenscht(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger;
+    public showNurPauschaleFuerBesondereBeduerfnisseGewuenscht(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger &&
+            this.gesuchModelManager.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt;
     }
 
     public setFinanziellesituationRequired(): void {
-        const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.verguenstigungGewuenscht);
+        const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.antragNurFuerBehinderungszuschlag);
         // Wenn es sich geändert hat, müssen gewisse Daten gesetzt werden
         if (required !== this.finanzielleSituationRequired && this.gesuchModelManager.getGesuch()) {
             this.gesuchModelManager.getGesuch().finSitStatus = required ? null : TSFinSitStatus.AKZEPTIERT;
@@ -86,5 +90,10 @@ export class DVFinanzielleSituationRequireController implements IController {
 
     public isKorrekturModusJugendamt(): boolean {
         return this.gesuchModelManager.isKorrekturModusJugendamt();
+    }
+
+    public getFalseOptionLabel(): string {
+        return this.$translate.instant('FINANZIELLE_SITUATION_NUR_BEHINDERUNGSZUSCHLAG_GEWUENSCHT_NEIN',
+            {maxEinkommen: this.maxMassgebendesEinkommen});
     }
 }

@@ -211,6 +211,7 @@ public class AbstractConverter {
 
 		convertAbstractDateRangedFieldsToEntity(jaxPensum, pensumEntity);
 		pensumEntity.setPensum(jaxPensum.getPensum());
+		pensumEntity.setMonatlicheBetreuungskosten(jaxPensum.getMonatlicheBetreuungskosten());
 		pensumEntity.setUnitForDisplay(jaxPensum.getUnitForDisplay());
 	}
 

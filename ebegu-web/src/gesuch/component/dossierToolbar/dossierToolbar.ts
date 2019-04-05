@@ -613,17 +613,14 @@ export class DossierToolbarController implements IDVFocusableController {
             elementID: 'gesuchLoeschenButton',
         }).then(() => {
             this.setAllFormsPristine();
-            if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
-                this.gesuchRS.removeGesuchstellerAntrag(this.getGesuch().id).then(() => {
+            this.gesuchRS.removeAntrag(this.getGesuch().id).then(() => {
+                if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerOnlyRoles())) {
                     this.gesuchModelManager.setGesuch(new TSGesuch());
                     this.resetNavigationParameters();
                     this.$state.go('gesuchsteller.dashboard');
-                });
-            } else {
-                this.gesuchRS.removePapiergesuch(this.getGesuch().id).then(() => {
+                } else {
                     if (this.antragList.length <= 1) {
                         this.$state.go('pendenzen.list-view');
-
                         return;
                     }
                     const navObj: any = {
@@ -631,8 +628,8 @@ export class DossierToolbarController implements IDVFocusableController {
                         dossierId: this.antragList[0].dossierId,
                     };
                     this.$state.go('gesuch.fallcreation', navObj);
-                });
-            }
+                }
+            });
         });
     }
 

@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
@@ -39,6 +40,7 @@ import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.data.VerfuegungZeitabschnittData;
 import ch.dvbern.ebegu.test.data.VerfuegungszeitabschnitteData;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -96,6 +98,7 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 		createBenutzer(mandant);
 		TestDataUtil.prepareParameters(gesuchsperiode, persistence);
 		gemeinde = TestDataUtil.getGemeindeBern(persistence).getId();
+		Locale.setDefault(Constants.DEFAULT_LOCALE);
 	}
 
 	@Test
