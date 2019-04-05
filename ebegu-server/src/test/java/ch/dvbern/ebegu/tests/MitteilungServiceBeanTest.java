@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
@@ -368,7 +369,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(persistedBetreuung.isPresent());
 		Assert.assertEquals(1, persistedBetreuung.get().getBetreuungspensumContainers().size());
 		final BetreuungspensumContainer nextBetPensum = persistedBetreuung.get().getBetreuungspensumContainers().iterator().next();
-		Assert.assertEquals(BigDecimal.valueOf(33).setScale(10), nextBetPensum.getBetreuungspensumJA().getPensum());
+		Assert.assertEquals(MathUtil.DEFAULT.from(33), nextBetPensum.getBetreuungspensumJA().getPensumRounded());
 		Assert.assertEquals(gueltigkeit, nextBetPensum.getBetreuungspensumJA().getGueltigkeit());
 	}
 
