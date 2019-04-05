@@ -277,7 +277,7 @@ export class BenutzerComponent implements OnInit {
             .then(() => {
                 this.$state.go('admin.benutzerlist').then(() => {
                     this.errorService.addMesageAsInfo(this.translate.instant(
-                        'BENUTZER_INVITED_MESSAGE',
+                        'BENUTZER_REINVITED_MESSAGE',
                         {fullName: this.selectedUser.getFullName()}
                     ));
                 });

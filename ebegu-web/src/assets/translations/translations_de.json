@@ -1344,6 +1344,7 @@
     "BENUTZER_ADD": "Benutzer hinzufügen",
     "BENUTZER_INVITE": "Benutzer einladen",
     "BENUTZER_INVITED_MESSAGE": "{{fullName}} wurde erfolgreich hinzugefügt und mittels E-Mail eingeladen",
+    "BENUTZER_REINVITED_MESSAGE": "{{fullName}} wurde erneut mittels E-Mail eingeladen",
     "BENUTZER_STATUS_AKTIV": "aktiv",
     "BENUTZER_STATUS_GESPERRT": "gesperrt",
     "BENUTZER_STATUS_EINGELADEN": "eingeladen",
