@@ -135,7 +135,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             case TSRole.ADMIN_BG:
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.ADMIN_GEMEINDE:
-			case TSRole.SACHBEARBEITER_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
             case TSRole.ADMIN_TS:
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.JURIST:
