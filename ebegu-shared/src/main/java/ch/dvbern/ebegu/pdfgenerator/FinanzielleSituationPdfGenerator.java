@@ -145,9 +145,13 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 	}
 
 	private boolean hasSecondGesuchsteller() {
+		// Der zweite GS wird gedruckt, wenn er Ende Gesuchsperiode zwingend war ODER es sich um eine Mutation handelt und
+		// der zweite GS bereits existiert.
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		return familiensituation != null
+		boolean hasSecondGsEndeGP = familiensituation != null
 			&& familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
+		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
+		return hasSecondGsEndeGP || isMutationWithSecondGs;
 	}
 
 	private boolean isKorrekturmodusGemeinde() {
