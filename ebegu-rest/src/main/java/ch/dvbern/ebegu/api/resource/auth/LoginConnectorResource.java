@@ -214,9 +214,11 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			//return the message to connector and stop process
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
-
+		//external uuid setzen
 		toBenutzer(externalBenutzer, existingBenutzer);
+		benutzerService.saveBenutzer(existingBenutzer);
 		persistence.getEntityManager().flush();
+
 
 
 		if (existingBenutzer.getStatus() == BenutzerStatus.EINGELADEN) {
