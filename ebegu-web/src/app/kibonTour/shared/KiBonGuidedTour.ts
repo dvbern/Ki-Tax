@@ -1,0 +1,248 @@
+/*
+ * Copyright (C) 2019 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import {TranslateService} from '@ngx-translate/core';
+import {StateService} from '@uirouter/core';
+import {GuidedTour, Orientation, OrientationConfiguration, TourStep} from 'ngx-guided-tour';
+
+const SELECTOR_HELP_ICON = 'dv-helpmenu';
+const SELECTOR_PENDENZEN_LIST = 'a[uisref="pendenzen.list-view"]';
+const SELECTOR_PENDENZEN_BETREUUNGEN_LIST = 'a[uisref="pendenzenBetreuungen.list-view"]';
+const SELECTOR_FAELLE_LIST = 'a[uisref="faelle.list"]';
+const SELECTOR_ZAHLUNG = 'a[uisref="zahlungsauftrag.view"]';
+const SELECTOR_STATISTIK = 'a[uisref="statistik.view"]';
+const SELECTOR_POST = 'dv-posteingang';
+const SELECTOR_CREATE_FALL = '[class~="dv-ng-navbar-element-fall-eroeffnen"]';
+const SELECTOR_SEARCH = 'dv-quicksearchbox';
+const SELECTOR_USERMENU = '#tourTipUserMenu';
+
+const ROUTE_PENDENZEN_LIST = 'pendenzen.list-view';
+const ROUTE_PENDENZEN_BETREUUNGEN_LIST = 'pendenzenBetreuungen.list-view';
+const ROUTE_FAELLE_LIST = 'faelle.list';
+const ROUTE_ZAHLUNG = 'zahlungsauftrag.view';
+const ROUTE_STATISTIK = 'statistik.view';
+const ROUTE_POST = 'posteingang.view';
+
+// TODO: FR Translations
+// TODO: Link to start tour again in help dialog
+// TODO: Configure tour for Gemeinde & Mandant
+
+export class GemeindeGuidedTour implements GuidedTour {
+
+    public tourId: string = 'GemeindeGuidedTour';
+    public steps: TourStep[] = [
+
+        new KiBonTourStep(
+            this.translate.instant('GEMEINDE_TOUR_STEP_HELP_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_HELP_CONTENT'),
+            SELECTOR_HELP_ICON, Orientation.BottomRight),
+
+        // TODO: mmissing a step here for admins
+
+        new KiBonTourStep(
+            this.translate.instant('GEMEINDE_TOUR_STEP_PENDENZEN_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_PENDENZEN_CONTENT'),
+            SELECTOR_PENDENZEN_LIST, Orientation.Bottom, this.state, ROUTE_PENDENZEN_LIST),
+
+        new KiBonTourStep(
+            this.translate.instant('GEMEINDE_TOUR_STEP_ALLEFAELLE_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_ALLEFAELLE_CONTENT'),
+            SELECTOR_FAELLE_LIST, Orientation.Bottom, this.state, ROUTE_FAELLE_LIST),
+
+        // TODO: the zahlung step here is different for admin/sachbearbeiter
+
+        new KiBonTourStep(
+            this.translate.instant('GEMEINDE_TOUR_STEP_ZAHLUNG_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_ZAHLUNG_CONTENT'),
+            SELECTOR_ZAHLUNG, Orientation.Bottom, this.state, ROUTE_ZAHLUNG),
+
+        new KiBonTourStep(
+            this.translate.instant('GEMEINDE_TOUR_STEP_STATISTIK_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_STATISTIK_CONTENT'),
+            SELECTOR_STATISTIK, Orientation.Bottom, this.state, ROUTE_STATISTIK),
+
+        new KiBonTourStep(
+            this.translate.instant('GEMEINDE_TOUR_STEP_POST_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_POST_CONTENT'),
+            SELECTOR_POST, Orientation.Bottom, this.state, ROUTE_POST),
+
+        new KiBonTourStep(
+            this.translate.instant('GEMEINDE_TOUR_STEP_CREATE_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_CREATE_CONTENT'),
+            SELECTOR_CREATE_FALL, Orientation.Left),
+
+        new KiBonTourStep(
+            this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_TITLE'),
+            this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_CONTENT'),
+            SELECTOR_SEARCH, Orientation.BottomLeft),
+    ];
+
+    public useOrb: boolean = false;
+    public skipCallback: (stepSkippedOn: number) => void;
+    public completeCallback: () => void;
+    public minimumScreenSize: number = 0;
+    public preventBackdropFromAdvancing: boolean = false;
+
+    public constructor(private readonly state: StateService,
+                       private readonly translate: TranslateService) {
+    }
+
+}
+
+export class InstitutionGuidedTour implements GuidedTour {
+
+    public tourId: string = 'InstitutionGuidedTour';
+    public steps: TourStep[] = [
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
+            SELECTOR_HELP_ICON, Orientation.BottomRight),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
+            SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_CONTENT'),
+            SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_CONTENT'),
+            SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
+            SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
+            SELECTOR_SEARCH, Orientation.BottomRight),
+
+    ];
+
+    public useOrb: boolean = false;
+    public skipCallback: (stepSkippedOn: number) => void;
+    public completeCallback: () => void;
+    public minimumScreenSize: number = 0;
+    public preventBackdropFromAdvancing: boolean = false;
+
+    public constructor(private readonly state: StateService,
+                       private readonly translate: TranslateService) {
+    }
+
+}
+
+export class AdminInstitutionGuidedTour implements GuidedTour {
+
+    public tourId: string = 'InstitutionGuidedTour';
+    public steps: TourStep[] = [
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
+            SELECTOR_HELP_ICON, Orientation.BottomRight),
+
+        new KiBonTourStep(
+             this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'),
+             this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
+             SELECTOR_USERMENU, Orientation.BottomRight),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
+            SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_CONTENT'),
+            SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_CONTENT'),
+            SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
+            SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK),
+
+        new KiBonTourStep(
+            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'),
+            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
+            SELECTOR_SEARCH, Orientation.BottomRight),
+
+    ];
+
+    public useOrb: boolean = false;
+    public skipCallback: (stepSkippedOn: number) => void;
+    public completeCallback: () => void;
+    public minimumScreenSize: number = 0;
+    public preventBackdropFromAdvancing: boolean = false;
+
+    public constructor(private readonly state: StateService,
+                       private readonly translate: TranslateService) {
+    }
+
+}
+
+export class KiBonTourStep implements TourStep {
+    public title: string;
+    public content: string;
+    public selector: string;
+    public action: () => void;
+    public closeAction: () => void;
+    public highlightPadding: number;
+    public orientation: Orientation | OrientationConfiguration[];
+    public scrollAdjustment: number;
+    public skipStep: boolean;
+    public useHighlightPadding: boolean;
+
+    // @ts-ignore
+    public constructor(title: string, content: string)
+    public constructor(title: string, content: string, selector: string, orientation: Orientation)
+    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService,
+                       navigateToOpen: string)
+    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService,
+                       navigateToOpen: string) {
+        this.title = title;
+        this.content = content;
+        this.selector = selector;
+        this.orientation = orientation;
+        // tslint:disable-next-line:early-exit
+        if (state !== undefined && state !== null) {
+            this.closeAction = () => {
+                console.log('closeaction: ' + new Date().toLocaleString());
+            };
+            this.action = () => {
+                console.log('action: ' + new Date().toLocaleString());
+                console.log(this.selector);
+                console.log(navigateToOpen);
+                if (navigateToOpen) {
+                    state.go(navigateToOpen);
+                }
+            };
+
+        }
+    }
+}
