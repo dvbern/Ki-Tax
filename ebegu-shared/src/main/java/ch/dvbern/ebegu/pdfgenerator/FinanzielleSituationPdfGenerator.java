@@ -94,6 +94,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 	private final Verfuegung verfuegungFuerMassgEinkommen;
 	private final LocalDate erstesEinreichungsdatum;
+	private final boolean hasSecondGesuchsteller;
 
 	@Nonnull
 	private FinanzielleSituation basisJahrGS1;
@@ -113,6 +114,14 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		super(gesuch, stammdaten);
 		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
 		this.erstesEinreichungsdatum = erstesEinreichungsdatum;
+
+		// Der zweite GS wird gedruckt, wenn er Ende Gesuchsperiode zwingend war ODER es sich um eine Mutation handelt und
+		// der zweite GS bereits existiert.
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		boolean hasSecondGsEndeGP = familiensituation != null
+			&& familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
+		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
+		this.hasSecondGesuchsteller =  hasSecondGsEndeGP || isMutationWithSecondGs;
 	}
 
 	@Nonnull
@@ -144,16 +153,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		};
 	}
 
-	private boolean hasSecondGesuchsteller() {
-		// Der zweite GS wird gedruckt, wenn er Ende Gesuchsperiode zwingend war ODER es sich um eine Mutation handelt und
-		// der zweite GS bereits existiert.
-		Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		boolean hasSecondGsEndeGP = familiensituation != null
-			&& familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
-		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
-		return hasSecondGsEndeGP || isMutationWithSecondGs;
-	}
-
 	private boolean isKorrekturmodusGemeinde() {
 		if (Eingangsart.ONLINE == gesuch.getEingangsart() &&
 			AntragStatus.getAllFreigegebeneStatus().contains(gesuch.getStatus())) {
@@ -177,7 +176,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 		basisJahrGS2 = null;
 		AbstractFinanzielleSituation basisJahrGS2Urspruenglich = null;
-		if (hasSecondGesuchsteller()) {
+		if (hasSecondGesuchsteller) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 			basisJahrGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
@@ -251,7 +250,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 		ekv1GS2 = null;
 		Einkommensverschlechterung ekv1GS2Urspruenglich = null;
-		if (hasSecondGesuchsteller()) {
+		if (hasSecondGesuchsteller) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
 			ekv1GS2 = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
@@ -304,7 +303,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 
 		Einkommensverschlechterung ekv2GS2 = null;
 		Einkommensverschlechterung ekv2GS2Urspruenglich = null;
-		if (hasSecondGesuchsteller()) {
+		if (hasSecondGesuchsteller) {
 			requireNonNull(gesuch.getGesuchsteller2());
 			requireNonNull(gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer());
 			ekv2GS2 = gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2();
@@ -465,7 +464,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		FinanzielleSituationTable tableEinkommen =
 			new FinanzielleSituationTable(
 				getPageConfiguration(),
-				hasSecondGesuchsteller(),
+				hasSecondGesuchsteller,
 				isKorrekturmodusGemeinde(),
 				false);
 		tableEinkommen.addRow(einkommenTitle);
@@ -549,7 +548,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		FinanzielleSituationTable table =
 			new FinanzielleSituationTable(
 				getPageConfiguration(),
-				hasSecondGesuchsteller(),
+				hasSecondGesuchsteller,
 				isKorrekturmodusGemeinde(),
 				false);
 		table.addRow(vermoegenTitle);
@@ -594,7 +593,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		FinanzielleSituationTable table =
 			new FinanzielleSituationTable(
 				getPageConfiguration(),
-				hasSecondGesuchsteller(),
+				hasSecondGesuchsteller,
 				isKorrekturmodusGemeinde(),
 				false);
 		table.addRow(abzuegeTitle);
