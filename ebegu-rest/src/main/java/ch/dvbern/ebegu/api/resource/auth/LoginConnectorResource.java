@@ -216,7 +216,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		}
 		//external uuid setzen
 		toBenutzer(externalBenutzer, existingBenutzer);
-		benutzerService.saveBenutzer(existingBenutzer);
+		existingBenutzer =  benutzerService.saveBenutzer(existingBenutzer);
 		persistence.getEntityManager().flush();
 
 
