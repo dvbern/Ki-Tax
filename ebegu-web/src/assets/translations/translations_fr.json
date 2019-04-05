@@ -1536,6 +1536,9 @@
     "INSTITUTION_TOUR_STEP_ADMIN_CONTENT": "",
     "INSTITUTION_TOUR_STEP_SEARCH_TITLE": "",
     "INSTITUTION_TOUR_STEP_SEARCH_CONTENT": "",
-    "BEENDEN": "Beenden",
-    "FERTIG": "Fertig"
+    "BEENDEN": "FR_Beenden",
+    "FERTIG": "FR_Fertig",
+    "SUPPORTANFRAGE_STELLEN": "FR_Supportanfrage erfassen",
+    "SUPPORTANFRAGE_BESCHREIBUNG": "FR_Problembeschreibung",
+    "SUPPORTANFRAGE_ANLEITUNG": "FR_Damit wir das Problem nachvollziehen können sind wir froh, wenn Sie im untenstehenden Formular so ausführlich wie möglich beschreiben, welches Problem aufgetreten ist. Informationen wie genaue Fehlermeldung, vorherige Schritte bis zum Fehler usw. sind für uns sehr hilfreich. Besten Dank für Ihre Rückmeldung!"
 }
