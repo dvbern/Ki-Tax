@@ -237,7 +237,16 @@ public class AuthResource {
 
 	private boolean isCookieSecure() {
 		final boolean forceCookieSecureFlag = configuration.forceCookieSecureFlag();
-		return request.isSecure() || forceCookieSecureFlag;
+		return isRequestProtocolSecure(request) || forceCookieSecureFlag;
+	}
+
+	private boolean isRequestProtocolSecure(HttpServletRequest request){
+		// get protocol of original request if present
+		final String originalProtocol = request.getHeader(AuthConstants.X_FORWARDED_PROTO);
+		if (originalProtocol != null) {
+			return originalProtocol.startsWith("https");
+		}
+		return request.isSecure();
 	}
 
 	@POST
