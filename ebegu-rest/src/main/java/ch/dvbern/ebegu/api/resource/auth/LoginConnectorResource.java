@@ -47,7 +47,6 @@ import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
-import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,9 +81,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 
 	@Context
 	private UriInfo uriInfo;
-
-	@Inject
-	private Persistence persistence;
 
 	@Inject
 	public LoginConnectorResource(
@@ -216,10 +212,6 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		}
 		//external uuid setzen
 		toBenutzer(externalBenutzer, existingBenutzer);
-		existingBenutzer =  benutzerService.saveBenutzer(existingBenutzer);
-		persistence.getEntityManager().flush();
-
-
 
 		if (existingBenutzer.getStatus() == BenutzerStatus.EINGELADEN) {
 			existingBenutzer.setStatus(BenutzerStatus.AKTIV);
