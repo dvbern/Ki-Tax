@@ -19,6 +19,10 @@ import {TSRole} from '../models/enums/TSRole';
 /**
  *  Navigiert basierend auf der Rolle zu einer anderen Startseite
  */
+export function navigateToStartPageForRoleWithParams(currentRole: TSRole, $state: StateService, params: any): TransitionPromise {
+    return $state.go(getRoleBasedTargetState(currentRole, $state).$state(), params);
+}
+
 export function navigateToStartPageForRole(currentRole: TSRole, $state: StateService): TransitionPromise {
     return $state.go(getRoleBasedTargetState(currentRole, $state).$state());
 }

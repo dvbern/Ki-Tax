@@ -62,11 +62,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensumRounded());
 		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
-		boolean besondereBeduerfnisse = false;
-		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
-			besondereBeduerfnisse = betreuung.getErweiterteBetreuungContainer()
-				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
-		}
+		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		if (besondereBeduerfnisse) {
 			zeitabschnitt.addBemerkung(RuleKey.ERWEITERTE_BEDUERFNISSE, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
