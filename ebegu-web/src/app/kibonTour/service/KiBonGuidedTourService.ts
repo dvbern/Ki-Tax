@@ -14,28 +14,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-@import (reference) '../../../style/variables.less';
-@import (reference) '../../../style/mixins.less';
 
-.welcome-title-cotainer {
-    text-align: center;
-    margin-top: 10rem;
+import {ErrorHandler, Injectable} from '@angular/core';
+import {GuidedTourService} from 'ngx-guided-tour';
+import {BehaviorSubject, Observable} from 'rxjs';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class KiBonGuidedTourService extends GuidedTourService {
+
+    private readonly guidedTourSubject$ = new BehaviorSubject(false);
+    private readonly _guidedTour$ = this.guidedTourSubject$.asObservable();
+
+    private constructor(public errorHandler: ErrorHandler) {
+        super(errorHandler);
+    }
+
+    public emit(): void {
+        this.guidedTourSubject$.next(true);
+    }
+
+    public get guidedTour$(): Observable<boolean | null> {
+        return this._guidedTour$;
+    }
 }
-
-.welcome-title {
-    font-weight: bold;
-    font-size: 10rem;
-    color: @white;
-    background: @primary;
-    padding: 0 2rem;
-}
-
-.welcome-image {
-    content: url('../../../assets/images/logo-kibon-bern.svg');
-    width: 400px;
-    height: 200px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
