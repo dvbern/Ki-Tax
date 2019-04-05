@@ -48,7 +48,7 @@ export class DvRadioContainerController implements IController {
     // D.h. dv-enable-element muss in diesem Fall immer gesetzt sein. Aus diesem Grund spielen wir
     // immer mit den Werten von dv-enable-allowed-roles und dv-enable-expression. Wenn die Direktive nicht gesetzt
     // werden muss, bekommen diese attributen die Werte by default allRoles und true, sodass es immer angezeigt wird.
-    public allRoles: Array<TSRole>;
+    public allRoles: ReadonlyArray<TSRole>;
 
     public $onInit(): void {
         this.modelToPassOn = this.ngModelCtrl.$viewValue;
