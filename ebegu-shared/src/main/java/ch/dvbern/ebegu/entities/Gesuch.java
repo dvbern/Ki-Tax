@@ -1013,7 +1013,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	public boolean isThereAnyBetreuungWithErweitertemBetreuungsaufwand() {
 		List<Betreuung> betreuungs = this.extractAllBetreuungen();
 		for (Betreuung betreuung : betreuungs) {
-			if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null && betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse()) {
+			if (betreuung.hasErweiterteBetreuung()) {
 				return true;
 			}
 		}

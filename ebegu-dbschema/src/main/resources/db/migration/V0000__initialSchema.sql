@@ -474,7 +474,7 @@ CREATE TABLE betreuungsmitteilung_pensum_aud (
 	gueltig_ab                  DATE,
 	gueltig_bis                 DATE,
 	monatliche_betreuungskosten DECIMAL(19, 2),
-	pensum                      DECIMAL(19, 2),
+	pensum                      DECIMAL(19, 10),
 	unit_for_display            VARCHAR(255),
 	betreuungsmitteilung_id     BINARY(16),
 	PRIMARY KEY (id, rev)
@@ -491,7 +491,7 @@ CREATE TABLE betreuungsmitteilung_pensum (
 	gueltig_ab                  DATE           NOT NULL,
 	gueltig_bis                 DATE           NOT NULL,
 	monatliche_betreuungskosten DECIMAL(19, 2) NOT NULL,
-	pensum                      DECIMAL(19, 2) NOT NULL,
+	pensum                      DECIMAL(19, 10) NOT NULL,
 	unit_for_display            VARCHAR(255)   NOT NULL,
 	betreuungsmitteilung_id     BINARY(16)     NOT NULL,
 	PRIMARY KEY (id)
@@ -508,7 +508,7 @@ CREATE TABLE betreuungspensum (
 	gueltig_ab                  DATE           NOT NULL,
 	gueltig_bis                 DATE           NOT NULL,
 	monatliche_betreuungskosten DECIMAL(19, 2) NOT NULL,
-	pensum                      DECIMAL(19, 2) NOT NULL,
+	pensum                      DECIMAL(19, 10) NOT NULL,
 	unit_for_display            VARCHAR(255)   NOT NULL,
 	nicht_eingetreten           BIT            NOT NULL,
 	PRIMARY KEY (id)
@@ -526,7 +526,7 @@ CREATE TABLE betreuungspensum_aud (
 	gueltig_ab                  DATE,
 	gueltig_bis                 DATE,
 	monatliche_betreuungskosten DECIMAL(19, 2),
-	pensum                      DECIMAL(19, 2),
+	pensum                      DECIMAL(19, 10),
 	unit_for_display            VARCHAR(255),
 	nicht_eingetreten           BIT,
 	PRIMARY KEY (id, rev)

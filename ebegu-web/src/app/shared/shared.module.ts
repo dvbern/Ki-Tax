@@ -22,6 +22,7 @@ import {FormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {UIRouterModule} from '@uirouter/angular';
+import {GuidedTourModule} from 'ngx-guided-tour';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
@@ -35,6 +36,7 @@ import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
 import {DvNgShowElementDirective} from '../core/directive/dv-ng-show-element/dv-ng-show-element.directive';
 import {I18nServiceRSRest} from '../i18n/services/i18nServiceRS.rest';
+import {KiBonGuidedTourComponent} from '../kibonTour/component/KiBonGuidedTourComponent';
 import {BenutzerRolleComponent} from './component/benutzer-rolle/benutzer-rolle.component';
 import {BerechtigungComponent} from './component/berechtigung/berechtigung.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
@@ -66,6 +68,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
                 deps: [HttpClient],
             },
         }),
+        GuidedTourModule.forRoot(),
     ],
     declarations: [
         AccordionDirective,
@@ -89,6 +92,7 @@ export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
         NavbarComponent,
         StammdatenHeaderComponent,
         UiViewComponent,
+        KiBonGuidedTourComponent
     ],
     entryComponents: [
         DvHelpmenuComponent,

@@ -1268,11 +1268,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			? String.valueOf(kind.getPensumFachstelle().getFachstelle().getName())
 			: StringUtils.EMPTY);
 
-		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null) {
-			row.setKindErwBeduerfnisse(betreuung.getErweiterteBetreuungContainer()
-				.getErweiterteBetreuungJA().getErweiterteBeduerfnisse());
-		}
-
+		row.setKindErwBeduerfnisse(betreuung.hasErweiterteBetreuung());
 		row.setKindSprichtAmtssprache(kind.getSprichtAmtssprache());
 		row.setKindEinschulungTyp(kind.getEinschulungTyp());
 	}
