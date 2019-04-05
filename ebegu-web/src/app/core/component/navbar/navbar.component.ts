@@ -115,7 +115,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     }
 
     public tourStart(start: boolean): void {
-
         if (!start) {
             return;
         }
@@ -123,38 +122,32 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
 
         switch (roleLoggedIn) {
             case TSRole.ADMIN_TRAEGERSCHAFT:
-                this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
-                break;
-            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
-            case TSRole.JURIST:
-            case TSRole.REVISOR:
-            case TSRole.STEUERAMT:
-            case TSRole.ADMIN_MANDANT:
-            case TSRole.SACHBEARBEITER_MANDANT:
-            case TSRole.ANONYMOUS:
-            case TSRole.GESUCHSTELLER:
-            case TSRole.SACHBEARBEITER_BG:
-            case TSRole.SACHBEARBEITER_GEMEINDE:
-                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
-                break;
-            case TSRole.SACHBEARBEITER_INSTITUTION:
-                this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
-                break;
             case TSRole.ADMIN_INSTITUTION:
                 this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
                 break;
-            case TSRole.SACHBEARBEITER_TS:
-            case TSRole.ADMIN_BG:
-                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
-                break;
-            case TSRole.ADMIN_GEMEINDE:
-                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+                this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
                 break;
             case TSRole.SUPER_ADMIN:
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_GEMEINDE:
+			case TSRole.SACHBEARBEITER_GEMEINDE:
             case TSRole.ADMIN_TS:
+            case TSRole.SACHBEARBEITER_TS:
+            case TSRole.JURIST:
+            case TSRole.REVISOR:
+            case TSRole.STEUERAMT:
+                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
+                break;
+            case TSRole.GESUCHSTELLER:
+                //TODO Gesuchsteller-Tour
+                break;
             default:
         }
-
     }
 
     private getGemeindeIDFromUser$(): Observable<string> {

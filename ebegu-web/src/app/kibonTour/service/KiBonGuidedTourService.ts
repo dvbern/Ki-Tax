@@ -1,11 +1,18 @@
 /*
- * Copyright © 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
- * Das vorliegende Dokument, einschliesslich aller seiner Teile, ist urheberrechtlich
- * geschützt. Jede Verwertung ist ohne Zustimmung der DV Bern AG unzulässig. Dies gilt
- * insbesondere für Vervielfältigungen, die Einspeicherung und Verarbeitung in
- * elektronischer Form. Wird das Dokument einem Kunden im Rahmen der Projektarbeit zur
- * Ansicht übergeben, ist jede weitere Verteilung durch den Kunden an Dritte untersagt.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ErrorHandler, Injectable} from '@angular/core';
@@ -31,5 +38,4 @@ export class KiBonGuidedTourService extends GuidedTourService {
     public get guidedTour$(): Observable<boolean | null> {
         return this._guidedTour$;
     }
-
 }
