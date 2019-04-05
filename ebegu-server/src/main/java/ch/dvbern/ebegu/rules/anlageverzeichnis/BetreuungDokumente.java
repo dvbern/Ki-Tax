@@ -24,7 +24,6 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
@@ -77,9 +76,7 @@ public class BetreuungDokumente extends AbstractDokumente<Betreuung, Object> {
 
 		switch (dokumentTyp) {
 		case BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND:
-			ErweiterteBetreuungContainer erwBetContainer = betreuung.getErweiterteBetreuungContainer();
-			return erwBetContainer.getErweiterteBetreuungJA() != null
-				&& erwBetContainer.getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
+			return betreuung.hasErweiterteBetreuung();
 		default:
 			return false;
 		}

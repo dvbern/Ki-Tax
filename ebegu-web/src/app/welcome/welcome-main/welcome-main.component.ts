@@ -18,7 +18,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
-import {navigateToStartPageForRole} from '../../../utils/AuthenticationUtil';
+import {ITourParams} from '../../../gesuch/gesuch.route';
+import {navigateToStartPageForRole, navigateToStartPageForRoleWithParams} from '../../../utils/AuthenticationUtil';
+import {KiBonGuidedTourService} from '../../kibonTour/service/KiBonGuidedTourService';
 
 @Component({
     selector: 'dv-welcome-main',
@@ -31,12 +33,20 @@ export class WelcomeMainComponent {
     public constructor(
         private readonly authServiceRs: AuthServiceRS,
         private readonly $state: StateService,
+        private readonly kibonGuidedTourService: KiBonGuidedTourService
     ) {
 
     }
 
     public navigateToStartPage(): void {
-        navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
+        const params: ITourParams = {
+            tourType : 'startTour'
+        };
+        navigateToStartPageForRoleWithParams(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state, params);
+        this.kibonGuidedTourService.emit();
     }
 
+    public cancel(): void {
+        navigateToStartPageForRole(this.authServiceRs.getPrincipal().getCurrentRole(), this.$state);
+    }
 }
