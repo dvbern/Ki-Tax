@@ -208,8 +208,7 @@
                     <div ng-if="vm.getBetreuungModel().vertrag">
                         <!--Institutionen, wenn editable ist oder der status falsche institution ist, als liste anzeigen-->
                         <div class="row"
-                             ng-if="vm.showInstitutionenList()"
-                             ng-disabled="!(vm.model.isEnabled() || vm.isFalscheInstitutionAndUserInRole())">
+                             ng-if="vm.showInstitutionenList()">
                             <div class="col-sm-12 dv-input-container-medium form-group">
                                 <label class="md-no-float required" data-translate="INSTITUTION" for="institution">
                                 </label>
