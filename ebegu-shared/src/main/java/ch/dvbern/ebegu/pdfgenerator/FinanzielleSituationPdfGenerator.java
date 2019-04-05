@@ -115,13 +115,14 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
 		this.erstesEinreichungsdatum = erstesEinreichungsdatum;
 
-		// Der zweite GS wird gedruckt, wenn er Ende Gesuchsperiode zwingend war ODER es sich um eine Mutation handelt und
+		// Der zweite GS wird gedruckt, wenn er Ende Gesuchsperiode zwingend war ODER es sich um eine Mutation handelt
+		// und
 		// der zweite GS bereits existiert.
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		boolean hasSecondGsEndeGP = familiensituation != null
 			&& familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
 		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
-		this.hasSecondGesuchsteller =  hasSecondGsEndeGP || isMutationWithSecondGs;
+		this.hasSecondGesuchsteller = hasSecondGsEndeGP || isMutationWithSecondGs;
 	}
 
 	@Nonnull
@@ -439,7 +440,8 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		FinanzielleSituationRow unterhaltsbeitraege = createRow(translate(ERH_UNTERHALTSBEITRAEGE),
 			AbstractFinanzielleSituation::getErhalteneAlimente, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow geschaftsgewinn = createRow(translate(GESCHAEFTSGEWINN),
+		FinanzielleSituationRow geschaftsgewinn = createRow(
+			translate(GESCHAEFTSGEWINN),
 			AbstractFinanzielleSituation::getDurchschnittlicherGeschaeftsgewinn,
 			gs1,
 			gs2,
