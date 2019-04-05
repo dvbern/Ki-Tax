@@ -144,7 +144,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
                 break;
             case TSRole.GESUCHSTELLER:
-                //TODO Gesuchsteller-Tour
+                // TODO Gesuchsteller-Tour
                 break;
             default:
         }
