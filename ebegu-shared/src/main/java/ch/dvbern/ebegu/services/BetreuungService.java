@@ -195,4 +195,9 @@ public interface BetreuungService {
 
 
 	int changeAnmeldungMutationZustand(String betreuungsId, AnmeldungMutationZustand anmeldungMutationZustand);
+
+	/**
+	 * Sendet eine E-Mail an alle Institutionen die aktuell offene Pendenzen haben.
+	 */
+	void sendInfoOffenePendenzenInstitution();
 }

@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -428,6 +429,26 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		String message = mailTemplateConfig.getBenutzerEinladung(einladender, einladung);
 
 		sendMessageWithTemplate(message, einladung.getEingeladener().getEmail());
+	}
+
+	@Override
+	public void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institutionStammdaten) {
+		String mailaddress = institutionStammdaten.getMail();
+		try {
+			if (StringUtils.isNotEmpty(mailaddress)) {
+				String message = mailTemplateConfig
+					.getInfoOffenePendenzenInstitution(institutionStammdaten, mailaddress);
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer InfoOffenePendenzenInstitution wurde versendet an {}", mailaddress);
+			} else {
+				LOG.warn("Skipping InfoOffenePendenzenInstitution because E-Mail of Institution is null");
+			}
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail InfoOffenePendenzenInstitution konnte nicht verschickt werden fuer Institution",
+				institutionStammdaten.getInstitution().getName());
+		}
 	}
 
 	private void sendMail(

@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.errors.MailException;
 
@@ -132,4 +133,10 @@ public interface MailService {
 	 * Sends an Einladungsemail to the given user according to the type of the Einladung
 	 */
 	void sendBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Einladung einladung) throws MailException;
+
+	/**
+	 * Sendet eine Email mit der Information, dass alle Betreuungsplaetze bestaetigt wurden und das Gesuch freigegeben
+	 * werden kann.
+	 */
+	void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institution);
 }
