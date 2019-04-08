@@ -3092,9 +3092,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxDokumentGrund.setPersonNumber(dokumentGrund.getPersonNumber());
 		jaxDokumentGrund.setDokumentTyp(dokumentGrund.getDokumentTyp());
 		jaxDokumentGrund.setNeeded(dokumentGrund.isNeeded());
-		if (jaxDokumentGrund.getDokumente() == null) {
-			jaxDokumentGrund.setDokumente(new HashSet<>());
-		}
+		jaxDokumentGrund.setDokumente(new HashSet<>());
 		dokumentGrund.getDokumente().stream()
 			.map(this::dokumentToJax)
 			.forEach(d -> jaxDokumentGrund.getDokumente().add(d));
