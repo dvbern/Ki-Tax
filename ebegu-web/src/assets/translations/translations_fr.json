@@ -568,7 +568,7 @@
     "MENU_PROVISORISCHE_BERECHNUNG": "Calcul provisoire",
     "MENU_UMZUG": "FR_Umzug",
     "MENU_ABWESENHEIT": "FR_Abwesenheit",
-    "EINGANGSDATUM": "Date de réception",
+    "EINGANGSDATUM": "Date de réception du {{typ}}",
     "MUTATION_AUSWAHL_TEXT_1": "FR_Um Ihr Gesuch zu bearbeiten, klicken Sie bitte die Punkte an, die Sie ändern möchten.",
     "MUTATION_AUSWAHL_TEXT_2": "FR_Navigieren Sie zum Abschnitt, den Sie bearbeiten möchten. Sie können sich Schritt für Schritt durch Ihr Gesuch klicken, um Ihre Angaben zu prüfen oder anzupassen.",
     "MUTATION_AUSWAHL_TEXT_3": "FR_Punkte, die Sie ändern, werden grün markiert. Alle anderen Punkte bleiben gespeichert. Bitte klicken Sie nach den erfolgten Änderungen auf Freigabe.",
