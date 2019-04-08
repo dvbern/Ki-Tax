@@ -27,6 +27,7 @@ import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {
@@ -182,5 +183,9 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
 
         return this.authServiceRS.principal$
             .pipe(map(p => p.extractCurrentAktiveGemeinden()));
+    }
+
+    public showMenuAnmeldungen(): boolean {
+        return EbeguUtil.isTagesschulangebotEnabled();
     }
 }
