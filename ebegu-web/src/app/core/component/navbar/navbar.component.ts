@@ -27,13 +27,10 @@ import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
-import {
-    AdminInstitutionGuidedTour,
-    GemeindeGuidedTour,
-    InstitutionGuidedTour
-} from '../../../kibonTour/shared/KiBonGuidedTour';
+import {AdminInstitutionGuidedTour, GemeindeGuidedTour, InstitutionGuidedTour} from '../../../kibonTour/shared/KiBonGuidedTour';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
@@ -50,6 +47,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
+
+    public readonly showMenuAnmeldungen = EbeguUtil.isTagesschulangebotEnabled();
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -72,7 +71,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 },
                 err => LOG.error(err),
             );
-        this.kibonGuidedTourService.guidedTour$.pipe(takeUntil(this.unsubscribe$))
+        this.kibonGuidedTourService.guidedTour$
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
                 next => {
                     this.tourStart(next);
@@ -183,4 +183,5 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         return this.authServiceRS.principal$
             .pipe(map(p => p.extractCurrentAktiveGemeinden()));
     }
+
 }
