@@ -101,7 +101,7 @@ public class JaxDokumentGrund extends JaxAbstractDTO {
 	}
 
 	public boolean isEmpty() {
-		return getDokumente() == null || getDokumente().size() <= 0;
+		return getDokumente().isEmpty();
 	}
 
 	@Nullable
