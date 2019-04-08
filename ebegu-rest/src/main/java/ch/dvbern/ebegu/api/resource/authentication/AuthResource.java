@@ -260,7 +260,6 @@ public class AuthResource {
 				String authToken = Objects.requireNonNull(authTokenCookie.getValue());
 				if (!authService.logoutAndDelete(authToken)) {
 					LOG.debug("Could not remove authToken in database");
-
 				}
 			}
 			// Always Respond with expired cookies
