@@ -161,6 +161,7 @@ public class AuthResource {
 	@POST
 	@Path("/login")
 	@PermitAll
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response login(@Nonnull JaxBenutzer loginElement) {
 		if (configuration.isDummyLoginEnabled()) {
 
@@ -212,7 +213,7 @@ public class AuthResource {
 			NewCookie principalCookie = new NewCookie(AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
 				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "principal", AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
 
-			return Response.ok().cookie(authCookie, xsrfCookie, principalCookie).build();
+			return Response.noContent().cookie(authCookie, xsrfCookie, principalCookie).build();
 		} else {
 			LOG.warn("Dummy Login is disabled, returning 410");
 			return Response.status(Response.Status.GONE).build();
@@ -252,24 +253,24 @@ public class AuthResource {
 	@POST
 	@Path("/logout")
 	@PermitAll
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response logout(@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
 		try {
 			if (authTokenCookie != null) {
 				String authToken = Objects.requireNonNull(authTokenCookie.getValue());
-				boolean cookieSecure = isCookieSecure();
-
-				if (authService.logoutAndDelete(authToken)) {
-					// Respond with expired cookies
-					NewCookie authCookie = expireCookie(AuthConstants.COOKIE_AUTH_TOKEN, cookieSecure, true);
-					NewCookie xsrfCookie = expireCookie(AuthConstants.COOKIE_XSRF_TOKEN, cookieSecure, false);
-					NewCookie principalCookie = expireCookie(AuthConstants.COOKIE_PRINCIPAL, cookieSecure, false);
-					return Response.ok().cookie(authCookie, xsrfCookie, principalCookie).build();
+				if (!authService.logoutAndDelete(authToken)) {
+					LOG.debug("Could not remove authToken in database");
 				}
 			}
-			return Response.ok().build();
+			// Always Respond with expired cookies
+			boolean cookieSecure = isCookieSecure();
+			NewCookie authCookie = expireCookie(AuthConstants.COOKIE_AUTH_TOKEN, cookieSecure, true);
+			NewCookie xsrfCookie = expireCookie(AuthConstants.COOKIE_XSRF_TOKEN, cookieSecure, false);
+			NewCookie principalCookie = expireCookie(AuthConstants.COOKIE_PRINCIPAL, cookieSecure, false);
+			return Response.noContent().cookie(authCookie, xsrfCookie, principalCookie).build();
 		} catch (NoSuchElementException e) {
 			LOG.info("Token Decoding from Cookies failed", e);
-			return Response.ok().build();
+			return Response.noContent().build();
 		}
 	}
 
