@@ -45,7 +45,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 export class DvNgShowElementDirective implements OnInit {
 
     private hasView = false;
-    private _roles: TSRole[];
+    private _roles: ReadonlyArray<TSRole>;
     private _condition: boolean;
 
     public constructor(
@@ -63,7 +63,7 @@ export class DvNgShowElementDirective implements OnInit {
      * Using a setter to respond to dynamic changes of input value
      */
     @Input('dvNgShowElementRoles')
-    public set roles(roles: TSRole[]) {
+    public set roles(roles: ReadonlyArray<TSRole>) {
         this._roles = roles;
         this.handleElement();
     }

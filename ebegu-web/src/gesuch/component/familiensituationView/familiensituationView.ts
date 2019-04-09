@@ -59,7 +59,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         '$timeout',
     ];
     public familienstatusValues: Array<TSFamilienstatus>;
-    public allowedRoles: Array<TSRole>;
+    public allowedRoles: ReadonlyArray<TSRole>;
     public initialFamiliensituation: TSFamiliensituation;
     public savedClicked: boolean = false;
 
