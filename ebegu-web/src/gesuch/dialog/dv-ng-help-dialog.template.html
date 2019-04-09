@@ -26,7 +26,10 @@
     <div class="marginTop40">
         <h2 [textContent]="'TECHNISCHE_HILFE' | translate"></h2>
         <p>DV Bern AG</p>
-        <p><a href="mailto:support@kibon.ch">support@kibon.ch</a></p>
+        <a href="" (click)="openSupportanfrage()">
+            <i class="fa fa-question-circle-o">&nbsp;</i>
+            <span translate="SUPPORTANFRAGE_STELLEN">&nbsp;</span>
+        </a>
         <p><a href="tel:+41 31 378 24 33">+41 31 378 24 33</a></p>
     </div>
 

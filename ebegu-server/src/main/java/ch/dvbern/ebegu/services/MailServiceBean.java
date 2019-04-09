@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -33,6 +34,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.SupportAnfrageDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -49,6 +52,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -89,6 +93,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private BenutzerService benutzerService;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
@@ -428,6 +439,27 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		String message = mailTemplateConfig.getBenutzerEinladung(einladender, einladung);
 
 		sendMessageWithTemplate(message, einladung.getEingeladener().getEmail());
+	}
+
+	@Override
+	public void sendSupportAnfrage(@Nonnull SupportAnfrageDTO supportAnfrageDTO) {
+		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalArgumentException());
+
+		String subject = "Supportanfrage KiBon: " + supportAnfrageDTO.getId();
+		StringBuilder content = new StringBuilder();
+		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
+		content.append("Erstellt am: " ).append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now())).append(Constants.LINE_BREAK);
+		content.append("Benutzer: ").append(benutzer.getUsername()).append(" (").append(benutzer.getFullName()).append(')').append(Constants.LINE_BREAK);
+		content.append("Rolle: ").append(benutzer.getRole()).append(Constants.LINE_BREAK);
+		content.append(Constants.LINE_BREAK);
+		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
+
+		try {
+			String supportMail = ebeguConfiguration.getSupportMail();
+			sendMessage(subject, content.toString(), supportMail);
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(e, "Senden der Mail nicht erfolgreich", "");
+		}
 	}
 
 	private void sendMail(

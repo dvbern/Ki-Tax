@@ -164,7 +164,7 @@ export default class AuthServiceRS {
                 return (parsedURL.hostname && parsedURL.hostname.endsWith('.be.ch'));
             }
 
-        } catch (e) {
+        } catch (ignore) {
             return false;
         }
         return false;
@@ -245,14 +245,14 @@ export default class AuthServiceRS {
     /**
      * gibt true zurueck wenn der aktuelle Benutzer eine der uebergebenen Rollen innehat
      */
-    public isOneOfRoles(roles: Array<TSRole>): boolean {
+    public isOneOfRoles(roles: ReadonlyArray<TSRole>): boolean {
         if (roles !== undefined && roles !== null && this.principal) {
             return this.principal.hasOneOfRoles(roles);
         }
         return false;
     }
 
-    public getVisibleRolesForPrincipal(): TSRole[] {
+    public getVisibleRolesForPrincipal(): ReadonlyArray<TSRole> {
         switch (this.getPrincipalRole()) {
             case TSRole.SUPER_ADMIN:
                 return TSRoleUtil.getAllRolesButAnonymous();

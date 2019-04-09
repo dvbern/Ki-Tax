@@ -14,9 +14,10 @@
  */
 
 import {Component} from '@angular/core';
-import {MatDialogRef} from '@angular/material';
+import {MatDialog, MatDialogRef} from '@angular/material';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import TSDownloadFile from '../../models/TSDownloadFile';
+import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';
 
 /**
  * This component shows a Help Dialog with all contact details and a Link to the user manual
@@ -29,6 +30,7 @@ export class DvNgHelpDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
+        private readonly dialogSupport: MatDialog,
         private readonly downloadRS: DownloadRS,
     ) {
     }
@@ -46,5 +48,9 @@ export class DvNgHelpDialogComponent {
             .catch(() => {
                 win.close();
             });
+    }
+
+    public openSupportanfrage(): void {
+        this.dialogSupport.open(DvNgSupportDialogComponent);
     }
 }

@@ -239,7 +239,7 @@ export class BenutzerComponent implements OnInit {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
-    private isAtLeastOneRoleInList(rolesToCheck: Array<TSRole>): boolean {
+    private isAtLeastOneRoleInList(rolesToCheck: ReadonlyArray<TSRole>): boolean {
         // Es muessen alle vorhandenen Rollen geprueft werden
         if (rolesToCheck.indexOf(this.currentBerechtigung.role) > -1) {
             return true;

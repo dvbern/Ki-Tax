@@ -75,7 +75,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public showKorrespondadrGS: boolean;
     public showRechnungsadr: boolean;
     public showRechnungsadrGS: boolean;
-    public allowedRoles: Array<TSRole>;
+    public allowedRoles: ReadonlyArray<TSRole>;
     public gesuchstellerNumber: number;
     private isLastVerfuegtesGesuch: boolean = false;
 
