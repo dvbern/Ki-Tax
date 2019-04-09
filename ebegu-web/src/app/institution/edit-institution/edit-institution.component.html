@@ -450,17 +450,9 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-
-            <!-- two button are needed, one for editMode and one for !editMode because the dv-loading-button gets
-            disabled when we click on it-->
-            <dv-loading-button *ngIf="editMode && isStammdatenEditable()" [type]="'submit'">
-                <span>{{submitButtonLabel()}}</span>
-            </dv-loading-button>
-
-            <dv-loading-button *ngIf="!editMode && isStammdatenEditable()" [type]="'submit'">
-                <span>{{submitButtonLabel()}}</span>
-            </dv-loading-button>
-
+            <button *ngIf="isStammdatenEditable()" [type]="'submit'" class="dv-btn next-button">
+                {{submitButtonLabel()}}
+            </button>
             <button type="button" class="dv-btn cancel-button"
                     *ngIf="!isRegistering()"
                     (click)="cancel()"

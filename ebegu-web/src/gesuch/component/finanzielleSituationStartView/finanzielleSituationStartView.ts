@@ -57,7 +57,7 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     public finanzielleSituationRequired: boolean;
     public areThereOnlySchulamtangebote: boolean;
     public areThereOnlyFerieninsel: boolean;
-    public allowedRoles: Array<TSRoleUtil>;
+    public allowedRoles: ReadonlyArray<TSRoleUtil>;
     private readonly initialModel: TSFinanzModel;
 
     public constructor(
