@@ -1536,5 +1536,7 @@
     "INSTITUTION_TOUR_STEP_SEARCH_TITLE": "",
     "INSTITUTION_TOUR_STEP_SEARCH_CONTENT": "Über die Suche können Sie Fälle nach folgenden Punkten durchsuchen:\n<ul>\n<li>Fallnummer</li>\n<li>BG-Nummer</li>\n<li>Vorname Gesuchstellerin bzw. Gesuchsteller</li>\n<li>Name Gesuchstellerin bzw. Gesuchsteller</li>\n<li>Vorname Kind</li>\n<li>Nachname Kind</li>\n<li>Geburtsdatum</li>\n</ul>\nDie Suche zeigt „live“ eine Vorschau an.\n<BR><BR>\nMit einem Klick auf einen Fall wird der neuste Antrag dieses Falls geöffnet. Anschliessend kann innerhalb dieses Falls mutiert werden.",
     "BEENDEN": "Beenden",
-    "FERTIG": "Fertig"
+    "FERTIG": "Fertig",
+    "INSTITUTION_BENACHRICHTIGUNGEN": "Benachrichtigungen",
+    "INSTITUTION_BENACHRICHTIGUNG_PENDENZEN": "Mail senden bei offenen Pendenzen (täglich)"
 }

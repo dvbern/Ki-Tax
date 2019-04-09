@@ -198,6 +198,19 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <!-- Mail senden bei offenen Pendenzen -->
+                    <div class="col-sm-6">
+                        <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
+                        <div class="form-group">
+                            <mat-checkbox id="sendMailWennOffenePendenzen_id" name="sendMailWennOffenePendenzen_id"
+                                          [(ngModel)]="stammdaten.sendMailWennOffenePendenzen">
+                                {{'INSTITUTION_BENACHRICHTIGUNG_PENDENZEN'|translate}}
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="title">
                     <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
                 </div>
@@ -441,6 +454,15 @@
                                    [translateParams]="{anzahlPlaetzeFirmen: stammdaten.anzahlPlaetzeFirmen ? stammdaten.anzahlPlaetzeFirmen : 0}">
                                     INSTITUTION_ANZAHL_PLAETZE_FIRMEN_PARAM
                                 </p>
+                            </div>
+                        </div>
+
+                        <!-- Benachrichtugnseinstellungen -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
+                                <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
+                                   translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
                             </div>
                         </div>
                     </div>

@@ -1537,5 +1537,7 @@
     "INSTITUTION_TOUR_STEP_SEARCH_TITLE": "",
     "INSTITUTION_TOUR_STEP_SEARCH_CONTENT": "",
     "BEENDEN": "Beenden",
-    "FERTIG": "Fertig"
+    "FERTIG": "Fertig",
+    "INSTITUTION_BENACHRICHTIGUNGEN": "FR_Benachrichtigungen",
+    "INSTITUTION_BENACHRICHTIGUNG_PENDENZEN": "FR_Mail senden bei offenen Pendenzen (täglich)"
 }

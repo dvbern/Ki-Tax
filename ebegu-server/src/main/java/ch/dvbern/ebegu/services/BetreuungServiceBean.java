@@ -825,7 +825,9 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			if (CollectionUtils.isNotEmpty(pendenzen)) {
 				InstitutionStammdaten stammdaten =
 					institutionStammdatenService.getInstitutionStammdatenByInstitution(institution.getId());
-				mailService.sendInfoOffenePendenzenInstitution(stammdaten);
+				if (stammdaten.getSendMailWennOffenePendenzen()) {
+					mailService.sendInfoOffenePendenzenInstitution(stammdaten);
+				}
 			}
 		}
 	}

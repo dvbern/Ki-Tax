@@ -1105,6 +1105,7 @@ export default class EbeguRestUtil {
             restInstitutionStammdaten.subventioniertePlaetze = institutionStammdaten.subventioniertePlaetze;
             restInstitutionStammdaten.anzahlPlaetze = institutionStammdaten.anzahlPlaetze;
             restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
+            restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
             restInstitutionStammdaten.adresseKontoinhaber =
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
             restInstitutionStammdaten.institutionStammdatenTagesschule =
@@ -1142,6 +1143,7 @@ export default class EbeguRestUtil {
             institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
             institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
             institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
+            institutionStammdatenTS.sendMailWennOffenePendenzen = institutionStammdatenFromServer.sendMailWennOffenePendenzen;
             institutionStammdatenTS.adresseKontoinhaber =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
             institutionStammdatenTS.institutionStammdatenTagesschule =
