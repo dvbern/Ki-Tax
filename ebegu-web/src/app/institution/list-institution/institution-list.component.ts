@@ -112,15 +112,26 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     /**
-     * Institutions in status EINGELADEN cannot be opened from the list
+     * Institutions in status EINGELADEN cannot be opened from the list. Only Exception: the InstitutionsAdmin for the
+     * Institution in question can always open the Institution.
      */
     public openInstitution(institution: TSInstitution): void {
-        if (institution.status !== TSInstitutionStatus.EINGELADEN) {
+        if (institution.status !== TSInstitutionStatus.EINGELADEN || this.isInstitutionsAdminForInstitution(institution)) {
             this.$state.go('institution.edit', {
                 institutionId: institution.id,
             });
         }
         return;
+    }
+
+    private isInstitutionsAdminForInstitution(institution: TSInstitution): boolean {
+        const currentBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
+        if (currentBerechtigung) {
+            return currentBerechtigung.role === TSRole.ADMIN_INSTITUTION
+                && ((currentBerechtigung.institution && currentBerechtigung.institution.id === institution.id)
+                    || (currentBerechtigung.traegerschaft && currentBerechtigung.traegerschaft.id === institution.traegerschaft.id));
+        }
+        return false;
     }
 
     public isCreateAllowed(): boolean {
