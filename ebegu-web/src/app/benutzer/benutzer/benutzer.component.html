@@ -259,6 +259,14 @@
                     (click)="cancel()"
                     [textContent]="'CANCEL' | translate">
             </button>
+
+            <button type="button" class="dv-btn cancel-button"
+                    *dvNgShowElement="selectedUser.status === TSBenutzerStatus.EINGELADEN;
+                        roles: TSRoleUtil.getSuperAdminRoles()"
+                    (click)="erneutEinladen()"
+                    [textContent]="'BENUTZER_ERNEUT_EINLADEN' | translate">
+            </button>
+
         </div>
 
     </form>

@@ -682,6 +682,10 @@ export class INewFallStateParams {
     public gemeindeId: string;
 }
 
+export class ITourParams {
+    public tourType: string;
+}
+
 export class IErwerbspensumStateParams {
     public gesuchstellerNumber: string;
     public erwerbspensumNum: string;

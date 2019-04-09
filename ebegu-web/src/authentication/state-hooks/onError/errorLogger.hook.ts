@@ -28,7 +28,7 @@ export function errorLoggerHookRunBlock($transitions: TransitionService): void {
 }
 
 function onError(transition: Transition): HookResult {
-    if (transition.error().type !== RejectType.SUPERSEDED) {
+    if (transition.error().type !== RejectType.SUPERSEDED && transition.error().type !== RejectType.IGNORED) {
         LOG.error('Fehler beim Navigieren', transition);
     }
 }
