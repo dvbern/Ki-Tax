@@ -66,7 +66,7 @@ export class EinkommensverschlechterungInfoViewController
     ];
 
     public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
-    public allowedRoles: Array<TSRole>;
+    public allowedRoles: ReadonlyArray<TSRole>;
     public basisJahrUndPeriode = {
         jahr1periode: this.gesuchModelManager.getBasisjahrPlus(1),
         jahr2periode: this.gesuchModelManager.getBasisjahrPlus(2),

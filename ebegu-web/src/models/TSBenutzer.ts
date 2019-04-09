@@ -223,9 +223,8 @@ export default class TSBenutzer {
         return this.getCurrentRole() === role;
     }
 
-    public hasOneOfRoles(roles: TSRole[]): boolean {
+    public hasOneOfRoles(roles: ReadonlyArray<TSRole>): boolean {
         const principalRole = this.getCurrentRole();
-
         return roles.some(role => role === principalRole);
     }
 }
