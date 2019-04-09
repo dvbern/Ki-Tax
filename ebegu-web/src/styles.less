@@ -495,6 +495,39 @@ _:-ms-fullscreen, .mat-cell {
     padding-top: 15px;
 }
 
+footer {
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    display: flex;
+    width: 100%;
+    font-size: 1.4rem;
+
+    div{
+        flex-grow: 1;
+        flex-basis: 0;
+    }
+
+    .copyright {
+        text-align: left;
+    }
+
+    .info {
+        text-align: center;
+
+        button {
+            border: 0;
+            padding: 0;
+            background: @white;
+            text-align: center;
+            text-decoration: underline;
+        }
+    }
+
+    .version {
+        text-align: right;
+    }
+}
+
 /* Personal preference for BS modal.  The LESS below makes the backdrop white and
    causes the modal to fade in rather than slide in. */
 //@modal-backdrop-bg: white;
