@@ -176,7 +176,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 	public PdfPTable createUnterschriftenTable() {
 		PdfPTable table = new PdfPTable(2);
 		PdfUtil.setTableDefaultStyles(table);
-		table.getDefaultCell().setPaddingTop(4 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
+		table.getDefaultCell().setPaddingTop(3 * PdfUtilities.DEFAULT_FONT_SIZE * PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 
 		GesuchstellerContainer gesuchsteller1 = getGesuch().getGesuchsteller1();
 		GesuchstellerContainer gesuchsteller2 = getGesuch().getGesuchsteller2();

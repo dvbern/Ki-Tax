@@ -82,7 +82,10 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		"PdfGeneration_Verfuegung_GutscheinOhneBeruecksichtigungMinimalbeitrag";
 	private static final String GUTSCHEIN = "PdfGeneration_Verfuegung_Gutschein";
 	private static final String ELTERNBEITRAG = "PdfGeneration_Verfuegung_MinimalerElternbeitrag";
-	private static final String KEIN_ANSPRUCH_CONTENT = "PdfGeneration_KeinAnspruch_Content";
+	private static final String KEIN_ANSPRUCH_CONTENT_1 = "PdfGeneration_KeinAnspruch_Content_1";
+	private static final String KEIN_ANSPRUCH_CONTENT_2 = "PdfGeneration_KeinAnspruch_Content_2";
+	private static final String KEIN_ANSPRUCH_CONTENT_3 = "PdfGeneration_KeinAnspruch_Content_3";
+	private static final String KEIN_ANSPRUCH_CONTENT_4 = "PdfGeneration_KeinAnspruch_Content_4";
 	private static final String NICHT_EINTRETEN_CONTENT_1 = "PdfGeneration_NichtEintreten_Content_1";
 	private static final String NICHT_EINTRETEN_CONTENT_2 = "PdfGeneration_NichtEintreten_Content_2";
 	private static final String NICHT_EINTRETEN_CONTENT_3 = "PdfGeneration_NichtEintreten_Content_3";
@@ -155,6 +158,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		List<Element> gruesseElements = Lists.newArrayList();
 		Kind kind = betreuung.getKind().getKindJA();
 		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
+		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
+		Paragraph paragraphWithSupertext;
 		switch (art) {
 		case NORMAL:
 			createFusszeileNormaleVerfuegung(generator.getDirectContent());
@@ -166,17 +171,30 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 			addBemerkungenIfAvailable(document);
 			break;
 		case KEIN_ANSPRUCH:
+			createFusszeileKeinAnspruch(generator.getDirectContent());
 			document.add(PdfUtil.createParagraph(translate(
-				KEIN_ANSPRUCH_CONTENT,
+				KEIN_ANSPRUCH_CONTENT_1,
+				Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
+				Constants.DATE_FORMATTER.format(gp.getGueltigBis()),
+				kind.getFullName(),
+				betreuung.getInstitutionStammdaten().getInstitution().getName(),
+				betreuung.getBGNummer())));
+			document.add(PdfUtil.createParagraph(translate(
+				KEIN_ANSPRUCH_CONTENT_2,
+				Constants.DATE_FORMATTER.format(eingangsdatum))));
+			addBemerkungenIfAvailable(document, false);
+			paragraphWithSupertext = PdfUtil.createParagraph(translate(
+				KEIN_ANSPRUCH_CONTENT_3,
 				kind.getFullName(),
 				Constants.DATE_FORMATTER.format(kind.getGeburtsdatum()),
 				Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
-				Constants.DATE_FORMATTER.format(gp.getGueltigBis())), 2));
-			addBemerkungenIfAvailable(document);
+				Constants.DATE_FORMATTER.format(gp.getGueltigBis())), 2);
+			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+			paragraphWithSupertext.add(new Chunk(" " + translate(KEIN_ANSPRUCH_CONTENT_4)));
+			document.add(paragraphWithSupertext);
 			break;
 		case NICHT_EINTRETTEN:
 			createFusszeileNichtEintreten(generator.getDirectContent());
-			LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 			document.add(PdfUtil.createParagraph(translate(
 				NICHT_EINTRETEN_CONTENT_1,
 				Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
@@ -188,19 +206,16 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 				NICHT_EINTRETEN_CONTENT_2,
 				Constants.DATE_FORMATTER.format(eingangsdatum))));
 			document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_3)));
-
-			Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
+			paragraphWithSupertext = PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4));
 			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
 			paragraphWithSupertext.add(new Chunk(translate(NICHT_EINTRETEN_CONTENT_5)));
 			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("2"));
 			paragraphWithSupertext.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6)));
 			document.add(paragraphWithSupertext);
-			document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_7)));
 			document.newPage();
-			document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_8)));
-			document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_9)));
+			document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_7)));
 			document.add(PdfUtil.createBoldParagraph(translate(
-				NICHT_EINTRETEN_CONTENT_10,
+				NICHT_EINTRETEN_CONTENT_8,
 				Constants.DATE_FORMATTER.format(eingangsdatum)), 2));
 			break;
 		}
@@ -210,15 +225,22 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		document.add(createRechtsmittelBelehrung());
 	}
 
-	private void addBemerkungenIfAvailable(Document document) {
+	private void addBemerkungenIfAvailable(Document document, boolean showTitle) {
 		List<Element> bemerkungenElements = Lists.newArrayList();
 		final List<String> bemerkungen = getBemerkungen();
 		if (!bemerkungen.isEmpty()) {
-			bemerkungenElements.add(PdfUtil.createParagraph(translate(BEMERKUNGEN)));
+			if (showTitle) {
+				bemerkungenElements.add(PdfUtil.createParagraph(translate(BEMERKUNGEN)));
+			}
 			bemerkungenElements.add(PdfUtil.createList(bemerkungen));
 			document.add(PdfUtil.createKeepTogetherTable(bemerkungenElements, 0, 2));
 		}
 	}
+
+	private void addBemerkungenIfAvailable(Document document) {
+		addBemerkungenIfAvailable(document, true);
+	}
+
 
 	@Nonnull
 	private PdfPTable createIntroAndInfoKontingentierung() {
@@ -536,6 +558,13 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		createFusszeile(
 			dirPdfContentByte,
 			Lists.newArrayList(translate(FUSSZEILE_1_NICHT_EINTRETEN), translate(FUSSZEILE_2_NICHT_EINTRETEN))
+		);
+	}
+
+	private void createFusszeileKeinAnspruch(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
+		createFusszeile(
+			dirPdfContentByte,
+			Lists.newArrayList(translate(FUSSZEILE_2_NICHT_EINTRETEN))
 		);
 	}
 
