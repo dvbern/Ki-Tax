@@ -17,7 +17,7 @@
 <config xmlns="urn:org:jgroups"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.0.xsd">
-<!--	change from default  7800-->
+<!--	change from default  7800 to 7850. For this channel to work the jgroups.rcp.address must be set-->
    <TCP bind_addr="${jgroups.tcp.address:127.0.0.1}"
         bind_port="${jgroups.tcp.port:7850}"
         enable_diagnostics="false"
@@ -32,7 +32,6 @@
    />
 	<TCPPING initial_hosts="${ebegu.clusterhost.hosta:127.0.0.1}[7850], ${ebegu.clusterhost.hostb:127.0.0.1}[7850]"
 			 port_range="0"
-
 	/>
 
    <MERGE3 min_interval="10000"
