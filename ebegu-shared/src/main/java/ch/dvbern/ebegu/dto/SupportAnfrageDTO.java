@@ -28,10 +28,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SupportAnfrageDTO {
 
-	private String id; // Diese ID wird auch in der Console geloggt, so dass wir weitere Informationen aus Sentry erfahren koennen
+	// Diese ID wird auch in der Console geloggt, so dass wir weitere Informationen aus Sentry erfahren koennen
+	private String id;
 
 	private String beschreibung;
-
 
 	public String getId() {
 		return id;
