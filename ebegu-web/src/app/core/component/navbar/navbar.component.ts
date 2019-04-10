@@ -30,7 +30,7 @@ import TSGemeinde from '../../../../models/TSGemeinde';
 import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
-import {AdminInstitutionGuidedTour, GemeindeGuidedTour, InstitutionGuidedTour} from '../../../kibonTour/shared/KiBonGuidedTour';
+import {GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
@@ -47,6 +47,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
+    private readonly unsubscribeTour$ = new Subject<void>();
 
     public readonly showMenuAnmeldungen = EbeguUtil.isTagesschulangebotEnabled();
 
@@ -72,7 +73,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 err => LOG.error(err),
             );
         this.kibonGuidedTourService.guidedTour$
-            .pipe(takeUntil(this.unsubscribe$))
+            .pipe(takeUntil(this.unsubscribeTour$))
             .subscribe(
                 next => {
                     this.tourStart(next);
@@ -108,6 +109,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+        this.unsubscribeTour$.next();
+        this.unsubscribeTour$.complete();
     }
 
     public ngAfterViewInit(): void {
@@ -123,28 +126,19 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         switch (roleLoggedIn) {
             case TSRole.ADMIN_TRAEGERSCHAFT:
             case TSRole.ADMIN_INSTITUTION:
-                this.guidedTourService.startTour(new AdminInstitutionGuidedTour(this.$state, this.translate));
-                break;
             case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
             case TSRole.SACHBEARBEITER_INSTITUTION:
-                this.guidedTourService.startTour(new InstitutionGuidedTour(this.$state, this.translate));
-                break;
             case TSRole.SUPER_ADMIN:
             case TSRole.ADMIN_MANDANT:
             case TSRole.SACHBEARBEITER_MANDANT:
-            case TSRole.ADMIN_BG:
-            case TSRole.SACHBEARBEITER_BG:
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
-            case TSRole.ADMIN_TS:
-            case TSRole.SACHBEARBEITER_TS:
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
             case TSRole.JURIST:
             case TSRole.REVISOR:
             case TSRole.STEUERAMT:
-                this.guidedTourService.startTour(new GemeindeGuidedTour(this.$state, this.translate));
-                break;
-            case TSRole.GESUCHSTELLER:
-                // TODO Gesuchsteller-Tour
+                this.guidedTourService.startTour(new GuidedTourByRole(this.$state, this.translate, roleLoggedIn));
                 break;
             default:
         }
