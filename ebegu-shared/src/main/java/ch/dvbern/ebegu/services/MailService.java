@@ -40,7 +40,8 @@ public interface MailService {
 	 * Sendet die Email mit gegebenem MessageBody an die gegebene Adresse. Dadurch kann eine beliebige Message gemailt
 	 * werden
 	 */
-	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress) throws MailException;
+	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress)
+		throws MailException;
 
 	/**
 	 * Sendet eine Supportanfrage an die definierte Support-Email
@@ -132,7 +133,9 @@ public interface MailService {
 	/**
 	 * Sendet eine E-Mail mit der Information, dass die Statistik erstellt wurde
 	 */
-	void sendInfoStatistikGeneriert(@Nonnull String receiverEmail, @Nonnull String downloadurl, @Nonnull Locale locale);
+	void sendInfoStatistikGeneriert(
+		@Nonnull String receiverEmail, @Nonnull String downloadurl,
+		@Nonnull Locale locale);
 
 	/**
 	 * Sends an Einladungsemail to the given user according to the type of the Einladung
@@ -140,8 +143,7 @@ public interface MailService {
 	void sendBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Einladung einladung) throws MailException;
 
 	/**
-	 * Sendet eine Email mit der Information, dass alle Betreuungsplaetze bestaetigt wurden und das Gesuch freigegeben
-	 * werden kann.
+	 * Sendet eine E-Mail an eine Institution mit der Info, dass es offene Pendenzen gibt
 	 */
-	void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institution);
+	void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institutionStammdaten);
 }

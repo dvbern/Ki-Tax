@@ -101,7 +101,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
-
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION })
@@ -449,8 +448,15 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		String subject = "Supportanfrage KiBon: " + supportAnfrageDTO.getId();
 		StringBuilder content = new StringBuilder();
 		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
-		content.append("Erstellt am: " ).append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now())).append(Constants.LINE_BREAK);
-		content.append("Benutzer: ").append(benutzer.getUsername()).append(" (").append(benutzer.getFullName()).append(')').append(Constants.LINE_BREAK);
+		content.append("Erstellt am: ")
+			.append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now()))
+			.append(Constants.LINE_BREAK);
+		content.append("Benutzer: ")
+			.append(benutzer.getUsername())
+			.append(" (")
+			.append(benutzer.getFullName())
+			.append(')')
+			.append(Constants.LINE_BREAK);
 		content.append("Rolle: ").append(benutzer.getRole()).append(Constants.LINE_BREAK);
 		content.append(Constants.LINE_BREAK);
 		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
@@ -522,9 +528,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	 * Hier wird an einer Stelle definiert, an welche Benutzergruppen ein Mail geschickt werden soll.
 	 */
 	private boolean doSendMail(@Nonnull Gesuch gesuch) {
-		// Mail nur schicken, wenn es der Fall einen Besitzer hat UND (das aktuelle Gesuch bzw. Mutation online eingereicht wurde ODER die Papiermutation
-		// bereits verfügt wurde)
-		return doSendMail(gesuch.getFall()) && (gesuch.getEingangsart().isOnlineGesuch() || gesuch.getStatus().isAnyStatusOfVerfuegt());
+		// Mail nur schicken, wenn es der Fall einen Besitzer hat UND (das aktuelle Gesuch bzw. Mutation online
+		// eingereicht wurde ODER die Papiermutation bereits verfügt wurde)
+		return doSendMail(gesuch.getFall()) && (gesuch.getEingangsart().isOnlineGesuch() || gesuch.getStatus()
+			.isAnyStatusOfVerfuegt());
 	}
 
 	@Nonnull
