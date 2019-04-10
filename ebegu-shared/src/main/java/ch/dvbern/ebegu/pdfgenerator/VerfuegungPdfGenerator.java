@@ -68,7 +68,8 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String ERSETZT_VERFUEGUNG = "PdfGeneration_Ersetzt_Verfuegung";
 	private static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
-	private static final String VERFUEGUNG_CONTENT = "PdfGeneration_Verfuegung_Content";
+	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
+	private static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
 	private static final String VON = "PdfGeneration_Verfuegung_Von";
 	private static final String BIS = "PdfGeneration_Verfuegung_Bis";
 	private static final String PENSUM_TITLE = "PdfGeneration_Verfuegung_PensumTitle";
@@ -94,8 +95,6 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
 	private static final String NICHT_EINTRETEN_CONTENT_7 = "PdfGeneration_NichtEintreten_Content_7";
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
-	private static final String NICHT_EINTRETEN_CONTENT_9 = "PdfGeneration_NichtEintreten_Content_9";
-	private static final String NICHT_EINTRETEN_CONTENT_10 = "PdfGeneration_NichtEintreten_Content_10";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
 	private static final String RECHTSMITTELBELEHRUNG_TITLE = "PdfGeneration_Rechtsmittelbelehrung_Title";
 	private static final String RECHTSMITTELBELEHRUNG_CONTENT = "PdfGeneration_Rechtsmittelbelehrung_Content";
@@ -163,10 +162,13 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		switch (art) {
 		case NORMAL:
 			createFusszeileNormaleVerfuegung(generator.getDirectContent());
-			document.add(PdfUtil.createParagraph(translate(
-				VERFUEGUNG_CONTENT,
+			paragraphWithSupertext = PdfUtil.createParagraph(translate(
+				VERFUEGUNG_CONTENT_1,
 				kind.getFullName(),
-				Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2));
+				Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
+			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+			paragraphWithSupertext.add(new Chunk(" " + translate(VERFUEGUNG_CONTENT_2)));
+			document.add(paragraphWithSupertext);
 			document.add(createVerfuegungTable());
 			addBemerkungenIfAvailable(document);
 			break;
@@ -542,7 +544,6 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		}
 
 		PdfPTable table = new PdfPTable(1);
-		table.getDefaultCell().setLeading(0, PdfUtilities.DEFAULT_MULTIPLIED_LEADING);
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		PdfPTable innerTable = new PdfPTable(1);
 		innerTable.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);

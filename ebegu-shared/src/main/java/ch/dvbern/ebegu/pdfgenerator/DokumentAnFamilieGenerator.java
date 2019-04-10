@@ -107,7 +107,7 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
 	protected void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte, List<String> content) throws DocumentException {
 		ColumnText fz = new ColumnText(dirPdfContentByte);
-		final float height = millimetersToPoints(15);
+		final float height = millimetersToPoints(13);
 		final float width = millimetersToPoints(170);
 		final float loverLeftX = millimetersToPoints(PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM);
 		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4.0f);
