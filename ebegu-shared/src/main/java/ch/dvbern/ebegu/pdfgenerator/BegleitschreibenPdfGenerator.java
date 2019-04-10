@@ -77,10 +77,14 @@ public class BegleitschreibenPdfGenerator extends DokumentAnFamilieGenerator {
 			.filter(this::isOrCanBeVerfuegt)
 			.map(this::getBeilagenText).collect(Collectors.toList());
 		// Finanzielle Situation
+		int anzahlBeilagen = 1;
 		if (EbeguUtil.isFinanzielleSituationRequired(gesuch) && getGesuch().getFinSitStatus() == FinSitStatus.AKZEPTIERT) {
-			beilagen.add(translate(BEILAGE_FINANZIELLESITUATION));
+			beilagen.add(translate(BEILAGE_FINANZIELLESITUATION, anzahlBeilagen++));
 		}
-		beilagen.add(translate(BEILAGE_ERLAEUTERUNG));
+		// Erläuterung zur Verfügung: Nur anhängen, wenn mindestens eine regulare Verfügung vorhanden
+		if (EbeguUtil.isErlaeuterungenZurVerfuegungRequired(getGesuch())) {
+			beilagen.add(translate(BEILAGE_ERLAEUTERUNG, anzahlBeilagen));
+		}
 		return beilagen;
 	}
 

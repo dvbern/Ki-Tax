@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -158,6 +159,21 @@ public final class EbeguUtil {
 		return gesuch.getGesuchsteller1() == null
 			|| (gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
 			&& gesuch.getEinkommensverschlechterungInfoContainer() == null);
+	}
+
+	public static boolean isErlaeuterungenZurVerfuegungRequired(@Nonnull Gesuch gesuch) {
+		// Im Status ENTWURF sollen die Erläuterungen immer als Beilage aufgeführt werden
+		boolean entwurf = !gesuch.getStatus().isAnyStatusOfVerfuegt();
+		return entwurf || isAtLeastOneBetreuungInStatus(gesuch, Betreuungsstatus.VERFUEGT);
+	}
+
+	public static boolean isAtLeastOneBetreuungInStatus(@Nonnull Gesuch gesuch, @Nonnull Betreuungsstatus status) {
+		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
+			if (status == betreuung.getBetreuungsstatus()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static String getPaddedFallnummer(long fallNummer) {
