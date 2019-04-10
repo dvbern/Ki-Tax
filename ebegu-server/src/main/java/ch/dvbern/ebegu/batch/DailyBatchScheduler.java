@@ -93,4 +93,9 @@ public class DailyBatchScheduler {
 	public void runBatchDeleteInvalidAuthTokens() {
 		dailyBatch.runBatchDeleteInvalidAuthTokens();
 	}
+
+	@Schedule(second = "59", minute = "00", hour = "03", persistent = true)
+	public void runBatchInfoOffenePendenzenInstitution() {
+		dailyBatch.runBatchInfoOffenePendenzenInstitution();
+	}
 }

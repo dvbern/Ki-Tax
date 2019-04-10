@@ -15,8 +15,7 @@
 
 import {Component} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
-import {DownloadRS} from '../../app/core/service/downloadRS.rest';
-import TSDownloadFile from '../../models/TSDownloadFile';
+import {KiBonGuidedTourService} from '../../app/kibonTour/service/KiBonGuidedTourService';
 import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';
 
 /**
@@ -31,7 +30,7 @@ export class DvNgHelpDialogComponent {
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
         private readonly dialogSupport: MatDialog,
-        private readonly downloadRS: DownloadRS,
+        private readonly kibonGuidedTourService: KiBonGuidedTourService,
     ) {
     }
 
@@ -39,18 +38,14 @@ export class DvNgHelpDialogComponent {
         this.dialogRef.close();
     }
 
-    public download(): void {
-        const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenBenutzerhandbuch()
-            .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-            })
-            .catch(() => {
-                win.close();
-            });
-    }
-
     public openSupportanfrage(): void {
+        this.close();
         this.dialogSupport.open(DvNgSupportDialogComponent);
     }
+
+    public startTour(): void {
+        this.close();
+        this.kibonGuidedTourService.emit();
+    }
+
 }
