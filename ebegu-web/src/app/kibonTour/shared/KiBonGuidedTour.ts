@@ -18,10 +18,12 @@
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTour, Orientation, OrientationConfiguration, TourStep} from 'ngx-guided-tour';
+import {TSRole} from "../../../models/enums/TSRole";
 
 const SELECTOR_HELP_ICON = 'dv-helpmenu';
 const SELECTOR_PENDENZEN_LIST = 'a[uisref="pendenzen.list-view"]';
 const SELECTOR_PENDENZEN_BETREUUNGEN_LIST = 'a[uisref="pendenzenBetreuungen.list-view"]';
+const SELECTOR_PENDENZEN_STEUERAMT_LIST = 'a[uisref="pendenzenSteueramt.list-view"]';
 const SELECTOR_FAELLE_LIST = 'a[uisref="faelle.list"]';
 const SELECTOR_ZAHLUNG = 'a[uisref="zahlungsauftrag.view"]';
 const SELECTOR_STATISTIK = 'a[uisref="statistik.view"]';
@@ -31,6 +33,7 @@ const SELECTOR_SEARCH = 'dv-quicksearchbox';
 const SELECTOR_USERMENU = '#tourTipUserMenu';
 
 const ROUTE_PENDENZEN_LIST = 'pendenzen.list-view';
+const ROUTE_PENDENZEN_STEUERAMT_LIST = 'pendenzenSteueramt.list-view';
 const ROUTE_PENDENZEN_BETREUUNGEN_LIST = 'pendenzenBetreuungen.list-view';
 const ROUTE_FAELLE_LIST = 'faelle.list';
 const ROUTE_ZAHLUNG = 'zahlungsauftrag.view';
@@ -38,58 +41,10 @@ const ROUTE_STATISTIK = 'statistik.view';
 const ROUTE_POST = 'posteingang.view';
 
 // TODO: FR Translations
-// TODO: Link to start tour again in help dialog
-// TODO: Configure tour for Gemeinde & Mandant
-
-export class GemeindeGuidedTour implements GuidedTour {
+export class GuidedTourByRole implements GuidedTour {
 
     public tourId: string = 'GemeindeGuidedTour';
-    public steps: TourStep[] = [
-
-        new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_HELP_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_HELP_CONTENT'),
-            SELECTOR_HELP_ICON, Orientation.BottomRight),
-
-        // TODO: mmissing a step here for admins
-
-        new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_PENDENZEN_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_PENDENZEN_CONTENT'),
-            SELECTOR_PENDENZEN_LIST, Orientation.Bottom, this.state, ROUTE_PENDENZEN_LIST),
-
-        new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_ALLEFAELLE_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_ALLEFAELLE_CONTENT'),
-            SELECTOR_FAELLE_LIST, Orientation.Bottom, this.state, ROUTE_FAELLE_LIST),
-
-        // TODO: the zahlung step here is different for admin/sachbearbeiter
-
-        new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_ZAHLUNG_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_ZAHLUNG_CONTENT'),
-            SELECTOR_ZAHLUNG, Orientation.Bottom, this.state, ROUTE_ZAHLUNG),
-
-        new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_STATISTIK_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_STATISTIK_CONTENT'),
-            SELECTOR_STATISTIK, Orientation.Bottom, this.state, ROUTE_STATISTIK),
-
-        new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_POST_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_POST_CONTENT'),
-            SELECTOR_POST, Orientation.Bottom, this.state, ROUTE_POST),
-
-        new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_CREATE_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_CREATE_CONTENT'),
-            SELECTOR_CREATE_FALL, Orientation.Left),
-
-        new KiBonTourStep(
-            this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_TITLE'),
-            this.translate.instant('GEMEINDE_TOUR_STEP_SEARCH_CONTENT'),
-            SELECTOR_SEARCH, Orientation.BottomLeft),
-    ];
+    public steps: TourStep[] = [];
 
     public useOrb: boolean = false;
     public skipCallback: (stepSkippedOn: number) => void;
@@ -98,112 +53,174 @@ export class GemeindeGuidedTour implements GuidedTour {
     public preventBackdropFromAdvancing: boolean = false;
 
     public constructor(private readonly state: StateService,
-                       private readonly translate: TranslateService) {
+                       private readonly translate: TranslateService,
+                       private readonly role: TSRole) {
+        // Step 1: Help
+        this.steps.push(new KiBonTourStep(
+            this.translate.instant('TOUR_STEP_HELP_TITLE'),
+            this.translate.instant('TOUR_STEP_HELP_CONTENT'),
+            SELECTOR_HELP_ICON, Orientation.BottomRight));
+        // Step 2: Admin
+        switch (role) {
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.ADMIN_INSTITUTION:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ADMIN_INSTITUTION_TITLE'),
+                    this.translate.instant('TOUR_STEP_ADMIN_INSTITUTION_CONTENT'),
+                    SELECTOR_USERMENU, Orientation.BottomRight));
+                break;
+            case TSRole.SACHBEARBEITER_MANDANT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ADMIN_SACHBEARBEITER_MANDANT_TITLE'),
+                    this.translate.instant('TOUR_STEP_ADMIN_SACHBEARBEITER_MANDANT_CONTENT'),
+                    SELECTOR_USERMENU, Orientation.BottomRight));
+                break;
+            case TSRole.ADMIN_MANDANT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ADMIN_ADMIN_MANDANT_TITLE'),
+                    this.translate.instant('TOUR_STEP_ADMIN_ADMIN_MANDANT_CONTENT'),
+                    SELECTOR_USERMENU, Orientation.BottomRight));
+                break;
+            case TSRole.ADMIN_BG:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ADMIN_BG_TITLE'),
+                    this.translate.instant('TOUR_STEP_ADMIN_BG_CONTENT'),
+                    SELECTOR_USERMENU, Orientation.BottomRight));
+                break;
+            default:
+        }
+        // Step 3: Pendenzen
+        switch (role) {
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_PENDENZEN_BG_TITLE'),
+                    this.translate.instant('TOUR_STEP_PENDENZEN_BG_CONTENT'),
+                    SELECTOR_PENDENZEN_LIST, Orientation.Bottom, this.state, ROUTE_PENDENZEN_LIST));
+                break;
+            case TSRole.STEUERAMT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_PENDENZEN_STEUERAMT_TITLE'),
+                    this.translate.instant('TOUR_STEP_PENDENZEN_STEUERAMT_CONTENT'),
+                    SELECTOR_PENDENZEN_STEUERAMT_LIST, Orientation.Bottom, this.state, ROUTE_PENDENZEN_STEUERAMT_LIST));
+                break;
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.ADMIN_INSTITUTION:
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_PENDENZEN_INTSTITUTION_TITLE'),
+                    this.translate.instant('TOUR_STEP_PENDENZEN_INTSTITUTION_CONTENT'),
+                    SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST));
+                break;
+            default:
+        }
+        // Step 4: Alle Fälle
+        switch (role) {
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.REVISOR:
+            case TSRole.JURIST:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ALLE_FAELLE_GEMEINDEN_TITLE'),
+                    this.translate.instant('TOUR_STEP_ALLE_FAELLE_GEMEINDEN_CONTENT'),
+                    SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST));
+                break;
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.ADMIN_INSTITUTION:
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ALLE_FAELLE_INTSTITUTION_TITLE'),
+                    this.translate.instant('TOUR_STEP_ALLE_FAELLE_INTSTITUTION_CONTENT'),
+                    SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST));
+                break;
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ALLE_FAELLE_MANDANT_TITLE'),
+                    this.translate.instant('TOUR_STEP_ALLE_FAELLE_MANDANT_CONTENT'),
+                    SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST));
+                break;
+            default:
+        }
+        // Step 5: Suche
+        switch (role) {
+            case TSRole.STEUERAMT:
+                break;
+            default:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_SEARCH_TITLE'),
+                    this.translate.instant('TOUR_STEP_SEARCH_CONTENT'),
+                    SELECTOR_SEARCH, Orientation.BottomRight));
+                break;
+        }
+        // Step 6: Zahlungen
+        switch (role) {
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ZAHLUNGEN_MANDANT_TITLE'),
+                    this.translate.instant('TOUR_STEP_ZAHLUNGEN_MANDANT_CONTENT'),
+                    SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG));
+                break;
+            case TSRole.ADMIN_BG:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ZAHLUNGEN_GEMEINDE_ADMIN_TITLE'),
+                    this.translate.instant('TOUR_STEP_ZAHLUNGEN_GEMEINDE_ADMIN_CONTENT'),
+                    SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG));
+                break;
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.REVISOR:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ZAHLUNGEN_GEMEINDE_TITLE'),
+                    this.translate.instant('TOUR_STEP_ZAHLUNGEN_GEMEINDE_CONTENT'),
+                    SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG));
+                break;
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.ADMIN_INSTITUTION:
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_ZAHLUNGEN_INSTITUTION_TITLE'),
+                    this.translate.instant('TOUR_STEP_ZAHLUNGEN_INTSTITUTION_CONTENT'),
+                    SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG));
+                break;
+            default:
+                break;
+        }
+        // Step 7: Statistiken
+        switch (role) {
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_BG:
+            case TSRole.REVISOR:
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.ADMIN_INSTITUTION:
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_STATISTIKEN_TITLE'),
+                    this.translate.instant('TOUR_STEP_STATISTIKEN_CONTENT'),
+                    SELECTOR_STATISTIK, Orientation.BottomRight, this.state, ROUTE_STATISTIK));
+                break;
+            default:
+                break;
+        }
+        // Step 8: Posteingang
+        switch (role) {
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.ADMIN_BG:
+                this.steps.push(new KiBonTourStep(
+                    this.translate.instant('TOUR_STEP_POSTEINGANG_TITLE'),
+                    this.translate.instant('TOUR_STEP_POSTEINGANG_CONTENT'),
+                    SELECTOR_POST, Orientation.Bottom, this.state, ROUTE_POST));
+                break;
+            default:
+                break;
+        }
     }
-
-}
-
-export class InstitutionGuidedTour implements GuidedTour {
-
-    public tourId: string = 'InstitutionGuidedTour';
-    public steps: TourStep[] = [
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
-            SELECTOR_HELP_ICON, Orientation.BottomRight),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
-            SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_CONTENT'),
-            SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_CONTENT'),
-            SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
-            SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
-            SELECTOR_SEARCH, Orientation.BottomRight),
-
-    ];
-
-    public useOrb: boolean = false;
-    public skipCallback: (stepSkippedOn: number) => void;
-    public completeCallback: () => void;
-    public minimumScreenSize: number = 0;
-    public preventBackdropFromAdvancing: boolean = false;
-
-    public constructor(private readonly state: StateService,
-                       private readonly translate: TranslateService) {
-    }
-
-}
-
-export class AdminInstitutionGuidedTour implements GuidedTour {
-
-    public tourId: string = 'InstitutionGuidedTour';
-    public steps: TourStep[] = [
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_HELP_CONTENT'),
-            SELECTOR_HELP_ICON, Orientation.BottomRight),
-
-        new KiBonTourStep(
-             this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_TITLE'),
-             this.translate.instant('INSTITUTION_TOUR_STEP_ADMIN_CONTENT'),
-             SELECTOR_USERMENU, Orientation.BottomRight),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_PENDENZEN_CONTENT'),
-            SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_ALLEFAELLE_CONTENT'),
-            SELECTOR_FAELLE_LIST, Orientation.BottomLeft, this.state, ROUTE_FAELLE_LIST),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_ZAHLUNGEN_CONTENT'),
-            SELECTOR_ZAHLUNG, Orientation.BottomLeft, this.state, ROUTE_ZAHLUNG),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_STATISTIKEN_CONTENT'),
-            SELECTOR_STATISTIK, Orientation.BottomLeft, this.state, ROUTE_STATISTIK),
-
-        new KiBonTourStep(
-            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_TITLE'),
-            this.translate.instant('INSTITUTION_TOUR_STEP_SEARCH_CONTENT'),
-            SELECTOR_SEARCH, Orientation.BottomRight),
-
-    ];
-
-    public useOrb: boolean = false;
-    public skipCallback: (stepSkippedOn: number) => void;
-    public completeCallback: () => void;
-    public minimumScreenSize: number = 0;
-    public preventBackdropFromAdvancing: boolean = false;
-
-    public constructor(private readonly state: StateService,
-                       private readonly translate: TranslateService) {
-    }
-
 }
 
 export class KiBonTourStep implements TourStep {

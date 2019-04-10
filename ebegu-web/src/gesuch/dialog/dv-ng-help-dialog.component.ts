@@ -18,6 +18,9 @@ import {MatDialog, MatDialogRef} from '@angular/material';
 import {DownloadRS} from '../../app/core/service/downloadRS.rest';
 import TSDownloadFile from '../../models/TSDownloadFile';
 import {DvNgSupportDialogComponent} from './dv-ng-support-dialog.component';
+import {KiBonGuidedTourService} from "../../app/kibonTour/service/KiBonGuidedTourService";
+import {ITourParams} from "../gesuch.route";
+import {navigateToStartPageForRoleWithParams} from "../../utils/AuthenticationUtil";
 
 /**
  * This component shows a Help Dialog with all contact details and a Link to the user manual
@@ -32,6 +35,7 @@ export class DvNgHelpDialogComponent {
         private readonly dialogRef: MatDialogRef<DvNgHelpDialogComponent>,
         private readonly dialogSupport: MatDialog,
         private readonly downloadRS: DownloadRS,
+        private readonly kibonGuidedTourService: KiBonGuidedTourService,
     ) {
     }
 
@@ -39,18 +43,14 @@ export class DvNgHelpDialogComponent {
         this.dialogRef.close();
     }
 
-    public download(): void {
-        const win = this.downloadRS.prepareDownloadWindow();
-        this.downloadRS.getAccessTokenBenutzerhandbuch()
-            .then((downloadFile: TSDownloadFile) => {
-                this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, false, win);
-            })
-            .catch(() => {
-                win.close();
-            });
-    }
-
     public openSupportanfrage(): void {
+        this.close();
         this.dialogSupport.open(DvNgSupportDialogComponent);
     }
+
+    public startTour(): void {
+        this.close();
+        this.kibonGuidedTourService.emit();
+    }
+
 }
