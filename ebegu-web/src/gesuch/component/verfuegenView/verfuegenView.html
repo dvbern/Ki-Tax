@@ -154,8 +154,38 @@
                                data-translate="BEGRUENDUNG"></label>
                         <textarea md-no-autogrow class="form-control" rows="6" id="manuelle_notes"
                                   ng-model="vm.bemerkungen" ng-disabled="vm.isBemerkungenDisabled()"
+                                  ng-required="vm.isVerfuegenClicked"
                                   ng-attr-placeholder="{{'BEMERKUNGEN_PLACEHOLDER' | translate}}"
                                   maxlength="4000"></textarea>
+                        <div class="dv-error-messages">
+                            <div ng-messages="vm.form.verfuegungsBemerkungenKontrolliert.$error"
+                                 class="error">
+                                <div ng-message="required" data-translate="ERROR_REQUIRED"
+                                     for="vm.form.manuelle_notes.$error" role="alert"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bestätigung, dass die Begründungen kontrolliert wurden -->
+                <div class="row" dv-show-element
+                     dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                     dv-show-expression="vm.showVerfuegen()">
+                    <div class="col-xs-12 dv-input-container-question">
+                        <div class="checkbox">
+                            <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert" ng-required="vm.isVerfuegenClicked"
+                                         name="verfuegungsBemerkungenKontrolliert"
+                                         aria-label="{{'VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT' | translate}}">
+                                <span data-translate="VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT"></span>
+                            </md-checkbox>
+                            <div class="dv-error-messages">
+                                <div ng-messages="vm.form.verfuegungsBemerkungenKontrolliert.$error"
+                                     class="error">
+                                    <div ng-message="required" data-translate="ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED"
+                                         for="vm.form.verfuegungsBemerkungenKontrolliert.$error" role="alert"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
