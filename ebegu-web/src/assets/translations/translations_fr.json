@@ -892,6 +892,8 @@
     "VERFUEGEN": "Rendre une décision",
     "VERFUEGEN_NICHT_EINTRETEN": "Ne pas entrer en matière",
     "VERFUEGEN_ABLEHNEN": "Rejeter",
+    "VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT": "FR_Ja, wir haben die Begründungen geprüft und wo sinnvoll ergänzt. Manuelle Korrekturen haben wir begründet.",
+    "ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED": "FR_Bitte bestätigen Sie die Begründungen um diese Betreuung zu verfügen",
     "VERFUEGT": "Décision rendue",
     "PRUEFUNG_STV": "",
     "IN_BEARBEITUNG_STV": "",

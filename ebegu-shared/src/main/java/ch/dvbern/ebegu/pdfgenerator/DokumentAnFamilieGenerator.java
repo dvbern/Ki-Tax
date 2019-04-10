@@ -83,7 +83,9 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 				anrede.append(singleAnrede);
 			} else {
 				anrede.append(", ");
-				anrede.append(Character.toLowerCase(singleAnrede.charAt(0))).append(singleAnrede.substring(1));
+				if (!singleAnrede.isEmpty()) {
+					anrede.append(Character.toLowerCase(singleAnrede.charAt(0))).append(singleAnrede.substring(1));
+				}
 			}
 			anrede.append(' ');
 			anrede.append(gesuchsteller.getGesuchstellerJA().getNachname());
