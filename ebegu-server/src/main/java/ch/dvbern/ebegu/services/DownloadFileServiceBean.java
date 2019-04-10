@@ -89,10 +89,6 @@ public class DownloadFileServiceBean implements DownloadFileService {
 		return persistence.persist(downloadFile);
 	}
 
-
-
-
-
 	@Nullable
 	@Override
 	public DownloadFile getDownloadFileByAccessToken(@Nonnull String accessToken) {
