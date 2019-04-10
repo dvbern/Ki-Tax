@@ -106,9 +106,9 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	private static final Logger LOG = LoggerFactory.getLogger(VerfuegungPdfGenerator.class);
 
-	private Font fontTabelle = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8.0f);
-	private Font fontTabelleBold = PdfUtilities.createFontWithSize(getPageConfiguration().getFontBold(), 8.0f);
-	private Font fontRed = PdfUtilities.createFontWithColor(getPageConfiguration().getFont(), Color.RED);
+	private final Font fontTabelle = PdfUtilities.createFontWithSize(getPageConfiguration().getFont(), 8.0f);
+	private final Font fontTabelleBold = PdfUtilities.createFontWithSize(getPageConfiguration().getFontBold(), 8.0f);
+	private final Font fontRed = PdfUtilities.createFontWithColor(getPageConfiguration().getFont(), Color.RED);
 
 	public enum Art {
 		NORMAL,
@@ -167,7 +167,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 				kind.getFullName(),
 				Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
 			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-			paragraphWithSupertext.add(new Chunk(" " + translate(VERFUEGUNG_CONTENT_2)));
+			paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
 			document.add(paragraphWithSupertext);
 			document.add(createVerfuegungTable());
 			addBemerkungenIfAvailable(document);
@@ -192,7 +192,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 				Constants.DATE_FORMATTER.format(gp.getGueltigAb()),
 				Constants.DATE_FORMATTER.format(gp.getGueltigBis())), 2);
 			paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-			paragraphWithSupertext.add(new Chunk(" " + translate(KEIN_ANSPRUCH_CONTENT_4)));
+			paragraphWithSupertext.add(new Chunk(' ' + translate(KEIN_ANSPRUCH_CONTENT_4)));
 			document.add(paragraphWithSupertext);
 			break;
 		case NICHT_EINTRETTEN:
@@ -290,7 +290,6 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	private PdfPTable createVerfuegungTable() {
-		Objects.requireNonNull(betreuung.getVerfuegung());
 
 		// Tabelle initialisieren
 		float[] columnWidths = { 90, 100, 88, 88, 88, 100, 100, 100, 108, 110 };
@@ -528,16 +527,16 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 
 	@Nonnull
 	public PdfPTable createRechtsmittelBelehrung() {
-		GemeindeStammdaten gemeindeStammdaten = getGemeindeStammdaten();
-		Adresse beschwerdeAdresse = gemeindeStammdaten.getBeschwerdeAdresse();
+		GemeindeStammdaten stammdaten = getGemeindeStammdaten();
+		Adresse beschwerdeAdresse = stammdaten.getBeschwerdeAdresse();
 		if (beschwerdeAdresse == null) {
-			beschwerdeAdresse = gemeindeStammdaten.getAdresse();
+			beschwerdeAdresse = stammdaten.getAdresse();
 		}
 
 		String rechtsmittelbelehrung = translate(RECHTSMITTELBELEHRUNG_CONTENT, beschwerdeAdresse.getAddressAsStringInOneLine());
-		if (!gemeindeStammdaten.getStandardRechtsmittelbelehrung()
-			&& gemeindeStammdaten.getRechtsmittelbelehrung() != null) {
-			String belehrungInSprache = gemeindeStammdaten.getRechtsmittelbelehrung().findTextByLocale(sprache);
+		if (!stammdaten.getStandardRechtsmittelbelehrung()
+			&& stammdaten.getRechtsmittelbelehrung() != null) {
+			String belehrungInSprache = stammdaten.getRechtsmittelbelehrung().findTextByLocale(sprache);
 			if (belehrungInSprache != null) {
 				rechtsmittelbelehrung = belehrungInSprache;
 			}
