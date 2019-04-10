@@ -5,7 +5,7 @@
 <#assign datumGeloescht = .now>
 From: ${configuration.senderAddress}
 To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
-Subject: <@base64Header>kiBon – Ihr Gesuch wurde gelöscht</@base64Header>
+Subject: <@base64Header>kiBon – FR_Ihr Gesuch wurde gelöscht</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon – Ihr Gesuch wurde gelöscht</title>
+	<title>FR_kiBon – Ihr Gesuch wurde gelöscht</title>
 
 </head>
 
@@ -24,18 +24,18 @@ ${templateConfiguration.mailCss}
 		FR_Guten Tag
 	</p>
 	<p>
-		Sie haben Ihren Antrag auf <a href="www.bern.ch/ki-tax">www.bern.ch/ki-tax</a> bearbeitet, diesen aber nicht
+        FR_Sie haben Ihren Antrag auf <a href="www.bern.ch/ki-tax">www.bern.ch/ki-tax</a> bearbeitet, diesen aber nicht
 		freigegeben oder die Freigabequittung nicht eingereicht. Wir hatten Sie diesbezüglich bereits informiert.
 	</p
 	<p>
-		Ihre Angaben wurden am ${datumGeloescht?date} automatisch gelöscht.
+        FR_Ihre Angaben wurden am ${datumGeloescht?date} automatisch gelöscht.
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+        FR_Freundliche Grüsse <br/>
+        FR_Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>
 </div>
 

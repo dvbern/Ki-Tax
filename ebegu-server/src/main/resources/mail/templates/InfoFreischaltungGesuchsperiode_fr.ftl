@@ -7,7 +7,7 @@
 <#-- @ftlvariable name="gesuchsperiode" type="ch.dvbern.ebegu.entities.Gesuchsperiode" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>FR_kiBon – Neue Gesuchsperiode freigeschaltet</@base64Header>
+Subject: <@base64Header>FR_kiBon – FR_Neue Gesuchsperiode freigeschaltet</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -37,7 +37,7 @@ ${templateConfiguration.mailCss}
         FR_Falls Sie für die Periode ${gesuchsperiode.gesuchsperiodeString} kein Gesuch stellen möchten, sind für Sie keine weiteren Schritte notwendig.
     <p>
         FR_Freundliche Grüsse <br/>
-        Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+        FR_Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
     </p>
     <p>
         FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.

@@ -7,7 +7,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 From: ${configuration.senderAddress}
 To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
-Subject: <@base64Header>kiBon – Freigabequittung ausstehend</@base64Header>
+Subject: <@base64Header>FR_kiBon – Freigabequittung ausstehend</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -15,7 +15,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>kiBon – Freigabequittung ausstehend</title>
+    <title>FR_kiBon – Freigabequittung ausstehend</title>
 
 </head>
 
@@ -42,7 +42,7 @@ ${templateConfiguration.mailCss}
     </p>
     <p>
         FR_Freundliche Grüsse <br/>
-        Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+        FR_Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
     </p>
     <p>
         FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
