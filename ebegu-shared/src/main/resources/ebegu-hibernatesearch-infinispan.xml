@@ -38,11 +38,12 @@
 		https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/single/configuration_guide/index#configure_jgroups_send_receive_buffers
 		-->
 		<stack-file name="ebegu-jgroups-udp" path="ebegu-jgroups-udp.xml"/>
+		<stack-file name="ebegu-jgroups-tcp" path="ebegu-jgroups-tcp.xml"/>
 	</jgroups>
 
 	<cache-container name="HibernateSearch" statistics="false" shutdown-hook="DONT_REGISTER">
 
-		<transport cluster="EBEGU Hibernate Search" stack="ebegu-jgroups-udp"/>
+		<transport cluster="EBEGU Hibernate Search" stack="ebegu-jgroups-tcp"/>
 
 		<!-- Duplicate domains are allowed so that multiple deployments with default fconfiguration
 			of Hibernate Search applications work - if possible it would be better to use JNDI to share
