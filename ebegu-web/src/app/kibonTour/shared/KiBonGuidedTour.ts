@@ -18,7 +18,7 @@
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {GuidedTour, Orientation, OrientationConfiguration, TourStep} from 'ngx-guided-tour';
-import {TSRole} from "../../../models/enums/TSRole";
+import {TSRole} from '../../../models/enums/TSRole';
 
 const SELECTOR_HELP_ICON = 'dv-helpmenu';
 const SELECTOR_PENDENZEN_LIST = 'a[uisref="pendenzen.list-view"]';
@@ -28,7 +28,6 @@ const SELECTOR_FAELLE_LIST = 'a[uisref="faelle.list"]';
 const SELECTOR_ZAHLUNG = 'a[uisref="zahlungsauftrag.view"]';
 const SELECTOR_STATISTIK = 'a[uisref="statistik.view"]';
 const SELECTOR_POST = 'dv-posteingang';
-const SELECTOR_CREATE_FALL = '[class~="dv-ng-navbar-element-fall-eroeffnen"]';
 const SELECTOR_SEARCH = 'dv-quicksearchbox';
 const SELECTOR_USERMENU = '#tourTipUserMenu';
 
@@ -40,7 +39,6 @@ const ROUTE_ZAHLUNG = 'zahlungsauftrag.view';
 const ROUTE_STATISTIK = 'statistik.view';
 const ROUTE_POST = 'posteingang.view';
 
-// TODO: FR Translations
 export class GuidedTourByRole implements GuidedTour {
 
     public tourId: string = 'GemeindeGuidedTour';
@@ -52,6 +50,7 @@ export class GuidedTourByRole implements GuidedTour {
     public minimumScreenSize: number = 0;
     public preventBackdropFromAdvancing: boolean = false;
 
+    // tslint:disable:no-unused-variable
     public constructor(private readonly state: StateService,
                        private readonly translate: TranslateService,
                        private readonly role: TSRole) {
@@ -111,7 +110,8 @@ export class GuidedTourByRole implements GuidedTour {
                 this.steps.push(new KiBonTourStep(
                     this.translate.instant('TOUR_STEP_PENDENZEN_INTSTITUTION_TITLE'),
                     this.translate.instant('TOUR_STEP_PENDENZEN_INTSTITUTION_CONTENT'),
-                    SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state, ROUTE_PENDENZEN_BETREUUNGEN_LIST));
+                    SELECTOR_PENDENZEN_BETREUUNGEN_LIST, Orientation.BottomLeft, this.state,
+                    ROUTE_PENDENZEN_BETREUUNGEN_LIST));
                 break;
             default:
         }
@@ -145,15 +145,12 @@ export class GuidedTourByRole implements GuidedTour {
             default:
         }
         // Step 5: Suche
-        switch (role) {
-            case TSRole.STEUERAMT:
-                break;
-            default:
-                this.steps.push(new KiBonTourStep(
-                    this.translate.instant('TOUR_STEP_SEARCH_TITLE'),
-                    this.translate.instant('TOUR_STEP_SEARCH_CONTENT'),
-                    SELECTOR_SEARCH, Orientation.BottomRight));
-                break;
+        if (role === TSRole.STEUERAMT) {
+        } else {
+            this.steps.push(new KiBonTourStep(
+                this.translate.instant('TOUR_STEP_SEARCH_TITLE'),
+                this.translate.instant('TOUR_STEP_SEARCH_CONTENT'),
+                SELECTOR_SEARCH, Orientation.BottomRight));
         }
         // Step 6: Zahlungen
         switch (role) {
@@ -259,7 +256,6 @@ export class KiBonTourStep implements TourStep {
                     state.go(navigateToOpen);
                 }
             };
-
         }
     }
 }
