@@ -58,7 +58,7 @@ export class GuidedTourByRole implements GuidedTour {
         this.steps.push(new KiBonTourStep(
             this.translate.instant('TOUR_STEP_HELP_TITLE'),
             this.translate.instant('TOUR_STEP_HELP_CONTENT'),
-            SELECTOR_HELP_ICON, Orientation.BottomRight));
+            SELECTOR_HELP_ICON, Orientation.BottomRight, this.state, undefined));
         // Step 2: Admin
         switch (role) {
             case TSRole.ADMIN_TRAEGERSCHAFT:
@@ -66,25 +66,25 @@ export class GuidedTourByRole implements GuidedTour {
                 this.steps.push(new KiBonTourStep(
                     this.translate.instant('TOUR_STEP_ADMIN_INSTITUTION_TITLE'),
                     this.translate.instant('TOUR_STEP_ADMIN_INSTITUTION_CONTENT'),
-                    SELECTOR_USERMENU, Orientation.BottomRight));
+                    SELECTOR_USERMENU, Orientation.BottomRight, this.state, undefined));
                 break;
             case TSRole.SACHBEARBEITER_MANDANT:
                 this.steps.push(new KiBonTourStep(
                     this.translate.instant('TOUR_STEP_ADMIN_SACHBEARBEITER_MANDANT_TITLE'),
                     this.translate.instant('TOUR_STEP_ADMIN_SACHBEARBEITER_MANDANT_CONTENT'),
-                    SELECTOR_USERMENU, Orientation.BottomRight));
+                    SELECTOR_USERMENU, Orientation.BottomRight, this.state, undefined));
                 break;
             case TSRole.ADMIN_MANDANT:
                 this.steps.push(new KiBonTourStep(
                     this.translate.instant('TOUR_STEP_ADMIN_ADMIN_MANDANT_TITLE'),
                     this.translate.instant('TOUR_STEP_ADMIN_ADMIN_MANDANT_CONTENT'),
-                    SELECTOR_USERMENU, Orientation.BottomRight));
+                    SELECTOR_USERMENU, Orientation.BottomRight, this.state, undefined));
                 break;
             case TSRole.ADMIN_BG:
                 this.steps.push(new KiBonTourStep(
                     this.translate.instant('TOUR_STEP_ADMIN_BG_TITLE'),
                     this.translate.instant('TOUR_STEP_ADMIN_BG_CONTENT'),
-                    SELECTOR_USERMENU, Orientation.BottomRight));
+                    SELECTOR_USERMENU, Orientation.BottomRight, this.state, undefined));
                 break;
             default:
         }
@@ -145,12 +145,11 @@ export class GuidedTourByRole implements GuidedTour {
             default:
         }
         // Step 5: Suche
-        if (role === TSRole.STEUERAMT) {
-        } else {
+        if (role !== TSRole.STEUERAMT) {
             this.steps.push(new KiBonTourStep(
                 this.translate.instant('TOUR_STEP_SEARCH_TITLE'),
                 this.translate.instant('TOUR_STEP_SEARCH_CONTENT'),
-                SELECTOR_SEARCH, Orientation.BottomRight));
+                SELECTOR_SEARCH, Orientation.BottomRight, this.state, undefined));
         }
         // Step 6: Zahlungen
         switch (role) {
@@ -232,17 +231,13 @@ export class KiBonTourStep implements TourStep {
     public skipStep: boolean;
     public useHighlightPadding: boolean;
 
-    // @ts-ignore
-    public constructor(title: string, content: string)
-    public constructor(title: string, content: string, selector: string, orientation: Orientation)
-    public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService,
-                       navigateToOpen: string)
     public constructor(title: string, content: string, selector: string, orientation: Orientation, state: StateService,
                        navigateToOpen: string) {
         this.title = title;
         this.content = content;
         this.selector = selector;
         this.orientation = orientation;
+
         // tslint:disable-next-line:early-exit
         if (state !== undefined && state !== null) {
             this.closeAction = () => {

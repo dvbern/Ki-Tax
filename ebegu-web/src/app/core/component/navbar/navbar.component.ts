@@ -47,6 +47,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
+    private readonly unsubscribeTour$ = new Subject<void>();
 
     public readonly showMenuAnmeldungen = EbeguUtil.isTagesschulangebotEnabled();
 
@@ -72,7 +73,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 err => LOG.error(err),
             );
         this.kibonGuidedTourService.guidedTour$
-            .pipe(takeUntil(this.unsubscribe$))
+            .pipe(takeUntil(this.unsubscribeTour$))
             .subscribe(
                 next => {
                     this.tourStart(next);
@@ -108,6 +109,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+        this.unsubscribeTour$.next();
+        this.unsubscribeTour$.complete();
     }
 
     public ngAfterViewInit(): void {
@@ -128,6 +131,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             case TSRole.SUPER_ADMIN:
             case TSRole.ADMIN_MANDANT:
             case TSRole.SACHBEARBEITER_MANDANT:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
             case TSRole.ADMIN_BG:
             case TSRole.SACHBEARBEITER_BG:
             case TSRole.JURIST:
