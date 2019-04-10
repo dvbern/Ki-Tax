@@ -31,7 +31,6 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -90,50 +89,9 @@ public class DownloadFileServiceBean implements DownloadFileService {
 		return persistence.persist(downloadFile);
 	}
 
-	//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs and download file can be generated when report is finsihed
-	@Nonnull
-	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public DownloadFile insertDirectly(@Nonnull String fileIdToUpdate, @Nonnull UploadFileInfo fileInfo, @Nonnull TokenLifespan lifespan, @Nonnull String ip) {
-		Objects.requireNonNull(fileIdToUpdate);
-		Objects.requireNonNull(fileInfo);
-		Objects.requireNonNull(lifespan);
-		Objects.requireNonNull(ip);
-		final DownloadFile downloadFile = new DownloadFile(fileInfo, ip);
-		downloadFile.setLifespan(lifespan);
-		final int updatedRows = updateByQuery(fileIdToUpdate, downloadFile);
-		if (updatedRows != 1) {
-			LOG.warn("Should have updated exactly one row but updated " + updatedRows);
-		}
-		return downloadFile;
-	}
 
-	private int updateByQuery(@Nonnull String accessTokenIdToUpdate, @Nonnull DownloadFile downloadFile) {
 
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		CriteriaUpdate<DownloadFile> query = cb.createCriteriaUpdate(DownloadFile.class);
-		Root<DownloadFile> root = query.from(DownloadFile.class);
 
-		ParameterExpression<String> accessTokenIdParam = cb.parameter(String.class, "accessTokenIdParam");
-		Predicate idPredicate = cb.equal(root.get(DownloadFile_.accessToken), accessTokenIdParam);
-
-		ParameterExpression<String> filenameParam = cb.parameter(String.class, "filenameParam");
-		ParameterExpression<String>filepfadParam = cb.parameter(String.class, "filepfadParam");
-		ParameterExpression<String> filesizeParam = cb.parameter(String.class, "filesizeParam");
-
-		query.set(root.get(DownloadFile_.filename), filenameParam);
-		query.set(root.get(DownloadFile_.filepfad), filepfadParam);
-		query.set(root.get(DownloadFile_.filesize), filesizeParam);
-
-		query.where(idPredicate);
-		final Query q = persistence.getEntityManager().createQuery(query);
-
-		q.setParameter(accessTokenIdParam, accessTokenIdToUpdate);
-		q.setParameter(filenameParam, downloadFile.getFilename());
-		q.setParameter(filepfadParam, downloadFile.getFilepfad());
-		q.setParameter(filesizeParam, downloadFile.getFilesize());
-		return q.executeUpdate();
-	}
 
 	@Nullable
 	@Override
