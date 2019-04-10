@@ -16,6 +16,7 @@
 import {IHttpService} from 'angular';
 import TSDokumenteDTO from '../../models/dto/TSDokumenteDTO';
 import {TSDokumentGrundTyp} from '../../models/enums/TSDokumentGrundTyp';
+import TSDokument from '../../models/TSDokument';
 import TSDokumentGrund from '../../models/TSDokumentGrund';
 import TSGesuch from '../../models/TSGesuch';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
@@ -60,13 +61,11 @@ export default class DokumenteRS {
             });
     }
 
-    public updateDokumentGrund(dokumentGrund: TSDokumentGrund): IPromise<TSDokumentGrund> {
-        let restDokumentGrund = {};
-        restDokumentGrund = this.ebeguRestUtil.dokumentGrundToRestObject(restDokumentGrund, dokumentGrund);
-        return this.http.put(this.serviceURL, restDokumentGrund).then((response: any) => {
+    public removeDokument(dokument: TSDokument): IPromise<TSDokumentGrund> {
+        const url = `${this.serviceURL}/${encodeURIComponent(dokument.id)}`;
+        return this.http.delete(url).then((response: any) => {
             this.log.debug('PARSING dokumentGrund REST object ', response.data);
             return this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data);
         });
     }
-
 }

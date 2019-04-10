@@ -68,7 +68,10 @@
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float" data-translate="EINGANGSDATUM" for="eingangsdatum_ID">
+                                <label class="md-no-float"
+                                       data-translate="EINGANGSDATUM"
+                                       data-translate-value-typ="{{vm.getGesuchModel().typ | translate}}"
+                                       for="eingangsdatum_ID">
                                 </label>
                                 <dv-datepicker input-id="eingangsdatum_ID" name="eingangsdatum"
                                                ng-model="vm.getGesuchModel().eingangsdatum" ng-required="true"

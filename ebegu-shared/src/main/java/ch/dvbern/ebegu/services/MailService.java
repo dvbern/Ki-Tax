@@ -21,6 +21,7 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.SupportAnfrageDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -39,8 +40,12 @@ public interface MailService {
 	 * Sendet die Email mit gegebenem MessageBody an die gegebene Adresse. Dadurch kann eine beliebige Message gemailt
 	 * werden
 	 */
-	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress)
-		throws MailException;
+	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress) throws MailException;
+
+	/**
+	 * Sendet eine Supportanfrage an die definierte Support-Email
+	 */
+	void sendSupportAnfrage(@Nonnull SupportAnfrageDTO supportAnfrageDTO);
 
 	/**
 	 * Sendet eine Email mit der Information, dass alle Betreuungsplaetze bestaetigt wurden und das Gesuch freigegeben
