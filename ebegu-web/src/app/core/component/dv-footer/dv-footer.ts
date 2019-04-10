@@ -43,12 +43,12 @@ export class DvFooterComponent implements IController {
     public showText(info: string): void {
         this.dvDialog.showDialogFullscreen(showTooltipTemplate, ShowTooltipController, {
             title: '',
-            text: info,
+            text: this.$translate.instant(info),
             parentController: this,
         });
     }
 
-    // TODO KIBON-415 ugly override
+    // we dont need a fallback here
     public setFocusBack(_elementID: string): void {
     }
 }
