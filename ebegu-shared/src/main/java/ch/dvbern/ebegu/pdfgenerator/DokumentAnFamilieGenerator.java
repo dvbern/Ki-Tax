@@ -83,7 +83,9 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 				anrede.append(singleAnrede);
 			} else {
 				anrede.append(", ");
-				anrede.append(Character.toLowerCase(singleAnrede.charAt(0))).append(singleAnrede.substring(1));
+				if (!singleAnrede.isEmpty()) {
+					anrede.append(Character.toLowerCase(singleAnrede.charAt(0))).append(singleAnrede.substring(1));
+				}
 			}
 			anrede.append(' ');
 			anrede.append(gesuchsteller.getGesuchstellerJA().getNachname());
@@ -107,7 +109,7 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
 	protected void createFusszeile(@Nonnull PdfContentByte dirPdfContentByte, List<String> content) throws DocumentException {
 		ColumnText fz = new ColumnText(dirPdfContentByte);
-		final float height = millimetersToPoints(20);
+		final float height = millimetersToPoints(13);
 		final float width = millimetersToPoints(170);
 		final float loverLeftX = millimetersToPoints(PageConfiguration.LEFT_PAGE_DEFAULT_MARGIN_MM);
 		final float loverLeftY = millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM / 4.0f);
