@@ -43,6 +43,7 @@ export default class TSInstitutionStammdatenSummary extends TSAbstractDateRanged
     public anzahlPlaetzeFirmen: number = undefined;
     public institutionStammdatenTagesschule: TSInstitutionStammdatenTagesschule = undefined;
     public institutionStammdatenFerieninsel: TSInstitutionStammdatenFerieninsel = undefined;
+    public sendMailWennOffenePendenzen: boolean = true;
 
     public constructor() {
         super();

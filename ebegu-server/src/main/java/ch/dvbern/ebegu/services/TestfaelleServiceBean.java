@@ -909,7 +909,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
 			mailService.sendBenutzerEinladung(besitzer, einladung);
 			mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", Locale.GERMAN);
-			LOG.info("Es sollten 16 Mails verschickt worden sein an " + mailadresse);
+			mailService.sendInfoOffenePendenzenInstitution(firstBetreuung.getInstitutionStammdaten());
+			LOG.info("Es sollten 17 Mails verschickt worden sein an " + mailadresse);
 		} catch (MailException e) {
 			LOG.error("Could not send Mails", e);
 		} finally {
