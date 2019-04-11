@@ -78,6 +78,7 @@ import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown'
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
 import {DvErrorMessagesComponentConfig} from './component/dv-error-messages/dv-error-messages';
 import {DVErwerbspensumListConfig} from './component/dv-erwerbspensum-list/dv-erwerbspensum-list';
+import {DvFooterComponentConfig} from './component/dv-footer/dv-footer';
 import {DvHelpmenuComponent} from './component/dv-helpmenu/dv-helpmenu';
 import {DvHomeIconComponentConfig} from './component/dv-home-icon/dv-home-icon';
 import {DvInputContainerComponentConfig} from './component/dv-input-container/dv-input-container';
@@ -282,6 +283,7 @@ export const CORE_JS_MODULE = angular
     .component('dvVersion', new DVVersionComponentConfig())
     .component('dvBenutzerList', new DVBenutzerListConfig())
     .component('dvLoginButton', new DVLoginButtonConfig())
+    .component('dvFooter', new DvFooterComponentConfig())
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
