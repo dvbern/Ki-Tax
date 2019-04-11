@@ -17,12 +17,14 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -66,6 +68,8 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 	private Mahnung mahnung_2_Alleinstehend;
 	private Mahnung mahnung_2_Verheiratet;
 
+	private String pfad = FileUtils.getTempDirectoryPath() + "/generated/";
+
 
 	@Before
 	public void init() throws IOException {
@@ -91,6 +95,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 			TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_alleinstehend, LocalDate.now().plusDays(20), 4);
 		mahnung_2_Verheiratet =
 			TestDataUtil.createMahnung(MahnungTyp.ZWEITE_MAHNUNG, gesuch_verheiratet, LocalDate.now().plusDays(20), 4);
+		FileUtils.forceMkdir(new File(pfad));
 	}
 
 	@Test
@@ -105,7 +110,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final FreigabequittungPdfGenerator generator = new FreigabequittungPdfGenerator(gesuch, stammdaten, benoetigteUnterlagen);
-		generator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + '/' + dokumentname));
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	@Test
@@ -120,7 +125,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final BegleitschreibenPdfGenerator generator = new BegleitschreibenPdfGenerator(gesuch, stammdaten);
-		generator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + '/' + dokumentname));
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	@Test
@@ -135,9 +140,13 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		evaluator.evaluate(gesuch_alleinstehend, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
+			Objects.requireNonNull(betreuung.getVerfuegung());
+			betreuung.getVerfuegung().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
+		}
 		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(getFirstBetreuung(gesuch), stammdaten, VerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung);
-		generator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + '/' + dokumentname));
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	@Test
@@ -153,7 +162,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung);
-		generator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + '/' + dokumentname));
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	@Test
@@ -170,7 +179,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGenerator generator = new VerfuegungPdfGenerator(getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung);
-		generator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + '/' + dokumentname));
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	@Test
@@ -186,7 +195,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final FinanzielleSituationPdfGenerator generator = new FinanzielleSituationPdfGenerator(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME);
-		generator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + '/' + dokumentname));
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	@Test
@@ -202,7 +211,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final MahnungPdfGenerator generator = new ErsteMahnungPdfGenerator(mahnung, stammdaten);
-		generator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + '/' + dokumentname));
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	@Test
@@ -218,7 +227,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		Assert.assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final MahnungPdfGenerator generator = new ZweiteMahnungPdfGenerator(mahnung, mahnung_1_Alleinstehend, stammdaten);
-		generator.generate(new FileOutputStream(FileUtils.getTempDirectoryPath() + '/' + dokumentname));
+		generator.generate(new FileOutputStream(pfad + dokumentname));
 	}
 
 	private Betreuung getFirstBetreuung(@Nonnull Gesuch gesuch) {
