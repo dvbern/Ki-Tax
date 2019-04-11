@@ -39,7 +39,6 @@ import ch.dvbern.ebegu.services.DownloadFileService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.WorkjobService;
 import ch.dvbern.ebegu.util.UploadFileInfo;
-import com.twelvemonkeys.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,10 +75,7 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 		final Workjob workJob = readWorkjobFromDatabase();
 		final UploadFileInfo fileMetadata = jobDataContainer.getResult();
 		final DownloadFile downloadFile = createDownloadfile(workJob, fileMetadata);
-		Validate.notNull(downloadFile, "BatchJob must create download file");
-		//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs, right now we create the download file right at the start and
-		// can only change its content
-		//		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken());
+		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken()); // add the actual generated doc to the workjob
 		try {
 			mailService.sendInfoStatistikGeneriert(receiverEmail, createStatistikPageLink(), Locale.forLanguageTag(receiverLanguage));
 			return BatchStatus.COMPLETED.toString();
@@ -95,11 +91,10 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	@Nullable
 	private DownloadFile createDownloadfile(@Nonnull Workjob workJob, @Nullable UploadFileInfo uploadFile) {
 		if (uploadFile != null) {
-			//copy data into pre exsiting dowonload-file
-			//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs and download file can be generated when report is finsihed
-			return downloadFileService.insertDirectly(workJob.getResultData(), uploadFile, TokenLifespan.LONG, workJob.getTriggeringIp());
+			// create an authorization token (downloadFile) for the generated document
+			return downloadFileService.create(uploadFile, TokenLifespan.LONG, workJob.getTriggeringIp());
 		}
-		LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step");
+		LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step fuer workJob " + workJob.getExecutionId());
 		return null;
 	}
 
