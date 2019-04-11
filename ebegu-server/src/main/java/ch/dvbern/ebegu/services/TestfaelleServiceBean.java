@@ -62,6 +62,8 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
@@ -865,7 +867,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	@Override
 	public void testAllMails(@Nonnull String mailadresse) {
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() -> new IllegalArgumentException());
-		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden().stream().findFirst().orElseThrow(() -> new IllegalArgumentException());;
+		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden().stream().findFirst().orElseThrow(() -> new IllegalArgumentException());
+		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()).orElseThrow(() -> new IllegalArgumentException());
 		Benutzer besitzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalStateException());
 		List<InstitutionStammdaten> institutionStammdatenList = getInstitutionsstammdatenForTestfaelle();
 		final Gesuch gesuch = createAndSaveGesuch(new Testfall01_WaeltiDagmar(gesuchsperiode, institutionStammdatenList, true, gemeinde),
@@ -876,6 +879,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		String oldAdresseUser = besitzer.getEmail();
 		String oldAdresseInstitution = firstBetreuung.getInstitutionStammdaten().getMail();
+		IBAN oldIBAN = gemeindeStammdaten.getIban();
+		KorrespondenzSpracheTyp oldKorrespondenzSpracheTyp = gemeindeStammdaten.getKorrespondenzsprache();
 
 		besitzer.setEmail(mailadresse);
 		firstBetreuung.getInstitutionStammdaten().setMail(mailadresse);
@@ -892,31 +897,49 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Einladung einladung = Einladung.forMitarbeiter(besitzer);
 		firstBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 
+		gemeindeStammdaten.setIban(new IBAN("CH82 0900 0000 1001 5000 6"));
+		gemeindeStammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
+
 		try {
-			mailService.sendInfoBetreuungenBestaetigt(gesuch);
-			mailService.sendInfoBetreuungAbgelehnt(firstBetreuung);
-			mailService.sendInfoSchulamtAnmeldungUebernommen(firstBetreuung);
-			mailService.sendInfoSchulamtAnmeldungAbgelehnt(firstBetreuung);
-			mailService.sendInfoMitteilungErhalten(mitteilung);
-			mailService.sendInfoVerfuegtGesuch(gesuch);
-			mailService.sendInfoVerfuegtMutation(gesuch);
-			mailService.sendInfoMahnung(gesuch);
-			mailService.sendWarnungGesuchNichtFreigegeben(gesuch, 10);
-			mailService.sendWarnungFreigabequittungFehlt(gesuch, 10);
-			mailService.sendInfoGesuchGeloescht(gesuch);
-			mailService.sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch);
-			mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
-			mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
-			mailService.sendBenutzerEinladung(besitzer, einladung);
-			mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", Locale.GERMAN);
+			// Sprachabhängige Mails in beiden Sprachen schicken
+			testAllMailsInSprache(Sprache.DEUTSCH, gesuch, firstBetreuung, gesuchsperiode, mailadresse);
+			testAllMailsInSprache(Sprache.FRANZOESISCH, gesuch, firstBetreuung, gesuchsperiode, mailadresse);
+			// Sprachunabhängige Mails
 			mailService.sendInfoOffenePendenzenInstitution(firstBetreuung.getInstitutionStammdaten());
-			LOG.info("Es sollten 17 Mails verschickt worden sein an " + mailadresse);
+			mailService.sendBenutzerEinladung(besitzer, einladung);
+			mailService.sendInfoMitteilungErhalten(mitteilung);
+			LOG.info("Es sollten 31 Mails verschickt worden sein an " + mailadresse);
 		} catch (MailException e) {
 			LOG.error("Could not send Mails", e);
 		} finally {
 			besitzer.setEmail(oldAdresseUser);
 			gesuch.getFall().setBesitzer(null);
 			firstBetreuung.getInstitutionStammdaten().setMail(oldAdresseInstitution);
+			gemeindeStammdaten.setIban(oldIBAN);
+			gemeindeStammdaten.setKorrespondenzsprache(oldKorrespondenzSpracheTyp);
 		}
+	}
+
+	private void testAllMailsInSprache(@Nonnull Sprache sprache, @Nonnull Gesuch gesuch, @Nonnull Betreuung firstBetreuung,
+		@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull String mailadresse) throws MailException {
+
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(sprache);
+		Locale locale = sprache == Sprache.FRANZOESISCH ? Locale.FRENCH : Locale.GERMAN;
+
+		mailService.sendInfoBetreuungenBestaetigt(gesuch);
+		mailService.sendInfoBetreuungAbgelehnt(firstBetreuung);
+		mailService.sendInfoSchulamtAnmeldungUebernommen(firstBetreuung);
+		mailService.sendInfoSchulamtAnmeldungAbgelehnt(firstBetreuung);
+		mailService.sendInfoVerfuegtGesuch(gesuch);
+		mailService.sendInfoVerfuegtMutation(gesuch);
+		mailService.sendInfoMahnung(gesuch);
+		mailService.sendWarnungGesuchNichtFreigegeben(gesuch, 10);
+		mailService.sendWarnungFreigabequittungFehlt(gesuch, 10);
+		mailService.sendInfoGesuchGeloescht(gesuch);
+		mailService.sendInfoFreischaltungGesuchsperiode(gesuchsperiode, gesuch);
+		mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
+		mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
+		mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", locale);
 	}
 }
