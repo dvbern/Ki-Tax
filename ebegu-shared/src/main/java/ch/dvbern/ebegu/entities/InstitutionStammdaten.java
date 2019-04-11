@@ -74,6 +74,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
+	@Nonnull
 	@Column(nullable = false)
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
@@ -146,6 +147,9 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Column(nullable = true)
 	private BigDecimal anzahlPlaetzeFirmen;
 
+	@Column(nullable = false)
+	private boolean sendMailWennOffenePendenzen = true;
+
 	@Nullable
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_inst_stammdaten_inst_stammdaten_tagesschule_id"), nullable = true)
@@ -172,7 +176,7 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		return betreuungsangebotTyp;
 	}
 
-	public void setBetreuungsangebotTyp(@Nullable BetreuungsangebotTyp betreuungsangebotTyp) {
+	public void setBetreuungsangebotTyp(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 
@@ -320,6 +324,14 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 
 	public void setAnzahlPlaetzeFirmen(@Nullable BigDecimal anzahlPlaetzeFirmen) {
 		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
+	}
+
+	public boolean getSendMailWennOffenePendenzen() {
+		return sendMailWennOffenePendenzen;
+	}
+
+	public void setSendMailWennOffenePendenzen(boolean sendMailWennOffenePendenzen) {
+		this.sendMailWennOffenePendenzen = sendMailWennOffenePendenzen;
 	}
 
 	/**

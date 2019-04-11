@@ -14,29 +14,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+@import (reference) '../../../../style/variables.less';
 
-package ch.dvbern.ebegu.mail;
+footer {
+    margin: 0 auto;
+    padding: 0.5rem 1rem;
+    display: flex;
+    width: 100%;
+    font-size: 1.4rem;
 
-/**
- * Enum für die Namen der MailTemplates (FreeMarkerTemplates). Der Name des Files muss z.B. XY_de.ftl heissen
- */
-public enum MailTemplate {
+    div {
+        flex-grow: 1;
+        flex-basis: 0;
+    }
 
-	InfoMitteilungErhalten,
-	InfoBetreuungVerfuegt,
-	InfoBetreuungGeloescht,
-	BenutzerEinladung,
-	InfoFreischaltungGesuchsperiode,
-	InfoGesuchGeloescht,
-	WarnungFreigabequittungFehlt,
-	WarnungGesuchNichtFreigegeben,
-	InfoMahnung,
-	InfoVerfuegtMutation,
-	InfoVerfuegtGesuch,
-	InfoSchulamtAnmeldungAbgelehnt,
-	InfoSchulamtAnmeldungUebernommen,
-	InfoBetreuungenBestaetigt,
-	InfoBetreuungAbgelehnt,
-	InfoStatistikGeneriert,
-	InfoOffenePendenzenInstitution
+    .copyright {
+        text-align: left;
+    }
+
+    .info {
+        text-align: center;
+
+        button {
+            border: 0;
+            padding: 0;
+            background: @white;
+            text-align: center;
+            text-decoration: underline;
+        }
+    }
+
+    .version {
+        text-align: right;
+    }
+
+    &h1 {
+        font-size: 2rem;
+    }
 }

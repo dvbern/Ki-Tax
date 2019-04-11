@@ -36,4 +36,6 @@ public interface DailyBatch {
 	void runBatchAbgelaufeneRollen();
 
 	void runBatchDeleteInvalidAuthTokens();
+
+	void runBatchInfoOffenePendenzenInstitution();
 }

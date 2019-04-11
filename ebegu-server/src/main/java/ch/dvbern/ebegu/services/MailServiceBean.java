@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -99,7 +100,6 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
-
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
@@ -448,8 +448,15 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		String subject = "Supportanfrage KiBon: " + supportAnfrageDTO.getId();
 		StringBuilder content = new StringBuilder();
 		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
-		content.append("Erstellt am: " ).append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now())).append(Constants.LINE_BREAK);
-		content.append("Benutzer: ").append(benutzer.getUsername()).append(" (").append(benutzer.getFullName()).append(')').append(Constants.LINE_BREAK);
+		content.append("Erstellt am: ")
+			.append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now()))
+			.append(Constants.LINE_BREAK);
+		content.append("Benutzer: ")
+			.append(benutzer.getUsername())
+			.append(" (")
+			.append(benutzer.getFullName())
+			.append(')')
+			.append(Constants.LINE_BREAK);
 		content.append("Rolle: ").append(benutzer.getRole()).append(Constants.LINE_BREAK);
 		content.append(Constants.LINE_BREAK);
 		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
@@ -459,6 +466,26 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			sendMessage(subject, content.toString(), supportMail);
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(e, "Senden der Mail nicht erfolgreich", "");
+		}
+	}
+
+	@Override
+	public void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institutionStammdaten) {
+		String mailaddress = institutionStammdaten.getMail();
+		try {
+			if (StringUtils.isNotEmpty(mailaddress)) {
+				String message = mailTemplateConfig
+					.getInfoOffenePendenzenInstitution(institutionStammdaten, mailaddress);
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer InfoOffenePendenzenInstitution wurde versendet an {}", mailaddress);
+			} else {
+				LOG.warn("Skipping InfoOffenePendenzenInstitution because E-Mail of Institution is null");
+			}
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail InfoOffenePendenzenInstitution konnte nicht verschickt werden fuer Institution",
+				institutionStammdaten.getInstitution().getName());
 		}
 	}
 
@@ -501,9 +528,10 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	 * Hier wird an einer Stelle definiert, an welche Benutzergruppen ein Mail geschickt werden soll.
 	 */
 	private boolean doSendMail(@Nonnull Gesuch gesuch) {
-		// Mail nur schicken, wenn es der Fall einen Besitzer hat UND (das aktuelle Gesuch bzw. Mutation online eingereicht wurde ODER die Papiermutation
-		// bereits verfügt wurde)
-		return doSendMail(gesuch.getFall()) && (gesuch.getEingangsart().isOnlineGesuch() || gesuch.getStatus().isAnyStatusOfVerfuegt());
+		// Mail nur schicken, wenn es der Fall einen Besitzer hat UND (das aktuelle Gesuch bzw. Mutation online
+		// eingereicht wurde ODER die Papiermutation bereits verfügt wurde)
+		return doSendMail(gesuch.getFall()) && (gesuch.getEingangsart().isOnlineGesuch() || gesuch.getStatus()
+			.isAnyStatusOfVerfuegt());
 	}
 
 	@Nonnull
