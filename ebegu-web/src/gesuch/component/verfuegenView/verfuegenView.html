@@ -152,18 +152,13 @@
                     <div class="col-md-12 form-group">
                         <label class="md-no-float inlineHint" for="manuelle_notes"
                                data-translate="BEGRUENDUNG"></label>
-                        <textarea md-no-autogrow class="form-control" rows="6" id="manuelle_notes"
+                        <textarea md-no-autogrow class="form-control" rows="6" name="manuelle_notes" id="manuelle_notes"
                                   ng-model="vm.bemerkungen" ng-disabled="vm.isBemerkungenDisabled()"
                                   ng-required="vm.isVerfuegenClicked"
                                   ng-attr-placeholder="{{'BEMERKUNGEN_PLACEHOLDER' | translate}}"
                                   maxlength="4000"></textarea>
-                        <div class="dv-error-messages">
-                            <div ng-messages="vm.form.verfuegungsBemerkungenKontrolliert.$error"
-                                 class="error">
-                                <div ng-message="required" data-translate="ERROR_REQUIRED"
-                                     for="vm.form.manuelle_notes.$error" role="alert"></div>
-                            </div>
-                        </div>
+                        <dv-error-messages input-id="manuelle_notes"
+                                           for="vm.form.manuelle_notes.$error"></dv-error-messages>
                     </div>
                 </div>
 
@@ -173,7 +168,8 @@
                      dv-show-expression="vm.showVerfuegen()">
                     <div class="col-xs-12 dv-input-container-question">
                         <div class="checkbox">
-                            <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert" ng-required="vm.isVerfuegenClicked"
+                            <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert"
+                                         ng-required="vm.isVerfuegenClicked"
                                          name="verfuegungsBemerkungenKontrolliert"
                                          aria-label="{{'VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT' | translate}}">
                                 <span data-translate="VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT"></span>
@@ -181,8 +177,10 @@
                             <div class="dv-error-messages">
                                 <div ng-messages="vm.form.verfuegungsBemerkungenKontrolliert.$error"
                                      class="error">
-                                    <div ng-message="required" data-translate="ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED"
-                                         for="vm.form.verfuegungsBemerkungenKontrolliert.$error" role="alert"></div>
+                                    <div ng-message="required"
+                                         data-translate="ERROR_CONFIRM_BEMERKUNGEN_KONTROLLIERT_REQUIRED"
+                                         for="vm.form.verfuegungsBemerkungenKontrolliert.$error"
+                                         role="alert"></div>
                                 </div>
                             </div>
                         </div>
@@ -252,7 +250,8 @@
                                            ng-if="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && vm.gesuchModelManager.isGesuch()">
                             <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
                         </dv-loading-button>
-                        <span class="ie11-fix" ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
+                        <span class="ie11-fix"
+                              ng-show="!vm.isSameVerfuegungsdaten() && vm.showVerfuegen() && !vm.gesuchModelManager.isGesuch()">
                             <!--Mutation wird nicht akzeptiert -> schliessen ohne Verfuegung. Der Status ist passt meiner Meinung
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button type="submit"
