@@ -31,7 +31,7 @@
                                     class="form-control"
                                     id="gemeinde"
                                     [required]="true">
-
+                                <option [ngValue]="null" selected="selected"></option>
                                 <option *ngFor="let gemeinde of (gemeinden$ | async)" [ngValue]="gemeinde">
                                     {{gemeinde.name}}
                                 </option>
@@ -44,10 +44,9 @@
                     </dv-error-messages>
                 </div>
                 <div>
-                    <dv-loading-button [buttonClass]="'onboarding-gemeinde-auswaehlen'"
-                                       [type]="'submit'">
+                    <button [type]="'submit'" class="dv-btn onboarding-gemeinde-auswaehlen">
                         <span translate>ONBOARDING_GEMEINDE_AUSWAEHLEN</span>
-                    </dv-loading-button>
+                    </button>
                 </div>
             </div>
         </div>

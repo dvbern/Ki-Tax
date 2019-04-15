@@ -19,6 +19,7 @@ import {APP_BASE_HREF} from '@angular/common';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Transition, UIRouterModule} from '@uirouter/angular';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import ErrorService from '../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -47,6 +48,7 @@ describe('BenutzerComponent', () => {
         const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
         const i18nServiceSpy = jasmine
             .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+        const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['addMesageAsInfo']);
 
         TestBed.configureTestingModule({
             imports: [SharedModule, UIRouterModule.forRoot()],
@@ -72,6 +74,7 @@ describe('BenutzerComponent', () => {
                 {provide: APP_BASE_HREF, useValue: '/'},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: ErrorService, useValue: errorServiceSpy},
             ],
         })
             .compileComponents();

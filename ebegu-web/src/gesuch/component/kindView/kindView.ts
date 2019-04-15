@@ -80,7 +80,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public showAusserordentlicherAnspruch: boolean;
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     public fachstelleId: string;
-    public allowedRoles: Array<TSRole>;
+    public allowedRoles: ReadonlyArray<TSRole>;
     public minValueAllowed: number = 0;
     public maxValueAllowed: number = 100;
 

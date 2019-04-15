@@ -32,6 +32,11 @@ public interface SuperAdminService {
 	void removeGesuch(@Nonnull String gesuchId);
 
 	/**
+	 * Entfernt ein Dossier mit allen seinen Gesuchen. RunAs(SUPER_ADMIN)
+	 */
+	void removeDossier(@Nonnull String dossierId);
+
+	/**
 	 * Entfernt einen Fall mitsamt seinen Gesuchen. RunAs(SUPER_ADMIN)
 	 */
 	void removeFall(@Nonnull Fall fall);

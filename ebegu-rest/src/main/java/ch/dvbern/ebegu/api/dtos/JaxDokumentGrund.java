@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -52,7 +53,7 @@ public class JaxDokumentGrund extends JaxAbstractDTO {
 	@Nullable
 	private Integer personNumber;
 
-	@Nullable
+	@Nonnull
 	private Set<JaxDokument> dokumente = new HashSet<>();
 
 	private boolean needed = true;
@@ -74,12 +75,12 @@ public class JaxDokumentGrund extends JaxAbstractDTO {
 		this.tag = tag;
 	}
 
-	@Nullable
+	@Nonnull
 	public Set<JaxDokument> getDokumente() {
 		return dokumente;
 	}
 
-	public void setDokumente(@Nullable Set<JaxDokument> dokumente) {
+	public void setDokumente(@Nonnull Set<JaxDokument> dokumente) {
 		this.dokumente = dokumente;
 	}
 
@@ -100,7 +101,7 @@ public class JaxDokumentGrund extends JaxAbstractDTO {
 	}
 
 	public boolean isEmpty() {
-		return getDokumente() == null || getDokumente().size() <= 0;
+		return getDokumente().isEmpty();
 	}
 
 	@Nullable

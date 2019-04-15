@@ -21,6 +21,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -444,7 +445,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			Objects.requireNonNull(familiensituationContainer, "Familiensituation muss gesetzt sein");
 			Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA(), "FamiliensituationJA muss gesetzt sein");
 			newFamsit.setSozialhilfeBezueger(familiensituationContainer.getFamiliensituationJA().getSozialhilfeBezueger());
-			newFamsit.setVerguenstigungGewuenscht(familiensituationContainer.getFamiliensituationJA().getVerguenstigungGewuenscht());
+			newFamsit.setAntragNurFuerBehinderungszuschlag(familiensituationContainer.getFamiliensituationJA().getAntragNurFuerBehinderungszuschlag());
 			familiensituationContainer.setFamiliensituationErstgesuch(familiensituationContainer.getFamiliensituationJA());
 			familiensituationContainer.setFamiliensituationJA(newFamsit);
 			familiensituationService.saveFamiliensituation(mutation, familiensituationContainer, null);
@@ -847,7 +848,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setGemeinsameSteuererklaerung(true);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
-		famsit.setVerguenstigungGewuenscht(true);
+		famsit.setAntragNurFuerBehinderungszuschlag(false);
 		return famsit;
 	}
 
@@ -857,7 +858,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		famsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		famsit.setAenderungPer(aenderungPer);
 		famsit.setSozialhilfeBezueger(false);
-		famsit.setVerguenstigungGewuenscht(true);
+		famsit.setAntragNurFuerBehinderungszuschlag(false);
 		return famsit;
 	}
 
@@ -881,15 +882,15 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setMail(mailadresse);
 		gesuch.getFall().setBesitzer(besitzer);
+		gesuch.setEingangsart(Eingangsart.ONLINE);
 
 		Mitteilung mitteilung = new Mitteilung();
 		mitteilung.setEmpfaenger(besitzer);
 		mitteilung.setBetreuung(firstBetreuung);
 		mitteilung.setDossier(gesuch.getDossier());
 
-		List<Gesuch> gesuche = new ArrayList<>();
-		gesuche.add(gesuch);
 		Einladung einladung = Einladung.forMitarbeiter(besitzer);
+		firstBetreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 
 		try {
 			mailService.sendInfoBetreuungenBestaetigt(gesuch);
@@ -907,7 +908,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
 			mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
 			mailService.sendBenutzerEinladung(besitzer, einladung);
-			mailService.sendInfoGesuchGeloescht(gesuch);
+			mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", Locale.GERMAN);
+			mailService.sendInfoOffenePendenzenInstitution(firstBetreuung.getInstitutionStammdaten());
+			LOG.info("Es sollten 17 Mails verschickt worden sein an " + mailadresse);
 		} catch (MailException e) {
 			LOG.error("Could not send Mails", e);
 		} finally {

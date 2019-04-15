@@ -298,7 +298,7 @@ public final class TestDataUtil {
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		// by default verguenstigung gewuenscht
 		familiensituation.setSozialhilfeBezueger(false);
-		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setAntragNurFuerBehinderungszuschlag(false);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		return familiensituation;
 	}
@@ -585,7 +585,7 @@ public final class TestDataUtil {
 		}
 		kind.setFamilienErgaenzendeBetreuung(true);
 		kind.setSprichtAmtssprache(true);
-		kind.setEinschulungTyp(EinschulungTyp.KLASSE1);
+		kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		return kind;
 	}
 
@@ -839,7 +839,7 @@ public final class TestDataUtil {
 			gesuch.setGesuchsperiode(createGesuchsperiode1718());
 		}
 		FinanzielleSituationRechner finanzielleSituationRechner = new FinanzielleSituationRechner();
-		finanzielleSituationRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(0.80));
+		finanzielleSituationRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(20));
 	}
 
 	public static Gesuch createTestgesuchDagmar() {

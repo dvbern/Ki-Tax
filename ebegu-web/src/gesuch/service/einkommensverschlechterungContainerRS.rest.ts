@@ -87,6 +87,11 @@ export default class EinkommensverschlechterungContainerRS {
             .then(r => this.toEinkommensverschlechterung(r));
     }
 
+    public calculateProzentualeDifferenz(betragJahr: number, betragJahrPlus1: number): IPromise<string> {
+        return this.$http.post(`${this.serviceURL}/calculateDifferenz/${betragJahr}/${betragJahrPlus1}`, null)
+            .then(httpresponse =>  httpresponse.data as string);
+    }
+
     private toEinkommensverschlechterung(response: IHttpResponse<any>): TSEinkommensverschlechterungContainer {
         this.$log.debug('PARSING EinkommensverschlechterungContainer REST object ', response.data);
         const container = new TSEinkommensverschlechterungContainer();

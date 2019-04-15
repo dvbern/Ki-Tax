@@ -56,7 +56,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
-    public allowedRoles: Array<TSRole>;
+    public allowedRoles: ReadonlyArray<TSRole>;
 
     public constructor(
         $stateParams: IStammdatenStateParams,

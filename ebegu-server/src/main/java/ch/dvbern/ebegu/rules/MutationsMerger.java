@@ -131,6 +131,7 @@ public final class MutationsMerger {
 				// Sobald der Stichtag erreicht ist, müssen wir nichts mehr machen, da dieser Merger *nach* den Monatsabschnitten läuft
 				// Wir haben also nie Abschnitte, die über die Monatsgrenze hinausgehen
 				zeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(vorangehenderAbschnitt.getMassgebendesEinkommenVorAbzFamgr());
+				zeitabschnitt.setEinkommensjahr(vorangehenderAbschnitt.getEinkommensjahr());
 				zeitabschnitt.setFamGroesse(vorangehenderAbschnitt.getFamGroesse());
 				zeitabschnitt.setAbzugFamGroesse(vorangehenderAbschnitt.getAbzugFamGroesse());
 				if (massgebendesEinkommen.compareTo(vorangehenderAbschnitt.getMassgebendesEinkommen()) < 0) {

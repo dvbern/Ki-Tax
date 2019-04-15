@@ -13,28 +13,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.mocks;
 
-import java.time.LocalDate;
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Collections;
 
 import javax.annotation.Nonnull;
-import javax.persistence.EntityManager;
 
-import ch.dvbern.ebegu.entities.EbeguVorlage;
-import ch.dvbern.ebegu.entities.Vorlage;
-import ch.dvbern.ebegu.enums.EbeguVorlageKey;
-import ch.dvbern.ebegu.services.EbeguVorlageServiceBean;
-import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.services.DokumentGrundServiceBean;
 
-public class EbeguVorlageServiceMock extends EbeguVorlageServiceBean {
+public class DokumentGrundServiceMock extends DokumentGrundServiceBean {
 
 	@Nonnull
 	@Override
-	public Optional<EbeguVorlage> getEbeguVorlageByDatesAndKey(@Nonnull LocalDate abDate, @Nonnull LocalDate bisDate, @Nonnull EbeguVorlageKey ebeguVorlageKey, EntityManager em) {
-		EbeguVorlage ebeguVorlage = new EbeguVorlage(ebeguVorlageKey, new DateRange(abDate, bisDate));
-		Vorlage vorlage = new Vorlage();
-		ebeguVorlage.setVorlage(vorlage);
-		return Optional.of(ebeguVorlage);
+	public Collection<DokumentGrund> findAllDokumentGrundByGesuch(@Nonnull Gesuch gesuch) {
+		return Collections.emptyList();
 	}
 }

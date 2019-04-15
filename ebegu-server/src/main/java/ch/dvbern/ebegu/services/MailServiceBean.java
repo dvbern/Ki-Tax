@@ -15,34 +15,62 @@
 
 package ch.dvbern.ebegu.services;
 
-import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
-import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.*;
-import javax.inject.Inject;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.*;
+import javax.annotation.Nonnull;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.SupportAnfrageDTO;
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
+import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -66,6 +94,12 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private BenutzerService benutzerService;
+
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
@@ -373,30 +407,24 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	}
 
 	@Override
-	public void sendDocumentCreatedEmail(
+	public void sendInfoStatistikGeneriert(
 		@Nonnull String receiverEmail,
-		@Nullable DownloadFile attachement,
 		@Nonnull String downloadurl,
 		@Nonnull Locale locale
-	) throws MailException {
+	) {
+		Sprache sprache = Sprache.DEUTSCH;
+		if (Locale.FRENCH.getLanguage().equals(locale.getLanguage())) {
+			sprache = Sprache.FRANZOESISCH;
+		}
+		String message = mailTemplateConfig.sendInfoStatistikGeneriert(receiverEmail, downloadurl, sprache);
 
 		try {
-			final String subj = ServerMessageUtil.getMessage("MAIL_REPORT_SUBJECT", locale);
-			String body = ServerMessageUtil.getMessage("MAIL_REPORT_BODY", locale);
-
-			body = body + '\n' + downloadurl;
-			if (attachement != null) {
-				sendMessage(subj, body, receiverEmail, attachement);
-			} else {
-				sendMessage(subj, body, receiverEmail);
-			}
-			LOG.debug("E-Mail mit Report versendet an {}", receiverEmail);
+			sendMessageWithTemplate(message, receiverEmail);
+			LOG.info("Email fuer InfoStatistikGeneriert wurde versendet an {}", receiverEmail);
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(
 				e,
-				"E-Mail mit Report versendet konnte nicht verschickt werden an",
-				receiverEmail);
-			throw e; // Wird spaeter nicht mehr geloggt
+				"Mail InfoStatistikGeneriert konnte nicht verschickt werden an", receiverEmail);
 		}
 	}
 
@@ -413,11 +441,59 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMessageWithTemplate(message, einladung.getEingeladener().getEmail());
 	}
 
+	@Override
+	public void sendSupportAnfrage(@Nonnull SupportAnfrageDTO supportAnfrageDTO) {
+		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new IllegalArgumentException());
+
+		String subject = "Supportanfrage KiBon: " + supportAnfrageDTO.getId();
+		StringBuilder content = new StringBuilder();
+		content.append("Id: ").append(supportAnfrageDTO.getId()).append(Constants.LINE_BREAK);
+		content.append("Erstellt am: ")
+			.append(Constants.FILENAME_DATE_TIME_FORMATTER.format(LocalDateTime.now()))
+			.append(Constants.LINE_BREAK);
+		content.append("Benutzer: ")
+			.append(benutzer.getUsername())
+			.append(" (")
+			.append(benutzer.getFullName())
+			.append(')')
+			.append(Constants.LINE_BREAK);
+		content.append("Rolle: ").append(benutzer.getRole()).append(Constants.LINE_BREAK);
+		content.append(Constants.LINE_BREAK);
+		content.append(supportAnfrageDTO.getBeschreibung()).append(Constants.LINE_BREAK);
+
+		try {
+			String supportMail = ebeguConfiguration.getSupportMail();
+			sendMessage(subject, content.toString(), supportMail);
+		} catch (MailException e) {
+			logExceptionAccordingToEnvironment(e, "Senden der Mail nicht erfolgreich", "");
+		}
+	}
+
+	@Override
+	public void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institutionStammdaten) {
+		String mailaddress = institutionStammdaten.getMail();
+		try {
+			if (StringUtils.isNotEmpty(mailaddress)) {
+				String message = mailTemplateConfig
+					.getInfoOffenePendenzenInstitution(institutionStammdaten, mailaddress);
+				sendMessageWithTemplate(message, mailaddress);
+				LOG.debug("Email fuer InfoOffenePendenzenInstitution wurde versendet an {}", mailaddress);
+			} else {
+				LOG.warn("Skipping InfoOffenePendenzenInstitution because E-Mail of Institution is null");
+			}
+		} catch (Exception e) {
+			logExceptionAccordingToEnvironment(
+				e,
+				"Mail InfoOffenePendenzenInstitution konnte nicht verschickt werden fuer Institution",
+				institutionStammdaten.getInstitution().getName());
+		}
+	}
+
 	private void sendMail(
 		@Nonnull Gesuch gesuch,
 		@Nonnull String logId,
 		@Nonnull BiFunction<Gesuchsteller, String, String> messageProvider) throws MailException {
-		if (!doSendMail(gesuch.getFall())) {
+		if (!doSendMail(gesuch)) {
 			return;
 		}
 
@@ -444,7 +520,18 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	 * Hier wird an einer Stelle definiert, an welche Benutzergruppen ein Mail geschickt werden soll.
 	 */
 	private boolean doSendMail(@Nonnull Fall fall) {
+		// Mail nur schicken, wenn es der Fall einen Besitzer hat
 		return fall.getBesitzer() != null;
+	}
+
+	/**
+	 * Hier wird an einer Stelle definiert, an welche Benutzergruppen ein Mail geschickt werden soll.
+	 */
+	private boolean doSendMail(@Nonnull Gesuch gesuch) {
+		// Mail nur schicken, wenn es der Fall einen Besitzer hat UND (das aktuelle Gesuch bzw. Mutation online
+		// eingereicht wurde ODER die Papiermutation bereits verfügt wurde)
+		return doSendMail(gesuch.getFall()) && (gesuch.getEingangsart().isOnlineGesuch() || gesuch.getStatus()
+			.isAnyStatusOfVerfuegt());
 	}
 
 	@Nonnull

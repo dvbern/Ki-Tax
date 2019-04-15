@@ -192,15 +192,8 @@ export default class GesuchRS implements IEntityRS {
             });
     }
 
-    public removePapiergesuch(gesuchId: string): IPromise<boolean> {
-        return this.$http.delete(`${this.serviceURL}/removePapiergesuch/${encodeURIComponent(gesuchId)}`)
-            .then((response: any) => {
-                return response.data;
-            });
-    }
-
-    public removeGesuchstellerAntrag(gesuchId: string): IPromise<boolean> {
-        return this.$http.delete(`${this.serviceURL}/removeGesuchstellerAntrag/${encodeURIComponent(gesuchId)}`)
+    public removeAntrag(gesuchId: string): IPromise<boolean> {
+        return this.$http.delete(`${this.serviceURL}/removeAntrag/${encodeURIComponent(gesuchId)}`)
             .then((response: any) => {
                 return response.data;
             });

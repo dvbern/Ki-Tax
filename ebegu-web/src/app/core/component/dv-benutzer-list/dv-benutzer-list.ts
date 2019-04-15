@@ -150,7 +150,7 @@ export class DVBenutzerListController implements IOnInit {
         });
     };
 
-    public getRollen(): TSRole[] {
+    public getRollen(): ReadonlyArray<TSRole> {
         return this.authServiceRS.getVisibleRolesForPrincipal();
     }
 

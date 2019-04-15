@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,20 +25,17 @@ import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxDokument;
 import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
 import ch.dvbern.ebegu.api.dtos.JaxDokumente;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -52,11 +48,13 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.services.DokumentGrundService;
-import ch.dvbern.ebegu.services.FileSaverService;
+import ch.dvbern.ebegu.services.DokumentService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * REST Resource fuer Dokumente
@@ -80,7 +78,8 @@ public class DokumenteResource {
 	private DokumentGrundService dokumentGrundService;
 
 	@Inject
-	private FileSaverService fileSaverService;
+	private DokumentService dokumentService;
+
 
 	@ApiOperation(value = "Gibt alle Dokumentgruende zurück, welche zum uebergebenen Gesuch vorhanden sind.",
 		response = JaxDokumente.class)
@@ -132,63 +131,26 @@ public class DokumenteResource {
 		throw new EbeguEntityNotFoundException("getDokumenteByTyp", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId.getId());
 	}
 
-	@ApiOperation(value = "Aktualisiert einen Dokumentgrund in der Datenbank", response = JaxDokumentGrund.class)
+	@ApiOperation("Loescht das Dokument mit der uebergebenen Id in der Datenbank")
 	@Nullable
-	@PUT
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public JaxDokumentGrund updateDokumentGrund(
-		@Nonnull @NotNull @Valid JaxDokumentGrund dokumentGrundJAXP,
-		@Context UriInfo uriInfo,
+	@DELETE
+	@Path("/{dokumentId}")
+	@Consumes(MediaType.WILDCARD)
+	public JaxDokumentGrund removeDokument(
+		@Nonnull @NotNull @PathParam("dokumentId") JaxId dokumentJAXPId,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(dokumentGrundJAXP.getId());
-		Optional<DokumentGrund> dokumentGrundOptional = dokumentGrundService.findDokumentGrund(dokumentGrundJAXP.getId());
-		DokumentGrund dokumentGrundFromDB = dokumentGrundOptional.orElseThrow(() -> new EbeguEntityNotFoundException("update", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentGrundJAXP.getId()));
-		// beim DokumentGrund mit dem DokumentGrundTyp SONSTIGE_NACHWEISE oder PAPIERGESUCH  soll das needed-Flag (transient)
-		// per default auf false sein. sonst stimmt der Wizardstep-Status spaeter nicht
-		if (DokumentGrundTyp.isSonstigeOrPapiergesuch(dokumentGrundFromDB.getDokumentGrundTyp())) {
-			dokumentGrundFromDB.setNeeded(false);
-		}
-		// Files where not in the list anymore, should be deleted on Filesystem!
-		Set<Dokument> dokumentsToRemove = findDokumentToRemove(dokumentGrundJAXP, dokumentGrundFromDB);
-		for (Dokument dokument : dokumentsToRemove) {
-			// Es duerfen nur dokumente ohne VorgaengerId geloescht werden. D.h. es koennen nur Files auf dem FS einer
-			// Mutation geloescht werden, welche neu hinzugefuegt worden sind. Kopierte Dokumente des EG duerfen nicht geloescht werden!
-			if (dokument.getVorgaengerId() == null) {
-				fileSaverService.remove(dokument.getFilepfad());
-			}
-		}
+		requireNonNull(dokumentJAXPId.getId());
+		String dokumentId = converter.toEntityId(dokumentJAXPId);
 
-		DokumentGrund dokumentGrundToMerge = converter.dokumentGrundToEntity(dokumentGrundJAXP, dokumentGrundFromDB);
-		DokumentGrund modifiedDokumentGrund = this.dokumentGrundService.updateDokumentGrund(dokumentGrundToMerge);
+		Dokument dokument = dokumentService.findDokument(dokumentId).orElseThrow(() -> new EbeguEntityNotFoundException("removeDokument",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
 
-		if (modifiedDokumentGrund == null) {
-			return null;
-		}
-		return converter.dokumentGrundToJax(modifiedDokumentGrund);
-	}
+		DokumentGrund updatedDokumentGrund = dokumentGrundService.findDokumentGrund(dokument.getDokumentGrund().getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("findDokumentGrund", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokument.getDokumentGrund().getId()));
 
-	/**
-	 * Gibt Liste von Dokumenten zurück, welche auf der DB vorhanden sind auf dem jaxB Objekt jedoch nicht mehr.
-	 */
-	private Set<Dokument> findDokumentToRemove(JaxDokumentGrund dokumentGrundJAXP, DokumentGrund dokumentGrundFromDB) {
-		Objects.requireNonNull(dokumentGrundFromDB.getDokumente());
-		Objects.requireNonNull(dokumentGrundJAXP.getDokumente());
-
-		Set<Dokument> dokumentsToRemove = new HashSet<>();
-		for (Dokument dokument : dokumentGrundFromDB.getDokumente()) {
-			boolean found = false;
-			for (JaxDokument jaxDokument : dokumentGrundJAXP.getDokumente()) {
-				if (dokument.getId().equals(jaxDokument.getId())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				dokumentsToRemove.add(dokument);
-			}
-		}
-		return dokumentsToRemove;
+		updatedDokumentGrund.getDokumente().remove(dokument);
+		dokumentService.removeDokument(dokument);
+		return converter.dokumentGrundToJax(updatedDokumentGrund);
 	}
 }

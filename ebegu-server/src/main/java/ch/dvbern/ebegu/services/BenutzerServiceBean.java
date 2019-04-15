@@ -80,6 +80,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguPendingInvitationException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -163,6 +164,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		requireNonNull(benutzer);
 		prepareBenutzerForSave(benutzer, currentBerechtigungChanged);
 		authorizer.checkWriteAuthorization(benutzer);
+		checkSuperuserRoleZuteilung(benutzer);
 		return persistence.merge(benutzer);
 	}
 
@@ -284,12 +286,29 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return persistedBenutzer;
 	}
 
+	@Nonnull
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
+		try {
+			checkArgument(eingeladener.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+			Einladung einladung = Einladung.forRolle(eingeladener);
+			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
+		} catch (MailException e) {
+			String message =
+				String.format("Es konnte keine Email Einladung an %s geschickt werden", eingeladener.getEmail());
+			KibonLogLevel logLevel = ebeguConfiguration.getIsDevmode() ? KibonLogLevel.INFO : KibonLogLevel.ERROR;
+			throw new EbeguRuntimeException(logLevel, "sendEinladung", message, ErrorCodeEnum.ERROR_MAIL, e);
+		}
+	}
+
 	/**
 	 * According to the type of Einladung it checks that the given benutzer meets the conditions required.
 	 */
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private void checkEinladung(@Nonnull Einladung einladung) {
 		Benutzer benutzer = einladung.getEingeladener();
+		checkSuperuserRoleZuteilung(einladung.getEingeladener());
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
@@ -298,12 +317,25 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			if (findBenutzer(benutzer.getUsername()).isPresent()) {
 				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist
 				// already
-				throw new EntityExistsException(Benutzer.class, "email", benutzer.getUsername(), ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
+				throw new EntityExistsException(
+					Benutzer.class,
+					"email",
+					benutzer.getUsername(),
+					ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 			}
 		}
 
 		if (benutzer.isNew()) {
 			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+		}
+	}
+
+	private void checkSuperuserRoleZuteilung(@Nonnull Benutzer benutzer) {
+		// Nur ein Superadmin kann Superadmin-Rechte vergeben!
+		if (benutzer.getRole() == UserRole.SUPER_ADMIN && !principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
+			throw new IllegalStateException(
+				"Nur ein Superadmin kann Superadmin-Rechte vergeben. Dies wurde aber versucht durch: "
+					+ principalBean.getBenutzer().getUsername());
 		}
 	}
 
@@ -410,6 +442,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	/**
 	 * Gibt alle existierenden Benutzer mit den gewünschten Rollen zurueck.
 	 * ¡Diese Methode filtert die Gemeinde über den angemeldeten Benutzer!
+	 *
 	 * @param roles Die besagten Rollen
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
@@ -423,7 +456,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
 		Root<Benutzer> root = query.from(Benutzer.class);
 		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
-		SetJoin<Berechtigung, Gemeinde> joinGemeinde = joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.LEFT);
+		SetJoin<Berechtigung, Gemeinde> joinGemeinde =
+			joinBerechtigungen.join(Berechtigung_.gemeindeList, JoinType.LEFT);
 		query.select(root);
 
 		predicates.add(cb.between(
@@ -437,11 +471,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		query.where(predicates.toArray(NEW));
 		query.distinct(true);
 
-		return persistence.getCriteriaResults(query);	}
+		return persistence.getCriteriaResults(query);
+	}
 
 	/**
 	 * Gibt alle existierenden Benutzer mit den gewünschten Rollen zurueck.
 	 * ¡Diese Methode filtert die Gemeinde über den Gemeinde-Parameter!
+	 *
 	 * @param roles Das Rollen Filter
 	 * @param gemeinde Das Gemeinde Filter
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
@@ -595,6 +631,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			foundUser.setVorname(benutzer.getVorname());
 			foundUser.setEmail(benutzer.getEmail());
 
+			// Wir setzen den konfigurierten User als SUPER_ADMIN
+			setSuperAdminRole(foundUser);
+
 			return saveBenutzer(foundUser);
 		}
 
@@ -609,32 +648,39 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		benutzer.getBerechtigungen().add(berechtigung);
 
 		// Wir setzen den konfigurierten User als SUPER_ADMIN
-		String superuserMail = ebeguConfiguration.getSuperuserMail();
-		if (superuserMail != null
-			&& superuserMail.equalsIgnoreCase(benutzer.getEmail())
-			&& benutzer.getRole() != UserRole.SUPER_ADMIN
-		) {
-			benutzer.setRole(UserRole.SUPER_ADMIN);
-			LOG.warn("Benutzer eingeloggt mit E-Mail {}: {}", benutzer.getEmail(), benutzer);
-		}
+		setSuperAdminRole(benutzer);
 
 		return saveBenutzer(benutzer);
 	}
 
+	private void setSuperAdminRole(@Nonnull Benutzer benutzer) {
+		// Wir setzen den konfigurierten User als SUPER_ADMIN
+		String superuserMail = ebeguConfiguration.getSuperuserMail();
+		if (superuserMail != null
+			&& superuserMail.equalsIgnoreCase(benutzer.getEmail()) && benutzer.getRole() != UserRole.SUPER_ADMIN
+		) {
+			benutzer.setRole(UserRole.SUPER_ADMIN);
+			benutzer.setInstitution(null);
+			benutzer.setTraegerschaft(null);
+			LOG.warn("Benutzer eingeloggt mit E-Mail {}: {}", benutzer.getEmail(), benutzer);
+		}
+	}
+
 	/**
-	 * If the given user is found in the DB by its email, it has a role that can be invited and it has no externalUUID yet
-	 * we can be sure that this user has been invited but he didn't accept the invitation yet.
+	 * If the given user is found in the DB by its email, it has a role that can be invited and it has no externalUUID
+	 * yet we can be sure that this user has been invited but he didn't accept the invitation yet.
 	 */
 	private void checkForPendingInvitations(@Nonnull Benutzer benutzer) {
 		findBenutzerByEmail(benutzer.getEmail())
 			.filter(benutzerByEmail ->
 				benutzerByEmail.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.NONE
-				&& benutzerByEmail.getExternalUUID() == null
+					&& benutzerByEmail.getExternalUUID() == null
 			)
 			.ifPresent(benutzerByEmail -> {
 				// the user
-				final String message = "Pending open invitation as a user with elevated role for user " + benutzer.getEmail() +
-					". This user must accept the invitation instead of trying to log in as Gesuchsteller";
+				final String message =
+					"Pending open invitation as a user with elevated role for user " + benutzer.getEmail() +
+						". This user must accept the invitation instead of trying to log in as Gesuchsteller";
 				LOG.debug(message);
 				throw new EbeguPendingInvitationException("updateOrStoreUserFromIAM", message);
 
@@ -1165,8 +1211,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		Root<GemeindeStammdaten> root = query.from(GemeindeStammdaten.class);
 
 		ParameterExpression<String> benutzerParam = cb.parameter(String.class, "username");
-		Predicate predicateDefaultBG = cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerBG).get(Benutzer_.username), benutzerParam);
-		Predicate predicateDefaultTS = cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerTS).get(Benutzer_.username), benutzerParam);
+		Predicate predicateDefaultBG =
+			cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerBG).get(Benutzer_.username), benutzerParam);
+		Predicate predicateDefaultTS =
+			cb.equal(root.get(GemeindeStammdaten_.defaultBenutzerTS).get(Benutzer_.username), benutzerParam);
 		Predicate anyDefault = cb.or(predicateDefaultBG, predicateDefaultTS);
 		query.where(anyDefault);
 

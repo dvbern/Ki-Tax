@@ -48,12 +48,21 @@ public class SuperAdminServiceBean implements SuperAdminService {
 	private GesuchService gesuchService;
 
 	@Inject
+	private DossierService dossierService;
+
+	@Inject
 	private FallService fallService;
 
 	@Override
 	@RolesAllowed({ GESUCHSTELLER, SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
 	public void removeGesuch(@Nonnull String gesuchId) {
 		gesuchService.removeGesuch(gesuchId, GesuchDeletionCause.USER);
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE, ADMIN_TS })
+	public void removeDossier(@Nonnull String dossierId) {
+		dossierService.removeDossier(dossierId, GesuchDeletionCause.USER);
 	}
 
 	@Override

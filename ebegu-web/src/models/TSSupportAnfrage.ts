@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,22 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+export default class TSSupportAnfrage {
 
-import java.time.LocalDate;
+    private _id: string;
 
-import javax.annotation.Nonnull;
+    private _beschreibung: string;
 
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.services.DossierServiceBean;
-import ch.dvbern.ebegu.util.Constants;
+    public get id(): string {
+        return this._id;
+    }
 
-public class DossierServiceMock extends DossierServiceBean {
+    public set id(value: string) {
+        this._id = value;
+    }
 
-	@Override
-	public LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
-		// return START_OF_TIME so this value will have no influence on the calculations
-		return Constants.START_OF_TIME;
-	}
+    public get beschreibung(): string {
+        return this._beschreibung;
+    }
+
+    public set beschreibung(value: string) {
+        this._beschreibung = value;
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,26 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.tests;
+package ch.dvbern.ebegu.mocks;
 
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.services.GemeindeServiceBean;
-import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.services.FallServiceBean;
 
-public class GemeindeServiceMock extends GemeindeServiceBean {
+public class FallServiceBeanMock extends FallServiceBean {
 
 	@Nonnull
 	@Override
-	public Optional<GemeindeStammdaten> getGemeindeStammdatenByGemeindeId(
-		@Nonnull String gemeindeId
-	) {
-		GemeindeStammdaten gemeindeWithStammdaten = TestDataUtil.createGemeindeWithStammdaten();
-		// Aktuell wird als Adresse immer Jugendamt verwendet
-		gemeindeWithStammdaten.getAdresse().setOrganisation("Jugendamt");
-		return Optional.of(gemeindeWithStammdaten);
+	public Optional<Fall> findFall(@Nonnull String key) {
+		return Optional.of(new Fall());
 	}
 }

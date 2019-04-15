@@ -91,7 +91,8 @@ describe('verfuegenListViewTest', () => {
             $injector.get('GesuchRS'),
             $injector.get('$timeout'),
             $injector.get('$translate'),
-            einstellungRS);
+            einstellungRS,
+            null);
         $rootScope.$apply();
     }));
 

@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -141,12 +142,12 @@ public final class EbeguUtil {
 
 	/**
 	 * finanzielle situation ist by default nicht zwingend, ausser es ist getSozialhilfeBezueger=false und
-	 * getVerguenstigungGewuenscht=true
+	 * getAntragNurFuerBehinderungszuschlag=false
 	 */
 	public static boolean isFinanzielleSituationRequired(@Nonnull Gesuch gesuch) {
 		return gesuch.getFamiliensituationContainer() != null && gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger())
-			&& BooleanUtils.isTrue(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht());
+			&& BooleanUtils.isFalse(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAntragNurFuerBehinderungszuschlag());
 	}
 
 	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {
@@ -158,6 +159,20 @@ public final class EbeguUtil {
 		return gesuch.getGesuchsteller1() == null
 			|| (gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
 			&& gesuch.getEinkommensverschlechterungInfoContainer() == null);
+	}
+
+	public static boolean isErlaeuterungenZurVerfuegungRequired(@Nonnull Gesuch gesuch) {
+		// Im Status ENTWURF sollen die Erläuterungen immer als Beilage aufgeführt werden
+		if (!gesuch.getStatus().isAnyStatusOfVerfuegt()) {
+			return true;
+		}
+		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
+			// Status VERFUEGT mit Anspruch
+			if (Betreuungsstatus.VERFUEGT == betreuung.getBetreuungsstatus() && betreuung.hasAnspruch()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static String getPaddedFallnummer(long fallNummer) {

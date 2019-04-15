@@ -107,15 +107,13 @@
                     <a href="#" ng-click="$event.preventDefault();" data-translate="AUSLOGGEN" aria-hidden></a>
                 </md-button>
             </md-menu-item>
-            <md-menu-item class="versionInfo">
-                <a href="https://github.com/StadtBern/Ki-Tax" target="_blank">Vers: {{vm.VERSION}}:
-                    {{vm.BUILDTSTAMP}}</a>
-            </md-menu-item>
 
-            <md-menu-item>
-                <dv-language-selector></dv-language-selector>
-            </md-menu-item>
+            <!-- todo uncomment code below when FR is totally translated -->
+            <!--<md-menu-item>-->
+                <!--<dv-language-selector></dv-language-selector>-->
+            <!--</md-menu-item>-->
 
         </md-menu-content>
     </md-menu>
+    <div id="tourTipUserMenu" style="position: relative; width: 0px; height: 0px; bottom: 0px; left: 50%;"></div>
 </md-menu-bar>

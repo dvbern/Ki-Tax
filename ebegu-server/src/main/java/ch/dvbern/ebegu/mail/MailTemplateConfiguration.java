@@ -56,6 +56,7 @@ public class MailTemplateConfiguration {
 	public static final String ADRESSE = "adresse";
 	public static final String MITTEILUNG = "mitteilung";
 	public static final String TEMPLATES_FOLDER = "/mail/templates";
+	public static final String INSTITUTION_STAMMDATEN = "institutionStammdaten";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -143,6 +144,7 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
 		paramMap.put("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung));
 		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
+		paramMap.put("status", ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsstatus(), sprache.getLocale()));
 
 		return processTemplateBetreuungGeloescht(
 			betreuung,
@@ -175,6 +177,17 @@ public class MailTemplateConfiguration {
 			institution,
 			paramMap,
 			sprache);
+	}
+
+	public String sendInfoStatistikGeneriert(
+		@Nonnull String empfaengerMail,
+		@Nonnull String downloadurl,
+		@Nonnull Sprache sprache
+	) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put("downloadurl", downloadurl);
+		paramMap.put("footer", ServerMessageUtil.getMessage("EinladungEmail_FOOTER", sprache.getLocale()));
+		return doProcessTemplate(appendLanguageToTemplateName(MailTemplate.InfoStatistikGeneriert, sprache), paramMap);
 	}
 
 	public String getInfoMitteilungErhalten(
@@ -325,6 +338,21 @@ public class MailTemplateConfiguration {
 		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentFR", "footerFR", Locale.FRENCH);
 
 		return doProcessTemplate(MailTemplate.BenutzerEinladung.name() + ".ftl", paramMap);
+	}
+
+	/**
+	 * InfoOffenePendenzenInstitution is sent in two languages FR and DE since we don't know the language of the institution.
+	 */
+	@Nonnull
+	public String getInfoOffenePendenzenInstitution(
+		@Nonnull InstitutionStammdaten institutionStammdaten,
+		@Nonnull String empfaengerMail
+	) {
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail);
+		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
+		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
+
+		return doProcessTemplate(MailTemplate.InfoOffenePendenzenInstitution.name() + ".ftl", paramMap);
 	}
 
 	private void addContentInLanguage(

@@ -396,13 +396,15 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	}
 
 	private void addErlaeuterungenDoc(Gesuch gesuch, List<InputStream> docsToMerge) {
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
-		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
+		if (EbeguUtil.isErlaeuterungenZurVerfuegungRequired(gesuch)) {
+			final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+			Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
 
-		byte[] content = gesuchsperiode.getVerfuegungErlaeuterungWithSprache(sprache);
+			byte[] content = gesuchsperiode.getVerfuegungErlaeuterungWithSprache(sprache);
 
-		if (content.length != 0) {
-			docsToMerge.add(new ByteArrayInputStream(content));
+			if (content.length != 0) {
+				docsToMerge.add(new ByteArrayInputStream(content));
+			}
 		}
 	}
 

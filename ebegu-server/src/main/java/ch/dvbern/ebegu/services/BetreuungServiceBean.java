@@ -65,6 +65,7 @@ import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
@@ -87,6 +88,7 @@ import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,6 +144,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private BenutzerService benutzerService;
 	@Inject
 	private GemeindeService gemeindeService;
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
 	@Inject
 	private PrincipalBean principalBean;
 
@@ -811,5 +815,20 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		update.where(predBetreuung);
 
 		return persistence.getEntityManager().createQuery(update).executeUpdate();
+	}
+
+	@Override
+	public void sendInfoOffenePendenzenInstitution() {
+		Collection<Institution> activeInstitutionen = institutionService.getAllActiveInstitutionen();
+		for (Institution institution : activeInstitutionen) {
+			Collection<Betreuung> pendenzen = getPendenzenForInstitution(institution);
+			if (CollectionUtils.isNotEmpty(pendenzen)) {
+				InstitutionStammdaten stammdaten =
+					institutionStammdatenService.getInstitutionStammdatenByInstitution(institution.getId());
+				if (stammdaten.getSendMailWennOffenePendenzen()) {
+					mailService.sendInfoOffenePendenzenInstitution(stammdaten);
+				}
+			}
+		}
 	}
 }

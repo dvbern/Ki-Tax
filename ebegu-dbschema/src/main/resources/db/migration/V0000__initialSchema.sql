@@ -474,7 +474,7 @@ CREATE TABLE betreuungsmitteilung_pensum_aud (
 	gueltig_ab                  DATE,
 	gueltig_bis                 DATE,
 	monatliche_betreuungskosten DECIMAL(19, 2),
-	pensum                      DECIMAL(19, 2),
+	pensum                      DECIMAL(19, 10),
 	unit_for_display            VARCHAR(255),
 	betreuungsmitteilung_id     BINARY(16),
 	PRIMARY KEY (id, rev)
@@ -491,7 +491,7 @@ CREATE TABLE betreuungsmitteilung_pensum (
 	gueltig_ab                  DATE           NOT NULL,
 	gueltig_bis                 DATE           NOT NULL,
 	monatliche_betreuungskosten DECIMAL(19, 2) NOT NULL,
-	pensum                      DECIMAL(19, 2) NOT NULL,
+	pensum                      DECIMAL(19, 10) NOT NULL,
 	unit_for_display            VARCHAR(255)   NOT NULL,
 	betreuungsmitteilung_id     BINARY(16)     NOT NULL,
 	PRIMARY KEY (id)
@@ -508,7 +508,7 @@ CREATE TABLE betreuungspensum (
 	gueltig_ab                  DATE           NOT NULL,
 	gueltig_bis                 DATE           NOT NULL,
 	monatliche_betreuungskosten DECIMAL(19, 2) NOT NULL,
-	pensum                      DECIMAL(19, 2) NOT NULL,
+	pensum                      DECIMAL(19, 10) NOT NULL,
 	unit_for_display            VARCHAR(255)   NOT NULL,
 	nicht_eingetreten           BIT            NOT NULL,
 	PRIMARY KEY (id)
@@ -526,7 +526,7 @@ CREATE TABLE betreuungspensum_aud (
 	gueltig_ab                  DATE,
 	gueltig_bis                 DATE,
 	monatliche_betreuungskosten DECIMAL(19, 2),
-	pensum                      DECIMAL(19, 2),
+	pensum                      DECIMAL(19, 10),
 	unit_for_display            VARCHAR(255),
 	nicht_eingetreten           BIT,
 	PRIMARY KEY (id, rev)
@@ -1065,37 +1065,39 @@ CREATE TABLE fall_aud (
 );
 
 CREATE TABLE familiensituation (
-	id                          BINARY(16)   NOT NULL,
-	timestamp_erstellt          DATETIME     NOT NULL,
-	timestamp_mutiert           DATETIME     NOT NULL,
-	user_erstellt               VARCHAR(255) NOT NULL,
-	user_mutiert                VARCHAR(255) NOT NULL,
-	version                     BIGINT       NOT NULL,
-	vorgaenger_id               VARCHAR(36),
-	aenderung_per               DATE,
-	familienstatus              VARCHAR(255) NOT NULL,
-	gemeinsame_steuererklaerung BIT,
-	sozialhilfe_bezueger        BIT,
-	start_konkubinat            DATE,
-	verguenstigung_gewuenscht   BIT,
+	id                                                       BINARY(16)   NOT NULL,
+	timestamp_erstellt                                       DATETIME     NOT NULL,
+	timestamp_mutiert                                        DATETIME     NOT NULL,
+	user_erstellt                                            VARCHAR(255) NOT NULL,
+	user_mutiert                                             VARCHAR(255) NOT NULL,
+	version                                                  BIGINT       NOT NULL,
+	vorgaenger_id                                            VARCHAR(36),
+	aenderung_per                                            DATE,
+	familienstatus                                           VARCHAR(255) NOT NULL,
+	gemeinsame_steuererklaerung                              BIT,
+	sozialhilfe_bezueger                                     BIT,
+	start_konkubinat                                         DATE,
+	antrag_nur_fuer_behinderungszuschlag                     BIT,
+	behinderungszuschlag_fuer_mind_ein_kind_einmal_beantragt BIT          NOT NULL DEFAULT FALSE,
 	PRIMARY KEY (id)
 );
 
 CREATE TABLE familiensituation_aud (
-	id                          BINARY(16) NOT NULL,
-	rev                         INTEGER    NOT NULL,
-	revtype                     TINYINT,
-	timestamp_erstellt          DATETIME,
-	timestamp_mutiert           DATETIME,
-	user_erstellt               VARCHAR(255),
-	user_mutiert                VARCHAR(255),
-	vorgaenger_id               VARCHAR(36),
-	aenderung_per               DATE,
-	familienstatus              VARCHAR(255),
-	gemeinsame_steuererklaerung BIT,
-	sozialhilfe_bezueger        BIT,
-	start_konkubinat            DATE,
-	verguenstigung_gewuenscht   BIT,
+	id                                                       BINARY(16) NOT NULL,
+	rev                                                      INTEGER    NOT NULL,
+	revtype                                                  TINYINT,
+	timestamp_erstellt                                       DATETIME,
+	timestamp_mutiert                                        DATETIME,
+	user_erstellt                                            VARCHAR(255),
+	user_mutiert                                             VARCHAR(255),
+	vorgaenger_id                                            VARCHAR(36),
+	aenderung_per                                            DATE,
+	familienstatus                                           VARCHAR(255),
+	gemeinsame_steuererklaerung                              BIT,
+	sozialhilfe_bezueger                                     BIT,
+	start_konkubinat                                         DATE,
+	antrag_nur_fuer_behinderungszuschlag                     BIT,
+	behinderungszuschlag_fuer_mind_ein_kind_einmal_beantragt BIT,
 	PRIMARY KEY (id, rev)
 );
 
@@ -1322,6 +1324,7 @@ CREATE TABLE gemeinde_stammdaten_aud (
 	korrespondenzsprache  VARCHAR(255),
 	logo_content          LONGBLOB,
 	mail                  VARCHAR(255),
+	standard_rechtsmittelbelehrung BIT,
 	telefon               VARCHAR(255),
 	webseite              VARCHAR(255),
 	adresse_id            BINARY(16),
@@ -1329,6 +1332,7 @@ CREATE TABLE gemeinde_stammdaten_aud (
 	default_benutzerbg_id BINARY(16),
 	default_benutzerts_id BINARY(16),
 	gemeinde_id           BINARY(16),
+	rechtsmittelbelehrung_id binary(16),
 	PRIMARY KEY (id, rev)
 );
 
@@ -1345,6 +1349,7 @@ CREATE TABLE gemeinde_stammdaten (
 	korrespondenzsprache  VARCHAR(255) NOT NULL,
 	logo_content          LONGBLOB,
 	mail                  VARCHAR(255) NOT NULL,
+	standard_rechtsmittelbelehrung bit not null,
 	telefon               VARCHAR(255),
 	webseite              VARCHAR(255),
 	adresse_id            BINARY(16)   NOT NULL,
@@ -1352,6 +1357,7 @@ CREATE TABLE gemeinde_stammdaten (
 	default_benutzerbg_id BINARY(16),
 	default_benutzerts_id BINARY(16),
 	gemeinde_id           BINARY(16)   NOT NULL,
+	rechtsmittelbelehrung_id binary(16),
 	PRIMARY KEY (id)
 );
 
@@ -2152,6 +2158,33 @@ CREATE TABLE sequence (
 	PRIMARY KEY (id)
 );
 
+CREATE TABLE text_ressource_aud (
+	id                 BINARY(16) NOT NULL,
+	rev                INTEGER    NOT NULL,
+	revtype            TINYINT,
+	timestamp_erstellt DATETIME,
+	timestamp_mutiert  DATETIME,
+	user_erstellt      VARCHAR(255),
+	user_mutiert       VARCHAR(255),
+	vorgaenger_id      VARCHAR(36),
+	text_deutsch       VARCHAR(4000),
+	text_franzoesisch  VARCHAR(4000),
+	primary key (id, rev)
+);
+
+CREATE TABLE text_ressource (
+	id                 BINARY(16)   NOT NULL,
+	timestamp_erstellt DATETIME     NOT NULL,
+	timestamp_mutiert  DATETIME     NOT NULL,
+	user_erstellt      VARCHAR(255) NOT NULL,
+	user_mutiert       VARCHAR(255) NOT NULL,
+	version            BIGINT       NOT NULL,
+	vorgaenger_id      VARCHAR(36),
+	text_deutsch       VARCHAR(4000),
+	text_franzoesisch  VARCHAR(4000),
+	PRIMARY KEY (id)
+);
+
 CREATE TABLE traegerschaft (
 	id                 BINARY(16)   NOT NULL,
 	timestamp_erstellt DATETIME     NOT NULL,
@@ -2573,358 +2606,358 @@ ALTER TABLE wizard_step
 
 ALTER TABLE abwesenheit_aud
 	ADD CONSTRAINT FK_abwesenheit_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE abwesenheit_container_aud
 	ADD CONSTRAINT FK_abwesenheit_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE abwesenheit_container
 	ADD CONSTRAINT FK_abwesenheit_container_abwesenheit_gs
-		FOREIGN KEY (abwesenheitgs_id)
-			REFERENCES abwesenheit(id);
+FOREIGN KEY (abwesenheitgs_id)
+REFERENCES abwesenheit(id);
 
 ALTER TABLE abwesenheit_container
 	ADD CONSTRAINT FK_abwesenheit_container_abwesenheit_ja
-		FOREIGN KEY (abwesenheitja_id)
-			REFERENCES abwesenheit(id);
+FOREIGN KEY (abwesenheitja_id)
+REFERENCES abwesenheit(id);
 
 ALTER TABLE abwesenheit_container
 	ADD CONSTRAINT FK_abwesenheit_container_betreuung_id
-		FOREIGN KEY (betreuung_id)
-			REFERENCES betreuung(id);
+FOREIGN KEY (betreuung_id)
+REFERENCES betreuung(id);
 
 ALTER TABLE adresse_aud
 	ADD CONSTRAINT FK_adresse_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE antrag_status_history_aud
 	ADD CONSTRAINT FK_antrag_status_history_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE antrag_status_history
 	ADD CONSTRAINT FK_antragstatus_history_benutzer_id
-		FOREIGN KEY (benutzer_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (benutzer_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE antrag_status_history
 	ADD CONSTRAINT FK_antragstatus_history_antrag_id
-		FOREIGN KEY (gesuch_id)
-			REFERENCES gesuch(id);
+FOREIGN KEY (gesuch_id)
+REFERENCES gesuch(id);
 
 ALTER TABLE application_property_aud
 	ADD CONSTRAINT FK_application_property_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE authorisierter_benutzer
 	ADD CONSTRAINT FK_authorisierter_benutzer_benutzer_id
-		FOREIGN KEY (benutzer_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (benutzer_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE belegung_ferieninsel_aud
 	ADD CONSTRAINT FK_belegung_ferieninsel_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_ferieninsel_belegung_ferieninsel_tag_aud
 	ADD CONSTRAINT FK_belegung_ferieninsel_belegung_ferieninsel_tag_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_ferieninsel_tag_aud
 	ADD CONSTRAINT FK_belegung_ferieninsel_tag_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_tagesschule_aud
 	ADD CONSTRAINT FK_belegung_tagesschule_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_tagesschule_modul_tagesschule_aud
 	ADD CONSTRAINT FK_belegung_tagesschule_modul_tagesschule_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE belegung_ferieninsel_belegung_ferieninsel_tag
 	ADD CONSTRAINT FK_belegung_ferieninsel_tage_id
-		FOREIGN KEY (tage_id)
-			REFERENCES belegung_ferieninsel_tag(id);
+FOREIGN KEY (tage_id)
+REFERENCES belegung_ferieninsel_tag(id);
 
 ALTER TABLE belegung_ferieninsel_belegung_ferieninsel_tag
 	ADD CONSTRAINT FK_belegung_ferieninsel_belegung_ferieninsel_id
-		FOREIGN KEY (belegung_ferieninsel_id)
-			REFERENCES belegung_ferieninsel(id);
+FOREIGN KEY (belegung_ferieninsel_id)
+REFERENCES belegung_ferieninsel(id);
 
 ALTER TABLE belegung_tagesschule_modul_tagesschule
 	ADD CONSTRAINT FK_belegung_tagesschule_module_tagesschule_id
-		FOREIGN KEY (module_tagesschule_id)
-			REFERENCES modul_tagesschule(id);
+FOREIGN KEY (module_tagesschule_id)
+REFERENCES modul_tagesschule(id);
 
 ALTER TABLE belegung_tagesschule_modul_tagesschule
 	ADD CONSTRAINT FK_belegung_tagesschule_belegung_tagesschule_id
-		FOREIGN KEY (belegung_tagesschule_id)
-			REFERENCES belegung_tagesschule(id);
+FOREIGN KEY (belegung_tagesschule_id)
+REFERENCES belegung_tagesschule(id);
 
 ALTER TABLE benutzer
 	ADD CONSTRAINT FK_benutzer_mandant_id
-		FOREIGN KEY (mandant_id)
-			REFERENCES mandant(id);
+FOREIGN KEY (mandant_id)
+REFERENCES mandant(id);
 
 ALTER TABLE benutzer_aud
 	ADD CONSTRAINT FK_benutzer_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE berechtigung
 	ADD CONSTRAINT FK_Berechtigung_benutzer_id
-		FOREIGN KEY (benutzer_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (benutzer_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE berechtigung
 	ADD CONSTRAINT FK_Berechtigung_institution_id
-		FOREIGN KEY (institution_id)
-			REFERENCES institution(id);
+FOREIGN KEY (institution_id)
+REFERENCES institution(id);
 
 ALTER TABLE berechtigung
 	ADD CONSTRAINT FK_Berechtigung_traegerschaft_id
-		FOREIGN KEY (traegerschaft_id)
-			REFERENCES traegerschaft(id);
+FOREIGN KEY (traegerschaft_id)
+REFERENCES traegerschaft(id);
 
 ALTER TABLE berechtigung_aud
 	ADD CONSTRAINT FK_berechtigung_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE berechtigung_gemeinde
 	ADD CONSTRAINT FK_berechtigung_gemeinde_berechtigung_id
-		FOREIGN KEY (gemeinde_id)
-			REFERENCES gemeinde(id);
+FOREIGN KEY (gemeinde_id)
+REFERENCES gemeinde(id);
 
 ALTER TABLE berechtigung_gemeinde
 	ADD CONSTRAINT FK_berechtigung_gemeinde_gemeinde_id
-		FOREIGN KEY (berechtigung_id)
-			REFERENCES berechtigung(id);
+FOREIGN KEY (berechtigung_id)
+REFERENCES berechtigung(id);
 
 ALTER TABLE berechtigung_gemeinde_aud
 	ADD CONSTRAINT FK_berechtigung_gemeinde_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE berechtigung_history_aud
 	ADD CONSTRAINT FK_berechtigung_history_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE berechtigung_history
 	ADD CONSTRAINT FK_berechtigung_history_institution_id
-		FOREIGN KEY (institution_id)
-			REFERENCES institution(id);
+FOREIGN KEY (institution_id)
+REFERENCES institution(id);
 
 ALTER TABLE berechtigung_history
 	ADD CONSTRAINT FK_berechtigung_history_traegerschaft_id
-		FOREIGN KEY (traegerschaft_id)
-			REFERENCES traegerschaft(id);
+FOREIGN KEY (traegerschaft_id)
+REFERENCES traegerschaft(id);
 
 ALTER TABLE betreuung
 	ADD CONSTRAINT FK_betreuung_belegung_ferieninsel_id
-		FOREIGN KEY (belegung_ferieninsel_id)
-			REFERENCES belegung_ferieninsel(id);
+FOREIGN KEY (belegung_ferieninsel_id)
+REFERENCES belegung_ferieninsel(id);
 
 ALTER TABLE betreuung
 	ADD CONSTRAINT FK_betreuung_belegung_tagesschule_id
-		FOREIGN KEY (belegung_tagesschule_id)
-			REFERENCES belegung_tagesschule(id);
+FOREIGN KEY (belegung_tagesschule_id)
+REFERENCES belegung_tagesschule(id);
 
 ALTER TABLE betreuung
 	ADD CONSTRAINT FK_betreuung_institution_stammdaten_id
-		FOREIGN KEY (institution_stammdaten_id)
-			REFERENCES institution_stammdaten(id);
+FOREIGN KEY (institution_stammdaten_id)
+REFERENCES institution_stammdaten(id);
 
 ALTER TABLE betreuung
 	ADD CONSTRAINT FK_betreuung_kind_id
-		FOREIGN KEY (kind_id)
-			REFERENCES kind_container(id);
+FOREIGN KEY (kind_id)
+REFERENCES kind_container(id);
 
 ALTER TABLE betreuung_aud
 	ADD CONSTRAINT FK_betreuung_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE betreuungsmitteilung_pensum_aud
 	ADD CONSTRAINT FK_betreuungsmitteilung_pensum_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE betreuungsmitteilung_pensum
 	ADD CONSTRAINT FK_betreuungsmitteilung_pens_betreuungsmitteilung_id
-		FOREIGN KEY (betreuungsmitteilung_id)
-			REFERENCES mitteilung(id);
+FOREIGN KEY (betreuungsmitteilung_id)
+REFERENCES mitteilung(id);
 
 ALTER TABLE betreuungspensum_aud
 	ADD CONSTRAINT FK_betreuungspensum_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE betreuungspensum_container_aud
 	ADD CONSTRAINT FK_betreuungspensum_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE betreuungspensum_container
 	ADD CONSTRAINT FK_betreuungspensum_container_betreuung_id
-		FOREIGN KEY (betreuung_id)
-			REFERENCES betreuung(id);
+FOREIGN KEY (betreuung_id)
+REFERENCES betreuung(id);
 
 ALTER TABLE betreuungspensum_container
 	ADD CONSTRAINT FK_betreuungspensum_container_betreuungspensum_gs
-		FOREIGN KEY (betreuungspensumgs_id)
-			REFERENCES betreuungspensum(id);
+FOREIGN KEY (betreuungspensumgs_id)
+REFERENCES betreuungspensum(id);
 
 ALTER TABLE betreuungspensum_container
 	ADD CONSTRAINT FK_betreuungspensum_container_betreuungspensum_ja
-		FOREIGN KEY (betreuungspensumja_id)
-			REFERENCES betreuungspensum(id);
+FOREIGN KEY (betreuungspensumja_id)
+REFERENCES betreuungspensum(id);
 
 ALTER TABLE bfs_gemeinde
 	ADD CONSTRAINT FK_bfs_gemeinde_mandant_id
-		FOREIGN KEY (mandant_id)
-			REFERENCES mandant(id);
+FOREIGN KEY (mandant_id)
+REFERENCES mandant(id);
 
 ALTER TABLE dokument
 	ADD CONSTRAINT FK_dokument_dokumentgrund_id
-		FOREIGN KEY (dokument_grund_id)
-			REFERENCES dokument_grund(id);
+FOREIGN KEY (dokument_grund_id)
+REFERENCES dokument_grund(id);
 
 ALTER TABLE dokument_aud
 	ADD CONSTRAINT FK_dokument_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE dokument_grund_aud
 	ADD CONSTRAINT FK_dokument_grund_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE dokument_grund
 	ADD CONSTRAINT FK_dokumentGrund_gesuch_id
-		FOREIGN KEY (gesuch_id)
-			REFERENCES gesuch(id);
+FOREIGN KEY (gesuch_id)
+REFERENCES gesuch(id);
 
 ALTER TABLE dossier
 	ADD CONSTRAINT FK_dossier_fall_id
-		FOREIGN KEY (fall_id)
-			REFERENCES fall(id);
+FOREIGN KEY (fall_id)
+REFERENCES fall(id);
 
 ALTER TABLE dossier
 	ADD CONSTRAINT FK_dossier_gemeinde_id
-		FOREIGN KEY (gemeinde_id)
-			REFERENCES gemeinde(id);
+FOREIGN KEY (gemeinde_id)
+REFERENCES gemeinde(id);
 
 ALTER TABLE dossier
 	ADD CONSTRAINT FK_dossier_verantwortlicher_bg_id
-		FOREIGN KEY (verantwortlicherbg_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (verantwortlicherbg_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE dossier
 	ADD CONSTRAINT FK_dossier_verantwortlicher_ts_id
-		FOREIGN KEY (verantwortlicherts_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (verantwortlicherts_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE dossier_aud
 	ADD CONSTRAINT FK_dossier_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE ebegu_vorlage_aud
 	ADD CONSTRAINT FK_ebegu_vorlage_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE ebegu_vorlage
 	ADD CONSTRAINT FK_ebeguvorlage_vorlage_id
-		FOREIGN KEY (vorlage_id)
-			REFERENCES vorlage(id);
+FOREIGN KEY (vorlage_id)
+REFERENCES vorlage(id);
 
 ALTER TABLE einkommensverschlechterung_aud
 	ADD CONSTRAINT FK_einkommensverschlechterung_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE einkommensverschlechterung_container_aud
 	ADD CONSTRAINT FK_einkommensverschlechterung_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE einkommensverschlechterung_info_aud
 	ADD CONSTRAINT FK_einkommensverschlechterung_info_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE einkommensverschlechterung_info_container_aud
 	ADD CONSTRAINT FK_einkommensverschlechterung_info_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE einkommensverschlechterung_container
 	ADD CONSTRAINT FK_einkommensverschlechterungcontainer_ekvGSBasisJahrPlus1_id
-		FOREIGN KEY (ekvgsbasis_jahr_plus1_id)
-			REFERENCES einkommensverschlechterung(id);
+FOREIGN KEY (ekvgsbasis_jahr_plus1_id)
+REFERENCES einkommensverschlechterung(id);
 
 ALTER TABLE einkommensverschlechterung_container
 	ADD CONSTRAINT FK_einkommensverschlechterungcontainer_ekvGSBasisJahrPlus2_id
-		FOREIGN KEY (ekvgsbasis_jahr_plus2_id)
-			REFERENCES einkommensverschlechterung(id);
+FOREIGN KEY (ekvgsbasis_jahr_plus2_id)
+REFERENCES einkommensverschlechterung(id);
 
 ALTER TABLE einkommensverschlechterung_container
 	ADD CONSTRAINT FK_einkommensverschlechterungcontainer_ekvJABasisJahrPlus1_id
-		FOREIGN KEY (ekvjabasis_jahr_plus1_id)
-			REFERENCES einkommensverschlechterung(id);
+FOREIGN KEY (ekvjabasis_jahr_plus1_id)
+REFERENCES einkommensverschlechterung(id);
 
 ALTER TABLE einkommensverschlechterung_container
 	ADD CONSTRAINT FK_einkommensverschlechterungcontainer_ekvJABasisJahrPlus2_id
-		FOREIGN KEY (ekvjabasis_jahr_plus2_id)
-			REFERENCES einkommensverschlechterung(id);
+FOREIGN KEY (ekvjabasis_jahr_plus2_id)
+REFERENCES einkommensverschlechterung(id);
 
 ALTER TABLE einkommensverschlechterung_container
 	ADD CONSTRAINT FK_einkommensverschlechterungcontainer_gesuchstellerContainer_id
-		FOREIGN KEY (gesuchsteller_container_id)
-			REFERENCES gesuchsteller_container(id);
+FOREIGN KEY (gesuchsteller_container_id)
+REFERENCES gesuchsteller_container(id);
 
 ALTER TABLE einkommensverschlechterung_info_container
 	ADD CONSTRAINT FK_ekvinfocontainer_einkommensverschlechterunginfogs_id
-		FOREIGN KEY (einkommensverschlechterung_infogs_id)
-			REFERENCES einkommensverschlechterung_info(id);
+FOREIGN KEY (einkommensverschlechterung_infogs_id)
+REFERENCES einkommensverschlechterung_info(id);
 
 ALTER TABLE einkommensverschlechterung_info_container
 	ADD CONSTRAINT FK_ekvinfocontainer_einkommensverschlechterunginfoja_id
-		FOREIGN KEY (einkommensverschlechterung_infoja_id)
-			REFERENCES einkommensverschlechterung_info(id);
+FOREIGN KEY (einkommensverschlechterung_infoja_id)
+REFERENCES einkommensverschlechterung_info(id);
 
 ALTER TABLE einstellung
 	ADD CONSTRAINT FK_einstellung_gemeinde_id
-		FOREIGN KEY (gemeinde_id)
-			REFERENCES gemeinde(id);
+FOREIGN KEY (gemeinde_id)
+REFERENCES gemeinde(id);
 
 ALTER TABLE einstellung
 	ADD CONSTRAINT FK_einstellung_gesuchsperiode_id
-		FOREIGN KEY (gesuchsperiode_id)
-			REFERENCES gesuchsperiode(id);
+FOREIGN KEY (gesuchsperiode_id)
+REFERENCES gesuchsperiode(id);
 
 ALTER TABLE einstellung
 	ADD CONSTRAINT FK_einstellung_mandant_id
-		FOREIGN KEY (mandant_id)
-			REFERENCES mandant(id);
+FOREIGN KEY (mandant_id)
+REFERENCES mandant(id);
 
 ALTER TABLE einstellung_aud
 	ADD CONSTRAINT FK_einstellung_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE erweiterte_betreuung_aud
 	ADD CONSTRAINT FK_erweiterte_betreuung_aud_revinfo
@@ -2933,13 +2966,13 @@ REFERENCES revinfo (rev);
 
 ALTER TABLE erweiterte_betreuung_container_aud
 	ADD CONSTRAINT FK_erweiterte_betreuung_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE erweiterte_betreuung
 	ADD CONSTRAINT FK_erweiterte_betreuung_fachstelle_id
-		FOREIGN KEY (fachstelle_id)
-			REFERENCES fachstelle(id);
+FOREIGN KEY (fachstelle_id)
+REFERENCES fachstelle(id);
 
 ALTER TABLE erweiterte_betreuung_container
 	ADD CONSTRAINT FK_erweiterte_betreuung_container_betreuung_id
@@ -2948,468 +2981,478 @@ REFERENCES betreuung(id);
 
 ALTER TABLE erweiterte_betreuung_container
 	ADD CONSTRAINT FK_erweiterte_betreuung_container_erweiterte_betreuung_gs
-		FOREIGN KEY (erweiterte_betreuunggs_id)
-			REFERENCES erweiterte_betreuung(id);
+FOREIGN KEY (erweiterte_betreuunggs_id)
+REFERENCES erweiterte_betreuung(id);
 
 ALTER TABLE erweiterte_betreuung_container
 	ADD CONSTRAINT FK_erweiterte_betreuung_container_erweiterte_betreuung_ja
-		FOREIGN KEY (erweiterte_betreuungja_id)
-			REFERENCES erweiterte_betreuung(id);
+FOREIGN KEY (erweiterte_betreuungja_id)
+REFERENCES erweiterte_betreuung(id);
 
 ALTER TABLE erwerbspensum
 	ADD CONSTRAINT FK_erwerbspensum_urlaub_id
-		FOREIGN KEY (unbezahlter_urlaub_id)
-			REFERENCES unbezahlter_urlaub(id);
+FOREIGN KEY (unbezahlter_urlaub_id)
+REFERENCES unbezahlter_urlaub(id);
 
 ALTER TABLE erwerbspensum_aud
 	ADD CONSTRAINT FK_erwerbspensum_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE erwerbspensum_container_aud
 	ADD CONSTRAINT FK_erwerbspensum_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE erwerbspensum_container
 	ADD CONSTRAINT FK_erwerbspensum_container_erwerbspensumgs_id
-		FOREIGN KEY (erwerbspensumgs_id)
-			REFERENCES erwerbspensum(id);
+FOREIGN KEY (erwerbspensumgs_id)
+REFERENCES erwerbspensum(id);
 
 ALTER TABLE erwerbspensum_container
 	ADD CONSTRAINT FK_erwerbspensum_container_erwerbspensumja_id
-		FOREIGN KEY (erwerbspensumja_id)
-			REFERENCES erwerbspensum(id);
+FOREIGN KEY (erwerbspensumja_id)
+REFERENCES erwerbspensum(id);
 
 ALTER TABLE erwerbspensum_container
 	ADD CONSTRAINT FK_erwerbspensum_container_gesuchstellerContainer_id
-		FOREIGN KEY (gesuchsteller_container_id)
-			REFERENCES gesuchsteller_container(id);
+FOREIGN KEY (gesuchsteller_container_id)
+REFERENCES gesuchsteller_container(id);
 
 ALTER TABLE fachstelle_aud
 	ADD CONSTRAINT FK_fachstelle_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE fall
 	ADD CONSTRAINT FK_fall_besitzer_id
-		FOREIGN KEY (besitzer_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (besitzer_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE fall
 	ADD CONSTRAINT FK_fall_mandant_id
-		FOREIGN KEY (mandant_id)
-			REFERENCES mandant(id);
+FOREIGN KEY (mandant_id)
+REFERENCES mandant(id);
 
 ALTER TABLE fall_aud
 	ADD CONSTRAINT FK_fall_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE familiensituation_aud
 	ADD CONSTRAINT FK_familiensituation_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE familiensituation_container_aud
 	ADD CONSTRAINT FK_familiensituation_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE familiensituation_container
 	ADD CONSTRAINT FK_familiensituation_container_familiensituation_erstgesuch_id
-		FOREIGN KEY (familiensituation_erstgesuch_id)
-			REFERENCES familiensituation(id);
+FOREIGN KEY (familiensituation_erstgesuch_id)
+REFERENCES familiensituation(id);
 
 ALTER TABLE familiensituation_container
 	ADD CONSTRAINT FK_familiensituation_container_familiensituation_GS_id
-		FOREIGN KEY (familiensituationgs_id)
-			REFERENCES familiensituation(id);
+FOREIGN KEY (familiensituationgs_id)
+REFERENCES familiensituation(id);
 
 ALTER TABLE familiensituation_container
 	ADD CONSTRAINT FK_familiensituation_container_familiensituation_JA_id
-		FOREIGN KEY (familiensituationja_id)
-			REFERENCES familiensituation(id);
+FOREIGN KEY (familiensituationja_id)
+REFERENCES familiensituation(id);
 
 ALTER TABLE ferieninsel_stammdaten_aud
 	ADD CONSTRAINT FK_ferieninsel_stammdaten_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE ferieninsel_stammdaten_ferieninsel_zeitraum_aud
 	ADD CONSTRAINT FK_ferieninsel_stammdaten_ferieninsel_zeitraum_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE ferieninsel_zeitraum_aud
 	ADD CONSTRAINT FK_ferieninsel_zeitraum_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE ferieninsel_stammdaten
 	ADD CONSTRAINT FK_ferieninsel_stammdaten_gesuchsperiodeId
-		FOREIGN KEY (gesuchsperiode_id)
-			REFERENCES gesuchsperiode(id);
+FOREIGN KEY (gesuchsperiode_id)
+REFERENCES gesuchsperiode(id);
 
 ALTER TABLE ferieninsel_stammdaten_ferieninsel_zeitraum
 	ADD CONSTRAINT FK_ferieninsel_stammdaten_ferieninsel_zeitraum_id
 FOREIGN KEY (zeitraum_id)
-			REFERENCES ferieninsel_zeitraum(id);
+REFERENCES ferieninsel_zeitraum(id);
 
 ALTER TABLE ferieninsel_stammdaten_ferieninsel_zeitraum
 	ADD CONSTRAINT FK_ferieninsel_stammdaten_ferieninsel_stammdaten_id
-		FOREIGN KEY (ferieninsel_stammdaten_id)
-			REFERENCES ferieninsel_stammdaten(id);
+FOREIGN KEY (ferieninsel_stammdaten_id)
+REFERENCES ferieninsel_stammdaten(id);
 
 ALTER TABLE finanzielle_situation_aud
 	ADD CONSTRAINT FK_finanzielle_situation_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE finanzielle_situation_container_aud
 	ADD CONSTRAINT FK_finanzielle_situation_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE finanzielle_situation_container
 	ADD CONSTRAINT FK_finanzielleSituationContainer_finanzielleSituationGS_id
-		FOREIGN KEY (finanzielle_situationgs_id)
-			REFERENCES finanzielle_situation(id);
+FOREIGN KEY (finanzielle_situationgs_id)
+REFERENCES finanzielle_situation(id);
 
 ALTER TABLE finanzielle_situation_container
 	ADD CONSTRAINT FK_finanzielleSituationContainer_finanzielleSituationJA_id
-		FOREIGN KEY (finanzielle_situationja_id)
-			REFERENCES finanzielle_situation(id);
+FOREIGN KEY (finanzielle_situationja_id)
+REFERENCES finanzielle_situation(id);
 
 ALTER TABLE finanzielle_situation_container
 	ADD CONSTRAINT FK_finanzielleSituationContainer_gesuchstellerContainer_id
-		FOREIGN KEY (gesuchsteller_container_id)
-			REFERENCES gesuchsteller_container(id);
+FOREIGN KEY (gesuchsteller_container_id)
+REFERENCES gesuchsteller_container(id);
 
 ALTER TABLE gemeinde
 	ADD CONSTRAINT FK_gemeinde_mandant_id
-		FOREIGN KEY (mandant_id)
-			REFERENCES mandant(id);
+FOREIGN KEY (mandant_id)
+REFERENCES mandant(id);
 
 ALTER TABLE gemeinde_aud
 	ADD CONSTRAINT FK_gemeinde_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE gemeinde_stammdaten_aud
 	ADD CONSTRAINT FK_gemeinde_stammdaten_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE gemeinde_stammdaten
 	ADD CONSTRAINT FK_gemeindestammdaten_adresse_id
-		FOREIGN KEY (adresse_id)
-			REFERENCES adresse(id);
+FOREIGN KEY (adresse_id)
+REFERENCES adresse(id);
 
 ALTER TABLE gemeinde_stammdaten
 	ADD CONSTRAINT FK_gemeindestammdaten_beschwerdeadresse_id
-		FOREIGN KEY (beschwerde_adresse_id)
-			REFERENCES adresse(id);
+FOREIGN KEY (beschwerde_adresse_id)
+REFERENCES adresse(id);
 
 ALTER TABLE gemeinde_stammdaten
 	ADD CONSTRAINT FK_gemeindestammdaten_defaultbenutzerbg_id
-		FOREIGN KEY (default_benutzerbg_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (default_benutzerbg_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE gemeinde_stammdaten
 	ADD CONSTRAINT FK_gemeindestammdaten_defaultbenutzerts_id
-		FOREIGN KEY (default_benutzerts_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (default_benutzerts_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE gemeinde_stammdaten
 	ADD CONSTRAINT FK_gemeindestammdaten_gemeinde_id
-		FOREIGN KEY (gemeinde_id)
-			REFERENCES gemeinde(id);
+FOREIGN KEY (gemeinde_id)
+REFERENCES gemeinde(id);
+
+ALTER TABLE gemeinde_stammdaten
+	ADD CONSTRAINT FK_rechtsmittelbelehrung_id
+FOREIGN KEY (rechtsmittelbelehrung_id)
+REFERENCES text_ressource (id);
 
 ALTER TABLE generated_dokument_aud
 	ADD CONSTRAINT FK_generated_dokument_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE generated_dokument
 	ADD CONSTRAINT FK_generated_dokument_gesuch_id
-		FOREIGN KEY (gesuch_id)
-			REFERENCES gesuch(id);
+FOREIGN KEY (gesuch_id)
+REFERENCES gesuch(id);
 
 ALTER TABLE gesuch
 	ADD CONSTRAINT FK_gesuch_dossier_id
-		FOREIGN KEY (dossier_id)
-			REFERENCES dossier(id);
+FOREIGN KEY (dossier_id)
+REFERENCES dossier(id);
 
 ALTER TABLE gesuch
 	ADD CONSTRAINT FK_gesuch_einkommensverschlechterungInfoContainer_id
-		FOREIGN KEY (einkommensverschlechterung_info_container_id)
-			REFERENCES einkommensverschlechterung_info_container(id);
+FOREIGN KEY (einkommensverschlechterung_info_container_id)
+REFERENCES einkommensverschlechterung_info_container(id);
 
 ALTER TABLE gesuch
 	ADD CONSTRAINT FK_gesuch_familiensituation_container_id
-		FOREIGN KEY (familiensituation_container_id)
-			REFERENCES familiensituation_container(id);
+FOREIGN KEY (familiensituation_container_id)
+REFERENCES familiensituation_container(id);
 
 ALTER TABLE gesuch
 	ADD CONSTRAINT FK_antrag_gesuchsperiode_id
-		FOREIGN KEY (gesuchsperiode_id)
-			REFERENCES gesuchsperiode(id);
+FOREIGN KEY (gesuchsperiode_id)
+REFERENCES gesuchsperiode(id);
 
 ALTER TABLE gesuch
 	ADD CONSTRAINT FK_gesuch_gesuchsteller_container1_id
-		FOREIGN KEY (gesuchsteller1_id)
-			REFERENCES gesuchsteller_container(id);
+FOREIGN KEY (gesuchsteller1_id)
+REFERENCES gesuchsteller_container(id);
 
 ALTER TABLE gesuch
 	ADD CONSTRAINT FK_gesuch_gesuchsteller_container2_id
-		FOREIGN KEY (gesuchsteller2_id)
-			REFERENCES gesuchsteller_container(id);
+FOREIGN KEY (gesuchsteller2_id)
+REFERENCES gesuchsteller_container(id);
 
 ALTER TABLE gesuch_aud
 	ADD CONSTRAINT FK_gesuch_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsperiode_aud
 	ADD CONSTRAINT FK_gesuchsperiode_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_adresse_aud
 	ADD CONSTRAINT FK_gesuchsteller_adresse_aud_adresse_aud
-		FOREIGN KEY (id, rev)
-			REFERENCES adresse_aud(id, rev);
+FOREIGN KEY (id, rev)
+REFERENCES adresse_aud(id, rev);
 
 ALTER TABLE gesuchsteller_adresse_container_aud
 	ADD CONSTRAINT FK_gesuchsteller_adresse_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_aud
 	ADD CONSTRAINT FK_gesuchsteller_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_container_aud
 	ADD CONSTRAINT FK_gesuchsteller_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE gesuchsteller_adresse
 	ADD CONSTRAINT FK_gesuchsteller_adresse_adresse_id # TODO Dieser FK wird als einziger nicht generiert (https://hibernate.atlassian.net/browse/HHH-10352)
-		FOREIGN KEY (id)
-			REFERENCES adresse(id);
+FOREIGN KEY (id)
+REFERENCES adresse(id);
 
 ALTER TABLE gesuchsteller_adresse_container
 	ADD CONSTRAINT FK_gesuchstelleradresse_container_gesuchstellergs_id
-		FOREIGN KEY (gesuchsteller_adressegs_id)
-			REFERENCES gesuchsteller_adresse(id);
+FOREIGN KEY (gesuchsteller_adressegs_id)
+REFERENCES gesuchsteller_adresse(id);
 
 ALTER TABLE gesuchsteller_adresse_container
 	ADD CONSTRAINT FK_gesuchstelleradresse_container_gesuchstellerja_id
-		FOREIGN KEY (gesuchsteller_adresseja_id)
-			REFERENCES gesuchsteller_adresse(id);
+FOREIGN KEY (gesuchsteller_adresseja_id)
+REFERENCES gesuchsteller_adresse(id);
 
 ALTER TABLE gesuchsteller_adresse_container
 	ADD CONSTRAINT FK_gesuchstelleradresse_container_gesuchstellerContainer_id
-		FOREIGN KEY (gesuchsteller_container_id)
-			REFERENCES gesuchsteller_container(id);
+FOREIGN KEY (gesuchsteller_container_id)
+REFERENCES gesuchsteller_container(id);
 
 ALTER TABLE gesuchsteller_container
 	ADD CONSTRAINT FK_gesuchsteller_container_gesuchstellergs_id
-		FOREIGN KEY (gesuchstellergs_id)
-			REFERENCES gesuchsteller(id);
+FOREIGN KEY (gesuchstellergs_id)
+REFERENCES gesuchsteller(id);
 
 ALTER TABLE gesuchsteller_container
 	ADD CONSTRAINT FK_gesuchsteller_container_gesuchstellerja_id
-		FOREIGN KEY (gesuchstellerja_id)
-			REFERENCES gesuchsteller(id);
+FOREIGN KEY (gesuchstellerja_id)
+REFERENCES gesuchsteller(id);
 
 ALTER TABLE institution
 	ADD CONSTRAINT FK_institution_mandant_id
-		FOREIGN KEY (mandant_id)
-			REFERENCES mandant(id);
+FOREIGN KEY (mandant_id)
+REFERENCES mandant(id);
 
 ALTER TABLE institution
 	ADD CONSTRAINT FK_institution_traegerschaft_id
-		FOREIGN KEY (traegerschaft_id)
-			REFERENCES traegerschaft(id);
+FOREIGN KEY (traegerschaft_id)
+REFERENCES traegerschaft(id);
 
 ALTER TABLE institution_aud
 	ADD CONSTRAINT FK_institution_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE institution_stammdaten_aud
 	ADD CONSTRAINT FK_institution_stammdaten_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE institution_stammdaten_ferieninsel_aud
 	ADD CONSTRAINT FK_institution_stammdaten_ferieninsel_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE institution_stammdaten_tagesschule_aud
 	ADD CONSTRAINT FK_institution_stammdaten_tagesschule_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE institution_stammdaten
 	ADD CONSTRAINT FK_institution_stammdaten_adresse_id
-		FOREIGN KEY (adresse_id)
-			REFERENCES adresse(id);
+FOREIGN KEY (adresse_id)
+REFERENCES adresse(id);
 
 ALTER TABLE institution_stammdaten
 	ADD CONSTRAINT FK_institution_stammdaten_adressekontoinhaber_id
-		FOREIGN KEY (adresse_kontoinhaber_id)
-			REFERENCES adresse(id);
+FOREIGN KEY (adresse_kontoinhaber_id)
+REFERENCES adresse(id);
 
 ALTER TABLE institution_stammdaten
 	ADD CONSTRAINT FK_institution_stammdaten_institution_id
-		FOREIGN KEY (institution_id)
-			REFERENCES institution(id);
+FOREIGN KEY (institution_id)
+REFERENCES institution(id);
 
 ALTER TABLE institution_stammdaten
 	ADD CONSTRAINT FK_inst_stammdaten_inst_stammdaten_ferieninsel_id
-		FOREIGN KEY (institution_stammdaten_ferieninsel_id)
-			REFERENCES institution_stammdaten_ferieninsel(id);
+FOREIGN KEY (institution_stammdaten_ferieninsel_id)
+REFERENCES institution_stammdaten_ferieninsel(id);
 
 ALTER TABLE institution_stammdaten
 	ADD CONSTRAINT FK_inst_stammdaten_inst_stammdaten_tagesschule_id
-		FOREIGN KEY (institution_stammdaten_tagesschule_id)
-			REFERENCES institution_stammdaten_tagesschule(id);
+FOREIGN KEY (institution_stammdaten_tagesschule_id)
+REFERENCES institution_stammdaten_tagesschule(id);
 
 ALTER TABLE kind
 	ADD CONSTRAINT FK_kind_pensum_ausserordentlicheranspruch_id
-		FOREIGN KEY (pensum_ausserordentlicher_anspruch_id)
-			REFERENCES pensum_ausserordentlicher_anspruch(id);
+FOREIGN KEY (pensum_ausserordentlicher_anspruch_id)
+REFERENCES pensum_ausserordentlicher_anspruch(id);
 
 ALTER TABLE kind
 	ADD CONSTRAINT FK_kind_pensum_fachstelle_id
-		FOREIGN KEY (pensum_fachstelle_id)
-			REFERENCES pensum_fachstelle(id);
+FOREIGN KEY (pensum_fachstelle_id)
+REFERENCES pensum_fachstelle(id);
 
 ALTER TABLE kind_aud
 	ADD CONSTRAINT FK_kind_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE kind_container_aud
 	ADD CONSTRAINT FK_kind_container_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE kind_container
 	ADD CONSTRAINT FK_kind_container_gesuch_id
-		FOREIGN KEY (gesuch_id)
-			REFERENCES gesuch(id);
+FOREIGN KEY (gesuch_id)
+REFERENCES gesuch(id);
 
 ALTER TABLE kind_container
 	ADD CONSTRAINT FK_kind_container_kindgs_id
-		FOREIGN KEY (kindgs_id)
-			REFERENCES kind(id);
+FOREIGN KEY (kindgs_id)
+REFERENCES kind(id);
 
 ALTER TABLE kind_container
 	ADD CONSTRAINT FK_kind_container_kindja_id
-		FOREIGN KEY (kindja_id)
-			REFERENCES kind(id);
+FOREIGN KEY (kindja_id)
+REFERENCES kind(id);
 
 ALTER TABLE mahnung
 	ADD CONSTRAINT FK_mahnung_gesuch_id
-		FOREIGN KEY (gesuch_id)
-			REFERENCES gesuch(id);
+FOREIGN KEY (gesuch_id)
+REFERENCES gesuch(id);
 
 ALTER TABLE mahnung_aud
 	ADD CONSTRAINT FK_mahnung_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE mandant_aud
 	ADD CONSTRAINT FK_mandant_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE massenversand_gesuch
 	ADD CONSTRAINT FK_massenversand_gesuch_id
 FOREIGN KEY (gesuch_id)
-			REFERENCES gesuch(id);
+REFERENCES gesuch(id);
 
 ALTER TABLE massenversand_gesuch
 	ADD CONSTRAINT FK_massenversand_massenversand_id
-		FOREIGN KEY (massenversand_id)
-			REFERENCES massenversand(id);
+FOREIGN KEY (massenversand_id)
+REFERENCES massenversand(id);
 
 ALTER TABLE mitteilung
 	ADD CONSTRAINT FK_mitteilung_betreuung_id
-		FOREIGN KEY (betreuung_id)
-			REFERENCES betreuung(id);
+FOREIGN KEY (betreuung_id)
+REFERENCES betreuung(id);
 
 ALTER TABLE mitteilung
 	ADD CONSTRAINT FK_mitteilung_dossier_id
-		FOREIGN KEY (dossier_id)
-			REFERENCES dossier(id);
+FOREIGN KEY (dossier_id)
+REFERENCES dossier(id);
 
 ALTER TABLE mitteilung
 	ADD CONSTRAINT FK_Mitteilung_empfaenger
-		FOREIGN KEY (empfaenger_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (empfaenger_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE mitteilung
 	ADD CONSTRAINT FK_Mitteilung_sender
-		FOREIGN KEY (sender_id)
-			REFERENCES benutzer(id);
+FOREIGN KEY (sender_id)
+REFERENCES benutzer(id);
 
 ALTER TABLE mitteilung_aud
 	ADD CONSTRAINT FK_mitteilung_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE modul_tagesschule_aud
 	ADD CONSTRAINT FK_modul_tagesschule_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE modul_tagesschule
 	ADD CONSTRAINT FK_modul_tagesschule_inst_stammdaten_tagesschule_id
-		FOREIGN KEY (institution_stammdaten_tagesschule_id)
-			REFERENCES institution_stammdaten_tagesschule(id);
+FOREIGN KEY (institution_stammdaten_tagesschule_id)
+REFERENCES institution_stammdaten_tagesschule(id);
 
 ALTER TABLE pain001dokument
 	ADD CONSTRAINT FK_pain001dokument_zahlungsauftrag_id
-		FOREIGN KEY (zahlungsauftrag_id)
-			REFERENCES zahlungsauftrag(id);
+FOREIGN KEY (zahlungsauftrag_id)
+REFERENCES zahlungsauftrag(id);
 
 ALTER TABLE pain001dokument_aud
 	ADD CONSTRAINT FK_pain001dokument_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE pensum_ausserordentlicher_anspruch_aud
 	ADD CONSTRAINT FK_pensum_ausserordentlicher_anspruch_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE pensum_fachstelle_aud
 	ADD CONSTRAINT FK_pensum_fachstelle_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE pensum_fachstelle
 	ADD CONSTRAINT FK_pensum_fachstelle_fachstelle_id
-		FOREIGN KEY (fachstelle_id)
-			REFERENCES fachstelle(id);
+FOREIGN KEY (fachstelle_id)
+REFERENCES fachstelle(id);
 
 ALTER TABLE sequence
 	ADD CONSTRAINT FK_sequence_mandant_id
-		FOREIGN KEY (mandant_id)
-			REFERENCES mandant(id);
+FOREIGN KEY (mandant_id)
+REFERENCES mandant(id);
+
+ALTER TABLE text_ressource_aud
+	ADD CONSTRAINT FK_text_ressource_aud_revinfo
+FOREIGN KEY (rev)
+REFERENCES revinfo (rev);
 
 ALTER TABLE traegerschaft_aud
 	ADD CONSTRAINT FK_traegerschaft_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE unbezahlter_urlaub_aud
 	ADD CONSTRAINT FK_unbezahlter_urlaub_aud_revinfo
@@ -3438,38 +3481,38 @@ REFERENCES verfuegung (betreuung_id);
 
 ALTER TABLE vorlage_aud
 	ADD CONSTRAINT FK_vorlage_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE wizard_step_aud
 	ADD CONSTRAINT FK_wizard_step_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE wizard_step
 	ADD CONSTRAINT FK_wizardstep_gesuch_id
-		FOREIGN KEY (gesuch_id)
-			REFERENCES gesuch(id);
+FOREIGN KEY (gesuch_id)
+REFERENCES gesuch(id);
 
 ALTER TABLE zahlung
 	ADD CONSTRAINT FK_Zahlung_institutionstammdaten_id
-		FOREIGN KEY (institution_stammdaten_id)
-			REFERENCES institution_stammdaten(id);
+FOREIGN KEY (institution_stammdaten_id)
+REFERENCES institution_stammdaten(id);
 
 ALTER TABLE zahlung
 	ADD CONSTRAINT FK_Zahlung_zahlungsauftrag_id
-		FOREIGN KEY (zahlungsauftrag_id)
-			REFERENCES zahlungsauftrag(id);
+FOREIGN KEY (zahlungsauftrag_id)
+REFERENCES zahlungsauftrag(id);
 
 ALTER TABLE zahlung_aud
 	ADD CONSTRAINT FK_zahlung_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE zahlungsauftrag_aud
 	ADD CONSTRAINT FK_zahlungsauftrag_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);
 
 ALTER TABLE zahlungsposition
 	ADD CONSTRAINT FK_Zahlungsposition_verfuegungZeitabschnitt_id
@@ -3478,10 +3521,10 @@ REFERENCES verfuegung_zeitabschnitt (id);
 
 ALTER TABLE zahlungsposition
 	ADD CONSTRAINT FK_Zahlungsposition_zahlung_id
-		FOREIGN KEY (zahlung_id)
-			REFERENCES zahlung(id);
+FOREIGN KEY (zahlung_id)
+REFERENCES zahlung(id);
 
 ALTER TABLE zahlungsposition_aud
 	ADD CONSTRAINT FK_zahlungsposition_aud_revinfo
-		FOREIGN KEY (rev)
-			REFERENCES revinfo(rev);
+FOREIGN KEY (rev)
+REFERENCES revinfo(rev);

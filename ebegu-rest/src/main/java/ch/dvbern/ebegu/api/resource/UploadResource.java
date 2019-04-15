@@ -106,10 +106,10 @@ public class UploadResource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadResource.class);
 
-	@ApiOperation(value = "Speichert ein Dokument in der Datenbank", response = JaxDokumentGrund.class)
+	@ApiOperation(value = "Speichert ein oder mehrere Dokumente in der Datenbank", response = JaxDokumentGrund.class)
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response save(@Context HttpServletRequest request, @Context UriInfo uriInfo, MultipartFormDataInput input)
+	public Response uploadFiles(@Context HttpServletRequest request, @Context UriInfo uriInfo, MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
 
 		request.setAttribute(InputPart.DEFAULT_CONTENT_TYPE_PROPERTY, "*/*; charset=UTF-8");
@@ -158,6 +158,17 @@ public class UploadResource {
 
 		}
 
+		// jaxDokumentGrund ist jetzt u.U. noch in einem falschen Zustand. Wir müssen es neu von der Datenbank lesen
+		// Die neu hochgeladenen Files gehen nicht verloren, sie befinden sich im "input"
+		DokumentGrund dokumentGrundToMerge = new DokumentGrund();
+		if (jaxDokumentGrund.getId() != null) {
+			Optional<DokumentGrund> existingDokumentGrundOptional = dokumentGrundService.findDokumentGrund(jaxDokumentGrund.getId());
+			if (existingDokumentGrundOptional.isPresent()) {
+				dokumentGrundToMerge = existingDokumentGrundOptional.get();
+				jaxDokumentGrund = converter.dokumentGrundToJax(dokumentGrundToMerge);
+			}
+		}
+
 		extractFilesFromInput(input, encodedFilenames, gesuchId, jaxDokumentGrund);
 
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId);
@@ -167,11 +178,6 @@ public class UploadResource {
 			return Response.serverError().entity(problemString).build();
 		}
 
-		DokumentGrund dokumentGrundToMerge = new DokumentGrund();
-		if (jaxDokumentGrund.getId() != null) {
-			Optional<DokumentGrund> optional = dokumentGrundService.findDokumentGrund(jaxDokumentGrund.getId());
-			dokumentGrundToMerge = optional.orElse(new DokumentGrund());
-		}
 		DokumentGrund convertedDokumentGrund = converter.dokumentGrundToEntity(jaxDokumentGrund, dokumentGrundToMerge);
 		convertedDokumentGrund.setGesuch(gesuch.get());
 

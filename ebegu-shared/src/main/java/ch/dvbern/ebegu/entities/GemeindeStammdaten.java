@@ -53,7 +53,8 @@ import static ch.dvbern.ebegu.util.Constants.ONE_MB;
 @Table (
 	uniqueConstraints = {
 		@UniqueConstraint(columnNames = "gemeinde_id", name = "UK_gemeinde_stammdaten_gemeinde_id"),
-		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_adresse_id")
+		@UniqueConstraint(columnNames = "adresse_id", name = "UK_gemeinde_stammdaten_adresse_id"),
+		@UniqueConstraint(columnNames = "rechtsmittelbelehrung_id", name = "UK_rechtsmittelbelehrung_id")
 	}
 )
 public class GemeindeStammdaten extends AbstractEntity {
@@ -125,6 +126,15 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Embedded
 	@Valid
 	private IBAN iban;
+
+	@NotNull
+	@Column(nullable = false)
+	private Boolean standardRechtsmittelbelehrung = true;
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_rechtsmittelbelehrung_id"))
+	private TextRessource rechtsmittelbelehrung;
 
 	@Nullable
 	public Benutzer getDefaultBenutzerBG() {
@@ -247,6 +257,23 @@ public class GemeindeStammdaten extends AbstractEntity {
 		this.iban = iban;
 	}
 
+	@Nonnull
+	public Boolean getStandardRechtsmittelbelehrung() {
+		return standardRechtsmittelbelehrung;
+	}
+
+	public void setStandardRechtsmittelbelehrung(@Nonnull Boolean beschwerdeStandardtext) {
+		this.standardRechtsmittelbelehrung = beschwerdeStandardtext;
+	}
+
+	@Nullable
+	public TextRessource getRechtsmittelbelehrung() {
+		return rechtsmittelbelehrung;
+	}
+
+	public void setRechtsmittelbelehrung(@Nullable TextRessource rechtsmittelbelehrung) {
+		this.rechtsmittelbelehrung = rechtsmittelbelehrung;
+	}
 
 	@Override
 	public boolean isSame(AbstractEntity other) {

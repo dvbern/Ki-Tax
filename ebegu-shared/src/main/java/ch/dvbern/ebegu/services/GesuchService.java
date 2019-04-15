@@ -375,17 +375,14 @@ public interface GesuchService {
 	void removeOnlineFolgegesuch(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
+	 * Als Gemeinde-Benutzer:
 	 * Loescht das angegebene Gesuch falls es sich um ein Papiergesuch handelt, das noch nicht im Status "verfuegen"
-	 * oder verfuegt ist.
-	 * Wenn es sich um ein Papier-Erstgesuch handelt, wird auch der Fall gelöscht.
-	 */
-	void removePapiergesuch(@Nonnull Gesuch gesuch);
-
-	/**
+	 * oder verfuegt ist. Wenn es sich um ein Papier-Erstgesuch handelt, wird auch der Fall gelöscht.
+	 * Als Gesuchsteller:
 	 * Loescht das angegebene Gesuch, falls es sich um ein Onlinegesuch handelt, das noch nicht freigegeben wurde. Der
 	 * Fall wird dabei nie geloescht.
 	 */
-	void removeGesuchstellerAntrag(@Nonnull Gesuch gesuch);
+	void removeAntrag(@Nonnull Gesuch gesuch);
 
 	/**
 	 * Sucht ein Folgegesuch fuer den gegebenen Antrag in der gegebenen Gesuchsperiode
