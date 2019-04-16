@@ -33,6 +33,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AdresseTyp;
@@ -68,6 +69,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.testfaelle.AbstractASIVTestfall;
@@ -151,6 +153,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private GemeindeService gemeindeService;
 	@Inject
 	private MailService mailService;
+	@Inject
+	private EbeguConfiguration configuration;
+
 
 	@Override
 	@Nonnull
@@ -866,6 +871,10 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 	@Override
 	public void testAllMails(@Nonnull String mailadresse) {
+		// in order to send test mails we must run in dev mode
+		if(!configuration.getIsDevmode()) {
+			throw new EbeguRuntimeException("testAllMails", "Testmails dürfen nur in Dev Mode versendet werden");
+		}
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() -> new IllegalArgumentException());
 		Gemeinde gemeinde = gemeindeService.getAktiveGemeinden().stream().findFirst().orElseThrow(() -> new IllegalArgumentException());
 		GemeindeStammdaten gemeindeStammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()).orElseThrow(() -> new IllegalArgumentException());
