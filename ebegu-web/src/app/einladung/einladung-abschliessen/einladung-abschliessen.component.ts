@@ -38,7 +38,7 @@ export class EinladungAbschliessenComponent {
 
     public next(): void {
         const target = this.setParamIsRegistering(
-            getEntityTargetState(this.transition, this.principal)
+            getEntityTargetState(this.transition)
         );
         this.transition.router.stateService.go(target.state(), target.params(), target.options());
     }

@@ -198,7 +198,7 @@ export class EditInstitutionComponent implements OnInit {
 
     private navigateToWelcomesite(): void {
         if (this.isRegisteringInstitution) {
-            this.$state.go('welcome.institution');
+            this.$state.go('welcome');
             return;
         }
     }
