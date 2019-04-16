@@ -1541,7 +1541,7 @@
     "TOUR_STEP_STATISTIKEN_CONTENT": "Hier können Sie Statistiken generieren lassen.<BR><BR>Über das <i class='fa fa-info-circle'>&nbsp;</i>-Feld erfahren Sie mehr über die einzelnen Statistiken.",
     "TOUR_STEP_POSTEINGANG_TITLE": "",
     "TOUR_STEP_POSTEINGANG_CONTENT": "Der Posteingang ist eine Art Pendenzenliste für eingegangene Nachrichten. Dabei werden sämtliche noch nicht erledigte Nachrichten aufgelistet.<BR><BR>Durch einen Klick auf eine Nachricht wird diese innerhalb des Falls angezeigt und als gelesen markiert.<BR><BR>Standardmässig werden nur die Nachrichten für welche die angemeldete Benutzerin bzw. der Benutzer verantwortlich ist angezeigt.<BR><BR>Nachrichten bleiben so lange im Posteingang, bis diese als \"erledigt\" markiert werden.",
-    "TOUR_WELCOME_TEXT": "Um Ihnen den Start in kiBon so angenehm wie möglich zu machen, haben wir für Sie eine Tour vorbereitet.<br><br>Die Tour führt Sie durch kiBon und zeigt Ihnen die wichitgsten Punkte. Sie dauert nur wenige Minuten.",
+    "TOUR_WELCOME_TEXT": "Um Ihnen den Start in kiBon so angenehm wie möglich zu machen, haben wir für Sie eine Tour vorbereitet.<br><br>Die Tour führt Sie kurz durch die kiBon-Anwendung und zeigt Ihnen die wichtigsten Punkte. Sie dauert nur wenige Minuten.",
     "BEENDEN": "Beenden",
     "FERTIG": "Fertig",
     "SUPPORTANFRAGE_STELLEN": "Supportanfrage erfassen",
