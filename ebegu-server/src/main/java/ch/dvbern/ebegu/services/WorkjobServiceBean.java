@@ -48,11 +48,9 @@ import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.entities.Workjob_;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.TokenLifespan;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
@@ -61,7 +59,6 @@ import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
@@ -75,9 +72,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
@@ -104,10 +101,6 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 
 	@Inject
 	private Persistence persistence;
-
-//	EBEGU-1663 Wildfly 10 hack, this can be removed later and download file can be generated when report is finsihed
-	@Inject
-	private DownloadFileService downloadFileService;
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
@@ -199,16 +192,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		persistence.getEntityManager().flush(); //so we can actually set state to running using an update script in the job-listener
 		long executionId = jobOperator.start("reportbatch", jobParameters);
 
-		//	EBEGU-1663 Wildfly 10 hack, this can be removed later and download file can be generated when report is finsihed
-		// since there is no Security Context in WF10 in the batchlet we have to store the download file here and update it using a query in the batchlet
-		final UploadFileInfo dummyFile = new UploadFileInfo("dummyname", null);
-		dummyFile.setSize(0L);
-		dummyFile.setPath("/invalid/dummypath");
-		final DownloadFile dummyDownloadFile = downloadFileService.create(dummyFile, TokenLifespan.LONG, workJob.getTriggeringIp());
 		this.persistence.getEntityManager().refresh(workJob); //evtl hat job schon gestartet
-		workJob.setResultData(dummyDownloadFile.getAccessToken());
-		workJob = this.saveWorkjob(workJob);
 		workJob.setExecutionId(executionId);
+		workJob = this.saveWorkjob(workJob);
 
 		LOG.debug("Startet GesuchStichttagStatistik with executionId {}", executionId);
 
@@ -339,12 +325,14 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	}
 
 	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void addResultToWorkjob(@Nonnull String workjobID, @Nonnull String resultData) {
 		Objects.requireNonNull(resultData);
 
 		CriteriaBuilder cb = this.persistence.getCriteriaBuilder();
 		CriteriaUpdate<Workjob> updateQuery = cb.createCriteriaUpdate(Workjob.class);
-
+		// query to setResultData into the workjob. the result is the accessToken of the download file
 		Root<Workjob> root = updateQuery.from(Workjob.class);
 		updateQuery.set(root.get(Workjob_.resultData), resultData);
 		updateQuery.where(cb.equal(root.get(AbstractEntity_.id), workjobID));

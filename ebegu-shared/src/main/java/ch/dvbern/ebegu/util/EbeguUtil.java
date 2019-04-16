@@ -163,13 +163,12 @@ public final class EbeguUtil {
 
 	public static boolean isErlaeuterungenZurVerfuegungRequired(@Nonnull Gesuch gesuch) {
 		// Im Status ENTWURF sollen die Erläuterungen immer als Beilage aufgeführt werden
-		boolean entwurf = !gesuch.getStatus().isAnyStatusOfVerfuegt();
-		return entwurf || isAtLeastOneBetreuungInStatus(gesuch, Betreuungsstatus.VERFUEGT);
-	}
-
-	public static boolean isAtLeastOneBetreuungInStatus(@Nonnull Gesuch gesuch, @Nonnull Betreuungsstatus status) {
+		if (!gesuch.getStatus().isAnyStatusOfVerfuegt()) {
+			return true;
+		}
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
-			if (status == betreuung.getBetreuungsstatus()) {
+			// Status VERFUEGT mit Anspruch
+			if (Betreuungsstatus.VERFUEGT == betreuung.getBetreuungsstatus() && betreuung.hasAnspruch()) {
 				return true;
 			}
 		}
