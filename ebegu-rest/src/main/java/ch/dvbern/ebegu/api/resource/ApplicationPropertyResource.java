@@ -279,7 +279,7 @@ public class ApplicationPropertyResource {
 		String background = getBackgroundColor().getValue();
 		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
 
-		String nodeName = "todo load nodename";
+		String nodeName = System.getenv("HOSTNAME"); //could probably be done better
 		JaxPublicAppConfig pubAppConf = new JaxPublicAppConfig(
 			nodeName,
 			String.valueOf(devmode),
