@@ -12,10 +12,8 @@ import {RedirectToResult, TargetState, Transition} from '@uirouter/core';
 import {map, take} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSEinladungTyp} from '../../../models/enums/TSEinladungTyp';
-import TSBenutzer from '../../../models/TSBenutzer';
-import {getRoleBasedTargetState} from '../../../utils/AuthenticationUtil';
 
-export function getEntityTargetState(transition: Transition, principal: TSBenutzer): TargetState {
+export function getEntityTargetState(transition: Transition): TargetState {
     const stateService = transition.router.stateService;
 
     const params = transition.params();
@@ -24,11 +22,10 @@ export function getEntityTargetState(transition: Transition, principal: TSBenutz
 
     switch (typ) {
         case TSEinladungTyp.MITARBEITER:
-            return getRoleBasedTargetState(principal.getCurrentRole(), stateService);
+        case TSEinladungTyp.TRAEGERSCHAFT:
+            return stateService.target('welcome');
         case TSEinladungTyp.GEMEINDE:
             return stateService.target('gemeinde.edit', {gemeindeId: entityId});
-        case TSEinladungTyp.TRAEGERSCHAFT:
-            return stateService.target('pendenzenBetreuungen.list-view', {traegerschaftId: entityId});
         case TSEinladungTyp.INSTITUTION:
             return stateService.target('institution.edit', {institutionId: entityId});
         default:
@@ -49,7 +46,7 @@ export function handleLoggedInUser(transition: Transition): Promise<RedirectToRe
                     }
 
                     // we are logged: redirect to the new entity
-                    return getEntityTargetState(transition, principal);
+                    return getEntityTargetState(transition);
                 },
             ),
         )
