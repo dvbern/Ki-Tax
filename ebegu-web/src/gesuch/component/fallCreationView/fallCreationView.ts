@@ -84,6 +84,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public $onInit(): void {
+        super.$onInit();
         this.readStateParams();
         this.initViewModel();
     }
