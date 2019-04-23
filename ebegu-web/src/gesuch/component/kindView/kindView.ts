@@ -71,6 +71,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'GlobalCacheService',
         'AuthServiceRS',
     ];
+
+    public readonly CONSTANTS: any = CONSTANTS;
     public integrationTypes: Array<string>;
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;

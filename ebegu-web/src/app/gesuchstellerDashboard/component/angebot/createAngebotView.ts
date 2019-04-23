@@ -27,6 +27,7 @@ import TSInstitutionStammdaten from '../../../../models/TSInstitutionStammdaten'
 import TSKindContainer from '../../../../models/TSKindContainer';
 import DateUtil from '../../../../utils/DateUtil';
 import EbeguUtil from '../../../../utils/EbeguUtil';
+import {CONSTANTS} from '../../../core/constants/CONSTANTS';
 import BetreuungRS from '../../../core/service/betreuungRS.rest';
 import {IAngebotStateParams} from '../../gesuchstellerDashboard.route';
 import IFormController = angular.IFormController;
@@ -49,6 +50,7 @@ export class CreateAngebotListViewController implements IController {
         '$translate',
     ];
 
+    public readonly CONSTANTS: any = CONSTANTS;
     public form: IFormController;
     public einschulungTypValues: Array<TSEinschulungTyp>;
     private ts: boolean;

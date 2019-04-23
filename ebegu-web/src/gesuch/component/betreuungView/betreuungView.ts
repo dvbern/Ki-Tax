@@ -142,6 +142,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     // tslint:disable-next-line:cognitive-complexity
     public $onInit(): void {
+        super.$onInit();
         this.mutationsmeldungModel = undefined;
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
