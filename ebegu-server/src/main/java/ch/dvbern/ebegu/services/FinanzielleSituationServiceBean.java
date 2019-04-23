@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
@@ -47,9 +46,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
@@ -149,15 +148,15 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	}
 
 	/**
-	 * Es wird nach dem Param PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG gesucht, der einen Wert von 0 bis 100 haben muss. Dann wird
-	 * die 100-komplementaer Zahl berechnet und 1-prozentuell zurueckgegeben. z.B:
-	 * PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG = 20 --> return 0.80
-	 * Sollte der Parameter nicht definiert sein, wird 1.00 zurueckgegeben, d.h. keine Grenze fuer EKV
+	 * Es wird nach dem Param PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG gesucht, der einen Wert von 0 bis 100 haben muss.
+	 * Sollte der Parameter nicht definiert sein, wird 0 zurueckgegeben, d.h. keine Grenze fuer EKV
 	 */
 	private BigDecimal calculateGrenzwertEKV(@Nonnull Gesuch gesuch) {
 		Einstellung einstellung = einstellungService.findEinstellung(
 			EinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
-		return MathUtil.ZWEI_NACHKOMMASTELLE
-			.divideNullSafe(BigDecimal.valueOf(100).subtract(einstellung.getValueAsBigDecimal()), BigDecimal.valueOf(100));
+		if (einstellung.getValueAsBigDecimal() != null) {
+			return einstellung.getValueAsBigDecimal();
+		}
+		return BigDecimal.ZERO;
 	}
 }

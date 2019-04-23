@@ -50,15 +50,17 @@
                                         id="traegerschaft_id" name="traegerschaft_id"
                                         class="form-control">
                                 <mat-option value="">{{'KEINE' | translate}}</mat-option>
-                                <mat-option *ngFor="let traegerschaft of traegerschaftenList; trackBy:traegerschaft?.id" [value]="traegerschaft">
+                                <mat-option *ngFor="let traegerschaft of traegerschaftenList; trackBy:traegerschaft?.id"
+                                            [value]="traegerschaft">
                                     {{traegerschaft.name}}
                                 </mat-option>
                             </mat-select>
-                            <dv-error-messages [errorObject]="form.controls.traegerschaft_id?.errors" inputId="traegerschaft_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.traegerschaft_id?.errors"
+                                               inputId="traegerschaft_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="title">
                     <h3 translate>KONTAKTADRESSE</h3>
                 </div>
@@ -71,7 +73,8 @@
                                    [(ngModel)]="stammdaten.adresse.organisation"
                                    [maxlength]="255" class="form-control" required
                                    placeholder="Kita ...">
-                            <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors" inputId="anschrift_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors"
+                                               inputId="anschrift_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- E-Mail -->
@@ -81,7 +84,8 @@
                             <input id="e_mail_id" type="email" name="e_mail_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.mail"
                                    [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.e_mail_id?.errors" inputId="e_mail_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.e_mail_id?.errors"
+                                               inputId="e_mail_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -93,7 +97,8 @@
                             <input id="strasse_id" type="text" name="strasse_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.strasse"
                                    [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.strasse_id?.errors" inputId="strasse_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.strasse_id?.errors"
+                                               inputId="strasse_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Hausnummer -->
@@ -103,7 +108,8 @@
                             <input id="hausnummer_id" type="text" name="hausnummer_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.hausnummer"
                                    [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.hausnummer_id?.errors" inputId="hausnummer_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.hausnummer_id?.errors"
+                                               inputId="hausnummer_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Telefon -->
@@ -113,7 +119,8 @@
                             <input id="telefon_id" type="text" name="telefon_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.telefon"
                                    [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.telefon_id?.errors" inputId="telefon_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.telefon_id?.errors"
+                                               inputId="telefon_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -125,7 +132,8 @@
                             <input id="plz_id" type="text" name="plz_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.plz"
                                    [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.plz_id?.errors" inputId="plz_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.plz_id?.errors"
+                                               inputId="plz_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Ort -->
@@ -135,7 +143,8 @@
                             <input id="ort_id" type="text" name="ort_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.ort"
                                    [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.ort_id?.errors" inputId="ort_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.ort_id?.errors"
+                                               inputId="ort_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Webseite -->
@@ -157,7 +166,8 @@
                                    [(ngModel)]="stammdaten.oeffnungszeiten"
                                    [maxlength]="255" class="form-control"
                                    placeholder="{{getPlaceholderForOeffnungszeiten()}}" required>
-                            <dv-error-messages [errorObject]="form.controls.oeffnungszeiten_id?.errors" inputId="oeffnungszeiten_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.oeffnungszeiten_id?.errors"
+                                               inputId="oeffnungszeiten_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Betreuungsgutscheine akzeptieren ab/bis -->
@@ -198,6 +208,19 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <!-- Mail senden bei offenen Pendenzen -->
+                    <div class="col-sm-6">
+                        <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
+                        <div class="form-group">
+                            <mat-checkbox id="sendMailWennOffenePendenzen_id" name="sendMailWennOffenePendenzen_id"
+                                          [(ngModel)]="stammdaten.sendMailWennOffenePendenzen">
+                                {{'INSTITUTION_BENACHRICHTIGUNG_PENDENZEN'|translate}}
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="title">
                     <h3 translate>INSTITUTION_ZAHLUNGSANGABEN</h3>
                 </div>
@@ -210,7 +233,8 @@
                                    [(ngModel)]="stammdaten.iban"
                                    [maxlength]="26" class="form-control" required
                                    placeholder="CHXX XXXX XXXX XXXX XXXX X">
-                            <dv-error-messages [errorObject]="form.controls.iban_nr_id?.errors" inputId="iban_nr_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.iban_nr_id?.errors"
+                                               inputId="iban_nr_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Kontoinhaber -->
@@ -219,8 +243,9 @@
                             <label class="required" translate for="kontoinhaber_id">INSTITUTION_KONTOINHABER</label>
                             <input id="kontoinhaber_id" type="text" name="kontoinhaber_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.kontoinhaber"
-                                   [maxlength]="255" class="kontoinhaber_id" required>
-                            <dv-error-messages [errorObject]="form.controls.kontoinhaber_id?.errors" inputId="kontoinhaber_id"></dv-error-messages>
+                                   [maxlength]="255" class="form-control" required>
+                            <dv-error-messages [errorObject]="form.controls.kontoinhaber_id?.errors"
+                                               inputId="kontoinhaber_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Anschrift -->
@@ -230,7 +255,8 @@
                             <input id="za_anschrift_id" type="text" name="za_anschrift_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresseKontoinhaber.organisation"
                                    [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.za_anschrift_id?.errors" inputId="za_anschrift_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.za_anschrift_id?.errors"
+                                               inputId="za_anschrift_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -252,7 +278,8 @@
                             <input id="za_strasse_id" type="text" name="za_strasse_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresseKontoinhaber.strasse"
                                    [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.za_strasse_id?.errors" inputId="za_strasse_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.za_strasse_id?.errors"
+                                               inputId="za_strasse_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Hausnummer -->
@@ -262,7 +289,8 @@
                             <input id="za_hausnummer_id" type="text" name="za_hausnummer_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresseKontoinhaber.hausnummer"
                                    [maxlength]="255" class="form-control">
-                            <dv-error-messages [errorObject]="form.controls.za_hausnummer_id?.errors" inputId="za_hausnummer_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.za_hausnummer_id?.errors"
+                                               inputId="za_hausnummer_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -276,7 +304,8 @@
                             <input id="za_plz_id" type="text" name="za_plz_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresseKontoinhaber.plz"
                                    [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.za_plz_id?.errors" inputId="za_plz_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.za_plz_id?.errors"
+                                               inputId="za_plz_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Ort -->
@@ -286,7 +315,8 @@
                             <input id="za_ort_id" type="text" name="za_ort_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresseKontoinhaber.ort"
                                    [maxlength]="255" class="form-control" required>
-                            <dv-error-messages [errorObject]="form.controls.za_ort_id?.errors" inputId="za_ort_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.za_ort_id?.errors"
+                                               inputId="za_ort_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -334,7 +364,8 @@
                                    [(ngModel)]="stammdaten.anzahlPlaetze"
                                    [maxlength]="255" class="form-control"
                                    placeholder="{{getPlaceholderForPlaetze()}}" required>
-                            <dv-error-messages [errorObject]="form.controls.anzahlPlaetze_id?.errors" inputId="anzahlPlaetze_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.anzahlPlaetze_id?.errors"
+                                               inputId="anzahlPlaetze_id"></dv-error-messages>
                         </div>
                     </div>
                     <!-- Anzahl Plätze Firmen -->
@@ -345,7 +376,8 @@
                                    [(ngModel)]="stammdaten.anzahlPlaetzeFirmen"
                                    [maxlength]="255" class="form-control"
                                    placeholder="{{getPlaceholderForPlaetze()}}">
-                            <dv-error-messages [errorObject]="form.controls.anzahlPlaetzeFirmen_id?.errors" inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>
+                            <dv-error-messages [errorObject]="form.controls.anzahlPlaetzeFirmen_id?.errors"
+                                               inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>
                         </div>
                     </div>
                 </div>
@@ -434,13 +466,23 @@
                                 <h3 translate>INSTITUTION_PLAETZE</h3>
                                 <p *ngIf="stammdaten.subventioniertePlaetze"
                                    translate>INSTITUTION_SUBVENTIONIERTE_PLAETZE</p>
-                                <p translate [translateParams]="{anzahlPlaetze: stammdaten.anzahlPlaetze  ? stammdaten.anzahlPlaetze : 0}">
+                                <p translate
+                                   [translateParams]="{anzahlPlaetze: stammdaten.anzahlPlaetze  ? stammdaten.anzahlPlaetze : 0}">
                                     INSTITUTION_ANZAHL_PLAETZE_PARAM
                                 </p>
                                 <p translate
                                    [translateParams]="{anzahlPlaetzeFirmen: stammdaten.anzahlPlaetzeFirmen ? stammdaten.anzahlPlaetzeFirmen : 0}">
                                     INSTITUTION_ANZAHL_PLAETZE_FIRMEN_PARAM
                                 </p>
+                            </div>
+                        </div>
+
+                        <!-- Benachrichtugnseinstellungen -->
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <h3 translate>INSTITUTION_BENACHRICHTIGUNGEN</h3>
+                                <p *ngIf="stammdaten.sendMailWennOffenePendenzen"
+                                   translate>INSTITUTION_BENACHRICHTIGUNG_PENDENZEN</p>
                             </div>
                         </div>
                     </div>
@@ -450,17 +492,9 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-
-            <!-- two button are needed, one for editMode and one for !editMode because the dv-loading-button gets
-            disabled when we click on it-->
-            <dv-loading-button *ngIf="editMode && isStammdatenEditable()" [type]="'submit'">
-                <span>{{submitButtonLabel()}}</span>
-            </dv-loading-button>
-
-            <dv-loading-button *ngIf="!editMode && isStammdatenEditable()" [type]="'submit'">
-                <span>{{submitButtonLabel()}}</span>
-            </dv-loading-button>
-
+            <button *ngIf="isStammdatenEditable()" [type]="'submit'" class="dv-btn next-button">
+                {{submitButtonLabel()}}
+            </button>
             <button type="button" class="dv-btn cancel-button"
                     *ngIf="!isRegistering()"
                     (click)="cancel()"

@@ -25,6 +25,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -52,6 +56,16 @@ public class BelegungFerieninsel extends AbstractMutableEntity {
 	@Valid
 	@SortNatural
 	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+		joinColumns = @JoinColumn(name = "belegung_ferieninsel_id", nullable = false),
+		inverseJoinColumns = @JoinColumn(name = "tage_id", nullable = false),
+		foreignKey = @ForeignKey(name = "FK_belegung_ferieninsel_belegung_ferieninsel_id"),
+		inverseForeignKey = @ForeignKey(name = "FK_belegung_ferieninsel_tage_id"),
+		indexes = {
+			@Index(name = "IX_belegung_ferieninsel_belegung_ferieninsel_id", columnList = "belegung_ferieninsel_id"),
+			@Index(name = "IX_belegung_ferieninsel_tage_id", columnList = "tage_id"),
+		}
+	)
 	private List<BelegungFerieninselTag> tage = new ArrayList<>();
 
 	@Override

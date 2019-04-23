@@ -86,7 +86,7 @@ public class Mitteilung extends AbstractMutableEntity {
 	private String subject;
 
 	@Size(min = 0, max = DB_TEXTAREA_LENGTH)
-	@Column(nullable = true)
+	@Column(nullable = true, length = DB_TEXTAREA_LENGTH)
 	@Nullable
 	private String message;
 

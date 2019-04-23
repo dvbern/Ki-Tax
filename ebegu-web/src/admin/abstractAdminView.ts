@@ -45,7 +45,7 @@ export default class AbstractAdminViewController implements IController {
             if (TSGesuchsperiodeStatus.GESCHLOSSEN === gesuchsperiode.status) {
                 return false;
             }
-            if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getSuperAdminRoles())) {
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getSuperAdminRoles())) {
                 return true;
             }
             return TSGesuchsperiodeStatus.ENTWURF === gesuchsperiode.status;

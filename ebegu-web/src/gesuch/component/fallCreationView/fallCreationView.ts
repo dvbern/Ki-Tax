@@ -84,6 +84,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public $onInit(): void {
+        super.$onInit();
         this.readStateParams();
         this.initViewModel();
     }
@@ -209,11 +210,17 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getGemeinde(): TSGemeinde {
-        return this.gesuchModelManager.getDossier().gemeinde;
+        if (this.gesuchModelManager.getDossier()) {
+            return this.gesuchModelManager.getDossier().gemeinde;
+        }
+        return undefined;
     }
 
     public getPeriodString(): string {
-        return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
+        if (this.getGemeinde()) {
+            return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
+        }
+        return undefined;
     }
 
     /**

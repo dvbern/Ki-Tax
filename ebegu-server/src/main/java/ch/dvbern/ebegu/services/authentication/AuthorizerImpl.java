@@ -133,7 +133,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				UserRole.getRolesWithoutAbhaengigkeit(RollenAbhaengigkeit.GEMEINDE));
 			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
 				principalBean.isCallerInAnyOfRole(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
-					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR);
+					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, STEUERAMT, JURIST);
 			if (!allGemeindenAllowed && !allowedForGemeinde) {
 				throwViolation(gemeinde);
 			}
@@ -304,7 +304,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		validateMandantMatches(dossier.getFall());
 
 		// Gemeinde muss fuer Mandant-Rollen nicht geprueft werden
-		if (!principalBean.isCallerInAnyOfRole(ADMIN_MANDANT, SACHBEARBEITER_MANDANT)
+		if (!principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT)
 			&& !isUserAllowedForGemeinde(dossier.getGemeinde())) {
 			return false;
 		}

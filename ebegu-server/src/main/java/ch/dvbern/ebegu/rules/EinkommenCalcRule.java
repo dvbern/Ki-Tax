@@ -59,8 +59,11 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		// Es gibt zwei Faelle, in denen die Finanzielle Situation nicht bekannt ist:
 		// - Sozialhilfeempfaenger: Wir rechnen mit Einkommen = 0
 		// - Keine Vergünstigung gewünscht: Wir rechnen mit dem Maximalen Einkommen
+
 		Familiensituation familiensituation = betreuung.extractGesuch().extractFamiliensituation();
+		boolean keineFinSitErfasst = false;
 		if (familiensituation != null) {
+			keineFinSitErfasst = Boolean.TRUE.equals(familiensituation.getAntragNurFuerBehinderungszuschlag());
 			int basisjahr = betreuung.extractGesuchsperiode().getBasisJahr();
 			if (Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger())) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
@@ -69,7 +72,9 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				verfuegungZeitabschnitt.addBemerkung(RuleKey.EINKOMMEN, MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
 				return;
 			}
-			if (Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht())) {
+			// keine FinSit erfasst wurde, aber ein Anspruch auf die Pauschale besteht, gehen wir von Maximalem Einkommen
+			// aus. Da Anspruch auf die Pauschale besteht, wird das Anspruchberechtigte Pensum nicht auf 0 gesetzt!
+			if (keineFinSitErfasst && Boolean.TRUE.equals(betreuung.hasErweiterteBetreuung())) {
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
 				verfuegungZeitabschnitt.setAbzugFamGroesse(BigDecimal.ZERO);
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
@@ -106,7 +111,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
 		if (requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt()) {
-			if (verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
+			if (keineFinSitErfasst || verfuegungZeitabschnitt.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 				//maximales einkommen wurde ueberschritten
 				verfuegungZeitabschnitt.setKategorieMaxEinkommen(true);
 				if (betreuung.getBetreuungsangebotTyp().isAngebotJugendamtKleinkind()) {
@@ -126,7 +131,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 	 * This is because the child still has Anspruch, though it will only get a redutcion of the costs due to this erweiterteBeduerfniss
 	 */
 	private void reduceAnspruchInNormalCase(@Nonnull Betreuung betreuung, @Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		if (!requireNonNull(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA()).getErweiterteBeduerfnisse()) {
+		if (!betreuung.hasErweiterteBetreuung()) {
 			verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 		}
 	}

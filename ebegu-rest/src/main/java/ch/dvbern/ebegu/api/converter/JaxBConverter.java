@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -105,6 +106,7 @@ import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
@@ -177,6 +179,7 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -245,7 +248,7 @@ import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
-@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity"})
+@SuppressWarnings({ "PMD.NcssTypeCount", "unused", "checkstyle:CyclomaticComplexity" })
 public class JaxBConverter extends AbstractConverter {
 
 	public static final String DROPPED_DUPLICATE_CONTAINER = "dropped duplicate container ";
@@ -642,7 +645,8 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setAenderungPer(familiensituationJAXP.getAenderungPer());
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
-		familiensituation.setVerguenstigungGewuenscht(familiensituationJAXP.getVerguenstigungGewuenscht());
+		familiensituation.setAntragNurFuerBehinderungszuschlag(familiensituationJAXP.getAntragNurFuerBehinderungszuschlag());
+		familiensituation.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(familiensituationJAXP.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 
 		return familiensituation;
 	}
@@ -655,7 +659,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setAenderungPer(persistedFamiliensituation.getAenderungPer());
 		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
-		jaxFamiliensituation.setVerguenstigungGewuenscht(persistedFamiliensituation.getVerguenstigungGewuenscht());
+		jaxFamiliensituation.setAntragNurFuerBehinderungszuschlag(persistedFamiliensituation.getAntragNurFuerBehinderungszuschlag());
+		jaxFamiliensituation.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(persistedFamiliensituation.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 
 		return jaxFamiliensituation;
 	}
@@ -1337,6 +1342,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
 		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
 		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
+		jaxInstStammdaten.setSendMailWennOffenePendenzen(persistedInstStammdaten.getSendMailWennOffenePendenzen());
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
@@ -1411,6 +1417,7 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
 		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
 		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
+		institutionStammdaten.setSendMailWennOffenePendenzen(institutionStammdatenJAXP.isSendMailWennOffenePendenzen());
 
 		Adresse convertedAdresse = null;
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
@@ -1422,6 +1429,7 @@ public class JaxBConverter extends AbstractConverter {
 		adresseToEntity(institutionStammdatenJAXP.getAdresse(), institutionStammdaten.getAdresse());
 
 		String id = institutionStammdatenJAXP.getInstitution().getId();
+		Objects.requireNonNull(id);
 		Institution institutionFromDB = institutionService.findInstitution(id)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"institutionStammdatenToEntity",
@@ -1679,7 +1687,9 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		final JaxPensumAusserordentlicherAnspruch jaxPensumAusserordentlicherAnspruch =
 			new JaxPensumAusserordentlicherAnspruch();
-		convertAbstractPensumFieldsToJAX(persistedPensumAusserordentlicherAnspruch, jaxPensumAusserordentlicherAnspruch);
+		convertAbstractPensumFieldsToJAX(
+			persistedPensumAusserordentlicherAnspruch,
+			jaxPensumAusserordentlicherAnspruch);
 		jaxPensumAusserordentlicherAnspruch.setBegruendung(persistedPensumAusserordentlicherAnspruch.getBegruendung());
 		return jaxPensumAusserordentlicherAnspruch;
 	}
@@ -2066,7 +2076,9 @@ public class JaxBConverter extends AbstractConverter {
 					findUnbezahlterUrlaub(jaxErwerbspensum.getUnbezahlterUrlaub().getId())
 					.orElse(new UnbezahlterUrlaub());
 			}
-			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(jaxErwerbspensum.getUnbezahlterUrlaub(), existingUrlaub));
+			erwerbspensum.setUnbezahlterUrlaub(unbezahlterUrlaubToEntity(
+				jaxErwerbspensum.getUnbezahlterUrlaub(),
+				existingUrlaub));
 		} else {
 			erwerbspensum.setUnbezahlterUrlaub(null);
 		}
@@ -2201,7 +2213,7 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
-		if(Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())){
+		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
 			requireNonNull(erweiterteBetreuungJAXP.getFachstelle(), "Fachstelle muss existieren");
 			requireNonNull(
 				erweiterteBetreuungJAXP.getFachstelle().getId(),
@@ -2674,7 +2686,7 @@ public class JaxBConverter extends AbstractConverter {
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(jaxVerfuegungZeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		verfuegungZeitabschnitt.setVerguenstigung(jaxVerfuegungZeitabschnitt.getVerguenstigung());
 		verfuegungZeitabschnitt.setMinimalerElternbeitrag(jaxVerfuegungZeitabschnitt.getMinimalerElternbeitrag());
-			verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
+		verfuegungZeitabschnitt.setElternbeitrag(jaxVerfuegungZeitabschnitt.getElternbeitrag());
 		verfuegungZeitabschnitt.setAbzugFamGroesse(jaxVerfuegungZeitabschnitt.getAbzugFamGroesse());
 		BigDecimal einkommen = jaxVerfuegungZeitabschnitt.getMassgebendesEinkommenVorAbzugFamgr();
 		verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(einkommen);
@@ -2821,12 +2833,14 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuungContainer, jaxErweiterteBetreuungContainer);
 
 		if (erweiterteBetreuungContainer.getErweiterteBetreuungGS() != null) {
-			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungGS());
+			JaxErweiterteBetreuung jaxErweiterteBetreuung =
+				erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungGS());
 			jaxErweiterteBetreuungContainer.setErweiterteBetreuungGS(jaxErweiterteBetreuung);
 		}
 
 		if (erweiterteBetreuungContainer.getErweiterteBetreuungJA() != null) {
-			JaxErweiterteBetreuung jaxErweiterteBetreuung = erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungJA());
+			JaxErweiterteBetreuung jaxErweiterteBetreuung =
+				erweiterteBetreuungToJax(erweiterteBetreuungContainer.getErweiterteBetreuungJA());
 			jaxErweiterteBetreuungContainer.setErweiterteBetreuungJA(jaxErweiterteBetreuung);
 		}
 
@@ -2842,7 +2856,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
 
-		if(erweiterteBetreuung.getFachstelle() != null) {
+		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
 		}
 
@@ -3081,9 +3095,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxDokumentGrund.setPersonNumber(dokumentGrund.getPersonNumber());
 		jaxDokumentGrund.setDokumentTyp(dokumentGrund.getDokumentTyp());
 		jaxDokumentGrund.setNeeded(dokumentGrund.isNeeded());
-		if (jaxDokumentGrund.getDokumente() == null) {
-			jaxDokumentGrund.setDokumente(new HashSet<>());
-		}
+		jaxDokumentGrund.setDokumente(new HashSet<>());
 		dokumentGrund.getDokumente().stream()
 			.map(this::dokumentToJax)
 			.forEach(d -> jaxDokumentGrund.getDokumente().add(d));
@@ -3938,6 +3950,7 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(jaxStammdaten.getGemeinde());
 		requireNonNull(jaxStammdaten.getGemeinde().getId());
 		requireNonNull(jaxStammdaten.getAdresse());
+		requireNonNull(jaxStammdaten.getStandardRechtsmittelbelehrung());
 
 		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
 
@@ -3984,6 +3997,17 @@ public class JaxBConverter extends AbstractConverter {
 			stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
 		}
 
+		stammdaten.setStandardRechtsmittelbelehrung(jaxStammdaten.getStandardRechtsmittelbelehrung());
+
+		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
+			if (stammdaten.getRechtsmittelbelehrung() == null) {
+				stammdaten.setRechtsmittelbelehrung(new TextRessource());
+			}
+			stammdaten.setRechtsmittelbelehrung(textRessourceToEntity(
+				jaxStammdaten.getRechtsmittelbelehrung(),
+				stammdaten.getRechtsmittelbelehrung()));
+		}
+
 		return stammdaten;
 	}
 
@@ -4006,16 +4030,40 @@ public class JaxBConverter extends AbstractConverter {
 		jaxStammdaten.setMail(stammdaten.getMail());
 		jaxStammdaten.setTelefon(stammdaten.getTelefon());
 		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(false);
-		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(false);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
-		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
+		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
+		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
+		// Konfiguration
+		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
+			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
+			if (gesuchsperiode != null) {
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+					stammdaten.getGemeinde(),
+					gesuchsperiode));
+			}
+		} else {
+			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
+			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
+				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
+					stammdaten.getGemeinde(),
+					gesuchsperiode));
+			}
 		}
+		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
+		jaxStammdaten.setBic(stammdaten.getBic());
+		if (stammdaten.getIban() != null) {
+			jaxStammdaten.setIban(stammdaten.getIban().getIban());
+		}
+
+		jaxStammdaten.setStandardRechtsmittelbelehrung(stammdaten.getStandardRechtsmittelbelehrung());
+
+		if (stammdaten.getRechtsmittelbelehrung() != null) {
+			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
+		}
+
+		return jaxStammdaten;
+	}
+
+	private void gemeindeStammdatenToJAXSetDefaultBenutzer(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
 		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
@@ -4031,28 +4079,46 @@ public class JaxBConverter extends AbstractConverter {
 				jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
 			}
 		}
-		// Konfiguration
-		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
-			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
-			if (gesuchsperiode != null) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
-					gesuchsperiode));
-			}
-		} else {
-			// Ist die Gemeinde noch im Status AKTIV, laden wir die Konfigurationen aller Gesuchsperioden
-			for (Gesuchsperiode gesuchsperiode : gesuchsperiodeService.getAllGesuchsperioden()) {
-				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(stammdaten.getGemeinde(),
-					gesuchsperiode));
-			}
-		}
-		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
-		jaxStammdaten.setBic(stammdaten.getBic());
-		if(stammdaten.getIban() != null) {
-			jaxStammdaten.setIban(stammdaten.getIban().getIban());
-		}
+	}
 
+	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
+		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(false);
+		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(false);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
+			jaxStammdaten.setKorrespondenzspracheDe(true);
+			jaxStammdaten.setKorrespondenzspracheFr(true);
+		}
+	}
 
-		return jaxStammdaten;
+	public TextRessource textRessourceToEntity(
+		@Nonnull final JaxTextRessource textRessourceJAX,
+		@Nonnull TextRessource textRessource) {
+		requireNonNull(textRessourceJAX);
+		requireNonNull(textRessource);
+
+		convertAbstractFieldsToEntity(textRessourceJAX, textRessource);
+
+		textRessource.setTextDeutsch(textRessourceJAX.getTextDeutsch());
+		textRessource.setTextFranzoesisch(textRessourceJAX.getTextFranzoesisch());
+
+		return textRessource;
+	}
+
+	public JaxTextRessource textRessourceToJAX(@Nonnull final TextRessource textRessource) {
+		Objects.requireNonNull(textRessource);
+
+		final JaxTextRessource jaxTextRessource = new JaxTextRessource();
+
+		convertAbstractFieldsToJAX(textRessource, jaxTextRessource);
+
+		jaxTextRessource.setTextDeutsch(textRessource.getTextDeutsch());
+		jaxTextRessource.setTextFranzoesisch(textRessource.getTextFranzoesisch());
+
+		return jaxTextRessource;
 	}
 
 	/**
@@ -4069,7 +4135,9 @@ public class JaxBConverter extends AbstractConverter {
 		return gpBeguStart.orElseGet(() -> gpNewest.orElse(null));
 	}
 
-	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
 		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
 		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName(LocaleThreadLocal.get()));
 		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());

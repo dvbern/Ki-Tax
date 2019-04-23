@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,7 +34,7 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 
 	private static final long serialVersionUID = -1893677808322218626L;
 
-	@Nullable
+	@Nonnull
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 	@NotNull
 	private JaxInstitution institution;
@@ -66,6 +67,8 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 	@Nullable
 	private BigDecimal anzahlPlaetzeFirmen;
 
+	private boolean sendMailWennOffenePendenzen = true;
+
 
 	@Nullable
 	public String getIban() {
@@ -76,12 +79,12 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 		this.iban = iban;
 	}
 
-	@Nullable
+	@Nonnull
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return betreuungsangebotTyp;
 	}
 
-	public void setBetreuungsangebotTyp(@Nullable BetreuungsangebotTyp betreuungsangebotTyp) {
+	public void setBetreuungsangebotTyp(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 
@@ -229,4 +232,11 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 		this.anzahlPlaetzeFirmen = anzahlPlaetzeFirmen;
 	}
 
+	public boolean isSendMailWennOffenePendenzen() {
+		return sendMailWennOffenePendenzen;
+	}
+
+	public void setSendMailWennOffenePendenzen(boolean sendMailWennOffenePendenzen) {
+		this.sendMailWennOffenePendenzen = sendMailWennOffenePendenzen;
+	}
 }

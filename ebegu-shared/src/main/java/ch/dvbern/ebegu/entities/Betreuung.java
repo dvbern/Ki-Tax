@@ -83,9 +83,8 @@ import org.hibernate.search.annotations.Indexed;
 @CheckBetreuungZeitraumInGesuchsperiode (groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
 @Table(
-	uniqueConstraints = {
-		@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer"),
-	}
+	uniqueConstraints =
+		@UniqueConstraint(columnNames = { "betreuungNummer", "kind_id" }, name = "UK_betreuung_kind_betreuung_nummer")
 )
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
@@ -640,5 +639,10 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 			return MathUtil.isPositive(value);
 		}
 		return false;
+	}
+
+	public boolean hasErweiterteBetreuung() {
+		return getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null
+			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
 	}
 }

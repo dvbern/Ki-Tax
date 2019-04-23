@@ -142,6 +142,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     // tslint:disable-next-line:cognitive-complexity
     public $onInit(): void {
+        super.$onInit();
         this.mutationsmeldungModel = undefined;
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
@@ -225,6 +226,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.erweiterteBetreuungContainer = new TSErweiterteBetreuungContainer();
         tsBetreuung.erweiterteBetreuungContainer.erweiterteBetreuungJA = new TSErweiterteBetreuung();
         tsBetreuung.betreuungsstatus = TSBetreuungsstatus.AUSSTEHEND;
+
+        tsBetreuung.keineKesbPlatzierung = false;
 
         return tsBetreuung;
     }
@@ -342,9 +345,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.errorService.clearAll();
         this.gesuchModelManager.saveBetreuung(this.model, newStatus, false).then(() => {
             this.gesuchModelManager.setBetreuungToWorkWith(this.model); // setze model
+            this.gesuchModelManager.handleErweiterteBetreuung();
             this.isSavingData = false;
             this.form.$setPristine();
             this.$state.go(nextStep, params);
+
         }).catch((exception: TSExceptionReport[]) => {
             // starting over
             this.$log.error('there was an error saving the betreuung ', this.model, exception);

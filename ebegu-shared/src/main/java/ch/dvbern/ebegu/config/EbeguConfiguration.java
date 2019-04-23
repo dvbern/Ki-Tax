@@ -145,11 +145,6 @@ public interface EbeguConfiguration {
 	boolean forceCookieSecureFlag();
 
 	/**
-	 * @return ob die Asynchron generierten Reports als attachments direkt im Infomail an den auftraggebendne Benutzer angehaengt werden
-	 */
-	boolean isSendReportAsAttachement();
-
-	/**
 	 * Property, welches festlegt, ob die vordefinierten Testfaelle fuer diese Umgebung verwendet werden duerfen.
 	 * Achtung, dieses Property wird vom Dummy-Login Property übersteuert, d.h. es müssen beide gesetzt sein!
 	 */
@@ -175,4 +170,14 @@ public interface EbeguConfiguration {
 	 * Returns the LogLevel by default. INFO for Dev-Mode and ERROR for others (production)
 	 */
 	KibonLogLevel getDefaultLogLevel();
+
+	/**
+	 * Gibt die E-Mail des (ersten) Superusers zurueck
+	 */
+	String getSuperuserMail();
+
+	/**
+	 * Gibt die E-Mail des Kibon-Supports zurück
+	 */
+	String getSupportMail();
 }

@@ -33,4 +33,8 @@ public interface DokumentService {
 	@Nonnull
 	Optional<Dokument> findDokument(@Nonnull String key);
 
+	/**
+	 * Löscht das übergebene Dokument aus der Datenbank
+	 */
+	void removeDokument(@Nonnull Dokument dokument);
 }

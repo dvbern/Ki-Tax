@@ -475,7 +475,8 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 			zahlungService.zahlungsauftragErstellen(DATUM_FAELLIG, "Testauftrag", DATUM_GENERIERT);
 
 		Assert.assertTrue(zahlungService.findZahlungsauftrag(zahlungsauftrag.getId()).isPresent());
-		Assert.assertFalse(zahlungService.findZahlungsauftrag("ungueltigeId").isPresent());
+		String inexsistentUUID = "6dac3a36-518d-436a-9095-ee425f9db9fd";
+		Assert.assertFalse(zahlungService.findZahlungsauftrag(inexsistentUUID).isPresent());
 	}
 
 	@Test

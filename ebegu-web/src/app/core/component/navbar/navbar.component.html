@@ -12,7 +12,7 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
-
+<kibon-guided-tour></kibon-guided-tour>
 <nav class="navbar navbar-default"
      *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()">
     <div class="dv-ng-navbar-wrapper">
@@ -21,12 +21,12 @@
                 <li uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
                     *dvNgShowElement="true; roles: TSRoleUtil.getAdministratorOrAmtRole()">
-                    <a uiSref="pendenzen.list-view" [textContent]="'MENU_PENDENZEN' | translate"></a>
+                    <a id="tour_menu_pendenzen" uiSref="pendenzen.list-view" [textContent]="'MENU_PENDENZEN' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
                     class="dv-ng-navbar-element uppercase"
-                    *dvNgShowElement="true; roles: TSRoleUtil.getSchulamtRoles()">
-                    <a uiSref="pendenzenBetreuungen.list-view"
+                    *dvNgShowElement="showMenuAnmeldungen; roles: TSRoleUtil.getSchulamtRoles()">
+                    <a uiSref="pendenzenBetreuungen"
                        [textContent]="'MENU_PENDENZEN_ANMELDUNGEN_SCH' | translate"></a>
                 </li>
                 <li uiSrefActive="active"
@@ -73,3 +73,4 @@
         </div>
     </div>
 </nav>
+

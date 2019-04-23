@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.entities.DownloadFile;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.TokenLifespan;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
-import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.services.DownloadFileService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.WorkjobService;
@@ -76,27 +75,11 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 		final Workjob workJob = readWorkjobFromDatabase();
 		final UploadFileInfo fileMetadata = jobDataContainer.getResult();
 		final DownloadFile downloadFile = createDownloadfile(workJob, fileMetadata);
-		//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs, right now we create the download file right at the start and
-		// can only change its content
-		//		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken());
+		workJobService.addResultToWorkjob(workJob.getId(), downloadFile.getAccessToken()); // add the actual generated doc to the workjob
 		try {
-
-			if (configuration.isSendReportAsAttachement()) {
-				mailService.sendDocumentCreatedEmail(
-					receiverEmail,
-					downloadFile,
-					createStatistikPageLink(),
-					Locale.forLanguageTag(receiverLanguage));
-			} else {
-				mailService.sendDocumentCreatedEmail(
-					receiverEmail,
-					null,
-					createStatistikPageLink(),
-					Locale.forLanguageTag(receiverLanguage)
-				);
-			}
+			mailService.sendInfoStatistikGeneriert(receiverEmail, createStatistikPageLink(), Locale.forLanguageTag(receiverLanguage));
 			return BatchStatus.COMPLETED.toString();
-		} catch (MailException ignore) {
+		} catch (Exception ignore) {
 			return BatchStatus.FAILED.toString();
 		}
 	}
@@ -108,11 +91,10 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	@Nullable
 	private DownloadFile createDownloadfile(@Nonnull Workjob workJob, @Nullable UploadFileInfo uploadFile) {
 		if (uploadFile != null) {
-			//copy data into pre exsiting dowonload-file
-			//	EBEGU-1663 Wildfly 10 hack, this can be removed as soon as WF11 runs and download file can be generated when report is finsihed
-			return downloadFileService.insertDirectly(workJob.getResultData(), uploadFile, TokenLifespan.LONG, workJob.getTriggeringIp());
+			// create an authorization token (downloadFile) for the generated document
+			return downloadFileService.create(uploadFile, TokenLifespan.LONG, workJob.getTriggeringIp());
 		}
-		LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step");
+		LOG.error("UploadFileInfo muss uebergeben werden vom vorherigen Step fuer workJob " + workJob.getExecutionId());
 		return null;
 	}
 

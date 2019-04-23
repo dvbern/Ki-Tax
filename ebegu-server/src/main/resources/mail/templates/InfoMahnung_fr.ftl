@@ -32,7 +32,7 @@ ${templateConfiguration.mailCss}
     </p>
     <p>
         FR_Freundliche Grüsse <br/>
-        Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+        FR_Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
     </p>
     <p>
         FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.

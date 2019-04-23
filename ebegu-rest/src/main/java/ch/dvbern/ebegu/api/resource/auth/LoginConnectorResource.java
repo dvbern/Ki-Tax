@@ -199,7 +199,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		String persistedEmail = existingBenutzer.getEmail();
 		String externalEmail = externalBenutzer.getEmail();
 
-		if (!persistedEmail.equals(externalEmail)) {
+		if (!persistedEmail.equalsIgnoreCase(externalEmail)) {
 			String msg = ServerMessageUtil.translateEnumValue(
 				ERROR_EMAIL_MISMATCH,
 				LocaleThreadLocal.get(),
@@ -210,7 +210,7 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			//return the message to connector and stop process
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
-
+		//external uuid setzen
 		toBenutzer(externalBenutzer, existingBenutzer);
 
 		if (existingBenutzer.getStatus() == BenutzerStatus.EINGELADEN) {

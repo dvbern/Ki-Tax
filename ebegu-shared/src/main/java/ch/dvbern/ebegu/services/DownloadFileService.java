@@ -38,13 +38,6 @@ public interface DownloadFileService {
 	DownloadFile create(@Nonnull UploadFileInfo fileInfo, @Nonnull TokenLifespan lifespan, @Nonnull String ip);
 
 	/**
-	 * In Wildfly 10 gibt es in Batch processes kein current-user (fixed in WF11, siehe EBEGU-1663).
-	 * Um dieses Problem zu loesen inserten wir direkt per insert query
-	 */
-	@Nonnull
-	DownloadFile insertDirectly(@Nonnull String fileIdToUpdate, @Nonnull UploadFileInfo fileInfo, @Nonnull TokenLifespan lifespan, @Nonnull String ip);
-
-	/**
 	 * Sucht ein Download File aufgrund eines AccessTokens
 	 */
 	@Nullable

@@ -37,7 +37,11 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.mocks.DokumentGrundServiceMock;
+import ch.dvbern.ebegu.mocks.DossierServiceBeanMock;
+import ch.dvbern.ebegu.mocks.EbeguVorlageServiceMock;
 import ch.dvbern.ebegu.mocks.EinstellungServiceMock;
+import ch.dvbern.ebegu.mocks.GemeindeServiceMock;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
@@ -81,7 +85,7 @@ public class PDFServiceBeanTest {
 	private PDFServiceBean pdfService;
 
 	@InjectIntoMany
-	DossierServiceMock dossierService = new DossierServiceMock();
+	DossierServiceBeanMock dossierService = new DossierServiceBeanMock();
 
 	@InjectIntoMany
 	EbeguVorlageService vorlageService = new EbeguVorlageServiceMock();

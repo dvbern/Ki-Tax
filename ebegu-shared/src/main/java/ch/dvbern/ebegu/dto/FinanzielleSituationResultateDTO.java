@@ -17,6 +17,8 @@ package ch.dvbern.ebegu.dto;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.util.MathUtil;
 
 /**
@@ -24,8 +26,11 @@ import ch.dvbern.ebegu.util.MathUtil;
  */
 public class FinanzielleSituationResultateDTO {
 
+	@Nullable
 	private BigDecimal geschaeftsgewinnDurchschnittGesuchsteller1 = BigDecimal.ZERO;
+	@Nullable
 	private BigDecimal geschaeftsgewinnDurchschnittGesuchsteller2 = BigDecimal.ZERO;
+	@Nullable
 	private BigDecimal einkommenBeiderGesuchsteller = BigDecimal.ZERO;
 	private BigDecimal nettovermoegenFuenfProzent = BigDecimal.ZERO;
 	private BigDecimal anrechenbaresEinkommen = BigDecimal.ZERO;
@@ -48,27 +53,30 @@ public class FinanzielleSituationResultateDTO {
 		massgebendesEinkVorAbzFamGr = MathUtil.positiveNonNullAndRound(massgebendesEinkVorAbzFamGr);
 	}
 
+	@Nullable
 	public BigDecimal getGeschaeftsgewinnDurchschnittGesuchsteller1() {
 		return geschaeftsgewinnDurchschnittGesuchsteller1;
 	}
 
-	public void setGeschaeftsgewinnDurchschnittGesuchsteller1(BigDecimal geschaeftsgewinnDurchschnittGesuchsteller1) {
+	public void setGeschaeftsgewinnDurchschnittGesuchsteller1(@Nullable BigDecimal geschaeftsgewinnDurchschnittGesuchsteller1) {
 		this.geschaeftsgewinnDurchschnittGesuchsteller1 = geschaeftsgewinnDurchschnittGesuchsteller1;
 	}
 
+	@Nullable
 	public BigDecimal getGeschaeftsgewinnDurchschnittGesuchsteller2() {
 		return geschaeftsgewinnDurchschnittGesuchsteller2;
 	}
 
-	public void setGeschaeftsgewinnDurchschnittGesuchsteller2(BigDecimal geschaeftsgewinnDurchschnittGesuchsteller2) {
+	public void setGeschaeftsgewinnDurchschnittGesuchsteller2(@Nullable BigDecimal geschaeftsgewinnDurchschnittGesuchsteller2) {
 		this.geschaeftsgewinnDurchschnittGesuchsteller2 = geschaeftsgewinnDurchschnittGesuchsteller2;
 	}
 
+	@Nullable
 	public BigDecimal getEinkommenBeiderGesuchsteller() {
 		return einkommenBeiderGesuchsteller;
 	}
 
-	public void setEinkommenBeiderGesuchsteller(BigDecimal einkommenBeiderGesuchsteller) {
+	public void setEinkommenBeiderGesuchsteller(@Nullable BigDecimal einkommenBeiderGesuchsteller) {
 		this.einkommenBeiderGesuchsteller = einkommenBeiderGesuchsteller;
 	}
 

@@ -71,6 +71,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'GlobalCacheService',
         'AuthServiceRS',
     ];
+
+    public readonly CONSTANTS: any = CONSTANTS;
     public integrationTypes: Array<string>;
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;
@@ -80,7 +82,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public showAusserordentlicherAnspruch: boolean;
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     public fachstelleId: string;
-    public allowedRoles: Array<TSRole>;
+    public allowedRoles: ReadonlyArray<TSRole>;
     public minValueAllowed: number = 0;
     public maxValueAllowed: number = 100;
 

@@ -573,7 +573,7 @@ export class EbeguDokumenteState implements Ng1StateDeclaration {
     };
 
     public data = {
-        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt(),
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
 
@@ -680,6 +680,10 @@ export class INewFallStateParams {
     public gesuchId: string;
     public dossierId: string;
     public gemeindeId: string;
+}
+
+export class ITourParams {
+    public tourType: string;
 }
 
 export class IErwerbspensumStateParams {
