@@ -59,6 +59,15 @@ export const APP_JS_MODULE = angular.module('ebeguWeb', [
     ])
         .component('appRoot', APP_ANGULARJS_COMPONENT)
         .config(conf)
+        .decorator('$rootScope', ['$delegate', ($delegate: any) => {
+            const originalDigest = $delegate.$digest;
+            $delegate.$digest = () => {
+                if (!$delegate.$$phase) {
+                    originalDigest.call($delegate);
+                }
+            };
+            return $delegate;
+        }])
 ;
 
 conf.$inject = ['$stateProvider'];

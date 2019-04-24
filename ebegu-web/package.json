@@ -122,8 +122,8 @@
     "xml2js": "~0.4.17"
   },
   "engines": {
-    "node": ">=8.0.0 <=10.5.0",
-    "npm": "=6.4.1"
+    "node": ">=8.0.0",
+    "npm": ">=6.4.1"
   },
   "dependencies": {
     "@angular/animations": "^6.1.10",
