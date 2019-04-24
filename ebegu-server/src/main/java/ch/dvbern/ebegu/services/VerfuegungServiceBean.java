@@ -150,7 +150,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 			if (vorgaengerVerfuegung.isPresent()) {
 				for (VerfuegungZeitabschnitt verfuegungZeitabschnittNeu : verfuegung.getZeitabschnitte()) {
 
-					List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerVerfuegung = findZeitabschnitteOnVorgaengerVerfuegung(verfuegungZeitabschnittNeu.getGueltigkeit(), vorgaengerVerfuegung.get());
+					List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerVerfuegung =
+						findZeitabschnitteOnVorgaengerVerfuegung(verfuegungZeitabschnittNeu.getGueltigkeit(), vorgaengerVerfuegung.get());
 
 					Optional<VerfuegungZeitabschnitt> zeitabschnittSameGueltigkeitSameBetrag = VerfuegungUtil.findZeitabschnittSameGueltigkeitSameBetrag
 						(zeitabschnitteOnVorgaengerVerfuegung, verfuegungZeitabschnittNeu);
@@ -167,7 +168,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 						// Wenn der alte Abschnitt VERRECHNET war und das Flag ignoriert -> IGNORIEREND
 						if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerVerfuegung)) {
 							// Es war schon verrechnet: Die neuen Zeitabschnitte muessen entweder ignoriert oder korrigiert werden
-							if (ignorieren) {
+							if (ignorieren || isThereAnyIgnoriert(zeitabschnitteOnVorgaengerVerfuegung)) {
+								// zeitabschnitte werden immer ignoriert wenn der Benutzer es ignorieren will oder wenn es bereits ignoriert wurde
 								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
 							} else {
 								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
@@ -184,12 +186,13 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	private boolean areAllZeitabschnitteVerrechnet(List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-			if (!verfuegungZeitabschnitt.getZahlungsstatus().isBereitsBehandeltInZahlungslauf()) {
-				return false;
-			}
-		}
-		return true;
+		return zeitabschnitte.stream()
+			.allMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isBereitsBehandeltInZahlungslauf());
+	}
+
+	private boolean isThereAnyIgnoriert(List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		return zeitabschnitte.stream()
+			.anyMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriert());
 	}
 
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
