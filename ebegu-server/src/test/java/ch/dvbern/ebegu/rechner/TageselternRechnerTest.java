@@ -49,29 +49,29 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void test() {
-		testWithParams(geburtstagBaby, false, false, intervall, 20, 100000, 113.00);
-		testWithParams(geburtstagKind, true, false, intervall, 20, 100000, 75.35);
-		testWithParams(geburtstagKind, false, false, intervall, 20, 50000, 138.15);
+		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 100000, 113.00);
+		testWithParams(geburtstagKind, true, false, false, intervall, 20, 100000, 75.35);
+		testWithParams(geburtstagKind, false, false, false, intervall, 20, 50000, 138.15);
 
-		testWithParams(geburtstagKind, false, false, intervallTag, 20, 100000, 6.85);
-		testWithParams(geburtstagKind, true, false, intervallTag, 20, 100000, 6.85);
-		testWithParams(geburtstagKind, false, true, intervallTag, 20, 100000, 13.55);
-		testWithParams(geburtstagKind, true, true, intervallTag, 20, 100000, 13.55);
+		testWithParams(geburtstagKind, false, false, false, intervallTag, 20, 100000, 6.85);
+		testWithParams(geburtstagKind, true, false, false, intervallTag, 20, 100000, 6.85);
+		testWithParams(geburtstagKind, false, true, true, intervallTag, 20, 100000, 13.55);
+		testWithParams(geburtstagKind, true, true, true, intervallTag, 20, 100000, 13.55);
 
-		testWithParams(geburtstagKind, false, false, intervall, 20, 150000, 12.55);
-		testWithParams(geburtstagKind, true, false, intervall, 20, 150000, 12.55);
-		testWithParams(geburtstagKind, false, true, intervall, 20, 150000, 86.00);
-		testWithParams(geburtstagKind, true, true, intervall, 20, 150000, 86.00);
+		testWithParams(geburtstagKind, false, false, false, intervall, 20, 150000, 12.55);
+		testWithParams(geburtstagKind, true, false, false, intervall, 20, 150000, 12.55);
+		testWithParams(geburtstagKind, false, true, true, intervall, 20, 150000, 86.00);
+		testWithParams(geburtstagKind, true, true, true, intervall, 20, 150000, 86.00);
 
-		testWithParams(geburtstagBaby, false, false, intervall, 20, 100000, 113.00);
-		testWithParams(geburtstagBaby, true, false, intervall, 20, 100000, 113.00);
-		testWithParams(geburtstagBaby, false, true, intervall, 20, 100000, 186.50);
-		testWithParams(geburtstagBaby, true, true, intervall, 20, 100000, 186.50);
+		testWithParams(geburtstagBaby, false, false, false, intervall, 20, 100000, 113.00);
+		testWithParams(geburtstagBaby, true, false, false, intervall, 20, 100000, 113.00);
+		testWithParams(geburtstagBaby, false, true, true, intervall, 20, 100000, 186.50);
+		testWithParams(geburtstagBaby, true, true, true, intervall, 20, 100000, 186.50);
 
-		testWithParams(geburtstagKind, false, false, intervall, 20, 100000, 75.35);
-		testWithParams(geburtstagKind, true, false, intervall, 20, 100000, 75.35);
-		testWithParams(geburtstagKind, false, true, intervall, 20, 100000, 148.80);
-		testWithParams(geburtstagKind, true, true, intervall, 20, 100000, 148.80);
+		testWithParams(geburtstagKind, false, false, false, intervall, 20, 100000, 75.35);
+		testWithParams(geburtstagKind, true, false, false, intervall, 20, 100000, 75.35);
+		testWithParams(geburtstagKind, false, true, true, intervall, 20, 100000, 148.80);
+		testWithParams(geburtstagKind, true, true, true, intervall, 20, 100000, 148.80);
 	}
 
 	@Test
@@ -85,27 +85,28 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 			LocalDate.of(2018, Month.SEPTEMBER, 1),
 			LocalDate.of(2018, Month.SEPTEMBER, 30));
 
-		testWithParams(kind, false, false, halberAugust, 50, 68712, 329.45);
-		testWithParams(kind, false, false, ganzerSeptember, 50, 68712, 729.50);
-		testWithParams(baby, false, false, halberAugust, 50, 68712, 494.20);
-		testWithParams(baby, false, false, ganzerSeptember, 50, 68712, 1094.30);
+		testWithParams(kind, false, false, false, halberAugust, 50, 68712, 329.45);
+		testWithParams(kind, false, false, false, ganzerSeptember, 50, 68712, 729.50);
+		testWithParams(baby, false, false, false, halberAugust, 50, 68712, 494.20);
+		testWithParams(baby, false, false, false, ganzerSeptember, 50, 68712, 1094.30);
 
-		testWithParams(baby, false, false, halberAugust, 50, 185447, 0.00);
-		testWithParams(baby, false, false, ganzerSeptember, 50, 185447, 0.00);
-		testWithParams(baby, false, true, halberAugust, 50, 185447, 211.15);
-		testWithParams(baby, false, true, ganzerSeptember, 50, 185447, 467.50);
+		testWithParams(baby, false, false, false, halberAugust, 50, 185447, 0.00);
+		testWithParams(baby, false, false, false, ganzerSeptember, 50, 185447, 0.00);
+		testWithParams(baby, false, true, true, halberAugust, 50, 185447, 211.15);
+		testWithParams(baby, false, true, true, ganzerSeptember, 50, 185447, 467.50);
 
-		testWithParams(baby, false, true, halberAugust, 50, 35447, 844.50);
-		testWithParams(baby, false, true, ganzerSeptember, 50, 35447, 1870.00);
+		testWithParams(baby, false, true, true, halberAugust, 50, 35447, 844.50);
+		testWithParams(baby, false, true, true, ganzerSeptember, 50, 35447, 1870.00);
 
-		testWithParams(kind, true, false, halberAugust, 50, 68712, 329.45);
-		testWithParams(kind, true, false, ganzerSeptember, 50, 68712, 729.50);
+		testWithParams(kind, true, false, false, halberAugust, 50, 68712, 329.45);
+		testWithParams(kind, true, false, false, ganzerSeptember, 50, 68712, 729.50);
 	}
 
 	private void testWithParams(
 		@Nonnull LocalDate geburtstag,
 		boolean eingeschult,
 		boolean besondereBeduerfnisse,
+		boolean besondereBeduerfnisseBestaetigt,
 		@Nonnull DateRange intervall,
 		int anspruch,
 		int einkommen,
@@ -120,6 +121,7 @@ public class TageselternRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.setBabyTarif(geburtstag.plusYears(1).isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		verfuegungZeitabschnitt.setEingeschult(eingeschult);
 		verfuegungZeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
+		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 
 		VerfuegungZeitabschnitt calculate = tageselternRechner.calculate(verfuegungZeitabschnitt, parameterDTO);
 		Assert.assertEquals(MathUtil.DEFAULT.from(expected), calculate.getVerguenstigung());

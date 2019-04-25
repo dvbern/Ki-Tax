@@ -68,6 +68,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 
 		// Falls die Betreuung im Status UNBEKANNTE_INSTITUTION ist, soll die Pauschale immer berechnet werden
+		// TODO Revier: Bitte kurz mit mir [egch] besprechen.
 		boolean besondereBeduerfnisseBestaetigt = besondereBeduerfnisse && (betreuung.getErweiterteBetreuungContainer()
 			.getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt()
 			|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
