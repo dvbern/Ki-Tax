@@ -66,6 +66,8 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
+
+		// Falls die Betreuung im Status UNBEKANNTE_INSTITUTION ist, soll die Pauschale immer berechnet werden
 		boolean besondereBeduerfnisseBestaetigt = besondereBeduerfnisse && (betreuung.getErweiterteBetreuungContainer()
 			.getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt()
 			|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);

@@ -44,6 +44,7 @@ public abstract class AbstractBGRechner {
 		// Benoetigte Daten
 		boolean unter12Monate = verfuegungZeitabschnitt.isBabyTarif();
 		boolean eingeschult = verfuegungZeitabschnitt.isEingeschult();
+		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
