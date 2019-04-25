@@ -67,7 +67,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 		boolean besondereBeduerfnisseBestaetigt = besondereBeduerfnisse && betreuung.getErweiterteBetreuungContainer()
 			.getErweiterteBetreuungJA()
-			.isBestaetigungAusserordentlicherBetreuungsaufwand();
+			.isErweiterteBeduerfnisseBestaetigt();
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		zeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 		if (besondereBeduerfnisse) {

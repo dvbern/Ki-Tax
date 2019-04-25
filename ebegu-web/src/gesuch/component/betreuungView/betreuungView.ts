@@ -717,10 +717,27 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public platzBestaetigen(): void {
-        if (this.isGesuchValid()) {
+        if (!this.isGesuchValid()) {
+            return;
+        }
+
+        if (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA !== null
+            && !this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisseBestaetigt) {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                title: 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT',
+                deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                cancelText: 'LABEL_ABBRECHEN',
+                confirmText: 'LABEL_SPEICHERN',
+            })
+                .then(() => {
+                    this.getBetreuungModel().datumBestaetigung = DateUtil.today();
+                    this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
+                });
+        } else {
             this.getBetreuungModel().datumBestaetigung = DateUtil.today();
             this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
         }
+
     }
 
     /**
@@ -1159,7 +1176,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles());
     }
 
-    public getBestaetigungAusserordentlicherBetreuungsaufwandLabel(): string {
+    public getErweiterteBeduerfnisseBestaetigtLabel(): string {
         if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
             return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND',
                 {betrag: this.zuschlagBehinderungProStd, einheit: this.$translate.instant('STUNDE')});

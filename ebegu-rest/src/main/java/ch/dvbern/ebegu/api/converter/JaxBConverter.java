@@ -2211,8 +2211,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(erweiterteBetreuungJAXP, erweiterteBetreuung);
 
 		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
-		erweiterteBetreuung.setBestaetigungAusserordentlicherBetreuungsaufwand(
-			erweiterteBetreuungJAXP.isBestaetigungAusserordentlicherBetreuungsaufwand());
+		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
+			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -2857,8 +2857,8 @@ public class JaxBConverter extends AbstractConverter {
 		JaxErweiterteBetreuung jaxErweiterteBetreuung = new JaxErweiterteBetreuung();
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
-		jaxErweiterteBetreuung.setBestaetigungAusserordentlicherBetreuungsaufwand(
-			erweiterteBetreuung.isBestaetigungAusserordentlicherBetreuungsaufwand());
+		jaxErweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
+			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));

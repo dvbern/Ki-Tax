@@ -33,7 +33,7 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 	private JaxFachstelle fachstelle;
 
 	@NotNull
-	private boolean bestaetigungAusserordentlicherBetreuungsaufwand;
+	private boolean erweiterteBeduerfnisseBestaetigt;
 
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
@@ -51,11 +51,11 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 		this.fachstelle = fachstelle;
 	}
 
-	public boolean isBestaetigungAusserordentlicherBetreuungsaufwand() {
-		return bestaetigungAusserordentlicherBetreuungsaufwand;
+	public boolean isErweiterteBeduerfnisseBestaetigt() {
+		return erweiterteBeduerfnisseBestaetigt;
 	}
 
-	public void setBestaetigungAusserordentlicherBetreuungsaufwand(boolean bestaetigungAusserordentlicherBetreuungsaufwand) {
-		this.bestaetigungAusserordentlicherBetreuungsaufwand = bestaetigungAusserordentlicherBetreuungsaufwand;
+	public void setErweiterteBeduerfnisseBestaetigt(boolean erweiterteBeduerfnisseBestaetigt) {
+		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
 	}
 }

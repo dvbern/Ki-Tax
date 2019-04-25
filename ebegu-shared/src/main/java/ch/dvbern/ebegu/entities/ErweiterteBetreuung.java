@@ -32,7 +32,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 
 	@Column(nullable = false)
 	@NotNull
-	private boolean bestaetigungAusserordentlicherBetreuungsaufwand = false;
+	private boolean erweiterteBeduerfnisseBestaetigt = false;
 
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
@@ -52,13 +52,13 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	}
 
 	@Nonnull
-	public boolean isBestaetigungAusserordentlicherBetreuungsaufwand() {
-		return bestaetigungAusserordentlicherBetreuungsaufwand;
+	public boolean isErweiterteBeduerfnisseBestaetigt() {
+		return erweiterteBeduerfnisseBestaetigt;
 	}
 
-	public void setBestaetigungAusserordentlicherBetreuungsaufwand(
-		@Nonnull boolean bestaetigungAusserordentlicherBetreuungsaufwand) {
-		this.bestaetigungAusserordentlicherBetreuungsaufwand = bestaetigungAusserordentlicherBetreuungsaufwand;
+	public void setErweiterteBeduerfnisseBestaetigt(
+		@Nonnull boolean erweiterteBeduerfnisseBestaetigt) {
+		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
 	}
 
 	@Override
@@ -79,8 +79,8 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			otherErwBetr.getErweiterteBeduerfnisse());
 
 		boolean bestAussBetrAufwand = Objects.equals(
-			isBestaetigungAusserordentlicherBetreuungsaufwand(),
-			otherErwBetr.isBestaetigungAusserordentlicherBetreuungsaufwand());
+			isErweiterteBeduerfnisseBestaetigt(),
+			otherErwBetr.isErweiterteBeduerfnisseBestaetigt());
 
 		boolean fachstelleSame = Objects.equals(
 			getFachstelle(),
@@ -97,8 +97,8 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		switch (copyType) {
 		case MUTATION:
 			target.setErweiterteBeduerfnisse(this.getErweiterteBeduerfnisse());
-			target.setBestaetigungAusserordentlicherBetreuungsaufwand(
-				this.isBestaetigungAusserordentlicherBetreuungsaufwand());
+			target.setErweiterteBeduerfnisseBestaetigt(
+				this.isErweiterteBeduerfnisseBestaetigt());
 			target.setFachstelle(this.getFachstelle());
 			break;
 		case ERNEUERUNG:

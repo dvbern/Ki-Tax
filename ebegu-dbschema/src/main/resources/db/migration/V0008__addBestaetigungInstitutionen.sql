@@ -1,2 +1,2 @@
-ALTER TABLE erweiterte_betreuung ADD bestaetigung_ausserordentlicher_betreuungsaufwand BIT NOT NULL DEFAULT FALSE;
-ALTER TABLE erweiterte_betreuung_aud ADD bestaetigung_ausserordentlicher_betreuungsaufwand BIT;
+ALTER TABLE erweiterte_betreuung ADD erweiterte_beduerfnisse_bestaetigt BIT NOT NULL DEFAULT FALSE;
+ALTER TABLE erweiterte_betreuung_aud ADD erweiterte_beduerfnisse_bestaetigt BIT;

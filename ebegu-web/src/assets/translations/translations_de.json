@@ -1554,6 +1554,8 @@
     "INSTITUTION_BENACHRICHTIGUNGEN": "Benachrichtigungen",
     "INSTITUTION_BENACHRICHTIGUNG_PENDENZEN": "Mail senden bei offenen Pendenzen (täglich)",
     "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND": "Wir bestätigen, dass wir den ausserordentlichen Betreuungsaufwand mit {{betrag}} Franken oder mehr pro {{einheit}} verrechnen.",
+    "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT": "Ohne Mehrkosten entfällt die Pauschale für die erweiterten Bedürfnisse.",
+    "WOLLEN_SIE_FORTFAHREN": "Wollen Sie fortfahren?",
     "STUNDE": "Stunde",
     "TAG": "Tag"
 }

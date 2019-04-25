@@ -1906,8 +1906,8 @@ export default class EbeguRestUtil {
     ): TSErweiterteBetreuung {
         this.abstractMutableEntityToRestObject(restErweiterteBetreuung, erweiterteBetreuung);
         restErweiterteBetreuung.erweiterteBeduerfnisse = erweiterteBetreuung.erweiterteBeduerfnisse;
-        restErweiterteBetreuung.bestaetigungAusserordentlicherBetreuungsaufwand =
-            erweiterteBetreuung.bestaetigungAusserordentlicherBetreuungsaufwand;
+        restErweiterteBetreuung.erweiterteBeduerfnisseBestaetigt =
+            erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -1921,8 +1921,8 @@ export default class EbeguRestUtil {
         if (erweiterteBetreuungFromServer) {
             this.parseAbstractMutableEntity(erweiterteBetreuungFromServer, erweiterteBetreuungTS);
             erweiterteBetreuungTS.erweiterteBeduerfnisse = erweiterteBetreuungFromServer.erweiterteBeduerfnisse;
-            erweiterteBetreuungTS.bestaetigungAusserordentlicherBetreuungsaufwand =
-                erweiterteBetreuungFromServer.bestaetigungAusserordentlicherBetreuungsaufwand;
+            erweiterteBetreuungTS.erweiterteBeduerfnisseBestaetigt =
+                erweiterteBetreuungFromServer.erweiterteBeduerfnisseBestaetigt;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);
