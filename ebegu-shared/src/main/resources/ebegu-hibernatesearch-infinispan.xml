@@ -31,7 +31,7 @@
 			property is defined. See the JGroupsTransport javadocs for more flags.
 			jgroups-udp.xml is the default stack bundled in the Infinispan core jar: integration
 			and tuning are tested by Infinispan. -->
-		<stack-file name="default-jgroups-udp" path="default-configs/default-jgroups-udp.xml"/>
+		<!--<stack-file name="default-jgroups-udp" path="default-configs/default-jgroups-udp.xml"/>-->
 		<!-- kiBon-jgroups-upd is based on default-jgroups-udp, but with reduced send and receive buffer sizes,
 		such that the buffer sizes match the OS (docker-container) allocated memory.
 		In case the performance is bad, adjust the OS buffer sizes instead.
@@ -79,7 +79,7 @@
 		<!-- **************************** -->
 		<distributed-cache name="LuceneIndexesData" mode="SYNC" remote-timeout="25000">
 			<locking striping="false" acquire-timeout="10000" concurrency-level="500"/>
-			<transaction mode="NONE"/>
+			<transaction mode="FULL_XA"/>
 			<expiration max-idle="-1"/>
 			<indexing index="NONE"/>
 			<state-transfer enabled="true" timeout="480000" await-initial-transfer="true"/>
