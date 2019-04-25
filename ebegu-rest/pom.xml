@@ -130,7 +130,6 @@
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-query</artifactId>
-            <scope>provided</scope>
         </dependency>
         <!--Dependencies fuer Fedlet Applikation von Forgerock Openam-->
         <dependency>
