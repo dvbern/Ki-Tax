@@ -73,6 +73,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 			|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		zeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		if (besondereBeduerfnisseBestaetigt) {
 			zeitabschnitt.addBemerkung(
 				RuleKey.ERWEITERTE_BEDUERFNISSE,
