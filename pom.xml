@@ -394,6 +394,13 @@
                 <!-- Provided as we use the Infinispan provided by Wildfly -->
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-query</artifactId>
+                <version>${version.infinispan}</version>
+                <!-- Provided as we use the Infinispan provided by Wildfly -->
+                <scope>provided</scope>
+            </dependency>
 
             <!-- Hibernate-Search dependencies-->
             <dependency>
