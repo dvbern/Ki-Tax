@@ -37,7 +37,8 @@
 		In case the performance is bad, adjust the OS buffer sizes instead.
 		https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/single/configuration_guide/index#configure_jgroups_send_receive_buffers
 		-->
-		<stack-file name="ebegu-jgroups-udp" path="ebegu-jgroups-udp.xml"/>
+		<!-- UDP wird nicht mehr verwendet -->
+		<!--<stack-file name="ebegu-jgroups-udp" path="ebegu-jgroups-udp.xml"/>-->
 		<stack-file name="ebegu-jgroups-tcp" path="ebegu-jgroups-tcp.xml"/>
 	</jgroups>
 
