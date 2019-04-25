@@ -104,6 +104,8 @@ describe('betreuungView', () => {
             $injector.get('MitteilungRS'),
             $injector.get('DvDialog'),
             $injector.get('$log'),
+            null,
+            null,
             $timeout,
             undefined);
         betreuungView.$onInit();
@@ -130,6 +132,8 @@ describe('betreuungView', () => {
                     undefined,
                     undefined,
                     undefined,
+                    null,
+                    null,
                     $timeout,
                     undefined);
                 myBetreuungView.model = betreuung;
