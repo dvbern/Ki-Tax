@@ -186,7 +186,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Column(nullable = false)
 	private boolean keineDetailinformationen = false;
 
-
 	public Betreuung() {
 	}
 

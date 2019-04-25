@@ -538,8 +538,10 @@ export default class EbeguRestUtil {
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
             restFamiliensituation.startKonkubinat = DateUtil.momentToLocalDate(familiensituation.startKonkubinat);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
-            restFamiliensituation.antragNurFuerBehinderungszuschlag = familiensituation.antragNurFuerBehinderungszuschlag;
-            restFamiliensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt = familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+            restFamiliensituation.antragNurFuerBehinderungszuschlag =
+                familiensituation.antragNurFuerBehinderungszuschlag;
+            restFamiliensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt =
+                familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
             return restFamiliensituation;
         }
         return undefined;
@@ -599,8 +601,10 @@ export default class EbeguRestUtil {
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
             familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
-            familiensituation.antragNurFuerBehinderungszuschlag = familiensituationFromServer.antragNurFuerBehinderungszuschlag;
-            familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt = familiensituationFromServer.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+            familiensituation.antragNurFuerBehinderungszuschlag =
+                familiensituationFromServer.antragNurFuerBehinderungszuschlag;
+            familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt =
+                familiensituationFromServer.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
             return familiensituation;
         }
         return undefined;
@@ -1139,12 +1143,14 @@ export default class EbeguRestUtil {
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
             institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
             institutionStammdatenTS.alterskategorieVorschule = institutionStammdatenFromServer.alterskategorieVorschule;
-            institutionStammdatenTS.alterskategorieKindergarten = institutionStammdatenFromServer.alterskategorieKindergarten;
+            institutionStammdatenTS.alterskategorieKindergarten =
+                institutionStammdatenFromServer.alterskategorieKindergarten;
             institutionStammdatenTS.alterskategorieSchule = institutionStammdatenFromServer.alterskategorieSchule;
             institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
             institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
             institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
-            institutionStammdatenTS.sendMailWennOffenePendenzen = institutionStammdatenFromServer.sendMailWennOffenePendenzen;
+            institutionStammdatenTS.sendMailWennOffenePendenzen =
+                institutionStammdatenFromServer.sendMailWennOffenePendenzen;
             institutionStammdatenTS.adresseKontoinhaber =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
             institutionStammdatenTS.institutionStammdatenTagesschule =
@@ -1158,8 +1164,9 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseInstitutionStammdaten(institutionStammdatenTS: TSInstitutionStammdaten,
-                                      institutionStammdatenFromServer: any,
+    public parseInstitutionStammdaten(
+        institutionStammdatenTS: TSInstitutionStammdaten,
+        institutionStammdatenFromServer: any,
     ): TSInstitutionStammdaten {
         if (institutionStammdatenFromServer) {
             this.parseInstitutionStammdatenSummary(institutionStammdatenTS, institutionStammdatenFromServer);
@@ -1288,7 +1295,8 @@ export default class EbeguRestUtil {
     ): TSFinanzielleSituation {
         this.abstractfinanzielleSituationToRestObject(restFinanzielleSituation, finanzielleSituation);
         restFinanzielleSituation.steuerveranlagungErhalten = finanzielleSituation.steuerveranlagungErhalten;
-        restFinanzielleSituation.steuererklaerungAusgefuellt = finanzielleSituation.steuererklaerungAusgefuellt || false;
+        restFinanzielleSituation.steuererklaerungAusgefuellt =
+            finanzielleSituation.steuererklaerungAusgefuellt || false;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         return restFinanzielleSituation;
@@ -1898,6 +1906,8 @@ export default class EbeguRestUtil {
     ): TSErweiterteBetreuung {
         this.abstractMutableEntityToRestObject(restErweiterteBetreuung, erweiterteBetreuung);
         restErweiterteBetreuung.erweiterteBeduerfnisse = erweiterteBetreuung.erweiterteBeduerfnisse;
+        restErweiterteBetreuung.bestaetigungAusserordentlicherBetreuungsaufwand =
+            erweiterteBetreuung.bestaetigungAusserordentlicherBetreuungsaufwand;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -1911,6 +1921,8 @@ export default class EbeguRestUtil {
         if (erweiterteBetreuungFromServer) {
             this.parseAbstractMutableEntity(erweiterteBetreuungFromServer, erweiterteBetreuungTS);
             erweiterteBetreuungTS.erweiterteBeduerfnisse = erweiterteBetreuungFromServer.erweiterteBeduerfnisse;
+            erweiterteBetreuungTS.bestaetigungAusserordentlicherBetreuungsaufwand =
+                erweiterteBetreuungFromServer.bestaetigungAusserordentlicherBetreuungsaufwand;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);

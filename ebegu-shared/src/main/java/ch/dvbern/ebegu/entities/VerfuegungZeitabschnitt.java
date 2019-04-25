@@ -228,6 +228,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private boolean besondereBeduerfnisse;
 
+	@Transient
+	private boolean besondereBeduerfnisseBestaetigt;
 
 	public VerfuegungZeitabschnitt() {
 	}
@@ -280,6 +282,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.babyTarif = toCopy.babyTarif;
 		this.eingeschult = toCopy.eingeschult;
 		this.besondereBeduerfnisse = toCopy.besondereBeduerfnisse;
+		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
 	}
 
 	/**
@@ -631,6 +634,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.besondereBeduerfnisse = besondereBeduerfnisse;
 	}
 
+	public boolean isBesondereBeduerfnisseBestaetigt() {
+		return besondereBeduerfnisseBestaetigt;
+	}
+
+	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
+		this.besondereBeduerfnisseBestaetigt = besondereBeduerfnisseBestaetigt;
+	}
+
 	public BigDecimal getVerguenstigungOhneBeruecksichtigungVollkosten() {
 		return verguenstigungOhneBeruecksichtigungVollkosten;
 	}
@@ -767,6 +778,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.setEingeschult(this.eingeschult || other.eingeschult);
 		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
+		this.setBesondereBeduerfnisse(this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt);
 		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
 	}
 

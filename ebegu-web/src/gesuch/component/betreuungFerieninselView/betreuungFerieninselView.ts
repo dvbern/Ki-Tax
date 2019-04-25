@@ -16,6 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IFormController, IPromise} from 'angular';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {FerieninselStammdatenRS} from '../../../admin/service/ferieninselStammdatenRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
@@ -34,6 +35,7 @@ import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
+import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungViewController} from '../betreuungView/betreuungView';
 import ILogService = angular.ILogService;
@@ -75,6 +77,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         'MitteilungRS',
         'DvDialog',
         '$log',
+        'EinstellungRS',
+        'GlobalCacheService',
         '$timeout',
         '$translate',
         'FerieninselStammdatenRS',
@@ -104,6 +108,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
         mitteilungRS: MitteilungRS,
         dvDialog: DvDialog,
         $log: ILogService,
+        einstellungRS: EinstellungRS,
+        globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
         private readonly ferieninselStammdatenRS: FerieninselStammdatenRS,
@@ -121,6 +127,8 @@ export class BetreuungFerieninselViewController extends BetreuungViewController 
             mitteilungRS,
             dvDialog,
             $log,
+            einstellungRS,
+            globalCacheService,
             $timeout,
             $translate);
     }

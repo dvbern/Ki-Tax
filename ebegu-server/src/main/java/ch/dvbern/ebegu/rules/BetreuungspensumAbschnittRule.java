@@ -56,16 +56,25 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	 * @return VerfuegungZeitabschnitt mit gleicher gueltigkeit und uebernommenem betreuungspensum
 	 */
 	@Nonnull
-	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Betreuungspensum betreuungspensum, @Nonnull Betreuung betreuung) {
+	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(
+		@Nonnull Betreuungspensum betreuungspensum,
+		@Nonnull Betreuung betreuung) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		// Eigentliches Betreuungspensum
 		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensumRounded());
 		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
+		boolean besondereBeduerfnisseBestaetigt = besondereBeduerfnisse && betreuung.getErweiterteBetreuungContainer()
+			.getErweiterteBetreuungJA()
+			.isBestaetigungAusserordentlicherBetreuungsaufwand();
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
+		zeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
 		if (besondereBeduerfnisse) {
-			zeitabschnitt.addBemerkung(RuleKey.ERWEITERTE_BEDUERFNISSE, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
+			zeitabschnitt.addBemerkung(
+				RuleKey.ERWEITERTE_BEDUERFNISSE,
+				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
+				getLocale());
 		}
 		return zeitabschnitt;
 	}

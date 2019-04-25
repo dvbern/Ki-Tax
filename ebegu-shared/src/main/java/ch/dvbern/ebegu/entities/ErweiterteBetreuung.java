@@ -30,6 +30,10 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_fachstelle_id"))
 	private Fachstelle fachstelle;
 
+	@Column(nullable = false)
+	@NotNull
+	private boolean bestaetigungAusserordentlicherBetreuungsaufwand = false;
+
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
 	}
@@ -47,6 +51,16 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.fachstelle = fachstelle;
 	}
 
+	@Nonnull
+	public boolean isBestaetigungAusserordentlicherBetreuungsaufwand() {
+		return bestaetigungAusserordentlicherBetreuungsaufwand;
+	}
+
+	public void setBestaetigungAusserordentlicherBetreuungsaufwand(
+		@Nonnull boolean bestaetigungAusserordentlicherBetreuungsaufwand) {
+		this.bestaetigungAusserordentlicherBetreuungsaufwand = bestaetigungAusserordentlicherBetreuungsaufwand;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -60,21 +74,31 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			return false;
 		}
 		final ErweiterteBetreuung otherErwBetr = (ErweiterteBetreuung) other;
-		boolean erwBeduerfnisseSame = Objects.equals(getErweiterteBeduerfnisse(),
+		boolean erwBeduerfnisseSame = Objects.equals(
+			getErweiterteBeduerfnisse(),
 			otherErwBetr.getErweiterteBeduerfnisse());
 
-		boolean fachstelleSame = Objects.equals(getFachstelle(),
+		boolean bestAussBetrAufwand = Objects.equals(
+			isBestaetigungAusserordentlicherBetreuungsaufwand(),
+			otherErwBetr.isBestaetigungAusserordentlicherBetreuungsaufwand());
+
+		boolean fachstelleSame = Objects.equals(
+			getFachstelle(),
 			otherErwBetr.getFachstelle());
 
-		return erwBeduerfnisseSame && fachstelleSame;
+		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame;
 	}
 
 	@Nonnull
-	public ErweiterteBetreuung copyErweiterteBetreuung(@Nonnull ErweiterteBetreuung target, @Nonnull AntragCopyType copyType) {
+	public ErweiterteBetreuung copyErweiterteBetreuung(
+		@Nonnull ErweiterteBetreuung target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setErweiterteBeduerfnisse(this.getErweiterteBeduerfnisse());
+			target.setBestaetigungAusserordentlicherBetreuungsaufwand(
+				this.isBestaetigungAusserordentlicherBetreuungsaufwand());
 			target.setFachstelle(this.getFachstelle());
 			break;
 		case ERNEUERUNG:

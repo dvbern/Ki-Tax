@@ -20,6 +20,7 @@ export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     private _erweiterteBeduerfnisse: boolean = false;
     private _fachstelle: TSFachstelle;
+    private _bestaetigungAusserordentlicherBetreuungsaufwand: boolean = false;
 
     public constructor() {
         super();
@@ -39,5 +40,13 @@ export default class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     public set fachstelle(value: TSFachstelle) {
         this._fachstelle = value;
+    }
+
+    public get bestaetigungAusserordentlicherBetreuungsaufwand(): boolean {
+        return this._bestaetigungAusserordentlicherBetreuungsaufwand;
+    }
+
+    public set bestaetigungAusserordentlicherBetreuungsaufwand(value: boolean) {
+        this._bestaetigungAusserordentlicherBetreuungsaufwand = value;
     }
 }
