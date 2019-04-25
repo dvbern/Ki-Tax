@@ -315,7 +315,7 @@
                                 <md-checkbox ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt"
                                              name="erweiterteBeduerfnisseBestaetigt"
                                              aria-label="vm.getErweiterteBeduerfnisseBestaetigtLabel()"
-                                             ng-disabled="!vm.enableErweiterteBeduerfnisse()">
+                                             ng-disabled="!vm.isBetreuungsstatusWarten()">
                                     <span>{{vm.getErweiterteBeduerfnisseBestaetigtLabel()}}</span>
                                 </md-checkbox>
                             </div>

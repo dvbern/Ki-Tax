@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -65,12 +66,12 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
-		boolean besondereBeduerfnisseBestaetigt = besondereBeduerfnisse && betreuung.getErweiterteBetreuungContainer()
-			.getErweiterteBetreuungJA()
-			.isErweiterteBeduerfnisseBestaetigt();
+		boolean besondereBeduerfnisseBestaetigt = besondereBeduerfnisse && (betreuung.getErweiterteBetreuungContainer()
+			.getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt()
+			|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		zeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
-		if (besondereBeduerfnisse) {
+		if (besondereBeduerfnisseBestaetigt) {
 			zeitabschnitt.addBemerkung(
 				RuleKey.ERWEITERTE_BEDUERFNISSE,
 				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,

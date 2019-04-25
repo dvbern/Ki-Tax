@@ -778,7 +778,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.setEingeschult(this.eingeschult || other.eingeschult);
 		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
-		this.setBesondereBeduerfnisse(this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt);
+		this.setBesondereBeduerfnisseBestaetigt(this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt);
 		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
 	}
 
@@ -904,6 +904,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			babyTarif == otherVerfuegungZeitabschnitt.babyTarif &&
 			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
 			besondereBeduerfnisse == otherVerfuegungZeitabschnitt.besondereBeduerfnisse &&
+			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
 			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
@@ -928,6 +929,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			babyTarif == that.babyTarif &&
 			eingeschult == that.eingeschult &&
 			besondereBeduerfnisse == that.besondereBeduerfnisse &&
+			besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			Objects.equals(this.bemerkungen, that.bemerkungen) &&
