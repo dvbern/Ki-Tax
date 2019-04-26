@@ -4069,7 +4069,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	private void gemeindeStammdatenToJAXSetDefaultBenutzer(
 		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
-		@Nonnull GemeindeStammdaten stammdaten) {
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
 		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
@@ -4089,7 +4090,8 @@ public class JaxBConverter extends AbstractConverter {
 
 	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(
 		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
-		@Nonnull GemeindeStammdaten stammdaten) {
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
 		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(true);
 			jaxStammdaten.setKorrespondenzspracheFr(false);

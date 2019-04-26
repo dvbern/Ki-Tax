@@ -1553,7 +1553,7 @@
     "IMPRESSUM_TEXT": "<h1>Impressum</h1><h2>Gesamtverantwortung</h2>Gesundheits- und Fürsorgedirektion des Kantons Bern<br>Sozialamt<br>Rathausgasse 1<br>CH-3011 Bern<br><br><h2>Betrieb & Technik</h2>DV Bern<br>Nussbaumstrasse 21<br>CH-3000 Bern 22 · Schweiz",
     "INSTITUTION_BENACHRICHTIGUNGEN": "Benachrichtigungen",
     "INSTITUTION_BENACHRICHTIGUNG_PENDENZEN": "Mail senden bei offenen Pendenzen (täglich)",
-    "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND": "Wir bestätigen, dass wir den ausserordentlichen Betreuungsaufwand mit {{betrag}} Franken oder mehr pro {{einheit}} verrechnen.",
+    "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST": "Wir bestätigen, dass wir den ausserordentlichen Betreuungsaufwand mit {{betrag}} Franken oder mehr pro {{einheit}} verrechnen.",
     "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT": "Ohne Mehrkosten entfällt die Pauschale für die erweiterten Bedürfnisse.",
     "WOLLEN_SIE_FORTFAHREN": "Wollen Sie fortfahren?",
     "STUNDE": "Stunde",

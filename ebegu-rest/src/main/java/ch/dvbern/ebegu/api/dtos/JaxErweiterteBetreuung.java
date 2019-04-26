@@ -32,7 +32,6 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	private JaxFachstelle fachstelle;
 
-	@NotNull
 	private boolean erweiterteBeduerfnisseBestaetigt;
 
 	public Boolean getErweiterteBeduerfnisse() {

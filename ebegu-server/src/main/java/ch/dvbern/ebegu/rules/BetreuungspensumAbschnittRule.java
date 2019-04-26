@@ -59,7 +59,8 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	@Nonnull
 	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(
 		@Nonnull Betreuungspensum betreuungspensum,
-		@Nonnull Betreuung betreuung) {
+		@Nonnull Betreuung betreuung
+	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		// Eigentliches Betreuungspensum
 		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensumRounded());
@@ -68,12 +69,14 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 
 		// Falls die Betreuung im Status UNBEKANNTE_INSTITUTION ist, soll die Pauschale immer berechnet werden
-		// TODO Revier: Bitte kurz mit mir [egch] besprechen.
-		boolean besondereBeduerfnisseBestaetigt = besondereBeduerfnisse && (betreuung.getErweiterteBetreuungContainer()
-			.getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt()
-			|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
+		boolean besondereBeduerfnisseBestaetigt =
+			besondereBeduerfnisse
+			&& (betreuung.isErweiterteBeduerfnisseBestaetigt()
+				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
+
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
 		zeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		if (besondereBeduerfnisseBestaetigt) {
 			zeitabschnitt.addBemerkung(

@@ -31,7 +31,6 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	private Fachstelle fachstelle;
 
 	@Column(nullable = false)
-	@NotNull
 	private boolean erweiterteBeduerfnisseBestaetigt = false;
 
 	public Boolean getErweiterteBeduerfnisse() {
@@ -51,13 +50,11 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.fachstelle = fachstelle;
 	}
 
-	@Nonnull
 	public boolean isErweiterteBeduerfnisseBestaetigt() {
 		return erweiterteBeduerfnisseBestaetigt;
 	}
 
-	public void setErweiterteBeduerfnisseBestaetigt(
-		@Nonnull boolean erweiterteBeduerfnisseBestaetigt) {
+	public void setErweiterteBeduerfnisseBestaetigt(boolean erweiterteBeduerfnisseBestaetigt) {
 		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
 	}
 

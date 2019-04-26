@@ -136,8 +136,8 @@ describe('betreuungView', () => {
                     undefined,
                     undefined,
                     undefined,
-                    null,
-                    null,
+                    undefined,
+                    undefined,
                     $timeout,
                     undefined);
                 myBetreuungView.model = betreuung;
