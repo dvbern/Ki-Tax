@@ -292,7 +292,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed(SUPER_ADMIN)
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
 		try {
-			checkArgument(eingeladener.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+			checkArgument(
+				eingeladener.getStatus() == BenutzerStatus.EINGELADEN,
+				"Benutzer should have Status EINGELADEN");
 			Einladung einladung = Einladung.forRolle(eingeladener);
 			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
 		} catch (MailException e) {
