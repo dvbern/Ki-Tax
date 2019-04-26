@@ -11,7 +11,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 From: ${configuration.senderAddress}
 To: ${institution.name} <${empfaengerMail}>
-Subject: <@base64Header>${institution.name}: kiBon – FR_Betreuung gelöscht</@base64Header>
+Subject: <@base64Header>${institution.name}: kiBon – Betreuung gelöscht</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -19,7 +19,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>FR_kiBon – Betreuung gelöscht</title>
+	<title>${institution.name}: kiBon – Betreuung gelöscht</title>
 
 </head>
 
@@ -27,49 +27,49 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		FR_Guten Tag
+		Guten Tag
 	</p>
 	<p>
-        FR_Der folgende Betreuungseintrag wurde entfernt:
+		Die folgende Betreuung wurde gelöscht:
 	</p>
 	<table>
 		<tbody>
 		<tr>
-			<td width="300">FR_Fall:</td>
+			<td width="300">Fall:</td>
 			<td width="300">${fall.getPaddedFallnummer()} ${gesuchsteller.nachname}</td>
 		</tr>
 		<tr>
-			<td>FR_Kind:</td>
+			<td>Kind:</td>
 			<td>${kind.fullName}, ${birthday}</td>
 		</tr>
 		<tr>
-			<td>FR_Betreuungsangebot:</td>
-			<td>${betreuung.getBetreuungsangebotTypTranslated("fr")}</td>
+			<td>Betreuungsangebot:</td>
+			<td>${betreuung.getBetreuungsangebotTypTranslated("de")}</td>
 		</tr>
 		<tr>
-			<td>FR_Institution:</td>
+			<td>Institution:</td>
 			<td>${institution.name}</td>
 		</tr>
 		<tr>
-			<td>FR_Periode:</td>
+			<td>Periode:</td>
 			<td>${betreuung.extractGesuchsperiode().getGesuchsperiodeString()}</td>
 		</tr>
 		<tr>
-			<td>FR_Status der entfernten Betreuung:</td>
-            <td>${status}</td>
+			<td>Status der entfernten Betreuung:</td>
+			<td>${status}</td>
 		</tr>
 		</tbody>
 	</table>
 	<br/>
 	<p>
-        FR_Der Betreuungseintrag war am ${datumErstellung} erstellt worden.
+		Die Betreuung wurde am ${datumErstellung} erfasset.
 	</p>
 	<p>
-        FR_Freundliche Grüsse <br/>
-        FR_Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Freundliche Grüsse <br/>
+		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>
 </div>
 
