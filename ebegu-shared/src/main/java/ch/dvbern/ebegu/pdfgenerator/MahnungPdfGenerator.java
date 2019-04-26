@@ -27,7 +27,6 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
