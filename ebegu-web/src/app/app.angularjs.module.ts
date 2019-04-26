@@ -59,11 +59,6 @@ export const APP_JS_MODULE = angular.module('ebeguWeb', [
     ])
         .component('appRoot', APP_ANGULARJS_COMPONENT)
         .config(conf)
-        // TODO following code prevents angularjs and angular to execute a $digest while another $digest is running
-        // this is needed because we sometimes get the error thata $digest is already running and the application stops.
-        // there is a bug that should be fixed in new versions of angular. We should update angular and remove this code
-        // https://github.com/angular/angular/issues/24680
-        // FIXME! remove this code as soon as the bug is fixed
         .decorator('$rootScope', ['$delegate', ($delegate: any) => {
             const originalDigest = $delegate.$digest;
             $delegate.$digest = () => {
