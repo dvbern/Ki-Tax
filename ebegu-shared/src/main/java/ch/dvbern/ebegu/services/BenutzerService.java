@@ -87,12 +87,11 @@ public interface BenutzerService {
 	@Nonnull
 	void erneutEinladen(@Nonnull Benutzer eingeladener);
 
-	/**
-	 * @param username PK (id) des Benutzers
-	 * @return Benutzer mit dem gegebenen key oder null falls nicht vorhanden
-	 */
 	@Nonnull
 	Optional<Benutzer> findBenutzer(@Nonnull String username);
+
+	@Nonnull
+	Optional<Benutzer> findAndLockBenutzer(@Nonnull String username);
 
 	@Nonnull
 	Optional<Benutzer> findBenutzerById(@Nonnull String id);
