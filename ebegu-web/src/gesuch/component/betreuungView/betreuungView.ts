@@ -1185,4 +1185,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST',
             {betrag: this.zuschlagBehinderungProTag, einheit: this.$translate.instant('TAG')});
     }
+
+    public isBestaetigungBesondereBeduerfnisseEnabled(): boolean {
+        return this.isBetreuungsstatusWarten() && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+    }
 }

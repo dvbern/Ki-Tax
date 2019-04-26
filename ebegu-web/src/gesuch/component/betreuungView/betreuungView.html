@@ -308,14 +308,14 @@
                     <!--Bestätigung Ausserordentlicher Betreuungsaufwand-->
                     <div class="row"
                          dv-show-element
-                         dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
+                         dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButGesuchsteller()"
                          dv-show-expression="vm.isFachstelleRequired()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt"
                                              name="erweiterteBeduerfnisseBestaetigt"
                                              aria-label="vm.getErweiterteBeduerfnisseBestaetigtLabel()"
-                                             ng-disabled="!vm.isBetreuungsstatusWarten()">
+                                             ng-disabled="!vm.isBestaetigungBesondereBeduerfnisseEnabled()">
                                     <span>{{vm.getErweiterteBeduerfnisseBestaetigtLabel()}}</span>
                                 </md-checkbox>
                             </div>
