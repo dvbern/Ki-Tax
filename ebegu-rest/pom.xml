@@ -127,10 +127,6 @@
             <artifactId>infinispan-core</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-query</artifactId>
-        </dependency>
         <!--Dependencies fuer Fedlet Applikation von Forgerock Openam-->
         <dependency>
             <groupId>javax.activation</groupId>
