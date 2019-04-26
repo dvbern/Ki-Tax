@@ -26,6 +26,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -56,16 +57,32 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 	 * @return VerfuegungZeitabschnitt mit gleicher gueltigkeit und uebernommenem betreuungspensum
 	 */
 	@Nonnull
-	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull Betreuungspensum betreuungspensum, @Nonnull Betreuung betreuung) {
+	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(
+		@Nonnull Betreuungspensum betreuungspensum,
+		@Nonnull Betreuung betreuung
+	) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(betreuungspensum.getGueltigkeit());
 		// Eigentliches Betreuungspensum
 		zeitabschnitt.setBetreuungspensum(betreuungspensum.getPensumRounded());
 		zeitabschnitt.setMonatlicheBetreuungskosten(betreuungspensum.getMonatlicheBetreuungskosten());
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
+
+		// Falls die Betreuung im Status UNBEKANNTE_INSTITUTION ist, soll die Pauschale immer berechnet werden
+		boolean besondereBeduerfnisseBestaetigt =
+			besondereBeduerfnisse
+			&& (betreuung.isErweiterteBeduerfnisseBestaetigt()
+				|| betreuung.getBetreuungsstatus() == Betreuungsstatus.UNBEKANNTE_INSTITUTION);
+
 		zeitabschnitt.setBesondereBeduerfnisse(besondereBeduerfnisse);
-		if (besondereBeduerfnisse) {
-			zeitabschnitt.addBemerkung(RuleKey.ERWEITERTE_BEDUERFNISSE, MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
+		zeitabschnitt.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
+
+		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
+		if (besondereBeduerfnisseBestaetigt) {
+			zeitabschnitt.addBemerkung(
+				RuleKey.ERWEITERTE_BEDUERFNISSE,
+				MsgKey.ERWEITERTE_BEDUERFNISSE_MSG,
+				getLocale());
 		}
 		return zeitabschnitt;
 	}
