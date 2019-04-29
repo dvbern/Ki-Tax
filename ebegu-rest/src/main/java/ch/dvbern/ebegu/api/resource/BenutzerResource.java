@@ -115,7 +115,8 @@ public class BenutzerResource {
 	@Path("/erneutEinladen")
 	@RolesAllowed(SUPER_ADMIN)
 	public Response erneutEinladen(@NotNull @Valid JaxBenutzer benutzerParam) {
-		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
+		Benutzer benutzer = benutzerService.findBenutzerByEmail(benutzerParam.getEmail()).orElseThrow(() -> new EbeguEntityNotFoundException("erneutEinladen",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, benutzerParam.getEmail()));
 		benutzerService.erneutEinladen(benutzer);
 		return Response.ok().build();
 	}
