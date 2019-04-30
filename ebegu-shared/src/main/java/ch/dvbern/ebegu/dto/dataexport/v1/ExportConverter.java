@@ -125,7 +125,10 @@ public class ExportConverter {
 		int anspruchPct = zeitabschnitt.getAnspruchberechtigtesPensum();
 		BigDecimal vergPct = zeitabschnitt.getBgPensum();
 		BigDecimal vollkosten = zeitabschnitt.getVollkosten();
+		BigDecimal betreuungsgutschein = zeitabschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag();
+		BigDecimal minimalerElternbeitrag = zeitabschnitt.getMinimalerElternbeitragGekuerzt();
 		BigDecimal verguenstigung = zeitabschnitt.getVerguenstigung();
-		return new ZeitabschnittExportDTO(von, bis, verfuegungNr, effektiveBetr, anspruchPct, vergPct, vollkosten, verguenstigung);
+		return new ZeitabschnittExportDTO(von, bis, verfuegungNr, effektiveBetr, anspruchPct, vergPct, vollkosten, betreuungsgutschein,
+			minimalerElternbeitrag, verguenstigung);
 	}
 }

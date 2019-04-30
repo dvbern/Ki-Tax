@@ -54,6 +54,10 @@ public class ZeitabschnittExportDTO {
 
 	private BigDecimal vollkosten;
 
+	private BigDecimal betreuungsgutschein;
+
+	private BigDecimal minimalerElternbeitrag;
+
 	private BigDecimal verguenstigung;
 
 	public ZeitabschnittExportDTO(
@@ -64,6 +68,8 @@ public class ZeitabschnittExportDTO {
 		int anspruchPct,
 		BigDecimal vergPct,
 		BigDecimal vollkosten,
+		BigDecimal betreuungsgutschein,
+		BigDecimal minimalerElternbeitrag,
 		BigDecimal verguenstigung
 	) {
 		this.von = von;
@@ -73,6 +79,8 @@ public class ZeitabschnittExportDTO {
 		this.anspruchPct = anspruchPct;
 		this.verguenstigtPct = vergPct;
 		this.vollkosten = vollkosten;
+		this.betreuungsgutschein = betreuungsgutschein;
+		this.minimalerElternbeitrag = minimalerElternbeitrag;
 		this.verguenstigung = verguenstigung;
 
 	}
@@ -144,6 +152,22 @@ public class ZeitabschnittExportDTO {
 		this.verguenstigung = verguenstigung;
 	}
 
+	public BigDecimal getBetreuungsgutschein() {
+		return betreuungsgutschein;
+	}
+
+	public void setBetreuungsgutschein(BigDecimal betreuungsgutschein) {
+		this.betreuungsgutschein = betreuungsgutschein;
+	}
+
+	public BigDecimal getMinimalerElternbeitrag() {
+		return minimalerElternbeitrag;
+	}
+
+	public void setMinimalerElternbeitrag(BigDecimal minimalerElternbeitrag) {
+		this.minimalerElternbeitrag = minimalerElternbeitrag;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -159,12 +183,15 @@ public class ZeitabschnittExportDTO {
 			Objects.equals(getVon(), that.getVon()) &&
 			Objects.equals(getBis(), that.getBis()) &&
 			getVerfuegungNr() == that.getVerfuegungNr() &&
-			getVollkosten() != null && getVollkosten().compareTo(that.getVollkosten()) == 0 &&
-			getVerguenstigung() != null && getVerguenstigung().compareTo(that.getVerguenstigung()) == 0;
+			Objects.equals(getVollkosten(), that.getVollkosten()) &&
+			Objects.equals(getBetreuungsgutschein(), that.getBetreuungsgutschein()) &&
+			Objects.equals(getMinimalerElternbeitrag(), that.getMinimalerElternbeitrag()) &&
+			Objects.equals(getVerguenstigung(), that.getVerguenstigung());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(von, bis, verfuegungNr, effektiveBetreuungPct, anspruchPct, verguenstigtPct, vollkosten, verguenstigung);
+		return Objects.hash(von, bis, verfuegungNr, effektiveBetreuungPct, anspruchPct, verguenstigtPct, vollkosten, betreuungsgutschein,
+			minimalerElternbeitrag, verguenstigung);
 	}
 }
