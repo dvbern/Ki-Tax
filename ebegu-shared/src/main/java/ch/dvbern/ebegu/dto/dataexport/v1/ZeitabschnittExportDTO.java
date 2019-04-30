@@ -40,6 +40,9 @@ public class ZeitabschnittExportDTO {
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate bis;
 
+	// Verfügungs-Version (EG=1, M1=2 etc.)
+	private int verfuegungNr;
+
 	//betreuungspensum.
 	private BigDecimal effektiveBetreuungPct;
 
@@ -56,6 +59,7 @@ public class ZeitabschnittExportDTO {
 	public ZeitabschnittExportDTO(
 		LocalDate von,
 		LocalDate bis,
+		int verfuegungNr,
 		BigDecimal effektiveBetr,
 		int anspruchPct,
 		BigDecimal vergPct,
@@ -64,6 +68,7 @@ public class ZeitabschnittExportDTO {
 	) {
 		this.von = von;
 		this.bis = bis;
+		this.verfuegungNr = verfuegungNr;
 		this.effektiveBetreuungPct = effektiveBetr;
 		this.anspruchPct = anspruchPct;
 		this.verguenstigtPct = vergPct;
@@ -89,6 +94,14 @@ public class ZeitabschnittExportDTO {
 
 	public void setBis(LocalDate bis) {
 		this.bis = bis;
+	}
+
+	public int getVerfuegungNr() {
+		return verfuegungNr;
+	}
+
+	public void setVerfuegungNr(int verfuegungNr) {
+		this.verfuegungNr = verfuegungNr;
 	}
 
 	public BigDecimal getEffektiveBetreuungPct() {
@@ -145,12 +158,13 @@ public class ZeitabschnittExportDTO {
 			Objects.equals(getVerguenstigtPct(), that.getVerguenstigtPct()) &&
 			Objects.equals(getVon(), that.getVon()) &&
 			Objects.equals(getBis(), that.getBis()) &&
-			Objects.equals(getVollkosten(), that.getVollkosten()) &&
-			Objects.equals(getVerguenstigung(), that.getVerguenstigung());
+			getVerfuegungNr() == that.getVerfuegungNr() &&
+			getVollkosten() != null && getVollkosten().compareTo(that.getVollkosten()) == 0 &&
+			getVerguenstigung() != null && getVerguenstigung().compareTo(that.getVerguenstigung()) == 0;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(von, bis, effektiveBetreuungPct, anspruchPct, verguenstigtPct, vollkosten, verguenstigung);
+		return Objects.hash(von, bis, verfuegungNr, effektiveBetreuungPct, anspruchPct, verguenstigtPct, vollkosten, verguenstigung);
 	}
 }

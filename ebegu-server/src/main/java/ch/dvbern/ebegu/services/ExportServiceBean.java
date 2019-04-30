@@ -32,9 +32,11 @@ import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.dto.dataexport.v1.ExportConverter;
 import ch.dvbern.ebegu.dto.dataexport.v1.VerfuegungenExportDTO;
+import ch.dvbern.ebegu.dto.dataexport.v1.ZeitabschnittExportDTO;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -63,6 +65,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @Local(ExportService.class)
 public class ExportServiceBean implements ExportService {
 
+	private static final ExportConverter EXPORT_CONVERTER = new ExportConverter();
+
 	@Inject
 	private GesuchService gesuchService;
 
@@ -74,6 +78,9 @@ public class ExportServiceBean implements ExportService {
 
 	@Inject
 	private FileSaverService fileSaverService;
+
+	@Inject
+	private VerfuegungService verfuegungService;
 
 	@Nonnull
 	@Override
@@ -108,7 +115,22 @@ public class ExportServiceBean implements ExportService {
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public UploadFileInfo exportVerfuegungOfBetreuungAsFile(String betreuungID) {
 		Betreuung betreuung = readBetreuung(betreuungID);
+		Objects.requireNonNull(betreuung.getVerfuegung());
 		VerfuegungenExportDTO verfuegungenExportDTO = convertBetreuungToExport(betreuung);
+
+		// Zusätzlich zu den Abschnitten der aktuellen Verfuegung müssen auch eventuell noch gueltige Abschnitte
+		// von frueheren Verfuegungen exportiert werden: immer dann, wenn in der aktuellen Verfuegung ignoriert wurde!
+		List<VerfuegungZeitabschnitt> nochGueltigeZeitabschnitte = new ArrayList<>();
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
+			if (verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriertIgnorierend()) {
+				verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(verfuegungZeitabschnitt, betreuung, nochGueltigeZeitabschnitte);
+			}
+		}
+		List<ZeitabschnittExportDTO> weitereExportDTOs =
+			EXPORT_CONVERTER.createZeitabschnittExportDTOFromZeitabschnitte(nochGueltigeZeitabschnitte);
+		// Wir haben im Moment nur eine Verfuegung im Export
+		verfuegungenExportDTO.getVerfuegungen().get(0).getZeitabschnitte().addAll(weitereExportDTOs);
+
 		String json = convertToJson(verfuegungenExportDTO);
 		byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
 		String filename = "export_" + betreuung.getBGNummer() + ".json";

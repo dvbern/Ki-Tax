@@ -149,7 +149,7 @@ public class ExportDTOMarshallingTest {
 		BigDecimal vergPct = BigDecimal.valueOf(60);
 		BigDecimal vollkosten = new BigDecimal("1370.05");
 		BigDecimal verg = new BigDecimal("690.45");
-		return new ZeitabschnittExportDTO(von, bis, effBet, anspPct, vergPct, vollkosten, verg);
+		return new ZeitabschnittExportDTO(von, bis, 0, effBet, anspPct, vergPct, vollkosten, verg);
 	}
 
 }

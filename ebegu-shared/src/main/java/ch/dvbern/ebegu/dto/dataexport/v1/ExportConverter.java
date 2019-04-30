@@ -48,7 +48,13 @@ public class ExportConverter {
 		VerfuegungenExportDTO exportDTO = new VerfuegungenExportDTO();
 		exportDTO.setVerfuegungen(verfuegungExportDTOS);
 		return exportDTO;
+	}
 
+	public List<ZeitabschnittExportDTO> createZeitabschnittExportDTOFromZeitabschnitte(List<VerfuegungZeitabschnitt> gueltigeZeitabschnitte) {
+		List<ZeitabschnittExportDTO> zeitabschnitte = gueltigeZeitabschnitte.stream()
+			.map(this::createZeitabschnittExportDTOFromZeitabschnitt)
+			.collect(Collectors.toList());
+		return zeitabschnitte;
 	}
 
 	private VerfuegungExportDTO createVerfuegungExportDTOFromVerfuegung(@Nonnull Verfuegung verfuegung) {
@@ -63,6 +69,7 @@ public class ExportConverter {
 		verfuegungDTO.setVerfuegtAm(verfuegung.getTimestampErstellt());
 		verfuegungDTO.setKind(createKindExportDTOFromKind(verfuegung.getBetreuung().getKind()));
 		GesuchstellerContainer gs1 = verfuegung.getBetreuung().extractGesuch().getGesuchsteller1();
+		Objects.requireNonNull(gs1);
 		verfuegungDTO.setGesuchsteller(createGesuchstellerExportDTOFromGesuchsteller(gs1));
 		verfuegungDTO.setBetreuung(createBetreuungExportDTOFromBetreuung(verfuegung.getBetreuung()));
 		// Verrechnete Zeitabschnitte
@@ -83,7 +90,6 @@ public class ExportConverter {
 	private KindExportDTO createKindExportDTOFromKind(KindContainer kindCont) {
 		Kind kindJA = kindCont.getKindJA();
 		return new KindExportDTO(kindJA.getVorname(), kindJA.getNachname(), kindJA.getGeburtsdatum());
-
 	}
 
 	private GesuchstellerExportDTO createGesuchstellerExportDTOFromGesuchsteller(GesuchstellerContainer gesuchstellerContainer) {
@@ -105,7 +111,6 @@ public class ExportConverter {
 		String traegerschaft = institution.getTraegerschaft() != null ? institution.getTraegerschaft().getName() : null;
 		AdresseExportDTO adresse = createAdresseExportDTOFromAdresse(institutionStammdaten.getAdresse());
 		return new InstitutionExportDTO(instID, name, traegerschaft, adresse);
-
 	}
 
 	private AdresseExportDTO createAdresseExportDTOFromAdresse(Adresse adresse) {
@@ -115,13 +120,12 @@ public class ExportConverter {
 	private ZeitabschnittExportDTO createZeitabschnittExportDTOFromZeitabschnitt(VerfuegungZeitabschnitt zeitabschnitt) {
 		LocalDate von = zeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = zeitabschnitt.getGueltigkeit().getGueltigBis();
+		int verfuegungNr = zeitabschnitt.getVerfuegung().getBetreuung().extractGesuch().getLaufnummer();
 		BigDecimal effektiveBetr = zeitabschnitt.getBetreuungspensum();
 		int anspruchPct = zeitabschnitt.getAnspruchberechtigtesPensum();
 		BigDecimal vergPct = zeitabschnitt.getBgPensum();
 		BigDecimal vollkosten = zeitabschnitt.getVollkosten();
 		BigDecimal verguenstigung = zeitabschnitt.getVerguenstigung();
-		return new ZeitabschnittExportDTO(von, bis, effektiveBetr, anspruchPct, vergPct, vollkosten, verguenstigung);
-
+		return new ZeitabschnittExportDTO(von, bis, verfuegungNr, effektiveBetr, anspruchPct, vergPct, vollkosten, verguenstigung);
 	}
-
 }
