@@ -299,7 +299,7 @@ public class ReportResourceAsync {
 	@Path("/excel/institutionen")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Response getInstitutionenReportExcel(
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo) {

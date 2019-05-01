@@ -28,6 +28,7 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDEC
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATETIME_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LOCAL_DATETIME_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 /**
@@ -75,7 +76,7 @@ public enum MergeFieldInstitutionen implements MergeFieldProvider {
 	subventioniert(new SimpleMergeField<>("subventioniert", BOOLEAN_X_CONVERTER)),
 	kapazitaet(new SimpleMergeField<>("kapazitaet", BIGDECIMAL_CONVERTER)),
 	reserviertFuerFirmen(new SimpleMergeField<>("reserviertFuerFirmen", BIGDECIMAL_CONVERTER)),
-	zuletztGeaendert(new SimpleMergeField<>("zuletztGeaendert", STRING_CONVERTER));
+	zuletztGeaendert(new SimpleMergeField<>("zuletztGeaendert", DATETIME_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

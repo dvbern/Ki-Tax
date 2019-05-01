@@ -1897,7 +1897,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	@Override
-	@RolesAllowed({ SUPER_ADMIN })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
@@ -1950,33 +1950,50 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	) {
 		Institution institution = institutionStammdaten.getInstitution();
 		Adresse adresse = institutionStammdaten.getAdresse();
-
+		List<LocalDateTime> zuletztGeandertList = new ArrayList<>();
+		LocalDateTime zuletztGeandert;
 		InstitutionenDataRow row = new InstitutionenDataRow();
+
+		ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale);
 		row.setTyp(institutionStammdaten.getBetreuungsangebotTyp().name());
 		if (institution.getTraegerschaft() != null) {
 			row.setTraegerschaft(institution.getTraegerschaft().getName());
 		}
 		row.setName(institution.getName());
-		row.setAnschrift(adresse.getOrganisation());
-		row.setStrasse(adresse.getStrasse());
+		if (adresse.getOrganisation() != null) {
+			row.setAnschrift(adresse.getOrganisation());
+		}
+		if (institutionStammdaten.getTelefon() != null) {
+			row.setTelefon(institutionStammdaten.getTelefon());
+		}
+		if (institutionStammdaten.getWebseite() != null) {
+			row.setUrl(institutionStammdaten.getWebseite());
+		}
+
+		if (institutionStammdaten.getOeffnungszeiten() != null) {
+			row.setOeffnungszeiten(institutionStammdaten.getOeffnungszeiten());
+		}
+		row.setStrasse(adresse.getStrasse() + " " + adresse.getHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
-		row.setTelefon(institutionStammdaten.getTelefon());
 		row.setEmail(institutionStammdaten.getMail());
-		row.setUrl(institutionStammdaten.getWebseite());
-		row.setOeffnungszeiten(institutionStammdaten.getOeffnungszeiten());
 		row.setBaby(institutionStammdaten.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdaten.getAlterskategorieVorschule());
 		row.setSchulkind(institutionStammdaten.getAlterskategorieSchule());
 		row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());
 		if (institutionStammdaten.getSubventioniertePlaetze()) {
 			row.setKapazitaet(institutionStammdaten.getAnzahlPlaetze());
-			row.setReserviertFuerFirmen(institutionStammdaten.getAnzahlPlaetzeFirmen());
+			if (institutionStammdaten.getAnzahlPlaetzeFirmen() != null) {
+				row.setReserviertFuerFirmen(institutionStammdaten.getAnzahlPlaetzeFirmen());
+			}
 		}
 
-		if (institutionStammdaten.getTimestampMutiert() != null) {
-			row.setZuletztGeaendert(institutionStammdaten.getTimestampMutiert().toLocalDate());
-		}
+		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
+		zuletztGeandertList.add(institution.getTimestampMutiert());
+		zuletztGeandertList.add(adresse.getTimestampMutiert());
+
+		zuletztGeandert = zuletztGeandertList.stream().max(LocalDateTime::compareTo).get();
+		row.setZuletztGeaendert(zuletztGeandert);
 
 		return row;
 	}

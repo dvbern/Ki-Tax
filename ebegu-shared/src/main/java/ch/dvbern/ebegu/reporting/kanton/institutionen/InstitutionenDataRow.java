@@ -18,7 +18,7 @@
 package ch.dvbern.ebegu.reporting.kanton.institutionen;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class InstitutionenDataRow {
 	private String typ = null;
@@ -38,7 +38,7 @@ public class InstitutionenDataRow {
 	private Boolean subventioniert = null;
 	private BigDecimal kapazitaet = null;
 	private BigDecimal reserviertFuerFirmen = null;
-	private LocalDate zuletztGeaendert = null;
+	private LocalDateTime zuletztGeaendert = null;
 
 	public String getTyp() {
 		return typ;
@@ -152,11 +152,11 @@ public class InstitutionenDataRow {
 		this.reserviertFuerFirmen = reserviertFuerFirmen;
 	}
 
-	public LocalDate getZuletztGeaendert() {
+	public LocalDateTime getZuletztGeaendert() {
 		return zuletztGeaendert;
 	}
 
-	public void setZuletztGeaendert(LocalDate zuletztGeaendert) {
+	public void setZuletztGeaendert(LocalDateTime zuletztGeaendert) {
 		this.zuletztGeaendert = zuletztGeaendert;
 	}
 
