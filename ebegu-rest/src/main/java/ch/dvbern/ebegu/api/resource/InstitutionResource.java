@@ -16,9 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,6 +56,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -113,6 +112,7 @@ public class InstitutionResource {
 					!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
 					// an existing user cannot be used to create a new Institution
 					throw new EbeguRuntimeException(
+						KibonLogLevel.INFO,
 						"createInstitution",
 						ErrorCodeEnum.EXISTING_USER_MAIL,
 						adminMail);
