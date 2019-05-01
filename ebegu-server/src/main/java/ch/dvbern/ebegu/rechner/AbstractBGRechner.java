@@ -44,7 +44,8 @@ public abstract class AbstractBGRechner {
 		// Benoetigte Daten
 		boolean unter12Monate = verfuegungZeitabschnitt.isBabyTarif();
 		boolean eingeschult = verfuegungZeitabschnitt.isEingeschult();
-		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisse();
+		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
+		boolean besonderebeduerfnisse = verfuegungZeitabschnitt.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
 		BigDecimal massgebendesEinkommen = verfuegungZeitabschnitt.getMassgebendesEinkommen();
@@ -94,7 +95,8 @@ public abstract class AbstractBGRechner {
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
 		// Runden und auf Zeitabschnitt zurückschreiben
 		verfuegungZeitabschnitt.setMinimalerElternbeitrag(minBetrag);
-		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(verguenstigungVorVollkostenUndMinimalbetrag);
+		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(
+			verguenstigungVorVollkostenUndMinimalbetrag);
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
 		verfuegungZeitabschnitt.setVerguenstigung(verguenstigung);
 		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
