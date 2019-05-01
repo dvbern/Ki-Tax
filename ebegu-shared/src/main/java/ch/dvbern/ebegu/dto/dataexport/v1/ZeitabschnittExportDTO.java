@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * This is a DTO that is used to export the relevant Information about a {@link ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt}.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ZeitabschnittExportDTO {
+public class  ZeitabschnittExportDTO implements Comparable<ZeitabschnittExportDTO> {
 
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -39,6 +39,9 @@ public class ZeitabschnittExportDTO {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate bis;
+
+	// Verfügungs-Version (EG=1, M1=2 etc.)
+	private int verfuegungNr;
 
 	//betreuungspensum.
 	private BigDecimal effektiveBetreuungPct;
@@ -51,23 +54,33 @@ public class ZeitabschnittExportDTO {
 
 	private BigDecimal vollkosten;
 
+	private BigDecimal betreuungsgutschein;
+
+	private BigDecimal minimalerElternbeitrag;
+
 	private BigDecimal verguenstigung;
 
 	public ZeitabschnittExportDTO(
 		LocalDate von,
 		LocalDate bis,
+		int verfuegungNr,
 		BigDecimal effektiveBetr,
 		int anspruchPct,
 		BigDecimal vergPct,
 		BigDecimal vollkosten,
+		BigDecimal betreuungsgutschein,
+		BigDecimal minimalerElternbeitrag,
 		BigDecimal verguenstigung
 	) {
 		this.von = von;
 		this.bis = bis;
+		this.verfuegungNr = verfuegungNr;
 		this.effektiveBetreuungPct = effektiveBetr;
 		this.anspruchPct = anspruchPct;
 		this.verguenstigtPct = vergPct;
 		this.vollkosten = vollkosten;
+		this.betreuungsgutschein = betreuungsgutschein;
+		this.minimalerElternbeitrag = minimalerElternbeitrag;
 		this.verguenstigung = verguenstigung;
 
 	}
@@ -89,6 +102,14 @@ public class ZeitabschnittExportDTO {
 
 	public void setBis(LocalDate bis) {
 		this.bis = bis;
+	}
+
+	public int getVerfuegungNr() {
+		return verfuegungNr;
+	}
+
+	public void setVerfuegungNr(int verfuegungNr) {
+		this.verfuegungNr = verfuegungNr;
 	}
 
 	public BigDecimal getEffektiveBetreuungPct() {
@@ -131,6 +152,22 @@ public class ZeitabschnittExportDTO {
 		this.verguenstigung = verguenstigung;
 	}
 
+	public BigDecimal getBetreuungsgutschein() {
+		return betreuungsgutschein;
+	}
+
+	public void setBetreuungsgutschein(BigDecimal betreuungsgutschein) {
+		this.betreuungsgutschein = betreuungsgutschein;
+	}
+
+	public BigDecimal getMinimalerElternbeitrag() {
+		return minimalerElternbeitrag;
+	}
+
+	public void setMinimalerElternbeitrag(BigDecimal minimalerElternbeitrag) {
+		this.minimalerElternbeitrag = minimalerElternbeitrag;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -145,12 +182,31 @@ public class ZeitabschnittExportDTO {
 			Objects.equals(getVerguenstigtPct(), that.getVerguenstigtPct()) &&
 			Objects.equals(getVon(), that.getVon()) &&
 			Objects.equals(getBis(), that.getBis()) &&
+			getVerfuegungNr() == that.getVerfuegungNr() &&
 			Objects.equals(getVollkosten(), that.getVollkosten()) &&
+			Objects.equals(getBetreuungsgutschein(), that.getBetreuungsgutschein()) &&
+			Objects.equals(getMinimalerElternbeitrag(), that.getMinimalerElternbeitrag()) &&
 			Objects.equals(getVerguenstigung(), that.getVerguenstigung());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(von, bis, effektiveBetreuungPct, anspruchPct, verguenstigtPct, vollkosten, verguenstigung);
+		return Objects.hash(
+			von,
+			bis,
+			verfuegungNr,
+			effektiveBetreuungPct,
+			anspruchPct,
+			verguenstigtPct,
+			vollkosten,
+			betreuungsgutschein,
+			minimalerElternbeitrag,
+			verguenstigung
+		);
+	}
+
+	@Override
+	public int compareTo(ZeitabschnittExportDTO o) {
+		return getVon().compareTo(o.getVon());
 	}
 }
