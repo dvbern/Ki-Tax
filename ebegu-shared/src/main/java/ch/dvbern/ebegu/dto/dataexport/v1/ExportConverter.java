@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.dto.dataexport.v1;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -34,6 +33,8 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.types.DateRange;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Converter to change to create the ExportDTO of a given Verfuegung
@@ -58,7 +59,7 @@ public class ExportConverter {
 	}
 
 	private VerfuegungExportDTO createVerfuegungExportDTOFromVerfuegung(@Nonnull Verfuegung verfuegung) {
-		Objects.requireNonNull(verfuegung, "verfuegung must be set");
+		requireNonNull(verfuegung, "verfuegung must be set");
 
 		VerfuegungExportDTO verfuegungDTO = new VerfuegungExportDTO();
 		verfuegungDTO.setRefnr(verfuegung.getBetreuung().getBGNummer());
@@ -69,7 +70,7 @@ public class ExportConverter {
 		verfuegungDTO.setVerfuegtAm(verfuegung.getTimestampErstellt());
 		verfuegungDTO.setKind(createKindExportDTOFromKind(verfuegung.getBetreuung().getKind()));
 		GesuchstellerContainer gs1 = verfuegung.getBetreuung().extractGesuch().getGesuchsteller1();
-		Objects.requireNonNull(gs1);
+		requireNonNull(gs1);
 		verfuegungDTO.setGesuchsteller(createGesuchstellerExportDTOFromGesuchsteller(gs1));
 		verfuegungDTO.setBetreuung(createBetreuungExportDTOFromBetreuung(verfuegung.getBetreuung()));
 		// Verrechnete Zeitabschnitte

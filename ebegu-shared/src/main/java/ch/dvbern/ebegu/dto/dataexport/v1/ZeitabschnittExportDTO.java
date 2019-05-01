@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * This is a DTO that is used to export the relevant Information about a {@link ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt}.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ZeitabschnittExportDTO {
+public class  ZeitabschnittExportDTO implements Comparable<ZeitabschnittExportDTO> {
 
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -191,7 +191,22 @@ public class ZeitabschnittExportDTO {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(von, bis, verfuegungNr, effektiveBetreuungPct, anspruchPct, verguenstigtPct, vollkosten, betreuungsgutschein,
-			minimalerElternbeitrag, verguenstigung);
+		return Objects.hash(
+			von,
+			bis,
+			verfuegungNr,
+			effektiveBetreuungPct,
+			anspruchPct,
+			verguenstigtPct,
+			vollkosten,
+			betreuungsgutschein,
+			minimalerElternbeitrag,
+			verguenstigung
+		);
+	}
+
+	@Override
+	public int compareTo(ZeitabschnittExportDTO o) {
+		return getVon().compareTo(o.getVon());
 	}
 }

@@ -17,8 +17,8 @@ package ch.dvbern.ebegu.services;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.activation.MimeType;
@@ -53,13 +53,14 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 @Stateless
 @Local(ExportService.class)
@@ -87,7 +88,7 @@ public class ExportServiceBean implements ExportService {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS })
 	public VerfuegungenExportDTO exportAllVerfuegungenOfAntrag(@Nonnull String antragId) {
-		Objects.requireNonNull(antragId, "gesuchId muss gesetzt sein");
+		requireNonNull(antragId, "gesuchId muss gesetzt sein");
 		Gesuch gesuch = gesuchService.findGesuch(antragId)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("exportVerfuegungOfAntrag", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, antragId));
 
@@ -115,21 +116,29 @@ public class ExportServiceBean implements ExportService {
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public UploadFileInfo exportVerfuegungOfBetreuungAsFile(String betreuungID) {
 		Betreuung betreuung = readBetreuung(betreuungID);
-		Objects.requireNonNull(betreuung.getVerfuegung());
+		requireNonNull(betreuung.getVerfuegung());
 		VerfuegungenExportDTO verfuegungenExportDTO = convertBetreuungToExport(betreuung);
 
 		// Zusätzlich zu den Abschnitten der aktuellen Verfuegung müssen auch eventuell noch gueltige Abschnitte
 		// von frueheren Verfuegungen exportiert werden: immer dann, wenn in der aktuellen Verfuegung ignoriert wurde!
 		List<VerfuegungZeitabschnitt> nochGueltigeZeitabschnitte = new ArrayList<>();
-		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : betreuung.getVerfuegung().getZeitabschnitte()) {
-			if (verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriertIgnorierend()) {
-				verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(verfuegungZeitabschnitt, betreuung, nochGueltigeZeitabschnitte);
-			}
-		}
+
+		betreuung.getVerfuegung().getZeitabschnitte().stream()
+			.filter(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriertIgnorierend())
+			.forEach(verfuegungZeitabschnitt ->
+				verfuegungService.findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(
+					verfuegungZeitabschnitt,
+					betreuung,
+					nochGueltigeZeitabschnitte
+				)
+			);
+
 		List<ZeitabschnittExportDTO> weitereExportDTOs =
 			EXPORT_CONVERTER.createZeitabschnittExportDTOFromZeitabschnitte(nochGueltigeZeitabschnitte);
 		// Wir haben im Moment nur eine Verfuegung im Export
+		assert verfuegungenExportDTO.getVerfuegungen().size() == 1;
 		verfuegungenExportDTO.getVerfuegungen().get(0).getZeitabschnitte().addAll(weitereExportDTOs);
+		Collections.sort(verfuegungenExportDTO.getVerfuegungen().get(0).getZeitabschnitte());
 
 		String json = convertToJson(verfuegungenExportDTO);
 		byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
@@ -138,7 +147,7 @@ public class ExportServiceBean implements ExportService {
 	}
 
 	private Betreuung readBetreuung(String betreuungID) {
-		Objects.requireNonNull(betreuungID, "betreuungID muss gesetzt sein");
+		requireNonNull(betreuungID, "betreuungID muss gesetzt sein");
 		Betreuung betreuung = betreuungService.findBetreuung(betreuungID)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("exportVerfuegungOfBetreuung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, betreuungID));
 		authorizer.checkReadAuthorization(betreuung);
