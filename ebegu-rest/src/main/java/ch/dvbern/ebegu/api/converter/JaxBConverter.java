@@ -646,6 +646,7 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setStartKonkubinat(familiensituationJAXP.getStartKonkubinat());
 		familiensituation.setSozialhilfeBezueger(familiensituationJAXP.getSozialhilfeBezueger());
 		familiensituation.setAntragNurFuerBehinderungszuschlag(familiensituationJAXP.getAntragNurFuerBehinderungszuschlag());
+		familiensituation.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(familiensituationJAXP.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 
 		return familiensituation;
 	}
@@ -659,6 +660,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setStartKonkubinat(persistedFamiliensituation.getStartKonkubinat());
 		jaxFamiliensituation.setSozialhilfeBezueger(persistedFamiliensituation.getSozialhilfeBezueger());
 		jaxFamiliensituation.setAntragNurFuerBehinderungszuschlag(persistedFamiliensituation.getAntragNurFuerBehinderungszuschlag());
+		jaxFamiliensituation.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(persistedFamiliensituation.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
 
 		return jaxFamiliensituation;
 	}
@@ -1340,6 +1342,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
 		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
 		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
+		jaxInstStammdaten.setSendMailWennOffenePendenzen(persistedInstStammdaten.getSendMailWennOffenePendenzen());
 		if (persistedInstStammdaten.getAdresseKontoinhaber() != null) {
 			jaxInstStammdaten.setAdresseKontoinhaber(adresseToJAX(persistedInstStammdaten.getAdresseKontoinhaber()));
 		}
@@ -1349,7 +1352,8 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxInstitutionStammdaten institutionStammdatenToJAX(
 		@Nonnull final InstitutionStammdaten persistedInstStammdaten
 	) {
-		final JaxInstitutionStammdaten jaxInstStammdaten = institutionStammdatenSummaryToJAX(persistedInstStammdaten, new JaxInstitutionStammdaten());
+		final JaxInstitutionStammdaten jaxInstStammdaten =
+			institutionStammdatenSummaryToJAX(persistedInstStammdaten, new JaxInstitutionStammdaten());
 
 		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
 			persistedInstStammdaten.getInstitution());
@@ -1414,6 +1418,7 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
 		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
 		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
+		institutionStammdaten.setSendMailWennOffenePendenzen(institutionStammdatenJAXP.isSendMailWennOffenePendenzen());
 
 		Adresse convertedAdresse = null;
 		if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
@@ -1425,6 +1430,7 @@ public class JaxBConverter extends AbstractConverter {
 		adresseToEntity(institutionStammdatenJAXP.getAdresse(), institutionStammdaten.getAdresse());
 
 		String id = institutionStammdatenJAXP.getInstitution().getId();
+		Objects.requireNonNull(id);
 		Institution institutionFromDB = institutionService.findInstitution(id)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"institutionStammdatenToEntity",
@@ -1970,7 +1976,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
 
-
 		return jaxFinanzielleSituation;
 	}
 
@@ -2206,6 +2211,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(erweiterteBetreuungJAXP, erweiterteBetreuung);
 
 		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
+		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
+			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -2850,6 +2857,8 @@ public class JaxBConverter extends AbstractConverter {
 		JaxErweiterteBetreuung jaxErweiterteBetreuung = new JaxErweiterteBetreuung();
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
+		jaxErweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
+			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
@@ -3090,9 +3099,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxDokumentGrund.setPersonNumber(dokumentGrund.getPersonNumber());
 		jaxDokumentGrund.setDokumentTyp(dokumentGrund.getDokumentTyp());
 		jaxDokumentGrund.setNeeded(dokumentGrund.isNeeded());
-		if (jaxDokumentGrund.getDokumente() == null) {
-			jaxDokumentGrund.setDokumente(new HashSet<>());
-		}
+		jaxDokumentGrund.setDokumente(new HashSet<>());
 		dokumentGrund.getDokumente().stream()
 			.map(this::dokumentToJax)
 			.forEach(d -> jaxDokumentGrund.getDokumente().add(d));
@@ -4060,7 +4067,10 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxStammdaten;
 	}
 
-	private void gemeindeStammdatenToJAXSetDefaultBenutzer(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
+	private void gemeindeStammdatenToJAXSetDefaultBenutzer(
+		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
 		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
@@ -4078,7 +4088,10 @@ public class JaxBConverter extends AbstractConverter {
 		}
 	}
 
-	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
+	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(
+		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
 		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(true);
 			jaxStammdaten.setKorrespondenzspracheFr(false);

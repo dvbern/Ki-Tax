@@ -17,7 +17,7 @@
     <div class="row viewTitle" ng-if="vm.getCurrentMitteilung()">
         <div class="col-xs-12 col-md-10 col-md-offset-1">
             <h1>
-                <span ng-if="!vm.betreuung" data-translate="NEUE_MITTEILUNG"></span>
+                <span ng-if="!vm.betreuung" data-translate="NEUE_MITTEILUNG" data-translate-value-gemeinde="{{vm.dossier.gemeinde.name}}"></span>
                 <span ng-if="vm.betreuung">{{vm.betreuung.kindFullname}} / {{vm.betreuung.institutionStammdaten.institution.name}}</span>
                 <span ng-if="vm.betreuung" class="pull-right BGNummer">{{vm.getBgNummer()}}</span>
 

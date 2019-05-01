@@ -23,6 +23,7 @@ import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSInstitution from '../../../models/TSInstitution';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -75,6 +76,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                 this.dataSource = new MatTableDataSource(insti);
                 this.dataSource.paginator = this.paginator;
                 this.changeDetectorRef.markForCheck();
+                this.dataSource.sort = this.sort;
             });
     }
 
@@ -112,15 +114,37 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     /**
-     * Institutions in status EINGELADEN cannot be opened from the list
+     * Institutions in status EINGELADEN cannot be opened from the list. Only Exception: the InstitutionsAdmin for the
+     * Institution in question can always open the Institution.
      */
     public openInstitution(institution: TSInstitution): void {
-        if (institution.status !== TSInstitutionStatus.EINGELADEN) {
+        if (institution.status !== TSInstitutionStatus.EINGELADEN || this.isCurrentUserAdminForInstitution(institution)) {
             this.$state.go('institution.edit', {
                 institutionId: institution.id,
             });
         }
         return;
+    }
+
+    private isCurrentUserAdminForInstitution(institution: TSInstitution): boolean {
+        const currentBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
+        if (currentBerechtigung) {
+            return this.isCurrentUserTraegerschaftAdminOfSelectedInstitution(institution, currentBerechtigung)
+            || this.isCurrentUserInstitutionAdminOfSelectedInstitution(institution, currentBerechtigung);
+        }
+        return false;
+    }
+
+    private isCurrentUserTraegerschaftAdminOfSelectedInstitution(institution: TSInstitution, currentBerechtigung: TSBerechtigung): boolean {
+        return currentBerechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
+            && (currentBerechtigung.traegerschaft && institution.traegerschaft
+                && currentBerechtigung.traegerschaft.id === institution.traegerschaft.id);
+    }
+
+    private isCurrentUserInstitutionAdminOfSelectedInstitution(institution: TSInstitution, currentBerechtigung: TSBerechtigung): boolean {
+        return currentBerechtigung.role === TSRole.ADMIN_INSTITUTION
+            && (currentBerechtigung.institution
+                && currentBerechtigung.institution.id === institution.id);
     }
 
     public isCreateAllowed(): boolean {

@@ -84,6 +84,7 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public $onInit(): void {
+        super.$onInit();
         this.readStateParams();
         this.initViewModel();
     }
@@ -216,7 +217,10 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
     }
 
     public getPeriodString(): string {
-        return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
+        if (this.getGemeinde()) {
+            return DateUtil.calculatePeriodenStartdatumString(this.getGemeinde().betreuungsgutscheineStartdatum);
+        }
+        return undefined;
     }
 
     /**

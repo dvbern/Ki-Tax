@@ -21,13 +21,13 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		FR_Sehr geehrte Familie
+		Sehr geehrte Familie
 	</p>
 	<p>
-		Ihr Betreuungsangebot für ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} wurde abgelehnt.
-		Die Betreuungsangebote können
+		Die Platzbestätigung für ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} wurde abgelehnt.
+		Sie können
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">hier</a>
-		eingesehen werden.
+		den Grund der Ablehnung einsehen und Ihr Gesuch bearbeiten.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

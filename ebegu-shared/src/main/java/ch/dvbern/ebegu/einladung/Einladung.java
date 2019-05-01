@@ -64,6 +64,39 @@ public class Einladung {
 		this.associatedEntity = associatedEntity;
 	}
 
+	public static Einladung forRolle(@Nonnull Benutzer eingeladener) {
+		switch (eingeladener.getRole()) {
+
+		case SUPER_ADMIN:
+		case ADMIN_MANDANT:
+		case SACHBEARBEITER_MANDANT:
+		case SACHBEARBEITER_INSTITUTION:
+		case SACHBEARBEITER_TRAEGERSCHAFT:
+		case SACHBEARBEITER_GEMEINDE:
+		case ADMIN_BG:
+		case SACHBEARBEITER_BG:
+		case ADMIN_TS:
+		case SACHBEARBEITER_TS:
+		case JURIST:
+		case REVISOR:
+		case STEUERAMT:
+			return new Einladung(EinladungTyp.MITARBEITER, eingeladener);
+		case ADMIN_GEMEINDE:
+			return new Einladung(
+				EinladungTyp.GEMEINDE,
+				eingeladener,
+				eingeladener.getCurrentBerechtigung().getGemeindeList().iterator().next());
+		case ADMIN_TRAEGERSCHAFT:
+			return new Einladung(EinladungTyp.TRAEGERSCHAFT, eingeladener, eingeladener.getTraegerschaft());
+		case ADMIN_INSTITUTION:
+			return new Einladung(EinladungTyp.INSTITUTION, eingeladener, eingeladener.getInstitution());
+		case GESUCHSTELLER:
+			throw new IllegalArgumentException();
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+
 	@Nonnull
 	public static Einladung forMitarbeiter(@Nonnull Benutzer eingeladener) {
 		return new Einladung(EinladungTyp.MITARBEITER, eingeladener);

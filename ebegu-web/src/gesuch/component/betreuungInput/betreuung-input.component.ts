@@ -16,6 +16,7 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
+import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
@@ -36,10 +37,11 @@ export class BetreuungInputComponentConfig implements IComponentOptions {
 
 export class BetreuungInputComponent implements IController {
 
-    public static $inject = ['$translate', 'CONSTANTS'];
+    public static $inject = ['$translate'];
 
     private readonly LOG: Log = LogFactory.createLog(BetreuungInputComponent.name);
 
+    public readonly CONSTANTS: any = CONSTANTS;
     // 100% = 20 days => 1% = 0.2 days
     private readonly MULTIPLIER_KITA = 0.2;
     // 100% = 220 hours => 1% = 2.2 hours

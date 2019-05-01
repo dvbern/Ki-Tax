@@ -34,22 +34,6 @@ ${templateConfiguration.mailCss}
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>
-	<hr>
-    <p>
-        FR_Sehr geehrte Familie
-    </p>
-    <p>
-        FR_Die Gemeinde ${mitteilung.dossier.gemeinde.name} hat Ihnen eine
-        <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/mitteilungen/${mitteilung.dossier.fall.id}/${mitteilung.dossier.id}/">Nachricht</a>
-        geschrieben.
-    </p>
-    <p>
-        FR_Freundliche Grüsse <br/>
-        FR_Ihre Gemeinde ${mitteilung.dossier.gemeinde.name}
-    </p>
-    <p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
-    </p>
 </div>
 
 </body>

@@ -53,4 +53,9 @@ public class DokumentServiceBean extends AbstractBaseService implements Dokument
 		return Optional.of(doc);
 	}
 
+	@Override
+	public void removeDokument(@Nonnull Dokument dokument) {
+		this.authorizer.checkWriteAuthorization(dokument.getDokumentGrund().getGesuch());
+		persistence.remove(dokument);
+	}
 }

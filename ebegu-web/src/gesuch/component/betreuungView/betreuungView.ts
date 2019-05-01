@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as $ from 'jquery';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
@@ -29,6 +30,8 @@ import {
     TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -37,6 +40,7 @@ import TSBetreuung from '../../../models/TSBetreuung';
 import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSBetreuungspensum from '../../../models/TSBetreuungspensum';
 import TSBetreuungspensumContainer from '../../../models/TSBetreuungspensumContainer';
+import TSEinstellung from '../../../models/TSEinstellung';
 import TSErweiterteBetreuung from '../../../models/TSErweiterteBetreuung';
 import TSErweiterteBetreuungContainer from '../../../models/TSErweiterteBetreuungContainer';
 import TSExceptionReport from '../../../models/TSExceptionReport';
@@ -53,6 +57,7 @@ import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
+import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
 import AbstractGesuchViewController from '../abstractGesuchView';
 import ILogService = angular.ILogService;
@@ -88,6 +93,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         'MitteilungRS',
         'DvDialog',
         '$log',
+        'EinstellungRS',
+        'GlobalCacheService',
         '$timeout',
         '$translate',
     ];
@@ -113,6 +120,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
     public fachstelleId: string;
     public provisorischeBetreuung: boolean;
+    public zuschlagBehinderungProStd: number;
+    public zuschlagBehinderungProTag: number;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -132,6 +141,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         private readonly mitteilungRS: MitteilungRS,
         dvDialog: DvDialog,
         private readonly $log: ILogService,
+        private readonly einstellungRS: EinstellungRS,
+        private readonly globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
     ) {
@@ -142,6 +153,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     // tslint:disable-next-line:cognitive-complexity
     public $onInit(): void {
+        super.$onInit();
         this.mutationsmeldungModel = undefined;
         this.isMutationsmeldungStatus = false;
         const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
@@ -199,15 +211,28 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         this.findExistingBetreuungsmitteilung();
         const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
-        if (!anmeldungMutationZustand) {
-            return;
+        if (anmeldungMutationZustand) {
+            if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
+                this.aktuellGueltig = false;
+            } else if (anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
+                this.aktuellGueltig = false;
+            }
         }
 
-        if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
-            this.aktuellGueltig = false;
-        } else if (anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-            this.aktuellGueltig = false;
-        }
+        this.einstellungRS.getAllEinstellungenBySystemCached(
+            this.gesuchModelManager.getGesuchsperiode().id,
+            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN),
+        ).then((response: TSEinstellung[]) => {
+            response.filter(r => r.key === TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG)
+                .forEach(value => {
+                    this.zuschlagBehinderungProTag = Number(value.value);
+                });
+            response.filter(r => r.key === TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD)
+                .forEach(value => {
+                    this.zuschlagBehinderungProStd = Number(value.value);
+                });
+        });
+
     }
 
     /**
@@ -692,10 +717,27 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public platzBestaetigen(): void {
-        if (this.isGesuchValid()) {
+        if (!this.isGesuchValid()) {
+            return;
+        }
+
+        if (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA !== null
+            && !this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisseBestaetigt) {
+            this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
+                title: 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT',
+                deleteText: 'WOLLEN_SIE_FORTFAHREN',
+                cancelText: 'LABEL_ABBRECHEN',
+                confirmText: 'LABEL_SPEICHERN',
+            })
+                .then(() => {
+                    this.getBetreuungModel().datumBestaetigung = DateUtil.today();
+                    this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
+                });
+        } else {
             this.getBetreuungModel().datumBestaetigung = DateUtil.today();
             this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
         }
+
     }
 
     /**
@@ -1132,5 +1174,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isGesuchsteller(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerRoles());
+    }
+
+    public getErweiterteBeduerfnisseBestaetigtLabel(): string {
+        if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+            return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST',
+                {betrag: this.zuschlagBehinderungProStd, einheit: this.$translate.instant('STUNDE')});
+        }
+
+        return this.$translate.instant('BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_INST',
+            {betrag: this.zuschlagBehinderungProTag, einheit: this.$translate.instant('TAG')});
+    }
+
+    public isBestaetigungBesondereBeduerfnisseEnabled(): boolean {
+        return this.isBetreuungsstatusWarten() && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
     }
 }

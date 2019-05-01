@@ -153,7 +153,7 @@ export class EditGemeindeComponent implements OnInit {
 
     private navigateBack(): void {
         if (this.isRegisteringGemeinde) {
-            this.$state.go('welcome.gemeinde');
+            this.$state.go('welcome');
             return;
         }
 

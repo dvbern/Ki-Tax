@@ -19,32 +19,16 @@ import {NgModule} from '@angular/core';
 import {Ng2StateDeclaration} from '@uirouter/angular';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
-import {WelcomeGemeindeComponent} from '../welcome-gemeinde/welcome-gemeinde.component';
-import {WelcomeInstitutionComponent} from '../welcome-institution/welcome-institution.component';
+import {WelcomeMainComponent} from '../welcome-main/welcome-main.component';
 
 const states: Ng2StateDeclaration[] = [
     {
         parent: 'app',
         name: 'welcome',
-        abstract: true,
         url: '/welcome',
-        component: UiViewComponent,
-    },
-    {
-        name: 'welcome.gemeinde',
-        url: '/gemeinde',
-        component: WelcomeGemeindeComponent,
+        component: WelcomeMainComponent,
         data: {
-            roles: TSRoleUtil.getAdministratorBgTsGemeindeRole(),
-        },
-    },
-    {
-        name: 'welcome.institution',
-        url: '/institution',
-        component: WelcomeInstitutionComponent,
-        data: {
-            roles: TSRoleUtil.getInstitutionRoles(),
+            roles: TSRoleUtil.getAllRolesButGesuchsteller(),
         },
     },
 ];

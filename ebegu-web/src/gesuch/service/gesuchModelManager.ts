@@ -91,7 +91,7 @@ export default class GesuchModelManager {
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
-        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS'
+        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS',
     ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
@@ -165,7 +165,7 @@ export default class GesuchModelManager {
                     }
 
                     return gesuch;
-                })
+                }),
             );
     }
 
@@ -757,11 +757,22 @@ export default class GesuchModelManager {
     }
 
     public handleErweiterteBetreuung(): void {
-        if (this.getGesuch() && !this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+        if (!this.getGesuch() || !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtRoles())) {
+            return;
+        }
+
+        if (this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
+            // Mindestens 1 Kind mit erweitertem Aufwand
+            // Wir setzen das Flag auf TRUE. Achtung: Es darf NIE MEHR auf false gesetzt werden!
+            this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt = true;
+            this.updateGesuch();
+        } else if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
             // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
+            // Dies aber nur, wenn der GS zu keinem Zeitpunkt bei irgendeinem Kind das Behinderungsflag gesetzt hatte!
             this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
             this.updateGesuch();
         }
+
     }
 
     private doSaveBetreuung(

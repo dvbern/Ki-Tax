@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {enableProdMode} from '@angular/core';
+import {enableProdMode, NgZone} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {UIRouter, UrlService} from '@uirouter/core';
 import * as angular from 'angular';
@@ -37,11 +37,15 @@ platformBrowserDynamic().bootstrapModule(AppModule).then(platformRef => {
     // get() the UIRouter instance from DI to initialize the router
     const urlService = platformRef.injector.get(UIRouter).urlService;
 
-    // Instruct UIRouter to listen to URL changes
-    urlService.listen();
-    urlService.sync();
+    const startRouter = () => {
+        // Instruct UIRouter to listen to URL changes
+        urlService.listen();
+        urlService.sync();
+    };
+
+    platformRef.injector.get<NgZone>(NgZone).run(startRouter);
 })
     .catch(err => console.error('App bootstrap error:', err));
 
 // Show ui-router-visualizer
-// appModuleAngularJS.run(['$uiRouter', visualizer]);
+// APP_JS_MODULE.run(['$uiRouter', visualizer]);

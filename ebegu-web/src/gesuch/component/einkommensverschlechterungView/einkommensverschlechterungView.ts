@@ -59,7 +59,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     public geschaeftsgewinnBasisjahrMinus2: number;
     public geschaeftsgewinnBasisjahrMinus1GS: number;
     public geschaeftsgewinnBasisjahrMinus2GS: number;
-    public allowedRoles: Array<TSRole>;
+    public allowedRoles: ReadonlyArray<TSRole>;
     public initialModel: TSFinanzModel;
 
     public constructor(

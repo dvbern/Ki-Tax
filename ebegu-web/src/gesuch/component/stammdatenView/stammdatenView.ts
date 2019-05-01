@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions} from 'angular';
+import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -70,12 +71,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         '$timeout',
     ];
 
+    public readonly CONSTANTS: any = CONSTANTS;
     public geschlechter: Array<string>;
     public showKorrespondadr: boolean;
     public showKorrespondadrGS: boolean;
     public showRechnungsadr: boolean;
     public showRechnungsadrGS: boolean;
-    public allowedRoles: Array<TSRole>;
+    public allowedRoles: ReadonlyArray<TSRole>;
     public gesuchstellerNumber: number;
     private isLastVerfuegtesGesuch: boolean = false;
 
@@ -105,6 +107,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public $onInit(): void {
+        super.$onInit();
         this.initViewmodel();
     }
 
@@ -172,7 +175,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             // promise immediately
             if ((this.gesuchModelManager.getGesuchstellerNumber() === 1
                 && !this.gesuchModelManager.isGesuchsteller2Required())
-                || this.gesuchModelManager.getGesuchstellerNumber() === 2) {
+                || this.gesuchModelManager.getGesuchstellerNumber() === 2
+            ) {
                 this.updateGSDependentWizardSteps();
             }
 

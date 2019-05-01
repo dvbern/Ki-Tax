@@ -13,9 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
+import {GuidedTourService} from 'ngx-guided-tour';
 import {from as fromPromise, Observable, of, Subject} from 'rxjs';
 import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
@@ -25,7 +27,10 @@ import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
+import {GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
 import {LogFactory} from '../../logging/LogFactory';
 import {DvNgGemeindeDialogComponent} from '../dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
 
@@ -37,11 +42,14 @@ const LOG = LogFactory.createLog('NavbarComponent');
     styleUrls: ['./navbar.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavbarComponent implements OnDestroy {
+export class NavbarComponent implements OnDestroy, AfterViewInit {
 
     public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
+    private readonly unsubscribeTour$ = new Subject<void>();
+
+    public readonly showMenuAnmeldungen = EbeguUtil.isTagesschulangebotEnabled();
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -49,13 +57,28 @@ export class NavbarComponent implements OnDestroy {
         private readonly dialog: MatDialog,
         private readonly $state: StateService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly guidedTourService: GuidedTourService,
+        private readonly translate: TranslateService,
+        private readonly kibonGuidedTourService: KiBonGuidedTourService
     ) {
 
         // navbar depends on the principal. trigger change detection when the principal changes
+
         this.authServiceRS.principal$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
-                () => this.changeDetectorRef.markForCheck(),
+                () => {
+                    this.changeDetectorRef.markForCheck();
+                },
+                err => LOG.error(err),
+            );
+        this.kibonGuidedTourService.guidedTour$
+            .pipe(takeUntil(this.unsubscribeTour$))
+            .subscribe(
+                next => {
+                    this.tourStart(next);
+                    this.changeDetectorRef.markForCheck();
+                },
                 err => LOG.error(err),
             );
     }
@@ -86,6 +109,39 @@ export class NavbarComponent implements OnDestroy {
     public ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+        this.unsubscribeTour$.next();
+        this.unsubscribeTour$.complete();
+    }
+
+    public ngAfterViewInit(): void {
+        this.tourStart(false);
+    }
+
+    public tourStart(start: boolean): void {
+        if (!start) {
+            return;
+        }
+        const roleLoggedIn = this.authServiceRS.getPrincipalRole();
+
+        switch (roleLoggedIn) {
+            case TSRole.ADMIN_TRAEGERSCHAFT:
+            case TSRole.ADMIN_INSTITUTION:
+            case TSRole.SACHBEARBEITER_TRAEGERSCHAFT:
+            case TSRole.SACHBEARBEITER_INSTITUTION:
+            case TSRole.SUPER_ADMIN:
+            case TSRole.ADMIN_MANDANT:
+            case TSRole.SACHBEARBEITER_MANDANT:
+            case TSRole.ADMIN_GEMEINDE:
+            case TSRole.SACHBEARBEITER_GEMEINDE:
+            case TSRole.ADMIN_BG:
+            case TSRole.SACHBEARBEITER_BG:
+            case TSRole.JURIST:
+            case TSRole.REVISOR:
+            case TSRole.STEUERAMT:
+                this.guidedTourService.startTour(new GuidedTourByRole(this.$state, this.translate, roleLoggedIn));
+                break;
+            default:
+        }
     }
 
     private getGemeindeIDFromUser$(): Observable<string> {
@@ -121,4 +177,5 @@ export class NavbarComponent implements OnDestroy {
         return this.authServiceRS.principal$
             .pipe(map(p => p.extractCurrentAktiveGemeinden()));
     }
+
 }

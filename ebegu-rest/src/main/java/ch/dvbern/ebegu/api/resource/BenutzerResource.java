@@ -37,6 +37,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -107,6 +108,17 @@ public class BenutzerResource {
 		Benutzer benutzer = converter.jaxBenutzerToBenutzer(benutzerParam, new Benutzer());
 
 		return converter.benutzerToJaxBenutzer(benutzerService.einladen(Einladung.forMitarbeiter(benutzer)));
+	}
+
+	@ApiOperation("Sendet einem Benutzer im Status EINGELADEN erneut den Einladungslink")
+	@POST
+	@Path("/erneutEinladen")
+	@RolesAllowed(SUPER_ADMIN)
+	public Response erneutEinladen(@NotNull @Valid JaxBenutzer benutzerParam) {
+		Benutzer benutzer = benutzerService.findBenutzerByEmail(benutzerParam.getEmail()).orElseThrow(() -> new EbeguEntityNotFoundException("erneutEinladen",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, benutzerParam.getEmail()));
+		benutzerService.erneutEinladen(benutzer);
+		return Response.ok().build();
 	}
 
 	@ApiOperation(value = "Gibt alle existierenden Benutzer mit Rolle ADMIN_BG, SACHBEARBEITER_BG, "

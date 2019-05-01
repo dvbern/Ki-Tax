@@ -21,10 +21,10 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		FR_Sehr geehrte Familie
+		Sehr geehrte Familie
 	</p>
 	<p>
-		Sämtliche Betreuungsangebote wurden bestätigt. Das kiBon-Gesuch kann
+		Für sämtliche Betreuungsangebote wurden die Plätze bestätigt. Das Gesuch kann
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">hier</a>
 		freigegeben werden.
 	<p>

@@ -74,6 +74,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public showSchemas: boolean;
     public sameVerfuegungsdaten: boolean;
     public sameVerrechneteVerguenstigung: boolean;
+    public verfuegungsBemerkungenKontrolliert: boolean = false;
+    public isVerfuegenClicked: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -183,7 +185,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public save(): void {
-        if (!this.isGesuchValid()) {
+        this.isVerfuegenClicked = true;
+        if (!this.isGesuchValid() || !this.isVerfuegenValid()) {
             return;
         }
 
@@ -194,6 +197,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             this.saveMutierteVerfuegung();
 
         promise.then(() => this.goToVerfuegen());
+    }
+
+    private isVerfuegenValid(): boolean {
+        return this.verfuegungsBemerkungenKontrolliert && EbeguUtil.isNotNullOrUndefined(this.bemerkungen);
     }
 
     private goToVerfuegen(): TransitionPromise {
@@ -308,6 +315,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             elementID: undefined,
         }).then(() => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
+            this.isVerfuegenClicked = false;
             return this.gesuchModelManager.saveVerfuegung(false);
         });
     }
@@ -321,6 +329,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             secondOkText: 'CONFIRM_MUTIERTE_VERFUEGUNG_IGNORIEREN',
         }).then(response => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
+            this.isVerfuegenClicked = false;
             return this.gesuchModelManager.saveVerfuegung(response === 2);
         });
     }

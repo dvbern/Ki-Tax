@@ -74,6 +74,9 @@ public class DailyBatchBean implements DailyBatch {
 	@Inject
 	private AuthService authService;
 
+	@Inject
+	private BetreuungService betreuungService;
+
 
 	@Override
 	@Asynchronous
@@ -202,6 +205,17 @@ public class DailyBatchBean implements DailyBatch {
 			LOGGER.info("... Job DeleteInvalidAuthTokens finished. Es wurden {} Tokens gelöscht", deletedTokens);
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job DeleteInvalidAuthTokens konnte nicht durchgefuehrt werden!", e);
+		}
+	}
+
+	@Override
+	public void runBatchInfoOffenePendenzenInstitution() {
+		try {
+			LOGGER.info("Starting Job InfoOffenePendenzenInstitution...");
+			betreuungService.sendInfoOffenePendenzenInstitution();
+			LOGGER.info("... Job InfoOffenePendenzenInstitution finished");
+		} catch (RuntimeException e) {
+			LOGGER.error("Batch-Job InfoOffenePendenzenInstitution konnte nicht durchgefuehrt werden!", e);
 		}
 	}
 }

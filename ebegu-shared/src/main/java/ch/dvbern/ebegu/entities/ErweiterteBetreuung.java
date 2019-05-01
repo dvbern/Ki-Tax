@@ -30,6 +30,9 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_erweiterte_betreuung_fachstelle_id"))
 	private Fachstelle fachstelle;
 
+	@Column(nullable = false)
+	private boolean erweiterteBeduerfnisseBestaetigt = false;
+
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
 	}
@@ -47,6 +50,14 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.fachstelle = fachstelle;
 	}
 
+	public boolean isErweiterteBeduerfnisseBestaetigt() {
+		return erweiterteBeduerfnisseBestaetigt;
+	}
+
+	public void setErweiterteBeduerfnisseBestaetigt(boolean erweiterteBeduerfnisseBestaetigt) {
+		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
+	}
+
 	@Override
 	public boolean isSame(AbstractEntity other) {
 		//noinspection ObjectEquality
@@ -60,21 +71,31 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			return false;
 		}
 		final ErweiterteBetreuung otherErwBetr = (ErweiterteBetreuung) other;
-		boolean erwBeduerfnisseSame = Objects.equals(getErweiterteBeduerfnisse(),
+		boolean erwBeduerfnisseSame = Objects.equals(
+			getErweiterteBeduerfnisse(),
 			otherErwBetr.getErweiterteBeduerfnisse());
 
-		boolean fachstelleSame = Objects.equals(getFachstelle(),
+		boolean bestAussBetrAufwand = Objects.equals(
+			isErweiterteBeduerfnisseBestaetigt(),
+			otherErwBetr.isErweiterteBeduerfnisseBestaetigt());
+
+		boolean fachstelleSame = Objects.equals(
+			getFachstelle(),
 			otherErwBetr.getFachstelle());
 
-		return erwBeduerfnisseSame && fachstelleSame;
+		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame;
 	}
 
 	@Nonnull
-	public ErweiterteBetreuung copyErweiterteBetreuung(@Nonnull ErweiterteBetreuung target, @Nonnull AntragCopyType copyType) {
+	public ErweiterteBetreuung copyErweiterteBetreuung(
+		@Nonnull ErweiterteBetreuung target,
+		@Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
 			target.setErweiterteBeduerfnisse(this.getErweiterteBeduerfnisse());
+			target.setErweiterteBeduerfnisseBestaetigt(
+				this.isErweiterteBeduerfnisseBestaetigt());
 			target.setFachstelle(this.getFachstelle());
 			break;
 		case ERNEUERUNG:

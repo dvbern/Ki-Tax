@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDate;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -42,7 +43,7 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@NotNull
 	private JaxGesuch gesuch;
 
-	@NotNull
+	@Nullable
 	private Boolean gemeinsameSteuererklaerung;
 
 	@Nullable
@@ -50,6 +51,8 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@Nullable
 	private Boolean antragNurFuerBehinderungszuschlag;
+
+	private boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt = false;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -63,28 +66,30 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 		return serialVersionUID;
 	}
 
+	@Nonnull
 	public EnumFamilienstatus getFamilienstatus() {
 		return familienstatus;
 	}
 
-	public void setFamilienstatus(EnumFamilienstatus familienstatus) {
+	public void setFamilienstatus(@Nonnull EnumFamilienstatus familienstatus) {
 		this.familienstatus = familienstatus;
 	}
 
+	@Nonnull
 	public JaxGesuch getGesuch() {
 		return gesuch;
 	}
 
-	public void setGesuch(JaxGesuch gesuch) {
+	public void setGesuch(@Nonnull JaxGesuch gesuch) {
 		this.gesuch = gesuch;
 	}
 
-	@NotNull
+	@Nullable
 	public Boolean getGemeinsameSteuererklaerung() {
 		return gemeinsameSteuererklaerung;
 	}
 
-	public void setGemeinsameSteuererklaerung(@NotNull Boolean gemeinsameSteuererklaerung) {
+	public void setGemeinsameSteuererklaerung(@Nullable Boolean gemeinsameSteuererklaerung) {
 		this.gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
 	}
 
@@ -122,5 +127,13 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setAntragNurFuerBehinderungszuschlag(@Nullable Boolean antragNurFuerBehinderungszuschlag) {
 		this.antragNurFuerBehinderungszuschlag = antragNurFuerBehinderungszuschlag;
+	}
+
+	public boolean getBehinderungszuschlagFuerMindEinKindEinmalBeantragt() {
+		return behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+	}
+
+	public void setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(boolean behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
+		this.behinderungszuschlagFuerMindEinKindEinmalBeantragt = behinderungszuschlagFuerMindEinKindEinmalBeantragt;
 	}
 }

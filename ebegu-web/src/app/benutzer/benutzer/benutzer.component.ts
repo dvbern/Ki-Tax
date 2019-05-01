@@ -36,6 +36,7 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {Permission} from '../../authorisation/Permission';
 import {PERMISSIONS} from '../../authorisation/Permissions';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import ErrorService from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 import BenutzerRS from '../../core/service/benutzerRS.rest';
 
@@ -73,6 +74,7 @@ export class BenutzerComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly benutzerRS: BenutzerRS,
         private readonly dialog: MatDialog,
+        private readonly errorService: ErrorService,
     ) {
     }
 
@@ -237,7 +239,7 @@ export class BenutzerComponent implements OnInit {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
-    private isAtLeastOneRoleInList(rolesToCheck: Array<TSRole>): boolean {
+    private isAtLeastOneRoleInList(rolesToCheck: ReadonlyArray<TSRole>): boolean {
         // Es muessen alle vorhandenen Rollen geprueft werden
         if (rolesToCheck.indexOf(this.currentBerechtigung.role) > -1) {
             return true;
@@ -268,5 +270,17 @@ export class BenutzerComponent implements OnInit {
 
     private navigateBackToUsersList(): void {
         this.$state.go('admin.benutzerlist');
+    }
+
+    public erneutEinladen(): void {
+        this.benutzerRS.erneutEinladen(this.selectedUser)
+            .then(() => {
+                this.$state.go('admin.benutzerlist').then(() => {
+                    this.errorService.addMesageAsInfo(this.translate.instant(
+                        'BENUTZER_REINVITED_MESSAGE',
+                        {fullName: this.selectedUser.getFullName()}
+                    ));
+                });
+            });
     }
 }

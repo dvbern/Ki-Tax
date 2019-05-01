@@ -21,11 +21,13 @@ import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.dto.SupportAnfrageDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.errors.MailException;
 
@@ -40,6 +42,11 @@ public interface MailService {
 	 */
 	void sendMessage(@Nonnull String subject, @Nonnull String messageBody, @Nonnull String mailadress)
 		throws MailException;
+
+	/**
+	 * Sendet eine Supportanfrage an die definierte Support-Email
+	 */
+	void sendSupportAnfrage(@Nonnull SupportAnfrageDTO supportAnfrageDTO);
 
 	/**
 	 * Sendet eine Email mit der Information, dass alle Betreuungsplaetze bestaetigt wurden und das Gesuch freigegeben
@@ -126,10 +133,17 @@ public interface MailService {
 	/**
 	 * Sendet eine E-Mail mit der Information, dass die Statistik erstellt wurde
 	 */
-	void sendInfoStatistikGeneriert(@Nonnull String receiverEmail, @Nonnull String downloadurl, @Nonnull Locale locale);
+	void sendInfoStatistikGeneriert(
+		@Nonnull String receiverEmail, @Nonnull String downloadurl,
+		@Nonnull Locale locale);
 
 	/**
 	 * Sends an Einladungsemail to the given user according to the type of the Einladung
 	 */
 	void sendBenutzerEinladung(@Nonnull Benutzer einladender, @Nonnull Einladung einladung) throws MailException;
+
+	/**
+	 * Sendet eine E-Mail an eine Institution mit der Info, dass es offene Pendenzen gibt
+	 */
+	void sendInfoOffenePendenzenInstitution(@Nonnull InstitutionStammdaten institutionStammdaten);
 }

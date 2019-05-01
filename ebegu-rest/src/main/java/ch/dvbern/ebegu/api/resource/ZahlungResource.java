@@ -235,6 +235,7 @@ public class ZahlungResource {
 	@Path("/update")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public JaxZahlungsauftrag updateZahlung(
 		@QueryParam("beschrieb") String beschrieb,
 		@QueryParam("faelligkeitsdatum") String stringFaelligkeitsdatum,

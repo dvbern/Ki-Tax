@@ -171,7 +171,7 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
             dokumentGrund.dokumente.splice(index, 1);
         }
 
-        this.dokumenteRS.updateDokumentGrund(dokumentGrund).then(response => {
+        this.dokumenteRS.removeDokument(dokument).then(response => {
 
             const returnedDG = angular.copy(response);
 

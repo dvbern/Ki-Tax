@@ -21,10 +21,10 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		FR_Sehr geehrte Familie
+		Sehr geehrte Familie
 	</p>
 	<p>
-		Die Prüfung und Berechnung Ihres kiBon-Gesuchs wurde bearbeitet. Sie können die Ergebnisse
+		Die Prüfung und Berechnung Ihres Gesuchs wurde bearbeitet. Sie können die Ergebnisse
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
 		einsehen.
 	</p>

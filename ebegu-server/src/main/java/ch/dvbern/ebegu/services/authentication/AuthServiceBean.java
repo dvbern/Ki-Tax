@@ -127,7 +127,7 @@ public class AuthServiceBean implements AuthService {
 		Root<AuthorisierterBenutzer> root = delete.from(AuthorisierterBenutzer.class);
 		Predicate authTokenPredicate = criteriaBuilder.equal(root.get(AuthorisierterBenutzer_.authToken), authToken);
 		delete.where(criteriaBuilder.and(authTokenPredicate));
-		cache.remove(authTokenPredicate);
+		cache.remove(authToken);
 		try {
 			entityManager.createQuery(delete).executeUpdate();
 			return true;

@@ -16,6 +16,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import ErrorService from '../../../app/core/errors/service/ErrorService';
 import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
@@ -32,6 +33,7 @@ import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import GesuchModelManager from '../../service/gesuchModelManager';
+import GlobalCacheService from '../../service/globalCacheService';
 import WizardStepManager from '../../service/wizardStepManager';
 import {BetreuungViewController} from '../betreuungView/betreuungView';
 import IFormController = angular.IFormController;
@@ -75,6 +77,8 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         'MitteilungRS',
         'DvDialog',
         '$log',
+        'EinstellungRS',
+        'GlobalCacheService',
         '$timeout',
         '$translate',
     ];
@@ -102,12 +106,14 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
         mitteilungRS: MitteilungRS,
         dvDialog: DvDialog,
         $log: ILogService,
+        einstellungRS: EinstellungRS,
+        globalCacheService: GlobalCacheService,
         $timeout: ITimeoutService,
         $translate: ITranslateService,
     ) {
 
         super($state, gesuchModelManager, ebeguUtil, CONSTANTS, $scope, berechnungsManager, errorService, authServiceRS,
-            wizardStepManager, $stateParams, mitteilungRS, dvDialog, $log, $timeout, $translate);
+            wizardStepManager, $stateParams, mitteilungRS, dvDialog, $log, einstellungRS, globalCacheService, $timeout, $translate);
 
         this.$scope.$watch(() => {
             return this.getBetreuungModel().institutionStammdaten;

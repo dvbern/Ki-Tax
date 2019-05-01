@@ -29,7 +29,7 @@
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "start": "npm run server",
     "set-version": "node scripts/version-from-pom.js",
-    "postinstall": "npm run set-version"
+    "postinstall": "npm run set-version && npm rebuild node-sass"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.1",
@@ -149,6 +149,7 @@
     "angular-utf8-base64": "0.0.5",
     "core-js": "~2.5.5",
     "detect-browser": "^3.0.1",
+    "ngx-guided-tour": "=1.1.2",
     "randomcolor": "^0.5.4",
     "raven-js": "~3.27.0",
     "rxjs": "^6.4.0",

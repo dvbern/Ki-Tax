@@ -99,6 +99,7 @@ import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
+import TSSupportAnfrage from '../models/TSSupportAnfrage';
 import TSTextRessource from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import TSUnbezahlterUrlaub from '../models/TSUnbezahlterUrlaub';
@@ -537,7 +538,10 @@ export default class EbeguRestUtil {
             restFamiliensituation.aenderungPer = DateUtil.momentToLocalDate(familiensituation.aenderungPer);
             restFamiliensituation.startKonkubinat = DateUtil.momentToLocalDate(familiensituation.startKonkubinat);
             restFamiliensituation.sozialhilfeBezueger = familiensituation.sozialhilfeBezueger;
-            restFamiliensituation.antragNurFuerBehinderungszuschlag = familiensituation.antragNurFuerBehinderungszuschlag;
+            restFamiliensituation.antragNurFuerBehinderungszuschlag =
+                familiensituation.antragNurFuerBehinderungszuschlag;
+            restFamiliensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt =
+                familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
             return restFamiliensituation;
         }
         return undefined;
@@ -597,7 +601,10 @@ export default class EbeguRestUtil {
             familiensituation.aenderungPer = DateUtil.localDateToMoment(familiensituationFromServer.aenderungPer);
             familiensituation.startKonkubinat = DateUtil.localDateToMoment(familiensituationFromServer.startKonkubinat);
             familiensituation.sozialhilfeBezueger = familiensituationFromServer.sozialhilfeBezueger;
-            familiensituation.antragNurFuerBehinderungszuschlag = familiensituationFromServer.antragNurFuerBehinderungszuschlag;
+            familiensituation.antragNurFuerBehinderungszuschlag =
+                familiensituationFromServer.antragNurFuerBehinderungszuschlag;
+            familiensituation.behinderungszuschlagFuerMindEinKindEinmalBeantragt =
+                familiensituationFromServer.behinderungszuschlagFuerMindEinKindEinmalBeantragt;
             return familiensituation;
         }
         return undefined;
@@ -1103,6 +1110,7 @@ export default class EbeguRestUtil {
             restInstitutionStammdaten.subventioniertePlaetze = institutionStammdaten.subventioniertePlaetze;
             restInstitutionStammdaten.anzahlPlaetze = institutionStammdaten.anzahlPlaetze;
             restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
+            restInstitutionStammdaten.sendMailWennOffenePendenzen = institutionStammdaten.sendMailWennOffenePendenzen;
             restInstitutionStammdaten.adresseKontoinhaber =
                 this.adresseToRestObject({}, institutionStammdaten.adresseKontoinhaber);
             restInstitutionStammdaten.institutionStammdatenTagesschule =
@@ -1135,11 +1143,14 @@ export default class EbeguRestUtil {
             institutionStammdatenTS.kontoinhaber = institutionStammdatenFromServer.kontoinhaber;
             institutionStammdatenTS.alterskategorieBaby = institutionStammdatenFromServer.alterskategorieBaby;
             institutionStammdatenTS.alterskategorieVorschule = institutionStammdatenFromServer.alterskategorieVorschule;
-            institutionStammdatenTS.alterskategorieKindergarten = institutionStammdatenFromServer.alterskategorieKindergarten;
+            institutionStammdatenTS.alterskategorieKindergarten =
+                institutionStammdatenFromServer.alterskategorieKindergarten;
             institutionStammdatenTS.alterskategorieSchule = institutionStammdatenFromServer.alterskategorieSchule;
             institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
             institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
             institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
+            institutionStammdatenTS.sendMailWennOffenePendenzen =
+                institutionStammdatenFromServer.sendMailWennOffenePendenzen;
             institutionStammdatenTS.adresseKontoinhaber =
                 this.parseAdresse(new TSAdresse(), institutionStammdatenFromServer.adresseKontoinhaber);
             institutionStammdatenTS.institutionStammdatenTagesschule =
@@ -1153,8 +1164,9 @@ export default class EbeguRestUtil {
         return undefined;
     }
 
-    public parseInstitutionStammdaten(institutionStammdatenTS: TSInstitutionStammdaten,
-                                      institutionStammdatenFromServer: any,
+    public parseInstitutionStammdaten(
+        institutionStammdatenTS: TSInstitutionStammdaten,
+        institutionStammdatenFromServer: any,
     ): TSInstitutionStammdaten {
         if (institutionStammdatenFromServer) {
             this.parseInstitutionStammdatenSummary(institutionStammdatenTS, institutionStammdatenFromServer);
@@ -1283,7 +1295,8 @@ export default class EbeguRestUtil {
     ): TSFinanzielleSituation {
         this.abstractfinanzielleSituationToRestObject(restFinanzielleSituation, finanzielleSituation);
         restFinanzielleSituation.steuerveranlagungErhalten = finanzielleSituation.steuerveranlagungErhalten;
-        restFinanzielleSituation.steuererklaerungAusgefuellt = finanzielleSituation.steuererklaerungAusgefuellt || false;
+        restFinanzielleSituation.steuererklaerungAusgefuellt =
+            finanzielleSituation.steuererklaerungAusgefuellt || false;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         return restFinanzielleSituation;
@@ -1893,6 +1906,8 @@ export default class EbeguRestUtil {
     ): TSErweiterteBetreuung {
         this.abstractMutableEntityToRestObject(restErweiterteBetreuung, erweiterteBetreuung);
         restErweiterteBetreuung.erweiterteBeduerfnisse = erweiterteBetreuung.erweiterteBeduerfnisse;
+        restErweiterteBetreuung.erweiterteBeduerfnisseBestaetigt =
+            erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -1906,6 +1921,8 @@ export default class EbeguRestUtil {
         if (erweiterteBetreuungFromServer) {
             this.parseAbstractMutableEntity(erweiterteBetreuungFromServer, erweiterteBetreuungTS);
             erweiterteBetreuungTS.erweiterteBeduerfnisse = erweiterteBetreuungFromServer.erweiterteBeduerfnisse;
+            erweiterteBetreuungTS.erweiterteBeduerfnisseBestaetigt =
+                erweiterteBetreuungFromServer.erweiterteBeduerfnisseBestaetigt;
             if (erweiterteBetreuungFromServer.fachstelle) {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);
@@ -3184,5 +3201,14 @@ export default class EbeguRestUtil {
         }
 
         return textRessourceTS;
+    }
+
+    public supportAnfrageToRestObject(supportRest: any, supportTS: TSSupportAnfrage): any {
+        if (supportTS) {
+            supportRest.id = supportTS.id;
+            supportRest.beschreibung = supportTS.beschreibung;
+            return supportRest;
+        }
+        return undefined;
     }
 }
