@@ -1306,6 +1306,7 @@
     "ReportType_zahlungperiode": "Zahlungen nach Periode",
     "ReportType_benutzer": "Registrierte Benutzer",
     "ReportType_massenversand": "Kontaktdaten für Serienbriefe",
+    "ReportType_institutionen": "Institutionen",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",
