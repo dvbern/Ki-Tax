@@ -21,6 +21,7 @@ import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.r
 import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor';
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
+import ITranslateService = angular.translate.ITranslateService;
 
 export class DVVersionComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -37,6 +38,7 @@ export class DVVersionController implements IController {
         'HttpVersionInterceptor',
         '$window',
         'ApplicationPropertyRS',
+        '$translate',
     ];
 
     public backendVersion: string;
@@ -50,6 +52,7 @@ export class DVVersionController implements IController {
         private readonly httpVersionInterceptor: HttpVersionInterceptor,
         private readonly $window: IWindowService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly $translate: ITranslateService,
     ) {
 
     }
@@ -62,7 +65,12 @@ export class DVVersionController implements IController {
             this.httpVersionInterceptor.eventCaptured = true;
             this.backendVersion = this.httpVersionInterceptor.backendVersion;
             this.updateDisplayVersion();
-            const msg = `Der Client (${this.frontendVersion}) hat eine andere Version als der Server(${this.backendVersion}). Bitte laden sie die Seite komplett neu (F5)`;
+            const msg = this.$translate.instant(
+                'VERSION_ERROR_TEXT',
+                {
+                    frontendVersion: this.frontendVersion,
+                    backendVersion: this.backendVersion,
+                });
             this.$window.alert(msg);
 
         });
