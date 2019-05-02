@@ -1306,6 +1306,7 @@
     "ReportType_zahlungperiode": "",
     "ReportType_benutzer": "",
     "ReportType_massenversand": "",
+    "ReportType_institutionen": "",
     "BatchJobStatus_REQUESTED": "",
     "BatchJobStatus_RUNNING": "",
     "BatchJobStatus_FINISHED": "",
@@ -1557,5 +1558,7 @@
     "BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT": "",
     "WOLLEN_SIE_FORTFAHREN": "",
     "STUNDE": "",
-    "TAG": ""
+    "TAG": "",
+    "INSTITUTIONEN_STATISTIK": "",
+    "STATISTIK_INSTITUTIONEN_HINT": ""
 }

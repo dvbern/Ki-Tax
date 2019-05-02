@@ -176,6 +176,10 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			);
 			return uploadFileInfo;
 		}
+		case VORLAGE_REPORT_INSTITUTIONEN: {
+			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportInstitutionen(locale);
+			return uploadFileInfo;
+		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);
 	}
