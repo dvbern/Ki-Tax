@@ -53,6 +53,8 @@
 			<anspruchPct>60</anspruchPct>
 			<verguenstigtPct>60</verguenstigtPct>
 			<vollkosten>1370.05</vollkosten>
+			<betreuungsgutschein>870.05</betreuungsgutschein>
+			<minimalerElternbeitrag>50.05</minimalerElternbeitrag>
 			<verguenstigung>690.45</verguenstigung>
 		</zeitabschnitte>
 	</verfuegungen>

@@ -76,6 +76,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                 this.dataSource = new MatTableDataSource(insti);
                 this.dataSource.paginator = this.paginator;
                 this.changeDetectorRef.markForCheck();
+                this.dataSource.sort = this.sort;
             });
     }
 
