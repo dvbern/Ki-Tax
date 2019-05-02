@@ -88,8 +88,8 @@ public class Benutzer extends AbstractMutableEntity {
 	private String username = null;
 
 	@Nullable
-	@Column(length = Constants.UUID_LENGTH)
-	@Size(max = Constants.UUID_LENGTH)
+	@Column(length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String externalUUID = null;
 
 	@NotNull

@@ -123,6 +123,7 @@ import static ch.dvbern.ebegu.services.util.FilterFunctions.setTraegerschaftFilt
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
+import static javax.persistence.LockModeType.PESSIMISTIC_WRITE;
 
 /**
  * Service fuer Benutzer
@@ -291,7 +292,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed(SUPER_ADMIN)
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
 		try {
-			checkArgument(eingeladener.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+			checkArgument(
+				eingeladener.getStatus() == BenutzerStatus.EINGELADEN,
+				"Benutzer should have Status EINGELADEN");
 			Einladung einladung = Einladung.forRolle(eingeladener);
 			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
 		} catch (MailException e) {
@@ -345,6 +348,32 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public Optional<Benutzer> findBenutzer(@Nonnull String username) {
 		requireNonNull(username, "username muss gesetzt sein");
 		return criteriaQueryHelper.getEntityByUniqueAttribute(Benutzer.class, username, Benutzer_.username);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
+	public Optional<Benutzer> findAndLockBenutzer(@Nonnull String username) {
+		requireNonNull(username, "username muss gesetzt sein");
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+		Predicate predicateUsername = cb.equal(root.get(Benutzer_.username), username);
+
+		query.where(predicateUsername);
+		query.distinct(true);
+
+		try {
+			Optional<Benutzer> benutzer = Optional.of(persistence.getEntityManager()
+				.createQuery(query)
+				.setLockMode(PESSIMISTIC_WRITE)
+				.getSingleResult());
+
+			return benutzer;
+		} catch (NoResultException nre) {
+			return Optional.empty();
+		}
 	}
 
 	@Nonnull
