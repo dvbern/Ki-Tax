@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>FR_kiBon – Ihr Gesuch wurde bearbeitet</@base64Header>
+Subject: <@base64Header>kiBon – Ihr Gesuch wurde bearbeitet</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>FR_kiBon – Ihr Gesuch wurde bearbeitet</title>
+	<title>kiBon – Ihr Gesuch wurde bearbeitet</title>
 
 </head>
 
@@ -21,19 +21,19 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		FR_Sehr geehrte Familie
+		Sehr geehrte Familie
 	</p>
 	<p>
-        FR_Die Prüfung und Berechnung Ihres kiBon-Gesuchs wurde bearbeitet. Sie können die Ergebnisse
+		Die Prüfung und Berechnung Ihres Gesuchs wurde bearbeitet. Sie können die Ergebnisse
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
 		einsehen.
 	</p>
 	<p>
-        FR_Freundliche Grüsse <br/>
+		Freundliche Grüsse <br/>
 		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>
 </div>
 

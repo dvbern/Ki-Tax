@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>FR_kiBon – Anmeldung entgegengenommen</@base64Header>
+Subject: <@base64Header>kiBon – Anmeldung entgegengenommen</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>FR_kiBon – Anmeldung entgegengenommen</title>
+	<title>kiBon – Anmeldung entgegengenommen</title>
 
 </head>
 
@@ -21,21 +21,21 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		FR_Sehr geehrte Familie
+		Sehr geehrte Familie
 	</p>
 	<p>
-        FR_Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} wurde entgegengenommen. Sie erhalten die
+		Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} wurde entgegengenommen. Sie erhalten die
 		definitive Bestätigung der Anmeldung von der gewählten Institution. <br/>
 		Die Betreuungsangebote können
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">hier</a>
 		eingesehen werden.
 	</p>
 	<p>
-        FR_Freundliche Grüsse <br/>
-        FR_Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Freundliche Grüsse <br/>
+		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>
 </div>
 
