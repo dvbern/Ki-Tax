@@ -27,8 +27,6 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATETIME_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LOCAL_DATETIME_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 /**

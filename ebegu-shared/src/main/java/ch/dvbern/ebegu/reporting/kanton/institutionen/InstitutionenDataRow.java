@@ -24,7 +24,7 @@ public class InstitutionenDataRow {
 	private String typ = null;
 	private String traegerschaft = null;
 	private String name = null;
-	private String anschrift;
+	private String anschrift = null;
 	private String strasse = null;
 	private String plz = null;
 	private String ort = null;

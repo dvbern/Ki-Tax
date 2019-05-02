@@ -1954,8 +1954,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		LocalDateTime zuletztGeandert;
 		InstitutionenDataRow row = new InstitutionenDataRow();
 
-		ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale);
-		row.setTyp(institutionStammdaten.getBetreuungsangebotTyp().name());
+		String angebotTyp = ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale);
+		row.setTyp(angebotTyp);
 		if (institution.getTraegerschaft() != null) {
 			row.setTraegerschaft(institution.getTraegerschaft().getName());
 		}
@@ -1973,7 +1973,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (institutionStammdaten.getOeffnungszeiten() != null) {
 			row.setOeffnungszeiten(institutionStammdaten.getOeffnungszeiten());
 		}
-		row.setStrasse(adresse.getStrasse() + " " + adresse.getHausnummer());
+		row.setStrasse(adresse.getStrasse() + ' ' + adresse.getHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
 		row.setEmail(institutionStammdaten.getMail());
