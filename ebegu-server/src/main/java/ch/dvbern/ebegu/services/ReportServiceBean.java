@@ -1927,7 +1927,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	}
 
 	private List<InstitutionenDataRow> getReportDataInstitutionen(@Nonnull Locale locale) {
-		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+		benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getReportDataInstitutionen", NO_USER_IS_LOGGED_IN));
 
 		return convertToInstitutionenDataRow(institutionStammdatenService.getAllInstitutionStammdaten(), locale);
