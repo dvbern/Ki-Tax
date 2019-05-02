@@ -17,6 +17,7 @@ import {IComponentOptions, IController} from 'angular';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import DateUtil from '../../../../utils/DateUtil';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor';
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
@@ -31,7 +32,12 @@ export class DVVersionComponentConfig implements IComponentOptions {
 
 export class DVVersionController implements IController {
 
-    public static $inject = ['$rootScope', 'HttpVersionInterceptor', '$window'];
+    public static $inject = [
+        '$rootScope',
+        'HttpVersionInterceptor',
+        '$window',
+        'ApplicationPropertyRS',
+    ];
 
     public backendVersion: string;
     public readonly buildTime: string = BUILDTSTAMP;
@@ -43,6 +49,7 @@ export class DVVersionController implements IController {
         private readonly $rootScope: IRootScopeService,
         private readonly httpVersionInterceptor: HttpVersionInterceptor,
         private readonly $window: IWindowService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
 
     }
@@ -51,8 +58,8 @@ export class DVVersionController implements IController {
 
         this.backendVersion = this.httpVersionInterceptor.backendVersion;
         this.currentYear = DateUtil.currentYear();
-
         this.$rootScope.$on(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH], () => {
+            this.httpVersionInterceptor.eventCaptured = true;
             this.backendVersion = this.httpVersionInterceptor.backendVersion;
             this.updateDisplayVersion();
             const msg = `Der Client (${this.frontendVersion}) hat eine andere Version als der Server(${this.backendVersion}). Bitte laden sie die Seite komplett neu (F5)`;
@@ -60,6 +67,10 @@ export class DVVersionController implements IController {
 
         });
 
+        // todo reviewer. This could be replace by a simple heartBeat() but then we need kind of a new Service,
+        //  Resource and all that. Do you think we should do it anyway?
+        // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
+        this.applicationPropertyRS.getBackgroundColor();
     }
 
     private updateDisplayVersion(): void {

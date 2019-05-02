@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -48,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer den Download von Dokumenten
@@ -72,8 +72,8 @@ public class DownloadFileServiceBean implements DownloadFileService {
 	@Nonnull
 	@Override
 	public DownloadFile create(@Nonnull FileMetadata fileMetadata, @Nonnull String ip) {
-		Objects.requireNonNull(fileMetadata);
-		Objects.requireNonNull(ip);
+		requireNonNull(fileMetadata);
+		requireNonNull(ip);
 
 		return persistence.persist(new DownloadFile(fileMetadata, ip));
 	}
@@ -81,9 +81,9 @@ public class DownloadFileServiceBean implements DownloadFileService {
 	@Nonnull
 	@Override
 	public DownloadFile create(@Nonnull UploadFileInfo fileInfo, @Nonnull TokenLifespan lifespan, @Nonnull String ip) {
-		Objects.requireNonNull(fileInfo);
-		Objects.requireNonNull(lifespan);
-		Objects.requireNonNull(ip);
+		requireNonNull(fileInfo);
+		requireNonNull(lifespan);
+		requireNonNull(ip);
 		final DownloadFile downloadFile = new DownloadFile(fileInfo, ip);
 		downloadFile.setLifespan(lifespan);
 		return persistence.persist(downloadFile);
@@ -92,7 +92,7 @@ public class DownloadFileServiceBean implements DownloadFileService {
 	@Nullable
 	@Override
 	public DownloadFile getDownloadFileByAccessToken(@Nonnull String accessToken) {
-		Objects.requireNonNull(accessToken);
+		requireNonNull(accessToken);
 
 		Optional<DownloadFile> tempDokumentOptional = criteriaQueryHelper.getEntityByUniqueAttribute(DownloadFile.class, accessToken, DownloadFile_.accessToken);
 
@@ -121,7 +121,7 @@ public class DownloadFileServiceBean implements DownloadFileService {
 		LOG.debug("Deleting {} TempDocuments before {}", TokenLifespan.SHORT, deleteOlderThan);
 
 		try {
-			Objects.requireNonNull(deleteOlderThan);
+			requireNonNull(deleteOlderThan);
 			this.deleteAllTokensBefore(DownloadFile.class, TokenLifespan.SHORT, deleteOlderThan);
 		} catch (RuntimeException rte) {
 			// timer methods may not throw exceptions or the timer will get cancelled (as per spec)
@@ -135,7 +135,7 @@ public class DownloadFileServiceBean implements DownloadFileService {
 		LOG.debug("Deleting {} TempDocuments before {}", TokenLifespan.LONG, deleteOlderThan);
 
 		try {
-			Objects.requireNonNull(deleteOlderThan);
+			requireNonNull(deleteOlderThan);
 			this.deleteAllTokensBefore(DownloadFile.class, TokenLifespan.LONG, deleteOlderThan);
 		} catch (RuntimeException rte) {
 			// timer methods may not throw exceptions or the timer will get cancelled (as per spec)
@@ -171,10 +171,9 @@ public class DownloadFileServiceBean implements DownloadFileService {
 	 */
 	private boolean isFileDownloadExpired(@Nonnull DownloadFile tempBlob) {
 		LocalDateTime timestampMutiert = checkNotNull(tempBlob.getTimestampMutiert());
-		if (tempBlob.getLifespan().equals(TokenLifespan.SHORT)) {
+		if (tempBlob.getLifespan() == TokenLifespan.SHORT) {
 			return timestampMutiert.isBefore(LocalDateTime.now().minus(Constants.MAX_SHORT_TEMP_DOWNLOAD_AGE_MINUTES, ChronoUnit.MINUTES));
-		} else {
-			return timestampMutiert.isBefore(LocalDateTime.now().minus(Constants.MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES, ChronoUnit.MINUTES));
 		}
+		return timestampMutiert.isBefore(LocalDateTime.now().minus(Constants.MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES, ChronoUnit.MINUTES));
 	}
 }
