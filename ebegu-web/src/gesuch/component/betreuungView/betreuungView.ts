@@ -721,8 +721,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
-        if (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA !== null
-            && !this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisseBestaetigt) {
+        if (this.getErweiterteBetreuungJA() !== null
+            && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
+            && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
             this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
                 title: 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT',
                 deleteText: 'WOLLEN_SIE_FORTFAHREN',
