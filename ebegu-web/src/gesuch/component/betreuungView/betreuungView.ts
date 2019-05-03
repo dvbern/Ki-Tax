@@ -106,6 +106,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public isSavingData: boolean; // Semaphore
     public initialBetreuung: TSBetreuung;
     public flagErrorVertrag: boolean;
+    public erneutePlatzbestaetigungErforderlich: boolean;
     public kindModel: TSKindContainer;
     public betreuungIndex: number;
     public isMutationsmeldungStatus: boolean;
@@ -398,9 +399,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * This method saves the Betreuung as it is and it doesn't trigger any other action.
      */
     public saveBetreuung(): void {
-        if (this.isGesuchValid()) {
-            this.save(null, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
+        if (!this.isGesuchValid()) {
+            return;
         }
+        if (this.erneutePlatzbestaetigungErforderlich) {
+            this.platzAnfordern();
+        }
+        this.save(null, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
     }
 
     /**
@@ -721,8 +726,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
-        if (this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA !== null
-            && !this.getBetreuungModel().erweiterteBetreuungContainer.erweiterteBetreuungJA.erweiterteBeduerfnisseBestaetigt) {
+        if (this.getErweiterteBetreuungJA()
+            && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
+            && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
             this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
                 title: 'BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND_POPUP_TEXT',
                 deleteText: 'WOLLEN_SIE_FORTFAHREN',
@@ -1188,5 +1194,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public isBestaetigungBesondereBeduerfnisseEnabled(): boolean {
         return this.isBetreuungsstatusWarten() && this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+    }
+
+    public changedBesondereBeduerfnisse(): void {
+        const betreuung = this.getBetreuungModel();
+        const erweiterteBetreuung = this.getErweiterteBetreuungJA();
+        if (betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT &&
+            erweiterteBetreuung.erweiterteBeduerfnisse &&
+            !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt) {
+            this.erneutePlatzbestaetigungErforderlich = true;
+        }
     }
 }
