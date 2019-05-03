@@ -502,7 +502,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		if (!doSendMail(gesuch)) {
 			return;
 		}
-		// Gewissen Mails sollen nur in bestimmten Status gesendet werden.
+		// Gewisse Mails sollen nur in bestimmten Status gesendet werden.
 		if (statusInWhichToSendMail != null && EnumUtil.isNoneOf(gesuch.getStatus(), statusInWhichToSendMail)) {
 			return;
 		}
