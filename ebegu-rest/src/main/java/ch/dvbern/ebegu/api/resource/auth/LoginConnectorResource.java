@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.resource.auth;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.EJBAccessException;
@@ -181,9 +183,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		@Nonnull String benutzerId,
 		@Nonnull JaxExternalBenutzer externalBenutzer
 	) {
-
 		requireNonNull(benutzerId);
 		requireNonNull(externalBenutzer);
+		requireNonNull(externalBenutzer.getExternalUUID());
 		checkLocalAccessOnly();
 
 		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId).orElse(null);
@@ -210,6 +212,17 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			//return the message to connector and stop process
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
+
+		// Überprüfen, ob die external ID schon besetzt ist
+		Optional<Benutzer> existingBenutzerWithExternalUuidOptional = benutzerService.findBenutzerByExternalUUID(externalBenutzer.getExternalUUID());
+		if (existingBenutzerWithExternalUuidOptional.isPresent()) {
+			Benutzer duplicatedBenutzer = existingBenutzerWithExternalUuidOptional.get();
+			duplicatedBenutzer.setExternalUUID(null);
+			LOG.warn("Es wurde ein bestehender Benutzer mit derselben externalUUID gefunden. Falls möglich, wird dieser gelöscht. username={} externalUUID={}"
+				, duplicatedBenutzer.getUsername(), duplicatedBenutzer.getExternalUUID());
+			benutzerService.deleteBenutzerIfAllowed(duplicatedBenutzer.getId());
+		}
+
 		//external uuid setzen
 		toBenutzer(externalBenutzer, existingBenutzer);
 

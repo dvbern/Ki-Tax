@@ -487,6 +487,32 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		mitteilungService.mitteilungUebergebenAnJugendamt(mitteilung.getId());
 	}
 
+	@Test
+	public void hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger() {
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerINST));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(sender));
+
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
+		mitteilungService.sendMitteilung(mitteilung1);
+
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerINST));
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(sender));
+
+		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
+			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
+		mitteilungService.sendMitteilung(mitteilung2);
+
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerINST));
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(sender));
+	}
+
 	private Mitteilung readFirstAndOnlyMitteilung() {
 		List<Mitteilung> mitteilungenForCurrentRolle = mitteilungService
 			.searchMitteilungen(TestDataUtil.createMitteilungTableFilterDTO(), false).getRight();
