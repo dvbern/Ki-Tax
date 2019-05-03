@@ -18,6 +18,7 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import AuthServiceRS from '../../../../../authentication/service/AuthServiceRS.rest';
+import GemeindeRS from '../../../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
 import SearchRS from '../../../../../gesuch/service/searchRS.rest';
 import TSAntragDTO from '../../../../../models/TSAntragDTO';
@@ -35,9 +36,17 @@ export class PendenzenListViewComponentConfig implements IComponentOptions {
 
 export class PendenzenListViewController {
 
-    public static $inject: string[] = ['GesuchModelManager', '$state', '$log', 'SearchRS', 'AuthServiceRS'];
+    public static $inject: string[] = [
+        'GesuchModelManager',
+        '$state',
+        '$log',
+        'SearchRS',
+        'AuthServiceRS',
+        'GemeindeRS'
+    ];
 
     public totalResultCount: string = '0';
+    public hasGemeindenInStatusAngemeldet: boolean = false;
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
@@ -45,7 +54,12 @@ export class PendenzenListViewController {
         private readonly $log: ILogService,
         private readonly searchRS: SearchRS,
         private readonly authServiceRS: AuthServiceRS,
+        private readonly gemeindeRS: GemeindeRS
     ) {
+    }
+
+    public $onInit(): void {
+        this.initHasGemeindenInStatusAngemeldet();
     }
 
     public passFilterToServer = (tableFilterState: any): IPromise<TSAntragSearchresultDTO> => {
@@ -87,5 +101,15 @@ export class PendenzenListViewController {
         } else {
             this.$state.go(path, navObj);
         }
+    }
+
+    private initHasGemeindenInStatusAngemeldet(): void {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole())) {
+            return;
+        }
+        this.gemeindeRS.hasGemeindenInStatusAngemeldet()
+            .then(result => {
+                this.hasGemeindenInStatusAngemeldet = result;
+            });
     }
 }
