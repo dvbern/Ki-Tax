@@ -24,7 +24,6 @@ import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.AsyncResult;
@@ -58,6 +57,7 @@ import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,7 +127,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			betreuung.extractGesuch(),
 			"InfoBetreuungAbgelehnt",
 			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungAbgelehnt(betreuung, gesuchsteller, adr,
-				sprache)
+				sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -138,7 +139,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			betreuung.extractGesuch(),
 			"InfoSchulamtAnmeldungUebernommen",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(betreuung, gesuchsteller, adr, sprache)
+				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(betreuung, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -152,7 +154,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 				betreuung,
 				gesuchsteller,
 				adr,
-				sprache)
+				sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -183,7 +186,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoVerfuegtGesuch",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtGesuch(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtGesuch(gesuch, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -195,7 +199,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoVerfuegtMutation",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtMutation(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtMutation(gesuch, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -207,7 +212,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoMahnung",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoMahnung(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoMahnung(gesuch, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -226,7 +232,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					gesuchsteller,
 					adr,
 					anzahlTageBisLoeschung,
-					sprache)
+					sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -245,7 +252,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					gesuchsteller,
 					adr,
 					anzahlTageBisLoeschung,
-					sprache)
+					sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -256,7 +264,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoGesuchGeloescht",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoGesuchGeloescht(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoGesuchGeloescht(gesuch, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -497,13 +506,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		@Nonnull Gesuch gesuch,
 		@Nonnull String logId,
 		@Nonnull BiFunction<Gesuchsteller, String, String> messageProvider,
-		@Nullable AntragStatus... statusInWhichToSendMail
+		@Nonnull AntragStatus... statusInWhichToSendMail
 	) throws MailException {
 		if (!doSendMail(gesuch)) {
 			return;
 		}
 		// Gewisse Mails sollen nur in bestimmten Status gesendet werden.
-		if (statusInWhichToSendMail != null && EnumUtil.isNoneOf(gesuch.getStatus(), statusInWhichToSendMail)) {
+		if (ArrayUtils.isNotEmpty(statusInWhichToSendMail) && EnumUtil.isNoneOf(gesuch.getStatus(), statusInWhichToSendMail)) {
 			return;
 		}
 
