@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.AsyncResult;
@@ -47,6 +48,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -55,6 +57,7 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.EnumUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +113,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			gesuch,
 			"InfoBetreuungBestaetigt",
 			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungenBestaetigt(gesuch, gesuchsteller, adr,
-				sprache)
+				sprache),
+			AntragStatus.IN_BEARBEITUNG_GS
 		);
 	}
 
@@ -492,8 +496,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	private void sendMail(
 		@Nonnull Gesuch gesuch,
 		@Nonnull String logId,
-		@Nonnull BiFunction<Gesuchsteller, String, String> messageProvider) throws MailException {
+		@Nonnull BiFunction<Gesuchsteller, String, String> messageProvider,
+		@Nullable AntragStatus... statusInWhichToSendMail
+	) throws MailException {
 		if (!doSendMail(gesuch)) {
+			return;
+		}
+		// Gewissen Mails sollen nur in bestimmten Status gesendet werden.
+		if (statusInWhichToSendMail != null && EnumUtil.isNoneOf(gesuch.getStatus(), statusInWhichToSendMail)) {
 			return;
 		}
 
