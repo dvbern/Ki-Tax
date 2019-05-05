@@ -20,6 +20,14 @@
          st-safe-src="vm.getPendenzenList()"
          st-delay="20">
 
+        <!-- Warnung, falls noch Institutionen im Status EINGELADEN -->
+        <div class="well well-status-abgewiesen" ng-if="vm.hasInstitutionenInStatusAngemeldet">
+            <span data-translate="WARNUNG_INSTITUTIONEN_IN_STATUS_ANMELDUNG"></span>
+            <p>
+	            <a ui-sref="institution.list" data-translate="ZUR_LISTE"></a>
+            </p>
+        </div>
+
         <div class="row">
             <div class="col-md-10">
                 <div id="titleText">
