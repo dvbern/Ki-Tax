@@ -53,6 +53,7 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
@@ -66,6 +67,7 @@ import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
+const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
 
 export class BetreuungViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -396,14 +398,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     /**
-     * This method saves the Betreuung as it is and it doesn't trigger any other action.
+     * This method saves the Betreuung as it is and it doesn't trigger any other action except Platzbestätigung has to
+     * be done again by the Institution.
      */
     public saveBetreuung(): void {
         if (!this.isGesuchValid()) {
             return;
         }
         if (this.erneutePlatzbestaetigungErforderlich) {
-            this.platzAnfordern();
+            this.dvDialog.showDialog(okHtmlDialogTempl, OkHtmlDialogController, {
+                title: 'ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT',
+            }).then(() => {
+                this.platzAnfordern();
+            });
+            return;
         }
         this.save(null, GESUCH_BETREUUNGEN, {gesuchId: this.getGesuchId()});
     }
@@ -1199,10 +1207,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public changedBesondereBeduerfnisse(): void {
         const betreuung = this.getBetreuungModel();
         const erweiterteBetreuung = this.getErweiterteBetreuungJA();
-        if (betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT &&
+        this.erneutePlatzbestaetigungErforderlich = betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT &&
             erweiterteBetreuung.erweiterteBeduerfnisse &&
-            !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt) {
-            this.erneutePlatzbestaetigungErforderlich = true;
-        }
+            !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
     }
 }
