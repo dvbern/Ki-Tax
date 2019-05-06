@@ -726,7 +726,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
-        if (this.getErweiterteBetreuungJA()
+        if (this.getErweiterteBetreuungJA() !== null
             && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
             && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
             this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
@@ -1078,7 +1078,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableErweiterteBeduerfnisse(): boolean {
-        if (!this.gesuchModelManager.getGesuch()) {
+        if (!this.gesuchModelManager.getGesuch() || this.isGesuchReadonly()) {
             return false;
         }
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());

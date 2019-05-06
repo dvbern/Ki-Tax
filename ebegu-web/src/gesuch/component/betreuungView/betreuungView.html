@@ -254,7 +254,9 @@
                                 <md-checkbox ng-model="vm.getBetreuungModel().keineKesbPlatzierung"
                                              name="keineKesbPlatzierung"
                                              aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
-                                             ng-disabled="!vm.isEnabled()">
+                                             dv-enable-element
+                                             dv-enable-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtSchulamtGesuchstellerRoles()"
+                                             dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
                                     <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
                                 </md-checkbox>
                             </div>

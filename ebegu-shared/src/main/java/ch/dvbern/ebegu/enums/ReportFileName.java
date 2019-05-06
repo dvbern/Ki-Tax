@@ -29,4 +29,5 @@ public enum ReportFileName {
 	KINDER,
 	GESUCHSTELLER,
 	MASSENVERSAND,
+	INSTITUTIONEN,
 }

@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -39,6 +38,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -51,6 +51,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Traegerschaft
@@ -75,13 +76,13 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Traegerschaft createTraegerschaft(@Nonnull Traegerschaft traegerschaft, @Nonnull String adminEmail) {
-		Objects.requireNonNull(traegerschaft);
-		Objects.requireNonNull(adminEmail);
+		requireNonNull(traegerschaft);
+		requireNonNull(adminEmail);
 
 		Traegerschaft persistedTraegerschaft = persistence.persist(traegerschaft);
 
 		benutzerService.findBenutzerByEmail(adminEmail).ifPresent(benutzer -> {
-			throw new EbeguRuntimeException("createTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, adminEmail);
+			throw new EbeguRuntimeException(KibonLogLevel.INFO, "createTraegerschaft", ErrorCodeEnum.EXISTING_USER_MAIL, adminEmail);
 		});
 
 		Benutzer benutzer = benutzerService.createAdminTraegerschaftByEmail(adminEmail, persistedTraegerschaft);
@@ -94,7 +95,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Traegerschaft saveTraegerschaft(@Nonnull Traegerschaft traegerschaft) {
-		Objects.requireNonNull(traegerschaft);
+		requireNonNull(traegerschaft);
 		return persistence.merge(traegerschaft);
 	}
 
@@ -102,7 +103,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@PermitAll
 	public Optional<Traegerschaft> findTraegerschaft(@Nonnull final String traegerschaftId) {
-		Objects.requireNonNull(traegerschaftId, "id muss gesetzt sein");
+		requireNonNull(traegerschaftId, "id muss gesetzt sein");
 		Traegerschaft a = persistence.find(Traegerschaft.class, traegerschaftId);
 		return Optional.ofNullable(a);
 	}
@@ -124,7 +125,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void removeTraegerschaft(@Nonnull String traegerschaftId) {
-		Objects.requireNonNull(traegerschaftId);
+		requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftToRemove = findTraegerschaft(traegerschaftId);
 		Traegerschaft traegerschaft = traegerschaftToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeTraegerschaft",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, traegerschaftId));
@@ -142,7 +143,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public void setInactive(@Nonnull String traegerschaftId) {
-		Objects.requireNonNull(traegerschaftId);
+		requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaftId);
 		Traegerschaft traegerschaft = traegerschaftOptional.orElseThrow(() -> new EbeguEntityNotFoundException("setInactive", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, traegerschaftId));
 		traegerschaft.setActive(false);
@@ -152,7 +153,7 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	@Override
 	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, REVISOR, ADMIN_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public EnumSet<BetreuungsangebotTyp> getAllAngeboteFromTraegerschaft(@Nonnull String traegerschaftId) {
-		Objects.requireNonNull(traegerschaftId);
+		requireNonNull(traegerschaftId);
 		Optional<Traegerschaft> traegerschaftOptional = findTraegerschaft(traegerschaftId);
 		Traegerschaft traegerschaft = traegerschaftOptional.orElseThrow(() -> new EbeguEntityNotFoundException("setInactive", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, traegerschaftId));
 
