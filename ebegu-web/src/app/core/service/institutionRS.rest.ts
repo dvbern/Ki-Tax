@@ -93,6 +93,12 @@ export class InstitutionRS {
         });
     }
 
+    public hasInstitutionenInStatusAngemeldet(): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/hasEinladungen/currentuser`).then((response: any) => {
+            return response.data;
+        });
+    }
+
     public getServiceName(): string {
         return 'InstitutionRS';
     }

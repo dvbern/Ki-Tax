@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IHttpBackendService, IQService, IScope} from 'angular';
+import AuthServiceRS from '../../../../../authentication/service/AuthServiceRS.rest';
 import BerechnungsManager from '../../../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
@@ -43,6 +44,7 @@ describe('pendenzenBetreuungenListView', () => {
     let berechnungsManager: BerechnungsManager;
     let $state: StateService;
     let gemeindeRS: GemeindeRS;
+    let authServiceRS: AuthServiceRS;
 
     beforeEach(angular.mock.module(PENDENZEN_BETREUUNGEN_JS_MODULE.name));
 
@@ -60,6 +62,7 @@ describe('pendenzenBetreuungenListView', () => {
         berechnungsManager = $injector.get('BerechnungsManager');
         $state = $injector.get('$state');
         gemeindeRS = $injector.get('GemeindeRS');
+        authServiceRS = $injector.get('AuthServiceRS');
     }));
 
     describe('API Usage', () => {
@@ -78,7 +81,8 @@ describe('pendenzenBetreuungenListView', () => {
                         gesuchModelManager,
                         berechnungsManager,
                         $state,
-                        gemeindeRS);
+                        gemeindeRS,
+                        authServiceRS);
                 pendenzBetreuungenListViewController.$onInit();
 
                 $scope.$apply();

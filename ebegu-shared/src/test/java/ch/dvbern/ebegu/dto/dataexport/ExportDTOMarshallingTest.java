@@ -148,8 +148,10 @@ public class ExportDTOMarshallingTest {
 		int anspPct = 60;
 		BigDecimal vergPct = BigDecimal.valueOf(60);
 		BigDecimal vollkosten = new BigDecimal("1370.05");
+		BigDecimal betreuungsgutschein = new BigDecimal("870.05");
+		BigDecimal minimalerElternbeitrag = new BigDecimal("50.05");
 		BigDecimal verg = new BigDecimal("690.45");
-		return new ZeitabschnittExportDTO(von, bis, effBet, anspPct, vergPct, vollkosten, verg);
+		return new ZeitabschnittExportDTO(von, bis, 0, effBet, anspPct, vergPct, vollkosten, betreuungsgutschein, minimalerElternbeitrag, verg);
 	}
 
 }
