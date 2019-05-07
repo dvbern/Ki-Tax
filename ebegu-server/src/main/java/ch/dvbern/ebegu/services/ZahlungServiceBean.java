@@ -43,8 +43,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -87,9 +89,9 @@ import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
 import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
@@ -139,6 +141,13 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Inject
 	private ZahlungUeberpruefungServiceBean zahlungUeberpruefungServiceBean;
+
+	@Inject
+	private Authorizer authorizer;
+
+	@Inject
+	private BenutzerService benutzerService;
+
 
 	@Override
 	@Nonnull
@@ -471,18 +480,17 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Objects.requireNonNull(datumFaelligkeit, "datumFaelligkeit muss gesetzt sein");
 		Objects.requireNonNull(beschreibung, "beschreibung muss gesetzt sein");
 
-		Optional<Zahlungsauftrag> auftragOptional = findZahlungsauftrag(auftragId);
-		if (auftragOptional.isPresent()) {
-			Zahlungsauftrag auftrag = auftragOptional.get();
-			// Auftrag kann nur im Status ENTWURF veraendert werden
-			if (auftrag.getStatus().isEntwurf()) {
-				auftrag.setBeschrieb(beschreibung);
-				auftrag.setDatumFaellig(datumFaelligkeit);
-				return persistence.merge(auftrag);
-			}
-			throw new IllegalStateException("Auftrag kann nicht mehr veraendert werden: " + auftragId);
+		Zahlungsauftrag auftrag = findZahlungsauftrag(auftragId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"zahlungsauftragAktualisieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId));
+
+		authorizer.checkWriteAuthorizationZahlungsauftrag(auftrag);
+		// Auftrag kann nur im Status ENTWURF veraendert werden
+		if (auftrag.getStatus().isEntwurf()) {
+			auftrag.setBeschrieb(beschreibung);
+			auftrag.setDatumFaellig(datumFaelligkeit);
+			return persistence.merge(auftrag);
 		}
-		throw new EbeguEntityNotFoundException("zahlungsauftragAktualisieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId);
+		throw new IllegalStateException("Auftrag kann nicht mehr veraendert werden: " + auftragId);
 	}
 
 	@Override
@@ -490,7 +498,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Zahlungsauftrag zahlungsauftragAusloesen(@Nonnull String auftragId) {
 		Objects.requireNonNull(auftragId, "auftragId muss gesetzt sein");
-		Zahlungsauftrag zahlungsauftrag = persistence.find(Zahlungsauftrag.class, auftragId);
+
+		Zahlungsauftrag zahlungsauftrag = findZahlungsauftrag(auftragId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"zahlungsauftragAktualisieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId));
+
+		authorizer.checkWriteAuthorizationZahlungsauftrag(zahlungsauftrag);
+
 		zahlungsauftrag.setStatus(ZahlungauftragStatus.AUSGELOEST);
 		// Jetzt muss noch das PAIN File erstellt werden. Nach dem Ausloesen kann dieses nicht mehr veraendert werden
 		try {
@@ -515,6 +528,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	public Optional<Zahlungsauftrag> findZahlungsauftrag(@Nonnull String auftragId) {
 		Objects.requireNonNull(auftragId, "auftragId muss gesetzt sein");
 		Zahlungsauftrag zahlungsauftrag = persistence.find(Zahlungsauftrag.class, auftragId);
+		authorizer.checkReadAuthorizationZahlungsauftrag(zahlungsauftrag);
 		return Optional.ofNullable(zahlungsauftrag);
 	}
 
@@ -525,6 +539,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	public Optional<Zahlung> findZahlung(@Nonnull String zahlungId) {
 		Objects.requireNonNull(zahlungId, "zahlungId muss gesetzt sein");
 		Zahlung zahlung = persistence.find(Zahlung.class, zahlungId);
+		authorizer.checkReadAuthorizationZahlung(zahlung);
 		return Optional.ofNullable(zahlung);
 	}
 
@@ -560,6 +575,25 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Collection<Zahlungsauftrag> getAllZahlungsauftraege() {
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getBenutzersOfRole", "Non logged in user should never reach this"));
+
+		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+			final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
+
+			Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
+			Join<Zahlungsauftrag, Gemeinde> joinGemeinde = root.join(Zahlungsauftrag_.gemeinde);
+
+			List<Predicate> predicates = new ArrayList<>();
+			Collection<Gemeinde> gemeindenForUser = currentBenutzer.extractGemeindenForUser();
+			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
+			predicates.add(inGemeinde);
+
+			query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+			return persistence.getCriteriaResults(query);
+		}
+		// Nicht Gemeinde-abhängige duerfen alle Auftraege sehen
 		return new ArrayList<>(criteriaQueryHelper.getAll(Zahlungsauftrag.class));
 	}
 
@@ -568,7 +602,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Zahlung zahlungBestaetigen(@Nonnull String zahlungId) {
 		Objects.requireNonNull(zahlungId, "zahlungId muss gesetzt sein");
-		Zahlung zahlung = persistence.find(Zahlung.class, zahlungId);
+		Zahlung zahlung = findZahlung(zahlungId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungBestaetigen",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungId));
+		authorizer.checkWriteAuthorizationZahlung(zahlung);
 		zahlung.setStatus(ZahlungStatus.BESTAETIGT);
 		Zahlung persistedZahlung = persistence.merge(zahlung);
 		zahlungauftragBestaetigenIfAllZahlungenBestaetigt(zahlung.getZahlungsauftrag());
