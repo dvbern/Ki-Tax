@@ -72,11 +72,8 @@ export class DVVersionController implements IController {
                     backendVersion: this.backendVersion,
                 });
             this.$window.alert(msg);
-
         });
 
-        // todo reviewer. This could be replace by a simple heartBeat() but then we need kind of a new Service,
-        //  Resource and all that. Do you think we should do it anyway?
         // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
         this.applicationPropertyRS.getBackgroundColor();
     }
@@ -84,5 +81,4 @@ export class DVVersionController implements IController {
     private updateDisplayVersion(): void {
         this.showSingleVersion = this.frontendVersion === this.backendVersion || this.backendVersion === null;
     }
-
 }
