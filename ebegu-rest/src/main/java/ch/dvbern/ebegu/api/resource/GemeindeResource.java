@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,8 +64,11 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -382,5 +386,27 @@ public class GemeindeResource {
 		return gemeindeService.getUnregisteredBfsGemeinden(bern).stream()
 			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
 			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Gemeinden in Status EINGELADEN", response = Boolean.class)
+	@Nonnull
+	@GET
+	@Path("/hasEinladungen/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hasGemeindenInStatusEingeladenForCurrentBenutzer() {
+		final Benutzer benutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguEntityNotFoundException("hasGemeindenInStatusEingeladenForCurrentBenutzer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+		Collection<Gemeinde> gemeindeList = new HashSet<>();
+		if (benutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			gemeindeList = benutzer.getCurrentBerechtigung().getGemeindeList();
+		} else if (benutzer.getCurrentBerechtigung().getRole() == UserRole.SUPER_ADMIN) {
+			gemeindeList = gemeindeService.getAllGemeinden();
+		}
+		long anzahl = gemeindeList.stream()
+			.filter(inst -> inst.getStatus() == GemeindeStatus.EINGELADEN)
+			.count();
+		return Response.ok(anzahl > 0).build();
 	}
 }
