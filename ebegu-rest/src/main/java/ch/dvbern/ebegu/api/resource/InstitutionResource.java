@@ -16,9 +16,7 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,9 +53,11 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -113,6 +113,7 @@ public class InstitutionResource {
 					!Objects.equals(b.getTraegerschaft(), persistedInstitution.getTraegerschaft())) {
 					// an existing user cannot be used to create a new Institution
 					throw new EbeguRuntimeException(
+						KibonLogLevel.INFO,
 						"createInstitution",
 						ErrorCodeEnum.EXISTING_USER_MAIL,
 						adminMail);
@@ -265,5 +266,18 @@ public class InstitutionResource {
 		return institutionService.getAllowedInstitutionenForCurrentBenutzer(true).stream()
 			.map(inst -> converter.institutionToJAX(inst))
 			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Institutionen in Status EINGELADEN", response = Boolean.class)
+	@Nonnull
+	@GET
+	@Path("/hasEinladungen/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hasInstitutionenInStatusEingeladenForCurrentBenutzer() {
+		long anzahl = institutionService.getAllowedInstitutionenForCurrentBenutzer(true).stream()
+			.filter(inst -> inst.getStatus() == InstitutionStatus.EINGELADEN)
+			.count();
+		return Response.ok(anzahl > 0).build();
 	}
 }
