@@ -1207,8 +1207,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public changedBesondereBeduerfnisse(): void {
         const betreuung = this.getBetreuungModel();
         const erweiterteBetreuung = this.getErweiterteBetreuungJA();
-        this.erneutePlatzbestaetigungErforderlich = betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT &&
-            erweiterteBetreuung.erweiterteBeduerfnisse &&
-            !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
+
+        this.erneutePlatzbestaetigungErforderlich = betreuung.betreuungsstatus === TSBetreuungsstatus.BESTAETIGT
+            && erweiterteBetreuung.erweiterteBeduerfnisse
+            && !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
     }
 }

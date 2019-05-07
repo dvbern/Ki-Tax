@@ -1564,5 +1564,5 @@
     "WARNUNG_INSTITUTIONEN_IN_STATUS_ANMELDUNG": "Sie haben noch Institutionen, die nicht aktiviert sind. Bitte vervollständigen Sie deren Angaben. Nur aktive Institutionen können Betreuungsgutscheine entgegennehmen.",
     "WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG": "Nicht aktivierte Gemeinden können keine Betreuungsgutscheine ausstellen. Bitte vervollständigen Sie alle Angaben Ihrer Gemeinden.",
     "ZUR_LISTE": "Zur Liste",
-    "ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT": "Diese Änderung erfordert eine erneute Platzbestätigung, da die Institution die Verrechnung für den ausserordentlichen Betreuungsaufwand bestäigen muss."
+    "ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT": "Diese Änderung erfordert eine erneute Platzbestätigung, da die Institution die Verrechnung für den ausserordentlichen Betreuungsaufwand bestätigen muss."
 }
