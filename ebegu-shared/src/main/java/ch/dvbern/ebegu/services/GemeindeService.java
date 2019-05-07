@@ -98,7 +98,11 @@ public interface GemeindeService {
 	 * Updates the logo of the given Gemeinde wth the given content
 	 */
 	@Nonnull
-	GemeindeStammdaten uploadLogo(@Nonnull String gemeindeId, @Nonnull byte[] content);
+	GemeindeStammdaten uploadLogo(
+		@Nonnull String gemeindeId,
+		@Nonnull byte[] content,
+		@Nonnull String name,
+		@Nonnull String type);
 
 	/**
 	 * Gibt eine Liste aller BFS Gemeinden dieses Mandanten zurueck, welche noch nicht fuer KiBon registriert sind.

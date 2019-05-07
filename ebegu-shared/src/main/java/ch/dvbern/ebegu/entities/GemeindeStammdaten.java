@@ -113,6 +113,14 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Lob
 	private byte[] logoContent;
 
+	@Nullable
+	@Column(nullable = true)
+	private String logoName;
+
+	@Nullable
+	@Column(nullable = true)
+	private String logoType;
+
 	@NotNull
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String kontoinhaber;
@@ -229,6 +237,24 @@ public class GemeindeStammdaten extends AbstractEntity {
 		} else {
 			this.logoContent = Arrays.copyOf(logoContent, logoContent.length);
 		}
+	}
+
+	@Nullable
+	public String getLogoName() {
+		return logoName;
+	}
+
+	public void setLogoName(@Nullable String logoName) {
+		this.logoName = logoName;
+	}
+
+	@Nullable
+	public String getLogoType() {
+		return logoType;
+	}
+
+	public void setLogoType(@Nullable String logoType) {
+		this.logoType = logoType;
 	}
 
 	@SuppressFBWarnings("NM_CONFUSING")

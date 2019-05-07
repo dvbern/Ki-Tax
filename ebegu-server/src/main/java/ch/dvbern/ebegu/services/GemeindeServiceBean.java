@@ -86,7 +86,6 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Inject
 	private Authorizer authorizer;
 
-
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
@@ -105,7 +104,11 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Gemeinde createGemeinde(@Nonnull Gemeinde gemeinde) {
 		if (findGemeindeByName(gemeinde.getName()).isPresent()) {
-			throw new EntityExistsException(Gemeinde.class, "name", gemeinde.getName(), ErrorCodeEnum.ERROR_DUPLICATE_GEMEINDE_NAME);
+			throw new EntityExistsException(
+				Gemeinde.class,
+				"name",
+				gemeinde.getName(),
+				ErrorCodeEnum.ERROR_DUPLICATE_GEMEINDE_NAME);
 		}
 		final Long bfsNummer = gemeinde.getBfsNummer();
 		if (findGemeindeByBSF(bfsNummer).isPresent()) {
@@ -128,13 +131,15 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	@Override
 	public Optional<Gemeinde> findGemeindeByName(@Nonnull String name) {
 		requireNonNull(name, "Gemeindename muss gesetzt sein");
-		Optional<Gemeinde> gemeindeOpt = criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
+		Optional<Gemeinde> gemeindeOpt =
+			criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, name, Gemeinde_.name);
 		return gemeindeOpt;
 	}
 
 	@Nonnull
 	private Optional<Gemeinde> findGemeindeByBSF(@Nullable Long bsf) {
-		Optional<Gemeinde> gemeindeOpt = criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, bsf, Gemeinde_.bfsNummer);
+		Optional<Gemeinde> gemeindeOpt =
+			criteriaQueryHelper.getEntityByUniqueAttribute(Gemeinde.class, bsf, Gemeinde_.bfsNummer);
 		return gemeindeOpt;
 	}
 
@@ -232,7 +237,8 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS, SACHBEARBEITER_GEMEINDE,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE, SACHBEARBEITER_BG, SACHBEARBEITER_TS,
+		SACHBEARBEITER_GEMEINDE,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public GemeindeStammdaten saveGemeindeStammdaten(@Nonnull GemeindeStammdaten stammdaten) {
 		requireNonNull(stammdaten);
@@ -245,14 +251,22 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	public GemeindeStammdaten uploadLogo(@Nonnull String gemeindeId, @Nonnull byte[] content) {
+	public GemeindeStammdaten uploadLogo(
+		@Nonnull String gemeindeId,
+		@Nonnull byte[] content,
+		@Nonnull String name,
+		@Nonnull String type) {
 		requireNonNull(gemeindeId);
 		requireNonNull(content);
+		requireNonNull(name);
+		requireNonNull(type);
 
 		final GemeindeStammdaten stammdaten = getGemeindeStammdatenByGemeindeId(gemeindeId).orElseThrow(
 			() -> new EbeguEntityNotFoundException("uploadLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId)
 		);
 		stammdaten.setLogoContent(content);
+		stammdaten.setLogoName(name);
+		stammdaten.setLogoType(type);
 		return saveGemeindeStammdaten(stammdaten);
 	}
 
