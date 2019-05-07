@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>kiBon – Ihre Mutation wurde bearbeitet</@base64Header>
+Subject: <@base64Header>kiBon – Le changement a été enregistré</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon – Ihre Mutation wurde bearbeitet</title>
+	<title>kiBon – Le changement a été enregistré</title>
 
 </head>
 
@@ -21,20 +21,19 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Sehr geehrte Familie
+		Chère famille,
 	</p>
 	<p>
-		Am ${gesuch.getEingangsdatumFormated()} haben Sie via kiBon eine Mutation eingereicht.
-		Wir haben die Mutation bearbeitet und Sie können das Ergebnis
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
-		einsehen.
+		Le changement que vous avez communiqué le ${gesuch.getEingangsdatumFormated()} a été enregistré.
+		Vous pouvez consulter le résultat
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+		Veuillez agréer nos salutations les meilleures,	<br/>
+		Votre commune ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>kiBon – Anmeldung entgegengenommen</@base64Header>
+Subject: <@base64Header>kiBon – Inscription acceptée</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon – Anmeldung entgegengenommen</title>
+	<title>kiBon – Inscription acceptée</title>
 
 </head>
 
@@ -21,21 +21,19 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Sehr geehrte Familie
+		Chère famille,
 	</p>
 	<p>
-		Ihre Anmeldung für ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} wurde entgegengenommen. Sie erhalten die
-		definitive Bestätigung der Anmeldung von der gewählten Institution. <br/>
-		Die Betreuungsangebote können
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">hier</a>
-		eingesehen werden.
+		Votre inscription pour ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} a été acceptée.
+		L'institution choisie vous fera parvenir la confirmation d'inscription définitive. Vous pouvez consulter la liste des offres de prise en charge
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">ici</a>.
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Veuillez agréer nos salutations les meilleures,	<br/>
+		Votre commune ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

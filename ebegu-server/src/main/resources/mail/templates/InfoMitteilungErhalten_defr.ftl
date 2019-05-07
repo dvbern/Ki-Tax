@@ -4,7 +4,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${mitteilung.empfaenger.fullName} <${empfaengerMail}>
-Subject: <@base64Header>kiBon - Neue Nachricht der Gemeinde ${mitteilung.dossier.gemeinde.name}</@base64Header>
+Subject: <@base64Header>kiBon - Neue Nachricht der Gemeinde ${mitteilung.dossier.gemeinde.name} / Nouveau message de la commune ${mitteilung.dossier.gemeinde.name}</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -12,7 +12,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon - Neue Nachricht der Gemeinde ${mitteilung.dossier.gemeinde.name}</title>
+	<title>kiBon - Neue Nachricht der Gemeinde ${mitteilung.dossier.gemeinde.name} / Nouveau message de la commune ${mitteilung.dossier.gemeinde.name}</title>
 
 </head>
 
@@ -33,6 +33,23 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+	</p>
+
+	<hr>
+
+	<p>
+		Chère famille,
+	</p>
+	<p>
+		La commune ${mitteilung.dossier.gemeinde.name} vous a envoyé un <a href="<#if configuration
+	.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/mitteilungen/${mitteilung.dossier.fall.id}/${mitteilung.dossier.id}/">message</a>.
+	</p>
+	<p>
+		Veuillez agréer nos salutations les meilleures,	<br/>
+		Votre commune ${mitteilung.dossier.gemeinde.name}
+	</p>
+	<p>
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

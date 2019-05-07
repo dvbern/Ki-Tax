@@ -7,7 +7,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 From: ${configuration.senderAddress}
 To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
-Subject: <@base64Header>kiBon – Freigabequittung ausstehend</@base64Header>
+Subject: <@base64Header>kiBon – Confirmation des données à remettre</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -15,7 +15,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon – Freigabequittung ausstehend</title>
+	<title>kiBon – Confirmation des données à remettre</title>
 
 </head>
 
@@ -23,29 +23,24 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Guten Tag
+		Bonjour,
 	</p>
 	<p>
-		Sie haben via kiBon Ihr Gesuch vollständig erfasst, besten Dank!
+		Vous avez déposé une demande via kiBon pour laquelle vous les données n'ont pas encore été confirmées.
+		Le formulaire, qui peut être téléchargé
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">ici</a>, est à remettre dûment signé et au plus vite par courrier postal à ${adresse} faute de quoi votre demande
+		sera considérée comme non valable. Elle ne pourra pas être traitée et sera automatiquement supprimée le ${datumLoeschung}.
 	</p>
 	<p>
-		Leider ist Ihre Freigabequittung bisher nicht bei uns eingetroffen.
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">Hier</a>
-		können Sie Ihre Freigabequittung nochmals herunterladen. Bitte schicken Sie uns die unterschriebene
-		Freigabequittung umgehend per Post an ${adresse}.
-		Andernfalls gilt Ihr Gesuch nicht nicht als eingereicht, kann nicht bearbeitet werden und wird am
-    ${datumLoeschung} automatisch gelöscht.
+		Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition que celle-ci soit assortie de tous les documents
+		requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
 	</p>
 	<p>
-		Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Gesuchs
-		und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird.
+		Veuillez agréer nos salutations les meilleures,	<br/>
+		Votre commune ${gesuch.dossier.gemeinde.name}
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
-	</p>
-	<p>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

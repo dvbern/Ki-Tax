@@ -9,7 +9,7 @@
 <#-- @ftlvariable name="acceptExpire" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${eingeladener.email}
-Subject: <@base64Header>kiBon – Einladung</@base64Header>
+Subject: <@base64Header>kiBon – Einladung / Confirmation</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -17,7 +17,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>kiBon – Einladung</title>
+    <title>kiBon – Einladung / Confirmation</title>
 
 </head>
 
@@ -56,6 +56,39 @@ ${templateConfiguration.mailCss}
         Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
     </p>
 
+	<hr>
+
+    <p>
+		${contentFR}
+    </p>
+    <p>
+    <table cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+            <td>
+                <table border="0" class="mobile-button" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td align="center" bgcolor="#d50025" style="background-color: #d50025; margin: auto; max-width: 600px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; padding: 10px 15px; " width="100%">
+                            <!--[if mso]>&nbsp;<![endif]-->
+                            <a href="${acceptLink}" target="_blank" style="color: #ffffff; font-weight:normal; text-align:center; background-color: #d50025; text-decoration: none; border: none; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; display: inline-block;">
+                                <span style="color: #ffffff; font-weight:normal; line-height:1.5em; text-align:center;">CONFIRMATION</span>
+                            </a>
+                            <!--[if mso]>&nbsp;<![endif]-->
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    </p>
+    <p>
+		Ce lien est actif jusqu’au <strong>${acceptExpire}</strong>.
+    </p>
+    <p>
+		${footerFR}
+    </p>
+    <p>
+		Merci de ne pas répondre à ce message automatique.
+    </p>
 </div>
 
 </body>
