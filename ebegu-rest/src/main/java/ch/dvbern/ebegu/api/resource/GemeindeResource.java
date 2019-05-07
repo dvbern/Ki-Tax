@@ -364,8 +364,8 @@ public class GemeindeResource {
 		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 		if (stammdaten.isPresent()) {
 			try {
-				return RestUtil.buildDownloadResponse(false, "logo.png",
-					"image/*", stammdaten.get().getLogoContent());
+				return RestUtil.buildDownloadResponse(false, "logo.jpeg",
+					"image/jpeg", stammdaten.get().getLogoContent());
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
 			}
