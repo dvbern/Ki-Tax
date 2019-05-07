@@ -1073,7 +1073,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableErweiterteBeduerfnisse(): boolean {
-        if (!this.gesuchModelManager.getGesuch()) {
+        if (!this.gesuchModelManager.getGesuch() || this.isGesuchReadonly()) {
             return false;
         }
         const gesuchsteller = this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles());
