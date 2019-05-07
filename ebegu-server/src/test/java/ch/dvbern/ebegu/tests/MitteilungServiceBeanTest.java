@@ -489,14 +489,18 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger() {
+		prepareDependentObjects("gesuchst");
+
 		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
 		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
 		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerINST));
 		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(sender));
 
+		dossier = persistence.merge(dossier);
+
 		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilungService.sendMitteilung(mitteilung1);
+		persistence.persist(mitteilung1);
 
 		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
 		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
@@ -505,7 +509,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 
 		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
-		mitteilungService.sendMitteilung(mitteilung2);
+		persistence.persist(mitteilung2);
 
 		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
 		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
