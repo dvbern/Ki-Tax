@@ -137,12 +137,17 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
             this.setBemerkungen();
+            this.setParamsDependingOnCurrentVerfuegung();
         } else {
             this.gesuchModelManager.calculateVerfuegungen().then(() => {
                 this.setBemerkungen();
+                this.setParamsDependingOnCurrentVerfuegung();
             });
         }
         this.initDevModeParameter();
+    }
+
+    private setParamsDependingOnCurrentVerfuegung(): void {
         this.setSameVerfuegungsdaten();
         this.setSameVerrechneteVerfuegungdaten();
     }
