@@ -189,6 +189,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.sameVerrechneteVerguenstigung;
     }
 
+    private isAlreadyIgnored(): boolean {
+        if (this.getVerfuegenToWorkWith()) {
+            return this.getVerfuegenToWorkWith().isAlreadyIgnored();
+        }
+        return false; // by default
+    }
+
     public save(): void {
         this.isVerfuegenClicked = true;
         if (!this.isGesuchValid() || !this.isVerfuegenValid()) {
@@ -196,10 +203,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         const isAngebotKITA = this.getBetreuung().isAngebotKITA();
-        const promise = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation() ?
-            this.saveVerfuegung() :
+        const promise = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
+        || this.isAlreadyIgnored()
+            ? this.saveVerfuegung()
             // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
-            this.saveMutierteVerfuegung();
+            : this.saveMutierteVerfuegung();
 
         promise.then(() => this.goToVerfuegen());
     }

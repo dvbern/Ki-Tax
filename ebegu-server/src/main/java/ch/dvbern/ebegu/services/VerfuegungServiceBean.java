@@ -159,7 +159,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 					if (zeitabschnittSameGueltigkeitSameBetrag.isPresent()) {
 						// Es hat ueberhaupt nichts geaendert seit dem letztem Gesuch. Falls es schon verrechnet war, bleibt
 						// es somit verrechnet. Sonst neu
-						if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerVerfuegung)) {
+						if (isThereAnyIgnoriert(zeitabschnitteOnVorgaengerVerfuegung)) {
+							// zeitabschnitte werden immer ignoriert wenn der Benutzer es ignorieren will oder wenn es bereits ignoriert wurde
+							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
+						} else if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerVerfuegung)) {
 							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
 						} else {
 							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
@@ -192,7 +195,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	private boolean isThereAnyIgnoriert(List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		return zeitabschnitte.stream()
-			.anyMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriert());
+			.anyMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriertIgnorierend());
 	}
 
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
