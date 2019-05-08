@@ -216,8 +216,8 @@ export class TestdatenViewComponent implements OnInit {
         });
     }
 
-    public zahlungenKontrollieren(): void {
-        this.zahlungRS.zahlungenKontrollieren();
+    public zahlungenKontrollieren(gemeinde: TSGemeinde): void {
+        this.zahlungRS.zahlungenKontrollieren(gemeinde);
     }
 
     public deleteAllZahlungsauftraege(): void {

@@ -18,6 +18,7 @@ import * as moment from 'moment';
 import {from, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSZahlung from '../../../models/TSZahlung';
 import TSZahlungsauftrag from '../../../models/TSZahlungsauftrag';
 import DateUtil from '../../../utils/DateUtil';
@@ -87,6 +88,7 @@ export default class ZahlungRS {
     }
 
     public createZahlungsauftrag(
+        gemeinde: TSGemeinde,
         beschrieb: string,
         faelligkeitsdatum: moment.Moment,
         datumGeneriert: moment.Moment,
@@ -94,21 +96,15 @@ export default class ZahlungRS {
         return this.http.get(`${this.serviceURL}/create`,
             {
                 params: {
+                    gemeindeId: gemeinde.id,
                     faelligkeitsdatum: DateUtil.momentToLocalDate(faelligkeitsdatum),
                     beschrieb,
                     datumGeneriert: DateUtil.momentToLocalDate(datumGeneriert),
                 },
             }).then((httpresponse: any) => {
             // Direkt die Zahlungspruefung durchfuehren
-            this.pruefeZahlungen();
+            this.zahlungenKontrollieren(gemeinde);
             return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse.data);
-        });
-    }
-
-    public pruefeZahlungen(): void {
-        this.$log.debug('Zahlungspruefung ausloesen...');
-        this.http.get(`${this.serviceURL}/pruefen`).then(() => {
-            this.$log.debug('... Zahlungspruefung durchgefuehrt ');
         });
     }
 
@@ -129,8 +125,8 @@ export default class ZahlungRS {
         });
     }
 
-    public zahlungenKontrollieren(): IPromise<IHttpResponse<any>> {
-        return this.http.get(`${this.serviceURL}/kontrollieren`);
+    public zahlungenKontrollieren(gemeinde: TSGemeinde): IPromise<IHttpResponse<any>> {
+        return this.http.get(`${this.serviceURL}/kontrollieren/${encodeURIComponent(gemeinde.id)}`);
     }
 
     public getZahlungsauftragForRole$(role: TSRole, zahlungsauftragId: string): Observable<TSZahlungsauftrag | null> {

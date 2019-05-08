@@ -1,4 +1,5 @@
 # Wir muessen allenfalls bestehende Zahlungsauftraege loeschen
+DELETE FROM pain001dokument;
 DELETE FROM zahlungsposition;
 DELETE FROM zahlung;
 DELETE FROM zahlungsauftrag;

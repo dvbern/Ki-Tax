@@ -200,6 +200,7 @@ public class ZahlungResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
 	public JaxZahlungsauftrag createZahlung(
+		@QueryParam("gemeindeId") String gemeindeId,
 		@QueryParam("faelligkeitsdatum") String stringFaelligkeitsdatum,
 		@QueryParam("beschrieb") String beschrieb,
 		@Nullable @QueryParam("datumGeneriert") String stringDatumGeneriert) throws EbeguRuntimeException {
@@ -212,21 +213,9 @@ public class ZahlungResource {
 			datumGeneriert = LocalDateTime.now();
 		}
 
-		final Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragErstellen(faelligkeitsdatum, beschrieb, datumGeneriert);
+		final Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragErstellen(gemeindeId, faelligkeitsdatum, beschrieb, datumGeneriert);
 
 		return converter.zahlungsauftragToJAX(zahlungsauftrag, false);
-	}
-
-	@ApiOperation("Ueberprueft die Zahlungen")
-	@Nonnull
-	@GET
-	@Path("/pruefen")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.WILDCARD)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
-	public Response pruefeZahlungen() {
-		zahlungService.zahlungenKontrollieren();
-		return Response.ok().build();
 	}
 
 	@ApiOperation(value = "Aktualisiert einen Zahlungsauftrag", response = JaxZahlungsauftrag.class)
@@ -278,10 +267,10 @@ public class ZahlungResource {
 
 	@ApiOperation("Zahlungsauftrag kontrollieren")
 	@GET
-	@Path("/kontrollieren")
-	@RolesAllowed(SUPER_ADMIN)
-	public Response zahlungenKontrollieren() {
-		zahlungService.zahlungenKontrollieren();
+	@Path("/kontrollieren/{gemeindeId}")
+	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
+	public Response zahlungenKontrollieren(@Nonnull @NotNull @PathParam("gemeindeId") String gemeindeId) {
+		zahlungService.zahlungenKontrollieren(gemeindeId);
 		return Response.ok().build();
 	}
 }

@@ -46,6 +46,8 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -148,20 +150,29 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Inject
 	private BenutzerService benutzerService;
 
+	@Inject
+	private GemeindeService gemeindeService;
+
 
 	@Override
 	@Nonnull
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
-	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung) {
-		return zahlungsauftragErstellen(datumFaelligkeit, beschreibung, LocalDateTime.now());
+	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung) {
+		return zahlungsauftragErstellen(gemeindeId, datumFaelligkeit, beschreibung, LocalDateTime.now());
 	}
 
 	@Override
 	@Nonnull
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
-	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung, @Nonnull LocalDateTime datumGeneriert) {
+	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung,
+		@Nonnull LocalDateTime datumGeneriert) {
+
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("findEinstellung",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		authorizer.checkWriteAuthorization(gemeinde);
+
 		// Es darf immer nur ein Zahlungsauftrag im Status ENTWURF sein
-		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag();
+		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(gemeinde);
 		if (lastZahlungsauftrag.isPresent() && lastZahlungsauftrag.get().getStatus().isEntwurf()) {
 			throw new EbeguRuntimeException("zahlungsauftragErstellen", ErrorCodeEnum.ERROR_ZAHLUNG_ERSTELLEN);
 		}
@@ -172,6 +183,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		zahlungsauftrag.setBeschrieb(beschreibung);
 		zahlungsauftrag.setDatumFaellig(datumFaelligkeit);
 		zahlungsauftrag.setDatumGeneriert(datumGeneriert);
+		zahlungsauftrag.setGemeinde(gemeinde);
 
 		// Alle aktuellen (d.h. der letzte Antrag jedes Falles) Verfuegungen suchen, welche ein Kita-Angebot haben
 		// Wir brauchen folgende Daten:
@@ -210,7 +222,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// "Normale" Zahlungen
 		if (!isRepetition) {
 			LOGGER.info("Ermittle normale Zahlungen im Zeitraum {}", zahlungsauftrag.getGueltigkeit().toRangeString());
-			Collection<VerfuegungZeitabschnitt> gueltigeVerfuegungZeitabschnitte = getGueltigeVerfuegungZeitabschnitte(zeitabschnittVon, zeitabschnittBis);
+			Collection<VerfuegungZeitabschnitt> gueltigeVerfuegungZeitabschnitte = getGueltigeVerfuegungZeitabschnitte(gemeinde, zeitabschnittVon,
+				zeitabschnittBis);
 			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) {
 				if (zeitabschnitt.getZahlungsstatus().isNeu()) {
 					createZahlungsposition(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
@@ -227,7 +240,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		if (isTestMode) {
 			lastZahlungErstellt = Constants.START_OF_DATETIME;
 		}
-		Collection<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = getVerfuegungsZeitabschnitteNachVerfuegungDatum(lastZahlungErstellt, zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
+		Collection<VerfuegungZeitabschnitt> verfuegungsZeitabschnitte = getVerfuegungsZeitabschnitteNachVerfuegungDatum(gemeinde, lastZahlungErstellt,
+			zahlungsauftrag.getDatumGeneriert(), stichtagKorrekturen);
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
 			if (zeitabschnitt.getZahlungsstatus().isIgnorierend() || zeitabschnitt.getZahlungsstatus().isNeu()) {
 				createZahlungspositionenKorrekturUndNachzahlung(zeitabschnitt, zahlungsauftrag, zahlungProInstitution);
@@ -269,7 +283,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	 * Ermittelt die aktuell gueltigen Verfuegungszeitabschnitte fuer die normale monatliche Zahlung (keine Korrekturen).
 	 */
 	@Nonnull
-	private Collection<VerfuegungZeitabschnitt> getGueltigeVerfuegungZeitabschnitte(@Nonnull LocalDate zeitabschnittVon, @Nonnull LocalDate zeitabschnittBis) {
+	private Collection<VerfuegungZeitabschnitt> getGueltigeVerfuegungZeitabschnitte(@Nonnull Gemeinde gemeinde, @Nonnull LocalDate zeitabschnittVon,
+		@Nonnull LocalDate zeitabschnittBis) {
 		Objects.requireNonNull(zeitabschnittVon, "zeitabschnittVon muss gesetzt sein");
 		Objects.requireNonNull(zeitabschnittBis, "zeitabschnittBis muss gesetzt sein");
 
@@ -278,6 +293,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
 		Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung);
 		Join<Verfuegung, Betreuung> joinBetreuung = joinVerfuegung.join(Verfuegung_.betreuung);
+		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(Betreuung_.kind);
+		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier);
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -296,6 +314,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Status der Betreuung muss VERFUEGT oder STORINERT sein
 		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT, Betreuungsstatus.STORNIERT);
 		predicates.add(predicateStatus);
+		// Das Dossier muss der uebergebenen Gemeinde zugeordnet sein
+		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
+		predicates.add(predicateGemeinde);
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
@@ -305,7 +326,11 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	 * Ermittelt alle Zeitabschnitte, welche zu Antraegen gehoeren, die seit dem letzten Zahlungslauf verfuegt wurden.
 	 */
 	@Nonnull
-	private Collection<VerfuegungZeitabschnitt> getVerfuegungsZeitabschnitteNachVerfuegungDatum(@Nonnull LocalDateTime datumVerfuegtVon, @Nonnull LocalDateTime datumVerfuegtBis, @Nonnull LocalDate zeitabschnittBis) {
+	private Collection<VerfuegungZeitabschnitt> getVerfuegungsZeitabschnitteNachVerfuegungDatum(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull LocalDateTime datumVerfuegtVon,
+		@Nonnull LocalDateTime datumVerfuegtBis,
+		@Nonnull LocalDate zeitabschnittBis) {
 		Objects.requireNonNull(datumVerfuegtVon, "datumVerfuegtVon muss gesetzt sein");
 		Objects.requireNonNull(datumVerfuegtBis, "datumVerfuegtBis muss gesetzt sein");
 		Objects.requireNonNull(zeitabschnittBis, "zeitabschnittBis muss gesetzt sein");
@@ -321,6 +346,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Join<Verfuegung, Betreuung> joinBetreuung = joinVerfuegung.join(Verfuegung_.betreuung);
 		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(Betreuung_.kind);
 		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier);
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -339,6 +365,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Status der Betreuung muss VERFUEGT oder STORINERT sein
 		Predicate predicateStatus = joinBetreuung.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.VERFUEGT, Betreuungsstatus.STORNIERT);
 		predicates.add(predicateStatus);
+		// Das Dossier muss der uebergebenen Gemeinde zugeordnet sein
+		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
+		predicates.add(predicateGemeinde);
 
 		query.orderBy(cb.asc(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigAb)));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
@@ -458,12 +487,16 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	/**
 	 * Ermittelt den zuletzt durchgefuehrten Zahlungsauftrag
 	 */
-	@Override
 	@Nonnull
-	public Optional<Zahlungsauftrag> findLastZahlungsauftrag() {
+	private Optional<Zahlungsauftrag> findLastZahlungsauftrag(@Nonnull Gemeinde gemeinde) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
 		Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
+
+		// Der Zahlungsauftrag muss der uebergebenen Gemeinde zugeordnet sein
+		Predicate predicateGemeinde = cb.equal(root.get(Zahlungsauftrag_.gemeinde), gemeinde);
+		query.where(predicateGemeinde);
+
 		query.orderBy(cb.desc(root.get(Zahlungsauftrag_.timestampErstellt)));
 		List<Zahlungsauftrag> criteriaResults = persistence.getCriteriaResults(query, 1);
 		if (!criteriaResults.isEmpty()) {
@@ -620,9 +653,24 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
 
 		Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
-		Predicate predicates = cb.between(root.get(Zahlungsauftrag_.datumGeneriert), cb.literal(von.atStartOfDay()), cb.literal(bis.atTime(LocalTime.MAX)));
+		List<Predicate> predicatesToUse = new ArrayList<>();
 
-		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		// Zeitraum
+		Predicate predicateZeitraum = cb.between(root.get(Zahlungsauftrag_.datumGeneriert), cb.literal(von.atStartOfDay()), cb.literal(bis.atTime(LocalTime.MAX)));
+		predicatesToUse.add(predicateZeitraum);
+
+		// Gemeinde
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getBenutzersOfRole", "Non logged in user should never reach this"));
+
+		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			Join<Zahlungsauftrag, Gemeinde> joinGemeinde = root.join(Zahlungsauftrag_.gemeinde);
+
+			Collection<Gemeinde> gemeindenForUser = currentBenutzer.extractGemeindenForUser();
+			Predicate inGemeinde = joinGemeinde.in(gemeindenForUser);
+			predicatesToUse.add(inGemeinde);
+		}
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicatesToUse));
 		return persistence.getCriteriaResults(query);
 
 	}
@@ -707,8 +755,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Override
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
-	public void zahlungenKontrollieren() {
-		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag();
+	public void zahlungenKontrollieren(@Nonnull String gemeindeId) {
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(gemeinde);
 		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(zahlungsauftrag.getDatumGeneriert()));
 	}
 }
