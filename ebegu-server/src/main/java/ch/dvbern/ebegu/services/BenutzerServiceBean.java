@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Berechtigung_;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten_;
@@ -157,6 +158,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private FallService fallService;
+
+	@Inject
+	private MitteilungService mitteilungService;
 
 	@Nonnull
 	@Override
@@ -1250,5 +1257,54 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		TypedQuery<GemeindeStammdaten> q = persistence.getEntityManager().createQuery(query);
 		q.setParameter(benutzerParam, username);
 		return !q.getResultList().isEmpty();
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void deleteBenutzerIfAllowed(@Nonnull String id) {
+		Objects.requireNonNull(id);
+
+		if (!isBenutzerDeleteable(id)) {
+			return;
+		}
+
+		Optional<Benutzer> benutzerOptional = findBenutzerById(id);
+		if (benutzerOptional.isPresent()) {
+			Benutzer benutzer = benutzerOptional.get();
+
+			authorizer.checkWriteAuthorization(benutzer);
+			LOG.warn("Benutzer wird gelöscht: {}", benutzer);
+			authService.logoutAndDeleteAuthorisierteBenutzerForUser(benutzer.getUsername());
+			persistence.remove(benutzer);
+		}
+	}
+
+	private boolean isBenutzerDeleteable(@Nonnull String id) {
+		Optional<Benutzer> benutzerOptional = findBenutzerById(id);
+		if (benutzerOptional.isPresent()) {
+			Benutzer benutzer = benutzerOptional.get();
+			if (benutzer.getRole() == UserRole.GESUCHSTELLER) {
+				// Gesuchsteller darf noch kein Dossier haben
+				Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
+				if (fallOptional.isPresent()) {
+					return false;
+				}
+			} else {
+				// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
+				if (benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
+					return false;
+				}
+			}
+			// Es darf keine Mitteilungen von oder an diesen Benutzer geben
+			if (mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(benutzer)) {
+				return false;
+			}
+			// Der Benutzer darf nirgends als Default-Benutzer gesetzt sein
+			if (isBenutzerDefaultBenutzerOfAnyGemeinde(benutzer.getUsername())) {
+				return false;
+			}
+			return true;
+		}
+		return false;
 	}
 }
