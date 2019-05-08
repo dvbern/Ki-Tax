@@ -271,13 +271,14 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	public void deleteBenutzerIfAllowed_SachbearbeiterMitEinladung() {
 		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.SUPER_ADMIN, "gesu1", null, null, getDummySuperadmin().getMandant(), "Gesuchsteller",
 			"Gertrude");
+
 		benutzer1.setStatus(BenutzerStatus.EINGELADEN);
 
 		Einladung einladung = Einladung.forRolle(benutzer1);
 		benutzerService.einladen(einladung);
 
 		benutzerService.deleteBenutzerIfAllowed(benutzer1.getId());
-		Assert.assertTrue("Benutzer wurde nicht gelöscht", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
+		Assert.assertFalse("Benutzer konnte gelöscht werden", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
 	}
 
 	private void assertCommonBenutzerFields(String adminMail, Benutzer adminTraegerschaft) {

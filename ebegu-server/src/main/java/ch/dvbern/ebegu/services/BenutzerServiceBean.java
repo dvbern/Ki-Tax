@@ -1291,7 +1291,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 				}
 			} else {
 				// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
-				return benutzer.getStatus() != BenutzerStatus.EINGELADEN;
+				if (benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
+					return false;
+				}
 			}
 			// Es darf keine Mitteilungen von oder an diesen Benutzer geben
 			if (mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(benutzer)) {

@@ -214,12 +214,17 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		}
 
 		// Überprüfen, ob die external ID schon besetzt ist
-		Optional<Benutzer> existingBenutzerWithExternalUuidOptional = benutzerService.findBenutzerByExternalUUID(externalBenutzer.getExternalUUID());
+		Optional<Benutzer> existingBenutzerWithExternalUuidOptional =
+			benutzerService.findBenutzerByExternalUUID(externalBenutzer.getExternalUUID());
 		if (existingBenutzerWithExternalUuidOptional.isPresent()) {
 			Benutzer duplicatedBenutzer = existingBenutzerWithExternalUuidOptional.get();
 			duplicatedBenutzer.setExternalUUID(null);
-			LOG.warn("Es wurde ein bestehender Benutzer mit derselben externalUUID gefunden. Falls möglich, wird dieser gelöscht. username={} externalUUID={}"
-				, duplicatedBenutzer.getUsername(), duplicatedBenutzer.getExternalUUID());
+			LOG.warn(
+				"Es wurde ein bestehender Benutzer mit derselben externalUUID gefunden. Falls möglich, wird dieser "
+					+ "gelöscht. username={} externalUUID={}"
+				,
+				duplicatedBenutzer.getUsername(),
+				duplicatedBenutzer.getExternalUUID());
 			benutzerService.deleteBenutzerIfAllowed(duplicatedBenutzer.getId());
 		}
 
@@ -234,7 +239,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(updatedBenutzer), null);
 	}
 
-	private JaxBenutzerResponseWrapper convertBenutzerResponseWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg) {
+	private JaxBenutzerResponseWrapper convertBenutzerResponseWrapperToJax(
+		@NotNull JaxExternalBenutzer benutzer,
+		@Nullable String msg) {
 		JaxBenutzerResponseWrapper wrapper = new JaxBenutzerResponseWrapper();
 		wrapper.setBenutzer(benutzer);
 		wrapper.setErrorMessage(msg);
