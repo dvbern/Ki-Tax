@@ -27,9 +27,9 @@
 
         <md-radio-group ng-model="vm.selected">
             <md-radio-button ng-value="1">{{vm.radioYes}}</md-radio-button>
-            <div class="md-dialog-content-body"><p class="step_hint" ng-class="vm.selected == 1 ? 'test' : ''">{{vm.radioYesHint}}</p></div>
+            <div class="md-dialog-content-body"><p class="step_hint" ng-class="vm.selected == 1 ? 'hint_transition' : ''">{{vm.radioYesHint}}</p></div>
             <md-radio-button ng-value="2">{{vm.radioNo}}</md-radio-button>
-            <div class="md-dialog-content-body"><p class="step_hint" ng-class="vm.selected == 2 ? 'test' : ''">{{vm.radioNoHint}}</p></div>
+            <div class="md-dialog-content-body"><p class="step_hint" ng-class="vm.selected == 2 ? 'hint_transition' : ''">{{vm.radioNoHint}}</p></div>
         </md-radio-group>
     </md-dialog-content>
 
