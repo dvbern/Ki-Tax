@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.FileMetadata_;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GeneratedDokument;
 import ch.dvbern.ebegu.entities.GeneratedDokument_;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -70,6 +71,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
@@ -159,9 +161,6 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Inject
 	private Pain001Service pain001Service;
 
-	private static final String DEF_DEBTOR_NAME = "Direktion fuer Bildung, Soziales und Sport der Stadt Bern";
-	private static final String DEF_DEBTOR_BIC = "POFICHBEXXX";
-	private static final String DEF_DEBTOR_IBAN = "CH3309000000300008233";
 
 	@Override
 	@Nonnull
@@ -266,8 +265,9 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				"getFinSitDokumentAccessTokenGeneratedDokument",
 				ErrorCodeEnum.ERROR_FIN_SIT_IS_NOT_REQUIRED);
 		}
-
-		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService);
+		final GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.extractGemeinde().getId()).orElseThrow(
+			() -> new EbeguEntityNotFoundException("uploadLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuch.extractGemeinde().getId()));
+		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, stammdaten);
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil.getFileNameForGeneratedDokumentTyp(
 			GeneratedDokumentTyp.FINANZIELLE_SITUATION, gesuch.getJahrFallAndGemeindenummer(),
@@ -836,7 +836,18 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 			boolean writeProtectPDF = forceCreation || ZahlungauftragStatus.ENTWURF != zahlungsauftrag.getStatus();
 
-			byte[] data = pain001Service.getPainFileContent(wrapZahlungsauftrag(zahlungsauftrag));
+			final GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(zahlungsauftrag.getGemeinde().getId()).orElseThrow(
+				() -> new EbeguEntityNotFoundException("getPain001DokumentAccessTokenGeneratedDokument", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungsauftrag.getGemeinde().getId()));
+
+			// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+			if (!stammdaten.isZahlungsinformationValid()) {
+				throw new EbeguRuntimeException(KibonLogLevel.INFO,
+					"getPain001DokumentAccessTokenGeneratedDokument",
+					ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INCOMPLETE,
+					zahlungsauftrag.getGemeinde().getName());
+			}
+
+			byte[] data = pain001Service.getPainFileContent(wrapZahlungsauftrag(zahlungsauftrag, stammdaten));
 
 			// Wenn nicht Entwurf, soll das Dokument schreibgeschützt sein!
 			persistedDokument = saveGeneratedDokumentInDB(data, dokumentTyp, zahlungsauftrag,
@@ -846,27 +857,21 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	}
 
-	private Pain001DTO wrapZahlungsauftrag(Zahlungsauftrag zahlungsauftrag) {
+	private Pain001DTO wrapZahlungsauftrag(@Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull GemeindeStammdaten gemeindeStammdaten) {
 		Pain001DTO pain001DTO = new Pain001DTO();
 
 		pain001DTO.setAuszahlungsDatum(zahlungsauftrag.getDatumFaellig());
 		pain001DTO.setGenerierungsDatum(zahlungsauftrag.getDatumGeneriert());
 
-		String debitorName =
-			applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_NAME);
-		String debitorBic =
-			applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_BIC);
-		String debitorIban =
-			applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_IBAN);
-		String debitorIbanGebuehren =
-			applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_IBAN_GEBUEHREN);
+		String debitorName = gemeindeStammdaten.getKontoinhaber();
+		String debitorBic = gemeindeStammdaten.getBic();
+		String debitorIban = gemeindeStammdaten.getIban().getIban();
+		String debitorIbanGebuehren = applicationPropertyService.findApplicationPropertyAsString(ApplicationPropertyKey.DEBTOR_IBAN_GEBUEHREN);
 
-		pain001DTO.setSchuldnerName(debitorName == null ? DEF_DEBTOR_NAME : debitorName);
-		pain001DTO.setSchuldnerIBAN(debitorIban == null ? DEF_DEBTOR_IBAN : debitorIban);
-		pain001DTO.setSchuldnerBIC(debitorBic == null ? DEF_DEBTOR_BIC : debitorBic);
-		pain001DTO.setSchuldnerIBANGebuehren(debitorIbanGebuehren == null ?
-			pain001DTO.getSchuldnerIBAN() :
-			debitorIbanGebuehren);
+		pain001DTO.setSchuldnerName(debitorName);
+		pain001DTO.setSchuldnerIBAN(debitorIban);
+		pain001DTO.setSchuldnerBIC(debitorBic);
+		pain001DTO.setSchuldnerIBANGebuehren(debitorIbanGebuehren == null ? pain001DTO.getSchuldnerIBAN() : debitorIbanGebuehren);
 		pain001DTO.setSoftwareName("kiBon");
 		// we use the currentTimeMillis so that it is always different
 		pain001DTO.setMsgId("kiBon" + Long.toString(System.currentTimeMillis()));
