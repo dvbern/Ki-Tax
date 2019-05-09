@@ -1565,5 +1565,6 @@
     "WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG": "Nicht aktivierte Gemeinden können keine Betreuungsgutscheine ausstellen. Bitte vervollständigen Sie alle Angaben Ihrer Gemeinden.",
     "ZUR_LISTE": "Zur Liste",
     "ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT": "Diese Änderung erfordert eine erneute Platzbestätigung, da die Institution die Verrechnung für den ausserordentlichen Betreuungsaufwand bestätigen muss.",
-    "VERSION_ERROR_TEXT": "Der Client {{frontendVersion}} hat eine andere Version als der Server {{backendVersion}}. Bitte laden sie die Seite komplett neu (F5)"
+    "VERSION_ERROR_TEXT": "Der Client {{frontendVersion}} hat eine andere Version als der Server {{backendVersion}}. Bitte laden sie die Seite komplett neu (F5)",
+    "FILTER": "Filter"
 }

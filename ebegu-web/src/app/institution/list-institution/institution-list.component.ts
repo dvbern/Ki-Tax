@@ -118,7 +118,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
      * Institution in question can always open the Institution.
      */
     public openInstitution(institution: TSInstitution): void {
-        if (institution.status !== TSInstitutionStatus.EINGELADEN || this.isCurrentUserAdminForInstitution(institution)) {
+        if (institution.status !== TSInstitutionStatus.EINGELADEN || this.isCurrentUserAdminForInstitution(institution) || this.isSuperAdmin()) {
             this.$state.go('institution.edit', {
                 institutionId: institution.id,
             });
@@ -130,18 +130,24 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         const currentBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
         if (currentBerechtigung) {
             return this.isCurrentUserTraegerschaftAdminOfSelectedInstitution(institution, currentBerechtigung)
-            || this.isCurrentUserInstitutionAdminOfSelectedInstitution(institution, currentBerechtigung);
+                || this.isCurrentUserInstitutionAdminOfSelectedInstitution(institution, currentBerechtigung);
         }
         return false;
     }
 
-    private isCurrentUserTraegerschaftAdminOfSelectedInstitution(institution: TSInstitution, currentBerechtigung: TSBerechtigung): boolean {
+    private isCurrentUserTraegerschaftAdminOfSelectedInstitution(
+        institution: TSInstitution,
+        currentBerechtigung: TSBerechtigung,
+    ): boolean {
         return currentBerechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
             && (currentBerechtigung.traegerschaft && institution.traegerschaft
                 && currentBerechtigung.traegerschaft.id === institution.traegerschaft.id);
     }
 
-    private isCurrentUserInstitutionAdminOfSelectedInstitution(institution: TSInstitution, currentBerechtigung: TSBerechtigung): boolean {
+    private isCurrentUserInstitutionAdminOfSelectedInstitution(
+        institution: TSInstitution,
+        currentBerechtigung: TSBerechtigung,
+    ): boolean {
         return currentBerechtigung.role === TSRole.ADMIN_INSTITUTION
             && (currentBerechtigung.institution
                 && currentBerechtigung.institution.id === institution.id);
@@ -152,7 +158,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public isDeleteAllowed(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+        return this.isSuperAdmin();
     }
 
     public showNoContentMessage(): boolean {
@@ -161,7 +167,15 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     private setDisplayedColumns(): void {
         this.displayedColumns = this.isDeleteAllowed()
-            ? ['name', 'status', 'remove']
-            : ['name', 'status'];
+            ? ['name', 'status', 'detail', 'remove']
+            : ['name', 'status', 'detail'];
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public doFilter = (value: string) => {
+        this.dataSource.filter = value.trim().toLocaleLowerCase();
     }
 }

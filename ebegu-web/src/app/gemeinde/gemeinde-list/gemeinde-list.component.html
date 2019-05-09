@@ -25,6 +25,11 @@
             <hr class="header">
         </div>
 
+        <div class="filter">
+            <h3 class="uppercase" translate>FILTER</h3>
+            <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter">
+        </div>
+
         <!--Tabelle zum anzeigen der berechtigten Gemeinden-->
         <div class="table-responsive gemeinden-table">
             <mat-table #table [dataSource]="dataSource" matSort>
@@ -34,7 +39,7 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'GEMEINDE' | translate}}
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let gemeinde"
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let gemeinde"
                               (click)="openGemeinde(gemeinde)">
                         {{gemeinde.name}}
                     </mat-cell>
@@ -45,9 +50,20 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'STATUS' | translate}}
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let gemeinde"
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let gemeinde"
                               (click)="openGemeinde(gemeinde)">
                         {{'GEMEINDE_STATUS_' + gemeinde.status | translate}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column detail -->
+                <ng-container matColumnDef="detail">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let gemeinde">
+                        <dv-loading-button buttonClass="dv-btn-sm"
+                                           (buttonClick)="openGemeinde(gemeinde)">
+                            <i class="fa fa-eye"></i>
+                        </dv-loading-button>
                     </mat-cell>
                 </ng-container>
 
