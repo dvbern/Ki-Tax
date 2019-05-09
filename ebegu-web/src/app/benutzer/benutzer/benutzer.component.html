@@ -242,7 +242,7 @@
             </dv-loading-button>
 
             <button type="button" class="dv-btn cancel-button"
-                    *dvNgShowElement="selectedUser.status === TSBenutzerStatus.AKTIV && !isDefaultVerantwortlicher;
+                    *dvNgShowElement="selectedUser.status !== TSBenutzerStatus.GESPERRT && !isDefaultVerantwortlicher;
                         roles: TSRoleUtil.getAllAdminRoles()"
                     (click)="inactivateBenutzer()"
                     [textContent]="'BENUTZER_SPERREN' | translate">
