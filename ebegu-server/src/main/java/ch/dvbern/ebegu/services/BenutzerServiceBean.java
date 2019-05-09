@@ -1310,11 +1310,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	private BenutzerStatus findLastNotGesperrtStatus(Benutzer benutzer) {
 		Collection<BerechtigungHistory> history = getBerechtigungHistoriesForBenutzer(benutzer);
-		BerechtigungHistory lastNotGesperrtStatus = history.stream()
+		BerechtigungHistory lastNotGesperrtHistory = history.stream()
 			.filter(x -> x.getStatus() != BenutzerStatus.GESPERRT)
 			.findFirst()
 			.get();
 
-		return lastNotGesperrtStatus.getStatus();
+		return lastNotGesperrtHistory.getStatus();
 	}
 }
