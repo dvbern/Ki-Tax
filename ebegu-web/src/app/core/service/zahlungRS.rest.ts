@@ -76,10 +76,6 @@ export default class ZahlungRS {
         });
     }
 
-    public deleteAllZahlungsauftraege(): IHttpPromise<any> {
-        return this.http.delete(`${this.serviceURL}/delete`, null);
-    }
-
     public zahlungBestaetigen(zahlungId: string): IPromise<TSZahlung> {
         return this.http.put(`${this.serviceURL}/bestaetigen/${encodeURIComponent(zahlungId)}`,
             null).then((response: any) => {
@@ -102,8 +98,6 @@ export default class ZahlungRS {
                     datumGeneriert: DateUtil.momentToLocalDate(datumGeneriert),
                 },
             }).then((httpresponse: any) => {
-            // Direkt die Zahlungspruefung durchfuehren
-            this.zahlungenKontrollieren(gemeinde);
             return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse.data);
         });
     }
@@ -123,10 +117,6 @@ export default class ZahlungRS {
             }).then((httpresponse: any) => {
             return this.ebeguRestUtil.parseZahlungsauftrag(new TSZahlungsauftrag(), httpresponse.data);
         });
-    }
-
-    public zahlungenKontrollieren(gemeinde: TSGemeinde): IPromise<IHttpResponse<any>> {
-        return this.http.get(`${this.serviceURL}/kontrollieren/${encodeURIComponent(gemeinde.id)}`);
     }
 
     public getZahlungsauftragForRole$(role: TSRole, zahlungsauftragId: string): Observable<TSZahlungsauftrag | null> {

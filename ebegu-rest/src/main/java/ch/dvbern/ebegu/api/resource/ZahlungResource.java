@@ -31,7 +31,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -39,7 +38,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -250,27 +248,5 @@ public class ZahlungResource {
 
 		final Zahlung zahlung = zahlungService.zahlungBestaetigen(zahlungId);
 		return converter.zahlungToJAX(zahlung);
-	}
-
-	@ApiOperation("Loescht einen Zahlungsauftrag")
-	@Nullable
-	@DELETE
-	@Path("/delete")
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed(SUPER_ADMIN)
-	public Response deleteAllZahlungsauftraege() {
-
-		zahlungService.deleteAllZahlungsauftraege();
-		return Response.ok().build();
-	}
-
-	@ApiOperation("Zahlungsauftrag kontrollieren")
-	@GET
-	@Path("/kontrollieren/{gemeindeId}")
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
-	public Response zahlungenKontrollieren(@Nonnull @NotNull @PathParam("gemeindeId") String gemeindeId) {
-		zahlungService.zahlungenKontrollieren(gemeindeId);
-		return Response.ok().build();
 	}
 }

@@ -256,7 +256,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		}
 		LOGGER.info(sb.toString());
 		calculateZahlungsauftrag(zahlungsauftrag);
-		return persistence.merge(zahlungsauftrag);
+		Zahlungsauftrag persistedAuftrag = persistence.merge(zahlungsauftrag);
+
+		zahlungenKontrollieren(gemeindeId);
+		return persistedAuftrag;
 	}
 
 	/**
