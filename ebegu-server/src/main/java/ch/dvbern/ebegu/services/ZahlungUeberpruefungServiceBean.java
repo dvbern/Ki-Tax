@@ -57,7 +57,6 @@ import ch.dvbern.ebegu.entities.Zahlungsposition_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.ejb3.annotation.TransactionTimeout;
@@ -82,9 +81,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ZahlungUeberpruefungServiceBean.class.getSimpleName());
 
-
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
