@@ -123,6 +123,20 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 
 	@Nonnull
 	@Override
+	public Collection<Dossier> findDossiersByGemeinde(@Nonnull String gemeindeId) {
+		final Gemeinde gemeinde =
+			gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("findDossiersByGemeinde",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+
+		Collection<Dossier> dossiers = criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, gemeinde, Dossier_.gemeinde);
+
+		return dossiers.stream()
+			.filter(authorizer::isReadCompletelyAuthorizedDossier).
+				collect(Collectors.toList());
+	}
+
+	@Nonnull
+	@Override
 	public Optional<Dossier> findDossierByGemeindeAndFall(@Nonnull String gemeindeId, @Nonnull String fallId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Dossier> query = cb.createQuery(Dossier.class);

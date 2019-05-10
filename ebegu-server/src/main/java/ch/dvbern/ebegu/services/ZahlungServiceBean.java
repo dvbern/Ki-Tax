@@ -75,6 +75,7 @@ import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -174,7 +175,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Es darf immer nur ein Zahlungsauftrag im Status ENTWURF sein
 		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(gemeinde);
 		if (lastZahlungsauftrag.isPresent() && lastZahlungsauftrag.get().getStatus().isEntwurf()) {
-			throw new EbeguRuntimeException("zahlungsauftragErstellen", ErrorCodeEnum.ERROR_ZAHLUNG_ERSTELLEN);
+			throw new EbeguRuntimeException(KibonLogLevel.DEBUG, "zahlungsauftragErstellen", ErrorCodeEnum.ERROR_ZAHLUNG_ERSTELLEN);
 		}
 
 		LOGGER.info("Erstelle Zahlungsauftrag mit Faelligkeit: {}", Constants.DATE_FORMATTER.format(datumFaelligkeit));
@@ -759,7 +760,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		Optional<Zahlungsauftrag> lastZahlungsauftrag = findLastZahlungsauftrag(gemeinde);
-		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(zahlungsauftrag.getDatumGeneriert()));
+		lastZahlungsauftrag.ifPresent(zahlungsauftrag -> zahlungUeberpruefungServiceBean.pruefungZahlungen(gemeinde, zahlungsauftrag.getDatumGeneriert()));
 	}
 }
 
