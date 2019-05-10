@@ -60,10 +60,9 @@
                 <ng-container matColumnDef="detail">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>
                     <mat-cell *matCellDef="let gemeinde">
-                        <dv-loading-button buttonClass="dv-btn-sm"
-                                           (buttonClick)="openGemeinde(gemeinde)">
+                        <button class="dv-btn dv-btn-sm" (click)="openGemeinde(gemeinde)">
                             <i class="fa fa-eye"></i>
-                        </dv-loading-button>
+                        </button>
                     </mat-cell>
                 </ng-container>
 
