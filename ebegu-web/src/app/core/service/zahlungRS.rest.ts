@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpResponse, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpService, ILogService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {from, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
