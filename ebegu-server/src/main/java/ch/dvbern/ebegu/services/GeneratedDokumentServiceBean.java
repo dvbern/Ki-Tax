@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -73,7 +74,6 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
@@ -81,6 +81,7 @@ import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.iso20022.pain001.v00103ch02.AuszahlungDTO;
@@ -818,11 +819,21 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 		GeneratedDokumentTyp dokumentTyp = GeneratedDokumentTyp.PAIN001;
 
-		// TODO KIBON-112 die Sprache muss aus der Gemeinde geholt werden
-		final Locale locale = LocaleThreadLocal.get();
+		final GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(zahlungsauftrag.getGemeinde().getId()).orElseThrow(
+			() -> new EbeguEntityNotFoundException("getPain001DokumentAccessTokenGeneratedDokument", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungsauftrag.getGemeinde().getId()));
+
+		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+		if (!stammdaten.isZahlungsinformationValid()) {
+			throw new EbeguRuntimeException(KibonLogLevel.INFO,
+				"getPain001DokumentAccessTokenGeneratedDokument",
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INCOMPLETE,
+				zahlungsauftrag.getGemeinde().getName());
+		}
+
+		Sprache korrespondenzsprache = EbeguUtil.extractGemeindeSprachen(stammdaten).get(0);
 
 		final String fileNameForGeneratedDokumentTyp = DokumenteUtil
-			.getFileNameForGeneratedDokumentTyp(dokumentTyp, zahlungsauftrag.getFilename(), locale);
+			.getFileNameForGeneratedDokumentTyp(dokumentTyp, zahlungsauftrag.getFilename(), korrespondenzsprache.getLocale());
 
 		if (!forceCreation && ZahlungauftragStatus.ENTWURF != zahlungsauftrag.getStatus()) {
 			persistedDokument = getPain001DocumentIfExistsAndIsWriteProtected(
@@ -836,18 +847,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 			boolean writeProtectPDF = forceCreation || ZahlungauftragStatus.ENTWURF != zahlungsauftrag.getStatus();
 
-			final GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(zahlungsauftrag.getGemeinde().getId()).orElseThrow(
-				() -> new EbeguEntityNotFoundException("getPain001DokumentAccessTokenGeneratedDokument", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungsauftrag.getGemeinde().getId()));
-
-			// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
-			if (!stammdaten.isZahlungsinformationValid()) {
-				throw new EbeguRuntimeException(KibonLogLevel.INFO,
-					"getPain001DokumentAccessTokenGeneratedDokument",
-					ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INCOMPLETE,
-					zahlungsauftrag.getGemeinde().getName());
-			}
-
-			byte[] data = pain001Service.getPainFileContent(wrapZahlungsauftrag(zahlungsauftrag, stammdaten));
+			byte[] data = pain001Service.getPainFileContent(wrapZahlungsauftrag(zahlungsauftrag, stammdaten, korrespondenzsprache.getLocale()));
 
 			// Wenn nicht Entwurf, soll das Dokument schreibgeschützt sein!
 			persistedDokument = saveGeneratedDokumentInDB(data, dokumentTyp, zahlungsauftrag,
@@ -857,7 +857,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	}
 
-	private Pain001DTO wrapZahlungsauftrag(@Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull GemeindeStammdaten gemeindeStammdaten) {
+	private Pain001DTO wrapZahlungsauftrag(@Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull GemeindeStammdaten gemeindeStammdaten, @Nonnull Locale locale) {
 		Pain001DTO pain001DTO = new Pain001DTO();
 
 		pain001DTO.setAuszahlungsDatum(zahlungsauftrag.getDatumFaellig());
@@ -896,6 +896,12 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				auszahlungDTO.setZahlungsempfaegerIBAN(institutionStammdaten.getIban().toString());
 				auszahlungDTO.setZahlungsempfaegerBankClearingNumber(institutionStammdaten.getIban()
 					.extractClearingNumberWithoutLeadingZeros());
+				String monat = zahlungsauftrag.getDatumFaellig().format(DateTimeFormatter.ofPattern("MMM yyyy", locale));
+				String zahlungstext = ServerMessageUtil.getMessage("ZahlungstextPainFile", locale,
+					gemeindeStammdaten.getGemeinde().getName(),
+					institutionStammdaten.getInstitution().getName(),
+					monat);
+				auszahlungDTO.setZahlungText(zahlungstext);
 
 				pain001DTO.getAuszahlungen().add(auszahlungDTO);
 			});
