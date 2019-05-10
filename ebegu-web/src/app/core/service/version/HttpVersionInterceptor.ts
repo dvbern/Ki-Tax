@@ -27,6 +27,10 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
 
     public backendVersion: string;
 
+    // this field is set to true when the event VERSION_MISMATCH has been captured. So we can keep throwing
+    // the event until it is handled
+    public eventCaptured: boolean = false;
+
     public constructor(
         private readonly $rootScope: IRootScopeService,
         private readonly $log: ILogService,
@@ -43,7 +47,8 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
         if (response.headers
             && response.config
             && response.config.url.indexOf(CONSTANTS.REST_API) === 0
-            && !response.config.cache) {
+            && !response.config.cache
+        ) {
             this.updateBackendVersion(response.headers('x-ebegu-version'));
         }
 
@@ -51,15 +56,21 @@ export default class HttpVersionInterceptor implements IHttpInterceptor {
     };
 
     private updateBackendVersion(newVersion: string): void {
-        if (newVersion === this.backendVersion) {
+
+        if (this.eventCaptured && newVersion === this.backendVersion) {
+            // if the event hasn't been captured yet we wait until it gets captured
             return;
         }
 
         this.backendVersion = newVersion;
+
         if (HttpVersionInterceptor.hasVersionCompatibility(VERSION, this.backendVersion)) {
             // could throw match event here but currently there is no action we want to perform when it matches
         } else {
             this.$log.warn('Versions of Frontend and Backend do not match');
+            // before we send the event we say that the event hasn't been captured.
+            // After caturing the event this should be set to true
+            this.eventCaptured = false;
             this.$rootScope.$broadcast(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH]);
         }
     }

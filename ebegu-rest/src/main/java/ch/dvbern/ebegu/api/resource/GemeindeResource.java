@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,8 +64,11 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -100,7 +104,6 @@ public class GemeindeResource {
 
 	@Inject
 	private JaxBConverter converter;
-
 
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
@@ -205,7 +208,8 @@ public class GemeindeResource {
 			.orElse(null);
 	}
 
-	@ApiOperation(value = "Returns the GemeindeStammdaten with the given GemeindeId.", response = JaxGemeindeStammdaten.class)
+	@ApiOperation(value = "Returns the GemeindeStammdaten with the given GemeindeId.",
+		response = JaxGemeindeStammdaten.class)
 	@Nullable
 	@GET
 	@Path("/stammdaten/{gemeindeId}")
@@ -288,7 +292,8 @@ public class GemeindeResource {
 
 	}
 
-	private void saveJaxGemeindeKonfiguration(@Nonnull Gemeinde gemeinde,
+	private void saveJaxGemeindeKonfiguration(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration) {
 		if (konfiguration.getGesuchsperiodeId() != null) {
 			Optional<Gesuchsperiode> gesuchsperiode =
@@ -301,7 +306,8 @@ public class GemeindeResource {
 		}
 	}
 
-	private void saveAllFutureJaxGemeindeKonfiguration(@Nonnull Gemeinde gemeinde,
+	private void saveAllFutureJaxGemeindeKonfiguration(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration) {
 		if (konfiguration.getGesuchsperiodeId() != null) {
 			Collection<Gesuchsperiode> gesuchsperioden =
@@ -343,7 +349,8 @@ public class GemeindeResource {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
-		gemeindeService.uploadLogo(gemeindeId, fileList.get(0).getContent());
+		TransferFile file = fileList.get(0);
+		gemeindeService.uploadLogo(gemeindeId, file.getContent(), file.getFilename(), file.getFiletype());
 
 		return Response.ok().build();
 	}
@@ -360,8 +367,10 @@ public class GemeindeResource {
 		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 		if (stammdaten.isPresent()) {
 			try {
-				return RestUtil.buildDownloadResponse(false, "logo",
-					"application/octet-stream", stammdaten.get().getLogoContent());
+				String name = stammdaten.get().getLogoName();
+				String type = stammdaten.get().getLogoType();
+				return RestUtil.buildDownloadResponse(false, name == null ? "logo" : name,
+					type == null ? "image/*" : type, stammdaten.get().getLogoContent());
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
 			}
@@ -382,5 +391,30 @@ public class GemeindeResource {
 		return gemeindeService.getUnregisteredBfsGemeinden(bern).stream()
 			.map(gemeinde -> converter.gemeindeBfsToJax(gemeinde))
 			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Gemeinden in Status EINGELADEN",
+		response = Boolean.class)
+	@Nonnull
+	@GET
+	@Path("/hasEinladungen/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hasGemeindenInStatusEingeladenForCurrentBenutzer() {
+		final Benutzer benutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"hasGemeindenInStatusEingeladenForCurrentBenutzer",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+		Collection<Gemeinde> gemeindeList = new HashSet<>();
+		if (benutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			gemeindeList = benutzer.getCurrentBerechtigung().getGemeindeList();
+		} else if (benutzer.getCurrentBerechtigung().getRole() == UserRole.SUPER_ADMIN) {
+			gemeindeList = gemeindeService.getAllGemeinden();
+		}
+		long anzahl = gemeindeList.stream()
+			.filter(inst -> inst.getStatus() == GemeindeStatus.EINGELADEN)
+			.count();
+		return Response.ok(anzahl > 0).build();
 	}
 }

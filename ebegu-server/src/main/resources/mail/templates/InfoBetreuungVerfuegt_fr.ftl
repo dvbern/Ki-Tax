@@ -9,7 +9,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 From: ${configuration.senderAddress}
 To: ${institution.name} <${empfaengerMail}>
-Subject: <@base64Header>${institution.name}: kiBon – FR_Betreuung verfügt</@base64Header>
+Subject: <@base64Header>${institution.name}: kiBon – Betreuung verfügt</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -17,7 +17,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>FR_kiBon – Betreuung verfügt</title>
+	<title>${institution.name}: kiBon – Betreuung verfügt</title>
 
 </head>
 
@@ -25,45 +25,45 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		FR_Guten Tag
+		Guten Tag
 	</p>
 	<p>
-		Die folgende familienexterne Betreuung wurde verfügt:
+		Der folgende Betreuungsgutschein wurde verfügt:
 	</p>
 	<table>
 		<tbody>
 		<tr>
-			<td width="300">FR_Fall:</td>
+			<td width="300">Fall:</td>
 			<td width="300">${fall.getPaddedFallnummer()} ${gesuchsteller.nachname}</td>
 		</tr>
 		<tr>
-			<td>FR_Kind:</td>
+			<td>Kind:</td>
 			<td>${kind.fullName}, ${birthday} </td>
 		</tr>
 		<tr>
-			<td>FR_Betreuungsangebot:</td>
-			<td>${betreuung.getBetreuungsangebotTypTranslated("fr")}</td>
+			<td>Betreuungsangebot:</td>
+			<td>${betreuung.getBetreuungsangebotTypTranslated("de")}</td>
 		</tr>
 		<tr>
-			<td>FR_Institution:</td>
+			<td>Institution:</td>
 			<td>${institution.name}</td>
 		</tr>
 		<tr>
-			<td>FR_Periode:</td>
+			<td>Periode:</td>
 			<td>${betreuung.extractGesuchsperiode().getGesuchsperiodeString()}</td>
 		</tr>
 		</tbody>
 	</table>
 	<br/>
 	<p>
-        FR_Die Details finden Sie <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">hier</a>.
+		Die Details finden Sie <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">hier</a>.
 	</p>
 	<p>
-        FR_Freundliche Grüsse <br/>
-        FR_Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Freundliche Grüsse <br/>
+		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
 	</p>
 	<p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>
 </div>
 

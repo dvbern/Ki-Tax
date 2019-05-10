@@ -186,7 +186,6 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Column(nullable = false)
 	private boolean keineDetailinformationen = false;
 
-
 	public Betreuung() {
 	}
 
@@ -644,5 +643,10 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	public boolean hasErweiterteBetreuung() {
 		return getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null
 			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().getErweiterteBeduerfnisse();
+	}
+
+	public boolean isErweiterteBeduerfnisseBestaetigt() {
+		return getErweiterteBetreuungContainer().getErweiterteBetreuungJA() != null
+			&& getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isErweiterteBeduerfnisseBestaetigt();
 	}
 }

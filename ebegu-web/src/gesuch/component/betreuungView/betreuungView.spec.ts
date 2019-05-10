@@ -14,6 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CORE_JS_MODULE} from '../../../app/core/core.angularjs.module';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
@@ -52,6 +53,7 @@ describe('betreuungView', () => {
     let wizardStepManager: WizardStepManager;
     let $stateParams: IBetreuungStateParams;
     let $timeout: angular.ITimeoutService;
+    let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -65,6 +67,7 @@ describe('betreuungView', () => {
         $q = $injector.get('$q');
         $stateParams = $injector.get('$stateParams');
         $timeout = $injector.get('$timeout');
+        einstellungRS = $injector.get('EinstellungRS');
 
         // they always need to be mocked
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
@@ -90,6 +93,7 @@ describe('betreuungView', () => {
         authServiceRS = $injector.get('AuthServiceRS');
         spyOn(authServiceRS, 'isRole').and.returnValue(true);
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(Promise.resolve([]));
         wizardStepManager = $injector.get('WizardStepManager');
         betreuungView = new BetreuungViewController($state,
             gesuchModelManager,
@@ -104,6 +108,8 @@ describe('betreuungView', () => {
             $injector.get('MitteilungRS'),
             $injector.get('DvDialog'),
             $injector.get('$log'),
+            einstellungRS,
+            $injector.get('GlobalCacheService'),
             $timeout,
             undefined);
         betreuungView.$onInit();
@@ -127,6 +133,8 @@ describe('betreuungView', () => {
                     authServiceRS,
                     wizardStepManager,
                     $stateParams,
+                    undefined,
+                    undefined,
                     undefined,
                     undefined,
                     undefined,

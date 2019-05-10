@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -55,6 +56,8 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.EnumUtil;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +113,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			gesuch,
 			"InfoBetreuungBestaetigt",
 			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungenBestaetigt(gesuch, gesuchsteller, adr,
-				sprache)
+				sprache),
+			AntragStatus.IN_BEARBEITUNG_GS
 		);
 	}
 
@@ -123,7 +127,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			betreuung.extractGesuch(),
 			"InfoBetreuungAbgelehnt",
 			(gesuchsteller, adr) -> mailTemplateConfig.getInfoBetreuungAbgelehnt(betreuung, gesuchsteller, adr,
-				sprache)
+				sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -134,7 +139,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			betreuung.extractGesuch(),
 			"InfoSchulamtAnmeldungUebernommen",
 			(gesuchsteller, adr) ->
-				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(betreuung, gesuchsteller, adr, sprache)
+				mailTemplateConfig.getInfoSchulamtAnmeldungUebernommen(betreuung, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -148,7 +154,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 				betreuung,
 				gesuchsteller,
 				adr,
-				sprache)
+				sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -179,7 +186,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoVerfuegtGesuch",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtGesuch(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtGesuch(gesuch, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -191,7 +199,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoVerfuegtMutation",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtMutation(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoVerfuegtMutation(gesuch, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -203,7 +212,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoMahnung",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoMahnung(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoMahnung(gesuch, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -222,7 +232,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					gesuchsteller,
 					adr,
 					anzahlTageBisLoeschung,
-					sprache)
+					sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -241,7 +252,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					gesuchsteller,
 					adr,
 					anzahlTageBisLoeschung,
-					sprache)
+					sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -252,7 +264,8 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		sendMail(
 			gesuch,
 			"InfoGesuchGeloescht",
-			(gesuchsteller, adr) -> mailTemplateConfig.getInfoGesuchGeloescht(gesuch, gesuchsteller, adr, sprache)
+			(gesuchsteller, adr) -> mailTemplateConfig.getInfoGesuchGeloescht(gesuch, gesuchsteller, adr, sprache),
+			AntragStatus.values()
 		);
 	}
 
@@ -492,8 +505,14 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 	private void sendMail(
 		@Nonnull Gesuch gesuch,
 		@Nonnull String logId,
-		@Nonnull BiFunction<Gesuchsteller, String, String> messageProvider) throws MailException {
+		@Nonnull BiFunction<Gesuchsteller, String, String> messageProvider,
+		@Nonnull AntragStatus... statusInWhichToSendMail
+	) throws MailException {
 		if (!doSendMail(gesuch)) {
+			return;
+		}
+		// Gewisse Mails sollen nur in bestimmten Status gesendet werden.
+		if (ArrayUtils.isNotEmpty(statusInWhichToSendMail) && EnumUtil.isNoneOf(gesuch.getStatus(), statusInWhichToSendMail)) {
 			return;
 		}
 

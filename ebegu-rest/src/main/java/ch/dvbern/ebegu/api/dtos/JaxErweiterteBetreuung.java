@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-
 /**
  * DTO fuer Daten der erweiterten Betreeung
  */
@@ -32,6 +31,8 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 	private Boolean erweiterteBeduerfnisse;
 
 	private JaxFachstelle fachstelle;
+
+	private boolean erweiterteBeduerfnisseBestaetigt;
 
 	public Boolean getErweiterteBeduerfnisse() {
 		return erweiterteBeduerfnisse;
@@ -47,5 +48,13 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	public void setFachstelle(JaxFachstelle fachstelle) {
 		this.fachstelle = fachstelle;
+	}
+
+	public boolean isErweiterteBeduerfnisseBestaetigt() {
+		return erweiterteBeduerfnisseBestaetigt;
+	}
+
+	public void setErweiterteBeduerfnisseBestaetigt(boolean erweiterteBeduerfnisseBestaetigt) {
+		this.erweiterteBeduerfnisseBestaetigt = erweiterteBeduerfnisseBestaetigt;
 	}
 }
