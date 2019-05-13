@@ -1575,6 +1575,6 @@
     "KORREKTURZAHLUNG_DIALOG_STEP2_TITLE": "Wollen Sie die Korrektur im nächsten Zahlungslauf wirklich ignorieren?",
     "KORREKTURZAHLUNG_DIALOG_IMMUTABLE": "Diese Aktion ist endgültig und kann nicht rückgängig gemacht werden!",
     "KORREKTURZAHLUNG_DIALOG_BACK": "Nein, zurück",
-    "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen"
-
+    "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen",
+    "FILTER": "Filter"
 }
