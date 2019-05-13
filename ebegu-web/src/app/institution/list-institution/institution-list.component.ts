@@ -118,7 +118,10 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
      * Institution in question can always open the Institution.
      */
     public openInstitution(institution: TSInstitution): void {
-        if (institution.status !== TSInstitutionStatus.EINGELADEN || this.isCurrentUserAdminForInstitution(institution) || this.isSuperAdmin()) {
+        if (institution.status !== TSInstitutionStatus.EINGELADEN
+            || this.isCurrentUserAdminForInstitution(institution)
+            || this.isSuperAdmin()
+        ) {
             this.$state.go('institution.edit', {
                 institutionId: institution.id,
             });
