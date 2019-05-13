@@ -765,7 +765,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		authorizer.checkWriteAuthorization(benutzerFromDB);
 
-		benutzerFromDB.setStatus(BenutzerStatus.AKTIV);
+		benutzerFromDB.setStatus(findLastNotGesperrtStatus(benutzerFromDB));
 		logReaktivierenBenutzer(benutzerFromDB);
 
 		return persistence.merge(benutzerFromDB);
@@ -1306,5 +1306,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			return true;
 		}
 		return false;
+	}
+
+	private BenutzerStatus findLastNotGesperrtStatus(Benutzer benutzer) {
+		Collection<BerechtigungHistory> history = getBerechtigungHistoriesForBenutzer(benutzer);
+		BerechtigungHistory lastNotGesperrtHistory = history.stream()
+			.filter(x -> x.getStatus() != BenutzerStatus.GESPERRT)
+			.findFirst()
+			.get();
+
+		return lastNotGesperrtHistory.getStatus();
 	}
 }
