@@ -105,7 +105,6 @@ public class GemeindeResource {
 	@Inject
 	private JaxBConverter converter;
 
-
 	@ApiOperation(value = "Erstellt eine neue Gemeinde in der Datenbank", response = JaxTraegerschaft.class)
 	@Nullable
 	@POST
@@ -209,7 +208,8 @@ public class GemeindeResource {
 			.orElse(null);
 	}
 
-	@ApiOperation(value = "Returns the GemeindeStammdaten with the given GemeindeId.", response = JaxGemeindeStammdaten.class)
+	@ApiOperation(value = "Returns the GemeindeStammdaten with the given GemeindeId.",
+		response = JaxGemeindeStammdaten.class)
 	@Nullable
 	@GET
 	@Path("/stammdaten/{gemeindeId}")
@@ -292,7 +292,8 @@ public class GemeindeResource {
 
 	}
 
-	private void saveJaxGemeindeKonfiguration(@Nonnull Gemeinde gemeinde,
+	private void saveJaxGemeindeKonfiguration(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration) {
 		if (konfiguration.getGesuchsperiodeId() != null) {
 			Optional<Gesuchsperiode> gesuchsperiode =
@@ -305,7 +306,8 @@ public class GemeindeResource {
 		}
 	}
 
-	private void saveAllFutureJaxGemeindeKonfiguration(@Nonnull Gemeinde gemeinde,
+	private void saveAllFutureJaxGemeindeKonfiguration(
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull JaxGemeindeKonfiguration konfiguration) {
 		if (konfiguration.getGesuchsperiodeId() != null) {
 			Collection<Gesuchsperiode> gesuchsperioden =
@@ -347,7 +349,8 @@ public class GemeindeResource {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
-		gemeindeService.uploadLogo(gemeindeId, fileList.get(0).getContent());
+		TransferFile file = fileList.get(0);
+		gemeindeService.uploadLogo(gemeindeId, file.getContent(), file.getFilename(), file.getFiletype());
 
 		return Response.ok().build();
 	}
@@ -364,8 +367,10 @@ public class GemeindeResource {
 		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 		if (stammdaten.isPresent()) {
 			try {
-				return RestUtil.buildDownloadResponse(false, "logo.jpeg",
-					"image/jpeg", stammdaten.get().getLogoContent());
+				String name = stammdaten.get().getLogoName();
+				String type = stammdaten.get().getLogoType();
+				return RestUtil.buildDownloadResponse(false, name == null ? "logo" : name,
+					type == null ? "image/*" : type, stammdaten.get().getLogoContent());
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
 			}
@@ -388,7 +393,8 @@ public class GemeindeResource {
 			.collect(Collectors.toList());
 	}
 
-	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Gemeinden in Status EINGELADEN", response = Boolean.class)
+	@ApiOperation(value = "Returns true, if the currently logged in Benutzer has any Gemeinden in Status EINGELADEN",
+		response = Boolean.class)
 	@Nonnull
 	@GET
 	@Path("/hasEinladungen/currentuser")
@@ -396,7 +402,9 @@ public class GemeindeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response hasGemeindenInStatusEingeladenForCurrentBenutzer() {
 		final Benutzer benutzer = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguEntityNotFoundException("hasGemeindenInStatusEingeladenForCurrentBenutzer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"hasGemeindenInStatusEingeladenForCurrentBenutzer",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		Collection<Gemeinde> gemeindeList = new HashSet<>();
 		if (benutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
