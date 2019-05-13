@@ -17,13 +17,13 @@ package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -205,4 +205,10 @@ public interface MitteilungService {
 		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
 		@Nonnull Boolean includeClosed
 	);
+
+	/**
+	 * Ermittelt, ob der übergebene Benutzer entweder als Sender oder als Empfänger in irgendeiner Mitteilung gesetzt ist
+	 * Es wird keine Berechtigungsprüfung durchgeführt, da nur ja/nein zurückgeben wird.
+	 */
+	boolean hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(@Nonnull Benutzer benutzer);
 }
