@@ -249,7 +249,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER, "gesu1", null, null, getDummySuperadmin().getMandant(), "Gesuchsteller",
 			"Gertrude");
 		benutzer1 = persistence.persist(benutzer1);
-		benutzerService.deleteBenutzerIfAllowed(benutzer1.getId());
+		benutzerService.deleteBenutzerInNewTransactionIfAllowed(benutzer1.getId());
 		Assert.assertFalse("Benutzer konnte gelöscht werden", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
 	}
 
@@ -263,7 +263,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		fall.setBesitzer(benutzer1);
 		fallService.saveFall(fall);
 
-		benutzerService.deleteBenutzerIfAllowed(benutzer1.getId());
+		benutzerService.deleteBenutzerInNewTransactionIfAllowed(benutzer1.getId());
 		Assert.assertTrue("Benutzer wurde nicht gelöscht", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
 	}
 
@@ -277,7 +277,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		Einladung einladung = Einladung.forRolle(benutzer1);
 		benutzerService.einladen(einladung);
 
-		benutzerService.deleteBenutzerIfAllowed(benutzer1.getId());
+		benutzerService.deleteBenutzerInNewTransactionIfAllowed(benutzer1.getId());
 		Assert.assertFalse("Benutzer konnte gelöscht werden", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
 	}
 

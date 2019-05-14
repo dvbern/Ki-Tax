@@ -264,10 +264,15 @@ public interface BenutzerService {
 	boolean isBenutzerDefaultBenutzerOfAnyGemeinde(@Nonnull String username);
 
 	/**
+	 * Loescht die externalUUID des Benutzers
+	 */
+	void deleteExternalUUIDInNewTransaction(@Nonnull String id);
+
+	/**
 	 * Loescht den Benutzer, falls folgende Voraussetzungen erfüllt sind:
 	 * 	 - Er die Rolle GESUCHSTELLER hat
 	 * 	 - Er eine erweiterte Rolle hat UND noch im Status EINGELADEN ist
 	 * 	 - Er kein Dossier und keine Mitteilungen hat
 	 */
-	void deleteBenutzerIfAllowed(@Nonnull String id);
+	void deleteBenutzerInNewTransactionIfAllowed(@Nonnull String id);
 }
