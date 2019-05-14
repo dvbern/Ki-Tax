@@ -299,9 +299,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed(SUPER_ADMIN)
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
 		try {
-			checkArgument(
-				eingeladener.getStatus() == BenutzerStatus.EINGELADEN,
-				"Benutzer should have Status EINGELADEN");
+			if(eingeladener.getStatus() == BenutzerStatus.EINGELADEN) {
+				throw new EbeguRuntimeException(
+					KibonLogLevel.INFO,
+					eingeladener.getUsername(),
+					ErrorCodeEnum.ERROR_BENUTZER_STATUS_NOT_EINGELADEN);
+			}
 			Einladung einladung = Einladung.forRolle(eingeladener);
 			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
 		} catch (MailException e) {
@@ -323,11 +326,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
 		if (einladungTyp == EinladungTyp.MITARBEITER) {
-			checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
-			if (findBenutzer(benutzer.getUsername()).isPresent()) {
-				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist
-				// already
+			if(!benutzer.isNew() || findBenutzer(benutzer.getUsername()).isPresent()) {
+				// when inviting a new Mitarbeiter the user cannot exist.
+				// For any other invitation the user may exist already
 				throw new EntityExistsException(
+					KibonLogLevel.INFO,
 					Benutzer.class,
 					"email",
 					benutzer.getUsername(),
@@ -335,8 +338,11 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			}
 		}
 
-		if (benutzer.isNew()) {
-			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+		if (benutzer.isNew() && benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.INFO,
+				benutzer.getUsername(),
+				ErrorCodeEnum.ERROR_BENUTZER_STATUS_NOT_EINGELADEN);
 		}
 	}
 
