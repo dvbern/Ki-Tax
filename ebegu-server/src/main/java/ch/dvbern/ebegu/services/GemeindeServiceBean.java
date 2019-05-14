@@ -49,6 +49,7 @@ import ch.dvbern.ebegu.enums.SequenceType;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.EntityExistsException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -105,6 +106,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	public Gemeinde createGemeinde(@Nonnull Gemeinde gemeinde) {
 		if (findGemeindeByName(gemeinde.getName()).isPresent()) {
 			throw new EntityExistsException(
+				KibonLogLevel.INFO,
 				Gemeinde.class,
 				"name",
 				gemeinde.getName(),
@@ -112,7 +114,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		}
 		final Long bfsNummer = gemeinde.getBfsNummer();
 		if (findGemeindeByBSF(bfsNummer).isPresent()) {
-			throw new EntityExistsException(Gemeinde.class, "bsf",
+			throw new EntityExistsException(
+				KibonLogLevel.INFO,
+				Gemeinde.class, "bsf",
 				Long.toString(bfsNummer),
 				ErrorCodeEnum.ERROR_DUPLICATE_GEMEINDE_BSF);
 		}
