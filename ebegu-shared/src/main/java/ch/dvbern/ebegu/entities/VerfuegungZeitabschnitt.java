@@ -909,7 +909,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
 			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
 			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
-			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap);
+			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
+			Objects.equals(this.monatlicheBetreuungskosten, otherVerfuegungZeitabschnitt.monatlicheBetreuungskosten);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
