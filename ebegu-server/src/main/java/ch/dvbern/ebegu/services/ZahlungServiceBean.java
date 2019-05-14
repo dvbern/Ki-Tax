@@ -43,6 +43,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuung_;
@@ -168,7 +170,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung,
 		@Nonnull LocalDateTime datumGeneriert) {
 
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("findEinstellung",
+		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungsauftragErstellen",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		authorizer.checkWriteAuthorization(gemeinde);
 
@@ -275,11 +277,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 					totalZahlung = MathUtil.DEFAULT.add(totalZahlung, zahlungsposition.getBetrag());
 				}
 			}
-			//noinspection ConstantConditions
 			zahlung.setBetragTotalZahlung(totalZahlung);
 			totalAuftrag = MathUtil.DEFAULT.add(totalAuftrag, totalZahlung);
 		}
-		//noinspection ConstantConditions
 		zahlungsauftrag.setBetragTotalAuftrag(totalAuftrag);
 	}
 
@@ -304,10 +304,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		List<Predicate> predicates = new ArrayList<>();
 
 		// Datum Von
-		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigAb), zeitabschnittBis);
+		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb), zeitabschnittBis);
 		predicates.add(predicateStart);
 		// Datum Bis
-		Predicate predicateEnd = cb.greaterThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigBis), zeitabschnittVon);
+		Predicate predicateEnd = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), zeitabschnittVon);
 		predicates.add(predicateEnd);
 		// Nur Angebot KITA
 		Predicate predicateAngebot = cb.equal(joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.KITA);
@@ -355,7 +355,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		List<Predicate> predicates = new ArrayList<>();
 
 		// Datum Bis muss VOR dem regulaeren Auszahlungszeitraum sein (sonst ist es keine Korrektur und schon im obigen Statement enthalten)
-		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigBis), zeitabschnittBis);
+		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), zeitabschnittBis);
 		predicates.add(predicateStart);
 		// Nur Angebot KITA
 		Predicate predicateAngebot = cb.equal(joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.KITA);
@@ -373,7 +373,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Predicate predicateGemeinde = cb.equal(joinDossier.get(Dossier_.gemeinde), gemeinde);
 		predicates.add(predicateGemeinde);
 
-		query.orderBy(cb.asc(root.get(VerfuegungZeitabschnitt_.gueltigkeit).get(DateRange_.gueltigAb)));
+		query.orderBy(cb.asc(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
 	}
@@ -501,7 +501,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Predicate predicateGemeinde = cb.equal(root.get(Zahlungsauftrag_.gemeinde), gemeinde);
 		query.where(predicateGemeinde);
 
-		query.orderBy(cb.desc(root.get(Zahlungsauftrag_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<Zahlungsauftrag> criteriaResults = persistence.getCriteriaResults(query, 1);
 		if (!criteriaResults.isEmpty()) {
 			return Optional.of(criteriaResults.get(0));

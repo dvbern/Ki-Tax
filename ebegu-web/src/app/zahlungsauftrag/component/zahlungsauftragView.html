@@ -28,15 +28,17 @@
                         <div class="form-group">
                             <label class="md-no-float" for="gemeinde"
                                    data-translate="GEMEINDE"></label>
-                            <select ng-model="vm.gemeinde"
-                                    name="gemeinde"
-                                    class="form-control"
-                                    id="gemeinde"
-                                    ng-required="true"
-                                    ng-options="gemeinde.name for gemeinde in vm.gemeindenList | orderBy: 'name'  track by gemeinde.name">
-                            </select>
-                            <dv-error-messages for="vm.form.gemeinde.$error"
-                                               class="error"></dv-error-messages>
+                            <div class="dv-select-style">
+                                <select ng-model="vm.gemeinde"
+                                        name="gemeinde"
+                                        class="form-control"
+                                        id="gemeinde"
+                                        ng-required="true"
+                                        ng-options="gemeinde.name for gemeinde in vm.gemeindenList | orderBy: 'name'  track by gemeinde.name">
+                                </select>
+                                <dv-error-messages for="vm.form.gemeinde.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
                         </div>
                     </div>
 

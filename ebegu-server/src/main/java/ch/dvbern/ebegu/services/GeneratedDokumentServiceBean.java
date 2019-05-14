@@ -266,6 +266,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 				"getFinSitDokumentAccessTokenGeneratedDokument",
 				ErrorCodeEnum.ERROR_FIN_SIT_IS_NOT_REQUIRED);
 		}
+
 		final GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.extractGemeinde().getId()).orElseThrow(
 			() -> new EbeguEntityNotFoundException("uploadLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuch.extractGemeinde().getId()));
 		final Sprache sprache = EbeguUtil.extractKorrespondenzsprache(gesuch, stammdaten);
@@ -820,7 +821,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		GeneratedDokumentTyp dokumentTyp = GeneratedDokumentTyp.PAIN001;
 
 		final GemeindeStammdaten stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(zahlungsauftrag.getGemeinde().getId()).orElseThrow(
-			() -> new EbeguEntityNotFoundException("getPain001DokumentAccessTokenGeneratedDokument", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungsauftrag.getGemeinde().getId()));
+			() -> new EbeguEntityNotFoundException("getPain001DokumentAccessTokenGeneratedDokument",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungsauftrag.getGemeinde().getId()));
 
 		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
 		if (!stammdaten.isZahlungsinformationValid()) {
@@ -857,8 +859,20 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 
 	}
 
-	private Pain001DTO wrapZahlungsauftrag(@Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull GemeindeStammdaten gemeindeStammdaten, @Nonnull Locale locale) {
+	private Pain001DTO wrapZahlungsauftrag(
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull GemeindeStammdaten gemeindeStammdaten,
+		@Nonnull Locale locale
+	) {
 		Pain001DTO pain001DTO = new Pain001DTO();
+
+		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
+		if (!gemeindeStammdaten.isZahlungsinformationValid()) {
+			throw new EbeguRuntimeException(KibonLogLevel.INFO,
+				"wrapZahlungsauftrag",
+				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_INCOMPLETE,
+				zahlungsauftrag.getGemeinde().getName());
+		}
 
 		pain001DTO.setAuszahlungsDatum(zahlungsauftrag.getDatumFaellig());
 		pain001DTO.setGenerierungsDatum(zahlungsauftrag.getDatumGeneriert());

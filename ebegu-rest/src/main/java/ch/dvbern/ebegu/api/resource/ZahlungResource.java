@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -69,6 +68,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Resource fuer Zahlungen
@@ -137,7 +137,7 @@ public class ZahlungResource {
 	public JaxZahlungsauftrag findZahlungsauftrag(
 		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) {
 
-		Objects.requireNonNull(zahlungsauftragJAXPId.getId());
+		requireNonNull(zahlungsauftragJAXPId.getId());
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
@@ -158,7 +158,7 @@ public class ZahlungResource {
 	public JaxZahlungsauftrag findZahlungsauftraginstitution(
 		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) {
 
-		Objects.requireNonNull(zahlungsauftragJAXPId.getId());
+		requireNonNull(zahlungsauftragJAXPId.getId());
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 		Optional<Zahlungsauftrag> optional = zahlungService.findZahlungsauftrag(zahlungsauftragId);
 
@@ -179,7 +179,7 @@ public class ZahlungResource {
 	public JaxZahlungsauftrag zahlungsauftragAusloesen(
 		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) throws MimeTypeParseException {
 
-		Objects.requireNonNull(zahlungsauftragJAXPId.getId());
+		requireNonNull(zahlungsauftragJAXPId.getId());
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 
 		final Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragAusloesen(zahlungsauftragId);
@@ -211,7 +211,8 @@ public class ZahlungResource {
 			datumGeneriert = LocalDateTime.now();
 		}
 
-		final Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragErstellen(gemeindeId, faelligkeitsdatum, beschrieb, datumGeneriert);
+		final Zahlungsauftrag zahlungsauftrag = zahlungService
+			.zahlungsauftragErstellen(gemeindeId, faelligkeitsdatum, beschrieb, datumGeneriert);
 
 		return converter.zahlungsauftragToJAX(zahlungsauftrag, false);
 	}
@@ -243,7 +244,7 @@ public class ZahlungResource {
 	public JaxZahlung zahlungBestaetigen(
 		@Nonnull @NotNull @PathParam("zahlungId") JaxId zahlungJAXPId) {
 
-		Objects.requireNonNull(zahlungJAXPId.getId());
+		requireNonNull(zahlungJAXPId.getId());
 		String zahlungId = converter.toEntityId(zahlungJAXPId);
 
 		final Zahlung zahlung = zahlungService.zahlungBestaetigen(zahlungId);

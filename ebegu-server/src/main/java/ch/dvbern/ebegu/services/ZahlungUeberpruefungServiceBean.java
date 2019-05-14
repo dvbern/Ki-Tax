@@ -268,7 +268,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				}
 			}
 		}
-		//noinspection ConstantConditions
 		return betragSoll;
 	}
 
@@ -280,7 +279,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				betragIst = DEFAULT.add(betragIst, zahlungsposition.getBetrag());
 			}
 		}
-		//noinspection ConstantConditions
 		return betragIst;
 	}
 
