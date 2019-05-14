@@ -734,7 +734,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
 
-        if (this.getErweiterteBetreuungJA() !== null
+        if (this.getErweiterteBetreuungJA()
             && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
             && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
             this.dvDialog.showRemoveDialog(removeDialogTemplate, undefined, RemoveDialogController, {
