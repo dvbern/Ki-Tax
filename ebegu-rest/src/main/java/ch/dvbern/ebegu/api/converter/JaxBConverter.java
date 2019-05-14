@@ -3656,6 +3656,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZahlungsauftrag.setStatus(persistedZahlungsauftrag.getStatus());
 		jaxZahlungsauftrag.setBeschrieb(persistedZahlungsauftrag.getBeschrieb());
 		jaxZahlungsauftrag.setBetragTotalAuftrag(persistedZahlungsauftrag.getBetragTotalAuftrag());
+		jaxZahlungsauftrag.setGemeinde(gemeindeToJAX(persistedZahlungsauftrag.getGemeinde()));
 		jaxZahlungsauftrag.setDatumFaellig(persistedZahlungsauftrag.getDatumFaellig());
 		jaxZahlungsauftrag.setDatumGeneriert(persistedZahlungsauftrag.getDatumGeneriert());
 
@@ -3681,7 +3682,8 @@ public class JaxBConverter extends AbstractConverter {
 			ADMIN_TRAEGERSCHAFT,
 			SACHBEARBEITER_TRAEGERSCHAFT,
 			ADMIN_INSTITUTION,
-			SACHBEARBEITER_INSTITUTION)) {
+			SACHBEARBEITER_INSTITUTION)
+		) {
 			RestUtil.purgeZahlungenOfInstitutionen(jaxZahlungsauftrag, allowedInst);
 			// es muss nochmal das Auftragstotal berechnet werden. Diesmal nur mit den erlaubten Zahlungen
 			// Dies nur fuer Institutionen
