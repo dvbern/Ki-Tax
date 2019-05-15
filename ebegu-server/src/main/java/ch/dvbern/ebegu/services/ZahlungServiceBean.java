@@ -309,8 +309,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Datum Bis
 		Predicate predicateEnd = cb.greaterThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), zeitabschnittVon);
 		predicates.add(predicateEnd);
-		// Nur Angebot KITA
-		Predicate predicateAngebot = cb.equal(joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.KITA);
+		// Nur Angebot KITA und TAGESFAMILIEN
+		Predicate predicateAngebot = joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
+			.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
 		predicates.add(predicateAngebot);
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
@@ -357,8 +358,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Datum Bis muss VOR dem regulaeren Auszahlungszeitraum sein (sonst ist es keine Korrektur und schon im obigen Statement enthalten)
 		Predicate predicateStart = cb.lessThanOrEqualTo(root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis), zeitabschnittBis);
 		predicates.add(predicateStart);
-		// Nur Angebot KITA
-		Predicate predicateAngebot = cb.equal(joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp), BetreuungsangebotTyp.KITA);
+		// Nur Angebot KITA und TAGESFAMILIEN
+		Predicate predicateAngebot = joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
+			.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
 		predicates.add(predicateAngebot);
 		// Gesuche, welche seit dem letzten Zahlungslauf verfuegt wurden. Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateDatum = cb.between(joinGesuch.get(Gesuch_.timestampVerfuegt), cb.literal(datumVerfuegtVon), cb.literal(datumVerfuegtBis));

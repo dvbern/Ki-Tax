@@ -187,8 +187,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void pruefeZahlungenSollFuerBetreuung(@Nonnull Betreuung betreuung, @Nonnull LocalDate dateAusbezahltBis) {
-		// Nur die "gueltige" Betreuung beachten und nur, wenn es KITA ist
-		if (betreuung.isAngebotKita()) {
+		// Nur die "gueltige" Betreuung beachten und nur, wenn es KITA oder TAGESFAMILIEN ist
+		if (betreuung.isAngebotAuszuzahlen()) {
 			if (!betreuung.isGueltig()) {
 				// Es gibt eine spätere Verfügung, deren Gesuch aber noch nicht (komplett) verfügt ist
 				Optional<Betreuung> gueltigeBetreuungOptional = betreuungService.findGueltigeBetreuungByBGNummer(betreuung.getBGNummer());
