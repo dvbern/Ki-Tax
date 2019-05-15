@@ -51,6 +51,8 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
+import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -993,6 +995,34 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 				throwViolation(mitteilung);
 			}
 			}
+		}
+	}
+
+	@Override
+	public void checkReadAuthorizationZahlung(@Nullable Zahlung zahlung) {
+		if (zahlung != null && zahlung.getZahlungsauftrag() != null) {
+			checkReadAuthorizationZahlungsauftrag(zahlung.getZahlungsauftrag());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorizationZahlung(@Nullable Zahlung zahlung) {
+		if (zahlung != null && zahlung.getZahlungsauftrag() != null) {
+			checkWriteAuthorizationZahlungsauftrag(zahlung.getZahlungsauftrag());
+		}
+	}
+
+	@Override
+	public void checkReadAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag) {
+		if (zahlungsauftrag != null) {
+			checkReadAuthorization(zahlungsauftrag.getGemeinde());
+		}
+	}
+
+	@Override
+	public void checkWriteAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag) {
+		if (zahlungsauftrag != null) {
+			checkWriteAuthorization(zahlungsauftrag.getGemeinde());
 		}
 	}
 

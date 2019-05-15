@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import {TSZahlungsauftragsstatus} from './enums/TSZahlungsauftragstatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import TSGemeinde from './TSGemeinde';
 import TSZahlung from './TSZahlung';
 import {TSDateRange} from './types/TSDateRange';
 
@@ -26,6 +27,7 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
     private _status: TSZahlungsauftragsstatus;
     private _beschrieb: string;
     private _betragTotalAuftrag: number;
+    private _gemeinde: TSGemeinde;
     private _zahlungen: Array<TSZahlung>;
 
     public constructor(
@@ -35,6 +37,7 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
         status?: TSZahlungsauftragsstatus,
         beschrieb?: string,
         betragTotalAuftrag?: number,
+        gemeinde?: TSGemeinde,
         zahlungen?: Array<TSZahlung>,
     ) {
         super(gueltigkeit);
@@ -43,6 +46,7 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
         this._status = status;
         this._beschrieb = beschrieb;
         this._betragTotalAuftrag = betragTotalAuftrag;
+        this._gemeinde = gemeinde;
         this._zahlungen = zahlungen;
     }
 
@@ -92,5 +96,13 @@ export default class TSZahlungsauftrag extends TSAbstractDateRangedEntity {
 
     public set status(value: TSZahlungsauftragsstatus) {
         this._status = value;
+    }
+
+    public get gemeinde(): TSGemeinde {
+        return this._gemeinde;
+    }
+
+    public set gemeinde(value: TSGemeinde) {
+        this._gemeinde = value;
     }
 }

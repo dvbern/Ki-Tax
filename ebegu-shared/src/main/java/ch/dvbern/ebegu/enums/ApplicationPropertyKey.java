@@ -31,21 +31,6 @@ public enum ApplicationPropertyKey {
 	BACKGROUND_COLOR,
 
 	/**
-	 * {Dbtr}{Nm} Name des Zahlungspflichtigen
-	 */
-	DEBTOR_NAME,
-
-	/**
-	 * {IBAN} IBAN des Zahlungspflichtigen?
-	 */
-	DEBTOR_IBAN,
-
-	/**
-	 * {BIC} BIC des Zahlungspflichtigen?
-	 */
-	DEBTOR_BIC,
-
-	/**
 	 * {ChrgsAcct} {IBAN} IBAN Belastungskonto Gebühren?
 	 */
 	DEBTOR_IBAN_GEBUEHREN,
