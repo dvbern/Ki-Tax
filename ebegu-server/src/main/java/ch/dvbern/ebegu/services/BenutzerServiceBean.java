@@ -845,9 +845,17 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			return benutzer;
 		}
 		// if we cannot find a User with the given ID, we try to load any Super Admin
-		return loadAnySuperAdmin();
+		final Optional<Benutzer> anySuperAdmin = loadAnySuperAdmin();
+		if (!anySuperAdmin.isPresent()) {
+			LOG.error("Could not find any SuperAdmin. At least one SuperAdmin must exist.");
+		}
+
+		return anySuperAdmin;
 	}
 
+	/**
+	 * Use this function to retrieve any Superadmin from the DB. It will randomly take the first one it finds
+	 */
 	private Optional<Benutzer> loadAnySuperAdmin() {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
