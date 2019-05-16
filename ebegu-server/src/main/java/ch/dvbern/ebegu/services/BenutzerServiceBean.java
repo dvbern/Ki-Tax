@@ -846,8 +846,33 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	private Optional<Benutzer> loadSuperAdmin() {
-		Benutzer benutzer = persistence.find(Benutzer.class, ID_SUPER_ADMIN);
-		return Optional.ofNullable(benutzer);
+		Optional<Benutzer> benutzer = Optional.ofNullable(persistence.find(Benutzer.class, ID_SUPER_ADMIN));
+		if (benutzer.isPresent()) {
+			return benutzer;
+		}
+		// if we cannot find a User with the given ID, we try to load any Super Admin
+		final Optional<Benutzer> anySuperAdmin = loadAnySuperAdmin();
+		if (!anySuperAdmin.isPresent()) {
+			LOG.error("Could not find any SuperAdmin. At least one SuperAdmin must exist.");
+		}
+
+		return anySuperAdmin;
+	}
+
+	/**
+	 * Use this function to retrieve any Superadmin from the DB. It will randomly take the first one it finds
+	 */
+	private Optional<Benutzer> loadAnySuperAdmin() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
+		query.select(root);
+
+		Predicate rolePredicate = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN);
+		query.where(rolePredicate);
+
+		return persistence.getCriteriaResults(query).stream().findFirst();
 	}
 
 	@Nonnull
