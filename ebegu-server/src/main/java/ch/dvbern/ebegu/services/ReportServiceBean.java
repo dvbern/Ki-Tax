@@ -810,6 +810,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
 			zahlungsauftrag.getDatumFaellig(),
+			zahlungsauftrag.getGemeinde(),
 			locale);
 	}
 
@@ -847,17 +848,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
 			zahlungsauftrag.getDatumFaellig(),
+			zahlungsauftrag.getGemeinde(),
 			locale
 		);
 	}
 
 	@Nonnull
 	private UploadFileInfo getUploadFileInfoZahlung(
-		List<Zahlung> reportData,
-		String excelFileName,
-		String bezeichnung,
-		LocalDateTime datumGeneriert,
-		LocalDate datumFaellig,
+		@Nonnull List<Zahlung> reportData,
+		@Nonnull String excelFileName,
+		@Nonnull String bezeichnung,
+		@Nonnull LocalDateTime datumGeneriert,
+		@Nonnull LocalDate datumFaellig,
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull Locale locale
 	) throws ExcelMergeException {
 
@@ -878,7 +881,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			allowedInst,
 			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale, bezeichnung),
 			datumGeneriert,
-			datumFaellig
+			datumFaellig,
+			gemeinde
 		);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
@@ -1954,7 +1958,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		LocalDateTime zuletztGeandert;
 		InstitutionenDataRow row = new InstitutionenDataRow();
 
-		String angebotTyp = ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale);
+		String angebotTyp =
+			ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale);
 		row.setTyp(angebotTyp);
 		if (institution.getTraegerschaft() != null) {
 			row.setTraegerschaft(institution.getTraegerschaft().getName());
@@ -1969,11 +1974,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (institutionStammdaten.getWebseite() != null) {
 			row.setUrl(institutionStammdaten.getWebseite());
 		}
-
 		if (institutionStammdaten.getOeffnungszeiten() != null) {
 			row.setOeffnungszeiten(institutionStammdaten.getOeffnungszeiten());
 		}
-		row.setStrasse(adresse.getStrasse() + ' ' + adresse.getHausnummer());
+		row.setStrasse(adresse.getStrasseAndHausnummer());
 		row.setPlz(adresse.getPlz());
 		row.setOrt(adresse.getOrt());
 		row.setEmail(institutionStammdaten.getMail());

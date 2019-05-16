@@ -35,7 +35,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     @Input() public traegerschaften: TSTraegerschaft[];
 
-    public displayedColumns: string[] = ['name', 'remove'];
+    public displayedColumns: string[] = ['name', 'detail', 'remove'];
     public dataSource: MatTableDataSource<TSTraegerschaft>;
 
     @ViewChild(NgForm) public form: NgForm;
@@ -113,5 +113,9 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     public showNoContentMessage(): boolean {
         return !this.dataSource || this.dataSource.data.length === 0;
+    }
+
+    public doFilter(value: string): void {
+        this.dataSource.filter = value.trim().toLocaleLowerCase();
     }
 }

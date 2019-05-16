@@ -58,6 +58,9 @@ public class JaxZahlungsauftrag extends JaxAbstractDateRangedDTO {
 	@NotNull
 	private BigDecimal betragTotalAuftrag;
 
+	@NotNull
+	private JaxGemeinde gemeinde;
+
 	@Nonnull
 	private List<JaxZahlung> zahlungen = new ArrayList<>();
 
@@ -108,5 +111,14 @@ public class JaxZahlungsauftrag extends JaxAbstractDateRangedDTO {
 
 	public void setBetragTotalAuftrag(BigDecimal betragTotalAuftrag) {
 		this.betragTotalAuftrag = betragTotalAuftrag;
+	}
+
+	@Nonnull
+	public JaxGemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@Nonnull JaxGemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 }

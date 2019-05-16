@@ -1872,23 +1872,21 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	private void logDeletingOfGesuchstellerAntrag(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
-		LOG.info("****************************************************");
-		LOG.info("Online Gesuch wird gelöscht:");
-		LOG.info("Benutzer: {}", principalBean.getBenutzer().getUsername());
-		LOG.info("Fall: {}", dossier.getFall().getFallNummer());
-		LOG.info("Gemeinde: {}", dossier.getGemeinde().getGemeindeNummer());
-		LOG.info("Gesuchsperiode: {}", gesuchsperiode.getGesuchsperiodeString());
-		LOG.info("****************************************************");
+		String sb = "Online Gesuch wird gelöscht:"
+			+ "Benutzer: " + principalBean.getBenutzer().getUsername()
+			+ ", Fall: " + dossier.getFall().getFallNummer()
+			+ ", Gemeinde: " + dossier.getGemeinde().getGemeindeNummer()
+			+ ", Gesuchsperiode: " + gesuchsperiode.getGesuchsperiodeString();
+		LOG.info(sb);
 	}
 
 	private void logDeletingOfAntrag(@Nonnull Gesuch gesuch) {
-		LOG.info("****************************************************");
-		LOG.info("Gesuch wird gelöscht:");
-		LOG.info("Benutzer: {}", principalBean.getBenutzer().getUsername());
-		LOG.info("Fall: {}", gesuch.getFall().getFallNummer());
-		LOG.info("Gesuchsperiode: {}", gesuch.getGesuchsperiode().getGesuchsperiodeString());
-		LOG.info("Gesuch-Id: {}", gesuch.getId());
-		LOG.info("****************************************************");
+		String sb = "Gesuch wird gelöscht:"
+			+ "Benutzer: " + principalBean.getBenutzer().getUsername()
+			+ ", Fall: " + gesuch.getFall().getFallNummer()
+			+ ", Gesuchsperiode: " + gesuch.getGesuchsperiode().getGesuchsperiodeString()
+			+ ", Gesuch-Id: " + gesuch.getId();
+		LOG.info(sb);
 	}
 
 	@Override

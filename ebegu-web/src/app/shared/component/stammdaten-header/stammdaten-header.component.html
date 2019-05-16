@@ -47,7 +47,7 @@
                                  class="gemeinde-profil-image">
                         </div>
                         <div *ngIf="editMode">
-                            <input #fileInput type="file" accept='image/*'
+                            <input #fileInput type="file" accept='image/png,image/jpeg'
                                    (change)="srcChange(fileInput.files)"
                                    class="gemeinde-profil-fileinput">
                         </div>
