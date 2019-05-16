@@ -27,8 +27,10 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
@@ -36,6 +38,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.FallService;
+import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -69,6 +72,9 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private FallService fallService;
+
+	@Inject
+	private GesuchService gesuchService;
 
 	@Test
 	public void oneBerechtigung() {
@@ -218,7 +224,9 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 		try {
 			benutzerService.einladen(einladung);
-			fail("It should throw a ConstraintViolationException because AKTIV is not a valid status. It must be EINGELADEN");
+			fail(
+				"It should throw a ConstraintViolationException because AKTIV is not a valid status. It must be "
+					+ "EINGELADEN");
 		} catch (EJBException e) {
 			// nop
 		}
@@ -246,16 +254,28 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void deleteBenutzerIfAllowed_GesuchstellerLeer() {
-		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER, "gesu1", null, null, getDummySuperadmin().getMandant(), "Gesuchsteller",
+		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER,
+			"gesu1",
+			null,
+			null,
+			getDummySuperadmin().getMandant(),
+			"Gesuchsteller",
 			"Gertrude");
 		benutzer1 = persistence.persist(benutzer1);
 		benutzerService.deleteBenutzerInNewTransactionIfAllowed(benutzer1.getId());
-		Assert.assertFalse("Benutzer konnte gelöscht werden", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
+		Assert.assertFalse(
+			"Benutzer konnte gelöscht werden",
+			benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
 	}
 
 	@Test
 	public void deleteBenutzerIfAllowed_GesuchstellerMitFall() {
-		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER, "gesu1", null, null, getDummySuperadmin().getMandant(), "Gesuchsteller",
+		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER,
+			"gesu1",
+			null,
+			null,
+			getDummySuperadmin().getMandant(),
+			"Gesuchsteller",
 			"Gertrude");
 		benutzer1 = persistence.persist(benutzer1);
 
@@ -268,8 +288,37 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 	}
 
 	@Test
+	public void deleteBenutzerIfAllowed_GesuchstellerMitGesuch() {
+		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER,
+			"gesu1",
+			null,
+			null,
+			getDummySuperadmin().getMandant(),
+			"Gesuchsteller",
+			"Gertrude");
+		benutzer1 = persistence.persist(benutzer1);
+
+		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
+		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
+		gesuch.setDossier(dossier);
+		gesuchService.createGesuch(gesuch);
+
+		Fall fall = dossier.getFall();
+		fall.setBesitzer(benutzer1);
+		fallService.saveFall(fall);
+
+		benutzerService.deleteBenutzerInNewTransactionIfAllowed(benutzer1.getId());
+		Assert.assertTrue("Benutzer wurde nicht gelöscht", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
+	}
+
+	@Test
 	public void deleteBenutzerIfAllowed_SachbearbeiterMitEinladung() {
-		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.SUPER_ADMIN, "gesu1", null, null, getDummySuperadmin().getMandant(), "Gesuchsteller",
+		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.SUPER_ADMIN,
+			"gesu1",
+			null,
+			null,
+			getDummySuperadmin().getMandant(),
+			"Gesuchsteller",
 			"Gertrude");
 
 		benutzer1.setStatus(BenutzerStatus.EINGELADEN);
@@ -278,7 +327,9 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		benutzerService.einladen(einladung);
 
 		benutzerService.deleteBenutzerInNewTransactionIfAllowed(benutzer1.getId());
-		Assert.assertFalse("Benutzer konnte gelöscht werden", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
+		Assert.assertFalse(
+			"Benutzer konnte gelöscht werden",
+			benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
 	}
 
 	private void assertCommonBenutzerFields(String adminMail, Benutzer adminTraegerschaft) {
