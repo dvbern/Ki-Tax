@@ -163,6 +163,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	private FallService fallService;
 
 	@Inject
+	private GesuchService gesuchService;
+
+	@Inject
 	private MitteilungService mitteilungService;
 
 	@Nonnull
@@ -1299,7 +1302,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// Gesuchsteller darf noch kein Dossier haben
 			Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
 			if (fallOptional.isPresent()) {
-				return false;
+				Fall fall = fallOptional.get();
+				if (gesuchService.getAllGesuchIDsForFall(fall.getId()).isEmpty() == false ) {
+					return false;
+				}
 			}
 		} else {
 			// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
