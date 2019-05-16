@@ -35,6 +35,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -160,6 +162,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Override
 	@Nonnull
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung) {
 		return zahlungsauftragErstellen(gemeindeId, datumFaelligkeit, beschreibung, LocalDateTime.now());
 	}
@@ -167,6 +170,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Override
 	@Nonnull
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung,
 		@Nonnull LocalDateTime datumGeneriert) {
 
@@ -260,7 +264,6 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		calculateZahlungsauftrag(zahlungsauftrag);
 		Zahlungsauftrag persistedAuftrag = persistence.merge(zahlungsauftrag);
 
-		zahlungenKontrollieren(gemeindeId);
 		return persistedAuftrag;
 	}
 
@@ -761,6 +764,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 	@Override
 	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void zahlungenKontrollieren(@Nonnull String gemeindeId) {
 		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungenKontrollieren",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
