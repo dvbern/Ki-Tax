@@ -1303,7 +1303,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
 			if (fallOptional.isPresent()) {
 				Fall fall = fallOptional.get();
-				if (gesuchService.getAllGesuchIDsForFall(fall.getId()).isEmpty() == false ) {
+				if (!gesuchService.getAllGesuchIDsForFall(fall.getId()).isEmpty()) {
 					return false;
 				}
 			}
