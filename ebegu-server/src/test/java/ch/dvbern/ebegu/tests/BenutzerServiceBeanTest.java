@@ -264,7 +264,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		fallService.saveFall(fall);
 
 		benutzerService.deleteBenutzerInNewTransactionIfAllowed(benutzer1.getId());
-		Assert.assertTrue("Benutzer wurde nicht gelöscht", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
+		Assert.assertFalse("Benutzer wurde gelöscht", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
 	}
 
 	@Test
