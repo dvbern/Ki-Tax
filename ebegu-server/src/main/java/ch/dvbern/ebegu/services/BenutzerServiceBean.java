@@ -1280,23 +1280,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 	}
 
-	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void deleteBenutzerInNewTransactionIfAllowed(@Nonnull String id) {
-		Objects.requireNonNull(id);
-		Optional<Benutzer> benutzerOptional = findBenutzerById(id);
-		if (benutzerOptional.isPresent()) {
-			Benutzer benutzer = benutzerOptional.get();
-			authorizer.checkWriteAuthorization(benutzer);
-			if (!isBenutzerDeleteable(benutzer)) {
-				return;
-			}
-			LOG.warn("Benutzer wird gelöscht: {}", benutzer);
-			authService.logoutAndDeleteAuthorisierteBenutzerForUser(benutzer.getUsername());
-			persistence.remove(benutzer);
-		}
-	}
-
 	private boolean isBenutzerDeleteable(@Nonnull Benutzer benutzer) {
 		if (benutzer.getRole() == UserRole.GESUCHSTELLER) {
 			// Gesuchsteller darf noch kein Dossier haben

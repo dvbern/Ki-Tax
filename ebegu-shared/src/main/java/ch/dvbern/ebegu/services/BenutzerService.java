@@ -57,21 +57,27 @@ public interface BenutzerService {
 	Benutzer saveBenutzer(@Nonnull Benutzer benutzer);
 
 	/**
-	 * Creates a new user of Role ADMIN_GEMEINDE with the given adminMail as email and as username and the given Gemeinde as the only
-	 * Gemeinde in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 * Creates a new user of Role ADMIN_GEMEINDE with the given adminMail as email and as username and the given
+	 * Gemeinde as the only
+	 * Gemeinde in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to
+	 * "UNKNOWN"
 	 */
 	@Nonnull
 	Benutzer createAdminGemeindeByEmail(@Nonnull String adminMail, @Nonnull Gemeinde gemeinde);
 
 	/**
-	 * Creates a new user of Role ADMIN_INSTITUTION with the given adminMail as email and as username and the given Institution as the only
-	 * Institution in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 * Creates a new user of Role ADMIN_INSTITUTION with the given adminMail as email and as username and the given
+	 * Institution as the only
+	 * Institution in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to
+	 * "UNKNOWN"
 	 */
 	Benutzer createAdminInstitutionByEmail(@Nonnull String adminMail, @Nonnull Institution institution);
 
 	/**
-	 * Creates a new user of Role ADMIN_TRAEGERSCHAFT with the given adminMail as email and as username and the given Traegerschaft as the only
-	 * Traegerschaft in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to "UNKNOWN"
+	 * Creates a new user of Role ADMIN_TRAEGERSCHAFT with the given adminMail as email and as username and the given
+	 * Traegerschaft as the only
+	 * Traegerschaft in the current Berechtigung, which will be valid from today on. Name and Vorname will be set to
+	 * "UNKNOWN"
 	 */
 	Benutzer createAdminTraegerschaftByEmail(@Nonnull String adminMail, @Nonnull Traegerschaft traegerschaft);
 
@@ -120,6 +126,7 @@ public interface BenutzerService {
 
 	/**
 	 * Gibt alle Administratoren einer Gemeinde zurueck.
+	 *
 	 * @param gemeinde Die Gemeinde
 	 * @return Liste aller Benutzern aus der DB
 	 */
@@ -128,6 +135,7 @@ public interface BenutzerService {
 
 	/**
 	 * Gibt alle Sachbearbeiter einer Gemeinde zurueck.
+	 *
 	 * @param gemeinde Die Gemeinde
 	 * @return Liste aller Benutzern aus der DB
 	 */
@@ -136,6 +144,7 @@ public interface BenutzerService {
 
 	/**
 	 * Gibt alle Administratoren einer Institution zurueck.
+	 *
 	 * @param institution Die Institution (Kita)
 	 * @return Liste aller Benutzern aus der DB
 	 */
@@ -144,6 +153,7 @@ public interface BenutzerService {
 
 	/**
 	 * Gibt alle Sachbearbeiter einer Institution zurueck.
+	 *
 	 * @param institution Die Institution (Kita)
 	 * @return Liste aller Benutzern aus der DB
 	 */
@@ -153,6 +163,7 @@ public interface BenutzerService {
 	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
 	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
+	 *
 	 * @param gemeinde Die Gemeinde
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
@@ -161,6 +172,7 @@ public interface BenutzerService {
 	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_TS oder Admin_TS oder
 	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
+	 *
 	 * @param gemeinde Die Gemeinde
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
@@ -267,12 +279,4 @@ public interface BenutzerService {
 	 * Loescht die externalUUID des Benutzers
 	 */
 	void deleteExternalUUIDInNewTransaction(@Nonnull String id);
-
-	/**
-	 * Loescht den Benutzer, falls folgende Voraussetzungen erfüllt sind:
-	 * 	 - Er die Rolle GESUCHSTELLER hat
-	 * 	 - Er eine erweiterte Rolle hat UND noch im Status EINGELADEN ist
-	 * 	 - Er kein Dossier und keine Mitteilungen hat
-	 */
-	void deleteBenutzerInNewTransactionIfAllowed(@Nonnull String id);
 }
