@@ -299,7 +299,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed(SUPER_ADMIN)
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
 		try {
-			if(eingeladener.getStatus() == BenutzerStatus.EINGELADEN) {
+			if (eingeladener.getStatus() != BenutzerStatus.EINGELADEN) {
 				throw new EbeguRuntimeException(
 					KibonLogLevel.INFO,
 					eingeladener.getUsername(),
@@ -325,7 +325,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
-		if (einladungTyp == EinladungTyp.MITARBEITER && (!benutzer.isNew() || findBenutzer(benutzer.getUsername()).isPresent())) {
+		if (einladungTyp == EinladungTyp.MITARBEITER && (!benutzer.isNew()
+			|| findBenutzer(benutzer.getUsername()).isPresent())) {
 			// when inviting a new Mitarbeiter the user cannot exist.
 			// For any other invitation the user may exist already
 			throw new EntityExistsException(
