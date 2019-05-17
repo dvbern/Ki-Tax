@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
-import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -72,9 +71,6 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private FallService fallService;
-
-	@Inject
-	private GesuchService gesuchService;
 
 	@Test
 	public void oneBerechtigung() {
@@ -298,14 +294,10 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 			"Gertrude");
 		benutzer1 = persistence.persist(benutzer1);
 
-		Dossier dossier = TestDataUtil.createAndPersistDossierAndFall(persistence);
-		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
-		gesuch.setDossier(dossier);
-		gesuchService.createGesuch(gesuch);
+		final Gemeinde gemeinde = persistence.find(Gemeinde.class, TestDataUtil.GEMEINDE_BERN_ID);
+		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, gemeinde);
 
-		Fall fall = dossier.getFall();
-		fall.setBesitzer(benutzer1);
-		fallService.saveFall(fall);
+		gesuch.getDossier().getFall().setBesitzer(benutzer1);
 
 		benutzerService.deleteBenutzerInNewTransactionIfAllowed(benutzer1.getId());
 		Assert.assertTrue("Benutzer wurde nicht gelöscht", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
