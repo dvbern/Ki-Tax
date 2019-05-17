@@ -1459,24 +1459,6 @@ export default class GesuchModelManager {
             true;
     }
 
-    public saveMutation(): IPromise<TSGesuch> {
-        return this.gesuchRS.antragMutieren(this.gesuch.id, this.gesuch.eingangsdatum)
-            .then(response => this.handleSave(response));
-    }
-
-    public saveErneuerungsgesuch(): IPromise<TSGesuch> {
-        return this.gesuchRS.antragErneuern(this.gesuch.gesuchsperiode.id, this.gesuch.id, this.gesuch.eingangsdatum)
-            .then(response => this.handleSave(response));
-    }
-
-    private handleSave(response: TSGesuch): IPromise<TSGesuch> {
-        this.setGesuch(response);
-
-        return this.wizardStepManager.findStepsFromGesuch(response.id).then(() => {
-            return this.getGesuch();
-        });
-    }
-
     /**
      * Aktualisiert alle gegebenen Betreuungen.
      * ACHTUNG. Die Betreuungen muessen existieren damit alles richtig funktioniert

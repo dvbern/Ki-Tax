@@ -103,22 +103,6 @@ export default class GesuchRS implements IEntityRS {
         });
     }
 
-    public antragMutieren(antragId: string, dateParam: moment.Moment): IPromise<TSGesuch> {
-        return this.$http.post(`${this.serviceURL}/mutieren/${encodeURIComponent(antragId)}`, null,
-            {params: {date: DateUtil.momentToLocalDate(dateParam)}}).then(response => {
-            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-        });
-    }
-
-    public antragErneuern(gesuchsperiodeId: string, antragId: string, dateParam: moment.Moment): IPromise<TSGesuch> {
-        const url = `${this.serviceURL}/erneuern/${encodeURIComponent(gesuchsperiodeId)}/${encodeURIComponent(
-            antragId)}`;
-        return this.$http.post(url, null, {params: {date: DateUtil.momentToLocalDate(dateParam)}})
-            .then(response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
-    }
-
     public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
         const url = `${this.serviceURL}/freigeben/${encodeURIComponent(antragId)}/JA/${usernameJA}/SCH/${usernameSCH}`;
         return this.$http.post(url, null, {

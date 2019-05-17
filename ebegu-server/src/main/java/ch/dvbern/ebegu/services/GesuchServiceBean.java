@@ -121,6 +121,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,27 +201,57 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
 		SACHBEARBEITER_TS, ADMIN_TS })
-	public Gesuch createGesuch(@Nonnull Gesuch gesuch) {
-		Objects.requireNonNull(gesuch);
+	public Gesuch createGesuch(@Nonnull Gesuch gesuchToCreate) {
+		Objects.requireNonNull(gesuchToCreate);
 
-		Gesuch persistedGesuch = null;
+		Gesuch gesuchToPersist = gesuchToCreate;
 
-		// Falls dies das erste Gesuch in einem neuen Dossier ist, müssen hier die Daten kopiert werden!
-		Optional<Gesuch> gesuchToCopyOptional = getNeustesGeprueftesGesuchInAnotherDossier(gesuch.getDossier(), true);
-		if (gesuchToCopyOptional.isPresent()) {
-			Eingangsart eingangsart = calculateEingangsart();
-			Gesuch gesuchToCopy = gesuchToCopyOptional.get();
-			Gesuch copiedGesuch = null;
-			if (gesuch.getGesuchsperiode().equals(gesuchToCopy.getGesuchsperiode())) {
-				copiedGesuch = gesuchToCopy.copyForMutationNeuesDossier(gesuch, eingangsart, gesuch.getDossier());
-			} else {
-				copiedGesuch = gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(gesuch, eingangsart, gesuch.getDossier(), gesuch.getGesuchsperiode());
+		Gemeinde gemeindeOfGesuchToCreate = gesuchToCreate.extractGemeinde();
+		Gesuchsperiode gesuchsperiodeOfGesuchToCreate = gesuchToCreate.getGesuchsperiode();
+		AntragTyp typOfGesuchToCreate = gesuchToCreate.getTyp();
+		Eingangsart eingangsart = calculateEingangsart();
+		LocalDate eingangsdatum = gesuchToCreate.getEingangsdatum();
+		LOG.info("CREATE gesuchToCreate " + gemeindeOfGesuchToCreate.getName() + " " + gesuchsperiodeOfGesuchToCreate.getGesuchsperiodeString() + " " + typOfGesuchToCreate + " " + gesuchToCreate.isNew() + " " + eingangsart + " " + eingangsdatum);
+
+		if (typOfGesuchToCreate == AntragTyp.MUTATION) {
+			LOG.info("Es ist eine Mutation");
+			Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiodeOfGesuchToCreate, gesuchToCreate.getDossier(), true);
+			if (gesuchForMutationOpt.isPresent()) {
+				// Es ist eine Mutation
+				LOG.info("... und es gibt ein Gesuch zu kopieren");
+				Gesuch gesuchForMutation = gesuchForMutationOpt.get();
+				gesuchToPersist = gesuchForMutation.copyForMutation(new Gesuch(), eingangsart);
 			}
-			persistedGesuch = persistence.persist(copiedGesuch);
-
-		} else {
-			persistedGesuch = persistence.persist(gesuch);
+		} else if (typOfGesuchToCreate == AntragTyp.ERNEUERUNGSGESUCH) {
+			LOG.info("Es ist ein Erneuerungsgesuch (im gleichen Dossier)");
+			Optional<Gesuch> gesuchForErneuerungOptional = getGesuchFuerErneuerungsantrag(gesuchToCreate.getDossier());
+			if (gesuchForErneuerungOptional.isPresent()) {
+				LOG.info("... und es gibt ein Gesuch zu kopieren");
+				Gesuch gesuchForErneuerung = gesuchForErneuerungOptional.get();
+				gesuchToPersist = gesuchForErneuerung.copyForErneuerung(new Gesuch(), gesuchsperiodeOfGesuchToCreate, eingangsart);
+			}
+		} else if (typOfGesuchToCreate == AntragTyp.ERSTGESUCH) {
+			LOG.info("Es ist entweder das erste Gesuch überhaupt oder das erste in einem neuen Dossier");
+			List<String> existingForFall = getAllGesuchIDsForFall(gesuchToCreate.getFall().getId());
+			if (CollectionUtils.isNotEmpty(existingForFall)) {
+				// Es ist das erste in einem neuen Dossier
+				Optional<Gesuch> gesuchToCopyOptional = getNeustesGeprueftesGesuchInAnotherDossier(gesuchToCreate.getDossier(), true);
+				if (gesuchToCopyOptional.isPresent()) {
+					LOG.info("Es ist das erste Gesuch in einem neuen Dossier!");
+					Gesuch gesuchToCopy = gesuchToCopyOptional.get();
+					if (gesuchsperiodeOfGesuchToCreate.equals(gesuchToCopy.getGesuchsperiode())) {
+						gesuchToPersist = gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart, gesuchToCreate.getDossier());
+					} else {
+						gesuchToPersist = gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(gesuchToCreate, eingangsart, gesuchToCreate.getDossier(), gesuchsperiodeOfGesuchToCreate);
+					}
+				}
+			}
 		}
+		gesuchToPersist.setEingangsart(eingangsart);
+		if (eingangsdatum != null) {
+			gesuchToPersist.setEingangsdatum(eingangsdatum);
+		}
+		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);
 
 		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
 		// Gesuch ohne WizardSteps gibt
@@ -1089,54 +1120,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			eingangsart = Eingangsart.PAPIER;
 		}
 		return eingangsart;
-	}
-
-	@Override
-	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
-	public Optional<Gesuch> antragErneuern(
-		@Nonnull String antragId,
-		@Nonnull String gesuchsperiodeId,
-		@Nullable LocalDate eingangsdatum) {
-
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"findGesuchsperiode",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				gesuchsperiodeId));
-		Gesuch gesuch = findGesuch(antragId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"antragErneuern",
-				"Es existiert kein Antrag mit ID, kann kein Erneuerungsgesuch erstellen " + antragId,
-				antragId));
-		List<Gesuch> allGesucheForDossierAndPeriod =
-			getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuchsperiode);
-		if (allGesucheForDossierAndPeriod.isEmpty()) {
-			Gesuch gesuchForErneuerung = getGesuchFuerErneuerungsantrag(gesuch.getDossier())
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"antragErneuern",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					"Kein Verfuegtes Gesuch fuer ID " + antragId));
-			return getErneuerungsgesuch(eingangsdatum, gesuchForErneuerung, gesuchsperiode);
-		}
-
-		// must have the gesuchsperiodeID as first item in the arguments list
-		throw new EbeguExistingAntragException("antragErneuern", ErrorCodeEnum.ERROR_EXISTING_ERNEUERUNGSGESUCH,
-			gesuch.getDossier().getId(), gesuchsperiodeId);
-	}
-
-	private Optional<Gesuch> getErneuerungsgesuch(
-		@Nullable LocalDate eingangsdatum,
-		@Nonnull Gesuch gesuchForErneuerung,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-
-		Eingangsart eingangsart = calculateEingangsart();
-		Gesuch erneuerungsgesuch = gesuchForErneuerung.copyForErneuerung(new Gesuch(), gesuchsperiode, eingangsart);
-		if (eingangsdatum != null) {
-			erneuerungsgesuch.setEingangsdatum(eingangsdatum);
-		}
-		return Optional.of(erneuerungsgesuch);
 	}
 
 	@Override

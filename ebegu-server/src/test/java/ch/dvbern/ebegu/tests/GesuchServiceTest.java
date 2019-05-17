@@ -309,11 +309,14 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gpFolgegesuch.getGueltigkeit().setGueltigAb(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusYears(1));
 		gpFolgegesuch.getGueltigkeit().setGueltigBis(erstgesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis().plusYears(1));
 		gpFolgegesuch = persistence.persist(gpFolgegesuch);
-		Optional<Gesuch> gesuchOptional = gesuchService.antragErneuern(erstgesuch.getId(), gpFolgegesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
 
-		Assert.assertTrue(gesuchOptional.isPresent());
-		Gesuch folgegesuch = gesuchOptional.get();
+		Gesuch erneuerung = new Gesuch();
+		erneuerung.setDossier(erstgesuch.getDossier());
+		erneuerung.setGesuchsperiode(gpFolgegesuch);
+		erneuerung.setEingangsdatum(LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch folgegesuch = gesuchService.createGesuch(erneuerung);
 
+		Assert.assertNotNull(folgegesuch);
 		Assert.assertEquals(AntragTyp.ERNEUERUNGSGESUCH, folgegesuch.getTyp());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, folgegesuch.getStatus());
 		Assert.assertEquals(erstgesuch.getDossier(), folgegesuch.getDossier());
@@ -951,9 +954,12 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createCustomGesuchsperiode(2018, 2019);
 		final Gesuchsperiode savedGesuchsperiode1819 = persistence.persist(gesuchsperiode1819);
 
-		final Optional<Gesuch> erneurtesGesuch = gesuchService.antragErneuern(gesuch.getId(), savedGesuchsperiode1819.getId(), null);
-		Assert.assertTrue(erneurtesGesuch.isPresent());
-		Gesuch folgegesuch = gesuchService.createGesuch(erneurtesGesuch.get());
+
+		Gesuch erneuerung = new Gesuch();
+		erneuerung.setDossier(gesuch.getDossier());
+		erneuerung.setGesuchsperiode(savedGesuchsperiode1819);
+		erneuerung.setEingangsdatum(null);
+		Gesuch folgegesuch = gesuchService.createGesuch(erneuerung);
 
 		Assert.assertTrue(gesuchService.hasFolgegesuchForAmt(gesuch.getId()));
 		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(folgegesuch.getId()));

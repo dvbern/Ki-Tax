@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.rest.test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Iterator;
 
@@ -181,24 +180,6 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 		Assert.assertEquals(200, response.getStatus());
 		Assert.assertNotNull(persistedGesuch);
 		Assert.assertEquals(AntragStatusDTO.ERSTE_MAHNUNG, persistedGesuch.getStatus());
-	}
-
-	@Test
-	public void testAntragMutieren() {
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
-		gesuch.setGueltig(true);
-		gesuch.setTimestampVerfuegt(LocalDateTime.now());
-		gesuch = persistence.merge(gesuch);
-		gesuchResource.updateStatus(new JaxId(gesuch.getId()), AntragStatusDTO.GEPRUEFT);
-		gesuchResource.updateStatus(new JaxId(gesuch.getId()), AntragStatusDTO.VERFUEGEN);
-		gesuchResource.updateStatus(new JaxId(gesuch.getId()), AntragStatusDTO.VERFUEGT);
-
-		//noinspection ConstantConditions
-		final Response response = gesuchResource.antragMutieren(new JaxId(gesuch.getId()), LocalDate.now().toString(), null, null);
-
-		Assert.assertNotNull(response);
-		final Object entity = response.getEntity();
-		Assert.assertNotNull(entity);
 	}
 
 	@Test

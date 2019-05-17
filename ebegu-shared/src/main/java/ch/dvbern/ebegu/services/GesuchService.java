@@ -162,6 +162,7 @@ public interface GesuchService {
 	 * Erstellt eine neue Mutation fuer die Gesuchsperiode und Fall des uebergebenen Antrags. Es wird immer der letzt
 	 * verfuegte Antrag kopiert fuer die Mutation.
 	 */
+	//TODO (hefr) brauchts mich noch?
 	@Nonnull
 	Optional<Gesuch> antragMutieren(@Nonnull String antragId, @Nullable LocalDate eingangsdatum);
 
@@ -173,16 +174,6 @@ public interface GesuchService {
 		@Nonnull String dossierID,
 		@Nonnull String gesuchsperiodeId,
 		@Nonnull LocalDate eingangsdatum);
-
-	/**
-	 * Erstellt ein Erneuerungsgesuch fuer die Gesuchsperiode und Fall des übergebenen Antrags. Es wird immer der
-	 * letzte verfügte Antrag kopiert für das Erneuerungsgesuch
-	 */
-	@Nonnull
-	Optional<Gesuch> antragErneuern(
-		@Nonnull String antragId,
-		@Nonnull String gesuchsperiodeId,
-		@Nullable LocalDate eingangsdatum);
 
 	/**
 	 * Gibt das letzte verfuegte Gesuch fuer die uebergebene Gesuchsoperde und den uebergebenen Fall zurueck.

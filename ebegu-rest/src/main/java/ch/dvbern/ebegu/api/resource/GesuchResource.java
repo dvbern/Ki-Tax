@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.api.resource;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +35,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -68,7 +66,6 @@ import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
-import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
@@ -350,69 +347,6 @@ public class GesuchResource {
 		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId) {
 		Objects.requireNonNull(dossierJAXPId.getId());
 		return gesuchService.getAllAntragDTOForDossier(converter.toEntityId(dossierJAXPId));
-	}
-
-	@ApiOperation(value = "Creates a new Antrag of type Mutation in the database", response = JaxGesuch.class)
-	@Nullable
-	@POST
-	@Path("/mutieren/{antragId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response antragMutieren(
-		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
-		@Nullable @QueryParam("date") String stringDate,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(antragJaxId.getId());
-
-		// Wenn der GS eine Mutation macht, ist das Eingangsdatum erst null. Wir muessen das Gesuch so erstellen
-		LocalDate eingangsdatum = null;
-		if (stringDate != null && !stringDate.isEmpty()) {
-			eingangsdatum = DateUtil.parseStringToDateOrReturnNow(stringDate);
-		}
-		final String antragId = converter.toEntityId(antragJaxId);
-
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(antragId, eingangsdatum);
-
-		if (!gesuchOptional.isPresent()) {
-			return Response.noContent().build();
-		}
-
-		Gesuch mutationToReturn = gesuchService.createGesuch(gesuchOptional.get());
-		return Response.ok(converter.gesuchToJAX(mutationToReturn)).build();
-	}
-
-	@ApiOperation(value = "Creates a new Antrag of type Erneuerungsgesuch in the database", response = JaxGesuch.class)
-	@Nullable
-	@POST
-	@Path("/erneuern/{gesuchsperiodeId}/{antragId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response antragErneuern(
-		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
-		@Nonnull @NotNull @PathParam("gesuchsperiodeId") JaxId gesuchsperiodeJaxId,
-		@Nullable @QueryParam("date") String stringDate,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(gesuchsperiodeJaxId.getId());
-		Objects.requireNonNull(antragJaxId.getId());
-
-		// Wenn der GS ein Erneuerungsgesuch macht, ist das Eingangsdatum erst null. Wir muessen das Gesuch so erstellen
-		LocalDate eingangsdatum = null;
-		if (stringDate != null && !stringDate.isEmpty()) {
-			eingangsdatum = DateUtil.parseStringToDateOrReturnNow(stringDate);
-		}
-		final String antragId = converter.toEntityId(antragJaxId);
-		final String gesuchsperiodeId = converter.toEntityId(gesuchsperiodeJaxId);
-
-		Optional<Gesuch> gesuchsperiodeOptional = gesuchService.antragErneuern(antragId, gesuchsperiodeId, eingangsdatum);
-		if (!gesuchsperiodeOptional.isPresent()) {
-			return Response.noContent().build();
-		}
-		Gesuch gesuchToReturn = gesuchService.createGesuch(gesuchsperiodeOptional.get());
-		return Response.ok(converter.gesuchToJAX(gesuchToReturn)).build();
 	}
 
 	@ApiOperation(value = "Gibt den Antrag frei und bereitet ihn vor für die Bearbeitung durch das Jugendamt",
