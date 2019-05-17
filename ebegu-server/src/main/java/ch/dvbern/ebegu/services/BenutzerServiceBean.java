@@ -325,17 +325,15 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
-		if (einladungTyp == EinladungTyp.MITARBEITER) {
-			if(!benutzer.isNew() || findBenutzer(benutzer.getUsername()).isPresent()) {
-				// when inviting a new Mitarbeiter the user cannot exist.
-				// For any other invitation the user may exist already
-				throw new EntityExistsException(
-					KibonLogLevel.INFO,
-					Benutzer.class,
-					"email",
-					benutzer.getUsername(),
-					ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
-			}
+		if (einladungTyp == EinladungTyp.MITARBEITER && (!benutzer.isNew() || findBenutzer(benutzer.getUsername()).isPresent())) {
+			// when inviting a new Mitarbeiter the user cannot exist.
+			// For any other invitation the user may exist already
+			throw new EntityExistsException(
+				KibonLogLevel.INFO,
+				Benutzer.class,
+				"email",
+				benutzer.getUsername(),
+				ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 		}
 
 		if (benutzer.isNew() && benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
