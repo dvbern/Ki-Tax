@@ -322,6 +322,7 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 			"Gertrude");
 
 		benutzer1.setStatus(BenutzerStatus.EINGELADEN);
+		benutzer1 = persistence.persist(benutzer1);
 
 		Einladung einladung = Einladung.forRolle(benutzer1);
 		benutzerService.einladen(einladung);
