@@ -163,6 +163,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	private FallService fallService;
 
 	@Inject
+	private GesuchService gesuchService;
+
+	@Inject
 	private MitteilungService mitteilungService;
 
 	@Nonnull
@@ -1291,51 +1294,47 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void deleteBenutzerIfAllowed(@Nonnull String id) {
-		Objects.requireNonNull(id);
-
-		if (!isBenutzerDeleteable(id)) {
-			return;
-		}
-
+	public void deleteExternalUUIDInNewTransaction(@Nonnull String id) {
 		Optional<Benutzer> benutzerOptional = findBenutzerById(id);
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
-
+			// Es gelten dieselben Regeln wie beim Loeschen
 			authorizer.checkWriteAuthorization(benutzer);
-			LOG.warn("Benutzer wird gelöscht: {}", benutzer);
-			authService.logoutAndDeleteAuthorisierteBenutzerForUser(benutzer.getUsername());
-			persistence.remove(benutzer);
+			if (!isBenutzerDeleteable(benutzer)) {
+				return;
+			}
+			LOG.warn("ExternalUUID von Benutzer wird gelöscht: {}", benutzer);
+			benutzer.addBemerkung("ExternalUUID " + benutzer.getExternalUUID() + " gelöscht");
+			benutzer.setExternalUUID(null);
+			persistence.merge(benutzer);
 		}
 	}
 
-	private boolean isBenutzerDeleteable(@Nonnull String id) {
-		Optional<Benutzer> benutzerOptional = findBenutzerById(id);
-		if (benutzerOptional.isPresent()) {
-			Benutzer benutzer = benutzerOptional.get();
-			if (benutzer.getRole() == UserRole.GESUCHSTELLER) {
-				// Gesuchsteller darf noch kein Dossier haben
-				Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
-				if (fallOptional.isPresent()) {
-					return false;
-				}
-			} else {
-				// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
-				if (benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
+	private boolean isBenutzerDeleteable(@Nonnull Benutzer benutzer) {
+		if (benutzer.getRole() == UserRole.GESUCHSTELLER) {
+			// Gesuchsteller darf noch kein Dossier haben
+			Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
+			if (fallOptional.isPresent()) {
+				Fall fall = fallOptional.get();
+				if (!gesuchService.getAllGesuchIDsForFall(fall.getId()).isEmpty()) {
 					return false;
 				}
 			}
-			// Es darf keine Mitteilungen von oder an diesen Benutzer geben
-			if (mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(benutzer)) {
+		} else {
+			// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
+			if (benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
 				return false;
 			}
-			// Der Benutzer darf nirgends als Default-Benutzer gesetzt sein
-			if (isBenutzerDefaultBenutzerOfAnyGemeinde(benutzer.getUsername())) {
-				return false;
-			}
-			return true;
 		}
-		return false;
+		// Es darf keine Mitteilungen von oder an diesen Benutzer geben
+		if (mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(benutzer)) {
+			return false;
+		}
+		// Der Benutzer darf nirgends als Default-Benutzer gesetzt sein
+		if (isBenutzerDefaultBenutzerOfAnyGemeinde(benutzer.getUsername())) {
+			return false;
+		}
+		return true;
 	}
 
 	private BenutzerStatus findLastNotGesperrtStatus(Benutzer benutzer) {

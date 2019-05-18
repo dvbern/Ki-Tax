@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
@@ -36,6 +37,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.FallService;
+import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -218,7 +220,9 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 		try {
 			benutzerService.einladen(einladung);
-			fail("It should throw a ConstraintViolationException because AKTIV is not a valid status. It must be EINGELADEN");
+			fail(
+				"It should throw a ConstraintViolationException because AKTIV is not a valid status. It must be "
+					+ "EINGELADEN");
 		} catch (EJBException e) {
 			// nop
 		}
@@ -242,43 +246,6 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 		} catch (EJBTransactionRolledbackException e) {
 			// nop
 		}
-	}
-
-	@Test
-	public void deleteBenutzerIfAllowed_GesuchstellerLeer() {
-		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER, "gesu1", null, null, getDummySuperadmin().getMandant(), "Gesuchsteller",
-			"Gertrude");
-		benutzer1 = persistence.persist(benutzer1);
-		benutzerService.deleteBenutzerIfAllowed(benutzer1.getId());
-		Assert.assertFalse("Benutzer konnte gelöscht werden", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
-	}
-
-	@Test
-	public void deleteBenutzerIfAllowed_GesuchstellerMitFall() {
-		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.GESUCHSTELLER, "gesu1", null, null, getDummySuperadmin().getMandant(), "Gesuchsteller",
-			"Gertrude");
-		benutzer1 = persistence.persist(benutzer1);
-
-		Fall fall = new Fall();
-		fall.setBesitzer(benutzer1);
-		fallService.saveFall(fall);
-
-		benutzerService.deleteBenutzerIfAllowed(benutzer1.getId());
-		Assert.assertTrue("Benutzer wurde nicht gelöscht", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
-	}
-
-	@Test
-	public void deleteBenutzerIfAllowed_SachbearbeiterMitEinladung() {
-		Benutzer benutzer1 = TestDataUtil.createBenutzer(UserRole.SUPER_ADMIN, "gesu1", null, null, getDummySuperadmin().getMandant(), "Gesuchsteller",
-			"Gertrude");
-
-		benutzer1.setStatus(BenutzerStatus.EINGELADEN);
-
-		Einladung einladung = Einladung.forRolle(benutzer1);
-		benutzerService.einladen(einladung);
-
-		benutzerService.deleteBenutzerIfAllowed(benutzer1.getId());
-		Assert.assertFalse("Benutzer konnte gelöscht werden", benutzerService.findBenutzerById(benutzer1.getId()).isPresent());
 	}
 
 	private void assertCommonBenutzerFields(String adminMail, Benutzer adminTraegerschaft) {

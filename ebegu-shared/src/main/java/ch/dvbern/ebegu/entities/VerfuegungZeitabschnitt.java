@@ -909,7 +909,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
 			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
 			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
-			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap);
+			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
+			Objects.equals(this.monatlicheBetreuungskosten, otherVerfuegungZeitabschnitt.monatlicheBetreuungskosten);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
@@ -959,7 +960,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0 &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
-			Objects.equals(this.einkommensjahr, that.einkommensjahr);
+			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
+			Objects.equals(this.monatlicheBetreuungskosten, that.monatlicheBetreuungskosten);
 	}
 
 	/**
