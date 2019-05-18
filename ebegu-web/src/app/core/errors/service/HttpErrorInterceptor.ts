@@ -29,6 +29,8 @@ export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
 export default class HttpErrorInterceptor implements IHttpInterceptor {
 
     public static $inject = ['$q', 'ErrorService', '$log'];
+    public readonly IGNORE_ORIGIN_ERROR_URLS =
+        ['https://beloginportal-replica.fin.be.ch/emaillogin/gui/registration/createmaillogin'];
 
     public constructor(
         private readonly $q: IQService,
@@ -78,6 +80,8 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
                 TSErrorLevel.SEVERE,
                 'ERROR_FILE_TOO_LARGE',
                 response.data));
+        } else if (this.IGNORE_ORIGIN_ERROR_URLS.indexOf(response.config.url) >= 0) {
+            errors = [];
         } else {
             this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
             this.$log.error('ResponseData:' + JSON.stringify(response.data));
