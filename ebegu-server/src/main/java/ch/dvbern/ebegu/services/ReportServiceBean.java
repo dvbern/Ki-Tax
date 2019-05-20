@@ -1980,14 +1980,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBaby(institutionStammdaten.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdaten.getAlterskategorieVorschule());
 		row.setSchulkind(institutionStammdaten.getAlterskategorieSchule());
-		row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());
-		if (institutionStammdaten.getSubventioniertePlaetze()) {
-			row.setKapazitaet(institutionStammdaten.getAnzahlPlaetze());
+		if (!institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+			row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());
+			if (institutionStammdaten.getAnzahlPlaetze() != null) {
+				row.setKapazitaet(institutionStammdaten.getAnzahlPlaetze());
+			}
 			if (institutionStammdaten.getAnzahlPlaetzeFirmen() != null) {
 				row.setReserviertFuerFirmen(institutionStammdaten.getAnzahlPlaetzeFirmen());
 			}
 		}
-
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
 		zuletztGeandertList.add(institution.getTimestampMutiert());
 		zuletztGeandertList.add(adresse.getTimestampMutiert());
