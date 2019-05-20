@@ -306,14 +306,14 @@ public class CopyTest {
 		assertNotNull(erneuerung.getGesuchsteller1().getAdressen());
 		assertEquals(1, erneuerung.getGesuchsteller1().getAdressen().size());
 
-		// Neue Gemeinde: Es werden KEINE Adressen kopiert (egal welche GP)
+		// Neue Gemeinde: Es werden nur aktive Adressen kopiert (egal welche GP)
 		assertNotNull(mutationNeuesDossier.getGesuchsteller1());
 		assertNotNull(mutationNeuesDossier.getGesuchsteller1().getAdressen());
-		assertEquals(0, mutationNeuesDossier.getGesuchsteller1().getAdressen().size());
+		assertEquals(1, mutationNeuesDossier.getGesuchsteller1().getAdressen().size());
 
 		assertNotNull(erneuerungNeuesDossier.getGesuchsteller1());
 		assertNotNull(erneuerungNeuesDossier.getGesuchsteller1().getAdressen());
-		assertEquals(0, erneuerungNeuesDossier.getGesuchsteller1().getAdressen().size());
+		assertEquals(1, erneuerungNeuesDossier.getGesuchsteller1().getAdressen().size());
 	}
 
 	@Test
