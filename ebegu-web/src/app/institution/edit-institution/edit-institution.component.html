@@ -347,7 +347,7 @@
 
                     </div>
                     <!-- Subventionierte Plätze -->
-                    <div *ngIf="!(stammdaten.betreuungsangebotTyp==='TAGESFAMILIEN')" class="col-sm-6">
+                    <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
                         <h3 translate>INSTITUTION_PLAETZE</h3>
                         <div class="form-group">
                             <mat-checkbox id="subventioniertePlaetze_id" name="subventioniertePlaetze_id"
@@ -357,7 +357,7 @@
                         </div>
                     </div>
                     <!-- Anzahl Plätze -->
-                    <div *ngIf="!(stammdaten.betreuungsangebotTyp==='TAGESFAMILIEN')" class="col-sm-3">
+                    <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
                         <div class="form-group">
                             <label class="required" translate for="anzahlPlaetze_id">INSTITUTION_ANZAHL_PLAETZE</label>
                             <input id="anzahlPlaetze_id" type="text" name="anzahlPlaetze_id" #name="ngModel"
@@ -369,7 +369,7 @@
                         </div>
                     </div>
                     <!-- Anzahl Plätze Firmen -->
-                    <div *ngIf="!(stammdaten.betreuungsangebotTyp==='TAGESFAMILIEN')" class="col-sm-3">
+                    <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
                         <div class="form-group">
                             <label translate for="anzahlPlaetzeFirmen_id">INSTITUTION_ANZAHL_PLAETZE_FIRMEN</label>
                             <input id="anzahlPlaetzeFirmen_id" type="text" name="anzahlPlaetzeFirmen_id" #name="ngModel"
@@ -461,7 +461,7 @@
                     </div>
                     <div class="row">
                         <!-- Subventionierte Plätze -->
-                        <div *ngIf="!(stammdaten.betreuungsangebotTyp==='TAGESFAMILIEN')" class="col-sm-6">
+                        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
                             <div class="form-group">
                                 <h3 translate>INSTITUTION_PLAETZE</h3>
                                 <p *ngIf="stammdaten.subventioniertePlaetze"

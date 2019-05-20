@@ -148,9 +148,11 @@ public class InstitutionResource {
 		adresse.setOrt("");
 		institutionStammdaten.setAdresse(adresse);
 		institutionStammdaten.setBetreuungsangebotTyp(BetreuungsangebotTyp.valueOf(betreuungsangebot));
-		if (!(institutionStammdaten.getBetreuungsangebotTyp().equals(BetreuungsangebotTyp.TAGESFAMILIEN))) {
+
+		if (institutionStammdaten.getBetreuungsangebotTyp() != BetreuungsangebotTyp.TAGESFAMILIEN) {
 			institutionStammdaten.setAnzahlPlaetze(BigDecimal.ZERO);
 		}
+
 		institutionStammdaten.setInstitution(persistedInstitution);
 		institutionStammdaten.setMail(adminMail);
 		LocalDate beguStart = LocalDate.parse(stringDateBeguStart, Constants.SQL_DATE_FORMAT);
