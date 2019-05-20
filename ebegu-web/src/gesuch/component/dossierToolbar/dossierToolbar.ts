@@ -112,6 +112,7 @@ export class DossierToolbarController implements IDVFocusableController {
     public dossierId: string;
     public fallId: string;
     public dossier: TSDossier;
+    public kontaktdatenGemeindeAsHtml: string;
 
     public gesuchsperiodeList: { [key: string]: Array<TSAntragDTO> } = {};
     public gesuchNavigationList: { [key: string]: Array<string> } = {};   // mapped z.B. '2006 / 2007' auf ein array
@@ -263,6 +264,8 @@ export class DossierToolbarController implements IDVFocusableController {
                 this.dossier = response;
                 this.gemeindeId = this.dossier.gemeinde.id;
 
+                this.updateGemeindeStammdaten();
+
                 if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                     this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((stammdaten => {
                         this.gemeindeInstitutionKontakteHtml = this.gemeindeStammdatenToHtml(stammdaten);
@@ -315,6 +318,12 @@ export class DossierToolbarController implements IDVFocusableController {
             });
         }
         this.forceLoadingFromFall = false; // reset it because it's not needed any more
+    }
+
+    private updateGemeindeStammdaten(): void {
+        this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
+            this.kontaktdatenGemeindeAsHtml = this.gemeindeStammdatenToHtml(gemeindeDaten);
+        }));
     }
 
     private resetNavigationParameters(): void {
@@ -650,12 +659,9 @@ export class DossierToolbarController implements IDVFocusableController {
     }
 
     public showKontakt(): void {
-        const text = this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then((gemeindeDaten => {
-            return this.gemeindeStammdatenToHtml(gemeindeDaten);
-        }));
         this.dvDialog.showDialog(showKontaktTemplate, ShowTooltipController, {
             title: '',
-            text,
+            text: this.kontaktdatenGemeindeAsHtml,
             parentController: this,
         });
     }

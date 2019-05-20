@@ -197,6 +197,24 @@ public final class EbeguUtil {
 		return gemeindeSprachen.get(0);
 	}
 
+	/**
+	 * Will return the desired Korrespondenzsprache of the Gesuchsteller if this happens to be configured as allowed language for the Gemeinde
+	 * In any other case it will return the first language that is allowed by the Gemeinde.
+	 * WARNING! since allowed languages are not prioritized in the Gemeinde, the method cannot know if it should return one language or another
+	 * for this reason it will return just the first language it finds.
+	 */
+	@Nonnull
+	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten gemeindeStammdaten) {
+		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gemeindeStammdaten);
+		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
+
+		if (gesuchstellerGewuenschteSprache != null && gemeindeSprachen.contains(gesuchstellerGewuenschteSprache)) {
+			return gesuchstellerGewuenschteSprache;
+		}
+
+		return gemeindeSprachen.get(0);
+	}
+
 	@Nullable
 	private static Sprache extractGesuchstellerSprache(@Nonnull Gesuch gesuch) {
 		if (gesuch.getGesuchsteller1() == null) {
@@ -231,6 +249,20 @@ public final class EbeguUtil {
 			);
 
 		final Sprache[] gemeindeSprachen = gemeindeStammdatenOpt.getKorrespondenzsprache().getSprache();
+		if (gemeindeSprachen.length <= 0) {
+			return Collections.singletonList(Sprache.DEUTSCH);
+		}
+		return Arrays.asList(gemeindeSprachen);
+	}
+
+	/**
+	 * Will looked for the language(s) of the given Gemeinde and return them as a list.
+	 * If the Gemeinde has no Stammdaten an Exception will be thrown because this shows a real problem in the data
+	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
+	 */
+	@Nonnull
+	public static List<Sprache> extractGemeindeSprachen(@Nonnull GemeindeStammdaten gemeindeStammdaten) {
+		final Sprache[] gemeindeSprachen = gemeindeStammdaten.getKorrespondenzsprache().getSprache();
 		if (gemeindeSprachen.length <= 0) {
 			return Collections.singletonList(Sprache.DEUTSCH);
 		}
