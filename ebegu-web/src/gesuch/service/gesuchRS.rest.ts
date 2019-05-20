@@ -14,7 +14,6 @@
  */
 
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
-import * as moment from 'moment';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSFinSitStatus} from '../../models/enums/TSFinSitStatus';
@@ -22,7 +21,6 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSMitteilungEvent} from '../../models/enums/TSMitteilungEvent';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSGesuch from '../../models/TSGesuch';
-import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import WizardStepManager from './wizardStepManager';
 import IRootScopeService = angular.IRootScopeService;
