@@ -29,6 +29,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -37,7 +40,6 @@ import javax.validation.constraints.Size;
 import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
 /**
@@ -45,7 +47,7 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-public class Zahlungsauftrag extends AbstractDateRangedEntity implements Comparable<Zahlungsauftrag> {
+public class Zahlungsauftrag extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = 5758088668232796741L;
 
@@ -66,6 +68,11 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity implements Compara
 	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String beschrieb;
+
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_zahlungsauftrag_gemeinde_id"))
+	private Gemeinde gemeinde;
 
 	@Nonnull
 	@Valid
@@ -125,11 +132,13 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity implements Compara
 		this.betragTotalAuftrag = betragTotalAuftrag;
 	}
 
-	@Override
-	public int compareTo(@Nonnull Zahlungsauftrag o) {
-		CompareToBuilder builder = new CompareToBuilder();
-		builder.append(this.getDatumFaellig(), o.getDatumFaellig());
-		return builder.toComparison();
+	@NotNull
+	public Gemeinde getGemeinde() {
+		return gemeinde;
+	}
+
+	public void setGemeinde(@NotNull Gemeinde gemeinde) {
+		this.gemeinde = gemeinde;
 	}
 
 	public String getFilename() {
@@ -154,8 +163,9 @@ public class Zahlungsauftrag extends AbstractDateRangedEntity implements Compara
 		final Zahlungsauftrag otherZahlungsauftrag = (Zahlungsauftrag) other;
 		return Objects.equals(getDatumFaellig(), otherZahlungsauftrag.getDatumFaellig()) &&
 			Objects.equals(getDatumGeneriert(), otherZahlungsauftrag.getDatumGeneriert()) &&
-			Objects.equals(getStatus(), otherZahlungsauftrag.getStatus()) &&
+			getStatus() == otherZahlungsauftrag.getStatus() &&
 			Objects.equals(getBeschrieb(), otherZahlungsauftrag.getBeschrieb()) &&
-			MathUtil.isSame(getBetragTotalAuftrag(), otherZahlungsauftrag.getBetragTotalAuftrag());
+			MathUtil.isSame(getBetragTotalAuftrag(), otherZahlungsauftrag.getBetragTotalAuftrag()) &&
+			Objects.equals(getGemeinde(), otherZahlungsauftrag.getGemeinde());
 	}
 }

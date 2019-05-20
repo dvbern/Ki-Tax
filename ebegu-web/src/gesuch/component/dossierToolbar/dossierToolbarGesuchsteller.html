@@ -165,11 +165,7 @@
     </div>
     <!--Kontakt-->
     <div class="mobile-kontakt">
-        <span>Jugendamt</span>
-        <span>Effingerstrasse 21</span>
-        <span>3008 Bern</span>
-        <a href="tel:0313215115"><span>031 321 51 15</span></a>
-        <a href="mailto:kinderbetreuung@bern.ch"><span>kinderbetreuung@bern.ch</span></a>
+        <div ng-bind-html="vmgs.kontaktdatenGemeindeAsHtml"></div>
     </div>
     <button class="dv-btn mobile-logout" ng-click="vmgs.toggleSidenav('dossier-toolbar-mobile');vmgs.logout()"
             aria-label="{{'AUSLOGGEN' | translate}}">

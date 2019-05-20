@@ -163,6 +163,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	private FallService fallService;
 
 	@Inject
+	private GesuchService gesuchService;
+
+	@Inject
 	private MitteilungService mitteilungService;
 
 	@Nonnull
@@ -299,9 +302,12 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@RolesAllowed(SUPER_ADMIN)
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
 		try {
-			checkArgument(
-				eingeladener.getStatus() == BenutzerStatus.EINGELADEN,
-				"Benutzer should have Status EINGELADEN");
+			if (eingeladener.getStatus() != BenutzerStatus.EINGELADEN) {
+				throw new EbeguRuntimeException(
+					KibonLogLevel.INFO,
+					eingeladener.getUsername(),
+					ErrorCodeEnum.ERROR_BENUTZER_STATUS_NOT_EINGELADEN);
+			}
 			Einladung einladung = Einladung.forRolle(eingeladener);
 			mailService.sendBenutzerEinladung(principalBean.getBenutzer(), einladung);
 		} catch (MailException e) {
@@ -322,21 +328,23 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		EinladungTyp einladungTyp = einladung.getEinladungTyp();
 		checkArgument(Objects.equals(benutzer.getMandant(), principalBean.getMandant()));
 
-		if (einladungTyp == EinladungTyp.MITARBEITER) {
-			checkArgument(benutzer.isNew(), "Cannot einladen an existing Benutzer");
-			if (findBenutzer(benutzer.getUsername()).isPresent()) {
-				// when inviting a new Mitarbeiter the user cannot exist. For any other invitation the user may exist
-				// already
-				throw new EntityExistsException(
-					Benutzer.class,
-					"email",
-					benutzer.getUsername(),
-					ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
-			}
+		if (einladungTyp == EinladungTyp.MITARBEITER && (!benutzer.isNew()
+			|| findBenutzer(benutzer.getUsername()).isPresent())) {
+			// when inviting a new Mitarbeiter the user cannot exist.
+			// For any other invitation the user may exist already
+			throw new EntityExistsException(
+				KibonLogLevel.INFO,
+				Benutzer.class,
+				"email",
+				benutzer.getUsername(),
+				ErrorCodeEnum.ERROR_BENUTZER_EXISTS);
 		}
 
-		if (benutzer.isNew()) {
-			checkArgument(benutzer.getStatus() == BenutzerStatus.EINGELADEN, "Benutzer should have Status EINGELADEN");
+		if (benutzer.isNew() && benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.INFO,
+				benutzer.getUsername(),
+				ErrorCodeEnum.ERROR_BENUTZER_STATUS_NOT_EINGELADEN);
 		}
 	}
 
@@ -765,7 +773,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 		authorizer.checkWriteAuthorization(benutzerFromDB);
 
-		benutzerFromDB.setStatus(BenutzerStatus.AKTIV);
+		benutzerFromDB.setStatus(findLastNotGesperrtStatus(benutzerFromDB));
 		logReaktivierenBenutzer(benutzerFromDB);
 
 		return persistence.merge(benutzerFromDB);
@@ -840,8 +848,33 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	}
 
 	private Optional<Benutzer> loadSuperAdmin() {
-		Benutzer benutzer = persistence.find(Benutzer.class, ID_SUPER_ADMIN);
-		return Optional.ofNullable(benutzer);
+		Optional<Benutzer> benutzer = Optional.ofNullable(persistence.find(Benutzer.class, ID_SUPER_ADMIN));
+		if (benutzer.isPresent()) {
+			return benutzer;
+		}
+		// if we cannot find a User with the given ID, we try to load any Super Admin
+		final Optional<Benutzer> anySuperAdmin = loadAnySuperAdmin();
+		if (!anySuperAdmin.isPresent()) {
+			LOG.error("Could not find any SuperAdmin. At least one SuperAdmin must exist.");
+		}
+
+		return anySuperAdmin;
+	}
+
+	/**
+	 * Use this function to retrieve any Superadmin from the DB. It will randomly take the first one it finds
+	 */
+	private Optional<Benutzer> loadAnySuperAdmin() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
+		query.select(root);
+
+		Predicate rolePredicate = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN);
+		query.where(rolePredicate);
+
+		return persistence.getCriteriaResults(query).stream().findFirst();
 	}
 
 	@Nonnull
@@ -1261,50 +1294,56 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void deleteBenutzerIfAllowed(@Nonnull String id) {
-		Objects.requireNonNull(id);
-
-		if (!isBenutzerDeleteable(id)) {
-			return;
-		}
-
+	public void deleteExternalUUIDInNewTransaction(@Nonnull String id) {
 		Optional<Benutzer> benutzerOptional = findBenutzerById(id);
 		if (benutzerOptional.isPresent()) {
 			Benutzer benutzer = benutzerOptional.get();
-
+			// Es gelten dieselben Regeln wie beim Loeschen
 			authorizer.checkWriteAuthorization(benutzer);
-			LOG.warn("Benutzer wird gelöscht: {}", benutzer);
-			authService.logoutAndDeleteAuthorisierteBenutzerForUser(benutzer.getUsername());
-			persistence.remove(benutzer);
+			if (!isBenutzerDeleteable(benutzer)) {
+				return;
+			}
+			LOG.warn("ExternalUUID von Benutzer wird gelöscht: {}", benutzer);
+			benutzer.addBemerkung("ExternalUUID " + benutzer.getExternalUUID() + " gelöscht");
+			benutzer.setExternalUUID(null);
+			persistence.merge(benutzer);
 		}
 	}
 
-	private boolean isBenutzerDeleteable(@Nonnull String id) {
-		Optional<Benutzer> benutzerOptional = findBenutzerById(id);
-		if (benutzerOptional.isPresent()) {
-			Benutzer benutzer = benutzerOptional.get();
-			if (benutzer.getRole() == UserRole.GESUCHSTELLER) {
-				// Gesuchsteller darf noch kein Dossier haben
-				Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
-				if (fallOptional.isPresent()) {
-					return false;
-				}
-			} else {
-				// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
-				if (benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
+	private boolean isBenutzerDeleteable(@Nonnull Benutzer benutzer) {
+		if (benutzer.getRole() == UserRole.GESUCHSTELLER) {
+			// Gesuchsteller darf noch kein Dossier haben
+			Optional<Fall> fallOptional = fallService.findFallByBesitzer(benutzer);
+			if (fallOptional.isPresent()) {
+				Fall fall = fallOptional.get();
+				if (!gesuchService.getAllGesuchIDsForFall(fall.getId()).isEmpty()) {
 					return false;
 				}
 			}
-			// Es darf keine Mitteilungen von oder an diesen Benutzer geben
-			if (mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(benutzer)) {
+		} else {
+			// Benutzer mit erhöhten Rechten darf die Einladung noch nicht angenommen haben
+			if (benutzer.getStatus() != BenutzerStatus.EINGELADEN) {
 				return false;
 			}
-			// Der Benutzer darf nirgends als Default-Benutzer gesetzt sein
-			if (isBenutzerDefaultBenutzerOfAnyGemeinde(benutzer.getUsername())) {
-				return false;
-			}
-			return true;
 		}
-		return false;
+		// Es darf keine Mitteilungen von oder an diesen Benutzer geben
+		if (mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(benutzer)) {
+			return false;
+		}
+		// Der Benutzer darf nirgends als Default-Benutzer gesetzt sein
+		if (isBenutzerDefaultBenutzerOfAnyGemeinde(benutzer.getUsername())) {
+			return false;
+		}
+		return true;
+	}
+
+	private BenutzerStatus findLastNotGesperrtStatus(Benutzer benutzer) {
+		Collection<BerechtigungHistory> history = getBerechtigungHistoriesForBenutzer(benutzer);
+		BerechtigungHistory lastNotGesperrtHistory = history.stream()
+			.filter(x -> x.getStatus() != BenutzerStatus.GESPERRT)
+			.findFirst()
+			.get();
+
+		return lastNotGesperrtHistory.getStatus();
 	}
 }

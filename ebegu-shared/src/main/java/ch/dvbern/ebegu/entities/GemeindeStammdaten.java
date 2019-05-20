@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -317,4 +318,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 		return Objects.equals(this.getGemeinde(), gemeindeStammdaten.getGemeinde());
 	}
 
+	public boolean isZahlungsinformationValid() {
+		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(bic) && StringUtils.isNotEmpty(iban.getIban());
+	}
 }

@@ -139,9 +139,9 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Column(nullable = false)
 	private boolean subventioniertePlaetze = false;
 
-	@NotNull
+	@Nullable
 	@Column(nullable = false)
-	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
+	private BigDecimal anzahlPlaetze;
 
 	@Nullable
 	@Column(nullable = true)

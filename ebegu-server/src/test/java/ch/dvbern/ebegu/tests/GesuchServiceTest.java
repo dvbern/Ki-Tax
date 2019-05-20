@@ -210,7 +210,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final DokumentGrund dokumentGrund = TestDataUtil.createDefaultDokumentGrund();
 		dokumentGrund.setGesuch(gesuch);
 		persistence.persist(dokumentGrund);
-		zahlungService.zahlungsauftragErstellen(LocalDate.now(), "Testauftrag", gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0));
+		zahlungService.zahlungsauftragErstellen(bern.getId(), LocalDate.now(), "Testauftrag",
+			gesuch2.getGesuchsperiode().getGueltigkeit().getGueltigAb().plusMonths(1).atTime(0, 0, 0));
 
 		//check all objects exist
 		Assert.assertEquals(2, readGesucheAsAdmin().size());

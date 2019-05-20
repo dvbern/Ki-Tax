@@ -47,7 +47,7 @@ const LOG = LogFactory.createLog('GemeindeListComponent');
 })
 export class GemeindeListComponent extends AbstractAdminViewController implements OnInit, OnDestroy, AfterViewInit {
 
-    public displayedColumns: string[] = ['name', 'status'];
+    public displayedColumns: string[] = ['name', 'status', 'detail'];
     public gemeinde: TSGemeinde = undefined;
     public dataSource: MatTableDataSource<TSGemeinde>;
     private readonly unsubscribe$ = new Subject<void>();
@@ -136,4 +136,7 @@ export class GemeindeListComponent extends AbstractAdminViewController implement
         return !this.dataSource || this.dataSource.data.length === 0;
     }
 
+    public doFilter(value: string): void {
+        this.dataSource.filter = value.trim().toLocaleLowerCase();
+    }
 }
