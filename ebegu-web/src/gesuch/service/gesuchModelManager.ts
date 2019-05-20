@@ -279,6 +279,9 @@ export default class GesuchModelManager {
      * Retrieves the list of InstitutionStammdaten for the date of today.
      */
     public updateActiveInstitutionenList(): void {
+        if (!this.getGesuchsperiode()) {
+            return;
+        }
         this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiode(this.getGesuchsperiode().id)
             .then((response: TSInstitutionStammdaten[]) => {
                 this.activInstitutionenList = response;
@@ -562,7 +565,10 @@ export default class GesuchModelManager {
     }
 
     public getStammdatenToWorkWith(): TSGesuchstellerContainer {
-        return this.gesuchstellerNumber === 2 ? this.gesuch.gesuchsteller2 : this.gesuch.gesuchsteller1;
+        if (this.gesuch) {
+            return this.gesuchstellerNumber === 2 ? this.gesuch.gesuchsteller2 : this.gesuch.gesuchsteller1;
+        }
+        return undefined;
     }
 
     public getEkvFuerBasisJahrPlus(basisJahrPlus: number): boolean {
