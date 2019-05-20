@@ -40,9 +40,23 @@
                     <hr class="header">
                 </div>
 
-                <div class="row" *ngIf="isSuperAdmin()">
-                    <!-- Traegerschaft -->
+
+
+                <div class="row">
+                    <!-- Anschrift -->
                     <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 class="required" translate for="name_id">NAME</h3>
+                            <input id="name_id" type="text" name="name_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.institution.name"
+                                   [maxlength]="255" class="form-control" required
+                                   placeholder="Name der Institution">
+                            <dv-error-messages [errorObject]="form.controls.name_id?.errors"
+                                               inputId="name_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Traegerschaft -->
+                    <div class="col-sm-6" *ngIf="isSuperAdmin()">
                         <div class="form-group">
                             <h3 translate for="traegerschaft_id">TRAEGERSCHAFT</h3>
                             <mat-select [(ngModel)]="stammdaten.institution.traegerschaft"
