@@ -1618,7 +1618,8 @@ public final class TestDataUtil {
 		@Nonnull GesuchService gesuchService, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
-		gesuch.setEingangsart(Eingangsart.PAPIER);
+		// Achtung: im createGesuch wird die Eingangsart aufgrund des eingeloggten Benutzers nochmals neu berechnet!
+		gesuch.setEingangsart(eingangsart);
 		gesuch.setStatus(status);
 		gesuch.setEingangsart(eingangsart);
 		gesuch.setGesuchsperiode(persistEntity(persistence, gesuchsperiode));

@@ -312,8 +312,10 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		Gesuch erneuerung = new Gesuch();
 		erneuerung.setDossier(erstgesuch.getDossier());
+		erneuerung.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		erneuerung.setGesuchsperiode(gpFolgegesuch);
 		erneuerung.setEingangsdatum(LocalDate.of(1980, Month.MARCH, 25));
+		erneuerung.setTyp(AntragTyp.ERNEUERUNGSGESUCH);
 		Gesuch folgegesuch = gesuchService.createGesuch(erneuerung);
 
 		Assert.assertNotNull(folgegesuch);
@@ -450,10 +452,12 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungJAIFFreigegeben() {
 		//bei Freigegeben soll ein lesen eines ja benutzers dazu fuehren dass das gesuch in bearbeitung ja wechselt
+		loginAsGesuchsteller("gesuchst");
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
 		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGEGEBEN, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.FREIGEGEBEN, gesuch.getStatus());
+		Assert.assertEquals(Eingangsart.ONLINE, gesuch.getEingangsart());
 		loginAsSachbearbeiterJA();
 		//durch findGesuch setzt der {@link UpdateStatusInterceptor} den Status um
 		Optional<Gesuch> foundGesuch = gesuchService.findGesuch(gesuch.getId());
@@ -957,6 +961,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 		Gesuch erneuerung = new Gesuch();
 		erneuerung.setDossier(gesuch.getDossier());
+		erneuerung.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
 		erneuerung.setGesuchsperiode(savedGesuchsperiode1819);
 		erneuerung.setEingangsdatum(null);
 		Gesuch folgegesuch = gesuchService.createGesuch(erneuerung);
