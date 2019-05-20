@@ -178,14 +178,15 @@ export class EditInstitutionComponent implements OnInit {
         }
         this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
             .then(() => {
+                // tslint:disable-next-line:early-exit
                 if (this.initName === this.stammdaten.institution.name) {
                     this.setValuesAfterSave();
-                    return;
+                } else {
+                    this.institutionRS.updateInstitution(this.stammdaten.institution)
+                        .then(() => {
+                            this.setValuesAfterSave();
+                        });
                 }
-                this.institutionRS.updateInstitution(this.stammdaten.institution)
-                    .then(() => {
-                        this.setValuesAfterSave();
-                    });
             });
     }
 
