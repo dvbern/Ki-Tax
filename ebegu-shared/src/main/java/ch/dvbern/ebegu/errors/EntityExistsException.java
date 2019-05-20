@@ -35,11 +35,12 @@ public class EntityExistsException extends EbeguRuntimeException {
 	}
 
 	public <T extends AbstractEntity> EntityExistsException(
+		@Nonnull KibonLogLevel logLevel,
 		@Nonnull Class<T> entityClass,
 		@Nonnull String constraintName,
 		@Nonnull String duplicateValue,
 		@Nonnull ErrorCodeEnum errorCodeEnum) {
 
-		super(null, errorCodeEnum, entityClass.getSimpleName(), constraintName, duplicateValue);
+		super(logLevel, null, errorCodeEnum, entityClass.getSimpleName(), constraintName, duplicateValue);
 	}
 }
