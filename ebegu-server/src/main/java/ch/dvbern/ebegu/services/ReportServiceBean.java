@@ -810,6 +810,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
 			zahlungsauftrag.getDatumFaellig(),
+			zahlungsauftrag.getGemeinde(),
 			locale);
 	}
 
@@ -847,17 +848,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
 			zahlungsauftrag.getDatumFaellig(),
+			zahlungsauftrag.getGemeinde(),
 			locale
 		);
 	}
 
 	@Nonnull
 	private UploadFileInfo getUploadFileInfoZahlung(
-		List<Zahlung> reportData,
-		String excelFileName,
-		String bezeichnung,
-		LocalDateTime datumGeneriert,
-		LocalDate datumFaellig,
+		@Nonnull List<Zahlung> reportData,
+		@Nonnull String excelFileName,
+		@Nonnull String bezeichnung,
+		@Nonnull LocalDateTime datumGeneriert,
+		@Nonnull LocalDate datumFaellig,
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull Locale locale
 	) throws ExcelMergeException {
 
@@ -878,7 +881,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			allowedInst,
 			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale, bezeichnung),
 			datumGeneriert,
-			datumFaellig
+			datumFaellig,
+			gemeinde
 		);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
@@ -1980,14 +1984,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBaby(institutionStammdaten.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdaten.getAlterskategorieVorschule());
 		row.setSchulkind(institutionStammdaten.getAlterskategorieSchule());
-		row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());
-		if (institutionStammdaten.getSubventioniertePlaetze()) {
-			row.setKapazitaet(institutionStammdaten.getAnzahlPlaetze());
+		if (!institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+			row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());
+			if (institutionStammdaten.getAnzahlPlaetze() != null) {
+				row.setKapazitaet(institutionStammdaten.getAnzahlPlaetze());
+			}
 			if (institutionStammdaten.getAnzahlPlaetzeFirmen() != null) {
 				row.setReserviertFuerFirmen(institutionStammdaten.getAnzahlPlaetzeFirmen());
 			}
 		}
-
 		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
 		zuletztGeandertList.add(institution.getTimestampMutiert());
 		zuletztGeandertList.add(adresse.getTimestampMutiert());

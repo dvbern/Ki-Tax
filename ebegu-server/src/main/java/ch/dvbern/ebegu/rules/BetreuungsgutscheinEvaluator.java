@@ -105,7 +105,7 @@ public class BetreuungsgutscheinEvaluator {
 
 		} else if (gesuch.getStatus() != AntragStatus.KEIN_ANGEBOT) {
 			// for Status KEIN_ANGEBOT it makes no sense to log an error because it is not an error
-			LOG.warn("Keine Betreuung vorhanden kann Familiengroesse und Abzuege nicht berechnen");
+			LOG.info("Keine Betreuung vorhanden kann Familiengroesse und Abzuege nicht berechnen");
 		}
 
 		// Eine neue (nirgends angehaengte) Verfügung erstellen

@@ -19,11 +19,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -86,8 +86,10 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 			TestfallName.LUETHI_MERET, gesuchsperiode, eingangsdatum, datumGeneriertErsterZahlungsauftrag.minusDays(1));
 		erstgesuch = testdataCreationService.createErstgesuch(config);
 
+		Gemeinde gemeinde = erstgesuch.extractGemeinde();
+
 		lastZahlungsauftrag = zahlungService
-			.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Normal August", datumGeneriertErsterZahlungsauftrag);
+			.zahlungsauftragErstellen(gemeinde.getId(), LocalDate.now().plusDays(3), "Zahlung Normal August", datumGeneriertErsterZahlungsauftrag);
 		lastZahlungsauftrag = zahlungService.zahlungsauftragAusloesen(lastZahlungsauftrag.getId());
 
 		erstgesuch = gesuchService.findGesuch(erstgesuch.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("findGesuch",
@@ -164,9 +166,10 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		MutationConfig configMutationIgnoriert = MutationConfig.createMutationVerfuegt(
 			eingangsdatum.plusDays(2), lastZahlungsauftrag.getDatumGeneriert().plusDays(1), 20, true);
 		Gesuch mutation = testdataCreationService.createMutation(configMutationIgnoriert, erstgesuch);
+		Gemeinde gemeinde = mutation.extractGemeinde();
 
 		// Zahlung im gleichen Monat
-		zahlungService.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Repetition August",
+		zahlungService.zahlungsauftragErstellen(gemeinde.getId(), LocalDate.now().plusDays(3), "Zahlung Repetition August",
 			lastZahlungsauftrag.getDatumGeneriert().plusDays(1));
 
 		Assert.assertNotNull(mutation);
@@ -187,9 +190,10 @@ public class ZahlungsauftragSonderfaelleTest extends AbstractTestdataCreationTes
 		MutationConfig configMutationIgnoriert = MutationConfig.createMutationVerfuegt(
 			eingangsdatum.plusDays(2), lastZahlungsauftrag.getDatumGeneriert().plusDays(1), 20, true);
 		Gesuch mutation = testdataCreationService.createMutation(configMutationIgnoriert, erstgesuch);
+		Gemeinde gemeinde = mutation.extractGemeinde();
 
 		// Zahlung im gleichen Monat
-		zahlungService.zahlungsauftragErstellen(LocalDate.now().plusDays(3), "Zahlung Normal September",
+		zahlungService.zahlungsauftragErstellen(gemeinde.getId(), LocalDate.now().plusDays(3), "Zahlung Normal September",
 			lastZahlungsauftrag.getDatumGeneriert().plusMonths(1));
 
 		Assert.assertNotNull(mutation);

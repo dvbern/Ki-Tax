@@ -16,13 +16,15 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import * as moment from 'moment';
-import {of} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {of, Subject} from 'rxjs';
+import {switchMap, takeUntil} from 'rxjs/operators';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {RemoveDialogController} from '../../../gesuch/dialog/RemoveDialogController';
+import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {TSZahlungsauftragsstatus} from '../../../models/enums/TSZahlungsauftragstatus';
 import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 import TSDownloadFile from '../../../models/TSDownloadFile';
+import TSGemeinde from '../../../models/TSGemeinde';
 import TSZahlungsauftrag from '../../../models/TSZahlungsauftrag';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -57,6 +59,7 @@ export class ZahlungsauftragViewController implements IController {
         'AuthServiceRS',
         'DvDialog',
         '$translate',
+        'GemeindeRS',
     ];
 
     public form: IFormController;
@@ -69,6 +72,10 @@ export class ZahlungsauftragViewController implements IController {
     public itemsByPage: number = 12;
     public testMode: boolean = false;
     public minDateForTestlauf: moment.Moment;
+    public gemeinde: TSGemeinde;
+    public gemeindenList: Array<TSGemeinde> = [];
+
+    private readonly unsubscribe$ = new Subject<void>();
 
     public constructor(
         private readonly zahlungRS: ZahlungRS,
@@ -79,6 +86,7 @@ export class ZahlungsauftragViewController implements IController {
         private readonly authServiceRS: AuthServiceRS,
         private readonly dvDialog: DvDialog,
         private readonly $translate: ITranslateService,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -86,9 +94,15 @@ export class ZahlungsauftragViewController implements IController {
         // Testlauf darf auch nur in die Zukunft gemacht werden!
         this.minDateForTestlauf = moment(moment.now()).subtract(1, 'days');
         this.updateZahlungsauftrag();
+        this.updateGemeindenList();
         this.applicationPropertyRS.isZahlungenTestMode().then((response: any) => {
             this.testMode = response;
         });
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     private updateZahlungsauftrag(): void {
@@ -127,7 +141,7 @@ export class ZahlungsauftragViewController implements IController {
             parentController: undefined,
             elementID: undefined,
         }).then(() => {   // User confirmed removal
-            this.zahlungRS.createZahlungsauftrag(this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert)
+            this.zahlungRS.createZahlungsauftrag(this.gemeinde, this.beschrieb, this.faelligkeitsdatum, this.datumGeneriert)
                 .then((response: TSZahlungsauftrag) => {
                     this.zahlungsAuftraege.push(response);
                     this.resetEditZahlungsauftrag();
@@ -248,5 +262,16 @@ export class ZahlungsauftragViewController implements IController {
             return TSZahlungsstatus.BESTAETIGT;
         }
         return zahlungsauftrag.status;
+    }
+
+    private updateGemeindenList(): void {
+        this.gemeindeRS.getGemeindenForPrincipal$()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+                gemeinden => {
+                    this.gemeindenList = gemeinden;
+                },
+                err => LOG.error(err),
+            );
     }
 }

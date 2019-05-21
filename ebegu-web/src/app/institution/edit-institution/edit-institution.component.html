@@ -40,9 +40,21 @@
                     <hr class="header">
                 </div>
 
-                <div class="row" *ngIf="isSuperAdmin()">
-                    <!-- Traegerschaft -->
+                <div class="row">
+                    <!-- Anschrift -->
                     <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 class="required" translate for="name_id">NAME</h3>
+                            <input id="name_id" type="text" name="name_id" #name="ngModel"
+                                   [(ngModel)]="stammdaten.institution.name"
+                                   [maxlength]="255" class="form-control"
+                                   required>
+                            <dv-error-messages [errorObject]="form.controls.name_id?.errors"
+                                               inputId="name_id"></dv-error-messages>
+                        </div>
+                    </div>
+                    <!-- Traegerschaft -->
+                    <div class="col-sm-6" *ngIf="isSuperAdmin()">
                         <div class="form-group">
                             <h3 translate for="traegerschaft_id">TRAEGERSCHAFT</h3>
                             <mat-select [(ngModel)]="stammdaten.institution.traegerschaft"
@@ -347,7 +359,7 @@
 
                     </div>
                     <!-- Subventionierte Plätze -->
-                    <div class="col-sm-6">
+                    <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
                         <h3 translate>INSTITUTION_PLAETZE</h3>
                         <div class="form-group">
                             <mat-checkbox id="subventioniertePlaetze_id" name="subventioniertePlaetze_id"
@@ -357,7 +369,7 @@
                         </div>
                     </div>
                     <!-- Anzahl Plätze -->
-                    <div class="col-sm-3">
+                    <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
                         <div class="form-group">
                             <label class="required" translate for="anzahlPlaetze_id">INSTITUTION_ANZAHL_PLAETZE</label>
                             <input id="anzahlPlaetze_id" type="text" name="anzahlPlaetze_id" #name="ngModel"
@@ -369,7 +381,7 @@
                         </div>
                     </div>
                     <!-- Anzahl Plätze Firmen -->
-                    <div class="col-sm-3">
+                    <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-3">
                         <div class="form-group">
                             <label translate for="anzahlPlaetzeFirmen_id">INSTITUTION_ANZAHL_PLAETZE_FIRMEN</label>
                             <input id="anzahlPlaetzeFirmen_id" type="text" name="anzahlPlaetzeFirmen_id" #name="ngModel"
@@ -430,7 +442,7 @@
                             <div class="form-group">
                                 <h3 translate>INSTITUTION_ZAHLUNGSADRESSE</h3>
                                 <p>{{stammdaten.adresseKontoinhaber.organisation}}</p>
-                                <p>{{stammdaten.adresseKontoinhaber.strasse}} {{stammdaten.adresse.hausnummer}}</p>
+                                <p>{{stammdaten.adresseKontoinhaber.strasse}} {{stammdaten.adresseKontoinhaber.hausnummer}}</p>
                                 <p>{{stammdaten.adresseKontoinhaber.plz}} {{stammdaten.adresseKontoinhaber.ort}}</p>
                             </div>
                         </div>
@@ -461,7 +473,7 @@
                     </div>
                     <div class="row">
                         <!-- Subventionierte Plätze -->
-                        <div class="col-sm-6">
+                        <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
                             <div class="form-group">
                                 <h3 translate>INSTITUTION_PLAETZE</h3>
                                 <p *ngIf="stammdaten.subventioniertePlaetze"

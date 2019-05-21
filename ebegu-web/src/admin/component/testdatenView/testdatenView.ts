@@ -26,7 +26,6 @@ import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import BenutzerRS from '../../../app/core/service/benutzerRS.rest';
 import GesuchsperiodeRS from '../../../app/core/service/gesuchsperiodeRS.rest';
-import ZahlungRS from '../../../app/core/service/zahlungRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import GesuchRS from '../../../gesuch/service/gesuchRS.rest';
 import TSBenutzer from '../../../models/TSBenutzer';
@@ -67,7 +66,6 @@ export class TestdatenViewComponent implements OnInit {
         private readonly benutzerRS: BenutzerRS,
         private readonly errorService: ErrorService,
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
-        private readonly zahlungRS: ZahlungRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly gesuchRS: GesuchRS,
         private readonly gemeindeRS: GemeindeRS,
@@ -214,21 +212,6 @@ export class TestdatenViewComponent implements OnInit {
         return this.testFaelleRS.createTutorialdaten().then(response => {
             this.createAndOpenOkDialog(response.data);
         });
-    }
-
-    public zahlungenKontrollieren(): void {
-        this.zahlungRS.zahlungenKontrollieren();
-    }
-
-    public deleteAllZahlungsauftraege(): void {
-        this.createAndOpenRemoveDialog$('ZAHLUNG_LOESCHEN_DIALOG_TITLE', 'ZAHLUNG_LOESCHEN_DIALOG_TEXT')
-            .subscribe(
-                acceptedByUser => {
-                    if (acceptedByUser) {
-                        this.zahlungRS.deleteAllZahlungsauftraege();
-                    }
-                },
-                err => LOG.error(err));
     }
 
     public gesuchVerfuegen(): void {
