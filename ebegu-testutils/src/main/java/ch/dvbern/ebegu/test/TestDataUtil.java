@@ -103,7 +103,6 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -1607,20 +1606,12 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch persistNewGesuchInStatus(
-		@Nonnull AntragStatus status,
-		@Nonnull Persistence persistence,
-		@Nonnull GesuchService gesuchService) {
-		return persistNewGesuchInStatus(status, Eingangsart.ONLINE, persistence, gesuchService);
-	}
-
-	public static Gesuch persistNewGesuchInStatus(
-		@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
+		@Nonnull AntragStatus status, @Nonnull Persistence persistence,
 		@Nonnull GesuchService gesuchService, @Nonnull Gesuchsperiode gesuchsperiode) {
+
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
-		gesuch.setEingangsart(eingangsart);
 		gesuch.setStatus(status);
-		gesuch.setEingangsart(eingangsart);
 		gesuch.setGesuchsperiode(persistEntity(persistence, gesuchsperiode));
 		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
 		gesuch.setDossier(persistence.persist(gesuch.getDossier()));
@@ -1639,13 +1630,12 @@ public final class TestDataUtil {
 	}
 
 	public static Gesuch persistNewGesuchInStatus(
-		@Nonnull AntragStatus status, @Nonnull Eingangsart eingangsart, @Nonnull Persistence persistence,
+		@Nonnull AntragStatus status, @Nonnull Persistence persistence,
 		@Nonnull GesuchService gesuchService) {
+
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
-		gesuch.setEingangsart(Eingangsart.PAPIER);
 		gesuch.setStatus(status);
-		gesuch.setEingangsart(eingangsart);
 		gesuch.setGesuchsperiode(persistence.persist(gesuch.getGesuchsperiode()));
 		gesuch.getDossier().setFall(persistence.persist(gesuch.getDossier().getFall()));
 		gesuch.setDossier(persistence.persist(gesuch.getDossier()));

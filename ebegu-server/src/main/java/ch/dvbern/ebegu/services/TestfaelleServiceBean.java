@@ -393,9 +393,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Familiensituation oldFamsit = getFamiliensituationAlleine(null);
 
 		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"testfallMutieren", "dossier konnte nicht geladen werden", dossierId));
+			"mutierenHeirat", "dossier konnte nicht geladen werden", dossierId));
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"testfallMutieren", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
+			"mutierenHeirat", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
 
 		Gesuch mutation = new Gesuch();
 		mutation.setTyp(AntragTyp.MUTATION);
@@ -431,9 +431,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Objects.requireNonNull(aenderungPer);
 
 		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"testfallMutieren", "dossier konnte nicht geladen werden", dossierId));
+			"mutierenFinSit", "dossier konnte nicht geladen werden", dossierId));
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"testfallMutieren", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
+			"mutierenFinSit", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
 
 		Gesuch mutation = new Gesuch();
 		mutation.setEingangsdatum(eingangsdatum);
@@ -466,9 +466,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Familiensituation newFamsit = getFamiliensituationAlleine(aenderungPer);
 
 		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"testfallMutieren", "dossier konnte nicht geladen werden", dossierId));
+			"mutierenScheidung", "dossier konnte nicht geladen werden", dossierId));
 		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(() -> new EbeguEntityNotFoundException(
-			"testfallMutieren", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
+			"mutierenScheidung", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
 
 		Gesuch mutation = new Gesuch();
 		mutation.setTyp(AntragTyp.MUTATION);

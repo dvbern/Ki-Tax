@@ -30,7 +30,6 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -82,8 +81,8 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testSearchAntraegeOrder() {
-		TestDataUtil.persistNewGesuchInStatus(AntragStatus.ERSTE_MAHNUNG, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
-		TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
+		TestDataUtil.persistNewGesuchInStatus(AntragStatus.ERSTE_MAHNUNG, persistence, gesuchService, gesuchsperiode);
+		TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
 
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
@@ -108,7 +107,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 
 	@Test
 	public void testSearchByFamilienname() {
-		TestDataUtil.persistNewGesuchInStatus(AntragStatus.ERSTE_MAHNUNG, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
+		TestDataUtil.persistNewGesuchInStatus(AntragStatus.ERSTE_MAHNUNG, persistence, gesuchService, gesuchsperiode);
 		final Gesuch gesuch = TestDataUtil.createAndPersistBeckerNoraGesuch(
 			persistence, LocalDate.of(1980, Month.MARCH, 25), null,
 			gesuchsperiode);

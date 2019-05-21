@@ -201,8 +201,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	public void removeGesuchTest() {
 		Assert.assertNotNull(gesuchService);
 		Gemeinde bern = TestDataUtil.getGemeindeBern(persistence);
-		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.ONLINE, persistence, gesuchService,
-			gesuchsperiode);
+		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService, gesuchsperiode);
 
 		Collection<InstitutionStammdaten> stammdaten = criteriaQueryHelper.getAll(InstitutionStammdaten.class);
 		Gesuch gesuch2 = testfaelleService.createAndSaveGesuch(new Testfall02_FeutzYvonne(gesuch.getGesuchsperiode(), stammdaten, true, bern), true, null);
@@ -421,7 +420,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungSTV_VERFUEGT() {
 		//wenn das Gesuch nicht im Status PRUEFUNG_STV ist, wird nichts gemacht
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.PAPIER, persistence, gesuchService);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
 		gesuch.setStatus(AntragStatus.GEPRUEFT);
 		gesuch = persistence.merge(gesuch);
 		gesuch.setStatus(AntragStatus.VERFUEGEN);
@@ -443,7 +442,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungSTV_PRUEFUNGSTV() {
 		//Wenn das Gesuch im Status PRUEFUNG_STV ist, wechselt der Status beim Ablesen auf IN_BEARBEITUNG_STV
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.ONLINE, persistence, gesuchService);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, persistence, gesuchService);
 		gesuch.setStatus(AntragStatus.GEPRUEFT);
 		gesuch = persistence.merge(gesuch);
 		gesuch.setStatus(AntragStatus.VERFUEGEN);
@@ -466,7 +465,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		//bei Freigegeben soll ein lesen eines ja benutzers dazu fuehren dass das gesuch in bearbeitung ja wechselt
 		loginAsGesuchsteller("gesuchst");
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, persistence, gesuchService, gesuchsperiode);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, gesuch.getStatus());
 		Assert.assertEquals(Eingangsart.ONLINE, gesuch.getEingangsart());
