@@ -203,54 +203,33 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public Gesuch createGesuch(@Nonnull Gesuch gesuchToCreate) {
 		Objects.requireNonNull(gesuchToCreate);
-
 		Gesuch gesuchToPersist = gesuchToCreate;
 
 		Gemeinde gemeindeOfGesuchToCreate = gesuchToCreate.extractGemeinde();
 		Gesuchsperiode gesuchsperiodeOfGesuchToCreate = gesuchToCreate.getGesuchsperiode();
 		AntragTyp typOfGesuchToCreate = gesuchToCreate.getTyp();
 		Eingangsart eingangsart = calculateEingangsart();
+		AntragStatus initialStatus = calculateInitialStatus();
 		LocalDate eingangsdatum = gesuchToCreate.getEingangsdatum();
-		LOG.info("CREATE gesuchToCreate " + gemeindeOfGesuchToCreate.getName() + " " + gesuchsperiodeOfGesuchToCreate.getGesuchsperiodeString() + " " + typOfGesuchToCreate + " " + gesuchToCreate.isNew() + " " + eingangsart + " " + eingangsdatum);
+		LOG.info("CREATE gesuchToCreate {}" + ' ' + "{}" + ' ' + "{}" + ' ' + "{}" + ' ' + "{}" + ' ' + "{}", gemeindeOfGesuchToCreate.getName(),
+			gesuchsperiodeOfGesuchToCreate.getGesuchsperiodeString(), typOfGesuchToCreate, gesuchToCreate.isNew(), eingangsart, eingangsdatum);
 
 		if (typOfGesuchToCreate == AntragTyp.MUTATION) {
 			LOG.info("Es ist eine Mutation");
-			Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiodeOfGesuchToCreate, gesuchToCreate.getDossier(), true);
-			if (gesuchForMutationOpt.isPresent()) {
-				// Es ist eine Mutation
-				LOG.info("... und es gibt ein Gesuch zu kopieren");
-				Gesuch gesuchForMutation = gesuchForMutationOpt.get();
-				gesuchToPersist = gesuchForMutation.copyForMutation(new Gesuch(), eingangsart);
-			}
+			gesuchToPersist = createMutation(gesuchToCreate, gesuchsperiodeOfGesuchToCreate, eingangsart);
 		} else if (typOfGesuchToCreate == AntragTyp.ERNEUERUNGSGESUCH) {
 			LOG.info("Es ist ein Erneuerungsgesuch (im gleichen Dossier)");
-			Optional<Gesuch> gesuchForErneuerungOptional = getGesuchFuerErneuerungsantrag(gesuchToCreate.getDossier());
-			if (gesuchForErneuerungOptional.isPresent()) {
-				LOG.info("... und es gibt ein Gesuch zu kopieren");
-				Gesuch gesuchForErneuerung = gesuchForErneuerungOptional.get();
-				gesuchToPersist = gesuchForErneuerung.copyForErneuerung(new Gesuch(), gesuchsperiodeOfGesuchToCreate, eingangsart);
-			}
+			gesuchToPersist = createErneuerungsgesuch(gesuchToCreate, gesuchsperiodeOfGesuchToCreate, eingangsart);
 		} else if (typOfGesuchToCreate == AntragTyp.ERSTGESUCH) {
 			LOG.info("Es ist entweder das erste Gesuch überhaupt oder das erste in einem neuen Dossier");
-			List<String> existingForFall = getAllGesuchIDsForFall(gesuchToCreate.getFall().getId());
-			if (CollectionUtils.isNotEmpty(existingForFall)) {
-				// Es ist das erste in einem neuen Dossier
-				Optional<Gesuch> gesuchToCopyOptional = getNeustesGeprueftesGesuchInAnotherDossier(gesuchToCreate.getDossier(), true);
-				if (gesuchToCopyOptional.isPresent()) {
-					LOG.info("Es ist das erste Gesuch in einem neuen Dossier!");
-					Gesuch gesuchToCopy = gesuchToCopyOptional.get();
-					if (gesuchsperiodeOfGesuchToCreate.equals(gesuchToCopy.getGesuchsperiode())) {
-						gesuchToPersist = gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart, gesuchToCreate.getDossier());
-					} else {
-						gesuchToPersist = gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(gesuchToCreate, eingangsart, gesuchToCreate.getDossier(), gesuchsperiodeOfGesuchToCreate);
-					}
-				}
-			}
+			gesuchToPersist = createErstgesuch(gesuchToCreate, gesuchsperiodeOfGesuchToCreate, eingangsart);
 		}
 		gesuchToPersist.setEingangsart(eingangsart);
+		gesuchToPersist.setStatus(initialStatus);
 		if (eingangsdatum != null) {
 			gesuchToPersist.setEingangsdatum(eingangsdatum);
 		}
+		authorizer.checkReadAuthorization(gesuchToPersist);
 		Gesuch persistedGesuch = persistence.persist(gesuchToPersist);
 
 		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
@@ -258,6 +237,59 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		wizardStepService.createWizardStepList(persistedGesuch);
 		antragStatusHistoryService.saveStatusChange(persistedGesuch, null);
 		return persistedGesuch;
+	}
+
+	@Nonnull
+	private Gesuch createMutation(@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
+		if (isThereAnyOpenMutation(gesuchToCreate.getDossier(), gesuchsperiode)) {
+			throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
+				gesuchToCreate.getDossier().getId(), gesuchsperiode.getId());
+		}
+		Optional<Gesuch> gesuchForMutationOpt = getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode, gesuchToCreate.getDossier(), true);
+		if (gesuchForMutationOpt.isPresent()) {
+			// Es ist eine Mutation
+			LOG.info("... und es gibt ein Gesuch zu kopieren");
+			Gesuch gesuchForMutation = gesuchForMutationOpt.get();
+			return gesuchForMutation.copyForMutation(new Gesuch(), eingangsart);
+		}
+		return gesuchToCreate;
+	}
+
+	@Nonnull
+	private Gesuch createErneuerungsgesuch(@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
+		Optional<Gesuch> gesuchForErneuerungOptional = getGesuchFuerErneuerungsantrag(gesuchToCreate.getDossier());
+		if (gesuchForErneuerungOptional.isPresent()) {
+			LOG.info("... und es gibt ein Gesuch zu kopieren");
+			Gesuch gesuchForErneuerung = gesuchForErneuerungOptional.get();
+			return gesuchForErneuerung.copyForErneuerung(new Gesuch(), gesuchsperiode, eingangsart);
+		}
+		return gesuchToCreate;
+	}
+
+	@Nonnull
+	private Gesuch createErstgesuch(@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
+		List<String> existingForFall = getAllGesuchIDsForFall(gesuchToCreate.getFall().getId());
+		if (CollectionUtils.isNotEmpty(existingForFall)) {
+			// Es ist das erste in einem neuen Dossier
+			return createErstgesuchInNeuemDossier(gesuchToCreate, gesuchsperiode, eingangsart);
+		}
+		return gesuchToCreate;
+	}
+
+	@Nonnull
+	private Gesuch createErstgesuchInNeuemDossier(@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode, @Nonnull Eingangsart eingangsart) {
+		Optional<Gesuch> gesuchToCopyOptional = getNeustesGeprueftesGesuchInAnotherDossier(gesuchToCreate.getDossier());
+		if (gesuchToCopyOptional.isPresent()) {
+			LOG.info("Es ist das erste Gesuch in einem neuen Dossier!");
+			Gesuch gesuchToCopy = gesuchToCopyOptional.get();
+			if (gesuchsperiode.equals(gesuchToCopy.getGesuchsperiode())) {
+				return gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart, gesuchToCreate.getDossier());
+			} else {
+				return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(gesuchToCreate, eingangsart, gesuchToCreate.getDossier(),
+					gesuchsperiode);
+			}
+		}
+		return gesuchToCreate;
 	}
 
 	@Nonnull
@@ -988,76 +1020,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return gesuch;
 	}
 
-	@Override
-	@Nonnull
-	@RolesAllowed({ ADMIN_BG, SUPER_ADMIN, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		SACHBEARBEITER_TS, ADMIN_TS })
-	public Optional<Gesuch> antragMutieren(@Nonnull String antragId, @Nullable LocalDate eingangsdatum) {
-		// Mutiert wird immer das Gesuch mit dem letzten Verfügungsdatum
-		Optional<Gesuch> gesuchOptional = findGesuch(antragId);
-		if (gesuchOptional.isPresent()) {
-			Gesuch gesuch = gesuchOptional.get();
-			Dossier dossier = gesuch.getDossier();
-			Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
-
-			if (!isThereAnyOpenMutation(dossier, gesuchsperiode)) {
-				authorizer.checkReadAuthorization(gesuch);
-				Optional<Gesuch> gesuchForMutationOpt =
-					getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode, dossier, true);
-				Gesuch gesuchForMutation = gesuchForMutationOpt.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"antragMutieren",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					"Kein Verfuegtes Gesuch fuer ID " + antragId));
-				return getGesuchMutation(eingangsdatum, gesuchForMutation);
-			}
-
-			throw new EbeguExistingAntragException("antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
-				dossier.getId(), gesuchsperiode.getId());
-		}
-
-		throw new EbeguEntityNotFoundException(
-			"antragMutieren",
-			"Es existiert kein Antrag mit ID, kann keine Mutation erstellen " + antragId,
-			antragId);
-	}
-
-	@Override
-	@Nonnull
-	@RolesAllowed(SUPER_ADMIN)
-	public Optional<Gesuch> testfallMutieren(
-		@Nonnull String dossierID,
-		@Nonnull String gesuchsperiodeId,
-		@Nonnull LocalDate eingangsdatum) {
-		// Mutiert wird immer das Gesuch mit dem letzten Verfügungsdatum
-		final Optional<Dossier> dossier = dossierService.findDossier(dossierID);
-		final Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
-
-		if (dossier.isPresent() && gesuchsperiode.isPresent()) {
-			if (!isThereAnyOpenMutation(dossier.get(), gesuchsperiode.get())) {
-				Gesuch gesuchForMutation =
-					getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode.get(), dossier.get(), true)
-						.orElseThrow(() -> new EbeguEntityNotFoundException(
-							"antragMutieren",
-							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-							"Kein Verfuegtes Gesuch fuer Fallnummer " + dossierID));
-				return getGesuchMutation(eingangsdatum, gesuchForMutation);
-			}
-
-			throw new EbeguExistingAntragException(
-				"antragMutieren",
-				ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
-				dossier.get().getId(),
-				gesuchsperiodeId);
-		}
-
-		throw new EbeguEntityNotFoundException(
-			"antragMutieren",
-			"dossier oder gesuchsperiode konnte nicht geladen werden  fallNr:"
-				+ dossierID
-				+ "gsPerID"
-				+ gesuchsperiodeId);
-	}
-
 	private boolean isThereAnyOpenMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode) {
 		List<Gesuch> criteriaResults = findExistingOpenMutationen(dossier, gesuchsperiode);
 		return !criteriaResults.isEmpty();
@@ -1102,15 +1064,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return persistence.getCriteriaResults(query);
 	}
 
-	private Optional<Gesuch> getGesuchMutation(@Nullable LocalDate eingangsdatum, @Nonnull Gesuch gesuchForMutation) {
-		Eingangsart eingangsart = calculateEingangsart();
-		Gesuch mutation = gesuchForMutation.copyForMutation(new Gesuch(), eingangsart);
-		if (eingangsdatum != null) {
-			mutation.setEingangsdatum(eingangsdatum);
-		}
-		return Optional.of(mutation);
-	}
-
 	@Nonnull
 	private Eingangsart calculateEingangsart() {
 		Eingangsart eingangsart;
@@ -1120,6 +1073,17 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			eingangsart = Eingangsart.PAPIER;
 		}
 		return eingangsart;
+	}
+
+	@Nonnull
+	private AntragStatus calculateInitialStatus() {
+		AntragStatus status;
+		if (this.principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
+			status = AntragStatus.IN_BEARBEITUNG_GS;
+		} else {
+			status = AntragStatus.IN_BEARBEITUNG_JA;
+		}
+		return status;
 	}
 
 	@Override
@@ -1167,11 +1131,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 
-	private Optional<Gesuch> getNeustesGeprueftesGesuchInAnotherDossier(@Nonnull Dossier dossier, boolean doAuthCheck) {
+	private Optional<Gesuch> getNeustesGeprueftesGesuchInAnotherDossier(@Nonnull Dossier dossier) {
 
-		if (doAuthCheck) {
-			authorizer.checkReadAuthorizationFall(dossier.getFall());
-		}
+		authorizer.checkReadAuthorizationFall(dossier.getFall());
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
@@ -1186,7 +1148,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Predicate predicateFall = cb.equal(joinDossier.get(Dossier_.fall), fallParam);
 
 		query.where(predicateStatus, predicateNotDossier, predicateFall);
-		query.orderBy(cb.desc(root.get(Gesuch_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		query.select(root);
 
 		TypedQuery<Gesuch> typedQuery = persistence.getEntityManager().createQuery(query);
@@ -1199,9 +1161,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		}
 
 		Gesuch gesuch = criteriaResults.get(0);
-		if (doAuthCheck) {
-			authorizer.checkReadAuthorization(gesuch);
-		}
+		authorizer.checkReadAuthorization(gesuch);
 		return Optional.of(gesuch);
 	}
 
@@ -1936,8 +1896,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS })
-	public Massenversand createMassenversand(@Nonnull Massenversand massenversand) {
-		return persistence.persist(massenversand);
+	public void createMassenversand(@Nonnull Massenversand massenversand) {
+		persistence.persist(massenversand);
 	}
 
 	@Override

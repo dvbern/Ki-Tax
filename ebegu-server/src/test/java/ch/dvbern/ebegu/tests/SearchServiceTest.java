@@ -83,7 +83,7 @@ public class SearchServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void testSearchAntraegeOrder() {
 		TestDataUtil.persistNewGesuchInStatus(AntragStatus.ERSTE_MAHNUNG, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
-		TestDataUtil.persistNewGesuchInStatus(AntragStatus.VERFUEGT, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
+		TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
 
 		final Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);
 		TestDataUtil.createAndPersistBeckerNoraGesuch(persistence, LocalDate.of(1980, Month.MARCH, 25), null, gesuchsperiode);

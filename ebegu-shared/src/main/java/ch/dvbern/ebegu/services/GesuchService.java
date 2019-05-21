@@ -48,7 +48,7 @@ public interface GesuchService {
 	 * @return das gespeicherte Gesuch
 	 */
 	@Nonnull
-	Gesuch createGesuch(@Nonnull Gesuch gesuch);
+	Gesuch createGesuch(@Nonnull Gesuch gesuchToCreate);
 
 	/**
 	 * Aktualisiert das Gesuch in der DB
@@ -157,23 +157,6 @@ public interface GesuchService {
 	 */
 	@Nonnull
 	List<JaxAntragDTO> getAllAntragDTOForDossier(String dossierId);
-
-	/**
-	 * Erstellt eine neue Mutation fuer die Gesuchsperiode und Fall des uebergebenen Antrags. Es wird immer der letzt
-	 * verfuegte Antrag kopiert fuer die Mutation.
-	 */
-	//TODO (hefr) brauchts mich noch?
-	@Nonnull
-	Optional<Gesuch> antragMutieren(@Nonnull String antragId, @Nullable LocalDate eingangsdatum);
-
-	/**
-	 * hilfsmethode zur mutation von faellen ueber das gui. Wird fuer testzwecke benoetigt
-	 */
-	@Nonnull
-	Optional<Gesuch> testfallMutieren(
-		@Nonnull String dossierID,
-		@Nonnull String gesuchsperiodeId,
-		@Nonnull LocalDate eingangsdatum);
 
 	/**
 	 * Gibt das letzte verfuegte Gesuch fuer die uebergebene Gesuchsoperde und den uebergebenen Fall zurueck.
@@ -449,7 +432,7 @@ public interface GesuchService {
 	/**
 	 * Speichert einen Massenversand in der Datenbank
 	 */
-	Massenversand createMassenversand(@Nonnull Massenversand massenversand);
+	void createMassenversand(@Nonnull Massenversand massenversand);
 
 	/**
 	 * Gibt die Texte aller Massenversände zurück, welche zum übergebenen Gesuch verschickt wurden

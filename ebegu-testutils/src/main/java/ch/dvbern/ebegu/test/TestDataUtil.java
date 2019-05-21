@@ -1618,7 +1618,6 @@ public final class TestDataUtil {
 		@Nonnull GesuchService gesuchService, @Nonnull Gesuchsperiode gesuchsperiode) {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		gesuch.getDossier().setGemeinde(getTestGemeinde(persistence));
-		// Achtung: im createGesuch wird die Eingangsart aufgrund des eingeloggten Benutzers nochmals neu berechnet!
 		gesuch.setEingangsart(eingangsart);
 		gesuch.setStatus(status);
 		gesuch.setEingangsart(eingangsart);
@@ -1633,8 +1632,10 @@ public final class TestDataUtil {
 		gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()
 			.setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
-		gesuchService.createGesuch(gesuch);
-		return gesuch;
+		Gesuch createdGesuch = gesuchService.createGesuch(gesuch);
+		// Achtung: im createGesuch wird die Eingangsart und der Status aufgrund des eingeloggten Benutzers nochmals neu berechnet!
+		createdGesuch.setStatus(status);
+		return persistence.merge(createdGesuch);
 	}
 
 	public static Gesuch persistNewGesuchInStatus(
@@ -1656,8 +1657,10 @@ public final class TestDataUtil {
 		gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()
 			.setFinanzielleSituationJA(TestDataUtil.createDefaultFinanzielleSituation());
-		gesuchService.createGesuch(gesuch);
-		return gesuch;
+		Gesuch createdGesuch = gesuchService.createGesuch(gesuch);
+		// Achtung: im createGesuch wird die Eingangsart und der Status aufgrund des eingeloggten Benutzers nochmals neu berechnet!
+		createdGesuch.setStatus(status);
+		return persistence.merge(createdGesuch);
 	}
 
 	@Nonnull

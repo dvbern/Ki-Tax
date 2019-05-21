@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -33,6 +32,7 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AntragStatusHistoryService;
 import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -59,6 +59,8 @@ public class AntragStatusHistoryServiceTest extends AbstractEbeguLoginTest {
 	private Persistence persistence;
 	@Inject
 	private GesuchService gesuchService;
+	@Inject
+	private TestfaelleService testfaelleService;
 
 	private Gesuch gesuch;
 	private Benutzer benutzerSuperAdmin;
@@ -160,26 +162,34 @@ public class AntragStatusHistoryServiceTest extends AbstractEbeguLoginTest {
 		gesuch.setGueltig(true);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
 		final Gesuch gesuchVerfuegt = gesuchService.updateGesuch(gesuch, true, null);
-		Optional<Gesuch> mutation = gesuchService.antragMutieren(gesuchVerfuegt.getId(), LocalDate.of(1980, Month.MARCH, 25));
 
-		Assert.assertTrue(mutation.isPresent());
-		mutation.get().setStatus(AntragStatus.VERFUEGT);
-		gesuchService.updateGesuch(mutation.get(), true, null);
+		Gesuch mutation = testfaelleService.antragMutieren(gesuchVerfuegt, LocalDate.of(1980, Month.MARCH, 25));
+		Assert.assertNotNull(mutation);
+		mutation.setStatus(AntragStatus.GEPRUEFT);
+		mutation = persistence.merge(mutation);
+		mutation.setStatus(AntragStatus.VERFUEGEN);
+		mutation = persistence.merge(mutation);
+		mutation.setStatus(AntragStatus.VERFUEGT);
+		gesuchService.updateGesuch(mutation, true, null);
 
 		final Collection<AntragStatusHistory> allStatus = statusHistoryService
-			.findAllAntragStatusHistoryByGPForDossier(mutation.get().getGesuchsperiode(), mutation.get().getDossier());
+			.findAllAntragStatusHistoryByGPForDossier(mutation.getGesuchsperiode(), mutation.getDossier());
 
 		Assert.assertNotNull(allStatus);
-		Assert.assertEquals(2, allStatus.size());
+		Assert.assertEquals(3, allStatus.size());
 
 		final Iterator<AntragStatusHistory> iterator = allStatus.iterator();
 		final AntragStatusHistory first = iterator.next();
 		Assert.assertEquals(AntragStatus.VERFUEGT, first.getStatus());
-		Assert.assertEquals(mutation.get().getId(), first.getGesuch().getId());
+		Assert.assertEquals(mutation.getId(), first.getGesuch().getId());
 
 		final AntragStatusHistory second = iterator.next();
-		Assert.assertEquals(AntragStatus.VERFUEGT, second.getStatus());
-		Assert.assertEquals(gesuchVerfuegt.getId(), second.getGesuch().getId());
+		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, second.getStatus());
+		Assert.assertEquals(mutation.getId(), second.getGesuch().getId());
+
+		final AntragStatusHistory third = iterator.next();
+		Assert.assertEquals(AntragStatus.VERFUEGT, third.getStatus());
+		Assert.assertEquals(gesuchVerfuegt.getId(), third.getGesuch().getId());
 	}
 
 	@Test

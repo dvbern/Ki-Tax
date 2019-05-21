@@ -85,6 +85,7 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
 import ch.dvbern.ebegu.enums.Amt;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
@@ -734,14 +735,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
-				final Optional<Gesuch> mutationOpt = this.gesuchService.antragMutieren(
-					gesuch.getId(),
-					LocalDate.now());
-				if (mutationOpt.isPresent()) {
-					Gesuch persistedMutation = gesuchService.createGesuch(mutationOpt.get());
-					applyBetreuungsmitteilungToMutation(persistedMutation, mitteilung);
-					return persistedMutation;
-				}
+				Gesuch mutation = new Gesuch();
+				mutation.setTyp(AntragTyp.MUTATION);
+				mutation.setDossier(gesuch.getDossier());
+				mutation.setGesuchsperiode(neustesGesuch.getGesuchsperiode());
+				mutation.setEingangsdatum(LocalDate.now());
+				mutation = gesuchService.createGesuch(mutation);
+				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
+				return mutation;
 			} else {
 				throw new EbeguRuntimeException(
 					"applyBetreuungsmitteilung",

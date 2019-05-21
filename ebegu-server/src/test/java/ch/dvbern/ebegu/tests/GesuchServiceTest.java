@@ -170,6 +170,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 
 	@Test
+	@Transactional(TransactionMode.DEFAULT)
 	public void createGesuch() {
 		Assert.assertNotNull(gesuchService);
 		loginAsSachbearbeiterJA();
@@ -270,19 +271,16 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		// Voraussetzung: Ich habe einen verfuegten Antrag
 		Gesuch gesuchVerfuegt = createSimpleVerfuegtesGesuch();
 
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(gesuchVerfuegt.getId(), LocalDate.of(1980, Month.MARCH, 25));
+		Gesuch mutation = testfaelleService.antragMutieren(gesuchVerfuegt, LocalDate.of(1980, Month.MARCH, 25));
 
-		Assert.assertTrue(gesuchOptional.isPresent());
-		Assert.assertEquals(AntragTyp.MUTATION, gesuchOptional.get().getTyp());
-		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, gesuchOptional.get().getStatus());
-		Assert.assertEquals(gesuchVerfuegt.getDossier(), gesuchOptional.get().getDossier());
-		Assert.assertTrue(gesuchOptional.get().isNew());
+		Assert.assertNotNull(mutation);
+		Assert.assertEquals(AntragTyp.MUTATION, mutation.getTyp());
+		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, mutation.getStatus());
+		Assert.assertEquals(gesuchVerfuegt.getDossier(), mutation.getDossier());
 
 		// Sicherstellen, dass alle Objekte kopiert und nicht referenziert sind.
 		// Anzahl erstellte Objekte zaehlen, es muessen im Gesuch und in der Mutation
 		// gleich viele sein
-		Gesuch mutation = gesuchOptional.get();
-
 		Map<String, AbstractEntity> entitiesErstgesuch = new TreeMap<>();
 		findAllIdsOfAbstractEntities(gesuchVerfuegt, entitiesErstgesuch, 0);
 		int anzahlObjekteErstgesuch = entitiesErstgesuch.size();
@@ -322,7 +320,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		Assert.assertEquals(AntragTyp.ERNEUERUNGSGESUCH, folgegesuch.getTyp());
 		Assert.assertEquals(AntragStatus.IN_BEARBEITUNG_JA, folgegesuch.getStatus());
 		Assert.assertEquals(erstgesuch.getDossier(), folgegesuch.getDossier());
-		Assert.assertTrue(folgegesuch.isNew());
 
 		// Sicherstellen, dass alle Objekte kopiert und nicht referenziert sind.
 		// Anzahl erstellte Objekte zaehlen, es muessen im Gesuch und in der Mutation
@@ -343,6 +340,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testAntragEinreichenAndFreigeben() {
 		LocalDate now = LocalDate.now();
+		loginAsGesuchsteller("gesuchst");
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService);
 
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
@@ -363,8 +361,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testExceptionOnInvalidFreigabe() {
 		LocalDate now = LocalDate.now();
+		loginAsGesuchsteller("gesuchst");
 		final Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService);
-
 		final Gesuch eingereichtesGesuch = gesuchService.antragFreigabequittungErstellen(gesuch, AntragStatus.FREIGABEQUITTUNG);
 
 		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, eingereichtesGesuch.getStatus());
@@ -374,6 +372,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.FREIGABE);
 
 		Assert.assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
+		gesuch.getFall().setBesitzer(null);
+		persistence.merge(gesuch.getFall());
 
 		Benutzer gesuchsteller = loginAsGesuchsteller("gesuchst");
 		try {
@@ -398,9 +398,7 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testAntragEinreichenAndFreigebenNurSchulamt() {
 		LocalDate now = LocalDate.now();
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_GS, persistence, gesuchService);
-		Assert.assertEquals(0, gesuch.getKindContainers().size());
-		Assert.assertFalse(gesuch.hasOnlyBetreuungenOfSchulamt());  //alle leer gilt aktuell als only schulamt = false
+		loginAsGesuchsteller("gesuchst");
 
 		Gesuch schulamtGesuch = persistNewNurSchulamtGesuchEntity(AntragStatus.IN_BEARBEITUNG_GS);
 
@@ -423,7 +421,13 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungSTV_VERFUEGT() {
 		//wenn das Gesuch nicht im Status PRUEFUNG_STV ist, wird nichts gemacht
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.VERFUEGT, Eingangsart.ONLINE, persistence, gesuchService);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.PAPIER, persistence, gesuchService);
+		gesuch.setStatus(AntragStatus.GEPRUEFT);
+		gesuch = persistence.merge(gesuch);
+		gesuch.setStatus(AntragStatus.VERFUEGEN);
+		gesuch = persistence.merge(gesuch);
+		gesuch.setStatus(AntragStatus.VERFUEGT);
+		gesuch = persistence.merge(gesuch);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.VERFUEGT, gesuch.getStatus());
 		loginAsSteueramt();
@@ -439,7 +443,15 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 	@Test
 	public void testStatusuebergangToInBearbeitungSTV_PRUEFUNGSTV() {
 		//Wenn das Gesuch im Status PRUEFUNG_STV ist, wechselt der Status beim Ablesen auf IN_BEARBEITUNG_STV
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.PRUEFUNG_STV, Eingangsart.ONLINE, persistence, gesuchService);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.IN_BEARBEITUNG_JA, Eingangsart.ONLINE, persistence, gesuchService);
+		gesuch.setStatus(AntragStatus.GEPRUEFT);
+		gesuch = persistence.merge(gesuch);
+		gesuch.setStatus(AntragStatus.VERFUEGEN);
+		gesuch = persistence.merge(gesuch);
+		gesuch.setStatus(AntragStatus.VERFUEGT);
+		gesuch = persistence.merge(gesuch);
+		gesuch.setStatus(AntragStatus.PRUEFUNG_STV);
+		gesuch = persistence.merge(gesuch);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
 		Assert.assertEquals(AntragStatus.PRUEFUNG_STV, gesuch.getStatus());
 		loginAsSteueramt();
@@ -454,10 +466,11 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		//bei Freigegeben soll ein lesen eines ja benutzers dazu fuehren dass das gesuch in bearbeitung ja wechselt
 		loginAsGesuchsteller("gesuchst");
 		Gesuchsperiode gesuchsperiode = TestDataUtil.createAndPersistGesuchsperiode1718(persistence);
-		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGEGEBEN, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
+		Gesuch gesuch = TestDataUtil.persistNewGesuchInStatus(AntragStatus.FREIGABEQUITTUNG, Eingangsart.ONLINE, persistence, gesuchService, gesuchsperiode);
 		gesuch = persistence.find(Gesuch.class, gesuch.getId());
-		Assert.assertEquals(AntragStatus.FREIGEGEBEN, gesuch.getStatus());
+		Assert.assertEquals(AntragStatus.FREIGABEQUITTUNG, gesuch.getStatus());
 		Assert.assertEquals(Eingangsart.ONLINE, gesuch.getEingangsart());
+		gesuchService.antragFreigeben(gesuch.getId(), "saja", null);
 		loginAsSachbearbeiterJA();
 		//durch findGesuch setzt der {@link UpdateStatusInterceptor} den Status um
 		Optional<Gesuch> foundGesuch = gesuchService.findGesuch(gesuch.getId());
@@ -486,14 +499,12 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
 		gesuch = gesuchService.updateGesuch(gesuch, true, null);
 		loginAsGesuchsteller("gesuchst");
-		final Optional<Gesuch> optMutation = gesuchService.antragMutieren(gesuch.getId(), LocalDate.now());
 
-		Assert.assertTrue(optMutation.isPresent());
-		gesuchService.createGesuch(optMutation.get());
-
+		Gesuch mutation = testfaelleService.antragMutieren(gesuch, LocalDate.now());
+		Assert.assertNotNull(mutation);
 		loginAsSachbearbeiterJA();
 		try {
-			gesuchService.antragMutieren(gesuch.getId(), LocalDate.now());
+			testfaelleService.antragMutieren(gesuch, LocalDate.now());
 			Assert.fail("Exception should be thrown. There is already an open Mutation");
 		} catch (EbeguRuntimeException e) {
 			// nop
@@ -677,9 +688,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		gesuch = gesuchService.updateGesuch(gesuch, true, sachbearbeiterJA);
 		final Betreuung betreuungErstGesuch = gesuch.extractAllBetreuungen().get(0);
 
-		final Optional<Gesuch> optMutation = gesuchService.antragMutieren(gesuch.getId(), LocalDate.now());
-		Assert.assertTrue(optMutation.isPresent());
-		final Gesuch mutation = gesuchService.createGesuch(optMutation.get());
+		Gesuch mutation = testfaelleService.antragMutieren(gesuch, LocalDate.now());
+		Assert.assertNotNull(mutation);
 		final String mutationID = mutation.getId();
 
 		Institution institutionToSet = gesuch.extractAllBetreuungen().get(0).getInstitutionStammdaten().getInstitution();
@@ -774,9 +784,8 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		persistence.persist(betreuung.getInstitutionStammdaten().getInstitution().getTraegerschaft());
 		betreuungService.saveBetreuung(betreuung, false);
 
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		Assert.assertTrue(gesuchOptional.isPresent());
-		final Gesuch mutation = gesuchService.createGesuch(gesuchOptional.get());
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		Assert.assertNotNull(mutation);
 
 		final List<Betreuung> allBetreuungenFromErstgesuch = betreuungService.findAllBetreuungenFromGesuch(erstgesuch.getId());
 		allBetreuungenFromErstgesuch.stream().filter(Betreuung::isAngebotSchulamt)
@@ -958,16 +967,9 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 		final Gesuchsperiode gesuchsperiode1819 = TestDataUtil.createCustomGesuchsperiode(2018, 2019);
 		final Gesuchsperiode savedGesuchsperiode1819 = persistence.persist(gesuchsperiode1819);
 
-
-		Gesuch erneuerung = new Gesuch();
-		erneuerung.setDossier(gesuch.getDossier());
-		erneuerung.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
-		erneuerung.setGesuchsperiode(savedGesuchsperiode1819);
-		erneuerung.setEingangsdatum(null);
-		Gesuch folgegesuch = gesuchService.createGesuch(erneuerung);
-
+		Gesuch erneuerung = testfaelleService.antragErneuern(gesuch, savedGesuchsperiode1819, null);
 		Assert.assertTrue(gesuchService.hasFolgegesuchForAmt(gesuch.getId()));
-		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(folgegesuch.getId()));
+		Assert.assertFalse(gesuchService.hasFolgegesuchForAmt(erneuerung.getId()));
 	}
 
 
@@ -1050,8 +1052,6 @@ public class GesuchServiceTest extends AbstractTestdataCreationTest {
 
 	private Gesuch persistNewNurSchulamtGesuchEntity(AntragStatus status) {
 		Gesuch gesuch = TestDataUtil.createAndPersistWaeltiDagmarGesuch(institutionService, persistence, LocalDate.of(1980, Month.MARCH, 25), status, gesuchsperiode);
-		gesuch.setStatus(status);
-		gesuch.setEingangsart(Eingangsart.PAPIER);
 		wizardStepService.createWizardStepList(gesuch);
 		gesuch.getKindContainers().stream()
 			.flatMap(kindContainer -> {
