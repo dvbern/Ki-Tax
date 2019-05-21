@@ -67,8 +67,11 @@ export class DVFinanzielleSituationRequireController implements IController {
      * erfasst war.
      */
     public showNurPauschaleFuerBesondereBeduerfnisseGewuenscht(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger) && !this.sozialhilfeBezueger &&
-            this.gesuchModelManager.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt;
+        return EbeguUtil.isNotNullOrUndefined(this.sozialhilfeBezueger)
+            && !this.sozialhilfeBezueger
+            && this.gesuchModelManager.getGesuch()
+            && this.gesuchModelManager.getGesuch().extractFamiliensituation()
+            && this.gesuchModelManager.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt;
     }
 
     public setFinanziellesituationRequired(): void {

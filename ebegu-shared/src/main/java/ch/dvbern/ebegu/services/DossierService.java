@@ -46,6 +46,12 @@ public interface DossierService {
 	Collection<Dossier> findDossiersByFall(@Nonnull String fallId);
 
 	/**
+	 * Gibt eine Liste aller Dossiers der uebergebenen Gemeinde zurück.
+	 */
+	@Nonnull
+	Collection<Dossier> findDossiersByGemeinde(@Nonnull String gemeindeId);
+
+	/**
 	 * Gibt das Dossier (falls vorhanden) fuer die uebergebene Gemeinde und den uebergebenen Fall zurueck
 	 */
 	@Nonnull

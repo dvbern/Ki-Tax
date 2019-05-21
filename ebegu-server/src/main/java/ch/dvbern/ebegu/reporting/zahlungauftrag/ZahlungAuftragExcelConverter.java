@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -61,10 +62,12 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 		@Nonnull List<Zahlung> data,
 		@Nonnull Locale locale,
 		@Nullable UserRole userRole,
-		Collection<Institution> allowedInst,
-		String beschrieb, LocalDateTime datumGeneriert,
-		LocalDate datumFaellig
-	) {
+		@Nonnull Collection<Institution> allowedInst,
+		@Nonnull String beschrieb,
+		@Nonnull LocalDateTime datumGeneriert,
+		@Nonnull LocalDate datumFaellig,
+		@Nonnull Gemeinde gemeinde
+		) {
 		checkNotNull(data);
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
@@ -74,6 +77,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.beschrieb, beschrieb);
 		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAm, datumGeneriert);
 		excelMerger.addValue(MergeFieldZahlungAuftrag.faelligAm, datumFaellig);
+		excelMerger.addValue(MergeFieldZahlungAuftrag.gemeinde, gemeinde.getName());
 
 		data.stream()
 			.filter(zahlung -> {
@@ -110,6 +114,7 @@ public class ZahlungAuftragExcelConverter implements ExcelConverter {
 	private void addHeaders(@Nonnull ExcelMergerDTO excelMerger, @Nonnull Locale locale) {
 		excelMerger.addValue(MergeFieldZahlungAuftrag.generiertAmTitle, ServerMessageUtil.getMessage("Reports_generiertAmTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.faelligAmTitle, ServerMessageUtil.getMessage("Reports_faelligAmTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftrag.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.nachnameTitle, ServerMessageUtil.getMessage("Reports_nachnameTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftrag.vornameTitle, ServerMessageUtil.getMessage("Reports_vornameTitle", locale));

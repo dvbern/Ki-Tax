@@ -914,7 +914,7 @@
     "BESCHREIBUNG_GESUCH_KEIN_ANGEBOT": "Die Korrespondenz mit dem Gesuchsteller muss ausserhalb kiBons erfolgen! Diese Änderung können Sie nicht mehr rückgängig machen",
     "BESCHREIBUNG_GESUCH_STATUS_WECHSELN_SCHULAMT": "Das Gesuch enthält nur Schulangebote. Wenn Sie auf Ja klicken, ändert der Status des Gesuches auf \"Schulamt\" und kann von der Gemeinde nicht mehr bearbeitet werden. Wollen Sie wirklich fortfahren?",
     "CONFIRM_SAVE_VERFUEGUNG": "Möchten Sie das Betreuungsangebot wirklich verfügen?",
-    "CONFIRM_SAVE_MUTIERTE_VERFUEGUNG": "Mutation führt zu Korrekturen bei bereits ausbezahlten Beträgen, trotzdem verfügen?",
+    "CONFIRM_SAVE_MUTIERTE_VERFUEGUNG": "Mutation führt zu Korrekturen von bereits ausbezahlten Beträgen",
     "CONFIRM_CLOSE_VERFUEGUNG_OHNE_VERFUEGEN": "Möchten Sie das Betreuungsangebot wirklich schliessen ohne neu zu verfügen?",
     "CONFIRM_CLOSE_VERFUEGUNG_NICHT_EINTRETEN": "Möchten Sie wirklich nicht auf das Betreuungsangebot eintreten?",
     "CONFIRM_GESUCH_FREIGEBEN": "Möchten Sie den Antrag wirklich freigeben?",
@@ -1565,5 +1565,16 @@
     "WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG": "Nicht aktivierte Gemeinden können keine Betreuungsgutscheine ausstellen. Bitte vervollständigen Sie alle Angaben Ihrer Gemeinden.",
     "ZUR_LISTE": "Zur Liste",
     "ERNEUTE_PLATZBESTAETIGUNG_POPUP_TEXT": "Diese Änderung erfordert eine erneute Platzbestätigung, da die Institution die Verrechnung für den ausserordentlichen Betreuungsaufwand bestätigen muss.",
-    "VERSION_ERROR_TEXT": "Der Client {{frontendVersion}} hat eine andere Version als der Server {{backendVersion}}. Bitte laden sie die Seite komplett neu (F5)"
+    "VERSION_ERROR_TEXT": "Der Client {{frontendVersion}} hat eine andere Version als der Server {{backendVersion}}. Bitte laden sie die Seite komplett neu (F5)",
+    "KORREKTURZAHLUNG_DIALOG_FRAGE": "Sie sind dabei, eine Mutation zu verfügen, welche zu Korrekturen an bereits ausbezahlten Beträgen führt. Möchten Sie fortfahren?",
+    "KORREKTURZAHLUNG_DIALOG_OPTION_JA": "Ja, Korrekturen in nächsten Zahlungslauf übernehmen.",
+    "KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION": "In diesem Fall erfolgt der Abgleich über kiBon direkt an die Institution.",
+    "KORREKTURZAHLUNG_DIALOG_OPTION_NEIN": "Ja, Korrekturen aber ignorieren.",
+    "KORREKTURZAHLUNG_DIALOG_OPTION_NEIN_DESCRIPTION": "In diesem Fall müssen Sie die Auszahlung respektive Rückerstattung ausserhalb kiBon direkt mit den Eltern vornehmen.",
+    "KORREKTURZAHLUNG_DIALOG_CHECKBOX_LABEL": "Ja und wir bestätigen, dass wir die Auszahlungen respektive Rückerstattung ausserhalb kiBon direkt mit den Eltern vornehmen. Dies gilt in diesem Fall auch für zukünftige Korrekturen.",
+    "KORREKTURZAHLUNG_DIALOG_STEP2_TITLE": "Wollen Sie die Korrektur im nächsten Zahlungslauf wirklich ignorieren?",
+    "KORREKTURZAHLUNG_DIALOG_IMMUTABLE": "Diese Aktion ist endgültig und kann nicht rückgängig gemacht werden!",
+    "KORREKTURZAHLUNG_DIALOG_BACK": "Nein, zurück",
+    "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen",
+    "FILTER": "Filter"
 }
