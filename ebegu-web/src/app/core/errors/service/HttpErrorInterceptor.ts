@@ -22,15 +22,20 @@ import IHttpInterceptor = angular.IHttpInterceptor;
 import ILogService = angular.ILogService;
 import IQService = angular.IQService;
 
+/**
+ * notokenrefresh is sent by the Mitteilungservice to indicate if there is a new Mitteilung
+ * emaillogin/gui/registration/createmaillogin is the URL of BE-Login used to burn timeout
+ */
 export function isIgnorableHttpError<T>(response: IHttpResponse<T>): boolean {
-    return response.config && response.config.url.includes('notokenrefresh');
+    return response.config
+        && (response.config.url.includes('notokenrefresh')
+            || response.config.url
+                .includes('emaillogin/gui/registration/createmaillogin'));
 }
 
 export default class HttpErrorInterceptor implements IHttpInterceptor {
 
     public static $inject = ['$q', 'ErrorService', '$log'];
-    public readonly IGNORE_ORIGIN_ERROR_URLS =
-        ['https://beloginportal-replica.fin.be.ch/emaillogin/gui/registration/createmaillogin'];
 
     public constructor(
         private readonly $q: IQService,
@@ -74,14 +79,14 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
 
         } else if (this.isDataEbeguExceptionReport(response.data)) {
             errors = this.convertEbeguExceptionReport(response.data);
+
         } else if (this.isFileUploadException(response.data)) {
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,
                 TSErrorLevel.SEVERE,
                 'ERROR_FILE_TOO_LARGE',
                 response.data));
-        } else if (this.IGNORE_ORIGIN_ERROR_URLS.indexOf(response.config.url) >= 0) {
-            errors = [];
+
         } else {
             this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
             this.$log.error('ResponseData:' + JSON.stringify(response.data));
