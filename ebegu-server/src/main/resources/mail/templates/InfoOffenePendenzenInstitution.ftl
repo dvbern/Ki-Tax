@@ -37,7 +37,7 @@ ${templateConfiguration.mailCss}
 		Bonjour,
 	</p>
 	<p>
-		Nous vous informons que des places sont en attente de confirmation pour votre institution ${institutionStammdaten.institution.name} dans kiBon.
+		Nous vous informons que des places sont en attente de confirmation pour l'institution ${institutionStammdaten.institution.name} dans kiBon.
 		Vous pouvez les consulter
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/pendenzenBetreuungen">ici</a>.
 	</p>

@@ -36,8 +36,8 @@ ${templateConfiguration.mailCss}
 		requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
 	</p>
 	<p>
-		Veuillez agréer nos salutations les meilleures,	<br/>
-		Votre commune ${gesuch.dossier.gemeinde.name}
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
 	</p>
 	<p>
 		Merci de ne pas répondre à ce message automatique.

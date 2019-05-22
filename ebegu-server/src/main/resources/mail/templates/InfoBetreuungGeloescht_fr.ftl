@@ -44,7 +44,7 @@ ${templateConfiguration.mailCss}
 		</tr>
 		<tr>
 			<td>Offre de prise en charge:</td>
-			<td>${betreuung.getBetreuungsangebotTypTranslated("de")}</td>
+			<td>${betreuung.getBetreuungsangebotTypTranslated("fr")}</td>
 		</tr>
 		<tr>
 			<td>Institution:</td>
@@ -65,8 +65,8 @@ ${templateConfiguration.mailCss}
 		Les informations ont été saisies le ${datumErstellung}.
 	</p>
 	<p>
-		Veuillez agréer nos salutations les meilleures,	<br/>
-		Votre commune ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
 	</p>
 	<p>
 		Merci de ne pas répondre à ce message automatique.

@@ -26,7 +26,7 @@ ${templateConfiguration.mailCss}
 		Bonjour,
 	</p>
 	<p>
-		Vous avez déposé une demande via kiBon pour laquelle vous les données n'ont pas encore été confirmées.
+		Vous avez déposé une demande via kiBon pour laquelle vos données n'ont pas encore été confirmées.
 		Le formulaire, qui peut être téléchargé
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">ici</a>, est à remettre dûment signé et au plus vite par courrier postal à ${adresse} faute de quoi votre demande
 		sera considérée comme non valable. Elle ne pourra pas être traitée et sera automatiquement supprimée le ${datumLoeschung}.
@@ -36,8 +36,8 @@ ${templateConfiguration.mailCss}
 		requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
 	</p>
 	<p>
-		Veuillez agréer nos salutations les meilleures,	<br/>
-		Votre commune ${gesuch.dossier.gemeinde.name}
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
 	</p>
 	<p>
 		Merci de ne pas répondre à ce message automatique.

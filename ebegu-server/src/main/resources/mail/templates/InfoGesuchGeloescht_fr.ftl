@@ -24,15 +24,16 @@ ${templateConfiguration.mailCss}
 		Bonjour,
 	</p>
 	<p>
-		Votre demande via  <a href="www.kibon.ch">www.kibon.ch</a> nous est bien parvenue mais elle n'a pas été validée et il manque la confirmation des
-		données. Vous avez déjà été informé-e à ce sujet.
+		Votre demande via  <a href="www.kibon.ch">www.kibon.ch</a> nous est bien parvenue mais elle n'a toujours pas été validée et il manque la confirmation
+		des
+		données. Vous avez déjà reçu un courriel à ce sujet.
 	</p>
 	<p>
-		Vos données ont été automatiquement supprimées le ${datumGeloescht?date}.
+		Vos données ont donc été automatiquement supprimées le ${datumGeloescht?date}.
 	</p>
 	<p>
-		Veuillez agréer nos salutations les meilleures,	<br/>
-		Votre commune ${gesuch.dossier.gemeinde.name}
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
 	</p>
 	<p>
 		Merci de ne pas répondre à ce message automatique.

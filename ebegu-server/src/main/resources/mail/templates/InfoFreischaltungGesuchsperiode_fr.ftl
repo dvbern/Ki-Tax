@@ -36,8 +36,8 @@ ${templateConfiguration.mailCss}
 	<p>
 		Si vous ne souhaitez pas déposer de demande pour la période ${gesuchsperiode.gesuchsperiodeString}, vous n'avez plus rien à entreprendre.
 	<p>
-		Veuillez agréer nos salutations les meilleures,	<br/>
-		Votre commune ${gesuch.dossier.gemeinde.name}
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
 	</p>
 	<p>
 		Merci de ne pas répondre à ce message automatique.
