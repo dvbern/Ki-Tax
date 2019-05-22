@@ -63,6 +63,8 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 	private boolean alterskategorieKindergarten;
 	private boolean alterskategorieSchule;
 	private boolean subventioniertePlaetze;
+
+	@Nullable
 	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
 	@Nullable
 	private BigDecimal anzahlPlaetzeFirmen;
@@ -215,11 +217,12 @@ public abstract class JaxAbstractInstitutionStammdaten extends JaxAbstractDateRa
 		this.subventioniertePlaetze = subventioniertePlaetze;
 	}
 
+	@Nullable
 	public BigDecimal getAnzahlPlaetze() {
 		return anzahlPlaetze;
 	}
 
-	public void setAnzahlPlaetze(BigDecimal anzahlPlaetze) {
+	public void setAnzahlPlaetze(@Nullable BigDecimal anzahlPlaetze) {
 		this.anzahlPlaetze = anzahlPlaetze;
 	}
 
