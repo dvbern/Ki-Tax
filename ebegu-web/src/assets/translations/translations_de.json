@@ -1079,7 +1079,7 @@
     "MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG": "Die eingegebenen Daten werden der bestehenden Mutation bzw. einer neuen Mutation hinzugefügt",
     "ZAHLUNG_FAELLIGKEIT": "Fälligkeitsdatum",
     "ZAHLUNG_TOTAL": "Betrag",
-    "ZAHLUNG_PAIN001": "PAIN001",
+    "ZAHLUNG_PAIN001": "Zahlungsdatei",
     "ZAHLUNGSAUFTRAEGE": "Zahlungsaufträge",
     "ZAHLUNG_INSTITUTION": "Institution",
     "ZAHLUNG_BETRAG": "Betrag",
@@ -1576,5 +1576,7 @@
     "KORREKTURZAHLUNG_DIALOG_IMMUTABLE": "Diese Aktion ist endgültig und kann nicht rückgängig gemacht werden!",
     "KORREKTURZAHLUNG_DIALOG_BACK": "Nein, zurück",
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen",
-    "FILTER": "Filter"
+    "FILTER": "Filter",
+    "MANDANT_DIREKTION": "Gesundheits- und Fürsorgedirektion des Kantons Bern",
+    "MANDANT_AMT": "Sozialamt"
 }
