@@ -13,8 +13,31 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IAugmentedJQuery} from 'angular';
+import {ApplicationPropertyRS} from './core/rest-services/applicationPropertyRS.rest';
+
+export class AppAngularjsComponent implements angular.IController {
+
+    public static $inject: string[] = ['$element', 'ApplicationPropertyRS'];
+
+    public constructor(
+        private $element: IAugmentedJQuery,
+        private applicationPropertyRS: ApplicationPropertyRS,
+    ) {
+    }
+
+    public $postLink(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then(response => {
+                this.$element.find('#Intro')
+                    .css('background-color', response.backgroundColor);
+                this.$element.find('.environment')
+                    .css('display', response.devmode ? 'inline' : 'none');
+            });
+    }
+}
 
 export const APP_ANGULARJS_COMPONENT: IComponentOptions = {
     template: require('./app.angularjs.component.html'),
+    controller: AppAngularjsComponent,
 };

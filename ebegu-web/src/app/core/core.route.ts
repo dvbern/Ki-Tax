@@ -25,7 +25,6 @@ import GesuchModelManager from '../../gesuch/service/gesuchModelManager';
 import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
-import TSApplicationProperty from '../../models/TSApplicationProperty';
 import {LogFactory} from './logging/LogFactory';
 import {ApplicationPropertyRS} from './rest-services/applicationPropertyRS.rest';
 import GesuchsperiodeRS from './service/gesuchsperiodeRS.rest';
@@ -75,6 +74,19 @@ export function appRun(
     gemeindeRS: GemeindeRS,
     LOCALE_ID: string,
 ): void {
+    const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
+    applicationPropertyRS.getPublicPropertiesCached()
+        .then(response => {
+            // todo KIBON-417 MUSS DAS IF DA SO RUMSTEHEN????
+            if (!response.devmode) {
+                if (response.sentryEnvName) {
+                    Raven.setEnvironment(response.sentryEnvName);
+                } else {
+                    Raven.setEnvironment('unspecified');
+                }
+
+            }
+        });
 
     function onNotAuthenticated(): void {
         authServiceRS.clearPrincipal();
@@ -133,27 +145,6 @@ export function appRun(
     authServiceRS.initWithCookie().then(() => {
         LOG.debug('logged in from cookie');
     });
-
-    if (!environment.test) {
-        // Hintergrundfarbe anpassen (testsystem kann zB andere Farbe haben)
-        const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
-        applicationPropertyRS.getBackgroundColor().then((prop: TSApplicationProperty) => {
-            if (prop && prop.value !== '#FFFFFF') {
-                angular.element('#Intro').css('background-color', prop.value);
-                angular.element('.user-menu').find('button').first().css('background', prop.value);
-            }
-        });
-
-        applicationPropertyRS.getSentryEnvName().then((sentryEnvName: TSApplicationProperty) => {
-            if (sentryEnvName && sentryEnvName.value) {
-                Raven.setEnvironment(sentryEnvName.value);
-
-            } else {
-                Raven.setEnvironment('unspecified');
-            }
-        });
-
-    }
 
     // Wir meochten eigentlich ueberall mit einem hotkey das formular submitten koennen
     // https://github.com/chieffancypants/angular-hotkeys#angular-hotkeys

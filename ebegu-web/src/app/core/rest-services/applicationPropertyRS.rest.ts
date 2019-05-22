@@ -13,13 +13,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpResponse, IHttpService, IPromise} from 'angular';
+import {ICacheObject, IHttpPromise, IHttpService, IPromise} from 'angular';
+import GlobalCacheService from '../../../gesuch/service/globalCacheService';
+import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import TSApplicationProperty from '../../../models/TSApplicationProperty';
+import TSPublicAppConfig from '../../../models/TSPublicAppConfig';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export class ApplicationPropertyRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'GlobalCacheService'];
 
     public serviceURL: string;
 
@@ -27,16 +30,15 @@ export class ApplicationPropertyRS {
         public http: IHttpService,
         REST_API: string,
         public ebeguRestUtil: EbeguRestUtil,
+        private readonly globalCacheService: GlobalCacheService,
     ) {
         this.serviceURL = `${REST_API}application-properties`;
     }
 
-    public getAllowedMimetypes(): IPromise<TSApplicationProperty> {
-        return this.http.get(`${this.serviceURL}/public/${encodeURIComponent('UPLOAD_FILETYPES_WHITELIST')}`,
-            {cache: true})
-            .then((response: IHttpResponse<TSApplicationProperty>) => {
-                return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
-            });
+    public getAllowedMimetypes(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.whitelist;
+        });
     }
 
     public getByName(name: string): IPromise<TSApplicationProperty> {
@@ -48,26 +50,20 @@ export class ApplicationPropertyRS {
     }
 
     public isDevMode(): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/public/devmode`, {cache: true}).then(response => {
-            return response.data as boolean;
+        return this.getPublicPropertiesCached().then(response => {
+            return response.devmode;
         });
     }
 
     public isDummyMode(): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/public/dummy`).then(response => {
-            return response.data as boolean;
+        return this.getPublicPropertiesCached().then(response => {
+            return response.dummyMode;
         });
     }
 
-    public getBackgroundColor(): IPromise<TSApplicationProperty> {
-        return this.http.get(`${this.serviceURL}/public/background`).then(response => {
-            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
-        });
-    }
-
-    public getSentryEnvName(): IPromise<TSApplicationProperty> {
-        return this.http.get(`${this.serviceURL}/public/sentryenv`).then(response => {
-            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
+    public getSentryEnvName(): IPromise<string> {
+        return this.getPublicPropertiesCached().then(response => {
+            return response.sentryEnvName;
         });
     }
 
@@ -94,16 +90,15 @@ export class ApplicationPropertyRS {
     }
 
     public isZahlungenTestMode(): IPromise<boolean> {
-        return this.http.get(`${this.serviceURL}/public/zahlungentestmode`, {cache: true}).then(response => {
-            return response.data as boolean;
+        return this.getPublicPropertiesCached().then(response => {
+            return response.zahlungentestmode;
         });
     }
 
-    //todo not any
-    public getPublicProperties(): IPromise<any> {
-        return this.http.get(`${this.serviceURL}/public/all`, {cache: true}).then(response => {
-            return response.data;
-        });
-
+    public getPublicPropertiesCached(): IPromise<TSPublicAppConfig> {
+        const cache: ICacheObject = this.globalCacheService.getCache(TSCacheTyp.EBEGU_PUBLIC_APP_CONFIG);
+        return this.http.get(`${this.serviceURL}/public/all`, {cache}).then(
+            (response: any) => this.ebeguRestUtil.parsePublicAppConfig(response.data),
+        );
     }
 }

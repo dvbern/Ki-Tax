@@ -75,7 +75,8 @@ export class DVVersionController implements IController {
         });
 
         // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
-        this.applicationPropertyRS.getBackgroundColor();
+        // todo KIBON-417: braucht es diesen Healthcheck?
+        // this.applicationPropertyRS.getBackgroundColor();
     }
 
     private updateDisplayVersion(): void {
