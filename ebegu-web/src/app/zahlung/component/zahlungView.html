@@ -43,6 +43,8 @@
                     <tr>
                         <th st-sort="institutionsName" class="sortable row-institutionsName uppercase"
                             data-translate="ZAHLUNG_INSTITUTION" st-sort-default="true"></th>
+                        <th st-sort="betreuungsangebotTyp" class="sortable row-betreuungsangebotTyp uppercase"
+                            data-translate="ZAHLUNG_BETREUUNGSANGEBOTTYP" st-sort-default="true"></th>
                         <th class="uppercase" data-translate="ZAHLUNG_DETAILPOSITIONEN"></th>
                         <th st-sort="betragTotalZahlung" class="sortable row-status uppercase"
                             data-translate="ZAHLUNG_BETRAG" id="betragTotalZahlung"></th>
@@ -54,6 +56,8 @@
                     <tr ng-repeat="row in displayedCollection">
                         <td class="ellipsis" title="{{row.institutionsName}}"
                             ng-bind="row.institutionsName"></td>
+                        <td class="ellipsis" title="{{row.betreuungsangebotTyp | translate}}"
+                            ng-bind="row.betreuungsangebotTyp | translate"></td>
                         <td class="symbol">
                             <dv-loading-button type="button" button-click="vm.downloadDetails(row)"
                                                button-class="dv-btn-operation">
@@ -78,7 +82,7 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="3" class="text-center">
+                        <td colspan="4" class="text-center">
                             <div st-pagination="" st-items-by-page="vm.itemsByPage" st-displayed-pages="5"></div>
                         </td>
                     </tr>

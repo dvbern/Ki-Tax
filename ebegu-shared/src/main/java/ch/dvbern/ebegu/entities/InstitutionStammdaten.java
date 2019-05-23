@@ -139,9 +139,9 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 	@Column(nullable = false)
 	private boolean subventioniertePlaetze = false;
 
-	@NotNull
+	@Nullable
 	@Column(nullable = false)
-	private BigDecimal anzahlPlaetze = BigDecimal.ZERO;
+	private BigDecimal anzahlPlaetze;
 
 	@Nullable
 	@Column(nullable = true)
@@ -309,11 +309,12 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.subventioniertePlaetze = subventioniertePlaetze;
 	}
 
+	@Nullable
 	public BigDecimal getAnzahlPlaetze() {
 		return anzahlPlaetze;
 	}
 
-	public void setAnzahlPlaetze(BigDecimal anzahlPlaetze) {
+	public void setAnzahlPlaetze(@Nullable BigDecimal anzahlPlaetze) {
 		this.anzahlPlaetze = anzahlPlaetze;
 	}
 

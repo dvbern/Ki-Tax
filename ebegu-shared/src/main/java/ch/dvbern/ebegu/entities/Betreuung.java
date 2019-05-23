@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
@@ -416,6 +417,11 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Transient
 	public boolean isAngebotKita() {
 		return BetreuungsangebotTyp.KITA == getBetreuungsangebotTyp();
+	}
+
+	@Transient
+	public boolean isAngebotAuszuzahlen() {
+		return EnumUtil.isOneOf(getBetreuungsangebotTyp(), BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
 	}
 
 	@Transient
