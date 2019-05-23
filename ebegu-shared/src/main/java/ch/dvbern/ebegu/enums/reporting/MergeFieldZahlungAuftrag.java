@@ -33,6 +33,7 @@ public enum MergeFieldZahlungAuftrag implements MergeFieldProvider {
 	faelligAmTitle(new SimpleMergeField<>("faelligAmTitle", STRING_CONVERTER)),
 	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
 	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
+	betreuungsangebotTypTitle(new SimpleMergeField<>("betreuungsangebotTypTitle", STRING_CONVERTER)),
 	nachnameTitle(new SimpleMergeField<>("nachnameTitle", STRING_CONVERTER)),
 	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
@@ -52,6 +53,7 @@ public enum MergeFieldZahlungAuftrag implements MergeFieldProvider {
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
+	betreuungsangebotTyp(new SimpleMergeField<>("betreuungsangebotTyp", STRING_CONVERTER)),
 	name(new SimpleMergeField<>("name", STRING_CONVERTER)),
 	vorname(new SimpleMergeField<>("vorname", STRING_CONVERTER)),
 	gebDatum(new SimpleMergeField<>("gebDatum", DATE_CONVERTER)),

@@ -2866,6 +2866,7 @@ export default class EbeguRestUtil {
 
             tsZahlung.betragTotalZahlung = zahlungFromServer.betragTotalZahlung;
             tsZahlung.institutionsName = zahlungFromServer.institutionsName;
+            tsZahlung.betreuungsangebotTyp = zahlungFromServer.betreuungsangebotTyp;
             tsZahlung.status = zahlungFromServer.status;
 
             return tsZahlung;

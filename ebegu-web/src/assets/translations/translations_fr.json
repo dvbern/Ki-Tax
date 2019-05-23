@@ -1082,6 +1082,7 @@
     "ZAHLUNG_PAIN001": "Document de versement",
     "ZAHLUNGSAUFTRAEGE": "Ordres de versement",
     "ZAHLUNG_INSTITUTION": "Institution",
+    "ZAHLUNG_BETREUUNGSANGEBOTTYP": "Offre",
     "ZAHLUNG_BETRAG": "Montant",
     "ZAHLUNG_STATUS": "Statut",
     "ZAHLUNG_FAELLIGKEITSDATUM": "Date d'échéance",

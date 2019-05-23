@@ -309,11 +309,12 @@ public class InstitutionStammdaten extends AbstractDateRangedEntity {
 		this.subventioniertePlaetze = subventioniertePlaetze;
 	}
 
+	@Nullable
 	public BigDecimal getAnzahlPlaetze() {
 		return anzahlPlaetze;
 	}
 
-	public void setAnzahlPlaetze(BigDecimal anzahlPlaetze) {
+	public void setAnzahlPlaetze(@Nullable BigDecimal anzahlPlaetze) {
 		this.anzahlPlaetze = anzahlPlaetze;
 	}
 

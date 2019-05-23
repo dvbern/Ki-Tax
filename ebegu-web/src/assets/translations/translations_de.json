@@ -1082,6 +1082,7 @@
     "ZAHLUNG_PAIN001": "Zahlungsdatei",
     "ZAHLUNGSAUFTRAEGE": "Zahlungsaufträge",
     "ZAHLUNG_INSTITUTION": "Institution",
+    "ZAHLUNG_BETREUUNGSANGEBOTTYP": "Angebot",
     "ZAHLUNG_BETRAG": "Betrag",
     "ZAHLUNG_STATUS": "Status",
     "ZAHLUNG_FAELLIGKEITSDATUM": "Fälligkeitsdatum",
