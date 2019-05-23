@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ICacheObject, IHttpPromise, IHttpService, IPromise} from 'angular';
+import {IHttpPromise, IHttpService, IPromise} from 'angular';
 import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import TSApplicationProperty from '../../../models/TSApplicationProperty';
@@ -100,5 +100,11 @@ export class ApplicationPropertyRS {
         return this.http.get(`${this.serviceURL}/public/all`, {cache}).then(
             (response: any) => this.ebeguRestUtil.parsePublicAppConfig(response.data),
         );
+    }
+
+    public getBackgroundColorFromServer(): IPromise<TSApplicationProperty> {
+        return this.http.get(`${this.serviceURL}/public/background`).then(response => {
+            return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);
+        });
     }
 }
