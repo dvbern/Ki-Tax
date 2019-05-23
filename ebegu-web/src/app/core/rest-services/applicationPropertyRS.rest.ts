@@ -102,6 +102,7 @@ export class ApplicationPropertyRS {
         );
     }
 
+    // we keep this method because it is used to perform healthchecks
     public getBackgroundColorFromServer(): IPromise<TSApplicationProperty> {
         return this.http.get(`${this.serviceURL}/public/background`).then(response => {
             return this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data);

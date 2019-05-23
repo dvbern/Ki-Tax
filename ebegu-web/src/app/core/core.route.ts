@@ -77,7 +77,7 @@ export function appRun(
     const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
     applicationPropertyRS.getPublicPropertiesCached()
         .then(response => {
-            if (response.devmode) {
+            if (environment.test) {
                 return;
             }
             if (response.sentryEnvName) {
