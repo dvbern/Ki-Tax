@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -52,6 +54,7 @@ import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -94,7 +97,10 @@ public class ApplicationPropertyResource {
 		@Context HttpServletResponse response) {
 
 		ApplicationProperty propertyFromDB = this.applicationPropertyService.readApplicationProperty(keyParam)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getByKey", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, keyParam));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getByKey",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				keyParam));
 		return converter.applicationPropertyToJAX(propertyFromDB);
 	}
 
@@ -108,7 +114,8 @@ public class ApplicationPropertyResource {
 		return Response.ok(ebeguConfiguration.getIsDevmode()).build();
 	}
 
-	@ApiOperation(value = "converts the list of whitelisted mimetypes (for uploads) into a list of file-extensions and "
+	@ApiOperation(value = "converts the list of whitelisted mimetypes (for uploads) into a list of file-extensions "
+		+ "and "
 		+ "retunrs it as a property ", response = JaxApplicationProperties.class)
 	@Nullable
 	@GET
@@ -119,7 +126,8 @@ public class ApplicationPropertyResource {
 		@Context HttpServletResponse response) {
 
 		final String list = readWhitelistAsString();
-		ApplicationProperty applicationProperty = new ApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, list);
+		ApplicationProperty applicationProperty =
+			new ApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, list);
 		return converter.applicationPropertyToJAX(applicationProperty);
 	}
 
@@ -166,7 +174,6 @@ public class ApplicationPropertyResource {
 		return converter.applicationPropertyToJAX(prop);
 	}
 
-
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@ApiOperation(value = "Returns background Color for the current System", response = String.class)
 	@GET
@@ -174,12 +181,16 @@ public class ApplicationPropertyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/background")
 	public JaxApplicationProperties getBackgroundColor() {
-		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR);
-		ApplicationProperty prop = propertyFromDB.orElse(new ApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR, "#FFFFFF"));
+		Optional<ApplicationProperty> propertyFromDB =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR);
+		ApplicationProperty prop =
+			propertyFromDB.orElse(new ApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR, "#FFFFFF"));
 		return converter.applicationPropertyToJAX(prop);
 	}
 
-	@ApiOperation(value = "Returns all application properties", responseContainer = "List", response = JaxApplicationProperties.class)
+	@ApiOperation(value = "Returns all application properties",
+		responseContainer = "List",
+		response = JaxApplicationProperties.class)
 	@Nonnull
 	@GET
 	@Consumes(MediaType.WILDCARD)
@@ -203,7 +214,10 @@ public class ApplicationPropertyResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		ApplicationProperty modifiedProperty = this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, key), value);
+		ApplicationProperty modifiedProperty =
+			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
+				ApplicationPropertyKey.class,
+				key), value);
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(ApplicationPropertyResource.class)
@@ -225,7 +239,10 @@ public class ApplicationPropertyResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		ApplicationProperty modifiedProperty = this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, key), value);
+		ApplicationProperty modifiedProperty =
+			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
+				ApplicationPropertyKey.class,
+				key), value);
 
 		return converter.applicationPropertyToJAX(modifiedProperty);
 	}
@@ -264,7 +281,6 @@ public class ApplicationPropertyResource {
 		return Response.noContent().build();
 	}
 
-
 	@ApiOperation(value = "Single request to load public config", response = Boolean.class)
 	@GET
 	@Consumes(MediaType.WILDCARD)
@@ -279,7 +295,12 @@ public class ApplicationPropertyResource {
 		String background = getBackgroundColor().getValue();
 		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
 
-		String nodeName = System.getenv("HOSTNAME"); //could probably be done better
+		String nodeName = "";
+		try {
+			nodeName = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			throw new EbeguRuntimeException("getHostName", "Hostname konnte nicht ermittelt werden");
+		}
 		JaxPublicAppConfig pubAppConf = new JaxPublicAppConfig(
 			nodeName,
 			String.valueOf(devmode),
@@ -288,9 +309,9 @@ public class ApplicationPropertyResource {
 			sentryEnvName,
 			background,
 			String.valueOf(zahlungentestmode)
-			);
+		);
 
 		return Response.ok(pubAppConf).build();
 
-		}
+	}
 }
