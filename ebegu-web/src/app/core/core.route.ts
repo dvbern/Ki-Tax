@@ -77,14 +77,13 @@ export function appRun(
     const applicationPropertyRS = $injector.get<ApplicationPropertyRS>('ApplicationPropertyRS');
     applicationPropertyRS.getPublicPropertiesCached()
         .then(response => {
-            // todo KIBON-417 MUSS DAS IF DA SO RUMSTEHEN????
-            if (!response.devmode) {
-                if (response.sentryEnvName) {
-                    Raven.setEnvironment(response.sentryEnvName);
-                } else {
-                    Raven.setEnvironment('unspecified');
-                }
-
+            if (response.devmode) {
+                return;
+            }
+            if (response.sentryEnvName) {
+                Raven.setEnvironment(response.sentryEnvName);
+            } else {
+                Raven.setEnvironment('unspecified');
             }
         });
 

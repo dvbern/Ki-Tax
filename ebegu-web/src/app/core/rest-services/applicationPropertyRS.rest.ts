@@ -96,7 +96,7 @@ export class ApplicationPropertyRS {
     }
 
     public getPublicPropertiesCached(): IPromise<TSPublicAppConfig> {
-        const cache: ICacheObject = this.globalCacheService.getCache(TSCacheTyp.EBEGU_PUBLIC_APP_CONFIG);
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_PUBLIC_APP_CONFIG);
         return this.http.get(`${this.serviceURL}/public/all`, {cache}).then(
             (response: any) => this.ebeguRestUtil.parsePublicAppConfig(response.data),
         );

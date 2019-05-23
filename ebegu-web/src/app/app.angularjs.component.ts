@@ -21,8 +21,8 @@ export class AppAngularjsComponent implements angular.IController {
     public static $inject: string[] = ['$element', 'ApplicationPropertyRS'];
 
     public constructor(
-        private $element: IAugmentedJQuery,
-        private applicationPropertyRS: ApplicationPropertyRS,
+        private readonly $element: IAugmentedJQuery,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
     }
 
