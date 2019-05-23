@@ -125,6 +125,16 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Override
+	public boolean isBenutzerGesperrt(@Nonnull String benutzerId) {
+		Benutzer benutzer = benutzerService.findBenutzerById(benutzerId).orElseThrow(() -> {
+			LOG.error("Benutzer not found for passed id: {}", benutzerId);
+			return new EbeguEntityNotFoundException("isBenutzerGesperrt", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		});
+
+		return benutzer.getStatus() == BenutzerStatus.GESPERRT;
+	}
+
+	@Override
 	public JaxBenutzerResponseWrapper updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer) {
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 		LOG.debug("Requested forwared for {} ", this.request.getHeader("X-Forwarded-For"));

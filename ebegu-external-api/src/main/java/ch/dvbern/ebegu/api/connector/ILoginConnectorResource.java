@@ -46,6 +46,15 @@ public interface ILoginConnectorResource {
 	String getHeartBeat();
 
 	/**
+	 * Service to check wheter a User is in Status Gesperrt or not
+	 */
+	@GET
+	@Path("/benutzer/gesperrt/{benutzerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	boolean isBenutzerGesperrt(@Nonnull @NotNull @PathParam("benutzerId") String benutzerId);
+
+	/**
 	 * Service to create or Update a Benutzer in Ki-TAX from an external login module. If the user is
 	 * already found by its unique username we update the existing entry, otherwise we create a new one
 	 *
@@ -65,8 +74,7 @@ public interface ILoginConnectorResource {
 	 * updated (from Eingeladen to Aktiv). The user must have used the same email, if not the system returens
 	 * an errormessage in the responsewrapper
 	 *
-	 *
-	 * @param benutzerId  The UserID serves as a unique identfier
+	 * @param benutzerId The UserID serves as a unique identfier
 	 * @param externalBenutzer User to update/store
 	 * @return wrapper containing either the stored object or a translated error Message
 	 */
