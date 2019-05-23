@@ -76,7 +76,6 @@ export class DVVersionController implements IController {
 
         // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
         this.applicationPropertyRS.getBackgroundColorFromServer();
-        debugger;
     }
 
     private updateDisplayVersion(): void {
