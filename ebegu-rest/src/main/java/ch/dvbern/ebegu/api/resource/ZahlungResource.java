@@ -214,6 +214,8 @@ public class ZahlungResource {
 		final Zahlungsauftrag zahlungsauftrag = zahlungService
 			.zahlungsauftragErstellen(gemeindeId, faelligkeitsdatum, beschrieb, datumGeneriert);
 
+		zahlungService.zahlungenKontrollieren(gemeindeId);
+
 		return converter.zahlungsauftragToJAX(zahlungsauftrag, false);
 	}
 
