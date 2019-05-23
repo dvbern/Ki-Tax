@@ -303,12 +303,12 @@ public class ApplicationPropertyResource {
 		}
 		JaxPublicAppConfig pubAppConf = new JaxPublicAppConfig(
 			nodeName,
-			String.valueOf(devmode),
+			devmode,
 			whitelist,
-			String.valueOf(dummyMode),
+			dummyMode,
 			sentryEnvName,
 			background,
-			String.valueOf(zahlungentestmode)
+			zahlungentestmode
 		);
 
 		return Response.ok(pubAppConf).build();

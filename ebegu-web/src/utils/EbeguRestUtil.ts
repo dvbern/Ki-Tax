@@ -3220,12 +3220,12 @@ export default class EbeguRestUtil {
         }
         const publicAppConfigTS = new TSPublicAppConfig();
         publicAppConfigTS.currentNode = data.currentNode;
-        publicAppConfigTS.devmode = !!data.devmode;
+        publicAppConfigTS.devmode = data.devmode;
         publicAppConfigTS.whitelist = data.whitelist;
-        publicAppConfigTS.dummyMode = !!data.dummyMode;
+        publicAppConfigTS.dummyMode = data.dummyMode;
         publicAppConfigTS.sentryEnvName = data.sentryEnvName;
         publicAppConfigTS.backgroundColor = data.backgroundColor;
-        publicAppConfigTS.zahlungentestmode = !!data.zahlungentestmode;
+        publicAppConfigTS.zahlungentestmode = data.zahlungentestmode;
         return publicAppConfigTS;
 
     }

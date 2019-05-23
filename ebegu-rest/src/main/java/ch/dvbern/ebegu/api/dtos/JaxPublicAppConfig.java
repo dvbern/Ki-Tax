@@ -12,15 +12,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JaxPublicAppConfig {
 
 	private String currentNode;
-	private String devmode;
+	private boolean devmode;
 	private String whitelist;
-	private String dummyMode;
+	private boolean dummyMode;
 	private String sentryEnvName;
 	private String backgroundColor;
-	private String zahlungentestmode;
+	private boolean zahlungentestmode;
 
-	public JaxPublicAppConfig(String currentNode, String devmode, String whitelist, String dummyMode, String sentryEnvName, String backgroundColor,
-		String zahlungentestmode) {
+	public JaxPublicAppConfig(
+		String currentNode,
+		boolean devmode,
+		String whitelist,
+		boolean dummyMode,
+		String sentryEnvName,
+		String backgroundColor,
+		boolean zahlungentestmode) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -38,11 +44,11 @@ public class JaxPublicAppConfig {
 		this.currentNode = currentNode;
 	}
 
-	public String getDevmode() {
+	public boolean getDevmode() {
 		return devmode;
 	}
 
-	public void setDevmode(String devmode) {
+	public void setDevmode(boolean devmode) {
 		this.devmode = devmode;
 	}
 
@@ -54,11 +60,11 @@ public class JaxPublicAppConfig {
 		this.whitelist = whitelist;
 	}
 
-	public String getDummyMode() {
+	public boolean getDummyMode() {
 		return dummyMode;
 	}
 
-	public void setDummyMode(String dummyMode) {
+	public void setDummyMode(boolean dummyMode) {
 		this.dummyMode = dummyMode;
 	}
 
@@ -78,11 +84,11 @@ public class JaxPublicAppConfig {
 		this.backgroundColor = backgroundColor;
 	}
 
-	public String getZahlungentestmode() {
+	public boolean getZahlungentestmode() {
 		return zahlungentestmode;
 	}
 
-	public void setZahlungentestmode(String zahlungentestmode) {
+	public void setZahlungentestmode(boolean zahlungentestmode) {
 		this.zahlungentestmode = zahlungentestmode;
 	}
 }

@@ -13,10 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IAugmentedJQuery} from 'angular';
+import {IController, IComponentOptions, IAugmentedJQuery} from 'angular';
 import {ApplicationPropertyRS} from './core/rest-services/applicationPropertyRS.rest';
 
-export class AppAngularjsComponent implements angular.IController {
+export class AppAngularjsComponent implements IController {
 
     public static $inject: string[] = ['$element', 'ApplicationPropertyRS'];
 
