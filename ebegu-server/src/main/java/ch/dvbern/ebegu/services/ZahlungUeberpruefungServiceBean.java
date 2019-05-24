@@ -121,10 +121,10 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 			pruefungZahlungenSollFuerGesuchsperiode(gesuchsperiode, gemeinde, datumLetzteZahlung);
 		}
 		LOGGER.info("Pruefung der Zahlungen beendet: {}", potentielleFehlerList.isEmpty() ? "OK" : "ERROR");
-		sendeMail();
+		sendeMail(gemeinde);
 	}
 
-	private void sendeMail() {
+	private void sendeMail(@Nonnull Gemeinde gemeinde) {
 		LOGGER.info("Sende Mail...");
 		String administratorMail = ebeguConfiguration.getAdministratorMail();
 		if (StringUtils.isEmpty(administratorMail)) {
@@ -133,8 +133,9 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		try {
 			final String serverName = ebeguConfiguration.getHostname();
+			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ')';
 			if (potentielleFehlerList.isEmpty()) {
-					mailService.sendMessage("Zahlungslauf: Keine Fehler gefunden (" + serverName + ')',
+					mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",
 						"Keine Fehler gefunden", administratorMail);
 			} else {
 				StringBuilder sb = new StringBuilder();
@@ -149,7 +150,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 					sb.append(s);
 					sb.append("\n*************************************\n");
 				}
-				mailService.sendMessage("Potentieller Fehler im Zahlungslauf (" + serverName + ')',
+				mailService.sendMessage(auftragBezeichnung+ ": Potentieller Fehler im Zahlungslauf",
 					sb.toString(), administratorMail);
 			}
 		} catch (MailException e) {
@@ -187,8 +188,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void pruefeZahlungenSollFuerBetreuung(@Nonnull Betreuung betreuung, @Nonnull LocalDate dateAusbezahltBis) {
-		// Nur die "gueltige" Betreuung beachten und nur, wenn es KITA ist
-		if (betreuung.isAngebotKita()) {
+		// Nur die "gueltige" Betreuung beachten und nur, wenn es KITA oder TAGESFAMILIEN ist
+		if (betreuung.isAngebotAuszuzahlen()) {
 			if (!betreuung.isGueltig()) {
 				// Es gibt eine spätere Verfügung, deren Gesuch aber noch nicht (komplett) verfügt ist
 				Optional<Betreuung> gueltigeBetreuungOptional = betreuungService.findGueltigeBetreuungByBGNummer(betreuung.getBGNummer());
