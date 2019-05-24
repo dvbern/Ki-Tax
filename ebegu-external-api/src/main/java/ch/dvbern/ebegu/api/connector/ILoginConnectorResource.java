@@ -52,7 +52,7 @@ public interface ILoginConnectorResource {
 	@Path("/benutzer/gesperrt/{benutzerId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	boolean isBenutzerGesperrt(@Nonnull @NotNull @PathParam("benutzerId") String benutzerId);
+	JaxBenutzerResponseWrapper isBenutzerGesperrt(@Nonnull @NotNull @PathParam("benutzerId") String benutzerId);
 
 	/**
 	 * Service to create or Update a Benutzer in Ki-TAX from an external login module. If the user is
