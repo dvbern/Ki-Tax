@@ -104,66 +104,23 @@ public class ApplicationPropertyResource {
 		return converter.applicationPropertyToJAX(propertyFromDB);
 	}
 
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Are we in development mode?", response = Boolean.class)
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.WILDCARD)
-	@Path("/public/devmode")
-	public Response isDevMode(@Context HttpServletResponse response) {
-		return Response.ok(ebeguConfiguration.getIsDevmode()).build();
-	}
-
-	@ApiOperation(value = "converts the list of whitelisted mimetypes (for uploads) into a list of file-extensions "
-		+ "and "
-		+ "retunrs it as a property ", response = JaxApplicationProperties.class)
-	@Nullable
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/public/UPLOAD_FILETYPES_WHITELIST")
-	public JaxApplicationProperties getWhitelist(
-		@Context HttpServletResponse response) {
-
-		final String list = readWhitelistAsString();
-		ApplicationProperty applicationProperty =
-			new ApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, list);
-		return converter.applicationPropertyToJAX(applicationProperty);
-	}
-
+	@Nonnull
 	private String readWhitelistAsString() {
 		final Collection<String> whitelist = this.applicationPropertyService.readMimeTypeWhitelist();
 		MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
-
 		final List<String> extensions = whitelist.stream().map(mimetype -> {
 			try {
 				return allTypes.forName(mimetype).getExtension();
 			} catch (MimeTypeException e) {
 				LOG.error("Could not find extension for mime type {}", mimetype);
-				return null;
+				return "";
 			}
 		}).filter(Objects::nonNull).collect(Collectors.toList());
-
 		return StringUtils.join(extensions, ",");
 	}
 
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Is Dummy-Login enabled?", response = Boolean.class)
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.WILDCARD)
-	@Path("/public/dummy")
-	public Response isDummyLoginEnabled(@Context HttpServletResponse response) {
-		return Response.ok(ebeguConfiguration.isDummyLoginEnabled()).build();
-	}
-
-	@ApiOperation(value = "Returns sentry env token for usage by sentry / raven.js", response = String.class)
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/public/sentryenv")
-	public JaxApplicationProperties getSentryEnvName() {
-
+	@Nonnull
+	private JaxApplicationProperties getSentryEnvName() {
 		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService
 			.readApplicationProperty(ApplicationPropertyKey.SENTRY_ENV);
 
@@ -258,16 +215,6 @@ public class ApplicationPropertyResource {
 		return Response.ok().build();
 	}
 
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Are we in Testmode for Zahlungen?", response = Boolean.class)
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.WILDCARD)
-	@Path("/public/zahlungentestmode")
-	public Response isZahlungenTestMode(@Context HttpServletResponse response) {
-		return Response.ok(ebeguConfiguration.getIsZahlungenTestMode()).build();
-	}
-
 	@RolesAllowed(SUPER_ADMIN)
 	@ApiOperation(value = "Gibt den Wert des Properties zurück", response = Boolean.class)
 	@GET
@@ -299,7 +246,7 @@ public class ApplicationPropertyResource {
 		try {
 			nodeName = InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
-			throw new EbeguRuntimeException("getHostName", "Hostname konnte nicht ermittelt werden");
+			throw new EbeguRuntimeException("getHostName", "Hostname konnte nicht ermittelt werden", e);
 		}
 		JaxPublicAppConfig pubAppConf = new JaxPublicAppConfig(
 			nodeName,
@@ -310,8 +257,6 @@ public class ApplicationPropertyResource {
 			background,
 			zahlungentestmode
 		);
-
 		return Response.ok(pubAppConf).build();
-
 	}
 }

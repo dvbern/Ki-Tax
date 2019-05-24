@@ -26,7 +26,8 @@ public class JaxPublicAppConfig {
 		boolean dummyMode,
 		String sentryEnvName,
 		String backgroundColor,
-		boolean zahlungentestmode) {
+		boolean zahlungentestmode
+	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
