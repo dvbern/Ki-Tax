@@ -3,7 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 From: ${configuration.senderAddress}
 To: ${institutionStammdaten.mail}
-Subject: <@base64Header>kiBon – Offene Pendenzen (${institutionStammdaten.institution.name}) / Confirmation de places en attente (${institutionStammdaten.institution.name})</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Offene Pendenzen (${institutionStammdaten.institution.name}) / Confirmation de places en attente (${institutionStammdaten.institution.name})</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -11,7 +11,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>kiBon – Offene Pendenzen (${institutionStammdaten.institution.name}) / Confirmation de places en attente (${institutionStammdaten.institution.name})</title>
+    <title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Offene Pendenzen (${institutionStammdaten.institution.name}) / Confirmation de places en attente (${institutionStammdaten.institution.name})</title>
 
 </head>
 
@@ -28,6 +28,9 @@ ${templateConfiguration.mailCss}
 		einsehen.
 	</p>
 	<p>
+		<#if configuration.isDevmode>
+		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+		</#if>
 		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
 	</p>
 
@@ -42,6 +45,9 @@ ${templateConfiguration.mailCss}
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/pendenzenBetreuungen">ici</a>.
 	</p>
 	<p>
+		<#if configuration.isDevmode>
+		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+		</#if>
 		Merci de ne pas répondre à ce message automatique.
 	</p>
 

@@ -4,7 +4,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${mitteilung.empfaenger.fullName} <${empfaengerMail}>
-Subject: <@base64Header>kiBon - Nouveau message de la commune ${mitteilung.dossier.gemeinde.name}</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> - Nouveau message de la commune ${mitteilung.dossier.gemeinde.name}</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -12,7 +12,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon - Nouveau message de la commune ${mitteilung.dossier.gemeinde.name}</title>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> - Nouveau message de la commune ${mitteilung.dossier.gemeinde.name}</title>
 
 </head>
 
@@ -31,6 +31,9 @@ ${templateConfiguration.mailCss}
 		Votre commune
 	</p>
 	<p>
+		<#if configuration.isDevmode>
+		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+		</#if>
 		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
