@@ -645,7 +645,6 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Objects.requireNonNull(zahlungId, "zahlungId muss gesetzt sein");
 		Zahlung zahlung = findZahlung(zahlungId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungBestaetigen",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungId));
-		authorizer.checkWriteAuthorizationZahlung(zahlung);
 		zahlung.setStatus(ZahlungStatus.BESTAETIGT);
 		Zahlung persistedZahlung = persistence.merge(zahlung);
 		zahlungauftragBestaetigenIfAllZahlungenBestaetigt(zahlung.getZahlungsauftrag());
