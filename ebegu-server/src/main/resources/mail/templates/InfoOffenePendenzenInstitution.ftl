@@ -3,7 +3,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 From: ${configuration.senderAddress}
 To: ${institutionStammdaten.mail}
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Offene Pendenzen (${institutionStammdaten.institution.name}) / Confirmation de places en attente (${institutionStammdaten.institution.name})</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Offene Pendenzen (${institutionStammdaten.institution.name}) / Confirmation de places en attente (${institutionStammdaten.institution.name})</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -11,7 +11,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Offene Pendenzen (${institutionStammdaten.institution.name}) / Confirmation de places en attente (${institutionStammdaten.institution.name})</title>
+    <title>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> – Offene Pendenzen (${institutionStammdaten.institution.name}) / Confirmation de places en attente (${institutionStammdaten.institution.name})</title>
 
 </head>
 
