@@ -52,7 +52,8 @@ public class JaxExternalBenutzer implements Serializable {
 	private String state = null;
 	private String countryCode = null;
 	private String country = null;
-
+	private String invitationLink = null;
+	private boolean invitationPending;
 	private boolean gesperrt;
 
 	public String getUsername() {
@@ -217,6 +218,22 @@ public class JaxExternalBenutzer implements Serializable {
 
 	public void setGesperrt(boolean gesperrt) {
 		this.gesperrt = gesperrt;
+	}
+
+	public String getInvitationLink() {
+		return invitationLink;
+	}
+
+	public void setInvitationLink(String invitationLink) {
+		this.invitationLink = invitationLink;
+	}
+
+	public boolean isInvitationPending() {
+		return invitationPending;
+	}
+
+	public void setInvitationPending(boolean invitationPending) {
+		this.invitationPending = invitationPending;
 	}
 
 	@Override

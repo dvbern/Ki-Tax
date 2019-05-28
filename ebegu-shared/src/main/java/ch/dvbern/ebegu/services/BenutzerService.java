@@ -279,4 +279,14 @@ public interface BenutzerService {
 	 * Loescht die externalUUID des Benutzers
 	 */
 	void deleteExternalUUIDInNewTransaction(@Nonnull String id);
+
+	/**
+	 * Gibt zurück, ob der Benutzer eine offene Einladung hat
+	 */
+	Optional<Benutzer> findUserWithInvitationByEmail(@Nonnull Benutzer benutzer);
+
+	/**
+	 * Erzeugt einen Einladungslink für einen Benutzer
+	 */
+	String createInvitationLink(@Nonnull Benutzer eingeladener, @Nonnull Einladung einladung);
 }
