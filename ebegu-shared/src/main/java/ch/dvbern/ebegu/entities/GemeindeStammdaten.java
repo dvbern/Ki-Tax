@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -112,6 +113,14 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@Column(nullable = true, length = ONE_MB) // 1 megabytes
 	@Lob
 	private byte[] logoContent;
+
+	@Nullable
+	@Column(nullable = true)
+	private String logoName;
+
+	@Nullable
+	@Column(nullable = true)
+	private String logoType;
 
 	@NotNull
 	@Column(nullable = false, length = Constants.DB_DEFAULT_MAX_LENGTH)
@@ -231,6 +240,24 @@ public class GemeindeStammdaten extends AbstractEntity {
 		}
 	}
 
+	@Nullable
+	public String getLogoName() {
+		return logoName;
+	}
+
+	public void setLogoName(@Nullable String logoName) {
+		this.logoName = logoName;
+	}
+
+	@Nullable
+	public String getLogoType() {
+		return logoType;
+	}
+
+	public void setLogoType(@Nullable String logoType) {
+		this.logoType = logoType;
+	}
+
 	@SuppressFBWarnings("NM_CONFUSING")
 	public String getKontoinhaber() {
 		return kontoinhaber;
@@ -291,4 +318,7 @@ public class GemeindeStammdaten extends AbstractEntity {
 		return Objects.equals(this.getGemeinde(), gemeindeStammdaten.getGemeinde());
 	}
 
+	public boolean isZahlungsinformationValid() {
+		return StringUtils.isNotEmpty(kontoinhaber) && StringUtils.isNotEmpty(bic) && StringUtils.isNotEmpty(iban.getIban());
+	}
 }

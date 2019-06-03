@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.DokumentGrundService;
 import ch.dvbern.ebegu.services.FileSaverService;
@@ -274,6 +275,7 @@ public class UploadResource {
 				fileSaverService.remove(fileInfo.getPath());
 				String message = "Blocked upload of filetype that is not in whitelist: " + contentType;
 				throw new EbeguRuntimeException(
+					KibonLogLevel.INFO,
 					"checkFiletypeAllowed",
 					message,
 					ErrorCodeEnum.ERROR_UPLOAD_INVALID_FILETYPE,

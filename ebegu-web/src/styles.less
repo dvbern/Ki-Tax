@@ -154,7 +154,6 @@ body {
 
 #Intro {
     top: 0;
-    background-color: @contrast-lightest;
     height: @navbar-height;
     min-height: @navbar-height;
     width: 100%;
@@ -493,6 +492,34 @@ html.cdk-global-scrollblock {
 // no other fix available due to (yet?) buggy implementation of flexbox
 _:-ms-fullscreen, .mat-cell {
     padding-top: 15px;
+}
+
+.mat-cell-clickable {
+    cursor: pointer;
+}
+
+.mat-row:hover {
+    background: rgba(220, 220, 220, 0.2);
+}
+
+.cdk-column-detail,
+.cdk-column-remove {
+    flex: 0 0 40px;
+}
+
+.environment {
+    font-weight: bold;
+    font-size: 3.6rem;
+    position: fixed;
+    width: 10rem;
+    text-align: center;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    display: none;
+    // IE11 needs z-index
+    z-index: 999;
+
 }
 
 /* Personal preference for BS modal.  The LESS below makes the backdrop white and

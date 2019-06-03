@@ -99,6 +99,7 @@ import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
+import TSPublicAppConfig from '../models/TSPublicAppConfig';
 import TSSupportAnfrage from '../models/TSSupportAnfrage';
 import TSTextRessource from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
@@ -2844,6 +2845,7 @@ export default class EbeguRestUtil {
             tsZahlungsauftrag.datumGeneriert = DateUtil.localDateTimeToMoment(zahlungsauftragFromServer.datumGeneriert);
             tsZahlungsauftrag.betragTotalAuftrag = zahlungsauftragFromServer.betragTotalAuftrag;
             tsZahlungsauftrag.zahlungen = this.parseZahlungen(zahlungsauftragFromServer.zahlungen);
+            tsZahlungsauftrag.gemeinde = this.parseGemeinde(new TSGemeinde(), zahlungsauftragFromServer.gemeinde);
 
             return tsZahlungsauftrag;
         }
@@ -2865,6 +2867,7 @@ export default class EbeguRestUtil {
 
             tsZahlung.betragTotalZahlung = zahlungFromServer.betragTotalZahlung;
             tsZahlung.institutionsName = zahlungFromServer.institutionsName;
+            tsZahlung.betreuungsangebotTyp = zahlungFromServer.betreuungsangebotTyp;
             tsZahlung.status = zahlungFromServer.status;
 
             return tsZahlung;
@@ -3210,5 +3213,21 @@ export default class EbeguRestUtil {
             return supportRest;
         }
         return undefined;
+    }
+
+    public parsePublicAppConfig(data: any): TSPublicAppConfig {
+        if (!data) {
+            return undefined;
+        }
+        const publicAppConfigTS = new TSPublicAppConfig();
+        publicAppConfigTS.currentNode = data.currentNode;
+        publicAppConfigTS.devmode = data.devmode;
+        publicAppConfigTS.whitelist = data.whitelist;
+        publicAppConfigTS.dummyMode = data.dummyMode;
+        publicAppConfigTS.sentryEnvName = data.sentryEnvName;
+        publicAppConfigTS.backgroundColor = data.backgroundColor;
+        publicAppConfigTS.zahlungentestmode = data.zahlungentestmode;
+        return publicAppConfigTS;
+
     }
 }

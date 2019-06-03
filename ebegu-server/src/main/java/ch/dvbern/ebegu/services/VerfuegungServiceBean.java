@@ -144,7 +144,8 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Betreuung betreuung = persistence.find(Betreuung.class, betreuungId);
 		final Gesuch gesuch = betreuung.extractGesuch();
 
-		if (gesuch.isMutation() && betreuung.isAngebotKita()) { // Zahlungsstatus muss nur bei Mutationen und Angebote der Art KITA aktualisiert werden
+		// Zahlungsstatus muss nur bei Mutationen und Angebote der Art KITA und TAGESELTERN aktualisiert werden
+		if (gesuch.isMutation() && betreuung.isAngebotAuszuzahlen()) {
 			Optional<Verfuegung> vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung);
 
 			if (vorgaengerVerfuegung.isPresent()) {

@@ -836,6 +836,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		// Gemeinde darf nicht ueberschrieben werden
 		if (dossierJAX.getGemeinde() != null) {
+			requireNonNull(dossierJAX.getGemeinde().getId());
 			Optional<Gemeinde> gemeindeFromDB = gemeindeService.findGemeinde(dossierJAX.getGemeinde().getId());
 			if (gemeindeFromDB.isPresent()) {
 				dossier.setGemeinde(gemeindeFromDB.get());
@@ -3656,6 +3657,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZahlungsauftrag.setStatus(persistedZahlungsauftrag.getStatus());
 		jaxZahlungsauftrag.setBeschrieb(persistedZahlungsauftrag.getBeschrieb());
 		jaxZahlungsauftrag.setBetragTotalAuftrag(persistedZahlungsauftrag.getBetragTotalAuftrag());
+		jaxZahlungsauftrag.setGemeinde(gemeindeToJAX(persistedZahlungsauftrag.getGemeinde()));
 		jaxZahlungsauftrag.setDatumFaellig(persistedZahlungsauftrag.getDatumFaellig());
 		jaxZahlungsauftrag.setDatumGeneriert(persistedZahlungsauftrag.getDatumGeneriert());
 
@@ -3681,7 +3683,8 @@ public class JaxBConverter extends AbstractConverter {
 			ADMIN_TRAEGERSCHAFT,
 			SACHBEARBEITER_TRAEGERSCHAFT,
 			ADMIN_INSTITUTION,
-			SACHBEARBEITER_INSTITUTION)) {
+			SACHBEARBEITER_INSTITUTION)
+		) {
 			RestUtil.purgeZahlungenOfInstitutionen(jaxZahlungsauftrag, allowedInst);
 			// es muss nochmal das Auftragstotal berechnet werden. Diesmal nur mit den erlaubten Zahlungen
 			// Dies nur fuer Institutionen
@@ -3697,14 +3700,14 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	public JaxZahlung zahlungToJAX(final Zahlung persistedZahlung) {
-		final JaxZahlung jaxZahlungs = new JaxZahlung();
-		convertAbstractVorgaengerFieldsToJAX(persistedZahlung, jaxZahlungs);
-		jaxZahlungs.setStatus(persistedZahlung.getStatus());
-		jaxZahlungs.setBetragTotalZahlung(persistedZahlung.getBetragTotalZahlung());
-		jaxZahlungs.setInstitutionsName(persistedZahlung.getInstitutionStammdaten().getInstitution().getName());
-		jaxZahlungs.setInstitutionsId(persistedZahlung.getInstitutionStammdaten().getInstitution().getId());
-
-		return jaxZahlungs;
+		final JaxZahlung jaxZahlung = new JaxZahlung();
+		convertAbstractVorgaengerFieldsToJAX(persistedZahlung, jaxZahlung);
+		jaxZahlung.setStatus(persistedZahlung.getStatus());
+		jaxZahlung.setBetragTotalZahlung(persistedZahlung.getBetragTotalZahlung());
+		jaxZahlung.setInstitutionsName(persistedZahlung.getInstitutionStammdaten().getInstitution().getName());
+		jaxZahlung.setBetreuungsangebotTyp(persistedZahlung.getInstitutionStammdaten().getBetreuungsangebotTyp());
+		jaxZahlung.setInstitutionsId(persistedZahlung.getInstitutionStammdaten().getInstitution().getId());
+		return jaxZahlung;
 	}
 
 	@Nonnull

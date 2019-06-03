@@ -11,7 +11,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 From: ${configuration.senderAddress}
 To: ${institution.name} <${empfaengerMail}>
-Subject: <@base64Header>${institution.name}: kiBon – Betreuung gelöscht</@base64Header>
+Subject: <@base64Header>${institution.name}: kiBon <#if configuration.isDevmode>Système de test</#if> – Suppression de l'offre de prise en charge</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -19,7 +19,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>${institution.name}: kiBon – Betreuung gelöscht</title>
+	<title>${institution.name}: kiBon <#if configuration.isDevmode>Système de test</#if> – Suppression de l'offre de prise en charge</title>
 
 </head>
 
@@ -27,49 +27,52 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Guten Tag
+		Bonjour,
 	</p>
 	<p>
-		Die folgende Betreuung wurde gelöscht:
+		L'offre de prise en charge suivante a été supprimée:
 	</p>
 	<table>
 		<tbody>
 		<tr>
-			<td width="300">Fall:</td>
+			<td width="300">Cas:</td>
 			<td width="300">${fall.getPaddedFallnummer()} ${gesuchsteller.nachname}</td>
 		</tr>
 		<tr>
-			<td>Kind:</td>
+			<td>Enfant:</td>
 			<td>${kind.fullName}, ${birthday}</td>
 		</tr>
 		<tr>
-			<td>Betreuungsangebot:</td>
-			<td>${betreuung.getBetreuungsangebotTypTranslated("de")}</td>
+			<td>Offre de prise en charge:</td>
+			<td>${betreuung.getBetreuungsangebotTypTranslated("fr")}</td>
 		</tr>
 		<tr>
 			<td>Institution:</td>
 			<td>${institution.name}</td>
 		</tr>
 		<tr>
-			<td>Periode:</td>
+			<td>Période:</td>
 			<td>${betreuung.extractGesuchsperiode().getGesuchsperiodeString()}</td>
 		</tr>
 		<tr>
-			<td>Status der entfernten Betreuung:</td>
+			<td>Statut de la prise en charge supprimée:</td>
 			<td>${status}</td>
 		</tr>
 		</tbody>
 	</table>
 	<br/>
 	<p>
-		Die Betreuung wurde am ${datumErstellung} erfasset.
+		Les informations ont été saisies le ${datumErstellung}.
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
 	</p>
 	<p>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		<#if configuration.isDevmode>
+		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
+		</#if>
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

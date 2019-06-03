@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.resource.auth;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.EJBAccessException;
@@ -123,6 +125,17 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Override
+	public JaxBenutzerResponseWrapper isBenutzerGesperrt(@Nonnull String benutzerId) {
+		Benutzer benutzer = benutzerService.findBenutzerById(benutzerId).orElseThrow(() -> {
+			LOG.error("Benutzer not found for passed id: {}", benutzerId);
+			return new EbeguEntityNotFoundException("isBenutzerGesperrt", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		});
+		JaxBenutzerResponseWrapper responseWrapper = new JaxBenutzerResponseWrapper();
+		responseWrapper.setStoredBenutzerGesperrt(benutzer.getStatus() == BenutzerStatus.GESPERRT);
+		return responseWrapper;
+	}
+
+	@Override
 	public JaxBenutzerResponseWrapper updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer) {
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 		LOG.debug("Requested forwared for {} ", this.request.getHeader("X-Forwarded-For"));
@@ -181,9 +194,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		@Nonnull String benutzerId,
 		@Nonnull JaxExternalBenutzer externalBenutzer
 	) {
-
 		requireNonNull(benutzerId);
 		requireNonNull(externalBenutzer);
+		requireNonNull(externalBenutzer.getExternalUUID());
 		checkLocalAccessOnly();
 
 		Benutzer existingBenutzer = benutzerService.findBenutzerById(benutzerId).orElse(null);
@@ -210,6 +223,22 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 			//return the message to connector and stop process
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
+
+		// Überprüfen, ob die external ID schon besetzt ist
+		Optional<Benutzer> existingBenutzerWithExternalUuidOptional =
+			benutzerService.findBenutzerByExternalUUID(externalBenutzer.getExternalUUID());
+		if (existingBenutzerWithExternalUuidOptional.isPresent()) {
+			Benutzer duplicatedBenutzer = existingBenutzerWithExternalUuidOptional.get();
+			benutzerService.deleteExternalUUIDInNewTransaction(duplicatedBenutzer.getId());
+			LOG.warn(
+				"Es wurde ein bestehender Benutzer mit derselben externalUUID gefunden. Bei diesem wurde die externalUUID "
+					+ "gelöscht. username={} externalUUID={}"
+				,
+				duplicatedBenutzer.getUsername(),
+				duplicatedBenutzer.getExternalUUID());
+			existingBenutzer.addBemerkung("ExternalUUID uebernommen von Benutzer mit ID: " + duplicatedBenutzer.getId());
+		}
+
 		//external uuid setzen
 		toBenutzer(externalBenutzer, existingBenutzer);
 
@@ -221,7 +250,9 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(updatedBenutzer), null);
 	}
 
-	private JaxBenutzerResponseWrapper convertBenutzerResponseWrapperToJax(@NotNull JaxExternalBenutzer benutzer, @Nullable String msg) {
+	private JaxBenutzerResponseWrapper convertBenutzerResponseWrapperToJax(
+		@NotNull JaxExternalBenutzer benutzer,
+		@Nullable String msg) {
 		JaxBenutzerResponseWrapper wrapper = new JaxBenutzerResponseWrapper();
 		wrapper.setBenutzer(benutzer);
 		wrapper.setErrorMessage(msg);

@@ -35,18 +35,29 @@ import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlung_;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
+import ch.dvbern.ebegu.entities.Zahlungsposition_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 import org.slf4j.Logger;
@@ -72,9 +83,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 
 
 	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
-
-	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 
 	@Inject
@@ -92,6 +100,9 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Inject
 	private BetreuungService betreuungService;
 
+	@Inject
+	private Persistence persistence;
+
 
 	private Map<String, List<Zahlungsposition>> zahlungenIstMap = null;
 	private final List<String> potentielleFehlerList = new ArrayList<>();
@@ -101,19 +112,19 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	@Asynchronous
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(value = 360, unit = TimeUnit.MINUTES)
-	public void pruefungZahlungen(@Nonnull LocalDateTime datumLetzteZahlung) {
-		LOGGER.info("Pruefe Zahlungen");
-		zahlungenIstMap = pruefeZahlungenIst();
+	public void pruefungZahlungen(@Nonnull Gemeinde gemeinde, @Nonnull LocalDateTime datumLetzteZahlung) {
+		LOGGER.info("Pruefe Zahlungen fuer Gemeinde {}", gemeinde.getName());
+		zahlungenIstMap = pruefeZahlungenIst(gemeinde);
 		// Alle Gesuchsperioden im Status AKTIV und INAKTIV muessen geprueft werden, da auch rueckwirkend Korrekturen gemacht werden koennen.
 		Collection<Gesuchsperiode> aktiveGesuchsperioden = gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden();
 		for (Gesuchsperiode gesuchsperiode : aktiveGesuchsperioden) {
-			pruefungZahlungenSollFuerGesuchsperiode(gesuchsperiode, datumLetzteZahlung);
+			pruefungZahlungenSollFuerGesuchsperiode(gesuchsperiode, gemeinde, datumLetzteZahlung);
 		}
-		LOGGER.info("Pruefung der Zahlungen beendet.");
-		sendeMail();
+		LOGGER.info("Pruefung der Zahlungen beendet: {}", potentielleFehlerList.isEmpty() ? "OK" : "ERROR");
+		sendeMail(gemeinde);
 	}
 
-	private void sendeMail() {
+	private void sendeMail(@Nonnull Gemeinde gemeinde) {
 		LOGGER.info("Sende Mail...");
 		String administratorMail = ebeguConfiguration.getAdministratorMail();
 		if (StringUtils.isEmpty(administratorMail)) {
@@ -122,8 +133,9 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		}
 		try {
 			final String serverName = ebeguConfiguration.getHostname();
+			String auftragBezeichnung = "Zahlungslauf " + gemeinde.getName() + " (" + serverName + ')';
 			if (potentielleFehlerList.isEmpty()) {
-					mailService.sendMessage("Zahlungslauf: Keine Fehler gefunden (" + serverName + ')',
+					mailService.sendMessage(auftragBezeichnung + ": Keine Fehler gefunden",
 						"Keine Fehler gefunden", administratorMail);
 			} else {
 				StringBuilder sb = new StringBuilder();
@@ -138,7 +150,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 					sb.append(s);
 					sb.append("\n*************************************\n");
 				}
-				mailService.sendMessage("Potentieller Fehler im Zahlungslauf (" + serverName + ')',
+				mailService.sendMessage(auftragBezeichnung+ ": Potentieller Fehler im Zahlungslauf",
 					sb.toString(), administratorMail);
 			}
 		} catch (MailException e) {
@@ -147,9 +159,10 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		LOGGER.info("... beendet");
 	}
 
-	private void pruefungZahlungenSollFuerGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode, @Nonnull LocalDateTime datumLetzteZahlung) {
+	private void pruefungZahlungenSollFuerGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull Gemeinde gemeinde, @Nonnull LocalDateTime datumLetzteZahlung) {
 		LOGGER.info("Pruefe Gesuchsperiode {}", gesuchsperiode.toString());
-		Collection<Dossier> allDossiers = dossierService.getAllDossiers(true);
+		Collection<Dossier> allDossiers = dossierService.findDossiersByGemeinde(gemeinde.getId());
 		for (Dossier dossier : allDossiers) {
 			Optional<Gesuch> gesuchOptional = gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuchsperiode, dossier, false);
 			gesuchOptional.ifPresent(gesuch -> pruefeZahlungenSollFuerGesuch(gesuch, datumLetzteZahlung));
@@ -175,8 +188,8 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 	}
 
 	private void pruefeZahlungenSollFuerBetreuung(@Nonnull Betreuung betreuung, @Nonnull LocalDate dateAusbezahltBis) {
-		// Nur die "gueltige" Betreuung beachten und nur, wenn es KITA ist
-		if (betreuung.isAngebotKita()) {
+		// Nur die "gueltige" Betreuung beachten und nur, wenn es KITA oder TAGESFAMILIEN ist
+		if (betreuung.isAngebotAuszuzahlen()) {
 			if (!betreuung.isGueltig()) {
 				// Es gibt eine spätere Verfügung, deren Gesuch aber noch nicht (komplett) verfügt ist
 				Optional<Betreuung> gueltigeBetreuungOptional = betreuungService.findGueltigeBetreuungByBGNummer(betreuung.getBGNummer());
@@ -207,7 +220,7 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 		StringBuilder sb = new StringBuilder();
 		BigDecimal differenz = DEFAULT.subtract(betragIst, betragSoll);
 		sb.append("Soll und Ist nicht identisch: ").append(betreuung.getBGNummer()).append(" Soll: ").append(betragSoll).append(" Ist: ").append
-			(betragIst).append('\n').append(" Differenz: ").append(differenz);
+			(betragIst).append('\n').append(" Differenz: ").append(differenz).append('\n');
 		sb.append("Aktuell gueltige Betreuung: ").append(betreuung.getId()).append('\n');
 		sb.append("Vergangene Zeitabschnitte").append('\n');
 		ausbezahlteAbschnitte.sort(Comparator.comparing(o -> o.getGueltigkeit().getGueltigAb()));
@@ -256,7 +269,6 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				}
 			}
 		}
-		//noinspection ConstantConditions
 		return betragSoll;
 	}
 
@@ -268,13 +280,23 @@ public class ZahlungUeberpruefungServiceBean extends AbstractBaseService {
 				betragIst = DEFAULT.add(betragIst, zahlungsposition.getBetrag());
 			}
 		}
-		//noinspection ConstantConditions
 		return betragIst;
 	}
 
-	private Map<String, List<Zahlungsposition>> pruefeZahlungenIst() {
+	private Map<String, List<Zahlungsposition>> pruefeZahlungenIst(@Nonnull Gemeinde gemeinde) {
 		Map<String, List<Zahlungsposition>> zahlungenIst = new HashMap<>();
-		Collection<Zahlungsposition> zahlungspositionList = criteriaQueryHelper.getAll(Zahlungsposition.class);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Zahlungsposition> query = cb.createQuery(Zahlungsposition.class);
+
+		Root<Zahlungsposition> root = query.from(Zahlungsposition.class);
+		Join<Zahlungsposition, Zahlung> joinZahlung = root.join(Zahlungsposition_.zahlung);
+		Join<Zahlung, Zahlungsauftrag> joinZahlungsauftrag = joinZahlung.join(Zahlung_.zahlungsauftrag);
+
+		Predicate predicate = cb.equal(joinZahlungsauftrag.get(Zahlungsauftrag_.gemeinde), gemeinde);
+		query.where(predicate);
+		Collection<Zahlungsposition> zahlungspositionList = persistence.getCriteriaResults(query);
+
 		for (Zahlungsposition zahlungsposition : zahlungspositionList) {
 			addToZahlungenList(zahlungenIst, zahlungsposition);
 		}
