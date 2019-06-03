@@ -78,7 +78,6 @@ import ch.dvbern.ebegu.entities.Traegerschaft_;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.RollenAbhaengigkeit;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
@@ -712,7 +711,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	public Optional<Benutzer> findUserWithInvitationByEmail(@Nonnull Benutzer benutzer) {
 		return findBenutzerByEmail(benutzer.getEmail())
 			.filter(benutzerByEmail ->
-				benutzerByEmail.getRole().getRollenAbhaengigkeit() != RollenAbhaengigkeit.NONE
+				benutzerByEmail.getStatus() == BenutzerStatus.EINGELADEN
 					&& benutzerByEmail.getExternalUUID() == null
 			);
 	}
