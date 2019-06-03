@@ -65,7 +65,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>
-		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
 		</#if>
 		Merci de ne pas répondre à ce message automatique.
 	</p>
