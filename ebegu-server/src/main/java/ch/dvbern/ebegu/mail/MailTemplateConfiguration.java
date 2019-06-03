@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EinladungTyp;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -65,6 +66,9 @@ public class MailTemplateConfiguration {
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	public MailTemplateConfiguration() {
 		this.freeMarkerConfiguration = new Configuration();
@@ -330,7 +334,7 @@ public class MailTemplateConfiguration {
 
 		Map<Object, Object> paramMap = initParamMap();
 		paramMap.put("acceptExpire", Constants.DATE_FORMATTER.format(LocalDate.now().plusDays(10)));
-		paramMap.put("acceptLink", createLink(eingeladener, einladung));
+		paramMap.put("acceptLink", benutzerService.createInvitationLink(eingeladener, einladung));
 		paramMap.put("eingeladener", eingeladener);
 
 		addContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Locale.GERMAN);
@@ -388,17 +392,6 @@ public class MailTemplateConfiguration {
 
 		return einladung.getEinladungObjectName()
 			.orElse("");
-	}
-
-	private String createLink(
-		@Nonnull Benutzer eingeladener,
-		@Nonnull Einladung einladung
-	) {
-		return ebeguConfiguration.isClientUsingHTTPS() ? "https://" : "http://"
-			+ ebeguConfiguration.getHostname()
-			+ "/einladung?typ=" + einladung.getEinladungTyp()
-			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
-			+ "&userid=" + eingeladener.getId();
 	}
 
 	private String processTemplateGesuch(
