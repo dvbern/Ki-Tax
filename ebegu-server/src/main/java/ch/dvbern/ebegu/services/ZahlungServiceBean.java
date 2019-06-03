@@ -337,7 +337,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull LocalDateTime datumVerfuegtVon,
 		@Nonnull LocalDateTime datumVerfuegtBis,
-		@Nonnull LocalDate zeitabschnittBis) {
+		@Nonnull LocalDate zeitabschnittBis
+	) {
 		requireNonNull(datumVerfuegtVon, "datumVerfuegtVon muss gesetzt sein");
 		requireNonNull(datumVerfuegtBis, "datumVerfuegtBis muss gesetzt sein");
 		requireNonNull(zeitabschnittBis, "zeitabschnittBis muss gesetzt sein");
@@ -495,8 +496,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	/**
 	 * Ermittelt den zuletzt durchgefuehrten Zahlungsauftrag
 	 */
+	@Override
 	@Nonnull
-	private Optional<Zahlungsauftrag> findLastZahlungsauftrag(@Nonnull Gemeinde gemeinde) {
+	public Optional<Zahlungsauftrag> findLastZahlungsauftrag(@Nonnull Gemeinde gemeinde) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
 		Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
