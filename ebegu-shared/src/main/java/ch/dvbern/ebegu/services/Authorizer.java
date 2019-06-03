@@ -198,11 +198,6 @@ public interface Authorizer {
 	void checkReadAuthorizationZahlung(@Nullable Zahlung zahlung);
 
 	/**
-	 * Prueft, ob der aktuelle Benutzer die uebergebene Zahlung editieren darf
-	 */
-	void checkWriteAuthorizationZahlung(@Nullable Zahlung zahlung);
-
-	/**
 	 * Prueft, ob der aktuelle Benutzer den uebergebenen Zahlungsauftrag lesen darf
 	 */
 	void checkReadAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);

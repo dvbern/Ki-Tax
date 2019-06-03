@@ -42,7 +42,6 @@ import static com.lowagie.text.Utilities.millimetersToPoints;
 
 public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 
-	protected static final String ANREDE_FAMILIE = "PdfGeneration_AnredeFamilie";
 	protected static final String ANREDE_HERR = "PdfGeneration_AnredeHerr";
 	protected static final String ANREDE_FRAU = "PdfGeneration_AnredeFrau";
 	protected static final String SACHBEARBEITUNG = "PdfGeneration_Sachbearbeitung";
@@ -76,19 +75,29 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 		return PdfUtil.createParagraph(anrede.toString());
 	}
 
-	private void addAnrede(final StringBuilder anrede, final GesuchstellerContainer gesuchsteller, final boolean first) {
+	private void addAnrede(@Nonnull final StringBuilder anrede, @Nullable final GesuchstellerContainer gesuchsteller, final boolean first) {
+		boolean isFrench = "fr".equalsIgnoreCase(sprache.getLanguage());
 		if (gesuchsteller != null) {
 			final String singleAnrede = gesuchsteller.getGesuchstellerJA().getGeschlecht() == Geschlecht.MAENNLICH ? translate(ANREDE_HERR) : translate(ANREDE_FRAU);
 			if (first) {
 				anrede.append(singleAnrede);
 			} else {
-				anrede.append(", ");
 				if (!singleAnrede.isEmpty()) {
-					anrede.append(Character.toLowerCase(singleAnrede.charAt(0))).append(singleAnrede.substring(1));
+					if (isFrench) {
+						anrede.append(' ');
+						anrede.append(singleAnrede);
+					} else {
+						anrede.append(", ");
+						anrede.append(Character.toLowerCase(singleAnrede.charAt(0)));
+						anrede.append(singleAnrede.substring(1));
+					}
 				}
 			}
-			anrede.append(' ');
-			anrede.append(gesuchsteller.getGesuchstellerJA().getNachname());
+			// Auf Französisch schreibt man nur "Monsieur, Madame,"
+			if (!isFrench) {
+				anrede.append(' ');
+				anrede.append(gesuchsteller.getGesuchstellerJA().getNachname());
+			}
 		}
 	}
 

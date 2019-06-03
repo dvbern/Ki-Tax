@@ -1006,13 +1006,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	}
 
 	@Override
-	public void checkWriteAuthorizationZahlung(@Nullable Zahlung zahlung) {
-		if (zahlung != null && zahlung.getZahlungsauftrag() != null) {
-			checkWriteAuthorizationZahlungsauftrag(zahlung.getZahlungsauftrag());
-		}
-	}
-
-	@Override
 	public void checkReadAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag) {
 		if (zahlungsauftrag != null) {
 			checkReadAuthorization(zahlungsauftrag.getGemeinde());
