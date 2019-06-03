@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -123,6 +124,7 @@ public class ZahlungResource {
 		return zahlungService.getAllZahlungsauftraege().stream()
 			.filter(zahlungsauftrag -> zahlungsauftrag.getStatus() != ZahlungauftragStatus.ENTWURF)
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(), allowedInst))
+			.filter(zahlungsauftrag -> zahlungsauftrag.getBetragTotalAuftrag().compareTo(BigDecimal.ZERO) > 0)
 			.collect(Collectors.toList());
 	}
 
@@ -152,7 +154,7 @@ public class ZahlungResource {
 	@Nullable
 	@GET
 	@Path("/zahlungsauftraginstitution/{zahlungsauftragId}")
-	@Consumes(MediaType.WILDCARD)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT})
 	public JaxZahlungsauftrag findZahlungsauftraginstitution(
@@ -173,7 +175,7 @@ public class ZahlungResource {
 	@Nullable
 	@PUT
 	@Path("/ausloesen/{zahlungsauftragId}")
-	@Consumes(MediaType.WILDCARD)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public JaxZahlungsauftrag zahlungsauftragAusloesen(
