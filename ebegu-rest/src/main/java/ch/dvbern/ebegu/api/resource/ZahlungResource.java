@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -124,7 +123,7 @@ public class ZahlungResource {
 		return zahlungService.getAllZahlungsauftraege().stream()
 			.filter(zahlungsauftrag -> zahlungsauftrag.getStatus() != ZahlungauftragStatus.ENTWURF)
 			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(), allowedInst))
-			.filter(zahlungsauftrag -> zahlungsauftrag.getBetragTotalAuftrag().compareTo(BigDecimal.ZERO) > 0)
+			.filter(zahlungsauftrag -> !zahlungsauftrag.getZahlungen().isEmpty())
 			.collect(Collectors.toList());
 	}
 
