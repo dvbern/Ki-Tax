@@ -1370,6 +1370,9 @@ export default class GesuchModelManager {
      * Returns true if the Gesuch has the given status
      */
     public isGesuchStatus(status: TSAntragStatus): boolean {
+        if (!this.gesuch) {
+            return undefined;
+        }
         return this.gesuch.status === status;
     }
 
