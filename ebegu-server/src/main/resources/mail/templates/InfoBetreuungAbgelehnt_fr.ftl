@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Betreuungsplatz abgelehnt</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Rejet de la place d'accueil</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Betreuungsplatz abgelehnt</title>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Rejet de la place d'accueil</title>
 
 </head>
 
@@ -21,23 +21,23 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Sehr geehrte Familie
+		Chère famille,
 	</p>
 	<p>
-		Die Platzbestätigung für ${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} wurde abgelehnt.
-		Sie können
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">hier</a>
-		den Grund der Ablehnung einsehen und Ihr Gesuch bearbeiten.
+		Nous avons le regret de vous informer que l'offre de prise en charge pour
+		${betreuung.kind.kindJA.fullName} / ${betreuung.institutionStammdaten.institution.name} a été rejetée.
+		Vous pouvez consulter la liste des structures
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/betreuungen/${betreuung.extractGesuch().id}">ici</a>.
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
 	</p>
 	<p>
 		<#if configuration.isDevmode>
-		<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
 		</#if>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

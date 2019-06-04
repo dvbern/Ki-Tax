@@ -62,7 +62,7 @@ ${templateConfiguration.mailCss}
 	</table>
 	<br/>
 	<p>
-		Die Betreuung wurde am ${datumErstellung} erfasset.
+		Die Betreuung wurde am ${datumErstellung} erfasst.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>

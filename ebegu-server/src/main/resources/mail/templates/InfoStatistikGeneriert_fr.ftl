@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="footer" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${empfaengerMail}
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Statistik erstellt</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Statistique disponible</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon <#if configuration.isDevmode>Testsystem</#if> – Statistik erstellt</title>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Statistique disponible</title>
 
 </head>
 
@@ -22,17 +22,17 @@ ${templateConfiguration.mailCss}
 <div>
 
 	<p>
-		Guten Tag
+		Bonjour,
 	</p>
 	<p>
-		Ihre Statistik wurde generiert und kann <a href="${downloadurl}">hier</a> heruntergeladen werden.
+		La statistique vous concernant est disponible et peut être téléchargée <a href="${downloadurl}">ici</a>.
 	</p>
 	<p>
 	${footer}
 	</p>
 	<#if configuration.isDevmode>
 		<p>
-			<b>Hierbei handelt es sich um eine Nachricht von einem Testsystem. Dieses Testsystem wird für Schulungen verwendet. Über dieses System abgehandelte Gesuche verfügen über keine Zahlungsberechtigung!</b><br><br>
+			<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
 		</p>
 	</#if>
 </div>

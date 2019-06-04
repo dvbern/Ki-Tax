@@ -85,7 +85,7 @@ public class SendEmailBatchlet extends AbstractBatchlet {
 	}
 
 	private String createStatistikPageLink() {
-		return configuration.getHostname() + "/statistik";
+		return configuration.isClientUsingHTTPS() ? "https://" : "http://" + configuration.getHostname()  + "/statistik";
 	}
 
 	@Nullable
