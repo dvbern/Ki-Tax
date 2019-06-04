@@ -72,7 +72,10 @@ export class ZahlungViewController implements IController {
                 switchMap(principal => {
                     if (principal) {
                         const zahlungsauftragId = this.$stateParams.zahlungsauftragId;
-                        return this.zahlungRS.getZahlungsauftragForRole$(principal.getCurrentRole(), zahlungsauftragId);
+                        if (this.$stateParams.zahlungsauftragId) {
+                            return this.zahlungRS.getZahlungsauftragForRole$(
+                                principal.getCurrentRole(), zahlungsauftragId);
+                        }
                     }
 
                     return of(null);
