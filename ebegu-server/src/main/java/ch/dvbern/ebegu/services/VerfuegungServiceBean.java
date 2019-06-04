@@ -34,7 +34,6 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -109,9 +108,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 	@Inject
 	private MailService mailService;
-
-	@Inject
-	private ZahlungService zahlungService;
 
 	@Nonnull
 	@Override
@@ -419,16 +415,12 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	private boolean isAusbezahlt(@Nonnull Betreuung betreuung) {
-		if (betreuung.getVerfuegung() == null || betreuung.getVerfuegung().getTimestampErstellt() == null) {
+		if (betreuung.getVerfuegung() == null) {
 			return false;
 		}
-		final Gesuch gesuch = betreuung.extractGesuch();
-		Optional<Zahlungsauftrag> lastZahlung = zahlungService.findLastZahlungsauftrag(gesuch.extractGemeinde());
-		return lastZahlung
-			.filter(zahlungsauftrag ->
-				gesuch.getTimestampVerfuegt() != null
-				&& gesuch.getTimestampVerfuegt().isBefore(zahlungsauftrag.getDatumGeneriert()))
-			.isPresent();
+		return betreuung.getVerfuegung().getZeitabschnitte()
+			.stream()
+			.anyMatch(zeitabschnitt -> zeitabschnitt.getZahlungsstatus().isBereitsBehandeltInZahlungslauf());
 	}
 
 	@Override

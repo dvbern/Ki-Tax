@@ -203,8 +203,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         const isAngebotKITA = this.getBetreuung().isAngebotKITA();
-        const promise = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
-        || this.isAlreadyIgnored()
+        const direktVerfuegen = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
+            || this.isAlreadyIgnored();
+        const promise = direktVerfuegen
             ? this.saveVerfuegung()
             // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
             : this.saveMutierteVerfuegung();
