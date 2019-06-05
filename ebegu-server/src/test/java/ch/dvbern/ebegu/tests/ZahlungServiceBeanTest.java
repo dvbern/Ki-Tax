@@ -160,8 +160,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void zahlungsauftragErstellenNormalUndMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
+		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, DATUM_GENERIERT, persistence);
 		final Gesuch mutation =
-			createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
+			createMutationFinSit(correctedGesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
 		Assert.assertNotNull(mutation);
 
 		// gleiche Mutation wie in vorherigem Test aber die Yahlung erfolgt nun am Ende der Periode, daher Aenderungen
@@ -201,8 +202,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void zahlungsauftragErstellenNormalUndTwoMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
+		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, DATUM_GENERIERT, persistence);
 		final Gesuch mutation =
-			createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
+			createMutationFinSit(correctedGesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
 		Assert.assertNotNull(mutation);
 		final Gesuch zweiteMutation =
 			createMutationFinSit(mutation, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(90000), false);
@@ -251,8 +253,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void zahlungsauftragErstellenNormalUndMutationChangeIgnoriert() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
+		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, DATUM_GENERIERT, persistence);
 		final Gesuch mutation =
-			createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), true);
+			createMutationFinSit(correctedGesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), true);
 		Assert.assertNotNull(mutation);
 
 		// gleiche Mutation wie in vorherigem Test aber die Yahlung erfolgt nun am Ende der Periode, daher Aenderungen

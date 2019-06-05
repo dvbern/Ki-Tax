@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -37,6 +38,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
+import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.util.BetreuungComparator;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
@@ -115,7 +117,11 @@ public class BetreuungsgutscheinEvaluator {
 	}
 
 	@SuppressWarnings({ "OverlyComplexMethod", "OverlyNestedMethod", "PMD.NcssMethodCount" })
-	public void evaluate(Gesuch gesuch, BGRechnerParameterDTO bgRechnerParameterDTO, @Nonnull Locale locale) {
+	public void evaluate(
+		@Nonnull Gesuch gesuch,
+		VerfuegungService verfuegungService,
+		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
+		@Nonnull Locale locale) {
 
 		// Wenn diese Methode aufgerufen wird, muss die Berechnung der Finanzdaten bereits erfolgt sein:
 		if (gesuch.getFinanzDatenDTO() == null) {
@@ -140,7 +146,7 @@ public class BetreuungsgutscheinEvaluator {
 					//initiale Restansprueche vorberechnen
 					if (betreuung.getBetreuungsstatus() != null) {
 						if ((betreuung.getBetreuungsstatus() == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
-							&& betreuung.getVerfuegungOrVorgaengerVerfuegung() == null)
+							&& betreuung.getVerfuegungOrVorgaengerAusbezahlteVerfuegung() == null)
 							|| betreuung.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN) {
 							// es kann sein dass eine neue Betreuung in der Mutation abgelehnt wird, dann gibts keinen Vorgaenger und keine aktuelle
 							//verfuegung und wir muessen keinenr restanspruch berechnen (vergl EBEGU-890)
@@ -212,12 +218,23 @@ public class BetreuungsgutscheinEvaluator {
 					String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte);
 					betreuung.getVerfuegung().setGeneratedBemerkungen(bemerkungenToShow);
 
-					// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
-					VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung());
-
-					// Zahlungsstatus aus vorgaenger uebernehmen
-					VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung());
+					setZahlungRelevanteDaten(verfuegungService, betreuung);
 				}
+			}
+		}
+	}
+
+	private void setZahlungRelevanteDaten(VerfuegungService verfuegungService, @Nonnull Betreuung betreuung) {
+		if (verfuegungService != null) {
+			final Optional<Verfuegung> ausbezahlteVorgaenger = verfuegungService.
+				findVorgaengerAusbezahlteVerfuegung(betreuung);
+
+			if (ausbezahlteVorgaenger.isPresent() && betreuung.getVerfuegung() != null) {
+				// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
+				VerfuegungUtil.setIsSameVerfuegungsdaten(betreuung.getVerfuegung(), ausbezahlteVorgaenger.get());
+
+				// Zahlungsstatus aus vorgaenger uebernehmen
+				VerfuegungUtil.setZahlungsstatus(betreuung.getVerfuegung(), ausbezahlteVorgaenger.get());
 			}
 		}
 	}
@@ -229,7 +246,7 @@ public class BetreuungsgutscheinEvaluator {
 	@Nonnull
 	private List<VerfuegungZeitabschnitt> getRestanspruchForVerfuegteBetreung(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte;
-		Verfuegung verfuegungForRestanspruch = betreuung.getVerfuegungOrVorgaengerVerfuegung();
+		Verfuegung verfuegungForRestanspruch = betreuung.getVerfuegungOrVorgaengerAusbezahlteVerfuegung();
 		if (verfuegungForRestanspruch == null) {
 			String message = "Ungueltiger Zustand, geschlossene  Betreuung ohne Verfuegung oder Vorgaengerverfuegung (" + betreuung.getId() + ')';
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);

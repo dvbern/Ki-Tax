@@ -1719,4 +1719,13 @@ public final class TestDataUtil {
 		erwBetContainer.setErweiterteBetreuungJA(erwBet);
 		return erwBetContainer;
 	}
+
+	/**
+	 * This method must be called before creating a Zahlung for the a new mutation. This is needed because to check abschnitte that have alreadz
+	 * been paied we take the las Betreuung that has been paid using the TimestampVerfuegt form Gesuch and the datumGeneriert of the zahlung
+	 */
+	public static Gesuch correctTimestampVerfuegt(Gesuch gesuch, LocalDateTime date, Persistence persistence) {
+		gesuch.setTimestampVerfuegt(date.minusDays(1));
+		return persistence.merge(gesuch);
+	}
 }

@@ -95,20 +95,29 @@ export default class TSVerfuegung extends TSAbstractMutableEntity {
     }
 
     /**
-     * Checks whether all Zeitabschnitte that have been paid (verrechnet or ignored)
+     * Checks whether all Zeitabschnitte that have been paid (verrechnet)
      * have the same Verguenstigung as the previous (vorgaenger) Verfuegung.
+     * All Ignorierte Zeitabschnitte must be ignored because they will always be ignored
      */
     public isSameVerrechneteVerguenstigung(): boolean {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < this._zeitabschnitte.length; i++) {
             if (!this._zeitabschnitte[i].sameVerguenstigung
                 && (this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET
-                    || this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT
-                    || this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
-                    || this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIEREND)) {
+                    || this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT)) {
                 return false;
             }
         }
         return true;
+    }
+    public isAlreadyIgnored(): boolean {
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < this._zeitabschnitte.length; i++) {
+            if (!this._zeitabschnitte[i].sameVerguenstigung
+                && this._zeitabschnitte[i].zahlungsstatus === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT) {
+                return true;
+            }
+        }
+        return false;
     }
 }
