@@ -24,6 +24,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.Dokument;
+import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -40,6 +41,9 @@ public class DokumentServiceBean extends AbstractBaseService implements Dokument
 	@Inject
 	private Authorizer authorizer;
 
+	@Inject
+	private DokumentGrundService dokumentGrundService;
+
 	@Override
 	@Nonnull
 	public Optional<Dokument> findDokument(@Nonnull String key) {
@@ -55,7 +59,10 @@ public class DokumentServiceBean extends AbstractBaseService implements Dokument
 
 	@Override
 	public void removeDokument(@Nonnull Dokument dokument) {
-		this.authorizer.checkWriteAuthorization(dokument.getDokumentGrund().getGesuch());
+		final DokumentGrund dokumentGrund = dokument.getDokumentGrund();
+		this.authorizer.checkWriteAuthorization(dokumentGrund.getGesuch());
+		dokumentGrund.getDokumente().remove(dokument);
 		persistence.remove(dokument);
+		dokumentGrundService.removeIfEmpty(dokumentGrund);
 	}
 }
