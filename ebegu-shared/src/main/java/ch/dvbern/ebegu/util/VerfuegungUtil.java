@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -33,8 +34,7 @@ public final class VerfuegungUtil {
 	private VerfuegungUtil() {
 	}
 
-	public static void setIsSameVerfuegungsdaten(@Nonnull Verfuegung verfuegung) {
-		final Verfuegung verfuegungOnGesuchForMutation = verfuegung.getBetreuung().getVorgaengerVerfuegung();
+	public static void setIsSameVerfuegungsdaten(@Nonnull Verfuegung verfuegung, @Nullable Verfuegung verfuegungOnGesuchForMutation) {
 		if (verfuegungOnGesuchForMutation != null) {
 			final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
 			final List<VerfuegungZeitabschnitt> zeitabschnitteGSM = verfuegungOnGesuchForMutation.getZeitabschnitte();
@@ -53,7 +53,10 @@ public final class VerfuegungUtil {
 		}
 	}
 
-	private static Optional<VerfuegungZeitabschnitt> findZeitabschnittSameGueltigkeit(List<VerfuegungZeitabschnitt> zeitabschnitteGSM, VerfuegungZeitabschnitt newZeitabschnitt) {
+	private static Optional<VerfuegungZeitabschnitt> findZeitabschnittSameGueltigkeit(
+		List<VerfuegungZeitabschnitt> zeitabschnitteGSM,
+		VerfuegungZeitabschnitt newZeitabschnitt
+	) {
 		for (VerfuegungZeitabschnitt zeitabschnittGSM : zeitabschnitteGSM) {
 			if (zeitabschnittGSM.getGueltigkeit().equals(newZeitabschnitt.getGueltigkeit())) {
 				return Optional.of(zeitabschnittGSM);
@@ -74,8 +77,7 @@ public final class VerfuegungUtil {
 		return Optional.empty();
 	}
 
-	public static void setZahlungsstatus(@Nonnull Verfuegung verfuegung) {
-		final Verfuegung verfuegungOnGesuchForMutation = verfuegung.getBetreuung().getVorgaengerVerfuegung();
+	public static void setZahlungsstatus(@Nonnull Verfuegung verfuegung, @Nullable Verfuegung verfuegungOnGesuchForMutation) {
 		if (verfuegungOnGesuchForMutation != null) {
 			final List<VerfuegungZeitabschnitt> newZeitabschnitte = verfuegung.getZeitabschnitte();
 			final List<VerfuegungZeitabschnitt> zeitabschnitteGSM = verfuegungOnGesuchForMutation.getZeitabschnitte();
