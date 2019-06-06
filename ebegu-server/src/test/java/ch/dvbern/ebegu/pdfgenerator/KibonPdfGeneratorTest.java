@@ -140,7 +140,7 @@ public class KibonPdfGeneratorTest extends AbstractBGRechnerTest {
 		InvoiceGeneratorException {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		evaluator.evaluate(gesuch, getParameter(), Constants.DEFAULT_LOCALE);
+		evaluator.evaluate(gesuch, null, getParameter(), Constants.DEFAULT_LOCALE);
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
 			Objects.requireNonNull(betreuung.getVerfuegung());
 			betreuung.getVerfuegung().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");

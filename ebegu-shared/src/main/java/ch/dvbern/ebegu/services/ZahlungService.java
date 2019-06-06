@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -100,4 +101,9 @@ public interface ZahlungService {
 	 * verglichen mit den tatsaechlich erfolgten Zahlungen.
 	 */
 	void zahlungenKontrollieren(@Nonnull String gemeindeId);
+
+	/**
+	 * Returns the last Zahlungsauftrag that has been created for the given Gemeinde
+	 */
+	Optional<Zahlungsauftrag> findLastZahlungsauftrag(@Nonnull Gemeinde gemeinde);
 }

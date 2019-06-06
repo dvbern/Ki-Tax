@@ -137,12 +137,17 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
             this.setBemerkungen();
+            this.setParamsDependingOnCurrentVerfuegung();
         } else {
             this.gesuchModelManager.calculateVerfuegungen().then(() => {
                 this.setBemerkungen();
+                this.setParamsDependingOnCurrentVerfuegung();
             });
         }
         this.initDevModeParameter();
+    }
+
+    private setParamsDependingOnCurrentVerfuegung(): void {
         this.setSameVerfuegungsdaten();
         this.setSameVerrechneteVerfuegungdaten();
     }
@@ -184,6 +189,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.sameVerrechneteVerguenstigung;
     }
 
+    private isAlreadyIgnored(): boolean {
+        if (this.getVerfuegenToWorkWith()) {
+            return this.getVerfuegenToWorkWith().isAlreadyIgnored();
+        }
+        return false; // by default
+    }
+
     public save(): void {
         this.isVerfuegenClicked = true;
         if (!this.isGesuchValid() || !this.isVerfuegenValid()) {
@@ -191,10 +203,12 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         const isAngebotKITA = this.getBetreuung().isAngebotKITA();
-        const promise = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation() ?
-            this.saveVerfuegung() :
+        const direktVerfuegen = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
+            || this.isAlreadyIgnored();
+        const promise = direktVerfuegen
+            ? this.saveVerfuegung()
             // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
-            this.saveMutierteVerfuegung();
+            : this.saveMutierteVerfuegung();
 
         promise.then(() => this.goToVerfuegen());
     }
