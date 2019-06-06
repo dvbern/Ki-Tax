@@ -19,4 +19,5 @@ export enum TSCacheTyp {
     EBEGU_INSTITUTIONSSTAMMDATEN = 'ebeguInstitutionsStammdaten',
     EBEGU_GEMEINDEN = 'ebeguGemeinden',
     EBEGU_GEMEINDEN_ACTIVE = 'ebeguGemeindenAktiv',
+    EBEGU_PUBLIC_APP_CONFIG = 'publicAppConfig',
 }

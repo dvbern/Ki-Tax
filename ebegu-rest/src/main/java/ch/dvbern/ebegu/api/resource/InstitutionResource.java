@@ -202,7 +202,6 @@ public class InstitutionResource {
 	}
 
 	@ApiOperation("Remove an Institution logically by his institution-id as parameter")
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@Nullable
 	@DELETE
 	@Path("/{institutionId}")

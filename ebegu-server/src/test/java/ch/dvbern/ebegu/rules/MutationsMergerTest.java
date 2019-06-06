@@ -163,7 +163,7 @@ public class MutationsMergerTest {
 		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
 		erstgesuchBetreuung.setVerfuegung(verfuegungErstgesuch);
-		final Gesuch erstgesuch = erstgesuchBetreuung.extractGesuch();
+		erstgesuchBetreuung.extractGesuch();
 		mutierteBetreuung.setVorgaengerVerfuegung(verfuegungErstgesuch);
 
 		// mergen

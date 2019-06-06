@@ -35,6 +35,8 @@ public class JaxBenutzerResponseWrapper implements Serializable {
 	@Nullable
 	private JaxExternalBenutzer benutzer = null;
 
+	private boolean storedBenutzerGesperrt;
+
 	@Nullable
 	public String getErrorMessage() {
 		return errorMessage;
@@ -51,5 +53,13 @@ public class JaxBenutzerResponseWrapper implements Serializable {
 
 	public void setBenutzer(@Nullable JaxExternalBenutzer benutzer) {
 		this.benutzer = benutzer;
+	}
+
+	public boolean isStoredBenutzerGesperrt() {
+		return storedBenutzerGesperrt;
+	}
+
+	public void setStoredBenutzerGesperrt(boolean storedBenutzerGesperrt) {
+		this.storedBenutzerGesperrt = storedBenutzerGesperrt;
 	}
 }

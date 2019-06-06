@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController} from 'angular';
+import {IComponentOptions, IController, ILogService} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
@@ -22,7 +22,6 @@ import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
 import {isAnyStatusOfVerfuegtButSchulamt} from '../../../../models/enums/TSAntragStatus';
 import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
 import {TSRole} from '../../../../models/enums/TSRole';
-import TSApplicationProperty from '../../../../models/TSApplicationProperty';
 import TSDokument from '../../../../models/TSDokument';
 import TSDokumentGrund from '../../../../models/TSDokumentGrund';
 import TSDownloadFile from '../../../../models/TSDownloadFile';
@@ -86,7 +85,7 @@ export class DVDokumenteListController implements IController {
         private readonly downloadRS: DownloadRS,
         private readonly dvDialog: DvDialog,
         private readonly wizardStepManager: WizardStepManager,
-        private readonly $log: angular.ILogService,
+        private readonly $log: ILogService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly $translate: ITranslateService,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -95,9 +94,9 @@ export class DVDokumenteListController implements IController {
     }
 
     public $onInit(): void {
-        this.applicationPropertyRS.getAllowedMimetypes().then((response: TSApplicationProperty) => {
+        this.applicationPropertyRS.getAllowedMimetypes().then(response => {
             if (response !== undefined) {
-                this.allowedMimetypes = response.value;
+                this.allowedMimetypes = response;
             }
         });
 
