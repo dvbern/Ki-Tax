@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportService;
+import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -58,6 +59,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportMassenversandService reportMassenversandService;
+
+	@Inject
+	private ReportVerrechnungKibonService reportVerrechnungKibonService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -178,6 +182,10 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 		}
 		case VORLAGE_REPORT_INSTITUTIONEN: {
 			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportInstitutionen(locale);
+			return uploadFileInfo;
+		}
+		case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
+			UploadFileInfo uploadFileInfo = this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(locale);
 			return uploadFileInfo;
 		}
 		}

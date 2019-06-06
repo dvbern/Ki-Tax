@@ -239,6 +239,12 @@ export class StatistikViewController implements IController {
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
+                return;
+            case TSStatistikParameterType.VERRECHNUNG_KIBON:
+                this.reportAsyncRS.getVerrechnungKibonReportExcel()
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
                 break;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);

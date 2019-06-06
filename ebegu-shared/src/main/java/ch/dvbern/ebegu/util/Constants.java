@@ -50,6 +50,7 @@ public final class Constants {
 	public static final Locale FRENCH_LOCALE = new Locale("fr", "CH");
 
 	public static final Character LINE_BREAK = '\n';
+	public static final String REPORT = "Report";
 	public static final String DATA = "Data";
 	public static final String REGEX_UUID = "(^.*)([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})(.*$)";
 	public static final String REGEX_EMAIL = "[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}";

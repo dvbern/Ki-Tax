@@ -113,6 +113,12 @@ public enum ReportVorlage {
 		ReportFileName.INSTITUTIONEN,
 		Constants.DATA,
 		MergeFieldInstitutionen.class
+	),
+	VORLAGE_REPORT_VERRECHNUNG_KIBON(
+		"/reporting/VerrechnungKibon.xlsx",
+		ReportFileName.VERRECHNUNG_KIBON,
+		Constants.REPORT,
+		MergeFieldVerrechnungKibon.class
 	);
 
 	@Nonnull

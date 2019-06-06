@@ -207,6 +207,13 @@ export class ReportAsyncRS {
             });
     }
 
+    public getVerrechnungKibonReportExcel(): IPromise<string> {
+        return this.http.get(`${this.serviceURL}/excel/verrechnungkibon`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }
