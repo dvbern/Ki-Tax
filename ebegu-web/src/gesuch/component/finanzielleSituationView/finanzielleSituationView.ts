@@ -90,7 +90,9 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
     }
 
     private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FINANZIELLE_SITUATION,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
         this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
             ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;

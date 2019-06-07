@@ -116,7 +116,9 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     private updateWizardStepStatus(): IPromise<void> {
         return this.gesuchModelManager.getGesuch().isMutation() ?
             this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
-            this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.FINANZIELLE_SITUATION,
+                TSWizardStepStatus.OK);
     }
 
     public calculate(): void {

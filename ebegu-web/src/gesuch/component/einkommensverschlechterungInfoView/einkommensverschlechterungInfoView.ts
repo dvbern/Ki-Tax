@@ -101,7 +101,9 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.initializeEKVContainers();
     }
 

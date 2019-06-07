@@ -85,7 +85,9 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         $timeout: ITimeoutService,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.BETREUUNG,
+            TSWizardStepStatus.IN_BEARBEITUNG);
 
     }
 

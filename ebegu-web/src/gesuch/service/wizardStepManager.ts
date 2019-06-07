@@ -222,6 +222,20 @@ export default class WizardStepManager {
     }
 
     /**
+     * Like updateCurrentWizardStepStatus but it will only execute the action when the currentStep has the given stepName.
+     * Use this method to avoid changing the status of a different Step than the one you have to change.
+     */
+    public updateCurrentWizardStepStatusSafe(
+        stepName: TSWizardStepName,
+        stepStatus: TSWizardStepStatus
+    ): IPromise<void> {
+        if (this.getCurrentStepName() === stepName) {
+            return this.updateCurrentWizardStepStatus(stepStatus);
+        }
+        return undefined;
+    }
+
+    /**
      * Der aktuelle Step wird aktualisiert und die Liste von Steps wird nochmal aus dem Server geholt. Sollte der
      * Status gleich sein, nichts wird gemacht und undefined wird zurueckgegeben.
      */

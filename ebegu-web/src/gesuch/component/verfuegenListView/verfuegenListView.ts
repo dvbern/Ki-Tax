@@ -129,7 +129,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
      * irgendwie anders berechnen koennen um den Server zu entlasten.
      */
     private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.WARTEN);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.VERFUEGEN,
+            TSWizardStepStatus.WARTEN);
 
         // Berechnung aller finanziellen Daten
         const gesuch = this.gesuchModelManager.getGesuch();

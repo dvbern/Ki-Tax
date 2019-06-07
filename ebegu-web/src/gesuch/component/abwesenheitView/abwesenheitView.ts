@@ -99,7 +99,9 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
 
     private initViewModel(): void {
         this.removed = false;
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.ABWESENHEIT,
+            TSWizardStepStatus.OK);
         this.setBetreuungList();
         this.initAbwesenheitList();
     }

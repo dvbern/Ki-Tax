@@ -79,7 +79,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
 
     private initViewModel(): void {
         this.model = [];
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.UMZUG, TSWizardStepStatus.OK);
         this.extractAdressenListFromBothGS();
     }
 

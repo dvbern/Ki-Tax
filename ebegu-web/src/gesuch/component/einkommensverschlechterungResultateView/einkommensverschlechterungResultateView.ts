@@ -144,7 +144,9 @@ export class EinkommensverschlechterungResultateViewController extends AbstractG
                     return this.wizardStepManager.updateCurrentWizardStepStatusMutiert();
                 }
             } else {
-                return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+                return this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                    TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+                    TSWizardStepStatus.OK);
             }
         }
         // wenn nichts gespeichert einfach den aktuellen GS zurueckgeben

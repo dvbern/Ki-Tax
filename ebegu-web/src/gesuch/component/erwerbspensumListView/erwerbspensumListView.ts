@@ -91,9 +91,13 @@ export class ErwerbspensumListViewController
         this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
             this.erwerbspensumRequired = response;
             if (this.isSaveDisabled()) {
-                this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                    TSWizardStepName.ERWERBSPENSUM,
+                    TSWizardStepStatus.IN_BEARBEITUNG);
             } else {
-                this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                    TSWizardStepName.ERWERBSPENSUM,
+                    TSWizardStepStatus.OK);
             }
         });
         this.setShowInfoAusserordentlichenAnspruchIfPossible();
@@ -190,7 +194,7 @@ export class ErwerbspensumListViewController
      * Gesuchsteller eingegeben wurde.
      */
     public isSaveDisabled(): boolean {
-        if (this.erwerbspensumRequired === false) {
+        if (this.erwerbspensumRequired === false) { // tslint:disable-line:no-boolean-literal-compare
             return false;
         }
 

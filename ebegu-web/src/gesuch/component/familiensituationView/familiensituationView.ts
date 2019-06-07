@@ -92,7 +92,9 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     }
 
     private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FAMILIENSITUATION,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
 
