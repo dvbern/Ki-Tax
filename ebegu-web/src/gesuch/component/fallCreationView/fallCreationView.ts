@@ -126,16 +126,6 @@ export class FallCreationViewController extends AbstractGesuchViewController<any
                 return this.$q.when(this.gesuchModelManager.getGesuch());
             }
             this.errorService.clearAll();
-            if (this.gesuchModelManager.getGesuch().isNew()) {
-                if (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.MUTATION) {
-                    this.berechnungsManager.clear();
-                    return this.gesuchModelManager.saveMutation();
-                }
-                if (this.gesuchModelManager.getGesuch().typ === TSAntragTyp.ERNEUERUNGSGESUCH) {
-                    this.berechnungsManager.clear();
-                    return this.gesuchModelManager.saveErneuerungsgesuch();
-                }
-            }
             return this.gesuchModelManager.saveGesuchAndFall();
         }
         return undefined;
