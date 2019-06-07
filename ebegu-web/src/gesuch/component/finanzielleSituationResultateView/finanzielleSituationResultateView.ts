@@ -76,27 +76,32 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     }
 
     public save(): IPromise<void> {
-        if (this.isGesuchValid()) {
-            this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-            if (!this.form.$dirty) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                // Update wizardStepStatus also if the form is empty and not dirty
-                return this.updateWizardStepStatus();
-            }
-            this.errorService.clearAll();
-            if (this.gesuchModelManager.getGesuch().gesuchsteller1) {
-                this.gesuchModelManager.setGesuchstellerNumber(1);
-                if (this.gesuchModelManager.getGesuch().gesuchsteller2) {
-                    return this.gesuchModelManager.saveFinanzielleSituation().then(() => {
-                        this.gesuchModelManager.setGesuchstellerNumber(2);
-                        return this.saveFinanzielleSituation();
-                    });
-                }
-                return this.saveFinanzielleSituation();
-            }
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        if (!this.form.$dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            // Update wizardStepStatus also if the form is empty and not dirty
+            return this.updateWizardStepStatus();
+        }
+
+        this.errorService.clearAll();
+
+        if (!this.gesuchModelManager.getGesuch().gesuchsteller1) {
+            return undefined;
+        }
+
+        this.gesuchModelManager.setGesuchstellerNumber(1);
+        if (this.gesuchModelManager.getGesuch().gesuchsteller2) {
+            return this.gesuchModelManager.saveFinanzielleSituation().then(() => {
+                this.gesuchModelManager.setGesuchstellerNumber(2);
+                return this.saveFinanzielleSituation();
+            });
+        }
+        return this.saveFinanzielleSituation();
     }
 
     private saveFinanzielleSituation(): IPromise<void> {

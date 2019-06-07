@@ -206,8 +206,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public $postLink(): void {
-        this.$timeout(() => {
-            EbeguUtil.selectFirst();
-        }, 100);
+        // tslint:disable-next-line:no-magic-numbers
+        this.doPostLinkActions(500);
     }
 }

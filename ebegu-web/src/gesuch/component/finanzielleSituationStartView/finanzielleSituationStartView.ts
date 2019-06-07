@@ -112,30 +112,31 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public confirmAndSave(): IPromise<TSGesuch> {
-        if (this.isGesuchValid()) {
-            this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-            if (!this.form.$dirty) {
-                if (this.updateStepDueToOnlyFerieninsel()) {
-                    return this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
-                        TSWizardStepStatus.OK).then(() => {
-                        return this.gesuchModelManager.getGesuch();
-                    });
-                }
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                return this.$q.when(this.gesuchModelManager.getGesuch());
-            }
-            if (this.finanzielleSituationTurnedNotRequired()) {
-                return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                    title: 'FINSIT_WARNING',
-                    deleteText: 'FINSIT_WARNING_BESCHREIBUNG',
-                }).then(() => {   // User confirmed changes
-                    return this.save();
+        if (!this.isGesuchValid()) {
+            return undefined;
+        }
+
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        if (!this.form.$dirty) {
+            if (this.updateStepDueToOnlyFerieninsel()) {
+                return this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
+                    TSWizardStepStatus.OK).then(() => {
+                    return this.gesuchModelManager.getGesuch();
                 });
             }
-            return this.save();
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return this.$q.when(this.gesuchModelManager.getGesuch());
         }
-        return undefined;
+        if (this.finanzielleSituationTurnedNotRequired()) {
+            return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'FINSIT_WARNING',
+                deleteText: 'FINSIT_WARNING_BESCHREIBUNG',
+            }).then(() => {   // User confirmed changes
+                return this.save();
+            });
+        }
+        return this.save();
     }
 
     /**

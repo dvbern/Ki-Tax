@@ -144,17 +144,18 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
-        if (this.isGesuchValid()) {
-            this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-            if (!this.form.$dirty) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith().finanzielleSituationContainer);
-            }
-            this.errorService.clearAll();
-            return this.gesuchModelManager.saveFinanzielleSituation();
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        if (!this.form.$dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith().finanzielleSituationContainer);
+        }
+        this.errorService.clearAll();
+        return this.gesuchModelManager.saveFinanzielleSituation();
     }
 
     public calculate(): void {

@@ -42,6 +42,9 @@ export default class WizardStepManager {
 
     private wizardStepsSnapshot: Array<TSWizardStep> = [];
 
+    // this semaphore will prevent a navigation to be executed again until the prozess is not finished
+    public isTransitionInProgress: boolean = false;
+
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly wizardStepRS: WizardStepRS,
