@@ -19,7 +19,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -31,7 +30,6 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
-import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
@@ -97,9 +95,6 @@ public class AsivTest extends AbstractEbeguLoginTest {
 	private TraegerschaftService traegerschaftService;
 
 	@Inject
-	private GesuchService gesuchService;
-
-	@Inject
 	private TestfaelleService testfaelleService;
 
 	private Gesuchsperiode gesuchsperiode;
@@ -125,14 +120,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_01(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_01(mutationCalculated);
 	}
 
 	@Test
@@ -144,14 +137,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_02(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_02(mutationCalculated);
 	}
 
 	@Test
@@ -163,14 +154,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_03(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_03(mutationCalculated);
 	}
 
 	@Test
@@ -182,14 +171,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_04(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_04(mutationCalculated);
 	}
 
 	@Test
@@ -201,14 +188,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_05(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_05(mutationCalculated);
 	}
 
 	@Test
@@ -220,14 +205,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_06(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_06(mutationCalculated);
 	}
 
 	@Test
@@ -239,14 +222,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_07(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_07(mutationCalculated);
 	}
 
 	@Test
@@ -258,14 +239,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_08(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_08(mutationCalculated);
 	}
 
 	@Test
@@ -277,14 +256,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_09(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_09(mutationCalculated);
 	}
 
 	@Test
@@ -296,14 +273,12 @@ public class AsivTest extends AbstractEbeguLoginTest {
 		Gesuch erstgesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		// Mutation
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = testfall.createMutation(gesuchOptional.get());
-			TestDataUtil.calculateFinanzDaten(mutation);
-			mutation.setGesuchsperiode(gesuchsperiode);
-			Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
-			AbstractBGRechnerTest.checkTestfall_ASIV_10(mutationCalculated);
-		}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
+		mutation = testfall.createMutation(mutation);
+		TestDataUtil.calculateFinanzDaten(mutation);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		Gesuch mutationCalculated = verfuegungService.calculateVerfuegung(mutation);
+		AbstractBGRechnerTest.checkTestfall_ASIV_10(mutationCalculated);
 	}
 
 	/**
