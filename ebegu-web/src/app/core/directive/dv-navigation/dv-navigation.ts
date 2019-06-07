@@ -87,8 +87,6 @@ export class NavigatorController implements IController {
     public dvTranslatePrevious: string;
     public containerClass: string;
 
-    public performSave: boolean;
-
     public constructor(
         private readonly wizardStepManager: WizardStepManager,
         private readonly state: StateService,
