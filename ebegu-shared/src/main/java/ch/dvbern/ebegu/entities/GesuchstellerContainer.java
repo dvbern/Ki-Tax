@@ -260,10 +260,12 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 			copyAdressenAktuellUndZukuenftig(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
+			copyAdressenAktuellUndZukuenftig(target, copyType);
 			copyFinanzen(target, copyType);
 			copyErwerbspensen(target, copyType);
 			break;
 		case ERNEUERUNG_NEUES_DOSSIER:
+			copyAdressenAktuellUndZukuenftig(target, copyType);
 			break;
 		}
 		return target;

@@ -175,18 +175,20 @@ public class Familiensituation extends AbstractMutableEntity {
 	public Familiensituation copyFamiliensituation(@Nonnull Familiensituation target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		target.setFamilienstatus(this.getFamilienstatus());
-		target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
 		target.setStartKonkubinat(this.getStartKonkubinat());
-		target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());
 			target.setAntragNurFuerBehinderungszuschlag(this.getAntragNurFuerBehinderungszuschlag());
 			target.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(this.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
+			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
+			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setAntragNurFuerBehinderungszuschlag(this.getAntragNurFuerBehinderungszuschlag());
 			target.setBehinderungszuschlagFuerMindEinKindEinmalBeantragt(this.getBehinderungszuschlagFuerMindEinKindEinmalBeantragt());
+			target.setGemeinsameSteuererklaerung(this.getGemeinsameSteuererklaerung());
+			target.setSozialhilfeBezueger(this.getSozialhilfeBezueger());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:

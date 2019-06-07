@@ -1019,4 +1019,22 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		}
 		return false;
 	}
+
+	public static Gesuch createMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
+		Gesuch mutation = new Gesuch();
+		mutation.setTyp(AntragTyp.MUTATION);
+		mutation.setDossier(dossier);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		mutation.setEingangsdatum(eingangsdatum);
+		return mutation;
+	}
+
+	public static Gesuch createErneuerung(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
+		Gesuch erneuerung = new Gesuch();
+		erneuerung.setTyp(AntragTyp.ERNEUERUNGSGESUCH);
+		erneuerung.setDossier(dossier);
+		erneuerung.setGesuchsperiode(gesuchsperiode);
+		erneuerung.setEingangsdatum(eingangsdatum);
+		return erneuerung;
+	}
 }
