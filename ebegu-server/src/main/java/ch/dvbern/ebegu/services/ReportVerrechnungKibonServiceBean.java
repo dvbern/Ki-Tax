@@ -24,9 +24,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -42,6 +45,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
@@ -50,6 +54,9 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Kind_;
+import ch.dvbern.ebegu.entities.VerrechnungKibon;
+import ch.dvbern.ebegu.entities.VerrechnungKibonDetail;
+import ch.dvbern.ebegu.entities.VerrechnungKibonDetail_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
@@ -98,37 +105,70 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
+	private boolean isEntwurf = false;
 
+
+	@SuppressWarnings("SimplifyStreamApiCallChains")
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
 	public List<VerrechnungKibonDataRow> getReportVerrechnungKibon(
 		@Nonnull Locale locale
 	) {
-
 		List<VerrechnungKibonDataRow> allGemeindenUndPerioden = new ArrayList<>();
 
+		// Es müssen alle aktiven Gesuchsperioden und alle aktiven Gemeinden berücksichtigt werden
 		Collection<Gesuchsperiode> gesuchsperioden = gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden();
 		Collection<Gemeinde> gemeinden = gemeindeService.getAktiveGemeinden();
 
+		// Die Daten der letzten Verrechnung lesen
+		List<VerrechnungKibonDetail> letzteVerrechnungDetails = getLetzteVerrechnungDetails();
+
+		// Die neue Verrechnung erstellen
+		VerrechnungKibon aktuelleVerrechnung = new VerrechnungKibon();
+		List<VerrechnungKibonDetail> aktuelleVerrechnungDetails = new ArrayList<>();
+
+		// über alle Gesuchsperioden und Gemeinden iterieren
 		for (Gesuchsperiode gesuchsperiode : gesuchsperioden) {
-			Map<Gemeinde, List<Gesuch>> gemeindeListMap = handleGesuchsperiode(gesuchsperiode);
+			Map<Gemeinde, List<Gesuch>> gemeindeListMap = getRelevanteGesucheFuerGesuchsperiode(gesuchsperiode);
 			// Sicherstellen, dass alle Gemeinden in der Liste sind, auch wenn sie keine Kinder (in dieser Gesuchsperiode) haben
 			for (Gemeinde gemeinde : gemeinden) {
 				if (!gemeindeListMap.containsKey(gemeinde)) {
 					gemeindeListMap.put(gemeinde, new ArrayList<>());
 				}
 			}
-
-			List<VerrechnungKibonDataRow> reportDataVerrechnungKibon = createReportDataVerrechnungKibon(gesuchsperiode, gemeindeListMap);
-			allGemeindenUndPerioden.addAll(reportDataVerrechnungKibon);
+			// Fuer diese Gesuchsperiode: Alle Gemeinden verarbeiten
+			List<VerrechnungKibonDetail> verrechnungDetailsForGesuchsperiode = createVerrechnungDetailsForGesuchsperiode(gesuchsperiode, gemeindeListMap, aktuelleVerrechnung);
+			aktuelleVerrechnungDetails.addAll(verrechnungDetailsForGesuchsperiode);
 		}
 
+		// Aus den Verrechnungsdetails Report-Rows generieren, die Verrechnungsdetails gegebenenfalls speichern
+		for (VerrechnungKibonDetail verrechnungKibonDetail : aktuelleVerrechnungDetails) {
+			// Das Detail der entsprechenden letzten Verrechnung suchen
+			Gemeinde gemeinde = verrechnungKibonDetail.getGemeinde();
+			Gesuchsperiode gesuchsperiode = verrechnungKibonDetail.getGesuchsperiode();
+			VerrechnungKibonDetail lastVerrechnungDetail = letzteVerrechnungDetails.stream()
+				.filter(detail -> detail.getGemeinde().equals(gemeinde))
+				.filter(detail -> detail.getGesuchsperiode().equals(gesuchsperiode))
+				.collect(Collectors.reducing((a, b) -> {
+					throw new IllegalStateException("Zu viele Verrechnungsdetails gefunden für Gemeinde " + gemeinde.getName() +
+				" und Gesuchsperiode " + gesuchsperiode.getGesuchsperiodeString());
+				}))
+				.orElse(null);
+			// In Report-Rows konvertieren
+			allGemeindenUndPerioden.add(toDataRow(verrechnungKibonDetail, lastVerrechnungDetail));
+			if (!isEntwurf) {
+				// Speichern, falls nicht im Entwurfs-Modus
+				persistence.persist(verrechnungKibonDetail);
+			}
+		}
+
+		// Nach Gemeinde aufsteigend sortiert zurueckgeben
 		Collections.sort(allGemeindenUndPerioden);
 		return allGemeindenUndPerioden;
 	}
 
-	private Map<Gemeinde, List<Gesuch>> handleGesuchsperiode(
+	private Map<Gemeinde, List<Gesuch>> getRelevanteGesucheFuerGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -150,17 +190,20 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		return newestGesucheFuerDossierUndGesuchsperiode;
 	}
 
-	private List<VerrechnungKibonDataRow> createReportDataVerrechnungKibon(
+	private List<VerrechnungKibonDetail> createVerrechnungDetailsForGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Map<Gemeinde, List<Gesuch>> gemeindeListMap
+		@Nonnull Map<Gemeinde, List<Gesuch>> gemeindeListMap,
+		@Nonnull VerrechnungKibon verrechnungAktuell
 	) {
-		List<VerrechnungKibonDataRow> result = new ArrayList<>();
+		List<VerrechnungKibonDetail> result = new ArrayList<>();
 		for (Gemeinde gemeinde : gemeindeListMap.keySet()) {
-			VerrechnungKibonDataRow row = new VerrechnungKibonDataRow();
-			row.setGemeinde(gemeinde.getName());
-			row.setGesuchsperiode(gesuchsperiode.getGesuchsperiodeString());
+			VerrechnungKibonDetail row = new VerrechnungKibonDetail();
+			row.setVerrechnungKibon(verrechnungAktuell);
+			row.setGemeinde(gemeinde);
+			row.setGesuchsperiode(gesuchsperiode);
 			List<Gesuch> gesuchList = gemeindeListMap.get(gemeinde);
 
+			StringBuilder details = new StringBuilder();
 			long countAlleKinder = 0;
 			for (Gesuch gesuch : gesuchList) {
 				long countKinderOfGesuch = 0;
@@ -172,21 +215,64 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 						kindernamen.append(kindContainer.getKindJA().getVorname()).append(' ');
 					}
 				}
+				String debug = gemeinde.getName() + ';'
+					+ gesuchsperiode.getGesuchsperiodeString() + ';'
+					+ gesuch.getFall().getFallNummer() + ';'
+					+ kindernamen + ';'
+					+ countKinderOfGesuch + ';';
+				// Zur Kontrolle die Details loggen
 				if (ebeguConfiguration.getIsDevmode()) {
-					String debug = gemeinde.getName() + ';'
-						+ gesuchsperiode.getGesuchsperiodeString() + ';'
-						+ gesuch.getFall().getFallNummer() + ';'
-						+ kindernamen + ';'
-						+ countKinderOfGesuch + ';';
 					LOG.info(debug);
 				}
-
+				details.append(debug).append('\n');
 				countAlleKinder += countKinderOfGesuch;
 			}
-			row.setKinderTotal(countAlleKinder);
+			row.setTotalKinderVerrechnet(countAlleKinder);
+			row.setDetails(details.toString());
 			result.add(row);
 		}
 		return result;
+	}
+
+	@Nonnull
+	private VerrechnungKibonDataRow toDataRow(@Nonnull VerrechnungKibonDetail currentVerrechnungDetail, @Nullable VerrechnungKibonDetail lastVerrechnungDetail) {
+		VerrechnungKibonDataRow row = new VerrechnungKibonDataRow();
+		row.setGemeinde(currentVerrechnungDetail.getGemeinde().getName());
+		row.setGesuchsperiode(currentVerrechnungDetail.getGesuchsperiode().getGesuchsperiodeString());
+		row.setKinderTotal(currentVerrechnungDetail.getTotalKinderVerrechnet());
+		if (lastVerrechnungDetail != null) {
+			row.setKinderBereitsVerrechnet(lastVerrechnungDetail.getTotalKinderVerrechnet());
+		} else {
+			row.setKinderBereitsVerrechnet(0L);
+		}
+		return row;
+	}
+
+	@Nonnull
+	private Optional<VerrechnungKibon> getLetzteVerrechnung() {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<VerrechnungKibon> query = cb.createQuery(VerrechnungKibon.class);
+
+		Root<VerrechnungKibon> root = query.from(VerrechnungKibon.class);
+
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+		List<VerrechnungKibon> criteriaResults = persistence.getCriteriaResults(query, 1);
+		return Optional.ofNullable(criteriaResults.get(0));
+	}
+
+	@Nonnull
+	private List<VerrechnungKibonDetail> getLetzteVerrechnungDetails() {
+		Optional<VerrechnungKibon> letzteVerrechnungOptional = getLetzteVerrechnung();
+		if (letzteVerrechnungOptional.isPresent()) {
+			final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+			final CriteriaQuery<VerrechnungKibonDetail> query = cb.createQuery(VerrechnungKibonDetail.class);
+
+			Root<VerrechnungKibonDetail> root = query.from(VerrechnungKibonDetail.class);
+			Predicate predicate = cb.equal(root.get(VerrechnungKibonDetail_.verrechnungKibon), letzteVerrechnungOptional.get());
+			query.where(predicate);
+			return persistence.getCriteriaResults(query);
+		}
+		return Collections.emptyList();
 	}
 
 	@Nonnull
@@ -194,9 +280,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportVerrechnungKibon(
-		@Nonnull Locale locale
-	) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportVerrechnungKibon(@Nonnull Locale locale) throws ExcelMergeException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_VERRECHNUNG_KIBON;
 
