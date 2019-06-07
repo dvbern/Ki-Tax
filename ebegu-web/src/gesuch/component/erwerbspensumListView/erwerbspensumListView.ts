@@ -190,7 +190,7 @@ export class ErwerbspensumListViewController
      * Gesuchsteller eingegeben wurde.
      */
     public isSaveDisabled(): boolean {
-        if (!this.erwerbspensumRequired) {
+        if (this.erwerbspensumRequired === false) {
             return false;
         }
 
