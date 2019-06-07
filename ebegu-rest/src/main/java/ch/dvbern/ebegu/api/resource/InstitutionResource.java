@@ -285,4 +285,19 @@ public class InstitutionResource {
 			.count();
 		return Response.ok(anzahl > 0).build();
 	}
+
+	@ApiOperation(
+		value = "Returns true, if the currently logged in Benutzer has any Institutionen which Stammdaten haven't been checked in the last 100 days",
+		response = Boolean.class)
+	@Nonnull
+	@GET
+	@Path("/isStammdatenCheckRequired/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response isStammdatenCheckRequiredForCurrentBenutzer() {
+		long anzahl = institutionService.getAllowedInstitutionenForCurrentBenutzer(true).stream()
+			.filter(institution -> institutionService.isStammdatenCheckRequired(institution.getId()))
+			.count();
+		return Response.ok(anzahl > 0).build();
+	}
 }

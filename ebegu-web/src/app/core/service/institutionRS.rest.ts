@@ -95,6 +95,12 @@ export class InstitutionRS {
         });
     }
 
+    public isStammdatenCheckRequired(): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/isStammdatenCheckRequired/currentuser`).then((response: any) => {
+            return response.data;
+        });
+    }
+
     public getServiceName(): string {
         return 'InstitutionRS';
     }

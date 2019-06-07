@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,6 +54,7 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -287,6 +289,16 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		InstitutionStammdaten allInstStammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
 		return allInstStammdaten.getBetreuungsangebotTyp();
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public boolean isStammdatenCheckRequired(@Nonnull String institutionId) {
+		InstitutionStammdaten instStammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
+
+		return instStammdaten.getTimestampMutiert() != null
+			&& instStammdaten.getTimestampMutiert().isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
 	}
 
 	private Predicate excludeUnknownInstitutionPredicate(Root root) {
