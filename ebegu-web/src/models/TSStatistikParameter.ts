@@ -26,6 +26,8 @@ export default class TSStatistikParameter extends TSAbstractMutableEntity {
     private _mischGesuche: boolean;
     private _tsGesuche: boolean;
     private _ohneFolgegesuche: boolean;
+    private _doSave: boolean;
+    private _betragProKind: number;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                        von?: moment.Moment, bis?: moment.Moment,
@@ -107,5 +109,21 @@ export default class TSStatistikParameter extends TSAbstractMutableEntity {
 
     public set ohneFolgegesuche(value: boolean) {
         this._ohneFolgegesuche = value;
+    }
+
+    public get doSave(): boolean {
+        return this._doSave;
+    }
+
+    public set doSave(value: boolean) {
+        this._doSave = value;
+    }
+
+    public get betragProKind(): number {
+        return this._betragProKind;
+    }
+
+    public set betragProKind(value: number) {
+        this._betragProKind = value;
     }
 }

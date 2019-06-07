@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
@@ -547,19 +548,23 @@ public class ReportResourceAsync {
 	@Produces(MediaType.TEXT_PLAIN)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT })
 	public Response getVerrechnungKibonReportExcel(
+		@QueryParam("doSave") @Nonnull String doSaveParam,
+		@QueryParam("betragProKind") @Nullable BigDecimal betragProKindParam,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo) {
 
 		String ip = downloadResource.getIP(request);
+
+		final boolean doSave = Boolean.parseBoolean(doSaveParam);
+		final BigDecimal betragProKind = betragProKindParam != null ? betragProKindParam : BigDecimal.ZERO;
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
 		workJob = workjobService.createNewReporting(
 			workJob,
 			ReportVorlage.VORLAGE_REPORT_VERRECHNUNG_KIBON,
-			null,
-			null,
-			null,
+			doSave,
+			betragProKind,
 			LocaleThreadLocal.get()
 		);
 

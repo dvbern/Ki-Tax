@@ -18,12 +18,14 @@
 package ch.dvbern.ebegu.services;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -105,15 +107,13 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
-	private boolean isEntwurf = false;
-
 
 	@SuppressWarnings("SimplifyStreamApiCallChains")
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
 	public List<VerrechnungKibonDataRow> getReportVerrechnungKibon(
-		@Nonnull Locale locale
+		boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale
 	) {
 		List<VerrechnungKibonDataRow> allGemeindenUndPerioden = new ArrayList<>();
 
@@ -156,8 +156,8 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 				}))
 				.orElse(null);
 			// In Report-Rows konvertieren
-			allGemeindenUndPerioden.add(toDataRow(verrechnungKibonDetail, lastVerrechnungDetail));
-			if (!isEntwurf) {
+			allGemeindenUndPerioden.add(toDataRow(verrechnungKibonDetail, lastVerrechnungDetail, betragProKind));
+			if (doSave) {
 				// Speichern, falls nicht im Entwurfs-Modus
 				persistence.persist(verrechnungKibonDetail);
 			}
@@ -196,12 +196,12 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		@Nonnull VerrechnungKibon verrechnungAktuell
 	) {
 		List<VerrechnungKibonDetail> result = new ArrayList<>();
-		for (Gemeinde gemeinde : gemeindeListMap.keySet()) {
+		for (Entry<Gemeinde, List<Gesuch>> gemeindeListEntry : gemeindeListMap.entrySet()) {
 			VerrechnungKibonDetail row = new VerrechnungKibonDetail();
 			row.setVerrechnungKibon(verrechnungAktuell);
-			row.setGemeinde(gemeinde);
+			row.setGemeinde(gemeindeListEntry.getKey());
 			row.setGesuchsperiode(gesuchsperiode);
-			List<Gesuch> gesuchList = gemeindeListMap.get(gemeinde);
+			List<Gesuch> gesuchList = gemeindeListEntry.getValue();
 
 			StringBuilder details = new StringBuilder();
 			long countAlleKinder = 0;
@@ -215,7 +215,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 						kindernamen.append(kindContainer.getKindJA().getVorname()).append(' ');
 					}
 				}
-				String debug = gemeinde.getName() + ';'
+				String debug = (gemeindeListEntry.getKey()).getName() + ';'
 					+ gesuchsperiode.getGesuchsperiodeString() + ';'
 					+ gesuch.getFall().getFallNummer() + ';'
 					+ kindernamen + ';'
@@ -235,7 +235,9 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	}
 
 	@Nonnull
-	private VerrechnungKibonDataRow toDataRow(@Nonnull VerrechnungKibonDetail currentVerrechnungDetail, @Nullable VerrechnungKibonDetail lastVerrechnungDetail) {
+	private VerrechnungKibonDataRow toDataRow(
+		@Nonnull VerrechnungKibonDetail currentVerrechnungDetail, @Nullable VerrechnungKibonDetail lastVerrechnungDetail, @Nonnull BigDecimal betragProKind
+	) {
 		VerrechnungKibonDataRow row = new VerrechnungKibonDataRow();
 		row.setGemeinde(currentVerrechnungDetail.getGemeinde().getName());
 		row.setGesuchsperiode(currentVerrechnungDetail.getGesuchsperiode().getGesuchsperiodeString());
@@ -245,6 +247,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		} else {
 			row.setKinderBereitsVerrechnet(0L);
 		}
+		row.setBetragProKind(betragProKind);
 		return row;
 	}
 
@@ -280,7 +283,9 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public UploadFileInfo generateExcelReportVerrechnungKibon(@Nonnull Locale locale) throws ExcelMergeException {
+	public UploadFileInfo generateExcelReportVerrechnungKibon(
+		boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale
+	) throws ExcelMergeException {
 
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_VERRECHNUNG_KIBON;
 
@@ -290,7 +295,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
 		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-		List<VerrechnungKibonDataRow> reportData = getReportVerrechnungKibon(locale);
+		List<VerrechnungKibonDataRow> reportData = getReportVerrechnungKibon(doSave, betragProKind, locale);
 		ExcelMergerDTO excelMergerDTO = verrechnungKibonExcelConverter.toExcelMergerDTO(reportData);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());

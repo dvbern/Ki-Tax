@@ -17,16 +17,26 @@
 
 package ch.dvbern.ebegu.reporting.verrechnungKibon;
 
+import java.math.BigDecimal;
+
 /**
  * DTO für die Verrechnung von KiBon für eine Gemeinde in einer Gesuchsperiode
  */
 public class VerrechnungKibonDataRow implements Comparable<VerrechnungKibonDataRow> {
 
+	private BigDecimal betragProKind;
 	private String gemeinde;
 	private String gesuchsperiode;
 	private Long kinderTotal;
 	private Long kinderBereitsVerrechnet;
 
+	public BigDecimal getBetragProKind() {
+		return betragProKind;
+	}
+
+	public void setBetragProKind(BigDecimal betragProKind) {
+		this.betragProKind = betragProKind;
+	}
 
 	public String getGemeinde() {
 		return gemeinde;

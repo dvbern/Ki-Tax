@@ -24,6 +24,7 @@ import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.LONG_CONVERTER;
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
@@ -31,6 +32,7 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING
 public enum MergeFieldVerrechnungKibon implements MergeFieldProvider {
 
 	datumErstellt(new SimpleMergeField<>("datumErstellt", DATE_CONVERTER)),
+	betragProKind(new SimpleMergeField<>("betragProKind", BIGDECIMAL_CONVERTER)),
 
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	gesuchsperiode(new SimpleMergeField<>("gesuchsperiode", STRING_CONVERTER)),

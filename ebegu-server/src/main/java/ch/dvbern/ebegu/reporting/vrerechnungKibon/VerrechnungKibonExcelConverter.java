@@ -16,6 +16,7 @@
  */
 package ch.dvbern.ebegu.reporting.vrerechnungKibon;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -41,7 +42,9 @@ public class VerrechnungKibonExcelConverter implements ExcelConverter {
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 
+		BigDecimal betragProKind = data.isEmpty() ? BigDecimal.ZERO : data.get(0).getBetragProKind();
 		excelMerger.addValue(MergeFieldVerrechnungKibon.datumErstellt, LocalDate.now());
+		excelMerger.addValue(MergeFieldVerrechnungKibon.betragProKind, betragProKind);
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO fallRowGroup = excelMerger.createGroup(MergeFieldVerrechnungKibon.repeatRow);

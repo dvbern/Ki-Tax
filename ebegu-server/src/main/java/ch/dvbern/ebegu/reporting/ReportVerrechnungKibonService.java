@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.reporting;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,9 +30,9 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 public interface ReportVerrechnungKibonService {
 
 	@Nonnull
-	List<VerrechnungKibonDataRow> getReportVerrechnungKibon(@Nonnull Locale locale);
+	List<VerrechnungKibonDataRow> getReportVerrechnungKibon(boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale);
 
 
 	@Nonnull
-	UploadFileInfo generateExcelReportVerrechnungKibon(@Nonnull Locale locale) throws ExcelMergeException;
+	UploadFileInfo generateExcelReportVerrechnungKibon(boolean doSave, @Nonnull BigDecimal betragProKind, @Nonnull Locale locale) throws ExcelMergeException;
 }

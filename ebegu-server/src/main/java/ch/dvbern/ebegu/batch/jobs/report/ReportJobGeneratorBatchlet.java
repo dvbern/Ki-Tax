@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.batch.jobs.report;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Locale;
@@ -40,6 +41,7 @@ import ch.dvbern.ebegu.reporting.ReportMassenversandService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
 import ch.dvbern.ebegu.util.DateUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import org.slf4j.Logger;
@@ -185,7 +187,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
-			UploadFileInfo uploadFileInfo = this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(locale);
+			boolean doSave = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.DO_SAVE));
+			BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
+			UploadFileInfo uploadFileInfo = this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
 			return uploadFileInfo;
 		}
 		}

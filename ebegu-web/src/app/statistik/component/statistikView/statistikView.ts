@@ -241,7 +241,8 @@ export class StatistikViewController implements IController {
                     });
                 return;
             case TSStatistikParameterType.VERRECHNUNG_KIBON:
-                this.reportAsyncRS.getVerrechnungKibonReportExcel()
+                this.reportAsyncRS.getVerrechnungKibonReportExcel(
+                    this._statistikParameter.doSave, this._statistikParameter.betragProKind)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
