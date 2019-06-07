@@ -662,8 +662,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// Wir ueberpruefen, ob der Username sich geaendert hat
 			if (!foundUser.getUsername().equals(benutzer.getUsername())) {
 				LOG.warn("External User has new Username: ExternalUUID {}, old username {}, new username {}. "
-						+ "Updating!",
+						+ "Updating and setting Bemerkung!",
 					benutzer.getExternalUUID(), foundUser.getUsername(), benutzer.getUsername());
+				foundUser.addBemerkung("External User has new Username: ExternalUUID: " + benutzer.getExternalUUID() + ", old username: " + foundUser.getUsername() + ", new username " + benutzer.getUsername());
 				foundUser.setUsername(benutzer.getUsername());
 			}
 			// den username ueberschreiben wir nicht!
