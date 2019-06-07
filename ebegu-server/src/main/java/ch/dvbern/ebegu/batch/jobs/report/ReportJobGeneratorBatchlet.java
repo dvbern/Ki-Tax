@@ -119,48 +119,37 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 		case VORLAGE_REPORT_GESUCH_STICHTAG_DE:
 		case VORLAGE_REPORT_GESUCH_STICHTAG_FR: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportGesuchStichtag(dateFrom, gesuchPeriodeID, locale);
 		}
 		case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
 		case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeID, locale);
 		}
 		case VORLAGE_REPORT_KANTON: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKanton(dateFrom, dateTo, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportKanton(dateFrom, dateTo, locale);
 		}
 		case VORLAGE_REPORT_MITARBEITERINNEN: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportMitarbeiterinnen(dateFrom, dateTo, locale);
 		}
 		case VORLAGE_REPORT_BENUTZER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportBenutzer(locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportBenutzer(locale);
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG: {
 			Objects.requireNonNull(zahlungsauftragId, "Zahlungsauftrag ID must be passed as param");
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportZahlungAuftrag(zahlungsauftragId, locale);
 		}
 		case VORLAGE_REPORT_ZAHLUNG_AUFTRAG_PERIODE: {
 			Objects.requireNonNull(gesuchPeriodeID);
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeID, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportZahlungPeriode(gesuchPeriodeID, locale);
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER_KINDER_BETREUUNG: {
-			final UploadFileInfo uploadFileInfo = this.reportService
-				.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeID, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportGesuchstellerKinderBetreuung(dateFrom, dateTo, gesuchPeriodeID, locale);
 		}
 		case VORLAGE_REPORT_KINDER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeID, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportKinder(dateFrom, dateTo, gesuchPeriodeID, locale);
 		}
 		case VORLAGE_REPORT_GESUCHSTELLER: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportGesuchsteller(dateFrom, locale);
 		}
 		case VORLAGE_REPORT_MASSENVERSAND: {
 			Objects.requireNonNull(gesuchPeriodeID);
@@ -183,14 +172,12 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			return uploadFileInfo;
 		}
 		case VORLAGE_REPORT_INSTITUTIONEN: {
-			final UploadFileInfo uploadFileInfo = this.reportService.generateExcelReportInstitutionen(locale);
-			return uploadFileInfo;
+			return this.reportService.generateExcelReportInstitutionen(locale);
 		}
 		case VORLAGE_REPORT_VERRECHNUNG_KIBON: {
 			boolean doSave = Boolean.valueOf(getParameters().getProperty(WorkJobConstants.DO_SAVE));
 			BigDecimal betragProKind = MathUtil.DEFAULT.from(getParameters().getProperty(WorkJobConstants.BETRAG_PRO_KIND));
-			UploadFileInfo uploadFileInfo = this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
-			return uploadFileInfo;
+			return this.reportVerrechnungKibonService.generateExcelReportVerrechnungKibon(doSave, betragProKind, locale);
 		}
 		}
 		throw new IllegalArgumentException("No Report generated: Unknown ReportType: " + workJobType);

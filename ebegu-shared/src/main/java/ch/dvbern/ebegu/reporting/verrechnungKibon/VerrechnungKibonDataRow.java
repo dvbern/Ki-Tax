@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.reporting.verrechnungKibon;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * DTO für die Verrechnung von KiBon für eine Gemeinde in einer Gesuchsperiode
@@ -77,5 +78,23 @@ public class VerrechnungKibonDataRow implements Comparable<VerrechnungKibonDataR
 			result = this.getGesuchsperiode().compareTo(o.getGesuchsperiode());
 		}
 		return result;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof VerrechnungKibonDataRow)) {
+			return false;
+		}
+		VerrechnungKibonDataRow that = (VerrechnungKibonDataRow) o;
+		return Objects.equals(gemeinde, that.gemeinde) &&
+			Objects.equals(gesuchsperiode, that.gesuchsperiode);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(gemeinde, gesuchsperiode);
 	}
 }
