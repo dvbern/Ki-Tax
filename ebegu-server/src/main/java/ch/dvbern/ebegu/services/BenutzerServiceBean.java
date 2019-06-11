@@ -134,8 +134,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	private static final Logger LOG = LoggerFactory.getLogger(BenutzerServiceBean.class.getSimpleName());
 
-	public static final String ID_SUPER_ADMIN = "22222222-2222-2222-2222-222222222222";
-
 	@Inject
 	private Persistence persistence;
 
@@ -295,7 +293,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return persistedBenutzer;
 	}
 
-	@Nonnull
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
@@ -346,6 +343,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 	}
 
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private void checkSuperuserRoleZuteilung(@Nonnull Benutzer benutzer) {
 		// Nur ein Superadmin kann Superadmin-Rechte vergeben!
 		if (benutzer.getRole() == UserRole.SUPER_ADMIN && !principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
