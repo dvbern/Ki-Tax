@@ -829,22 +829,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 	}
 
-	/**
-	 * Use this function to retrieve any Superadmin from the DB. It will randomly take the first one it finds
-	 */
-	private Optional<Benutzer> loadAnySuperAdmin() {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
-		Root<Benutzer> root = query.from(Benutzer.class);
-		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
-		query.select(root);
-
-		Predicate rolePredicate = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN);
-		query.where(rolePredicate);
-
-		return persistence.getCriteriaResults(query).stream().findFirst();
-	}
-
 	@Nonnull
 	@Override
 	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT,
