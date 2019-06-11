@@ -999,9 +999,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Nullable
 	public Betreuung getFirstBetreuung() {
-		return getKindContainers().stream()
+		return extractAllBetreuungen().stream()
 			.findFirst()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream().findFirst())
 			.orElse(null);
 	}
 
