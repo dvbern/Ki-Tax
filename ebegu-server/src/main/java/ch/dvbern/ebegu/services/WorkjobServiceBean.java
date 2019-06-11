@@ -257,7 +257,8 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void removeOldWorkjobs() {
 		LocalDateTime cutoffDate = LocalDateTime.now().minusMinutes(Constants.MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES);
-		this.criteriaQueryHelper.deleteAllBefore(Workjob.class, cutoffDate);
+		int i = this.criteriaQueryHelper.deleteAllBefore(Workjob.class, cutoffDate);
+		LOG.info("... deleted " + i + " + workjobs");
 	}
 
 	@Nonnull

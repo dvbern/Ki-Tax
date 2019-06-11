@@ -640,10 +640,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			username = principal.getName();
 		}
 		if (StringUtils.isNotEmpty(username)) {
-			if (Constants.ANONYMOUS_USER_USERNAME.equals(username)
-				&& principalBean.isCallerInRole(UserRole.SUPER_ADMIN.name())) {
-				return loadSuperAdmin();
-			}
 			return findBenutzer(username);
 		}
 		return Optional.empty();
@@ -831,20 +827,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
 			berechtigung.setTraegerschaft(null);
 		}
-	}
-
-	private Optional<Benutzer> loadSuperAdmin() {
-		Optional<Benutzer> benutzer = Optional.ofNullable(persistence.find(Benutzer.class, ID_SUPER_ADMIN));
-		if (benutzer.isPresent()) {
-			return benutzer;
-		}
-		// if we cannot find a User with the given ID, we try to load any Super Admin
-		final Optional<Benutzer> anySuperAdmin = loadAnySuperAdmin();
-		if (!anySuperAdmin.isPresent()) {
-			LOG.error("Could not find any SuperAdmin. At least one SuperAdmin must exist.");
-		}
-
-		return anySuperAdmin;
 	}
 
 	/**
@@ -1162,7 +1144,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			}
 			// Die abgelaufene Rolle löschen
 			for (Berechtigung abgelaufeneBerechtigung : abgelaufeneBerechtigungen) {
-				LOG.info("Benutzerrolle ist abgelaufen: {}, war: {}, abgelaufen: {}", benutzer.getUsername(),
+				LOG.info("... Benutzerrolle ist abgelaufen: {}, war: {}, abgelaufen: {}", benutzer.getUsername(),
 					abgelaufeneBerechtigung.getRole(), abgelaufeneBerechtigung.getGueltigkeit().getGueltigBis());
 				benutzer.getBerechtigungen().remove(abgelaufeneBerechtigung);
 				persistence.merge(benutzer);

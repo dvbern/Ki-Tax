@@ -1423,7 +1423,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@RolesAllowed(SUPER_ADMIN)
 	public int deleteGesucheOhneFreigabeOderQuittung() {
 
-		List<Gesuch> criteriaResults = getGesuchesOhneFreigabeOderQuittung();
+		List<Gesuch> criteriaResults = getGesucheOhneFreigabeOderQuittung();
 		int anzahl = criteriaResults.size();
 		List<Betreuung> betreuungen = new ArrayList<>();
 		for (Gesuch gesuch : criteriaResults) {
@@ -1450,7 +1450,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
-	public List<Gesuch> getGesuchesOhneFreigabeOderQuittung() {
+	public List<Gesuch> getGesucheOhneFreigabeOderQuittung() {
 		Integer anzahlTageBisLoeschungNachWarnungFreigabe =
 			applicationPropertyService.findApplicationPropertyAsInteger(ApplicationPropertyKey.ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE);
 		Integer anzahlTageBisLoeschungNachWarnungQuittung =

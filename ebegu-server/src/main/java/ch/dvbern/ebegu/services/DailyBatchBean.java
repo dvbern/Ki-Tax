@@ -175,7 +175,7 @@ public class DailyBatchBean implements DailyBatch {
 		try {
 			LOGGER.info("Starting Job GesuchsperiodeLoeschen...");
 			LocalDate stichtag = LocalDate.now().minusYears(10);
-			LOGGER.info("Deleting Gesuchsperioden older than {}", Constants.DATE_FORMATTER.format(stichtag));
+			LOGGER.info("... Deleting Gesuchsperioden older than {}", Constants.DATE_FORMATTER.format(stichtag));
 			Collection<Gesuchsperiode> gesuchsperiodenBetween = gesuchsperiodeService.getGesuchsperiodenBetween(LocalDate.of(1900, Month.JANUARY, 1), stichtag);
 			for (Gesuchsperiode gesuchsperiode : gesuchsperiodenBetween) {
 				gesuchsperiodeService.removeGesuchsperiode(gesuchsperiode.getId());

@@ -339,7 +339,7 @@ public interface GesuchService {
 	 * Freigabe
 	 * die Quittung nicht geschickt haben.
 	 */
-	List<Gesuch> getGesuchesOhneFreigabeOderQuittung();
+	List<Gesuch> getGesucheOhneFreigabeOderQuittung();
 
 	/**
 	 * Prüft, ob alle Anträge dieser Periode im Status VERFUEGT oder NUR_SCHULAMT sind
