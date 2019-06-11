@@ -26,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -305,14 +306,23 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 			});
 	}
 
-	private void updateStammdatenCheckRequired(String institutionId, boolean isCheckRequired) {
+	@Nullable
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired) {
 		final Optional<Institution> institutionOpt = findInstitution(institutionId);
-		institutionOpt.ifPresent(institution -> {
-			if (isCheckRequired != institution.isStammdatenCheckRequired()) {
-				institution.setStammdatenCheckRequired(isCheckRequired);
-				updateInstitution(institution);
-			}
-		});
+
+		final Institution institution = institutionOpt.orElseThrow(() -> new EbeguEntityNotFoundException(
+			"updateStammdatenCheckRequired",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			institutionId));
+
+		if (isCheckRequired != institution.isStammdatenCheckRequired()) {
+			institution.setStammdatenCheckRequired(isCheckRequired);
+			updateInstitution(institution);
+		}
+
+		return institution;
 	}
 
 	/**

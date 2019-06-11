@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -104,4 +103,9 @@ public interface InstitutionService {
 	 * If it does it will set the Flag stammdatenCheckRequired to true. It will set it to false otherwise.
 	 */
 	void calculateStammdatenCheckRequired();
+
+	/**
+	 * Updates the Flag stammdatenCheckRequired to the given value
+	 */
+	Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired);
 }

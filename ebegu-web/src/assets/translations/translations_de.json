@@ -720,6 +720,7 @@
     "INSTITUTION_STATUS_AKTIV": "Aktiv",
     "INSTITUTION_STATUS_EINGELADEN": "Eingeladen",
     "INSTITUTION_STATUS_CHECK_REQUIRED": "(benötigt Überprüfung)",
+    "INSTITUTION_CHECK_REQUIRED_BUTTON": "Stammdaten sind korrekt",
     "GELOESCHT": "Gelöscht",
     "MANDANT": "Mandant",
     "OEFFNUNGSTAGE": "Öffnungstage",

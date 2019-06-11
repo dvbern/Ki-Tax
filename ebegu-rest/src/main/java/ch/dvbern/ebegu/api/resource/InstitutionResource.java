@@ -300,4 +300,22 @@ public class InstitutionResource {
 			.count();
 		return Response.ok(anzahl > 0).build();
 	}
+
+	@ApiOperation(
+		value = "Returns the given institution",
+		response = Boolean.class)
+	@Nonnull
+	@PUT
+	@Path("/deactivateStammdatenCheckRequired/{institutionId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deactivateStammdatenCheckRequired(
+		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJaxId
+	) {
+		Objects.requireNonNull(institutionJaxId.getId());
+		final String institutionId = converter.toEntityId(institutionJaxId);
+
+		final Institution updatedInstitution = institutionService.updateStammdatenCheckRequired(institutionId, false);
+		return Response.ok(updatedInstitution).build();
+	}
 }

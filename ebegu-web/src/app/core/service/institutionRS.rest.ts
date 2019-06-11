@@ -104,4 +104,11 @@ export class InstitutionRS {
     public getServiceName(): string {
         return 'InstitutionRS';
     }
+
+    public deactivateStammdatenCheckRequired(institutionId: string): IPromise<TSInstitution> {
+        return this.$http.put(`${this.serviceURL}/deactivateStammdatenCheckRequired/${institutionId}`, {})
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
+            });
+    }
 }
