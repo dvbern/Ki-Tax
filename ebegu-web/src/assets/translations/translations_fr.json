@@ -717,6 +717,8 @@
     "TRAEGERSCHAFTEN": "Organismes responsables",
     "GEMEINDE_STATUS_AKTIV": "Actif",
     "GEMEINDE_STATUS_EINGELADEN": "Invité",
+    "INSTITUTION_STATUS_AKTIV": "Actif",
+    "INSTITUTION_STATUS_EINGELADEN": "Invité",
     "GELOESCHT": "Supprimé",
     "MANDANT": "Mandant",
     "OEFFNUNGSTAGE": "Jours d'ouverture",

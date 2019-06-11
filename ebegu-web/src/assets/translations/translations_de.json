@@ -717,6 +717,8 @@
     "TRAEGERSCHAFTEN": "Trägerschaften",
     "GEMEINDE_STATUS_AKTIV": "Aktiv",
     "GEMEINDE_STATUS_EINGELADEN": "Eingeladen",
+    "INSTITUTION_STATUS_AKTIV": "Aktiv",
+    "INSTITUTION_STATUS_EINGELADEN": "Eingeladen",
     "GELOESCHT": "Gelöscht",
     "MANDANT": "Mandant",
     "OEFFNUNGSTAGE": "Öffnungstage",
