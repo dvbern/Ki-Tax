@@ -496,9 +496,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	/**
 	 * Ermittelt den zuletzt durchgefuehrten Zahlungsauftrag
 	 */
-	@Override
 	@Nonnull
-	public Optional<Zahlungsauftrag> findLastZahlungsauftrag(@Nonnull Gemeinde gemeinde) {
+	private Optional<Zahlungsauftrag> findLastZahlungsauftrag(@Nonnull Gemeinde gemeinde) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
 		Root<Zahlungsauftrag> root = query.from(Zahlungsauftrag.class);
@@ -546,6 +545,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			"zahlungsauftragAktualisieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId));
 
 		authorizer.checkWriteAuthorizationZahlungsauftrag(zahlungsauftrag);
+
 		zahlungsauftrag.setStatus(ZahlungauftragStatus.AUSGELOEST);
 		// Jetzt muss noch das PAIN File erstellt werden. Nach dem Ausloesen kann dieses nicht mehr veraendert werden
 		try {

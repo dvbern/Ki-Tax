@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.services.WizardStepService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -77,6 +78,9 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private WizardStepService wizardStepService;
+
+	@Inject
+	private TestfaelleService testfaelleService;
 
 	private Gesuchsperiode gesuchsperiode;
 
@@ -125,25 +129,21 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		erstgesuch = gesuchService.updateGesuch(erstgesuch, true, null);
 		assertEquals(1, erstgesuch.getKindContainers().size());
 
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), LocalDate.of(1980, Month.MARCH, 25));
-		if (gesuchOptional.isPresent()) {
-			Gesuch mutation = gesuchOptional.get();
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(1980, Month.MARCH, 25));
 
-			mutation = gesuchService.createGesuch(mutation);
-			assertEquals(1, mutation.getKindContainers().size());
+		assertEquals(1, mutation.getKindContainers().size());
 
-			WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.KINDER);
-			assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
+		WizardStep wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.KINDER);
+		assertEquals(WizardStepStatus.OK, wizardStepFromGesuch.getWizardStepStatus());
 
-			KindContainer neuesKindInMutation = TestDataUtil.createKindContainerWithoutFachstelle();
+		KindContainer neuesKindInMutation = TestDataUtil.createKindContainerWithoutFachstelle();
 
-			neuesKindInMutation.setGesuch(mutation);
-			kindService.saveKind(neuesKindInMutation);
-			assertEquals(2, kindService.findAllKinderFromGesuch(mutation.getId()).size());
+		neuesKindInMutation.setGesuch(mutation);
+		kindService.saveKind(neuesKindInMutation);
+		assertEquals(2, kindService.findAllKinderFromGesuch(mutation.getId()).size());
 
-			wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.KINDER);
-			assertEquals(WizardStepStatus.MUTIERT, wizardStepFromGesuch.getWizardStepStatus());
-		}
+		wizardStepFromGesuch = wizardStepService.findWizardStepFromGesuch(mutation.getId(), WizardStepName.KINDER);
+		assertEquals(WizardStepStatus.MUTIERT, wizardStepFromGesuch.getWizardStepStatus());
 	}
 
 	@Test

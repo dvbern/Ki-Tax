@@ -129,7 +129,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
      * irgendwie anders berechnen koennen um den Server zu entlasten.
      */
     private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.WARTEN);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.VERFUEGEN,
+            TSWizardStepStatus.WARTEN);
 
         // Berechnung aller finanziellen Daten
         const gesuch = this.gesuchModelManager.getGesuch();
@@ -725,13 +727,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.authServiceRs.isRole(TSRole.SUPER_ADMIN);
     }
 
-    public $postLink(): void {
-        const delay = 500;
-        this.$timeout(() => {
-            EbeguUtil.selectFirst();
-        }, delay);
-    }
-
     public getTitle(): string {
         const gesuch = this.gesuchModelManager.getGesuch();
         if (this.isGesuchsteller()
@@ -743,5 +738,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public isGesuchsteller(): boolean {
         return this.authServiceRs.isRole(TSRole.GESUCHSTELLER);
+    }
+
+    public $postLink(): void {
+        // tslint:disable-next-line:no-magic-numbers
+        this.doPostLinkActions(500);
     }
 }
