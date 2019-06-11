@@ -719,6 +719,7 @@
     "GEMEINDE_STATUS_EINGELADEN": "Invité",
     "INSTITUTION_STATUS_AKTIV": "Actif",
     "INSTITUTION_STATUS_EINGELADEN": "Invité",
+    "INSTITUTION_STATUS_CHECK_REQUIRED": "",
     "GELOESCHT": "Supprimé",
     "MANDANT": "Mandant",
     "OEFFNUNGSTAGE": "Jours d'ouverture",

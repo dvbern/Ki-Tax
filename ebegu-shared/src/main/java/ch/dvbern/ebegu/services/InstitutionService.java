@@ -100,9 +100,8 @@ public interface InstitutionService {
 	BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId);
 
 	/**
-	 * Checks if the Stammdaten of the given Institution need to be checked by the user. This happens when the stammdaten haven't
-	 * been saved for a long time (usually 100 days)
+	 * Will take all Institutions and check whether its Stammdaten has to be checked (stammdaten haven't been saved for a long time) or not.
+	 * If it does it will set the Flag stammdatenCheckRequired to true. It will set it to false otherwise.
 	 */
-	boolean isStammdatenCheckRequired(@Nonnull String institutionId);
-
+	void calculateStammdatenCheckRequired();
 }

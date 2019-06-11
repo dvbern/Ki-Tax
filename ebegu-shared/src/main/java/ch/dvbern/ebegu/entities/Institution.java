@@ -65,6 +65,10 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	@Enumerated(EnumType.STRING)
 	private InstitutionStatus status = InstitutionStatus.EINGELADEN;
 
+	@NotNull
+	@Column(nullable = false)
+	private boolean stammdatenCheckRequired = false;
+
 
 	public Institution() {
 	}
@@ -104,6 +108,14 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 
 	public void setStatus(InstitutionStatus status) {
 		this.status = status;
+	}
+
+	public boolean isStammdatenCheckRequired() {
+		return stammdatenCheckRequired;
+	}
+
+	public void setStammdatenCheckRequired(boolean stammdatenCheckRequired) {
+		this.stammdatenCheckRequired = stammdatenCheckRequired;
 	}
 
 	@Override

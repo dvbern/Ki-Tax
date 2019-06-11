@@ -719,6 +719,7 @@
     "GEMEINDE_STATUS_EINGELADEN": "Eingeladen",
     "INSTITUTION_STATUS_AKTIV": "Aktiv",
     "INSTITUTION_STATUS_EINGELADEN": "Eingeladen",
+    "INSTITUTION_STATUS_CHECK_REQUIRED": "(benötigt Überprüfung)",
     "GELOESCHT": "Gelöscht",
     "MANDANT": "Mandant",
     "OEFFNUNGSTAGE": "Öffnungstage",

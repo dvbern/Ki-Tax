@@ -296,7 +296,7 @@ public class InstitutionResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response isStammdatenCheckRequiredForCurrentBenutzer() {
 		long anzahl = institutionService.getAllowedInstitutionenForCurrentBenutzer(true).stream()
-			.filter(institution -> institutionService.isStammdatenCheckRequired(institution.getId()))
+			.filter(Institution::isStammdatenCheckRequired)
 			.count();
 		return Response.ok(anzahl > 0).build();
 	}
