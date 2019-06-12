@@ -114,7 +114,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     private initViewmodel(): void {
         this.gesuchModelManager.initStammdaten();
         this.model = angular.copy(this.gesuchModelManager.getStammdatenToWorkWith());
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.GESUCHSTELLER,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.showKorrespondadr = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseJA);
         this.showKorrespondadrGS = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseGS);
@@ -205,7 +207,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
      * Aktualisiert alle Steps die Abhaengigkeiten mit dem Status von GS haben.
      */
     private updateGSDependentWizardSteps(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK); // GESUCHSTELLER
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.GESUCHSTELLER,
+            TSWizardStepStatus.OK);
         if (this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION, TSWizardStepStatus.NOK)) {
             this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
                 TSWizardStepStatus.OK);

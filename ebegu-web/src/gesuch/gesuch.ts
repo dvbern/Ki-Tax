@@ -14,6 +14,8 @@
  */
 
 import {IController, IRootScopeService} from 'angular';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import ErrorService from '../app/core/errors/service/ErrorService';
 import {LogFactory} from '../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../app/core/service/antragStatusHistoryRS.rest';
@@ -64,6 +66,7 @@ export class GesuchRouteController implements IController {
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
     public openEwkSidenav: boolean;
+    private readonly unsubscribe$ = new Subject<void>();
 
     public userFullName = '';
 
@@ -79,9 +82,21 @@ export class GesuchRouteController implements IController {
         private readonly ewkRS: EwkRS,
         private readonly $rootScope: IRootScopeService,
     ) {
-        this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch());
+        this.antragStatusHistoryRS.loadLastStatusChange(this.gesuchModelManager.getGesuch())
+            .then(() => {
+                this.antragStatusHistoryRS.lastChange$
+                    .pipe(takeUntil(this.unsubscribe$))
+                    .subscribe(lastChange => {
+                        this.userFullName = this.antragStatusHistoryRS.getUserFullname(lastChange);
+                    },
+                    err => LOG.error(err));
+            });
 
-        this.userFullName = this.antragStatusHistoryRS.getUserFullname();
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     public getDateFromGesuch(): string {

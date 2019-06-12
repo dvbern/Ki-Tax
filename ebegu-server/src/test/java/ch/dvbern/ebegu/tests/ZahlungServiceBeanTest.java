@@ -591,31 +591,29 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		return mutation;
 	}
 
-	@Nullable
+	@Nonnull
 	private Gesuch createMutationBetreuungspensum(Gesuch erstgesuch, LocalDate eingangsdatum, BigDecimal pensum) {
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), eingangsdatum);
-		if (gesuchOptional.isPresent()) {
-			final Gesuch mutation = gesuchOptional.get();
-			mutation.setStatus(AntragStatus.VERFUEGEN);
-			List<Betreuung> betreuungs = mutation.extractAllBetreuungen();
-			for (Betreuung betreuung : betreuungs) {
-				Set<BetreuungspensumContainer> betreuungspensumContainers = betreuung.getBetreuungspensumContainers();
-				for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
-					betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
-				}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, eingangsdatum);
+		mutation.setStatus(AntragStatus.GEPRUEFT);
+		mutation = persistence.merge(mutation);
+		mutation.setStatus(AntragStatus.VERFUEGEN);
+		List<Betreuung> betreuungs = mutation.extractAllBetreuungen();
+		for (Betreuung betreuung : betreuungs) {
+			Set<BetreuungspensumContainer> betreuungspensumContainers = betreuung.getBetreuungspensumContainers();
+			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
+				betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
 			}
-			gesuchService.createGesuch(mutation);
-			// es muss mit verfuegungService.verfuegen verfuegt werden, damit der Zahlungsstatus der Zeitabschnitte
-			// richtig gesetzt wird. So wird auch dies getestet
-			testfaelleService.gesuchVerfuegenUndSpeichern(false, mutation, true, false);
-			verfuegungService.calculateVerfuegung(mutation);
-			for (Betreuung betreuung : betreuungs) {
-				Assert.assertNotNull(betreuung.getVerfuegung());
-				verfuegungService.verfuegen(betreuung.getVerfuegung(), betreuung.getId(), false);
-			}
-			return mutation;
 		}
-		return gesuchOptional.orElse(null);
+		gesuchService.updateGesuch(mutation, false, null);
+		// es muss mit verfuegungService.verfuegen verfuegt werden, damit der Zahlungsstatus der Zeitabschnitte
+		// richtig gesetzt wird. So wird auch dies getestet
+		testfaelleService.gesuchVerfuegenUndSpeichern(false, mutation, true, false);
+		verfuegungService.calculateVerfuegung(mutation);
+		for (Betreuung betreuung : betreuungs) {
+			Assert.assertNotNull(betreuung.getVerfuegung());
+			verfuegungService.verfuegen(betreuung.getVerfuegung(), betreuung.getId(), false);
+		}
+		return mutation;
 	}
 
 	private Gesuch createMutationBetreuungspensum(

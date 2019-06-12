@@ -142,6 +142,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public void setZahlungsstatus(Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
 		Betreuung betreuung = persistence.find(Betreuung.class, betreuungId);
+		Objects.requireNonNull(betreuung);
 		final Gesuch gesuch = betreuung.extractGesuch();
 
 		// Zahlungsstatus muss nur bei Mutationen und Angebote der Art KITA und TAGESELTERN aktualisiert werden

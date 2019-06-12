@@ -43,7 +43,6 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
@@ -158,8 +157,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 
 	@Override
 	public Gesuch createMutation(@Nonnull MutationConfig config, @Nonnull Gesuch vorgaengerAntrag) {
-		Gesuch mutation = gesuchService.antragMutieren(vorgaengerAntrag.getId(), config.getEingangsdatum())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("antragMutieren", ""));
+		Gesuch mutation = testfaelleService.antragMutieren(vorgaengerAntrag, config.getEingangsdatum());
 		if (config.getErwerbspensum() != null) {
 			Objects.requireNonNull(mutation.getGesuchsteller1());
 			Set<ErwerbspensumContainer> erwerbspensenContainersNotEmpty =
@@ -169,7 +167,7 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 				erwerbspensumContainer.getErwerbspensumJA().setPensum(config.getErwerbspensum());
 			}
 		}
-		mutation = gesuchService.createGesuch(mutation);
+		mutation = gesuchService.updateGesuch(mutation, false, null);
 		testfaelleService.gesuchVerfuegenUndSpeichern(
 			config.isVerfuegt(),
 			mutation,
