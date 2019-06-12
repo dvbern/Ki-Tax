@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,20 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.entities;
 
-public enum ReportFileName {
-	GESUCH_STICHTAG,
-	GESUCH_ZEITRAUM,
-	KANTON,
-	MITARBEITERINNEN,
-	BENUTZER,
-	ZAHLUNG_AUFTRAG,
-	ZAHLUNG_AUFTRAG_PERIODE,
-	GESUCHSTELLER_KINDER_BETREUUNG,
-	KINDER,
-	GESUCHSTELLER,
-	MASSENVERSAND,
-	INSTITUTIONEN,
-	VERRECHNUNG_KIBON
+import javax.persistence.Entity;
+
+/**
+ * Entitaet zum Speichern von Verrechnungen in der Datenbank.
+ */
+@Entity
+public class VerrechnungKibon extends AbstractEntity {
+
+	private static final long serialVersionUID = -7687613920281069860L;
+
+
+	public VerrechnungKibon() {
+	}
+
+	@Override
+	public boolean isSame(AbstractEntity other) {
+		return getId().equals(other.getId());
+	}
 }
