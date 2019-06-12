@@ -89,23 +89,6 @@ describe('institutionRS', () => {
             });
         });
 
-        describe('removeInstitution', () => {
-            it('should remove an institution', () => {
-                const httpOk = 200;
-                $httpBackend.expectDELETE(`${institutionRS.serviceURL}/${encodeURIComponent(mockInstitution.id)}`)
-                    .respond(httpOk);
-
-                let deleteResult: any;
-                institutionRS.removeInstitution(mockInstitution.id)
-                    .then(result => {
-                        deleteResult = result;
-                    });
-                $httpBackend.flush();
-                expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(httpOk);
-            });
-        });
-
         describe('getAllInstitutionen', () => {
             it('should return all Institutionen', () => {
                 const institutionenRestArray = [mockInstitutionRest, mockInstitutionRest];

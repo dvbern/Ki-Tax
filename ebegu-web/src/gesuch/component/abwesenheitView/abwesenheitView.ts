@@ -99,7 +99,9 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
 
     private initViewModel(): void {
         this.removed = false;
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.ABWESENHEIT,
+            TSWizardStepStatus.OK);
         this.setBetreuungList();
         this.initAbwesenheitList();
     }
@@ -144,33 +146,34 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
     }
 
     public save(): IPromise<Array<TSBetreuung>> {
-        if (this.isGesuchValid()) {
-            this.errorService.clearAll();
-            if (!this.form.$dirty && !this.removed) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                return this.$q.when([]);
-            }
-
-            // Zuerst loeschen wir alle Abwesenheiten jeder Betreuung
-            const kinderList = this.gesuchModelManager.getKinderWithBetreuungList();
-            kinderList.forEach((kindContainer: TSKindContainer) => {
-                kindContainer.betreuungen.forEach((betreuung: TSBetreuung) => {
-                    betreuung.abwesenheitContainers.length = 0;
-                });
-            });
-            // Jetzt koennen wir alle geaenderten Abwesenheiten nochmal hinzufuegen
-            this.model.forEach((abwesenheit: AbwesenheitUI) => {
-                if (!abwesenheit.kindBetreuung.betreuung.abwesenheitContainers) {
-                    abwesenheit.kindBetreuung.betreuung.abwesenheitContainers = [];
-                }
-                abwesenheit.kindBetreuung.betreuung.abwesenheitContainers.push(abwesenheit.abwesenheit);
-                this.addChangedBetreuungToList(abwesenheit.kindBetreuung.betreuung);
-            });
-
-            return this.gesuchModelManager.updateBetreuungen(this.changedBetreuungen, true);
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        this.errorService.clearAll();
+        if (!this.form.$dirty && !this.removed) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return this.$q.when([]);
+        }
+
+        // Zuerst loeschen wir alle Abwesenheiten jeder Betreuung
+        const kinderList = this.gesuchModelManager.getKinderWithBetreuungList();
+        kinderList.forEach((kindContainer: TSKindContainer) => {
+            kindContainer.betreuungen.forEach((betreuung: TSBetreuung) => {
+                betreuung.abwesenheitContainers.length = 0;
+            });
+        });
+        // Jetzt koennen wir alle geaenderten Abwesenheiten nochmal hinzufuegen
+        this.model.forEach((abwesenheit: AbwesenheitUI) => {
+            if (!abwesenheit.kindBetreuung.betreuung.abwesenheitContainers) {
+                abwesenheit.kindBetreuung.betreuung.abwesenheitContainers = [];
+            }
+            abwesenheit.kindBetreuung.betreuung.abwesenheitContainers.push(abwesenheit.abwesenheit);
+            this.addChangedBetreuungToList(abwesenheit.kindBetreuung.betreuung);
+        });
+
+        return this.gesuchModelManager.updateBetreuungen(this.changedBetreuungen, true);
     }
 
     /**

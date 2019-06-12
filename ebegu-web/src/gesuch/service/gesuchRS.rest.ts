@@ -14,7 +14,6 @@
  */
 
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
-import * as moment from 'moment';
 import {IEntityRS} from '../../app/core/service/iEntityRS.rest';
 import {TSAntragStatus} from '../../models/enums/TSAntragStatus';
 import {TSFinSitStatus} from '../../models/enums/TSFinSitStatus';
@@ -22,7 +21,6 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSMitteilungEvent} from '../../models/enums/TSMitteilungEvent';
 import TSAntragDTO from '../../models/TSAntragDTO';
 import TSGesuch from '../../models/TSGesuch';
-import DateUtil from '../../utils/DateUtil';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import WizardStepManager from './wizardStepManager';
 import IRootScopeService = angular.IRootScopeService;
@@ -101,22 +99,6 @@ export default class GesuchRS implements IEntityRS {
         return this.$http.get(`${this.serviceURL}/dossier/${encodeURIComponent(dossierId)}`).then((response: any) => {
             return this.ebeguRestUtil.parseAntragDTOs(response.data);
         });
-    }
-
-    public antragMutieren(antragId: string, dateParam: moment.Moment): IPromise<TSGesuch> {
-        return this.$http.post(`${this.serviceURL}/mutieren/${encodeURIComponent(antragId)}`, null,
-            {params: {date: DateUtil.momentToLocalDate(dateParam)}}).then(response => {
-            return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-        });
-    }
-
-    public antragErneuern(gesuchsperiodeId: string, antragId: string, dateParam: moment.Moment): IPromise<TSGesuch> {
-        const url = `${this.serviceURL}/erneuern/${encodeURIComponent(gesuchsperiodeId)}/${encodeURIComponent(
-            antragId)}`;
-        return this.$http.post(url, null, {params: {date: DateUtil.momentToLocalDate(dateParam)}})
-            .then(response => {
-                return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
-            });
     }
 
     public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
