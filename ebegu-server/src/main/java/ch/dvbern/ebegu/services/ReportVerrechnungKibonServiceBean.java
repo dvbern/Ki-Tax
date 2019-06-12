@@ -138,7 +138,8 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 				}
 			}
 			// Fuer diese Gesuchsperiode: Alle Gemeinden verarbeiten
-			List<VerrechnungKibonDetail> verrechnungDetailsForGesuchsperiode = createVerrechnungDetailsForGesuchsperiode(gesuchsperiode, gemeindeListMap, aktuelleVerrechnung);
+			List<VerrechnungKibonDetail> verrechnungDetailsForGesuchsperiode =
+				createVerrechnungDetailsForGesuchsperiode(gesuchsperiode, gemeindeListMap, aktuelleVerrechnung);
 			aktuelleVerrechnungDetails.addAll(verrechnungDetailsForGesuchsperiode);
 		}
 
@@ -151,8 +152,8 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 				.filter(detail -> detail.getGemeinde().equals(gemeinde))
 				.filter(detail -> detail.getGesuchsperiode().equals(gesuchsperiode))
 				.collect(Collectors.reducing((a, b) -> {
-					throw new IllegalStateException("Zu viele Verrechnungsdetails gefunden für Gemeinde " + gemeinde.getName() +
-				" und Gesuchsperiode " + gesuchsperiode.getGesuchsperiodeString());
+					throw new IllegalStateException("Zu viele Verrechnungsdetails gefunden für Gemeinde "
+						+ gemeinde.getName() + " und Gesuchsperiode " + gesuchsperiode.getGesuchsperiodeString());
 				}))
 				.orElse(null);
 			// In Report-Rows konvertieren
@@ -236,7 +237,9 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 
 	@Nonnull
 	private VerrechnungKibonDataRow toDataRow(
-		@Nonnull VerrechnungKibonDetail currentVerrechnungDetail, @Nullable VerrechnungKibonDetail lastVerrechnungDetail, @Nonnull BigDecimal betragProKind
+		@Nonnull VerrechnungKibonDetail currentVerrechnungDetail,
+		@Nullable VerrechnungKibonDetail lastVerrechnungDetail,
+		@Nonnull BigDecimal betragProKind
 	) {
 		VerrechnungKibonDataRow row = new VerrechnungKibonDataRow();
 		row.setGemeinde(currentVerrechnungDetail.getGemeinde().getName());
@@ -260,7 +263,10 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<VerrechnungKibon> criteriaResults = persistence.getCriteriaResults(query, 1);
-		return Optional.ofNullable(criteriaResults.get(0));
+
+		return criteriaResults.isEmpty()
+			? Optional.empty()
+			: Optional.ofNullable(criteriaResults.get(0));
 	}
 
 	@Nonnull
@@ -280,7 +286,7 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_TS })
+	@RolesAllowed(SUPER_ADMIN)
 	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportVerrechnungKibon(

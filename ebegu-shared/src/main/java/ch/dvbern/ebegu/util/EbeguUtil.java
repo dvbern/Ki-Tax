@@ -102,7 +102,7 @@ public final class EbeguUtil {
 	 * Gibt aus einer Liste von Gesuchen nur das jeweils neueste (hoechste Laufummer) pro Dossier zurueck.
 	 * Die Rueckgabe erfolgt in einer Map mit Gemeinde - Liste von (neuesten) Gesuchen
 	 */
-	public static Map<Gemeinde, List<Gesuch>> groupByDossierAndSelectNewestAntrag(List<Gesuch> allGesuche) {
+	public static Map<Gemeinde, List<Gesuch>> groupByDossierAndSelectNewestAntrag(@Nonnull List<Gesuch> allGesuche) {
 		ArrayListMultimap<Dossier, Gesuch> dossierToAntragMultimap = ArrayListMultimap.create();
 		allGesuche.forEach(gesuch -> dossierToAntragMultimap.put(gesuch.getDossier(), gesuch));
 		// map erstellen in der nur noch das gesuch mit der hoechsten laufnummer drin ist
