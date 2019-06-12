@@ -199,6 +199,7 @@ export default class GesuchModelManager {
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.activInstitutionenList = undefined;
         this.loadGemeindeStammdaten();
+        this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
 
         return gesuch;
     }
@@ -1191,6 +1192,7 @@ export default class GesuchModelManager {
     private calculateGesuchStatusVerfuegt(): void {
         if (!this.isThereAnyOpenBetreuung()) {
             this.gesuch.status = this.calculateNewStatus(TSAntragStatus.VERFUEGT);
+            this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
         }
     }
 
