@@ -29,6 +29,8 @@ public final class WorkJobConstants {
 	public static final String INKL_TS_GESUCHE = "InklTsGesuche";
 	public static final String OHNE_ERNEUERUNGSGESUCHE = "OhneErneuerungsgesuche";
 	public static final String TEXT = "text";
+	public static final String DO_SAVE = "doSave";
+	public static final String BETRAG_PRO_KIND = "betragProKind";
 	public static final String EMAIL_OF_USER = "emailOfUser";
 	public static final String LANGUAGE = "language";
 
