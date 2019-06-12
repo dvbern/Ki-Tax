@@ -55,11 +55,6 @@ public class VerrechnungKibonDetail extends AbstractEntity {
 	@Column(nullable = false)
 	private Long totalKinderVerrechnet;
 
-	@Size(max = Constants.DB_TEXTAREA_LENGTH)
-	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
-	private String details;
-
-
 	public VerrechnungKibonDetail() {
 	}
 
@@ -97,14 +92,6 @@ public class VerrechnungKibonDetail extends AbstractEntity {
 
 	public void setTotalKinderVerrechnet(@NotNull Long totalKinderVerrechnet) {
 		this.totalKinderVerrechnet = totalKinderVerrechnet;
-	}
-
-	public String getDetails() {
-		return details;
-	}
-
-	public void setDetails(String details) {
-		this.details = details;
 	}
 
 	@Override

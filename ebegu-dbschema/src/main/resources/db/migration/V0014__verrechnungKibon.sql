@@ -15,7 +15,6 @@ create table verrechnung_kibon_detail (
 	user_erstellt varchar(255) not null,
 	user_mutiert varchar(255) not null,
 	version bigint not null,
-	details varchar(4000),
 	total_kinder_verrechnet bigint not null,
 	gemeinde_id binary(16) not null,
 	gesuchsperiode_id binary(16) not null,

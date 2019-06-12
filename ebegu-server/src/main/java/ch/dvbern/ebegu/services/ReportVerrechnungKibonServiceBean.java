@@ -46,7 +46,6 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -104,9 +103,6 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	@Inject
 	private Persistence persistence;
 
-	@Inject
-	private EbeguConfiguration ebeguConfiguration;
-
 
 	@SuppressWarnings("SimplifyStreamApiCallChains")
 	@Nonnull
@@ -139,7 +135,12 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 			}
 			// Fuer diese Gesuchsperiode: Alle Gemeinden verarbeiten
 			List<VerrechnungKibonDetail> verrechnungDetailsForGesuchsperiode =
-				createVerrechnungDetailsForGesuchsperiode(gesuchsperiode, gemeindeListMap, aktuelleVerrechnung);
+				createVerrechnungDetailsForGesuchsperiode(
+					gesuchsperiode,
+					gemeindeListMap,
+					aktuelleVerrechnung,
+					doSave
+				);
 			aktuelleVerrechnungDetails.addAll(verrechnungDetailsForGesuchsperiode);
 		}
 
@@ -194,7 +195,8 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 	private List<VerrechnungKibonDetail> createVerrechnungDetailsForGesuchsperiode(
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Map<Gemeinde, List<Gesuch>> gemeindeListMap,
-		@Nonnull VerrechnungKibon verrechnungAktuell
+		@Nonnull VerrechnungKibon verrechnungAktuell,
+		boolean doSave
 	) {
 		List<VerrechnungKibonDetail> result = new ArrayList<>();
 		for (Entry<Gemeinde, List<Gesuch>> gemeindeListEntry : gemeindeListMap.entrySet()) {
@@ -204,7 +206,6 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 			row.setGesuchsperiode(gesuchsperiode);
 			List<Gesuch> gesuchList = gemeindeListEntry.getValue();
 
-			StringBuilder details = new StringBuilder();
 			long countAlleKinder = 0;
 			for (Gesuch gesuch : gesuchList) {
 				long countKinderOfGesuch = 0;
@@ -221,15 +222,13 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 					+ gesuch.getFall().getFallNummer() + ';'
 					+ kindernamen + ';'
 					+ countKinderOfGesuch + ';';
-				// Zur Kontrolle die Details loggen
-				if (ebeguConfiguration.getIsDevmode()) {
+				// Zur Kontrolle die Details loggen nur wenn es doSave ist
+				if (doSave) {
 					LOG.info(debug);
 				}
-				details.append(debug).append('\n');
 				countAlleKinder += countKinderOfGesuch;
 			}
 			row.setTotalKinderVerrechnet(countAlleKinder);
-			row.setDetails(details.toString());
 			result.add(row);
 		}
 		return result;
