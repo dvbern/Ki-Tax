@@ -260,7 +260,10 @@ public class ReportVerrechnungKibonServiceBean extends AbstractReportServiceBean
 
 		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		List<VerrechnungKibon> criteriaResults = persistence.getCriteriaResults(query, 1);
-		return Optional.ofNullable(criteriaResults.get(0));
+		if (!criteriaResults.isEmpty()) {
+			return Optional.ofNullable(criteriaResults.get(0));
+		}
+		return Optional.empty();
 	}
 
 	@Nonnull
