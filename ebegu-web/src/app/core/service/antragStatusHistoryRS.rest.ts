@@ -33,7 +33,7 @@ export default class AntragStatusHistoryRS {
     public serviceURL: string;
 
     private readonly lastChangeSubject$ = new ReplaySubject<TSAntragStatusHistory | null>(1);
-    private _lastChange$: Observable<TSAntragStatusHistory | null> = this.lastChangeSubject$.asObservable();
+    private readonly _lastChange$: Observable<TSAntragStatusHistory | null> = this.lastChangeSubject$.asObservable();
 
     public constructor(
         public http: IHttpService,

@@ -88,7 +88,8 @@ export class GesuchRouteController implements IController {
                     .pipe(takeUntil(this.unsubscribe$))
                     .subscribe(lastChange => {
                         this.userFullName = this.antragStatusHistoryRS.getUserFullname(lastChange);
-                    });
+                    },
+                    err => LOG.error(err));
             });
 
     }
