@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.InstitutionStatus;
+import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -116,6 +117,10 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 
 	public void setStammdatenCheckRequired(boolean stammdatenCheckRequired) {
 		this.stammdatenCheckRequired = stammdatenCheckRequired;
+	}
+
+	public boolean isUnknownInstitution() {
+		return this.name.equals(Constants.UNKNOWN_INSTITUTION_NAME);
 	}
 
 	@Override

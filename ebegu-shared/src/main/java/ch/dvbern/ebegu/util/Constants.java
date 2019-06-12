@@ -114,6 +114,8 @@ public final class Constants {
 
 	public static final int DAYS_BEFORE_INSTITUTION_CHECK = 100;
 
+	public static final String UNKNOWN_INSTITUTION_NAME = " ";
+
 	private Constants() {
 		//this prevents even the native class from
 		//calling this ctor as well :
