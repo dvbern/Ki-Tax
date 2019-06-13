@@ -141,8 +141,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject
-	private BenutzerService benutzerService;
-	@Inject
 	private GemeindeService gemeindeService;
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
