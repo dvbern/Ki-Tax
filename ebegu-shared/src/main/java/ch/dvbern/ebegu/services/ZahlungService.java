@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
@@ -37,7 +38,7 @@ public interface ZahlungService {
 	 * Der Zahlungsauftrag hat den initialen Status ENTWURF
 	 * Als datumGeneriert wird "Jetzt" verwendet
 	 */
-	Zahlungsauftrag zahlungsauftragErstellen(LocalDate datumFaelligkeit, String beschreibung);
+	Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung);
 
 	/**
 	 * Aktualisiert das Fälligkeitsdatum und die Beschreibung im übergebenen Auftrag. Die Zahlungspositionen werden
@@ -50,7 +51,8 @@ public interface ZahlungService {
 	 * Mutationen.
 	 * Der Zahlungsauftrag hat den initialen Status ENTWURF
 	 */
-	Zahlungsauftrag zahlungsauftragErstellen(LocalDate datumFaelligkeit, String beschreibung, LocalDateTime datumGeneriert);
+	Zahlungsauftrag zahlungsauftragErstellen(@Nonnull String gemeindeId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung,
+		@Nonnull LocalDateTime datumGeneriert);
 
 	/**
 	 * Nachdem alle Daten kontrolliert wurden, wird der Zahlungsauftrag ausgeloest. Danach kann er nicht mehr
@@ -79,17 +81,13 @@ public interface ZahlungService {
 	Collection<Zahlungsauftrag> getAllZahlungsauftraege();
 
 	/**
-	 * Gibt alle Zahlungsauftraege zurueck
-	 */
-	Optional<Zahlungsauftrag> findLastZahlungsauftrag();
-
-	/**
 	 * Eine Kita kann/muss den Zahlungseingang bestaetigen
 	 */
 	Zahlung zahlungBestaetigen(String zahlungId);
 
 	/**
-	 * Gibt alle Zahlungsaufträge des übergebenen Zeitraums zurück.
+	 * Gibt alle Zahlungsaufträge des übergebenen Zeitraums zurück. Es werden nur Zahlungsaufträge aufgefuehrt, fuer die der eingeloggte Benutzer berechtigt
+	 * ist (d.h. für die Gemeinde).
 	 */
 	Collection<Zahlungsauftrag> getZahlungsauftraegeInPeriode(LocalDate von, @Nonnull LocalDate bis);
 
@@ -102,5 +100,5 @@ public interface ZahlungService {
 	 * Kontrolliert die Zahlungen Stand heute: Es werden die Zahlen aus der letzt gueltigen Verfuegung jedes Falls
 	 * verglichen mit den tatsaechlich erfolgten Zahlungen.
 	 */
-	void zahlungenKontrollieren();
+	void zahlungenKontrollieren(@Nonnull String gemeindeId);
 }

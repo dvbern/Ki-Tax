@@ -25,6 +25,11 @@
             <hr class="header">
         </div>
 
+        <div class="filter">
+            <h3 class="uppercase" translate>FILTER</h3>
+            <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter">
+        </div>
+
         <!--Tabelle zum anzeigen aller Traegerschaften-->
         <div class="table-responsive traegerschaft-table">
 
@@ -34,9 +39,20 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'TRAEGERSCHAFT' | translate}}
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let traegerschaft"
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let traegerschaft"
                               (click)="openTraegerschaft(traegerschaft)">
                         {{traegerschaft.name}}
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column detail -->
+                <ng-container matColumnDef="detail">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let traegerschaft">
+                        <dv-loading-button buttonClass="dv-btn-sm"
+                                           (buttonClick)="openTraegerschaft(traegerschaft)">
+                            <i class="fa fa-eye"></i>
+                        </dv-loading-button>
                     </mat-cell>
                 </ng-container>
 

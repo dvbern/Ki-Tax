@@ -48,6 +48,6 @@ public enum VerfuegungsZeitabschnittZahlungsstatus {
 	}
 
 	public boolean isBereitsBehandeltInZahlungslauf() {
-		return  !(isNeu() || isIgnorierend());
+		return  !isNeu() && !isIgnorierend();
 	}
 }

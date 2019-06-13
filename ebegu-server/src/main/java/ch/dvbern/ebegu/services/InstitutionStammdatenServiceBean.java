@@ -179,14 +179,20 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@Nonnull
 	@PermitAll
 	public InstitutionStammdaten getInstitutionStammdatenByInstitution(String institutionId) {
-		Institution institution = institutionService.findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException
-			("getInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+		Institution institution = institutionService.findInstitution(institutionId)
+			.orElseThrow(() ->
+				new EbeguEntityNotFoundException(
+					"getInstitutionStammdatenByInstitution_institution",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					institutionId)
+			);
+
 		return criteriaQueryHelper.getEntityByUniqueAttribute(
 			InstitutionStammdaten.class,
 			institution,
 			InstitutionStammdaten_.institution
 		).orElseThrow(() -> new EbeguEntityNotFoundException
-			("getInstitutionStammdatenByInstitution", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
+			("getInstitutionStammdatenByInstitution_institutionStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
 	}
 
 	@Nullable

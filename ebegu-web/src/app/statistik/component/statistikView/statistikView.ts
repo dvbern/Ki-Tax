@@ -234,6 +234,19 @@ export class StatistikViewController implements IController {
                     this.createMassenversand();
                 }
                 return;
+            case TSStatistikParameterType.INSTITUTIONEN:
+                this.reportAsyncRS.getInstitutionenReportExcel()
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                return;
+            case TSStatistikParameterType.VERRECHNUNG_KIBON:
+                this.reportAsyncRS.getVerrechnungKibonReportExcel(
+                    this._statistikParameter.doSave, this._statistikParameter.betragProKind)
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                break;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }

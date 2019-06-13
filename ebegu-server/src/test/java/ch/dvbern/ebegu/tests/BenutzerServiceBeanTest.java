@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.ejb.EJBException;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.inject.Inject;
 
@@ -32,8 +31,10 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.FallService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -63,6 +64,9 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private FallService fallService;
 
 	@Test
 	public void oneBerechtigung() {
@@ -212,8 +216,10 @@ public class BenutzerServiceBeanTest extends AbstractEbeguLoginTest {
 
 		try {
 			benutzerService.einladen(einladung);
-			fail("It should throw a ConstraintViolationException because AKTIV is not a valid status. It must be EINGELADEN");
-		} catch (EJBException e) {
+			fail(
+				"It should throw a EbeguRuntimeException because AKTIV is not a valid status. It must be "
+					+ "EINGELADEN");
+		} catch (EbeguRuntimeException e) {
 			// nop
 		}
 

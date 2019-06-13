@@ -5,7 +5,7 @@
 <#assign datumGeloescht = .now>
 From: ${configuration.senderAddress}
 To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
-Subject: <@base64Header>kiBon – FR_Ihr Gesuch wurde gelöscht</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Votre demande a été supprimée</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>FR_kiBon – Ihr Gesuch wurde gelöscht</title>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Votre demande a été supprimée</title>
 
 </head>
 
@@ -21,21 +21,25 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		FR_Guten Tag
+		Bonjour,
 	</p>
 	<p>
-        FR_Sie haben Ihren Antrag auf <a href="www.bern.ch/ki-tax">www.bern.ch/ki-tax</a> bearbeitet, diesen aber nicht
-		freigegeben oder die Freigabequittung nicht eingereicht. Wir hatten Sie diesbezüglich bereits informiert.
-	</p
-	<p>
-        FR_Ihre Angaben wurden am ${datumGeloescht?date} automatisch gelöscht.
+		Votre demande via  <a href="www.kibon.ch">www.kibon.ch</a> nous est bien parvenue mais elle n'a toujours pas été validée et il manque la confirmation
+		des
+		données. Vous avez déjà reçu un courriel à ce sujet.
 	</p>
 	<p>
-        FR_Freundliche Grüsse <br/>
-        FR_Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+		Vos données ont donc été automatiquement supprimées le ${datumGeloescht?date}.
 	</p>
 	<p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
+	</p>
+	<p>
+		<#if configuration.isDevmode>
+		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
+		</#if>
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

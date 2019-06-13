@@ -17,9 +17,11 @@ import {IComponentOptions, IController} from 'angular';
 import {BUILDTSTAMP, VERSION} from '../../../../environments/version';
 import DateUtil from '../../../../utils/DateUtil';
 import {TSVersionCheckEvent} from '../../events/TSVersionCheckEvent';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import HttpVersionInterceptor from '../../service/version/HttpVersionInterceptor';
 import IRootScopeService = angular.IRootScopeService;
 import IWindowService = angular.IWindowService;
+import ITranslateService = angular.translate.ITranslateService;
 
 export class DVVersionComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -31,18 +33,27 @@ export class DVVersionComponentConfig implements IComponentOptions {
 
 export class DVVersionController implements IController {
 
-    public static $inject = ['$rootScope', 'HttpVersionInterceptor', '$window'];
+    public static $inject = [
+        '$rootScope',
+        'HttpVersionInterceptor',
+        '$window',
+        'ApplicationPropertyRS',
+        '$translate',
+    ];
 
     public backendVersion: string;
     public readonly buildTime: string = BUILDTSTAMP;
     public readonly frontendVersion: string = VERSION;
     public showSingleVersion: boolean = true;
     public currentYear: number;
+    public currentNode: string;
 
     public constructor(
         private readonly $rootScope: IRootScopeService,
         private readonly httpVersionInterceptor: HttpVersionInterceptor,
         private readonly $window: IWindowService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly $translate: ITranslateService,
     ) {
 
     }
@@ -51,19 +62,25 @@ export class DVVersionController implements IController {
 
         this.backendVersion = this.httpVersionInterceptor.backendVersion;
         this.currentYear = DateUtil.currentYear();
-
         this.$rootScope.$on(TSVersionCheckEvent[TSVersionCheckEvent.VERSION_MISMATCH], () => {
+            this.httpVersionInterceptor.eventCaptured = true;
             this.backendVersion = this.httpVersionInterceptor.backendVersion;
             this.updateDisplayVersion();
-            const msg = `Der Client (${this.frontendVersion}) hat eine andere Version als der Server(${this.backendVersion}). Bitte laden sie die Seite komplett neu (F5)`;
+            const msg = this.$translate.instant(
+                'VERSION_ERROR_TEXT',
+                {
+                    frontendVersion: this.frontendVersion,
+                    backendVersion: this.backendVersion,
+                });
             this.$window.alert(msg);
-
         });
 
+        // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
+        this.applicationPropertyRS.getBackgroundColorFromServer();
+        this.applicationPropertyRS.getPublicPropertiesCached().then(value => this.currentNode = value.currentNode);
     }
 
     private updateDisplayVersion(): void {
         this.showSingleVersion = this.frontendVersion === this.backendVersion || this.backendVersion === null;
     }
-
 }

@@ -199,6 +199,7 @@ export default class GesuchModelManager {
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.activInstitutionenList = undefined;
         this.loadGemeindeStammdaten();
+        this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
 
         return gesuch;
     }
@@ -279,6 +280,9 @@ export default class GesuchModelManager {
      * Retrieves the list of InstitutionStammdaten for the date of today.
      */
     public updateActiveInstitutionenList(): void {
+        if (!this.getGesuchsperiode()) {
+            return;
+        }
         this.instStamRS.getAllActiveInstitutionStammdatenByGesuchsperiode(this.getGesuchsperiode().id)
             .then((response: TSInstitutionStammdaten[]) => {
                 this.activInstitutionenList = response;
@@ -562,7 +566,10 @@ export default class GesuchModelManager {
     }
 
     public getStammdatenToWorkWith(): TSGesuchstellerContainer {
-        return this.gesuchstellerNumber === 2 ? this.gesuch.gesuchsteller2 : this.gesuch.gesuchsteller1;
+        if (this.gesuch) {
+            return this.gesuchstellerNumber === 2 ? this.gesuch.gesuchsteller2 : this.gesuch.gesuchsteller1;
+        }
+        return undefined;
     }
 
     public getEkvFuerBasisJahrPlus(basisJahrPlus: number): boolean {
@@ -1185,6 +1192,7 @@ export default class GesuchModelManager {
     private calculateGesuchStatusVerfuegt(): void {
         if (!this.isThereAnyOpenBetreuung()) {
             this.gesuch.status = this.calculateNewStatus(TSAntragStatus.VERFUEGT);
+            this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
         }
     }
 
@@ -1364,6 +1372,9 @@ export default class GesuchModelManager {
      * Returns true if the Gesuch has the given status
      */
     public isGesuchStatus(status: TSAntragStatus): boolean {
+        if (!this.gesuch) {
+            return undefined;
+        }
         return this.gesuch.status === status;
     }
 
@@ -1457,24 +1468,6 @@ export default class GesuchModelManager {
         return this.gesuch ?
             this.gesuch.typ === TSAntragTyp.ERSTGESUCH || this.gesuch.typ === TSAntragTyp.ERNEUERUNGSGESUCH :
             true;
-    }
-
-    public saveMutation(): IPromise<TSGesuch> {
-        return this.gesuchRS.antragMutieren(this.gesuch.id, this.gesuch.eingangsdatum)
-            .then(response => this.handleSave(response));
-    }
-
-    public saveErneuerungsgesuch(): IPromise<TSGesuch> {
-        return this.gesuchRS.antragErneuern(this.gesuch.gesuchsperiode.id, this.gesuch.id, this.gesuch.eingangsdatum)
-            .then(response => this.handleSave(response));
-    }
-
-    private handleSave(response: TSGesuch): IPromise<TSGesuch> {
-        this.setGesuch(response);
-
-        return this.wizardStepManager.findStepsFromGesuch(response.id).then(() => {
-            return this.getGesuch();
-        });
     }
 
     /**

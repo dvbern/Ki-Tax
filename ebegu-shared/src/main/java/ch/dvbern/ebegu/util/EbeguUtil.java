@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.util;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -93,6 +94,28 @@ public final class EbeguUtil {
 			List<Gesuch> antraege = fallToAntragMultimap.get(fall);
 			antraege.sort(Comparator.comparing(Gesuch::getLaufnummer).reversed());
 			gesuchMap.put(antraege.get(0).getId(), antraege.get(0)); //nur neusten Antrag zurueckgeben
+		}
+		return gesuchMap;
+	}
+
+	/**
+	 * Gibt aus einer Liste von Gesuchen nur das jeweils neueste (hoechste Laufummer) pro Dossier zurueck.
+	 * Die Rueckgabe erfolgt in einer Map mit Gemeinde - Liste von (neuesten) Gesuchen
+	 */
+	public static Map<Gemeinde, List<Gesuch>> groupByDossierAndSelectNewestAntrag(@Nonnull List<Gesuch> allGesuche) {
+		ArrayListMultimap<Dossier, Gesuch> dossierToAntragMultimap = ArrayListMultimap.create();
+		allGesuche.forEach(gesuch -> dossierToAntragMultimap.put(gesuch.getDossier(), gesuch));
+		// map erstellen in der nur noch das gesuch mit der hoechsten laufnummer drin ist
+		Map<Gemeinde, List<Gesuch>> gesuchMap = new HashMap<>();
+		for (Dossier dossier : dossierToAntragMultimap.keySet()) {
+			List<Gesuch> antraege = dossierToAntragMultimap.get(dossier);
+			antraege.sort(Comparator.comparing(Gesuch::getLaufnummer).reversed());
+			Gesuch neuesterAntragProDossier = antraege.get(0);
+			Gemeinde gmde = neuesterAntragProDossier.extractGemeinde();
+			if (!gesuchMap.containsKey(gmde)) {
+				gesuchMap.put(gmde, new ArrayList<>());
+			}
+			gesuchMap.get(gmde).add(neuesterAntragProDossier);
 		}
 		return gesuchMap;
 	}
@@ -197,6 +220,24 @@ public final class EbeguUtil {
 		return gemeindeSprachen.get(0);
 	}
 
+	/**
+	 * Will return the desired Korrespondenzsprache of the Gesuchsteller if this happens to be configured as allowed language for the Gemeinde
+	 * In any other case it will return the first language that is allowed by the Gemeinde.
+	 * WARNING! since allowed languages are not prioritized in the Gemeinde, the method cannot know if it should return one language or another
+	 * for this reason it will return just the first language it finds.
+	 */
+	@Nonnull
+	public static Sprache extractKorrespondenzsprache(@Nonnull Gesuch gesuch, @Nonnull GemeindeStammdaten gemeindeStammdaten) {
+		final List<Sprache> gemeindeSprachen = extractGemeindeSprachen(gemeindeStammdaten);
+		final Sprache gesuchstellerGewuenschteSprache = extractGesuchstellerSprache(gesuch);
+
+		if (gesuchstellerGewuenschteSprache != null && gemeindeSprachen.contains(gesuchstellerGewuenschteSprache)) {
+			return gesuchstellerGewuenschteSprache;
+		}
+
+		return gemeindeSprachen.get(0);
+	}
+
 	@Nullable
 	private static Sprache extractGesuchstellerSprache(@Nonnull Gesuch gesuch) {
 		if (gesuch.getGesuchsteller1() == null) {
@@ -231,6 +272,20 @@ public final class EbeguUtil {
 			);
 
 		final Sprache[] gemeindeSprachen = gemeindeStammdatenOpt.getKorrespondenzsprache().getSprache();
+		if (gemeindeSprachen.length <= 0) {
+			return Collections.singletonList(Sprache.DEUTSCH);
+		}
+		return Arrays.asList(gemeindeSprachen);
+	}
+
+	/**
+	 * Will looked for the language(s) of the given Gemeinde and return them as a list.
+	 * If the Gemeinde has no Stammdaten an Exception will be thrown because this shows a real problem in the data
+	 * If the Gemeinde has no language configured it returns DEUTSCH as default language
+	 */
+	@Nonnull
+	public static List<Sprache> extractGemeindeSprachen(@Nonnull GemeindeStammdaten gemeindeStammdaten) {
+		final Sprache[] gemeindeSprachen = gemeindeStammdaten.getKorrespondenzsprache().getSprache();
 		if (gemeindeSprachen.length <= 0) {
 			return Collections.singletonList(Sprache.DEUTSCH);
 		}

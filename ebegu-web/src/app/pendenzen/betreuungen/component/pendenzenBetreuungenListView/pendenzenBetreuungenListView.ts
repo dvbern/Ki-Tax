@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import AuthServiceRS from '../../../../../authentication/service/AuthServiceRS.rest';
 import BerechnungsManager from '../../../../../gesuch/service/berechnungsManager';
 import GemeindeRS from '../../../../../gesuch/service/gemeindeRS.rest';
 import GesuchModelManager from '../../../../../gesuch/service/gesuchModelManager';
@@ -26,6 +27,7 @@ import TSGesuchsperiode from '../../../../../models/TSGesuchsperiode';
 import TSInstitution from '../../../../../models/TSInstitution';
 import TSPendenzBetreuung from '../../../../../models/TSPendenzBetreuung';
 import EbeguUtil from '../../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import GesuchsperiodeRS from '../../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../../core/service/institutionRS.rest';
@@ -53,6 +55,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         'BerechnungsManager',
         '$state',
         'GemeindeRS',
+        'AuthServiceRS'
     ];
 
     private pendenzenList: Array<TSPendenzBetreuung>;
@@ -66,6 +69,7 @@ export class PendenzenBetreuungenListViewController implements IController {
     public gemeindenList: Array<TSGemeinde>;
     public itemsByPage: number = 20;
     public numberOfPages: number = 1;
+    public hasInstitutionenInStatusAngemeldet: boolean = false;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -79,6 +83,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         private readonly berechnungsManager: BerechnungsManager,
         private readonly $state: StateService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -88,6 +93,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         this.updateBetreuungsangebotTypList();
         this.updateActiveGesuchsperiodenList();
         this.updateGemeindenList();
+        this.initHasInstitutionenInStatusAngemeldet();
     }
 
     public $onDestroy(): void {
@@ -179,5 +185,15 @@ export class PendenzenBetreuungenListViewController implements IController {
         } else {
             this.$state.go('gesuch.betreuung', navObj);
         }
+    }
+
+    private initHasInstitutionenInStatusAngemeldet(): void {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles())) {
+            return;
+        }
+        this.institutionRS.hasInstitutionenInStatusAngemeldet()
+            .then(result => {
+                this.hasInstitutionenInStatusAngemeldet = result;
+            });
     }
 }

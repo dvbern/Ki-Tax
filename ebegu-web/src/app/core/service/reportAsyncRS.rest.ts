@@ -200,6 +200,24 @@ export class ReportAsyncRS {
             });
     }
 
+    public getInstitutionenReportExcel(): IPromise<string> {
+        return this.http.get(`${this.serviceURL}/excel/institutionen`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
+    public getVerrechnungKibonReportExcel(doSave: boolean, betragProKind: number): IPromise<string> {
+        const reportParams = this.httpParamSerializer({
+            doSave,
+            betragProKind,
+        });
+        return this.http.get(`${this.serviceURL}/excel/verrechnungkibon?${reportParams}`)
+            .then((response: any) => {
+                return response.data;
+            });
+    }
+
     public getServiceName(): string {
         return 'ReportAsyncRS';
     }

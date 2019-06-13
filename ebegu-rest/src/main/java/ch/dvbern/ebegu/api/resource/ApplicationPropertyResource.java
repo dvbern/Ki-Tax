@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -46,11 +48,13 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
+import ch.dvbern.ebegu.api.dtos.JaxPublicAppConfig;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -93,64 +97,30 @@ public class ApplicationPropertyResource {
 		@Context HttpServletResponse response) {
 
 		ApplicationProperty propertyFromDB = this.applicationPropertyService.readApplicationProperty(keyParam)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("getByKey", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, keyParam));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getByKey",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				keyParam));
 		return converter.applicationPropertyToJAX(propertyFromDB);
 	}
 
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Are we in development mode?", response = Boolean.class)
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.WILDCARD)
-	@Path("/public/devmode")
-	public Response isDevMode(@Context HttpServletResponse response) {
-		return Response.ok(ebeguConfiguration.getIsDevmode()).build();
-	}
-
-	@ApiOperation(value = "converts the list of whitelisted mimetypes (for uploads) into a list of file-extensions and "
-		+ "retunrs it as a property ", response = JaxApplicationProperties.class)
-	@Nullable
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/public/UPLOAD_FILETYPES_WHITELIST")
-	public JaxApplicationProperties getWhitelist(
-		@Context HttpServletResponse response) {
-
+	@Nonnull
+	private String readWhitelistAsString() {
 		final Collection<String> whitelist = this.applicationPropertyService.readMimeTypeWhitelist();
 		MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
-
 		final List<String> extensions = whitelist.stream().map(mimetype -> {
 			try {
 				return allTypes.forName(mimetype).getExtension();
 			} catch (MimeTypeException e) {
 				LOG.error("Could not find extension for mime type {}", mimetype);
-				return null;
+				return "";
 			}
 		}).filter(Objects::nonNull).collect(Collectors.toList());
-
-		final String list = StringUtils.join(extensions, ",");
-		ApplicationProperty applicationProperty = new ApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, list);
-		return converter.applicationPropertyToJAX(applicationProperty);
+		return StringUtils.join(extensions, ",");
 	}
 
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Is Dummy-Login enabled?", response = Boolean.class)
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.WILDCARD)
-	@Path("/public/dummy")
-	public Response isDummyLoginEnabled(@Context HttpServletResponse response) {
-		return Response.ok(ebeguConfiguration.isDummyLoginEnabled()).build();
-	}
-
-	@ApiOperation(value = "Returns sentry env token for usage by sentry / raven.js", response = String.class)
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/public/sentryenv")
-	public JaxApplicationProperties getSentryEnvName(@Context HttpServletResponse response) {
-
+	@Nonnull
+	private JaxApplicationProperties getSentryEnvName() {
 		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService
 			.readApplicationProperty(ApplicationPropertyKey.SENTRY_ENV);
 
@@ -161,20 +131,23 @@ public class ApplicationPropertyResource {
 		return converter.applicationPropertyToJAX(prop);
 	}
 
-
 	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	@ApiOperation(value = "Returns background Color for the current System", response = String.class)
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/public/background")
-	public JaxApplicationProperties getBackgroundColor(@Context HttpServletResponse response) {
-		Optional<ApplicationProperty> propertyFromDB = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR);
-		ApplicationProperty prop = propertyFromDB.orElse(new ApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR, "#FFFFFF"));
+	public JaxApplicationProperties getBackgroundColor() {
+		Optional<ApplicationProperty> propertyFromDB =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR);
+		ApplicationProperty prop =
+			propertyFromDB.orElse(new ApplicationProperty(ApplicationPropertyKey.BACKGROUND_COLOR, "#FFFFFF"));
 		return converter.applicationPropertyToJAX(prop);
 	}
 
-	@ApiOperation(value = "Returns all application properties", responseContainer = "List", response = JaxApplicationProperties.class)
+	@ApiOperation(value = "Returns all application properties",
+		responseContainer = "List",
+		response = JaxApplicationProperties.class)
 	@Nonnull
 	@GET
 	@Consumes(MediaType.WILDCARD)
@@ -198,7 +171,10 @@ public class ApplicationPropertyResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		ApplicationProperty modifiedProperty = this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, key), value);
+		ApplicationProperty modifiedProperty =
+			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
+				ApplicationPropertyKey.class,
+				key), value);
 
 		URI uri = uriInfo.getBaseUriBuilder()
 			.path(ApplicationPropertyResource.class)
@@ -220,7 +196,10 @@ public class ApplicationPropertyResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		ApplicationProperty modifiedProperty = this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(ApplicationPropertyKey.class, key), value);
+		ApplicationProperty modifiedProperty =
+			this.applicationPropertyService.saveOrUpdateApplicationProperty(Enum.valueOf(
+				ApplicationPropertyKey.class,
+				key), value);
 
 		return converter.applicationPropertyToJAX(modifiedProperty);
 	}
@@ -236,16 +215,6 @@ public class ApplicationPropertyResource {
 		return Response.ok().build();
 	}
 
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@ApiOperation(value = "Are we in Testmode for Zahlungen?", response = Boolean.class)
-	@GET
-	@Consumes(MediaType.WILDCARD)
-	@Produces(MediaType.WILDCARD)
-	@Path("/public/zahlungentestmode")
-	public Response isZahlungenTestMode(@Context HttpServletResponse response) {
-		return Response.ok(ebeguConfiguration.getIsZahlungenTestMode()).build();
-	}
-
 	@RolesAllowed(SUPER_ADMIN)
 	@ApiOperation(value = "Gibt den Wert des Properties zurück", response = Boolean.class)
 	@GET
@@ -257,5 +226,37 @@ public class ApplicationPropertyResource {
 			return Response.ok(System.getProperty(keyParam)).build();
 		}
 		return Response.noContent().build();
+	}
+
+	@ApiOperation(value = "Single request to load public config", response = Boolean.class)
+	@GET
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/public/all")
+	public Response getPublicProperties(@Context HttpServletResponse response) {
+
+		boolean devmode = ebeguConfiguration.getIsDevmode();
+		final String whitelist = readWhitelistAsString();
+		boolean dummyMode = ebeguConfiguration.isDummyLoginEnabled();
+		String sentryEnvName = getSentryEnvName().getValue();
+		String background = getBackgroundColor().getValue();
+		boolean zahlungentestmode = ebeguConfiguration.getIsZahlungenTestMode();
+
+		String nodeName = "";
+		try {
+			nodeName = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			throw new EbeguRuntimeException("getHostName", "Hostname konnte nicht ermittelt werden", e);
+		}
+		JaxPublicAppConfig pubAppConf = new JaxPublicAppConfig(
+			nodeName,
+			devmode,
+			whitelist,
+			dummyMode,
+			sentryEnvName,
+			background,
+			zahlungentestmode
+		);
+		return Response.ok(pubAppConf).build();
 	}
 }

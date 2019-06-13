@@ -17,16 +17,15 @@
 
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatDialog, MatDialogConfig, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {StateService} from '@uirouter/core';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
+import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSInstitution from '../../../models/TSInstitution';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 
 @Component({
@@ -38,7 +37,6 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     public displayedColumns: string[] = [];
     public institutionen: TSInstitution[];
-    public selectedInstitution: TSInstitution = undefined;
     public dataSource: MatTableDataSource<TSInstitution>;
 
     @ViewChild(NgForm) public form: NgForm;
@@ -47,7 +45,6 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
-        private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
@@ -75,6 +72,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                 this.dataSource = new MatTableDataSource(insti);
                 this.dataSource.paginator = this.paginator;
                 this.changeDetectorRef.markForCheck();
+                this.dataSource.sort = this.sort;
             });
     }
 
@@ -87,26 +85,6 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         );
     }
 
-    public removeInstitution(institution: any): void {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.data = {
-            title: 'LOESCHEN_DIALOG_TITLE',
-        };
-        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe(userAccepted => {   // User confirmed removal
-                if (!userAccepted) {
-                    return;
-                }
-                this.selectedInstitution = undefined;
-                this.institutionRS.removeInstitution(institution.id).then(() => {
-                    const index = EbeguUtil.getIndexOfElementwithID(institution, this.institutionen);
-                    if (index > -1) {
-                        this.institutionen.splice(index, 1);
-                    }
-                });
-            });
-    }
-
     public createInstitution(): void {
         this.$state.go('institution.add');
     }
@@ -116,7 +94,10 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
      * Institution in question can always open the Institution.
      */
     public openInstitution(institution: TSInstitution): void {
-        if (institution.status !== TSInstitutionStatus.EINGELADEN || this.isInstitutionsAdminForInstitution(institution)) {
+        if (institution.status !== TSInstitutionStatus.EINGELADEN
+            || this.isCurrentUserAdminForInstitution(institution)
+            || this.isSuperAdmin()
+        ) {
             this.$state.go('institution.edit', {
                 institutionId: institution.id,
             });
@@ -124,22 +105,35 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         return;
     }
 
-    private isInstitutionsAdminForInstitution(institution: TSInstitution): boolean {
+    private isCurrentUserAdminForInstitution(institution: TSInstitution): boolean {
         const currentBerechtigung = this.authServiceRS.getPrincipal().currentBerechtigung;
         if (currentBerechtigung) {
-            return currentBerechtigung.role === TSRole.ADMIN_INSTITUTION
-                && ((currentBerechtigung.institution && currentBerechtigung.institution.id === institution.id)
-                    || (currentBerechtigung.traegerschaft && currentBerechtigung.traegerschaft.id === institution.traegerschaft.id));
+            return this.isCurrentUserTraegerschaftAdminOfSelectedInstitution(institution, currentBerechtigung)
+                || this.isCurrentUserInstitutionAdminOfSelectedInstitution(institution, currentBerechtigung);
         }
         return false;
     }
 
-    public isCreateAllowed(): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
+    private isCurrentUserTraegerschaftAdminOfSelectedInstitution(
+        institution: TSInstitution,
+        currentBerechtigung: TSBerechtigung,
+    ): boolean {
+        return currentBerechtigung.role === TSRole.ADMIN_TRAEGERSCHAFT
+            && (currentBerechtigung.traegerschaft && institution.traegerschaft
+                && currentBerechtigung.traegerschaft.id === institution.traegerschaft.id);
     }
 
-    public isDeleteAllowed(): boolean {
-        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    private isCurrentUserInstitutionAdminOfSelectedInstitution(
+        institution: TSInstitution,
+        currentBerechtigung: TSBerechtigung,
+    ): boolean {
+        return currentBerechtigung.role === TSRole.ADMIN_INSTITUTION
+            && (currentBerechtigung.institution
+                && currentBerechtigung.institution.id === institution.id);
+    }
+
+    public isCreateAllowed(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
     public showNoContentMessage(): boolean {
@@ -147,8 +141,14 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     private setDisplayedColumns(): void {
-        this.displayedColumns = this.isDeleteAllowed()
-            ? ['name', 'status', 'remove']
-            : ['name', 'status'];
+        this.displayedColumns = ['name', 'status', 'detail'];
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public doFilter = (value: string) => {
+        this.dataSource.filter = value.trim().toLocaleLowerCase();
     }
 }

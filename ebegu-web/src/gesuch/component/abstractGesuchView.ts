@@ -32,6 +32,8 @@ import ITimeoutService = angular.ITimeoutService;
 
 export default class AbstractGesuchViewController<T> implements IController {
 
+    public readonly DEFAULT_DELAY: number = 200;
+
     public $scope: IScope;
     public gesuchModelManager: GesuchModelManager;
     public berechnungsManager: BerechnungsManager;
@@ -127,19 +129,25 @@ export default class AbstractGesuchViewController<T> implements IController {
     }
 
     public extractFullNameGS1(): string {
-        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1 ?
-            this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName() :
-            '';
+        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1
+            ? this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName()
+            : '';
     }
 
     public extractFullNameGS2(): string {
-        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2 ?
-            this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() :
-            '';
+        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2
+            ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName()
+            : '';
     }
 
     public $postLink(): void {
-        const delay = 200;
+        this.doPostLinkActions(this.DEFAULT_DELAY);
+    }
+
+    public doPostLinkActions(delay: number): void {
+        // always when a new site is loaded we set the semaphore back to false so a new transition can happen
+        this.wizardStepManager.isTransitionInProgress = false;
+
         this.$timeout(() => {
             EbeguUtil.selectFirst();
         }, delay);

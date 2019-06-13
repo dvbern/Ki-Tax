@@ -51,6 +51,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -91,6 +92,9 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private TestfaelleService testfaelleService;
 
 	private Traegerschaft traegerschaft;
 	private Mandant mandant;
@@ -344,8 +348,7 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuch1.setGueltig(true);
 		gesuch1.setTimestampVerfuegt(LocalDateTime.now());
 		gesuchService.updateGesuch(gesuch1, true, null);
-		final Optional<Gesuch> mutationOpt = gesuchService.antragMutieren(gesuch1.getId(), LocalDate.now());
-		final Gesuch mutation = gesuchService.createGesuch(mutationOpt.get());
+		Gesuch mutation = testfaelleService.antragMutieren(gesuch1, LocalDate.now());
 		final Betreuungsmitteilung mitteilung = TestDataUtil.createBetreuungmitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
 			sender, MitteilungTeilnehmerTyp.INSTITUTION);
 
@@ -485,6 +488,36 @@ public class MitteilungServiceBeanTest extends AbstractEbeguLoginTest {
 		loginAsSachbearbeiterJA();
 		Mitteilung mitteilung = readFirstAndOnlyMitteilung();
 		mitteilungService.mitteilungUebergebenAnJugendamt(mitteilung.getId());
+	}
+
+	@Test
+	public void hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger() {
+		prepareDependentObjects("gesuchst");
+
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerINST));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(sender));
+
+		dossier = persistence.merge(dossier);
+
+		Mitteilung mitteilung1 = TestDataUtil.createMitteilung(dossier, empfaengerJA, MitteilungTeilnehmerTyp.JUGENDAMT,
+			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
+		persistence.persist(mitteilung1);
+
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerINST));
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(sender));
+
+		Mitteilung mitteilung2 = TestDataUtil.createMitteilung(dossier, empfaengerSCH, MitteilungTeilnehmerTyp.JUGENDAMT,
+			sender, MitteilungTeilnehmerTyp.GESUCHSTELLER);
+		persistence.persist(mitteilung2);
+
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerJA));
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerSCH));
+		Assert.assertFalse(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(empfaengerINST));
+		Assert.assertTrue(mitteilungService.hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(sender));
 	}
 
 	private Mitteilung readFirstAndOnlyMitteilung() {

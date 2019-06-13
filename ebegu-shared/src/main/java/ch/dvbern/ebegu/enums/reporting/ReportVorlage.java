@@ -107,6 +107,18 @@ public enum ReportVorlage {
 		ReportFileName.MASSENVERSAND,
 		Constants.DATA,
 		MergeFieldMassenversand.class
+	),
+	VORLAGE_REPORT_INSTITUTIONEN(
+		"/reporting/Institutionen.xlsx",
+		ReportFileName.INSTITUTIONEN,
+		Constants.DATA,
+		MergeFieldInstitutionen.class
+	),
+	VORLAGE_REPORT_VERRECHNUNG_KIBON(
+		"/reporting/VerrechnungKibon.xlsx",
+		ReportFileName.VERRECHNUNG_KIBON,
+		Constants.DATA,
+		MergeFieldVerrechnungKibon.class
 	);
 
 	@Nonnull

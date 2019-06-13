@@ -31,13 +31,17 @@ public enum MergeFieldZahlungAuftragPeriode implements MergeFieldProvider {
 	parameterTitle(new SimpleMergeField<>("parameterTitle", STRING_CONVERTER)),
 	periodeTitle(new SimpleMergeField<>("periodeTitle", STRING_CONVERTER)),
 	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
+	betreuungsangebotTypTitle(new SimpleMergeField<>("betreuungsangebotTypTitle", STRING_CONVERTER)),
 	auszahlungAmTitle(new SimpleMergeField<>("auszahlungAmTitle", STRING_CONVERTER)),
 	betragCHFTitle(new SimpleMergeField<>("betragCHFTitle", STRING_CONVERTER)),
+	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
 
 	repeatZahlungAuftragRow(new RepeatRowMergeField("repeatZahlungAuftragRow")),
 
 	periode(new SimpleMergeField<>("periode", STRING_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
+	betreuungsangebotTyp(new SimpleMergeField<>("betreuungsangebotTyp", STRING_CONVERTER)),
+	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
 	bezahltAm(new SimpleMergeField<>("bezahltAm", DATE_CONVERTER)),
 	betragCHF(new SimpleMergeField<>("betragCHF", BIGDECIMAL_CONVERTER));
 

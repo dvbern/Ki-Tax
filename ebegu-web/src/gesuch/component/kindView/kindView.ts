@@ -195,17 +195,18 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public save(): IPromise<TSKindContainer> {
-        if (this.isGesuchValid()) {
-            if (!this.form.$dirty) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                return this.$q.when(this.model);
-            }
-
-            this.errorService.clearAll();
-            return this.gesuchModelManager.saveKind(this.model);
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        if (!this.form.$dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return this.$q.when(this.model);
+        }
+
+        this.errorService.clearAll();
+        return this.gesuchModelManager.saveKind(this.model);
     }
 
     public cancel(): void {
@@ -311,7 +312,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public getYearEinschulung(): number {
-        return this.gesuchModelManager.getGesuchsperiodeBegin().year();
+        if (this.gesuchModelManager && this.gesuchModelManager.getGesuchsperiodeBegin()) {
+            return this.gesuchModelManager.getGesuchsperiodeBegin().year();
+        }
+        return undefined;
     }
 
     public getTextFachstelleKorrekturJA(): string {

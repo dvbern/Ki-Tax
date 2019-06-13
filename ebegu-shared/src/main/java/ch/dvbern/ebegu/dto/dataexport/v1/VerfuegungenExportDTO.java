@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class VerfuegungenExportDTO {
 
-	private static final String SCHEMA_VERSION = "1.0"; //converter for Version 1
+	private static final String SCHEMA_VERSION = "2.0"; //converter for Version 2
 
 	private List<VerfuegungExportDTO> verfuegungen;
 

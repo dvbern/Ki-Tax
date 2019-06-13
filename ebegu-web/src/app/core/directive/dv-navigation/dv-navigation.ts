@@ -85,11 +85,7 @@ export class NavigatorController implements IController {
     public dvSubStep: number;
     public dvTranslateNext: string;
     public dvTranslatePrevious: string;
-    // this semaphore will prevent a navigation button to be called again until the prozess is not finished
-    public isRequestInProgress: boolean = false;
     public containerClass: string;
-
-    public performSave: boolean;
 
     public constructor(
         private readonly wizardStepManager: WizardStepManager,
@@ -157,29 +153,29 @@ export class NavigatorController implements IController {
      * deshalb keine Promise zurueckgibt, wird dann direkt zum naechsten Step geleitet.
      */
     public nextStep(): void {
-        if (this.isRequestInProgress) {
+        if (this.wizardStepManager.isTransitionInProgress) {
             console.log('doubleclick suppressed'); // for testing
             return;
         }
 
-        this.isRequestInProgress = true;
+        this.wizardStepManager.isTransitionInProgress = true;
+
+        // tslint:disable-next-line:early-exit
         if (this.isSavingEnabled() && this.dvSave) {
             const returnValue = this.dvSave();  // callback ausfuehren, could return promise
-            if (returnValue === undefined) {
-                this.isRequestInProgress = false;
-            } else {
+            if (returnValue) {
                 this.$q.when(returnValue).then(() => {
                     this.$timeout(() => {
                         this.navigateToNextStep(); // wait till digest is finished (EBEGU-1595)
                     });
 
-                }).finally(() => {
-                    this.isRequestInProgress = false;
                 });
+            } else {
+                // we need to release the semaphore because we stay in the page and we need to allow the user to move on
+                this.wizardStepManager.isTransitionInProgress = false;
             }
         } else {
             // do nothing if we are already saving
-            this.isRequestInProgress = false;
             this.navigateToNextStep();
         }
     }
@@ -194,26 +190,27 @@ export class NavigatorController implements IController {
      * deshalb keine Promise zurueckgibt, wird dann direkt zum vorherigen Step geleitet.
      */
     public previousStep(): void {
-        if (this.isRequestInProgress) {
+        if (this.wizardStepManager.isTransitionInProgress) {
             // do nothing if we are already saving
             return;
         }
 
+        this.wizardStepManager.isTransitionInProgress = true;
+
+        // tslint:disable-next-line:early-exit
         if (this.isSavingEnabled() && this.dvSave) {
             const returnValue = this.dvSave();  // callback ausfuehren, could return promise
-            if (returnValue === undefined) {
-                this.isRequestInProgress = false;
-            } else {
+            if (returnValue) {
                 this.$q.when(returnValue).then(() => {
                     this.$timeout(() => {
                         this.navigateToPreviousStep(); // wait till digest is finished (EBEGU-1595)
                     });
-                }).finally(() => {
-                    this.isRequestInProgress = false;
                 });
+            } else {
+                // we need to release the semaphore because we stay in the page and we need to allow the user to move on
+                this.wizardStepManager.isTransitionInProgress = false;
             }
         } else {
-            this.isRequestInProgress = false;
             this.navigateToPreviousStep();
         }
     }

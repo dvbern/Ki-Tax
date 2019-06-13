@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -88,8 +89,8 @@ public class Benutzer extends AbstractMutableEntity {
 	private String username = null;
 
 	@Nullable
-	@Column(length = Constants.UUID_LENGTH)
-	@Size(max = Constants.UUID_LENGTH)
+	@Column(length = Constants.DB_DEFAULT_MAX_LENGTH)
+	@Size(max = Constants.DB_DEFAULT_MAX_LENGTH)
 	private String externalUUID = null;
 
 	@NotNull
@@ -121,6 +122,12 @@ public class Benutzer extends AbstractMutableEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_benutzer_mandant_id"))
 	private Mandant mandant = null;
+
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	private String bemerkungen;
+
 
 	public String getUsername() {
 		return username;
@@ -186,6 +193,15 @@ public class Benutzer extends AbstractMutableEntity {
 
 	public void setStatus(@Nonnull BenutzerStatus status) {
 		this.status = status;
+	}
+
+	@Nullable
+	public String getBemerkungen() {
+		return bemerkungen;
+	}
+
+	public void setBemerkungen(@Nullable String bemerkungen) {
+		this.bemerkungen = bemerkungen;
 	}
 
 	@Nonnull
@@ -293,5 +309,14 @@ public class Benutzer extends AbstractMutableEntity {
 		return !getRole().isRoleGemeindeabhaengig() || getCurrentBerechtigung().getGemeindeList()
 			.stream()
 			.anyMatch(gemeinde::equals);
+	}
+
+	public void addBemerkung(String s) {
+		String bemerkungWithDate = Constants.DATE_FORMATTER.format(LocalDate.now()) + ": " + s;
+		if (bemerkungen == null) {
+			bemerkungen = bemerkungWithDate;
+		} else {
+			bemerkungen = bemerkungen + '\n' + bemerkungWithDate;
+		}
 	}
 }

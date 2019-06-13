@@ -29,7 +29,7 @@ import TSVerfuegung from '../../../models/TSVerfuegung';
 import TSVerfuegungZeitabschnitt from '../../../models/TSVerfuegungZeitabschnitt';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
-import {ThreeButtonsDialogController} from '../../dialog/ThreeButtonsDialogController';
+import {StepDialogController} from '../../dialog/StepDialogController';
 import {IBetreuungStateParams} from '../../gesuch.route';
 import BerechnungsManager from '../../service/berechnungsManager';
 import ExportRS from '../../service/exportRS.rest';
@@ -39,7 +39,7 @@ import AbstractGesuchViewController from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
-const threeButtonsDialogTempl = require('../../dialog/threeButtonsDialog.html');
+const stepDialogTempl = require('../../dialog/stepDialog.html');
 
 export class VerfuegenViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -137,12 +137,17 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
             this.setBemerkungen();
+            this.setParamsDependingOnCurrentVerfuegung();
         } else {
             this.gesuchModelManager.calculateVerfuegungen().then(() => {
                 this.setBemerkungen();
+                this.setParamsDependingOnCurrentVerfuegung();
             });
         }
         this.initDevModeParameter();
+    }
+
+    private setParamsDependingOnCurrentVerfuegung(): void {
         this.setSameVerfuegungsdaten();
         this.setSameVerrechneteVerfuegungdaten();
     }
@@ -184,6 +189,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.sameVerrechneteVerguenstigung;
     }
 
+    private isAlreadyIgnored(): boolean {
+        if (this.getVerfuegenToWorkWith()) {
+            return this.getVerfuegenToWorkWith().isAlreadyIgnored();
+        }
+        return false; // by default
+    }
+
     public save(): void {
         this.isVerfuegenClicked = true;
         if (!this.isGesuchValid() || !this.isVerfuegenValid()) {
@@ -191,10 +203,12 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         const isAngebotKITA = this.getBetreuung().isAngebotKITA();
-        const promise = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation() ?
-            this.saveVerfuegung() :
+        const direktVerfuegen = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
+            || this.isAlreadyIgnored();
+        const promise = direktVerfuegen
+            ? this.saveVerfuegung()
             // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
-            this.saveMutierteVerfuegung();
+            : this.saveMutierteVerfuegung();
 
         promise.then(() => this.goToVerfuegen());
     }
@@ -321,12 +335,22 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public saveMutierteVerfuegung(): IPromise<TSVerfuegung> {
-        return this.dvDialog.showDialog(threeButtonsDialogTempl, ThreeButtonsDialogController, {
+        return this.dvDialog.showDialog(stepDialogTempl, StepDialogController, {
             title: 'CONFIRM_SAVE_MUTIERTE_VERFUEGUNG',
-            confirmationText: 'BESCHREIBUNG_SAVE_VERFUEGUNG',
+            questionText: 'KORREKTURZAHLUNG_DIALOG_FRAGE',
             cancelText: 'LABEL_NEIN',
-            firstOkText: 'CONFIRM_MUTIERTE_VERFUEGUNG_UEBERNEHMEN',
-            secondOkText: 'CONFIRM_MUTIERTE_VERFUEGUNG_IGNORIEREN',
+            firstOkText: 'WEITER_ONLY',
+            radioYes: 'KORREKTURZAHLUNG_DIALOG_OPTION_JA',
+            radioYesHint: 'KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION',
+            radioNo: 'KORREKTURZAHLUNG_DIALOG_OPTION_NEIN',
+            radioNoHint: 'KORREKTURZAHLUNG_DIALOG_OPTION_NEIN_DESCRIPTION',
+            titleStep2: 'KORREKTURZAHLUNG_DIALOG_STEP2_TITLE',
+            checkboxLabel: 'KORREKTURZAHLUNG_DIALOG_CHECKBOX_LABEL',
+            warning: 'KORREKTURZAHLUNG_DIALOG_IMMUTABLE',
+            backText: 'KORREKTURZAHLUNG_DIALOG_BACK',
+            nextText: 'WEITER_ONLY',
+            finishText: 'KORREKTURZAHLUNG_DIALOG_FINISH',
+
         }).then(response => {
             this.getVerfuegenToWorkWith().manuelleBemerkungen = this.bemerkungen;
             this.isVerfuegenClicked = false;

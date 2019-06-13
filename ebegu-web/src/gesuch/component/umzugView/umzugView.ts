@@ -79,7 +79,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
 
     private initViewModel(): void {
         this.model = [];
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.UMZUG, TSWizardStepStatus.OK);
         this.extractAdressenListFromBothGS();
     }
 
@@ -88,25 +88,26 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSUm
     }
 
     public save(): IPromise<TSGesuchstellerContainer> {
-        if (this.isGesuchValid()) {
-            if (!this.form.$dirty && !this.dirty) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith());
-            }
-
-            this.errorService.clearAll();
-            this.saveAdresseInGS();
-            this.gesuchModelManager.setGesuchstellerNumber(1);
-            return this.gesuchModelManager.updateGesuchsteller(true).then(() => {
-                if (this.gesuchModelManager.getGesuch().gesuchsteller2) {
-                    this.gesuchModelManager.setGesuchstellerNumber(2);
-                    return this.gesuchModelManager.updateGesuchsteller(true);
-                }
-                return this.gesuchModelManager.getStammdatenToWorkWith();
-            });
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        if (!this.form.$dirty && !this.dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith());
+        }
+
+        this.errorService.clearAll();
+        this.saveAdresseInGS();
+        this.gesuchModelManager.setGesuchstellerNumber(1);
+        return this.gesuchModelManager.updateGesuchsteller(true).then(() => {
+            if (this.gesuchModelManager.getGesuch().gesuchsteller2) {
+                this.gesuchModelManager.setGesuchstellerNumber(2);
+                return this.gesuchModelManager.updateGesuchsteller(true);
+            }
+            return this.gesuchModelManager.getStammdatenToWorkWith();
+        });
     }
 
     /**

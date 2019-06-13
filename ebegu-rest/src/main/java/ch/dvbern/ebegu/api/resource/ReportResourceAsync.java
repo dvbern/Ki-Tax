@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
@@ -293,6 +294,33 @@ public class ReportResourceAsync {
 		return Response.ok(workJob.getId()).build();
 	}
 
+	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Institutionen'", response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/institutionen")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Response getInstitutionenReportExcel(
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo) {
+
+		String ip = downloadResource.getIP(request);
+
+		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
+
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_INSTITUTIONEN,
+			null,
+			null,
+			null,
+			LocaleThreadLocal.get()
+		);
+
+		return Response.ok(workJob.getId()).build();
+	}
+
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Zahlungen pro Periode'",
 		response = JaxDownloadFile.class)
 	@Nonnull
@@ -506,6 +534,37 @@ public class ReportResourceAsync {
 			inklTsGesucheBoolean,
 			Boolean.valueOf(ohneErneuerungsgesuch),
 			text,
+			LocaleThreadLocal.get()
+		);
+
+		return Response.ok(workJob.getId()).build();
+	}
+
+	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Verrechnung kiBon'", response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/verrechnungkibon")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT })
+	public Response getVerrechnungKibonReportExcel(
+		@QueryParam("doSave") @Nonnull String doSaveParam,
+		@QueryParam("betragProKind") @Nullable BigDecimal betragProKindParam,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo) {
+
+		String ip = downloadResource.getIP(request);
+
+		final boolean doSave = Boolean.parseBoolean(doSaveParam);
+		final BigDecimal betragProKind = betragProKindParam != null ? betragProKindParam : BigDecimal.ZERO;
+
+		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
+
+		workJob = workjobService.createNewReporting(
+			workJob,
+			ReportVorlage.VORLAGE_REPORT_VERRECHNUNG_KIBON,
+			doSave,
+			betragProKind,
 			LocaleThreadLocal.get()
 		);
 

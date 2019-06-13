@@ -94,7 +94,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -735,14 +734,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
-				final Optional<Gesuch> mutationOpt = this.gesuchService.antragMutieren(
-					gesuch.getId(),
-					LocalDate.now());
-				if (mutationOpt.isPresent()) {
-					Gesuch persistedMutation = gesuchService.createGesuch(mutationOpt.get());
-					applyBetreuungsmitteilungToMutation(persistedMutation, mitteilung);
-					return persistedMutation;
-				}
+				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
+				mutation = gesuchService.createGesuch(mutation);
+				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
+				return mutation;
 			} else {
 				throw new EbeguRuntimeException(
 					"applyBetreuungsmitteilung",
@@ -1267,6 +1262,31 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilung.setMitteilungStatus(statusRequested);
 		}
 		return persistence.merge(mitteilung);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public boolean hasBenutzerAnyMitteilungenAsSenderOrEmpfaenger(@Nonnull Benutzer benutzer) {
+
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, SearchMode.COUNT, "searchMitteilungen");
+		Root<Mitteilung> root = query.from(Mitteilung.class);
+
+		// Join all the relevant relations
+		Join<Mitteilung, Benutzer> joinSender = root.join(Mitteilung_.sender, JoinType.LEFT);
+		Join<Mitteilung, Benutzer> joinEmpfaenger = root.join(Mitteilung_.empfaenger, JoinType.LEFT);
+
+		Predicate predicate = cb.or(
+			cb.equal(joinSender, benutzer),
+			cb.equal(joinEmpfaenger, benutzer)
+		);
+
+		query.select(cb.countDistinct(root.get(Gesuch_.id)))
+			.where(predicate);
+
+		Long count = (Long) persistence.getCriteriaSingleResult(query);
+
+		return count > 0;
 	}
 }
 

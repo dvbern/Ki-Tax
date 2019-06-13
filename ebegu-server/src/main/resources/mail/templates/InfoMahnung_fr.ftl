@@ -5,38 +5,40 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>FR_kiBon – Unvollständige Unterlagen</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Documents incomplets</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
 <head>
 ${templateConfiguration.mailCss}
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>FR_kiBon – Unvollständige Unterlagen</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Documents incomplets</title>
 
 </head>
 
 <body>
 
 <div>
-    <p>
-        FR_Sehr geehrte Familie
-    </p>
-    <p>
-        FR_Am ${gesuch.getEingangsdatumFormated()} haben Sie ein Gesuch via kiBon eingereicht.
-        Leider sind die eingereichten Unterlagen unvollständig. Die fehlenden Dokumente
-        müssen nachgereicht werden. Unser Schreiben erhalten Sie per Post und kann
-        <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
-        eingesehen werden.
-    </p>
-    <p>
-        FR_Freundliche Grüsse <br/>
-        FR_Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
-    </p>
-    <p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
-    </p>
+	<p>
+		Chère famille,
+	</p>
+	<p>
+		Vous avez déposé une demande via kiBon le ${gesuch.getEingangsdatumFormated()}.
+		Malheureusement, le dossier est incomplet. Vous voudrez bien nous faire parvenir les documents manquants.
+		Vous recevrez prochainement une lettre par courrier postal. Elle peut également être consultée
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
+	</p>
+	<p>
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
+	</p>
+	<p>
+		<#if configuration.isDevmode>
+		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
+		</#if>
+		Merci de ne pas répondre à ce message automatique.
+	</p>
 </div>
 
 </body>

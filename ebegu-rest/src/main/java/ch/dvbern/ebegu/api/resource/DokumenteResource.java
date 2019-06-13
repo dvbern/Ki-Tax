@@ -146,11 +146,17 @@ public class DokumenteResource {
 		Dokument dokument = dokumentService.findDokument(dokumentId).orElseThrow(() -> new EbeguEntityNotFoundException("removeDokument",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
 
-		DokumentGrund updatedDokumentGrund = dokumentGrundService.findDokumentGrund(dokument.getDokumentGrund().getId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException("findDokumentGrund", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokument.getDokumentGrund().getId()));
+		DokumentGrund dokumentGrund = dokumentGrundService.findDokumentGrund(dokument.getDokumentGrund().getId())
+			.orElseThrow(() ->
+				new EbeguEntityNotFoundException(
+					"findDokumentGrund_loadDokumentGrund",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					dokument.getDokumentGrund().getId()
+				));
 
-		updatedDokumentGrund.getDokumente().remove(dokument);
+		dokumentGrund.getDokumente().remove(dokument);
 		dokumentService.removeDokument(dokument);
-		return converter.dokumentGrundToJax(updatedDokumentGrund);
+
+		return converter.dokumentGrundToJax(dokumentGrund);
 	}
 }

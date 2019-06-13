@@ -836,6 +836,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		// Gemeinde darf nicht ueberschrieben werden
 		if (dossierJAX.getGemeinde() != null) {
+			requireNonNull(dossierJAX.getGemeinde().getId());
 			Optional<Gemeinde> gemeindeFromDB = gemeindeService.findGemeinde(dossierJAX.getGemeinde().getId());
 			if (gemeindeFromDB.isPresent()) {
 				dossier.setGemeinde(gemeindeFromDB.get());
@@ -1352,7 +1353,8 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxInstitutionStammdaten institutionStammdatenToJAX(
 		@Nonnull final InstitutionStammdaten persistedInstStammdaten
 	) {
-		final JaxInstitutionStammdaten jaxInstStammdaten = institutionStammdatenSummaryToJAX(persistedInstStammdaten, new JaxInstitutionStammdaten());
+		final JaxInstitutionStammdaten jaxInstStammdaten =
+			institutionStammdatenSummaryToJAX(persistedInstStammdaten, new JaxInstitutionStammdaten());
 
 		Collection<Benutzer> administratoren = benutzerService.getInstitutionAdministratoren(
 			persistedInstStammdaten.getInstitution());
@@ -1975,7 +1977,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
 
-
 		return jaxFinanzielleSituation;
 	}
 
@@ -2211,6 +2212,8 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(erweiterteBetreuungJAXP, erweiterteBetreuung);
 
 		erweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuungJAXP.getErweiterteBeduerfnisse());
+		erweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
+			erweiterteBetreuungJAXP.isErweiterteBeduerfnisseBestaetigt());
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -2855,6 +2858,8 @@ public class JaxBConverter extends AbstractConverter {
 		JaxErweiterteBetreuung jaxErweiterteBetreuung = new JaxErweiterteBetreuung();
 		convertAbstractVorgaengerFieldsToJAX(erweiterteBetreuung, jaxErweiterteBetreuung);
 		jaxErweiterteBetreuung.setErweiterteBeduerfnisse(erweiterteBetreuung.getErweiterteBeduerfnisse());
+		jaxErweiterteBetreuung.setErweiterteBeduerfnisseBestaetigt(
+			erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
@@ -3652,6 +3657,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZahlungsauftrag.setStatus(persistedZahlungsauftrag.getStatus());
 		jaxZahlungsauftrag.setBeschrieb(persistedZahlungsauftrag.getBeschrieb());
 		jaxZahlungsauftrag.setBetragTotalAuftrag(persistedZahlungsauftrag.getBetragTotalAuftrag());
+		jaxZahlungsauftrag.setGemeinde(gemeindeToJAX(persistedZahlungsauftrag.getGemeinde()));
 		jaxZahlungsauftrag.setDatumFaellig(persistedZahlungsauftrag.getDatumFaellig());
 		jaxZahlungsauftrag.setDatumGeneriert(persistedZahlungsauftrag.getDatumGeneriert());
 
@@ -3677,7 +3683,8 @@ public class JaxBConverter extends AbstractConverter {
 			ADMIN_TRAEGERSCHAFT,
 			SACHBEARBEITER_TRAEGERSCHAFT,
 			ADMIN_INSTITUTION,
-			SACHBEARBEITER_INSTITUTION)) {
+			SACHBEARBEITER_INSTITUTION)
+		) {
 			RestUtil.purgeZahlungenOfInstitutionen(jaxZahlungsauftrag, allowedInst);
 			// es muss nochmal das Auftragstotal berechnet werden. Diesmal nur mit den erlaubten Zahlungen
 			// Dies nur fuer Institutionen
@@ -3693,14 +3700,14 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	public JaxZahlung zahlungToJAX(final Zahlung persistedZahlung) {
-		final JaxZahlung jaxZahlungs = new JaxZahlung();
-		convertAbstractVorgaengerFieldsToJAX(persistedZahlung, jaxZahlungs);
-		jaxZahlungs.setStatus(persistedZahlung.getStatus());
-		jaxZahlungs.setBetragTotalZahlung(persistedZahlung.getBetragTotalZahlung());
-		jaxZahlungs.setInstitutionsName(persistedZahlung.getInstitutionStammdaten().getInstitution().getName());
-		jaxZahlungs.setInstitutionsId(persistedZahlung.getInstitutionStammdaten().getInstitution().getId());
-
-		return jaxZahlungs;
+		final JaxZahlung jaxZahlung = new JaxZahlung();
+		convertAbstractVorgaengerFieldsToJAX(persistedZahlung, jaxZahlung);
+		jaxZahlung.setStatus(persistedZahlung.getStatus());
+		jaxZahlung.setBetragTotalZahlung(persistedZahlung.getBetragTotalZahlung());
+		jaxZahlung.setInstitutionsName(persistedZahlung.getInstitutionStammdaten().getInstitution().getName());
+		jaxZahlung.setBetreuungsangebotTyp(persistedZahlung.getInstitutionStammdaten().getBetreuungsangebotTyp());
+		jaxZahlung.setInstitutionsId(persistedZahlung.getInstitutionStammdaten().getInstitution().getId());
+		return jaxZahlung;
 	}
 
 	@Nonnull
@@ -4063,7 +4070,10 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxStammdaten;
 	}
 
-	private void gemeindeStammdatenToJAXSetDefaultBenutzer(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
+	private void gemeindeStammdatenToJAXSetDefaultBenutzer(
+		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
 		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
 			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
 		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
@@ -4081,7 +4091,10 @@ public class JaxBConverter extends AbstractConverter {
 		}
 	}
 
-	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(@Nonnull JaxGemeindeStammdaten jaxStammdaten, @Nonnull GemeindeStammdaten stammdaten) {
+	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(
+		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
+		@Nonnull GemeindeStammdaten stammdaten
+	) {
 		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
 			jaxStammdaten.setKorrespondenzspracheDe(true);
 			jaxStammdaten.setKorrespondenzspracheFr(false);

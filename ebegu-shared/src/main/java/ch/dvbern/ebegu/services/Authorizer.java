@@ -32,6 +32,8 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.WizardStep;
+import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 
 /**
  * Interface fuer eine Klasse welche prueft ob der aktuelle Benutzer fuer ein Gesuch berechtigt ist
@@ -189,4 +191,19 @@ public interface Authorizer {
 	 * Prueft, ob der aktuelle Benutzer die uebergebene Mitteilung lesen darf
 	 */
 	void checkReadAuthorizationMitteilung(@Nullable Mitteilung mitteilung);
+
+	/**
+	 * Prueft, ob der aktuelle Benutzer die uebergebene Zahlung lesen darf
+	 */
+	void checkReadAuthorizationZahlung(@Nullable Zahlung zahlung);
+
+	/**
+	 * Prueft, ob der aktuelle Benutzer den uebergebenen Zahlungsauftrag lesen darf
+	 */
+	void checkReadAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);
+
+	/**
+	 * Prueft, ob der aktuelle Benutzer den uebergebenen Zahlungsauftrag editieren/erstellen darf
+	 */
+	void checkWriteAuthorizationZahlungsauftrag(@Nullable Zahlungsauftrag zahlungsauftrag);
 }

@@ -7,46 +7,44 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 From: ${configuration.senderAddress}
 To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
-Subject: <@base64Header>FR_kiBon – Freigabequittung ausstehend</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Confirmation des données à remettre</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
 <head>
 ${templateConfiguration.mailCss}
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>FR_kiBon – Freigabequittung ausstehend</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Confirmation des données à remettre</title>
 
 </head>
 
 <body>
 
 <div>
-    <p>
-        FR_Guten Tag
-    </p>
-    <p>
-        FR_Sie haben via kiBon Ihr Gesuch vollständig erfasst, besten Dank!
-    </p>
-    <p>
-        FR_Leider ist Ihre Freigabequittung bisher nicht bei uns eingetroffen.
-        <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">Hier</a>
-        können Sie Ihre Freigabequittung nochmals herunterladen. Bitte schicken Sie uns die unterschriebene
-        Freigabequittung umgehend per Post an ${adresse}.
-        Andernfalls gilt Ihr Gesuch nicht nicht als eingereicht, kann nicht bearbeitet werden und wird am
-	${datumLoeschung} automatisch gelöscht.
-    </p>
-    <p>
-        FR_Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Gesuchs
-        und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird.
-    </p>
-    <p>
-        FR_Freundliche Grüsse <br/>
-        FR_Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
-    </p>
-    <p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
-    </p>
+	<p>
+		Bonjour,
+	</p>
+	<p>
+		Vous avez déposé une demande via kiBon pour laquelle vos données n'ont pas encore été confirmées.
+		Le formulaire, qui peut être téléchargé
+		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${configuration.hostname}/gesuch/freigabe/${gesuch.id}">ici</a>, est à remettre dûment signé et au plus vite par courrier postal à ${adresse} faute de quoi votre demande
+		sera considérée comme non valable. Elle ne pourra pas être traitée et sera automatiquement supprimée le ${datumLoeschung}.
+	</p>
+	<p>
+		Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition que celle-ci soit assortie de tous les documents
+		requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
+	</p>
+	<p>
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
+	</p>
+	<p>
+		<#if configuration.isDevmode>
+		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
+		</#if>
+		Merci de ne pas répondre à ce message automatique.
+	</p>
 </div>
 
 </body>

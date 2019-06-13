@@ -70,22 +70,25 @@ public class Einladung {
 		case SUPER_ADMIN:
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT:
-			return new Einladung(EinladungTyp.MITARBEITER, eingeladener);
+		case SACHBEARBEITER_INSTITUTION:
+		case SACHBEARBEITER_TRAEGERSCHAFT:
+		case SACHBEARBEITER_GEMEINDE:
 		case ADMIN_BG:
 		case SACHBEARBEITER_BG:
-		case ADMIN_GEMEINDE:
-		case SACHBEARBEITER_GEMEINDE:
 		case ADMIN_TS:
 		case SACHBEARBEITER_TS:
 		case JURIST:
 		case REVISOR:
 		case STEUERAMT:
-			return new Einladung(EinladungTyp.GEMEINDE, eingeladener, eingeladener.getCurrentBerechtigung().getGemeindeList().iterator().next());
+			return new Einladung(EinladungTyp.MITARBEITER, eingeladener);
+		case ADMIN_GEMEINDE:
+			return new Einladung(
+				EinladungTyp.GEMEINDE,
+				eingeladener,
+				eingeladener.getCurrentBerechtigung().getGemeindeList().iterator().next());
 		case ADMIN_TRAEGERSCHAFT:
-		case SACHBEARBEITER_TRAEGERSCHAFT:
 			return new Einladung(EinladungTyp.TRAEGERSCHAFT, eingeladener, eingeladener.getTraegerschaft());
 		case ADMIN_INSTITUTION:
-		case SACHBEARBEITER_INSTITUTION:
 			return new Einladung(EinladungTyp.INSTITUTION, eingeladener, eingeladener.getInstitution());
 		case GESUCHSTELLER:
 			throw new IllegalArgumentException();

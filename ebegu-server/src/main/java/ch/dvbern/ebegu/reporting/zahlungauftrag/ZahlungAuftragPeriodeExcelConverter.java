@@ -20,6 +20,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungAuftragPeriode;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -53,7 +54,11 @@ public class ZahlungAuftragPeriodeExcelConverter implements ExcelConverter {
 			.sorted()
 			.forEach(zahlung -> {
 				ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldZahlungAuftragPeriode.repeatZahlungAuftragRow);
-				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.institution, zahlung.getInstitutionStammdaten().getInstitution().getName());
+				InstitutionStammdaten institutionStammdaten = zahlung.getInstitutionStammdaten();
+				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.institution, institutionStammdaten.getInstitution().getName());
+				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.betreuungsangebotTyp,
+					ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale));
+				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.gemeinde, zahlung.getZahlungsauftrag().getGemeinde().getName());
 				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.bezahltAm, zahlung.getZahlungsauftrag().getDatumFaellig());
 				excelRowGroup.addValue(MergeFieldZahlungAuftragPeriode.betragCHF, zahlung.getBetragTotalZahlung());
 			});
@@ -66,7 +71,9 @@ public class ZahlungAuftragPeriodeExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldZahlungAuftragPeriode.parameterTitle, ServerMessageUtil.getMessage("Reports_parameterTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftragPeriode.periodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftragPeriode.institutionTitle, ServerMessageUtil.getMessage("Reports_institutionTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftragPeriode.betreuungsangebotTypTitle, ServerMessageUtil.getMessage("Reports_betreuungsangebotTypTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftragPeriode.auszahlungAmTitle, ServerMessageUtil.getMessage("Reports_auszahlungAmTitle", locale));
 		excelMerger.addValue(MergeFieldZahlungAuftragPeriode.betragCHFTitle, ServerMessageUtil.getMessage("Reports_betragCHFTitle", locale));
+		excelMerger.addValue(MergeFieldZahlungAuftragPeriode.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle", locale));
 	}
 }

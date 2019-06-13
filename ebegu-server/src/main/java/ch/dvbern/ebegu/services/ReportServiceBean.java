@@ -61,6 +61,7 @@ import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Abwesenheit;
+import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -82,6 +83,7 @@ import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -101,6 +103,8 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenDataRow;
+import ch.dvbern.ebegu.reporting.kanton.institutionen.InstitutionenExcelConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
@@ -187,6 +191,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private BenutzerExcelConverter benutzerExcelConverter;
 
 	@Inject
+	private InstitutionenExcelConverter institutionenExcelConverter;
+
+	@Inject
 	private ZahlungAuftragExcelConverter zahlungAuftragExcelConverter;
 
 	@Inject
@@ -200,6 +207,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	@Inject
 	private InstitutionService institutionService;
+
+	@Inject
+	private InstitutionStammdatenService institutionStammdatenService;
 
 	@Inject
 	private TraegerschaftService traegerschaftService;
@@ -800,6 +810,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
 			zahlungsauftrag.getDatumFaellig(),
+			zahlungsauftrag.getGemeinde(),
 			locale);
 	}
 
@@ -837,17 +848,19 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			zahlungsauftrag.getBeschrieb(),
 			zahlungsauftrag.getDatumGeneriert(),
 			zahlungsauftrag.getDatumFaellig(),
+			zahlungsauftrag.getGemeinde(),
 			locale
 		);
 	}
 
 	@Nonnull
 	private UploadFileInfo getUploadFileInfoZahlung(
-		List<Zahlung> reportData,
-		String excelFileName,
-		String bezeichnung,
-		LocalDateTime datumGeneriert,
-		LocalDate datumFaellig,
+		@Nonnull List<Zahlung> reportData,
+		@Nonnull String excelFileName,
+		@Nonnull String bezeichnung,
+		@Nonnull LocalDateTime datumGeneriert,
+		@Nonnull LocalDate datumFaellig,
+		@Nonnull Gemeinde gemeinde,
 		@Nonnull Locale locale
 	) throws ExcelMergeException {
 
@@ -868,7 +881,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			allowedInst,
 			ServerMessageUtil.getMessage("Reports_detailpositionenTitle", locale, bezeichnung),
 			datumGeneriert,
-			datumFaellig
+			datumFaellig,
+			gemeinde
 		);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
@@ -1884,6 +1898,109 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setTagesfamilien(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesfamilien));
 		row.setTagesschule(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesschule));
 		row.setFerieninsel(angebote.stream().anyMatch(BetreuungsangebotTyp::isFerieninsel));
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@TransactionTimeout(value = Constants.STATISTIK_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Nonnull
+	public UploadFileInfo generateExcelReportInstitutionen(@Nonnull Locale locale) throws ExcelMergeException {
+		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_INSTITUTIONEN;
+
+		InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+		requireNonNull(is, VORLAGE + reportVorlage.getTemplatePath() + NICHT_GEFUNDEN);
+
+		Workbook workbook = ExcelMerger.createWorkbookFromTemplate(is);
+		Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
+
+		List<InstitutionenDataRow> reportData = getReportDataInstitutionen(locale);
+
+		ExcelMergerDTO excelMergerDTO = institutionenExcelConverter.toExcelMergerDTO(reportData, locale);
+
+		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
+		institutionenExcelConverter.applyAutoSize(sheet);
+
+		byte[] bytes = createWorkbook(workbook);
+
+		return fileSaverService.save(
+			bytes,
+			getFileName(reportVorlage, locale),
+			Constants.TEMP_REPORT_FOLDERNAME,
+			getContentTypeForExport());
+	}
+
+	private List<InstitutionenDataRow> getReportDataInstitutionen(@Nonnull Locale locale) {
+		benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getReportDataInstitutionen", NO_USER_IS_LOGGED_IN));
+
+		return convertToInstitutionenDataRow(institutionStammdatenService.getAllInstitutionStammdaten(), locale);
+	}
+
+	@Nonnull
+	private List<InstitutionenDataRow> convertToInstitutionenDataRow(
+		@Nonnull Collection<InstitutionStammdaten> stammdaten,
+		@Nonnull Locale locale
+	) {
+		return stammdaten.stream()
+			.map(institution -> institutionToDataRow(institution, locale))
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	private InstitutionenDataRow institutionToDataRow(
+		@Nonnull InstitutionStammdaten institutionStammdaten,
+		@Nonnull Locale locale
+	) {
+		Institution institution = institutionStammdaten.getInstitution();
+		Adresse adresse = institutionStammdaten.getAdresse();
+		List<LocalDateTime> zuletztGeandertList = new ArrayList<>();
+		LocalDateTime zuletztGeandert;
+		InstitutionenDataRow row = new InstitutionenDataRow();
+
+		String angebotTyp =
+			ServerMessageUtil.translateEnumValue(institutionStammdaten.getBetreuungsangebotTyp(), locale);
+		row.setTyp(angebotTyp);
+		if (institution.getTraegerschaft() != null) {
+			row.setTraegerschaft(institution.getTraegerschaft().getName());
+		}
+		row.setName(institution.getName());
+		if (adresse.getOrganisation() != null) {
+			row.setAnschrift(adresse.getOrganisation());
+		}
+		if (institutionStammdaten.getTelefon() != null) {
+			row.setTelefon(institutionStammdaten.getTelefon());
+		}
+		if (institutionStammdaten.getWebseite() != null) {
+			row.setUrl(institutionStammdaten.getWebseite());
+		}
+		if (institutionStammdaten.getOeffnungszeiten() != null) {
+			row.setOeffnungszeiten(institutionStammdaten.getOeffnungszeiten());
+		}
+		row.setStrasse(adresse.getStrasseAndHausnummer());
+		row.setPlz(adresse.getPlz());
+		row.setOrt(adresse.getOrt());
+		row.setEmail(institutionStammdaten.getMail());
+		row.setBaby(institutionStammdaten.getAlterskategorieBaby());
+		row.setVorschulkind(institutionStammdaten.getAlterskategorieVorschule());
+		row.setSchulkind(institutionStammdaten.getAlterskategorieSchule());
+		if (!institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+			row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());
+			if (institutionStammdaten.getAnzahlPlaetze() != null) {
+				row.setKapazitaet(institutionStammdaten.getAnzahlPlaetze());
+			}
+			if (institutionStammdaten.getAnzahlPlaetzeFirmen() != null) {
+				row.setReserviertFuerFirmen(institutionStammdaten.getAnzahlPlaetzeFirmen());
+			}
+		}
+		zuletztGeandertList.add(institutionStammdaten.getTimestampMutiert());
+		zuletztGeandertList.add(institution.getTimestampMutiert());
+		zuletztGeandertList.add(adresse.getTimestampMutiert());
+
+		zuletztGeandert = zuletztGeandertList.stream().max(LocalDateTime::compareTo).get();
+		row.setZuletztGeaendert(zuletztGeandert);
+
+		return row;
 	}
 
 	private int onlySchulamt() {

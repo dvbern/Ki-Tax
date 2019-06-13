@@ -7,41 +7,44 @@
 <#-- @ftlvariable name="gesuchsperiode" type="ch.dvbern.ebegu.entities.Gesuchsperiode" -->
 From: ${configuration.senderAddress}
 To: ${gesuchsteller.fullName} <${empfaengerMail}>
-Subject: <@base64Header>FR_kiBon – FR_Neue Gesuchsperiode freigeschaltet</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Activation de la nouvelle période couverte par la demande</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
 <head>
 ${templateConfiguration.mailCss}
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>FR_kiBon – Neue Gesuchsperiode freigeschaltet</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Activation de la nouvelle période couverte par la demande</title>
 </head>
 
 <body>
 
 <div>
-    <p>
-        FR_Guten Tag
-    </p>
-    <p>
-        FR_Gerne möchten wir Sie mit dieser Mail informieren, dass die Gesuchperiode ${gesuchsperiode.gesuchsperiodeString} ab sofort
-        für die Erfassung Ihrer Daten in kiBon offen steht. <br>
-        <a href="https://www.kibon.ch/">Hier</a> können Sie das neue Gesuch erfassen.
-    </p>
-    <p>
-        FR_Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Gesuchs
-        und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird.
-    </p>
-    <p>
-        FR_Falls Sie für die Periode ${gesuchsperiode.gesuchsperiodeString} kein Gesuch stellen möchten, sind für Sie keine weiteren Schritte notwendig.
-    <p>
-        FR_Freundliche Grüsse <br/>
-        FR_Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
-    </p>
-    <p>
-        FR_Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
-    </p>
+	<p>
+		Bonjour,
+	</p>
+	<p>
+		Nous avons le plaisir de vous informer que la période couverte par la demande ${gesuchsperiode.gesuchsperiodeString} est dès à présent active dans kiBon
+		pour la saisie de vos données. <br>
+		Vous pouvez saisir une nouvelle demande <a href="https://www.kibon.ch/">ici</a>.
+	</p>
+	<p>
+		Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition qu'elle soit assortie de tous les documents requis,
+		et pour le début de la prise en charge dans le cadre de la nouvelle période.
+	</p>
+	<p>
+		Si vous ne souhaitez pas déposer de demande pour la période ${gesuchsperiode.gesuchsperiodeString}, vous n'avez plus rien à entreprendre.
+	<p>
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
+	</p>
+	<p>
+		<#if configuration.isDevmode>
+		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
+		</#if>
+		Merci de ne pas répondre à ce message automatique.
+	</p>
 </div>
 
 </body>

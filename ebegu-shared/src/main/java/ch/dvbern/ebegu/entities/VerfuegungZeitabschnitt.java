@@ -228,6 +228,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Transient
 	private boolean besondereBeduerfnisse;
 
+	@Transient
+	private boolean besondereBeduerfnisseBestaetigt;
 
 	public VerfuegungZeitabschnitt() {
 	}
@@ -280,6 +282,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.babyTarif = toCopy.babyTarif;
 		this.eingeschult = toCopy.eingeschult;
 		this.besondereBeduerfnisse = toCopy.besondereBeduerfnisse;
+		this.besondereBeduerfnisseBestaetigt = toCopy.besondereBeduerfnisseBestaetigt;
 	}
 
 	/**
@@ -631,6 +634,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.besondereBeduerfnisse = besondereBeduerfnisse;
 	}
 
+	public boolean isBesondereBeduerfnisseBestaetigt() {
+		return besondereBeduerfnisseBestaetigt;
+	}
+
+	public void setBesondereBeduerfnisseBestaetigt(boolean besondereBeduerfnisseBestaetigt) {
+		this.besondereBeduerfnisseBestaetigt = besondereBeduerfnisseBestaetigt;
+	}
+
 	public BigDecimal getVerguenstigungOhneBeruecksichtigungVollkosten() {
 		return verguenstigungOhneBeruecksichtigungVollkosten;
 	}
@@ -767,6 +778,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setBabyTarif(this.babyTarif || other.babyTarif);
 		this.setEingeschult(this.eingeschult || other.eingeschult);
 		this.setBesondereBeduerfnisse(this.besondereBeduerfnisse || other.besondereBeduerfnisse);
+		this.setBesondereBeduerfnisseBestaetigt(this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt);
 		this.setMinimalesEwpUnterschritten(this.minimalesEwpUnterschritten || other.minimalesEwpUnterschritten);
 	}
 
@@ -892,11 +904,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			babyTarif == otherVerfuegungZeitabschnitt.babyTarif &&
 			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
 			besondereBeduerfnisse == otherVerfuegungZeitabschnitt.besondereBeduerfnisse &&
+			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
 			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
 			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
-			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap);
+			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
+			Objects.equals(this.monatlicheBetreuungskosten, otherVerfuegungZeitabschnitt.monatlicheBetreuungskosten);
 	}
 
 	public boolean isSameSichtbareDaten(VerfuegungZeitabschnitt that) {
@@ -916,6 +930,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			babyTarif == that.babyTarif &&
 			eingeschult == that.eingeschult &&
 			besondereBeduerfnisse == that.besondereBeduerfnisse &&
+			besondereBeduerfnisseBestaetigt == that.besondereBeduerfnisseBestaetigt &&
 			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
 			Objects.equals(this.bemerkungen, that.bemerkungen) &&
@@ -945,7 +960,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			MathUtil.isSame(massgebendesEinkommenVorAbzugFamgr, that.massgebendesEinkommenVorAbzugFamgr) &&
 			getGueltigkeit().compareTo(that.getGueltigkeit()) == 0 &&
 			minimalesEwpUnterschritten == that.minimalesEwpUnterschritten &&
-			Objects.equals(this.einkommensjahr, that.einkommensjahr);
+			Objects.equals(this.einkommensjahr, that.einkommensjahr) &&
+			Objects.equals(this.monatlicheBetreuungskosten, that.monatlicheBetreuungskosten);
 	}
 
 	/**

@@ -74,4 +74,9 @@ public interface DokumentGrundService {
 	DokumentGrund updateDokumentGrund(@Nonnull DokumentGrund dokumentGrund);
 
 	void removeAllDokumentGrundeFromGesuch(Gesuch gesuch);
+
+	/**
+	 * Removes the given dokumentGrund if its list of Dokument is empty
+	 */
+	void removeIfEmpty(@Nonnull DokumentGrund dokumentGrund);
 }

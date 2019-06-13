@@ -102,4 +102,10 @@ public interface TestfaelleService {
 	void gesuchVerfuegenUndSpeichern(boolean verfuegen, @Nonnull Gesuch gesuch, boolean mutation, boolean ignorierenInZahlungslauf);
 
 	void testAllMails(@Nonnull String mailadresse);
+
+	@Nonnull
+	Gesuch antragErneuern(@Nonnull Gesuch gesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum);
+
+	@Nonnull
+	Gesuch antragMutieren(@Nonnull Gesuch antrag, @Nullable LocalDate eingangsdatum);
 }

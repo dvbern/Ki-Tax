@@ -28,6 +28,7 @@ import java.util.Optional;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -57,6 +58,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -97,6 +99,7 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.apache.commons.lang.StringUtils;
@@ -155,6 +158,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private MailService mailService;
 	@Inject
 	private EbeguConfiguration configuration;
+	@Inject
+	private TestfaelleService testfaelleService;
 
 
 	@Override
@@ -387,11 +392,17 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Familiensituation newFamsit = getFamiliensituationZuZweit(aenderungPer);
 		Familiensituation oldFamsit = getFamiliensituationAlleine(null);
 
-		Gesuch mutation = gesuchService.testfallMutieren(dossierId, gesuchsperiodeId, eingangsdatum).orElseThrow(() -> new EbeguEntityNotFoundException
-			("mutierenHeirat", "Gesuch zum Mutieren nicht gefunden"));
+		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"mutierenHeirat", "dossier konnte nicht geladen werden", dossierId));
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"mutierenHeirat", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
+
+		Gesuch mutation = Gesuch.createMutation(dossier, gesuchsperiode, eingangsdatum);
+		mutation = gesuchService.createGesuch(mutation);
+
 		final FamiliensituationContainer familiensituationContainer = mutation.getFamiliensituationContainer();
 		Objects.requireNonNull(familiensituationContainer, "Familiensituation muss gesetzt sein");
-		familiensituationContainer.setFamiliensituationErstgesuch(familiensituationContainer.getFamiliensituationJA());
+		familiensituationContainer.setFamiliensituationErstgesuch(oldFamsit);
 		familiensituationContainer.setFamiliensituationJA(newFamsit);
 
 		familiensituationService.saveFamiliensituation(mutation, familiensituationContainer, oldFamsit);
@@ -400,7 +411,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			.saveGesuchsteller(createGesuchstellerHeirat(mutation.getGesuchsteller1()), mutation, 2, false);
 
 		mutation.setGesuchsteller2(gesuchsteller2);
-		gesuchService.createGesuch(mutation);
+		gesuchService.updateGesuch(mutation, false);
 		gesuchVerfuegenUndSpeichern(verfuegen, mutation, true, false);
 		return mutation;
 	}
@@ -415,15 +426,20 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Objects.requireNonNull(dossierId);
 		Objects.requireNonNull(aenderungPer);
 
-		Gesuch mutation = gesuchService.testfallMutieren(dossierId, gesuchsperiodeId, eingangsdatum).orElseThrow(() -> new EbeguEntityNotFoundException
-			("mutierenFinSit", "Gesuch zum Mutieren nicht gefunden"));
+		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"mutierenFinSit", "dossier konnte nicht geladen werden", dossierId));
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"mutierenFinSit", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
+
+		Gesuch mutation = Gesuch.createMutation(dossier, gesuchsperiode, eingangsdatum);
+		mutation = gesuchService.createGesuch(mutation);
+
 		Objects.requireNonNull(mutation.getGesuchsteller1(), "GS1 muss gesetzt sein");
 		Objects.requireNonNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer(), "FinSit vom GS1 muss gesetzt sein");
 		mutation.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(nettoLohn);
 
 		gesuchstellerService.saveGesuchsteller(mutation.getGesuchsteller1(), mutation, 1, false);
-
-		gesuchService.createGesuch(mutation);
+		gesuchService.updateGesuch(mutation, false);
 		gesuchVerfuegenUndSpeichern(verfuegen, mutation, true, ignorieren);
 		return mutation;
 	}
@@ -438,30 +454,26 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Objects.requireNonNull(dossierId);
 		Objects.requireNonNull(aenderungPer);
 
-		Familiensituation newFamsit = new Familiensituation();
-		newFamsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-		newFamsit.setAenderungPer(aenderungPer);
+		Familiensituation oldFamsit = getFamiliensituationZuZweit(null);
+		Familiensituation newFamsit = getFamiliensituationAlleine(aenderungPer);
 
-		Familiensituation oldFamsit = new Familiensituation();
-		oldFamsit.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+		Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"mutierenScheidung", "dossier konnte nicht geladen werden", dossierId));
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"mutierenScheidung", "gesuchsperiode konnte nicht geladen werden", gesuchsperiodeId));
 
-		Optional<Gesuch> gesuchOptional = gesuchService.testfallMutieren(dossierId, gesuchsperiodeId, eingangsdatum);
-		if (gesuchOptional.isPresent()) {
-			final Gesuch mutation = gesuchOptional.get();
-			final FamiliensituationContainer familiensituationContainer = mutation.getFamiliensituationContainer();
-			Objects.requireNonNull(familiensituationContainer, "Familiensituation muss gesetzt sein");
-			Objects.requireNonNull(familiensituationContainer.getFamiliensituationJA(), "FamiliensituationJA muss gesetzt sein");
-			newFamsit.setSozialhilfeBezueger(familiensituationContainer.getFamiliensituationJA().getSozialhilfeBezueger());
-			newFamsit.setAntragNurFuerBehinderungszuschlag(familiensituationContainer.getFamiliensituationJA().getAntragNurFuerBehinderungszuschlag());
-			familiensituationContainer.setFamiliensituationErstgesuch(familiensituationContainer.getFamiliensituationJA());
-			familiensituationContainer.setFamiliensituationJA(newFamsit);
-			familiensituationService.saveFamiliensituation(mutation, familiensituationContainer, null);
-			gesuchService.createGesuch(mutation);
-			gesuchVerfuegenUndSpeichern(verfuegen, mutation, true, false);
-			return mutation;
-		}
+		Gesuch mutation = Gesuch.createMutation(dossier, gesuchsperiode, eingangsdatum);
+		mutation = gesuchService.createGesuch(mutation);
 
-		return gesuchOptional.orElse(null);
+		final FamiliensituationContainer familiensituationContainer = mutation.getFamiliensituationContainer();
+		Objects.requireNonNull(familiensituationContainer, "Familiensituation muss gesetzt sein");
+		familiensituationContainer.setFamiliensituationErstgesuch(oldFamsit);
+		familiensituationContainer.setFamiliensituationJA(newFamsit);
+
+		familiensituationService.saveFamiliensituation(mutation, familiensituationContainer, oldFamsit);
+		gesuchService.updateGesuch(mutation, false);
+		gesuchVerfuegenUndSpeichern(verfuegen, mutation, true, false);
+		return mutation;
 	}
 
 	@Nonnull
@@ -573,11 +585,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		@Nullable Benutzer besitzer) {
 		final Gesuch erstgesuch = createAndSaveGesuch(fromTestfall, true, besitzer);
 		// Mutation
-		Gesuch gesuch = gesuchService.antragMutieren(erstgesuch.getId(),
-			LocalDate.of(2016, Month.MARCH, 1)).
-			orElseThrow(() -> new EbeguEntityNotFoundException("createAndSaveAsivGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
-		Gesuch mutation = fromTestfall.createMutation(gesuch);
-		gesuchService.createGesuch(mutation);
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, LocalDate.of(2016, Month.MARCH, 1));
+		mutation = fromTestfall.createMutation(mutation);
+		gesuchService.updateGesuch(mutation, false, null);
 		Objects.requireNonNull(mutation.getFamiliensituationContainer(), "Familiensituation muss gesetzt sein!");
 		familiensituationService.saveFamiliensituation(mutation, mutation.getFamiliensituationContainer(), null);
 		gesuchVerfuegenUndSpeichern(verfuegen, mutation, true, false);
@@ -637,7 +647,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			gesuch.getKindContainers().stream().flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 				.filter(betreuung -> !betreuung.isAngebotSchulamt()).forEach(betreuung -> verfuegungService.generateVerfuegungDokument(betreuung)
 			);
-			generateDokFinSituation(gesuch); // the finSit document must be explicitly generated
+			if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
+				generateDokFinSituation(gesuch); // the finSit document must be explicitly generated
+			}
 			gesuchService.postGesuchVerfuegen(gesuch);
 		}
 		wizardStepService.updateSteps(gesuch.getId(), null, null, WizardStepName.VERFUEGEN);
@@ -917,7 +929,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			mailService.sendInfoOffenePendenzenInstitution(firstBetreuung.getInstitutionStammdaten());
 			mailService.sendBenutzerEinladung(besitzer, einladung);
 			mailService.sendInfoMitteilungErhalten(mitteilung);
-			LOG.info("Es sollten 31 Mails verschickt worden sein an " + mailadresse);
+			LOG.info("Es sollten 31 Mails verschickt worden sein an {}", mailadresse);
 		} catch (MailException e) {
 			LOG.error("Could not send Mails", e);
 		} finally {
@@ -950,5 +962,21 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		mailService.sendInfoBetreuungGeloescht(gesuch.extractAllBetreuungen());
 		mailService.sendInfoBetreuungVerfuegt(firstBetreuung);
 		mailService.sendInfoStatistikGeneriert(mailadresse, "www.kibon.ch", locale);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
+	public Gesuch antragErneuern(@Nonnull Gesuch gesuch, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
+		Gesuch erneuerung = Gesuch.createErneuerung(gesuch.getDossier(), gesuchsperiode, eingangsdatum);
+		return gesuchService.createGesuch(erneuerung);
+	}
+
+	@Nonnull
+	@Override
+	@PermitAll
+	public Gesuch antragMutieren(@Nonnull Gesuch antrag, @Nullable LocalDate eingangsdatum) {
+		Gesuch mutation = Gesuch.createMutation(antrag.getDossier(), antrag.getGesuchsperiode(), eingangsdatum);
+		return gesuchService.createGesuch(mutation);
 	}
 }
