@@ -295,7 +295,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public void calculateStammdatenCheckRequired() {
-		final Collection<Institution> allInstitutionen = criteriaQueryHelper.getAll(Institution.class);
+		final Collection<Institution> allInstitutionen = this.getAllInstitutionen();
 
 		// It will set the flag to true or to false accordingly to the value of calculateStammdatenCheckRequired(). This is better than only
 		// setting it to true because it helps set the flag back to false even when it is incorrectly true or hasn't been updated properly
@@ -304,6 +304,17 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 				final boolean isCheckRequired = calculateStammdatenCheckRequiredForInstitution(institution.getId());
 				updateStammdatenCheckRequired(institution.getId(), isCheckRequired);
 			});
+	}
+
+	@Nullable
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public Institution deactivateStammdatenCheckRequired(@Nonnull String institutionId) {
+		InstitutionStammdaten stammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
+		institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
+
+		return updateStammdatenCheckRequired(institutionId, false);
 	}
 
 	@Nullable
