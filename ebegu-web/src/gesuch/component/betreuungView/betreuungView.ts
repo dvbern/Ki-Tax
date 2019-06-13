@@ -1078,6 +1078,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Based on the type of the Angebot it resets the belegungen.
      */
     private cleanBelegungen(): void {
+        if (!this.betreuungsangebot) {
+            return;
+        }
         if (this.betreuungsangebot.key !== TSBetreuungsangebotTyp.FERIENINSEL) {
             this.getBetreuungModel().belegungFerieninsel = undefined;
         }
