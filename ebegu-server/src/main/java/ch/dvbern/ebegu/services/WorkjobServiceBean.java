@@ -319,7 +319,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 	public void removeOldWorkjobs() {
 		LocalDateTime cutoffDate = LocalDateTime.now().minusMinutes(Constants.MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES);
 		int i = this.criteriaQueryHelper.deleteAllBefore(Workjob.class, cutoffDate);
-		LOG.info("... deleted " + i + " + workjobs");
+		LOG.info("... deleted {} + workjobs", i);
 	}
 
 	@Nonnull
