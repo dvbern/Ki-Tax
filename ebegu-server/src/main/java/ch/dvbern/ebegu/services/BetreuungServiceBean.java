@@ -81,7 +81,6 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
@@ -716,12 +715,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (role.isRoleGemeindeabhaengig()) {
 			Benutzer benutzer = principalBean.getBenutzer();
-			if (benutzer == null) {
-				throw new EbeguRuntimeException(
-					"getPendenzenForInstitution",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					"current user not found");
-			}
 			final Join<Dossier, Gemeinde> gemeindeJoin =
 				root.join(Betreuung_.kind, JoinType.LEFT).join(KindContainer_.gesuch, JoinType.LEFT)
 					.join(Gesuch_.dossier, JoinType.LEFT).join(Dossier_.gemeinde, JoinType.LEFT);
