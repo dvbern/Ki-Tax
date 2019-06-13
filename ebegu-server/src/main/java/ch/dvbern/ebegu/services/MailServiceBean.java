@@ -450,7 +450,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		requireNonNull(einladung);
 
 		String message = mailTemplateConfig.getBenutzerEinladung(einladender, einladung);
-
+		LOG.info("Benutzereinladung wird gesendet an {}", einladung.getEingeladener().getEmail());
 		sendMessageWithTemplate(message, einladung.getEingeladener().getEmail());
 	}
 

@@ -149,6 +149,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-search-backend-jgroups</artifactId>
+        </dependency>
+
         <!--json object generation-->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
