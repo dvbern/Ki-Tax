@@ -41,9 +41,10 @@ public interface AntragStatusHistoryService {
 
 	/**
 	 * Findet den letzten StatusChange furs gegebene Gesuch und gibt ihn zurueck
+	 * @param gesuchId
 	 */
 	@Nullable
-	AntragStatusHistory findLastStatusChange(@Nonnull Gesuch gesuch);
+	AntragStatusHistory findLastStatusChange(@Nonnull String gesuchId);
 
 	/**
 	 * Entfernt alle AntrasStatusHistory Objekte vom gegebenen Gesuch
