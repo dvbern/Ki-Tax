@@ -41,13 +41,16 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Mahnung_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.KibonPrintUtil;
@@ -212,7 +215,7 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN })
+	@RolesAllowed(SUPER_ADMIN)
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void fristAblaufTimer() {
 		// Es muessen alle ueberprueft werden, die noch aktiv sind und deren Ablaufdatum < NOW liegt
@@ -229,16 +232,42 @@ public class MahnungServiceBean extends AbstractBaseService implements MahnungSe
 		List<Mahnung> gesucheMitAbgelaufenenMahnungen = persistence.getCriteriaResults(query);
 		for (Mahnung mahnung : gesucheMitAbgelaufenenMahnungen) {
 			final Gesuch gesuch = mahnung.getGesuch();
+			// Der Batchjob hat keinen eingeloggten Benutzer. Darum speichern wir den Statuswechsel auf den Verantwortlichen des Dossiers.
+			Benutzer verantwortlichePerson = getVerantwortlicher(gesuch);
 			if (AntragStatus.ERSTE_MAHNUNG == gesuch.getStatus()) {
 				gesuch.setStatus(AntragStatus.ERSTE_MAHNUNG_ABGELAUFEN);
-				gesuchService.updateGesuch(gesuch, true, null);
+				gesuchService.updateGesuch(gesuch, true, verantwortlichePerson);
 			} else if (AntragStatus.ZWEITE_MAHNUNG == gesuch.getStatus()) {
 				gesuch.setStatus(AntragStatus.ZWEITE_MAHNUNG_ABGELAUFEN);
-				gesuchService.updateGesuch(gesuch, true, null);
+				gesuchService.updateGesuch(gesuch, true, verantwortlichePerson);
 			}
 			mahnung.setAbgelaufen(true);
 			persistence.merge(mahnung);
 		}
+	}
+
+	@Nonnull
+	private Benutzer getVerantwortlicher(@Nonnull Gesuch gesuch) {
+		final Benutzer dossierVerantwortlicher = gesuch.getDossier().getHauptVerantwortlicher();
+		if (dossierVerantwortlicher != null) {
+			return dossierVerantwortlicher;
+		}
+
+		final GemeindeStammdaten gemeindeStammdaten =
+			gemeindeService.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"getVerantwortlicher",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					gesuch.getDossier().getGemeinde().getId()));
+
+		if (gemeindeStammdaten.getDefaultBenutzerBG() == null) {
+			throw new EbeguEntityNotFoundException(
+				"getVerantwortlicher",
+				ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND,
+				gemeindeStammdaten);
+		}
+
+		return gemeindeStammdaten.getDefaultBenutzerBG();
 	}
 
 	@Override

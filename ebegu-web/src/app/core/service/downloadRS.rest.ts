@@ -194,7 +194,7 @@ export class DownloadRS {
         // wir pruefen den dokumentstatus alle 100ms, insgesamt maximal 300 mal
         const count = 3000;
         const readyTimer = this.$interval(() => {
-            if (win.document.readyState !== 'complete') {
+            if (!win.document || win.document.readyState !== 'complete') {
                 return;
             }
             this.$interval.cancel(readyTimer);

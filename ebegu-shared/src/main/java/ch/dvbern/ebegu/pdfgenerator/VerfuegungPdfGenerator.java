@@ -262,7 +262,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private PdfPTable createIntro() {
 
 		//für unbekannte Institutionen soll ein Fragezeichen auf die Verfügung aufgedruckt werden
-		final String institutionName = betreuung.getInstitutionStammdaten().getInstitution().getName().isEmpty()
+		final String institutionName = betreuung.getInstitutionStammdaten().getInstitution().isUnknownInstitution()
 			? UNKNOWN_INSTITUTION_NAME
 			: betreuung.getInstitutionStammdaten().getInstitution().getName();
 

@@ -81,7 +81,6 @@ import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
@@ -140,8 +139,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private MailService mailService;
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
-	@Inject
-	private BenutzerService benutzerService;
 	@Inject
 	private GemeindeService gemeindeService;
 	@Inject
@@ -577,8 +574,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		authorizer.checkWriteAuthorization(betreuung);
 		final Gesuch gesuch = betreuung.extractGesuch();
 
-
-
 		persistence.remove(betreuung);
 
 		// the betreuung needs to be removed from the object as well
@@ -671,13 +666,6 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	private Collection<Betreuung> getPendenzenForInstitution(@Nonnull Institution... institutionen) {
 		Objects.requireNonNull(institutionen, "institutionen muss gesetzt sein");
 
-		Optional<Benutzer> benutzerOptional = benutzerService.getCurrentBenutzer();
-		if (!benutzerOptional.isPresent()) {
-			throw new EbeguRuntimeException(
-				"getPendenzenForInstitution",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"current user not found");
-		}
 		UserRole role = principalBean.discoverMostPrivilegedRoleOrThrowExceptionIfNone();
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -726,11 +714,11 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		}
 
 		if (role.isRoleGemeindeabhaengig()) {
+			Benutzer benutzer = principalBean.getBenutzer();
 			final Join<Dossier, Gemeinde> gemeindeJoin =
 				root.join(Betreuung_.kind, JoinType.LEFT).join(KindContainer_.gesuch, JoinType.LEFT)
 					.join(Gesuch_.dossier, JoinType.LEFT).join(Dossier_.gemeinde, JoinType.LEFT);
-			FilterFunctions.setGemeindeFilterForCurrentUser(benutzerOptional.get(),
-				gemeindeJoin, predicates);
+			FilterFunctions.setGemeindeFilterForCurrentUser(benutzer, gemeindeJoin, predicates);
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));

@@ -77,6 +77,9 @@ public class DailyBatchBean implements DailyBatch {
 	@Inject
 	private BetreuungService betreuungService;
 
+	@Inject
+	private InstitutionService institutionService;
+
 
 	@Override
 	@Asynchronous
@@ -175,7 +178,7 @@ public class DailyBatchBean implements DailyBatch {
 		try {
 			LOGGER.info("Starting Job GesuchsperiodeLoeschen...");
 			LocalDate stichtag = LocalDate.now().minusYears(10);
-			LOGGER.info("Deleting Gesuchsperioden older than {}", Constants.DATE_FORMATTER.format(stichtag));
+			LOGGER.info("... Deleting Gesuchsperioden older than {}", Constants.DATE_FORMATTER.format(stichtag));
 			Collection<Gesuchsperiode> gesuchsperiodenBetween = gesuchsperiodeService.getGesuchsperiodenBetween(LocalDate.of(1900, Month.JANUARY, 1), stichtag);
 			for (Gesuchsperiode gesuchsperiode : gesuchsperiodenBetween) {
 				gesuchsperiodeService.removeGesuchsperiode(gesuchsperiode.getId());
@@ -216,6 +219,17 @@ public class DailyBatchBean implements DailyBatch {
 			LOGGER.info("... Job InfoOffenePendenzenInstitution finished");
 		} catch (RuntimeException e) {
 			LOGGER.error("Batch-Job InfoOffenePendenzenInstitution konnte nicht durchgefuehrt werden!", e);
+		}
+	}
+
+	@Override
+	public void runBatchInstitutionCheckRequired() {
+		try {
+			LOGGER.info("Starting Job InstitutionCheckRequired...");
+			institutionService.calculateStammdatenCheckRequired();
+			LOGGER.info("... Job InstitutionCheckRequired finished");
+		} catch (RuntimeException e) {
+			LOGGER.error("Batch-Job InstitutionCheckRequired konnte nicht durchgefuehrt werden!", e);
 		}
 	}
 }
