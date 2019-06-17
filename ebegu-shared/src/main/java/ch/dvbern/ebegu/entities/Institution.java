@@ -32,6 +32,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.InstitutionStatus;
+import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
@@ -64,6 +65,10 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private InstitutionStatus status = InstitutionStatus.EINGELADEN;
+
+	@NotNull
+	@Column(nullable = false)
+	private boolean stammdatenCheckRequired = false;
 
 
 	public Institution() {
@@ -104,6 +109,18 @@ public class Institution extends AbstractMutableEntity implements HasMandant, Di
 
 	public void setStatus(InstitutionStatus status) {
 		this.status = status;
+	}
+
+	public boolean isStammdatenCheckRequired() {
+		return stammdatenCheckRequired;
+	}
+
+	public void setStammdatenCheckRequired(boolean stammdatenCheckRequired) {
+		this.stammdatenCheckRequired = stammdatenCheckRequired;
+	}
+
+	public boolean isUnknownInstitution() {
+		return this.name.equals(Constants.UNKNOWN_INSTITUTION_NAME);
 	}
 
 	@Override

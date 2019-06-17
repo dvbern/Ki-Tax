@@ -38,4 +38,6 @@ public interface DailyBatch {
 	void runBatchDeleteInvalidAuthTokens();
 
 	void runBatchInfoOffenePendenzenInstitution();
+
+	void runBatchInstitutionCheckRequired();
 }
