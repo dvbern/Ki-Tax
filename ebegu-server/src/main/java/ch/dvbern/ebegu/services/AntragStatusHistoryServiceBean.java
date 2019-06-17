@@ -36,6 +36,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.AntragStatusHistory_;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -107,7 +108,7 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 		}
 		if (userToSet != null) {
 			// Den letzten Eintrag beenden, falls es schon einen gab
-			AntragStatusHistory lastStatusChange = findLastStatusChange(gesuch);
+			AntragStatusHistory lastStatusChange = findLastStatusChange(gesuch.getId());
 			if (lastStatusChange != null) {
 				lastStatusChange.setTimestampBis(LocalDateTime.now());
 			}
@@ -126,16 +127,16 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 	@Override
 	@Nullable
 	@PermitAll
-	public AntragStatusHistory findLastStatusChange(@Nonnull Gesuch gesuch) {
-		Objects.requireNonNull(gesuch);
+	public AntragStatusHistory findLastStatusChange(@Nonnull String gesuchId) {
+		Objects.requireNonNull(gesuchId);
 		try {
-			final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuch);
+			final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuchId);
 
 			AntragStatusHistory result = persistence.getEntityManager().createQuery(query).setFirstResult(0).setMaxResults(1).getSingleResult();
 			authorizer.checkReadAuthorization(result.getGesuch());
 			return result;
 		} catch (NoResultException e) {
-			LOG.debug("No last status change found for gesuch {}", gesuch.getId(), e);
+			LOG.debug("No last status change found for gesuch {}", gesuchId, e);
 			return null;
 		}
 	}
@@ -175,7 +176,7 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 		Predicate gesuchsperiodePredicate = cb.equal(root.get(AntragStatusHistory_.gesuch).get(Gesuch_.gesuchsperiode), gesuchsperiode);
 		Predicate rolePredicate = root.get(AntragStatusHistory_.gesuch).get(Gesuch_.status).in(antragStatuses);
 		query.where(fallPredicate, gesuchsperiodePredicate, rolePredicate);
-		query.orderBy(cb.desc(root.get(AntragStatusHistory_.timestampErstellt)));
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
 		return persistence.getCriteriaResults(query);
 	}
 
@@ -184,7 +185,7 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 	public AntragStatusHistory findLastStatusChangeBeforeBeschwerde(@Nonnull Gesuch gesuch) {
 		Objects.requireNonNull(gesuch);
 		authorizer.checkReadAuthorization(gesuch);
-		final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuch);
+		final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuch.getId());
 
 		final List<AntragStatusHistory> lastTwoChanges = persistence.getEntityManager().createQuery(query).setMaxResults(2).getResultList();
 		if (lastTwoChanges.size() < 2 || AntragStatus.BESCHWERDE_HAENGIG != lastTwoChanges.get(0).getStatus()) {
@@ -202,7 +203,7 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 			throw new EbeguRuntimeException("findLastStatusChangeBeforePruefungSTV", ErrorCodeEnum.ERROR_ONLY_IN_GEPRUEFT_STV_ALLOWED, gesuch.getId());
 		}
 
-		final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuch);
+		final CriteriaQuery<AntragStatusHistory> query = createQueryAllAntragStatusHistoryProGesuch(gesuch.getId());
 
 		final List<AntragStatusHistory> allStatusChanges = persistence.getEntityManager().createQuery(query).getResultList();
 		boolean changeToPruefungSTVFound = false;
@@ -221,12 +222,12 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 	 * Gibt alle AntragStatusHistory des gegebenen Gesuchs zurueck. Sortiert nach timestampVon DESC
 	 */
 	@Nonnull
-	private CriteriaQuery<AntragStatusHistory> createQueryAllAntragStatusHistoryProGesuch(Gesuch gesuch) {
+	private CriteriaQuery<AntragStatusHistory> createQueryAllAntragStatusHistoryProGesuch(@Nonnull String gesuchId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<AntragStatusHistory> query = cb.createQuery(AntragStatusHistory.class);
 		Root<AntragStatusHistory> root = query.from(AntragStatusHistory.class);
 
-		Predicate predicateInstitution = cb.equal(root.get(AntragStatusHistory_.gesuch).get(Gesuch_.id), gesuch.getId());
+		Predicate predicateInstitution = cb.equal(root.get(AntragStatusHistory_.gesuch).get(AbstractEntity_.id), gesuchId);
 
 		query.where(predicateInstitution);
 		query.orderBy(cb.desc(root.get(AntragStatusHistory_.timestampVon)));

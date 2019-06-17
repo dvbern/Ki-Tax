@@ -94,6 +94,10 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
+
+		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
+		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);
+
 		return persistence.merge(institutionStammdaten);
 	}
 

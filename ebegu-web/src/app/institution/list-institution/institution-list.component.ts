@@ -18,6 +18,7 @@
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -48,6 +49,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
+        private readonly translate: TranslateService,
     ) {
         super(authServiceRS);
     }
@@ -150,5 +152,13 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     public doFilter = (value: string) => {
         this.dataSource.filter = value.trim().toLocaleLowerCase();
+    }
+
+    public translateStatus(institution: TSInstitution): string {
+        const translatedStatus = this.translate.instant('INSTITUTION_STATUS_' + institution.status);
+        const translatedCheck = institution.stammdatenCheckRequired
+            ? this.translate.instant('INSTITUTION_STATUS_CHECK_REQUIRED')
+            : '';
+        return `${translatedStatus} ${translatedCheck}`;
     }
 }
