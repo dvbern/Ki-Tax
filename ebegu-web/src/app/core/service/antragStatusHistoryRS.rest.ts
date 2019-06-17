@@ -14,6 +14,7 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
+import {Observable, ReplaySubject} from 'rxjs';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import TSAntragStatusHistory from '../../../models/TSAntragStatusHistory';
 import TSDossier from '../../../models/TSDossier';
@@ -23,15 +24,16 @@ import EbeguRestUtil from '../../../utils/EbeguRestUtil';
 
 export default class AntragStatusHistoryRS {
 
-    public get lastChange(): TSAntragStatusHistory {
-        return this._lastChange;
+    public get lastChange$(): Observable<TSAntragStatusHistory | null> {
+        return this._lastChange$;
     }
 
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS'];
 
     public serviceURL: string;
 
-    private _lastChange: TSAntragStatusHistory;
+    private readonly lastChangeSubject$ = new ReplaySubject<TSAntragStatusHistory | null>(1);
+    private readonly _lastChange$: Observable<TSAntragStatusHistory | null> = this.lastChangeSubject$.asObservable();
 
     public constructor(
         public http: IHttpService,
@@ -52,13 +54,13 @@ export default class AntragStatusHistoryRS {
                 .then((response: any) => {
                     this.log.debug('PARSING AntragStatusHistory REST object ', response.data);
                     const history = new TSAntragStatusHistory();
-                    this._lastChange = this.ebeguRestUtil.parseAntragStatusHistory(history, response.data);
+                    const lastChange = this.ebeguRestUtil.parseAntragStatusHistory(history, response.data);
+                    this.lastChangeSubject$.next(lastChange);
 
-                    return this._lastChange;
+                    return lastChange;
                 });
         }
-        this._lastChange = undefined;
-        return Promise.resolve(this._lastChange);
+        return Promise.resolve(undefined);
     }
 
     public loadAllAntragStatusHistoryByGesuchsperiode(
@@ -83,9 +85,9 @@ export default class AntragStatusHistoryRS {
      * Gibt den FullName des Benutzers zurueck, der den Gesuchsstatus am letzten geaendert hat. Sollte das Gesuch noch
      * nicht gespeichert sein (fallCreation), wird der FullName des eingeloggten Benutzers zurueckgegeben
      */
-    public getUserFullname(): string {
-        if (this.lastChange && this.lastChange.benutzer) {
-            return this.lastChange.benutzer.getFullName();
+    public getUserFullname(lastChange: TSAntragStatusHistory): string {
+        if (lastChange && lastChange.benutzer) {
+            return lastChange.benutzer.getFullName();
         }
 
         const principal = this.authServiceRS.getPrincipal();

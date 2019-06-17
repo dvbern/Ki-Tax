@@ -505,8 +505,11 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 						.otherwise(institution.get(Institution_.name));
 				}
 				break;
-			case "verantwortlicher":
+			case "verantwortlicherBG":
 				expression = root.get(Gesuch_.dossier).get(Dossier_.verantwortlicherBG).get(Benutzer_.nachname);
+				break;
+			case "verantwortlicherTS":
+				expression = root.get(Gesuch_.dossier).get(Dossier_.verantwortlicherTS).get(Benutzer_.nachname);
 				break;
 			case "kinder":
 				expression = kinder.get(AbstractPersonEntity_.vorname);

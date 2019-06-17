@@ -31,13 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_BG;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_BG;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static ch.dvbern.ebegu.enums.UserRole.SUPER_ADMIN;
-import static ch.dvbern.ebegu.enums.UserRole.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_GEMEINDE;
 
 /**
  * UpdateStatusInterceptor:
@@ -73,7 +73,7 @@ public class UpdateStatusInterceptor {
 			if (gesuchID != null) {
 				Gesuch gesuch = persistence.find(Gesuch.class, gesuchID);
 				if (gesuch == null) {
-					LOG.info("Gesuch mit ID " + gesuchID + " wurde nicht in der DB gefunden");
+					LOG.info("Gesuch mit ID {} wurde nicht in der DB gefunden", gesuchID);
 				} else {
 					if (principalBean.isCallerInAnyOfRole(JA_OR_SCH_OR_ADM) && Eingangsart.ONLINE == gesuch.getEingangsart()
 						&& AntragStatus.FREIGEGEBEN == gesuch.getStatus()) {
@@ -92,7 +92,7 @@ public class UpdateStatusInterceptor {
 		gesuchService.updateGesuch(gesuch, true, null);
 
 		if (configuration.getIsDevmode() || LOG.isDebugEnabled()) {
-			LOG.info("Antrag wurde in den Status " + newStatus + " gesetzt. ID " + gesuch.getId());
+			LOG.info("Antrag wurde in den Status {} gesetzt. ID {}", newStatus, gesuch.getId());
 		}
 	}
 

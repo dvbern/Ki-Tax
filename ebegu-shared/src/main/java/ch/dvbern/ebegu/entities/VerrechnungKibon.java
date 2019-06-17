@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,23 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@import (reference) '../../../../style/variables.less';
+package ch.dvbern.ebegu.entities;
 
-.language-selector {
-    text-align: center;
-    height: 100%;
-    position: relative;
-    right: 0;
-    top: 0;
-    padding-right: 2rem;
+import javax.persistence.Entity;
 
-    .language-button {
-        border: 0;
-        background: transparent;
-        text-align: center;
-        height: 100%;
-        position: relative;
-        right: 0;
-        top: 0;
-    }
+/**
+ * Entitaet zum Speichern von Verrechnungen in der Datenbank.
+ */
+@Entity
+public class VerrechnungKibon extends AbstractEntity {
+
+	private static final long serialVersionUID = -7687613920281069860L;
+
+
+	public VerrechnungKibon() {
+	}
+
+	@Override
+	public boolean isSame(AbstractEntity other) {
+		return getId().equals(other.getId());
+	}
 }
