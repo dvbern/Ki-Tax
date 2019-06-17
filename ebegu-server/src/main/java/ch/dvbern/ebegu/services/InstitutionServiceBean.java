@@ -312,7 +312,11 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 	public Institution deactivateStammdatenCheckRequired(@Nonnull String institutionId) {
 		InstitutionStammdaten stammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
-		institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
+		if (stammdaten != null) {
+			// save stammdaten to update its timestamp_mutiert, since this field will be used to set the Flag stammdatenCheckRequired
+			stammdaten.setTimestampMutiert(LocalDateTime.now());
+			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
+		}
 
 		return updateStammdatenCheckRequired(institutionId, false);
 	}
