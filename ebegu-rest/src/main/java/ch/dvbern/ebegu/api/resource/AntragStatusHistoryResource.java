@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -36,13 +35,11 @@ import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
 import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AntragStatusHistoryService;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -57,8 +54,6 @@ public class AntragStatusHistoryResource {
 
 	@Inject
 	private JaxBConverter converter;
-	@Inject
-	private GesuchService gesuchService;
 	@Inject
 	private GesuchsperiodeService gesuchsperiodeService;
 	@Inject
@@ -77,14 +72,13 @@ public class AntragStatusHistoryResource {
 
 		Objects.requireNonNull(jaxGesuchId.getId());
 		String gesuchId = converter.toEntityId(jaxGesuchId);
-		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId);
 
-		if (gesuch.isPresent()) {
-			final AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuch.get());
-			if (lastStatusChange != null) {
-				return converter.antragStatusHistoryToJAX(lastStatusChange);
-			}
+		final AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuchId);
+
+		if (lastStatusChange != null) {
+			return converter.antragStatusHistoryToJAX(lastStatusChange);
 		}
+
 		return null;
 	}
 
