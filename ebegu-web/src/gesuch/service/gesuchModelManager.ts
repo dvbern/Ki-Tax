@@ -428,7 +428,6 @@ export default class GesuchModelManager {
         });
     }
 
-
     /**
      * Speichert den StammdatenToWorkWith.
      */
