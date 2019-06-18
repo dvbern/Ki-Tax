@@ -713,8 +713,8 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 		Familiensituation familiensituationJA = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
-		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
-		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
+		Boolean sozialhilfeBezueger = EbeguUtil.toBoolean(familiensituationJA.getSozialhilfeBezueger(), false);
+		Boolean gemeinsameSteuererklaerung = EbeguUtil.toBoolean(familiensituationJA.getGemeinsameSteuererklaerung(), false);
 		Objects.requireNonNull(sozialhilfeBezueger);
 		Objects.requireNonNull(gemeinsameSteuererklaerung);
 		if (gesuch.getGesuchsteller1() != null && gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null) {
