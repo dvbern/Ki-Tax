@@ -256,10 +256,11 @@ export class KommentarViewController {
     }
 
     public showBemerkungenPruefungSTV(): boolean {
-        return this.getGesuch().geprueftSTV
+        return this.getGesuch() && (
+            this.getGesuch().geprueftSTV
             || this.getGesuch().status === TSAntragStatus.PRUEFUNG_STV
             || this.getGesuch().status === TSAntragStatus.IN_BEARBEITUNG_STV
-            || this.getGesuch().status === TSAntragStatus.GEPRUEFT_STV;
+            || this.getGesuch().status === TSAntragStatus.GEPRUEFT_STV);
     }
 
     public getFreigabeName(): string {

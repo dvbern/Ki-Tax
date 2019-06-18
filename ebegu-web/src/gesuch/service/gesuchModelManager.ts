@@ -510,6 +510,9 @@ export default class GesuchModelManager {
     }
 
     public convertKindNumberToKindIndex(kindNumber: number): number {
+        if (!this.getGesuch()) {
+            return -1;
+        }
         for (let i = 0; i < this.getGesuch().kindContainers.length; i++) {
             if (this.getGesuch().kindContainers[i].kindNummer === kindNumber) {
                 return i;
