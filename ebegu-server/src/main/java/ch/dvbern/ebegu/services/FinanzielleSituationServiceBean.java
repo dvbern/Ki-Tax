@@ -29,10 +29,14 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -88,24 +92,56 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
-	public FinanzielleSituationContainer saveFinanzielleSituation(@Nonnull FinanzielleSituationContainer finanzielleSituation, String gesuchId) {
-		Objects.requireNonNull(finanzielleSituation);
-		authorizer.checkCreateAuthorizationFinSit(finanzielleSituation);
+	public Gesuch saveFinanzielleSituationStart(
+		@Nonnull FinanzielleSituationContainer finanzielleSituation,
+		@Nonnull Boolean sozialhilfebezueger,
+		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nonnull String gesuchId
+	) {
+		// Die eigentliche FinSit speichern
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
-		if (gesuchId != null) {
 			wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
 				.FINANZIELLE_SITUATION);
-		}
-		return finanzielleSituationPersisted;
+
+		// Die zwei Felder "sozialhilfebezueger" und "gemeinsameSteuererklaerung" befinden sich nicht auf der FinanziellenSituation, sondern auf der
+		// FamilienSituation -> Das Gesuch muss hier aus der DB geladen werden, damit nichts überschrieben wird!
+		Gesuch gesuch = saveFinanzielleSituationFelderAufGesuch(sozialhilfebezueger, gemeinsameSteuererklaerung, gesuchId);
+		return gesuch;
 	}
 
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
-	public Gesuch saveFinanzielleSituationStart(@Nonnull Gesuch gesuch) {
-		Gesuch modifiedGesuch = gesuchService.updateGesuch(gesuch, false, null);
-		wizardStepService.updateSteps(modifiedGesuch.getId(), null, null, WizardStepName.FINANZIELLE_SITUATION, 1);
-		return modifiedGesuch;
+	public FinanzielleSituationContainer saveFinanzielleSituation(
+		@Nonnull FinanzielleSituationContainer finanzielleSituation,
+		@Nonnull Boolean sozialhilfebezueger,
+		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nonnull String gesuchId
+	) {
+		// Die eigentliche FinSit speichern
+		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
+		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
+			.FINANZIELLE_SITUATION);
+
+		// Die zwei Felder "sozialhilfebezueger" und "gemeinsameSteuererklaerung" befinden sich nicht auf der FinanziellenSituation, sondern auf der
+		// FamilienSituation -> Das Gesuch muss hier aus der DB geladen werden, damit nichts überschrieben wird!
+		saveFinanzielleSituationFelderAufGesuch(sozialhilfebezueger, gemeinsameSteuererklaerung, gesuchId);
+		return finanzielleSituationPersisted;
+	}
+
+	private Gesuch saveFinanzielleSituationFelderAufGesuch(
+		@Nonnull Boolean sozialhilfebezueger,
+		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nonnull String gesuchId
+	) {
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId));
+		FamiliensituationContainer familiensituationContainer = gesuch.getFamiliensituationContainer();
+		Objects.requireNonNull(familiensituationContainer);
+		Familiensituation familiensituation = familiensituationContainer.getFamiliensituationJA();
+		Objects.requireNonNull(familiensituation);
+		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
+		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
+		return gesuch;
 	}
 
 	@Nonnull

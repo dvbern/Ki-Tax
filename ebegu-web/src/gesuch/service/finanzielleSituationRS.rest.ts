@@ -39,33 +39,27 @@ export default class FinanzielleSituationRS {
     }
 
     public saveFinanzielleSituation(
-        finanzielleSituationContainer: TSFinanzielleSituationContainer,
+        gesuch: TSGesuch,
         gesuchstellerId: string,
-        gesuchId: string,
     ): IPromise<TSFinanzielleSituationContainer> {
-        let returnedFinanzielleSituation = {};
-        returnedFinanzielleSituation = this.ebeguRestUtil.finanzielleSituationContainerToRestObject(
-            returnedFinanzielleSituation,
-            finanzielleSituationContainer);
+        const sentGesuch = this.ebeguRestUtil.gesuchToRestObject({}, gesuch);
+        const url = `${this.serviceURL}/finanzielleSituation/${encodeURIComponent(gesuchstellerId)}`;
 
-        const url = `${this.serviceURL}/${encodeURIComponent(gesuchstellerId)}/${encodeURIComponent(gesuchId)}`;
-        return this.$http.put(url, returnedFinanzielleSituation).then((httpresponse: any) => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                    httpresponse.data);
+        return this.$http.put(url, sentGesuch).then(response => {
+            return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
+                return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(), response.data);
             });
         });
     }
 
-    /**
-     * Sendet zurzeit das komplette Gesuch.
-     */
-    public saveFinanzielleSituationStart(gesuch: TSGesuch): IPromise<TSGesuch> {
-        let sentGesuch = {};
-        sentGesuch = this.ebeguRestUtil.gesuchToRestObject(sentGesuch, gesuch);
-        return this.$http.put(`${this.serviceURL}/finsitStart/`, sentGesuch).then(response => {
+    public saveFinanzielleSituationStart(
+        gesuch: TSGesuch,
+    ): IPromise<TSGesuch> {
+        const sentGesuch = this.ebeguRestUtil.gesuchToRestObject({}, gesuch);
+        const url = `${this.serviceURL}/finanzielleSituationStart`;
+
+        return this.$http.put(url, sentGesuch).then(response => {
             return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
-                this.$log.debug('PARSING gesuch REST object ', response.data);
                 return this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data);
             });
         });

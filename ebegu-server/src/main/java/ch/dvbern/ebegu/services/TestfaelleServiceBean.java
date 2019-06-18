@@ -58,7 +58,6 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -711,12 +710,27 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	}
 
 	private void saveFinanzielleSituation(@Nonnull Gesuch gesuch, @Nonnull List<WizardStep> wizardStepsFromGesuch) {
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		Familiensituation familiensituationJA = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
+		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
+		Objects.requireNonNull(sozialhilfeBezueger);
+		Objects.requireNonNull(gemeinsameSteuererklaerung);
 		if (gesuch.getGesuchsteller1() != null && gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null) {
 			setWizardStepInStatus(wizardStepsFromGesuch, WizardStepName.FINANZIELLE_SITUATION, WizardStepStatus.IN_BEARBEITUNG);
-			finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
+				sozialhilfeBezueger,
+				gemeinsameSteuererklaerung,
+				gesuch.getId());
 		}
 		if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
-			finanzielleSituationService.saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
+				sozialhilfeBezueger,
+				gemeinsameSteuererklaerung,
+				gesuch.getId());
 		}
 		setWizardStepInStatus(wizardStepsFromGesuch, WizardStepName.FINANZIELLE_SITUATION, WizardStepStatus.OK);
 		setWizardStepVerfuegbar(wizardStepsFromGesuch, WizardStepName.FINANZIELLE_SITUATION);

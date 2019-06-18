@@ -428,14 +428,6 @@ export default class GesuchModelManager {
         });
     }
 
-    public saveFinanzielleSituationStart(): IPromise<TSGesuch> {
-        // tslint:disable-next-line:no-identical-functions
-        return this.finanzielleSituationRS.saveFinanzielleSituationStart(this.gesuch).then(gesuchResponse => {
-            this.gesuch = gesuchResponse;
-
-            return this.gesuch;
-        });
-    }
 
     /**
      * Speichert den StammdatenToWorkWith.
@@ -454,11 +446,19 @@ export default class GesuchModelManager {
             });
     }
 
+    public saveFinanzielleSituationStart(): IPromise<TSGesuch> {
+        // tslint:disable-next-line:no-identical-functions
+        return this.finanzielleSituationRS.saveFinanzielleSituationStart(this.gesuch).then(gesuchResponse => {
+            this.gesuch = gesuchResponse;
+
+            return this.gesuch;
+        });
+    }
+
     public saveFinanzielleSituation(): IPromise<TSFinanzielleSituationContainer> {
         return this.finanzielleSituationRS.saveFinanzielleSituation(
-            this.getStammdatenToWorkWith().finanzielleSituationContainer,
-            this.getStammdatenToWorkWith().id,
-            this.gesuch.id)
+            this.gesuch,
+            this.getStammdatenToWorkWith().id)
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
 
