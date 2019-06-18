@@ -52,6 +52,7 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
+    public isCheckRequired: boolean = false;
     public abweichendeZahlungsAdresse: boolean;
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
@@ -94,6 +95,7 @@ export class EditInstitutionComponent implements OnInit {
                     } else {
                         this.createInstitutionStammdaten(institution);
                     }
+                    this.isCheckRequired = institution.stammdatenCheckRequired;
                     this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
                     this.initName = this.stammdaten.institution.name;
                     this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
@@ -264,5 +266,15 @@ export class EditInstitutionComponent implements OnInit {
 
     public getPlaceholderForOeffnungszeiten(): string {
         return this.translate.instant('INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER');
+    }
+
+    public deactivateStammdatenCheckRequired(): void {
+        this.institutionRS.deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
+            .then(() => this.navigateBack());
+
+    }
+
+    public isCheckRequiredEnabled(): boolean {
+        return this.isCheckRequired && !this.editMode;
     }
 }

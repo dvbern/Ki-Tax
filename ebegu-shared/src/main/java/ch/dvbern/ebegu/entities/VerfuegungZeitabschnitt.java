@@ -657,8 +657,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return verguenstigungOhneBeruecksichtigungMinimalbeitrag;
 	}
 
-	public  void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(BigDecimal
-		verguenstigungOhneBeruecksichtigungMinimalbeitrag
+	public  void setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(
+		BigDecimal verguenstigungOhneBeruecksichtigungMinimalbeitrag
 	) {
 		// Wir stellen direkt im setter sicher, dass wir die Beträge mit 2 Nachkommastelle speichern
 		this.verguenstigungOhneBeruecksichtigungMinimalbeitrag = MathUtil.toTwoKommastelle(verguenstigungOhneBeruecksichtigungMinimalbeitrag);

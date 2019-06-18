@@ -134,8 +134,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	private static final Logger LOG = LoggerFactory.getLogger(BenutzerServiceBean.class.getSimpleName());
 
-	public static final String ID_SUPER_ADMIN = "22222222-2222-2222-2222-222222222222";
-
 	@Inject
 	private Persistence persistence;
 
@@ -295,7 +293,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return persistedBenutzer;
 	}
 
-	@Nonnull
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void erneutEinladen(@Nonnull Benutzer eingeladener) {
@@ -346,6 +343,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		}
 	}
 
+	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
 	private void checkSuperuserRoleZuteilung(@Nonnull Benutzer benutzer) {
 		// Nur ein Superadmin kann Superadmin-Rechte vergeben!
 		if (benutzer.getRole() == UserRole.SUPER_ADMIN && !principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
@@ -640,10 +638,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			username = principal.getName();
 		}
 		if (StringUtils.isNotEmpty(username)) {
-			if (Constants.ANONYMOUS_USER_USERNAME.equals(username)
-				&& principalBean.isCallerInRole(UserRole.SUPER_ADMIN.name())) {
-				return loadSuperAdmin();
-			}
 			return findBenutzer(username);
 		}
 		return Optional.empty();
@@ -662,8 +656,9 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			// Wir ueberpruefen, ob der Username sich geaendert hat
 			if (!foundUser.getUsername().equals(benutzer.getUsername())) {
 				LOG.warn("External User has new Username: ExternalUUID {}, old username {}, new username {}. "
-						+ "Updating!",
+						+ "Updating and setting Bemerkung!",
 					benutzer.getExternalUUID(), foundUser.getUsername(), benutzer.getUsername());
+				foundUser.addBemerkung("External User has new Username: ExternalUUID: " + benutzer.getExternalUUID() + ", old username: " + foundUser.getUsername() + ", new username " + benutzer.getUsername());
 				foundUser.setUsername(benutzer.getUsername());
 			}
 			// den username ueberschreiben wir nicht!
@@ -830,36 +825,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
 			berechtigung.setTraegerschaft(null);
 		}
-	}
-
-	private Optional<Benutzer> loadSuperAdmin() {
-		Optional<Benutzer> benutzer = Optional.ofNullable(persistence.find(Benutzer.class, ID_SUPER_ADMIN));
-		if (benutzer.isPresent()) {
-			return benutzer;
-		}
-		// if we cannot find a User with the given ID, we try to load any Super Admin
-		final Optional<Benutzer> anySuperAdmin = loadAnySuperAdmin();
-		if (!anySuperAdmin.isPresent()) {
-			LOG.error("Could not find any SuperAdmin. At least one SuperAdmin must exist.");
-		}
-
-		return anySuperAdmin;
-	}
-
-	/**
-	 * Use this function to retrieve any Superadmin from the DB. It will randomly take the first one it finds
-	 */
-	private Optional<Benutzer> loadAnySuperAdmin() {
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
-		Root<Benutzer> root = query.from(Benutzer.class);
-		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
-		query.select(root);
-
-		Predicate rolePredicate = joinBerechtigungen.get(Berechtigung_.role).in(UserRole.SUPER_ADMIN);
-		query.where(rolePredicate);
-
-		return persistence.getCriteriaResults(query).stream().findFirst();
 	}
 
 	@Nonnull
@@ -1161,7 +1126,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			}
 			// Die abgelaufene Rolle löschen
 			for (Berechtigung abgelaufeneBerechtigung : abgelaufeneBerechtigungen) {
-				LOG.info("Benutzerrolle ist abgelaufen: {}, war: {}, abgelaufen: {}", benutzer.getUsername(),
+				LOG.info("... Benutzerrolle ist abgelaufen: {}, war: {}, abgelaufen: {}", benutzer.getUsername(),
 					abgelaufeneBerechtigung.getRole(), abgelaufeneBerechtigung.getGueltigkeit().getGueltigBis());
 				benutzer.getBerechtigungen().remove(abgelaufeneBerechtigung);
 				persistence.merge(benutzer);

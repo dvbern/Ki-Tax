@@ -548,7 +548,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 			gesuch.setStatus(status);
 		}
 		gesuch.setTimestampVerfuegt(verfuegungsdatum.atStartOfDay());
-		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuch);
+		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuch.getId());
 		Objects.requireNonNull(lastStatusChange);
 		lastStatusChange.setTimestampVon(verfuegungsdatum.atStartOfDay());
 		persistence.merge(lastStatusChange);
@@ -630,7 +630,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch loadedGesuch = gesuchOpt.get();
 		loadedGesuch.setTimestampVerfuegt(verfuegungsdatum.atStartOfDay());
 		gesuchService.updateGesuch(loadedGesuch, false, null);
-		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(loadedGesuch);
+		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(loadedGesuch.getId());
 		Objects.requireNonNull(lastStatusChange);
 		lastStatusChange.setTimestampVon(verfuegungsdatum.atStartOfDay());
 		persistence.merge(lastStatusChange);

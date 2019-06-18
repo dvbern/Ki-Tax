@@ -205,12 +205,28 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         const isAngebotKITA = this.getBetreuung().isAngebotKITA();
         const direktVerfuegen = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
             || this.isAlreadyIgnored();
-        const promise = direktVerfuegen
+        // Falls es bereits ignoriert war, soll eine Warung angezeigt werden
+        if (this.isAlreadyIgnored()) {
+            this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+                title: 'CONFIRM_ALREADY_IGNORED',
+                deleteText: 'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {
+               const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
+               promise.then(() => this.goToVerfuegen());
+            });
+        } else {
+            const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
+            promise.then(() => this.goToVerfuegen());
+        }
+    }
+
+    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean):  IPromise<TSVerfuegung> {
+        return direktVerfuegen
             ? this.saveVerfuegung()
             // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
             : this.saveMutierteVerfuegung();
-
-        promise.then(() => this.goToVerfuegen());
     }
 
     private isVerfuegenValid(): boolean {

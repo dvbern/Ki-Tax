@@ -112,14 +112,14 @@ public class AntragStatusHistoryServiceTest extends AbstractEbeguLoginTest {
 		statusHistoryService.saveStatusChange(gesuch, null);
 		gesuch.setStatus(AntragStatus.VERFUEGT);
 		statusHistoryService.saveStatusChange(gesuch, null);
-		final AntragStatusHistory lastStatusChange = statusHistoryService.findLastStatusChange(gesuch);
+		final AntragStatusHistory lastStatusChange = statusHistoryService.findLastStatusChange(gesuch.getId());
 		Assert.assertNotNull(lastStatusChange);
 		Assert.assertEquals(AntragStatus.VERFUEGT, lastStatusChange.getStatus());
 	}
 
 	@Test
 	public void findLastStatusChangeNoChangeNullTest() {
-		Assert.assertNull(statusHistoryService.findLastStatusChange(gesuch));
+		Assert.assertNull(statusHistoryService.findLastStatusChange(gesuch.getId()));
 	}
 
 	@Test
