@@ -41,6 +41,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 
 	public static final int LOGO_LEFT_IN_MM = RECEIVER_LEFT_IN_MM;
 	public static final int LOGO_TOP_IN_MM = 15;
+	public static final int BARCODE_TOP_IN_MM = 22;
 	private static final int LOGO_MAX_WIDTH_IN_MM = 70;
 	private static final int LOGO_MAX_HEIGHT_IN_MM = 25;
 
