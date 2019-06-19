@@ -71,7 +71,7 @@ export class LoginComponentController implements IController {
                     if (this.countdown > 0) {
                         this.$timeout(this.doCountdown, 1000);
                     }
-                    this.$timeout(() => this.redirect(url), this.countdown * 1000);
+                    this.$timeout(() => this.redirect(this.redirectionHref), this.countdown * 1000);
                 });
         });
     }
@@ -95,15 +95,12 @@ export class LoginComponentController implements IController {
 
     public singlelogout(): void {
         this.authService.logoutRequest().then(() => {
-            // FIXME
-            // Bei der logoutHref kommt immer ein 404 Fehler vom Backend.
-            // Die URL sieht z.B. so aus:
-            // http://localhost:4200/connector/fedletSloInit?NameIDValue&SessionIndex=55a0ca81-d34f-4d28-8a3b-3c4486363a8b&RelayState=http%3A%2F%2Flocalhost%3A4200%2F
-            // Ich deaktiviere das bis auf weiteres, damit man die Logout Funktion sinnvoll nutzen kann. if
-            // (this.logoutHref !== '' || this.logoutHref === undefined) { this.$window.open(this.logoutHref, '_self');
-            // } else { wenn wir nicht in iam ausloggen gehen wir auf den anonymous state
-            navigateToStartPageForRole(TSRole.ANONYMOUS, this.$state);
-            // }
+            if (this.logoutHref !== '' || this.logoutHref === undefined) {
+                this.$window.open(this.logoutHref, '_self');
+            } else {
+                // wenn wir nicht im connector ausloggen gehen wir auf den anonymous state
+                navigateToStartPageForRole(TSRole.ANONYMOUS, this.$state);
+            }
         });
     }
 
