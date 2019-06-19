@@ -32,8 +32,8 @@
     "postinstall": "npm run set-version && npm rebuild node-sass"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.13.9",
-    "@angular/cli": "^6.2.9",
+    "@angular-devkit/build-angular": "~0.13.0",
+    "@angular/cli": "^7.3.9",
     "@angular/compiler-cli": "^6.1.10",
     "@types/angular": "^1.6.54",
     "@types/angular-animate": "^1.5.8",
@@ -122,7 +122,7 @@
     "xml2js": "~0.4.17"
   },
   "engines": {
-    "node": ">=8.0.0 <=10.5.0",
+    "node": ">=8.0.0 <=10.9.0",
     "npm": "=6.4.1"
   },
   "dependencies": {
@@ -154,6 +154,7 @@
     "raven-js": "~3.27.0",
     "rxjs": "^6.4.0",
     "rxjs-compat": "^6.4.0",
+    "tslib": "^1.9.0",
     "zone.js": "^0.8.29"
   }
 }
