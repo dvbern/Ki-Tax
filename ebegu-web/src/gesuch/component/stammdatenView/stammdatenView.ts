@@ -19,6 +19,7 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
+import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGesuchEvent} from '../../../models/enums/TSGesuchEvent';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -351,5 +352,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public showRechnungsadresseCheckbox(): boolean {
         // todo this should be shown for GS1 when Tagesschulen are active
         return false;
+    }
+
+    public isMailRequired(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        if (!gesuch) {
+            return true;
+        }
+        return gesuch.eingangsart === TSEingangsart.ONLINE;
     }
 }
