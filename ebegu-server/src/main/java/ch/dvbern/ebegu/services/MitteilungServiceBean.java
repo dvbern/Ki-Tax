@@ -734,14 +734,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
-				final Optional<Gesuch> mutationOpt = this.gesuchService.antragMutieren(
-					gesuch.getId(),
-					LocalDate.now());
-				if (mutationOpt.isPresent()) {
-					Gesuch persistedMutation = gesuchService.createGesuch(mutationOpt.get());
-					applyBetreuungsmitteilungToMutation(persistedMutation, mitteilung);
-					return persistedMutation;
-				}
+				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
+				mutation = gesuchService.createGesuch(mutation);
+				applyBetreuungsmitteilungToMutation(mutation, mitteilung);
+				return mutation;
 			} else {
 				throw new EbeguRuntimeException(
 					"applyBetreuungsmitteilung",

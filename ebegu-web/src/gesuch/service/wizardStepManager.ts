@@ -42,6 +42,9 @@ export default class WizardStepManager {
 
     private wizardStepsSnapshot: Array<TSWizardStep> = [];
 
+    // this semaphore will prevent a navigation to be executed again until the process is not finished
+    public isTransitionInProgress: boolean = false;
+
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly wizardStepRS: WizardStepRS,
@@ -216,6 +219,20 @@ export default class WizardStepManager {
         }
 
         return !(newStepStatus === TSWizardStepStatus.OK && oldStepStatus === TSWizardStepStatus.MUTIERT);
+    }
+
+    /**
+     * Like updateCurrentWizardStepStatus but it will only execute the action when the currentStep has the given stepName.
+     * Use this method to avoid changing the status of a different Step than the one you have to change.
+     */
+    public updateCurrentWizardStepStatusSafe(
+        stepName: TSWizardStepName,
+        stepStatus: TSWizardStepStatus
+    ): IPromise<void> {
+        if (this.getCurrentStepName() === stepName) {
+            return this.updateCurrentWizardStepStatus(stepStatus);
+        }
+        return undefined;
     }
 
     /**

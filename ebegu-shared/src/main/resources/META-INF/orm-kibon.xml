@@ -355,5 +355,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.BfsGemeinde"/>
 	<entity class="ch.dvbern.ebegu.entities.Massenversand"/>
 	<entity class="ch.dvbern.ebegu.entities.TextRessource"/>
+	<entity class="ch.dvbern.ebegu.entities.VerrechnungKibon"/>
+	<entity class="ch.dvbern.ebegu.entities.VerrechnungKibonDetail"/>
 
 </entity-mappings>

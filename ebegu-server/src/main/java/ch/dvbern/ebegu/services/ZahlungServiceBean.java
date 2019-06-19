@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -102,6 +101,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Service fuer Zahlungen. Die Zahlungen werden folgendermassen generiert:
@@ -291,8 +291,8 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Nonnull
 	private Collection<VerfuegungZeitabschnitt> getGueltigeVerfuegungZeitabschnitte(@Nonnull Gemeinde gemeinde, @Nonnull LocalDate zeitabschnittVon,
 		@Nonnull LocalDate zeitabschnittBis) {
-		Objects.requireNonNull(zeitabschnittVon, "zeitabschnittVon muss gesetzt sein");
-		Objects.requireNonNull(zeitabschnittBis, "zeitabschnittBis muss gesetzt sein");
+		requireNonNull(zeitabschnittVon, "zeitabschnittVon muss gesetzt sein");
+		requireNonNull(zeitabschnittBis, "zeitabschnittBis muss gesetzt sein");
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<VerfuegungZeitabschnitt> query = cb.createQuery(VerfuegungZeitabschnitt.class);
@@ -337,10 +337,11 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull Gemeinde gemeinde,
 		@Nonnull LocalDateTime datumVerfuegtVon,
 		@Nonnull LocalDateTime datumVerfuegtBis,
-		@Nonnull LocalDate zeitabschnittBis) {
-		Objects.requireNonNull(datumVerfuegtVon, "datumVerfuegtVon muss gesetzt sein");
-		Objects.requireNonNull(datumVerfuegtBis, "datumVerfuegtBis muss gesetzt sein");
-		Objects.requireNonNull(zeitabschnittBis, "zeitabschnittBis muss gesetzt sein");
+		@Nonnull LocalDate zeitabschnittBis
+	) {
+		requireNonNull(datumVerfuegtVon, "datumVerfuegtVon muss gesetzt sein");
+		requireNonNull(datumVerfuegtBis, "datumVerfuegtBis muss gesetzt sein");
+		requireNonNull(zeitabschnittBis, "zeitabschnittBis muss gesetzt sein");
 
 		LOGGER.info("Ermittle Korrekturzahlungen:");
 		LOGGER.info("Zeitabschnitt endet vor: {}", Constants.DATE_FORMATTER.format(zeitabschnittBis));
@@ -517,9 +518,9 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Zahlungsauftrag zahlungsauftragAktualisieren(@Nonnull String auftragId, @Nonnull LocalDate datumFaelligkeit, @Nonnull String beschreibung) {
-		Objects.requireNonNull(auftragId, "auftragId muss gesetzt sein");
-		Objects.requireNonNull(datumFaelligkeit, "datumFaelligkeit muss gesetzt sein");
-		Objects.requireNonNull(beschreibung, "beschreibung muss gesetzt sein");
+		requireNonNull(auftragId, "auftragId muss gesetzt sein");
+		requireNonNull(datumFaelligkeit, "datumFaelligkeit muss gesetzt sein");
+		requireNonNull(beschreibung, "beschreibung muss gesetzt sein");
 
 		Zahlungsauftrag auftrag = findZahlungsauftrag(auftragId).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"zahlungsauftragAktualisieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId));
@@ -538,7 +539,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
 	public Zahlungsauftrag zahlungsauftragAusloesen(@Nonnull String auftragId) {
-		Objects.requireNonNull(auftragId, "auftragId muss gesetzt sein");
+		requireNonNull(auftragId, "auftragId muss gesetzt sein");
 
 		Zahlungsauftrag zahlungsauftrag = findZahlungsauftrag(auftragId).orElseThrow(() -> new EbeguEntityNotFoundException(
 			"zahlungsauftragAktualisieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, auftragId));
@@ -567,7 +568,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Zahlungsauftrag> findZahlungsauftrag(@Nonnull String auftragId) {
-		Objects.requireNonNull(auftragId, "auftragId muss gesetzt sein");
+		requireNonNull(auftragId, "auftragId muss gesetzt sein");
 		Zahlungsauftrag zahlungsauftrag = persistence.find(Zahlungsauftrag.class, auftragId);
 		authorizer.checkReadAuthorizationZahlungsauftrag(zahlungsauftrag);
 		return Optional.ofNullable(zahlungsauftrag);
@@ -578,7 +579,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public Optional<Zahlung> findZahlung(@Nonnull String zahlungId) {
-		Objects.requireNonNull(zahlungId, "zahlungId muss gesetzt sein");
+		requireNonNull(zahlungId, "zahlungId muss gesetzt sein");
 		Zahlung zahlung = persistence.find(Zahlung.class, zahlungId);
 		authorizer.checkReadAuthorizationZahlung(zahlung);
 		return Optional.ofNullable(zahlung);
@@ -642,7 +643,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Nonnull
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
 	public Zahlung zahlungBestaetigen(@Nonnull String zahlungId) {
-		Objects.requireNonNull(zahlungId, "zahlungId muss gesetzt sein");
+		requireNonNull(zahlungId, "zahlungId muss gesetzt sein");
 		Zahlung zahlung = findZahlung(zahlungId).orElseThrow(() -> new EbeguEntityNotFoundException("zahlungBestaetigen",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, zahlungId));
 		zahlung.setStatus(ZahlungStatus.BESTAETIGT);
@@ -685,7 +686,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	@Override
 	@RolesAllowed(SUPER_ADMIN)
 	public void deleteZahlungspositionenOfGesuch(@Nonnull Gesuch gesuch) {
-		Objects.requireNonNull(gesuch, "gesuch muss gesetzt sein");
+		requireNonNull(gesuch, "gesuch muss gesetzt sein");
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsposition> query = cb.createQuery(Zahlungsposition.class);
 
@@ -753,7 +754,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	}
 
 	private void zahlungauftragBestaetigenIfAllZahlungenBestaetigt(@Nonnull Zahlungsauftrag zahlungsauftrag) {
-		Objects.requireNonNull(zahlungsauftrag, "zahlungsauftrag darf nicht null sein");
+		requireNonNull(zahlungsauftrag, "zahlungsauftrag darf nicht null sein");
 		if (zahlungsauftrag.getZahlungen().stream().allMatch(zahlung -> zahlung.getStatus() == ZahlungStatus.BESTAETIGT)) {
 			zahlungsauftrag.setStatus(ZahlungauftragStatus.BESTAETIGT);
 			persistence.merge(zahlungsauftrag);

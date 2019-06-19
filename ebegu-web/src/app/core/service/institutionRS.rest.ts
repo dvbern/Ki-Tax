@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, IPromise} from 'angular';
+import {IHttpService, IPromise} from 'angular';
 import * as moment from 'moment';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import TSInstitution from '../../../models/TSInstitution';
@@ -71,10 +71,6 @@ export class InstitutionRS {
             });
     }
 
-    public removeInstitution(institutionID: string): IHttpPromise<any> {
-        return this.$http.delete(`${this.serviceURL}/${encodeURIComponent(institutionID)}`);
-    }
-
     public getAllInstitutionen(): IPromise<TSInstitution[]> {
         return this.$http.get(this.serviceURL).then((response: any) => {
             return this.ebeguRestUtil.parseInstitutionen(response.data);
@@ -99,7 +95,20 @@ export class InstitutionRS {
         });
     }
 
+    public isStammdatenCheckRequired(): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/isStammdatenCheckRequired/currentuser`).then((response: any) => {
+            return response.data;
+        });
+    }
+
     public getServiceName(): string {
         return 'InstitutionRS';
+    }
+
+    public deactivateStammdatenCheckRequired(institutionId: string): IPromise<TSInstitution> {
+        return this.$http.put(`${this.serviceURL}/deactivateStammdatenCheckRequired/${institutionId}`, {})
+            .then((response: any) => {
+                return this.ebeguRestUtil.parseInstitution(new TSInstitution(), response.data);
+            });
     }
 }

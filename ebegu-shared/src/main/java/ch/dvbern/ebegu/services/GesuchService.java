@@ -48,7 +48,7 @@ public interface GesuchService {
 	 * @return das gespeicherte Gesuch
 	 */
 	@Nonnull
-	Gesuch createGesuch(@Nonnull Gesuch gesuch);
+	Gesuch createGesuch(@Nonnull Gesuch gesuchToCreate);
 
 	/**
 	 * Aktualisiert das Gesuch in der DB
@@ -157,32 +157,6 @@ public interface GesuchService {
 	 */
 	@Nonnull
 	List<JaxAntragDTO> getAllAntragDTOForDossier(String dossierId);
-
-	/**
-	 * Erstellt eine neue Mutation fuer die Gesuchsperiode und Fall des uebergebenen Antrags. Es wird immer der letzt
-	 * verfuegte Antrag kopiert fuer die Mutation.
-	 */
-	@Nonnull
-	Optional<Gesuch> antragMutieren(@Nonnull String antragId, @Nullable LocalDate eingangsdatum);
-
-	/**
-	 * hilfsmethode zur mutation von faellen ueber das gui. Wird fuer testzwecke benoetigt
-	 */
-	@Nonnull
-	Optional<Gesuch> testfallMutieren(
-		@Nonnull String dossierID,
-		@Nonnull String gesuchsperiodeId,
-		@Nonnull LocalDate eingangsdatum);
-
-	/**
-	 * Erstellt ein Erneuerungsgesuch fuer die Gesuchsperiode und Fall des übergebenen Antrags. Es wird immer der
-	 * letzte verfügte Antrag kopiert für das Erneuerungsgesuch
-	 */
-	@Nonnull
-	Optional<Gesuch> antragErneuern(
-		@Nonnull String antragId,
-		@Nonnull String gesuchsperiodeId,
-		@Nullable LocalDate eingangsdatum);
 
 	/**
 	 * Gibt das letzte verfuegte Gesuch fuer die uebergebene Gesuchsoperde und den uebergebenen Fall zurueck.
@@ -339,7 +313,7 @@ public interface GesuchService {
 	 * Freigabe
 	 * die Quittung nicht geschickt haben.
 	 */
-	List<Gesuch> getGesuchesOhneFreigabeOderQuittung();
+	List<Gesuch> getGesucheOhneFreigabeOderQuittung();
 
 	/**
 	 * Prüft, ob alle Anträge dieser Periode im Status VERFUEGT oder NUR_SCHULAMT sind
@@ -458,7 +432,7 @@ public interface GesuchService {
 	/**
 	 * Speichert einen Massenversand in der Datenbank
 	 */
-	Massenversand createMassenversand(@Nonnull Massenversand massenversand);
+	void createMassenversand(@Nonnull Massenversand massenversand);
 
 	/**
 	 * Gibt die Texte aller Massenversände zurück, welche zum übergebenen Gesuch verschickt wurden

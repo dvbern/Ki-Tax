@@ -137,12 +137,17 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         if (this.gesuchModelManager.getVerfuegenToWorkWith()) {
             this.setBemerkungen();
+            this.setParamsDependingOnCurrentVerfuegung();
         } else {
             this.gesuchModelManager.calculateVerfuegungen().then(() => {
                 this.setBemerkungen();
+                this.setParamsDependingOnCurrentVerfuegung();
             });
         }
         this.initDevModeParameter();
+    }
+
+    private setParamsDependingOnCurrentVerfuegung(): void {
         this.setSameVerfuegungsdaten();
         this.setSameVerrechneteVerfuegungdaten();
     }
@@ -184,6 +189,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.sameVerrechneteVerguenstigung;
     }
 
+    private isAlreadyIgnored(): boolean {
+        if (this.getVerfuegenToWorkWith()) {
+            return this.getVerfuegenToWorkWith().isAlreadyIgnored();
+        }
+        return false; // by default
+    }
+
     public save(): void {
         this.isVerfuegenClicked = true;
         if (!this.isGesuchValid() || !this.isVerfuegenValid()) {
@@ -191,12 +203,30 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         const isAngebotKITA = this.getBetreuung().isAngebotKITA();
-        const promise = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation() ?
-            this.saveVerfuegung() :
-            // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
-            this.saveMutierteVerfuegung();
+        const direktVerfuegen = !isAngebotKITA || this.isSameVerrechneteVerguenstigung() || !this.isMutation()
+            || this.isAlreadyIgnored();
+        // Falls es bereits ignoriert war, soll eine Warung angezeigt werden
+        if (this.isAlreadyIgnored()) {
+            this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+                title: 'CONFIRM_ALREADY_IGNORED',
+                deleteText: 'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED',
+                parentController: undefined,
+                elementID: undefined,
+            }).then(() => {
+               const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
+               promise.then(() => this.goToVerfuegen());
+            });
+        } else {
+            const promise = this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen);
+            promise.then(() => this.goToVerfuegen());
+        }
+    }
 
-        promise.then(() => this.goToVerfuegen());
+    private askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegen: boolean):  IPromise<TSVerfuegung> {
+        return direktVerfuegen
+            ? this.saveVerfuegung()
+            // wenn Mutation, und die Verfuegung neue Daten hat, kann sie ignoriert oder uebernommen werden
+            : this.saveMutierteVerfuegung();
     }
 
     private isVerfuegenValid(): boolean {

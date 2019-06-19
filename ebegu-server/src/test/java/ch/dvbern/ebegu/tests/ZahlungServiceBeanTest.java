@@ -160,8 +160,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void zahlungsauftragErstellenNormalUndMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
+		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, DATUM_GENERIERT, persistence);
 		final Gesuch mutation =
-			createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
+			createMutationFinSit(correctedGesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
 		Assert.assertNotNull(mutation);
 
 		// gleiche Mutation wie in vorherigem Test aber die Yahlung erfolgt nun am Ende der Periode, daher Aenderungen
@@ -201,8 +202,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void zahlungsauftragErstellenNormalUndTwoMutationChange() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
+		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, DATUM_GENERIERT, persistence);
 		final Gesuch mutation =
-			createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
+			createMutationFinSit(correctedGesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), false);
 		Assert.assertNotNull(mutation);
 		final Gesuch zweiteMutation =
 			createMutationFinSit(mutation, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(90000), false);
@@ -251,8 +253,9 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 	public void zahlungsauftragErstellenNormalUndMutationChangeIgnoriert() {
 		final Gesuch gesuch = createGesuch(true);
 		final Zahlungsauftrag zahlungsauftrag = checkZahlungErstgesuch(gesuch, DATUM_GENERIERT);
+		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, DATUM_GENERIERT, persistence);
 		final Gesuch mutation =
-			createMutationFinSit(gesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), true);
+			createMutationFinSit(correctedGesuch, true, DATUM_AUGUST.atStartOfDay(), BigDecimal.valueOf(70000), true);
 		Assert.assertNotNull(mutation);
 
 		// gleiche Mutation wie in vorherigem Test aber die Yahlung erfolgt nun am Ende der Periode, daher Aenderungen
@@ -545,7 +548,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 			gesuch.setStatus(status);
 		}
 		gesuch.setTimestampVerfuegt(verfuegungsdatum.atStartOfDay());
-		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuch);
+		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(gesuch.getId());
 		Objects.requireNonNull(lastStatusChange);
 		lastStatusChange.setTimestampVon(verfuegungsdatum.atStartOfDay());
 		persistence.merge(lastStatusChange);
@@ -588,31 +591,29 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		return mutation;
 	}
 
-	@Nullable
+	@Nonnull
 	private Gesuch createMutationBetreuungspensum(Gesuch erstgesuch, LocalDate eingangsdatum, BigDecimal pensum) {
-		Optional<Gesuch> gesuchOptional = gesuchService.antragMutieren(erstgesuch.getId(), eingangsdatum);
-		if (gesuchOptional.isPresent()) {
-			final Gesuch mutation = gesuchOptional.get();
-			mutation.setStatus(AntragStatus.VERFUEGEN);
-			List<Betreuung> betreuungs = mutation.extractAllBetreuungen();
-			for (Betreuung betreuung : betreuungs) {
-				Set<BetreuungspensumContainer> betreuungspensumContainers = betreuung.getBetreuungspensumContainers();
-				for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
-					betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
-				}
+		Gesuch mutation = testfaelleService.antragMutieren(erstgesuch, eingangsdatum);
+		mutation.setStatus(AntragStatus.GEPRUEFT);
+		mutation = persistence.merge(mutation);
+		mutation.setStatus(AntragStatus.VERFUEGEN);
+		List<Betreuung> betreuungs = mutation.extractAllBetreuungen();
+		for (Betreuung betreuung : betreuungs) {
+			Set<BetreuungspensumContainer> betreuungspensumContainers = betreuung.getBetreuungspensumContainers();
+			for (BetreuungspensumContainer betreuungspensumContainer : betreuungspensumContainers) {
+				betreuungspensumContainer.getBetreuungspensumJA().setPensum(pensum);
 			}
-			gesuchService.createGesuch(mutation);
-			// es muss mit verfuegungService.verfuegen verfuegt werden, damit der Zahlungsstatus der Zeitabschnitte
-			// richtig gesetzt wird. So wird auch dies getestet
-			testfaelleService.gesuchVerfuegenUndSpeichern(false, mutation, true, false);
-			verfuegungService.calculateVerfuegung(mutation);
-			for (Betreuung betreuung : betreuungs) {
-				Assert.assertNotNull(betreuung.getVerfuegung());
-				verfuegungService.verfuegen(betreuung.getVerfuegung(), betreuung.getId(), false);
-			}
-			return mutation;
 		}
-		return gesuchOptional.orElse(null);
+		gesuchService.updateGesuch(mutation, false, null);
+		// es muss mit verfuegungService.verfuegen verfuegt werden, damit der Zahlungsstatus der Zeitabschnitte
+		// richtig gesetzt wird. So wird auch dies getestet
+		testfaelleService.gesuchVerfuegenUndSpeichern(false, mutation, true, false);
+		verfuegungService.calculateVerfuegung(mutation);
+		for (Betreuung betreuung : betreuungs) {
+			Assert.assertNotNull(betreuung.getVerfuegung());
+			verfuegungService.verfuegen(betreuung.getVerfuegung(), betreuung.getId(), false);
+		}
+		return mutation;
 	}
 
 	private Gesuch createMutationBetreuungspensum(
@@ -629,7 +630,7 @@ public class ZahlungServiceBeanTest extends AbstractEbeguLoginTest {
 		Gesuch loadedGesuch = gesuchOpt.get();
 		loadedGesuch.setTimestampVerfuegt(verfuegungsdatum.atStartOfDay());
 		gesuchService.updateGesuch(loadedGesuch, false, null);
-		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(loadedGesuch);
+		AntragStatusHistory lastStatusChange = antragStatusHistoryService.findLastStatusChange(loadedGesuch.getId());
 		Objects.requireNonNull(lastStatusChange);
 		lastStatusChange.setTimestampVon(verfuegungsdatum.atStartOfDay());
 		persistence.merge(lastStatusChange);

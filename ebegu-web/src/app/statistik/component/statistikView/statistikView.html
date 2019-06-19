@@ -641,6 +641,61 @@
                         </tab-body>
                     </dv-accordion-tab>
                 </div>
+
+                <div dv-show-element
+                     dv-show-allowed-roles="['SUPER_ADMIN']">
+                    <dv-accordion-tab tabid="verrechnung">
+                        <tab-title>
+                            <span class="uppercase" data-translate="VERRECHNUNG_KIBON_STATISTIK"></span>
+                            <dv-tooltip input-id="verrechnung_info"
+                                        ng-click="$event.stopPropagation()"
+                                        text="'STATISTIK_VERRECHNUNG_KIBON_HINT' | translate">
+                            </dv-tooltip>
+                        </tab-title>
+                        <tab-body>
+                            <form name="verrechnung"
+                                  ng-submit="vm.generateStatistik(verrechnung, vm.TSStatistikParameterType.VERRECHNUNG_KIBON)"
+                                  novalidate>
+                                <div class="row">
+                                    <div class="col-xs-12 form-group md-no-float statistik-no-fields">
+                                        <span data-translate="VERRECHNUNG_KIBON_INFO"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <dv-input-container class="form-group">
+                                            <md-checkbox name="doSave"
+                                                         ng-model="vm.statistikParameter.doSave"
+                                                         aria-label="VERRECHNUNG_KIBON_DEFINITIV"
+                                                         class="input-element">
+                                                <span data-translate="VERRECHNUNG_KIBON_DEFINITIV"></span>
+                                            </md-checkbox>
+                                        </dv-input-container>
+                                    </div>
+                                    <div class="col-xs-3 ">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float" for="betragProKind" data-translate="VERRECHNUNG_KIBON_BETRAG_PRO_KIND"></label>
+                                            <input aria-describedby="betragProKind-error"
+                                                   id="betragProKind" type="text" name="betragProKind"
+                                                   ng-required="true"
+                                                   ng-model="vm.statistikParameter.betragProKind"
+                                                   class="input-element">
+                                            <dv-error-messages for="verrechnung.betragProKind.$error"
+                                                               class="error"></dv-error-messages>
+                                        </dv-input-container>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" data-translate="GENERIEREN"></span>
+                                        </dv-loading-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </tab-body>
+                    </dv-accordion-tab>
+                </div>
             </dv-accordion>
         </div>
     </div>

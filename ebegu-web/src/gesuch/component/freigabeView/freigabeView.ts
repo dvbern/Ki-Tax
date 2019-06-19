@@ -79,7 +79,9 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FREIGABE,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.initDevModeParameter();
         this.gemeindeName = this.gesuchModelManager.getDossier().extractGemeindeName();
     }
@@ -206,8 +208,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     }
 
     public $postLink(): void {
-        this.$timeout(() => {
-            EbeguUtil.selectFirst();
-        }, 100);
+        // tslint:disable-next-line:no-magic-numbers
+        this.doPostLinkActions(500);
     }
 }

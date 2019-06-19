@@ -1257,6 +1257,7 @@ public class JaxBConverter extends AbstractConverter {
 		assert persistedInstitution.getMandant() != null;
 		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
 		jaxInstitution.setStatus(persistedInstitution.getStatus());
+		jaxInstitution.setStammdatenCheckRequired(persistedInstitution.isStammdatenCheckRequired());
 		if (persistedInstitution.getTraegerschaft() != null) {
 			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
 		}
@@ -1269,6 +1270,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(institutionJAXP, institution);
 		institution.setName(institutionJAXP.getName());
 		institution.setStatus(institutionJAXP.getStatus());
+		institution.setStammdatenCheckRequired(institutionJAXP.isStammdatenCheckRequired());
 
 		if (institutionJAXP.getMandant() != null && institutionJAXP.getMandant().getId() != null) {
 			final Optional<Mandant> mandantFromDB = mandantService.findMandant(institutionJAXP.getMandant().getId());

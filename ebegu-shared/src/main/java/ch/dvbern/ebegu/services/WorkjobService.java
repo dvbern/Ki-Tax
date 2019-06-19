@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
@@ -65,6 +66,15 @@ public interface WorkjobService {
 		@Nullable LocalDate datumVon,
 		@Nullable LocalDate datumBis,
 		@Nullable String gesuchPeriodIdParam,
+		@Nonnull Locale locale
+	);
+
+	@Nonnull
+	Workjob createNewReporting(
+		@Nonnull Workjob workJob,
+		@Nonnull ReportVorlage vorlage,
+		boolean doSave,
+		@Nonnull BigDecimal betragProKind,
 		@Nonnull Locale locale
 	);
 

@@ -45,6 +45,8 @@ public class JaxInstitution extends JaxAbstractDTO {
 	@NotNull
 	private InstitutionStatus status = InstitutionStatus.EINGELADEN;
 
+	private boolean stammdatenCheckRequired = false;
+
 
 	public String getName() {
 		return name;
@@ -78,4 +80,11 @@ public class JaxInstitution extends JaxAbstractDTO {
 		this.status = status;
 	}
 
+	public boolean isStammdatenCheckRequired() {
+		return stammdatenCheckRequired;
+	}
+
+	public void setStammdatenCheckRequired(boolean stammdatenCheckRequired) {
+		this.stammdatenCheckRequired = stammdatenCheckRequired;
+	}
 }

@@ -262,17 +262,17 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 	private PdfPTable createIntro() {
 
 		//für unbekannte Institutionen soll ein Fragezeichen auf die Verfügung aufgedruckt werden
-		final String institutionName = betreuung.getInstitutionStammdaten().getInstitution().getName().isEmpty()
+		final String institutionName = betreuung.getInstitutionStammdaten().getInstitution().isUnknownInstitution()
 			? UNKNOWN_INSTITUTION_NAME
 			: betreuung.getInstitutionStammdaten().getInstitution().getName();
 
 		List<TableRowLabelValue> intro = new ArrayList<>();
 		intro.add(new TableRowLabelValue(REFERENZNUMMER, betreuung.getBGNummer()));
 		intro.add(new TableRowLabelValue(NAME_KIND, betreuung.getKind().getKindJA().getFullName()));
-		if (betreuung.getVorgaengerVerfuegung() != null) {
-			Objects.requireNonNull(betreuung.getVorgaengerVerfuegung().getTimestampErstellt());
+		if (betreuung.getVorgaengerAusbezahlteVerfuegung() != null) {
+			Objects.requireNonNull(betreuung.getVorgaengerAusbezahlteVerfuegung().getTimestampErstellt());
 			intro.add(new TableRowLabelValue(BEMERKUNG, translate(ERSETZT_VERFUEGUNG,
-				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
+				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerAusbezahlteVerfuegung().getTimestampErstellt()))));
 		}
 		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));

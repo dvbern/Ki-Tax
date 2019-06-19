@@ -84,7 +84,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
         this.initialModel = angular.copy(this.model);
 
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.FINANZIELLE_SITUATION,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.areThereOnlySchulamtangebote = this.gesuchModelManager.areThereOnlySchulamtAngebote(); // so we load it
                                                                                                     // just once
         this.areThereOnlyFerieninsel = this.gesuchModelManager.areThereOnlyFerieninsel(); // so we load it just once
@@ -112,30 +114,31 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
     }
 
     public confirmAndSave(): IPromise<TSGesuch> {
-        if (this.isGesuchValid()) {
-            this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-            if (!this.form.$dirty) {
-                if (this.updateStepDueToOnlyFerieninsel()) {
-                    return this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
-                        TSWizardStepStatus.OK).then(() => {
-                        return this.gesuchModelManager.getGesuch();
-                    });
-                }
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                return this.$q.when(this.gesuchModelManager.getGesuch());
-            }
-            if (this.finanzielleSituationTurnedNotRequired()) {
-                return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                    title: 'FINSIT_WARNING',
-                    deleteText: 'FINSIT_WARNING_BESCHREIBUNG',
-                }).then(() => {   // User confirmed changes
-                    return this.save();
+        if (!this.isGesuchValid()) {
+            return undefined;
+        }
+
+        this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        if (!this.form.$dirty) {
+            if (this.updateStepDueToOnlyFerieninsel()) {
+                return this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
+                    TSWizardStepStatus.OK).then(() => {
+                    return this.gesuchModelManager.getGesuch();
                 });
             }
-            return this.save();
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return this.$q.when(this.gesuchModelManager.getGesuch());
         }
-        return undefined;
+        if (this.finanzielleSituationTurnedNotRequired()) {
+            return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'FINSIT_WARNING',
+                deleteText: 'FINSIT_WARNING_BESCHREIBUNG',
+            }).then(() => {   // User confirmed changes
+                return this.save();
+            });
+        }
+        return this.save();
     }
 
     /**
@@ -172,7 +175,9 @@ export class FinanzielleSituationStartViewController extends AbstractGesuchViewC
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man
             // sicher noch weiter muss!
             this.initSteuerFragen();
-            this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.NOK);
+            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                TSWizardStepName.FINANZIELLE_SITUATION,
+                TSWizardStepStatus.NOK);
         } else if (!this.model.gemeinsameSteuererklaerung) {
             // Wenn neu NEIN -> Fragen loeschen wenn noch nichts eingegeben worden ist
             this.model.finanzielleSituationContainerGS1 = undefined;

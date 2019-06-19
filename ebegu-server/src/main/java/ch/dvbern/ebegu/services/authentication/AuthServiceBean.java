@@ -233,6 +233,7 @@ public class AuthServiceBean implements AuthService {
 		delete.where(criteriaBuilder.and(predicateAbgelaufen));
 		try {
 			int nbrDeleted = entityManager.createQuery(delete).executeUpdate();
+			LOG.info("... deleted AuthTokens: {}", nbrDeleted);
 			return nbrDeleted;
 		} catch (Exception e) {
 			LOG.error("Could not delete invalid AuthTokens", e);

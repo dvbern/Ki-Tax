@@ -70,6 +70,7 @@ export class PendenzenBetreuungenListViewController implements IController {
     public itemsByPage: number = 20;
     public numberOfPages: number = 1;
     public hasInstitutionenInStatusAngemeldet: boolean = false;
+    public isStammdatenCheckRequired: boolean = false;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -94,6 +95,7 @@ export class PendenzenBetreuungenListViewController implements IController {
         this.updateActiveGesuchsperiodenList();
         this.updateGemeindenList();
         this.initHasInstitutionenInStatusAngemeldet();
+        this.initIsStammdatenCheckRequired();
     }
 
     public $onDestroy(): void {
@@ -194,6 +196,16 @@ export class PendenzenBetreuungenListViewController implements IController {
         this.institutionRS.hasInstitutionenInStatusAngemeldet()
             .then(result => {
                 this.hasInstitutionenInStatusAngemeldet = result;
+            });
+    }
+
+    private initIsStammdatenCheckRequired(): void {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionProfilEditRoles())) {
+            return;
+        }
+        this.institutionRS.isStammdatenCheckRequired()
+            .then(result => {
+                this.isStammdatenCheckRequired = result;
             });
     }
 }

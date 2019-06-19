@@ -125,6 +125,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public provisorischeBetreuung: boolean;
     public zuschlagBehinderungProStd: number;
     public zuschlagBehinderungProTag: number;
+    public korrekteKostenBestaetigung: boolean = false;
+    public isBestaetigenClicked: boolean = false;
 
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
@@ -730,10 +732,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public platzBestaetigen(): void {
-        if (!this.isGesuchValid()) {
+        this.isBestaetigenClicked = true;
+        if (!this.isGesuchValid() || !this.korrekteKostenBestaetigung) {
             return;
         }
 
+        // tslint:disable-next-line:early-exit
         if (this.getErweiterteBetreuungJA()
             && this.getErweiterteBetreuungJA().erweiterteBeduerfnisse
             && !this.getErweiterteBetreuungJA().erweiterteBeduerfnisseBestaetigt) {
@@ -744,14 +748,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 confirmText: 'LABEL_SPEICHERN',
             })
                 .then(() => {
-                    this.getBetreuungModel().datumBestaetigung = DateUtil.today();
-                    this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
+                    this.savePlatzBestaetigung();
                 });
         } else {
-            this.getBetreuungModel().datumBestaetigung = DateUtil.today();
-            this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
+            this.savePlatzBestaetigung();
         }
 
+    }
+
+    private savePlatzBestaetigung(): void {
+        this.getBetreuungModel().datumBestaetigung = DateUtil.today();
+        this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
+        this.isBestaetigenClicked = false;
     }
 
     /**
@@ -762,7 +770,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      */
     public platzAbweisen(): void {
         // copy values modified by the Institution in initialBetreuung
-
         this.initialBetreuung.grundAblehnung = this.getBetreuungModel().grundAblehnung;
         // restore initialBetreuung
         this.model = angular.copy(this.initialBetreuung);
@@ -1071,6 +1078,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
      * Based on the type of the Angebot it resets the belegungen.
      */
     private cleanBelegungen(): void {
+        if (!this.betreuungsangebot) {
+            return;
+        }
         if (this.betreuungsangebot.key !== TSBetreuungsangebotTyp.FERIENINSEL) {
             this.getBetreuungModel().belegungFerieninsel = undefined;
         }

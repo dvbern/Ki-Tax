@@ -98,4 +98,9 @@ public class DailyBatchScheduler {
 	public void runBatchInfoOffenePendenzenInstitution() {
 		dailyBatch.runBatchInfoOffenePendenzenInstitution();
 	}
+
+	@Schedule(second = "59", minute = "30", hour = "02", persistent = true)
+	public void runBatchInstitutionCheckRequired() {
+		dailyBatch.runBatchInstitutionCheckRequired();
+	}
 }

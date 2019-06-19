@@ -51,7 +51,7 @@
                     </mat-header-cell>
                     <mat-cell class="mat-cell-clickable" *matCellDef="let institution"
                               (click)="openInstitution(institution)">
-                        {{'GEMEINDE_STATUS_' + institution.status | translate}}
+                        {{translateStatus(institution)}}
                     </mat-cell>
                 </ng-container>
 
@@ -62,17 +62,6 @@
                         <dv-loading-button buttonClass="dv-btn-sm"
                                            (buttonClick)="openInstitution(institution)">
                             <i class="fa fa-eye"></i>
-                        </dv-loading-button>
-                    </mat-cell>
-                </ng-container>
-
-                <!-- Column remove -->
-                <ng-container matColumnDef="remove" *ngIf="isDeleteAllowed()">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let institution">
-                        <dv-loading-button buttonClass="dv-btn-sm"
-                                           (buttonClick)="removeInstitution(institution)">
-                            <i class="fa fa-minus"></i>
                         </dv-loading-button>
                     </mat-cell>
                 </ng-container>

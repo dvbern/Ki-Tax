@@ -321,6 +321,8 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
 			.forEach(betreuung -> {
+					Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = verfuegungService.findVorgaengerAusbezahlteVerfuegung(betreuung);
+					betreuung.setVorgaengerAusbezahlteVerfuegung(vorgaengerAusbezahlteVerfuegung.orElse(null));
 					Optional<Verfuegung> vorgaengerVerfuegung = verfuegungService.findVorgaengerVerfuegung(betreuung);
 					betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
 				}

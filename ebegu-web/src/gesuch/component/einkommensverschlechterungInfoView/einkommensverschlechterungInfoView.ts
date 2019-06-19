@@ -101,7 +101,9 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.initializeEKVContainers();
     }
 
@@ -144,24 +146,25 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public confirmAndSave(): IPromise<TSEinkommensverschlechterungInfoContainer> {
-        if (this.isGesuchValid()) {
-            if (!this.form.$dirty && !this.isThereSomethingNew()) {
-                // If the model is new (it hasn't been saved yet) we need to save it
-                // If there are no changes in form we don't need anything to update on Server and we could
-                // return the promise immediately
-                return this.$q.when(this.model);
-            }
-            if (this.isConfirmationRequired()) {
-                return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-                    title: 'EINKVERS_WARNING',
-                    deleteText: 'EINKVERS_WARNING_BESCHREIBUNG',
-                }).then(() => {   // User confirmed changes
-                    return this.save();
-                });
-            }
-            return this.save();
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        if (!this.form.$dirty && !this.isThereSomethingNew()) {
+            // If the model is new (it hasn't been saved yet) we need to save it
+            // If there are no changes in form we don't need anything to update on Server and we could
+            // return the promise immediately
+            return this.$q.when(this.model);
+        }
+        if (this.isConfirmationRequired()) {
+            return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
+                title: 'EINKVERS_WARNING',
+                deleteText: 'EINKVERS_WARNING_BESCHREIBUNG',
+            }).then(() => {   // User confirmed changes
+                return this.save();
+            });
+        }
+        return this.save();
     }
 
     /**
