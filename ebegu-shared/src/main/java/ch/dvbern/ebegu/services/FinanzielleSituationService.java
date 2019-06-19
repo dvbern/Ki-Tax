@@ -29,6 +29,11 @@ import ch.dvbern.ebegu.entities.Gesuch;
  */
 public interface FinanzielleSituationService {
 
+	/**
+	 * Speichert die allgemeinen Fragen der Finanziellen Situation.
+	 * Diese werden auf der Familiensituation (bei gemeinsamer Stek) bzw. auf der
+	 * Finanziellen Situation des GS1 gespeichert (bei getrennter Stek)
+	 */
 	@Nonnull
 	Gesuch saveFinanzielleSituationStart(
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
@@ -36,11 +41,12 @@ public interface FinanzielleSituationService {
 		@Nonnull Boolean gemeinsameSteuererklaerung,
 		@Nonnull String gesuchId);
 
+	/**
+	 * Speichert die Finanzielle Situation für einen Gesuchsteller
+	 */
 	@Nonnull
 	FinanzielleSituationContainer saveFinanzielleSituation(
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
-		@Nonnull Boolean sozialhilfebezueger,
-		@Nonnull Boolean gemeinsameSteuererklaerung,
 		@Nonnull String gesuchId);
 
 	/**

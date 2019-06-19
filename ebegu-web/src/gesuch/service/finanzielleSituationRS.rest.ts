@@ -18,6 +18,7 @@ import TSFinanzielleSituationResultateDTO from '../../models/dto/TSFinanzielleSi
 import TSFinanzielleSituationContainer from '../../models/TSFinanzielleSituationContainer';
 import TSFinanzModel from '../../models/TSFinanzModel';
 import TSGesuch from '../../models/TSGesuch';
+import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import WizardStepManager from './wizardStepManager';
 import ILogService = angular.ILogService;
@@ -39,14 +40,13 @@ export default class FinanzielleSituationRS {
     }
 
     public saveFinanzielleSituation(
-        gesuch: TSGesuch,
-        gesuchstellerId: string,
+        gesuchId: string,
+        gesuchsteller: TSGesuchstellerContainer,
     ): IPromise<TSFinanzielleSituationContainer> {
-        const sentGesuch = this.ebeguRestUtil.gesuchToRestObject({}, gesuch);
-        const url = `${this.serviceURL}/finanzielleSituation/${encodeURIComponent(gesuchstellerId)}`;
-
-        return this.$http.put(url, sentGesuch).then(response => {
-            return this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => {
+        const url = `${this.serviceURL}/finanzielleSituation/${encodeURIComponent(gesuchId)}/${encodeURIComponent(gesuchsteller.id)}`;
+        const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({}, gesuchsteller.finanzielleSituationContainer);
+        return this.$http.put(url, finSitContainerToSend).then(response => {
+            return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 return this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(), response.data);
             });
         });

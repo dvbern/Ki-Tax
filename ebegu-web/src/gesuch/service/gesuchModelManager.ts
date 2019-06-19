@@ -456,8 +456,8 @@ export default class GesuchModelManager {
 
     public saveFinanzielleSituation(): IPromise<TSFinanzielleSituationContainer> {
         return this.finanzielleSituationRS.saveFinanzielleSituation(
-            this.gesuch,
-            this.getStammdatenToWorkWith().id)
+            this.gesuch.id,
+            this.getStammdatenToWorkWith())
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
 

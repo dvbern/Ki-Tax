@@ -109,26 +109,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		return gesuch;
 	}
 
-	@Nonnull
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
-	public FinanzielleSituationContainer saveFinanzielleSituation(
-		@Nonnull FinanzielleSituationContainer finanzielleSituation,
-		@Nonnull Boolean sozialhilfebezueger,
-		@Nonnull Boolean gemeinsameSteuererklaerung,
-		@Nonnull String gesuchId
-	) {
-		// Die eigentliche FinSit speichern
-		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
-		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
-			.FINANZIELLE_SITUATION);
-
-		// Die zwei Felder "sozialhilfebezueger" und "gemeinsameSteuererklaerung" befinden sich nicht auf der FinanziellenSituation, sondern auf der
-		// FamilienSituation -> Das Gesuch muss hier aus der DB geladen werden, damit nichts überschrieben wird!
-		saveFinanzielleSituationFelderAufGesuch(sozialhilfebezueger, gemeinsameSteuererklaerung, gesuchId);
-		return finanzielleSituationPersisted;
-	}
-
 	private Gesuch saveFinanzielleSituationFelderAufGesuch(
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
@@ -142,6 +122,20 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setSozialhilfeBezueger(sozialhilfebezueger);
 		familiensituation.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
 		return gesuch;
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
+	public FinanzielleSituationContainer saveFinanzielleSituation(
+		@Nonnull FinanzielleSituationContainer finanzielleSituation,
+		@Nonnull String gesuchId
+	) {
+		// Die eigentliche FinSit speichern
+		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
+		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
+			.FINANZIELLE_SITUATION);
+		return finanzielleSituationPersisted;
 	}
 
 	@Nonnull

@@ -17,12 +17,10 @@ package ch.dvbern.ebegu.tests;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -67,15 +65,7 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 		container.setFinanzielleSituationGS(finanzielleSituation);
 		container.setGesuchsteller(gesuchsteller);
 
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		Familiensituation familiensituationJA = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
-		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
-		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
-		Objects.requireNonNull(sozialhilfeBezueger);
-		Objects.requireNonNull(gemeinsameSteuererklaerung);
-
-		finanzielleSituationService.saveFinanzielleSituation(container, sozialhilfeBezueger, gemeinsameSteuererklaerung, gesuch.getId());
+		finanzielleSituationService.saveFinanzielleSituation(container, gesuch.getId());
 		Collection<FinanzielleSituationContainer> allFinanzielleSituationen = finanzielleSituationService.getAllFinanzielleSituationen();
 		Assert.assertEquals(1, allFinanzielleSituationen.size());
 		FinanzielleSituationContainer nextFinanzielleSituation = allFinanzielleSituationen.iterator().next();
@@ -92,22 +82,14 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 		FinanzielleSituationContainer finanzielleSituation = finanzielleSituationOptional.get();
 		finanzielleSituation.setFinanzielleSituationGS(TestDataUtil.createDefaultFinanzielleSituation());
 
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		Familiensituation familiensituationJA = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
-		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
-		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
-		Objects.requireNonNull(sozialhilfeBezueger);
-		Objects.requireNonNull(gemeinsameSteuererklaerung);
-
 		FinanzielleSituationContainer updatedCont = finanzielleSituationService.saveFinanzielleSituation(
-			finanzielleSituation, sozialhilfeBezueger, gemeinsameSteuererklaerung, gesuch.getId());
+			finanzielleSituation, gesuch.getId());
 		Assert.assertNotNull(updatedCont.getFinanzielleSituationGS().getNettolohn());
 		Assert.assertEquals(100000L, updatedCont.getFinanzielleSituationGS().getNettolohn().longValue());
 
 		updatedCont.getFinanzielleSituationGS().setNettolohn(new BigDecimal(200000));
 		FinanzielleSituationContainer contUpdTwice = finanzielleSituationService.saveFinanzielleSituation(
-			updatedCont, sozialhilfeBezueger, gemeinsameSteuererklaerung, gesuch.getId());
+			updatedCont, gesuch.getId());
 		Assert.assertNotNull(contUpdTwice.getFinanzielleSituationGS().getNettolohn());
 		Assert.assertEquals(200000L, contUpdTwice.getFinanzielleSituationGS().getNettolohn().longValue());
 	}
