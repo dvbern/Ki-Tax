@@ -528,12 +528,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			return;
 		}
 
-		// TODO KIBON-594 reviewer: wollen wir das hier trotzdem loggen?
-		LOG.warn(
-			"Not sending Email to {} because Gesuchsteller or Email Address is NULL: {}, {}",
-			logId,
-			gesuchsteller,
-			emailAddress);
+		if (gesuch.getEingangsart().isOnlineGesuch()) {
+			LOG.warn(
+				"Not sending Email to {} because Gesuchsteller or Email Address is NULL: {}, {}",
+				logId,
+				gesuchsteller,
+				emailAddress);
+		}
 	}
 
 	/**

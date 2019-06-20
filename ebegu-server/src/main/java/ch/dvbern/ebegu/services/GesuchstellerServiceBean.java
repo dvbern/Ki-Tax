@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,6 +35,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
@@ -51,6 +56,7 @@ import ch.dvbern.ebegu.enums.WizardStepStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.lang3.Validate;
 
@@ -88,8 +94,9 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		Objects.requireNonNull(gesuch);
 		Objects.requireNonNull(gsNumber);
 
-		createFinSitInMutationIfNotExisting(gesuchsteller, gesuch, gsNumber);
+		validateGesuchstellerEmail(gesuch);
 
+		createFinSitInMutationIfNotExisting(gesuchsteller, gesuch, gsNumber);
 		createEKVInMutationIfNotExisting(gesuchsteller, gesuch, gsNumber);
 
 		if (!gesuchsteller.isNew()) {
@@ -104,6 +111,16 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		}
 		updateWizStepsForGesuchstellerView(gesuch, gsNumber, umzug, mergedGesuchsteller.getGesuchstellerJA());
 		return mergedGesuchsteller;
+	}
+
+	private void validateGesuchstellerEmail(@Nonnull Gesuch gesuch) {
+		// Gesamt-Validierung durchführen
+		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
+		Set<ConstraintViolation<Gesuch>> constraintViolations =
+			validator.validate(gesuch, GesuchstellerSaveValidationGroup.class);
+		if (!constraintViolations.isEmpty()) {
+			throw new ConstraintViolationException(constraintViolations);
+		}
 	}
 
 	/**

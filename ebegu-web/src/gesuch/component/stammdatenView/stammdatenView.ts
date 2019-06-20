@@ -359,6 +359,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (!gesuch) {
             return true;
         }
-        return gesuch.eingangsart === TSEingangsart.ONLINE;
+        return this.gesuchstellerNumber === 1 && gesuch.eingangsart === TSEingangsart.ONLINE;
     }
 }
