@@ -51,6 +51,8 @@ describe('gesuchsperiodeRS', () => {
         mockGesuchsperiode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV, new TSDateRange(date, date));
         TestDataUtil.setAbstractMutableFieldsUndefined(mockGesuchsperiode);
         mockGesuchsperiodeRest = ebeguRestUtil.gesuchsperiodeToRestObject({}, mockGesuchsperiode);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('Public API', () => {
@@ -70,7 +72,7 @@ describe('gesuchsperiodeRS', () => {
                     foundGesuchsperiode = result;
                 });
                 $httpBackend.flush();
-                checkFieldValues(foundGesuchsperiode, mockGesuchsperiode, true);
+                checkFieldValues(foundGesuchsperiode, mockGesuchsperiode);
             });
         });
         describe('getAllActiveGesuchsperioden', () => {
@@ -96,7 +98,7 @@ describe('gesuchsperiodeRS', () => {
                         createdGesuchsperiode = result;
                     });
                 $httpBackend.flush();
-                checkFieldValues(createdGesuchsperiode, mockGesuchsperiode, true);
+                checkFieldValues(createdGesuchsperiode, mockGesuchsperiode);
             });
         });
         describe('updateGesuchsperiode', () => {
@@ -112,7 +114,7 @@ describe('gesuchsperiodeRS', () => {
                         updatedGesuchsperiode = result;
                     });
                 $httpBackend.flush();
-                checkFieldValues(updatedGesuchsperiode, mockGesuchsperiode, false);
+                checkFieldValues(updatedGesuchsperiode, mockGesuchsperiode);
             });
         });
         describe('removeGesuchsperiode', () => {
@@ -136,7 +138,6 @@ describe('gesuchsperiodeRS', () => {
     function checkFieldValues(
         createdGesuchsperiode: TSGesuchsperiode,
         mockPeriode: TSGesuchsperiode,
-        _active: boolean,
     ): void {
         expect(createdGesuchsperiode).toBeDefined();
         expect(createdGesuchsperiode.status).toBe(TSGesuchsperiodeStatus.AKTIV);

@@ -20,6 +20,7 @@ import TSBetreuungsmitteilung from '../../../models/TSBetreuungsmitteilung';
 import TSDossier from '../../../models/TSDossier';
 import TSFall from '../../../models/TSFall';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import MitteilungRS from './mitteilungRS.rest';
 
@@ -48,6 +49,8 @@ describe('MitteilungRS', () => {
         betreuung = new TSBetreuung();
         const betreuungNummer = 123;
         betreuung.betreuungNummer = betreuungNummer;
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     }));
 
     describe('Public API', () => {

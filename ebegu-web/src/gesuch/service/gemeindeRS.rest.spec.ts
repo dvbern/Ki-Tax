@@ -57,6 +57,7 @@ describe('dossier', () => {
         });
 
         it('should give all gemeinden for a role without gemeinde', done => {
+            TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
             $httpBackend.expectGET(gemeindeRS.serviceURL + '/all').respond(allGemeinde);
             const user = createUser(TSRole.SACHBEARBEITER_INSTITUTION, false);
 

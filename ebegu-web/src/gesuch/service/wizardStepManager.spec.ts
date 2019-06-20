@@ -31,6 +31,7 @@ import TSGesuchstellerContainer from '../../models/TSGesuchstellerContainer';
 import TSWizardStep from '../../models/TSWizardStep';
 import {TSDateRange} from '../../models/types/TSDateRange';
 import DateUtil from '../../utils/DateUtil';
+import TestDataUtil from '../../utils/TestDataUtil.spec';
 import WizardStepManager from './wizardStepManager';
 import WizardStepRS from './WizardStepRS.rest';
 
@@ -55,6 +56,8 @@ describe('wizardStepManager', () => {
         scope = $injector.get('$rootScope').$new();
         $q = $injector.get('$q');
         wizardStepManager = $injector.get('WizardStepManager');
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
     }));
 
     beforeEach(() => {
