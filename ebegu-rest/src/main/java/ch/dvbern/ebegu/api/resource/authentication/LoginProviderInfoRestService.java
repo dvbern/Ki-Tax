@@ -58,11 +58,8 @@ public class LoginProviderInfoRestService {
 
 	private ILoginProviderInfoResource loginProviderInfoRESTService;
 
-	public String getSingleLogoutURL(
-		@Nullable String relayPath,
-		@Nullable String nameID,
-		@Nullable String sessionID) {
-		return getLoginProviderInfoProxClient().getSingleLogoutURL(relayPath, nameID, sessionID);
+	public String getSingleLogoutURL() {
+		return getLoginProviderInfoProxClient().getSingleLogoutURL();
 	}
 
 	public String getSSOLoginInitURL(@Nullable String relayPath) {

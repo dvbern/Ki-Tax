@@ -137,13 +137,9 @@ public class AuthResource {
 			Optional<AuthorisierterBenutzer> currentAuthOpt = authService
 				.validateAndRefreshLoginToken(authTokenCookie.getValue(), false);
 			if (currentAuthOpt.isPresent()) {
-				String nameID = currentAuthOpt.get().getSamlNameId();
-				String sessionID = currentAuthOpt.get().getSessionIndex();
-				if (sessionID != null) {
-					String logoutUrl = loginProviderInfoRestService.getSingleLogoutURL(relayPath, nameID, sessionID);
-					LOG.debug("Received URL to initialize Logout URL '{}'", logoutUrl);
-					return Response.ok(logoutUrl).build();
-				}
+				String logoutUrl = loginProviderInfoRestService.getSingleLogoutURL();
+				LOG.debug("Received URL to initialize Logout URL '{}'", logoutUrl);
+				return Response.ok(logoutUrl).build();
 			}
 		}
 

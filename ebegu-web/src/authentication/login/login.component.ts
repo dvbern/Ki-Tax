@@ -52,6 +52,12 @@ export class LoginComponentController implements IController {
     }
 
     public $onInit(): void {
+
+        if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
+            this.doLogout();
+            return;
+        }
+
         // wir leiten hier mal direkt weiter, theoretisch koennte man auch eine auswahl praesentieren
         const relayUrl = this.$state.href(this.returnTo.$state(), this.returnTo.params(), {absolute: true});
         // wrap in burn timeout request, note that this will always produce an error
@@ -62,10 +68,6 @@ export class LoginComponentController implements IController {
             this.authService.initSSOLogin(relayUrl)
                 .then(url => {
                     this.redirectionHref = url;
-                    if (this.$stateParams.type !== undefined && this.$stateParams.type === 'logout') {
-                        this.doLogout();
-                        return;
-                    }
 
                     this.redirecting = true;
                     if (this.countdown > 0) {
