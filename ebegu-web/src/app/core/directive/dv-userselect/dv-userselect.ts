@@ -45,6 +45,7 @@ export class DVUserselect implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVUserselect();
+        // @ts-ignore
         directive.$inject = [];
         return directive;
     }

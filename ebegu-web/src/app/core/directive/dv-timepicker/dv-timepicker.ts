@@ -42,6 +42,7 @@ export class DVTimepicker implements IDirective {
     /* constructor() { this.link = this.unboundLink.bind(this); }*/
     public static factory(): IDirectiveFactory {
         const directive = () => new DVTimepicker();
+        // @ts-ignore
         directive.$inject = [];
         return directive;
     }
