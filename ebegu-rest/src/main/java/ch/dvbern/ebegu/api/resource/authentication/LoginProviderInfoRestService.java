@@ -47,7 +47,7 @@ import static ch.dvbern.ebegu.config.EbeguConfigurationImpl.EBEGU_LOGIN_PROVIDER
 public class LoginProviderInfoRestService {
 
 	@SuppressWarnings("checkstyle:MemberName")
-	private final Logger LOG = LoggerFactory.getLogger(LoginProviderInfoRestService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LoginProviderInfoRestService.class);
 	public static final int CONNECTION_TIMEOUT = 10;
 
 	@Inject
