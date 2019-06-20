@@ -100,13 +100,12 @@ public class AuthResource {
 		return Response.ok(url).build();
 	}
 
-
 	@Path("/connectorPing")
 	@GET
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	@PermitAll
-	public Response connectorPing(){
+	public Response connectorPing() {
 		final String response = this.loginProviderInfoRestService.pingLoginProvider();
 		return Response.ok(response).build();
 
@@ -129,20 +128,18 @@ public class AuthResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	@GET
 	@PermitAll
-	public Response initSingleLogout(@Nullable @QueryParam("relayPath") String relayPath,
-		@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie) {
+	public Response initSingleLogout(
+		@Nullable @QueryParam("relayPath") String relayPath,
+		@CookieParam(AuthConstants.COOKIE_AUTH_TOKEN) Cookie authTokenCookie
+	) {
 
 		if (authTokenCookie != null && authTokenCookie.getValue() != null) {
-			Optional<AuthorisierterBenutzer> currentAuthOpt = authService.validateAndRefreshLoginToken(authTokenCookie.getValue(), false);
+			Optional<AuthorisierterBenutzer> currentAuthOpt = authService
+				.validateAndRefreshLoginToken(authTokenCookie.getValue(), false);
 			if (currentAuthOpt.isPresent()) {
-				String nameID = currentAuthOpt.get().getSamlNameId();
-				String sessionID = currentAuthOpt.get().getSessionIndex();
-				if (sessionID != null) {
-					String logoutUrl = loginProviderInfoRestService.getSingleLogoutURL(relayPath, nameID, sessionID);
-					String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath);
-					LOG.debug("Received URL to initialize SSLogout '{}'", url);
-					return Response.ok(logoutUrl).build();
-				}
+				String logoutUrl = loginProviderInfoRestService.getSingleLogoutURL();
+				LOG.debug("Received URL to initialize Logout URL '{}'", logoutUrl);
+				return Response.ok(logoutUrl).build();
 			}
 		}
 
@@ -205,20 +202,22 @@ public class AuthResource {
 
 			// Cookie to store auth_token, HTTP-Only Cookie --> Protection from XSS
 			NewCookie authCookie = new NewCookie(AuthConstants.COOKIE_AUTH_TOKEN, access.getAuthToken(),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "authentication", AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, true);
+				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "authentication",
+				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, true);
 			// Readable Cookie for XSRF Protection (the Cookie can only be read from our Domain)
 			NewCookie xsrfCookie = new NewCookie(AuthConstants.COOKIE_XSRF_TOKEN, access.getXsrfToken(),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "XSRF", AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
+				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "XSRF",
+				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
 			// Readable Cookie storing user data
 			NewCookie principalCookie = new NewCookie(AuthConstants.COOKIE_PRINCIPAL, encodeAuthAccessElement(element),
-				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "principal", AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
+				AuthConstants.COOKIE_PATH, AuthConstants.COOKIE_DOMAIN, "principal",
+				AuthConstants.COOKIE_TIMEOUT_SECONDS, cookieSecure, false);
 
 			return Response.noContent().cookie(authCookie, xsrfCookie, principalCookie).build();
-		} else {
-			LOG.warn("Dummy Login is disabled, returning 410");
-			return Response.status(Response.Status.GONE).build();
 		}
 
+		LOG.warn("Dummy Login is disabled, returning 410");
+		return Response.status(Response.Status.GONE).build();
 	}
 
 	/**
@@ -238,10 +237,10 @@ public class AuthResource {
 
 	private boolean isCookieSecure() {
 		final boolean forceCookieSecureFlag = configuration.forceCookieSecureFlag();
-		return isRequestProtocolSecure(request) || forceCookieSecureFlag;
+		return isRequestProtocolSecure() || forceCookieSecureFlag;
 	}
 
-	private boolean isRequestProtocolSecure(HttpServletRequest request){
+	private boolean isRequestProtocolSecure() {
 		// get protocol of original request if present
 		final String originalProtocol = request.getHeader(AuthConstants.X_FORWARDED_PROTO);
 		if (originalProtocol != null) {
@@ -285,7 +284,7 @@ public class AuthResource {
 	 */
 	private String encodeAuthAccessElement(JaxAuthAccessElementCookieData element) {
 		Gson gson = new Gson();
-		String s =  Base64.getEncoder().encodeToString(gson.toJson(element).getBytes(StandardCharsets.UTF_8));
+		String s = Base64.getEncoder().encodeToString(gson.toJson(element).getBytes(StandardCharsets.UTF_8));
 		try {
 			s = URLEncoder.encode(s, StandardCharsets.UTF_8.displayName());
 		} catch (UnsupportedEncodingException e) {

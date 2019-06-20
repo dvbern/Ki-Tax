@@ -94,17 +94,17 @@ export default class AuthServiceRS {
             return undefined;
         }
 
-        return this.$http.post(CONSTANTS.REST_API + 'auth/login',
-            this.ebeguRestUtil.userToRestObject({}, userCredentials))
-            .then(() => {
-                // try to reload buffered requests
-                this.httpBuffer.retryAll((config: IRequestConfig) => config);
-                // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before
-                // login
-                this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in');
-                // Response cookies are not immediately accessible, so lets wait for a bit
-                return this.$timeout(() => this.initWithCookie(), 100);
-            });
+        return this.$http.post(
+            CONSTANTS.REST_API + 'auth/login',
+            this.ebeguRestUtil.userToRestObject({}, userCredentials)
+        ).then(() => {
+            // try to reload buffered requests
+            this.httpBuffer.retryAll((config: IRequestConfig) => config);
+            // ensure that there is ALWAYS a logout-event before the login-event by throwing it right before login
+            this.authLifeCycleService.changeAuthStatus(TSAuthEvent.LOGOUT_SUCCESS, 'logged out before logging in');
+            // Response cookies are not immediately accessible, so lets wait for a bit
+            return this.$timeout(() => this.initWithCookie(), 100);
+        });
     }
 
     public initWithCookie(): IPromise<TSBenutzer> {
