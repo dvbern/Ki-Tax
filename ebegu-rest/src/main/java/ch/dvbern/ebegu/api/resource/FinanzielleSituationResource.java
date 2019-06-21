@@ -148,6 +148,7 @@ public class FinanzielleSituationResource {
 			-> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchstellerId invalid: " + gesuchstellerId));
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
+		convertedFinSitCont.setGesuchsteller(gesuchsteller);
 
 		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(convertedFinSitCont,
 			sozialhilfeBezueger, gemeinsameSteuererklaerung, gesuchId);
