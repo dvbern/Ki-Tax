@@ -290,7 +290,7 @@
                                        ng-model="vm.getModelJA().mail"
                                        dv-max-length
                                        class="form-control"
-                                       required
+                                       ng-required="vm.isMailRequired()"
                                        placeholder="hans.muster@example.com"
                                        ng-pattern="vm.CONSTANTS.PATTERN_EMAIL"
                                        autocomplete="email">

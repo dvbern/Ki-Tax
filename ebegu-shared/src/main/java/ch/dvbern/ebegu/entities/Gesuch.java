@@ -64,6 +64,8 @@ import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchTypFromAngebotTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
+import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
+import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
@@ -75,6 +77,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  */
 @Audited
 @CheckGesuchComplete(groups = AntragCompleteValidationGroup.class)
+@CheckEmailGesuchsteller(groups = GesuchstellerSaveValidationGroup.class)
 @Entity
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)

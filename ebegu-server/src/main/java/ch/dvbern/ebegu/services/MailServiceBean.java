@@ -528,11 +528,13 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 			return;
 		}
 
-		LOG.warn(
-			"Not sending Email to {} because Gesuchsteller or Email Address is NULL: {}, {}",
-			logId,
-			gesuchsteller,
-			emailAddress);
+		if (gesuch.getEingangsart().isOnlineGesuch()) {
+			LOG.warn(
+				"Not sending Email to {} because Gesuchsteller or Email Address is NULL: {}, {}",
+				logId,
+				gesuchsteller,
+				emailAddress);
+		}
 	}
 
 	/**
