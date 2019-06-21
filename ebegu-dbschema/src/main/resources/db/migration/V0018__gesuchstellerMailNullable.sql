@@ -1,0 +1,1 @@
+ALTER TABLE gesuchsteller MODIFY COLUMN mail VARCHAR(255);

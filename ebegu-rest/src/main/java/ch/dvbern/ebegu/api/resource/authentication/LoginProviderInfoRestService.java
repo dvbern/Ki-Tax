@@ -47,7 +47,7 @@ import static ch.dvbern.ebegu.config.EbeguConfigurationImpl.EBEGU_LOGIN_PROVIDER
 public class LoginProviderInfoRestService {
 
 	@SuppressWarnings("checkstyle:MemberName")
-	private final Logger LOG = LoggerFactory.getLogger(LoginProviderInfoRestService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LoginProviderInfoRestService.class);
 	public static final int CONNECTION_TIMEOUT = 10;
 
 	@Inject
@@ -58,11 +58,8 @@ public class LoginProviderInfoRestService {
 
 	private ILoginProviderInfoResource loginProviderInfoRESTService;
 
-	public String getSingleLogoutURL(
-		@Nullable String relayPath,
-		@Nullable String nameID,
-		@Nullable String sessionID) {
-		return getLoginProviderInfoProxClient().getSingleLogoutURL(relayPath, nameID, sessionID);
+	public String getSingleLogoutURL() {
+		return getLoginProviderInfoProxClient().getSingleLogoutURL();
 	}
 
 	public String getSSOLoginInitURL(@Nullable String relayPath) {
