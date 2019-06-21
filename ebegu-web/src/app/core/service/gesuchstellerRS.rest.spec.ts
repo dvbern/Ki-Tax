@@ -23,7 +23,6 @@ import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import GesuchstellerRS from './gesuchstellerRS.rest';
 import IInjectorService = angular.auto.IInjectorService;
-import IRootScopeService = angular.IRootScopeService;
 
 describe('GesuchstellerRS', () => {
 
@@ -35,14 +34,12 @@ describe('GesuchstellerRS', () => {
     const dummyGesuchID = '123';
     let $q: IQService;
     let wizardStepManager: WizardStepManager;
-    let $rootScope: IRootScopeService;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
-        $rootScope = $injector.get('$rootScope');
         gesuchstellerRS = $injector.get('GesuchstellerRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');

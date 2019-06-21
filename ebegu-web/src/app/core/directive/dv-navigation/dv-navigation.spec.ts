@@ -57,7 +57,7 @@ describe('dvNavigation', () => {
         $state = $injector.get('$state');
         gesuchModelManager = $injector.get('GesuchModelManager');
         authServiceRS = $injector.get('AuthServiceRS');
-        $httpBackend = $injector.get('$httpBackend')
+        $httpBackend = $injector.get('$httpBackend');
 
         navController = new NavigatorController(wizardStepManager, $state, gesuchModelManager,
             $injector.get('$translate'), $injector.get('ErrorService'), $q, $timeout);
