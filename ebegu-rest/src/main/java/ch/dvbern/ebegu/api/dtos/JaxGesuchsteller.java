@@ -40,8 +40,8 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	private static final long serialVersionUID = -1297026901664130397L;
 
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
-	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	@NotNull
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Nullable
 	private String mail;
 
 	@Pattern(regexp = Constants.REGEX_TELEFON_MOBILE, message = "{error_invalid_mobilenummer}")
@@ -62,12 +62,12 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	@Nullable
 	private Sprache korrespondenzSprache;
 
-
+	@Nullable
 	public String getMail() {
 		return mail;
 	}
 
-	public void setMail(final String mail) {
+	public void setMail(@Nullable final String mail) {
 		this.mail = mail;
 	}
 
