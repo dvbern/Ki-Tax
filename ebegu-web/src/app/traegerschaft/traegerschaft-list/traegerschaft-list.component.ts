@@ -53,6 +53,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     }
 
     public ngOnInit(): void {
+        this.setDisplayedColumns();
         this.dataSource = new MatTableDataSource(this.traegerschaften);
         this.sortTable();
     }
@@ -126,5 +127,11 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     public doFilter(value: string): void {
         this.dataSource.filter = value.trim().toLocaleLowerCase();
+    }
+
+    private setDisplayedColumns(): void {
+        this.displayedColumns = this.isDeleteAllowed()
+            ? ['name', 'detail', 'remove']
+            : ['name', 'detail'];
     }
 }
