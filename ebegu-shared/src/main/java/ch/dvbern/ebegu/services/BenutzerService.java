@@ -265,6 +265,12 @@ public interface BenutzerService {
 	Collection<Berechtigung> findBerechtigungByInstitution(@Nonnull Institution institution);
 
 	/**
+	 * Returns all Berechtigungen linked to the given Traegerschaft. If there isn't any an empty list will be returned
+	 */
+	@Nonnull
+	Collection<Berechtigung> findBerechtigungByTraegerschaft(@Nonnull Traegerschaft traegerschaft);
+
+	/**
 	 * Schreibt eine Berechtigungs-History in die DB
 	 */
 	void saveBerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted);

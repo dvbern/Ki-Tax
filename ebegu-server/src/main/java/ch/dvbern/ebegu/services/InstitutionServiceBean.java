@@ -351,17 +351,17 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId)
 		);
 
-		checkForLinkedBerechtigungen(institutionId, institution);
+		checkForLinkedBerechtigungen(institution);
 		benutzerService.removeInstitutionFromBerechtigungHistory(institution);
 
 		institutionStammdatenService.removeInstitutionStammdatenByInstitution(institutionId);
 		persistence.remove(institution);
 	}
 
-	private void checkForLinkedBerechtigungen(@Nonnull String institutionId, @Nonnull Institution institution) {
+	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {
 		final Collection<Berechtigung> linkedBerechtigungen = benutzerService.findBerechtigungByInstitution(institution);
 		if (!linkedBerechtigungen.isEmpty()) {
-			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN, institutionId);
+			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN, institution.getId());
 		}
 	}
 

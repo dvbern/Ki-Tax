@@ -1194,6 +1194,13 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, institution, Berechtigung_.institution);
 	}
 
+	@Nonnull
+	@Override
+	public Collection<Berechtigung> findBerechtigungByTraegerschaft(@Nonnull Traegerschaft traegerschaft) {
+		requireNonNull(traegerschaft, "traegerschaft cannot be null");
+		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, traegerschaft, Berechtigung_.traegerschaft);
+	}
+
 	private void removeBerechtigung(@Nonnull Berechtigung berechtigung) {
 		authService.logoutAndDeleteAuthorisierteBenutzerForUser(berechtigung.getBenutzer().getUsername());
 		persistence.remove(berechtigung);
