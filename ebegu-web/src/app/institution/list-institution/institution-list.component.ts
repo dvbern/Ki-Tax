@@ -28,6 +28,7 @@ import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 
 @Component({
@@ -36,6 +37,8 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstitutionListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
+
+    private readonly log: Log = LogFactory.createLog('InstitutionListComponent');
 
     public displayedColumns: string[] = [];
     public dataSource: MatTableDataSource<TSInstitution>;
@@ -94,14 +97,19 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
             title: 'LOESCHEN_DIALOG_TITLE',
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe(userAccepted => {   // User confirmed removal
-                if (!userAccepted) {
-                    return;
+            .subscribe(
+                userAccepted => {   // User confirmed removal
+                    if (!userAccepted) {
+                        return;
+                    }
+                    this.institutionRS.removeInstitution(institution.id).then(() => {
+                        this.updateInstitutionenList();
+                    });
+                },
+                () => {
+                    this.log.error('error in observable. removeInstitution');
                 }
-                this.institutionRS.removeInstitution(institution.id).then(() => {
-                    this.updateInstitutionenList();
-                });
-            });
+            );
     }
 
     public createInstitution(): void {
