@@ -267,15 +267,14 @@ public class MassgebendesEinkommenFristenTest {
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
 
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 3, 50000, 38600);
-
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 3, 50000, 38600);
