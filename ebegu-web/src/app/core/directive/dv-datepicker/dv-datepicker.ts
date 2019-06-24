@@ -43,6 +43,7 @@ export class DVDatepicker implements IDirective {
     /* constructor() { this.link = this.unboundLink.bind(this); }*/
     public static factory(): IDirectiveFactory {
         const directive = () => new DVDatepicker();
+        // @ts-ignore
         directive.$inject = [];
         return directive;
     }

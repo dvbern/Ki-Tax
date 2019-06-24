@@ -59,6 +59,7 @@ export class DVNavigation implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVNavigation();
+        // @ts-ignore
         directive.$inject = [];
         return directive;
     }

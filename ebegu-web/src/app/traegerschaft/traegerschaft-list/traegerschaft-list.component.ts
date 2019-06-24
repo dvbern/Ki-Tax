@@ -24,6 +24,7 @@ import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({
@@ -32,6 +33,8 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TraegerschaftListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
+
+    private readonly log: Log = LogFactory.createLog('TraegerschaftListComponent');
 
     @Input() public traegerschaften: TSTraegerschaft[];
 
@@ -85,18 +88,23 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
         };
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe(userAccepted => {   // User confirmed removal
-                if (!userAccepted) {
-                    return;
-                }
-                this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
-                    const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
-                    if (index > -1) {
-                        this.traegerschaften.splice(index, 1);
-                        this.refreshTraegerschaftenList();
+            .subscribe(
+                userAccepted => {   // User confirmed removal
+                    if (!userAccepted) {
+                        return;
                     }
-                });
-            });
+                    this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
+                        const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                        if (index > -1) {
+                            this.traegerschaften.splice(index, 1);
+                            this.refreshTraegerschaftenList();
+                        }
+                    });
+                },
+                () => {
+                    this.log.error('error has occurred while closing the remove dialog for Traegerschaft');
+                }
+            );
     }
 
     public addTraegerschaft(): void {

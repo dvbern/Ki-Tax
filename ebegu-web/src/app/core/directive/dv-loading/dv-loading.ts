@@ -31,6 +31,7 @@ export class DVLoading implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVLoading();
+        // @ts-ignore
         directive.$inject = [];
         return directive;
     }
