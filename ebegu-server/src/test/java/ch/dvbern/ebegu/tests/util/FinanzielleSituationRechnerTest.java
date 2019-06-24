@@ -174,7 +174,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		TestDataUtil.setFinanzielleSituation(gesuch, EINKOMMEN_FINANZIELLE_SITUATION);
 		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, true);
-		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ANGENOMMEN, false); // nicht weniger als im vorherigen Jahr
+		TestDataUtil.setEinkommensverschlechterung(gesuch, gesuch.getGesuchsteller1(), EINKOMMEN_EKV_ABGELEHNT, false);
 		TestDataUtil.calculateFinanzDaten(gesuch);
 
 		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjVorAbzFamGr());
@@ -183,7 +183,7 @@ public class FinanzielleSituationRechnerTest extends AbstractEbeguLoginTest {
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Erfasst());
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv1Accepted());
 
-		Assert.assertEquals(EINKOMMEN_EKV_ANGENOMMEN, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
+		Assert.assertEquals(EINKOMMEN_FINANZIELLE_SITUATION, gesuch.getFinanzDatenDTO().getMassgebendesEinkBjP2VorAbzFamGr());
 		Assert.assertTrue(gesuch.getFinanzDatenDTO().isEkv2Erfasst());
 		Assert.assertFalse(gesuch.getFinanzDatenDTO().isEkv2Accepted());
 	}

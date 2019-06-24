@@ -61,7 +61,8 @@ public class EinkommenAbschnittRuleTest {
 
 		// Es gibt nur einen Zeitraum, da keine EKV angenommen
 		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 2016, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres 2016. Das massgebende Einkommen des Jahres 2017 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer ist als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).");
-		assertEkvResultate(zeitabschnitte, jahr1);
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_FINANZIELLE_SITUATION, 2016, "");
+		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
 	}
 
 	@Test
