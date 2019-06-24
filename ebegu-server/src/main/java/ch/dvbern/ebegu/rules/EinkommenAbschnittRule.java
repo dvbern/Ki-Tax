@@ -55,12 +55,11 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 			VerfuegungZeitabschnitt abschnittFinanzielleSituation = new VerfuegungZeitabschnitt(betreuung.extractGesuchsperiode().getGueltigkeit());
 			einkommensAbschnitte.add(abschnittFinanzielleSituation);
 			lastAbschnitt = abschnittFinanzielleSituation;
-			boolean hasEKV1 = false;
 
 			// Einkommensverschlechterung 1: In mind. 1 Kombination eingegeben
 			if (finanzDatenDTOAlleine.isEkv1Erfasst() || finanzDatenDTOZuZweit.isEkv1Erfasst()) {
-				LocalDate stichtagEKV1 = LocalDate.of(betreuung.extractGesuchsperiode().getBasisJahrPlus1(), Month.JANUARY, 1);
-				DateRange rangeEKV1 = new DateRange(stichtagEKV1, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
+				int jahr = betreuung.extractGesuchsperiode().getBasisJahrPlus1();
+				DateRange rangeEKV1 = new DateRange(LocalDate.of(jahr, Month.JANUARY, 1), LocalDate.of(jahr, Month.DECEMBER, 31));
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung1 = new VerfuegungZeitabschnitt(rangeEKV1);
 
 				// EKV1 fuer alleine erfasst
@@ -69,18 +68,16 @@ public class EinkommenAbschnittRule extends AbstractAbschnittRule {
 				abschnittEinkommensverschlechterung1.setEkv1ZuZweit(finanzDatenDTOZuZweit.isEkv1Erfasst());
 
 				einkommensAbschnitte.add(abschnittEinkommensverschlechterung1);
-				// Den vorherigen Zeitabschnitt beenden
-				lastAbschnitt.getGueltigkeit().endOnDayBefore(abschnittEinkommensverschlechterung1.getGueltigkeit());
+				// Den vorherigen Zeitabschnitt erst nach der EKV 1 beginnen
+				lastAbschnitt.getGueltigkeit().startsDayAfter(abschnittEinkommensverschlechterung1.getGueltigkeit());
 				lastAbschnitt = abschnittEinkommensverschlechterung1;
-				hasEKV1 = true;
 			}
 
 			// Einkommensverschlechterung 2: In mind. 1 Kombination akzeptiert
 			if (finanzDatenDTOAlleine.isEkv2Erfasst() || finanzDatenDTOZuZweit.isEkv2Erfasst()) {
-				LocalDate stichtagEKV2 = LocalDate.of(betreuung.extractGesuchsperiode().getBasisJahrPlus2(), Month.JANUARY, 1);
-				DateRange rangeEKV2 = new DateRange(stichtagEKV2, betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigBis());
+				int jahr = betreuung.extractGesuchsperiode().getBasisJahrPlus2();
+				DateRange rangeEKV2 = new DateRange(LocalDate.of(jahr, Month.JANUARY, 1), LocalDate.of(jahr, Month.DECEMBER, 31));
 				VerfuegungZeitabschnitt abschnittEinkommensverschlechterung2 = new VerfuegungZeitabschnitt(rangeEKV2);
-				abschnittEinkommensverschlechterung2.setEkv1NotExisting(!hasEKV1);
 
 				// EKV2 fuer alleine erfasst
 				abschnittEinkommensverschlechterung2.setEkv2Alleine(finanzDatenDTOAlleine.isEkv2Erfasst());

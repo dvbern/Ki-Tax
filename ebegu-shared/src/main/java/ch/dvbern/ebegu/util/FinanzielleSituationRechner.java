@@ -214,15 +214,13 @@ public class FinanzielleSituationRechner {
 					calculateResultateEinkommensverschlechterung(gesuch, 2, false);
 				FinanzielleSituationResultateDTO resultateEKV2ZuZweit =
 					calculateResultateEinkommensverschlechterung(gesuch, 2, true);
-				// In der EKV 2 vergleichen wir immer mit dem EKV 1, egal ob diese akzeptiert war
+				// In der EKV 2 vergleichen wir immer mit dem Basisjahr
 				handleEKV2(finanzDatenDTOAlleine,
 					resultateEKV2Alleine.getMassgebendesEinkVorAbzFamGr(),
-					massgebendesEinkommenVorjahrAlleine,
 					massgebendesEinkommenBasisjahrAlleine,
 					minimumEKV);
 				handleEKV2(finanzDatenDTOZuZweit,
 					resultateEKV2ZuZweit.getMassgebendesEinkVorAbzFamGr(),
-					massgebendesEinkommenVorjahrZuZweit,
 					massgebendesEinkommenBasisjahrZuZweit,
 					minimumEKV);
 			} else {
@@ -254,21 +252,20 @@ public class FinanzielleSituationRechner {
 	private void handleEKV2(
 		@Nonnull FinanzDatenDTO finanzDatenDTO,
 		BigDecimal massgebendesEinkommenEKV2,
-		BigDecimal massgebendesEinkommenVorjahr,
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal minimumEKV
 	) {
-		// In der EKV 2 vergleichen wir immer mit dem EKV 1, egal ob diese akzeptiert war
+		// In der EKV 2 vergleichen wir immer mit dem Basisjahr. Egal ob eine EKV 1 vorhanden ist
 		finanzDatenDTO.setEkv2Erfasst(true);
-		boolean ekv2AlleineAccepted = acceptEKV2(massgebendesEinkommenVorjahr,
+		boolean accepted = acceptEKV(
 			massgebendesEinkommenBasisjahr,
 			massgebendesEinkommenEKV2,
 			minimumEKV);
-		finanzDatenDTO.setEkv2Accepted(ekv2AlleineAccepted);
-		if (ekv2AlleineAccepted) {
+		finanzDatenDTO.setEkv2Accepted(accepted);
+		if (accepted) {
 			finanzDatenDTO.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenEKV2);
 		} else {
-			finanzDatenDTO.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenVorjahr);
+			finanzDatenDTO.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenBasisjahr);
 		}
 	}
 
@@ -315,25 +312,6 @@ public class FinanzielleSituationRechner {
 		BigDecimal divide = MathUtil.EXACT.divide(einkommenJahrPlus1, einkommenJahr);
 		divide = MathUtil.EXACT.multiply(divide, HUNDERT);
 		return  MathUtil.EXACT.subtract(HUNDERT, divide).negate();
-	}
-
-	/**
-	 * @return Die Einkommensverschlechterung II kommt zum Zuge, falls diese grösser als die
-	 * Einkommensverschlechterung I ist und auch grösser 20%
-	 */
-	private boolean acceptEKV2(
-		BigDecimal massgebendesEinkommenVorjahr,
-		BigDecimal massgebendesEinkommenBasisjahr,
-		BigDecimal massgebendesEinkommenJahr,
-		BigDecimal minimumEKV) {
-
-		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0 &&
-			massgebendesEinkommenVorjahr.compareTo(massgebendesEinkommenJahr) > 0;
-		if (result) {
-			BigDecimal differenz = calculateProzentualeDifferenz(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
-			return differenz.abs().compareTo(minimumEKV) > 0;
-		}
-		return false;
 	}
 
 	private void calculateZusammen(
