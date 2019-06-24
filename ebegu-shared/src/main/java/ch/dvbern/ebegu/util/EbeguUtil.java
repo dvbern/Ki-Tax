@@ -291,4 +291,12 @@ public final class EbeguUtil {
 		}
 		return Arrays.asList(gemeindeSprachen);
 	}
+
+	@Nonnull
+	public static Boolean toBoolean(@Nullable Boolean aBoolean, boolean booleanIfNull) {
+		if (aBoolean == null) {
+			return booleanIfNull;
+		}
+		return aBoolean;
+	}
 }

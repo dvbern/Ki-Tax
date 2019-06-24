@@ -30,15 +30,24 @@ import ch.dvbern.ebegu.entities.Gesuch;
 public interface FinanzielleSituationService {
 
 	/**
-	 * Speichert die FinanzielleSituation neu in der DB falls der Key noch nicht existiert.
-	 *
-	 * @param finanzielleSituation Die FinanzielleSituation als DTO
+	 * Speichert die allgemeinen Fragen der Finanziellen Situation.
+	 * Diese werden auf der Familiensituation (bei gemeinsamer Stek) bzw. auf der
+	 * Finanziellen Situation des GS1 gespeichert (bei getrennter Stek)
 	 */
 	@Nonnull
-	FinanzielleSituationContainer saveFinanzielleSituation(@Nonnull FinanzielleSituationContainer finanzielleSituation, String gesuchId);
+	Gesuch saveFinanzielleSituationStart(
+		@Nonnull FinanzielleSituationContainer finanzielleSituation,
+		@Nonnull Boolean sozialhilfebezueger,
+		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nonnull String gesuchId);
 
+	/**
+	 * Speichert die Finanzielle Situation für einen Gesuchsteller
+	 */
 	@Nonnull
-	Gesuch saveFinanzielleSituationStart(@Nonnull Gesuch gesuch);
+	FinanzielleSituationContainer saveFinanzielleSituation(
+		@Nonnull FinanzielleSituationContainer finanzielleSituation,
+		@Nonnull String gesuchId);
 
 	/**
 	 * @param id PK (id) der FinanzielleSituation
