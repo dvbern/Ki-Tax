@@ -102,7 +102,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
                     });
                 },
                 () => {
-                    this.log.error('error has occurred while closing the remove dialog for Traegerrschaften');
+                    this.log.error('error has occurred while closing the remove dialog for Traegerschaft');
                 }
             );
     }
