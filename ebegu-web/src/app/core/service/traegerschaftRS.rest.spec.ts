@@ -17,6 +17,7 @@ import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {TraegerschaftRS} from './traegerschaftRS.rest';
 
@@ -43,6 +44,8 @@ describe('traegerschaftRS', () => {
         mockTraegerschaft.name = 'TraegerschaftTest';
         mockTraegerschaft.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
         mockTraegerschaftRest = ebeguRestUtil.traegerschaftToRestObject({}, mockTraegerschaft);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('API Usage', () => {

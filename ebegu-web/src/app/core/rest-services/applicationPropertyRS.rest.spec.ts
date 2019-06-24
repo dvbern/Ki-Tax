@@ -16,6 +16,7 @@
 import {ADMIN_JS_MODULE} from '../../../admin/admin.module';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSApplicationProperty from '../../../models/TSApplicationProperty';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {ApplicationPropertyRS} from './applicationPropertyRS.rest';
 import IHttpBackendService = angular.IHttpBackendService;
 
@@ -56,6 +57,8 @@ describe('ApplicationPropertyRS', () => {
             .respond(httpCreated,
                 mockApplicationPropertyRest,
                 {Location: 'http://localhost:8080/ebegu/api/v1/application-properties/key/test2'});
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
 
     });
 

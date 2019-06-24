@@ -110,7 +110,7 @@ export class StatistikViewController implements IController {
     public $onDestroy(): void {
         if (this.polling) {
             this.$interval.cancel(this.polling);
-            this.$log.debug('canceld job polling');
+            this.$log.debug('canceled job polling');
         }
     }
 

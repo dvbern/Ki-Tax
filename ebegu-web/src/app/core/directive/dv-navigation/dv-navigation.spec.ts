@@ -14,7 +14,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IQService, IScope} from 'angular';
+import {IHttpBackendService, IQService, IScope} from 'angular';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import WizardStepManager from '../../../../gesuch/service/wizardStepManager';
@@ -43,13 +43,13 @@ describe('dvNavigation', () => {
     let gesuchModelManager: GesuchModelManager;
     let authServiceRS: AuthServiceRS;
     let isStatusVerfuegen: boolean;
+    let $httpBackend: IHttpBackendService;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
     beforeEach(angular.mock.module(ngServicesMock));
 
     beforeEach(angular.mock.inject($injector => {
-        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
         $q = $injector.get('$q');
         const $timeout = $injector.get('$timeout');
         $rootScope = $injector.get('$rootScope');
@@ -57,6 +57,8 @@ describe('dvNavigation', () => {
         $state = $injector.get('$state');
         gesuchModelManager = $injector.get('GesuchModelManager');
         authServiceRS = $injector.get('AuthServiceRS');
+        $httpBackend = $injector.get('$httpBackend');
+
         navController = new NavigatorController(wizardStepManager, $state, gesuchModelManager,
             $injector.get('$translate'), $injector.get('ErrorService'), $q, $timeout);
         navController.dvSave = () => {
@@ -66,6 +68,7 @@ describe('dvNavigation', () => {
         spyOn(gesuchModelManager, 'isGesuchReadonly').and.callFake(() => {
             return isStatusVerfuegen;
         });
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     }));
 
     describe('getNextButtonName', () => {
@@ -213,6 +216,7 @@ describe('dvNavigation', () => {
         });
         it('moves to gesuch.finanzielleSituation when coming from FINANZIELLE_SITUATION substep 1 with GS1 and 2GS required',
             () => {
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
                 spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
                 spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
                 spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(true);
@@ -226,6 +230,7 @@ describe('dvNavigation', () => {
             });
         it('moves to gesuch.finanzielleSituationResultate when coming from FINANZIELLE_SITUATION substep 1 with GS1 and 2GS NOT required',
             () => {
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
                 spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
                 spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
                 spyOn(gesuchModelManager, 'isGesuchsteller2Required').and.returnValue(false);
@@ -235,6 +240,7 @@ describe('dvNavigation', () => {
                 expect($state.go).toHaveBeenCalledWith('gesuch.finanzielleSituationResultate', {gesuchId: '123'});
             });
         it('moves to gesuch.finanzielleSituation when coming from FINANZIELLE_SITUATION substep 2', () => {
+            $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
             spyOn(wizardStepManager, 'getCurrentStepName').and.returnValue(TSWizardStepName.FINANZIELLE_SITUATION);
             navController.dvSubStep = 1;
             gesuchModelManager.setGesuch(mockGesuch());

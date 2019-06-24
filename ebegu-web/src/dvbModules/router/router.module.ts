@@ -14,6 +14,7 @@
  */
 
 import {upgradeModule} from '@uirouter/angular-hybrid';
+// tslint:disable-next-line:match-default-export-name
 import uiRouter from '@uirouter/angularjs';
 import * as angular from 'angular';
 import RouterHelperProvider from './route-helper-provider';

@@ -53,6 +53,8 @@ describe('ErwerbspensumRS', () => {
         gesuchstellerId = '2afc9d9a-957e-4550-9a22-97624a1d8fe1';
         gesuchId = '2afc9d9a-957e-4550-9a22-97624a1d8fe2';
         mockErwerbspensumRS = ebeguRestUtil.erwerbspensumContainerToRestObject({}, mockErwerbspensum);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('API Usage', () => {

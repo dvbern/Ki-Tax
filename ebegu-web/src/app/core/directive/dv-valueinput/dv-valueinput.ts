@@ -41,6 +41,7 @@ export class DVValueinput implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVValueinput();
+        // @ts-ignore
         directive.$inject = [];
         return directive;
     }

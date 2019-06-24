@@ -53,6 +53,8 @@ describe('searchRS', () => {
         mockPendenz.verantwortlicherBG = 'Juan Arbolado';
         mockPendenz.verantwortlicherTS = 'Juan Arbolado';
         ebeguRestUtil.antragDTOToRestObject({}, mockPendenz);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('API Usage', () => {

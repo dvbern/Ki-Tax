@@ -59,6 +59,8 @@ describe('VerfuegungRS', () => {
         TestDataUtil.setAbstractMutableFieldsUndefined(mockKind);
         mockKind.id = '2afc9d9a-957e-4550-9a22-97624a1d8feb';
         mockKindContainerListRest = ebeguRestUtil.kindContainerToRestObject({}, mockKind);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('Public API', () => {

@@ -33,6 +33,7 @@ export class DVBarcodeListener implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVBarcodeListener();
+        // @ts-ignore
         directive.$inject = [];
         return directive;
     }

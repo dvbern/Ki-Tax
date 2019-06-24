@@ -79,6 +79,8 @@ describe('mitteilungenView', () => {
         dossier.verantwortlicherBG = verantwortlicher;
 
         spyOn(mitteilungRS, 'getEntwurfOfDossierForCurrentRolle').and.returnValue($q.when(undefined));
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($injector.get('$httpBackend'));
     }));
 
     const assertMitteilungContent = () => {

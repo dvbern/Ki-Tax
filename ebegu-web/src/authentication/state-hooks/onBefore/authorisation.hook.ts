@@ -52,7 +52,7 @@ function abortWhenUnauthorised(transition: Transition): HookResult {
         .pipe(
             take(1),
             map(principal => {
-                const transitionTo: string = (transition ? transition.$to().name  : '-');
+                const transitionTo = (transition ? transition.$to().name  : '-');
                 LOG.debug('check authorisation of principal for transition to ' + transitionTo, principal);
                 const allowedRoles: TSRole[] = transition.to().data.roles;
 

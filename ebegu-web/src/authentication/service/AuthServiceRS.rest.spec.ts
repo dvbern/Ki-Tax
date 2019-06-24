@@ -53,6 +53,8 @@ describe('AuthServiceRS', () => {
         benutzerRS = $injector.get('BenutzerRS');
         gesuchModelManager = $injector.get('GesuchModelManager');
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(TestDataUtil.createGesuchsperiode20162017());
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     }));
 
     describe('API usage', () => {

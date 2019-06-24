@@ -97,6 +97,7 @@ describe('gesuchModelManager', () => {
         });
         describe('saveBetreuung', () => {
             it('updates a betreuung', async(() => {
+                $httpBackend.when('GET', '/ebegu/api/v1/dossier/id/undefined').respond({});
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
                     undefined).then(() => {
@@ -162,6 +163,7 @@ describe('gesuchModelManager', () => {
         });
         describe('setUserAsFallVerantwortlicherBG', () => {
             it('puts the given user as the verantwortlicherBG for the fall', async(() => {
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 gesuchModelManager.initGesuch(TSEingangsart.PAPIER,
                     TSCreationAction.CREATE_NEW_FALL,
                     undefined).then(() => {
@@ -337,6 +339,7 @@ describe('gesuchModelManager', () => {
         });
         describe('updateBetreuungen', () => {
             it('should return empty Promise for undefined betreuung list', () => {
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 const promise = gesuchModelManager.updateBetreuungen(undefined, true);
                 expect(promise).toBeDefined();
                 let promiseExecuted: Array<TSBetreuung> = null;
@@ -347,6 +350,7 @@ describe('gesuchModelManager', () => {
                 expect(promiseExecuted).toBe(undefined);
             });
             it('should return empty Promise for empty betreuung list', () => {
+                TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
                 const promise = gesuchModelManager.updateBetreuungen([], true);
                 expect(promise).toBeDefined();
                 let promiseExecuted = false;
@@ -392,6 +396,7 @@ describe('gesuchModelManager', () => {
         describe('openGesuch', () => {
             it('should call findGesuchForInstitution for role Institution or Traegerschaft', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
 
                 const gesuch = new TSGesuch();
                 gesuch.id = '123';
@@ -409,6 +414,7 @@ describe('gesuchModelManager', () => {
             });
             it('should call findGesuch for other role but Institution/Traegerschaft', () => {
                 TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+                $httpBackend.when('GET', '/ebegu/api/v1/antragStatusHistory/123').respond({});
 
                 const gesuch = new TSGesuch();
                 gesuch.id = '123';
