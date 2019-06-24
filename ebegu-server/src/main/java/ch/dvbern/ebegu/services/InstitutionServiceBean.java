@@ -323,7 +323,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Nullable
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
 	public Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired) {
 		final Optional<Institution> institutionOpt = findInstitution(institutionId);
 
