@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
 import ch.dvbern.ebegu.entities.Institution;
@@ -53,6 +54,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -338,6 +340,29 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		}
 
 		return institution;
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void removeInstitution(@Nonnull String institutionId) {
+		final Optional<Institution> institutionOpt = findInstitution(institutionId);
+		final Institution institution = institutionOpt.orElseThrow(() ->
+			new EbeguEntityNotFoundException("removeInstitution",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId)
+		);
+
+		checkForLinkedBerechtigungen(institutionId, institution);
+		benutzerService.removeInstitutionFromBerechtigungHistory(institution);
+
+		institutionStammdatenService.removeInstitutionStammdatenByInstitution(institutionId);
+		persistence.remove(institution);
+	}
+
+	private void checkForLinkedBerechtigungen(@Nonnull String institutionId, @Nonnull Institution institution) {
+		final Collection<Berechtigung> linkedBerechtigungen = benutzerService.findBerechtigungByInstitution(institution);
+		if (!linkedBerechtigungen.isEmpty()) {
+			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN, institutionId);
+		}
 	}
 
 	/**

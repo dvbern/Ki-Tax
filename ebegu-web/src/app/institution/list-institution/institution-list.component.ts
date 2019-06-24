@@ -17,7 +17,7 @@
 
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatDialogConfig, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
@@ -27,6 +27,7 @@ import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
+import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 
 @Component({
@@ -37,7 +38,6 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
 export class InstitutionListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
     public displayedColumns: string[] = [];
-    public institutionen: TSInstitution[];
     public dataSource: MatTableDataSource<TSInstitution>;
 
     @ViewChild(NgForm) public form: NgForm;
@@ -46,6 +46,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
+        private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
@@ -85,6 +86,22 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
                 disableClear: false,
             },
         );
+    }
+
+    public removeInstitution(institution: any): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+            title: 'LOESCHEN_DIALOG_TITLE',
+        };
+        this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
+            .subscribe(userAccepted => {   // User confirmed removal
+                if (!userAccepted) {
+                    return;
+                }
+                this.institutionRS.removeInstitution(institution.id).then(() => {
+                    this.updateInstitutionenList();
+                });
+            });
     }
 
     public createInstitution(): void {
@@ -138,12 +155,18 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles());
     }
 
+    public isDeleteAllowed(): boolean {
+        return this.isSuperAdmin();
+    }
+
     public showNoContentMessage(): boolean {
         return !this.dataSource || this.dataSource.data.length === 0;
     }
 
     private setDisplayedColumns(): void {
-        this.displayedColumns = ['name', 'status', 'detail'];
+        this.displayedColumns = this.isDeleteAllowed()
+            ? ['name', 'status', 'detail', 'remove']
+            : ['name', 'status', 'detail'];
     }
 
     public isSuperAdmin(): boolean {

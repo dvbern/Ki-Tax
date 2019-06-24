@@ -124,13 +124,22 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
+	@RolesAllowed(SUPER_ADMIN)
 	public void removeInstitutionStammdaten(@Nonnull String institutionStammdatenId) {
 		Objects.requireNonNull(institutionStammdatenId);
 		Optional<InstitutionStammdaten> institutionStammdatenToRemove = findInstitutionStammdaten(institutionStammdatenId);
 		final InstitutionStammdaten removeInstitutionStammdaten = institutionStammdatenToRemove.orElseThrow(() -> new EbeguEntityNotFoundException
 			("removeInstitutionStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionStammdatenId));
 		persistence.remove(removeInstitutionStammdaten);
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
+		Objects.requireNonNull(institutionId);
+		InstitutionStammdaten institutionStammdatenToRemove = getInstitutionStammdatenByInstitution(institutionId);
+
+		persistence.remove(institutionStammdatenToRemove);
 	}
 
 	@Override

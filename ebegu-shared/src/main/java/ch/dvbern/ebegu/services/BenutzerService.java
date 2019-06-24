@@ -259,6 +259,12 @@ public interface BenutzerService {
 	Optional<Berechtigung> findBerechtigung(@Nonnull String id);
 
 	/**
+	 * Returns all Berechtigungen linked to the given institution. If there isn't any an empty list will be returned
+	 */
+	@Nonnull
+	Collection<Berechtigung> findBerechtigungByInstitution(@Nonnull Institution institution);
+
+	/**
 	 * Schreibt eine Berechtigungs-History in die DB
 	 */
 	void saveBerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted);
@@ -289,4 +295,10 @@ public interface BenutzerService {
 	 * Erzeugt einen Einladungslink für einen Benutzer
 	 */
 	String createInvitationLink(@Nonnull Benutzer eingeladener, @Nonnull Einladung einladung);
+
+	/**
+	 * Removes all records from BerechtigungHistory where the given Institution appears.
+	 * CAUTION. This method should be used with cution because the history will be completely removed
+	 */
+	void removeInstitutionFromBerechtigungHistory(@Nonnull Institution institution);
 }

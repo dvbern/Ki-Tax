@@ -56,6 +56,11 @@ public interface InstitutionStammdatenService {
 	void removeInstitutionStammdaten(@Nonnull String institutionStammdatenId);
 
 	/**
+	 * totally removes a InstitutionStammdaten from the Database. It takes the InstitutionStammdaten based on the given Institution ID
+	 */
+	void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId);
+
+	/**
 	 * @param date Das Datum fuer welches die InstitutionStammdaten gesucht werden muessen
 	 * @return Alle InstitutionStammdaten, bei denen das gegebene Datum zwischen datumVon und datumBis liegt
 	 */

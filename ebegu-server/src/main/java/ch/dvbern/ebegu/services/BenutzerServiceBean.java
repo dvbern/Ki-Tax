@@ -1186,6 +1186,14 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return Optional.ofNullable(persistence.find(Berechtigung.class, id));
 	}
 
+	@Nonnull
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public Collection<Berechtigung> findBerechtigungByInstitution(@Nonnull Institution institution) {
+		requireNonNull(institution, "institution cannot be null");
+		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, institution, Berechtigung_.institution);
+	}
+
 	private void removeBerechtigung(@Nonnull Berechtigung berechtigung) {
 		authService.logoutAndDeleteAuthorisierteBenutzerForUser(berechtigung.getBenutzer().getUsername());
 		persistence.remove(berechtigung);
@@ -1270,6 +1278,18 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			+ "/einladung?typ=" + einladung.getEinladungTyp()
 			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
 			+ "&userid=" + eingeladener.getId();
+	}
+
+	@Override
+	public void removeInstitutionFromBerechtigungHistory(@Nonnull Institution institution) {
+		final Collection<BerechtigungHistory> berechtigungHistories = criteriaQueryHelper.getEntitiesByAttribute(
+			BerechtigungHistory.class,
+			institution,
+			BerechtigungHistory_.institution);
+
+		for (BerechtigungHistory berechtigungHistory : berechtigungHistories) {
+			persistence.remove(berechtigungHistory);
+		}
 	}
 
 	private boolean isBenutzerDeleteable(@Nonnull Benutzer benutzer) {

@@ -113,4 +113,9 @@ public interface InstitutionService {
 	 * Updates the Flag stammdatenCheckRequired to the given value
 	 */
 	Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired);
+
+	/**
+	 * Removes the institution given by the id totally from the DB if this isn't linked to any other object
+	 */
+	void removeInstitution(@Nonnull String institutionId);
 }

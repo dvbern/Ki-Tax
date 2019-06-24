@@ -201,7 +201,7 @@ public class InstitutionResource {
 		return optional.map(institution -> converter.institutionToJAX(institution)).orElse(null);
 	}
 
-	@ApiOperation("Remove an Institution logically by his institution-id as parameter")
+	@ApiOperation("Remove an Institution from the DB by its institution-id as parameter")
 	@Nullable
 	@DELETE
 	@Path("/{institutionId}")
@@ -211,7 +211,7 @@ public class InstitutionResource {
 		@Context HttpServletResponse response) {
 
 		requireNonNull(institutionJAXPId.getId());
-		institutionService.setInstitutionInactive(converter.toEntityId(institutionJAXPId));
+		institutionService.removeInstitution(converter.toEntityId(institutionJAXPId));
 		return Response.ok().build();
 	}
 
