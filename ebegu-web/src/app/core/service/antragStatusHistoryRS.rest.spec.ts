@@ -38,6 +38,8 @@ describe('antragStatusHistoryRS', () => {
         antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     }));
 
     describe('Public API', () => {

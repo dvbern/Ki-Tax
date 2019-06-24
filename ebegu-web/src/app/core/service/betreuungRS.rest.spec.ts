@@ -59,6 +59,8 @@ describe('betreuungRS', () => {
 
         $httpBackend.whenGET(`${betreuungRS.serviceURL}/${encodeURIComponent(mockBetreuung.id)}`)
             .respond(mockBetreuungRest);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('Public API', () => {

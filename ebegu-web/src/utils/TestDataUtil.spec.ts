@@ -88,20 +88,26 @@ export default class TestDataUtil {
     }
 
     public static mockDefaultGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
+        $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/application-properties/public/all').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/gemeinde/all').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/0621fb5d-a187-5a91-abaf-8a813c4d263a').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/wizard-steps').respond({});
         $httpBackend.when('POST', '/ebegu/api/v1/wizard-steps').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/anspruch').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active').respond({});
     }
 
     public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
+        $httpBackend.when('GET', '/ebegu/api/v1/application-properties/public/all').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/gemeinde/all').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/active').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/gesuchsperioden/unclosed').respond({});
-        $httpBackend.when('GET', '/ebegu/api/v1/fachstellen').respond({});
-        $httpBackend.when('GET',
-            '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active?gesuchsperiodeId=0621fb5d-a187-5a91-abaf-8a813c4d263a')
-            .respond(
-                {});
+        $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/anspruch').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active').respond({});
     }
 
     public static createWizardStep(gesuchId: string): TSWizardStep {
