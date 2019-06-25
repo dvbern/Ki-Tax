@@ -147,7 +147,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 								if (gueltigkeit.getGueltigAb().isBefore(familiensituationStichtag)) {
 									gueltigkeit.setGueltigAb(familiensituationStichtag);
 								}
-								createZeitabschnittForGS2(adressenZeitabschnitte, gesuchstellerAdresse.extractIsNichtInGemeinde(), gueltigkeit);
+								createZeitabschnittForGS2(adressenZeitabschnitte, gueltigkeit);
 							}
 						}
 						// from 2GS to 1GS
@@ -158,20 +158,18 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 							if (!gueltigkeit.getGueltigBis().isBefore(familiensituationStichtag)) {
 								gueltigkeit.setGueltigBis(familiensituationStichtag.minusDays(1));
 							}
-							createZeitabschnittForGS2(adressenZeitabschnitte, gesuchstellerAdresse.extractIsNichtInGemeinde(), gueltigkeit);
+							createZeitabschnittForGS2(adressenZeitabschnitte, gueltigkeit);
 						}
 					} else {
-						createZeitabschnittForGS2(adressenZeitabschnitte, gesuchstellerAdresse.extractIsNichtInGemeinde(), gueltigkeit);
+						createZeitabschnittForGS2(adressenZeitabschnitte, gueltigkeit);
 					}
 				}
 			});
 		return adressenZeitabschnitte;
 	}
 
-	private void createZeitabschnittForGS2(List<VerfuegungZeitabschnitt> adressenZeitabschnitte, boolean nichtInGemeinde,
-		DateRange gueltigkeit) {
+	private void createZeitabschnittForGS2(List<VerfuegungZeitabschnitt> adressenZeitabschnitte, DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(gueltigkeit);
-		zeitabschnitt.setWohnsitzNichtInGemeindeGS2(nichtInGemeinde);
 		adressenZeitabschnitte.add(zeitabschnitt);
 	}
 }
