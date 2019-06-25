@@ -615,7 +615,10 @@ export default class GesuchModelManager {
             gesuchsteller = new TSGesuchsteller();
         }
         this.setStammdatenToWorkWith(new TSGesuchstellerContainer(gesuchsteller));
-        this.getStammdatenToWorkWith().adressen = this.initWohnAdresse();
+        // Nur GS 1 muss die Wohnadresse angeben!
+        if (this.gesuchstellerNumber === 1) {
+            this.getStammdatenToWorkWith().adressen = this.initWohnAdresse();
+        }
     }
 
     private initEinkommensverschlechterungInfo(): void {
