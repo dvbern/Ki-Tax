@@ -182,7 +182,6 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 
 		} else if (isEkv2) {
 			if (finanzDatenDTO.isEkv2AcceptedAndNotAnnuliert()) {
-				// EKV 1 accepted -> basisjahr + 2
 				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP2VorAbzFamGr());
 				verfuegungZeitabschnitt.setEinkommensjahr(basisjahrPlus2);
 				verfuegungZeitabschnitt.addBemerkung(
@@ -192,13 +191,8 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 					String.valueOf(basisjahrPlus2),
 					String.valueOf(basisjahr));
 			} else {
-				if (finanzDatenDTO.isEkv1AcceptedAndNotAnnuliert()) {
-					verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP1VorAbzFamGr());
-					verfuegungZeitabschnitt.setEinkommensjahr(basisjahrPlus1);
-				} else {
-					verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
-					verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
-				}
+				verfuegungZeitabschnitt.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr());
+				verfuegungZeitabschnitt.setEinkommensjahr(basisjahr);
 				if (finanzDatenDTO.isEkv2Annulliert()) {
 					verfuegungZeitabschnitt.addBemerkung(
 						RuleKey.EINKOMMEN,
