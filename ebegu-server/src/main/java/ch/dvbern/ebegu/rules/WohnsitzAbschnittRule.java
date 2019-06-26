@@ -108,7 +108,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	private boolean isWohnsitzNichtInGemeinde(VerfuegungZeitabschnitt zeitabschnitt) {
-		return (zeitabschnitt.isWohnsitzNichtInGemeindeGS1() && zeitabschnitt.isWohnsitzNichtInGemeindeGS2());
+		return zeitabschnitt.isWohnsitzNichtInGemeindeGS1();
 	}
 
 	/**
