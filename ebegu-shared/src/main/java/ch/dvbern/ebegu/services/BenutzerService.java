@@ -253,24 +253,6 @@ public interface BenutzerService {
 	int handleAbgelaufeneRollen(@Nonnull LocalDate stichtag);
 
 	/**
-	 * Suche die Berechtigung mit der uebergebenen Id
-	 */
-	@Nonnull
-	Optional<Berechtigung> findBerechtigung(@Nonnull String id);
-
-	/**
-	 * Returns all Berechtigungen linked to the given institution. If there isn't any an empty list will be returned
-	 */
-	@Nonnull
-	Collection<Berechtigung> findBerechtigungByInstitution(@Nonnull Institution institution);
-
-	/**
-	 * Returns all Berechtigungen linked to the given Traegerschaft. If there isn't any an empty list will be returned
-	 */
-	@Nonnull
-	Collection<Berechtigung> findBerechtigungByTraegerschaft(@Nonnull Traegerschaft traegerschaft);
-
-	/**
 	 * Schreibt eine Berechtigungs-History in die DB
 	 */
 	void saveBerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted);
@@ -302,9 +284,4 @@ public interface BenutzerService {
 	 */
 	String createInvitationLink(@Nonnull Benutzer eingeladener, @Nonnull Einladung einladung);
 
-	/**
-	 * Removes all records from BerechtigungHistory where the given Institution appears.
-	 * CAUTION. This method should be used with cution because the history will be completely removed
-	 */
-	void removeInstitutionFromBerechtigungHistory(@Nonnull Institution institution);
 }

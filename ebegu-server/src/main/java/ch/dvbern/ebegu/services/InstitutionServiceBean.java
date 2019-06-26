@@ -46,6 +46,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
+import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -136,26 +137,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		institutionStammdaten.setInactive();
 		final InstitutionStammdaten mergedInstitutionstammdaten = persistence.merge(institutionStammdaten);
 		return mergedInstitutionstammdaten.getInstitution();
-	}
-
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
-	public void deleteInstitution(@Nonnull String institutionId) {
-		Objects.requireNonNull(institutionId);
-		Optional<Institution> institutionToRemove = findInstitution(institutionId);
-		Institution institution =
-			institutionToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeInstitution",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
-
-		// Es müssen auch alle Berechtigungen für diese Institution gelöscht werden
-		Collection<BerechtigungHistory> berechtigungenToDelete =
-			criteriaQueryHelper.getEntitiesByAttribute(BerechtigungHistory.class, institution,
-				BerechtigungHistory_.institution);
-		for (BerechtigungHistory berechtigungHistory : berechtigungenToDelete) {
-			persistence.remove(berechtigungHistory);
-		}
-
-		persistence.remove(institution);
 	}
 
 	@Override
@@ -352,17 +333,33 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		);
 
 		checkForLinkedBerechtigungen(institution);
-		benutzerService.removeInstitutionFromBerechtigungHistory(institution);
+		removeInstitutionFromBerechtigungHistory(institution);
 
 		institutionStammdatenService.removeInstitutionStammdatenByInstitution(institutionId);
 		persistence.remove(institution);
 	}
 
 	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {
-		final Collection<Berechtigung> linkedBerechtigungen = benutzerService.findBerechtigungByInstitution(institution);
+		final Collection<Berechtigung> linkedBerechtigungen = findBerechtigungByInstitution(institution);
 		if (!linkedBerechtigungen.isEmpty()) {
 			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN, institution.getId());
 		}
+	}
+
+	private void removeInstitutionFromBerechtigungHistory(@Nonnull Institution institution) {
+		final Collection<BerechtigungHistory> berechtigungHistories = criteriaQueryHelper.getEntitiesByAttribute(
+			BerechtigungHistory.class,
+			institution,
+			BerechtigungHistory_.institution);
+
+		for (BerechtigungHistory berechtigungHistory : berechtigungHistories) {
+			persistence.remove(berechtigungHistory);
+		}
+	}
+
+	private Collection<Berechtigung> findBerechtigungByInstitution(@Nonnull Institution institution) {
+		requireNonNull(institution, "institution cannot be null");
+		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, institution, Berechtigung_.institution);
 	}
 
 	/**

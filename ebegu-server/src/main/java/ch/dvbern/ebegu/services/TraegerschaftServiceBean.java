@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
+import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Traegerschaft_;
@@ -148,10 +149,15 @@ public class TraegerschaftServiceBean extends AbstractBaseService implements Tra
 	}
 
 	private void checkForLinkedBerechtigungen(@Nonnull Traegerschaft traegerschaft) {
-		final Collection<Berechtigung> linkedBerechtigungen = benutzerService.findBerechtigungByTraegerschaft(traegerschaft);
+		final Collection<Berechtigung> linkedBerechtigungen = findBerechtigungByTraegerschaft(traegerschaft);
 		if (!linkedBerechtigungen.isEmpty()) {
 			throw new EbeguRuntimeException("checkForLinkedBerechtigungen", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN, traegerschaft.getId());
 		}
+	}
+
+	private Collection<Berechtigung> findBerechtigungByTraegerschaft(@Nonnull Traegerschaft traegerschaft) {
+		requireNonNull(traegerschaft, "traegerschaft cannot be null");
+		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, traegerschaft, Berechtigung_.traegerschaft);
 	}
 
 	@Override

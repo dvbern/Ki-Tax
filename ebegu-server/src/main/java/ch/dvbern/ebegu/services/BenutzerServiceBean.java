@@ -1178,29 +1178,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return resultList.get(0);
 	}
 
-	@Nonnull
-	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
-	public Optional<Berechtigung> findBerechtigung(@Nonnull String id) {
-		requireNonNull(id, "id muss gesetzt sein");
-		return Optional.ofNullable(persistence.find(Berechtigung.class, id));
-	}
-
-	@Nonnull
-	@Override
-	@RolesAllowed(SUPER_ADMIN)
-	public Collection<Berechtigung> findBerechtigungByInstitution(@Nonnull Institution institution) {
-		requireNonNull(institution, "institution cannot be null");
-		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, institution, Berechtigung_.institution);
-	}
-
-	@Nonnull
-	@Override
-	public Collection<Berechtigung> findBerechtigungByTraegerschaft(@Nonnull Traegerschaft traegerschaft) {
-		requireNonNull(traegerschaft, "traegerschaft cannot be null");
-		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, traegerschaft, Berechtigung_.traegerschaft);
-	}
-
 	private void removeBerechtigung(@Nonnull Berechtigung berechtigung) {
 		authService.logoutAndDeleteAuthorisierteBenutzerForUser(berechtigung.getBenutzer().getUsername());
 		persistence.remove(berechtigung);
@@ -1285,18 +1262,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			+ "/einladung?typ=" + einladung.getEinladungTyp()
 			+ einladung.getEinladungRelatedObjectId().map(entityId -> "&entityid=" + entityId).orElse("")
 			+ "&userid=" + eingeladener.getId();
-	}
-
-	@Override
-	public void removeInstitutionFromBerechtigungHistory(@Nonnull Institution institution) {
-		final Collection<BerechtigungHistory> berechtigungHistories = criteriaQueryHelper.getEntitiesByAttribute(
-			BerechtigungHistory.class,
-			institution,
-			BerechtigungHistory_.institution);
-
-		for (BerechtigungHistory berechtigungHistory : berechtigungHistories) {
-			persistence.remove(berechtigungHistory);
-		}
 	}
 
 	private boolean isBenutzerDeleteable(@Nonnull Benutzer benutzer) {

@@ -65,10 +65,6 @@ export class InstitutionStammdatenRS {
         );
     }
 
-    public removeInstitutionStammdaten(institutionStammdatenID: string): IHttpPromise<any> {
-        return this.$http.delete(`${this.serviceURL}/${encodeURIComponent(institutionStammdatenID)}`);
-    }
-
     public getAllInstitutionStammdaten(): IPromise<TSInstitutionStammdaten[]> {
         return this.$http.get(this.serviceURL).then((response: any) => {
             return this.ebeguRestUtil.parseInstitutionStammdatenArray(response.data);

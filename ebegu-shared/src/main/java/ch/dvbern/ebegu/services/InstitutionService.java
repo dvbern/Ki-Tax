@@ -58,11 +58,6 @@ public interface InstitutionService {
 	Institution setInstitutionInactive(@Nonnull String institutionId);
 
 	/**
-	 * Delete Institution on the Database.
-	 */
-	void deleteInstitution(@Nonnull String institutionId);
-
-	/**
 	 * @param traegerschaftId Der ID der Traegerschaft, fuer welche die Institutionen gesucht werden muessen
 	 * @return Liste mit allen Institutionen der gegebenen Traegerschaft
 	 */

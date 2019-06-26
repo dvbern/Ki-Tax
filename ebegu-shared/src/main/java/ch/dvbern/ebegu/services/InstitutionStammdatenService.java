@@ -49,13 +49,6 @@ public interface InstitutionStammdatenService {
 	Collection<InstitutionStammdaten> getAllInstitutionStammdaten();
 
 	/**
-	 * removes a InstitutionStammdaten from the Database.
-	 *
-	 * @param institutionStammdatenId PK (id) der InstitutionStammdaten
-	 */
-	void removeInstitutionStammdaten(@Nonnull String institutionStammdatenId);
-
-	/**
 	 * totally removes a InstitutionStammdaten from the Database. It takes the InstitutionStammdaten based on the given Institution ID
 	 */
 	void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId);
