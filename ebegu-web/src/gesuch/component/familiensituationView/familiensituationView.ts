@@ -183,8 +183,8 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
      * in a Mutation the GS2 is new and will be removed
      */
     private isConfirmationRequired(): boolean {
-        return (!this.isMutation() && this.checkChanged2To1GS()) ||
-            (this.isMutation() && this.checkChanged2To1GSMutation());
+        return !this.isKorrekturModusJugendamt() && ((!this.isMutation() && this.checkChanged2To1GS()) ||
+            (this.isMutation() && this.checkChanged2To1GSMutation()));
     }
 
     private checkChanged2To1GS(): boolean {
@@ -218,8 +218,8 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer);
     }
 
-    public isEnabled(): boolean {
-        return this.isMutationAndDateSet() && !this.isGesuchReadonly() && !this.isKorrekturModusJugendamt();
+    public isFamiliensituationEnabled(): boolean {
+        return this.isMutationAndDateSet() && !this.isGesuchReadonly();
     }
 
     public isStartKonkubinatDisabled(): boolean {

@@ -60,63 +60,6 @@ describe('umzugView', () => {
         $timeout = $injector.get('$timeout');
     }));
 
-    describe('getNameFromBetroffene', () => {
-        beforeEach(() => {
-            umzugController = new UmzugViewController(gesuchModelManager, berechnungsManager,
-                wizardStepManager, errorService, $translate, dialog, $q, $rootScope, $timeout);
-        });
-        it('should return the names of the GS or beide Gesuchsteller', () => {
-            const gesuch = new TSGesuch();
-            gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
-            gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Ana', 'Karenina');
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_1))
-                .toEqual(gesuch.gesuchsteller1.extractFullName());
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_2))
-                .toEqual(gesuch.gesuchsteller2.extractFullName());
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.BEIDE_GESUCHSTELLER)).toEqual(
-                'beide Gesuchstellenden');
-        });
-        it('should return empty string for empty data', () => {
-            const gesuch = new TSGesuch();
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_1)).toEqual('');
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.GESUCHSTELLER_2)).toEqual('');
-            expect(umzugController.getNameFromBetroffene(TSBetroffene.BEIDE_GESUCHSTELLER)).toEqual(
-                'beide Gesuchstellenden');
-        });
-    });
-
-    describe('getBetroffenenList', () => {
-        beforeEach(() => {
-            umzugController = new UmzugViewController(gesuchModelManager, berechnungsManager,
-                wizardStepManager, errorService, $translate, dialog, $q, $rootScope, $timeout);
-        });
-        it('should return a list with only GS1', () => {
-            const gesuch = new TSGesuch();
-            gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-
-            const betroffenenList = umzugController.getBetroffenenList();
-            expect(betroffenenList.length).toBe(1);
-            expect(betroffenenList[0]).toBe(TSBetroffene.GESUCHSTELLER_1);
-        });
-        it('should return a list with GS1, GS2 und BEIDE', () => {
-            const gesuch = new TSGesuch();
-            gesuch.gesuchsteller1 = TestDataUtil.createGesuchsteller('Rodolfo', 'Langostino');
-            gesuch.gesuchsteller2 = TestDataUtil.createGesuchsteller('Ana', 'Karenina');
-            spyOn(gesuchModelManager, 'getGesuch').and.returnValue(gesuch);
-
-            const betroffenenList = umzugController.getBetroffenenList();
-            expect(betroffenenList.length).toBe(3);
-            expect(betroffenenList[0]).toBe(TSBetroffene.GESUCHSTELLER_1);
-            expect(betroffenenList[1]).toBe(TSBetroffene.GESUCHSTELLER_2);
-            expect(betroffenenList[2]).toBe(TSBetroffene.BEIDE_GESUCHSTELLER);
-        });
-    });
-
     describe('getAdressenListFromGS', () => {
         it('should have an empty AdressenList for gesuch=null', () => {
             spyOn(gesuchModelManager, 'getGesuch').and.returnValue(undefined);
