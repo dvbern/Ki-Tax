@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {IHttpPromise, IHttpService, ILogService, IPromise} from 'angular';
+import {IHttpService, ILogService, IPromise} from 'angular';
 import * as moment from 'moment';
 import GlobalCacheService from '../../../gesuch/service/globalCacheService';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
