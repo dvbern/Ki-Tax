@@ -79,7 +79,7 @@ public abstract class AbstractBGRechner {
 			MATH.multiplyNullSafe(stundenGemaessPensumUndAnteilMonat, verguenstigungProTag);
 
 		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
-		if (betreuungspensum != null && betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
+		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
 			anteilVerguenstigesPensumAmBetreuungspensum =
 				MATH.divide(verfuegungZeitabschnitt.getBgPensum(), betreuungspensum);
 		}

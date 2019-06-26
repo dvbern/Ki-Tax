@@ -61,7 +61,7 @@ import static ch.dvbern.ebegu.rules.EbeguRuleTestsHelper.calculateInklAllgemeine
 public class MassgebendesEinkommenFristenTest {
 
 	private static final LocalDate EINREICHUNG_RECHTZEITIG = TestDataUtil.START_PERIODE.minusMonths(3);
-	private static final LocalDate EINREICHUNG_ZU_SPAET = TestDataUtil.ENDE_PERIODE.minusMonths(3);
+	private static final LocalDate EINREICHUNG_ZU_SPAET = TestDataUtil.START_PERIODE.plusMonths(1);
 	private static final FinanzielleSituationRechner RECHNER = new FinanzielleSituationRechner();
 
 	/**
@@ -131,14 +131,14 @@ public class MassgebendesEinkommenFristenTest {
 
 	/**
 	 * Zusätzliches Kind: Massgebendes Einkommen sinkt wegen höherem Familienabzug
-	 * Geburt Kind: 16.11.2017
-	 * Mutation eingereicht: 30.04.2018 (zu spät)
+	 * Geburt Kind: 16.01.2017
+	 * Mutation eingereicht: 30.09.2017 (zu spät)
 	 * => Anpassung Familiengrösse und Massgebendes Einkommen per 01.05.2018 (Folgemonat Einreichung)
 	 */
 	@Test
 	public void mutationGeburtNeuesKindZuSpaet() {
 		Betreuung mutationBetreuung = createMutationAlleine(EINREICHUNG_ZU_SPAET);
-		addKind(mutationBetreuung.extractGesuch(), LocalDate.of(2017, Month.NOVEMBER, 16));
+		addKind(mutationBetreuung.extractGesuch(), LocalDate.of(2017, Month.JANUARY, 16));
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
@@ -146,14 +146,14 @@ public class MassgebendesEinkommenFristenTest {
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 50000, 50000);
 
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 3, 50000, 38600);
@@ -252,14 +252,14 @@ public class MassgebendesEinkommenFristenTest {
 
 	/**
 	 * Heirat, Partner hat kein Einkommen: Massgebendes Einkommen sinkt wegen höherem Familienabzug
-	 * Heirat: 16.11.2017
-	 * Mutation eingereicht: 30.04.2018 (zu spät)
+	 * Heirat: 16.04.2017
+	 * Mutation eingereicht:  30.09.2017 (zu spät)
 	 * => Anpassung Familiengrösse und Massgebendes Einkommen per 01.05.2018 (Folgemonat Meldung)
 	 */
 	@Test
 	public void mutationHeiratOhneZweiteinkommenZuSpaet() {
 		Betreuung mutationBetreuung =
-			createMutationHeirat(EINREICHUNG_ZU_SPAET, LocalDate.of(2017, Month.NOVEMBER, 16), 0);
+			createMutationHeirat(EINREICHUNG_ZU_SPAET, LocalDate.of(2017, Month.APRIL, 16), 0);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(mutationBetreuung);
 		Assert.assertEquals(12, result.size());
@@ -267,14 +267,14 @@ public class MassgebendesEinkommenFristenTest {
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 50000, 50000);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 50000, 50000);
 
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 3, 50000, 38600);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 3, 50000, 38600);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 3, 50000, 38600);
@@ -363,7 +363,7 @@ public class MassgebendesEinkommenFristenTest {
 
 	/**
 	 * Mutation, tieferes Einkommen für ganze Periode
-	 * Mutation eingereicht: 30.04.2018 (zu spät)
+	 * Mutation eingereicht:  30.09.2017 (zu spät)
 	 * => Anpassung Massgebendes Einkommen gilt per 01.05.2018 (Folgemonat Meldung)
 	 */
 	@Test
@@ -376,14 +376,15 @@ public class MassgebendesEinkommenFristenTest {
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 50000, 50000, true);
 
+		// Anpassung FinSit zu spaet eingereicht: Gilt ab Oktober
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 30000, 30000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 30000, 30000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 30000, 30000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 30000, 30000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 30000, 30000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 30000, 30000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 30000, 30000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 30000, 30000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 30000, 30000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 30000, 30000, true);
@@ -409,19 +410,21 @@ public class MassgebendesEinkommenFristenTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 20000, 20000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 20000, 20000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 20000, 20000, true);
+
+		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 50000, 50000, true);
 	}
 
 	/**
 	 * Erstgesuch mit EKV
 	 * EKV ab 16.11.2017
-	 * Eingereicht: 30.04.2018 (zu spät)
+	 * Eingereicht:  30.09.2017 (zu spät)
 	 * => Gesamtanspruch beginnt per 01.05.2018 (Folgemonat Meldung), das Einkommen wird aber schon ab Ereignisdatum
 	 * (15.12.). neu berechnet
 	 */
@@ -436,17 +439,21 @@ public class MassgebendesEinkommenFristenTest {
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 20000, 20000, false);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 20000, 20000, false);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 20000, 20000, false);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 20000, 20000, false);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 20000, 20000, false);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 20000, 20000, false);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 20000, 20000, false);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 20000, 20000, false);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 20000, 20000, false);
 
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 20000, 20000, true);
+		// EKV 1 zu spät eingereicht: Gilt ab Oktober
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 20000, 20000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 20000, 20000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 20000, 20000, true);
+
+		// Keine EKV 2 erfasst: Ab Januar gilt wieder das Einkommen des Basisjahres
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 50000, 50000, true);
+
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 50000, 50000, true);
 	}
 
 	/**
@@ -468,19 +475,21 @@ public class MassgebendesEinkommenFristenTest {
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 20000, 20000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 20000, 20000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 20000, 20000, true);
+
+		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 50000, 50000, true);
 	}
 
 	/**
 	 * Mutation mit EKV
 	 * EKV ab 16.11.2017
-	 * Eingereicht: 30.04.2018 (zu spät)
+	 * Eingereicht:  30.09.2017 (zu spät)
 	 * => Anpassung Massgebendes Einkommen gilt per 01.05.2018 (Folgemonat Meldung)
 	 */
 	@Test
@@ -493,17 +502,20 @@ public class MassgebendesEinkommenFristenTest {
 
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 2, 50000, 50000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 50000, 50000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 50000, 50000, true);
+
+		// EkV 1: Eingereicht im September, gilt ab Oktober
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 2, 20000, 20000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 2, 20000, 20000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 2, 20000, 20000, true);
+
+		// Keine EKV 2 -> ab Januar gilt wieder das Einkommen des Basisjahres
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 2, 50000, 50000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 2, 50000, 50000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 2, 50000, 50000, true);
 		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 2, 50000, 50000, true);
-
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 20000, 20000, true);
-		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 20000, 20000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 50000, 50000, true);
+		assertZeitabschnitt(result.get(i++), LocalDate.of(2018, Month.JULY, 1), 2, 50000, 50000, true);
 	}
 
 	/**
@@ -524,16 +536,18 @@ public class MassgebendesEinkommenFristenTest {
 		Assert.assertEquals(12, result.size());
 		int i = 0;
 
-		// EKV theoretisch gültig für den ganzen Zeitraum
+		// EKV 1
 		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.AUGUST, 1), 3, 60000, 2017);
 		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.SEPTEMBER, 1), 3, 60000, 2017);
 		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.OCTOBER, 1), 3, 60000, 2017);
 		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.NOVEMBER, 1), 3, 60000, 2017);
 		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2017, Month.DECEMBER, 1), 3, 60000, 2017);
-		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 60000, 2017);
-		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 3, 60000, 2017);
-		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 3, 60000, 2017);
-		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 3, 60000, 2017);
+
+		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.JANUARY, 1), 3, 100000, 2016);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.FEBRUARY, 1), 3, 100000, 2016);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.MARCH, 1), 3, 100000, 2016);
+		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.APRIL, 1), 3, 100000, 2016);
 		// Scheidung
 		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.MAY, 1), 2, 50000, 2016);
 		assertZeitabschnittMitJahr(result.get(i++), LocalDate.of(2018, Month.JUNE, 1), 2, 50000, 2016);
