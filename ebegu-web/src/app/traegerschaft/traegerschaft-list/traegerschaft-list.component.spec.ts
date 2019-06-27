@@ -36,7 +36,7 @@ describe('TraegerschaftListComponent', () => {
       const traegerschaftServiceSpy = jasmine.createSpyObj<TraegerschaftRS>(TraegerschaftRS.name,
           ['createTraegerschaft']);
       const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['getErrors']);
-      const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
+      const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles', 'isRole']);
       const dvDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
       const stateServiceSpy = jasmine.createSpyObj(StateService.name, ['go']);
       const i18nServiceSpy = jasmine
