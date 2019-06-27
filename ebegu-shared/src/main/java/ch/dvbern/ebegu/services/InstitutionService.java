@@ -58,11 +58,6 @@ public interface InstitutionService {
 	Institution setInstitutionInactive(@Nonnull String institutionId);
 
 	/**
-	 * Delete Institution on the Database.
-	 */
-	void deleteInstitution(@Nonnull String institutionId);
-
-	/**
 	 * @param traegerschaftId Der ID der Traegerschaft, fuer welche die Institutionen gesucht werden muessen
 	 * @return Liste mit allen Institutionen der gegebenen Traegerschaft
 	 */
@@ -113,4 +108,9 @@ public interface InstitutionService {
 	 * Updates the Flag stammdatenCheckRequired to the given value
 	 */
 	Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired);
+
+	/**
+	 * Removes the institution given by the id totally from the DB if this isn't linked to any other object
+	 */
+	void removeInstitution(@Nonnull String institutionId);
 }

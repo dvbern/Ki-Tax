@@ -66,6 +66,17 @@
                     </mat-cell>
                 </ng-container>
 
+                <!-- Column remove -->
+                <ng-container matColumnDef="remove" *ngIf="isDeleteAllowed()">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let institution">
+                        <dv-loading-button buttonClass="dv-btn-sm"
+                                           (buttonClick)="removeInstitution(institution)">
+                            <i class="fa fa-minus"></i>
+                        </dv-loading-button>
+                    </mat-cell>
+                </ng-container>
+
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
             </mat-table>
