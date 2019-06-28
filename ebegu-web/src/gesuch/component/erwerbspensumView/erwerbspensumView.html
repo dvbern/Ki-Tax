@@ -18,10 +18,11 @@
     <div class="row viewTitle">
         <div class="col-md-12">
             <h2 ng-bind="vm.gesuchsteller.extractFullName()"></h2>
-            <dv-bisher gs="vm.getModel().erwerbspensumGS"
-                       ja="vm.getModel().erwerbspensumJA"
+            <dv-bisher gs="vm.model.erwerbspensumGS"
+                       ja="vm.model.erwerbspensumJA"
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true">
+
             <hr class="header"/>
             <p class="inlineHint" data-translate="PFLICHTFELDER_HINT"></p>
         </div>
