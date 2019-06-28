@@ -147,6 +147,10 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return this.model.familiensituationJA;
     }
 
+    public getFamiliensituationGS(): TSFamiliensituation {
+        return this.model.familiensituationGS;
+    }
+
     public isStartKonkubinatVisible(): boolean {
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
     }
@@ -254,7 +258,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     }
 
     public gesuchstellerHasChangedZivilstand(): boolean {
-        return this.model.familiensituationGS && !!this.model.familiensituationGS.aenderungPer;
+        return this.getFamiliensituationGS() && !!this.getFamiliensituationGS().aenderungPer;
     }
 
 }
