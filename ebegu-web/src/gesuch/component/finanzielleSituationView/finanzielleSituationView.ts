@@ -176,7 +176,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return this.berechnungsManager.finanzielleSituationResultate;
     }
 
-    public getTextSelbstaendigKorrektur(): any {
+    public getTextSelbstaendigKorrektur(): string {
         const finSitGS = this.getModel().finanzielleSituationGS;
         if (!finSitGS || !finSitGS.isSelbstaendig()) {
             return this.$translate.instant('LABEL_KEINE_ANGABE');
