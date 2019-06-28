@@ -45,6 +45,7 @@ export class DvBisherComponentConfig implements IComponentOptions {
         specificBisherText: '<',
         blockExisted: '<',
         showIfBisherNone: '<',
+        showSpecificBisherTextIfBisherNone: '<',
     };
     public template = require('./dv-bisher.html');
     public controller = DvBisher;
@@ -61,6 +62,8 @@ export class DvBisher implements IController {
     public ja: any;
     // sollen die korrekturen des jugendamts angezeigt werden wenn im GS container kein wert ist
     public showIfBisherNone: boolean;
+    // Soll ein spezifischer Text angezeigt werden, wenn das JA einen Eintrag erfasst hat?
+    public showSpecificBisherTextIfBisherNone: boolean;
     public specificBisherText: string;
     public bisherText: Array<string>;
     public blockExisted: boolean;
@@ -76,6 +79,9 @@ export class DvBisher implements IController {
             // wenn nicht von aussen gesetzt auf true
             this.showIfBisherNone = true;
         }
+        if (EbeguUtil.isNullOrUndefined(this.showSpecificBisherTextIfBisherNone)) {
+            this.showSpecificBisherTextIfBisherNone = false;
+        }
     }
 
     public getBisher(): Array<string> {
@@ -83,7 +89,7 @@ export class DvBisher implements IController {
         if (this.specificBisherText) {
             this.bisherText = this.specificBisherText ? this.specificBisherText.split('\n') : undefined;
             // War es eine Loeschung, oder ein Hinzufuegen?
-            if (this.hasBisher()) {
+            if (this.hasBisher() || this.showSpecificBisherTextIfBisherNone) {
                 return this.bisherText; // neue eingabe als ein einzelner block
             }
             return [this.$translate.instant('LABEL_KEINE_ANGABE')];  // vorher war keine angabe da
@@ -125,6 +131,10 @@ export class DvBisher implements IController {
         }
         if (Array.isArray(gs)) {
             return JSON.stringify(gs) === JSON.stringify(ja);
+        }
+        if (gs instanceof TSAbstractMutableEntity) {
+            return (EbeguUtil.isNotNullOrUndefined(gs) && EbeguUtil.isNotNullOrUndefined(ja))
+                || (EbeguUtil.isNullOrUndefined(gs) && EbeguUtil.isNullOrUndefined(ja));
         }
         return gs === ja || (this.isEmpty(gs) && this.isEmpty(ja)); // either they are equal or both are a form of empty
     }

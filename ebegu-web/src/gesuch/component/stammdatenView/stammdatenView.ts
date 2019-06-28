@@ -19,6 +19,7 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
+import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGesuchEvent} from '../../../models/enums/TSGesuchEvent';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -114,7 +115,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     private initViewmodel(): void {
         this.gesuchModelManager.initStammdaten();
         this.model = angular.copy(this.gesuchModelManager.getStammdatenToWorkWith());
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.GESUCHSTELLER,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.showKorrespondadr = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseJA);
         this.showKorrespondadrGS = !!(this.model.korrespondenzAdresse && this.model.korrespondenzAdresse.adresseGS);
@@ -205,7 +208,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
      * Aktualisiert alle Steps die Abhaengigkeiten mit dem Status von GS haben.
      */
     private updateGSDependentWizardSteps(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK); // GESUCHSTELLER
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.GESUCHSTELLER,
+            TSWizardStepStatus.OK);
         if (this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION, TSWizardStepStatus.NOK)) {
             this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
                 TSWizardStepStatus.OK);
@@ -347,5 +352,17 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public showRechnungsadresseCheckbox(): boolean {
         // todo this should be shown for GS1 when Tagesschulen are active
         return false;
+    }
+
+    public isMailRequired(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        if (!gesuch) {
+            return true;
+        }
+        return this.gesuchstellerNumber === 1 && gesuch.eingangsart === TSEingangsart.ONLINE;
+    }
+
+    public getBisherTextDurchGemeindeErfasst(): string {
+        return this.$translate.instant('DURCH_GEMEINDE_ERFASST');
     }
 }
