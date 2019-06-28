@@ -23,8 +23,8 @@
             <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR"
                   translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahrToWorkWith(), gesuchsteller:vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
             </h2>
-            <dv-bisher gs="vm.getModel().getEkvToWorkWith_GS()"
-                       ja="vm.getModel().getEkvToWorkWith()"
+            <dv-bisher gs="vm.model.getEkvToWorkWith_GS()"
+                       ja="vm.model.getEkvToWorkWith()"
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
@@ -51,7 +51,7 @@
                                 <dv-bisher
                                     gs="vm.model.getEkvToWorkWith_GS().nettolohn"
                                     ja="vm.model.getEkvToWorkWith().nettolohn"
-                                    show-if-bisher-none="vm.getModel().getEkvToWorkWith_GS !== undefined"></dv-bisher>
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
                                 <dv-error-messages input-id="nettolohn"
                                                    for="vm.form.nettolohn.$error"
                                                    class="error"></dv-error-messages>
@@ -77,7 +77,7 @@
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().familienzulage"
                                         ja="vm.model.getEkvToWorkWith().familienzulage"
-                                        show-if-bisher-none="vm.getModel().getEkvToWorkWith_GS !== undefined"></dv-bisher>
+                                        show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
                                     <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
@@ -102,7 +102,7 @@
                                 <dv-bisher
                                     gs="vm.model.getEkvToWorkWith_GS().ersatzeinkommen"
                                     ja="vm.model.getEkvToWorkWith().ersatzeinkommen"
-                                    show-if-bisher-none="vm.getModel().getEkvToWorkWith_GS !== undefined"></dv-bisher>
+                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
                                 <dv-error-messages input-id="ersatzeinkommen" for="vm.form.ersatzeinkommen.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -127,7 +127,7 @@
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
                                         ja="vm.model.getEkvToWorkWith().erhalteneAlimente"
-                                        show-if-bisher-none="vm.getModel().getEkvToWorkWith_GS !== undefined"></dv-bisher>
+                                        show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
                                     <dv-error-messages input-id="erhalteneAlimente"
                                                        for="vm.form.erhalteneAlimente.$error"
                                                        class="error"></dv-error-messages>
@@ -155,7 +155,8 @@
                                 <dv-bisher gs="vm.showSelbstaendigGS" class="dv-bisher-break"
                                            ja="vm.showSelbstaendig"
                                            specific-bisher-text="vm.getTextSelbstaendigKorrektur()"
-                                           show-if-bisher-none="vm.getModel().getEkvToWorkWith_GS !== undefined"></dv-bisher>
+                                           show-specific-bisher-text-if-bisher-none="false"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
                             </div>
                         </div>
                     </div>
@@ -308,7 +309,7 @@
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"
                                         ja="vm.model.getEkvToWorkWith().geleisteteAlimente"
-                                        show-if-bisher-none="vm.getModel().getEkvToWorkWith_GS !== undefined"></dv-bisher>
+                                        show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
                                     <dv-error-messages input-id="geleisteteAlimente"
                                                        for="vm.form.geleisteteAlimente.$error"
                                                        class="error"></dv-error-messages>
