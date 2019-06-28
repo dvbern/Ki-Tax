@@ -368,4 +368,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
         return this.gesuchstellerNumber === 1 && gesuch.eingangsart === TSEingangsart.ONLINE;
     }
+
+    public getBisherTextDurchGemeindeErfasst(): string {
+        return this.$translate.instant('DURCH_GEMEINDE_ERFASST');
+    }
 }
