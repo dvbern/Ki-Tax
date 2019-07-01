@@ -58,8 +58,17 @@ public class JaxTraegerschaft extends JaxAbstractDTO {
 		this.active = active;
 	}
 
+	public int getInstitutionCount() {
+		return institutionCount;
+	}
+
 	public void setInstitutionCount(int institutionCount) {
 		this.institutionCount = institutionCount;
+	}
+
+	@Nullable
+	public String getInstitutionNames() {
+		return institutionNames;
 	}
 
 	public void setInstitutionNames(@Nullable String institutionNames) {
