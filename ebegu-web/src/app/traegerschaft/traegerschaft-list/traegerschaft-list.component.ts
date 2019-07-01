@@ -139,7 +139,7 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     private setDisplayedColumns(): void {
         this.displayedColumns = this.isDeleteAllowed()
-            ? ['name', 'detail', 'remove']
-            : ['name', 'detail'];
+            ? ['name', 'institutionCount', 'detail', 'remove']
+            : ['name', 'institutionCount', 'detail'];
     }
 }
