@@ -64,8 +64,7 @@ public class WohnsitzAbschnittRuleTest {
 		verfuegungsZeitabschnitte = wohnsitzRule.normalizeZeitabschnitte(verfuegungsZeitabschnitte, gesuch.getGesuchsperiode());
 
 		Assert.assertNotNull(verfuegungsZeitabschnitte);
-		// Es werden 3 Abschnitte erwartet weil sie danach noch gemerged werden muessen
-		Assert.assertEquals(3, verfuegungsZeitabschnitte.size());
+		Assert.assertEquals(2, verfuegungsZeitabschnitte.size());
 
 		VerfuegungZeitabschnitt abschnitt1 = verfuegungsZeitabschnitte.get(0);
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), abschnitt1.getGueltigkeit().getGueltigAb());
@@ -76,11 +75,6 @@ public class WohnsitzAbschnittRuleTest {
 		Assert.assertEquals(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.FEBRUARY, 1), abschnitt2.getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), abschnitt2.getGueltigkeit().getGueltigBis());
 		Assert.assertTrue(abschnitt2.isWohnsitzNichtInGemeindeGS1());
-
-		VerfuegungZeitabschnitt abschnitt3 = verfuegungsZeitabschnitte.get(2);
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), abschnitt3.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), abschnitt3.getGueltigkeit().getGueltigBis());
-		Assert.assertTrue(abschnitt3.isWohnsitzNichtInGemeindeGS1());
 
 		final List<VerfuegungZeitabschnitt> mergedZerfuegungZeitabschnitte = wohnsitzRule.mergeZeitabschnitte(verfuegungsZeitabschnitte);
 
