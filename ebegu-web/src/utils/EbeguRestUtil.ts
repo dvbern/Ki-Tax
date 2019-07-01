@@ -1050,6 +1050,8 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(traegerschaftTS, traegerschaftFromServer);
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
+            traegerschaftTS.institutionCount = traegerschaftFromServer.institutionCount;
+            traegerschaftTS.institutionNames = traegerschaftFromServer.institutionNames;
             return traegerschaftTS;
         }
         return undefined;

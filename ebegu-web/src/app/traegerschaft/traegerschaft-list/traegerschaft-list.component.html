@@ -45,6 +45,17 @@
                     </mat-cell>
                 </ng-container>
 
+                <!-- Institution Count -->
+                <ng-container matColumnDef="institutionCount">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'INSTITUTIONEN' | translate}}
+                    </mat-header-cell>
+                    <mat-cell class="mat-cell-clickable" *matCellDef="let traegerschaft"
+                              (click)="openTraegerschaft(traegerschaft)">
+                        {{traegerschaft.institutionCount}}
+                    </mat-cell>
+                </ng-container>
+
                 <!-- Column detail -->
                 <ng-container matColumnDef="detail">
                     <mat-header-cell *matHeaderCellDef></mat-header-cell>

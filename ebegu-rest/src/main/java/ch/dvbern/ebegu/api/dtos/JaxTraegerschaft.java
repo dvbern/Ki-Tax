@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,6 +37,10 @@ public class JaxTraegerschaft extends JaxAbstractDTO {
 	@NotNull
 	private Boolean active = true;
 
+	private int institutionCount = 0;
+
+	@Nullable
+	private String institutionNames = "";
 
 	public String getName() {
 		return name;
@@ -51,5 +56,13 @@ public class JaxTraegerschaft extends JaxAbstractDTO {
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	public void setInstitutionCount(int institutionCount) {
+		this.institutionCount = institutionCount;
+	}
+
+	public void setInstitutionNames(@Nullable String institutionNames) {
+		this.institutionNames = institutionNames;
 	}
 }
