@@ -61,6 +61,7 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldInstitutionen.oeffnungszeiten, dataRow.getOeffnungszeiten());
 			excelRowGroup.addValue(MergeFieldInstitutionen.isBaby, dataRow.getBaby());
 			excelRowGroup.addValue(MergeFieldInstitutionen.isVorschulkind, dataRow.getVorschulkind());
+			excelRowGroup.addValue(MergeFieldInstitutionen.isKindergarten, dataRow.getKindergarten());
 			excelRowGroup.addValue(MergeFieldInstitutionen.isSchulkind, dataRow.getSchulkind());
 			excelRowGroup.addValue(MergeFieldInstitutionen.subventioniert, dataRow.getSubventioniert());
 			excelRowGroup.addValue(MergeFieldInstitutionen.kapazitaet, dataRow.getKapazitaet());
@@ -98,6 +99,9 @@ public class InstitutionenExcelConverter implements ExcelConverter {
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.vorschulkindTitle,
 			ServerMessageUtil.getMessage("Reports_vorschulkindTitle", locale));
+		mergerDTO.addValue(
+			MergeFieldInstitutionen.kindergartenTitle,
+			ServerMessageUtil.getMessage("Reports_kindergartenTitle", locale));
 		mergerDTO.addValue(
 			MergeFieldInstitutionen.schulkindTitle,
 			ServerMessageUtil.getMessage("Reports_schulkindTitle", locale));

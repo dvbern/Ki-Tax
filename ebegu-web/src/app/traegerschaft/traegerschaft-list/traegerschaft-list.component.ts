@@ -21,6 +21,7 @@ import {MatDialog, MatDialogConfig, MatSort, MatTableDataSource} from '@angular/
 import {StateService} from '@uirouter/core';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -55,8 +56,17 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     }
 
     public ngOnInit(): void {
+        this.setDisplayedColumns();
         this.dataSource = new MatTableDataSource(this.traegerschaften);
         this.sortTable();
+    }
+
+    public isDeleteAllowed(): boolean {
+        return this.isSuperAdmin();
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     /**
@@ -125,5 +135,11 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     public doFilter(value: string): void {
         this.dataSource.filter = value.trim().toLocaleLowerCase();
+    }
+
+    private setDisplayedColumns(): void {
+        this.displayedColumns = this.isDeleteAllowed()
+            ? ['name', 'detail', 'remove']
+            : ['name', 'detail'];
     }
 }

@@ -1178,14 +1178,6 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return resultList.get(0);
 	}
 
-	@Nonnull
-	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
-	public Optional<Berechtigung> findBerechtigung(@Nonnull String id) {
-		requireNonNull(id, "id muss gesetzt sein");
-		return Optional.ofNullable(persistence.find(Berechtigung.class, id));
-	}
-
 	private void removeBerechtigung(@Nonnull Berechtigung berechtigung) {
 		authService.logoutAndDeleteAuthorisierteBenutzerForUser(berechtigung.getBenutzer().getUsername());
 		persistence.remove(berechtigung);

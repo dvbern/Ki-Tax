@@ -253,12 +253,6 @@ public interface BenutzerService {
 	int handleAbgelaufeneRollen(@Nonnull LocalDate stichtag);
 
 	/**
-	 * Suche die Berechtigung mit der uebergebenen Id
-	 */
-	@Nonnull
-	Optional<Berechtigung> findBerechtigung(@Nonnull String id);
-
-	/**
 	 * Schreibt eine Berechtigungs-History in die DB
 	 */
 	void saveBerechtigungHistory(@Nonnull Berechtigung berechtigung, boolean deleted);
@@ -289,4 +283,5 @@ public interface BenutzerService {
 	 * Erzeugt einen Einladungslink für einen Benutzer
 	 */
 	String createInvitationLink(@Nonnull Benutzer eingeladener, @Nonnull Einladung einladung);
+
 }

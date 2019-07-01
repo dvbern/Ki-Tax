@@ -43,7 +43,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.entities.Institution;
@@ -126,8 +125,7 @@ public class TraegerschaftResource {
 		return optional.map(traegerschaft -> converter.traegerschaftToJAX(traegerschaft)).orElse(null);
 	}
 
-	@ApiOperation("Loescht die Traegerschaft mit der uebergebenen id")
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	@ApiOperation("Loescht die Traegerschaft mit der uebergebenen id aus der DB. Die dazu gehoerenden Institutionen werden nicht geloescht")
 	@Nullable
 	@DELETE
 	@Path("/{traegerschaftId}")
@@ -138,12 +136,18 @@ public class TraegerschaftResource {
 
 		Objects.requireNonNull(traegerschaftJAXPId.getId());
 		final String traegerschaftId = converter.toEntityId(traegerschaftJAXPId);
+
 		Collection<Institution> allInstitutionen = institutionService
 			.getAllActiveInstitutionenFromTraegerschaft(traegerschaftId);
+
+		// set null Traegerschaft
 		for (Institution institution : allInstitutionen) {
-			institutionService.setInstitutionInactive(institution.getId());
+			institution.setTraegerschaft(null);
+			institutionService.updateInstitution(institution);
 		}
-		traegerschaftService.setInactive(traegerschaftId);
+
+		traegerschaftService.removeTraegerschaft(traegerschaftId);
+
 		return Response.ok().build();
 	}
 

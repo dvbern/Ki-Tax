@@ -115,24 +115,6 @@ describe('institutionStammdatenRS', () => {
             });
         });
 
-        describe('removeInstitutionStammdaten', () => {
-            it('should remove a InstitutionStammdaten', () => {
-                const httpOk = 200;
-                $httpBackend.expectDELETE(`${institutionStammdatenRS.serviceURL}/${encodeURIComponent(
-                    mockInstitutionStammdaten.id)}`)
-                    .respond(httpOk);
-
-                let deleteResult: any;
-                institutionStammdatenRS.removeInstitutionStammdaten(mockInstitutionStammdaten.id)
-                    .then(result => {
-                        deleteResult = result;
-                    });
-                $httpBackend.flush();
-                expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(httpOk);
-            });
-        });
-
         describe('getAllInstitutionStammdaten', () => {
             it('should return all InstitutionStammdaten', () => {
                 const institutionStammdatenRestArray = [mockInstitutionStammdatenRest, mockInstitutionStammdatenRest];
