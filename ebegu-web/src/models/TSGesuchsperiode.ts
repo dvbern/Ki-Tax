@@ -16,6 +16,7 @@
 import * as moment from 'moment';
 import {TSGesuchsperiodeStatus} from './enums/TSGesuchsperiodeStatus';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import TSEinstellung from './TSEinstellung';
 import {TSDateRange} from './types/TSDateRange';
 
 export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
@@ -23,6 +24,7 @@ export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
     private _status: TSGesuchsperiodeStatus;
     private _datumFreischaltungTagesschule: moment.Moment;
     private _datumErsterSchultag: moment.Moment;
+    private _einstellungenList: TSEinstellung[];
 
     public constructor(
         status?: TSGesuchsperiodeStatus,
@@ -58,6 +60,14 @@ export default class TSGesuchsperiode extends TSAbstractDateRangedEntity {
 
     public set datumErsterSchultag(value: moment.Moment) {
         this._datumErsterSchultag = value;
+    }
+
+    public get einstellungenList(): TSEinstellung[] {
+        return this._einstellungenList;
+    }
+
+    public set einstellungenList(value: TSEinstellung[]) {
+        this._einstellungenList = value;
     }
 
     public get gesuchsperiodeString(): string {

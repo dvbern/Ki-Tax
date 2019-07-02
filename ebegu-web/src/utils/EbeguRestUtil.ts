@@ -1966,6 +1966,7 @@ export default class EbeguRestUtil {
                 DateUtil.localDateToMoment(gesuchsperiodeFromServer.datumFreischaltungTagesschule);
             gesuchsperiodeTS.datumErsterSchultag =
                 DateUtil.localDateToMoment(gesuchsperiodeFromServer.datumErsterSchultag);
+            gesuchsperiodeTS.einstellungenList = this.parseEinstellungList(gesuchsperiodeFromServer.einstellungenList);
             return gesuchsperiodeTS;
         }
         return undefined;

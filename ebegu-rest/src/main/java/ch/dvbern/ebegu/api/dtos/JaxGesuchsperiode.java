@@ -16,6 +16,8 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -23,8 +25,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 /**
  * DTO fuer Gesuchsperiode
@@ -44,6 +46,8 @@ public class JaxGesuchsperiode extends JaxAbstractDateRangedDTO {
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
 	private LocalDate datumErsterSchultag;
+
+	private List<JaxEinstellung> einstellungenList = new ArrayList<>();
 
 
 	public GesuchsperiodeStatus getStatus() {
@@ -70,5 +74,13 @@ public class JaxGesuchsperiode extends JaxAbstractDateRangedDTO {
 
 	public void setDatumErsterSchultag(@Nullable LocalDate datumErsterSchultag) {
 		this.datumErsterSchultag = datumErsterSchultag;
+	}
+
+	public List<JaxEinstellung> getEinstellungenList() {
+		return einstellungenList;
+	}
+
+	public void setEinstellungenList(List<JaxEinstellung> einstellungenList) {
+		this.einstellungenList = einstellungenList;
 	}
 }

@@ -2886,6 +2886,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuchsperiode.setDatumFreischaltungTagesschule(persistedGesuchsperiode.getDatumFreischaltungTagesschule());
 		jaxGesuchsperiode.setDatumErsterSchultag(persistedGesuchsperiode.getDatumErsterSchultag());
 
+		Collection<Einstellung> allEinstellungenBySystem = einstellungService.getAllEinstellungenBySystem(persistedGesuchsperiode);
+		for (Einstellung einstellung : allEinstellungenBySystem) {
+			// Wir setzen hier ALLE Einstellungen, auch die Gemeindespezifischen: Hier wird jedoch der Mandant-Default zurückgegeben!
+			jaxGesuchsperiode.getEinstellungenList().add(einstellungToJAX(einstellung));
+		}
+
 		return jaxGesuchsperiode;
 	}
 
@@ -4167,7 +4173,7 @@ public class JaxBConverter extends AbstractConverter {
 		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
 			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
-			.filter(map -> map.getKey().name().startsWith("GEMEINDE_"))
+			.filter(map -> map.getKey().isGemeindeEinstellung())
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 		return konfiguration;

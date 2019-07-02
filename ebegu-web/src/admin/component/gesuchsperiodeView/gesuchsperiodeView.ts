@@ -65,7 +65,6 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     public form: IFormController;
     public gesuchsperiode: TSGesuchsperiode;
-    public einstellungenGesuchsperiode: TSEinstellung[];
 
     public initialStatus: TSGesuchsperiodeStatus;
     public datumFreischaltungTagesschule: moment.Moment;
@@ -111,15 +110,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
 
     private setSelectedGesuchsperiode(gesuchsperiode: any): void {
         this.gesuchsperiode = gesuchsperiode;
-        this.readEinstellungenByGesuchsperiode();
         this.datumFreischaltungTagesschule = undefined;
         this.datumFreischaltungMax = this.getDatumFreischaltungMax();
-    }
-
-    private readEinstellungenByGesuchsperiode(): void {
-        this.einstellungenRS.getAllEinstellungenBySystem(this.gesuchsperiode.id).then((response: TSEinstellung[]) => {
-            this.einstellungenGesuchsperiode = response;
-        });
     }
 
     public cancelGesuchsperiode(): void {
@@ -178,8 +170,6 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             this.gesuchsperiode = response;
             this.datumFreischaltungTagesschule = undefined;
             this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
-            // Die E-BEGU-Parameter für die neue Periode lesen bzw. erstellen, wenn noch nicht vorhanden
-            this.readEinstellungenByGesuchsperiode();
             this.gesuchsperiodeRS.updateActiveGesuchsperiodenList(); // reset gesuchperioden in manager
             this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();
             this.initialStatus = this.gesuchsperiode.status;
@@ -207,7 +197,7 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
     }
 
     public saveParameterByGesuchsperiode(): void {
-        this.einstellungenGesuchsperiode.forEach(param => this.einstellungenRS.saveEinstellung(param));
+        this.gesuchsperiode.einstellungenList.forEach(param => this.einstellungenRS.saveEinstellung(param));
         this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN).removeAll();
         this.gesuchsperiodeRS.updateActiveGesuchsperiodenList();
         this.gesuchsperiodeRS.updateNichtAbgeschlosseneGesuchsperiodenList();

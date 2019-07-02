@@ -709,6 +709,8 @@
     "FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION": "Maximales Pensum für Fachstelle sprachliche Integration",
     "FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION": "Minimales Pensum für Fachstelle soziale Integration",
     "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "Minimales Pensum für Fachstelle sprachliche Integration",
+    "TAGESSCHULE_ENABLED_FOR_MANDANT": "Tagesschule aktiviert",
+    "TAGESSCHULE_ENABLED_FOR_GEMEINDE": "Tagesschule aktiviert für Gemeinde",
     "PLATZBESTAETIGUNG": "Platzbestätigung",
     "PLATZBESTAETIGUNG_MUTATION": "Platz mutieren",
     "QUICKSEARCH_ALL_RESULTS": "Alle Resultate (bis zu {{totalNum}} weitere)",
