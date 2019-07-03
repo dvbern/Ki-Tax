@@ -112,13 +112,22 @@
                         </div>
                     </ng-template>
                 </div>
+                <div class="row">
+                    <!-- Betreuungsgutscheine anbieten ab -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>BEGU_START</h3>
+                            <p>{{beguStartStr}}</p>
+                        </div>
+
+                    </div>
+                </div>
             </fieldset>
 
             <fieldset>
                 <dv-gemeinde-konfiguration
                     [konfigurationsListe]="stammdaten.konfigurationsListe"
-                    [gemeindeStatus]="stammdaten.gemeinde.status"
-                    [beguStartDate]="stammdaten.gemeinde.betreuungsgutscheineStartdatum">
+                    [gemeindeStatus]="stammdaten.gemeinde.status">
                 </dv-gemeinde-konfiguration>
             </fieldset>
 
