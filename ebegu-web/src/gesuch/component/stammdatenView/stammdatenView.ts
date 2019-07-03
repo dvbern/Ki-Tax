@@ -240,6 +240,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 && this.model.vorgaengerId !== undefined));
     }
 
+    /**
+     * Die Wohnadresse, die Rechungsadresse, sowie das Umzugsflag werden nur für GS 1 angezeigt
+     */
+    public showWohnadresse(): boolean {
+        return this.gesuchstellerNumber === 1;
+    }
+
     public isThereAnyUmzug(): boolean {
         return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().isThereAnyUmzug();
     }

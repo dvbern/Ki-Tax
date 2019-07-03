@@ -147,6 +147,10 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return this.model.familiensituationJA;
     }
 
+    public getFamiliensituationGS(): TSFamiliensituation {
+        return this.model.familiensituationGS;
+    }
+
     public isStartKonkubinatVisible(): boolean {
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
     }
@@ -183,8 +187,8 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
      * in a Mutation the GS2 is new and will be removed
      */
     private isConfirmationRequired(): boolean {
-        return (!this.isMutation() && this.checkChanged2To1GS()) ||
-            (this.isMutation() && this.checkChanged2To1GSMutation());
+        return !this.isKorrekturModusJugendamt() && ((!this.isMutation() && this.checkChanged2To1GS()) ||
+            (this.isMutation() && this.checkChanged2To1GSMutation()));
     }
 
     private checkChanged2To1GS(): boolean {
@@ -218,8 +222,8 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
         return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer);
     }
 
-    public isEnabled(): boolean {
-        return this.isMutationAndDateSet() && !this.isGesuchReadonly() && !this.isKorrekturModusJugendamt();
+    public isFamiliensituationEnabled(): boolean {
+        return this.isMutationAndDateSet() && !this.isGesuchReadonly();
     }
 
     public isStartKonkubinatDisabled(): boolean {
@@ -254,7 +258,7 @@ export class FamiliensituationViewController extends AbstractGesuchViewControlle
     }
 
     public gesuchstellerHasChangedZivilstand(): boolean {
-        return this.model.familiensituationGS && !!this.model.familiensituationGS.aenderungPer;
+        return this.getFamiliensituationGS() && !!this.getFamiliensituationGS().aenderungPer;
     }
 
 }

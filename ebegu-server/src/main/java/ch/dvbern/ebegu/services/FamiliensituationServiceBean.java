@@ -28,7 +28,6 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -149,14 +148,14 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	/**
 	 * Wenn die neue Familiensituation nur 1GS hat und der zweite GS schon existiert, wird dieser
 	 * und seine Daten endgueltig geloescht. Dies gilt aber nur fuer ERSTGESUCH. Bei Mutationen wird
-	 * der 2GS nie geloescht
+	 * der 2GS nie geloescht. Ebenfalls nicht geloescht wird im KorrekturmodusGemeinde
 	 */
 	private boolean isNeededToRemoveGesuchsteller2(Gesuch gesuch, Familiensituation newFamiliensituation,
 		Familiensituation familiensituationErstgesuch) {
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		return (!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
+		return !EbeguUtil.isKorrekturmodusGemeinde(gesuch) && ((!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
 			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))
-			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation, familiensituationErstgesuch));
+			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation, familiensituationErstgesuch)));
 	}
 
 	private boolean isChanged1To2Reverted(Gesuch gesuch, Familiensituation newFamiliensituation,

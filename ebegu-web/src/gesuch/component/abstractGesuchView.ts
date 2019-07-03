@@ -152,4 +152,12 @@ export default class AbstractGesuchViewController<T> implements IController {
             EbeguUtil.selectFirst();
         }, delay);
     }
+
+    public isNullOrUndefined(value: any): boolean {
+        return EbeguUtil.isNullOrUndefined(value);
+    }
+
+    public isNotNullOrUndefined(value: any): boolean {
+        return EbeguUtil.isNotNullOrUndefined(value);
+    }
 }

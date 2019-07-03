@@ -22,6 +22,10 @@
             <span data-translate="FINANZIELLE_SITUATION"
                   translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr(), gesuchsteller: vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
             </h2>
+            <dv-bisher gs="vm.getModel().finanzielleSituationGS"
+                       ja="vm.getModel().finanzielleSituationJA"
+                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
+                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
         </div>
     </div>
@@ -99,7 +103,8 @@
                                                class="input-element">
                                 </dv-valueinput>
                                 <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettolohn"
-                                           ja="vm.getModel().finanzielleSituationJA.nettolohn"></dv-bisher>
+                                           ja="vm.getModel().finanzielleSituationJA.nettolohn"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
                                 <dv-error-messages input-id="nettolohn"
                                                    for="vm.form.nettolohn.$error"
                                                    class="error"></dv-error-messages>
@@ -122,7 +127,8 @@
                                                    class="input-element">
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getModel().finanzielleSituationGS.familienzulage"
-                                               ja="vm.getModel().finanzielleSituationJA.familienzulage"></dv-bisher>
+                                               ja="vm.getModel().finanzielleSituationJA.familienzulage"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
                                     <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
@@ -144,7 +150,8 @@
                                                class="input-element">
                                 </dv-valueinput>
                                 <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommen"
-                                           ja="vm.getModel().finanzielleSituationJA.ersatzeinkommen"></dv-bisher>
+                                           ja="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
                                 <dv-error-messages input-id="ersatzeinkommen" for="vm.form.ersatzeinkommen.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -166,7 +173,8 @@
                                                    class="input-element">
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getModel().finanzielleSituationGS.erhalteneAlimente"
-                                               ja="vm.getModel().finanzielleSituationJA.erhalteneAlimente"></dv-bisher>
+                                               ja="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
                                     <dv-error-messages input-id="erhalteneAlimente" for="vm.form.erhalteneAlimente.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
@@ -190,7 +198,9 @@
                                             text="'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
                                 <dv-bisher gs="vm.showSelbstaendigGS" class="dv-bisher-break"
                                            ja="vm.showSelbstaendig"
-                                           specific-bisher-text="vm.getTextSelbstaendigKorrektur()"></dv-bisher>
+                                           specific-bisher-text="vm.getTextSelbstaendigKorrektur()"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"
+                                           show-specific-bisher-text-if-bisher-none="false"></dv-bisher>
                             </div>
                         </div>
                     </div>
@@ -340,7 +350,8 @@
                                                    class="input-element">
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getModel().finanzielleSituationGS.geleisteteAlimente"
-                                               ja="vm.getModel().finanzielleSituationJA.geleisteteAlimente"></dv-bisher>
+                                               ja="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
                                     <dv-error-messages input-id="geleisteteAlimente" for="vm.form.geleisteteAlimente.$error"
                                                        class="error"></dv-error-messages>
                                 </div>

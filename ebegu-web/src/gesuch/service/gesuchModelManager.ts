@@ -222,9 +222,12 @@ export default class GesuchModelManager {
      * benoetigt, da bei Mutationen darf der 2GS nicht geloescht werden
      */
     public isGesuchsteller2Required(): boolean {
+        // Der 2. Gesuchsteller ist auch REQIERED, wenn die Familiensituation von der Gemeinde im Korrekturmodus geaendert wurde
+        const gs2VorhandenNichtLoeschen = this.isKorrekturModusJugendamt() &&  !!this.gesuch.gesuchsteller2;
         if (this.gesuch && this.getFamiliensituation() && this.getFamiliensituation().familienstatus) {
             return this.getFamiliensituation().hasSecondGesuchsteller(this.getGesuchsperiode().gueltigkeit.gueltigBis)
-                || (this.gesuch.isMutation() && !!this.gesuch.gesuchsteller2);
+                || (this.gesuch.isMutation() && !!this.gesuch.gesuchsteller2)
+                || gs2VorhandenNichtLoeschen;
         }
 
         return false;
@@ -615,7 +618,10 @@ export default class GesuchModelManager {
             gesuchsteller = new TSGesuchsteller();
         }
         this.setStammdatenToWorkWith(new TSGesuchstellerContainer(gesuchsteller));
-        this.getStammdatenToWorkWith().adressen = this.initWohnAdresse();
+        // Nur GS 1 muss die Wohnadresse angeben!
+        if (this.gesuchstellerNumber === 1) {
+            this.getStammdatenToWorkWith().adressen = this.initWohnAdresse();
+        }
     }
 
     private initEinkommensverschlechterungInfo(): void {
