@@ -37,10 +37,9 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FinanzielleSituationRechner;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.Iterables;
@@ -152,14 +151,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			// Massgebendes Einkommen
 			createPageMassgebendesEinkommen(document);
 		};
-	}
-
-	private boolean isKorrekturmodusGemeinde() {
-		if (Eingangsart.ONLINE == gesuch.getEingangsart() &&
-			AntragStatus.getAllFreigegebeneStatus().contains(gesuch.getStatus())) {
-			return true;
-		}
-		return false;
 	}
 
 	private void createPageBasisJahr(
@@ -467,7 +458,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			new FinanzielleSituationTable(
 				getPageConfiguration(),
 				hasSecondGesuchsteller,
-				isKorrekturmodusGemeinde(),
+				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
 				false);
 		tableEinkommen.addRow(einkommenTitle);
 		tableEinkommen.addRow(nettolohn);
@@ -551,7 +542,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			new FinanzielleSituationTable(
 				getPageConfiguration(),
 				hasSecondGesuchsteller,
-				isKorrekturmodusGemeinde(),
+				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
 				false);
 		table.addRow(vermoegenTitle);
 		table.addRow(bruttovermoegen);
@@ -596,7 +587,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 			new FinanzielleSituationTable(
 				getPageConfiguration(),
 				hasSecondGesuchsteller,
-				isKorrekturmodusGemeinde(),
+				EbeguUtil.isKorrekturmodusGemeinde(gesuch),
 				false);
 		table.addRow(abzuegeTitle);
 		table.addRow(unterhaltsbeitraege);

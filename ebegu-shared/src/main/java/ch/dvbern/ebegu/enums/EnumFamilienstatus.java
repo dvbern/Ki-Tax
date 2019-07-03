@@ -20,8 +20,8 @@ package ch.dvbern.ebegu.enums;
  */
 public enum EnumFamilienstatus {
 
-	ALLEINERZIEHEND,
 	VERHEIRATET,
 	KONKUBINAT,
 	KONKUBINAT_KEIN_KIND,
+	ALLEINERZIEHEND,
 }

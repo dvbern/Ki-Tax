@@ -182,7 +182,9 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public doFilter = (value: string) => {
-        this.dataSource.filter = value.trim().toLocaleLowerCase();
+        if (this.dataSource) {
+            this.dataSource.filter = value.trim().toLocaleLowerCase();
+        }
     }
 
     public translateStatus(institution: TSInstitution): string {
