@@ -133,6 +133,6 @@ export class PosteingangViewController implements IController {
     }
 
     public showBgOrTS(): boolean {
-        return this.authServiceRS.getPrincipalMandant().isTagesschuleEnabled();
+        return this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
     }
 }

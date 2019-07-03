@@ -30,10 +30,10 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
     let angebote: Array<TSBetreuungsangebotTyp> = [];
     angebote.push(TSBetreuungsangebotTyp.KITA);
     angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
-    if (mandant.isTagesschuleEnabled() && hasTagesschulanmeldungen) {
+    if (mandant.tagesschuleEnabled && hasTagesschulanmeldungen) {
         angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
-    if (mandant.isTagesschuleEnabled()) {
+    if (mandant.tagesschuleEnabled) {
         angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
     }
     return angebote;

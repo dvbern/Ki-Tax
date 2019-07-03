@@ -260,6 +260,6 @@ export class DVAntragListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.getPrincipalMandant().isTagesschuleEnabled();
+        return this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
     }
 }

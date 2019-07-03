@@ -18,6 +18,7 @@ import TSFinanzielleSituationResultateDTO from '../models/dto/TSFinanzielleSitua
 import TSQuickSearchResult from '../models/dto/TSQuickSearchResult';
 import TSSearchResultEntry from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
+import {TSEinstellungKey} from '../models/enums/TSEinstellungKey';
 import TSAbstractAntragEntity from '../models/TSAbstractAntragEntity';
 import {TSAbstractDateRangedEntity} from '../models/TSAbstractDateRangedEntity';
 import {TSAbstractDecimalPensumEntity} from '../models/TSAbstractDecimalPensumEntity';
@@ -1044,6 +1045,18 @@ export default class EbeguRestUtil {
             mandantTS.name = mandantFromServer.name;
             mandantTS.konfigurationsListe =
                 this.parseMandantKonfigurationList(mandantFromServer.konfigurationsListe);
+			// Die Konfigurationen direkt auf den Mandanten schreiben
+            mandantTS.konfigurationsListe.forEach((config: TSMandantKonfiguration) => {
+                config.konfigurationen.forEach(property => {
+                    if (TSEinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT === property.key) {
+                        // Sobald es in irgendeiner Gesuchsperiode aktiv ist, gilt es für alle!
+                        if (property.value === 'true') {
+                            mandantTS.tagesschuleEnabled = true;
+                            return;
+                        }
+                    }
+                });
+            });
             return mandantTS;
         }
         return undefined;

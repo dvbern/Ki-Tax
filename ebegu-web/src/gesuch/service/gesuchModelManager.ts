@@ -1581,6 +1581,6 @@ export default class GesuchModelManager {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.getPrincipalMandant().isTagesschuleEnabled();
+        return this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
     }
 }
