@@ -18,10 +18,11 @@
     <div class="row viewTitle">
         <div class="col-md-12">
             <h2 ng-bind="vm.gesuchsteller.extractFullName()"></h2>
+            <dv-bisher gs="vm.model.erwerbspensumGS"
+                       ja="vm.model.erwerbspensumJA"
+                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
+                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
-            <div class="dv-bisher">
-                <span data-translate="DURCH_GEMEINDE_ERFASST" class="dv-bisher-content-row ng-binding"></span>
-            </div>
             <p class="inlineHint" data-translate="PFLICHTFELDER_HINT"></p>
         </div>
     </div>
@@ -44,7 +45,8 @@
                                        ng-attr-placeholder="{{'TAETIGKEIT_PLACEHOLDER' | translate}}"
                                 >
                                 <dv-bisher gs="vm.model.erwerbspensumGS.bezeichnung"
-                                           ja="vm.model.erwerbspensumJA.bezeichnung"></dv-bisher>
+                                           ja="vm.model.erwerbspensumJA.bezeichnung"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 <dv-error-messages input-id="bezeichnung"
                                                    for="vm.form.bezeichnung.$error"></dv-error-messages>
                             </dv-input-container>
@@ -71,7 +73,8 @@
                                     </select>
 
                                     <dv-bisher gs="vm.model.erwerbspensumGS.taetigkeit"
-                                               ja="vm.model.erwerbspensumJA.taetigkeit"></dv-bisher>
+                                               ja="vm.model.erwerbspensumJA.taetigkeit"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                     <dv-error-messages input-id="taetigkeit"
                                                        for="vm.form.taetigkeit.$error"
                                                        class="error"></dv-error-messages>
@@ -93,7 +96,8 @@
                                        ng-disabled="vm.erwerbspensumDisabled()"
                                        ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
                                 <dv-bisher gs="vm.model.erwerbspensumGS.pensum"
-                                           ja="vm.model.erwerbspensumJA.pensum"></dv-bisher>
+                                           ja="vm.model.erwerbspensumJA.pensum"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 <dv-error-messages input-id="taetigkeitPensum" for="vm.form.taetigkeitPensum.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -113,7 +117,8 @@
                                                ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
                                 </dv-datepicker>
                                 <dv-bisher gs="vm.model.erwerbspensumGS.gueltigkeit.gueltigAb"
-                                           ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigAb"></dv-bisher>
+                                           ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigAb"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 <dv-error-messages input-id="taetigkeitAbID" for="vm.form.taetigkeitAb.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -128,7 +133,8 @@
                                                ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
                                 </dv-datepicker>
                                 <dv-bisher gs="vm.model.erwerbspensumGS.gueltigkeit.gueltigBis"
-                                           ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigBis"></dv-bisher>
+                                           ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigBis"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 <dv-error-messages input-id="taetigkeitBisID" for="vm.form.taetigkeitBis.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -146,9 +152,12 @@
                                              ng-change="vm.unbezahlterUrlaubClicked()">
                                     <span data-translate="UNBEZAHLTER_URLAUB"></span>
                                 </md-checkbox>
+                                <div ng-if="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)">
                                 <dv-bisher gs="vm.hasUnbezahlterUrlaubGS"
                                            ja="vm.hasUnbezahlterUrlaub"
-                                           specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"></dv-bisher>
+                                           specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
+                                </div>
                                 <dv-error-messages for="vm.form.showUnbezahlterUrlaub.$error"
                                                    class="error"></dv-error-messages>
                             </div>
