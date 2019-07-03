@@ -14,8 +14,8 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
-import {Moment} from 'moment';
 import * as moment from 'moment';
+import {Moment} from 'moment';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';

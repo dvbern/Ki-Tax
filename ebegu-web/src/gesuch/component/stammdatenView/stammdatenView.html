@@ -22,7 +22,7 @@
             </h2>
             <dv-bisher gs="vm.getModel().gesuchstellerGS"
                        ja="vm.getModel().gesuchstellerJA"
-                       specific-bisher-text="vm.getBisherTextDurchGemeindeErfasst()"
+                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
             <p class="inlineHint" data-translate="PFLICHTFELDER_HINT"></p>
@@ -50,7 +50,7 @@
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.geschlecht"
                                            ja="vm.getModel().gesuchstellerJA.geschlecht"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages input-id="geschlecht" for="vm.form.geschlecht.$error"
                                                    class="error"></dv-error-messages>
                             </div>
@@ -74,7 +74,7 @@
                                        autocomplete="given-name">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.vorname"
                                            ja="vm.getModel().gesuchstellerJA.vorname"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages for="vm.form.vorname.$error"
                                                    input-id="vorname_ID"
                                                    class="error"></dv-error-messages>
@@ -95,7 +95,7 @@
                                        autocomplete="family-name">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.nachname"
                                            ja="vm.getModel().gesuchstellerJA.nachname"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages input-id="name_ID" for="vm.form.name.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -115,7 +115,7 @@
                                 </dv-datepicker>
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.geburtsdatum"
                                            ja="vm.getModel().gesuchstellerJA.geburtsdatum"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages input-id="geburtsdatum_ID" for="vm.form.geburtsdatum.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -139,7 +139,7 @@
                                     </select>
                                     <dv-bisher gs="vm.getModel().gesuchstellerGS.korrespondenzSprache"
                                                ja="vm.getModel().gesuchstellerJA.korrespondenzSprache"
-                                               show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                     <dv-error-messages for="vm.form.korrespondenzSprache.$error"
                                                        input-id="korrespondenzSprache"
                                                        class="error"></dv-error-messages>
@@ -180,7 +180,7 @@
                     </div>
 
                     <!-- Adresse. Bei Mutationen nicht editierbar-->
-                    <fieldset ng-disabled="vm.disableWohnadresseFor2GS()" class="dv-adresse__fieldset">
+                    <fieldset ng-if="vm.showWohnadresse()" ng-disabled="vm.disableWohnadresseFor2GS()" class="dv-adresse__fieldset">
                         <!-- Dieses disabled wird vom obigen disabled ueberschrieben wenn VERFUEGT -->
                         <dv-adresse adresse="vm.getModel().getWohnAdresse()"
                                     show-nicht-in-gemeinde="true"
@@ -204,13 +204,13 @@
                                             text="'GESUCHSTELLER_DIPLOMATENSTATUS_HINT' | translate"></dv-tooltip>
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.diplomatenstatus"
                                            ja="vm.getModel().gesuchstellerJA.diplomatenstatus"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                             </div>
                         </div>
                     </div>
 
                     <!--Umzug checkbox. Bei Mutationen nicht angezeigt-->
-                    <div class="row" ng-if="!vm.isMutation()">
+                    <div class="row" ng-if="!vm.isMutation() && vm.showWohnadresse()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getModel().showUmzug"
@@ -228,7 +228,7 @@
                     </div>
 
                     <!--Korrenspondenzadr Checkbox (aka Zustelladresse)-->
-                    <div class="row">
+                    <div class="row" ng-if="vm.showWohnadresse()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class=" checkbox">
                                 <md-checkbox ng-model="vm.showKorrespondadr"
@@ -246,12 +246,13 @@
                                 <dv-bisher gs="vm.showKorrespondadrGS" class="dv-bisher-break"
                                            ja="vm.showKorrespondadr"
                                            specific-bisher-text="vm.getTextAddrKorrekturJA(vm.getModel().korrespondenzAdresse)"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages for="vm.form.korrespondenzAdr.$error"
                                                    class="error" style=""></dv-error-messages>
                             </div>
                         </div>
                     </div>
+
 
                     <dv-adresse adresse="vm.getModel().korrespondenzAdresse" ng-if="vm.showKorrespondadr"
                                 prefix="korrespondenz" show-if-bisher-none="false"
@@ -276,7 +277,7 @@
                                 <dv-bisher gs="vm.showRechnungsadrGS" class="dv-bisher-break"
                                            ja="vm.showRechnungsadr"
                                            specific-bisher-text="vm.getTextAddrKorrekturJA(vm.getModel().rechnungsAdresse)"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages for="vm.form.rechnungsAdr.$error"
                                                    class="error" style=""></dv-error-messages>
                             </div>
@@ -308,7 +309,7 @@
                                        autocomplete="email">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.mail"
                                            ja="vm.getModel().gesuchstellerJA.mail"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages input-id="email_ID" for="vm.form.email.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -333,7 +334,7 @@
                                        autocomplete="mobile">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.mobile"
                                            ja="vm.getModel().gesuchstellerJA.mobile"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages input-id="mobile_ID" for="vm.form.mobile.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -354,7 +355,7 @@
                                        autocomplete="home tel">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.telefon"
                                            ja="vm.getModel().gesuchstellerJA.telefon"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages input-id="tel_ID" for="vm.form.telefon.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -371,7 +372,7 @@
                                        dv-max-length class="form-control">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.telefonAusland"
                                            ja="vm.getModel().gesuchstellerJA.telefonAusland"
-                                           show-if-bisher-none="vm.getModel().gesuchstellerGS !== undefined"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().gesuchstellerGS)"></dv-bisher>
                                 <dv-error-messages input-id="ausl_tel" for="vm.form.telefonAusland.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>

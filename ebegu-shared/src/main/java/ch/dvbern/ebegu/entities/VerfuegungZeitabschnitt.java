@@ -97,9 +97,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private Boolean wohnsitzNichtInGemeindeGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
 	@Transient
-	private Boolean wohnsitzNichtInGemeindeGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
-
-	@Transient
 	// Wenn Vollkosten bezahlt werden muessen, werden die Vollkosten berechnet und als Elternbeitrag gesetzt
 	private boolean bezahltVollkosten;
 
@@ -245,7 +242,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
-		this.wohnsitzNichtInGemeindeGS2 = toCopy.wohnsitzNichtInGemeindeGS2;
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
@@ -486,14 +482,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public void setWohnsitzNichtInGemeindeGS1(Boolean wohnsitzNichtInGemeindeGS1) {
 		this.wohnsitzNichtInGemeindeGS1 = wohnsitzNichtInGemeindeGS1;
-	}
-
-	public boolean isWohnsitzNichtInGemeindeGS2() {
-		return wohnsitzNichtInGemeindeGS2 != null ? wohnsitzNichtInGemeindeGS2 : true;
-	}
-
-	public void setWohnsitzNichtInGemeindeGS2(Boolean wohnsitzNichtInGemeindeGS2) {
-		this.wohnsitzNichtInGemeindeGS2 = wohnsitzNichtInGemeindeGS2;
 	}
 
 	public BigDecimal getFamGroesse() {
@@ -738,7 +726,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setZuSpaetEingereicht(this.isZuSpaetEingereicht() || other.isZuSpaetEingereicht());
 
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
-		this.setWohnsitzNichtInGemeindeGS2(this.isWohnsitzNichtInGemeindeGS2() && other.isWohnsitzNichtInGemeindeGS2());
 
 		this.setBezahltVollkosten(this.isBezahltVollkosten() || other.isBezahltVollkosten());
 
@@ -880,7 +867,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(abzugFamGroesse, otherVerfuegungZeitabschnitt.abzugFamGroesse) &&
 			Objects.equals(famGroesse, otherVerfuegungZeitabschnitt.famGroesse) &&
 			Objects.equals(massgebendesEinkommenVorAbzugFamgr, otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) &&
-			(isWohnsitzNichtInGemeindeGS1() && isWohnsitzNichtInGemeindeGS2()) == (otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1() && otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS2()) &&
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
 			minimalesEwpUnterschritten == otherVerfuegungZeitabschnitt.minimalesEwpUnterschritten &&
 			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
@@ -897,7 +883,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
-			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
 			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
 			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
 			Objects.equals(this.monatlicheBetreuungskosten, otherVerfuegungZeitabschnitt.monatlicheBetreuungskosten);

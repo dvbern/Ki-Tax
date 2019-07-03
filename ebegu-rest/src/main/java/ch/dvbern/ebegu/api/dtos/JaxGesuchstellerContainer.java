@@ -45,7 +45,7 @@ public class JaxGesuchstellerContainer extends JaxAbstractDTO {
 	//Adressen
 	@NotNull
 	@Valid
-	private List<JaxAdresseContainer> adressen;
+	private List<JaxAdresseContainer> adressen = new ArrayList<>();
 
 	@Valid
 	private JaxAdresseContainer alternativeAdresse;

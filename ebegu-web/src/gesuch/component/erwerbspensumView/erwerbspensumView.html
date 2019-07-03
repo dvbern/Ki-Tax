@@ -21,7 +21,8 @@
             <dv-bisher gs="vm.model.erwerbspensumGS"
                        ja="vm.model.erwerbspensumJA"
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
-                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
+                       show-specific-bisher-text-if-bisher-none="true">
+
             <hr class="header"/>
             <p class="inlineHint" data-translate="PFLICHTFELDER_HINT"></p>
         </div>
@@ -153,10 +154,10 @@
                                     <span data-translate="UNBEZAHLTER_URLAUB"></span>
                                 </md-checkbox>
                                 <div ng-if="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)">
-                                <dv-bisher gs="vm.hasUnbezahlterUrlaubGS"
-                                           ja="vm.hasUnbezahlterUrlaub"
-                                           specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
+									<dv-bisher gs="vm.hasUnbezahlterUrlaubGS"
+											   ja="vm.hasUnbezahlterUrlaub"
+											   specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"
+											   show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 </div>
                                 <dv-error-messages for="vm.form.showUnbezahlterUrlaub.$error"
                                                    class="error"></dv-error-messages>

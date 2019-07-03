@@ -110,6 +110,7 @@ public class FinanzielleSituationResource {
 
 		FinanzielleSituationContainer persistedFinSit =
 			this.finanzielleSituationService.saveFinanzielleSituation(convertedFinSitCont, gesuchId);
+		persistedFinSit.setGesuchsteller(gesuchsteller);
 		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 

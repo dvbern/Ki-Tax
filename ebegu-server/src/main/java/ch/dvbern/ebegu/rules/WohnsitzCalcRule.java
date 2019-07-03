@@ -15,15 +15,12 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
@@ -48,7 +45,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		@Nonnull VerfuegungZeitabschnitt verfuegungZeitabschnitt
 	) {
 		if (Objects.requireNonNull(betreuung.getBetreuungsangebotTyp()).isJugendamt()) {
-			if (areNotInBern(betreuung, verfuegungZeitabschnitt)) {
+			if (areNotInBern(verfuegungZeitabschnitt)) {
 				verfuegungZeitabschnitt.setAnspruchberechtigtesPensum(0);
 				verfuegungZeitabschnitt.addBemerkung(
 					RuleKey.WOHNSITZ,
@@ -62,35 +59,10 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	}
 
 	/**
-	 * Zuerst schaut ob es eine Aenderung in der Familiensituation gab. Dementsprechend nimmt es die richtige
-	 * Familiensituation
-	 * um zu wissen ob es ein GS2 gibt, erst dann wird es geprueft ob die Adressen von GS1 oder GS2 in Bern sind
+	 * Nur GS 1 ist relevant. GS 2 muss per Definition bei GS 1 wohnen
 	 */
-	private boolean areNotInBern(Betreuung betreuung, VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
-		boolean hasSecondGesuchsteller = false;
-		final Gesuch gesuch = betreuung.extractGesuch();
-		Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		Objects.requireNonNull(familiensituation);
-		LocalDate familiensituationAenderungPer = familiensituation.getAenderungPer();
-		// Die Familiensituation wird immer fruehestens per nächsten Monat angepasst!
-		LocalDate bis = verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis();
-		if (!gesuch.isMutation()
-			|| (familiensituationAenderungPer != null
-			&& !getStichtagForEreignis(familiensituationAenderungPer)
-			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb()))) {
-
-			hasSecondGesuchsteller = familiensituation.hasSecondGesuchsteller(bis);
-		} else {
-			Familiensituation familiensituationErstgesuch = gesuch.extractFamiliensituationErstgesuch();
-			if (familiensituationErstgesuch != null) {
-				hasSecondGesuchsteller = familiensituationErstgesuch.hasSecondGesuchsteller(bis);
-			}
-		}
-		return (hasSecondGesuchsteller
-			&& verfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1()
-			&& verfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS2())
-			|| (!hasSecondGesuchsteller
-			&& verfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1());
+	private boolean areNotInBern(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		return verfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1();
 	}
 
 }
