@@ -33,7 +33,6 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
-import {MandantRS} from '../../service/mandantRS.rest';
 
 const LOG = LogFactory.createLog('DVAntragListController');
 

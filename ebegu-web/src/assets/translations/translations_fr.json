@@ -710,7 +710,6 @@
     "FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION": "Taux minimal pour le service spécialisé Intégration sociale",
     "FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION": "Taux minimal pour le service spécialisé Intégration linguistique",
     "TAGESSCHULE_ENABLED_FOR_MANDANT": "",
-    "TAGESSCHULE_ENABLED_FOR_GEMEINDE": "",
     "PLATZBESTAETIGUNG": "Confirmation de place",
     "PLATZBESTAETIGUNG_MUTATION": "Changer la place",
     "QUICKSEARCH_ALL_RESULTS": "Tous les résultats (jusqu'à {{totalNum}} suivants)",

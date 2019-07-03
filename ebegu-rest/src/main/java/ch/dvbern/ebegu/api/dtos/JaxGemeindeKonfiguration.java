@@ -26,7 +26,6 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 
 public class JaxGemeindeKonfiguration {
-
 	@NotNull
 	private String gesuchsperiodeName;
 	@NotNull

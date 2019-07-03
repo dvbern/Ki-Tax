@@ -33,7 +33,7 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
     if (mandant.isTagesschuleEnabled() && hasTagesschulanmeldungen) {
         angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
-    if (mandant.isFerieninselEnabled()) {
+    if (mandant.isTagesschuleEnabled()) {
         angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
     }
     return angebote;

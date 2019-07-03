@@ -39,8 +39,6 @@ public class JaxMandant extends JaxAbstractDTO {
 	private List<JaxMandantKonfiguration> konfigurationsListe = new ArrayList<>();
 
 
-	private boolean tagesschuleEnabled;
-
 	public String getName() {
 		return name;
 	}
@@ -56,14 +54,6 @@ public class JaxMandant extends JaxAbstractDTO {
 
 	public void setKonfigurationsListe(@NotNull List<JaxMandantKonfiguration> konfigurationsListe) {
 		this.konfigurationsListe = konfigurationsListe;
-	}
-
-	public boolean isTagesschuleEnabled() {
-		return tagesschuleEnabled;
-	}
-
-	public void setTagesschuleEnabled(boolean tagesschuleEnabled) {
-		this.tagesschuleEnabled = tagesschuleEnabled;
 	}
 
 }

@@ -49,8 +49,4 @@ export class TSMandant extends TSAbstractMutableEntity {
     public isTagesschuleEnabled(): boolean {
         return this.tagesschuleEnabled;
     }
-
-    public isFerieninselEnabled(): boolean {
-        return false; //TODO (team) Property!!!
-    }
 }

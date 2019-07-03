@@ -272,7 +272,7 @@
                                 </div>
                             </div>
                             <!-- Parameter-Liste (repeater) -->
-                            <div ng-repeat="paramgp in vm.gesuchsperiode.einstellungenList" class="row">
+                            <div ng-repeat="paramgp in vm.einstellungenGesuchsperiode" class="row">
                                 <div class="col-md-12 form-group">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -302,7 +302,7 @@
                                     <dv-loading-button type="button"
                                                        button-click="vm.saveParameterByGesuchsperiode()"
                                                        button-class="color-success">
-                                            <span ng-bind="(vm.gesuchsperiode.einstellungenList && vm.gesuchsperiode.einstellungenList[0].isNew())
+                                            <span ng-bind="(vm.einstellungenGesuchsperiode && vm.einstellungenGesuchsperiode[0].isNew())
                                                              ? ('SAVE' | translate) : ('UPDATE' | translate)"></span>
                                     </dv-loading-button>
                                 </div>

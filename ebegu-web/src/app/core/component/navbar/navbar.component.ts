@@ -81,7 +81,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 },
                 err => LOG.error(err),
             );
-
     }
 
     public createNewFall(): void {
