@@ -52,9 +52,11 @@ export class EditInstitutionComponent implements OnInit {
 
     public traegerschaftenList: TSTraegerschaft[];
     public stammdaten: TSInstitutionStammdaten;
+    public isCheckRequired: boolean = false;
     public abweichendeZahlungsAdresse: boolean;
     public editMode: boolean;
     private isRegisteringInstitution: boolean = false;
+    private initName: string;
 
     public constructor(
         private readonly $transition$: Transition,
@@ -93,7 +95,9 @@ export class EditInstitutionComponent implements OnInit {
                     } else {
                         this.createInstitutionStammdaten(institution);
                     }
+                    this.isCheckRequired = institution.stammdatenCheckRequired;
                     this.abweichendeZahlungsAdresse = !!this.stammdaten.adresseKontoinhaber;
+                    this.initName = this.stammdaten.institution.name;
                     this.editMode = this.stammdaten.institution.status === TSInstitutionStatus.EINGELADEN;
                     this.changeDetectorRef.markForCheck();
                 });
@@ -176,12 +180,24 @@ export class EditInstitutionComponent implements OnInit {
         }
         this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
             .then(() => {
-                this.editMode = false;
-                this.changeDetectorRef.markForCheck();
-                this.navigateToWelcomesite();
-                // if we don't navigate away we refresh all data
-                this.fetchInstitution(this.stammdaten.institution.id);
+                // tslint:disable-next-line:early-exit
+                if (this.initName === this.stammdaten.institution.name) {
+                    this.setValuesAfterSave();
+                } else {
+                    this.institutionRS.updateInstitution(this.stammdaten.institution)
+                        .then(() => {
+                            this.setValuesAfterSave();
+                        });
+                }
             });
+    }
+
+    private setValuesAfterSave(): void {
+        this.editMode = false;
+        this.changeDetectorRef.markForCheck();
+        this.navigateToWelcomesite();
+        // if we don't navigate away we refresh all data
+        this.fetchInstitution(this.stammdaten.institution.id);
     }
 
     private createInstitutionStammdaten(institution: TSInstitution): void {
@@ -250,5 +266,15 @@ export class EditInstitutionComponent implements OnInit {
 
     public getPlaceholderForOeffnungszeiten(): string {
         return this.translate.instant('INSTITUTION_OEFFNUNGSZEITEN_PLACEHOLDER');
+    }
+
+    public deactivateStammdatenCheckRequired(): void {
+        this.institutionRS.deactivateStammdatenCheckRequired(this.stammdaten.institution.id)
+            .then(() => this.navigateBack());
+
+    }
+
+    public isCheckRequiredEnabled(): boolean {
+        return this.isCheckRequired && !this.editMode;
     }
 }

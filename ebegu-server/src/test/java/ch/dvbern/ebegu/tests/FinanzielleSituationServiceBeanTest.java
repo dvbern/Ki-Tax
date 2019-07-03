@@ -50,6 +50,8 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 	@Inject
 	private Persistence persistence;
 
+	private Gesuch gesuch;
+
 	@Test
 	public void createFinanzielleSituation() {
 		Assert.assertNotNull(finanzielleSituationService);
@@ -63,10 +65,11 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 		container.setFinanzielleSituationGS(finanzielleSituation);
 		container.setGesuchsteller(gesuchsteller);
 
-		finanzielleSituationService.saveFinanzielleSituation(container, null);
+		finanzielleSituationService.saveFinanzielleSituation(container, gesuch.getId());
 		Collection<FinanzielleSituationContainer> allFinanzielleSituationen = finanzielleSituationService.getAllFinanzielleSituationen();
 		Assert.assertEquals(1, allFinanzielleSituationen.size());
 		FinanzielleSituationContainer nextFinanzielleSituation = allFinanzielleSituationen.iterator().next();
+		Assert.assertNotNull(nextFinanzielleSituation.getFinanzielleSituationGS().getNettolohn());
 		Assert.assertEquals(100000L, nextFinanzielleSituation.getFinanzielleSituationGS().getNettolohn().longValue());
 	}
 
@@ -78,16 +81,21 @@ public class FinanzielleSituationServiceBeanTest extends AbstractEbeguLoginTest 
 		Assert.assertTrue(finanzielleSituationOptional.isPresent());
 		FinanzielleSituationContainer finanzielleSituation = finanzielleSituationOptional.get();
 		finanzielleSituation.setFinanzielleSituationGS(TestDataUtil.createDefaultFinanzielleSituation());
-		FinanzielleSituationContainer updatedCont = finanzielleSituationService.saveFinanzielleSituation(finanzielleSituation, null);
+
+		FinanzielleSituationContainer updatedCont = finanzielleSituationService.saveFinanzielleSituation(
+			finanzielleSituation, gesuch.getId());
+		Assert.assertNotNull(updatedCont.getFinanzielleSituationGS().getNettolohn());
 		Assert.assertEquals(100000L, updatedCont.getFinanzielleSituationGS().getNettolohn().longValue());
 
 		updatedCont.getFinanzielleSituationGS().setNettolohn(new BigDecimal(200000));
-		FinanzielleSituationContainer contUpdTwice = finanzielleSituationService.saveFinanzielleSituation(updatedCont, null);
+		FinanzielleSituationContainer contUpdTwice = finanzielleSituationService.saveFinanzielleSituation(
+			updatedCont, gesuch.getId());
+		Assert.assertNotNull(contUpdTwice.getFinanzielleSituationGS().getNettolohn());
 		Assert.assertEquals(200000L, contUpdTwice.getFinanzielleSituationGS().getNettolohn().longValue());
 	}
 
 	private FinanzielleSituationContainer insertNewEntity() {
-		final Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
+		this.gesuch = TestDataUtil.createAndPersistGesuch(persistence);
 		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
 		FinanzielleSituationContainer container = TestDataUtil.createFinanzielleSituationContainer();
 		gesuchsteller.setFinanzielleSituationContainer(container);

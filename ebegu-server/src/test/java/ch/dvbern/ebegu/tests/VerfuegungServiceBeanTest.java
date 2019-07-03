@@ -39,8 +39,8 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
-import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.TestfaelleService;
 import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -82,7 +82,7 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 	private BetreuungService betreuungService;
 
 	@Inject
-	private GesuchService gesuchService;
+	private TestfaelleService testfaelleService;
 
 	private Gesuchsperiode gesuchsperiode;
 
@@ -170,9 +170,8 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 		persistence.persist(antragStatusHistory);
 		gesuch = persistence.merge(gesuch);
 
-		Optional<Gesuch> gesuchOptional = this.gesuchService.antragMutieren(gesuch.getId(), LocalDate.now());
-		Assert.assertTrue(gesuchOptional.isPresent());
-		Gesuch mutation = persistence.merge(gesuchOptional.get());
+		Gesuch mutation = this.testfaelleService.antragMutieren(gesuch, LocalDate.now());
+		Assert.assertNotNull(mutation);
 
 		List<Betreuung> allBetreuungenFromGesuch = this.betreuungService.findAllBetreuungenFromGesuch(mutation.getId());
 		Optional<Betreuung> optFolgeBetreeung = allBetreuungenFromGesuch.stream()

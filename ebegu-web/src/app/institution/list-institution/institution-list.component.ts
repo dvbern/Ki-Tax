@@ -18,6 +18,7 @@
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
@@ -25,9 +26,9 @@ import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import TSBerechtigung from '../../../models/TSBerechtigung';
 import TSInstitution from '../../../models/TSInstitution';
-import EbeguUtil from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 
 @Component({
@@ -37,9 +38,9 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
 })
 export class InstitutionListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
+    private readonly log: Log = LogFactory.createLog('InstitutionListComponent');
+
     public displayedColumns: string[] = [];
-    public institutionen: TSInstitution[];
-    public selectedInstitution: TSInstitution = undefined;
     public dataSource: MatTableDataSource<TSInstitution>;
 
     @ViewChild(NgForm) public form: NgForm;
@@ -52,6 +53,7 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly $state: StateService,
         authServiceRS: AuthServiceRS,
+        private readonly translate: TranslateService,
     ) {
         super(authServiceRS);
     }
@@ -95,18 +97,19 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
             title: 'LOESCHEN_DIALOG_TITLE',
         };
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe(userAccepted => {   // User confirmed removal
-                if (!userAccepted) {
-                    return;
-                }
-                this.selectedInstitution = undefined;
-                this.institutionRS.removeInstitution(institution.id).then(() => {
-                    const index = EbeguUtil.getIndexOfElementwithID(institution, this.institutionen);
-                    if (index > -1) {
-                        this.institutionen.splice(index, 1);
+            .subscribe(
+                userAccepted => {   // User confirmed removal
+                    if (!userAccepted) {
+                        return;
                     }
-                });
-            });
+                    this.institutionRS.removeInstitution(institution.id).then(() => {
+                        this.updateInstitutionenList();
+                    });
+                },
+                () => {
+                    this.log.error('error in observable. removeInstitution');
+                }
+            );
     }
 
     public createInstitution(): void {
@@ -179,6 +182,16 @@ export class InstitutionListComponent extends AbstractAdminViewController implem
     }
 
     public doFilter = (value: string) => {
-        this.dataSource.filter = value.trim().toLocaleLowerCase();
+        if (this.dataSource) {
+            this.dataSource.filter = value.trim().toLocaleLowerCase();
+        }
+    }
+
+    public translateStatus(institution: TSInstitution): string {
+        const translatedStatus = this.translate.instant('INSTITUTION_STATUS_' + institution.status);
+        const translatedCheck = institution.stammdatenCheckRequired
+            ? this.translate.instant('INSTITUTION_STATUS_CHECK_REQUIRED')
+            : '';
+        return `${translatedStatus} ${translatedCheck}`;
     }
 }

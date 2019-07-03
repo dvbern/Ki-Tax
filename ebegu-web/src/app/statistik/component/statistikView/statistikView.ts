@@ -110,7 +110,7 @@ export class StatistikViewController implements IController {
     public $onDestroy(): void {
         if (this.polling) {
             this.$interval.cancel(this.polling);
-            this.$log.debug('canceld job polling');
+            this.$log.debug('canceled job polling');
         }
     }
 
@@ -236,6 +236,13 @@ export class StatistikViewController implements IController {
                 return;
             case TSStatistikParameterType.INSTITUTIONEN:
                 this.reportAsyncRS.getInstitutionenReportExcel()
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                return;
+            case TSStatistikParameterType.VERRECHNUNG_KIBON:
+                this.reportAsyncRS.getVerrechnungKibonReportExcel(
+                    this._statistikParameter.doSave, this._statistikParameter.betragProKind)
                     .then((batchExecutionId: string) => {
                         this.informReportGenerationStarted(batchExecutionId);
                     });

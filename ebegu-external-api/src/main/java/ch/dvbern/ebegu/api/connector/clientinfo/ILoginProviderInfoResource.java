@@ -23,6 +23,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+@SuppressWarnings("InterfaceNeverImplemented")
 @Path("/info")
 public interface ILoginProviderInfoResource {
 
@@ -53,10 +54,6 @@ public interface ILoginProviderInfoResource {
 	@Path("/singleLogoutURL")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
-	String getSingleLogoutURL(
-		@Nullable @QueryParam("relayPath") String relayPath,
-		@Nullable @QueryParam("nameID") String nameID,
-		@Nullable @QueryParam("sessionID") String sessionID
-	);
+	String getSingleLogoutURL();
 
 }

@@ -25,7 +25,7 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2019.7.0-SNAPSHOT</version>
+    <version>2019.9.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
@@ -404,6 +404,18 @@
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-search-backend-jgroups</artifactId>
+                <version>${hibernate-search.version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.jgroups</groupId>
+                <artifactId>jgroups</artifactId>
+                <version>4.0.12.Final</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-search-engine</artifactId>
                 <version>${hibernate-search.version}</version>
                 <scope>provided</scope>
@@ -637,7 +649,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.9.8</version>
+                <version>2.9.9</version>
             </dependency>
             <!--<dependency>-->
                 <!--<groupId>org.wildfly.core</groupId>-->
@@ -699,6 +711,16 @@
                 <artifactId>openpdf</artifactId>
                 <groupId>com.github.librepdf</groupId>
                 <version>1.2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>io.undertow</groupId>
+                <artifactId>undertow-core</artifactId>
+                <version>2.0.21.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wildfly.security.elytron-web</groupId>
+                <artifactId>undertow-server</artifactId>
+                <version>2.0.0.Alpha1</version>
             </dependency>
         </dependencies>
 

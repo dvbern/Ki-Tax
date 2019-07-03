@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.util;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -93,6 +94,28 @@ public final class EbeguUtil {
 			List<Gesuch> antraege = fallToAntragMultimap.get(fall);
 			antraege.sort(Comparator.comparing(Gesuch::getLaufnummer).reversed());
 			gesuchMap.put(antraege.get(0).getId(), antraege.get(0)); //nur neusten Antrag zurueckgeben
+		}
+		return gesuchMap;
+	}
+
+	/**
+	 * Gibt aus einer Liste von Gesuchen nur das jeweils neueste (hoechste Laufummer) pro Dossier zurueck.
+	 * Die Rueckgabe erfolgt in einer Map mit Gemeinde - Liste von (neuesten) Gesuchen
+	 */
+	public static Map<Gemeinde, List<Gesuch>> groupByDossierAndSelectNewestAntrag(@Nonnull List<Gesuch> allGesuche) {
+		ArrayListMultimap<Dossier, Gesuch> dossierToAntragMultimap = ArrayListMultimap.create();
+		allGesuche.forEach(gesuch -> dossierToAntragMultimap.put(gesuch.getDossier(), gesuch));
+		// map erstellen in der nur noch das gesuch mit der hoechsten laufnummer drin ist
+		Map<Gemeinde, List<Gesuch>> gesuchMap = new HashMap<>();
+		for (Dossier dossier : dossierToAntragMultimap.keySet()) {
+			List<Gesuch> antraege = dossierToAntragMultimap.get(dossier);
+			antraege.sort(Comparator.comparing(Gesuch::getLaufnummer).reversed());
+			Gesuch neuesterAntragProDossier = antraege.get(0);
+			Gemeinde gmde = neuesterAntragProDossier.extractGemeinde();
+			if (!gesuchMap.containsKey(gmde)) {
+				gesuchMap.put(gmde, new ArrayList<>());
+			}
+			gesuchMap.get(gmde).add(neuesterAntragProDossier);
 		}
 		return gesuchMap;
 	}
@@ -267,5 +290,13 @@ public final class EbeguUtil {
 			return Collections.singletonList(Sprache.DEUTSCH);
 		}
 		return Arrays.asList(gemeindeSprachen);
+	}
+
+	@Nonnull
+	public static Boolean toBoolean(@Nullable Boolean aBoolean, boolean booleanIfNull) {
+		if (aBoolean == null) {
+			return booleanIfNull;
+		}
+		return aBoolean;
 	}
 }

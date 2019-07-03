@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
@@ -41,8 +43,10 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
 import ch.dvbern.ebegu.entities.BerechtigungHistory_;
+import ch.dvbern.ebegu.entities.Berechtigung_;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -51,8 +55,10 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
@@ -131,26 +137,6 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		institutionStammdaten.setInactive();
 		final InstitutionStammdaten mergedInstitutionstammdaten = persistence.merge(institutionStammdaten);
 		return mergedInstitutionstammdaten.getInstitution();
-	}
-
-	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT })
-	public void deleteInstitution(@Nonnull String institutionId) {
-		Objects.requireNonNull(institutionId);
-		Optional<Institution> institutionToRemove = findInstitution(institutionId);
-		Institution institution =
-			institutionToRemove.orElseThrow(() -> new EbeguEntityNotFoundException("removeInstitution",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId));
-
-		// Es müssen auch alle Berechtigungen für diese Institution gelöscht werden
-		Collection<BerechtigungHistory> berechtigungenToDelete =
-			criteriaQueryHelper.getEntitiesByAttribute(BerechtigungHistory.class, institution,
-				BerechtigungHistory_.institution);
-		for (BerechtigungHistory berechtigungHistory : berechtigungenToDelete) {
-			persistence.remove(berechtigungHistory);
-		}
-
-		persistence.remove(institution);
 	}
 
 	@Override
@@ -287,6 +273,105 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		InstitutionStammdaten allInstStammdaten =
 			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
 		return allInstStammdaten.getBetreuungsangebotTyp();
+	}
+
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public void calculateStammdatenCheckRequired() {
+		final Collection<Institution> allInstitutionen = this.getAllInstitutionen();
+
+		// It will set the flag to true or to false accordingly to the value of calculateStammdatenCheckRequired(). This is better than only
+		// setting it to true because it helps set the flag back to false even when it is incorrectly true or hasn't been updated properly
+		allInstitutionen
+			.forEach(institution -> {
+				final boolean isCheckRequired = calculateStammdatenCheckRequiredForInstitution(institution.getId());
+				updateStammdatenCheckRequired(institution.getId(), isCheckRequired);
+			});
+	}
+
+	@Nullable
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public Institution deactivateStammdatenCheckRequired(@Nonnull String institutionId) {
+		InstitutionStammdaten stammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
+		if (stammdaten != null) {
+			// save stammdaten to update its timestamp_mutiert, since this field will be used to set the Flag stammdatenCheckRequired
+			stammdaten.setTimestampMutiert(LocalDateTime.now());
+			institutionStammdatenService.saveInstitutionStammdaten(stammdaten);
+		}
+
+		return updateStammdatenCheckRequired(institutionId, false);
+	}
+
+	@Nullable
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired) {
+		final Optional<Institution> institutionOpt = findInstitution(institutionId);
+
+		final Institution institution = institutionOpt.orElseThrow(() -> new EbeguEntityNotFoundException(
+			"updateStammdatenCheckRequired",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			institutionId));
+
+		if (isCheckRequired != institution.isStammdatenCheckRequired()) {
+			institution.setStammdatenCheckRequired(isCheckRequired);
+			updateInstitution(institution);
+		}
+
+		return institution;
+	}
+
+	@Override
+	@RolesAllowed(SUPER_ADMIN)
+	public void removeInstitution(@Nonnull String institutionId) {
+		final Optional<Institution> institutionOpt = findInstitution(institutionId);
+		final Institution institution = institutionOpt.orElseThrow(() ->
+			new EbeguEntityNotFoundException("removeInstitution",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionId)
+		);
+
+		checkForLinkedBerechtigungen(institution);
+		removeInstitutionFromBerechtigungHistory(institution);
+
+		institutionStammdatenService.removeInstitutionStammdatenByInstitution(institutionId);
+		persistence.remove(institution);
+	}
+
+	private void checkForLinkedBerechtigungen(@Nonnull Institution institution) {
+		final Collection<Berechtigung> linkedBerechtigungen = findBerechtigungByInstitution(institution);
+		if (!linkedBerechtigungen.isEmpty()) {
+			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN, institution.getId());
+		}
+	}
+
+	private void removeInstitutionFromBerechtigungHistory(@Nonnull Institution institution) {
+		final Collection<BerechtigungHistory> berechtigungHistories = criteriaQueryHelper.getEntitiesByAttribute(
+			BerechtigungHistory.class,
+			institution,
+			BerechtigungHistory_.institution);
+
+		for (BerechtigungHistory berechtigungHistory : berechtigungHistories) {
+			persistence.remove(berechtigungHistory);
+		}
+	}
+
+	private Collection<Berechtigung> findBerechtigungByInstitution(@Nonnull Institution institution) {
+		requireNonNull(institution, "institution cannot be null");
+		return criteriaQueryHelper.getEntitiesByAttribute(Berechtigung.class, institution, Berechtigung_.institution);
+	}
+
+	/**
+	 * Checks if the Stammdaten of the given Institution need to be checked by the user. This happens when the stammdaten haven't
+	 * been saved for a long time (usually 100 days)
+	 */
+	private boolean calculateStammdatenCheckRequiredForInstitution(@Nonnull String institutionId) {
+		InstitutionStammdaten instStammdaten =
+			institutionStammdatenService.fetchInstitutionStammdatenByInstitution(institutionId);
+
+		return instStammdaten.getTimestampMutiert() != null
+			&& instStammdaten.getTimestampMutiert().isBefore(LocalDateTime.now().minusDays(Constants.DAYS_BEFORE_INSTITUTION_CHECK));
 	}
 
 	private Predicate excludeUnknownInstitutionPredicate(Root root) {

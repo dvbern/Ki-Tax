@@ -52,12 +52,9 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
@@ -94,6 +91,10 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_INSTITUTION, ADMIN_TRAEGERSCHAFT })
 	public InstitutionStammdaten saveInstitutionStammdaten(@Nonnull InstitutionStammdaten institutionStammdaten) {
 		Objects.requireNonNull(institutionStammdaten);
+
+		// always when stammdaten are saved we need to reset the flag stammdatenCheckRequired to false
+		institutionService.updateStammdatenCheckRequired(institutionStammdaten.getInstitution().getId(), false);
+
 		return persistence.merge(institutionStammdaten);
 	}
 
@@ -120,13 +121,12 @@ public class InstitutionStammdatenServiceBean extends AbstractBaseService implem
 	}
 
 	@Override
-	@RolesAllowed({ ADMIN_BG, ADMIN_GEMEINDE, SUPER_ADMIN, ADMIN_TS })
-	public void removeInstitutionStammdaten(@Nonnull String institutionStammdatenId) {
-		Objects.requireNonNull(institutionStammdatenId);
-		Optional<InstitutionStammdaten> institutionStammdatenToRemove = findInstitutionStammdaten(institutionStammdatenId);
-		final InstitutionStammdaten removeInstitutionStammdaten = institutionStammdatenToRemove.orElseThrow(() -> new EbeguEntityNotFoundException
-			("removeInstitutionStammdaten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, institutionStammdatenId));
-		persistence.remove(removeInstitutionStammdaten);
+	@RolesAllowed(SUPER_ADMIN)
+	public void removeInstitutionStammdatenByInstitution(@Nonnull String institutionId) {
+		Objects.requireNonNull(institutionId);
+		InstitutionStammdaten institutionStammdatenToRemove = getInstitutionStammdatenByInstitution(institutionId);
+
+		persistence.remove(institutionStammdatenToRemove);
 	}
 
 	@Override

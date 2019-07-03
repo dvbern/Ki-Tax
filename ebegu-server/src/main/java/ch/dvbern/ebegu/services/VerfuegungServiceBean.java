@@ -142,32 +142,44 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	public void setZahlungsstatus(Verfuegung verfuegung, @Nonnull String betreuungId, boolean ignorieren) {
 		Betreuung betreuung = persistence.find(Betreuung.class, betreuungId);
+		Objects.requireNonNull(betreuung);
 		final Gesuch gesuch = betreuung.extractGesuch();
 
-		if (gesuch.isMutation() && betreuung.isAngebotKita()) { // Zahlungsstatus muss nur bei Mutationen und Angebote der Art KITA aktualisiert werden
-			Optional<Verfuegung> vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung);
+		// Zahlungsstatus muss nur bei Mutationen und Angebote der Art KITA und TAGESELTERN aktualisiert werden
+		if (gesuch.isMutation() && betreuung.isAngebotAuszuzahlen()) {
+			Optional<Verfuegung> vorgaengerAusbezahlteVerfuegungOpt = findVorgaengerAusbezahlteVerfuegung(betreuung);
 
-			if (vorgaengerVerfuegung.isPresent()) {
+			if (vorgaengerAusbezahlteVerfuegungOpt.isPresent()) {
+
+				final Verfuegung vorgaengerAusbezahlteVerfuegung = vorgaengerAusbezahlteVerfuegungOpt.get();
+
 				for (VerfuegungZeitabschnitt verfuegungZeitabschnittNeu : verfuegung.getZeitabschnitte()) {
 
-					List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerVerfuegung = findZeitabschnitteOnVorgaengerVerfuegung(verfuegungZeitabschnittNeu.getGueltigkeit(), vorgaengerVerfuegung.get());
+					List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerAusbezahlteVerfuegung =
+						findZeitabschnitteOnVerfuegung(verfuegungZeitabschnittNeu.getGueltigkeit(), vorgaengerAusbezahlteVerfuegung);
 
 					Optional<VerfuegungZeitabschnitt> zeitabschnittSameGueltigkeitSameBetrag = VerfuegungUtil.findZeitabschnittSameGueltigkeitSameBetrag
-						(zeitabschnitteOnVorgaengerVerfuegung, verfuegungZeitabschnittNeu);
+						(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung, verfuegungZeitabschnittNeu);
 
 					if (zeitabschnittSameGueltigkeitSameBetrag.isPresent()) {
 						// Es hat ueberhaupt nichts geaendert seit dem letztem Gesuch. Falls es schon verrechnet war, bleibt
-						// es somit verrechnet. Sonst neu
-						if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerVerfuegung)) {
-							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+						// es somit verrechnet. Sonst neu oder ignoriert wenn der Benutzer es ignorieren will oder wenn ein
+						// Abschnitt bereits ignoriert wurde. Wenn es ignorierend war muss es Ignorierend sein
+						if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung)) {
+							if (isThereAnyIgnoriert(vorgaengerAusbezahlteVerfuegung)) {
+								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT);
+							} else {
+								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
+							}
 						} else {
 							verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
 						}
 					} else { // we only check the status if there has been any verrechnete zeitabschnitt. Otherwise NEU
 						// Wenn der alte Abschnitt VERRECHNET war und das Flag ignoriert -> IGNORIEREND
-						if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerVerfuegung)) {
+							if (areAllZeitabschnitteVerrechnet(zeitabschnitteOnVorgaengerAusbezahlteVerfuegung)) {
 							// Es war schon verrechnet: Die neuen Zeitabschnitte muessen entweder ignoriert oder korrigiert werden
-							if (ignorieren) {
+							if (ignorieren || isThereAnyIgnoriert(vorgaengerAusbezahlteVerfuegung)) {
+								// zeitabschnitte werden immer ignoriert wenn der Benutzer es ignorieren will oder wenn ein Abschnitt bereits ignoriert wurde
 								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.IGNORIEREND);
 							} else {
 								verfuegungZeitabschnittNeu.setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus.NEU);
@@ -183,13 +195,14 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		}
 	}
 
-	private boolean areAllZeitabschnitteVerrechnet(List<VerfuegungZeitabschnitt> zeitabschnitte) {
-		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-			if (!verfuegungZeitabschnitt.getZahlungsstatus().isBereitsBehandeltInZahlungslauf()) {
-				return false;
-			}
-		}
-		return true;
+	private boolean areAllZeitabschnitteVerrechnet(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		return zeitabschnitte.stream()
+			.allMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isBereitsBehandeltInZahlungslauf());
+	}
+
+	private boolean isThereAnyIgnoriert(@Nonnull Verfuegung verfuegung) {
+		return verfuegung.getZeitabschnitte().stream()
+			.anyMatch(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getZahlungsstatus().isIgnoriertIgnorierend());
 	}
 
 	private void setVerfuegungsKategorien(Verfuegung verfuegung) {
@@ -298,7 +311,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		persistence.remove(loadedVerf);
 	}
 
-	@SuppressWarnings("OptionalIsPresent")
 	@Nonnull
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
@@ -321,14 +333,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		gesuch.getKindContainers()
 			.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.forEach(betreuung -> {
-					Optional<Verfuegung> vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung);
-					betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
-				}
-			);
+			.forEach(this::setVorgaengerVerfuegungen);
 
-
-		bgEvaluator.evaluate(gesuch, calculatorParameters, sprache.getLocale());
+		bgEvaluator.evaluate(gesuch, this, calculatorParameters, sprache.getLocale());
 		authorizer.checkReadAuthorizationForAnyBetreuungen(gesuch.extractAllBetreuungen()); // betreuungen pruefen reicht hier glaub
 		return gesuch;
 	}
@@ -348,12 +355,15 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		gesuch.getKindContainers()
 			.stream()
 			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream())
-			.forEach(betreuung -> {
-					Optional<Verfuegung> vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung);
-					betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
-				}
-			);
+			.forEach(this::setVorgaengerVerfuegungen);
 		return bgEvaluator.evaluateFamiliensituation(gesuch, sprache.getLocale());
+	}
+
+	private void setVorgaengerVerfuegungen(Betreuung betreuung) {
+		Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuung);
+		betreuung.setVorgaengerAusbezahlteVerfuegung(vorgaengerAusbezahlteVerfuegung.orElse(null));
+		Optional<Verfuegung> vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuung);
+		betreuung.setVorgaengerVerfuegung(vorgaengerVerfuegung.orElse(null));
 	}
 
 	@Override
@@ -381,6 +391,40 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Optional<Verfuegung> findVorgaengerAusbezahlteVerfuegung(@Nonnull Betreuung betreuung) {
+		Objects.requireNonNull(betreuung, "betreuung darf nicht null sein");
+		if (betreuung.getVorgaengerId() == null) {
+			return Optional.empty();
+		}
+
+		// Achtung, hier wird persistence.find() verwendet, da ich fuer das Vorgaengergesuch evt. nicht
+		// Leseberechtigt bin, fuer die Mutation aber schon!
+		Betreuung vorgaengerbetreuung = persistence.find(Betreuung.class, betreuung.getVorgaengerId());
+		if (vorgaengerbetreuung != null) {
+			if (vorgaengerbetreuung.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
+				&& isAusbezahlt(vorgaengerbetreuung)) {
+				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
+				return Optional.ofNullable(vorgaengerbetreuung.getVerfuegung());
+			}
+			return findVorgaengerAusbezahlteVerfuegung(vorgaengerbetreuung);
+		}
+		return Optional.empty();
+	}
+
+	private boolean isAusbezahlt(@Nonnull Betreuung betreuung) {
+		if (betreuung.getVerfuegung() == null) {
+			return false;
+		}
+		return betreuung.getVerfuegung().getZeitabschnitte()
+			.stream()
+			.anyMatch(zeitabschnitt -> zeitabschnitt.getZahlungsstatus().isBereitsBehandeltInZahlungslauf());
+	}
+
+	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_TRAEGERSCHAFT,
 		SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
@@ -401,11 +445,11 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Override
 	public void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
 		@Nonnull Betreuung betreuungNeu, @Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte) {
-		Optional<Verfuegung> vorgaengerVerfuegung = findVorgaengerVerfuegung(betreuungNeu);
-		if (vorgaengerVerfuegung.isPresent()) {
-			List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerVerfuegung = findZeitabschnitteOnVorgaengerVerfuegung(zeitabschnittNeu.getGueltigkeit(),
-				vorgaengerVerfuegung.get());
-			for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitteOnVorgaengerVerfuegung) {
+		Optional<Verfuegung> vorgaengerAusbezahlteVerfuegung = findVorgaengerAusbezahlteVerfuegung(betreuungNeu);
+		if (vorgaengerAusbezahlteVerfuegung.isPresent()) {
+			List<VerfuegungZeitabschnitt> zeitabschnitteOnVorgaengerAusbezahlteVerfuegung = findZeitabschnitteOnVerfuegung(zeitabschnittNeu.getGueltigkeit(),
+				vorgaengerAusbezahlteVerfuegung.get());
+			for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitteOnVorgaengerAusbezahlteVerfuegung) {
 				final Betreuung vorgaengerBetreuung = zeitabschnitt.getVerfuegung().getBetreuung();
 				if ((zeitabschnitt.getZahlungsstatus().isVerrechnet() || zeitabschnitt.getZahlungsstatus().isIgnoriert()) && isNotInZeitabschnitteList
 					(zeitabschnitt, vorgaengerZeitabschnitte)) {
@@ -438,8 +482,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	 * Findet das anspruchberechtigtes Pensum zum Zeitpunkt des neuen Zeitabschnitt-Start
 	 */
 	@Nonnull
-	private List<VerfuegungZeitabschnitt> findZeitabschnitteOnVorgaengerVerfuegung(@Nonnull DateRange newVerfuegungGueltigkeit,
-		@Nonnull Verfuegung lastVerfuegung) {
+	private List<VerfuegungZeitabschnitt> findZeitabschnitteOnVerfuegung(
+		@Nonnull DateRange newVerfuegungGueltigkeit,
+		@Nonnull Verfuegung lastVerfuegung
+	) {
 		List<VerfuegungZeitabschnitt> lastVerfuegungsZeitabschnitte = new ArrayList<>();
 		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : lastVerfuegung.getZeitabschnitte()) {
 			final DateRange gueltigkeitExistingZeitabschnitt = verfuegungZeitabschnitt.getGueltigkeit();

@@ -64,6 +64,8 @@ import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
 import ch.dvbern.ebegu.enums.GesuchTypFromAngebotTyp;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
+import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
+import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
@@ -75,6 +77,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  */
 @Audited
 @CheckGesuchComplete(groups = AntragCompleteValidationGroup.class)
+@CheckEmailGesuchsteller(groups = GesuchstellerSaveValidationGroup.class)
 @Entity
 @Indexed
 @Analyzer(impl = EBEGUGermanAnalyzer.class)
@@ -999,9 +1002,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Nullable
 	public Betreuung getFirstBetreuung() {
-		return getKindContainers().stream()
+		return extractAllBetreuungen().stream()
 			.findFirst()
-			.flatMap(kindContainer -> kindContainer.getBetreuungen().stream().findFirst())
 			.orElse(null);
 	}
 
@@ -1018,5 +1020,23 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			}
 		}
 		return false;
+	}
+
+	public static Gesuch createMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
+		Gesuch mutation = new Gesuch();
+		mutation.setTyp(AntragTyp.MUTATION);
+		mutation.setDossier(dossier);
+		mutation.setGesuchsperiode(gesuchsperiode);
+		mutation.setEingangsdatum(eingangsdatum);
+		return mutation;
+	}
+
+	public static Gesuch createErneuerung(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
+		Gesuch erneuerung = new Gesuch();
+		erneuerung.setTyp(AntragTyp.ERNEUERUNGSGESUCH);
+		erneuerung.setDossier(dossier);
+		erneuerung.setGesuchsperiode(gesuchsperiode);
+		erneuerung.setEingangsdatum(eingangsdatum);
+		return erneuerung;
 	}
 }

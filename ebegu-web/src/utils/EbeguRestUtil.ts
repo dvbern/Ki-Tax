@@ -99,6 +99,7 @@ import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
 import {TSPensumAusserordentlicherAnspruch} from '../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
+import TSPublicAppConfig from '../models/TSPublicAppConfig';
 import TSSupportAnfrage from '../models/TSSupportAnfrage';
 import TSTextRessource from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
@@ -426,7 +427,7 @@ export default class EbeguRestUtil {
     public gesuchstellerToRestObject(restGesuchsteller: any, gesuchsteller: TSGesuchsteller): any {
         if (gesuchsteller) {
             this.abstractPersonEntitytoRestObject(restGesuchsteller, gesuchsteller);
-            restGesuchsteller.mail = gesuchsteller.mail;
+            restGesuchsteller.mail = gesuchsteller.mail || undefined;
             restGesuchsteller.mobile = gesuchsteller.mobile || undefined;
             restGesuchsteller.telefon = gesuchsteller.telefon || undefined;
             restGesuchsteller.telefonAusland = gesuchsteller.telefonAusland || undefined;
@@ -1049,6 +1050,8 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(traegerschaftTS, traegerschaftFromServer);
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
+            traegerschaftTS.institutionCount = traegerschaftFromServer.institutionCount;
+            traegerschaftTS.institutionNames = traegerschaftFromServer.institutionNames;
             return traegerschaftTS;
         }
         return undefined;
@@ -1061,6 +1064,7 @@ export default class EbeguRestUtil {
             restInstitution.mandant = this.mandantToRestObject({}, institution.mandant);
             restInstitution.traegerschaft = this.traegerschaftToRestObject({}, institution.traegerschaft);
             restInstitution.status = institution.status;
+            restInstitution.stammdatenCheckRequired = institution.stammdatenCheckRequired;
             return restInstitution;
         }
         return undefined;
@@ -1074,6 +1078,7 @@ export default class EbeguRestUtil {
             institutionTS.traegerschaft =
                 this.parseTraegerschaft(new TSTraegerschaft(), institutionFromServer.traegerschaft);
             institutionTS.status = institutionFromServer.status;
+            institutionTS.stammdatenCheckRequired = institutionFromServer.stammdatenCheckRequired;
             return institutionTS;
         }
         return undefined;
@@ -2866,6 +2871,7 @@ export default class EbeguRestUtil {
 
             tsZahlung.betragTotalZahlung = zahlungFromServer.betragTotalZahlung;
             tsZahlung.institutionsName = zahlungFromServer.institutionsName;
+            tsZahlung.betreuungsangebotTyp = zahlungFromServer.betreuungsangebotTyp;
             tsZahlung.status = zahlungFromServer.status;
 
             return tsZahlung;
@@ -3211,5 +3217,21 @@ export default class EbeguRestUtil {
             return supportRest;
         }
         return undefined;
+    }
+
+    public parsePublicAppConfig(data: any): TSPublicAppConfig {
+        if (!data) {
+            return undefined;
+        }
+        const publicAppConfigTS = new TSPublicAppConfig();
+        publicAppConfigTS.currentNode = data.currentNode;
+        publicAppConfigTS.devmode = data.devmode;
+        publicAppConfigTS.whitelist = data.whitelist;
+        publicAppConfigTS.dummyMode = data.dummyMode;
+        publicAppConfigTS.sentryEnvName = data.sentryEnvName;
+        publicAppConfigTS.backgroundColor = data.backgroundColor;
+        publicAppConfigTS.zahlungentestmode = data.zahlungentestmode;
+        return publicAppConfigTS;
+
     }
 }

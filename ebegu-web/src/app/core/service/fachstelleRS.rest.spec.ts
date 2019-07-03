@@ -18,6 +18,7 @@ import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSFachstelleName} from '../../../models/enums/TSFachstelleName';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {FachstelleRS} from './fachstelleRS.rest';
 
@@ -47,6 +48,8 @@ describe('fachstelleRS', () => {
         mockFachstelle.name = TSFachstelleName.ERZIEHUNGSBERATUNG;
         mockFachstelle.fachstelleAnspruch = true;
         mockFachstelleRest = ebeguRestUtil.fachstelleToRestObject({}, mockFachstelle);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('Public API', () => {

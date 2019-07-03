@@ -101,17 +101,17 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     public save(): IPromise<any> {
-        if (this.isGesuchValid()) {
-
-            if (!this.form.$dirty) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                return this.$q.when(this.model);
-            }
-            this.errorService.clearAll();
-            return this.gesuchModelManager.saveErwerbspensum(this.gesuchsteller, this.model);
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        if (!this.form.$dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return this.$q.when(this.model);
+        }
+        this.errorService.clearAll();
+        return this.gesuchModelManager.saveErwerbspensum(this.gesuchsteller, this.model);
     }
 
     public cancel(): void {

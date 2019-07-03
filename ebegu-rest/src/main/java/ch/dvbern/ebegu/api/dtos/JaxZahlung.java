@@ -17,11 +17,13 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ZahlungStatus;
 
 /**
@@ -40,40 +42,57 @@ public class JaxZahlung extends JaxAbstractDTO {
 	private String institutionsId;
 
 	@NotNull
+	private BetreuungsangebotTyp betreuungsangebotTyp;
+
+	@NotNull
 	private ZahlungStatus status;
 
 	@NotNull
 	private BigDecimal betragTotalZahlung;
 
+
+	@Nonnull
 	public String getInstitutionsName() {
 		return institutionsName;
 	}
 
-	public void setInstitutionsName(String institutionsName) {
+	public void setInstitutionsName(@Nonnull String institutionsName) {
 		this.institutionsName = institutionsName;
 	}
 
+	@Nonnull
 	public ZahlungStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(ZahlungStatus status) {
+	public void setStatus(@Nonnull ZahlungStatus status) {
 		this.status = status;
 	}
 
+	@Nonnull
 	public BigDecimal getBetragTotalZahlung() {
 		return betragTotalZahlung;
 	}
 
-	public void setBetragTotalZahlung(BigDecimal betragTotalZahlung) {
+	public void setBetragTotalZahlung(@Nonnull BigDecimal betragTotalZahlung) {
 		this.betragTotalZahlung = betragTotalZahlung;
 	}
 
+	@Nonnull
 	public String getInstitutionsId() {
 		return institutionsId;
 	}
 
-	public void setInstitutionsId(String institutionsId) {
+	public void setInstitutionsId(@Nonnull String institutionsId) {
 		this.institutionsId = institutionsId;
+	}
+
+	@Nonnull
+	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
+		return betreuungsangebotTyp;
+	}
+
+	public void setBetreuungsangebotTyp(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
+		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 }

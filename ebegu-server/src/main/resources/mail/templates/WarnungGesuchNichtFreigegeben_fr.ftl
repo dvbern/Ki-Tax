@@ -5,7 +5,7 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 From: ${configuration.senderAddress}
 To: " ${gesuchsteller.fullName} <${gesuchsteller.mail}>
-Subject: <@base64Header>kiBon – Gesuch nicht abgeschlossen</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Demande non confirmée</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
@@ -13,7 +13,7 @@ Content-Type: text/html;charset=utf-8
 ${templateConfiguration.mailCss}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<title>kiBon – Gesuch nicht abgeschlossen</title>
+	<title>kiBon <#if configuration.isDevmode>Système de test</#if> – Demande non confirmée</title>
 
 </head>
 
@@ -21,26 +21,29 @@ ${templateConfiguration.mailCss}
 
 <div>
 	<p>
-		Guten Tag
+		Bonjour,
 	</p>
 	<p>
-		Sie haben sich auf <a href="www.kibon.ch">www.kibon.ch</a> registriert. Sie haben Ihre Daten noch
-		nicht freigegeben.
+		Vous êtes enregistré-e sur  <a href="www.kibon.ch">www.kibon.ch</a> mais vous n'avez pas encore validé vos données.
 	</p>
 	<p>
-		Mit dieser Mail möchten wir Sie daran erinnern, Ihren Antrag rechtzeitig abzuschliessen. Das Gesuch gilt erst mit
-		dem Einsenden der Freigabequittung als eingereicht und kann zuvor durch die Gemeinde nicht bearbeitet werden.
-		Ohne eine Freigabe innert ${anzahlTage} Tagen erfolgt eine automatische Löschung.
-	</p>
-	Bitte beachten Sie, dass der Betreuungsgutschein auf den Folgemonat nach Einreichung des vollständigen Gesuchs
-	und ab Beginn des Betreuungsverhältnisses in der neuen Periode ausgestellt wird.
+		Par le présent courriel, nous souhaitons vous rappeler de clore votre demande dans le délai imparti. La confirmation des données doit nous être remise
+		avant le début de la prise en charge afin que vous ne perdiez pas votre droit. Si vous ne confirmez pas vos données au moyen du formulaire ad hoc dans
+		les ${anzahlTage} jours, votre requête sera automatiquement supprimée.
 	</p>
 	<p>
-		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+		Veuillez noter que le bon de garde est émis pour le mois suivant le dépôt de la demande, à condition que celle-ci soit assortie de tous les documents
+		requis, et pour le début de la prise en charge dans le cadre de la nouvelle période.
 	</p>
 	<p>
-		Dies ist eine automatisch versendete E-Mail. Bitte antworten Sie nicht auf diese Nachricht.
+		Nous vous présentons nos salutations les meilleures.<br/>
+		Votre commune
+	</p>
+	<p>
+		<#if configuration.isDevmode>
+		<b>Le présent message est envoyé par un système test utilisé pour les tutoriels. Les demandes via ce système ne donnent pas droit à un versement.</b><br><br>
+		</#if>
+		Merci de ne pas répondre à ce message automatique.
 	</p>
 </div>
 

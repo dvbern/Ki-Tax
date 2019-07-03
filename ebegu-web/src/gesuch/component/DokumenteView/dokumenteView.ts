@@ -87,7 +87,9 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.DOKUMENTE, $timeout);
         this.parsedNum = parseInt($stateParams.gesuchstellerNumber, 10);
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.IN_BEARBEITUNG);
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+            TSWizardStepName.DOKUMENTE,
+            TSWizardStepStatus.IN_BEARBEITUNG);
         this.calculate();
     }
 

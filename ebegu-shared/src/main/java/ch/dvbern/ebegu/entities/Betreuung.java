@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
@@ -93,6 +94,16 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	private static final long serialVersionUID = -6776987863150835840L;
 
+	/**
+	 * Contains the VorgaengerVerfuegung that has already been paid. It can be null even in Mutationen if there was no Zahlung zet
+	 */
+	@Transient
+	@Nullable
+	private Verfuegung vorgaengerAusbezahlteVerfuegung;
+
+	/**
+	 * It will always contain the vorganegerVerfuegung, regardless it has been paid or not
+	 */
 	@Transient
 	@Nullable
 	private Verfuegung vorgaengerVerfuegung;
@@ -419,6 +430,11 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	}
 
 	@Transient
+	public boolean isAngebotAuszuzahlen() {
+		return EnumUtil.isOneOf(getBetreuungsangebotTyp(), BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
+	}
+
+	@Transient
 	public boolean isAngebotTagesfamilien() {
 		return BetreuungsangebotTyp.TAGESFAMILIEN == getBetreuungsangebotTyp();
 	}
@@ -472,11 +488,20 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	 * @return die Verfuegung oder Vorgaengerverfuegung dieser Betreuung
 	 */
 	@Nullable
-	public Verfuegung getVerfuegungOrVorgaengerVerfuegung() {
+	public Verfuegung getVerfuegungOrVorgaengerAusbezahlteVerfuegung() {
 		if (getVerfuegung() != null) {
 			return getVerfuegung();
 		}
-		return getVorgaengerVerfuegung();
+		return getVorgaengerAusbezahlteVerfuegung();
+	}
+
+	@Nullable
+	public Verfuegung getVorgaengerAusbezahlteVerfuegung() {
+		return vorgaengerAusbezahlteVerfuegung;
+	}
+
+	public void setVorgaengerAusbezahlteVerfuegung(@Nullable Verfuegung vorgaengerAusbezahlteVerfuegung) {
+		this.vorgaengerAusbezahlteVerfuegung = vorgaengerAusbezahlteVerfuegung;
 	}
 
 	@Nullable

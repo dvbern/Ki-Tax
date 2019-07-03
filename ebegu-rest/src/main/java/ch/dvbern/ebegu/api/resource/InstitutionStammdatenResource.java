@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -39,7 +38,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -161,21 +159,6 @@ public class InstitutionStammdatenResource {
 		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
 			.map(instStammdaten -> converter.institutionStammdatenSummaryToJAX(instStammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
-	}
-
-	@ApiOperation("Loescht die InstitutionsStammdaten mit der uebergebenen Id aus der Datenbank")
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@Nullable
-	@DELETE
-	@Path("/{institutionStammdatenId}")
-	@Consumes(MediaType.WILDCARD)
-	public Response removeInstitutionStammdaten(
-		@Nonnull @NotNull @PathParam("institutionStammdatenId") JaxId institutionStammdatenJAXPId,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(institutionStammdatenJAXPId.getId());
-		institutionStammdatenService.removeInstitutionStammdaten(converter.toEntityId(institutionStammdatenJAXPId));
-		return Response.ok().build();
 	}
 
 	/**

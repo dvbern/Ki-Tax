@@ -207,9 +207,12 @@ public class TestfaelleServiceBeanTest extends AbstractEbeguLoginTest {
 	public void testVerfuegung_MeierMeret_mutationScheidung() {
 		Gesuch gesuch = testfaelleService.createAndSaveTestfaelle(TestfaelleService.MEIER_MERET, true, true, gemeinde, gesuchsperiode);
 		assert gesuch != null;
-		final Gesuch mutieren = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
-			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 15), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15), true);
-		ueberpruefeVerfuegungszeitabschnitte(mutieren, "MutationScheidung");
+		//		final Gesuch correctedGesuch = TestDataUtil.correctTimestampVerfuegt(gesuch, LocalDateTime.MAX, persistence);
+		final Gesuch mutation = testfaelleService.mutierenScheidung(gesuch.getDossier().getId(),
+			gesuch.getGesuchsperiode().getId(), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 15),
+			LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 15),
+			true);
+		ueberpruefeVerfuegungszeitabschnitte(mutation, "MutationScheidung");
 	}
 
 	/**

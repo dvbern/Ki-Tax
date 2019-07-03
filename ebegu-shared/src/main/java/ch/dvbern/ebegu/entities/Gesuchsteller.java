@@ -46,9 +46,9 @@ public class Gesuchsteller extends AbstractPersonEntity {
 	private static final long serialVersionUID = -9032257320578372570L;
 
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
-	@Size(min = 5, max = DB_DEFAULT_MAX_LENGTH)
-	@NotNull
-	@Column(nullable = false)
+	@Size(max = DB_DEFAULT_MAX_LENGTH)
+	@Nullable
+	@Column(nullable = true)
 	private String mail;
 
 	@Column(nullable = true, length = Constants.DB_DEFAULT_MAX_LENGTH)
@@ -80,11 +80,12 @@ public class Gesuchsteller extends AbstractPersonEntity {
 	public Gesuchsteller() {
 	}
 
+	@Nullable
 	public String getMail() {
 		return mail;
 	}
 
-	public void setMail(final String mail) {
+	public void setMail(@Nullable final String mail) {
 		this.mail = mail;
 	}
 

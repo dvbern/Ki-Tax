@@ -836,6 +836,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		// Gemeinde darf nicht ueberschrieben werden
 		if (dossierJAX.getGemeinde() != null) {
+			requireNonNull(dossierJAX.getGemeinde().getId());
 			Optional<Gemeinde> gemeindeFromDB = gemeindeService.findGemeinde(dossierJAX.getGemeinde().getId());
 			if (gemeindeFromDB.isPresent()) {
 				dossier.setGemeinde(gemeindeFromDB.get());
@@ -1206,6 +1207,13 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
 		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
 		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
+
+		Collection<Institution> institutionen = institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
+		// its enough if we just pass the names here, we only want to display it later
+		jaxTraegerschaft.setInstitutionNames(institutionen.stream()
+			.map(Institution::getName)
+			.collect(Collectors.joining(", ")));
+		jaxTraegerschaft.setInstitutionCount(institutionen.size());
 		return jaxTraegerschaft;
 	}
 
@@ -1256,6 +1264,7 @@ public class JaxBConverter extends AbstractConverter {
 		assert persistedInstitution.getMandant() != null;
 		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
 		jaxInstitution.setStatus(persistedInstitution.getStatus());
+		jaxInstitution.setStammdatenCheckRequired(persistedInstitution.isStammdatenCheckRequired());
 		if (persistedInstitution.getTraegerschaft() != null) {
 			jaxInstitution.setTraegerschaft(traegerschaftToJAX(persistedInstitution.getTraegerschaft()));
 		}
@@ -1268,6 +1277,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToEntity(institutionJAXP, institution);
 		institution.setName(institutionJAXP.getName());
 		institution.setStatus(institutionJAXP.getStatus());
+		institution.setStammdatenCheckRequired(institutionJAXP.isStammdatenCheckRequired());
 
 		if (institutionJAXP.getMandant() != null && institutionJAXP.getMandant().getId() != null) {
 			final Optional<Mandant> mandantFromDB = mandantService.findMandant(institutionJAXP.getMandant().getId());
@@ -3699,14 +3709,14 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	public JaxZahlung zahlungToJAX(final Zahlung persistedZahlung) {
-		final JaxZahlung jaxZahlungs = new JaxZahlung();
-		convertAbstractVorgaengerFieldsToJAX(persistedZahlung, jaxZahlungs);
-		jaxZahlungs.setStatus(persistedZahlung.getStatus());
-		jaxZahlungs.setBetragTotalZahlung(persistedZahlung.getBetragTotalZahlung());
-		jaxZahlungs.setInstitutionsName(persistedZahlung.getInstitutionStammdaten().getInstitution().getName());
-		jaxZahlungs.setInstitutionsId(persistedZahlung.getInstitutionStammdaten().getInstitution().getId());
-
-		return jaxZahlungs;
+		final JaxZahlung jaxZahlung = new JaxZahlung();
+		convertAbstractVorgaengerFieldsToJAX(persistedZahlung, jaxZahlung);
+		jaxZahlung.setStatus(persistedZahlung.getStatus());
+		jaxZahlung.setBetragTotalZahlung(persistedZahlung.getBetragTotalZahlung());
+		jaxZahlung.setInstitutionsName(persistedZahlung.getInstitutionStammdaten().getInstitution().getName());
+		jaxZahlung.setBetreuungsangebotTyp(persistedZahlung.getInstitutionStammdaten().getBetreuungsangebotTyp());
+		jaxZahlung.setInstitutionsId(persistedZahlung.getInstitutionStammdaten().getInstitution().getId());
+		return jaxZahlung;
 	}
 
 	@Nonnull

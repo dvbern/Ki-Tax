@@ -38,11 +38,13 @@ import ch.dvbern.ebegu.api.resource.MandantResource;
 import ch.dvbern.ebegu.api.util.version.VersionInfoBean;
 import ch.dvbern.ebegu.authentication.AuthAccessElement;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AuthService;
@@ -125,6 +127,17 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 	}
 
 	@Override
+	public JaxBenutzerResponseWrapper isBenutzerGesperrt(@Nonnull String benutzerId) {
+		Benutzer benutzer = benutzerService.findBenutzerById(benutzerId).orElseThrow(() -> {
+			LOG.error("Benutzer not found for passed id: {}", benutzerId);
+			return new EbeguEntityNotFoundException("isBenutzerGesperrt", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		});
+		JaxBenutzerResponseWrapper responseWrapper = new JaxBenutzerResponseWrapper();
+		responseWrapper.setStoredBenutzerGesperrt(benutzer.getStatus() == BenutzerStatus.GESPERRT);
+		return responseWrapper;
+	}
+
+	@Override
 	public JaxBenutzerResponseWrapper updateOrStoreBenutzer(@Nonnull JaxExternalBenutzer externalBenutzer) {
 		LOG.debug("Requested url {} ", this.uriInfo.getAbsolutePath());
 		LOG.debug("Requested forwared for {} ", this.request.getHeader("X-Forwarded-For"));
@@ -159,12 +172,22 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		benutzer.setMandant(mandant);
 
 		Benutzer storedUser;
-		try {
-			storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
-		} catch (Exception ignore) {
-			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION, LocaleThreadLocal.get());
+
+
+		Optional<Benutzer> invitedUserOpt = benutzerService.findUserWithInvitationByEmail(benutzer);
+		// wenn der Benutzer eingeladen ist, muss er die Einladung akzeptieren
+		if(invitedUserOpt.isPresent()) {
+			final Benutzer presentUser = invitedUserOpt.get();
+			String url = benutzerService.createInvitationLink(presentUser, Einladung.forRolle(presentUser));
+			externalBenutzer.setInvitationLink(url);
+			externalBenutzer.setInvitationPending(true);
+			String rolleIst = ServerMessageUtil.translateEnumValue(UserRole.GESUCHSTELLER, LocaleThreadLocal.get());
+			String rolleSoll = ServerMessageUtil.translateEnumValue(presentUser.getRole(), LocaleThreadLocal.get());
+			String msg = ServerMessageUtil.translateEnumValue(ERROR_PENDING_INVITATION, LocaleThreadLocal.get(), rolleIst, rolleSoll);
 			return convertBenutzerResponseWrapperToJax(externalBenutzer, msg);
 		}
+
+		storedUser = benutzerService.updateOrStoreUserFromIAM(benutzer);
 
 		return convertBenutzerResponseWrapperToJax(convertBenutzerToJax(storedUser), null);
 	}
@@ -219,13 +242,11 @@ public class LoginConnectorResource implements ILoginConnectorResource {
 		if (existingBenutzerWithExternalUuidOptional.isPresent()) {
 			Benutzer duplicatedBenutzer = existingBenutzerWithExternalUuidOptional.get();
 			benutzerService.deleteExternalUUIDInNewTransaction(duplicatedBenutzer.getId());
-			LOG.warn(
-				"Es wurde ein bestehender Benutzer mit derselben externalUUID gefunden. Bei diesem wurde die externalUUID "
-					+ "gelöscht. username={} externalUUID={}"
-				,
-				duplicatedBenutzer.getUsername(),
-				duplicatedBenutzer.getExternalUUID());
-			existingBenutzer.addBemerkung("ExternalUUID uebernommen von Benutzer mit ID: " + duplicatedBenutzer.getId());
+			String bemerkung =
+				"ExternalUUID uebernommen von Benutzer: username=" + duplicatedBenutzer.getUsername()
+					+ " externalUUID= " + duplicatedBenutzer.getExternalUUID() + ". Bei diesem wurde die externalUUID gelöscht" ;
+			LOG.warn(bemerkung);
+			existingBenutzer.addBemerkung(bemerkung);
 		}
 
 		//external uuid setzen

@@ -14,6 +14,7 @@
  */
 
 import {IComponentOptions, IController} from 'angular';
+import {Moment} from 'moment';
 import * as moment from 'moment';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
@@ -95,7 +96,7 @@ export class DvBisher implements IController {
             return [this.$translate.instant('LABEL_KEINE_ANGABE')];  // vorher war keine angabe da
         }
         if (this.gs instanceof moment) {
-            return [DateUtil.momentToLocalDateFormat(this.gs, defaultDateFormat)];
+            return [DateUtil.momentToLocalDateFormat(this.gs as Moment, defaultDateFormat)];
         }
         if (this.gs === true) {
             return [this.$translate.instant('LABEL_JA')];
@@ -126,7 +127,7 @@ export class DvBisher implements IController {
 
     public equals(gs: any, ja: any): boolean {
         if (gs instanceof moment) {
-            return this.equals(DateUtil.momentToLocalDateFormat(gs, defaultDateFormat),
+            return this.equals(DateUtil.momentToLocalDateFormat(gs as Moment, defaultDateFormat),
                 DateUtil.momentToLocalDateFormat(ja, defaultDateFormat));
         }
         if (Array.isArray(gs)) {

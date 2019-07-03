@@ -31,6 +31,7 @@ export class DVLoading implements IDirective {
 
     public static factory(): IDirectiveFactory {
         const directive = () => new DVLoading();
+        // @ts-ignore
         directive.$inject = [];
         return directive;
     }
@@ -50,7 +51,9 @@ export class DVLoading implements IDirective {
             } else {
                 const delay = 500;
                 promise = controller.$timeout(() => {
-                    element.hide();
+                    if (element) {
+                        element.hide();
+                    }
                 }, delay);
 
             }

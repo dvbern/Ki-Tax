@@ -46,6 +46,7 @@ export class DVVersionController implements IController {
     public readonly frontendVersion: string = VERSION;
     public showSingleVersion: boolean = true;
     public currentYear: number;
+    public currentNode: string;
 
     public constructor(
         private readonly $rootScope: IRootScopeService,
@@ -75,7 +76,8 @@ export class DVVersionController implements IController {
         });
 
         // we use this as a healthcheck after we register the listener for VERSION_MISMATCH
-        this.applicationPropertyRS.getBackgroundColor();
+        this.applicationPropertyRS.getBackgroundColorFromServer();
+        this.applicationPropertyRS.getPublicPropertiesCached().then(value => this.currentNode = value.currentNode);
     }
 
     private updateDisplayVersion(): void {

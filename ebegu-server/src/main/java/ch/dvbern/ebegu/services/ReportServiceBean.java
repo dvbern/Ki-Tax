@@ -1983,6 +1983,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setEmail(institutionStammdaten.getMail());
 		row.setBaby(institutionStammdaten.getAlterskategorieBaby());
 		row.setVorschulkind(institutionStammdaten.getAlterskategorieVorschule());
+		row.setKindergarten(institutionStammdaten.getAlterskategorieKindergarten());
 		row.setSchulkind(institutionStammdaten.getAlterskategorieSchule());
 		if (!institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
 			row.setSubventioniert(institutionStammdaten.getSubventioniertePlaetze());

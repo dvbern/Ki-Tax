@@ -133,10 +133,13 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		if (gemeinde != null) {
 			boolean allGemeindenAllowed = principalBean.isCallerInAnyOfRole(
 				UserRole.getRolesWithoutAbhaengigkeit(RollenAbhaengigkeit.GEMEINDE));
+			if (allGemeindenAllowed) {
+				return;
+			}
 			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
 				principalBean.isCallerInAnyOfRole(ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS,
 					ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, REVISOR, STEUERAMT, JURIST);
-			if (!allGemeindenAllowed && !allowedForGemeinde) {
+			if (!allowedForGemeinde) {
 				throwViolation(gemeinde);
 			}
 		}
@@ -146,9 +149,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkWriteAuthorization(@Nullable Gemeinde gemeinde) {
 		if (gemeinde != null) {
 			boolean allGemeindenAllowed = principalBean.isCallerInAnyOfRole(SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT);
+			if (allGemeindenAllowed) {
+				return;
+			}
 			boolean allowedForGemeinde = isUserAllowedForGemeinde(gemeinde) &&
 				principalBean.isCallerInAnyOfRole(ADMIN_BG, ADMIN_TS, ADMIN_GEMEINDE);
-			if (!allGemeindenAllowed && !allowedForGemeinde) {
+			if (!allowedForGemeinde) {
 				throwViolation(gemeinde);
 			}
 		}
@@ -1002,13 +1008,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkReadAuthorizationZahlung(@Nullable Zahlung zahlung) {
 		if (zahlung != null && zahlung.getZahlungsauftrag() != null) {
 			checkReadAuthorizationZahlungsauftrag(zahlung.getZahlungsauftrag());
-		}
-	}
-
-	@Override
-	public void checkWriteAuthorizationZahlung(@Nullable Zahlung zahlung) {
-		if (zahlung != null && zahlung.getZahlungsauftrag() != null) {
-			checkWriteAuthorizationZahlungsauftrag(zahlung.getZahlungsauftrag());
 		}
 	}
 

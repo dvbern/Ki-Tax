@@ -118,11 +118,12 @@ public class DownloadFileServiceBean implements DownloadFileService {
 
 	private void deleteShortTermAccessTokens() {
 		LocalDateTime deleteOlderThan = LocalDateTime.now().minus(Constants.MAX_SHORT_TEMP_DOWNLOAD_AGE_MINUTES, ChronoUnit.MINUTES);
-		LOG.debug("Deleting {} TempDocuments before {}", TokenLifespan.SHORT, deleteOlderThan);
+		LOG.debug("Deleting {} ShortTerm TempDocuments before {}", TokenLifespan.SHORT, deleteOlderThan);
 
 		try {
 			requireNonNull(deleteOlderThan);
-			this.deleteAllTokensBefore(DownloadFile.class, TokenLifespan.SHORT, deleteOlderThan);
+			int result = this.deleteAllTokensBefore(DownloadFile.class, TokenLifespan.SHORT, deleteOlderThan);
+			LOG.info("... Deleteted {} ShortTerm TempDocuments", result);
 		} catch (RuntimeException rte) {
 			// timer methods may not throw exceptions or the timer will get cancelled (as per spec)
 			String msg = "Unexpected error while deleting old TempDocuments";
@@ -132,11 +133,12 @@ public class DownloadFileServiceBean implements DownloadFileService {
 
 	private void deleteLongTermAccessTokens() {
 		LocalDateTime deleteOlderThan = LocalDateTime.now().minus(Constants.MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES, ChronoUnit.MINUTES);
-		LOG.debug("Deleting {} TempDocuments before {}", TokenLifespan.LONG, deleteOlderThan);
+		LOG.debug("Deleting {} LongTerm TempDocuments before {}", TokenLifespan.LONG, deleteOlderThan);
 
 		try {
 			requireNonNull(deleteOlderThan);
-			this.deleteAllTokensBefore(DownloadFile.class, TokenLifespan.LONG, deleteOlderThan);
+			int result = this.deleteAllTokensBefore(DownloadFile.class, TokenLifespan.LONG, deleteOlderThan);
+			LOG.info("... Deleteted {} LongTerm TempDocuments", result);
 		} catch (RuntimeException rte) {
 			// timer methods may not throw exceptions or the timer will get cancelled (as per spec)
 			String msg = "Unexpected error while deleting old TempDocuments";

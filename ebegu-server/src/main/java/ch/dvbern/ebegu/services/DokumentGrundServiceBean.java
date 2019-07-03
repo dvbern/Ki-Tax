@@ -191,4 +191,11 @@ public class DokumentGrundServiceBean extends AbstractBaseService implements Dok
 			persistence.remove(DokumentGrund.class, dokument.getId());
 		}
 	}
+
+	@Override
+	public void removeIfEmpty(@Nonnull DokumentGrund dokumentGrund) {
+		if (dokumentGrund.isEmpty()) {
+			persistence.remove(dokumentGrund);
+		}
+	}
 }

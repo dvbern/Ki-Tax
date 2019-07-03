@@ -46,6 +46,8 @@ describe('WizardStepRS', () => {
         TestDataUtil.setAbstractMutableFieldsUndefined(mockWizardStep);
         mockWizardStepRest = ebeguRestUtil.wizardStepToRestObject({}, mockWizardStep);
         mockWizardStepListRest = [mockWizardStepRest];
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('Public API', () => {

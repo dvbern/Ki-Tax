@@ -201,8 +201,7 @@ public class InstitutionResource {
 		return optional.map(institution -> converter.institutionToJAX(institution)).orElse(null);
 	}
 
-	@ApiOperation("Remove an Institution logically by his institution-id as parameter")
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
+	@ApiOperation("Remove an Institution from the DB by its institution-id as parameter")
 	@Nullable
 	@DELETE
 	@Path("/{institutionId}")
@@ -212,7 +211,7 @@ public class InstitutionResource {
 		@Context HttpServletResponse response) {
 
 		requireNonNull(institutionJAXPId.getId());
-		institutionService.setInstitutionInactive(converter.toEntityId(institutionJAXPId));
+		institutionService.removeInstitution(converter.toEntityId(institutionJAXPId));
 		return Response.ok().build();
 	}
 
@@ -285,5 +284,38 @@ public class InstitutionResource {
 			.filter(inst -> inst.getStatus() == InstitutionStatus.EINGELADEN)
 			.count();
 		return Response.ok(anzahl > 0).build();
+	}
+
+	@ApiOperation(
+		value = "Returns true, if the currently logged in Benutzer has any Institutionen which Stammdaten haven't been checked in the last 100 days",
+		response = Boolean.class)
+	@Nonnull
+	@GET
+	@Path("/isStammdatenCheckRequired/currentuser")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response isStammdatenCheckRequiredForCurrentBenutzer() {
+		long anzahl = institutionService.getAllowedInstitutionenForCurrentBenutzer(true).stream()
+			.filter(Institution::isStammdatenCheckRequired)
+			.count();
+		return Response.ok(anzahl > 0).build();
+	}
+
+	@ApiOperation(
+		value = "Returns the given institution",
+		response = Boolean.class)
+	@Nonnull
+	@PUT
+	@Path("/deactivateStammdatenCheckRequired/{institutionId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deactivateStammdatenCheckRequired(
+		@Nonnull @NotNull @PathParam("institutionId") JaxId institutionJaxId
+	) {
+		Objects.requireNonNull(institutionJaxId.getId());
+		final String institutionId = converter.toEntityId(institutionJaxId);
+
+		final Institution updatedInstitution = institutionService.deactivateStammdatenCheckRequired(institutionId);
+		return Response.ok(updatedInstitution).build();
 	}
 }

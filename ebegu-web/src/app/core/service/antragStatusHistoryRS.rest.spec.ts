@@ -38,6 +38,8 @@ describe('antragStatusHistoryRS', () => {
         antragStatusHistoryRS = $injector.get('AntragStatusHistoryRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     }));
 
     describe('Public API', () => {
@@ -73,13 +75,13 @@ describe('antragStatusHistoryRS', () => {
         });
         it('should return undefined if the gesuch is undefined', () => {
             antragStatusHistoryRS.loadLastStatusChange(undefined);
-            expect(antragStatusHistoryRS.lastChange).toBeUndefined();
+            antragStatusHistoryRS.lastChange$.subscribe(value => expect(value).toBeUndefined(), fail);
         });
         it('should return undefined if the gesuch id is undefined', () => {
             const gesuch = new TSGesuch();
             gesuch.id = undefined;
             antragStatusHistoryRS.loadLastStatusChange(gesuch);
-            expect(antragStatusHistoryRS.lastChange).toBeUndefined();
+            antragStatusHistoryRS.lastChange$.subscribe(value => expect(value).toBeUndefined(), fail);
         });
     });
 

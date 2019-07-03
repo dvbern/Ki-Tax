@@ -79,7 +79,7 @@ public abstract class AbstractBGRechner {
 			MATH.multiplyNullSafe(stundenGemaessPensumUndAnteilMonat, verguenstigungProTag);
 
 		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
-		if (betreuungspensum != null && betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
+		if (betreuungspensum.compareTo(BigDecimal.ZERO) > 0) {
 			anteilVerguenstigesPensumAmBetreuungspensum =
 				MATH.divide(verfuegungZeitabschnitt.getBgPensum(), betreuungspensum);
 		}
@@ -94,10 +94,10 @@ public abstract class AbstractBGRechner {
 		verguenstigung = MathUtil.roundToFrankenRappen(verguenstigung);
 		BigDecimal elternbeitrag = MATH.subtract(vollkosten, verguenstigung);
 		// Runden und auf Zeitabschnitt zurückschreiben
-		verfuegungZeitabschnitt.setMinimalerElternbeitrag(minBetrag);
+		verfuegungZeitabschnitt.setMinimalerElternbeitrag(MathUtil.roundToFrankenRappen(minBetrag));
 		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungVollkosten(
 			verguenstigungVorVollkostenUndMinimalbetrag);
-		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(verguenstigungVorMinimalbetrag);
+		verfuegungZeitabschnitt.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(MathUtil.roundToFrankenRappen(verguenstigungVorMinimalbetrag));
 		verfuegungZeitabschnitt.setVerguenstigung(verguenstigung);
 		verfuegungZeitabschnitt.setVollkosten(MathUtil.roundToFrankenRappen(vollkosten));
 		verfuegungZeitabschnitt.setElternbeitrag(MathUtil.roundToFrankenRappen(elternbeitrag));

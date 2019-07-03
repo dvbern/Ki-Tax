@@ -184,24 +184,6 @@ public class GesuchResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
-	public void testAntragMutieren() {
-		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
-		gesuch.setGueltig(true);
-		gesuch.setTimestampVerfuegt(LocalDateTime.now());
-		gesuch = persistence.merge(gesuch);
-		gesuchResource.updateStatus(new JaxId(gesuch.getId()), AntragStatusDTO.GEPRUEFT);
-		gesuchResource.updateStatus(new JaxId(gesuch.getId()), AntragStatusDTO.VERFUEGEN);
-		gesuchResource.updateStatus(new JaxId(gesuch.getId()), AntragStatusDTO.VERFUEGT);
-
-		//noinspection ConstantConditions
-		final Response response = gesuchResource.antragMutieren(new JaxId(gesuch.getId()), LocalDate.now().toString(), null, null);
-
-		Assert.assertNotNull(response);
-		final Object entity = response.getEntity();
-		Assert.assertNotNull(entity);
-	}
-
-	@Test
 	public void testGesuchBySTVFreigeben_NotExistingGesuch() {
 		try {
 			//noinspection ConstantConditions

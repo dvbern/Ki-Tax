@@ -34,6 +34,7 @@ public class InstitutionenDataRow {
 	private String oeffnungszeiten = null;
 	private Boolean baby = null;
 	private Boolean vorschulkind = null;
+	private Boolean kindergarten = null;
 	private Boolean schulkind = null;
 	private Boolean subventioniert = null;
 	private BigDecimal kapazitaet = null;
@@ -182,5 +183,13 @@ public class InstitutionenDataRow {
 
 	public void setAnschrift(String anschrift) {
 		this.anschrift = anschrift;
+	}
+
+	public Boolean getKindergarten() {
+		return kindergarten;
+	}
+
+	public void setKindergarten(Boolean kindergarten) {
+		this.kindergarten = kindergarten;
 	}
 }

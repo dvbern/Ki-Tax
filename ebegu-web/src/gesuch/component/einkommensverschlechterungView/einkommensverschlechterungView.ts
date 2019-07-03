@@ -127,17 +127,18 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     }
 
     public save(): IPromise<TSEinkommensverschlechterungContainer> {
-        if (this.isGesuchValid()) {
-            if (!this.form.$dirty) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                return this.$q.when(this.model.getEkvContToWorkWith());
-            }
-            this.errorService.clearAll();
-            this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
-            return this.gesuchModelManager.saveEinkommensverschlechterungContainer();
+        if (!this.isGesuchValid()) {
+            return undefined;
         }
-        return undefined;
+
+        if (!this.form.$dirty) {
+            // If there are no changes in form we don't need anything to update on Server and we could return the
+            // promise immediately
+            return this.$q.when(this.model.getEkvContToWorkWith());
+        }
+        this.errorService.clearAll();
+        this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        return this.gesuchModelManager.saveEinkommensverschlechterungContainer();
     }
 
     public calculate(): void {

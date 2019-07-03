@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -59,11 +58,6 @@ public interface InstitutionService {
 	Institution setInstitutionInactive(@Nonnull String institutionId);
 
 	/**
-	 * Delete Institution on the Database.
-	 */
-	void deleteInstitution(@Nonnull String institutionId);
-
-	/**
 	 * @param traegerschaftId Der ID der Traegerschaft, fuer welche die Institutionen gesucht werden muessen
 	 * @return Liste mit allen Institutionen der gegebenen Traegerschaft
 	 */
@@ -99,4 +93,24 @@ public interface InstitutionService {
 	 */
 	BetreuungsangebotTyp getAngebotFromInstitution(@Nonnull String institutionId);
 
+	/**
+	 * Will take all Institutions and check whether its Stammdaten has to be checked (stammdaten haven't been saved for a long time) or not.
+	 * If it does it will set the Flag stammdatenCheckRequired to true. It will set it to false otherwise.
+	 */
+	void calculateStammdatenCheckRequired();
+
+	/**
+	 * Updates the Flag stammdatenCheckRequired to false and updates the Stammdaten so timestamp_mutiert gets updated
+	 */
+	Institution deactivateStammdatenCheckRequired(@Nonnull String institutionId);
+
+	/**
+	 * Updates the Flag stammdatenCheckRequired to the given value
+	 */
+	Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired);
+
+	/**
+	 * Removes the institution given by the id totally from the DB if this isn't linked to any other object
+	 */
+	void removeInstitution(@Nonnull String institutionId);
 }

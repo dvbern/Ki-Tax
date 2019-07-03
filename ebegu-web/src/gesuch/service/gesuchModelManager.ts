@@ -199,6 +199,7 @@ export default class GesuchModelManager {
         // Liste zuruecksetzen, da u.U. im Folgegesuch andere Stammdaten gelten!
         this.activInstitutionenList = undefined;
         this.loadGemeindeStammdaten();
+        this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
 
         return gesuch;
     }
@@ -427,15 +428,6 @@ export default class GesuchModelManager {
         });
     }
 
-    public saveFinanzielleSituationStart(): IPromise<TSGesuch> {
-        // tslint:disable-next-line:no-identical-functions
-        return this.finanzielleSituationRS.saveFinanzielleSituationStart(this.gesuch).then(gesuchResponse => {
-            this.gesuch = gesuchResponse;
-
-            return this.gesuch;
-        });
-    }
-
     /**
      * Speichert den StammdatenToWorkWith.
      */
@@ -453,11 +445,19 @@ export default class GesuchModelManager {
             });
     }
 
+    public saveFinanzielleSituationStart(): IPromise<TSGesuch> {
+        // tslint:disable-next-line:no-identical-functions
+        return this.finanzielleSituationRS.saveFinanzielleSituationStart(this.gesuch).then(gesuchResponse => {
+            this.gesuch = gesuchResponse;
+
+            return this.gesuch;
+        });
+    }
+
     public saveFinanzielleSituation(): IPromise<TSFinanzielleSituationContainer> {
         return this.finanzielleSituationRS.saveFinanzielleSituation(
-            this.getStammdatenToWorkWith().finanzielleSituationContainer,
-            this.getStammdatenToWorkWith().id,
-            this.gesuch.id)
+            this.gesuch.id,
+            this.getStammdatenToWorkWith())
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
 
@@ -510,6 +510,9 @@ export default class GesuchModelManager {
     }
 
     public convertKindNumberToKindIndex(kindNumber: number): number {
+        if (!this.getGesuch()) {
+            return -1;
+        }
         for (let i = 0; i < this.getGesuch().kindContainers.length; i++) {
             if (this.getGesuch().kindContainers[i].kindNummer === kindNumber) {
                 return i;
@@ -762,23 +765,26 @@ export default class GesuchModelManager {
                 .then(betreuungenStatus => handleStatus(betreuungenStatus, storedBetreuung)));
     }
 
-    public handleErweiterteBetreuung(): void {
+    public handleErweiterteBetreuung(): IPromise<TSGesuch> {
         if (!this.getGesuch() || !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerJugendamtRoles())) {
-            return;
+            return this.$q.when(this.getGesuch());
         }
 
         if (this.getGesuch().isThereAnyBetreuungWithErweitertemBetreuungsaufwand()) {
             // Mindestens 1 Kind mit erweitertem Aufwand
             // Wir setzen das Flag auf TRUE. Achtung: Es darf NIE MEHR auf false gesetzt werden!
             this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt = true;
-            this.updateGesuch();
-        } else if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
+            return this.updateGesuch();
+        }
+
+        if (!this.getGesuch().extractFamiliensituation().behinderungszuschlagFuerMindEinKindEinmalBeantragt) {
             // Keine Betreuungen (mehr?) mit erweitertem Aufwand -> FinSit neu zwingend
             // Dies aber nur, wenn der GS zu keinem Zeitpunkt bei irgendeinem Kind das Behinderungsflag gesetzt hatte!
             this.getGesuch().extractFamiliensituation().antragNurFuerBehinderungszuschlag = false;
-            this.updateGesuch();
+            return this.updateGesuch();
         }
 
+        return this.$q.when(this.getGesuch());
     }
 
     private doSaveBetreuung(
@@ -1024,14 +1030,17 @@ export default class GesuchModelManager {
     }
 
     public removeBetreuung(): IPromise<void> {
-        return this.betreuungRS.removeBetreuung(this.getBetreuungToWorkWith().id,
-            this.gesuch.id).then(() => {
+        return this.betreuungRS.removeBetreuung(
+            this.getBetreuungToWorkWith().id,
+            this.gesuch.id
+        ).then(() => {
             this.removeBetreuungFromKind();
-            this.handleErweiterteBetreuung();
 
             return this.gesuchRS.getGesuchBetreuungenStatus(this.gesuch.id).then(betreuungenStatus => {
                 this.gesuch.gesuchBetreuungenStatus = betreuungenStatus;
-                this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
+                this.handleErweiterteBetreuung().then(() => {
+                    this.kindRS.saveKind(this.getKindToWorkWith(), this.gesuch.id);
+                });
             });
         });
     }
@@ -1191,6 +1200,7 @@ export default class GesuchModelManager {
     private calculateGesuchStatusVerfuegt(): void {
         if (!this.isThereAnyOpenBetreuung()) {
             this.gesuch.status = this.calculateNewStatus(TSAntragStatus.VERFUEGT);
+            this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
         }
     }
 
@@ -1370,6 +1380,9 @@ export default class GesuchModelManager {
      * Returns true if the Gesuch has the given status
      */
     public isGesuchStatus(status: TSAntragStatus): boolean {
+        if (!this.gesuch) {
+            return undefined;
+        }
         return this.gesuch.status === status;
     }
 
@@ -1463,24 +1476,6 @@ export default class GesuchModelManager {
         return this.gesuch ?
             this.gesuch.typ === TSAntragTyp.ERSTGESUCH || this.gesuch.typ === TSAntragTyp.ERNEUERUNGSGESUCH :
             true;
-    }
-
-    public saveMutation(): IPromise<TSGesuch> {
-        return this.gesuchRS.antragMutieren(this.gesuch.id, this.gesuch.eingangsdatum)
-            .then(response => this.handleSave(response));
-    }
-
-    public saveErneuerungsgesuch(): IPromise<TSGesuch> {
-        return this.gesuchRS.antragErneuern(this.gesuch.gesuchsperiode.id, this.gesuch.id, this.gesuch.eingangsdatum)
-            .then(response => this.handleSave(response));
-    }
-
-    private handleSave(response: TSGesuch): IPromise<TSGesuch> {
-        this.setGesuch(response);
-
-        return this.wizardStepManager.findStepsFromGesuch(response.id).then(() => {
-            return this.getGesuch();
-        });
     }
 
     /**

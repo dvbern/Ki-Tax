@@ -17,11 +17,14 @@ package ch.dvbern.ebegu.tests;
 
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.services.DokumentGrundService;
+import ch.dvbern.ebegu.services.DokumentService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.jboss.arquillian.junit.Arquillian;
@@ -44,19 +47,54 @@ public class DokumentGrundServiceTest extends AbstractEbeguLoginTest {
 	private DokumentGrundService dokumentGrundService;
 
 	@Inject
+	private DokumentService dokumentService;
+
+	@Inject
 	private Persistence persistence;
 
 	@Test
 	public void createDokumentGrund() {
 		Assert.assertNotNull(dokumentGrundService);
 
+		createDokumentGrundAndAssertCreation();
+	}
+
+	@Test
+	public void removeIfEmpty_NotEmpty() {
+		DokumentGrund dokumentGrund = createDokumentGrundAndAssertCreation();
+
+		dokumentGrundService.removeIfEmpty(dokumentGrund);
+
+		Optional<DokumentGrund> dokumentGrundRemovedOpt = dokumentGrundService.findDokumentGrund(dokumentGrund.getId());
+		Assert.assertTrue(dokumentGrundRemovedOpt.isPresent());
+	}
+
+	@Test
+	@Transactional(TransactionMode.DEFAULT)
+	public void removeIfEmpty_Empty() {
+		DokumentGrund dokumentGrund = createDokumentGrundAndAssertCreation();
+
+		dokumentGrund.getDokumente().forEach(dokument -> {
+			final Optional<Dokument> foundDokument = dokumentService.findDokument(dokument.getId());
+			Assert.assertTrue(foundDokument.isPresent());
+			dokumentService.removeDokument(foundDokument.get());
+		});
+
+		Optional<DokumentGrund> dokumentGrundRemovedOpt = dokumentGrundService.findDokumentGrund(dokumentGrund.getId());
+		Assert.assertFalse(dokumentGrundRemovedOpt.isPresent());
+	}
+
+	@Nonnull
+	private DokumentGrund createDokumentGrundAndAssertCreation() {
 		DokumentGrund dokumentGrund = TestDataUtil.createDefaultDokumentGrund();
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence);
 		dokumentGrund.setGesuch(gesuch);
 
 		dokumentGrundService.saveDokumentGrund(dokumentGrund);
+
 		Optional<DokumentGrund> dokumentGrundOpt = dokumentGrundService.findDokumentGrund(dokumentGrund.getId());
 		Assert.assertTrue(dokumentGrundOpt.isPresent());
+		return dokumentGrund;
 	}
 
 }

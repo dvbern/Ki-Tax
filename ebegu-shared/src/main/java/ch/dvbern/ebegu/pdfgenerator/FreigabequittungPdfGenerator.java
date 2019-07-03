@@ -145,7 +145,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			dataMatrixBean.generateBarcode(canvas, "§FREIGABE|OPEN|" + getGesuch().getId() + '§');
 			canvas.finish();
 			Image image = Image.getInstance(bytesOut.toByteArray());
-			image.setAbsolutePosition(document.leftMargin(), document.getPageSize().getHeight() - 2 * Utilities.millimetersToPoints(PdfLayoutConfiguration.LOGO_TOP_IN_MM));
+			image.setAbsolutePosition(document.leftMargin(), document.getPageSize().getHeight() - 2 * Utilities.millimetersToPoints(PdfLayoutConfiguration.BARCODE_TOP_IN_MM));
 			document.add(image);
 		} catch (IOException | DocumentException e) {
 			LOG.error("Failed to read the Barcode: {}", e.getMessage());

@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSZahlungsstatus} from './enums/TSZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 
@@ -20,13 +21,16 @@ export default class TSZahlung extends TSAbstractMutableEntity {
 
     private _institutionsName: string;
 
+    private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
+
     private _status: TSZahlungsstatus;
 
     private _betragTotalZahlung: number;
 
-    public constructor(institutionsName?: string, status?: TSZahlungsstatus, betragTotalZahlung?: number) {
+    public constructor(institutionsName?: string, betreuungsangebotTyp?: TSBetreuungsangebotTyp, status?: TSZahlungsstatus, betragTotalZahlung?: number) {
         super();
         this._institutionsName = institutionsName;
+        this._betreuungsangebotTyp = betreuungsangebotTyp;
         this._status = status;
         this._betragTotalZahlung = betragTotalZahlung;
     }
@@ -37,6 +41,14 @@ export default class TSZahlung extends TSAbstractMutableEntity {
 
     public set institutionsName(value: string) {
         this._institutionsName = value;
+    }
+
+    public get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
+        return this._betreuungsangebotTyp;
+    }
+
+    public set betreuungsangebotTyp(value: TSBetreuungsangebotTyp) {
+        this._betreuungsangebotTyp = value;
     }
 
     public get status(): TSZahlungsstatus {
