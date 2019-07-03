@@ -48,3 +48,7 @@ update gesuchsteller_adresse_container set gs2 = 1 where gesuchsteller_container
 delete from gesuchsteller_adresse_container where gs2 = 1;
 delete from gesuchsteller_adresse where gs2 = 1;
 delete from adresse where gs2 = 1;
+
+alter table adresse DROP COLUMN gs2;
+alter table gesuchsteller_adresse DROP COLUMN gs2;
+alter table gesuchsteller_adresse_container DROP COLUMN gs2;

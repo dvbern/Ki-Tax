@@ -312,10 +312,7 @@ public final class EbeguUtil {
 	}
 
 	public static boolean isKorrekturmodusGemeinde(@Nonnull Gesuch gesuch) {
-		if (Eingangsart.ONLINE == gesuch.getEingangsart() &&
-			AntragStatus.getAllFreigegebeneStatus().contains(gesuch.getStatus())) {
-			return true;
-		}
-		return false;
+		return Eingangsart.ONLINE == gesuch.getEingangsart() &&
+			AntragStatus.getAllFreigegebeneStatus().contains(gesuch.getStatus());
 	}
 }
