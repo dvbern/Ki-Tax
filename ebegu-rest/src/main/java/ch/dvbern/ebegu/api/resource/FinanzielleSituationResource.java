@@ -108,9 +108,11 @@ public class FinanzielleSituationResource {
 		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
 
+		convertedFinSitCont.setGesuchsteller(gesuchsteller);
+
 		FinanzielleSituationContainer persistedFinSit =
 			this.finanzielleSituationService.saveFinanzielleSituation(convertedFinSitCont, gesuchId);
-		persistedFinSit.setGesuchsteller(gesuchsteller);
+
 		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 
