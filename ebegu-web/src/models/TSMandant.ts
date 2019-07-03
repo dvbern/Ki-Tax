@@ -13,22 +13,44 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {TSEinstellungKey} from './enums/TSEinstellungKey';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
+import TSMandantKonfiguration from './TSMandantKonfiguration';
 
 export class TSMandant extends TSAbstractMutableEntity {
 
-    private _name: string;
 
-    public constructor(name?: string) {
+    public name: string;
+    public konfigurationsListe: TSMandantKonfiguration[];
+
+    private tagesschuleEnabled: boolean;
+
+    constructor() {
         super();
-        this._name = name;
+        this.initProperties();
     }
 
-    public get name(): string {
-        return this._name;
+    private initProperties(): void {
+        if (this.konfigurationsListe) {
+            this.konfigurationsListe.forEach(config => {
+                config.konfigurationen.forEach(property => {
+                    if (TSEinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT === property.key) {
+                        // Sobald es in irgendeiner Gesuchsperiode aktiv ist, gilt es für alle!
+                        if (property.value === 'true') {
+                            this.tagesschuleEnabled = true;
+                            return;
+                        }
+                    }
+                });
+            });
+        }
     }
 
-    public set name(value: string) {
-        this._name = value;
+    public isTagesschuleEnabled(): boolean {
+        return this.tagesschuleEnabled;
+    }
+
+    public isFerieninselEnabled(): boolean {
+        return false; //TODO (team) Property!!!
     }
 }

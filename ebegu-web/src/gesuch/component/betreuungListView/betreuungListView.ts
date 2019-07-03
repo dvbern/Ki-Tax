@@ -258,7 +258,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         const isRole = this.authServiceRS.isOneOfRoles(allowedRoles);
         const isGesuchsperiode = this.gesuchModelManager.getGesuchsperiode().hasTagesschulenAnmeldung();
         const istNotStatusFreigabequittung = this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG;
-        const isSchulamtAngeboteEnabled = EbeguUtil.isTagesschulangebotEnabled();
+        const isSchulamtAngeboteEnabled = this.gesuchModelManager.isTagesschulangebotEnabled();
 
         return isSchulamtAngeboteEnabled && isStatus && isRole && isGesuchsperiode && istNotStatusFreigabequittung && this.gesuchModelManager.isNeuestesGesuch();
     }

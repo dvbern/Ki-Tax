@@ -65,7 +65,13 @@ export class VerantwortlicherselectController implements IController {
     }
 
     public getTitel(): string {
-        return this.$translate.instant(EbeguUtil.getTitleVerantwortlicher(this.isSchulamt));
+        let key: string;
+        if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
+            key = 'VERANTWORTLICHER_OHNE_SCHULAMT';
+        } else {
+            key = this.isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
+        }
+        return this.$translate.instant(key);
     }
 
     public getGesuch(): TSGesuch {

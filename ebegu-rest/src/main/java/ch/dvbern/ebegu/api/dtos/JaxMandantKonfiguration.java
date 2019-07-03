@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2019 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,30 +20,15 @@ package ch.dvbern.ebegu.api.dtos;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+public class JaxMandantKonfiguration {
 
-public class JaxGemeindeKonfiguration {
-
-	@NotNull
-	private String gesuchsperiodeName;
 	@NotNull
 	private String gesuchsperiodeId;
 	@NotNull
-	private GesuchsperiodeStatus gesuchsperiodeStatus;
-	@NotNull
 	private List<JaxEinstellung> konfigurationen = new ArrayList<>();
 
-
-	public String getGesuchsperiodeName() {
-		return gesuchsperiodeName;
-	}
-
-	public void setGesuchsperiodeName(String gesuchsperiodeName) {
-		this.gesuchsperiodeName = gesuchsperiodeName;
-	}
 
 	public String getGesuchsperiodeId() {
 		return gesuchsperiodeId;
@@ -51,15 +36,6 @@ public class JaxGemeindeKonfiguration {
 
 	public void setGesuchsperiodeId(String gesuchsperiodeId) {
 		this.gesuchsperiodeId = gesuchsperiodeId;
-	}
-
-	@Nonnull
-	public GesuchsperiodeStatus getGesuchsperiodeStatus() {
-		return gesuchsperiodeStatus;
-	}
-
-	public void setGesuchsperiodeStatus(@Nonnull GesuchsperiodeStatus gesuchsperiodeStatus) {
-		this.gesuchsperiodeStatus = gesuchsperiodeStatus;
 	}
 
 	public List<JaxEinstellung> getKonfigurationen() {

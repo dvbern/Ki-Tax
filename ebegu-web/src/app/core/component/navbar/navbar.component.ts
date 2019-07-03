@@ -49,7 +49,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     private readonly unsubscribe$ = new Subject<void>();
     private readonly unsubscribeTour$ = new Subject<void>();
 
-    public readonly showMenuAnmeldungen = EbeguUtil.isTagesschulangebotEnabled();
+    public showMenuAnmeldungen = false;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -81,6 +81,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 },
                 err => LOG.error(err),
             );
+
     }
 
     public createNewFall(): void {
@@ -148,6 +149,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         return this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
+                    this.showMenuAnmeldungen = principal.mandant.isTagesschuleEnabled();
                     if (principal && principal.hasJustOneGemeinde()) {
                         return of(principal.extractCurrentGemeindeId());
                     }

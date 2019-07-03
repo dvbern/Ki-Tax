@@ -41,6 +41,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Einstellung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -84,6 +85,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 
 	@Override
@@ -227,6 +231,35 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			.sorted(Comparator.comparing(Einstellung::getKey))
 			.collect(Collectors.toCollection(ArrayList::new));
 		return sorted;
+	}
+
+	@Override
+	@Nonnull
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
+		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Map<EinstellungKey, Einstellung> getAllEinstellungenByMandantAsMap(@Nonnull Gesuchsperiode gesuchsperiode) {
+		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
+			new EbeguRuntimeException("getAllEinstellungenByMandantAsMap", "Benutzer nicht eingeloggt"));
+		Map<EinstellungKey, Einstellung> result = new HashMap<>();
+		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
+		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
+
+			// (1) Nach Mandant
+			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantGemeindeOrSystem(
+				einstellungKey, benutzer.getMandant(), null, gesuchsperiode, persistence.getEntityManager());
+			if (einstellungByMandant.isPresent()) {
+				result.put(einstellungKey, einstellungByMandant.get());
+			} else {
+				// (2) Nach Default des Systems
+				Optional<Einstellung> einstellungBySystem = findEinstellungByMandantGemeindeOrSystem(
+					einstellungKey, null, null, gesuchsperiode, persistence.getEntityManager());
+				if (einstellungBySystem.isPresent()) {
+					result.put(einstellungKey, einstellungBySystem.get());
+				}
+			}
+		});
+		return result;
 	}
 
 	@Nonnull

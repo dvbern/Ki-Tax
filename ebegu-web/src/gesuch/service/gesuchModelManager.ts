@@ -1573,4 +1573,8 @@ export default class GesuchModelManager {
     public showInfoAusserordentlichenAnspruch(): IPromise<boolean> {
         return this.gesuchRS.isAusserordentlicherAnspruchPossible(this.gesuch.id);
     }
+
+    public isTagesschulangebotEnabled(): boolean {
+        return this.authServiceRS.getPrincipalMandant().isTagesschuleEnabled();
+    }
 }

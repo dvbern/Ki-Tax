@@ -16,15 +16,12 @@
 import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {
-    getTSAntragStatusPendenzValues,
-    getTSAntragStatusValuesByRole,
-    TSAntragStatus,
-} from '../../../../models/enums/TSAntragStatus';
+import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus,} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSAntragSearchresultDTO from '../../../../models/TSAntragSearchresultDTO';
@@ -36,6 +33,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
 import GesuchsperiodeRS from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
+import {MandantRS} from '../../service/mandantRS.rest';
 
 const LOG = LogFactory.createLog('DVAntragListController');
 
@@ -217,7 +215,7 @@ export class DVAntragListController implements IController {
      * Alle Betreuungsangebot typen fuer das Filterdropdown
      */
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValues();
+        return getTSBetreuungsangebotTypValuesForMandant(this.authServiceRS.getPrincipalMandant());
     }
 
     /**
@@ -260,5 +258,9 @@ export class DVAntragListController implements IController {
     public getColumnsNumber(): number {
         const element = this.$window.document.getElementById('antraegeHeadRow');
         return element.childElementCount;
+    }
+
+    public isTagesschulangebotEnabled(): boolean {
+        return this.authServiceRS.getPrincipalMandant().isTagesschuleEnabled();
     }
 }

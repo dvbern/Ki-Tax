@@ -25,6 +25,7 @@ import BenutzerRS from '../../app/core/service/benutzerRS.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import TSBenutzer from '../../models/TSBenutzer';
+import {TSMandant} from '../../models/TSMandant';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {AuthLifeCycleService} from './authLifeCycle.service';
@@ -85,6 +86,13 @@ export default class AuthServiceRS {
     public getPrincipalRole(): TSRole | undefined {
         if (this.principal) {
             return this.principal.getCurrentRole();
+        }
+        return undefined;
+    }
+
+    public getPrincipalMandant(): TSMandant | undefined {
+        if (this.principal) {
+            return this.principal.mandant;
         }
         return undefined;
     }

@@ -21,7 +21,7 @@ import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
-import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
+import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragDTO from '../../../../models/TSAbstractAntragDTO';
 import TSAntragDTO from '../../../../models/TSAntragDTO';
 import TSBenutzer from '../../../../models/TSBenutzer';
@@ -125,7 +125,7 @@ export class DVQuicksearchListController implements IController {
     }
 
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValues();
+        return getTSBetreuungsangebotTypValuesForMandant(this.authServiceRS.getPrincipalMandant());
     }
 
     public updateGesuchsperiodenList(): void {
@@ -228,5 +228,9 @@ export class DVQuicksearchListController implements IController {
 
     public showPapierGesuchIcon(row: TSAbstractAntragDTO): boolean {
         return row instanceof TSAntragDTO && !row.hasBesitzer();
+    }
+
+    public isTagesschulangebotEnabled(): boolean {
+        return this.authServiceRS.getPrincipalMandant().isTagesschuleEnabled();
     }
 }

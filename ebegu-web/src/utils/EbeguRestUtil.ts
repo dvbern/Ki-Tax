@@ -94,6 +94,7 @@ import TSKindContainer from '../models/TSKindContainer';
 import TSKindDublette from '../models/TSKindDublette';
 import TSMahnung from '../models/TSMahnung';
 import {TSMandant} from '../models/TSMandant';
+import TSMandantKonfiguration from '../models/TSMandantKonfiguration';
 import TSMitteilung from '../models/TSMitteilung';
 import TSModulTagesschule from '../models/TSModulTagesschule';
 import TSPendenzBetreuung from '../models/TSPendenzBetreuung';
@@ -1012,7 +1013,27 @@ export default class EbeguRestUtil {
         if (mandant) {
             this.abstractMutableEntityToRestObject(restMandant, mandant);
             restMandant.name = mandant.name;
+            restMandant.konfigurationsListe =
+                this.mandantKonfigurationListToRestObject(mandant.konfigurationsListe);
             return restMandant;
+        }
+        return undefined;
+    }
+
+    private mandantKonfigurationListToRestObject(konfigurationListTS: Array<TSMandantKonfiguration>): Array<any> {
+        return konfigurationListTS
+            ? konfigurationListTS.map(item => this.mandantKonfigurationToRestObject({}, item))
+            : [];
+    }
+
+    private mandantKonfigurationToRestObject(
+        restKonfiguration: any,
+        konfiguration: TSMandantKonfiguration,
+    ): TSMandantKonfiguration {
+        if (konfiguration) {
+            restKonfiguration.gesuchsperiodeId = konfiguration.gesuchsperiodeId;
+            restKonfiguration.konfigurationen = this.einstellungListToRestObject(konfiguration.konfigurationen);
+            return restKonfiguration;
         }
         return undefined;
     }
@@ -1021,7 +1042,30 @@ export default class EbeguRestUtil {
         if (mandantFromServer) {
             this.parseAbstractMutableEntity(mandantTS, mandantFromServer);
             mandantTS.name = mandantFromServer.name;
+            mandantTS.konfigurationsListe =
+                this.parseMandantKonfigurationList(mandantFromServer.konfigurationsListe);
             return mandantTS;
+        }
+        return undefined;
+    }
+
+    private parseMandantKonfigurationList(data: any): TSMandantKonfiguration[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+            ? data.map(item => this.parseMandantKonfiguration(new TSMandantKonfiguration(), item))
+            : [this.parseMandantKonfiguration(new TSMandantKonfiguration(), data)];
+    }
+
+    private parseMandantKonfiguration(
+        konfigurationTS: TSMandantKonfiguration,
+        konfigurationFromServer: any,
+    ): TSMandantKonfiguration {
+        if (konfigurationFromServer) {
+            konfigurationTS.gesuchsperiodeId = konfigurationFromServer.gesuchsperiodeId;
+            konfigurationTS.konfigurationen = this.parseEinstellungList(konfigurationFromServer.konfigurationen);
+            return konfigurationTS;
         }
         return undefined;
     }

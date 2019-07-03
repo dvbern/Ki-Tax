@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import EbeguUtil from '../../utils/EbeguUtil';
+import {TSMandant} from '../TSMandant';
 
 export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',
@@ -22,38 +22,21 @@ export enum TSBetreuungsangebotTyp {
     FERIENINSEL = 'FERIENINSEL'
 }
 
-export function getTSBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {
-    if (EbeguUtil.isTagesschulangebotEnabled()) {
-        return [
-            TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN,
-            TSBetreuungsangebotTyp.TAGESSCHULE,
-            TSBetreuungsangebotTyp.FERIENINSEL,
-        ];
-    }
-
-    return [
-        TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGESFAMILIEN,
-    ];
+export function getTSBetreuungsangebotTypValuesForMandant(mandant: TSMandant): Array<TSBetreuungsangebotTyp> {
+    return getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(mandant, true);
 }
 
-/**
- * These are all BetreuungsangebotTyp for a period without Tagesschuleanmeldungen, normally 17/18
- */
-export function getTSBetreuungsangebotTypValuesNoTagesschuleanmeldungen(): Array<TSBetreuungsangebotTyp> {
-    if (EbeguUtil.isTagesschulangebotEnabled()) {
-        return [
-            TSBetreuungsangebotTyp.KITA,
-            TSBetreuungsangebotTyp.TAGESFAMILIEN,
-            TSBetreuungsangebotTyp.TAGESSCHULE,
-        ];
+export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(mandant: TSMandant, hasTagesschulanmeldungen: boolean): Array<TSBetreuungsangebotTyp> {
+    let angebote: Array<TSBetreuungsangebotTyp> = [];
+    angebote.push(TSBetreuungsangebotTyp.KITA);
+    angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
+    if (mandant.isTagesschuleEnabled() && hasTagesschulanmeldungen) {
+        angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
-
-    return [
-        TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGESFAMILIEN,
-    ];
+    if (mandant.isFerieninselEnabled()) {
+        angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
+    }
+    return angebote;
 }
 
 export function getSchulamtBetreuungsangebotTypValues(): Array<TSBetreuungsangebotTyp> {

@@ -20,7 +20,8 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
-import {getTSBetreuungsangebotTypValues, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
@@ -51,6 +52,7 @@ export class AddInstitutionComponent implements OnInit {
         private readonly institutionRS: InstitutionRS,
         private readonly traegerschaftRS: TraegerschaftRS,
         private readonly translate: TranslateService,
+        private readonly authServiceRS: AuthServiceRS,
     ) {
     }
 
@@ -64,7 +66,7 @@ export class AddInstitutionComponent implements OnInit {
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.beguStart = futureMonthBegin;
         this.beguStartDatumMin = futureMonthBegin;
-        this.betreuungsangebote = getTSBetreuungsangebotTypValues();
+        this.betreuungsangebote = getTSBetreuungsangebotTypValuesForMandant(this.authServiceRS.getPrincipalMandant());
     }
 
     public cancel(): void {
