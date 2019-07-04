@@ -16,6 +16,7 @@
 import {IComponentOptions, IOnInit} from 'angular';
 import TSErwerbspensum from '../../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../../models/TSErwerbspensumContainer';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 
 export class DVErwerbspensumListConfig implements IComponentOptions {
     public transclude = false;
@@ -84,10 +85,10 @@ export class DVErwerbspensumListController implements IOnInit {
         this.onAdd();
     }
 
-    public isRemoveAllowed(_pensumToEdit: any): boolean {
+    public isRemoveAllowed(_pensumToEdit: TSErwerbspensumContainer): boolean {
         // Loeschen erlaubt, solange das Gesuch noch nicht readonly ist. Dies ist notwendig, weil sonst in die Zukunft
         // erfasste Taetigkeiten bei nicht-zustandekommen des Jobs nicht mehr geloescht werden koennen
         // Siehe auch EBEGU-1146 und EBEGU-580
-        return this.addButtonVisible;
+        return this.addButtonVisible && EbeguUtil.isNullOrUndefined(_pensumToEdit.erwerbspensumGS);
     }
 }
