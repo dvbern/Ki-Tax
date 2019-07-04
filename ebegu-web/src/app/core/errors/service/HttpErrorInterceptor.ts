@@ -46,6 +46,7 @@ export default class HttpErrorInterceptor implements IHttpInterceptor {
 
     public responseError = (response: any) => {
         const http403 = 403;
+
         if (response.status === http403) {
             this.errorService.addMesageAsError('ERROR_UNAUTHORIZED');
             return this.$q.reject(response);
