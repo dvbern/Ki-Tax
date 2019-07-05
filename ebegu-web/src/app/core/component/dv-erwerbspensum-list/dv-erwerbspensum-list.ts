@@ -16,7 +16,6 @@
 import {IComponentOptions, IOnInit} from 'angular';
 import TSErwerbspensum from '../../../../models/TSErwerbspensum';
 import TSErwerbspensumContainer from '../../../../models/TSErwerbspensumContainer';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 
 export class DVErwerbspensumListConfig implements IComponentOptions {
     public transclude = false;
@@ -29,7 +28,6 @@ export class DVErwerbspensumListConfig implements IComponentOptions {
         tableId: '@',
         tableTitle: '@',
         addButtonVisible: '<',
-        addButtonEnabled: '<',
         addButtonText: '@',
         inputId: '@',
     };
@@ -48,7 +46,6 @@ export class DVErwerbspensumListController implements IOnInit {
     public inputId: string;
     public addButtonText: string;
     public addButtonVisible: boolean;
-    public addButtonEnabled: boolean;
     public onRemove: (pensumToRemove: any) => void;
     public onEdit: (pensumToEdit: any) => void;
     public onAdd: () => void;
@@ -59,9 +56,6 @@ export class DVErwerbspensumListController implements IOnInit {
         }
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = true;
-        }
-        if (this.addButtonEnabled === undefined) {
-            this.addButtonEnabled = true;
         }
         // clear selected
         // tslint:disable-next-line:prefer-for-of
@@ -89,6 +83,6 @@ export class DVErwerbspensumListController implements IOnInit {
         // Loeschen erlaubt, solange das Gesuch noch nicht readonly ist. Dies ist notwendig, weil sonst in die Zukunft
         // erfasste Taetigkeiten bei nicht-zustandekommen des Jobs nicht mehr geloescht werden koennen
         // Siehe auch EBEGU-1146 und EBEGU-580
-        return this.addButtonVisible && EbeguUtil.isNullOrUndefined(_pensumToEdit.erwerbspensumGS);
+        return this.addButtonVisible && _pensumToEdit.isGSContainerEmpty();
     }
 }
