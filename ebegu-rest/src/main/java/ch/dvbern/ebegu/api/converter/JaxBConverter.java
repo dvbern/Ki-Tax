@@ -2892,12 +2892,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuchsperiode.setDatumFreischaltungTagesschule(persistedGesuchsperiode.getDatumFreischaltungTagesschule());
 		jaxGesuchsperiode.setDatumErsterSchultag(persistedGesuchsperiode.getDatumErsterSchultag());
 
-		Collection<Einstellung> allEinstellungenBySystem = einstellungService.getAllEinstellungenBySystem(persistedGesuchsperiode);
-		for (Einstellung einstellung : allEinstellungenBySystem) {
-			// Wir setzen hier ALLE Einstellungen, auch die Gemeindespezifischen: Hier wird jedoch der Mandant-Default zurückgegeben!
-			jaxGesuchsperiode.getEinstellungenList().add(einstellungToJAX(einstellung));
-		}
-
 		return jaxGesuchsperiode;
 	}
 
