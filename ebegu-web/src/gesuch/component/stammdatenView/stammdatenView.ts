@@ -190,12 +190,12 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.maybeResetRechnungsadr();
 
         if (this.gesuchModelManager.getGesuchstellerNumber() === 1) {
-			let showUmzug = this.gesuchModelManager.getGesuch().gesuchsteller1.showUmzug;
-			if ((this.gesuchModelManager.getGesuch().gesuchsteller1 && showUmzug) || this.isMutation()) {
-				this.wizardStepManager.unhideStep(TSWizardStepName.UMZUG);
-			} else {
-				this.wizardStepManager.hideStep(TSWizardStepName.UMZUG);
-			}
+            const showUmzug = this.gesuchModelManager.getGesuch().gesuchsteller1.showUmzug;
+            if ((this.gesuchModelManager.getGesuch().gesuchsteller1 && showUmzug) || this.isMutation()) {
+                this.wizardStepManager.unhideStep(TSWizardStepName.UMZUG);
+            } else {
+                this.wizardStepManager.hideStep(TSWizardStepName.UMZUG);
+            }
         }
         this.errorService.clearAll();
         // todo bei Aenderungen von Kontaktdaten sollte man nicht den ganzen GS updaten sondern nur die Kontakdaten
