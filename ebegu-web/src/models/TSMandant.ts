@@ -21,7 +21,7 @@ export class TSMandant extends TSAbstractMutableEntity {
     public name: string;
     public konfigurationsListe: TSMandantKonfiguration[];
 
-    public tagesschuleEnabled: boolean; // Nur auf dem GUI
+    public tagesschuleEnabled: boolean = false; // Nur auf dem GUI
 
     public constructor(name?: string) {
         super();

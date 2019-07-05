@@ -1051,7 +1051,6 @@ export default class EbeguRestUtil {
                     if (TSEinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT === property.key
                         && property.value === 'true') {
                         mandantTS.tagesschuleEnabled = true;
-                        return;
                     }
                 });
             });
