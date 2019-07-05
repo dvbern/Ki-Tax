@@ -106,7 +106,12 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 		// Die zwei Felder "sozialhilfebezueger" und "gemeinsameSteuererklaerung" befinden sich nicht auf der FinanziellenSituation, sondern auf der
 		// FamilienSituation -> Das Gesuch muss hier aus der DB geladen werden, damit nichts überschrieben wird!
-		Gesuch gesuch = saveFinanzielleSituationFelderAufGesuch(sozialhilfebezueger, gemeinsameSteuererklaerung, antragNurFuerBehinderungszuschlag, gesuchId);
+		Gesuch gesuch = saveFinanzielleSituationFelderAufGesuch(
+			sozialhilfebezueger,
+			gemeinsameSteuererklaerung,
+			antragNurFuerBehinderungszuschlag,
+			gesuchId
+		);
 		return gesuch;
 	}
 
