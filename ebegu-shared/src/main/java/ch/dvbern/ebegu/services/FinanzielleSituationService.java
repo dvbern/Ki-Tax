@@ -39,6 +39,7 @@ public interface FinanzielleSituationService {
 		@Nonnull FinanzielleSituationContainer finanzielleSituation,
 		@Nonnull Boolean sozialhilfebezueger,
 		@Nonnull Boolean gemeinsameSteuererklaerung,
+		@Nonnull Boolean antragNurFuerBehinderungszuschlag,
 		@Nonnull String gesuchId);
 
 	/**
