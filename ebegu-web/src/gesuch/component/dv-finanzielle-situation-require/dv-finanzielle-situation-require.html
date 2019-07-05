@@ -22,7 +22,7 @@
                 <span data-translate="FINANZIELLE_SITUATION_SOZIALHILFE_BEZUEGER"
                       translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></span>
             </span>
-            <dv-radio-container name="sozialhilfeBezueger" class="input-element"
+            <dv-radio-container name="sozialhilfeBezueger" id="sozialhilfeBezueger" class="input-element"
                                 ng-model="vm.sozialhilfeBezueger"
                                 ng-required="true" class="radio" ng-change="vm.setFinanziellesituationRequired()"
                                 dv-enable-element

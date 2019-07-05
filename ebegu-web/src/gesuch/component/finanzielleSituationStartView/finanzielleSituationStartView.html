@@ -26,7 +26,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form role="form" name="vm.form" class="" unsaved-warning-form="" novalidate>
+            <form role="form" name="vm.form" class="" unsaved-warning-form novalidate>
 
                 <div class="row" ng-if="vm.areThereOnlyFerieninsel">
                     <div class="col-md-12">
@@ -41,7 +41,8 @@
 
                     <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.sozialhilfeBezueger"
                                                       antrag_nur_fuer_behinderungszuschlag="vm.model.antragNurFuerBehinderungszuschlag"
-                                                      finanzielle-situation-required="vm.finanzielleSituationRequired">
+                                                      finanzielle-situation-required="vm.finanzielleSituationRequired"
+                                                      form="vm.form">
                     </dv-finanzielle-situation-require>
 
                     <div ng-if="vm.isFinanziellesituationRequired() && vm.is2GSRequired()">

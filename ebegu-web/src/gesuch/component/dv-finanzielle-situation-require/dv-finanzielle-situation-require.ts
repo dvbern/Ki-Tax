@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentOptions, IController} from 'angular';
+import {IComponentOptions, IController, IFormController} from 'angular';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
@@ -27,6 +27,7 @@ export class DvFinanzielleSituationRequire implements IComponentOptions {
         sozialhilfeBezueger: '=',
         antragNurFuerBehinderungszuschlag: '=',
         finanzielleSituationRequired: '=',
+        form: '=',
     };
     public template = require('./dv-finanzielle-situation-require.html');
     public controller = DVFinanzielleSituationRequireController;
@@ -42,6 +43,8 @@ export class DVFinanzielleSituationRequireController implements IController {
     public antragNurFuerBehinderungszuschlag: boolean;
 
     public maxMassgebendesEinkommen: string;
+
+    public form: IFormController;
 
     public constructor(
         private readonly einstellungRS: EinstellungRS,
