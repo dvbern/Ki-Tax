@@ -184,8 +184,7 @@ describe('EbeguRestUtil', () => {
         });
         describe('parseMandant()', () => {
             it('should transform TSMandant to REST object and back', () => {
-                const myMandant = new TSMandant('myMandant');
-                TestDataUtil.setAbstractMutableFieldsUndefined(myMandant);
+                const myMandant = TestDataUtil.createMandant();
 
                 const restMandant = ebeguRestUtil.mandantToRestObject({}, myMandant);
                 expect(restMandant).toBeDefined();
@@ -526,8 +525,7 @@ describe('EbeguRestUtil', () => {
         traegerschaft.institutionCount = undefined;
         traegerschaft.institutionNames = undefined;
         TestDataUtil.setAbstractMutableFieldsUndefined(traegerschaft);
-        const mandant = new TSMandant('myMandant');
-        TestDataUtil.setAbstractMutableFieldsUndefined(mandant);
+        const mandant = TestDataUtil.createMandant();
         const myInstitution = new TSInstitution('myInstitution', traegerschaft, mandant);
         TestDataUtil.setAbstractMutableFieldsUndefined(myInstitution);
         return myInstitution;

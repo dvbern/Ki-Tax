@@ -93,6 +93,7 @@ describe('betreuungView', () => {
         authServiceRS = $injector.get('AuthServiceRS');
         spyOn(authServiceRS, 'isRole').and.returnValue(true);
         spyOn(authServiceRS, 'isOneOfRoles').and.returnValue(true);
+        spyOn(authServiceRS, 'getPrincipalMandant').and.returnValue(TestDataUtil.createMandant());
         spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(Promise.resolve([]));
         wizardStepManager = $injector.get('WizardStepManager');
         betreuungView = new BetreuungViewController($state,
