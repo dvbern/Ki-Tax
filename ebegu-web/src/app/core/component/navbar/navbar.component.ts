@@ -27,7 +27,6 @@ import {TSCreationAction} from '../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSRole} from '../../../../models/enums/TSRole';
 import TSGemeinde from '../../../../models/TSGemeinde';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {KiBonGuidedTourService} from '../../../kibonTour/service/KiBonGuidedTourService';
 import {GuidedTourByRole} from '../../../kibonTour/shared/KiBonGuidedTour';
@@ -148,7 +147,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         return this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
-                    this.showMenuAnmeldungen = principal.mandant.isTagesschuleEnabled();
+                    this.showMenuAnmeldungen = principal.mandant.tagesschuleEnabled;
                     if (principal && principal.hasJustOneGemeinde()) {
                         return of(principal.extractCurrentGemeindeId());
                     }

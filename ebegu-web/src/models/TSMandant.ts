@@ -18,10 +18,13 @@ import TSMandantKonfiguration from './TSMandantKonfiguration';
 
 export class TSMandant extends TSAbstractMutableEntity {
 
-
     public name: string;
     public konfigurationsListe: TSMandantKonfiguration[];
 
     public tagesschuleEnabled: boolean; // Nur auf dem GUI
 
+    public constructor(name?: string) {
+        super();
+        this.name = name;
+    }
 }

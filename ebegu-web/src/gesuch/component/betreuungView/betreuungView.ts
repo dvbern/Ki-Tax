@@ -24,7 +24,9 @@ import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen, TSBetreuungsangebotTyp,} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {
+    getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
+    TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -579,7 +581,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         const tsConfigured = gesuchsperiode && gesuchsperiode.hasTagesschulenAnmeldung();
         const betreuungsangebotTypValues =
-            getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(this.authServiceRS.getPrincipalMandant(), tsConfigured);
+            getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
+                this.authServiceRS.getPrincipalMandant(), tsConfigured);
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
     }
 

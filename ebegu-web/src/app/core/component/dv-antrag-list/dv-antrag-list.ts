@@ -16,10 +16,9 @@
 import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
-import {AuthLifeCycleService} from '../../../../authentication/service/authLifeCycle.service';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus,} from '../../../../models/enums/TSAntragStatus';
+import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus, } from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
@@ -66,7 +65,6 @@ export class DVAntragListController implements IController {
         'AuthServiceRS',
         '$window',
         'GemeindeRS',
-        'AuthLifeCycleService',
     ];
 
     public totalResultCount: number;

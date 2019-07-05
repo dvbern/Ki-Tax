@@ -26,8 +26,10 @@ export function getTSBetreuungsangebotTypValuesForMandant(mandant: TSMandant): A
     return getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(mandant, true);
 }
 
-export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(mandant: TSMandant, hasTagesschulanmeldungen: boolean): Array<TSBetreuungsangebotTyp> {
-    let angebote: Array<TSBetreuungsangebotTyp> = [];
+export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
+    mandant: TSMandant, hasTagesschulanmeldungen: boolean
+): Array<TSBetreuungsangebotTyp> {
+    const angebote: Array<TSBetreuungsangebotTyp> = [];
     angebote.push(TSBetreuungsangebotTyp.KITA);
     angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
     if (mandant.tagesschuleEnabled && hasTagesschulanmeldungen) {

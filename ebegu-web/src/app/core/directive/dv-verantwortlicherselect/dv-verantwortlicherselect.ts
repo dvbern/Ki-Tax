@@ -17,7 +17,6 @@ import {IController, IDirective, IDirectiveFactory} from 'angular';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import TSBenutzer from '../../../../models/TSBenutzer';
 import TSGesuch from '../../../../models/TSGesuch';
-import EbeguUtil from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import BenutzerRS from '../../service/benutzerRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
@@ -65,13 +64,10 @@ export class VerantwortlicherselectController implements IController {
     }
 
     public getTitel(): string {
-        let key: string;
         if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
-            key = 'VERANTWORTLICHER_OHNE_SCHULAMT';
-        } else {
-            key = this.isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT';
+            return this.$translate.instant('VERANTWORTLICHER_OHNE_SCHULAMT');
         }
-        return this.$translate.instant(key);
+        return this.$translate.instant(this.isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT');
     }
 
     public getGesuch(): TSGesuch {

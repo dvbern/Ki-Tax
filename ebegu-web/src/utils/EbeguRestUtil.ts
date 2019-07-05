@@ -1045,15 +1045,13 @@ export default class EbeguRestUtil {
             mandantTS.name = mandantFromServer.name;
             mandantTS.konfigurationsListe =
                 this.parseMandantKonfigurationList(mandantFromServer.konfigurationsListe);
-			// Die Konfigurationen direkt auf den Mandanten schreiben
+            // Die Konfigurationen direkt auf den Mandanten schreiben
             mandantTS.konfigurationsListe.forEach((config: TSMandantKonfiguration) => {
                 config.konfigurationen.forEach(property => {
-                    if (TSEinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT === property.key) {
-                        // Sobald es in irgendeiner Gesuchsperiode aktiv ist, gilt es für alle!
-                        if (property.value === 'true') {
-                            mandantTS.tagesschuleEnabled = true;
-                            return;
-                        }
+                    if (TSEinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT === property.key
+                        && property.value === 'true') {
+                        mandantTS.tagesschuleEnabled = true;
+                        return;
                     }
                 });
             });
