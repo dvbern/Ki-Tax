@@ -55,7 +55,7 @@ public final class ServerMessageUtil {
 	private static String readStringFromBundleOrReturnKey(ResourceBundle bundle, String key) {
 		try {
 			return bundle.getString(key);
-		} catch (MissingResourceException ex) {
+		} catch (MissingResourceException ignore) {
 			return "???" + key + "???";
 		}
 	}
