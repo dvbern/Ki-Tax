@@ -314,4 +314,8 @@ export class GesuchsperiodeViewController extends AbstractAdminViewController {
             this.isErlaeuterungFR = !!result;
         });
     }
+
+    public isTagesschulangebotEnabled(): boolean {
+        return this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
+    }
 }
