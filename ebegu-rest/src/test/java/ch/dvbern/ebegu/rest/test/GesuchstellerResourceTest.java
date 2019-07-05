@@ -62,7 +62,7 @@ public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void createGesuchstellerTest() throws EbeguException {
 		JaxGesuchstellerContainer testJaxGesuchsteller = TestJaxDataUtil.createTestJaxGesuchsteller();
-		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, testJaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, testJaxGesuchsteller, null, null);
 		Assert.assertNotNull(jaxGesuchsteller);
 
 	}
@@ -70,7 +70,7 @@ public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void createGesuchstellerWithUmzugTest() throws EbeguException {
 		JaxGesuchstellerContainer testGesuchsteller = TestJaxDataUtil.createTestJaxGesuchstellerWithUmzug();
-		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, testGesuchsteller, null, null);
+		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, testGesuchsteller, null, null);
 		Assert.assertNotNull(jaxGesuchsteller);
 		Assert.assertNotNull(jaxGesuchsteller.getAlternativeAdresse());
 		Assert.assertNotNull(jaxGesuchsteller.getRechnungsAdresse());
@@ -86,12 +86,12 @@ public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 	public void updateGesuchstellerTest() throws EbeguException {
 		JaxGesuchstellerContainer testJaxGesuchsteller = TestJaxDataUtil.createTestJaxGesuchsteller();
 		final JaxAdresseContainer oldAdresse = testJaxGesuchsteller.getAdressen().get(0);
-		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, testJaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, testJaxGesuchsteller, null, null);
 		JaxAdresseContainer umzugAdr = TestJaxDataUtil.createTestJaxAdr("umzugadr");
 		umzugAdr.getAdresseJA().setGueltigAb(LocalDate.now().plusDays(7));
 
 		jaxGesuchsteller.addAdresse(umzugAdr);
-		JaxGesuchstellerContainer umgezogeneGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, jaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer umgezogeneGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, jaxGesuchsteller, null, null);
 
 		Assert.assertNotNull(umgezogeneGesuchsteller.getAdressen());
 		Assert.assertEquals(2, umgezogeneGesuchsteller.getAdressen().size());
@@ -103,7 +103,7 @@ public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void removeKorrespondenzAndRechnungsaddr() throws EbeguException {
 		JaxGesuchstellerContainer testJaxGesuchsteller = TestJaxDataUtil.createTestJaxGesuchsteller();
-		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, testJaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, testJaxGesuchsteller, null, null);
 		JaxAdresseContainer korrAdr = TestJaxDataUtil.createTestJaxAdr("korradr");
 		JaxAdresseContainer rechnungsAdr = TestJaxDataUtil.createTestJaxAdr("rechnungsAdr");
 		korrAdr.getAdresseJA().setAdresseTyp(AdresseTyp.KORRESPONDENZADRESSE);
@@ -111,13 +111,13 @@ public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 
 		jaxGesuchsteller.setAlternativeAdresse(korrAdr);
 		jaxGesuchsteller.setRechnungsAdresse(rechnungsAdr);
-		JaxGesuchstellerContainer gesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, jaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer gesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, jaxGesuchsteller, null, null);
 		Assert.assertNotNull(gesuchsteller.getAlternativeAdresse());
 		Assert.assertNotNull(gesuchsteller.getRechnungsAdresse());
 
 		gesuchsteller.setAlternativeAdresse(null);
 		gesuchsteller.setRechnungsAdresse(null);
-		gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, jaxGesuchsteller, null, null);
+		gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, jaxGesuchsteller, null, null);
 		//Nun wollen wir testen was passiert wenn man die Korrespondenzadr wieder entfernt
 		Assert.assertNull("Korrespondenzaddr muss geloscht sein", gesuchsteller.getAlternativeAdresse());
 		//Nun wollen wir testen was passiert wenn man die Rechnungsadresse wieder entfernt
@@ -128,13 +128,13 @@ public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void findGesuchstellerTest() throws EbeguException {
 		JaxGesuchstellerContainer testGesuchsteller = TestJaxDataUtil.createTestJaxGesuchstellerWithUmzug();
-		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, testGesuchsteller, null, null);
+		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, testGesuchsteller, null, null);
 		JaxGesuchstellerContainer foundGesuchsteller = gesuchstellerResource.findGesuchsteller(converter.toJaxId(jaxGesuchsteller));
 		Assert.assertNotNull(foundGesuchsteller);
 		Assert.assertEquals(testGesuchsteller.getGesuchstellerJA().getNachname(), foundGesuchsteller.getGesuchstellerJA().getNachname());
 		foundGesuchsteller.getGesuchstellerJA().setNachname("changednachname");
 
-		gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, foundGesuchsteller, null, null);
+		gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, foundGesuchsteller, null, null);
 		JaxGesuchstellerContainer reloadedGesuchsteller = gesuchstellerResource.findGesuchsteller(converter.toJaxId(jaxGesuchsteller));
 		Assert.assertEquals(foundGesuchsteller.getGesuchstellerJA().getNachname(), reloadedGesuchsteller.getGesuchstellerJA().getNachname());
 		Assert.assertEquals("changednachname", reloadedGesuchsteller.getGesuchstellerJA().getNachname());
@@ -144,13 +144,13 @@ public class GesuchstellerResourceTest extends AbstractEbeguRestLoginTest {
 	@Test
 	public void updateGesuchstellerTest2() throws EbeguException {
 		JaxGesuchstellerContainer testJaxGesuchsteller = TestJaxDataUtil.createTestJaxGesuchsteller();
-		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, testJaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, testJaxGesuchsteller, null, null);
 		JaxAdresseContainer korrespondenzAdr = TestJaxDataUtil.createTestJaxAdr("umzugadr");
 		korrespondenzAdr.getAdresseJA().setOrganisation("Test");
 
 		jaxGesuchsteller.setAlternativeAdresse(korrespondenzAdr);
 		jaxGesuchsteller.getAlternativeAdresse().getAdresseJA().setAdresseTyp(AdresseTyp.KORRESPONDENZADRESSE);
-		JaxGesuchstellerContainer umgezogeneGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, jaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer umgezogeneGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, jaxGesuchsteller, null, null);
 
 		Assert.assertNotNull(umgezogeneGesuchsteller.getAlternativeAdresse());
 		Assert.assertEquals(umgezogeneGesuchsteller.getAlternativeAdresse().getAdresseJA().getOrganisation(),

@@ -89,7 +89,9 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		SACHBEARBEITER_TS, ADMIN_TS })
 	public GesuchstellerContainer saveGesuchsteller(
 		@Nonnull GesuchstellerContainer gesuchsteller,
-		final Gesuch gesuch, Integer gsNumber, boolean umzug) {
+		@Nonnull final Gesuch gesuch,
+		@Nonnull Integer gsNumber
+	) {
 		Objects.requireNonNull(gesuchsteller);
 		Objects.requireNonNull(gesuch);
 		Objects.requireNonNull(gsNumber);
@@ -109,7 +111,7 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		} else if (gsNumber == 2) {
 			gesuch.setGesuchsteller2(mergedGesuchsteller);
 		}
-		updateWizStepsForGesuchstellerView(gesuch, gsNumber, umzug, mergedGesuchsteller.getGesuchstellerJA());
+		updateWizStepsForGesuchstellerView(gesuch, gsNumber, mergedGesuchsteller.getGesuchstellerJA());
 		return mergedGesuchsteller;
 	}
 
@@ -190,29 +192,21 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	private void updateWizStepsForGesuchstellerView(
 		Gesuch gesuch,
 		Integer gsNumber,
-		boolean umzug,
-		Gesuchsteller gesuchsteller) {
-		//Wenn beide Gesuchsteller ausgefuellt werden muessen (z.B bei einer Mutation die die Familiensituation aendert
+		Gesuchsteller gesuchsteller
+	) {
+		// Wenn beide Gesuchsteller ausgefuellt werden muessen (z.B bei einer Mutation die die Familiensituation aendert
 		// (i.e. von 1GS auf 2GS) wollen wir den Benutzer zwingen beide Gesuchsteller Seiten zu besuchen bevor wir auf
 		// ok setzten.
 		// Ansonsten setzten wir es sofort auf ok
-		if (umzug) {
-			// only if it is the last GS from both, we update the Step Umzug
-			if ((gesuch.getGesuchsteller2() == null && gsNumber == 1) || (gesuch.getGesuchsteller2() != null
-				&& gsNumber == 2)) {
-				wizardStepService.updateSteps(gesuch.getId(), null, gesuchsteller, WizardStepName.UMZUG);
-			}
-		} else {
-			WizardStep existingWizStep =
-				wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.GESUCHSTELLER);
-			WizardStepStatus gesuchStepStatus = existingWizStep != null ? existingWizStep.getWizardStepStatus() : null;
-			if (WizardStepStatus.NOK == gesuchStepStatus || WizardStepStatus.IN_BEARBEITUNG == gesuchStepStatus) {
-				if (isSavingLastNecessaryGesuchsteller(gesuch, gsNumber)) {
-					wizardStepService.updateSteps(gesuch.getId(), null, gesuchsteller, WizardStepName.GESUCHSTELLER);
-				}
-			} else {
+		WizardStep existingWizStep =
+			wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.GESUCHSTELLER);
+		WizardStepStatus gesuchStepStatus = existingWizStep != null ? existingWizStep.getWizardStepStatus() : null;
+		if (WizardStepStatus.NOK == gesuchStepStatus || WizardStepStatus.IN_BEARBEITUNG == gesuchStepStatus) {
+			if (isSavingLastNecessaryGesuchsteller(gesuch, gsNumber)) {
 				wizardStepService.updateSteps(gesuch.getId(), null, gesuchsteller, WizardStepName.GESUCHSTELLER);
 			}
+		} else {
+			wizardStepService.updateSteps(gesuch.getId(), null, gesuchsteller, WizardStepName.GESUCHSTELLER);
 		}
 	}
 

@@ -407,7 +407,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		familiensituationService.saveFamiliensituation(mutation, familiensituationContainer, oldFamsit);
 		Objects.requireNonNull(mutation.getGesuchsteller1(), "Gesuchsteller 1 muss gesetzt sein");
 		final GesuchstellerContainer gesuchsteller2 = gesuchstellerService
-			.saveGesuchsteller(createGesuchstellerHeirat(mutation.getGesuchsteller1()), mutation, 2, false);
+			.saveGesuchsteller(createGesuchstellerHeirat(mutation.getGesuchsteller1()), mutation, 2);
 
 		mutation.setGesuchsteller2(gesuchsteller2);
 		gesuchService.updateGesuch(mutation, false);
@@ -437,7 +437,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		Objects.requireNonNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer(), "FinSit vom GS1 muss gesetzt sein");
 		mutation.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettolohn(nettoLohn);
 
-		gesuchstellerService.saveGesuchsteller(mutation.getGesuchsteller1(), mutation, 1, false);
+		gesuchstellerService.saveGesuchsteller(mutation.getGesuchsteller1(), mutation, 1);
 		gesuchService.updateGesuch(mutation, false);
 		gesuchVerfuegenUndSpeichern(verfuegen, mutation, true, ignorieren);
 		return mutation;
@@ -754,10 +754,10 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 	private void saveGesuchsteller(@Nonnull Gesuch gesuch, @Nonnull List<WizardStep> wizardStepsFromGesuch) {
 		if (gesuch.getGesuchsteller1() != null) {
 			setWizardStepInStatus(wizardStepsFromGesuch, WizardStepName.GESUCHSTELLER, WizardStepStatus.IN_BEARBEITUNG);
-			gesuchstellerService.saveGesuchsteller(gesuch.getGesuchsteller1(), gesuch, 1, false);
+			gesuchstellerService.saveGesuchsteller(gesuch.getGesuchsteller1(), gesuch, 1);
 		}
 		if (gesuch.getGesuchsteller2() != null) {
-			gesuchstellerService.saveGesuchsteller(gesuch.getGesuchsteller2(), gesuch, 2, false);
+			gesuchstellerService.saveGesuchsteller(gesuch.getGesuchsteller2(), gesuch, 2);
 		}
 		setWizardStepVerfuegbar(wizardStepsFromGesuch, WizardStepName.GESUCHSTELLER);
 		// Umzug wird by default OK und verfuegbar, da es nicht notwendig ist, einen Umzug einzutragen

@@ -79,20 +79,19 @@ public class GesuchstellerResource {
 	@ApiOperation(value = "Updates a Gesuchsteller or creates it if it doesn't exist in the database. The transfer " +
 		"object also has a relation to adressen (wohnadresse, umzugadresse, korrespondenzadresse, rechnungsadresse) " +
 		"these are stored in the database as well. Note that wohnadresse and umzugadresse are both stored as consecutive " +
-		"wohnadressen in the database. Umzugs flag wird gebraucht, um WizardSteps richtig zu setzen.",
+		"wohnadressen in the database.",
 		response = JaxGesuchstellerContainer.class)
 	@Nullable
 	@PUT
-	@Path("/{gesuchId}/gsNumber/{gsNumber}/{umzug}")
+	@Path("/{gesuchId}/gsNumber/{gsNumber}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGesuchstellerContainer saveGesuchsteller(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchContJAXPId,
 		@Nonnull @NotNull @PathParam("gsNumber") Integer gsNumber,
-		@Nonnull @NotNull @PathParam("umzug") Boolean umzug,
 		@Nonnull @NotNull @Valid JaxGesuchstellerContainer gesuchstellerJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		Gesuch gesuch = gesuchService.findGesuch(gesuchContJAXPId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("createGesuchsteller", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchContJAXPId.getId()));
 
@@ -107,7 +106,7 @@ public class GesuchstellerResource {
 		}
 
 		GesuchstellerContainer convertedGesuchsteller = converter.gesuchstellerContainerToEntity(gesuchstellerJAXP, gesuchstellerToMerge);
-		GesuchstellerContainer persistedGesuchsteller = this.gesuchstellerService.saveGesuchsteller(convertedGesuchsteller, gesuch, gsNumber, umzug);
+		GesuchstellerContainer persistedGesuchsteller = this.gesuchstellerService.saveGesuchsteller(convertedGesuchsteller, gesuch, gsNumber);
 
 		return converter.gesuchstellerContainerToJAX(persistedGesuchsteller);
 	}
@@ -120,7 +119,7 @@ public class GesuchstellerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGesuchstellerContainer findGesuchsteller(
-		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) {
 
 		Objects.requireNonNull(gesuchstellerJAXPId.getId());
 		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
@@ -174,7 +173,7 @@ public class GesuchstellerResource {
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId,
 		@Nonnull @NotNull @PathParam("ewkPersonId") JaxId ewkPersonJAXPId,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(gesuchstellerJAXPId.getId());
 		Objects.requireNonNull(ewkPersonJAXPId.getId());

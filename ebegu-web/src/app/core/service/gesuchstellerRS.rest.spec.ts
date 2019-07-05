@@ -72,7 +72,7 @@ describe('GesuchstellerRS', () => {
                     ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller))
                     .respond(ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller));
 
-                gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1, false).then(result => {
+                gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1).then(result => {
                     updatedGesuchsteller = result;
                 });
                 $httpBackend.flush();
