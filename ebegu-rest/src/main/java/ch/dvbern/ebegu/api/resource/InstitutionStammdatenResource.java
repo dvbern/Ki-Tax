@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -68,6 +69,9 @@ public class InstitutionStammdatenResource {
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private InstitutionService institutionService;
 
 	@Inject
 	private TraegerschaftService traegerschaftService;
@@ -105,11 +109,13 @@ public class InstitutionStammdatenResource {
 		// the institution from the DB. For this reason we need to change any field of the institution manually
 
 		// Statuswechsel eingeladen -> aktiv
-		if (convertedInstData.getInstitution().getStatus() == InstitutionStatus.EINGELADEN) {
-			convertedInstData.getInstitution().setStatus(InstitutionStatus.AKTIV);
+		Institution convertedInstitution = convertedInstData.getInstitution();
+		if (convertedInstitution.getStatus() == InstitutionStatus.EINGELADEN) {
+			institutionService.activateInstitution(convertedInstData.getInstitution().getId());
 		}
 
-		updateTraegerschaft(institutionStammdatenJAXP.getInstitution(), convertedInstData.getInstitution());
+		// Trägerschaft speichern
+		updateTraegerschaft(institutionStammdatenJAXP.getInstitution(), convertedInstitution);
 
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(convertedInstData);
