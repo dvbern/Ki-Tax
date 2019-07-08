@@ -38,9 +38,10 @@ export default class GesuchstellerRS {
         gesuchsteller: TSGesuchstellerContainer,
         gesuchId: string,
         gsNumber: number,
+        umzug: boolean,
     ): IPromise<TSGesuchstellerContainer> {
         const gessteller = this.ebeguRestUtil.gesuchstellerContainerToRestObject({}, gesuchsteller);
-        const url = `${this.serviceURL}/${encodeURIComponent(gesuchId)}/gsNumber/${gsNumber}`;
+        const url = `${this.serviceURL}/${encodeURIComponent(gesuchId)}/gsNumber/${gsNumber}/${umzug}`;
 
         return this.http.put(url, gessteller)
             .then(response => this.wizardStepManager.findStepsFromGesuch(gesuchId)

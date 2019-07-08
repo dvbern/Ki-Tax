@@ -79,16 +79,17 @@ public class GesuchstellerResource {
 	@ApiOperation(value = "Updates a Gesuchsteller or creates it if it doesn't exist in the database. The transfer " +
 		"object also has a relation to adressen (wohnadresse, umzugadresse, korrespondenzadresse, rechnungsadresse) " +
 		"these are stored in the database as well. Note that wohnadresse and umzugadresse are both stored as consecutive " +
-		"wohnadressen in the database.",
+		"wohnadressen in the database. Umzugs flag wird gebraucht, um WizardSteps richtig zu setzen.",
 		response = JaxGesuchstellerContainer.class)
 	@Nullable
 	@PUT
-	@Path("/{gesuchId}/gsNumber/{gsNumber}")
+	@Path("/{gesuchId}/gsNumber/{gsNumber}/{umzug}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGesuchstellerContainer saveGesuchsteller(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchContJAXPId,
 		@Nonnull @NotNull @PathParam("gsNumber") Integer gsNumber,
+		@Nonnull @NotNull @PathParam("umzug") Boolean umzug,
 		@Nonnull @NotNull @Valid JaxGesuchstellerContainer gesuchstellerJAXP,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
@@ -106,7 +107,7 @@ public class GesuchstellerResource {
 		}
 
 		GesuchstellerContainer convertedGesuchsteller = converter.gesuchstellerContainerToEntity(gesuchstellerJAXP, gesuchstellerToMerge);
-		GesuchstellerContainer persistedGesuchsteller = this.gesuchstellerService.saveGesuchsteller(convertedGesuchsteller, gesuch, gsNumber);
+		GesuchstellerContainer persistedGesuchsteller = this.gesuchstellerService.saveGesuchsteller(convertedGesuchsteller, gesuch, gsNumber, umzug);
 
 		return converter.gesuchstellerContainerToJAX(persistedGesuchsteller);
 	}

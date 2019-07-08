@@ -99,7 +99,7 @@ export class UmzugViewController extends AbstractGesuchViewController<Array<TSAd
         this.errorService.clearAll();
         this.saveAdresseInGS();
         this.gesuchModelManager.setGesuchstellerNumber(1);
-        return this.gesuchModelManager.updateGesuchsteller().then(() => {
+        return this.gesuchModelManager.updateGesuchsteller(true).then(() => {
             return this.gesuchModelManager.getStammdatenToWorkWith();
         });
     }

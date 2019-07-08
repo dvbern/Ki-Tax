@@ -36,10 +36,7 @@ public interface GesuchstellerService {
 	 * @param gsNumber Die Gesuchersteller-Nummer
 	 */
 	@Nonnull
-	GesuchstellerContainer saveGesuchsteller(
-		@Nonnull GesuchstellerContainer gesuchsteller,
-		@Nonnull final Gesuch gesuch,
-		@Nonnull Integer gsNumber);
+	GesuchstellerContainer saveGesuchsteller(@Nonnull GesuchstellerContainer gesuchsteller, final Gesuch gesuch, Integer gsNumber, boolean umzug);
 
 	/**
 	 * @param id PK (id) der Gesuchsteller

@@ -57,7 +57,7 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 		final Gesuch gesuch = TestDataUtil.createDefaultGesuch();
 		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer(gesuch);
 
-		gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1);
+		gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1, false);
 		Collection<GesuchstellerContainer> allGesuchsteller = gesuchstellerService.getAllGesuchsteller();
 		Assert.assertEquals(1, allGesuchsteller.size());
 		GesuchstellerContainer nextGesuchsteller = allGesuchsteller.iterator().next();
@@ -75,7 +75,7 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertEquals("tim.tester@example.com", gesuchsteller.getGesuchstellerJA().getMail());
 
 		gesuchsteller.getGesuchstellerJA().setMail("fritz.mueller@example.com");
-		GesuchstellerContainer updatedGesuchsteller = gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1);
+		GesuchstellerContainer updatedGesuchsteller = gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1, false);
 		Assert.assertEquals("fritz.mueller@example.com", updatedGesuchsteller.getGesuchstellerJA().getMail());
 	}
 
@@ -94,7 +94,7 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 		Assert.assertNotNull(gesuchstellerService);
 		GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerWithEinkommensverschlechterung();
 
-		gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1);
+		gesuchstellerService.saveGesuchsteller(gesuchsteller, TestDataUtil.createDefaultGesuch(), 1, false);
 		Collection<GesuchstellerContainer> allGesuchsteller = gesuchstellerService.getAllGesuchsteller();
 		Assert.assertEquals(1, allGesuchsteller.size());
 
@@ -130,7 +130,7 @@ public class GesuchstellerServiceBeanTest extends AbstractEbeguLoginTest {
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(TestDataUtil.createFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(TestDataUtil.createDefaultEinkommensverschlechterungsContainer());
 
-		final GesuchstellerContainer savedGesuchsteller = gesuchstellerService.saveGesuchsteller(gesuchsteller, gesuch, 2);
+		final GesuchstellerContainer savedGesuchsteller = gesuchstellerService.saveGesuchsteller(gesuchsteller, gesuch, 2, false);
 
 		Assert.assertNotNull(savedGesuchsteller.getFinanzielleSituationContainer());
 		Assert.assertNotNull(savedGesuchsteller.getFinanzielleSituationContainer().getFinanzielleSituationJA());

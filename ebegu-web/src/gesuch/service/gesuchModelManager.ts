@@ -434,12 +434,13 @@ export default class GesuchModelManager {
     /**
      * Speichert den StammdatenToWorkWith.
      */
-    public updateGesuchsteller(): IPromise<TSGesuchstellerContainer> {
+    public updateGesuchsteller(umzug: boolean): IPromise<TSGesuchstellerContainer> {
         // Da showUmzug nicht im Server gespeichert wird, muessen wir den alten Wert kopieren und nach der
         // Aktualisierung wiedersetzen
         return this.gesuchstellerRS.saveGesuchsteller(this.getStammdatenToWorkWith(),
             this.gesuch.id,
-            this.gesuchstellerNumber)
+            this.gesuchstellerNumber,
+            umzug)
             .then((gesuchstellerResponse: any) => {
                 this.setStammdatenToWorkWith(gesuchstellerResponse);
 

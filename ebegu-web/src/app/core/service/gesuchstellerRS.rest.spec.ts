@@ -68,11 +68,11 @@ describe('GesuchstellerRS', () => {
             it('should updateGesuchsteller a gesuchsteller and her adresses', () => {
                 mockGesuchsteller.gesuchstellerJA.nachname = 'changedname';
                 let updatedGesuchsteller: TSGesuchstellerContainer;
-                $httpBackend.expectPUT(`${gesuchstellerRS.serviceURL}/${dummyGesuchID}/gsNumber/1`,
+                $httpBackend.expectPUT(`${gesuchstellerRS.serviceURL}/${dummyGesuchID}/gsNumber/1/false`,
                     ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller))
                     .respond(ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller));
 
-                gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1).then(result => {
+                gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1, false).then(result => {
                     updatedGesuchsteller = result;
                 });
                 $httpBackend.flush();
