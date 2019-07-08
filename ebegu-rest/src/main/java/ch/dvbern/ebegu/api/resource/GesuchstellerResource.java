@@ -92,7 +92,7 @@ public class GesuchstellerResource {
 		@Nonnull @NotNull @PathParam("umzug") Boolean umzug,
 		@Nonnull @NotNull @Valid JaxGesuchstellerContainer gesuchstellerJAXP,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		Gesuch gesuch = gesuchService.findGesuch(gesuchContJAXPId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("createGesuchsteller", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchContJAXPId.getId()));
 
@@ -120,7 +120,7 @@ public class GesuchstellerResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGesuchstellerContainer findGesuchsteller(
-		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) throws EbeguException {
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) {
 
 		Objects.requireNonNull(gesuchstellerJAXPId.getId());
 		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
@@ -174,7 +174,7 @@ public class GesuchstellerResource {
 		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId,
 		@Nonnull @NotNull @PathParam("ewkPersonId") JaxId ewkPersonJAXPId,
 		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) throws EbeguException {
+		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(gesuchstellerJAXPId.getId());
 		Objects.requireNonNull(ewkPersonJAXPId.getId());

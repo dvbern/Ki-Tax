@@ -25,7 +25,6 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.ErwerbspensumResource;
 import ch.dvbern.ebegu.api.resource.GesuchstellerResource;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -62,17 +61,19 @@ public class ErwerbspensumResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
-	public void createGesuchstelelrWithErwerbspensumTest() throws EbeguException {
+	public void createGesuchstelelrWithErwerbspensumTest() {
 		JaxGesuchstellerContainer testJaxGesuchsteller = TestJaxDataUtil.createTestJaxGesuchstellerWithErwerbsbensum();
-		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, testJaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer jaxGesuchsteller = gesuchstellerResource
+			.saveGesuchsteller(gesuchJAXPId, 1, false, testJaxGesuchsteller, null, null);
 		Assert.assertNotNull(jaxGesuchsteller);
 
 	}
 
 	@Test
-	public void createErwerbspensumTest() throws EbeguException {
+	public void createErwerbspensumTest() {
 		JaxGesuchstellerContainer jaxGesuchsteller = TestJaxDataUtil.createTestJaxGesuchsteller();
-		JaxGesuchstellerContainer gesuchsteller = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, jaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer gesuchsteller = gesuchstellerResource
+			.saveGesuchsteller(gesuchJAXPId, 1, false, jaxGesuchsteller, null, null);
 		Response response = erwerbspensumResource.saveErwerbspensum(gesuchJAXPId, converter.toJaxId(gesuchsteller), TestJaxDataUtil.createTestJaxErwerbspensumContainer(), null, null);
 		JaxErwerbspensumContainer jaxErwerbspensum = (JaxErwerbspensumContainer) response.getEntity();
 		Assert.assertNotNull(jaxErwerbspensum);
@@ -80,9 +81,10 @@ public class ErwerbspensumResourceTest extends AbstractEbeguRestLoginTest {
 	}
 
 	@Test
-	public void updateGesuchstellerTest() throws EbeguException {
+	public void updateGesuchstellerTest() {
 		JaxGesuchstellerContainer jaxGesuchsteller = TestJaxDataUtil.createTestJaxGesuchsteller();
-		JaxGesuchstellerContainer storedGS = gesuchstellerResource.saveGesuchsteller(gesuchJAXPId, 1, false, jaxGesuchsteller, null, null);
+		JaxGesuchstellerContainer storedGS = gesuchstellerResource
+			.saveGesuchsteller(gesuchJAXPId, 1, false, jaxGesuchsteller, null, null);
 		Response response = erwerbspensumResource.saveErwerbspensum(gesuchJAXPId, converter.toJaxId(storedGS), TestJaxDataUtil.createTestJaxErwerbspensumContainer(), null, null);
 		JaxErwerbspensumContainer jaxErwerbspensum = (JaxErwerbspensumContainer) response.getEntity();
 		JaxErwerbspensumContainer loadedEwp = erwerbspensumResource.findErwerbspensum(converter.toJaxId(jaxErwerbspensum));
