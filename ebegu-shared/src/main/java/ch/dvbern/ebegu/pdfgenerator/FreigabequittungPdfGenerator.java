@@ -148,7 +148,7 @@ public class FreigabequittungPdfGenerator extends DokumentAnGemeindeGenerator {
 			image.setAbsolutePosition(document.leftMargin(), document.getPageSize().getHeight() - 2 * Utilities.millimetersToPoints(PdfLayoutConfiguration.BARCODE_TOP_IN_MM));
 			document.add(image);
 		} catch (IOException | DocumentException e) {
-			LOG.error("Failed to read the Barcode: {}", e.getMessage());
+			LOG.error("Failed to read the Barcode: {}", e.getMessage(), e);
 		}
 	}
 

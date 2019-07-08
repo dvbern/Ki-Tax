@@ -86,7 +86,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 				widthInMm);
 			setLogo(logo);
 		} catch (IOException | BadElementException e) {
-			LOG.error("Failed to read the Logo: {}", e.getMessage());
+			LOG.error("Failed to read the Logo: {}", e.getMessage(), e);
 		}
 	}
 }

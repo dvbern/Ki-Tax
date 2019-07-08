@@ -27,7 +27,7 @@ describe('dvbErrorMessages', () => {
 
     beforeEach(angular.mock.inject($injector => {
         controller = new DvErrorMessagesPanelComponent($injector.get('$rootScope'), $injector.get('ErrorService'),
-            undefined, undefined);
+            undefined, undefined, undefined);
         spyOn(controller, 'show').and.returnValue({});
         exceptionReport = TestDataUtil.createExceptionReport();
     }));

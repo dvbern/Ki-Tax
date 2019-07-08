@@ -21,7 +21,7 @@
             <dv-bisher gs="vm.model.erwerbspensumGS"
                        ja="vm.model.erwerbspensumJA"
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
-                       show-specific-bisher-text-if-bisher-none="true">
+                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
 
             <hr class="header"/>
             <p class="inlineHint" data-translate="PFLICHTFELDER_HINT"></p>
@@ -47,7 +47,7 @@
                                 >
                                 <dv-bisher gs="vm.model.erwerbspensumGS.bezeichnung"
                                            ja="vm.model.erwerbspensumJA.bezeichnung"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().erwerbspensumGS)"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 <dv-error-messages input-id="bezeichnung"
                                                    for="vm.form.bezeichnung.$error"></dv-error-messages>
                             </dv-input-container>
@@ -75,7 +75,7 @@
 
                                     <dv-bisher gs="vm.model.erwerbspensumGS.taetigkeit"
                                                ja="vm.model.erwerbspensumJA.taetigkeit"
-                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().erwerbspensumGS)"></dv-bisher>
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                     <dv-error-messages input-id="taetigkeit"
                                                        for="vm.form.taetigkeit.$error"
                                                        class="error"></dv-error-messages>
@@ -98,7 +98,7 @@
                                        ng-attr-placeholder="{{'PERCENTAGE_PLACEHOLDER' | translate}}">
                                 <dv-bisher gs="vm.model.erwerbspensumGS.pensum"
                                            ja="vm.model.erwerbspensumJA.pensum"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().erwerbspensumGS)"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 <dv-error-messages input-id="taetigkeitPensum" for="vm.form.taetigkeitPensum.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -119,7 +119,7 @@
                                 </dv-datepicker>
                                 <dv-bisher gs="vm.model.erwerbspensumGS.gueltigkeit.gueltigAb"
                                            ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigAb"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().erwerbspensumGS)"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 <dv-error-messages input-id="taetigkeitAbID" for="vm.form.taetigkeitAb.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -135,7 +135,7 @@
                                 </dv-datepicker>
                                 <dv-bisher gs="vm.model.erwerbspensumGS.gueltigkeit.gueltigBis"
                                            ja="vm.model.erwerbspensumJA.gueltigkeit.gueltigBis"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().erwerbspensumGS)"></dv-bisher>
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
                                 <dv-error-messages input-id="taetigkeitBisID" for="vm.form.taetigkeitBis.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -153,10 +153,12 @@
                                              ng-change="vm.unbezahlterUrlaubClicked()">
                                     <span data-translate="UNBEZAHLTER_URLAUB"></span>
                                 </md-checkbox>
-                                <dv-bisher gs="vm.hasUnbezahlterUrlaubGS"
-                                           ja="vm.hasUnbezahlterUrlaub"
-                                           specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().erwerbspensumGS)"></dv-bisher>
+                                <div ng-if="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)">
+									<dv-bisher gs="vm.hasUnbezahlterUrlaubGS"
+											   ja="vm.hasUnbezahlterUrlaub"
+											   specific-bisher-text="vm.getTextUnbezahlterUrlaubKorrekturJA()"
+											   show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.erwerbspensumGS)"></dv-bisher>
+                                </div>
                                 <dv-error-messages for="vm.form.showUnbezahlterUrlaub.$error"
                                                    class="error"></dv-error-messages>
                             </div>

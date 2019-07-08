@@ -20,6 +20,10 @@
             <h2>
                 <span data-translate="KIND"></span> {{vm.getContainer() ? vm.getContainer().kindNummer : ''}}
             </h2>
+            <dv-bisher gs="vm.getContainer().kindGS"
+                       ja="vm.getContainer().kindJA"
+                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
+                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
             <p class="inlineHint" data-translate="PFLICHTFELDER_HINT"></p>
         </div>
@@ -46,7 +50,8 @@
                                                     aria-described-by="geschlecht-error">
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getContainer().kindGS.geschlecht"
-                                           ja="vm.getContainer().kindJA.geschlecht"></dv-bisher>
+                                           ja="vm.getContainer().kindJA.geschlecht"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="geschlecht" for="vm.form.geschlecht.$error"
                                                    class="error"></dv-error-messages>
                             </div>
@@ -61,7 +66,8 @@
                                        ng-model="vm.getModel().vorname"
                                        dv-max-length class="form-control" required>
                                 <dv-bisher gs="vm.getContainer().kindGS.vorname"
-                                           ja="vm.getContainer().kindJA.vorname"></dv-bisher>
+                                           ja="vm.getContainer().kindJA.vorname"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="vorname_ID" for="vm.form.vorname.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -78,7 +84,8 @@
                                        class="form-control"
                                        required>
                                 <dv-bisher gs="vm.getContainer().kindGS.nachname"
-                                           ja="vm.getContainer().kindJA.nachname"></dv-bisher>
+                                           ja="vm.getContainer().kindJA.nachname"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="name_ID" for="vm.form.name.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -99,7 +106,8 @@
                                 </dv-datepicker>
 
                                 <dv-bisher gs="vm.getContainer().kindGS.geburtsdatum"
-                                           ja="vm.getContainer().kindJA.geburtsdatum"></dv-bisher>
+                                           ja="vm.getContainer().kindJA.geburtsdatum"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="geburtsdatum_ID"
                                                    for="vm.form.geburtsdatum.$error"></dv-error-messages>
                             </dv-input-container>
@@ -126,7 +134,8 @@
                                                     aria-described-by="kinderabzugErstesHalbjahr-error">
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getContainer().kindGS.kinderabzugErstesHalbjahr"
-                                           ja="vm.getContainer().kindJA.kinderabzugErstesHalbjahr"></dv-bisher>
+                                           ja="vm.getContainer().kindJA.kinderabzugErstesHalbjahr"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="kinderabzugErstesHalbjahr" for="vm.form.kinderabzugErstesHalbjahr.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -152,7 +161,8 @@
                                                     aria-described-by="kinderabzugZweitesHalbjahr-error">
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getContainer().kindGS.kinderabzugZweitesHalbjahr"
-                                           ja="vm.getContainer().kindJA.kinderabzugZweitesHalbjahr"></dv-bisher>
+                                           ja="vm.getContainer().kindJA.kinderabzugZweitesHalbjahr"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="kinderabzugZweitesHalbjahr" for="vm.form.kinderabzugZweitesHalbjahr.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -174,7 +184,7 @@
                                 <dv-radio-container name="familienErgaenzendeBetreuung" class="input-element"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.isKorrekturModusJugendamt() && !vm.hasKindBetreuungen()"
+                                                    dv-enable-expression="!vm.isGesuchReadonly() && !vm.hasKindBetreuungen()"
                                                     ng-required="true"
                                                     ng-model="vm.getModel().familienErgaenzendeBetreuung"
                                                     ng-change="vm.familienErgaenzendeBetreuungClicked()"
@@ -182,7 +192,8 @@
                                                     aria-described-by="familienErgaenzendeBetreuung-error">
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getContainer().kindGS.familienErgaenzendeBetreuung"
-                                           ja="vm.getContainer().kindJA.familienErgaenzendeBetreuung"></dv-bisher>
+                                           ja="vm.getContainer().kindJA.familienErgaenzendeBetreuung"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="familienErgaenzendeBetreuung"
                                                    for="vm.form.familienErgaenzendeBetreuung.$error"
                                                    class="error"></dv-error-messages>
@@ -210,7 +221,8 @@
                                                     aria-described-by="sprichtAmtssprache-error">
                                 </dv-radio-container>
                                 <dv-bisher gs="vm.getContainer().kindGS.sprichtAmtssprache"
-                                           ja="vm.getContainer().kindJA.sprichtAmtssprache"></dv-bisher>
+                                           ja="vm.getContainer().kindJA.sprichtAmtssprache"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="sprichtAmtssprache"
                                                    for="vm.form.sprichtAmtssprache.$error"
                                                    class="error"></dv-error-messages>
@@ -239,7 +251,8 @@
                                             ng-required="vm.getModel().familienErgaenzendeBetreuung">
                                     </select>
                                     <dv-bisher gs="vm.getContainer().kindGS.einschulungTyp"
-                                               ja="vm.getContainer().kindJA.einschulungTyp"></dv-bisher>
+                                               ja="vm.getContainer().kindJA.einschulungTyp"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                     <dv-error-messages input-id="einschulungTyp" for="vm.form.einschulungTyp.$error">
                                     </dv-error-messages>
                                 </div>
@@ -261,7 +274,8 @@
                                             text="'INVOLVIERTE_FACHSTELLE_HELP' | translate"></dv-tooltip>
                                 <dv-bisher gs="vm.showFachstelleGS"
                                            ja="vm.showFachstelle"
-                                           specific-bisher-text="vm.getTextFachstelleKorrekturJA()"></dv-bisher>
+                                           specific-bisher-text="vm.getTextFachstelleKorrekturJA()"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages for="vm.form.showFachstelle.$error"
                                                    class="error"></dv-error-messages>
                             </div>

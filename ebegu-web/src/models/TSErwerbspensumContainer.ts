@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import EbeguUtil from '../utils/EbeguUtil';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import TSErwerbspensum from './TSErwerbspensum';
 
@@ -35,5 +36,9 @@ export default class TSErwerbspensumContainer extends TSAbstractMutableEntity {
 
     public set erwerbspensumJA(value: TSErwerbspensum) {
         this._erwerbspensumJA = value;
+    }
+
+    public isGSContainerEmpty(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.erwerbspensumGS);
     }
 }

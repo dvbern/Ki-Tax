@@ -87,7 +87,7 @@ public class FinanzielleSituationTable {
 		try {
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Failed to set the width: {}", e.getMessage());
+			LOG.error("Failed to set the width: {}", e.getMessage(), e);
 		}
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setHeaderRows(numberOfTitleRows);

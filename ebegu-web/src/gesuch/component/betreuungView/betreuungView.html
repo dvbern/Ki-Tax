@@ -25,6 +25,10 @@
                       data-translate-value-geschlecht="{{vm.getKindModel().kindJA.geschlecht | translate}}"
                       data-translate-value-geburtsdatum="{{vm.getKindModel().kindJA.geburtsdatum | amDateFormat : 'DD.MM.YYYY'}}"></span>
             </h2>
+            <dv-bisher gs="vm.getKindModel().kindGS"
+                       ja="vm.getKindModel().kindJA"
+                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
+                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
         </div>
         <div class="col-md-4 text-right">
             <h2 class="ebeguH2" aria-hidden>
@@ -278,7 +282,8 @@
                                 </md-checkbox>
                                 <dv-bisher gs="vm.getErweiterteBetreuungGS().erweiterteBeduerfnisse"
                                            ja="vm.getErweiterteBetreuungJA().erweiterteBeduerfnisse"
-                                           specific-bisher-text="vm.getTextFachstelleKorrekturJA()"></dv-bisher>
+                                           specific-bisher-text="vm.getTextFachstelleKorrekturJA()"
+                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.getErweiterteBetreuungGS())"></dv-bisher>
                             </div>
                         </div>
                     </div>
@@ -301,7 +306,8 @@
                                             ng-change="vm.setSelectedFachsstelle()">
                                     </select>
                                     <dv-bisher gs="vm.getErweiterteBetreuungGS().fachstelle.name"
-                                               ja="vm.getErweiterteBetreuungJA().fachstelle.name"></dv-bisher>
+                                               ja="vm.getErweiterteBetreuungJA().fachstelle.name"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.getErweiterteBetreuungGS())"></dv-bisher>
                                     <dv-error-messages input-id="fachstelle" for="vm.form.fachstelle.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
