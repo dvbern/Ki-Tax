@@ -52,6 +52,12 @@ public interface InstitutionService {
 	Optional<Institution> findInstitution(@Nonnull String id);
 
 	/**
+	 * Setzt den Status der Institution auf AKTIV
+	 */
+	@Nonnull
+	Institution activateInstitution(@Nonnull String institutionId);
+
+	/**
 	 * marks an Institution as inactive on the Database. It does it by setting Institutionstammdaten.gueltigkeit.bis
 	 * to the date of today.
 	 */

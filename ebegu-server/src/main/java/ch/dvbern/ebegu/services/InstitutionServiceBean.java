@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
 import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -124,6 +125,16 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Objects.requireNonNull(id, "id muss gesetzt sein");
 		Institution a = persistence.find(Institution.class, id);
 		return Optional.ofNullable(a);
+	}
+
+	@Nonnull
+	@Override
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION })
+	public Institution activateInstitution(@Nonnull String institutionId) {
+		Institution institution = findInstitution(institutionId).orElseThrow(() -> new EbeguEntityNotFoundException("activateInstitution",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		institution.setStatus(InstitutionStatus.AKTIV);
+		return updateInstitution(institution);
 	}
 
 	@Override

@@ -101,8 +101,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	) {
 		// Die eigentliche FinSit speichern
 		FinanzielleSituationContainer finanzielleSituationPersisted = persistence.merge(finanzielleSituation);
-			wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), WizardStepName
-				.FINANZIELLE_SITUATION);
 
 		// Die zwei Felder "sozialhilfebezueger" und "gemeinsameSteuererklaerung" befinden sich nicht auf der FinanziellenSituation, sondern auf der
 		// FamilienSituation -> Das Gesuch muss hier aus der DB geladen werden, damit nichts überschrieben wird!
@@ -112,6 +110,14 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			antragNurFuerBehinderungszuschlag,
 			gesuchId
 		);
+
+		wizardStepService.updateSteps(
+			gesuchId,
+			null,
+			finanzielleSituationPersisted.getFinanzielleSituationJA(),
+			WizardStepName.FINANZIELLE_SITUATION,
+			1); // it must be substep 1 since it is finanzielleSituationStart
+
 		return gesuch;
 	}
 
