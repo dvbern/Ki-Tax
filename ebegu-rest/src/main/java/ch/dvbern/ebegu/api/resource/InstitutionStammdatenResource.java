@@ -111,12 +111,8 @@ public class InstitutionStammdatenResource {
 		// Statuswechsel eingeladen -> aktiv
 		Institution convertedInstitution = convertedInstData.getInstitution();
 		if (convertedInstitution.getStatus() == InstitutionStatus.EINGELADEN) {
-			convertedInstitution.setStatus(InstitutionStatus.AKTIV);
+			institutionService.activateInstitution(convertedInstData.getInstitution().getId());
 		}
-
-		// Institution speichern
-		convertedInstitution = institutionService.updateInstitution(convertedInstitution);
-		convertedInstData.setInstitution(convertedInstitution);
 
 		// Trägerschaft speichern
 		updateTraegerschaft(institutionStammdatenJAXP.getInstitution(), convertedInstitution);
