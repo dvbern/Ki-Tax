@@ -552,9 +552,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						setStatusDueToFinSitRequired(wizardStep, gesuch);
 					}
 				}
-				if (WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName() && Objects.equals(
-					1,
-					substep)) {
+				if (WizardStepName.EINKOMMENSVERSCHLECHTERUNG == wizardStep.getWizardStepName()
+					&& Objects.equals(1, substep)) {
 					setStatusDueToFinSitRequired(wizardStep, gesuch);
 				}
 			}

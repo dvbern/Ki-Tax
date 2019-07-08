@@ -191,8 +191,8 @@ public final class EbeguUtil {
 
 	public static boolean isFinanzielleSituationNotIntroduced(@Nonnull Gesuch gesuch) {
 		return gesuch.getGesuchsteller1() == null
-			|| (gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
-			&& gesuch.getEinkommensverschlechterungInfoContainer() == null);
+			|| gesuch.getGesuchsteller1().getFinanzielleSituationContainer() == null
+			|| gesuch.getEinkommensverschlechterungInfoContainer() == null;
 	}
 
 	public static boolean isErlaeuterungenZurVerfuegungRequired(@Nonnull Gesuch gesuch) {
