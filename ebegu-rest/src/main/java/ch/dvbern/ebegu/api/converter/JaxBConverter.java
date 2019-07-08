@@ -1207,6 +1207,13 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
 		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
 		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
+
+		Collection<Institution> institutionen = institutionService.getAllInstitutionenFromTraegerschaft(persistedTraegerschaft.getId());
+		// its enough if we just pass the names here, we only want to display it later
+		jaxTraegerschaft.setInstitutionNames(institutionen.stream()
+			.map(Institution::getName)
+			.collect(Collectors.joining(", ")));
+		jaxTraegerschaft.setInstitutionCount(institutionen.size());
 		return jaxTraegerschaft;
 	}
 

@@ -52,15 +52,16 @@ public interface InstitutionService {
 	Optional<Institution> findInstitution(@Nonnull String id);
 
 	/**
+	 * Setzt den Status der Institution auf AKTIV
+	 */
+	@Nonnull
+	Institution activateInstitution(@Nonnull String institutionId);
+
+	/**
 	 * marks an Institution as inactive on the Database. It does it by setting Institutionstammdaten.gueltigkeit.bis
 	 * to the date of today.
 	 */
 	Institution setInstitutionInactive(@Nonnull String institutionId);
-
-	/**
-	 * Delete Institution on the Database.
-	 */
-	void deleteInstitution(@Nonnull String institutionId);
 
 	/**
 	 * @param traegerschaftId Der ID der Traegerschaft, fuer welche die Institutionen gesucht werden muessen
@@ -113,4 +114,9 @@ public interface InstitutionService {
 	 * Updates the Flag stammdatenCheckRequired to the given value
 	 */
 	Institution updateStammdatenCheckRequired(@Nonnull String institutionId, boolean isCheckRequired);
+
+	/**
+	 * Removes the institution given by the id totally from the DB if this isn't linked to any other object
+	 */
+	void removeInstitution(@Nonnull String institutionId);
 }

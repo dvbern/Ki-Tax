@@ -44,33 +44,10 @@
                           dv-enable-expression="!vm.isGesuchReadonly()">
 
                     <div ng-repeat="umzugAdresse in vm.getUmzugAdressenList()">
-                        <!--Gesuchsteller-->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-medium">
-                                <div class="form-group">
-                                    <!--suppress XmlInvalidId -->
-                                    <label class="required" data-translate="BETROFFENE_WAEHLEN" for="betroffene">
-                                    </label>
-                                    <div class="dv-select-style">
-                                        <select aria-describedby="betroffene-{{$index}}-error"
-                                                name="betroffene-{{$index}}" id="betroffene-{{$index}}"
-                                                ng-model="umzugAdresse.betroffene"
-                                                class="form-control"
-                                                ng-disabled="vm.isKorrekturModusJugendamt()"
-                                                ng-options="(vm.getNameFromBetroffene(betroffene)) for betroffene in vm.getBetroffenenList()"
-                                                ng-required="true">
-                                        </select>
-                                        <dv-error-messages input-id="betroffene-{{$index}}"
-                                                           for="vm.form['betroffene-' + $index].$error"
-                                                           class="error"></dv-error-messages>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <!-- Umzugadresse-->
                         <div class="row">
                             <div class="col-md-12">
-                                <dv-adresse adresse="umzugAdresse.adresse" show-nicht-in-gemeinde="true"
+                                <dv-adresse adresse="umzugAdresse" show-nicht-in-gemeinde="true"
                                             gemeinde="vm.gesuchModelManager.getDossier().gemeinde"
                                             prefix="umzug-{{$index}}"></dv-adresse>
                             </div>

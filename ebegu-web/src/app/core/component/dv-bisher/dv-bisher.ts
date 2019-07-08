@@ -15,10 +15,13 @@
 
 import {IComponentOptions, IController} from 'angular';
 import * as moment from 'moment';
+import {Moment} from 'moment';
 import GesuchModelManager from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {TSAbstractMutableEntity} from '../../../../models/TSAbstractMutableEntity';
 import DateUtil from '../../../../utils/DateUtil';
+import EbeguUtil from '../../../../utils/EbeguUtil';
 import ITranslateService = angular.translate.ITranslateService;
 
 /**
@@ -43,6 +46,7 @@ export class DvBisherComponentConfig implements IComponentOptions {
         specificBisherText: '<',
         blockExisted: '<',
         showIfBisherNone: '<',
+        showSpecificBisherTextIfBisherNone: '<',
     };
     public template = require('./dv-bisher.html');
     public controller = DvBisher;
@@ -59,6 +63,8 @@ export class DvBisher implements IController {
     public ja: any;
     // sollen die korrekturen des jugendamts angezeigt werden wenn im GS container kein wert ist
     public showIfBisherNone: boolean;
+    // Soll ein spezifischer Text angezeigt werden, wenn das JA einen Eintrag erfasst hat?
+    public showSpecificBisherTextIfBisherNone: boolean;
     public specificBisherText: string;
     public bisherText: Array<string>;
     public blockExisted: boolean;
@@ -74,6 +80,9 @@ export class DvBisher implements IController {
             // wenn nicht von aussen gesetzt auf true
             this.showIfBisherNone = true;
         }
+        if (EbeguUtil.isNullOrUndefined(this.showSpecificBisherTextIfBisherNone)) {
+            this.showSpecificBisherTextIfBisherNone = false;
+        }
     }
 
     public getBisher(): Array<string> {
@@ -81,13 +90,13 @@ export class DvBisher implements IController {
         if (this.specificBisherText) {
             this.bisherText = this.specificBisherText ? this.specificBisherText.split('\n') : undefined;
             // War es eine Loeschung, oder ein Hinzufuegen?
-            if (this.hasBisher()) {
+            if (this.hasBisher() || this.showSpecificBisherTextIfBisherNone) {
                 return this.bisherText; // neue eingabe als ein einzelner block
             }
             return [this.$translate.instant('LABEL_KEINE_ANGABE')];  // vorher war keine angabe da
         }
         if (this.gs instanceof moment) {
-            return [DateUtil.momentToLocalDateFormat(this.gs, defaultDateFormat)];
+            return [DateUtil.momentToLocalDateFormat(this.gs as Moment, defaultDateFormat)];
         }
         if (this.gs === true) {
             return [this.$translate.instant('LABEL_JA')];
@@ -118,11 +127,15 @@ export class DvBisher implements IController {
 
     public equals(gs: any, ja: any): boolean {
         if (gs instanceof moment) {
-            return this.equals(DateUtil.momentToLocalDateFormat(gs, defaultDateFormat),
+            return this.equals(DateUtil.momentToLocalDateFormat(gs as Moment, defaultDateFormat),
                 DateUtil.momentToLocalDateFormat(ja, defaultDateFormat));
         }
         if (Array.isArray(gs)) {
             return JSON.stringify(gs) === JSON.stringify(ja);
+        }
+        if (gs instanceof TSAbstractMutableEntity) {
+            return (EbeguUtil.isNotNullOrUndefined(gs) && EbeguUtil.isNotNullOrUndefined(ja))
+                || (EbeguUtil.isNullOrUndefined(gs) && EbeguUtil.isNullOrUndefined(ja));
         }
         return gs === ja || (this.isEmpty(gs) && this.isEmpty(ja)); // either they are equal or both are a form of empty
     }

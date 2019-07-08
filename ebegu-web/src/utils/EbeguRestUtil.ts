@@ -427,7 +427,7 @@ export default class EbeguRestUtil {
     public gesuchstellerToRestObject(restGesuchsteller: any, gesuchsteller: TSGesuchsteller): any {
         if (gesuchsteller) {
             this.abstractPersonEntitytoRestObject(restGesuchsteller, gesuchsteller);
-            restGesuchsteller.mail = gesuchsteller.mail;
+            restGesuchsteller.mail = gesuchsteller.mail || undefined;
             restGesuchsteller.mobile = gesuchsteller.mobile || undefined;
             restGesuchsteller.telefon = gesuchsteller.telefon || undefined;
             restGesuchsteller.telefonAusland = gesuchsteller.telefonAusland || undefined;
@@ -1050,6 +1050,8 @@ export default class EbeguRestUtil {
             this.parseAbstractMutableEntity(traegerschaftTS, traegerschaftFromServer);
             traegerschaftTS.name = traegerschaftFromServer.name;
             traegerschaftTS.active = traegerschaftFromServer.active;
+            traegerschaftTS.institutionCount = traegerschaftFromServer.institutionCount;
+            traegerschaftTS.institutionNames = traegerschaftFromServer.institutionNames;
             return traegerschaftTS;
         }
         return undefined;

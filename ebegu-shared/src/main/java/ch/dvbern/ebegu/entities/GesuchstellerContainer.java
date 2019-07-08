@@ -86,7 +86,6 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 	private Set<ErwerbspensumContainer> erwerbspensenContainers = new HashSet<>();
 
 	@Valid
-	@Size(min = 1)
 	@Nonnull
 	// es handelt sich um eine "private" Relation, das heisst Adressen koennen nie einer anderen Gesuchsteller zugeordnet werden
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "gesuchstellerContainer")

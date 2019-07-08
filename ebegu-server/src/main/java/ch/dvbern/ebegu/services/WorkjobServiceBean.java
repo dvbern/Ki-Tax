@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -309,7 +310,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		final boolean alreadyQueued = openWorkjobs.stream().anyMatch(workJob::isSame);
 		if (alreadyQueued) {
 			String messsage = String.format("An identical Workjob was already queued by this user; %s ", workJob);
-			throw new EbeguRuntimeException("checkIfJobCreationAllowed", messsage, ErrorCodeEnum.ERROR_JOB_ALREADY_EXISTS);
+			throw new EbeguRuntimeException(KibonLogLevel.INFO, "checkIfJobCreationAllowed", messsage, ErrorCodeEnum.ERROR_JOB_ALREADY_EXISTS);
 		}
 	}
 

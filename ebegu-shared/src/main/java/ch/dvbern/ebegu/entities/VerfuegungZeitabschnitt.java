@@ -97,9 +97,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	private Boolean wohnsitzNichtInGemeindeGS1 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
 
 	@Transient
-	private Boolean wohnsitzNichtInGemeindeGS2 = null; //es muss by default null sein um zu wissen, wann es nicht definiert wurde
-
-	@Transient
 	// Wenn Vollkosten bezahlt werden muessen, werden die Vollkosten berechnet und als Elternbeitrag gesetzt
 	private boolean bezahltVollkosten;
 
@@ -124,9 +121,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	@Transient
 	private boolean ekv2ZuZweit;
-
-	@Transient
-	private boolean ekv1NotExisting;
 
 	@Transient
 	private boolean kategorieMaxEinkommen = false;
@@ -248,7 +242,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.zuSpaetEingereicht = toCopy.zuSpaetEingereicht;
 		this.minimalesEwpUnterschritten = toCopy.minimalesEwpUnterschritten;
 		this.wohnsitzNichtInGemeindeGS1 = toCopy.wohnsitzNichtInGemeindeGS1;
-		this.wohnsitzNichtInGemeindeGS2 = toCopy.wohnsitzNichtInGemeindeGS2;
 		this.bezahltVollkosten = toCopy.bezahltVollkosten;
 		this.longAbwesenheit = toCopy.isLongAbwesenheit();
 		this.anspruchspensumRest = toCopy.anspruchspensumRest;
@@ -271,9 +264,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.ekv1ZuZweit = toCopy.ekv1ZuZweit;
 		this.ekv2Alleine = toCopy.ekv2Alleine;
 		this.ekv2ZuZweit = toCopy.ekv2ZuZweit;
-		this.ekv1NotExisting = toCopy.ekv1NotExisting;
 		this.bemerkungen = toCopy.bemerkungen;
 		this.mergeBemerkungenMap(toCopy.getBemerkungenMap());
+		//noinspection ConstantConditions: Muss erst beim Speichern gesetzt sein
 		this.verfuegung = null;
 		this.kategorieMaxEinkommen = toCopy.kategorieMaxEinkommen;
 		this.kategorieKeinPensum = toCopy.kategorieKeinPensum;
@@ -330,11 +323,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.taetigkeiten = taetigkeiten;
 	}
 
+	@Nonnull
 	public BigDecimal getBetreuungspensum() {
 		return betreuungspensum;
 	}
 
-	public void setBetreuungspensum(BigDecimal betreuungspensum) {
+	public void setBetreuungspensum(@Nonnull BigDecimal betreuungspensum) {
 		this.betreuungspensum = betreuungspensum;
 	}
 
@@ -441,11 +435,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return bemerkungenMap;
 	}
 
+	@Nonnull
 	public Verfuegung getVerfuegung() {
 		return verfuegung;
 	}
 
-	public void setVerfuegung(Verfuegung verfuegung) {
+	public void setVerfuegung(@Nonnull Verfuegung verfuegung) {
 		this.verfuegung = verfuegung;
 	}
 
@@ -489,14 +484,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.wohnsitzNichtInGemeindeGS1 = wohnsitzNichtInGemeindeGS1;
 	}
 
-	public boolean isWohnsitzNichtInGemeindeGS2() {
-		return wohnsitzNichtInGemeindeGS2 != null ? wohnsitzNichtInGemeindeGS2 : true;
-	}
-
-	public void setWohnsitzNichtInGemeindeGS2(Boolean wohnsitzNichtInGemeindeGS2) {
-		this.wohnsitzNichtInGemeindeGS2 = wohnsitzNichtInGemeindeGS2;
-	}
-
 	public BigDecimal getFamGroesse() {
 		return famGroesse;
 	}
@@ -506,11 +493,12 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.famGroesse = MathUtil.toOneKommastelle(famGroesse);
 	}
 
+	@Nonnull
 	public Integer getEinkommensjahr() {
 		return einkommensjahr;
 	}
 
-	public void setEinkommensjahr(Integer einkommensjahr) {
+	public void setEinkommensjahr(@Nonnull Integer einkommensjahr) {
 		this.einkommensjahr = einkommensjahr;
 	}
 
@@ -546,14 +534,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.ekv2ZuZweit = ekv2ZuZweit;
 	}
 
-	public boolean isEkv1NotExisting() {
-		return ekv1NotExisting;
-	}
-
-	public void setEkv1NotExisting(boolean ekv1NotExisting) {
-		this.ekv1NotExisting = ekv1NotExisting;
-	}
-
 	public boolean isKategorieMaxEinkommen() {
 		return kategorieMaxEinkommen;
 	}
@@ -570,19 +550,21 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.kategorieKeinPensum = kategorieKeinPensum;
 	}
 
+	@Nonnull
 	public VerfuegungsZeitabschnittZahlungsstatus getZahlungsstatus() {
 		return zahlungsstatus;
 	}
 
-	public void setZahlungsstatus(VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
+	public void setZahlungsstatus(@Nonnull VerfuegungsZeitabschnittZahlungsstatus zahlungsstatus) {
 		this.zahlungsstatus = zahlungsstatus;
 	}
 
+	@Nonnull
 	public List<Zahlungsposition> getZahlungsposition() {
 		return zahlungsposition;
 	}
 
-	public void setZahlungsposition(List<Zahlungsposition> zahlungsposition) {
+	public void setZahlungsposition(@Nonnull List<Zahlungsposition> zahlungsposition) {
 		this.zahlungsposition = zahlungsposition;
 	}
 
@@ -744,7 +726,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.setZuSpaetEingereicht(this.isZuSpaetEingereicht() || other.isZuSpaetEingereicht());
 
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
-		this.setWohnsitzNichtInGemeindeGS2(this.isWohnsitzNichtInGemeindeGS2() && other.isWohnsitzNichtInGemeindeGS2());
 
 		this.setBezahltVollkosten(this.isBezahltVollkosten() || other.isBezahltVollkosten());
 
@@ -760,16 +741,13 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Validate.isTrue(this.getFamGroesse() == null, "Familiengoressen kann nicht gemerged werden");
 			this.setFamGroesse(other.getFamGroesse());
 		}
-		if (other.getEinkommensjahr() != null) {
-			this.setEinkommensjahr(other.getEinkommensjahr());
-		}
+		this.setEinkommensjahr(other.getEinkommensjahr());
 		this.setHasSecondGesuchstellerForFinanzielleSituation(this.isHasSecondGesuchstellerForFinanzielleSituation() || other.isHasSecondGesuchstellerForFinanzielleSituation());
 
 		this.ekv1Alleine = (this.ekv1Alleine || other.ekv1Alleine);
 		this.ekv1ZuZweit = (this.ekv1ZuZweit || other.ekv1ZuZweit);
 		this.ekv2Alleine = (this.ekv2Alleine || other.ekv2Alleine);
 		this.ekv2ZuZweit = (this.ekv2ZuZweit || other.ekv2ZuZweit);
-		this.ekv1NotExisting = (this.ekv1NotExisting || other.ekv1NotExisting);
 
 		this.setKategorieKeinPensum(this.kategorieKeinPensum || other.kategorieKeinPensum);
 		this.setKategorieMaxEinkommen(this.kategorieMaxEinkommen || other.kategorieMaxEinkommen);
@@ -889,7 +867,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			Objects.equals(abzugFamGroesse, otherVerfuegungZeitabschnitt.abzugFamGroesse) &&
 			Objects.equals(famGroesse, otherVerfuegungZeitabschnitt.famGroesse) &&
 			Objects.equals(massgebendesEinkommenVorAbzugFamgr, otherVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr) &&
-			(isWohnsitzNichtInGemeindeGS1() && isWohnsitzNichtInGemeindeGS2()) == (otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS1() && otherVerfuegungZeitabschnitt.isWohnsitzNichtInGemeindeGS2()) &&
 			zuSpaetEingereicht == otherVerfuegungZeitabschnitt.zuSpaetEingereicht &&
 			minimalesEwpUnterschritten == otherVerfuegungZeitabschnitt.minimalesEwpUnterschritten &&
 			bezahltVollkosten == otherVerfuegungZeitabschnitt.bezahltVollkosten &&
@@ -899,7 +876,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			ekv1ZuZweit == otherVerfuegungZeitabschnitt.ekv1ZuZweit &&
 			ekv2Alleine == otherVerfuegungZeitabschnitt.ekv2Alleine &&
 			ekv2ZuZweit == otherVerfuegungZeitabschnitt.ekv2ZuZweit &&
-			ekv1NotExisting == otherVerfuegungZeitabschnitt.ekv1NotExisting &&
 			abschnittLiegtNachBEGUStartdatum == otherVerfuegungZeitabschnitt.abschnittLiegtNachBEGUStartdatum &&
 			babyTarif == otherVerfuegungZeitabschnitt.babyTarif &&
 			eingeschult == otherVerfuegungZeitabschnitt.eingeschult &&
@@ -907,7 +883,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			besondereBeduerfnisseBestaetigt == otherVerfuegungZeitabschnitt.besondereBeduerfnisseBestaetigt &&
 			zahlungsstatus == otherVerfuegungZeitabschnitt.zahlungsstatus &&
 			Objects.equals(wohnsitzNichtInGemeindeGS1, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS1) &&
-			Objects.equals(wohnsitzNichtInGemeindeGS2, otherVerfuegungZeitabschnitt.wohnsitzNichtInGemeindeGS2) &&
 			Objects.equals(this.bemerkungen, otherVerfuegungZeitabschnitt.bemerkungen) &&
 			Objects.equals(this.bemerkungenMap, otherVerfuegungZeitabschnitt.bemerkungenMap) &&
 			Objects.equals(this.monatlicheBetreuungskosten, otherVerfuegungZeitabschnitt.monatlicheBetreuungskosten);

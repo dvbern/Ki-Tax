@@ -28,7 +28,6 @@ export class DVErwerbspensumListConfig implements IComponentOptions {
         tableId: '@',
         tableTitle: '@',
         addButtonVisible: '<',
-        addButtonEnabled: '<',
         addButtonText: '@',
         inputId: '@',
     };
@@ -47,7 +46,6 @@ export class DVErwerbspensumListController implements IOnInit {
     public inputId: string;
     public addButtonText: string;
     public addButtonVisible: boolean;
-    public addButtonEnabled: boolean;
     public onRemove: (pensumToRemove: any) => void;
     public onEdit: (pensumToEdit: any) => void;
     public onAdd: () => void;
@@ -58,9 +56,6 @@ export class DVErwerbspensumListController implements IOnInit {
         }
         if (this.addButtonVisible === undefined) {
             this.addButtonVisible = true;
-        }
-        if (this.addButtonEnabled === undefined) {
-            this.addButtonEnabled = true;
         }
         // clear selected
         // tslint:disable-next-line:prefer-for-of
@@ -84,10 +79,10 @@ export class DVErwerbspensumListController implements IOnInit {
         this.onAdd();
     }
 
-    public isRemoveAllowed(_pensumToEdit: any): boolean {
+    public isRemoveAllowed(_pensumToEdit: TSErwerbspensumContainer): boolean {
         // Loeschen erlaubt, solange das Gesuch noch nicht readonly ist. Dies ist notwendig, weil sonst in die Zukunft
         // erfasste Taetigkeiten bei nicht-zustandekommen des Jobs nicht mehr geloescht werden koennen
         // Siehe auch EBEGU-1146 und EBEGU-580
-        return this.addButtonVisible;
+        return this.addButtonVisible && _pensumToEdit.isGSContainerEmpty();
     }
 }

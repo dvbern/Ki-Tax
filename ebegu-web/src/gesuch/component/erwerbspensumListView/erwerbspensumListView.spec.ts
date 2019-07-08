@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {IComponentControllerService, IScope} from 'angular';
+import {IComponentControllerService, IHttpBackendService, IScope} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSDossier from '../../../models/TSDossier';
 import TestDataUtil from '../../../utils/TestDataUtil.spec';
@@ -39,6 +39,7 @@ describe('erwerbspensumListView', () => {
     let gemeindeRS: GemeindeRS;
     let $q: angular.IQService;
     let dossier: TSDossier;
+    let $httpBackend: IHttpBackendService;
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         prepareDossier();
@@ -48,6 +49,7 @@ describe('erwerbspensumListView', () => {
         $componentController = $injector.get('$componentController');
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
+        $httpBackend = $injector.get('$httpBackend');
 
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
@@ -55,6 +57,9 @@ describe('erwerbspensumListView', () => {
             telefon: gemeindeTelefon,
             mail: gemeindeMail
         }));
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
+        $httpBackend.when('GET', '/ebegu/api/v1/erwerbspensen/required/').respond({});
     }));
 
     beforeEach(() => {

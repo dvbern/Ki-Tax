@@ -15,6 +15,7 @@
 
 import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../hybridTools/ngServicesMocks';
+import TestDataUtil from '../../utils/TestDataUtil.spec';
 import {ADMIN_JS_MODULE} from '../admin.module';
 import {TestFaelleRS} from './testFaelleRS.rest';
 
@@ -30,6 +31,8 @@ describe('TestFaelleRS', () => {
     beforeEach(angular.mock.inject($injector => {
         testFaelleRS = $injector.get('TestFaelleRS');
         $httpBackend = $injector.get('$httpBackend');
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     }));
 
     describe('Public API', () => {

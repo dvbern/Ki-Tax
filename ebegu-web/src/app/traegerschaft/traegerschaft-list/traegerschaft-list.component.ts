@@ -21,9 +21,11 @@ import {MatDialog, MatDialogConfig, MatSort, MatTableDataSource} from '@angular/
 import {StateService} from '@uirouter/core';
 import AbstractAdminViewController from '../../../admin/abstractAdminView';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguUtil from '../../../utils/EbeguUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 
 @Component({
@@ -33,9 +35,11 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 })
 export class TraegerschaftListComponent extends AbstractAdminViewController implements OnInit, AfterViewInit {
 
+    private readonly log: Log = LogFactory.createLog('TraegerschaftListComponent');
+
     @Input() public traegerschaften: TSTraegerschaft[];
 
-    public displayedColumns: string[] = ['name', 'detail', 'remove'];
+    public displayedColumns: string[] = ['name', 'institutionCount', 'detail', 'remove'];
     public dataSource: MatTableDataSource<TSTraegerschaft>;
 
     @ViewChild(NgForm) public form: NgForm;
@@ -52,8 +56,17 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
     }
 
     public ngOnInit(): void {
+        this.setDisplayedColumns();
         this.dataSource = new MatTableDataSource(this.traegerschaften);
         this.sortTable();
+    }
+
+    public isDeleteAllowed(): boolean {
+        return this.isSuperAdmin();
+    }
+
+    public isSuperAdmin(): boolean {
+        return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 
     /**
@@ -85,18 +98,23 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
         };
 
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig).afterClosed()
-            .subscribe(userAccepted => {   // User confirmed removal
-                if (!userAccepted) {
-                    return;
-                }
-                this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
-                    const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
-                    if (index > -1) {
-                        this.traegerschaften.splice(index, 1);
-                        this.refreshTraegerschaftenList();
+            .subscribe(
+                userAccepted => {   // User confirmed removal
+                    if (!userAccepted) {
+                        return;
                     }
-                });
-            });
+                    this.traegerschaftRS.removeTraegerschaft(traegerschaft.id).then(() => {
+                        const index = EbeguUtil.getIndexOfElementwithID(traegerschaft, this.traegerschaften);
+                        if (index > -1) {
+                            this.traegerschaften.splice(index, 1);
+                            this.refreshTraegerschaftenList();
+                        }
+                    });
+                },
+                () => {
+                    this.log.error('error has occurred while closing the remove dialog for Traegerschaft');
+                }
+            );
     }
 
     public addTraegerschaft(): void {
@@ -117,5 +135,11 @@ export class TraegerschaftListComponent extends AbstractAdminViewController impl
 
     public doFilter(value: string): void {
         this.dataSource.filter = value.trim().toLocaleLowerCase();
+    }
+
+    private setDisplayedColumns(): void {
+        this.displayedColumns = this.isDeleteAllowed()
+            ? ['name', 'institutionCount', 'detail', 'remove']
+            : ['name', 'institutionCount', 'detail'];
     }
 }

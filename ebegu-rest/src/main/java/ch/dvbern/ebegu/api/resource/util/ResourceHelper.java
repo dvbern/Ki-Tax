@@ -134,8 +134,7 @@ public class ResourceHelper {
 		// Der Status des Client-Objektes darf nicht weniger weit sein als der des Server-Objektes
 		if (Arrays.stream(betreuungsstatusFromClient).noneMatch(status -> betreuungFromDB.getBetreuungsstatus() == status)) {
 			String msg = "Expected BetreuungStatus to be " + betreuungsstatusFromClient + " but was " + betreuungFromDB.getBetreuungsstatus();
-			throw new EbeguRuntimeException(ASSERT_BETREUUNG_STATUS_EQUAL, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, betreuungId, msg);
+			throw new EbeguRuntimeException(ASSERT_BETREUUNG_STATUS_EQUAL, msg, ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, betreuungId);
 		}
 	}
-
 }

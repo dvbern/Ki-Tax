@@ -17,6 +17,7 @@ import {IHttpBackendService} from 'angular';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {TSMandant} from '../../../models/TSMandant';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {MandantRS} from './mandantRS.rest';
 
@@ -42,6 +43,8 @@ describe('mandantRS', () => {
         mockMandant = new TSMandant('MandantTest');
         mockMandant.id = '2afc9d9a-957e-4550-9a22-97624a1d8fa1';
         mockMandantRest = ebeguRestUtil.mandantToRestObject({}, mockMandant);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('API Usage', () => {

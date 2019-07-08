@@ -149,7 +149,7 @@ export default class GesuchsperiodeRS {
             });
     }
 
-    public downloadErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<boolean> {
+    public downloadErlaeuterung(gesuchsperiodeId: string, sprache: TSSprache): IPromise<BlobPart> {
         return this.http
             .get(`${this.serviceURL}/downloadErlaeuterung/${encodeURIComponent(gesuchsperiodeId)}/${sprache}`,
                 {responseType: 'blob'})

@@ -23,6 +23,7 @@ import TSInstitutionStammdaten from '../../../models/TSInstitutionStammdaten';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import DateUtil from '../../../utils/DateUtil';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {InstitutionStammdatenRS} from './institutionStammdatenRS.rest';
 
@@ -61,6 +62,7 @@ describe('institutionStammdatenRS', () => {
         mockInstitutionStammdaten.gueltigkeit = new TSDateRange(today, today);
         mockInstitutionStammdaten.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
         mockInstitutionStammdatenRest = ebeguRestUtil.institutionStammdatenToRestObject({}, mockInstitutionStammdaten);
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('API Usage', () => {
@@ -110,24 +112,6 @@ describe('institutionStammdatenRS', () => {
                     });
                 $httpBackend.flush();
                 checkFieldValues(updatedInstitutionStammdaten, mockInstitutionStammdaten);
-            });
-        });
-
-        describe('removeInstitutionStammdaten', () => {
-            it('should remove a InstitutionStammdaten', () => {
-                const httpOk = 200;
-                $httpBackend.expectDELETE(`${institutionStammdatenRS.serviceURL}/${encodeURIComponent(
-                    mockInstitutionStammdaten.id)}`)
-                    .respond(httpOk);
-
-                let deleteResult: any;
-                institutionStammdatenRS.removeInstitutionStammdaten(mockInstitutionStammdaten.id)
-                    .then(result => {
-                        deleteResult = result;
-                    });
-                $httpBackend.flush();
-                expect(deleteResult).toBeDefined();
-                expect(deleteResult.status).toEqual(httpOk);
             });
         });
 

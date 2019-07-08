@@ -14,17 +14,17 @@
  */
 
 export enum TSFamilienstatus {
-    ALLEINERZIEHEND = 'ALLEINERZIEHEND',
     VERHEIRATET = 'VERHEIRATET',
     KONKUBINAT = 'KONKUBINAT',
     KONKUBINAT_KEIN_KIND = 'KONKUBINAT_KEIN_KIND',
+    ALLEINERZIEHEND = 'ALLEINERZIEHEND',
 }
 
 export function getTSFamilienstatusValues(): Array<TSFamilienstatus> {
     return [
-        TSFamilienstatus.ALLEINERZIEHEND,
         TSFamilienstatus.VERHEIRATET,
         TSFamilienstatus.KONKUBINAT,
         TSFamilienstatus.KONKUBINAT_KEIN_KIND,
+        TSFamilienstatus.ALLEINERZIEHEND,
     ];
 }

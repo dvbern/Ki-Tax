@@ -18,6 +18,7 @@ import IScope = angular.IScope;
 import {IController, IOnInit} from 'angular';
 import {RemoveDialogController} from '../../../../../gesuch/dialog/RemoveDialogController';
 import GesuchRS from '../../../../../gesuch/service/gesuchRS.rest';
+import WizardStepManager from '../../../../../gesuch/service/wizardStepManager';
 import {TSErrorAction} from '../../../../../models/enums/TSErrorAction';
 import {TSMessageEvent} from '../../../../../models/enums/TSErrorEvent';
 import {TSErrorLevel} from '../../../../../models/enums/TSErrorLevel';
@@ -40,7 +41,13 @@ export class DvErrorMessagesPanelComponentConfig implements IComponentOptions {
  */
 export class DvErrorMessagesPanelComponent implements IController, IOnInit {
 
-    public static $inject: string[] = ['$scope', 'ErrorService', 'DvDialog', 'GesuchRS'];
+    public static $inject: string[] = [
+        '$scope',
+        'ErrorService',
+        'DvDialog',
+        'GesuchRS',
+        'WizardStepManager',
+    ];
 
     public errors: Array<TSExceptionReport> = [];
     public readonly TSRoleUtil = TSRoleUtil;
@@ -50,6 +57,7 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
         private readonly errorService: ErrorService,
         private readonly dvDialog: DvDialog,
         private readonly gesuchRS: GesuchRS,
+        private readonly wizardStepManager: WizardStepManager,
     ) {
     }
 
@@ -63,9 +71,20 @@ export class DvErrorMessagesPanelComponent implements IController, IOnInit {
     }
 
     public displayMessages = (_event: any, errors: Array<TSExceptionReport>) => {
+        this.resetTransitionInProgressFlag();
+
         this.errors = errors;
         this.show();
     };
+
+    /**
+     * if an error comes from client we know that the transition is not in progress any more
+     */
+    private resetTransitionInProgressFlag(): void {
+        if (this.wizardStepManager) {
+            this.wizardStepManager.isTransitionInProgress = false;
+        }
+    }
 
     public executeAction(error: TSExceptionReport): void {
         if (error.action) {

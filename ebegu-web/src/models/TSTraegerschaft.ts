@@ -19,6 +19,8 @@ export class TSTraegerschaft extends TSAbstractMutableEntity {
 
     private _name: string;
     private _active: boolean;
+    private _institutionNames: string;
+    private _institutionCount: number;
 
     public constructor() {
         super();
@@ -38,5 +40,21 @@ export class TSTraegerschaft extends TSAbstractMutableEntity {
 
     public set active(value: boolean) {
         this._active = value;
+    }
+
+    public get institutionNames(): string {
+        return this._institutionNames;
+    }
+
+    public set institutionNames(value: string) {
+        this._institutionNames = value;
+    }
+
+    public get institutionCount(): number {
+        return this._institutionCount;
+    }
+
+    public set institutionCount(value: number) {
+        this._institutionCount = value;
     }
 }

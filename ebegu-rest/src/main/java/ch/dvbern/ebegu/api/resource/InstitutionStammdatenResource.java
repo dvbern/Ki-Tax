@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -39,7 +38,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -54,6 +52,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -70,6 +69,9 @@ public class InstitutionStammdatenResource {
 
 	@Inject
 	private InstitutionStammdatenService institutionStammdatenService;
+
+	@Inject
+	private InstitutionService institutionService;
 
 	@Inject
 	private TraegerschaftService traegerschaftService;
@@ -107,11 +109,13 @@ public class InstitutionStammdatenResource {
 		// the institution from the DB. For this reason we need to change any field of the institution manually
 
 		// Statuswechsel eingeladen -> aktiv
-		if (convertedInstData.getInstitution().getStatus() == InstitutionStatus.EINGELADEN) {
-			convertedInstData.getInstitution().setStatus(InstitutionStatus.AKTIV);
+		Institution convertedInstitution = convertedInstData.getInstitution();
+		if (convertedInstitution.getStatus() == InstitutionStatus.EINGELADEN) {
+			institutionService.activateInstitution(convertedInstData.getInstitution().getId());
 		}
 
-		updateTraegerschaft(institutionStammdatenJAXP.getInstitution(), convertedInstData.getInstitution());
+		// Trägerschaft speichern
+		updateTraegerschaft(institutionStammdatenJAXP.getInstitution(), convertedInstitution);
 
 		InstitutionStammdaten persistedInstData =
 			institutionStammdatenService.saveInstitutionStammdaten(convertedInstData);
@@ -161,21 +165,6 @@ public class InstitutionStammdatenResource {
 		return institutionStammdatenService.getAllInstitutionStammdaten().stream()
 			.map(instStammdaten -> converter.institutionStammdatenSummaryToJAX(instStammdaten, new JaxInstitutionStammdatenSummary()))
 			.collect(Collectors.toList());
-	}
-
-	@ApiOperation("Loescht die InstitutionsStammdaten mit der uebergebenen Id aus der Datenbank")
-	@SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
-	@Nullable
-	@DELETE
-	@Path("/{institutionStammdatenId}")
-	@Consumes(MediaType.WILDCARD)
-	public Response removeInstitutionStammdaten(
-		@Nonnull @NotNull @PathParam("institutionStammdatenId") JaxId institutionStammdatenJAXPId,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(institutionStammdatenJAXPId.getId());
-		institutionStammdatenService.removeInstitutionStammdaten(converter.toEntityId(institutionStammdatenJAXPId));
-		return Response.ok().build();
 	}
 
 	/**

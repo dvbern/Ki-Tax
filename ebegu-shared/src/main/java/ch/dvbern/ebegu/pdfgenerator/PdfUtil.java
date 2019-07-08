@@ -215,7 +215,7 @@ public final class PdfUtil {
 			float[] columnWidths = { 1, 2 };
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Error while creating intro table: {}", e.getMessage());
+			LOG.error("Error while creating intro table: {}", e.getMessage(), e);
 		}
 		setTableDefaultStyles(table);
 
@@ -252,7 +252,7 @@ public final class PdfUtil {
 		try {
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Failed to set the width: {}", e.getMessage());
+			LOG.error("Failed to set the width: {}", e.getMessage(), e);
 		}
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setHeaderRows(1);

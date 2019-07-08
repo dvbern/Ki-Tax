@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -41,11 +40,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
+import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzModel;
 import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -54,7 +55,6 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
-import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -71,8 +71,6 @@ public class FinanzielleSituationResource {
 	private FinanzielleSituationService finanzielleSituationService;
 	@Inject
 	private GesuchstellerService gesuchstellerService;
-	@Inject
-	private GesuchService gesuchService;
 
 	@SuppressWarnings("CdiInjectionPointsInspection")
 	@Inject
@@ -81,48 +79,47 @@ public class FinanzielleSituationResource {
 	@Resource
 	private EJBContext context;    //fuer rollback
 
-	@Inject
-	private ResourceHelper resourceHelper;
 
 	@ApiOperation(value = "Create a new JaxFinanzielleSituationContainer in the database. The transfer object also has a " +
 		"relation to FinanzielleSituation, it is stored in the database as well.", response = JaxFinanzielleSituationContainer.class)
 	@Nullable
 	@PUT
-	@Path("/{gesuchstellerId}/{gesuchId}")
+	@Path("/finanzielleSituation/{gesuchId}/{gesuchstellerId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response saveFinanzielleSituation(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId,
-		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId gesuchstellerId,
-		@Nonnull @NotNull @Valid JaxFinanzielleSituationContainer finanzielleSituationJAXP,
+	public JaxFinanzielleSituationContainer saveFinanzielleSituation(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId jaxGesuchId,
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
+		@Nonnull @NotNull @Valid JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Gesuch gesuch = gesuchService.findGesuch(gesuchJAXPId.getId()).orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchJAXPId.getId()));
+		Objects.requireNonNull(jaxGesuchId);
+		Objects.requireNonNull(jaxGesuchstellerId);
+		Objects.requireNonNull(jaxFinanzielleSituationContainer);
 
-		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
-		resourceHelper.assertGesuchStatusForBenutzerRole(gesuch);
+		String gesuchId = converter.toEntityId(jaxGesuchId);
+		String gesuchstellerId = converter.toEntityId(jaxGesuchstellerId);
+		Objects.requireNonNull(gesuchId);
+		Objects.requireNonNull(gesuchstellerId);
 
-		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId.getId()).orElseThrow(()
-			-> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchstellerId invalid: " + gesuchstellerId.getId()));
-		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(finanzielleSituationJAXP,
+		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
+			-> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchstellerId invalid: " + gesuchstellerId));
+		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(jaxFinanzielleSituationContainer,
 			gesuchsteller.getFinanzielleSituationContainer());
+
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
-		FinanzielleSituationContainer persistedFinanzielleSituation = this.finanzielleSituationService.saveFinanzielleSituation(convertedFinSitCont, gesuch.getId());
 
-		URI uri = uriInfo.getBaseUriBuilder()
-			.path(FinanzielleSituationResource.class)
-			.path('/' + persistedFinanzielleSituation.getId())
-			.build();
+		FinanzielleSituationContainer persistedFinSit =
+			this.finanzielleSituationService.saveFinanzielleSituation(convertedFinSitCont, gesuchId);
 
-		JaxFinanzielleSituationContainer jaxFinanzielleSituation = converter.finanzielleSituationContainerToJAX(persistedFinanzielleSituation);
-		return Response.created(uri).entity(jaxFinanzielleSituation).build();
+		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 
 	@ApiOperation(value = "Updates all required Data for the finanzielle Situation in Gesuch", response = JaxFinanzielleSituationContainer.class)
 	@Nullable
 	@PUT
-	@Path("/finsitStart")
+	@Path("/finanzielleSituationStart")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxGesuch saveFinanzielleSituationStart(
@@ -131,12 +128,36 @@ public class FinanzielleSituationResource {
 		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(gesuchJAXP.getId());
-		Optional<Gesuch> optGesuch = gesuchService.findGesuch(gesuchJAXP.getId());
-		Gesuch gesuchFromDB = optGesuch.orElseThrow(() -> new EbeguEntityNotFoundException("saveFinanzielleSituationStart", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchJAXP.getId()));
+		JaxFamiliensituationContainer jaxFamiliensituationContainer = gesuchJAXP.getFamiliensituationContainer();
+		Objects.requireNonNull(jaxFamiliensituationContainer);
+		JaxFamiliensituation familiensituationJA = jaxFamiliensituationContainer.getFamiliensituationJA();
+		Objects.requireNonNull(familiensituationJA);
+		// Bei FinanzielleSituationStart arbeiten wir immer mit GS1: Wenn Sie gemeinsame Stek haben, werden die Fragen zu Veranlagung und Stek von GS1 genommen!
+		JaxGesuchstellerContainer gesuchsteller1 = gesuchJAXP.getGesuchsteller1();
+		Objects.requireNonNull(gesuchsteller1);
+		JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer = gesuchsteller1.getFinanzielleSituationContainer();
+		Objects.requireNonNull(jaxFinanzielleSituationContainer);
 
-		Gesuch gesuchToMerge = converter.gesuchToEntity(gesuchJAXP, gesuchFromDB);
-		Gesuch modifiedGesuch = finanzielleSituationService.saveFinanzielleSituationStart(gesuchToMerge);
-		return converter.gesuchToJAX(modifiedGesuch);
+		String gesuchId = gesuchJAXP.getId();
+		String gesuchstellerId = gesuchsteller1.getId();
+		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
+		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
+		Boolean antragNurFuerBehinderungszuschlag = familiensituationJA.getAntragNurFuerBehinderungszuschlag();
+
+		Objects.requireNonNull(gesuchstellerId);
+		Objects.requireNonNull(sozialhilfeBezueger);
+		Objects.requireNonNull(gemeinsameSteuererklaerung);
+		Objects.requireNonNull(antragNurFuerBehinderungszuschlag);
+
+		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerId).orElseThrow(()
+			-> new EbeguEntityNotFoundException("saveFinanzielleSituation", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchstellerId invalid: " + gesuchstellerId));
+		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(jaxFinanzielleSituationContainer,
+			gesuchsteller.getFinanzielleSituationContainer());
+		convertedFinSitCont.setGesuchsteller(gesuchsteller);
+
+		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(convertedFinSitCont,
+			sozialhilfeBezueger, gemeinsameSteuererklaerung, antragNurFuerBehinderungszuschlag, gesuchId);
+		return converter.gesuchToJAX(persistedGesuch);
 	}
 
 	@ApiOperation(value = "Berechnet die FinanzielleSituation fuer das uebergebene Gesuch. Die Berechnung wird " +

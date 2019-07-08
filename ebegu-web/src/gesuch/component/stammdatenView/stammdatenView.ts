@@ -19,6 +19,7 @@ import ErrorService from '../../../app/core/errors/service/ErrorService';
 import EwkRS from '../../../app/core/service/ewkRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAdressetyp} from '../../../models/enums/TSAdressetyp';
+import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGesuchEvent} from '../../../models/enums/TSGesuchEvent';
 import {TSRole} from '../../../models/enums/TSRole';
@@ -175,49 +176,28 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (!this.form.$dirty) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            if ((this.gesuchModelManager.getGesuchstellerNumber() === 1
-                && !this.gesuchModelManager.isGesuchsteller2Required())
-                || this.gesuchModelManager.getGesuchstellerNumber() === 2
-            ) {
-                this.updateGSDependentWizardSteps();
-            }
-
             return this.$q.when(this.model);
         }
         // wenn keine Korrespondenzaddr oder Rechnungsadr da ist koennen wir sie wegmachen
         this.maybeResetKorrespondadr();
         this.maybeResetRechnungsadr();
 
-        if ((this.gesuchModelManager.getGesuch().gesuchsteller1
-            && this.gesuchModelManager.getGesuch().gesuchsteller1.showUmzug)
-            || (
-                this.gesuchModelManager.getGesuch().gesuchsteller2
-                && this.gesuchModelManager.getGesuch().gesuchsteller2.showUmzug)
-            || this.isMutation()) {
-            this.wizardStepManager.unhideStep(TSWizardStepName.UMZUG);
-        } else {
-            this.wizardStepManager.hideStep(TSWizardStepName.UMZUG);
-        }
+        this.updateStatusStepUmzug();
         this.errorService.clearAll();
         // todo bei Aenderungen von Kontaktdaten sollte man nicht den ganzen GS updaten sondern nur die Kontakdaten
         return this.gesuchModelManager.updateGesuchsteller(false);
     }
 
-    /**
-     * Aktualisiert alle Steps die Abhaengigkeiten mit dem Status von GS haben.
-     */
-    private updateGSDependentWizardSteps(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-            TSWizardStepName.GESUCHSTELLER,
-            TSWizardStepStatus.OK);
-        if (this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.FINANZIELLE_SITUATION, TSWizardStepStatus.NOK)) {
-            this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.FINANZIELLE_SITUATION,
-                TSWizardStepStatus.OK);
+    private updateStatusStepUmzug(): void {
+        if (this.gesuchModelManager.getGesuchstellerNumber() !== 1) {
+            // umzug can only be introduced for gs1
+            return;
         }
-        if (this.wizardStepManager.hasStepGivenStatus(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
-            TSWizardStepStatus.NOK)) {
-            this.wizardStepManager.updateWizardStepStatus(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
-                TSWizardStepStatus.OK);
+        const showUmzug = this.gesuchModelManager.getGesuch().gesuchsteller1.showUmzug;
+        if ((this.gesuchModelManager.getGesuch().gesuchsteller1 && showUmzug) || this.isMutation()) {
+            this.wizardStepManager.unhideStep(TSWizardStepName.UMZUG);
+        } else {
+            this.wizardStepManager.hideStep(TSWizardStepName.UMZUG);
         }
     }
 
@@ -237,6 +217,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         return this.isMutation() && (this.gesuchstellerNumber === 1
             || (this.model.vorgaengerId !== null
                 && this.model.vorgaengerId !== undefined));
+    }
+
+    /**
+     * Die Wohnadresse, die Rechungsadresse, sowie das Umzugsflag werden nur für GS 1 angezeigt
+     */
+    public showWohnadresse(): boolean {
+        return this.gesuchstellerNumber === 1;
     }
 
     public isThereAnyUmzug(): boolean {
@@ -351,5 +338,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public showRechnungsadresseCheckbox(): boolean {
         // todo this should be shown for GS1 when Tagesschulen are active
         return false;
+    }
+
+    public isMailRequired(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        if (!gesuch) {
+            return true;
+        }
+        return this.gesuchstellerNumber === 1 && gesuch.eingangsart === TSEingangsart.ONLINE;
     }
 }

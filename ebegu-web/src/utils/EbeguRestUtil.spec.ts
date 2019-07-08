@@ -201,6 +201,8 @@ describe('EbeguRestUtil', () => {
                 const myTraegerschaft = new TSTraegerschaft();
                 myTraegerschaft.name = 'myTraegerschaft';
                 myTraegerschaft.active = undefined;
+                myTraegerschaft.institutionCount = undefined;
+                myTraegerschaft.institutionNames = undefined;
                 TestDataUtil.setAbstractMutableFieldsUndefined(myTraegerschaft);
 
                 const restTraegerschaft = ebeguRestUtil.traegerschaftToRestObject({}, myTraegerschaft);
@@ -521,6 +523,8 @@ describe('EbeguRestUtil', () => {
         const traegerschaft = new TSTraegerschaft();
         traegerschaft.name = 'myTraegerschaft';
         traegerschaft.active = undefined;
+        traegerschaft.institutionCount = undefined;
+        traegerschaft.institutionNames = undefined;
         TestDataUtil.setAbstractMutableFieldsUndefined(traegerschaft);
         const mandant = new TSMandant('myMandant');
         TestDataUtil.setAbstractMutableFieldsUndefined(mandant);

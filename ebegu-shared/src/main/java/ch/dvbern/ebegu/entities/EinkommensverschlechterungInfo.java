@@ -156,14 +156,10 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 	}
 
 	private boolean isSameBasisJahrPlus1(EinkommensverschlechterungInfo otherEKVInfo) {
-		// if BasisJahrPlus1 is not set (ekvFuerBasisJahrPlus1==false) there is no need to compare the rest
-		return Objects.equals(getEkvFuerBasisJahrPlus1(), otherEKVInfo.getEkvFuerBasisJahrPlus1())
-			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus1());
+		return EbeguUtil.isSameOrNullBoolean(getEkvFuerBasisJahrPlus1(), otherEKVInfo.getEkvFuerBasisJahrPlus1());
 	}
 
 	private boolean isSameBasisJahrPlus2(EinkommensverschlechterungInfo otherEKVInfo) {
-		// if BasisJahrPlus2 is not set (ekvFuerBasisJahrPlus2==false) there is no need to compare the rest
-		return Objects.equals(getEkvFuerBasisJahrPlus2(), otherEKVInfo.getEkvFuerBasisJahrPlus2())
-			&& Boolean.FALSE.equals(getEkvFuerBasisJahrPlus2());
+		return EbeguUtil.isSameOrNullBoolean(getEkvFuerBasisJahrPlus2(), otherEKVInfo.getEkvFuerBasisJahrPlus2());
 	}
 }

@@ -49,11 +49,4 @@ export default class TSAdresseContainer extends TSAbstractMutableEntity {
     public set showDatumVon(value: boolean) {
         this._showDatumVon = value;
     }
-
-    public isSameWohnAdresse(umzugAdresse: TSAdresseContainer): boolean {
-        if (this.adresseJA && umzugAdresse.adresseJA) {
-            return this.adresseJA.isSameWohnAdresse(umzugAdresse.adresseJA);
-        }
-        return undefined;
-    }
 }

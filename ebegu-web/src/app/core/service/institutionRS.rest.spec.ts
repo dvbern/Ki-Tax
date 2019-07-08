@@ -19,6 +19,7 @@ import TSInstitution from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import {InstitutionRS} from './institutionRS.rest';
 
@@ -49,6 +50,8 @@ describe('institutionRS', () => {
         mockInstitution = new TSInstitution('InstitutionTest', traegerschaft, mandant);
         mockInstitution.id = '2afc9d9a-957e-4550-9a22-97624a1d8f05';
         mockInstitutionRest = ebeguRestUtil.institutionToRestObject({}, mockInstitution);
+
+        TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('Public API', () => {

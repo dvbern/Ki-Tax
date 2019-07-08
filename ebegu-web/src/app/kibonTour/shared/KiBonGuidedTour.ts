@@ -50,7 +50,6 @@ export class GuidedTourByRole implements GuidedTour {
     public minimumScreenSize: number = 0;
     public preventBackdropFromAdvancing: boolean = false;
 
-    // tslint:disable:no-unused-variable
     public constructor(private readonly state: StateService,
                        private readonly translate: TranslateService,
                        private readonly role: TSRole) {

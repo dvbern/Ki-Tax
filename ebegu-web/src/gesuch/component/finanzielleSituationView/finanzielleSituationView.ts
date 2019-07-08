@@ -149,12 +149,15 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         if (!this.isGesuchValid()) {
             return undefined;
         }
-
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        if (!this.form.$dirty) {
+        const finanzielleSituationContainer =
+            this.gesuchModelManager.getStammdatenToWorkWith().finanzielleSituationContainer;
+        // Auf der Finanziellen Situation ist nichts zwingend. Zumindest das erste Mal müssen wir daher auch
+        // Speichern, wenn das Form nicht dirty ist!
+        if (!this.form.$dirty && !finanzielleSituationContainer.isNew()) {
             // If there are no changes in form we don't need anything to update on Server and we could return the
             // promise immediately
-            return this.$q.when(this.gesuchModelManager.getStammdatenToWorkWith().finanzielleSituationContainer);
+            return this.$q.when(finanzielleSituationContainer);
         }
         this.errorService.clearAll();
         return this.gesuchModelManager.saveFinanzielleSituation();
@@ -176,7 +179,7 @@ export class FinanzielleSituationViewController extends AbstractGesuchViewContro
         return this.berechnungsManager.finanzielleSituationResultate;
     }
 
-    public getTextSelbstaendigKorrektur(): any {
+    public getTextSelbstaendigKorrektur(): string {
         const finSitGS = this.getModel().finanzielleSituationGS;
         if (!finSitGS || !finSitGS.isSelbstaendig()) {
             return this.$translate.instant('LABEL_KEINE_ANGABE');

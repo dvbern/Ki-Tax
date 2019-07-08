@@ -19,8 +19,10 @@ import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import TSGesuchsteller from '../../../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../../../models/TSGesuchstellerContainer';
 import EbeguRestUtil from '../../../utils/EbeguRestUtil';
+import TestDataUtil from '../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../core.angularjs.module';
 import GesuchstellerRS from './gesuchstellerRS.rest';
+import IInjectorService = angular.auto.IInjectorService;
 
 describe('GesuchstellerRS', () => {
 
@@ -37,7 +39,7 @@ describe('GesuchstellerRS', () => {
 
     beforeEach(angular.mock.module(ngServicesMock));
 
-    beforeEach(angular.mock.inject($injector => {
+    beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         gesuchstellerRS = $injector.get('GesuchstellerRS');
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
@@ -57,30 +59,31 @@ describe('GesuchstellerRS', () => {
 
         const url = `${gesuchstellerRS.serviceURL}/${encodeURIComponent(mockGesuchsteller.id)}`;
         $httpBackend.whenGET(url).respond(mockGesuchstellerRest);
+
+        TestDataUtil.mockLazyGesuchModelManagerHttpCalls($httpBackend);
     });
 
     describe('API Usage', () => {
         describe('updateGesuchsteller', () => {
             it('should updateGesuchsteller a gesuchsteller and her adresses', () => {
-                    mockGesuchsteller.gesuchstellerJA.nachname = 'changedname';
-                    let updatedGesuchsteller: TSGesuchstellerContainer;
-                    $httpBackend.expectPUT(`${gesuchstellerRS.serviceURL}/${dummyGesuchID}/gsNumber/1/false`,
-                        ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller))
-                        .respond(ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller));
+                mockGesuchsteller.gesuchstellerJA.nachname = 'changedname';
+                let updatedGesuchsteller: TSGesuchstellerContainer;
+                $httpBackend.expectPUT(`${gesuchstellerRS.serviceURL}/${dummyGesuchID}/gsNumber/1/false`,
+                    ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller))
+                    .respond(ebeguRestUtil.gesuchstellerContainerToRestObject({}, mockGesuchsteller));
 
-                    gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1, false).then(result => {
-                        updatedGesuchsteller = result;
-                    });
-                    $httpBackend.flush();
-                    // tslint:disable-next-line:no-unbound-method
-                    expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(dummyGesuchID);
-                    expect(updatedGesuchsteller).toBeDefined();
-                    expect(updatedGesuchsteller.gesuchstellerJA).toBeDefined();
-                    expect(updatedGesuchsteller.gesuchstellerJA.nachname)
-                        .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
-                    expect(updatedGesuchsteller.id).toEqual(mockGesuchsteller.id);
-                },
-            );
+                gesuchstellerRS.saveGesuchsteller(mockGesuchsteller, dummyGesuchID, 1, false).then(result => {
+                    updatedGesuchsteller = result;
+                });
+                $httpBackend.flush();
+                // tslint:disable-next-line:no-unbound-method
+                expect(wizardStepManager.findStepsFromGesuch).toHaveBeenCalledWith(dummyGesuchID);
+                expect(updatedGesuchsteller).toBeDefined();
+                expect(updatedGesuchsteller.gesuchstellerJA).toBeDefined();
+                expect(updatedGesuchsteller.gesuchstellerJA.nachname)
+                    .toEqual(mockGesuchsteller.gesuchstellerJA.nachname);
+                expect(updatedGesuchsteller.id).toEqual(mockGesuchsteller.id);
+            });
         });
 
         describe('findGesuchsteller', () => {
