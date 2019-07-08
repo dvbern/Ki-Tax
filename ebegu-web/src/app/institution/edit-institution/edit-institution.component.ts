@@ -180,15 +180,17 @@ export class EditInstitutionComponent implements OnInit {
         }
         this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
             .then(() => {
+                // Der Institutionsname ist das einzige Attribut auf dieser Seite, welches direkt auf der Institution
+                // gespeichert wird!
                 // tslint:disable-next-line:early-exit
-                if (this.initName === this.stammdaten.institution.name) {
-                    this.setValuesAfterSave();
-                } else {
-                    this.institutionRS.updateInstitution(this.stammdaten.institution)
-                        .then(() => {
+                // if (this.initName !== this.stammdaten.institution.name) {
+                //     this.setValuesAfterSave();
+                // } else {
+                //     this.institutionRS.updateInstitution(this.stammdaten.institution)
+                //         .then(() => {
                             this.setValuesAfterSave();
-                        });
-                }
+                        // });
+                // }
             });
     }
 
