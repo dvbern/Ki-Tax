@@ -297,7 +297,7 @@ public class VerfuegungPdfGenerator extends DokumentAnFamilieGenerator {
 		try {
 			table.setWidths(columnWidths);
 		} catch (DocumentException e) {
-			LOG.error("Failed to set the width: {}", e.getMessage());
+			LOG.error("Failed to set the width: {}", e.getMessage(), e);
 		}
 		table.setWidthPercentage(PdfElementGenerator.FULL_WIDTH);
 		table.setSpacingAfter(DEFAULT_MULTIPLIED_LEADING * fontTabelle.getSize() * 2);

@@ -135,8 +135,11 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
 
     public erwerbspensumDisabled(): boolean {
         // Disabled wenn Mutation, ausser bei Bearbeiter Jugendamt oder Schulamt
-        return this.model.erwerbspensumJA.vorgaengerId
-            && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+        if (this.model && this.model.erwerbspensumJA) {
+            return this.model.erwerbspensumJA.vorgaengerId
+                && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
+        }
+        return false;
     }
 
     public isUnbezahlterUrlaubVisible(): boolean {
