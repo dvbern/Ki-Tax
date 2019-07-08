@@ -269,6 +269,7 @@
 	<ebegu_parameter id="yTKHML35SbGDwSak43F0bQ==" timestamp_erstellt="2016-06-03 10:16:38.0" timestamp_mutiert="2016-06-03 10:20:59.0" user_erstellt="flyway" user_mutiert="flyway" version="0" gueltig_ab="2017-08-01" gueltig_bis="2018-07-31" name="PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG" value="20"/>
 	<ebegu_parameter id="zN0+/egpSzy8HCjIw6Rjog==" timestamp_erstellt="2016-06-03 10:16:37.0" timestamp_mutiert="2016-06-03 10:20:58.0" user_erstellt="flyway" user_mutiert="flyway" version="0" gueltig_ab="2017-08-01" gueltig_bis="2018-07-31" name="PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6" value="7580"/>
 	<ebegu_vorlage/>
+	<einstellung id="BsHlaajATy2vJSUbFd6Kqg==" timestamp_erstellt="2016-06-03 10:16:38.0" timestamp_mutiert="2016-06-03 10:20:59.0" user_erstellt="flyway" user_mutiert="flyway" version="0" gesuchsperiode_id="BiH7XaGHWpGrr4qBPE0mOg==" einstellung_key="TAGESSCHULE_ENABLED_FOR_MANDANT" value="false"/>
 	<einkommensverschlechterung/>
 	<einkommensverschlechterung_container/>
 	<einkommensverschlechterung_info/>
