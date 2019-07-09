@@ -197,6 +197,11 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 	@Column(nullable = false)
 	private boolean keineDetailinformationen = false;
 
+	@Valid
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
+	@SortNatural
+	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen;
+
 	public Betreuung() {
 	}
 
@@ -368,6 +373,15 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 
 	public void setKeineDetailinformationen(boolean keineDetailinformationen) {
 		this.keineDetailinformationen = keineDetailinformationen;
+	}
+
+	@Nullable
+	public Set<BetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
+		return betreuungspensumAbweichungen;
+	}
+
+	public void setBetreuungspensumAbweichungen(@Nullable Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 
 	@Override
