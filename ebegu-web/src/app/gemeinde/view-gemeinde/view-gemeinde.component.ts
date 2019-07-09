@@ -40,6 +40,7 @@ export class ViewGemeindeComponent implements OnInit {
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
     public korrespondenzsprache: string;
+    public beguStartStr: string;
     private gemeindeId: string;
 
     public constructor(
@@ -60,6 +61,9 @@ export class ViewGemeindeComponent implements OnInit {
             this.gemeindeRS.getGemeindeStammdaten(this.gemeindeId).then(stammdaten => {
                 this.initStrings(stammdaten);
                 this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
+                if (stammdaten.gemeinde && stammdaten.gemeinde.betreuungsgutscheineStartdatum) {
+                    this.beguStartStr = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
+                }
                 return stammdaten;
             }));
     }
