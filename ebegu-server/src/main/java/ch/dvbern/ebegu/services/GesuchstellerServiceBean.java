@@ -192,16 +192,12 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		Integer gsNumber,
 		boolean umzug,
 		Gesuchsteller gesuchsteller) {
-		//Wenn beide Gesuchsteller ausgefuellt werden muessen (z.B bei einer Mutation die die Familiensituation aendert
+		// Wenn beide Gesuchsteller ausgefuellt werden muessen (z.B bei einer Mutation die die Familiensituation aendert
 		// (i.e. von 1GS auf 2GS) wollen wir den Benutzer zwingen beide Gesuchsteller Seiten zu besuchen bevor wir auf
 		// ok setzten.
 		// Ansonsten setzten wir es sofort auf ok
 		if (umzug) {
-			// only if it is the last GS from both, we update the Step Umzug
-			if ((gesuch.getGesuchsteller2() == null && gsNumber == 1) || (gesuch.getGesuchsteller2() != null
-				&& gsNumber == 2)) {
-				wizardStepService.updateSteps(gesuch.getId(), null, gesuchsteller, WizardStepName.UMZUG);
-			}
+			wizardStepService.updateSteps(gesuch.getId(), null, gesuchsteller, WizardStepName.UMZUG);
 		} else {
 			WizardStep existingWizStep =
 				wizardStepService.findWizardStepFromGesuch(gesuch.getId(), WizardStepName.GESUCHSTELLER);

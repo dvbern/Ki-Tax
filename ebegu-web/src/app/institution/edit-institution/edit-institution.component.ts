@@ -178,17 +178,24 @@ export class EditInstitutionComponent implements OnInit {
         if (this.stammdaten.telefon === '') { // Prevent phone regex error in case of empty string
             this.stammdaten.telefon = null;
         }
+
+        // tslint:disable-next-line:early-exit
+        if (this.initName === this.stammdaten.institution.name) {
+            this.saveStammdaten();
+        } else {
+            this.institutionRS.updateInstitution(this.stammdaten.institution)
+                .then(institution => {
+                    this.stammdaten.institution = institution;
+                    this.saveStammdaten();
+                });
+        }
+    }
+
+    private saveStammdaten(): void {
         this.institutionStammdatenRS.saveInstitutionStammdaten(this.stammdaten)
-            .then(() => {
-                // tslint:disable-next-line:early-exit
-                if (this.initName === this.stammdaten.institution.name) {
-                    this.setValuesAfterSave();
-                } else {
-                    this.institutionRS.updateInstitution(this.stammdaten.institution)
-                        .then(() => {
-                            this.setValuesAfterSave();
-                        });
-                }
+            .then(stammdaten => {
+                this.stammdaten = stammdaten;
+                this.setValuesAfterSave();
             });
     }
 
