@@ -20,11 +20,7 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
-import * as moment from 'moment';
-import {
-    getTSEinschulungTypGemeindeValues,
-    TSEinschulungTyp,
-} from '../../../models/enums/TSEinschulungTyp';
+import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -40,9 +36,7 @@ export class GemeindeKonfigComponent implements OnInit {
     @ViewChild(NgForm) public form: NgForm;
     @Input() public konfigurationsListe: TSGemeindeKonfiguration[];
     @Input() public gemeindeStatus: TSGemeindeStatus;
-    @Input() public beguStartDate: moment.Moment;
 
-    public beguStartStr: string;
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
     private navigationDest: StateDeclaration;
 
@@ -55,7 +49,6 @@ export class GemeindeKonfigComponent implements OnInit {
     public ngOnInit(): void {
         this.navigationDest = this.$transition$.to();
         this.einschulungTypGemeindeValues = getTSEinschulungTypGemeindeValues();
-        this.beguStartStr = this.beguStartDate.format('DD.MM.YYYY');
         this.initProperties();
     }
 
