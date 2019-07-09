@@ -10,15 +10,17 @@ INSERT INTO einstellung (
 	gemeinde_id,
 	gesuchsperiode_id,
 	mandant_id)
-VALUES (
-	UNHEX(REPLACE(UUID(), '-', '')),
-	'2019-06-28 00:00:00',
-	'2019-06-28 00:00:00',
-	'flyway',
-	'flyway',
-	0,
-	'TAGESSCHULE_ENABLED_FOR_MANDANT',
-	'false',
-	NULL,
-	(select id from gesuchsperiode limit 1),
-	NULL);
+SELECT * FROM (SELECT
+				   UNHEX(REPLACE(UUID(), '-', '')) as id,
+				   '2019-06-28 00:00:00' as timestamp_erstellt,
+				   '2019-06-28 00:00:00' as timestamp_mutiert,
+				   'flyway' as user_erstellt,
+				   'flyway' as user_mutiert,
+				   0 as version,
+				   'TAGESSCHULE_ENABLED_FOR_MANDANT' as einstellung_key,
+				   'false' as value,
+				   NULL as gemeinde_id,
+				   gp.id as gesuchsperiode_id,
+				   NULL as mandant_id
+			   from gesuchsperiode as gp
+) as tmp;

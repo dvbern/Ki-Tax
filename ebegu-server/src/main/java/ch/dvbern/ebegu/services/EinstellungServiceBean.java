@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -235,28 +236,27 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@PermitAll
 	public Map<EinstellungKey, Einstellung> getAllEinstellungenByMandantAsMap(@Nonnull Gesuchsperiode gesuchsperiode) {
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
 			new EbeguRuntimeException("getAllEinstellungenByMandantAsMap", "Benutzer nicht eingeloggt"));
+
+		final EntityManager entityManager = persistence.getEntityManager();
 		Map<EinstellungKey, Einstellung> result = new HashMap<>();
+
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
 		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
 
 			// (1) Nach Mandant
 			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantGemeindeOrSystem(
-				einstellungKey, benutzer.getMandant(), null, gesuchsperiode, persistence.getEntityManager());
+				einstellungKey, benutzer.getMandant(), null, gesuchsperiode, entityManager);
 			if (einstellungByMandant.isPresent()) {
 				result.put(einstellungKey, einstellungByMandant.get());
 			} else {
 				// (2) Nach Default des Systems
 				Optional<Einstellung> einstellungBySystem = findEinstellungByMandantGemeindeOrSystem(
-					einstellungKey, null, null, gesuchsperiode, persistence.getEntityManager());
-				if (einstellungBySystem.isPresent()) {
-					result.put(einstellungKey, einstellungBySystem.get());
-				}
+					einstellungKey, null, null, gesuchsperiode, entityManager);
+				einstellungBySystem.ifPresent(einstellung -> result.put(einstellungKey, einstellung));
 			}
 		});
 		return result;
@@ -264,9 +264,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 	@Nonnull
 	@Override
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, GESUCHSTELLER,
-		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TS, SACHBEARBEITER_TS, STEUERAMT,
-		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@PermitAll
 	public Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> result = new HashMap<>();
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden

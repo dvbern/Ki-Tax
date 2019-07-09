@@ -1046,6 +1046,9 @@ export default class EbeguRestUtil {
             mandantTS.konfigurationsListe =
                 this.parseMandantKonfigurationList(mandantFromServer.konfigurationsListe);
             // Die Konfigurationen direkt auf den Mandanten schreiben
+            // Das Tagesschule-Flag ist eigentlich nicht Gesuchsperiode abhängig. Wir iterieren durch
+            // alle Konfigurationen aller Gesuchsperioden und sobald das Flag irgendwo true ist,
+            // verwenden wir diese Einstellung immer.
             mandantTS.konfigurationsListe.forEach((config: TSMandantKonfiguration) => {
                 config.konfigurationen.forEach(property => {
                     if (TSEinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT === property.key
