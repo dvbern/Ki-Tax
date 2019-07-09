@@ -83,11 +83,11 @@ public interface EinstellungService {
 	/**
 	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode zurueck. Es werden die Defaults des Mandanten zurückgegeben
 	 * (falls vorhanden), sonst die System Defaults.
-	 * In der zurueckgegebenen Map ist jeder EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten Wert fuer
+	 * In der zurueckgegebenen Liste ist jeder EinstellungKey genau einmal vorhanden, jeweils mit dem spezifischsten Wert fuer
 	 * den Mandanten. z.B. Key A als Mandanteinstellung, Key B als System Default, Key C als Mandanteinstellung
 	 */
 	@Nonnull
-	Map<EinstellungKey, Einstellung> getAllEinstellungenByMandantAsMap(@Nonnull Gesuchsperiode gesuchsperiode);
+	Collection<Einstellung> getAllEinstellungenByMandant(@Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
 	 * Gibt alle Einstellungen der uebergebenen Gesuchsperiode *fuer eine bestimmte Gemeinde* zurueck. D.h. in der

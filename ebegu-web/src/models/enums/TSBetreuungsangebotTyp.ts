@@ -13,8 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSMandant} from '../TSMandant';
-
 export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',
     TAGESFAMILIEN = 'TAGESFAMILIEN',
@@ -22,20 +20,23 @@ export enum TSBetreuungsangebotTyp {
     FERIENINSEL = 'FERIENINSEL'
 }
 
-export function getTSBetreuungsangebotTypValuesForMandant(mandant: TSMandant): Array<TSBetreuungsangebotTyp> {
-    return getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(mandant, true);
+export function getTSBetreuungsangebotTypValuesForMandant(
+    tagesschuleEnabledForMandant: boolean
+): Array<TSBetreuungsangebotTyp> {
+    return getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
+        tagesschuleEnabledForMandant, true);
 }
 
 export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-    mandant: TSMandant, hasTagesschulanmeldungen: boolean
+    tagesschuleEnabledForMandant: boolean, tagesschuleAnmeldungenConfigured: boolean
 ): Array<TSBetreuungsangebotTyp> {
     const angebote: Array<TSBetreuungsangebotTyp> = [];
     angebote.push(TSBetreuungsangebotTyp.KITA);
     angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
-    if (mandant.tagesschuleEnabled && hasTagesschulanmeldungen) {
+    if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured) {
         angebote.push(TSBetreuungsangebotTyp.TAGESSCHULE);
     }
-    if (mandant.tagesschuleEnabled) {
+    if (tagesschuleEnabledForMandant) {
         angebote.push(TSBetreuungsangebotTyp.FERIENINSEL);
     }
     return angebote;

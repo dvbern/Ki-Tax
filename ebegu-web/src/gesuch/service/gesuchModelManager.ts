@@ -15,6 +15,7 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import ErrorService from '../../app/core/errors/service/ErrorService';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../app/core/service/betreuungRS.rest';
@@ -91,7 +92,7 @@ export default class GesuchModelManager {
         'ErwerbspensumRS', 'InstitutionStammdatenRS', 'BetreuungRS', '$log', 'AuthServiceRS',
         'EinkommensverschlechterungContainerRS', 'VerfuegungRS', 'WizardStepManager',
         'AntragStatusHistoryRS', 'EbeguUtil', 'ErrorService', '$q', 'AuthLifeCycleService', 'EwkRS',
-        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS',
+        'GlobalCacheService', 'DossierRS', 'GesuchGenerator', 'GemeindeRS', 'EinstellungRS',
     ];
     private gesuch: TSGesuch;
     private neustesGesuch: boolean;
@@ -136,6 +137,7 @@ export default class GesuchModelManager {
         private readonly dossierRS: DossierRS,
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly einstellungRS: EinstellungRS,
     ) {
 
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
@@ -1581,6 +1583,6 @@ export default class GesuchModelManager {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
+        return this.einstellungRS.isTagesschuleEnabledForMandant();
     }
 }

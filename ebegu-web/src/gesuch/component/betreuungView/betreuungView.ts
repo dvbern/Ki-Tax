@@ -24,11 +24,8 @@ import MitteilungRS from '../../../app/core/service/mitteilungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnmeldungMutationZustand} from '../../../models/enums/TSAnmeldungMutationZustand';
 import {isVerfuegtOrSTV, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
-import {
-    getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
-    TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
-import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
@@ -223,8 +220,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id,
-            this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN),
+            this.gesuchModelManager.getGesuchsperiode().id
         ).then((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG)
                 .forEach(value => {
@@ -581,7 +577,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const tsConfigured = gesuchsperiode && gesuchsperiode.hasTagesschulenAnmeldung();
         const betreuungsangebotTypValues =
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-                this.authServiceRS.getPrincipalMandant(), tsConfigured);
+                this.einstellungRS.isTagesschuleEnabledForMandant(), tsConfigured);
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
     }
 

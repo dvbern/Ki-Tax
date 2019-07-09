@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IFilterService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
 import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
@@ -59,7 +60,7 @@ export class DVQuicksearchListController implements IController {
 
     public static $inject: string[] = [
         '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'AuthServiceRS', 'GemeindeRS',
+        '$state', 'AuthServiceRS', 'GemeindeRS', 'EinstellungRS',
     ];
 
     public antraege: Array<TSAntragDTO> = []; // muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
@@ -98,6 +99,7 @@ export class DVQuicksearchListController implements IController {
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -125,7 +127,7 @@ export class DVQuicksearchListController implements IController {
     }
 
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValuesForMandant(this.authServiceRS.getPrincipalMandant());
+        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
     }
 
     public updateGesuchsperiodenList(): void {
@@ -231,6 +233,6 @@ export class DVQuicksearchListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
+        return this.einstellungRS.isTagesschuleEnabledForMandant();
     }
 }

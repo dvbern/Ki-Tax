@@ -16,22 +16,26 @@
  */
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
+import GlobalCacheService from '../../gesuch/service/globalCacheService';
+import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
 import TSEinstellung from '../../models/TSEinstellung';
 import TSGemeinde from '../../models/TSGemeinde';
 import TSGesuchsperiode from '../../models/TSGesuchsperiode';
 import EbeguRestUtil from '../../utils/EbeguRestUtil';
-import ICacheObject = angular.ICacheObject;
 
 export class EinstellungRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'GlobalCacheService'];
     public serviceURL: string;
+
+    private tageschuleEnabledForMandant: boolean = false;
 
     public constructor(
         public readonly http: IHttpService,
         REST_API: string,
         public readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly globalCacheService: GlobalCacheService,
     ) {
         this.serviceURL = `${REST_API}einstellung`;
     }
@@ -63,10 +67,29 @@ export class EinstellungRS {
             });
     }
 
-    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string, cache: ICacheObject): IPromise<TSEinstellung[]> {
+    public getAllEinstellungenBySystemCached(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN);
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`, {cache})
             .then((response: any) => {
                 return this.ebeguRestUtil.parseEinstellungList(response.data);
             });
+    }
+
+    public getAllEinstellungenByMandantCached(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
+        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN_MANDANT);
+        return this.http.get(`${this.serviceURL}/mandant/gesuchsperiode/${gesuchsperiodeId}`, {cache})
+            .then((response: any) => {
+                const einstellungenList = this.ebeguRestUtil.parseEinstellungList(response.data);
+                for (const tsEinstellung of einstellungenList) {
+                    if (tsEinstellung.key === TSEinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT) {
+                        this.tageschuleEnabledForMandant = 'true' === tsEinstellung.value;
+                    }
+                }
+                return einstellungenList;
+            });
+    }
+
+    public isTagesschuleEnabledForMandant(): boolean {
+       return this.tageschuleEnabledForMandant;
     }
 }

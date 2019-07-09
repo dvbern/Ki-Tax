@@ -15,6 +15,7 @@
 
 import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IPromise} from 'angular';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GesuchRS from '../../../../gesuch/service/gesuchRS.rest';
 import SearchRS from '../../../../gesuch/service/searchRS.rest';
@@ -55,6 +56,7 @@ export class GesuchstellerDashboardViewController implements IController {
         'MitteilungRS',
         'GesuchRS',
         'ErrorService',
+        'EinstellungRS',
     ];
 
     private antragList: Array<TSAntragDTO> = [];
@@ -76,6 +78,7 @@ export class GesuchstellerDashboardViewController implements IController {
         private readonly mitteilungRS: MitteilungRS,
         private readonly gesuchRS: GesuchRS,
         private readonly errorService: ErrorService,
+        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -210,7 +213,7 @@ export class GesuchstellerDashboardViewController implements IController {
 
     public showAnmeldungCreate(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
-        const isSchulamtAngeboteEnabled = this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
+        const isSchulamtAngeboteEnabled = this.einstellungRS.isTagesschuleEnabledForMandant();
         return isSchulamtAngeboteEnabled && periode.hasTagesschulenAnmeldung() && !!antrag &&
             antrag.status !== TSAntragStatus.IN_BEARBEITUNG_GS &&
             antrag.status !== TSAntragStatus.FREIGABEQUITTUNG

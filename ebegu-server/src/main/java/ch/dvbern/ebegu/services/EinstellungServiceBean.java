@@ -237,12 +237,12 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Override
 	@Nonnull
 	@PermitAll
-	public Map<EinstellungKey, Einstellung> getAllEinstellungenByMandantAsMap(@Nonnull Gesuchsperiode gesuchsperiode) {
+	public Collection<Einstellung> getAllEinstellungenByMandant(@Nonnull Gesuchsperiode gesuchsperiode) {
 		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
 			new EbeguRuntimeException("getAllEinstellungenByMandantAsMap", "Benutzer nicht eingeloggt"));
 
 		final EntityManager entityManager = persistence.getEntityManager();
-		Map<EinstellungKey, Einstellung> result = new HashMap<>();
+		Collection<Einstellung> result = new ArrayList<>();
 
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
 		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
@@ -251,12 +251,12 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantGemeindeOrSystem(
 				einstellungKey, benutzer.getMandant(), null, gesuchsperiode, entityManager);
 			if (einstellungByMandant.isPresent()) {
-				result.put(einstellungKey, einstellungByMandant.get());
+				result.add(einstellungByMandant.get());
 			} else {
 				// (2) Nach Default des Systems
 				Optional<Einstellung> einstellungBySystem = findEinstellungByMandantGemeindeOrSystem(
 					einstellungKey, null, null, gesuchsperiode, entityManager);
-				einstellungBySystem.ifPresent(einstellung -> result.put(einstellungKey, einstellung));
+				einstellungBySystem.ifPresent(einstellung -> result.add(einstellung));
 			}
 		});
 		return result;

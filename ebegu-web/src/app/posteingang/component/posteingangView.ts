@@ -17,6 +17,7 @@ import {StateService} from '@uirouter/core';
 import {IComponentOptions, IController, IPromise} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../gesuch/service/gemeindeRS.rest';
 import {getAemterForFilter, TSAmt} from '../../../models/enums/TSAmt';
@@ -40,7 +41,7 @@ export class PosteingangViewComponentConfig implements IComponentOptions {
 
 export class PosteingangViewController implements IController {
 
-    public static $inject: string[] = ['MitteilungRS', '$state', 'AuthServiceRS', 'GemeindeRS'];
+    public static $inject: string[] = ['MitteilungRS', '$state', 'AuthServiceRS', 'GemeindeRS', 'EinstellungRS'];
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -63,6 +64,7 @@ export class PosteingangViewController implements IController {
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly einstellungRS: EinstellungRS,
     ) {
 
         this.updateGemeindenList();
@@ -133,6 +135,6 @@ export class PosteingangViewController implements IController {
     }
 
     public showBgOrTS(): boolean {
-        return this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
+        return this.einstellungRS.isTagesschuleEnabledForMandant();
     }
 }

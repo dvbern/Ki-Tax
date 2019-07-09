@@ -146,4 +146,25 @@ public class EinstellungResource {
 		}
 		return Collections.emptyList();
 	}
+
+	@ApiOperation(value = "Get all kiBon parameter for a specific Gesuchsperiode. The id of the gesuchsperiode is " +
+		"passed  as a pathParam", responseContainer = "List", response = JaxEinstellung.class)
+	@Nonnull
+	@GET
+	@Path("/mandant/gesuchsperiode/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JaxEinstellung> getAllEinstellungenByMandant(
+		@Nonnull @NotNull @PathParam("id") JaxId id) {
+
+		Objects.requireNonNull(id.getId());
+		String gesuchsperiodeId = converter.toEntityId(id);
+		Optional<Gesuchsperiode> gesuchsperiode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId);
+		if (gesuchsperiode.isPresent()) {
+			return einstellungService.getAllEinstellungenByMandant(gesuchsperiode.get()).stream()
+				.map(einstellung -> converter.einstellungToJAX(einstellung))
+				.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
 }

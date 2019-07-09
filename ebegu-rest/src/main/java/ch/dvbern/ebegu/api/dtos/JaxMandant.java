@@ -15,9 +15,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -35,10 +32,6 @@ public class JaxMandant extends JaxAbstractDTO {
 	@NotNull
 	private String name;
 
-	@NotNull
-	private List<JaxMandantKonfiguration> konfigurationsListe = new ArrayList<>();
-
-
 	public String getName() {
 		return name;
 	}
@@ -46,14 +39,4 @@ public class JaxMandant extends JaxAbstractDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	@NotNull
-	public List<JaxMandantKonfiguration> getKonfigurationsListe() {
-		return konfigurationsListe;
-	}
-
-	public void setKonfigurationsListe(@NotNull List<JaxMandantKonfiguration> konfigurationsListe) {
-		this.konfigurationsListe = konfigurationsListe;
-	}
-
 }

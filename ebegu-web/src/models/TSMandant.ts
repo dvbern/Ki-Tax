@@ -14,17 +14,21 @@
  */
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
-import TSMandantKonfiguration from './TSMandantKonfiguration';
 
 export class TSMandant extends TSAbstractMutableEntity {
 
-    public name: string;
-    public konfigurationsListe: TSMandantKonfiguration[];
-
-    public tagesschuleEnabled: boolean = false; // Nur auf dem GUI
+    private _name: string;
 
     public constructor(name?: string) {
         super();
-        this.name = name;
+        this._name = name;
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public set name(value: string) {
+        this._name = value;
     }
 }

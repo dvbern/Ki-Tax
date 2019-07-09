@@ -20,6 +20,7 @@ import {StateService} from '@uirouter/core';
 import {GuidedTourService} from 'ngx-guided-tour';
 import {from as fromPromise, Observable, of, Subject} from 'rxjs';
 import {filter, map, switchMap, take, takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import {INewFallStateParams} from '../../../../gesuch/gesuch.route';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
@@ -58,7 +59,9 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly gemeindeRS: GemeindeRS,
         private readonly guidedTourService: GuidedTourService,
         private readonly translate: TranslateService,
-        private readonly kibonGuidedTourService: KiBonGuidedTourService
+        private readonly kibonGuidedTourService: KiBonGuidedTourService,
+        private readonly einstellungRS: EinstellungRS,
+
     ) {
 
         // navbar depends on the principal. trigger change detection when the principal changes
@@ -80,6 +83,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 },
                 err => LOG.error(err),
             );
+
+        this.showMenuAnmeldungen = this.einstellungRS.isTagesschuleEnabledForMandant();
     }
 
     public createNewFall(): void {
@@ -147,7 +152,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         return this.authServiceRS.principal$
             .pipe(
                 switchMap(principal => {
-                    this.showMenuAnmeldungen = principal.mandant.tagesschuleEnabled;
                     if (principal && principal.hasJustOneGemeinde()) {
                         return of(principal.extractCurrentGemeindeId());
                     }

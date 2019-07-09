@@ -16,9 +16,10 @@
 import {IComponentOptions, IController, IFilterService, IPromise, IWindowService} from 'angular';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import AuthServiceRS from '../../../../authentication/service/AuthServiceRS.rest';
 import GemeindeRS from '../../../../gesuch/service/gemeindeRS.rest';
-import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus, } from '../../../../models/enums/TSAntragStatus';
+import {getTSAntragStatusPendenzValues, getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../../models/enums/TSAntragTyp';
 import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../../models/enums/TSBetreuungsangebotTyp';
 import TSAbstractAntragEntity from '../../../../models/TSAbstractAntragEntity';
@@ -65,6 +66,7 @@ export class DVAntragListController implements IController {
         'AuthServiceRS',
         '$window',
         'GemeindeRS',
+        'EinstellungRS',
     ];
 
     public totalResultCount: number;
@@ -112,6 +114,7 @@ export class DVAntragListController implements IController {
         private readonly authServiceRS: AuthServiceRS,
         private readonly $window: IWindowService,
         private readonly gemeindeRS: GemeindeRS,
+        private readonly einstellungRS: EinstellungRS,
     ) {
     }
 
@@ -212,7 +215,7 @@ export class DVAntragListController implements IController {
      * Alle Betreuungsangebot typen fuer das Filterdropdown
      */
     public getBetreuungsangebotTypen(): Array<TSBetreuungsangebotTyp> {
-        return getTSBetreuungsangebotTypValuesForMandant(this.authServiceRS.getPrincipalMandant());
+        return getTSBetreuungsangebotTypValuesForMandant(this.isTagesschulangebotEnabled());
     }
 
     /**
@@ -258,6 +261,6 @@ export class DVAntragListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.getPrincipalMandant().tagesschuleEnabled;
+        return this.einstellungRS.isTagesschuleEnabledForMandant();
     }
 }

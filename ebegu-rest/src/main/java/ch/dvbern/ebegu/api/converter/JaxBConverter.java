@@ -42,6 +42,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
@@ -96,13 +97,11 @@ import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxKind;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
-import ch.dvbern.ebegu.api.dtos.JaxMandantKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
@@ -1200,11 +1199,6 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxMandant jaxMandant = new JaxMandant();
 		convertAbstractVorgaengerFieldsToJAX(persistedMandant, jaxMandant);
 		jaxMandant.setName(persistedMandant.getName());
-
-		Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(LocalDate.now());
-		if (gesuchsperiode != null) {
-			jaxMandant.getKonfigurationsListe().add(loadMandantKonfiguration(persistedMandant, gesuchsperiode));
-		}
 		return jaxMandant;
 	}
 
@@ -4056,8 +4050,7 @@ public class JaxBConverter extends AbstractConverter {
 		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
 		// Konfiguration
 		if (GemeindeStatus.EINGELADEN == stammdaten.getGemeinde().getStatus()) {
-			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten.getGemeinde()
-				.getBetreuungsgutscheineStartdatum());
+			Gesuchsperiode gesuchsperiode = findRelevantGesuchsperiode(stammdaten);
 			if (gesuchsperiode != null) {
 				jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
 					stammdaten.getGemeinde(),
@@ -4156,8 +4149,9 @@ public class JaxBConverter extends AbstractConverter {
 	 * falls diese nicht existiert, nehmen wir die aktuelle Gesuchsperiode
 	 */
 	@Nullable
-	private Gesuchsperiode findRelevantGesuchsperiode(@Nonnull LocalDate stichtag) {
-		Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stichtag);
+	private Gesuchsperiode findRelevantGesuchsperiode(@Nonnull GemeindeStammdaten stammdaten) {
+		Optional<Gesuchsperiode> gpBeguStart = gesuchsperiodeService.getGesuchsperiodeAm(stammdaten.getGemeinde()
+			.getBetreuungsgutscheineStartdatum());
 		Optional<Gesuchsperiode> gpNewest = gesuchsperiodeService.findNewestGesuchsperiode();
 
 		return gpBeguStart.orElseGet(() -> gpNewest.orElse(null));
@@ -4174,20 +4168,6 @@ public class JaxBConverter extends AbstractConverter {
 			.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
 		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
 			.filter(map -> map.getKey().isGemeindeEinstellung())
-			.map(x -> einstellungToJAX(x.getValue()))
-			.collect(Collectors.toList()));
-		return konfiguration;
-	}
-
-	private JaxMandantKonfiguration loadMandantKonfiguration(
-		@Nonnull Mandant mandant,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-		JaxMandantKonfiguration konfiguration = new JaxMandantKonfiguration();
-		konfiguration.setGesuchsperiodeId(gesuchsperiode.getId());
-		Map<EinstellungKey, Einstellung> konfigurationMap = einstellungService
-			.getAllEinstellungenByMandantAsMap(gesuchsperiode);
-		konfiguration.getKonfigurationen().addAll(konfigurationMap.entrySet().stream()
-			.filter(map -> map.getKey().isMandantEinstellung())
 			.map(x -> einstellungToJAX(x.getValue()))
 			.collect(Collectors.toList()));
 		return konfiguration;

@@ -36,7 +36,6 @@ import TSGemeinde from '../models/TSGemeinde';
 import TSGesuchsperiode from '../models/TSGesuchsperiode';
 import TSGesuchsteller from '../models/TSGesuchsteller';
 import TSGesuchstellerContainer from '../models/TSGesuchstellerContainer';
-import {TSMandant} from '../models/TSMandant';
 import TSVerfuegung from '../models/TSVerfuegung';
 import TSWizardStep from '../models/TSWizardStep';
 import {TSDateRange} from '../models/types/TSDateRange';
@@ -99,6 +98,8 @@ export default class TestDataUtil {
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/anspruch').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/fachstellen/erweiterteBetreuung').respond({});
         $httpBackend.when('GET', '/ebegu/api/v1/institutionstammdaten/gesuchsperiode/active').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/einstellung/mandant/gesuchsperiode/0621fb5d-a187-5a91-abaf-8a813c4d263a').respond({});
+        $httpBackend.when('GET', '/ebegu/api/v1/einstellung/mandant/gesuchsperiode/undefined').respond({});
     }
 
     public static mockLazyGesuchModelManagerHttpCalls($httpBackend: IHttpBackendService): void {
@@ -266,13 +267,6 @@ export default class TestDataUtil {
         user.currentBerechtigung = new TSBerechtigung();
         user.currentBerechtigung.role = TSRole.SUPER_ADMIN;
         return user;
-    }
-
-    public static createMandant(): TSMandant {
-        const mandant = new TSMandant();
-        TestDataUtil.setAbstractMutableFieldsUndefined(mandant);
-        mandant.konfigurationsListe = [];
-        return mandant;
     }
 
     /**

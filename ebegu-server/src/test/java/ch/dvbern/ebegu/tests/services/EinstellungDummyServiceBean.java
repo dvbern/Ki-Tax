@@ -122,11 +122,8 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 
 	@Nonnull
 	@Override
-	public Map<EinstellungKey, Einstellung> getAllEinstellungenByMandantAsMap(@Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> result = new HashMap<>();
-		Collection<Einstellung> paramsForGesuchsperiode = getAllEinstellungenBySystem(gesuchsperiode);
-		paramsForGesuchsperiode.stream().forEach(ebeguParameter -> result.put(ebeguParameter.getKey(), ebeguParameter));
-		return result;
+	public Collection<Einstellung> getAllEinstellungenByMandant(@Nonnull Gesuchsperiode gesuchsperiode) {
+		return dummyObjects.values();
 	}
 
 	@Nonnull
