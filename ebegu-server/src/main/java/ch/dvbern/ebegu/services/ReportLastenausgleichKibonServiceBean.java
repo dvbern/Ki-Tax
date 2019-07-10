@@ -87,7 +87,7 @@ public class ReportLastenausgleichKibonServiceBean extends AbstractReportService
 
 		List<LastenausgleichKibonDataRow> reportData = getReportLastenausgleichKibon(dateFrom);
 		ExcelMergerDTO excelMergerDTO = lastenausgleichKibonExcelConverter
-			.toExcelMergerDTO(reportData, dateFrom.getYear());
+			.toExcelMergerDTO(reportData, dateFrom.getYear(), locale);
 
 		mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 		lastenausgleichKibonExcelConverter.applyAutoSize(sheet);
@@ -118,8 +118,8 @@ public class ReportLastenausgleichKibonServiceBean extends AbstractReportService
 				dataRow.setZeitabschnittBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
 				dataRow.setBgPensum(zeitabschnitt.getBgPensum());
 				dataRow.setInstitution(betreuung.getInstitutionStammdaten().getInstitution().getName());
-				dataRow.setBetreuungsTyp(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().name());
-				dataRow.setTarif(kindJA.getEinschulungTyp() != null ? kindJA.getEinschulungTyp().name() : "");
+				dataRow.setBetreuungsTyp(betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp());
+				dataRow.setTarif(kindJA.getEinschulungTyp());
 				dataRow.setZusatz(betreuung.hasErweiterteBetreuung());
 				dataRow.setGutschein(zeitabschnitt.getVerguenstigung());
 

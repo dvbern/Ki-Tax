@@ -18,15 +18,18 @@ package ch.dvbern.ebegu.reporting.lastenausgleich;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.reporting.MergeFieldLastenausgleichKibon;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 public class LastenausgleichKibonExcelConverter implements ExcelConverter {
 
@@ -35,7 +38,11 @@ public class LastenausgleichKibonExcelConverter implements ExcelConverter {
 	}
 
 	@Nonnull
-	public ExcelMergerDTO toExcelMergerDTO(@Nonnull List<LastenausgleichKibonDataRow> data, int year) {
+	public ExcelMergerDTO toExcelMergerDTO(
+		@Nonnull List<LastenausgleichKibonDataRow> data,
+		int year,
+		@Nonnull Locale locale
+	) {
 		checkNotNull(data);
 
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
@@ -52,8 +59,10 @@ public class LastenausgleichKibonExcelConverter implements ExcelConverter {
 			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.zeitabschnittBis, dataRow.getZeitabschnittBis());
 			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.bgPensum, dataRow.getBgPensum());
 			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.institution, dataRow.getInstitution());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.betreuungsTyp, dataRow.getBetreuungsTyp());
-			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.tarif, dataRow.getTarif());
+			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.betreuungsTyp,
+				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getBetreuungsTyp()), locale));
+			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.tarif,
+				ServerMessageUtil.translateEnumValue(requireNonNull(dataRow.getTarif()), locale));
 			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.zusatz, dataRow.getZusatz());
 			fallRowGroup.addValue(MergeFieldLastenausgleichKibon.gutschein, dataRow.getGutschein());
 		});

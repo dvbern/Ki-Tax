@@ -20,6 +20,11 @@ package ch.dvbern.ebegu.reporting.lastenausgleich;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+
 /**
  * DTO für den Lastenausgleich von KiBon
  */
@@ -33,8 +38,9 @@ public class LastenausgleichKibonDataRow {
 	private LocalDate zeitabschnittBis;
 	private BigDecimal bgPensum;
 	private String institution;
-	private String betreuungsTyp;
-	private String tarif;
+	private BetreuungsangebotTyp betreuungsTyp;
+	@Nullable
+	private EinschulungTyp tarif;
 	private Boolean zusatz;
 	private BigDecimal gutschein;
 
@@ -102,19 +108,20 @@ public class LastenausgleichKibonDataRow {
 		this.institution = institution;
 	}
 
-	public String getBetreuungsTyp() {
+	public BetreuungsangebotTyp getBetreuungsTyp() {
 		return betreuungsTyp;
 	}
 
-	public void setBetreuungsTyp(String betreuungsTyp) {
+	public void setBetreuungsTyp(BetreuungsangebotTyp betreuungsTyp) {
 		this.betreuungsTyp = betreuungsTyp;
 	}
 
-	public String getTarif() {
+	@Nullable
+	public EinschulungTyp getTarif() {
 		return tarif;
 	}
 
-	public void setTarif(String tarif) {
+	public void setTarif(@Nullable EinschulungTyp tarif) {
 		this.tarif = tarif;
 	}
 
