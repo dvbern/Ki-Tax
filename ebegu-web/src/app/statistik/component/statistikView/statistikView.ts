@@ -249,6 +249,12 @@ export class StatistikViewController implements IController {
                         this.informReportGenerationStarted(batchExecutionId);
                     });
                 break;
+            case TSStatistikParameterType.LASTENAUSGLEICH_KIBON:
+                this.reportAsyncRS.getLastenausgleichKibonReportExcel(this._statistikParameter.jahr)
+                    .then((batchExecutionId: string) => {
+                        this.informReportGenerationStarted(batchExecutionId);
+                    });
+                break;
             default:
                 throw new Error(`unknown TSStatistikParameterType: ${type}`);
         }

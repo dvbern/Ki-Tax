@@ -137,4 +137,9 @@ public interface VerfuegungService {
 	 */
 	void findVerrechnetenZeitabschnittOnVorgaengerVerfuegung(@Nonnull VerfuegungZeitabschnitt zeitabschnittNeu,
 		@Nonnull Betreuung betreuungNeu, @Nonnull List<VerfuegungZeitabschnitt> vorgaengerZeitabschnitte);
+
+	/**
+	 * Returns all Zeitabschnitte within the given year that are gueltig
+	 */
+	List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year);
 }

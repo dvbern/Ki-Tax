@@ -119,6 +119,12 @@ public enum ReportVorlage {
 		ReportFileName.VERRECHNUNG_KIBON,
 		Constants.DATA,
 		MergeFieldVerrechnungKibon.class
+	),
+	VORLAGE_REPORT_LASTENAUSGLEICH_KIBON(
+		"/reporting/LastenausgleichKibon.xlsx",
+		ReportFileName.LASTENAUSGLEICH_KIBON,
+		Constants.DATA,
+		MergeFieldLastenausgleichKibon.class
 	);
 
 	@Nonnull

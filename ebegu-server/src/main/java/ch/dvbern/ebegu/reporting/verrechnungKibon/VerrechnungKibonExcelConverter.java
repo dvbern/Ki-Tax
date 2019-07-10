@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ch.dvbern.ebegu.reporting.vrerechnungKibon;
+package ch.dvbern.ebegu.reporting.verrechnungKibon;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,7 +23,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.enums.reporting.MergeFieldVerrechnungKibon;
-import ch.dvbern.ebegu.reporting.verrechnungKibon.VerrechnungKibonDataRow;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;

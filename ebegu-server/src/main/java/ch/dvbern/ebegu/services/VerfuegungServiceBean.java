@@ -29,11 +29,22 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuung_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
+import ch.dvbern.ebegu.entities.Verfuegung_;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -48,6 +59,7 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -463,6 +475,37 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		}
 		//noinspection UnnecessaryReturnStatement: Abbruchbedingung: Es gibt keinen Vorgaenger mehr
 		return;
+	}
+
+	@Override
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
+	public List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<VerfuegungZeitabschnitt> query = cb.createQuery(VerfuegungZeitabschnitt.class);
+
+		Root<VerfuegungZeitabschnitt> root = query.from(VerfuegungZeitabschnitt.class);
+
+		Join<VerfuegungZeitabschnitt, Verfuegung> joinVerfuegung = root.join(VerfuegungZeitabschnitt_.verfuegung);
+		Join<Verfuegung, Betreuung> joinBetreuung = joinVerfuegung.join(Verfuegung_.betreuung);
+
+		ParameterExpression<Integer> parameterYear = cb.parameter(Integer.class, "year");
+		Predicate predicateYear = cb.equal(
+			cb.function(
+				"YEAR",
+				Integer.class,
+				root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb)
+			),
+			parameterYear
+		);
+
+		Predicate predicateGueltig = cb.isTrue(joinBetreuung.get(Betreuung_.gueltig));
+
+		query.where(cb.and(predicateYear, predicateGueltig));
+
+		TypedQuery<VerfuegungZeitabschnitt> typedQuery = persistence.getEntityManager().createQuery(query);
+		typedQuery.setParameter(parameterYear, year);
+
+		return typedQuery.getResultList();
 	}
 
 	/**
