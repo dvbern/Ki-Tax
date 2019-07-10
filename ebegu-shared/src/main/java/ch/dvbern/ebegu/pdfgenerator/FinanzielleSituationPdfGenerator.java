@@ -31,7 +31,6 @@ import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
-import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -117,7 +116,6 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		// Der zweite GS wird gedruckt, wenn er Ende Gesuchsperiode zwingend war ODER es sich um eine Mutation handelt
 		// und
 		// der zweite GS bereits existiert.
-		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		boolean hasSecondGsEndeGP = hasSecondGesuchsteller();
 		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
 		this.hasSecondGesuchsteller = hasSecondGsEndeGP || isMutationWithSecondGs;

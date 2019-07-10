@@ -163,10 +163,8 @@ public abstract class KibonPdfGenerator {
 
 	protected boolean hasSecondGesuchsteller() {
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		if (familiensituation != null && familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())) {
-			return true;
-		}
-		return false;
+		return familiensituation != null
+			&& familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
 	}
 
 	@Nonnull
