@@ -329,6 +329,6 @@ export class StatistikViewController implements IController {
                 }
             });
 
-        this.years = this.years.sort();
+        this.years.sort();
     }
 }
