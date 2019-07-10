@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<div class="betreuungView gesuchModul">
+    <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
+
+    <div class="row viewTitle">
+        <div class="col-md-8">
+            <h2>
+                <span>{{vm.getKindModel().kindJA.getFullName()}} / </span><span data-translate="ABWEICHUNGEN_MELDEN"></span>
+            </h2>
+            <dv-bisher gs="vm.getKindModel().kindGS"
+                       ja="vm.getKindModel().kindJA"
+                       specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
+                       show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
+        </div>
+        <div class="col-md-4 text-right">
+            <h2 class="ebeguH2" aria-hidden>
+                {{vm.model.bgNummer}}
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <hr class="header"/>
+        </div>
+    </div>
+
+    <div class="row marginTop40">
+        <div class="col-md-12">
+            <span data-translate="WARNUNG_GEMEINDEN_IN_STATUS_ANMELDUNG"></span>
+        </div>
+    </div>
+
+</div>
