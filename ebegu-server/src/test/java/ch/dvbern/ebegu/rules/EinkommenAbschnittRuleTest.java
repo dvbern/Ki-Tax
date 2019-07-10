@@ -125,6 +125,18 @@ public class EinkommenAbschnittRuleTest {
 		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
 	}
 
+	@Test
+	public void testEinkommensverschlechterungIstEineMassiveEinkommenserhoehung() {
+		BigDecimal EINKOMMEN_TIEF = new BigDecimal("60000");
+		BigDecimal EINKOMMEN_HOCH = new BigDecimal("100000");
+		List<VerfuegungZeitabschnitt> zeitabschnitte = createTestdataEinkommensverschlechterung(EINKOMMEN_TIEF, EINKOMMEN_HOCH, EINKOMMEN_HOCH);
+
+		// Es kann maximal 2 Abschnitte geben, da die EKVs immer für das ganze Jahr gelten
+		ExpectedResult jahr1 = new ExpectedResult(EINKOMMEN_TIEF, 2016, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres 2016. Das massgebende Einkommen des Jahres 2017 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).");
+		ExpectedResult jahr2 = new ExpectedResult(EINKOMMEN_TIEF, 2016, "Ihr Antrag zur Anwendung der Einkommensverschlechterung wurde abgelehnt. Es gilt weiterhin das massgebende Einkommen des Jahres 2016. Das massgebende Einkommen des Jahres 2018 ohne Abzug des Pauschalbetrags gemäss Familiengrösse ist nicht um mehr als 20 Prozent tiefer als das massgebende Einkommen des aktuellen Bemessungszeitraums (Jahr 2016) ohne Abzug des Pauschalbetrags gemäss Familiengrösse. (Art. 34m Abs. 2 ASIV).");
+		assertEkvResultate(zeitabschnitte, jahr1, jahr2);
+	}
+
 	private void assertEkvResultate(List<VerfuegungZeitabschnitt> zeitabschnitte, ExpectedResult... expectedResults) {
 		Assert.assertEquals(expectedResults.length, zeitabschnitte.size());
 		int i = 0;
