@@ -647,8 +647,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Transient
 	public String extractFullnamesString() {
+		boolean hasSecondGesuchsteller = false;
+		Familiensituation familiensituation = extractFamiliensituation();
+		if (familiensituation != null && familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigBis())) {
+			hasSecondGesuchsteller = true;
+		}
 		String bothFamiliennamen = (this.getGesuchsteller1() != null ? this.getGesuchsteller1().extractFullName() : "");
-		bothFamiliennamen += this.getGesuchsteller2() != null ? ", " + this.getGesuchsteller2().extractFullName() : "";
+		if (hasSecondGesuchsteller) {
+			bothFamiliennamen += this.getGesuchsteller2() != null ? ", " + this.getGesuchsteller2().extractFullName() : "";
+		}
 		return bothFamiliennamen;
 	}
 

@@ -118,8 +118,7 @@ public class FinanzielleSituationPdfGenerator extends DokumentAnFamilieGenerator
 		// und
 		// der zweite GS bereits existiert.
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		boolean hasSecondGsEndeGP = familiensituation != null
-			&& familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
+		boolean hasSecondGsEndeGP = hasSecondGesuchsteller();
 		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
 		this.hasSecondGesuchsteller = hasSecondGsEndeGP || isMutationWithSecondGs;
 	}

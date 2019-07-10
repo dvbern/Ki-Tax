@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -153,11 +154,19 @@ public abstract class KibonPdfGenerator {
 			empfaengerAdresse.add(translate(EINSCHREIBEN));
 		}
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()));
-		if (getGesuch().getGesuchsteller2() != null) {
+		if (hasSecondGesuchsteller() && getGesuch().getGesuchsteller2() != null) {
 			empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller2()));
 		}
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerAddressAsString(getGesuch().getGesuchsteller1()));
 		return empfaengerAdresse;
+	}
+
+	protected boolean hasSecondGesuchsteller() {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		if (familiensituation != null && familiensituation.hasSecondGesuchsteller(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis())) {
+			return true;
+		}
+		return false;
 	}
 
 	@Nonnull
