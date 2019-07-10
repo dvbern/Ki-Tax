@@ -357,5 +357,6 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.TextRessource"/>
 	<entity class="ch.dvbern.ebegu.entities.VerrechnungKibon"/>
 	<entity class="ch.dvbern.ebegu.entities.VerrechnungKibonDetail"/>
+	<entity class="ch.dvbern.ebegu.entities.BetreuungspensumAbweichung"/>
 
 </entity-mappings>

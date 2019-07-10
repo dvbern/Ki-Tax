@@ -1221,4 +1221,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && erweiterteBetreuung.erweiterteBeduerfnisse
             && !erweiterteBetreuung.erweiterteBeduerfnisseBestaetigt;
     }
+
+    public gotoBetreuungAbweichungen(): void {
+        this.$state.go('gesuch.abweichungen', {
+            gesuchId: this.gesuchModelManager.getGesuch().id,
+            betreuungNumber: this.$stateParams.betreuungNumber,
+            kindNumber: this.$stateParams.kindNumber,
+        });
+    }
 }

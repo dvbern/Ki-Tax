@@ -1595,5 +1595,6 @@
     "KORREKTURZAHLUNG_DIALOG_FINISH": "Ja, verfügen",
     "FILTER": "Filter",
     "MANDANT_DIREKTION": "Gesundheits- und Fürsorgedirektion des Kantons Bern",
-    "MANDANT_AMT": "Sozialamt"
+    "MANDANT_AMT": "Sozialamt",
+    "ABWEICHUNGEN_MELDEN": "Abweichungen melden"
 }

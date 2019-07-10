@@ -619,6 +619,14 @@
                         </dv-loading-button>
                     </span>
 
+                    <span dv-show-element
+                          dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()">
+                        <dv-loading-button button-click="vm.gotoBetreuungAbweichungen()"
+                                           aria-label="{{'ABWEICHUNGEN_MELDEN' | translate}}">
+                            <span class="uppercase" data-translate="ABWEICHUNGEN_MELDEN"></span>
+                        </dv-loading-button>
+                    </span>
+
                     <!--Institution Buttons-->
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"

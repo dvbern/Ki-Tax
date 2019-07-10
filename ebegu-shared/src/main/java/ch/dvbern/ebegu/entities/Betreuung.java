@@ -375,12 +375,12 @@ public class Betreuung extends AbstractMutableEntity implements Comparable<Betre
 		this.keineDetailinformationen = keineDetailinformationen;
 	}
 
-	@Nullable
+	@NotNull
 	public Set<BetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
 		return betreuungspensumAbweichungen;
 	}
 
-	public void setBetreuungspensumAbweichungen(@Nullable Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+	public void setBetreuungspensumAbweichungen(@NotNull Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
 		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 

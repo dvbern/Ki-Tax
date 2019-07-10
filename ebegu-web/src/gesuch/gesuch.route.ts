@@ -265,6 +265,7 @@ export class EbeguBetreuungListState implements Ng1StateDeclaration {
         gesuch: getGesuchModelManager,
     };
 
+
     public data = {
         roles: TSRoleUtil.getAllRolesButAnonymous(),
     };
@@ -293,6 +294,30 @@ export class EbeguBetreuungState implements Ng1StateDeclaration {
 
     public data = {
         roles: TSRoleUtil.getAllRolesButAnonymous(),
+    };
+}
+
+// TODO KIBON-621 only pass necessary arguments in the url
+export class EbeguBetreuungAbweichungenState implements Ng1StateDeclaration {
+    public name = 'gesuch.abweichungen';
+    public url = '/betreuungen/betreuung/abweichungen/:gesuchId/:kindNumber/:betreuungNumber';
+    public params = {
+        betreuungsangebotTyp: '',
+        betreuungNumber: '',
+    };
+
+    public views: { [name: string]: Ng1StateDeclaration } = {
+        gesuchViewPort: {
+            template: '<betreuung-abweichungen-view>',
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getTraegerschaftInstitutionRoles(),
     };
 }
 
@@ -638,6 +663,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguErwerbspensumState(),
     new EbeguBetreuungListState(),
     new EbeguBetreuungState(),
+    new EbeguBetreuungAbweichungenState(),
     new EbeguAbwesenheitState(),
     new EbeguNewFallState(),
     new EbeguMutationState(),
