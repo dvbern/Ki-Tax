@@ -48,6 +48,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHUL
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT;
 
 /**
  * Dummyservice fuer Einstellungen
@@ -79,6 +80,8 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 			new Einstellung(FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode1718));
 		dummyObjects.put(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION,
 			new Einstellung(FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION, "40", gesuchsperiode1718));
+		dummyObjects.put(TAGESSCHULE_ENABLED_FOR_MANDANT,
+			new Einstellung(TAGESSCHULE_ENABLED_FOR_MANDANT, "false", gesuchsperiode1718));
 	}
 
 	@Nonnull
@@ -116,7 +119,19 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 
 	@Nonnull
 	@Override
+	public Einstellung findEinstellungTagesschuleEnabledForMandant() {
+		return findEinstellung(EinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT, new Gemeinde(), new Gesuchsperiode());
+	}
+
+	@Nonnull
+	@Override
 	public Collection<Einstellung> getAllEinstellungenBySystem(@Nonnull Gesuchsperiode gesuchsperiode) {
+		return dummyObjects.values();
+	}
+
+	@Nonnull
+	@Override
+	public Collection<Einstellung> getAllEinstellungenByMandant(@Nonnull Gesuchsperiode gesuchsperiode) {
 		return dummyObjects.values();
 	}
 
@@ -125,7 +140,7 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 	public Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
 		Map<EinstellungKey, Einstellung> result = new HashMap<>();
 		Collection<Einstellung> paramsForGesuchsperiode = getAllEinstellungenBySystem(gesuchsperiode);
-		paramsForGesuchsperiode.stream().map(ebeguParameter -> result.put(ebeguParameter.getKey(), ebeguParameter));
+		paramsForGesuchsperiode.stream().forEach(ebeguParameter -> result.put(ebeguParameter.getKey(), ebeguParameter));
 		return result;
 	}
 
