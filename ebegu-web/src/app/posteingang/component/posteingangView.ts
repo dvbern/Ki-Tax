@@ -59,6 +59,9 @@ export class PosteingangViewController implements IController {
     public includeClosed: boolean = false;
     public gemeindenList: Array<TSGemeinde> = [];
 
+    private _tageschuleEnabledForMandant: boolean;
+    private readonly unsubscribeTsEnabled$ = new Subject<void>();
+
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
         private readonly $state: StateService,
@@ -66,13 +69,22 @@ export class PosteingangViewController implements IController {
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
     ) {
+    }
 
+    public $onInit(): void {
         this.updateGemeindenList();
+        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err));
     }
 
     public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+        this.unsubscribeTsEnabled$.next();
+        this.unsubscribeTsEnabled$.complete();
     }
 
     public addZerosToFallNummer(fallnummer: number): string {
@@ -135,6 +147,6 @@ export class PosteingangViewController implements IController {
     }
 
     public showBgOrTS(): boolean {
-        return this.einstellungRS.isTagesschuleEnabledForMandant();
+        return this._tageschuleEnabledForMandant;
     }
 }

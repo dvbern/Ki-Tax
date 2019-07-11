@@ -20,14 +20,19 @@ import {NgForm} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {getTSBetreuungsangebotTypValuesForMandant, TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import TSInstitution from '../../../models/TSInstitution';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 import ErrorService from '../../core/errors/service/ErrorService';
+import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+
+const LOG = LogFactory.createLog('AddInstitutionComponent');
 
 @Component({
     selector: 'dv-add-institution',
@@ -45,6 +50,9 @@ export class AddInstitutionComponent implements OnInit {
     public beguStart: moment.Moment;
     public beguStartDatumMin: moment.Moment;
     public adminMail: string;
+
+    private _tageschuleEnabledForMandant: boolean;
+    private readonly unsubscribeTsEnabled$ = new Subject<void>();
 
     public constructor(
         private readonly $state: StateService,
@@ -66,9 +74,17 @@ export class AddInstitutionComponent implements OnInit {
         const futureMonthBegin = moment(futureMonth).startOf('month');
         this.beguStart = futureMonthBegin;
         this.beguStartDatumMin = futureMonthBegin;
-        this.betreuungsangebote = getTSBetreuungsangebotTypValuesForMandant(
-            this.einstellungRS.isTagesschuleEnabledForMandant()
-        );
+        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err));
+        this.betreuungsangebote = getTSBetreuungsangebotTypValuesForMandant(this._tageschuleEnabledForMandant);
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribeTsEnabled$.next();
+        this.unsubscribeTsEnabled$.complete();
     }
 
     public cancel(): void {

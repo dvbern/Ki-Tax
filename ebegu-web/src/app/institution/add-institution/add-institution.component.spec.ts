@@ -43,7 +43,7 @@ describe('AddInstitutionComponent', () => {
         ['getAllTraegerschaften', 'getAllActiveTraegerschaften']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const einstellungSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['isTagesschuleEnabledForMandant']);
+    // const einstellungSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['isTagesschuleEnabledForMandant']);
 
     beforeEach(async(() => {
 
@@ -60,7 +60,7 @@ describe('AddInstitutionComponent', () => {
                 {provide: TraegerschaftRS, useValue: traegerschaftSpy},
                 {provide: BenutzerRS, useValue: benutzerServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: EinstellungRS, useValue: einstellungSpy},
+                // {provide: EinstellungRS, useValue: einstellungSpy},
             ],
             declarations: [
                 AddInstitutionComponent,
@@ -72,7 +72,7 @@ describe('AddInstitutionComponent', () => {
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
         transitionServiceSpy.params.and.returnValue({institutionId: undefined});
-        einstellungSpy.isTagesschuleEnabledForMandant.and.returnValue(false);
+        // einstellungSpy.isTagesschuleEnabledForMandant.and.returnValue(false);
     }));
 
     beforeEach(async(() => {

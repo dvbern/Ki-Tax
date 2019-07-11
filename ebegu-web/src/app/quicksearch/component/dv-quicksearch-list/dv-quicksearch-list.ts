@@ -92,6 +92,9 @@ export class DVQuicksearchListController implements IController {
 
     private readonly unsubscribe$ = new Subject<void>();
 
+    private _tageschuleEnabledForMandant: boolean;
+    private readonly unsubscribeTsEnabled$ = new Subject<void>();
+
     public constructor(
         private readonly $filter: IFilterService,
         private readonly institutionRS: InstitutionRS,
@@ -111,11 +114,19 @@ export class DVQuicksearchListController implements IController {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
+
+        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err));
     }
 
     public $onDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+        this.unsubscribeTsEnabled$.next();
+        this.unsubscribeTsEnabled$.complete();
     }
 
     public getAntragTypen(): Array<TSAntragTyp> {
@@ -233,6 +244,6 @@ export class DVQuicksearchListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.einstellungRS.isTagesschuleEnabledForMandant();
+        return this._tageschuleEnabledForMandant;
     }
 }

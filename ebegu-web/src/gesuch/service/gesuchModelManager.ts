@@ -15,8 +15,11 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import ErrorService from '../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../app/core/logging/LogFactory';
 import AntragStatusHistoryRS from '../../app/core/service/antragStatusHistoryRS.rest';
 import BetreuungRS from '../../app/core/service/betreuungRS.rest';
 import ErwerbspensumRS from '../../app/core/service/erwerbspensumRS.rest';
@@ -85,6 +88,8 @@ import GesuchRS from './gesuchRS.rest';
 import GlobalCacheService from './globalCacheService';
 import WizardStepManager from './wizardStepManager';
 
+const LOG = LogFactory.createLog('GesuchModelManager');
+
 export default class GesuchModelManager {
 
     public static $inject = [
@@ -113,6 +118,9 @@ export default class GesuchModelManager {
     // initialize empty KinderContainer list to avoid infinite loop in smart table
     public emptyKinderList: Array<TSKindContainer> = [];
 
+    private _tageschuleEnabledForMandant: boolean;
+    private readonly unsubscribeTsEnabled$ = new Subject<void>();
+
     public constructor(
         private readonly gesuchRS: GesuchRS,
         private readonly gesuchstellerRS: GesuchstellerRS,
@@ -139,7 +147,9 @@ export default class GesuchModelManager {
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
     ) {
+    }
 
+    public $onInit(): void {
         this.authLifeCycleService.get$(TSAuthEvent.LOGOUT_SUCCESS)
             .subscribe(() => {
                     this.setGesuch(undefined);
@@ -147,6 +157,16 @@ export default class GesuchModelManager {
                 },
                 err => this.log.error(err),
             );
+        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err));
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribeTsEnabled$.next();
+        this.unsubscribeTsEnabled$.complete();
     }
 
     /**
@@ -1583,6 +1603,6 @@ export default class GesuchModelManager {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.einstellungRS.isTagesschuleEnabledForMandant();
+        return this._tageschuleEnabledForMandant;
     }
 }

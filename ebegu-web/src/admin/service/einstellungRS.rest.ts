@@ -16,6 +16,7 @@
  */
 
 import {IHttpResponse, IHttpService, IPromise} from 'angular';
+import {Observable, ReplaySubject} from 'rxjs';
 import GlobalCacheService from '../../gesuch/service/globalCacheService';
 import {TSCacheTyp} from '../../models/enums/TSCacheTyp';
 import {TSEinstellungKey} from '../../models/enums/TSEinstellungKey';
@@ -29,7 +30,8 @@ export class EinstellungRS {
     public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', 'GlobalCacheService'];
     public serviceURL: string;
 
-    private tageschuleEnabledForMandant: boolean = false;
+    private readonly tagesschuleEnabledSubject$ = new ReplaySubject<TSEinstellung | null>(1);
+    private _tageschuleEnabledForMandant$: Observable<TSEinstellung | null> = this.tagesschuleEnabledSubject$.asObservable();
 
     public constructor(
         public readonly http: IHttpService,
@@ -60,6 +62,13 @@ export class EinstellungRS {
             });
     }
 
+    public findEinstellungTagesschuleEnabledForMandant(): void {
+        this.http.get(`${this.serviceURL}/tagesschuleEnabledForMandant`)
+            .then((param: IHttpResponse<TSEinstellung>) => {
+                this.tagesschuleEnabledSubject$.next(this.ebeguRestUtil.parseEinstellung(new TSEinstellung(), param.data));
+            });
+    }
+
     public getAllEinstellungenBySystem(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
             .then((response: any) => {
@@ -75,21 +84,9 @@ export class EinstellungRS {
             });
     }
 
-    public getAllEinstellungenByMandantCached(gesuchsperiodeId: string): IPromise<TSEinstellung[]> {
-        const cache = this.globalCacheService.getCache(TSCacheTyp.EBEGU_EINSTELLUNGEN_MANDANT);
-        return this.http.get(`${this.serviceURL}/mandant/gesuchsperiode/${gesuchsperiodeId}`, {cache})
-            .then((response: any) => {
-                const einstellungenList = this.ebeguRestUtil.parseEinstellungList(response.data);
-                for (const tsEinstellung of einstellungenList) {
-                    if (tsEinstellung.key === TSEinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT) {
-                        this.tageschuleEnabledForMandant = 'true' === tsEinstellung.value;
-                    }
-                }
-                return einstellungenList;
-            });
-    }
-
-    public isTagesschuleEnabledForMandant(): boolean {
-       return this.tageschuleEnabledForMandant;
+    // Use the observable, when the state must be updated automatically, when the principal changes.
+    // e.g. printing the name of the current user
+    public tageschuleEnabledForMandant$(): Observable<TSEinstellung | null> {
+        return this._tageschuleEnabledForMandant$;
     }
 }

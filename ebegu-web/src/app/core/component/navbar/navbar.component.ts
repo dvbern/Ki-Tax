@@ -49,7 +49,8 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     private readonly unsubscribe$ = new Subject<void>();
     private readonly unsubscribeTour$ = new Subject<void>();
 
-    public showMenuAnmeldungen = false;
+    private _tageschuleEnabledForMandant: boolean;
+    private readonly unsubscribeTsEnabled$ = new Subject<void>();
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -63,7 +64,9 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
         private readonly einstellungRS: EinstellungRS,
 
     ) {
+    }
 
+    public ngOnInit(): void {
         // navbar depends on the principal. trigger change detection when the principal changes
 
         this.authServiceRS.principal$
@@ -84,7 +87,20 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 err => LOG.error(err),
             );
 
-        this.showMenuAnmeldungen = this.einstellungRS.isTagesschuleEnabledForMandant();
+        this.einstellungRS.tageschuleEnabledForMandant$().pipe(takeUntil(this.unsubscribeTsEnabled$))
+            .subscribe(tsEnabledForMandantEinstellung => {
+                    this._tageschuleEnabledForMandant = tsEnabledForMandantEinstellung.getValueAsBoolean();
+                },
+                err => LOG.error(err));
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+        this.unsubscribeTour$.next();
+        this.unsubscribeTour$.complete();
+        this.unsubscribeTsEnabled$.next();
+        this.unsubscribeTsEnabled$.complete();
     }
 
     public createNewFall(): void {
@@ -108,13 +124,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
                 ,
                 err => LOG.error(err),
             );
-    }
-
-    public ngOnDestroy(): void {
-        this.unsubscribe$.next();
-        this.unsubscribe$.complete();
-        this.unsubscribeTour$.next();
-        this.unsubscribeTour$.complete();
     }
 
     public ngAfterViewInit(): void {
@@ -182,4 +191,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             .pipe(map(p => p.extractCurrentAktiveGemeinden()));
     }
 
+    public isTagesschulangebotEnabled(): boolean {
+        return this._tageschuleEnabledForMandant;
+    }
 }
