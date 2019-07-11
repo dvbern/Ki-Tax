@@ -42,6 +42,7 @@ export class EditGemeindeComponent implements OnInit {
 
     public stammdaten$: Observable<TSGemeindeStammdaten>;
     public keineBeschwerdeAdresse: boolean;
+    public beguStartStr: string;
     private navigationSource: StateDeclaration;
     private gemeindeId: string;
     private fileToUpload: File;
@@ -76,6 +77,9 @@ export class EditGemeindeComponent implements OnInit {
                 }
                 if (!stammdaten.rechtsmittelbelehrung) {
                     stammdaten.rechtsmittelbelehrung = new TSTextRessource();
+                }
+                if (stammdaten.gemeinde && stammdaten.gemeinde.betreuungsgutscheineStartdatum) {
+                    this.beguStartStr = stammdaten.gemeinde.betreuungsgutscheineStartdatum.format('DD.MM.YYYY');
                 }
                 return stammdaten;
             }));

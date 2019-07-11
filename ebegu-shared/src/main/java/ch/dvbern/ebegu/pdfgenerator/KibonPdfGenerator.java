@@ -153,11 +153,15 @@ public abstract class KibonPdfGenerator {
 			empfaengerAdresse.add(translate(EINSCHREIBEN));
 		}
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()));
-		if (getGesuch().getGesuchsteller2() != null) {
+		if (hasSecondGesuchsteller() && getGesuch().getGesuchsteller2() != null) {
 			empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller2()));
 		}
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerAddressAsString(getGesuch().getGesuchsteller1()));
 		return empfaengerAdresse;
+	}
+
+	protected boolean hasSecondGesuchsteller() {
+		return gesuch.hasSecondGesuchstellerAtEndOfGesuchsperiode();
 	}
 
 	@Nonnull
