@@ -20,6 +20,7 @@ import {TSMessageEvent} from '../../models/enums/TSErrorEvent';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import TSExceptionReport from '../../models/TSExceptionReport';
+import TSGesuch from '../../models/TSGesuch';
 import EbeguUtil from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import BerechnungsManager from '../service/berechnungsManager';
@@ -93,8 +94,8 @@ export default class AbstractGesuchViewController<T> implements IController {
     }
 
     public getGesuchId(): string {
-        return this.gesuchModelManager && this.gesuchModelManager.getGesuch() ?
-            this.gesuchModelManager.getGesuch().id :
+        return this.gesuchModelManager && this.getGesuch() ?
+            this.getGesuch().id :
             '';
     }
 
@@ -103,7 +104,7 @@ export default class AbstractGesuchViewController<T> implements IController {
     }
 
     public isGesuchInStatus(status: TSAntragStatus): boolean {
-        return this.gesuchModelManager.getGesuch() && status === this.gesuchModelManager.getGesuch().status;
+        return this.getGesuch() && status === this.getGesuch().status;
     }
 
     public isBetreuungInStatus(status: TSBetreuungsstatus): boolean {
@@ -113,7 +114,11 @@ export default class AbstractGesuchViewController<T> implements IController {
     }
 
     public isMutation(): boolean {
-        return this.gesuchModelManager.getGesuch() ? this.gesuchModelManager.getGesuch().isMutation() : false;
+        return this.getGesuch() ? this.getGesuch().isMutation() : false;
+    }
+
+    protected getGesuch(): TSGesuch {
+        return this.gesuchModelManager.getGesuch();
     }
 
     public isKorrekturModusJugendamt(): boolean {
@@ -129,14 +134,14 @@ export default class AbstractGesuchViewController<T> implements IController {
     }
 
     public extractFullNameGS1(): string {
-        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller1
-            ? this.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName()
+        return this.getGesuch() && this.getGesuch().gesuchsteller1
+            ? this.getGesuch().gesuchsteller1.extractFullName()
             : '';
     }
 
     public extractFullNameGS2(): string {
-        return this.gesuchModelManager.getGesuch() && this.gesuchModelManager.getGesuch().gesuchsteller2
-            ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName()
+        return this.getGesuch() && this.getGesuch().gesuchsteller2
+            ? this.getGesuch().gesuchsteller2.extractFullName()
             : '';
     }
 

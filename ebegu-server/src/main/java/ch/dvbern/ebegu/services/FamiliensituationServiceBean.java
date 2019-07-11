@@ -65,9 +65,11 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 	@Override
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
-	public FamiliensituationContainer saveFamiliensituation(Gesuch gesuch,
+	public FamiliensituationContainer saveFamiliensituation(
+		Gesuch gesuch,
 		FamiliensituationContainer familiensituationContainer,
-		Familiensituation loadedFamiliensituation) {
+		Familiensituation loadedFamiliensituation
+	) {
 		Objects.requireNonNull(familiensituationContainer);
 		Objects.requireNonNull(gesuch);
 
@@ -106,8 +108,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 			//Alle Daten des GS2 loeschen wenn man von 2GS auf 1GS wechselt und GS2 bereits erstellt wurde
 		assert mergedFamiliensituationContainer != null;
-		if (gesuch.getGesuchsteller2() != null && isNeededToRemoveGesuchsteller2(gesuch,
-			mergedFamiliensituationContainer.extractFamiliensituation(), oldFamiliensituation)) {
+		if (gesuch.getGesuchsteller2() != null
+			&& isNeededToRemoveGesuchsteller2(gesuch, mergedFamiliensituationContainer.extractFamiliensituation(), oldFamiliensituation)
+		) {
 				gesuchstellerService.removeGesuchsteller(gesuch.getGesuchsteller2());
 				gesuch.setGesuchsteller2(null);
 				newFamiliensituation.setGemeinsameSteuererklaerung(false);
@@ -150,16 +153,23 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	 * und seine Daten endgueltig geloescht. Dies gilt aber nur fuer ERSTGESUCH. Bei Mutationen wird
 	 * der 2GS nie geloescht. Ebenfalls nicht geloescht wird im KorrekturmodusGemeinde
 	 */
-	private boolean isNeededToRemoveGesuchsteller2(Gesuch gesuch, Familiensituation newFamiliensituation,
-		Familiensituation familiensituationErstgesuch) {
+	private boolean isNeededToRemoveGesuchsteller2(
+		Gesuch gesuch,
+		Familiensituation newFamiliensituation,
+		Familiensituation familiensituationErstgesuch
+	) {
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		return !EbeguUtil.isKorrekturmodusGemeinde(gesuch) && ((!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
+		return (!EbeguUtil.isKorrekturmodusGemeinde(gesuch) || (EbeguUtil.isKorrekturmodusGemeinde(gesuch) && gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getGesuchstellerGS() == null))
+			&& ((!gesuch.isMutation() && gesuch.getGesuchsteller2() != null
 			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))
 			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation, familiensituationErstgesuch)));
 	}
 
-	private boolean isChanged1To2Reverted(Gesuch gesuch, Familiensituation newFamiliensituation,
-		Familiensituation familiensituationErstgesuch) {
+	private boolean isChanged1To2Reverted(
+		Gesuch gesuch,
+		Familiensituation newFamiliensituation,
+		Familiensituation familiensituationErstgesuch
+	) {
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)
 			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis);
