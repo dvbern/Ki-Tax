@@ -58,6 +58,7 @@ import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
@@ -647,8 +648,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Transient
 	public String extractFullnamesString() {
+		Familiensituation familiensituation = extractFamiliensituation();
+
 		String bothFamiliennamen = (this.getGesuchsteller1() != null ? this.getGesuchsteller1().extractFullName() : "");
-		bothFamiliennamen += this.getGesuchsteller2() != null ? ", " + this.getGesuchsteller2().extractFullName() : "";
+
+		if (familiensituation != null && familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigBis())) {
+			bothFamiliennamen += this.getGesuchsteller2() != null ? ", " + this.getGesuchsteller2().extractFullName() : "";
+		}
+
 		return bothFamiliennamen;
 	}
 
@@ -824,18 +831,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	private void copyGesuchsteller2(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
-		if (this.getGesuchsteller2() != null) {
+		if (this.getGesuchsteller2() != null && this.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}
 	}
 
 	private void copyGesuchsteller2IfStillNeeded(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
 		// Den zweiten GS nur kopieren, wenn er laut aktuellem Zivilstand noch benoetigt wird
-		if (this.getGesuchsteller2() != null
-			&& target.getFamiliensituationContainer() != null
-			&& target.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& target.getFamiliensituationContainer().getFamiliensituationJA().hasSecondGesuchsteller(gesuchsperiode.getGueltigkeit().getGueltigBis())) {
-
+		if (this.getGesuchsteller2() != null && target.hasSecondGesuchstellerAtEndOfGesuchsperiode()) {
 			target.setGesuchsteller2(this.getGesuchsteller2().copyGesuchstellerContainer(new GesuchstellerContainer(), copyType));
 		}
 	}
@@ -850,8 +853,18 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		if (this.getDokumentGrunds() != null) {
 			target.setDokumentGrunds(new HashSet<>());
 			this.getDokumentGrunds().forEach(
-			dokumentGrund -> target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType))
-		);}
+				dokumentGrund -> {
+					boolean hasSecondGS = target.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode();
+					if (!hasSecondGS) {
+						boolean isDokumentOfSecondGS = dokumentGrund.getPersonType() == DokumentGrundPersonType.GESUCHSTELLER
+							&& dokumentGrund.getPersonNumber() != null && 2 == dokumentGrund.getPersonNumber();
+						if (!isDokumentOfSecondGS) {
+							target.addDokumentGrund(dokumentGrund.copyDokumentGrund(new DokumentGrund(), copyType));
+						}
+					}
+				}
+			);
+		}
 	}
 
 	@Nonnull
@@ -1020,6 +1033,19 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			}
 		}
 		return false;
+	}
+
+	public boolean hasSecondGesuchstellerAtEndOfGesuchsperiode() {
+		Familiensituation familiensituation = extractFamiliensituation();
+		return familiensituation != null
+			&& familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigBis());
+	}
+
+	public boolean hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode() {
+		Familiensituation familiensituation = extractFamiliensituation();
+		return familiensituation != null
+			&& (familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigAb())
+			|| familiensituation.hasSecondGesuchsteller(getGesuchsperiode().getGueltigkeit().getGueltigBis()));
 	}
 
 	public static Gesuch createMutation(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode, @Nullable LocalDate eingangsdatum) {
