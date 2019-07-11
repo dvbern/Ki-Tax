@@ -111,4 +111,7 @@ public interface EinstellungService {
 	 * Löscht alle Einstellungen der uebergebenen Gesuchsperiode
 	 */
 	void deleteEinstellungenOfGesuchsperiode(@Nonnull Gesuchsperiode gesuchsperiode);
+
+	@Nonnull
+	Einstellung findEinstellungTagesschuleEnabledForMandant();
 }

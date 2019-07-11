@@ -126,6 +126,18 @@ public class EinstellungResource {
 		return converter.einstellungToJAX(einstellungService.findEinstellung(einstellungKey, gemeinde, gp));
 	}
 
+	@ApiOperation(value = "Gibt zurück, ob für den Mandanten des eingeloggten Benutzers die Tagesschulanmeldungen aktiviert sind",
+		response = JaxEinstellung.class)
+	@Nullable
+	@GET
+	@Path("/tagesschuleEnabledForMandant")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	public JaxEinstellung findEinstellungTagesschuleEnabledForMandant() {
+		Einstellung enabledForMandant = einstellungService.findEinstellungTagesschuleEnabledForMandant();
+		return converter.einstellungToJAX(enabledForMandant);
+	}
+
 	@ApiOperation(value = "Get all kiBon parameter for a specific Gesuchsperiode. The id of the gesuchsperiode is " +
 		"passed  as a pathParam", responseContainer = "List", response = JaxEinstellung.class)
 	@Nonnull

@@ -90,6 +90,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Inject
 	private BenutzerService benutzerService;
 
+	@Inject
+	private GesuchsperiodeService gesuchsperiodeService;
+
 
 	@Override
 	@Nonnull
@@ -158,17 +161,28 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		if (einstellungByGemeinde.isPresent()) {
 			return einstellungByGemeinde.get();
 		}
-		// (2) Nach Mandant
-		Optional<Einstellung> einstellungByMandant = findEinstellungByMandantGemeindeOrSystem(key, gemeinde.getMandant(), null, gesuchsperiode, em);
-		if (einstellungByMandant.isPresent()) {
-			return einstellungByMandant.get();
-		}
-		// (3) Nach Default des Systems
-		Optional<Einstellung> einstellungBySystem = findEinstellungByMandantGemeindeOrSystem(key, null, null, gesuchsperiode, em);
-		if (einstellungBySystem.isPresent()) {
-			return einstellungBySystem.get();
+		// (2) Nach Mandant oder System-Default
+		Optional<Einstellung> einstellungByMandantOrSystem = findEinstellungByMandantOrSystem(key, gemeinde.getMandant(), gesuchsperiode, em);
+		if (einstellungByMandantOrSystem.isPresent()) {
+			return einstellungByMandantOrSystem.get();
 		}
 		throw new NoEinstellungFoundException(key, gemeinde, gesuchsperiode);
+	}
+
+	/**
+	 * Sucht die Einstellung nach Mandant oder System. Dies sollte nur aufgerufen werden, wenn auf Stufe GEMEINDE nichts gefunden wurde!
+	 * Daher diese Methode nie public machen.
+	 */
+	private Optional<Einstellung> findEinstellungByMandantOrSystem(@Nonnull EinstellungKey key, @Nonnull Mandant mandant, @Nonnull Gesuchsperiode gesuchsperiode,
+		@Nonnull final EntityManager em) {
+		// (1) Nach Mandant
+		Optional<Einstellung> einstellungByMandant = findEinstellungByMandantGemeindeOrSystem(key, mandant, null, gesuchsperiode, em);
+		if (einstellungByMandant.isPresent()) {
+			return einstellungByMandant;
+		}
+		// (2) Nach Default des Systems
+		Optional<Einstellung> einstellungBySystem = findEinstellungByMandantGemeindeOrSystem(key, null, null, gesuchsperiode, em);
+		return einstellungBySystem;
 	}
 
 	private Optional<Einstellung> findEinstellungByMandantGemeindeOrSystem(
@@ -246,18 +260,9 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
 		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
-
-			// (1) Nach Mandant
-			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantGemeindeOrSystem(
-				einstellungKey, benutzer.getMandant(), null, gesuchsperiode, entityManager);
-			if (einstellungByMandant.isPresent()) {
-				result.add(einstellungByMandant.get());
-			} else {
-				// (2) Nach Default des Systems
-				Optional<Einstellung> einstellungBySystem = findEinstellungByMandantGemeindeOrSystem(
-					einstellungKey, null, null, gesuchsperiode, entityManager);
-				einstellungBySystem.ifPresent(einstellung -> result.add(einstellung));
-			}
+			// Nach Mandant oder System
+			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantOrSystem(einstellungKey, benutzer.getMandant(), gesuchsperiode, entityManager);
+			einstellungByMandant.ifPresent(result::add);
 		});
 		return result;
 	}
@@ -295,5 +300,27 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			Einstellung_.gesuchsperiode);
 		einstellungenOfGP
 			.forEach(einstellung -> persistence.remove(Einstellung.class, einstellung.getId()));
+	}
+
+	@Nonnull
+	@Override
+	public Einstellung findEinstellungTagesschuleEnabledForMandant() {
+
+		Benutzer benutzer = benutzerService.getCurrentBenutzer().orElseThrow(() ->
+			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Benutzer nicht eingeloggt"));
+
+		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode().orElseThrow(() ->
+			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Keine Gesuchsperiode gefunden"));
+
+		Optional<Einstellung> einstellungOptional = findEinstellungByMandantOrSystem(
+			EinstellungKey.TAGESSCHULE_ENABLED_FOR_MANDANT,
+			benutzer.getMandant(),
+			gesuchsperiode,
+			persistence.getEntityManager());
+
+		Einstellung einstellung = einstellungOptional.orElseThrow(() ->
+			new EbeguRuntimeException("findEinstellungTagesschuleEnabledForMandant", "Einstellung TAGESSCHULE_ENABLED_FOR_MANDANT nicht gfunden"));
+
+		return einstellung;
 	}
 }
