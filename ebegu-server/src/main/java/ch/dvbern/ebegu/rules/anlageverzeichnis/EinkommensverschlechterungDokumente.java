@@ -100,14 +100,16 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 					1,
 					basisJahrPlus1,
 					stichtag);
-				getAllDokumenteGesuchsteller(
-					anlageVerzeichnis,
-					gesuchsteller2,
-					gemeinsam,
-					2,
-					1,
-					basisJahrPlus1,
-					stichtag);
+				if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+					getAllDokumenteGesuchsteller(
+						anlageVerzeichnis,
+						gesuchsteller2,
+						gemeinsam,
+						2,
+						1,
+						basisJahrPlus1,
+						stichtag);
+				}
 			}
 			if (einkommensverschlechterungInfo.getEkvFuerBasisJahrPlus2()) {
 				getAllDokumenteGesuchsteller(
@@ -118,14 +120,16 @@ public class EinkommensverschlechterungDokumente extends AbstractFinanzielleSitu
 					2,
 					basisJahrPlus2,
 					stichtag);
-				getAllDokumenteGesuchsteller(
-					anlageVerzeichnis,
-					gesuchsteller2,
-					gemeinsam,
-					2,
-					2,
-					basisJahrPlus2,
-					stichtag);
+				if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+					getAllDokumenteGesuchsteller(
+						anlageVerzeichnis,
+						gesuchsteller2,
+						gemeinsam,
+						2,
+						2,
+						basisJahrPlus2,
+						stichtag);
+				}
 			}
 		}
 

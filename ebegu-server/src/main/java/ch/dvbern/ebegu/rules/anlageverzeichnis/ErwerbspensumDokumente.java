@@ -75,8 +75,10 @@ public class ErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum, Loc
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller1, 1, gueltigAb, locale);
 
-		final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, 2, gueltigAb, locale);
+		if (gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+			final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
+			getAllDokumenteGesuchsteller(anlageVerzeichnis, gesuchsteller2, 2, gueltigAb, locale);
+		}
 	}
 
 	private void getAllDokumenteGesuchsteller(

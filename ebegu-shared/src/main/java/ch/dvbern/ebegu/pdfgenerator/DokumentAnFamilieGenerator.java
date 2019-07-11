@@ -71,7 +71,9 @@ public abstract class DokumentAnFamilieGenerator extends KibonPdfGenerator {
 	protected Paragraph createAnrede() {
 		final StringBuilder anrede = new StringBuilder();
 		addAnrede(anrede, gesuch.getGesuchsteller1(), true);
-		addAnrede(anrede, gesuch.getGesuchsteller2(), false);
+		if (hasSecondGesuchsteller()) {
+			addAnrede(anrede, gesuch.getGesuchsteller2(), false);
+		}
 		return PdfUtil.createParagraph(anrede.toString());
 	}
 
