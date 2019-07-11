@@ -24,7 +24,7 @@ import TSGemeinde from '../../models/TSGemeinde';
 import TestDataUtil from '../../utils/TestDataUtil.spec';
 import GemeindeRS from './gemeindeRS.rest';
 
-describe('dossier', () => {
+describe('GemeindeRS', () => {
 
     let gemeindeRS: GemeindeRS;
     let $httpBackend: IHttpBackendService;
