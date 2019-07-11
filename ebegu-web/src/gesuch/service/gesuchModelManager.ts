@@ -222,19 +222,12 @@ export default class GesuchModelManager {
      * benoetigt, da bei Mutationen darf der 2GS nicht geloescht werden
      */
     public isGesuchsteller2Required(): boolean {
-        // Der 2. Gesuchsteller ist auch REQIERED, wenn die Familiensituation von der Gemeinde im Korrekturmodus geaendert wurde
-        const gs2VorhandenNichtLoeschen = this.isKorrekturModusJugendamt() &&  !!this.gesuch.gesuchsteller2;
         if (this.gesuch && this.getFamiliensituation() && this.getFamiliensituation().familienstatus) {
             return this.getFamiliensituation().hasSecondGesuchsteller(this.getGesuchsperiode().gueltigkeit.gueltigBis)
-                || (this.gesuch.isMutation() && !!this.gesuch.gesuchsteller2)
-                || gs2VorhandenNichtLoeschen;
+                || !!this.gesuch.gesuchsteller2;
         }
 
         return false;
-    }
-
-    public isBasisJahr2Required(): boolean {
-        return this.getEkvFuerBasisJahrPlus(2);
     }
 
     // tslint:disable-next-line:naming-convention
