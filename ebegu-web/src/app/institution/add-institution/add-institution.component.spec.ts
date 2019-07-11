@@ -18,7 +18,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService, Transition} from '@uirouter/core';
-import {Observable, of} from 'rxjs';
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 import TSEinstellung from '../../../models/TSEinstellung';
