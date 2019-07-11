@@ -141,5 +141,6 @@ public interface VerfuegungService {
 	/**
 	 * Returns all Zeitabschnitte within the given year that are gueltig
 	 */
+	@Nonnull
 	List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year);
 }

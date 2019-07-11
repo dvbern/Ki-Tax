@@ -1324,6 +1324,7 @@
     "ReportType_massenversand": "Coordonnées pour série de courriers",
     "ReportType_institutionen": "Institutions",
     "ReportType_verrechnungkibon": "Comptabilitè kiBon",
+    "ReportType_lastenausgleich": "",
     "BatchJobStatus_REQUESTED": "Statistique demandée",
     "BatchJobStatus_RUNNING": "Statistique en cours d'élaboration",
     "BatchJobStatus_FINISHED": "Prêt à télécharger",

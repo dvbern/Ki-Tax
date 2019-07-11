@@ -1324,6 +1324,7 @@
     "ReportType_massenversand": "Kontaktdaten für Serienbriefe",
     "ReportType_institutionen": "Institutionen",
     "ReportType_verrechnungkibon": "VerrechnungKibon",
+    "ReportType_lastenausgleich": "Lastenausgleich",
     "BatchJobStatus_REQUESTED": "Statistik angefordert",
     "BatchJobStatus_RUNNING": "Statistik wird erstellt",
     "BatchJobStatus_FINISHED": "Bereit zum Download",

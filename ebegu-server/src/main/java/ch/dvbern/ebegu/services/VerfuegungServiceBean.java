@@ -477,6 +477,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		return;
 	}
 
+	@Nonnull
 	@Override
 	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT})
 	public List<VerfuegungZeitabschnitt> findZeitabschnitteByYear(int year) {
